@@ -1,0 +1,71 @@
+﻿# Copyright 2004-2017 Tom Rothamel <pytom@bishoujo.us>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+init python:
+
+    layout.provides('navigation')
+
+    style.gm_nav_frame = Style(style.menu_frame, help="game menu navigation frame")
+    style.gm_nav_box = Style(style.vbox, help="box containing game menu navigation buttons")
+
+    style.gm_nav_button = Style(style.button, help="game menu navigation button")
+    style.gm_nav_button_text = Style(style.button_text, help="game menu navigation button (text)")
+
+    style.gm_nav_button.size_group = "gm_nav_button"
+
+    style.gm_nav_frame.xpos = 5.0/6.0
+    style.gm_nav_frame.xanchor = 0.5
+    style.gm_nav_frame.ypos = 0.95
+    style.gm_nav_frame.yanchor = 1.0
+
+    def _navigation(screen=None):
+
+        # Display the game menu background
+        ui.window(style=style.gm_root[screen])
+        ui.null()
+
+        if screen is None:
+            return
+
+        # Display the navigation frame.
+        ui.frame(style='gm_nav_frame')
+        ui.vbox(focus='gm_nav', style='gm_nav_box')
+
+        for e in config.game_menu:
+
+            if len(e) == 4:
+                 key, label, clicked, enabled = e
+                 shown = "True"
+            else:
+                 key, label, clicked, enabled, shown = e
+
+            if not eval(shown):
+                continue
+
+            layout.button(label,
+                          "gm_nav",
+                          selected=(screen==key),
+                          enabled=eval(enabled),
+                          clicked=clicked)
+
+        ui.close()
+
+    layout.navigation = _navigation

@@ -1,0 +1,2 @@
+DOKI DOKI LITERATURE CLUB
+Copyright (c) 2017 Team Salvato. All rights reserved. This published work includes the Ren'Py game engine whose material is covered by the license information included in the "LICENSE" document.

@@ -1,0 +1,159 @@
+﻿# Copyright 2004-2017 Tom Rothamel <pytom@bishoujo.us>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+init python:
+
+    layout.provides('preferences')
+    renpy.load_module("_layout/imagemap_common")
+
+    # The ground image.
+    config.preferences_ground = None
+
+    # The idle image.
+    config.preferences_idle = None
+
+    # The hover image.
+    config.preferences_hover = None
+
+    # The selected idle image.
+    config.preferences_selected_idle = None
+
+    # The selected hover image.
+    config.preferences_selected_hover = None
+
+    # The hotspots. Each hotspot is defined by a tuple giving:
+    # - The x-coordinate of the left side.
+    # - The y-coordinate of the top side.
+    # - The x-coordinate of the right side.
+    # - The y-coordinate of the bottoms side.
+    # - The name of the button or slider this is equivalent to.
+    config.preferences_hotspots = None
+
+    config.sample_sound = None
+    config.sample_voice = None
+    config.always_has_joystick = False
+
+    def __set(base, field, value):
+        setattr(base, field, value)
+        return True
+
+    __curried_set = renpy.curry(__set)
+
+
+    def __show_preferences():
+
+        ime = _ImageMapper(
+            "preferences",
+            config.preferences_ground,
+            config.preferences_idle,
+            config.preferences_hover,
+            config.preferences_selected_idle,
+            config.preferences_selected_hover,
+            config.preferences_hotspots)
+
+        def pref(name, pref, value):
+            ime.button(
+                name,
+                __curried_set(_preferences, pref, value),
+                getattr(_preferences, pref) == value)
+
+        pref("Window", "fullscreen", False)
+        pref("Fullscreen", "fullscreen", True)
+
+        pref("All", "transitions", 2)
+        pref("Some", "transitions", 1)
+        pref("None", "transitions", 0)
+
+        pref("Seen Messages", "skip_unseen", False)
+        pref("All Messages", "skip_unseen", True)
+
+        if not main_menu:
+            ime.button("Begin Skipping", ui.jumps("_return_skipping"), False)
+
+        pref("Stop Skipping", "skip_after_choices", False)
+        pref("Keep Skipping", "skip_after_choices", True)
+
+        if renpy.display.joystick.enabled or config.always_has_joystick:
+            ime.button("Joystick", ui.jumps("joystick_preferences_screen"), False)
+
+        def play_sound():
+            renpy.music.play(config.sample_sound, channel="sound")
+
+        ime.button("Sound Test", play_sound, False)
+
+        def play_voice():
+            renpy.music.play(config.sample_sound, channel="voice")
+
+        ime.button("Voice Test", play_voice, False)
+
+        v = _preferences.text_cps
+        if v == 0:
+            v = 150
+        else:
+            v = v - 1
+
+        def set_text_cps(v):
+            if v == 150:
+                v = 0
+            else:
+                v = v + 1
+
+            _preferences.text_cps = v
+
+        ime.bar("Text Speed", 150, v, set_text_cps)
+
+        v = _preferences.afm_time
+        if v == 0:
+            v = 40
+        else:
+            v = v - 1
+
+        def set_afm_time(v):
+            if v == 40:
+                v = 0
+            else:
+                v = v + 1
+
+            _preferences.afm_time = v
+
+        ime.bar("Auto-Forward Time", 40, v, set_afm_time)
+
+        def set_music(v):
+            _preferences.set_volume('music', v / 128.0)
+        def set_sound(v):
+            _preferences.set_volume('sfx', v / 128.0)
+        def set_voice(v):
+            _preferences.set_volume('voice', v / 128.0)
+
+        if config.has_music:
+            ime.bar("Music Volume", 128, int(_preferences.get_volume('music') * 128), set_music)
+        if config.has_sound:
+            ime.bar("Sound Volume", 128, int(_preferences.get_volume('sfx') * 128), set_sound)
+        if config.has_voice:
+            ime.bar("Voice Volume", 128, int(_preferences.get_volume('voice') * 128), set_voice)
+
+        ime.close()
+        ui.interact(mouse="gamemenu")
+
+label preferences_screen:
+
+    while True:
+        $ __show_preferences()

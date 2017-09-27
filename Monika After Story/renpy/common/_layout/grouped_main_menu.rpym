@@ -1,0 +1,88 @@
+﻿# Copyright 2004-2017 Tom Rothamel <pytom@bishoujo.us>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+init python:
+
+    layout.provides('main_menu')
+
+    style.mm_menu_frame = Style(style.menu_frame, help="frame containing main menu")
+    style.mm_outer_box = Style(style.vbox, help="outer box containing main menu buttons")
+    style.mm_inner_box = Style(style.hbox, help="inner box containing main menu buttons")
+
+    style.mm_button = Style(style.button, help="main menu button")
+    style.mm_button_text = Style(style.button_text, help="main menu button (text)")
+
+    style.mm_menu_frame.xalign = 0.5
+    style.mm_menu_frame.yalign = 0.98
+    style.mm_inner_box.xalign = 0.5
+
+    config.main_menu_per_group = 2
+
+
+label main_menu_screen:
+
+    python hide:
+        # Ignore right-click while at the main menu.
+        ui.keymap(game_menu=ui.returns(None))
+
+        # Show the background.
+        ui.window(style='mm_root')
+        ui.null()
+
+        ui.frame(style='mm_menu_frame')
+        ui.vbox(style='mm_outer_box')
+
+        inner_open = False
+
+        for i, e in enumerate(config.main_menu):
+
+            if len(e) == 3:
+                label, clicked, enabled = e
+                shown = "True"
+            else:
+                label, clicked, enabled, shown = e
+
+            if not eval(shown):
+                continue
+
+            if i % config.main_menu_per_group == 0:
+                if inner_open:
+                    ui.close()
+
+                ui.hbox(style='mm_inner_box')
+                inner_open = True
+
+            # This checks to see if clicked is a string. If so, we want clicked
+            # to jump us out of the current context.
+            if isinstance(clicked, basestring):
+                clicked=ui.jumpsoutofcontext(clicked)
+
+            # Create each button.
+            layout.button(label, "mm", enabled=eval(enabled), clicked=clicked)
+
+        if inner_open:
+            ui.close() # inner box
+
+        ui.close() # outer box
+
+        ui.interact(mouse="mainmenu")
+
+    return

@@ -1,0 +1,3 @@
+This directory exists because Python will complain about a missing exec_prefix
+if it doesn't. This file exists because some archive formats and version control
+systems dislike empty directories.

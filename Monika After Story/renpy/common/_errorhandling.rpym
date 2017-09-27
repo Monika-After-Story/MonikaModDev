@@ -1,0 +1,659 @@
+﻿# Copyright 2004-2017 Tom Rothamel <pytom@bishoujo.us>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# This file contains the code for in-game Ren'Py error handling. It's a
+# module (as opposed to a .rpy file) because that allows us to ensure
+# that it is fully loaded or run before any other Ren'Py code runs.
+
+
+init python in gui:
+    system_font = None
+
+init python:
+    style._default = Style(None)
+
+init python hide:
+
+    if renpy.loadable("gui.rpy") or renpy.loadable("gui.rpyc"):
+        config.screen_width, config.screen_height = 1280, 720
+
+    def init_system_styles():
+        if gui.system_font is not None:
+            style._default.font = gui.system_font
+
+    config.init_system_styles = init_system_styles
+
+init label _errorhandling:
+
+    python in gui:
+        from store import config
+
+        def _scale(n):
+            return int(n * config.screen_height / 720)
+
+        _wide = (config.screen_width >  (config.screen_height * 1.5))
+
+    style _default:
+
+        # Text properties
+        font "DejaVuSans.ttf"
+        language "unicode"
+        antialias True
+        size gui._scale(16)
+        color "#404040"
+        black_color (0, 0, 0, 255)
+        bold False
+        italic False
+        underline False
+        strikethrough False
+        kerning 0.0
+        drop_shadow None
+        drop_shadow_color (0, 0, 0, 255)
+        outlines [ ]
+        minwidth 0
+        text_align 0
+        justify False
+        text_y_fudge 0
+        first_indent 0
+        rest_indent 0
+        line_spacing 0
+        line_leading 0
+        line_overlap_split 0
+        layout "tex"
+        subtitle_width 0.9
+        slow_cps None
+        slow_cps_multiplier 1.0
+        slow_abortable False
+        hinting "auto"
+        adjust_spacing True
+
+        # Window properties
+        background None
+        xpadding 0
+        ypadding 0
+        xmargin 0
+        ymargin 0
+        xfill False
+        yfill False
+        xminimum 0
+        yminimum 0
+
+        # Placement properties
+        xpos None
+        ypos None
+        xanchor None
+        yanchor None
+        xmaximum None
+        ymaximum None
+        xoffset 0
+        yoffset 0
+        subpixel False
+
+        # Sound properties
+        activate_sound None
+        hover_sound None
+
+        # Box properties
+        spacing 0
+        first_spacing None
+        box_layout None
+        box_wrap False
+        box_reverse False
+        order_reverse False
+        xfit False
+        yfit False
+
+        # Button properties
+        focus_mask None
+        focus_rect None
+        keyboard_focus True
+        key_events False
+        hover_key_events True
+
+        # Bar properties
+        fore_bar Null()
+        aft_bar Null()
+        thumb None
+        thumb_shadow None
+        left_gutter 0
+        right_gutter 0
+        thumb_offset 0
+        unscrollable None
+        bar_invert False
+        bar_vertical False
+
+        # Viewport properties
+        clipping False
+
+    init python:
+        # Temporarily, until the real styles can be defined.
+        style.default = style._default
+        style.image = style._default
+        style.fixed = style._default
+
+        ##########################################################################
+
+    style _frame is _default:
+        background "#d0d0d0"
+        xpadding gui._scale(150 if gui._wide else 15)
+        ypadding gui._scale(15)
+        xfill True
+        yfill True
+
+    style _text is _default
+    style _fixed is _default
+
+    style _hbox is _default:
+        box_layout 'horizontal'
+
+    style _vbox is _default:
+        box_layout 'vertical'
+
+    style _grid is _default
+    style _side is _default
+
+    style _viewport is _default:
+        xfill True
+        yfill True
+
+    style _button is _default:
+        ypadding gui._scale(2)
+
+    style _button_text is _default:
+        size gui._scale(26)
+        color "#405060"
+        hover_color "#048"
+        insensitive_color "#00000020"
+
+    style _small_button is _button
+
+    style _small_button_text is _button_text:
+        size gui._scale(16)
+
+    style _radio_button is _button:
+        selected_background Solid("#048", xsize=gui._scale(5), ysize=gui._scale(22), yalign=0.5)
+        left_padding gui._scale(15)
+
+    style _radio_button_text is _button_text
+
+    style _label is _default:
+        top_margin gui._scale(10)
+        bottom_margin gui._scale(15)
+
+    style _label_text is _default:
+        size gui._scale(40)
+        kerning -1
+
+    style _bar is _default:
+        left_bar "#048"
+        right_bar "#b0b0b0"
+        ysize gui._scale(20)
+
+    style _vbar is _default:
+        bottom_bar "#048"
+        top_bar "#b0b0b0"
+        xsize gui._scale(20)
+        bar_vertical True
+
+    style _scrollbar is _default:
+        thumb "#808080"
+        hover_thumb "#a0a0a0"
+        base_bar "#b0b0b0"
+        unscrollable "hide"
+        ymaximum gui._scale(10)
+
+    style _vscrollbar is _default:
+        thumb "#808080"
+        hover_thumb "#a0a0a0"
+        base_bar "#b0b0b0"
+        unscrollable "hide"
+        xmaximum gui._scale(10)
+        bar_vertical True
+        bar_invert True
+
+    style _hyperlink is _default:
+        color "#405060"
+        hover_color Color("#048")
+
+    # Early hyperlink support.
+    python hide:
+        def hyperlink_styler(target):
+            return style._hyperlink
+
+        def hyperlink_function(target):
+            if target.startswith("http:"):
+                try:
+                    import webbrowser
+                    webbrowser.open(target)
+                except:
+                    pass
+
+            if target.startswith("edit:"):
+                prefix, line, filename = target.split(":", 2)
+                line = int(line)
+
+                renpy.launch_editor([ filename ], line)
+
+        style._default.hyperlink_functions = (hyperlink_styler, hyperlink_function, None)
+
+    return
+
+# Invokes _errorhanding when this is first loaded.
+init:
+    call _errorhandling
+
+init python:
+
+    # The keymap we use before the real keymap is defined.
+    config.keymap = dict(
+
+        # Bindings present almost everywhere, unless explicitly
+        # disabled.
+        toggle_fullscreen = [ 'f', 'alt_K_RETURN', 'alt_K_KP_ENTER', 'K_F11' ],
+        reload_game = [ 'R' ],
+        quit = [ 'meta_q', 'alt_K_F4', 'alt_q' ],
+        iconify = [ 'meta_m', 'alt_m' ],
+        choose_renderer = [ 'G' ],
+
+        # Focus.
+        focus_left = [ 'K_LEFT' ],
+        focus_right = [ 'K_RIGHT' ],
+        focus_up = [ 'K_UP' ],
+        focus_down = [ 'K_DOWN' ],
+
+        # Button.
+        button_ignore = [ 'mousedown_1' ],
+        button_select = [ 'mouseup_1', 'K_RETURN', 'K_KP_ENTER', 'K_SELECT' ],
+
+        # Viewport.
+        viewport_leftarrow = [ 'K_LEFT', 'repeat_K_LEFT' ],
+        viewport_rightarrow = [ 'K_RIGHT', 'repeat_K_RIGHT' ],
+        viewport_uparrow = [ 'K_UP', 'repeat_K_UP' ],
+        viewport_downarrow = [ 'K_DOWN', 'repeat_K_DOWN' ],
+        viewport_wheelup = [ 'mousedown_4' ],
+        viewport_wheeldown = [ 'mousedown_5' ],
+        viewport_drag_start = [ 'mousedown_1' ],
+        viewport_drag_end = [ 'mouseup_1' ],
+
+        # These control the bar.
+        bar_activate = [ 'mousedown_1', 'K_RETURN', 'K_KP_ENTER', 'K_SELECT' ],
+        bar_deactivate = [ 'mouseup_1', 'K_RETURN', 'K_KP_ENTER', 'K_SELECT' ],
+        bar_decrease = [ 'K_LEFT' ],
+        bar_increase = [ 'K_RIGHT' ],
+
+        # Null console, just in case.
+        console = [ ],
+        )
+
+    config.pad_bindings = {
+        "pad_leftshoulder_press" : [ "rollback", ],
+        "pad_lefttrigger_pos" : [ "rollback", ],
+        "pad_back_press" : [ "rollback", ],
+
+        "pad_guide_press" : [ "game_menu", ],
+        "pad_start_press" : [ "game_menu", ],
+
+        "pad_y_press" : [ "hide_windows", ],
+
+        "pad_rightshoulder_press" : [ "rollforward", ],
+
+        "pad_righttrigger_pos" : [ "dismiss", "button_select" ],
+        "pad_a_press" : [ "dismiss", "button_select" ],
+        "pad_b_press" : [ "button_alternate" ],
+
+        "pad_dpleft_press" : [ "focus_left", "bar_left" ],
+        "pad_leftx_neg" : [ "focus_left", "bar_left" ],
+        "pad_rightx_neg" : [ "focus_left", "bar_left" ],
+
+        "pad_dpright_press" : [ "focus_right", "bar_right" ],
+        "pad_leftx_pos" : [ "focus_right", "bar_right" ],
+        "pad_rightx_pos" : [ "focus_right", "bar_right" ],
+
+        "pad_dpup_press" : [ "focus_up", "bar_up" ],
+        "pad_lefty_neg" :  [ "focus_up", "bar_up" ],
+        "pad_righty_neg" : [ "focus_up", "bar_up" ],
+
+        "pad_dpdown_press" : [ "focus_down", "bar_down" ],
+        "pad_lefty_pos" : [ "focus_down", "bar_down" ],
+        "pad_righty_pos" : [ "focus_down", "bar_down" ],
+    }
+
+    # Null translation function. This gets redefined once things start
+    # successfully.
+    def _(s):
+        return s
+
+    # This function is responsible for taking a traceback, and converting
+    # it to a string that can be shown with text.
+    def __format_traceback(s):
+        import re
+
+        lines = [ i.replace("{", "{{") for i in s.split("\n") ]
+
+        rv = [ ("{size=%d}" % gui._scale(22)) + lines[0] + "{/size}" ]
+
+        for i in lines[1:]:
+            i = re.sub(r'(File "(.*)", line (\d+))', r'{a=edit:\3:\2}\1{/a}', i)
+            rv.append("  " + i)
+
+        rv[1] = "{vspace=5}" + rv[1]
+
+        return "\n".join(rv)
+
+
+    def __format_parse_errors(s):
+        import re
+
+        rv = ""
+
+        lines = s.split("\n")
+        len_lines = len(lines)
+
+        ln = 0
+
+        while ln < len_lines:
+            line = lines[ln]
+            ln += 1
+
+            if ln < len_lines and lines[ln].endswith("^"):
+                highlight = len(lines[ln]) - 1
+                ln += 1
+            else:
+                highlight = -1
+
+            pos = 0
+
+            for c in line:
+                if pos == highlight:
+                    rv += u"{color=#c00}\u2192{/color}"
+                    highlight = -1
+
+                pos += 1
+
+                if c == "{":
+                    rv += "{{"
+                else:
+                    rv += c
+
+            if highlight > 0:
+                rv += u"{color=#c00}\u2190{/color}"
+
+            rv += "\n"
+
+
+        rv = re.sub(r'(File "(.*)", line (\d+))', r'{a=edit:\3:\2}\1{/a}', rv)
+
+        return rv
+
+    class _EditFile(Action):
+        def __init__(self, filename, line=1):
+            self.filename = filename
+            self.line = line
+
+        def __call__(self):
+            try:
+                renpy.launch_editor([ self.filename ], self.line, transient=1)
+            except:
+                pass
+
+    class _CopyFile(Action):
+        def __init__(self, filename):
+            self.filename = filename
+
+        def __call__(self):
+            import pygame.scrap
+
+            with open(self.filename, "rb") as f:
+                f.read(3) # skip the BOM.
+                s = u"[code]\n{}[/code]\n".format(f.read().decode("utf-8"))
+
+            s = s.replace("\n", "\r\n")
+            s = s.replace("\r\r", "\r")
+
+            pygame.scrap.put(pygame.SCRAP_TEXT, s.encode("utf-8"))
+
+    def __can_open_traceback():
+        return True
+
+    class __TooltipAction(object):
+
+        def __init__(self, tooltip, value):
+            self.tooltip = tooltip
+            self.value = value
+
+        def __call__(self):
+            if self.tooltip.value != self.value:
+                self.tooltip.value = self.value
+                renpy.restart_interaction()
+
+        def unhovered(self):
+            if self.tooltip.value != self.tooltip.default:
+                self.tooltip.value = self.tooltip.default
+                renpy.restart_interaction()
+
+    class __Tooltip(object):
+        def __init__(self, default):
+            self.value = default
+            self.default = default
+
+        def action(self, value):
+            return __TooltipAction(self, value)
+
+    class __XScrollValue(BarValue):
+        def __init__(self, viewport):
+            self.viewport = viewport
+
+        def get_adjustment(self):
+            w = renpy.get_widget(None, self.viewport)
+            if not isinstance(w, Viewport):
+                raise Exception("The displayable with id %r is not declared, or not a viewport." % self.viewport)
+
+            return w.xadjustment
+
+        def get_style(self):
+            return "scrollbar", "vscrollbar"
+
+    class __YScrollValue(BarValue):
+        def __init__(self, viewport):
+            self.viewport = viewport
+
+        def get_adjustment(self):
+            w = renpy.get_widget(None, self.viewport)
+            if not isinstance(w, Viewport):
+                raise Exception("The displayable with id %r is not declared, or not a viewport." % self.viewport)
+
+            return w.yadjustment
+
+        def get_style(self):
+            return "scrollbar", "vscrollbar"
+
+    class __ErrorQuit(Action):
+        """
+        An action that quits with an error status.
+        """
+
+        def __call__(self):
+            renpy.quit(status=1)
+
+    class __EnterConsole(Action):
+        """
+        An action that enters the console if we can.
+        """
+
+        def __call__(self):
+            try:
+                f = _console.enter
+            except:
+                return None
+
+            return f()
+
+# This screen can be customized to add additional actions to the exception
+# screen. It currently takes two positional parameters.
+#
+# * traceback_fn - a filename containing the exception text.
+# * tt - a tooltip used for help text.
+#
+# For forward-compatibility, custom implmentations should use *args to ignore
+# added arguments.
+screen _exception_actions(traceback_fn, tt, *args):
+
+    textbutton _("Open"):
+        action _EditFile(traceback_fn)
+        hovered tt.action(_("Opens the traceback.txt file in a text editor."))
+
+    textbutton _("Copy"):
+        action _CopyFile(traceback_fn)
+        hovered tt.action(_("Copies the traceback.txt file to the clipboard."))
+
+
+# The screen that is used for error handling.
+screen _exception:
+    modal True
+    zorder 1090
+
+    default tt = __Tooltip("")
+    default fmt_short = __format_traceback(short)
+    default fmt_full = __format_traceback(full)
+
+    frame:
+        style_group ""
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _("An exception has occurred.")
+
+        viewport:
+            id "viewport"
+            child_size (4000, None)
+            mousewheel True
+            draggable True
+            scrollbars "both"
+
+            has vbox
+
+            text fmt_short substitute False
+            text fmt_full substitute False
+
+        vbox:
+            hbox:
+                spacing gui._scale(25)
+
+                if rollback_action:
+                    textbutton _("Rollback"):
+                        action rollback_action
+                        hovered tt.action(_("Attempts a roll back to a prior time, allowing you to save or choose a different choice."))
+
+                if ignore_action:
+                    textbutton _("Ignore"):
+                        action ignore_action
+                        hovered tt.action(_("Ignores the exception, allowing you to continue. This often leads to additional errors."))
+
+                if config.developer and not renpy.mobile:
+                    textbutton _("Reload"):
+                        action reload_action
+                        hovered tt.action(_("Reloads the game from disk, saving and restoring game state if possible."))
+
+                    textbutton _("Console"):
+                        action __EnterConsole()
+                        hovered tt.action(_("Opens a console to allow debugging the problem."))
+
+
+
+                use _exception_actions(traceback_fn, tt)
+
+                vbox:
+                    xfill True
+
+                    textbutton _("Quit"):
+                        xalign 1.0
+                        action __ErrorQuit()
+                        hovered tt.action(_("Quits the game."))
+
+            # Tooltip.
+            text tt.value
+
+    if config.developer and reload_action:
+        key "R" action reload_action
+
+    key "console" action __EnterConsole()
+
+# The screen that is used for error handling.
+screen _parse_errors:
+    modal True
+    zorder 1090
+
+    default tt = __Tooltip("")
+    default fmt_errors = __format_parse_errors(errors)
+
+    frame:
+        style_group ""
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _("Parsing the script failed.")
+
+        viewport:
+            id "viewport"
+            child_size (4000, None)
+            mousewheel True
+            draggable True
+            scrollbars "both"
+            xfill True
+            yfill True
+
+            has vbox
+
+            text fmt_errors substitute False
+
+        vbox:
+
+            hbox:
+                spacing gui._scale(25)
+
+                textbutton _("Reload"):
+                    action reload_action
+                    hovered tt.action(_("Reloads the game from disk, saving and restoring game state if possible."))
+
+                textbutton _("Open"):
+                    action _EditFile(error_fn)
+                    hovered tt.action(_("Opens the errors.txt file in a text editor."))
+
+                textbutton _("Copy"):
+                    action _CopyFile(error_fn)
+                    hovered tt.action(_("Copies the errors.txt file to the clipboard."))
+
+                vbox:
+                    xfill True
+
+                    textbutton _("Quit"):
+                        action __ErrorQuit()
+                        hovered tt.action(_("Quits the game."))
+                        xalign 1.0
+
+            # Tooltip.
+            text tt.value
+
+    if config.developer and reload_action:
+        key "R" action reload_action
+

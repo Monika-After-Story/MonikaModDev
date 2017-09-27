@@ -1,0 +1,124 @@
+﻿# Copyright 2004-2017 Tom Rothamel <pytom@bishoujo.us>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+init python:
+
+    layout.provides('joystick_preferences')
+
+    style.js_frame = Style(style.menu_frame, help="frame used for changing a joystick binding")
+    style.js_frame_box = Style(style.vbox, help="vbox used for changing a joystick binding")
+    style.js_function_prompt = Style(style.prompt, help="the name of the joystick binding to change (window)")
+    style.js_function_prompt_text = Style(style.prompt_text, help="the name of the joystick binding to change (text)")
+    style.js_action_prompt = Style(style.prompt, help="prompting the user how to change a joystick binding (window)")
+    style.js_action_prompt_text = Style(style.prompt_text, help="prompting the user how to change a joystick binding (text)")
+
+    style.js_prefs_frame = Style(style.menu_frame, help="frame containing all joystick bindings")
+    style.js_prefs_box = Style(style.vbox, help="box containing all joystick bindings")
+    style.js_prefs_button = Style(style.button, help="button containing a joystick binding")
+    style.js_prefs_button_text = Style(style.button_text, help="button containing a joystick binding (text)")
+
+    style.js_prefs_label = Style(style.label, help="joystick preferences label (window)")
+    style.js_prefs_label_text = Style(style.label_text, help="joystick preferences label (text)")
+
+    style.js_frame.ypos = .1
+    style.js_frame.ypadding = .05
+    style.js_frame.xmargin = .1
+    style.js_frame_box.box_spacing = 30
+
+    style.js_prefs_frame.xpos = 10
+    style.js_prefs_frame.ypos = 10
+
+    style.js_prefs_button.xminimum = 0.5
+    style.js_prefs_box.box_first_spacing = 10
+
+    config.joystick_keys = [
+        (u'Left', 'joy_left'),
+        (u'Right', 'joy_right'),
+        (u'Up', 'joy_up'),
+        (u'Down', 'joy_down'),
+        (u'Select/Dismiss', 'joy_dismiss'),
+        (u'Rollback', 'joy_rollback'),
+        (u'Hold to Skip', 'joy_holdskip'),
+        (u'Toggle Skip', 'joy_toggleskip'),
+        (u'Hide Text', 'joy_hide'),
+        (u'Menu', 'joy_menu'),
+        ]
+
+    def _joystick_select_binding():
+
+        for label, key in config.joystick_keys:
+
+            def my_clicked(label=label, key=key):
+                return (label, key)
+
+            layout.button(_(label) + " - " + _(_preferences.joymap.get(key, u"Not Assigned")), "prefs_js", clicked=my_clicked, index=label)
+
+    def _joystick_get_binding():
+        ui.saybehavior()
+        ui.add(renpy.display.joystick.JoyBehavior())
+
+    def _joystick_take_binding(binding, key):
+
+        if not isinstance(binding, basestring):
+            if key in _preferences.joymap:
+                del _preferences.joymap[key]
+        else:
+            _preferences.joymap[key] = binding
+
+
+    def _joystick_preferences():
+
+            def set_binding(label, key):
+                layout.navigation(None)
+
+                ui.window(style='js_frame')
+                ui.vbox(style='js_frame_box')
+                layout.prompt(_(u"Joystick Mapping") + " - " + _(label), "js_function")
+                layout.prompt(u'Move the joystick or press a joystick button to create the mapping. Click the mouse to remove the mapping.', 'js_action')
+                ui.close()
+
+                _joystick_get_binding()
+                binding = ui.interact(mouse="gamemenu")
+                _joystick_take_binding(binding, key)
+
+                return True
+
+            ui.window(style='js_prefs_frame')
+            ui.vbox(style='js_prefs_box')
+
+            layout.label("Joystick Configuration", "js_prefs")
+
+            for label, key in config.joystick_keys:
+
+                def clicked(label=label, key=key):
+                    return renpy.invoke_in_new_context(set_binding, label, key)
+
+                layout.button(_(label) + " - " + _(_preferences.joymap.get(key, u"Not Assigned")), "js_prefs", clicked=clicked, index=label)
+
+            ui.close()
+
+label joystick_preferences_screen:
+
+    while True:
+        python:
+            layout.navigation("joystick_preferences")
+            _joystick_preferences()
+            ui.interact(mouse="gamemenu")

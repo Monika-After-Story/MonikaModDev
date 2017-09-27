@@ -1,0 +1,145 @@
+﻿# Copyright 2004-2017 Tom Rothamel <pytom@bishoujo.us>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+init python:
+
+    class _ImageMapper(object):
+
+        def __init__(self, screen, ground, idle, hover, selected_idle, selected_hover, hotspots, navigation=True, variant=None):
+
+            # If the argument is a dict, look up the screen in that dict, and
+            # return the result. Otherwise, just return the result.
+            def maybe_variant(a):
+                if isinstance(a, dict):
+                    if variant in a:
+                        return a[variant]
+                    else:
+                        return a[None]
+                return a
+
+            ground = maybe_variant(ground)
+
+            self.idle = maybe_variant(idle) or ground
+            self.hover = maybe_variant(hover) or self.idle
+            self.selected_idle = maybe_variant(selected_idle) or self.idle
+            self.selected_hover = maybe_variant(selected_hover) or self.hover
+
+            self.hotspots = { }
+            for (x1, y1, x2, y2, name) in maybe_variant(hotspots):
+                self.hotspots[name] = (x1, y1, x2, y2)
+
+            self.remaining_hotspots = set(self.hotspots.keys())
+
+            if navigation:
+
+                # Display the layout navigation only if there are no
+                # game menu buttons defined.
+                for i in config.game_menu:
+                    if i[1] in self.hotspots:
+                        break
+                else:
+                    layout.navigation(screen)
+
+            ui.fixed(style='imagemap')
+            ui.image(ground)
+
+            if navigation:
+
+                # Display any navigation buttons that exist.
+                for e in config.game_menu:
+                    screen_ = e[0]
+                    name = e[1]
+                    act = e[2]
+                    enable = e[3]
+
+                    if not eval(enable):
+                        continue
+
+                    self.button(name, act, screen == screen_)
+
+        def button(self, name, clicked, selected, keymap={}):
+
+            if name not in self.hotspots:
+                return None
+
+            self.remaining_hotspots.discard(name)
+
+            x1, y1, x2, y2 = self.hotspots[name]
+
+            if clicked is None:
+                return (x1, y1, x2, y2)
+
+            if selected:
+                idle = self.selected_idle
+                hover = self.selected_hover
+            else:
+                idle = self.idle
+                hover = self.hover
+
+            ui.imagebutton(
+                LiveCrop((x1, y1, (x2 - x1), (y2 - y1)), idle),
+                LiveCrop((x1, y1, (x2 - x1), (y2 - y1)), hover),
+                xpos=x1,
+                ypos=y1,
+                xanchor=0,
+                yanchor=0,
+                clicked=clicked,
+                focus_mask=True,
+                style='imagemap_button',
+                keymap=keymap,
+                )
+
+            return (x1, y1, x2, y2)
+
+
+        def bar(self, name, range, value, changed):
+
+            if name not in self.hotspots:
+                return
+
+            self.remaining_hotspots.discard(name)
+
+            x1, y1, x2, y2 = self.hotspots[name]
+
+            ui.bar(
+                range,
+                value,
+                changed=changed,
+                left_gutter=0,
+                right_gutter=0,
+                left_bar=LiveCrop((x1, y1, (x2 - x1), (y2 - y1)), self.selected_idle),
+                right_bar=LiveCrop((x1, y1, (x2 - x1), (y2 - y1)), self.idle),
+                hover_left_bar=LiveCrop((x1, y1, (x2 - x1), (y2 - y1)), self.selected_hover),
+                hover_right_bar=LiveCrop((x1, y1, (x2 - x1), (y2 - y1)), self.hover),
+                bar_resizing=False,
+                xpos=x1,
+                ypos=y1,
+                xmaximum=(x2-x1),
+                ymaximum=(y2-y1),
+                thumb=None,
+                thumb_shadow=None,
+                thumb_offset=0)
+
+        def nothing(self, name):
+            self.remaining_hotspots.discard(name)
+
+        def close(self):
+            ui.close()

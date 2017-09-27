@@ -1,0 +1,568 @@
+﻿# Copyright 2004-2017 Tom Rothamel <pytom@bishoujo.us>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+# This file contains code that helps support the development of Ren'Py
+# games.
+
+# List styles.
+
+screen _developer:
+
+    zorder 1001
+    modal True
+
+    frame:
+        style_group ""
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _(u"Developer Menu")
+
+        fixed:
+            vbox:
+
+                textbutton _("Reload Game (Shift+R)"):
+                    action ui.callsinnewcontext("_save_reload_game")
+                textbutton _("Console (Shift+O)"):
+                    action [ Hide("_developer"), _console.enter ]
+                textbutton _("Variable Viewer"):
+                    action ui.callsinnewcontext("_debugger_screen")
+                textbutton _("Theme Test"):
+                    action ui.callsinnewcontext("_theme_test")
+                textbutton _("Image Location Picker"):
+                    action ui.callsinnewcontext("_image_location_picker")
+                textbutton _("Filename List"):
+                    action ui.callsinnewcontext("_filename_list")
+
+                if not renpy.get_screen("_image_load_log"):
+                    textbutton _("Show Image Load Log"):
+                        action Show("_image_load_log")
+                else:
+                    textbutton _("Hide Image Load Log"):
+                        action Hide("_image_load_log")
+
+        hbox:
+            spacing gui._scale(25)
+
+            textbutton _(u"Return"):
+                action Hide("_developer")
+                size_group "developer"
+
+
+screen _variable_viewer(entries):
+
+    zorder 1010
+    modal True
+
+    frame:
+        style_group ""
+        right_padding 0
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _("Variable Viewer")
+
+        viewport:
+            scrollbars "both"
+            child_size (4000, 0)
+            yfill True
+            xfill True
+            mousewheel True
+
+            vbox:
+
+                if not entries:
+                    text _("Nothing to inspect.")
+
+                for vn, value in entries:
+                    text "[vn] = [value!q]"
+
+        hbox:
+            spacing gui._scale(25)
+
+            textbutton _(u"Return"):
+                action Return(True)
+
+
+label _debugger_screen:
+
+    call _enter_game_menu
+
+    python hide:
+
+        import repr
+        aRepr = repr.Repr()
+        aRepr.maxstring = 120
+
+        entries = [ ]
+
+        for sn, d in renpy.python.store_dicts.items():
+            for vn in d.ever_been_changed:
+
+                if vn.startswith("__00"):
+                    continue
+
+                if vn.startswith("_") and not vn.startswith("__"):
+                    continue
+
+                if vn not in d:
+                    value = "deleted"
+                else:
+                    value = aRepr.repr(d[vn])
+
+                if vn == "nvl_list":
+                    continue
+
+                name = (sn + "." + vn)[6:]
+
+                entries.append((name, value))
+
+        renpy.call_screen("_variable_viewer", entries=entries)
+
+    return
+
+label _theme_test:
+
+    call _enter_game_menu
+
+    python hide:
+
+        # Never gets pickled
+        def role(b):
+            if b:
+                return "selected_"
+            else:
+                return ""
+
+        toggle_var = True
+        adj = ui.adjustment(100, 25, page=25, adjustable=True)
+
+        while True:
+
+            ui.window(style=style.gm_root)
+            ui.null()
+
+            # Buttons
+            ui.hbox(box_spacing=10, xpos=10, ypos=10)
+
+            ui.vbox(box_spacing=10)
+
+            sg = "theme_test"
+
+            ui.frame(style='menu_frame')
+            ui.vbox()
+            layout.label("Button", None)
+            ui.textbutton("Button", size_group=sg, clicked=ui.returns("gndn"))
+            ui.textbutton("Button (Selected)", size_group=sg, clicked=ui.returns("gndn"), role=role(True))
+            ui.textbutton("Small", clicked=ui.returns("gndn"), style='small_button')
+            ui.close()
+
+            ui.frame(style='menu_frame')
+            ui.vbox()
+            layout.label("Radio Button", None)
+            ui.textbutton("True", size_group=sg, clicked=ui.returns("set"), role=role(toggle_var), style='radio_button')
+            ui.textbutton("False", size_group=sg, clicked=ui.returns("unset"), role=role(not toggle_var), style='radio_button')
+            ui.close()
+
+            ui.frame(style='menu_frame')
+            ui.vbox()
+            layout.label("Check Button", None)
+            ui.textbutton("Check Button", size_group=sg, clicked=ui.returns("toggle"), role=role(toggle_var), style='check_button')
+            ui.close()
+
+            ui.frame(style='menu_frame')
+            ui.vbox(box_spacing=2)
+            ui.bar(adjustment=adj, style='bar', xmaximum=200)
+            ui.bar(adjustment=adj, style='slider', xmaximum=200)
+            ui.bar(adjustment=adj, style='scrollbar', xmaximum=200)
+            ui.close()
+
+            ui.close() # vbox
+
+            ui.frame(style='menu_frame')
+            ui.hbox(box_spacing=2)
+            ui.bar(adjustment=adj, style='vbar', ymaximum=200)
+            ui.bar(adjustment=adj, style='vslider', ymaximum=200)
+            ui.bar(adjustment=adj, style='vscrollbar', ymaximum=200)
+            ui.close()
+
+            ui.frame(style='menu_frame', xmaximum=0.95)
+            ui.vbox(box_spacing=20)
+            layout.prompt("This is a prompt. We've made this text long enough to wrap around so it fills multiple lines.", None)
+            ui.close()
+
+            ui.close() # hbox
+
+            ui.frame(style='menu_frame', xalign=.01, yalign=.99)
+            ui.textbutton(_("Return to the developer menu"), clicked=ui.returns("return"))
+
+            rv = ui.interact()
+            if rv == "return":
+                break
+
+            elif rv == "set":
+                toggle_var = True
+            elif rv == "unset":
+                toggle_var = False
+            elif rv == "toggle":
+                toggle_var = not toggle_var
+
+    return
+
+
+# Not used any more, but may be in save files.
+init -1050 python:
+    config.missing_background = "black"
+
+
+# Not used any more, but may be in save files.
+screen _missing_images:
+    pass
+
+init 1050 python:
+
+    if config.developer:
+
+        def __missing_show_callback(name, what, layer):
+            if layer != 'master':
+                return False
+
+            if not renpy.count_displayables_in_layer(layer):
+                p = Placeholder("bg")
+            else:
+                p = Placeholder()
+
+            return p._duplicate(p._args.copy(args=what))
+
+        def __missing_hide_callback(name, layer):
+            if layer != 'master':
+                return False
+
+            return True
+
+        def __missing_scene_callback(layer):
+            if layer != 'master':
+                return False
+
+            return True
+
+        config.missing_scene = __missing_scene_callback
+        config.missing_show = __missing_show_callback
+        config.missing_hide = __missing_hide_callback
+
+
+init -1050 python:
+
+    class __FPSMeter(object):
+
+        def __init__(self):
+            self.last_frames = None
+            self.last_time = None
+
+        def __call__(self, st, at):
+
+            if self.last_time is not None:
+                frames = config.frames - self.last_frames
+                time = st - self.last_time
+
+                text = "FPS: %.1f" % (frames / time)
+
+            else:
+                text = "FPS: --.-"
+
+            self.last_frames = config.frames
+            self.last_time = st
+
+            return Text(text, xalign=1.0), .5
+
+label _fps_meter:
+
+    python hide:
+        def fps_overlay():
+            ui.add(DynamicDisplayable(__FPSMeter()))
+
+        # We normally don't want to change this at runtime... but here
+        # it's okay, because we don't want to save the FPS meter anyway.
+        #
+        # Do as I say, not as I do.
+        config.overlay_functions.append(fps_overlay)
+
+    return
+
+
+init python:
+
+    # This is a displayable that can keep track of the mouse coordinates,
+    # and show them to the user.
+    class __ImageLocationPicker(renpy.Displayable):
+
+        def __init__(self, fn, **kwargs):
+            super(__ImageLocationPicker, self).__init__(**kwargs)
+
+            self.child = Image(fn)
+
+            self.mouse = None
+            self.point1 = None
+            self.point2 = None
+
+            self.size = (0, 0)
+
+            self.clipboard = None
+
+        def rectangle(self):
+            x1, y1 = self.point1
+            x2, y2 = self.point2
+
+            width = self.size[0]
+            height = self.size[1]
+
+            x1 = min(x1, width)
+            x2 = min(x2, width)
+            y1 = min(y1, height)
+            y2 = min(y2, height)
+
+            minx = min(x1, x2)
+            miny = min(y1, y2)
+            maxx = max(x1, x2)
+            maxy = max(y1, y2)
+
+            w = int(maxx - minx)
+            h = int(maxy - miny)
+
+            minx = int(minx)
+            miny = int(miny)
+
+
+            return (minx, miny, w, h)
+
+        def render(self, width, height, st, at):
+            rv = renpy.Render(width, height)
+
+            cr = renpy.render(self.child, width, height, st, at)
+            rv.blit(cr, (0, 0))
+
+            text = [ ]
+
+            self.size = (cr.width, cr.height)
+
+            if self.point1 and self.point2 and not self.point1 == self.point2:
+                x, y, w, h = self.rectangle()
+
+                if w and h:
+
+                    sr = renpy.render(Solid("#0ff4"), w, h, st, at)
+                    rv.blit(sr, (x, y))
+
+                    # text.append("Imagemap rectangle: %r" % ((minx, miny, maxx, maxy),))
+                    text.append(__("Rectangle: %r") % ((x, y, w, h),))
+
+            if self.mouse:
+                mx, my = self.mouse
+                if mx < cr.width and my < cr.height:
+                    text.append(__("Mouse position: %r") % (self.mouse,))
+
+            if self.clipboard:
+                text.append(self.clipboard)
+
+            text.append(__("Right-click or escape to quit."))
+
+            td = Text("\n".join(text), size=14, color="#fff", outlines=[ (1, "#000", 0, 0 ) ])
+            tr = renpy.render(td, width, height, st, at)
+
+            rv.blit(tr, (0, height - tr.height))
+
+            return rv
+
+        def event(self, ev, x, y, st):
+            import pygame_sdl2 as pygame
+
+            if (x < 0 or y < 0):
+                return None
+
+            self.mouse = (x, y)
+            renpy.redraw(self, 0)
+
+            if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+                self.point1 = (x, y)
+                self.point2 = (x, y)
+
+            elif ev.type == pygame.MOUSEMOTION and ev.buttons[0]:
+                self.point2 = (x, y)
+
+            elif ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
+                self.point2 = (x, y)
+
+                x, y, w, h = self.rectangle()
+
+                if w or h:
+                    text = repr((x, y, w, h))
+                    self.clipboard = __("Rectangle copied to clipboard.")
+                else:
+                    text = repr((x, y))
+                    self.clipboard = __("Position copied to clipboard.")
+
+                import pygame.scrap
+                pygame.scrap.put(pygame.scrap.SCRAP_TEXT, text)
+
+screen _image_location_picker(image_files):
+
+    frame:
+        style_group ""
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _(u"Image Location Picker")
+
+        viewport:
+            xfill True
+            yfill True
+            scrollbars "both"
+            mousewheel True
+
+            has vbox
+
+            for fn in image_files:
+
+                textbutton "[fn!q]":
+                    action Return(fn)
+                    style_suffix "small_button"
+
+        hbox:
+            spacing gui._scale(25)
+
+            textbutton _(u"Return"):
+                action Return(False)
+
+
+label _image_location_picker:
+
+    call _enter_game_menu
+
+    scene black
+
+    python hide:
+
+        image_files = [
+            fn
+            for dir, fn in renpy.loader.listdirfiles()
+            if fn.lower().endswith(".jpg") or fn.lower().endswith(".png")
+            if not fn[0] == "_"
+            ]
+
+        image_files.sort()
+
+        xadjustment = ui.adjustment()
+        yadjustment = ui.adjustment()
+
+        while True:
+
+            rv = renpy.call_screen("_image_location_picker", image_files=image_files)
+
+            if rv is False:
+                renpy.jump("_image_location_picker_done")
+
+            # Now, allow the user to pick the image.
+
+            ui.keymap(game_menu=ui.returns(True))
+            ui.add(__ImageLocationPicker(rv))
+            ui.interact()
+
+        renpy.jump("_image_location_picker")
+
+label _image_location_picker_done:
+    return
+
+
+label _filename_list:
+
+    python hide:
+        import os
+        f = file("files.txt", "w")
+
+        for dirname, dirs, files in os.walk(config.gamedir):
+
+            dirs.sort()
+            files.sort()
+
+            for fn in files:
+                fn = os.path.join(dirname, fn)
+                fn = fn[len(config.gamedir) + 1:]
+                print >>f, fn.encode("utf-8", "replace")
+                print fn.encode("utf-8", "replace")
+
+        f.close()
+
+        renpy.launch_editor(["files.txt"], transient=1)
+
+    return
+
+
+init python:
+    def _image_load_log_function(st, at):
+
+        ill = list(renpy.get_image_load_log(3))
+
+        vbox = VBox()
+
+        for when, filename, preload in ill:
+            if preload:
+                color="#ccffcc"
+                prefix=__("✔ ")
+            else:
+                color="#ffcccc"
+                prefix=__("✘ ")
+
+            vbox.add(Text(prefix + filename.replace("{", "{{").replace("[", "[["), size=14, color=color, style="_default"))
+
+        if at < 10.0:
+            vbox.add(Text(
+            _("\n{color=#cfc}✔ predicted image (good){/color}\n{color=#fcc}✘ unpredicted image (bad){/color}\n{color=#fff}Drag to move.{/color}"),
+            size=14, style="_default"))
+
+        return vbox, .25
+
+screen _image_load_log:
+
+    zorder 1000
+
+    drag:
+        draggable True
+        focus_mask None
+        xpos 0
+        ypos 0
+
+        frame:
+            style "empty"
+            background "#0004"
+            xpadding 5
+            ypadding 5
+            xminimum 200
+
+            add DynamicDisplayable(_image_load_log_function)
+
+
+
+init python:
+    if config.transparent_tile:
+        config.underlay.append(im.Tile("_transparent_tile.png"))

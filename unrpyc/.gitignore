@@ -1,0 +1,16 @@
+*.swp
+*.pyc
+*.pyo
+
+*.rpy
+*.rpyc
+!un.rpyc
+*.txt
+
+/renpy
+/build
+/dist
+/tests
+/*.egg-info
+
+/bintray.json

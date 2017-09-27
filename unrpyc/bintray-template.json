@@ -1,0 +1,18 @@
+{
+    "package": {
+        "name": "un.rpyc-BRANCHNAME",
+        "repo": "unrpyc",
+        "subject": "jackmcbarn"
+    },
+
+    "version": {
+        "name": "VERSION"
+    },
+
+    "files":
+        [
+        {"includePattern": "un.rpyc/un.rpyc", "uploadPattern": "un.rpyc"}
+        ],
+
+    "publish": true
+}
