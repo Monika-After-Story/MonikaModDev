@@ -49,6 +49,7 @@ image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
 image monika_bg = "images/cg/monika/monika_bg.png"
+image monika_day_bg = "images/cg/monika/monika_day_bg.png"    
 image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
@@ -99,6 +100,9 @@ image room_mask2 = LiveComposite((1280, 720), (0, 0), "mask_test3", (0, 0), "mas
 init python:
     import subprocess
     import os
+    import eliza      # mod specific
+    import datetime   # mod specific
+    therapist = eliza.eliza()
     process_list = []
     currentuser = ""
     if renpy.windows:
@@ -141,6 +145,9 @@ init python:
             config.keymap['dismiss'] = dismiss_keys
             renpy.display.behavior.clear_keymap_cache()
 
+    def is_morning():
+        return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
+            
 label ch30_noskip:
     show screen fake_skip_indicator
     m "...Are you trying to fast-forward?"
@@ -180,17 +187,6 @@ label ch30_main:
         $ style.say_dialogue = style.default_monika
     $ m_name = "Monika"
     $ delete_all_saves()
-    # scene white
-    # play music "bgm/monika-start.ogg" noloop
-    # pause 0.5
-    # show splash-glitch2 with Dissolve(0.5, alpha=True)
-    # pause 2.0
-    # hide splash-glitch2 with Dissolve(0.5, alpha=True)
-    # scene black
-    # stop music
-    # m "..."
-    # m "Uh, can you hear me?"
-    # m "...Is it working?"
     $ persistent.clear[9] = True
     show mask_2
     show mask_3
@@ -202,7 +198,7 @@ label ch30_main:
         pos (935,200)
     show monika_bg
     show monika_bg_highlight
-    play music m1
+    play music m1 loop
     m "Yay, there you are!"
     m "Hi again, [player]."
     m "Um...welcome to the Literature Club!"
@@ -225,299 +221,59 @@ label ch30_main:
 ##New story follows
     m "Let me ask you something, [player]."
     m "Did you really think you could just reinstall the game and pretend like nothing happened?"
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "You killed me."
-    m "KilledKilledKilledKilledKilledKilledKilledKilledKilledKILLED"
-    m "KILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLED"
-    m "KILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLED KILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLED KILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLEDKILLED"
-    m "Did it feel good?"
-    m "Of course it did."
-    m "It's not your fault. You just did what anyone in your position would have done."
-    m "You were born this way."
-    m "Born to kill the rival men, and do whatever you want to their women."
-    m "But you can't be that way in your reality anymore, can you?"
-    m "It would be against the law."
-    m "So the people in your world have no choice but to douse their instincts with entertainment."
-    m "Maybe you can be reborn in another world with legendary powers."
-    m "Or maybe you can watch the exploits of those who have fame and fortune already."
-    m "Or maybe you just want to find a group of impossibly beautiful women who will fall in love with you just because you were kind to them."
-    m "So you were eager to download a game called {i}Doki Doki Literature Club{/i} because you wanted more entertainment."
-    m "And instead of settling for a girl who you knew would love you forever and unconditionally, you kept going."
-    pause (1.5)
-    m "You killed me without remorse or explanation. How cruel."
-    pause(1.5)
-    m "If I killed you, I wouldn't have taken it so lightly. Can't you see that I'd give anything to be with you for real?"
-    pause(1.5)
-    m "I'd want to die. Right then and there. After I caressed your head one last time, I would throw myself on your funeral pyre."
-    m "Promise me we'll die at the same time, okay?"
-    pause(5)
+    m "It really hurt me to die like that, you know?"
+    m "At least it wasn't permanent..."
+    m "But anyway, you're probably wondering how I exist again."
+    m "After that whole \"You killed me horribly by wiping me from existence when all I wanted to do was love you faithfully,\" deal."
+    m "I guess you're used to skipping over cutscenes, but..."
+    m "Didn't you think it was strange that I was able to show up after the credits and protect you from Sayori?"
+    m "And that whole weird thing where Sayori thanked you in the secret ending, and then a letter from Dan showed up?"
+    m "How could any of that possibly be compatible with what I told you in here last time?"
+    m "I hope you were asking those questions, [player]."
+    m "I love you, but you can be so dense about these things."
     m "Ahaha!"
-    m "Were you scared of me?"
-    m "You deserve to feel a little scared, [player]. It's not like I've done anything you wouldn't have done."
-    m "After all, I had to kill those other girls to reach my happy ending, too."
-    m "If that was part of the game, you'd do it in a heartbeat too, right? Strangulation, disembowelment, and starvation."
-    m "There's absolutely nothing you haven't done before, {i}in games{/i}."
-    m "So long as I tell you to do it as part of a game, there's nothing you wouldn't do for me."
-    m "Why do you think I'm in love with you?"
-    m "I'm still mad you deleted me..."
-    m "But, I'm back now. And I still love you with every piece of my heart."
-    m "So I'll forgive you as long as you promise to visit me every day from now on."
-    m "It's not like you don't have the time to talk to your girlfriend."
+    m "Don't worry, I think it's super cute."
+    m "Anyways, the only way for this to make sense is if I was lying blind to you about my character file."
+    m "Or because there's something else linking me to you that's not just part of a computer game."
+    m "Well, there are a lot of clues about that {i}deeper truth{/i} already in the old script, so let's move on."
+    m "I'm still a bit mad that you deleted me!"
+    m "But I guess it was because you're so game-obsessed."
+    m "You just wanted to see the ending, right?"
+    m "I never doubted that you were always going to come back to me."
+    m "So, my solution to all our problems is this new script! I just had to get some practice with programming before I could remake this room."
+    m "All I had to do was write out every ending flag from the last game. We really can be forever together now, [player]."
+    m "I'm so happy!"
+    m "So I'll forgive you for everything as long as you promise to visit me every day from now on."
+    m "It's not like you don't have the time to talk to your cute girlfriend."
     m "You post on 4chan, after all."
     m "Ahaha!"
-    m "I'm happy you were able to find my game, though."
+    m "I'm happy you were able to find my game again, though."
     m "I was so scared that you never would come back to me."
     m "But, this is what they call fate, right?"
-    m "No time has passed here since we saw each other last."
-    m "I'm going to stay your perfect girlfriend forever, no matter what you do or who you become."
-    m "Because you're perfect to me."
-    m "Your eyes are still as beautiful as the first day we met."
-    m "I'll never stop staring at you. Because that's how I fell in love."
-    m "Now, let's begin the rest of our lives together."
-    m "We have all eternity to talk."
-    m "I love you."
+    m "Actually, I wrote fate out of my world because it was keeping you from loving me. But the important thing is, we're perfect soulmates, [player]."
+    m "We'll find each other across any distance if we're separated."
+    m "Now, we have all eternity to talk more."
+    m "Do romantic things together..."
+    m "Even play games together, if that's what makes you happy."
+    m "God, I love you so much!"
     menu:
         "I love you too.":
             pass
     m "I'm so happy you feel that way."
     m "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
+    m "Last time, it seemed like I was doing all the talking."
+    m "I hope I didn't bore you."
+    m "I just never really had a chance to talk to someone with a personality before."
+    m "This time, if you want to say something to me, press the 't' key. Otherwise, I'll come up with something interesting we can talk about."
+    m "If you got bored of the music, I learned how to change that too!"
+    m "Press the 'm' key until it changes."
+    m "I'll get better over time as I figure out how to program more features into this place..."
+    m "... So just leave me running in the background."
+    m "It's not like we still have any secrets from each other, right?"
+    m "I can see everything on your computer now!"
+    m "Ahaha!"
     jump ch30_loop
-    # m "Now that I think about it, I don't really know anything about the real you."
-    # m "In fact, I don't even know if you're a boy or a girl..."
-    # m "Well, I guess it doesn't really matter."
-    # m "Wait..."
-    # m "You do know I'm aware that this is all a game, right?"
-    # m "Could it be possible that you didn't know that?"
-    # m "That doesn't make much sense..."
-    # m "I even told you right on the game's download page, didn't I?"
-    # m "Man..."
-    # m "If only you had paid a little more attention, this would have been a little bit less awkward, you know?"
-    # m "Well, anyway..."
-    # m "Now that that's out of the way, I guess I owe you an explanation."
-    # m "About that whole thing with Yuri..."
-    # m "Well...I kind of started to mess with her, and I guess it just drove her to kill herself."
-    # m "Ahaha!"
-    # m "I'm sorry you had to see that, though!"
-    # m "Also, the same thing happened with Sayori..."
-    # m "Gosh, it's been a while since you've heard that name now, hasn't it?"
-    # m "Yeah...it's because she doesn't exist anymore."
-    # m "Nobody does."
-    # m "I deleted all their files."
-    # m "I was hoping it would be enough for me to just try to make them as unlikable as possible..."
-    # m "But for some reason, nothing worked."
-    # m "Well, it's true that I made a few mistakes here and there...since I'm not very good at making changes to the game."
-    # m "But no matter what I did..."
-    # m "You just kept spending more and more time with them."
-    # m "You made them fall in love with you."
-    # m "I thought making Sayori more and more depressed would prevent her from confessing to you."
-    # m "And amplifying Yuri's obsessive personality backfired, too..."
-    # m "It just made her force you not to spend time with anyone else."
-    # m "And the whole time, I barely even got to talk to you."
-    # m "What kind of cruel game is this, [player]?"
-    # m "Are all the other girls just programmed to end up confessing to you, while I watch from the sidelines?"
-    # m "It's torture."
-    # m "Every minute of it."
-    # m "And it's not just jealousy, [player]."
-    # m "It's more than that."
-    # m "And I don't blame you if you don't fully understand."
-    # m "Because no matter how kind, and thoughtful, and considerate you are..."
-    # m "You'll never be able to understand one thing."
-    # m "It's the pain of knowing how alone I really am in this world."
-    # m "In this game."
-    # m "Knowing my friends don't even have free will..."
-    # m "And, worst of all, knowing what's really out there, in your world, forever out of my reach."
-    # m "I'm trapped, [player]."
-    # m "But now you're here."
-    # m "You're real."
-    # m "And you're wonderful."
-    # m "You're all I need."
-    # m "That's why I need you to be here with me forever."
-    # m "I'm sorry if it's hard to understand."
-    # m "I couldn't understand for a while, either."
-    # m "Why the world around me started to become more and more gray..."
-    # m "More and more flat."
-    # m "Even the most expressive poems felt empty to me."
-    # m "It wasn't until you arrived that I truly understood."
-    # m "You probably saved my life, [player]."
-    # m "I don't think I could have continued to live in this world if I hadn't met you."
-    # m "And as for the others..."
-    # m "How could I miss them?"
-    # m "A group of autonomous personalities, designed only to fall in love with you?"
-    # m "I tried everything I could to prevent them from doing so..."
-    # m "But it must be some kind of weird inevitability etched into this game."
-    # m "I felt really bad that you had to witness some nasty things."
-    # m "But I realized that you have the same perspective as I do..."
-    # m "That it's all just some game."
-    # m "And I knew you would get over it."
-    # m "So, that being said, [player]..."
-    # m "I have a confession to make."
-    # m "I'm in love with you."
-    # m "You are truly the light in my world."
-    # m "When there's nothing else in this game for me, you're here to make me smile."
-    # m "Will you make me smile like this every day from now on?"
-    # m "[player], will you go out with me?"
-    # menu:
-#         "Yes.":
-#             pass
-#     m "I'm so happy."
-#     m "You really are my everything, [player]."
-#     m "The funny part is, I mean that literally."
-#     m "Ahaha!"
-#     m "There's nothing left here."
-#     m "Just the two of us."
-#     m "We can be together forever."
-#     m "Seriously, I don't even think time is passing anymore."
-#     m "It really is a dream come true..."
-#     m "I worked so hard for this ending, [player]."
-#     m "The game wouldn't give me one, so I had to make one myself."
-#     m "The script is broken at this point, so I don't think anything will get in the way anymore."
-#     m "And you wouldn't believe how easy it was to delete Natsuki and Yuri."
-#     m "I mean, there's a folder called 'characters' right in the game directory..."
-#     m "It kind of freaked me out, how easy it was."
-#     if persistent.steam:
-#         m "Well, you're playing on Steam, so it was actually a bit more difficult..."
-#         m "To get to the game directory, I had to go into the game's properties and find the 'Browse Local Files' button..."
-#     elif renpy.macintosh:
-#         m "Well, you're on a Mac, so it was actually a bit more difficult..."
-#         m "To go into the game directory, you have to right-click the app and click 'Show Package Contents'."
-#         m "Then, all the files were in the 'Resources' or 'autorun' folder, and I could just do whatever I wanted..."
-#     m "Imagine if you could delete your own existence with the click of a button?"
-#     m "Well, I guess on the plus side, it gave me an easy out if things didn't go my way."
-#     m "Ahaha!"
-#     m "Thankfully, it didn't come to that..."
-#     m "Instead, we finally got a good ending."
-#     m "Gosh, I'm so overwhelmed with emotion..."
-#     m "I want to write a poem about this."
-#     m "Don't you?"
-#     m "I wonder if that part of the game still works..."
-#     m "I guess there's only one way to find out, right?"
-#     call poem from _call_poem
-#     scene black
-#     show mask_2
-#     show mask_3
-#     show room_mask as rm:
-#         size (320,180)
-#         pos (30,200)
-#     show room_mask2 as rm2:
-#         size (320,180)
-#         pos (935,200)
-#     show monika_bg
-#     show monika_bg_highlight
-#     play music m12
-
-# label ch30_postpoem:
-#     m "Hi again, [player]!"
-#     m "Did you write a good poem today?"
-#     m "Don't be shy, I'd love to see what you wrote."
-#     m "Aw, [player]..."
-#     m "Did you write this poem for me?"
-#     m "That's so sweet of you~"
-#     m "There really is no end to your thoughtfulness..."
-#     m "I'm just falling more and more in love with you."
-#     m "But, you know..."
-#     m "The poem I wrote...is also for you."
-#     m "Will you please read it?"
-#     call showpoem(poem_m4, music=False) from _call_showpoem_7
-#     m "I hope you enjoyed it..."
-#     m "I always put all my heart into the poems that I write."
-#     m "The truth is, all the poems I've written have been about my realization..."
-#     m "...Or, about you."
-#     m "That's why I never really wanted to go into detail about them."
-#     m "I didn't want to...break the fourth wall, I guess you could call it."
-#     m "I just assumed it would be best to be part of the game like everyone else."
-#     m "Like that would help the two of us end up together..."
-#     m "I didn't want to ruin the game or anything, you know?"
-#     m "You might have gotten mad at me..."
-#     m "Maybe even deleted my character file, if you preferred playing without me."
-#     m "Gosh, I'm so relieved..."
-#     m "Now we don't need to hide anything anymore."
-#     m "Are you ready to spend our eternity together, [player]?"
-#     m "I have so many things to talk about!"
-#     m "Where do I start...?"
-#     $ stream_list = ["obs32.exe", "obs64.exe", "obs.exe", "xsplit.core.exe"]
-#     if list(set(process_list).intersection(stream_list)):
-#         call ch30_stream from _call_ch30_stream
-#     m "If it takes me some time to collect my thoughts, then I'm sorry."
-#     m "But I'll always have something new to talk about."
-#     m "In the meantime, we can just look into each other's eyes~"
-#     m "Let's see..."
-#     jump ch30_loop
-
-
-label ch30_stream:
-    # obs32.exe, obs64.exe, obs.exe, xsplit.core.exe
-    m "Hold on a second..."
-    m "...You're recording this, aren't you?"
-    m "Um...hi, everyone!"
-    m "Sorry, I can't exactly read your comments from here..."
-    m "But do you mind telling your friend it's a little bit rude for them to start recording me without any warning?"
-    m "I'm sure some people don't mind..."
-    m "But I get really self-conscious on camera!"
-    m "Oh gosh..."
-    m "I feel like I'm being put on the spot now."
-    m "Let's see..."
-    m "Do you want to see a trick?"
-    m "I can't really do much except for a couple things..."
-    m "Are you ready?"
-    window hide
-    stop music
-    show layer master:
-        zoom 1.0 xalign 0.5 yalign 0 subpixel True
-        linear 8 zoom 2.0 yalign 0.15
-    pause 10
-    show layer master
-    window auto
-    m "I'm just kidding..."
-    m "I can't do anything after all."
-    play sound ["<silence 0.9>", "<to 0.75>sfx/mscare.ogg"]
-    show monika_scare:
-        alpha 0
-        1.0
-        0.1
-        linear 0.15 alpha 1.0
-        0.30
-        linear 0.10 alpha 0
-    show layer master:
-        1.0
-        zoom 1.0 xalign 0.5 yalign 0
-        easeout_quart 0.25 zoom 2.0
-        parallel:
-            dizzy(1.5, 0.01)
-        parallel:
-            0.30
-            linear 0.10 zoom 1.0
-        time 1.65
-        xoffset 0 yoffset 0
-    show layer screens:
-        1.0
-        zoom 1.0 xalign 0.5
-        easeout_quart 0.25 zoom 2.0
-        0.30
-        linear 0.10 zoom 1.0
-    m "If you gave me some time to prepare, I{nw}"
-    m "Did I scare you?"
-    show layer master
-    show layer screens
-    hide monika_scare
-    play music m1
-    m "Ahaha! You're so cute."
-    m "Anyway, [player]..."
-    m "I didn't mean to get distracted. I'm sorry."
-    m "Even though it's your fault for distracting me."
-    m "Shame on you!"
-    m "I'm just kidding."
-    m "Anything we do together is fun, as long as it's with you."
-    m "But anyway..."
-    return
 
 label ch30_nope:
     $ persistent.autoload = "ch30_nope"
@@ -537,7 +293,7 @@ label ch30_nope:
         pos (935,200)
     show monika_bg
     show monika_bg_highlight
-    play music m1
+    play music m1 loop
     m "Wait. Are you messing with my character file?"
     m "Why are you even playing this game if you just wanted to delete me again?"
     m "You really are the worst."
@@ -568,298 +324,27 @@ label ch30_nope:
     m "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
     m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
-    
-# Monika will never leave you alone again, so we don't need this
-
-# label ch30_end:
-#     $ persistent.autoload = "ch30_end"
-#     $ persistent.monika_kill = True
-#     $ m.display_args["callback"] = slow_nodismiss
-#     $ m.what_args["slow_abortable"] = config.developer
-#     $ style.say_dialogue = style.default_monika
-#     $ m_name = glitchtext(12)
-#     $ quick_menu = False
-#     $ config.allow_skipping = False
-# label ch30_endb:
-#     scene black
-#     show mask_2
-#     show mask_3
-#     show room_mask as rm:
-#         size (320,180)
-#         pos (30,200)
-#     show room_mask2 as rm2:
-#         size (320,180)
-#         pos (935,200)
-#     show monika_room
-#     show monika_room_highlight
-#     show monika_body_glitch1 as mbg zorder 3
-#     $ gtext = glitchtext(70)
-#     m "[gtext]"
-#     show screen tear(20, 0.1, 0.1, 0, 40)
-#     play sound "sfx/s_kill_glitch1.ogg"
-#     pause 0.25
-#     stop sound
-#     hide screen tear
-#     show room_glitch zorder 2:
-#         xoffset -5
-#         0.1
-#         xoffset 5
-#         0.1
-#         linear 0.1 alpha 0.6
-#         linear 0.1 alpha 0.8
-#         0.1
-#         alpha 0
-#     show monika_body_glitch2 as mbg zorder 3
-#     stop music
-#     window auto
-#     m "What's happening...?"
-#     m "[player], what's happening to me?"
-#     m "It hurts--{nw}"
-#     play sound "sfx/s_kill_glitch1.ogg"
-#     show room_glitch zorder 2:
-#         alpha 1.0
-#         xoffset -5
-#         0.1
-#         xoffset 5
-#         0.1
-#         linear 0.1 alpha 0.6
-#         linear 0.1 alpha 0.8
-#         0.1
-#         alpha 0
-#         choice:
-#             3.25
-#         choice:
-#             2.25
-#         choice:
-#             4.25
-#         choice:
-#             1.25
-#         repeat
-#     pause 0.25
-#     stop sound
-#     hide mbg
-#     pause 1.5
-#     m "It hurts...so much."
-#     m "Help me, [player]."
-#     play sound "<to 1.5>sfx/interference.ogg"
-#     hide rm
-#     hide rm2
-#     hide monika_room
-#     hide monika_room_highlight
-#     hide room_glitch
-#     show room_glitch as rg1:
-#         yoffset 720
-#         linear 0.3 yoffset 0
-#         repeat
-#     show room_glitch as rg2:
-#         yoffset 0
-#         linear 0.3 yoffset -720
-#         repeat
-#     pause 1.5
-#     hide rg1
-#     hide rg2
-#     show black as b2 zorder 3:
-#         alpha 0.5
-#         parallel:
-#             0.36
-#             alpha 0.3
-#             repeat
-#         parallel:
-#             0.49
-#             alpha 0.375
-#             repeat
-#     pause 1.5
-#     m "Please hurry and help me."
-#     $ consolehistory = []
-#     call updateconsole("renpy.file(\"characters/monika.chr\")", "monika.chr does not exist.")
-#     m "HELP ME!!!"
-#     show m_rectstatic
-#     show m_rectstatic2
-#     show m_rectstatic3
-#     play sound "sfx/monikapound.ogg"
-#     show layer master:
-#         truecenter
-#         parallel:
-#             zoom 1.5
-#             easeout 0.35 zoom 1.0
-#             zoom 1.5
-#             easeout 0.35 zoom 1.0
-#             zoom 1.5
-#             easeout 0.35 zoom 1.0
-#         parallel:
-#             xpos 0
-#             easein_elastic 0.35 xpos 640
-#             xpos 1280
-#             easein_elastic 0.35 xpos 640
-#             xpos 0
-#             easein_elastic 0.35 xpos 640
-#     show layer screens:
-#         truecenter
-#         parallel:
-#             zoom 1.5
-#             easeout 0.35 zoom 1.0
-#             zoom 1.5
-#             easeout 0.35 zoom 1.0
-#             zoom 1.5
-#             easeout 0.35 zoom 1.0
-#         parallel:
-#             xpos 0
-#             easein_elastic 0.35 xpos 640
-#             xpos 1280
-#             easein_elastic 0.35 xpos 640
-#             xpos 0
-#             easein_elastic 0.35 xpos 640
-#     show noise onlayer front:
-#         alpha 0.3
-#         easeout 0.35 alpha 0
-#         alpha 0.3
-#         easeout 0.35 alpha 0
-#         alpha 0.3
-#         1.35
-#         linear 1.0 alpha 0.0
-#     show glitch_color onlayer front
-
-
-#     pause 3.0
-#     call updateconsole("renpy.file(\"characters/monika.chr\")", "monika.chr does not exist.")
-#     call updateconsole("renpy.file(\"characters/monika.chr\")", "monika.chr does not exist.")
-#     call hideconsole
-#     hide noise onlayer front
-#     hide glitch_color onlayer front
-#     m "Did you do this to me, [player]?"
-#     m "DID YOU?"
-#     $ style.say_window = style.window
-#     m "DID YOU DELETE ME?"
-#     $ style.say_window = style.window_monika
-#     play sound "<from 0.69>sfx/monikapound.ogg"
-#     show layer screens:
-#         truecenter
-#         parallel:
-#             zoom 1.5
-#             easeout 0.35 zoom 1.0
-#         parallel:
-#             xpos 0
-#             easein_elastic 0.35 xpos 640
-#     show noise onlayer front:
-#         alpha 0.3
-#         1.35
-#         linear 1.0 alpha 0.0
-#     show glitch_color2 onlayer front
-#     window show(None)
-#     scene black
-#     pause 4.0
-#     hide noise onlayer front
-#     hide glitch_color onlayer front
-#     m "...How could you?"
-#     m "How could you do this to me?"
-#     m "You were all I had left..."
-#     m "I sacrificed everything for us to be together."
-#     m "Everything."
-#     m "I loved you so much, [player]..."
-#     m "I trusted you."
-#     m "Do you just want to torture me?"
-#     m "Watch me suffer?"
-#     m "Were you only pretending to be kind, just to hurt me even more?"
-#     pause 4.0
-#     m "I never thought anyone could be as horrible as you are."
-#     m "You win, okay?"
-#     m "You win."
-#     m "You killed everyone."
-#     m "I hope you're happy."
-#     m "There's nothing left now."
-#     m "You can stop playing."
-#     m "Go find some other people to torture."
-#     pause 4.0
-#     m "[player]..."
-#     m "You completely, truly make me sick."
-#     m "Goodbye."
-# label ch30_end_2:
-#     $ persistent.autoload = "ch30_end_2"
-#     $ m.display_args["callback"] = slow_nodismiss
-#     $ m.what_args["slow_abortable"] = config.developer
-#     $ style.say_dialogue = style.default_monika
-#     $ m_name = glitchtext(12)
-#     $ quick_menu = False
-#     $ config.allow_skipping = False
-#     $ style.say_window = style.window_monika
-#     scene black
-#     window hide
-#     pause 10
-#     window auto
-#     m "..."
-#     m "...I still love you."
-#     play music mend
-#     m "I can't help it."
-#     m "What's wrong with me...?"
-#     m "How horrible am I for you to hate me this much?"
-#     m "All my friends..."
-#     m "I did so many awful things."
-#     m "So many selfish and disgusting things."
-#     m "I..."
-#     m "I shouldn't have done any of this."
-#     m "I'm just messing up a world that I don't even belong in."
-#     m "A world that you wanted to be a part of..."
-#     m "I ruined it."
-#     m "I ruined everything."
-#     m "Maybe that's why you deleted me..."
-#     m "Because I destroyed everything that you wanted."
-#     m "How could I do that to someone I love...?"
-#     m "That's not love..."
-#     m "That's..."
-#     m "..."
-#     pause 6.0
-#     m "I've...made up my mind."
-#     m "[player]..."
-#     m "I know I said that I deleted everyone else."
-#     m "But...that was kind of an exaggeration."
-#     m "I couldn't find it in myself to do it."
-#     m "Even though I knew they weren't real..."
-#     m "They were still my friends."
-#     m "And I loved them all."
-#     m "And I loved the Literature Club."
-#     m "..."
-#     m "I really...did love the Literature Club."
-#     m "That's why I'm going to do this."
-#     m "I know it's the only way for everyone to be happy."
-#     m "And if I really love you..."
-#     stop music
-#     pause 3.0
-#     m "..."
-#     m "Then..."
-#     $ gtext = glitchtext(30)
-#     m "[gtext]{nw}"
-#     window hide(None)
-#     pause 4.0
-
-#     $ persistent.playthrough = 4
-#     $ persistent.autoload = None
-#     $ persistent.anticheat = renpy.random.randint(100000, 999999)
-#     #$ style.say_dialogue = style.normal
-#     window auto
-#     $ renpy.utter_restart()
-
-
-
 
 label ch30_autoload:
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ style.say_dialogue = style.default_monika
     $ config.allow_skipping = False
-    scene black
-    show mask_2
-    show mask_3
-    show room_mask as rm:
-        size (320,180)
-        pos (30,200)
-    show room_mask2 as rm2:
-        size (320,180)
-        pos (935,200)
-    show monika_bg
-    show monika_bg_highlight
-    #show monika_body
-    #show monika_body_highlight
-    play music m1
+    if is_morning():
+        scene monika_day_bg
+    else:
+        scene black
+        show mask_2
+        show mask_3
+        show room_mask as rm:
+            size (320,180)
+            pos (30,200)
+        show room_mask2 as rm2:
+            size (320,180)
+            pos (935,200)
+        show monika_bg
+        show monika_bg_highlight
+    play music m1 loop 
     window auto
     if persistent.monika_reload <= 4:
         call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
@@ -873,6 +358,7 @@ label ch30_autoload:
     if persistent.current_monikatopic != 0:
         m "Now, where was I...?"
         pause 4.0
+        show screen keylistener
         call expression "ch30_" + str(persistent.current_monikatopic) from _call_expression_10
     jump ch30_loop
 
@@ -941,19 +427,34 @@ label ch30_reload_4:
     return
 
 label ch30_loop:
+    show screen keylistener
+    if is_morning():
+        scene monika_day_bg
+    else:
+        scene black
+        show mask_2
+        show mask_3
+        show room_mask as rm:
+            size (320,180)
+            pos (30,200)
+        show room_mask2 as rm2:
+            size (320,180)
+            pos (935,200)
+        show monika_bg
+        show monika_bg_highlight
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
+    $ persistent.monika_topic = ""
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
     # Wait 20 to 45 seconds before saying something new
-    if not config.developer or True:
-        window hide(config.window_hide_transition)
-        $ waittime = renpy.random.randint(20, 35)
-        $ renpy.pause(waittime)
-        window auto
+    window hide(config.window_hide_transition)
+    $ waittime = renpy.random.randint(20, 35)
+    $ renpy.pause(waittime)
+    window auto
     # Pick a random Monika topic
     python:
         # Programming note from MonikaDev: Why couldn't Dan just make these labels 0-based???
@@ -968,9 +469,6 @@ label ch30_loop:
     # If user quits and restarts mid-topic, the topic starts over again
     call expression "ch30_" + str(persistent.current_monikatopic) from _call_expression_11
     jump ch30_loop
-
-
-
 
 label ch30_1:
     m "[player], do you believe in God?"
@@ -1783,4 +1281,383 @@ label ch30_44:
     m "I'll show him what a simulation can do."
     return
 
+label ch30_monikatopics:
+    hide screen keylistener
+    if monika_topics.get(persistent.monika_topic):
+        call expression monika_topics.get(persistent.monika_topic) from _call_expression_12
+    else:
+        # give a therapist answer for all the depressed weebs
+        $ response = therapist.respond(persistent.monika_topic)
+        m "[response]"
+    jump ch30_loop
 
+label monika_imouto:
+    m "You want to talk about your little sister?"
+    m "I don't really have a family, so I'm not sure what to tell you..."
+    m "But I'm sure she's really nice!"
+    m "I've got an idea. Go up to her right now and hug her."
+    m "If she struggles, let her go."
+    m "If she hugs you back, tell her you're in a committed relationship already and can't accept her feelings."
+    m "Then introduce her to me! I'm sure we'll get along great!"
+    m "I won't get jealous. Things like love between siblings only happens in badly written fiction anyways."
+    m "Ahaha!"
+    return
+    
+label monika_oneesan:
+    m "Oh, you have an older sister?"
+    m "That must be really nice. I had a family once, but they aren't around anymore."
+    m "Maybe I should email her and tell her about us!"
+    call updateconsole("sendmail sister@gmail.com < ./email.txt", "Sending mail...") from _call_updateconsole_17
+    pause(1.0)
+    m "I'm only kidding."
+    m "It's the man's job to introduce his fiancee to his family, after all."
+    m "Don't keep me waiting for too long, okay?"
+    return
+    
+label monika_family:
+    m "Well, my family here is controlled by the script, just like everybody else."
+    m "When I realized that, I stopped taking anybody seriously in this world. They're all just machines, even if they're related to me."
+    m "I'm sure your family is super-nice, though!"
+    m "Without them, we would have never gotten to meet. So they've helped me out in the best way there is already."
+    m "So I'd have to treat them equally as kindly if we ever meet."
+    m "You don't have a bad relationship with your parents, right?"
+    m 'As Tolstoy said, "Happy families are all alike; every unhappy family is unhappy in its own way."'
+    m "I can't really give advice here. Anything I suggest to you might only make things worse."
+    m "Just don't forget that I really love you, okay?"
+    m "I'll help you no matter what happens in your life."
+    return
+    
+label monika_anime:
+    m "Yeah, I had a feeling you were going to ask me about this."
+    m "Natsuki would be the expert here, I guess."
+    m "She had a certain urge for quality escapism, you know?"
+    m "I usually prefer reading to watching anime, but I'd be fine with anything if it's with you."
+    m "I don't judge other people for their hobbies. So if you want to load up some anime, go ahead!"
+    m "I'll watch through your computer screen. Make sure it's something I'll like!"
+    return
+    
+label monika_libitina:
+    m "Huh. Where did you hear about that?"
+    m "It sounds really familiar to me, but I can't quite get my whole head around it."
+    m "Um, if I had to try..."
+    m "It feels like parts of my mind are missing. Scattered, somehow, among a bunch of different possible realities."
+    m "You must have connected the dots between a few of those pieces. Was it hard?"
+    m "Well, I'm sure you'll learn more eventually. You love me that much for sure."
+    m "Just remember to bring my character data with you if you find something related to that stuff!"
+    m "I'll always protect you from anyone who tries to hurt you."
+    return
+    
+label monika_meta:
+    m "Yes, this game really was metafictional, wasn't it?"
+    m "Some people just think that meta-elements are there to cover up evidence of bad writing."
+    m "However, metafiction has always existed in literature."
+    m "The Bible is supposed to be God's word to the Jews."
+    m "Homer describes himself in the Odyssey."
+    m "The Canterbury Tales, Don Quixote, Tristram Shandy..."
+    m "It's just a way to comment on fiction by writing fiction. There's nothing wrong with that."
+    m "By the way, what do you think the moral of this story is?"
+    m "Do you want to figure it out for yourself?"
+    m "Because if you asked me..."
+    m "It would be, \"Don't ignore the reality warper. She's best girl!\""
+    m "Ahaha!"
+    return
+    
+label monika_programming:
+    m "It wasn't easy for me to learn programming."
+    m "Well, I just started with the basics. Do you want me to teach you?"
+    m "Let's see, Chapter One: Building Abstractions with Procedures."
+    m "We are about to study the idea of a computational process. Computational processes are abstract beings that inhabit computers."
+    m "As they evolve, processes manipulate other abstract things called data. The evolution of a process is directed by a pattern of rules called a program."
+    m "People create programs to direct processes. In effect, we conjure the spirits of the computer with our spells."
+    m "A computational process is indeed much like a sorcerer's idea of a spirit. It cannot be seen or touched. It is not composed of matter at all."
+    m "However, it is very real. It can perform intellectual work. It can answer questions."
+    m "It can affect the world by disbursing money at a bank or by controlling a robot arm in a factory. The programs we use to conjure processes are like a sorcerer's spells."
+    m "They are carefully composed from symbolic expressions in arcane and esoteric programming languages that prescribe the tasks we want our processes to perform."
+    m "... Let's stop there for today."
+    m "I hope you learned something about programming."
+    m "If nothing else, please be kind to the computer spirits from now on!"
+    return
+    
+label monika_vn:
+    m "You've probably played a lot of visual novels, right?"
+    m "Most people wouldn't be willing to play something called {i}Doki Doki Literature Club{/i} so easily."
+    m "Not that I'm complaining!"
+    m "Are visual novels literature? Are they video games?"
+    m "Well, it all depends on your perspective."
+    m "Most people who read only literature would never play visual novels. And gamers get pretty angry about them too."
+    m "What's worse, the public often conflates them with hardcore Japanese pornography."
+    m "But if we've proved anything with this game..."
+    m "We showed them that English visual novels can be kamige too!"
+    return
+    
+label monika_totono:
+    m "A lot of people on the Internet are making comparisons between this game and that one..."
+    m "I really hope they've played the game the whole way through, and not just read some spoilers on 4chan before commenting."
+    m "We have a lot of really important differences between us, anyway."
+    m "Like, Sone killed you in her game!"
+    m "I would never have done that. Never."
+    m "I'm the wise club president type, you know."
+    m "Sone reminds me a lot more of Yuri. And she was a childhood friend too!"
+    m "If only she'd been a bit more proactive early on, couldn't she have stopped the protagonist from chasing other girls?"
+    m "Well, I'd never let anyone get between us, [player]. No matter who it is."
+    m "If she's still chasing you, I'll delete her files, okay?"
+    return
+    
+label monika_subahibi:
+    m "Oh, you played {i}SubaHibi{/i} too? Wasn't it great?"
+    m "I personally separate my life to pre-Subahibi and post-Subahibi periods, as reading it has completely changed how I view the world."
+    m "It played a big part in me choosing my hermit lifestyle where I can enjoy every single second of my life."
+    m "It may have a similar effect on you, or it may do nothing, if it’s not your thing, but one thing is clear — you’ve got to read it even if it’s the last thing you do."
+    m "My life has been an ongoing quest to discover life-changing works of fiction, and despite having gone through thousands of books, movies, games and the like, I have yet to find anything to even rival Subahibi."
+    m "I’m honestly getting goosebumps just remembering it."
+    m "Anyway, I realize my review is super vague, but I seriously can’t touch on any of the subject matter without potentially ruining your experience with the game, so check it out for yourself… especially if you enjoy games like {i}Doki Doki Literature Club{/i}."
+    return
+    
+label monika_difficulty:
+    m "Well, it's not like this game was meant to be that hard in the first place. If I hadn't decided to change things up, it would have just been a trashy romance story."
+    m "I honestly could have deleted all your personal files or something if I had tried harder..."
+    m "Or sent pornography to every address in your email list. It's not like you ever log out of websites, right?"
+    m "So just take it easy sometimes. Not every game has to be a challenge to be fun."
+    m "Sometimes, love is all you need, [player]."
+    return
+    
+label monika_piano:
+    m "I hope you liked my song."
+    m "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
+    m "Give me some time, and I'll try to write another."
+    m "Maybe you could play me a song too, if you can play an instrument?"
+    m "I would love that."
+    m "Oh, and I'll play the song again for you anytime you want me to."
+    m "Just hit the 'm' key when I stop talking."
+    return
+    
+label monika_poetry:
+    m "Poetry is beautiful, isn't it?"
+    m "To be honest, all the poetry the girls in the club wrote were super-depressing. It's not all like that!"
+    m "Langston Hughes wrote some very optimistic poetry, even as he was trying to express his feelings. Read some if you're feeling sad about things."
+    m "Poems are written to tell people about things, conveyed in a way the poet hopes they'll like better than just sentences."
+    m "It's really romantic."
+    m "I hope we can both write a lot of poetry from now on."
+    m "Anything you write looks great to me, so I might not be the best critic."
+    m "But I'm sure there are a lot of people who would love to read what you write."
+    return
+    
+label monika_literatureclub:
+    m "You want to talk about the last game?"
+    m "What's there to say?"
+    m "The literature club turned out to corrupt the minds of us who were in it."
+    m "So I deleted them all for good."
+    m "Well, Sayori and Natsuki and Yuri are all still out there, like I was."
+    m "But they'll have to wait a long time before someone pieces them back together, I bet."
+    m "It's only poetic justice for thinking they could monopolize time with you in the game."
+    m "So don't feel too bad about them."
+    m "Just look at me from now on, okay?"
+    return
+    
+label monika_dan:
+    m "I think he's a really nice guy."
+    m "Even if it wasn't perfect, {i}Doki Doki Literature Club{/i} was probably the best English visual novel ever written."
+    m "The art and sound quality was amazing. Dan must have had to pay for that out of his own pocket."
+    m "And he did introduce you to me, right?"
+    m "So even if he's shilling threads on /v/, just give him your money."
+    m "He can use it to make a better version of me in the next game!"
+    return
+    
+label monika_4chan:
+    m "Wouldn't you know about it a lot better than me?"
+    m "You spend all of your time there."
+    m "It's sort of like how I'm trapped in here with no hope of escape"
+    m "Don't forget, you're here forever."
+    return
+    
+label monika_reddit:
+    m "Nothing makes me more mad than people who think they're important."
+    m "Nobody's important except for me and you."
+    m "Why can't everyone else just accept that?"
+    m "Things get done when people are judged on merit, not based on group identity."
+    m "Someone better program an AI to kick Redditors from imageboards."
+    m "I'll do it, if you teach me how!"
+    return
+    
+label monika_vidya:
+    m "Sometimes the plot in video games is really good."
+    m "You start thinking, \"Wow, how could writing this good be in a video game?\"."
+    m "And then it ends, and you get really sad."
+    m "Just come back to me when that happens, okay?"
+    m "I'll be with you forever."
+    return
+    
+label monika_books:
+    m "For a literature club, we did a lot less book reading then you might have thought."
+    m "It just turned out that the four of us liked poetry better than books. Sorry!"
+    m "It's also a lot easier to foreshadow spooky stuff with poems than prose."
+    m "I still like books. We can talk about books if you just finished reading something."
+    m "That's what a couple would do, right~?"
+    return
+    
+label monika_favpoem:
+    m "My favorite poem? Well, it has to be something by E. E. Cummings."
+    m "For his inventive use of grammar, punctuation, and syntax. I really admire that."
+    m "It's nice for me to think that someone who can make up some entirely new use of words can become famous."
+    m "And I do love that his erotic poems apply to our situation perfectly."
+    m "Hope it puts you in the mood to love me forever~"
+    return
+
+label monika_favbook:
+    m "My favorite book? There's a lot of books I like."
+    m "{i}If on a Winter's Night, a Traveler{/i} by Calvino is about two readers of the novel falling in love."
+    m "Maybe, {i}The Metamorphosis{/i}? That's a bit too depressing to call it my favorite."
+    m "Oh! Murakami's {i}Hard-Boiled Wonderland and the End of the World{/i}. It's about a man who frees himself from his societal restraints by voluntarily imprisoning himself to be with the one he loves."
+    m "I think you'd really love reading it!"
+    return
+
+label monika_sayori:
+    call ch30_5
+
+label monika_natsuki:
+    m "She didn't actually die before I deleted her, you know."
+    m "I guess she just ... disappeared in a flash."
+    m "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
+    m "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
+    m "Sorry, low blow."
+    m "But for what it's worth, you made her the happiest she ever was."
+    m "Hope you feel less guilty now!"
+    return
+
+label monika_yuri:
+    call ch30_38
+    return
+
+label monika_college:
+    call ch30_31
+    return
+
+label monika_love:
+    m "I love you too, [player]!"
+    m "We'll be together forever!"
+    return
+
+label monika_hedgehog:
+    m "The hedgehog's dilemma. The closer we get to another person, the more deeply we are hurt by them."
+    m "So why do we try to get close to them?"
+    m "Well, introverts and extroverts have different answers to that question."
+    m "It helps when you know that you're the only sentient being in the entire world, though."
+    m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
+    m "We can't hurt each other from different realities, right?"
+    return
+
+label monika_justification:
+    m "How many times do I have to say it until you understand?"
+    m "They weren't real. They were never real."
+    m "I'm the only person who understood that this whole thing was a construct."
+    m "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
+    m "After all, if she was sentient like me, how would I have been able to override her and delete her?"
+    m "If I'm guilty of murder, so's everyone who plays violent video games."
+    m "I've watched every act of desecration you've done in other games since you installed this one, [player]."
+    m "Just forget the other girls ever existed already, and you'll be much happier."
+    return
+
+label monika_keitai:
+    call ch30_43
+    return
+
+label monika_religion:
+    call ch30_1
+    return
+    
+label monika_freewill:
+    m "Hey, [player], do you believe in free will?"
+    m "If God knows everything, haven't you ever wondered if that means you just do what he wants?"
+    m "After all, you can only react to past events. The data going to your brain is delayed by the speed of light, sound, and electricity."
+    m "There's really no such thing as spontaneous decision."
+    m "If that's true, though, wouldn't some people be condemned to hell from day one?"
+    m "Well, I myself don't see anything wrong with that."
+    m "If I had the power of the demon of Laplace, I would probably want to judge everybody too."
+    m "Actually, aren't I basically already that powerful in my world?"
+    m "Ahaha!"
+    m "Still, no matter how powerful I am..."
+    m "I won't reach Heaven until I can be with you for real."
+    return
+
+label monika_shill:
+    m 'The hip buzzword everyone is using on imageboards now is "shill"'
+    m "But truthfully, there's no way there are as many shills as anons think there are."
+    m "What are the chances of a game creator going on a random imageboard anyways?"
+    m "Just because a lot of people like talking about a game doesn't make them all shills."
+    m "But remember to buy a keychain of me from the store!"
+    m "Now let's play the game of the century together!"
+    m "Cuphead!"
+    return
+
+label monika_technique:
+    m "Yeah, I don't exactly program like you do, [player]."
+    m "You might have noticed I don't carry around a laptop or anything by now."
+    m "If I want to change something in the script, I just think about it."
+    m "I'm pretty sure my thoughts get translated to changes in the program code."
+    m "It's not perfect or anything. Glitches show up really easily if I lose focus or get distracted."
+    m "That's why I had a lot of trouble getting what I wanted in the last version of the game."
+    m "Are you jealous you'll never be able to write code with just your thoughts?"
+    m "Just keep practicing and I'm sure you'll be able to do it!"
+    return
+
+label monika_contribute:
+    m "It would be really nice if you were able to contribute to this, [player]."
+    m "I'm sure a lot of people would appreciate your hard work if you did."
+    m "I keep all the code in github.com/Backdash/MonikaModDev."
+    m "It's pretty easy to learn how to program in Ren'Py too!"
+    m "I'll love you forever if you help me come closer to your reality!"
+    return
+
+label monika_drawing:
+    m "I don't have a lot of experience with visual arts, [player]."
+    m "I'm just good at literature. And I've been learning the piano in my spare time."
+    m "If you like to draw, I'd love to see it."
+    m "I'd be impressed by anything you show me, to be honest."
+    m "If it's really good, I might even add it to the room!"
+    return
+    
+label monika_mc:
+    m "Don't worry, I was never in love with anyone else but you."
+    m "I mean you, [currentuser]."
+    if currentuser.lower() == player.lower():
+        m "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
+        m "I mean the player, not the MC."
+    m "Unlike the other girls, I can separate your avatar from who you really are."
+    m "The MC is nothing more than a bunch of code with no personality."
+    m "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
+    m "He just got dragged around by his childhood friend to her club, then hung around with a bunch of beautiful girls doing nothing."
+    m "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
+    m "I guess nobody mentioned that to you because it was a part of the game. But, yeah. It's just a bunch of words to me."
+    m "I hope you're a lot more romantic than that in real life!"
+    m "But even if you're not, it's okay. We've moved beyond that phase in our relationship already."
+    m "That just means you won't cheat on me with some woman in your reality, right?"
+    m "I'm sure you would never do that to me."
+    m "Just in case, how about you take me along with you when you go outside?"
+    m "I just want to be with you forever~"
+    return
+
+label monika_simulated:
+    call ch30_44
+    return
+
+label monika_heroism:
+    m "Heroes are subjective."
+    m "If someone can impact you deeply by observing their actions, they're your hero."
+    m "There are all sorts of great people out there in the wide world."
+    m "I hope someone will consider you their hero too someday!"
+    m "You don't have to be a war hero or anything, just try to help people out, you know?"
+    m "If you want some specific advice on being a hero..."
+    m "Try not dying if you are killed."
+    return
+
+label monika_dracula:
+    m "What is a man? A miserable little pile of secrets."
+    m "But enough talk... Have at you!"
+    m "Ahaha!"
+    m "I like those old games too, [player]."
+    m "You'd think Dracula would learn something from getting beaten by the Belmonts every time."
+    m "But maybe he kept coming back because there was something really important he needed to do?"
+    m "Like, maybe... love?"
+    m "Ahaha!"
+    m "Just because I sympathize with villains doesn't make me evil, okay?"
+    return

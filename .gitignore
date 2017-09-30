@@ -2,6 +2,7 @@
 *.rpyc
 *.rpyb
 *.bak
+*.pyc
 log.txt
 traceback.txt
 errors.txt
