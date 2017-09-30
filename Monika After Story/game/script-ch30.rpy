@@ -1512,7 +1512,7 @@ label monika_favbook:
     return
 
 label monika_sayori:
-    call ch30_5
+    call ch30_5 from _call_ch30_5
 
 label monika_natsuki:
     m "She didn't actually die before I deleted her, you know."
@@ -1525,11 +1525,11 @@ label monika_natsuki:
     return
 
 label monika_yuri:
-    call ch30_38
+    call ch30_38 from _call_ch30_38
     return
 
 label monika_college:
-    call ch30_31
+    call ch30_31 from _call_ch30_31
     return
 
 label monika_love:
@@ -1558,11 +1558,11 @@ label monika_justification:
     return
 
 label monika_keitai:
-    call ch30_43
+    call ch30_43 from _call_ch30_43
     return
 
 label monika_religion:
-    call ch30_1
+    call ch30_1 from _call_ch30_1
     return
     
 label monika_freewill:
@@ -1637,7 +1637,7 @@ label monika_mc:
     return
 
 label monika_simulated:
-    call ch30_44
+    call ch30_44 from _call_ch30_44
     return
 
 label monika_heroism:
