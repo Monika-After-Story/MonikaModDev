@@ -28,6 +28,6 @@ Example new dialogue code block:
 label ch30_50:
     m "Contribute already~"
         return
-	```
+```
 
 For things more complicated than adding in dialogue, consult Ren'Py tutorials.
