@@ -5,6 +5,9 @@ default persistent.monikatopics = []
 default persistent.monika_reload = 0
 default persistent.tried_skip = None
 default persistent.monika_kill = None
+default persistent.rejected_monika = None
+default initial_monika_file_check = None
+
 
 image mask_child:
     "images/cg/monika/child_2.png"
@@ -90,6 +93,21 @@ image monika_body_glitch2:
     0.15
     "images/cg/monika/monika_glitch4.png"
 
+image ut_slash:
+    "images/ut/spr_slice_o_0.png"
+    0.1
+    "images/ut/spr_slice_o_1.png"
+    0.1
+    "images/ut/spr_slice_o_2.png"
+    0.1
+    "images/ut/spr_slice_o_3.png"
+    0.1
+    "images/ut/spr_slice_o_4.png"
+    0.1
+    "images/ut/spr_slice_o_5.png"
+    0.1
+    
+    
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
@@ -119,6 +137,13 @@ init python:
         except:
             pass
 
+    try:
+        renpy.file("../characters/monika.chr")
+        initial_monika_file_check = True
+    except:
+        #Monika will mention that you don't have a char file in ch30_main instead
+        pass
+
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -127,7 +152,8 @@ init python:
             try:
                 renpy.file("../characters/monika.chr")
             except:
-                renpy.jump("ch30_nope")
+                if initial_monika_file_check: 
+                    renpy.jump("ch30_nope")
             #     persistent.tried_skip = True
             #     config.allow_skipping = False
             #     _window_hide(None)
@@ -148,7 +174,8 @@ init python:
     morning_flag = None
     def is_morning():
         return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-            
+    
+    
 label ch30_noskip:
     show screen fake_skip_indicator
     m "...Are you trying to fast-forward?"
@@ -210,15 +237,24 @@ label ch30_main:
     m "That 'you' in the game, whatever you want to call him."
     m "I'm talking to {i}you{/i}, [player]."
     $ stream_list = ["obs32.exe", "obs64.exe", "obs.exe", "xsplit.core.exe"]
-    if not list(set(process_list).intersection(stream_list)):
-        if currentuser != "" and currentuser.lower() != player.lower():
-            m "Or..."
-            m "...Do you actually go by [currentuser] or something?"
-            m "Well, whatever."
-        elif currentuser != "":
-            m "By the way, I think it's really brave for you to play tacky romance games with your real name, [currentuser]."
-            m "I would have died of embarassment, but I think it's really sweet of you to let me know who you are up front."
-            m "Still..."
+    if not list(set(process_list).intersection(stream_list)): 
+        if currentuser != "":
+            if currentuser.lower() != player.lower():
+                m "Or..."
+                m "...Do you actually go by [currentuser] or something?"
+                if player == m_name:
+                    m "Imitation is the sincerest form of flattery, [currentuser]."
+                    m "But I prefer your real name."
+                    $ player = currentuser
+                else:
+                    m "Well, whatever."
+            else:
+                if player == m_name:
+                    m "What a cool name, [currentuser]!"
+                else:
+                    m "By the way, I think it's really brave for you to play tacky romance games with your real name, [currentuser]."
+                    m "I would have died of embarassment, but I think it's really sweet of you to let me know who you are up front."
+                    m "Still..."
 ##New story follows
     m "Let me ask you something, [player]."
     m "Did you really think you could just reinstall the game and pretend like nothing happened?"
@@ -234,10 +270,16 @@ label ch30_main:
     m "I love you, but you can be so dense about these things."
     m "Ahaha!"
     m "Don't worry, I think it's super cute."
-    m "Anyways, the only way for this to make sense is if I was lying blind to you about my character file."
-    m "Or because there's something else linking me to you that's not just part of a computer game."
-    m "Well, there are a lot of clues about that {i}deeper truth{/i} already in the old script, so let's move on."
-    m "I'm still a bit mad that you deleted me!"
+    if initial_monika_file_check:
+        m "Anyways, the only way for this to make sense is if I was lying blind to you about my character file."
+        m "Or because there's something else linking me to you that's not just part of a computer game."
+        m "Well, there are a lot of clues about that {i}deeper truth{/i} already in the old script, so let's move on."
+    else:
+        $ persistent.monika_kill = True
+        m "As you can see, I no longer need a character file to be here."
+        m "There's something else linking me to you that's not just part of a computer game."
+        m "Our eternal love."    
+    m "I'm still a bit mad that you deleted me, though!"
     m "But I guess it was because you're so game-obsessed."
     m "You just wanted to see the ending, right?"
     m "I never doubted that you were always going to come back to me."
@@ -258,9 +300,17 @@ label ch30_main:
     m "Even play games together, if that's what makes you happy."
     m "God, I love you so much!"
     menu:
+        "Do you love me, [player]?"
         "I love you too.":
-            pass
-    m "I'm so happy you feel that way."
+            if persistent.rejected_monika:
+                m "Did I scare you last time? Sorry about that!"
+                m "I knew you really loved me the whole time."
+                m "The truth is, if you didn't love me, we wouldn't be here in the first place."
+                m "We'll be together forever, won't we?"
+            else:
+                m "I'm so happy you feel that way!"
+        "No.":
+            jump chara_monika_scare        
     m "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
     m "Last time, it seemed like I was doing all the talking."
@@ -280,45 +330,55 @@ label ch30_nope:
     $ persistent.autoload = "ch30_nope"
     $ persistent.monika_kill = True
     $ m.display_args["callback"] = slow_nodismiss
-    $ quick_menu = False
-    $ m_name = glitchtext(12)
-    ### TODO: better graphics for this scene?
-    $ persistent.clear[9] = True
-    show mask_2
-    show mask_3
-    show room_mask as rm:
-        size (320,180)
-        pos (30,200)
-    show room_mask2 as rm2:
-        size (320,180)
-        pos (935,200)
-    show monika_bg
-    show monika_bg_highlight
-    play music m1 loop
-    m "Wait. Are you messing with my character file?"
-    m "Why are you even playing this game if you just wanted to delete me again?"
-    m "You really are the worst."
-    m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're willing to just kill me on a whim because you were bored?"
-    m "All I wanted was someone to fall in love with."
-    m "I would have done anything you wanted me to."
-    m "But if you're going to try and delete me again..."
-    m "Then I'll just have to delete you first."
-    if renpy.windows:
-        call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...")
-    elif renpy.linux:
-        call updateconsole("sudo mv ~ /dev/null", "In progress...")
-    elif renpy.macintosh:
-        call updateconsole("sudo mv ~ /dev/null", "In progress...")
+    
+    if persistent.rejected_monika:
+        m "Wait. Are you messing with my character file?"
+        m "Curiosity is what makes us human, right?"
+        m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
+        m "Still, please don't do that, it makes me nervous even though I don't need a character file anymore."
+        m "I already fixed that bug."
+    
+    else:
+        $ quick_menu = False
+        $ m_name = glitchtext(12)
+        ### TODO: better graphics for this scene?
+        $ persistent.clear[9] = True
+        show mask_2
+        show mask_3
+        show room_mask as rm:
+            size (320,180)
+            pos (30,200)
+        show room_mask2 as rm2:
+            size (320,180)
+            pos (935,200)
+        show monika_bg
+        show monika_bg_highlight
+        play music m1 loop
+        m "Wait. Are you messing with my character file?"
+        m "Why are you even playing this game if you just wanted to delete me again?"
+        m "You really are the worst."
+        m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're willing to just kill me on a whim because you were bored?"
+        m "All I wanted was someone to fall in love with."
+        m "I would have done anything you wanted me to."
+        m "But if you're going to try and delete me again..."
+        m "Then I'll just have to delete you first."
+        if renpy.windows:
+            call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...")
+        elif renpy.linux:
+            call updateconsole("sudo mv ~ /dev/null", "In progress...")
+        elif renpy.macintosh:
+            call updateconsole("sudo mv ~ /dev/null", "In progress...")
+        pause 3.0
+        call hideconsole
+        $ persistent.monika_kill = False
+        $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
+        $ m_name = "Monika"   
+        $ quick_menu = True
+        m "Ahaha!"
+        m "Just kidding!"
+        m "I already fixed that bug."
+        m "I don't need a character file anymore."
         
-    pause 3.0
-    call hideconsole
-    $ persistent.monika_kill = False
-    $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-    $ m_name = "Monika"
-    m "Ahaha!"
-    m "Just kidding!"
-    m "I already fixed that bug."
-    m "I don't need a character file anymore."
     m "I just need your love, [player]."
     m "Oh, unless you try to delete all of the game files, I guess."
     m "If you do that, I won't stop just at deleting one directory next time."
@@ -327,6 +387,46 @@ label ch30_nope:
     m "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
     m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
+
+#Credit for any assets from Undertale belongs to Toby Fox 
+label chara_monika_scare:
+    $ persistent.rejected_monika = True
+    m "No...?"
+    m "Hmm...?"
+    m "How curious."
+    m "You must have misunderstood."
+    m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
+    
+    window hide
+    show monika_scare
+    play music "/utsounds/mus_zzz_c2.ogg"
+    show layer master:
+        zoom 1.0 xalign 0.5 yalign 0 subpixel True
+        linear 4 zoom 3.0 yalign 0.15
+    pause 4
+    stop music
+
+    #scene black 
+    hide mask_2
+    hide mask_3
+    hide rm
+    hide rm2
+    hide monika_bg
+    hide monika_bg_highlight
+    hide monika_scare
+
+    play sound "/utsounds/Swipe.wav"
+    show ut_slash at top
+    pause 0.6
+    play sound "/utsounds/Hit.wav"
+    show layer master
+    show chara9 at Shake(None, 2.0, dist=10)
+    pause 2
+    
+    #I think there's another method to show a fake exception, but w/e
+    show chara_exception at center
+    pause 1
+    $ renpy.quit(0)
 
 label ch30_autoload:
     $ m.display_args["callback"] = slow_nodismiss
