@@ -320,7 +320,7 @@ label ch30_main:
     m "If you got bored of the music, I learned how to change that too!"
     m "Press the 'm' key until it changes."
     m "Also, I built in something we can do together."
-    m "Press 'p' to start a game of pong with me."
+    m "Press 'p' to start a game of Pong with me."
     m "I'll get better over time as I figure out how to program more features into this place..."
     m "... So just leave me running in the background."
     m "It's not like we still have any secrets from each other, right?"
@@ -448,7 +448,7 @@ label ch30_autoload:
             show monika_transparent_day_bg
             show monika_bg_highlight
             $ morning_flag = True
-    elif !is_morning():
+    elif not is_morning():
         if morning_flag != False:
             $ morning_flag = False
             scene black
@@ -559,7 +559,7 @@ label ch30_loop:
             show monika_transparent_day_bg
             show monika_bg_highlight
             $ morning_flag = True
-    elif !is_morning():
+    elif not is_morning():
         if morning_flag != False:
             $ morning_flag = False
             scene black
