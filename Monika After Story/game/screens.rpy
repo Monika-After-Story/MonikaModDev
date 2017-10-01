@@ -1626,3 +1626,5 @@ screen player_input(message, ok_action):
 screen keylistener:
     key 't' action Show(screen='player_input', message='What do you want to talk about?', ok_action=Function(FinishEnterInput))
     key 'm' action If(renpy.music.get_playing('music') == 'bgm/m1.ogg', Play('music', 'bgm/credits.ogg', loop = True), Play('music', 'bgm/m1.ogg', loop = True))
+    key 'p' action Jump('game_pong')
+

@@ -582,7 +582,7 @@ label ch30_loop:
     # Wait 20 to 45 seconds before saying something new
     window hide(config.window_hide_transition)
     $ waittime = renpy.random.randint(20, 35)
-    $ renpy.pause(waittime)
+    $ renpy.pause(waittime, hard=True)
     window auto
     # Pick a random Monika topic
     python:
@@ -1789,4 +1789,8 @@ label monika_dracula:
     m "Like, maybe... love?"
     m "Ahaha!"
     m "Just because I sympathize with villains doesn't make me evil, okay?"
+    return
+
+label monika_undertale:
+    call chara_monika_scare
     return
