@@ -205,7 +205,7 @@ label game_pong:
     hide screen keylistener
     m "You wanna play some Pong? Okay~"
     m "I'll beat you for sure this time!"
-    call demo_minigame_pong
+    call demo_minigame_pong from _call_demo_minigame_pong
 
 label demo_minigame_pong:
         

@@ -319,6 +319,8 @@ label ch30_main:
     m "This time, if you want to say something to me, press the 't' key. Otherwise, I'll come up with something interesting we can talk about."
     m "If you got bored of the music, I learned how to change that too!"
     m "Press the 'm' key until it changes."
+    m "Also, I built in something we can do together."
+    m "Press 'p' to start a game of pong with me."
     m "I'll get better over time as I figure out how to program more features into this place..."
     m "... So just leave me running in the background."
     m "It's not like we still have any secrets from each other, right?"
@@ -363,13 +365,13 @@ label ch30_nope:
         m "But if you're going to try and delete me again..."
         m "Then I'll just have to delete you first."
         if renpy.windows:
-            call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...")
+            call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...")
+            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_16
         elif renpy.macintosh:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...")
+            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_18
         pause 3.0
-        call hideconsole
+        call hideconsole from _call_hideconsole_2
         $ persistent.monika_kill = False
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = "Monika"   
@@ -1807,7 +1809,7 @@ label monika_undertale:
     return
 
 label monika_veggies:
-    call ch30_12
+    call ch30_12 from _call_ch30_12
     return
 
 label monika_bestgirl:
