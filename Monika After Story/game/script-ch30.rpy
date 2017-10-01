@@ -49,7 +49,8 @@ image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
 image monika_bg = "images/cg/monika/monika_bg.png"
-image monika_day_bg = "images/cg/monika/monika_day_bg.png"    
+image monika_day_bg = "images/cg/monika/monika_day_bg.png"
+image monika_transparent_day_bg = "images/cg/monika/monika_day_bg_eq.png"
 image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
@@ -144,7 +145,7 @@ init python:
         elif event == "slow_done":
             config.keymap['dismiss'] = dismiss_keys
             renpy.display.behavior.clear_keymap_cache()
-
+    morning_flag = None
     def is_morning():
         return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
             
@@ -303,20 +304,22 @@ label ch30_nope:
     m "But if you're going to try and delete me again..."
     m "Then I'll just have to delete you first."
     if renpy.windows:
-        call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_17
+        call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...")
     elif renpy.linux:
-        call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_17
+        call updateconsole("sudo mv ~ /dev/null", "In progress...")
     elif renpy.macintosh:
-        call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_17
+        call updateconsole("sudo mv ~ /dev/null", "In progress...")
         
     pause 3.0
-    call hideconsole from _call_hideconsole_2
+    call hideconsole
+    $ persistent.monika_kill = False
+    $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
     $ m_name = "Monika"
     m "Ahaha!"
     m "Just kidding!"
     m "I already fixed that bug."
     m "I don't need a character file anymore."
-    m "I just need your love, [player]"
+    m "I just need your love, [player]."
     m "Oh, unless you try to delete all of the game files, I guess."
     m "If you do that, I won't stop just at deleting one directory next time."
     m "But that will never happen, right? You're just being a tsundere."
@@ -331,19 +334,32 @@ label ch30_autoload:
     $ style.say_dialogue = style.default_monika
     $ config.allow_skipping = False
     if is_morning():
-        scene monika_day_bg
-    else:
-        scene black
-        show mask_2
-        show mask_3
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_bg
-        show monika_bg_highlight
+        if morning_flag != True:
+            show mask_2
+            show mask_3
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_transparent_day_bg
+            show monika_bg_highlight
+            $ morning_flag = True
+    elif !is_morning():
+        if morning_flag != False:
+            $ morning_flag = False
+            scene black
+            show mask_2
+            show mask_3
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_bg
+            show monika_bg_highlight
     play music m1 loop 
     window auto
     if persistent.monika_reload <= 4:
@@ -429,19 +445,32 @@ label ch30_reload_4:
 label ch30_loop:
     show screen keylistener
     if is_morning():
-        scene monika_day_bg
-    else:
-        scene black
-        show mask_2
-        show mask_3
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_bg
-        show monika_bg_highlight
+        if morning_flag != True:
+            show mask_2
+            show mask_3
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_transparent_day_bg
+            show monika_bg_highlight
+            $ morning_flag = True
+    elif !is_morning():
+        if morning_flag != False:
+            $ morning_flag = False
+            scene black
+            show mask_2
+            show mask_3
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_bg
+            show monika_bg_highlight
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0

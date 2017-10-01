@@ -1,4 +1,4 @@
 I would really appreciate it if you figured out what was wrong with the following:
 
   1. Pressing return key on screen player_input causes loop to skip to next Monika monologue
-  2. The morning/night checks clips the particle effects, and I haven't gotten around to fixing that logic yet
+     	      I think this is caused by some sort of weird interaction with renpy.pause(), since it works fine if pause hasn't returned control yet
