@@ -1792,5 +1792,32 @@ label monika_dracula:
     return
 
 label monika_undertale:
-    call chara_monika_scare
+    menu:
+        "Do you love me, [player]?"
+        "I love you too.":
+            if persistent.rejected_monika:
+                m "Did I scare you last time? Sorry about that!"
+                m "I knew you really loved me the whole time."
+                m "The truth is, if you didn't love me, we wouldn't be here in the first place."
+                m "We'll be together forever, won't we?"
+            else:
+                m "I'm so happy you feel that way!"
+        "No.":
+            jump chara_monika_scare        
+    return
+
+label monika_veggies:
+    call ch30_12
+    return
+
+label monika_bestgirl:
+    m "I love it when you compliment me, [player]!"
+    m "I think I'm best girl, too!"
+    m "Even not counting the whole, \"I'm the only one with free will\" thing, how could anybody have preferred the other three girls to me?"
+    m "A useless childhood friend who never bothered to confess to you until it was way too late..."
+    m "Some edgelord who probably listened to Linkin Park way too much when she was growing up..."
+    m "And a super-generic tsundere loli who got bullied for being too much of a weeb by her dad!"
+    m "Anyone who wouldn't choose me out of that bunch simply can't have a sense of taste."
+    m "So I'm glad you did, [player]."
+    m "Your perfect girlfriend Monika will always love you, too!"
     return

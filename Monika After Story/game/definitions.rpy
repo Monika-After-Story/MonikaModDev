@@ -97,7 +97,12 @@ init python:
         monika_topics[key] = 'monika_heroism'
     for key in ['what is a man', 'what is a man?', 'mankind ill needs a savior such as you!', 'your words are as empty as your soul!','mankind ill needs a savior such as you', 'your words are as empty as your soul', 'castlevania', 'dracula', 'belmont']:
         monika_topics[key] = 'monika_dracula'
-
+    for key in ['undertale', 'undertale reference']:
+        monika_topics[key] = 'monika_undertale'
+    for key in ['vegetarian', 'vegan', 'vegetarians', 'vegetarianism', 'save the planet', 'vegetables', 'veggies']:
+        monika_topics[key] = 'monika_veggies'
+    for key in ['best girl', "you're best girl", 'you are best girl', 'monika best girl', 'monika is best girl']:
+        monika_topics[key] = 'monika_bestgirl'
     
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
