@@ -480,6 +480,15 @@ label ch30_loop:
     else:
         $ config.allow_skipping = False
     # Wait 20 to 45 seconds before saying something new
+    # I inserted a menu here to allow the player to play Pong. If you have a better idea of implementing this then by all means do it
+    menu:
+        m "What would you like to do?"
+        
+        "Talk":
+            pass
+        "Play a game":
+            jump game_test
+    show screen keylistener
     window hide(config.window_hide_transition)
     $ waittime = renpy.random.randint(20, 35)
     $ renpy.pause(waittime)
@@ -1689,4 +1698,10 @@ label monika_dracula:
     m "Like, maybe... love?"
     m "Ahaha!"
     m "Just because I sympathize with villains doesn't make me evil, okay?"
+    return
+
+label game_test:
+    m "You wanna play some Pong? Okay~"
+    m "I'll beat you for sure this time!"
+    jump demo_minigame_pong
     return
