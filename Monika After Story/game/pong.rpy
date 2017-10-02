@@ -231,7 +231,7 @@ label demo_minigame_pong:
             pos (935,200)
         show monika_transparent_day_bg
         show monika_bg_highlight
-    elif !is_morning():
+    elif not is_morning():
         scene black
         show mask_2
         show mask_3
