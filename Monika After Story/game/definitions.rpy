@@ -103,7 +103,11 @@ init python:
         monika_topics[key] = 'monika_veggies'
     for key in ['best girl', "you're best girl", 'you are best girl', 'monika best girl', 'monika is best girl']:
         monika_topics[key] = 'monika_bestgirl'
-    
+    for key in ['gf', 'tfw no gf', 'girlfriend', 'my girlfriend', 'you are my girlfriend']:
+        monika_topics[key] = 'monika_girlfriend'
+    for key in ['waifus', 'waifuism', 'galge', 'romance games', 'dating sims', 'romance movie', 'romance movies']:
+        monika_topics[key] = 'monika_waifu'
+        
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos

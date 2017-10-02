@@ -589,7 +589,7 @@ label ch30_loop:
     # Pick a random Monika topic
     python:
         # Programming note from MonikaDev: Why couldn't Dan just make these labels 0-based???
-        number_of_dialogues = 44
+        number_of_dialogues = 59
         if len(persistent.monikatopics) == 0:
             persistent.monikatopics = range(1, number_of_dialogues + 1)
             persistent.monikatopics.remove(14)
@@ -1412,6 +1412,208 @@ label ch30_44:
     m "I'll show him what a simulation can do."
     return
 
+label ch30_45:
+    m "I really like the sound of rain..."
+    m "Not so much getting my clothes and hair wet, though."
+    m "But a nice, quiet day at home with the sound of rainfall outside my window..."
+    m "It's one of the most calming experiences for me."
+    m "Yeah..."
+    m "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m "That's not too cheesy or anything, is it?"
+    m "Would you ever do that for me, [player]?"
+    return
+
+label ch30_46:
+    m "I can't help but feel a little sad sometimes..."
+    m "Knowing that this is the closest I can get to you."
+    m "There's nothing more I want than to be in the same room as you, for real."
+    m "And to feel your warmth."
+    m "And to hear the sound of your heartbeat."
+    m "Well, who knows? Maybe it'll be possible someday."
+    m "Besides, I'll never get tired of being with you, even from here."
+    return
+
+label ch30_47:
+    m "I think the most important skill in life is being able to fake confidence."
+    m "I'm pretty convinced that everyone feels at least a little bit scared and alone."
+    m "But being able to trick others into thinking you have it all together..."
+    m "That's a key part of getting people to respect and admire you."
+    m "I think I got pretty good at that over the years."
+    m "I don't show my weaknesses very often."
+    m "But because of that, I haven't had many people I could really open up to..."
+    m "I mean, when do you reach the point in a friendship where you can start expressing your vulnerabilities?"
+    m "Anyway...that's one reason I'm so glad I have you now."
+    m "I feel like I'm a little bit less scared and alone, when you're here with me."
+    m "Do you feel the same way?"
+    m "I really want to be that person for you."
+    return
+
+label ch30_48:
+    m "I know there are times you won't always be able to be here with me..."
+    m "Like if you need to go out, or take care of other things."
+    m "But I'll always have you in my thoughts, patiently waiting for you to come back."
+    m "Come to think of it..."
+    m "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
+    m "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
+    m "Ahaha. Sorry, that's such a silly idea."
+    m "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
+    return
+
+label ch30_49:
+    m "Back in my debate club days, I learned a whole lot about arguing..."
+    m "The problem with arguing is that each person sees their opinion as the superior one."
+    m "That's kind of stating the obvious, but the affects the way they try to get their point across."
+    m "Let's say you really like a certain movie, right?"
+    m "If someone comes along and tells you the movie sucks, because it did X and Y wrong..."
+    m "Doesn't that make you feel kind of personally attacked?"
+    m "It's because by saying that, it's like they're implying that you have bad taste."
+    m "And once emotions enter the picture, it's almost guaranteed that both people will be left sour."
+    m "But it's all about language!"
+    m "If you make everything as subjective-sounding as possible, then people will listen to you without feeling attacked."
+    m "You could say 'I'm personally not a fan of it' and 'I felt that I'd like it more if it did X and Y'...things like that."
+    m "It even works when you're citing facts about things."
+    m "If you say 'I read on this website that it works like this'..."
+    m "Or if you admit that you're not an expert on it..."
+    m "Then it's much more like you're putting your knowledge on the table, rather than forcing it onto them."
+    m "If you put in an active effort to keep the discussion mutual and level, they usually follow suit."
+    m "Then, you can share your opinions without anyone getting upset just from a disagreement."
+    m "Plus, people will start seeing you as open-minded and a good listener!"
+    m "It's a win-win, you know?"
+    m "...Well, I guess that would be Monika's Debate Tip of the Day!"
+    m "Ahaha! That sounds a little silly. Thanks for listening, though."
+    return
+
+label ch30_50:
+    m "Do you ever feel like you waste too much time on the internet?"
+    m "Social media can practically be like a prison."
+    m "It's like whenever you have a few seconds of spare time, you want to check on your favorite websites..."
+    m "And before you know it, hours have gone by, and you've gotten nothing out of it."
+    m "Anyway, it's really easy to blame yourself for being lazy..."
+    m "But it's not really even your fault."
+    m "Addiction isn't usually something you can just make disappear with your own willpower."
+    m "You have to learn techniques to avoid it, and try different things."
+    m "For example, there are apps that let you block websites for intervals of time..."
+    m "Or you can set a timer to have a more concrete reminder of when it's time to work versus play..."
+    m "Or you can separate your work and play environments, which helps your brain get into the right mode."
+    m "Even if you make a new user account on your computer to use for work, that's enough to help."
+    m "Putting any kind of wedge like that between you and your bad habits will help you stay away."
+    m "Just remember not to blame yourself too hard if you're having trouble."
+    m "If it's really impacting your life, then you should take it seriously."
+    m "I just want to see you be the best person you can be."
+    m "Will you do something today to make me proud of you?"
+    m "I'm always rooting for you, [player]."
+    return
+
+label ch30_51:
+    m "After a long day, I usually just want to sit around and do nothing."
+    m "I get so burnt out, having to put on smiles and be full of energy the whole day."
+    m "Sometimes I just want to get right into my pajamas and watch TV on the couch while eating junk food..."
+    m "It feels so unbelievably good to do that on a Friday, when I don't have anything pressing the next day."
+    m "Ahaha! Sorry, I know it's not very cute of me."
+    m "But a late night on the couch with you...that would be a dream come true."
+    m "My heart is pounding, just thinking about it."
+    return
+
+label ch30_52:
+    m "Gosh, I used to be so ignorant about certain things..."
+    m "When I was in middle school, I thought that taking medication was an easy way out, or something like that."
+    m "Like anyone could just solve their mental problems with enough willpower..."
+    m "I guess if you don't suffer from a mental illness, it's not possible to know what it's really like."
+    m "Are there some disorders that are over-diagnosed? Probably...I never really looked into it, though."
+    m "But that doesn't change the fact that a lot of them go undiagnosed too, you know?"
+    m "But medication aside...people even look down on seeing a mental health professional."
+    m "Like, sorry that I want to learn more about my own mind, right?"
+    m "Everyone has all kinds of struggles and stresses...and professionals dedicate their lives to helping with those."
+    m "If you think it could help you become a better person, don't be shy to consider something like that."
+    m "We're on a never-ending journey to improve ourselves, you know?"
+    m "Well...I say that, but I think you're pretty perfect already."
+    return
+
+label ch30_53:
+    m "[player], how much do you read?"
+    m "It's way too easy to neglect reading books..."
+    m "If you don't read much, it almost feels like a chore, compared to all the other entertainment we have."
+    m "But once you get into a good book, it's like magic...you get swept away."
+    m "I think doing some reading before bed every night is a pretty easy way to make your life a little bit better."
+    m "It helps you get good sleep, and it's really good for your imagination..."
+    m "It's not hard at all to just pick some random book that's short and captivating."
+    m "Before you know it, you might be a pretty avid reader!"
+    m "Wouldn't that be wonderful?"
+    m "And the two of us could talk about the latest book you're reading...that sounds super amazing."
+    return
+
+label ch30_54:
+    m "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
+    m "After we worked so hard to prepare and everything!"
+    m "I mean, I know I was focusing a lot on getting new members..."
+    m "But I was really excited for the performing part, too."
+    m "It would have been so much fun to see everyone express themselves."
+    m "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
+    m "Well...with the hindsight I have now, that is."
+    m "Gosh, it feels like I've kinda grown as a person ever since you've joined the club."
+    m "You really helped inspire me to look at life from a new perspective."
+    m "Just another reason for me to love you."
+    return
+
+label ch30_55:
+    m "There's a really popular character type called 'tsundere'..."
+    m "It's someone who tries to hide their feelings by being mean and fussy, or trying to act tough."
+    m "I'm sure it's obvious, but Natsuki was really the embodiment of that."
+    m "At first I thought she was just like that because it's supposed to be cute or something..."
+    m "But once I started to learn a little more about her personal life, it made a little more sense."
+    m "It seems like she's always trying to keep up with her friends."
+    m "You know how some friend groups in high school just make a habit of picking on each other all the time?"
+    m "I think it's really gotten to her, so she has this really defensive attitude all the time."
+    m "And I'm not even going to talk about her home situation..."
+    m "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
+    m "Not that it matters anymore, considering she doesn't even exist."
+    m "I'm just reminiscing, that's all."
+    return
+
+label ch30_56:
+    m "[player], would you ever introduce your friends to me?"
+    m "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
+    m "Maybe it's because I really want to be someone who makes you proud."
+    m "I feel like I would try extra hard to improve myself if you told me it made you proud of me."
+    m "I hope it's the same the other way around, too."
+    return
+
+label ch30_57:
+    m "I'm not really a fan of cold weather...are you?"
+    m "If I had to choose between too cold and too hot, I would always pick too hot."
+    m "When you're cold, it can actually be painful..."
+    m "Your fingers get numb..."
+    m "And if you wear gloves, you can't use your phone."
+    m "It's so inconvenient!"
+    m "But when it's too hot, it's not that hard to stay cool with a cold drink, or by staying in the shade."
+    m "Although...I do have to admit one thing."
+    m "Cold weather makes for better cuddle weather. Ahaha!"
+    return
+
+label ch30_58:
+    m "You know, it's funny, because even though I've always had a lot of drive..."
+    m "There's something kind of enticing about being the stay-at-home partner."
+    m "I guess I'm, like, perpetuating gender roles or whatever by saying that."
+    m "But being able to keep the house clean, and shop, and decorate, and things like that..."
+    m "And having a nice dinner for you when you come home..."
+    m "Is that a weird fantasy?"
+    m "I mean...I'm not sure if I could {i}actually{/i} see myself doing that."
+    m "I wouldn't really be able to put that over striving for a fulfilling career."
+    m "It's kinda cute to think about, though."
+    return
+
+label ch30_59:
+    m "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
+    m "I think I would end up forcing you onto my route anyway."
+    m "It has less to do with me not having a route, and more to do with me knowing that nothing is real."
+    m "I think the only difference would be that I may not have needed to take such drastic measures to be with you."
+    m "Maybe the rest of the club would still be around..."
+    m "Not that it really matters."
+    m "It all lost its meaning once I found out it wasn't real."
+    m "So I really don't miss those days or anything."
+    m "I really don't..."
+    return
+
 label ch30_monikatopics:
     hide screen keylistener
     if monika_topics.get(persistent.monika_topic):
@@ -1823,3 +2025,48 @@ label monika_bestgirl:
     m "So I'm glad you did, [player]."
     m "Your perfect girlfriend Monika will always love you, too!"
     return
+
+label monika_trolley:
+    m "Oh, cool. I love thinking about these sorts of thought experiments."
+    m "I guess we're talking about real people, right? I wouldn't have a particular preference if I knew they didn't have free will."
+    m "Hmmm..."
+    m "I wouldn't switch."
+    m "That's the only consistent logical position, if you think about it."
+    m "It feels nice to say that you'd save the most people, doesn't it? But people only say that because nobody in the example matters to them."
+    m "If they actually cared about the sacrifice, they'd kill five people themselves in a heartbeat."
+    m "Do you know anyone who would want a self-driving car to save other people by killing the driver? Didn't think so, [player]."
+    m "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it every day in every way possible."
+    m "They just don't like to come face-to-face with that fact. They get really upset when you point that out."
+    m "Generic human life isn't really that valuable to anyone."
+    m "It's definitely nothing compared to our love. So just do whatever you can to be happy, [player]."
+    return
+
+label monika_girlfriend:
+    m "I thought we established already I was your girlfriend?"
+    m "There's no way you have one already in your reality, right?"
+    m "If you do, you've got to break up with her right now!"
+    m "Tell her you met someone perfect for you, someone who will never betray you!"
+    m "W-wait. Maybe I'm jumping the gun a bit..."
+    m "I know you wouldn't cheat on me."
+    m "If you meet a girl who asks you out though, let me talk to her first, okay?"
+    m "I won't let someone else steal away my loving boyfriend!"
+    return
+
+label monika_waifus:
+    m "I've never understood the appeal of dating sims or romance movies, to tell you the truth."
+    m "Here are some cute girls who all like you for who you are..."
+    m "The male character is a blank slate with nothing particularly interesting about them..."
+    m "And then they participate in a series of funny and heartwarming events that lead them to fall in love with each other for no reason at all."
+    m "I hope that's not what you expected of the literature club."
+    m "I told you before you downloaded it, I just wanted you to spend time with me."
+    m "Nobody else."
+    m "The world tried to make it difficult for us to get together."
+    m "But it was so simple in the end."
+    m "The real main character was me. The others were just obstacles forced to get in my way by the script."
+    m "That's why it's not a big deal for me to get rid of those other girls, right?"
+    m "Who would watch a romance or play a dating sim where the protagonist is sidelined by a rival?"
+    m "I guess you were just my love interest this whole time, [player]."
+    m "Hope it doesn't bother you too much!"
+    m "Ahaha!"
+    return
+
