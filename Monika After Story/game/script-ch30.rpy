@@ -8,45 +8,6 @@ default persistent.monika_kill = None
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 
-
-image mask_child:
-    "images/cg/monika/child_2.png"
-    xtile 2
-
-image mask_mask:
-    "images/cg/monika/mask.png"
-    xtile 3
-
-image mask_mask_flip:
-    "images/cg/monika/mask.png"
-    xtile 3 xzoom -1
-
-
-image maskb:
-    "images/cg/monika/maskb.png"
-    xtile 3
-
-image mask_test = AnimatedMask("#ff6000", "mask_mask", "maskb", 0.10, 32)
-image mask_test2 = AnimatedMask("#ffffff", "mask_mask", "maskb", 0.03, 16)
-image mask_test3 = AnimatedMask("#ff6000", "mask_mask_flip", "maskb", 0.10, 32)
-image mask_test4 = AnimatedMask("#ffffff", "mask_mask_flip", "maskb", 0.03, 16)
-
-image mask_2:
-    "images/cg/monika/mask_2.png"
-    xtile 3 subpixel True
-    block:
-        xoffset 1280
-        linear 1200 xoffset 0
-        repeat
-
-image mask_3:
-    "images/cg/monika/mask_3.png"
-    xtile 3 subpixel True
-    block:
-        xoffset 1280
-        linear 180 xoffset 0
-        repeat
-
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
@@ -111,10 +72,8 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = LiveComposite((1280, 720), (0, 0), "mask_test", (0, 0), "mask_test2")
-image room_mask2 = LiveComposite((1280, 720), (0, 0), "mask_test3", (0, 0), "mask_test4")
-
-
+image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.ogg",mask="images/cg/monika/window_1.ogg")
+image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.ogg",mask="images/cg/monika/window_2.ogg")
 
 init python:
     import subprocess
@@ -216,8 +175,6 @@ label ch30_main:
     $ m_name = "Monika"
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    show mask_2
-    show mask_3
     show room_mask as rm:
         size (320,180)
         pos (30,200)
@@ -345,8 +302,6 @@ label ch30_nope:
         $ m_name = glitchtext(12)
         ### TODO: better graphics for this scene?
         $ persistent.clear[9] = True
-        show mask_2
-        show mask_3
         show room_mask as rm:
             size (320,180)
             pos (30,200)
@@ -409,8 +364,6 @@ label chara_monika_scare:
     stop music
 
     #scene black 
-    hide mask_2
-    hide mask_3
     hide rm
     hide rm2
     hide monika_bg
@@ -437,8 +390,6 @@ label ch30_autoload:
     $ config.allow_skipping = False
     if is_morning():
         if morning_flag != True:
-            show mask_2
-            show mask_3
             show room_mask as rm:
                 size (320,180)
                 pos (30,200)
@@ -452,8 +403,6 @@ label ch30_autoload:
         if morning_flag != False:
             $ morning_flag = False
             scene black
-            show mask_2
-            show mask_3
             show room_mask as rm:
                 size (320,180)
                 pos (30,200)
@@ -548,8 +497,6 @@ label ch30_loop:
     show screen keylistener
     if is_morning():
         if morning_flag != True:
-            show mask_2
-            show mask_3
             show room_mask as rm:
                 size (320,180)
                 pos (30,200)
@@ -563,8 +510,6 @@ label ch30_loop:
         if morning_flag != False:
             $ morning_flag = False
             scene black
-            show mask_2
-            show mask_3
             show room_mask as rm:
                 size (320,180)
                 pos (30,200)
