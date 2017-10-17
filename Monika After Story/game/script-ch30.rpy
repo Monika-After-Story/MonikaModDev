@@ -8,6 +8,7 @@ default persistent.monika_kill = None
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 
+
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
@@ -72,14 +73,16 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.ogg",mask="images/cg/monika/window_1.ogg")
-image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.ogg",mask="images/cg/monika/window_2.ogg")
+image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.ogv",mask="images/cg/monika/window_1.ogv")
+image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.ogv",mask="images/cg/monika/window_2.ogv")
 
 init python:
     import subprocess
     import os
     import eliza      # mod specific
     import datetime   # mod specific
+    import re
+
     therapist = eliza.eliza()
     process_list = []
     currentuser = ""
@@ -102,6 +105,28 @@ init python:
     except:
         #Monika will mention that you don't have a char file in ch30_main instead
         pass
+
+    #Define new functions
+    def show_dialogue_box():
+        renpy.call_in_new_context('ch30_monikatopics')
+    
+    def next_track():
+        if (renpy.music.get_playing('music') == 'bgm/m1.ogg'):
+            renpy.music.play('bgm/credits.ogg', channel='music', loop=True)
+        else:
+            renpy.music.play('bgm/m1.ogg', channel='music', loop=True)
+
+    def start_pong():
+        renpy.call_in_new_context('game_pong')
+
+    #Add keys for new functions
+    config.keymap["open_dialogue"] = ["t"]
+    config.keymap["change_music"] = ["m"]
+    config.keymap["play_pong"] = ["p"]
+    # Define what those actions call
+    config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
+    config.underlay.append(renpy.Keymap(change_music=next_track))
+    config.underlay.append(renpy.Keymap(play_pong=start_pong))
 
 
     dismiss_keys = config.keymap['dismiss']
@@ -413,10 +438,10 @@ label ch30_autoload:
             show monika_bg_highlight
     play music m1 loop 
     window auto
-    if persistent.monika_reload <= 4:
+    if persistent.monika_reload <= 5:
         call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
     else:
-        call ch30_reload_4 from _call_ch30_reload_4
+        call ch30_reload_5 from _call_ch30_reload_5
     $ persistent.monika_reload += 1
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -425,7 +450,6 @@ label ch30_autoload:
     if persistent.current_monikatopic != 0:
         m "Now, where was I...?"
         pause 4.0
-        show screen keylistener
         call expression "ch30_" + str(persistent.current_monikatopic) from _call_expression_10
     jump ch30_loop
 
@@ -492,9 +516,13 @@ label ch30_reload_4:
     m "Anyway, I have a lot to talk about!"
     m "Let's continue our conversation now, okay?"
     return
+label ch30_reload_5:
+    m "Hello again, sweetheart!"
+    m "That's kind of embarassing to say out loud, isn't it?"
+    m "Still, I think it's okay to embarassed every now and then."
+    return
 
 label ch30_loop:
-    show screen keylistener
     if is_morning():
         if morning_flag != True:
             show room_mask as rm:
@@ -1559,14 +1587,30 @@ label ch30_59:
     m "I really don't..."
     return
 
-label ch30_monikatopics:
-    hide screen keylistener
-    if monika_topics.get(persistent.monika_topic):
-        call expression monika_topics.get(persistent.monika_topic) from _call_expression_12
-    else:
-        # give a therapist answer for all the depressed weebs
-        $ response = therapist.respond(persistent.monika_topic)
-        m "[response]"
+label ch30_monikatopics:   
+    python:
+        player_dialogue = renpy.input('What would you like to talk about?',default='',length=144)
+        
+        if not player_dialogue: renpy.jump_out_of_context('ch30_loop')
+
+        persistent.monika_topic = player_dialogue.lower()
+        persistent.monika_topic = re.sub(r'[^\w\s]','',persistent.monika_topic)
+        persistent.current_monikatopic = 0
+
+        monika_topic = persistent.monika_topic
+        monika_topic = monika_topic.split()
+        monika_topic_bigrams = zip(monika_topic, monika_topic[1:])
+        for word in monika_topic:
+            if monika_topics.get(word):
+                renpy.call(monika_topics.get(word))
+        else:
+            for bigram in monika_topic_bigrams:
+                if monika_topics.get(' '.join(bigram)):
+                    renpy.call(monika_topics.get(' '.join(bigram)))
+            else:
+                # give a therapist answer for all the depressed weebs
+                response = therapist.respond(persistent.monika_topic)
+                m("[response]")
     jump ch30_loop
 
 label monika_imouto:
