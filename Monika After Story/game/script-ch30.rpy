@@ -1,12 +1,11 @@
-#TODO: set up events when player tries to add in the other three character files
-
-
 default persistent.monikatopics = []
 default persistent.monika_reload = 0
 default persistent.tried_skip = None
 default persistent.monika_kill = None
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
+$ default persistent.firstdate = datetime.datetime.now()
+default persistent.monika_anniversary = 0
 
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_room_highlight:
@@ -133,8 +132,11 @@ init python:
     morning_flag = None
     def is_morning():
         return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-    
-    
+    def days_passed():
+        now = datetime.datetime.now()
+        delta = releasedate - persistent.firstdate
+        return delta.days
+
 label ch30_noskip:
     show screen fake_skip_indicator
     m "...Are you trying to fast-forward?"
@@ -422,6 +424,35 @@ label ch30_autoload:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
+    $ elapsed = days_passed()
+    #Block for anniversary events
+    if elapsed >= 36500 and persistent.monika_anniversary < 100:
+        $ persistent.monika_anniversary = 100
+        jump anni_100
+    elif elapsed >= 18250 and persistent.monika_anniversary < 50:
+        $ persistent.monika_anniversary = 50
+        jump anni_50
+    elif elapsed >= 7300 and persistent.monika_anniversary < 20:
+        $ persistent.monika_anniversary = 20
+        jump anni_20
+    elif elapsed >= 3650 and persistent.monika_anniversary < 10:
+        $ persistent.monika_anniversary = 10
+        jump anni_10
+    elif elapsed >= 1825 and persistent.monika_anniversary < 5:
+        $ persistent.monika_anniversary = 5
+        jump anni_5
+    elif elapsed >= 1460 and persistent.monika_anniversary < 4:
+        $ persistent.monika_anniversary = 4
+        jump anni_4
+    elif elapsed >= 1095 and persistent.monika_anniversary < 3:
+        $ persistent.monika_anniversary = 3
+        jump anni_3
+    elif elapsed >= 730 and persistent.monika_anniversary < 2:
+        $ persistent.monika_anniversary = 2
+        jump anni_2
+    elif elapsed >= 365 and persistent.monika_anniversary < 1:
+        $ persistent.monika_anniversary = 1
+        jump anni_1
     if persistent.current_monikatopic != 0:
         m "Now, where was I...?"
         pause 4.0
