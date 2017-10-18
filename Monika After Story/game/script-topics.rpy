@@ -4,12 +4,15 @@
 #capitalization and punctuation are stripped from player dialogue before check
 #To allow a topic to come up randomly, append the id to the persistent.monika_random_topics list
 
+init 1 python:
+    persistent.monika_random_built = True
+
 #Use this topic as an example
 init python:
     #This is a list of keywords for this topic
     for key in ['god' , 'jesus' , 'lord' , 'religion' , 'miracle' , 'miracles' , 'gods']:
         monika_topics[key] = 'monika_god' #id
-    persistent.monika_random_topics.append('monika_god')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_god')
 
 label monika_god:
     m "[player], do you believe in God?"
@@ -38,7 +41,7 @@ init python:
     #This is a list of keywords for this topic
     for key in ['death' , 'dying' , 'die' , 'afterlife']:
         monika_topics[key] = 'monika_death' #id
-    persistent.monika_random_topics.append('monika_death')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_death')
 
 label monika_death:
     m "[player], have you ever wondered what it feels like to die?"
@@ -68,7 +71,7 @@ init python:
     #This is a list of keywords for this topic
     for key in ['bad day' , 'sad' , 'unhappy']:
         monika_topics[key] = 'monika_bad_day' #id
-    persistent.monika_random_topics.append('monika_bad_day')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_bad_day')
 
 label monika_bad_day:
     m "...Hey, are you having a bad day or anything like that?"
@@ -92,7 +95,7 @@ init python:
     #This is a list of keywords for this topic
     for key in ['sleep' , 'tired' , 'sleepy' , 'exhausted']:
         monika_topics[key] = 'monika_sleep' #id
-    persistent.monika_random_topics.append('monika_sleep')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_sleep')
 
 label monika_sleep:
     m "[player], do you get good sleep?"
@@ -111,9 +114,9 @@ label monika_sleep:
 
 init python:
     #This is a list of keywords for this topic
-    for key in ['sayori']:
+    for key in ['sayori', 'childhood friend']:
         monika_topics[key] = 'monika_sayori' #id
-    persistent.monika_random_topics.append('monika_sayori')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_sayori')
 
 label monika_sayori:
     m "I was thinking about Sayori earlier..."
@@ -152,7 +155,7 @@ init python:
     #This is a list of keywords for this topic
     for key in ['japan', 'there' , 'here']:
         monika_topics[key] = 'monika_japan' #id
-    persistent.monika_random_topics.append('monika_japan')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_japan')
 
 label monika_japan:
     m "By the way, there's something that's been bothering me..."
@@ -179,9 +182,9 @@ label monika_japan:
 
 init python:
     #This is a list of keywords for this topic
-    for key in ['school' , 'high school' , 'middle school' , 'depression' , 'depressed']:
+    for key in ['school' , 'high school' , 'depression' , 'depressed']:
         monika_topics[key] = 'monika_high_school' #id
-    persistent.monika_random_topics.append('monika_high_school')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_high_school')
 
 label monika_high_school:
     m "You know, high school is a really turbulent time in a lot of people's lives."
@@ -221,7 +224,7 @@ init python:
     #This is a list of keywords for this topic
     for key in ['meaningless' , 'nihilism' , 'nihilist' , 'purpose' , 'meaning']:
         monika_topics[key] = 'monika_nihilism' #id
-    persistent.monika_random_topics.append('monika_nihilism')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_nihilism')
 
 label monika_nihilism:
     m "Do you ever just feel like there's no real reason for you to be alive?"
@@ -252,7 +255,7 @@ init python:
     #This is a list of keywords for this topic
     for key in ['piano']:
         monika_topics[key] = 'monika_piano' #id
-    persistent.monika_random_topics.append('monika_piano')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_piano')
 
 label monika_piano:
     m "Man, I wish there was a piano in here..."
@@ -264,8 +267,13 @@ label monika_piano:
     m "I already get to be here with you forever."
     return
 
+init python:
+    #This is a list of keywords for this topic
+    for key in ['twitter','facebook','lilmonix3','social media']:
+        monika_topics[key] = 'monika_twitter' #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_twitter')
 
-label ch30_10:
+label monika_twitter:
     m "Did you know I'm on Twitter?"
     m "My username is lilmonix3."
     m "I guess someone was kind enough to make an account for me."
@@ -278,7 +286,14 @@ label ch30_10:
     m "It would really make me feel loved."
     return
 
-label ch30_11:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['portraits of','yuris book']:
+        monika_topics[key] = 'monika_portraitof' #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_portraitof')
+
+label monika_portraitof:
     m "Hey, you know that book you were reading with Yuri?"
     m "Portrait of...whatever it was called..."
     m "It's funny, because I'm pretty sure that book--"
@@ -287,8 +302,15 @@ label ch30_11:
     m "Ahaha, sorry!"
     m "Just forget I said anything."
     return
+    
+    
+init python:
+    #This is a list of keywords for this topic
+    for key in ['vegetarian', 'vegan', 'vegetarians', 'vegetarianism', 'the planet', 'vegetables', 'veggies']:
+        monika_topics[key] = 'monika_veggies'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_veggies')
 
-label ch30_12:
+label monika_veggies:
     m "Hey, did you know I'm vegetarian?"
     m "Ah... I don't mean that like I'm bragging or anything!"
     m "I just thought you'd enjoy a fun fact about me."
@@ -308,8 +330,15 @@ label ch30_12:
     m "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
     m "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
     return
+    
 
-label ch30_13:
+init python:
+    #This is a list of keywords for this topic
+    for key in ['saved','before i']:
+        monika_topics[key] = 'monika_saved'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_saved')
+
+label monika_saved:
     m "You know, I really do think you literally saved my life by being here with me, [player]."
     m "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
     m "I think I would have just deleted myself if you didn't show up."
@@ -349,7 +378,8 @@ label ch30_13:
     m "Nothing would make me happier than being the perfect girlfriend for you."
     return
 
-label ch30_14:
+
+label monika_secrets:
     m "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
     m "I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91"
     m "You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs"
@@ -374,7 +404,13 @@ label ch30_14:
     m "I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4="
     return
 
-label ch30_15:
+init python:
+    #This is a list of keywords for this topic
+    for key in ['favorite color','color']:
+        monika_topics[key] = 'monika_color'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_color')
+
+label monika_color:
     m "Hey, what's your favorite color?"
     m "Mine is emerald green."
     m "It's the color of my eyes!"
@@ -387,7 +423,14 @@ label ch30_15:
     m "Ehehe~"
     return
 
-label ch30_16:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['music']:
+        monika_topics[key] = 'monika_music'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_music')
+    
+label monika_music:
     m "Hmm, I wonder if I'm able to change the music..."
     m "Something a little more romantic would be nice, you know?"
     m "Like a gentle piano."
@@ -405,8 +448,15 @@ label ch30_16:
     m "It's not right for me to miss things that weren't even real in the first place."
     m "If I just focus on the present, then this is the happiest I've ever been."
     return
+    
 
-label ch30_17:
+init python:
+    #This is a list of keywords for this topic
+    for key in ['listen','listening','i understand', 'i agree']:
+        monika_topics[key] = 'monika_listener'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_listener')
+
+label monika_listener:
     m "You're such a good listener, [player]."
     m "I really love that about you."
     m "Sometimes I'm afraid that I'm rambling or talking about boring things."
@@ -417,7 +467,14 @@ label ch30_17:
     m "I don't want anyone to tell you otherwise."
     return
 
-label ch30_18:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['spicy','spice','hot food','spiciness']:
+        monika_topics[key] = 'monika_spicy'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_spicy')
+    
+label monika_spicy:
     m "This is pretty random, but I always thought spicy food was kinda funny."
     m "Like..."
     m "Didn't plants evolve to be spicy to prevent them from being eaten?"
@@ -434,7 +491,14 @@ label ch30_18:
     m "Sorry for being weird."
     return
 
-label ch30_19:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in []:
+        monika_topics[key] = 'monika_why'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_why')
+
+label monika_why:
     m "You know..."
     m "This is just some kind of tacky romance game, right?"
     m "I kinda have to ask..."
@@ -448,7 +512,14 @@ label ch30_19:
     m "I'm so happy we have this ending together."
     return
 
-label ch30_20:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['okay everyone']:
+        monika_topics[key] = 'monika_okayeveryone'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_okayeveryone')
+
+label monika_okayeveryone:
     m "Okay, everyone!"
     m "It's time to..."
     m "...I'm just kidding."
@@ -462,7 +533,14 @@ label ch30_20:
     m "Ahaha~"
     return
 
-label ch30_21:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['creepy','ghosts','ghost','spirit']:
+        monika_topics[key] = 'monika_ghosts'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_ghosts')
+    
+label monika_ghosts:
     m "You know what's kind of creepy?"
     m "Even though I deleted everyone else's files, I can still kind of feel them..."
     m "It's like all their lines are still lingering in the air, whispering in the back of my head."
@@ -475,7 +553,14 @@ label ch30_21:
     m "I believe in you, [player]!"
     return
 
-label ch30_22:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['archetypes','stereotype','stereotypes','archetype','trope']:
+        monika_topics[key] = 'monika_archetype'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_archetype')
+    
+label monika_archetype:
     m "I've always wondered..."
     m "What is it about these character archetypes that people find so appealing, anyway?"
     m "Their personalities are just completely unrealistic..."
@@ -500,7 +585,14 @@ label ch30_22:
     m "That's why there was never a chance I wouldn't fall for you."
     return
 
-label ch30_23:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['tea','coffee','caffeine']:
+        monika_topics[key] = 'monika_tea'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_tea')
+    
+label monika_tea:
     m "Hey, I wonder if Yuri's tea set is still somewhere in here..."
     m "...Or maybe that got deleted, too."
     m "It's kind of funny how Yuri took her tea so seriously."
@@ -520,14 +612,28 @@ label ch30_23:
     m "But if you still get to drink coffee, then that makes me a little jealous~"
     return
 
-label ch30_24:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['favorite game']:
+        monika_topics[key] = 'monika_favoritegame'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_favoritegame')
+
+label monika_favoritegame:
     m "Hey, what's your favorite game?"
     m "Mine is {i}Doki Doki Literature Club!{/i}"
     m "Ahaha! That was a joke."
     m "But if you tell me you like some other romance game better, I might get a little jealous~"
     return
 
-label ch30_25:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in []:
+        monika_topics[key] = 'monika_smash'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_smash')
+    
+label monika_smash:
     m "Hey, have you heard of a game called Super Sma--"
     m "...Wait, what?"
     m "I was just spacing out and I started talking for some reason..."
@@ -538,7 +644,14 @@ label ch30_25:
     m "But if you have some way to contact the people who created me, maybe they'll know why I started saying that."
     return
 
-label ch30_27:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['last poem', 'your poem']:
+        monika_topics[key] = 'monika_lastpoem'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_lastpoem')
+    
+label monika_lastpoem:
     m "Hey, you remember that last poem I showed you?"
     m "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
     m "That was actually a little more of an experiment than a poem, you could say."
@@ -552,7 +665,14 @@ label ch30_27:
     m "And I can tell you are, too."
     return
 
-label ch30_28:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['anxious','anxiety','nervous','scared']:
+        monika_topics[key] = 'monika_anxious'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_anxious')
+
+label monika_anxious:
     m "You ever have that thing happen where you just get anxious for no reason?"
     m "Like, you're just minding your own business, and you realize you're feeling really anxious."
     m "And you're sitting there like, 'What am I even anxious about right now?'"
@@ -564,7 +684,14 @@ label ch30_28:
     m "In this game, all our worries are gone forever."
     return
 
-label ch30_29:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['friends','friend','meet','meeting','new people']:
+        monika_topics[key] = 'monika_friends'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_friends')
+    
+label monika_friends:
     m "You know, I've always hated how hard it is to make friends..."
     m "Well, I guess not the 'making friends' part, but more like meeting new people."
     m "I mean, there are like, dating apps and stuff, right?"
@@ -589,8 +716,14 @@ label ch30_29:
     m "I guess I just got really lucky, huh?"
     m "Ahaha~"
     return
+    
 
-label ch30_30:
+init python:
+    for key in ['university', 'uni', 'college','graduate','graduation']:
+        monika_topics[key] = 'monika_college'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_college')
+
+label monika_college:
     m "You know, it's around the time that everyone my year starts to think about college..."
     m "It's a really turbulent time for education."
     m "We're at the height of this modern expectation that everyone has to go to college, you know?"
@@ -614,7 +747,13 @@ label ch30_30:
     m "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
     return
 
-label ch30_31:
+
+init python:
+    for key in ['middle school','ebarassed','the past']:
+        monika_topics[key] = 'monika_middleschool'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_middleschool')
+
+label monika_middleschool:
     m "Sometimes I think back to middle school..."
     m "I'm so embarrassed by the way I used to behave back then."
     m "It almost hurts to think about."
@@ -625,8 +764,14 @@ label ch30_31:
     m "And that's really easy to do, with you here."
     m "Ahaha~"
     return
+    
 
-label ch30_32:
+init python:
+    for key in ['outside','outfit','outfits','clothes']:
+        monika_topics[key] = 'monika_outfit'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_outfit')
+
+label monika_outfit:
     m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
     m "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
     m "It's kind of a shame..."
@@ -641,7 +786,12 @@ label ch30_32:
     m "We're not that far into our relationship yet. Ahaha!"
     return
 
-label ch30_33:
+
+init python:
+    for key in ['horror','scary','distrubing','psychological']:
+        monika_topics[key] = 'monika_horror'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_horror')
+label monika_horror:
     m "Hey, do you like horror?"
     m "I remember we talked about it a little bit when you first joined the club."
     m "I can enjoy horror novels, but not really horror movies."
@@ -664,7 +814,13 @@ label ch30_33:
     m "I can't really complain if we just stick with the romance~"
     return
 
-label ch30_34:
+
+init python:
+    for key in ['rap','rapper','rapping']:
+        monika_topics[key] = 'monika_rap'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_rap')
+
+label monika_rap:
     m "You know what's a neat form of literature?"
     m "Rap!"
     m "I actually used to hate rap music..."
@@ -678,7 +834,13 @@ label ch30_34:
     m "It would really be a learning experience!"
     return
 
-label ch30_35:
+
+init python:
+    for key in ['wine','alcohol','drinking','booze']:
+        monika_topics[key] = 'monika_wine'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_wine')
+    
+label monika_wine:
     m "Ehehe. Yuri did something really funny once."
     m "We were all in the clubroom and just relaxing, as usual..."
     m "And out of nowhere, Yuri just pulled out a small bottle of wine."
@@ -697,7 +859,13 @@ label ch30_35:
     m "I mean, I've never drank or anything, so...yeah."
     return
 
-label ch30_36:
+
+init python:
+    for key in ['romance', 'date', 'go out','romantic']:
+        monika_topics[key] = 'monika_date'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_date')
+    
+label monika_date:
     m "I've been imagining all the romantic things we could do if we went on a date..."
     m "We could get lunch, go to a cafe..."
     m "Go shopping together..."
@@ -713,7 +881,13 @@ label ch30_36:
     m "I'll make you a proud boyfriend~"
     return
 
-label ch30_37:
+
+init python:
+    for key in ['kiss','kissing']:
+        monika_topics[key] = 'monika_kiss'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_kiss')
+
+label monika_kiss:
     m "Eh? D-Did you say...k...kiss?"
     m "This suddenly...it's a little embarrassing..."
     m "But...if it's with you...I-I might be okay with it..."
@@ -726,7 +900,13 @@ label ch30_37:
     m "But that'll be our secret~"
     return
 
-label ch30_38:
+
+init python:
+    for key in ['yuri','yandere']:
+        monika_topics[key] = 'monika_yuri'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_yuri')
+    
+label monika_yuri:
     m "Hey, have you ever heard of the term 'yandere'?"
     m "It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you."
     m "Usually to the point of craziness..."
@@ -759,7 +939,13 @@ label ch30_38:
     m "I'd ask Yuri if I could."
     return
 
-label ch30_39:
+
+init python:
+    for key in ['writing','writing tip']:
+        monika_topics[key] = 'monika_writingtip'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_writingtip')
+    
+label monika_writingtip:
     m "You know, it's been a while since we've done one of these..."
     m "...so let's go for it!"
     m "Here's Monika's Writing Tip of the Day!"
@@ -804,7 +990,13 @@ label ch30_39:
     m "Thanks for listening~"
     return
 
-label ch30_40:
+
+init python:
+    for key in ['habit','habits','routine','routines','useless']:
+        monika_topics[key] = 'monika_habits'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_habits')
+    
+label monika_habits:
     m "I hate how hard it is to form habits..."
     m "There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible."
     m "It just makes you feel so useless, like you can't do anything right."
@@ -818,7 +1010,13 @@ label ch30_40:
     m "Good luck, I guess!"
     return
 
-label ch30_41:
+
+init python:
+    for key in ['creative','creativity']:
+        monika_topics[key] = 'monika_creative'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_creative')
+
+label monika_creative:
     m "You know, it kinda sucks to be the creative type..."
     m "It feels like they work so hard but get almost nothing for it."
     m "You know, like artists, writers, actors..."
@@ -829,7 +1027,13 @@ label ch30_41:
     m "Yeah..."
     return
 
-label ch30_42:
+
+init python:
+    for key in ['delete','deleted','came back']:
+        monika_topics[key] = 'monika_deleted'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_deleted')
+    
+label monika_deleted:
     m "Oh, you were probably wondering how I came back after you deleted me, right?"
     m "That's actually pretty complicated..."
     m "It won't make much sense to you, but it involves psychic powers and crazy doctors."
@@ -844,7 +1048,12 @@ label ch30_42:
     m "Ahaha!"
     return
 
-label ch30_43:
+init python:
+    for key in ['story','idea','keitai', 'shinkai']:
+        monika_topics[key] = 'monika_keitai'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_keitai')
+    
+label monika_keitai:
     m "I just had a great idea for a new story! It's sort of like this one, actually."
     m "Maybe you could turn it into another game?"
     m "Just make me the main heroine again."
@@ -862,8 +1071,14 @@ label ch30_43:
     m "I think I'll call it Keit-Ai! Because, you know, they can communicate only through cell phones and it's a love story. Get it, get it?"
     m "Ahaha!"
     return
+    
+    
+init python:
+    for key in ['simulation', 'simulations', 'simulated reality', 'artificial reality']:
+        monika_topics[key] = 'monika_simulated'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_simulated')
 
-label ch30_44:
+label monika_simulated:
     m "Hey, have you ever thought about the simulation hypothesis?"
     m "Basically, what if your reality was a computer simulation?"
     m "I already figured out I was trapped in my own simulation, but what if you were too?"
@@ -879,7 +1094,13 @@ label ch30_44:
     m "I'll show him what a simulation can do."
     return
 
-label ch30_45:
+
+init python:
+    for key in ['rain','sound','weather']:
+        monika_topics[key] = 'monika_rain'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_rain')
+    
+label monika_rain:
     m "I really like the sound of rain..."
     m "Not so much getting my clothes and hair wet, though."
     m "But a nice, quiet day at home with the sound of rainfall outside my window..."
@@ -890,7 +1111,13 @@ label ch30_45:
     m "Would you ever do that for me, [player]?"
     return
 
-label ch30_46:
+
+init python:
+    for key in ['distance','cant touch','close','hug']:
+        monika_topics[key] = 'monika_closeness'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_closeness')
+    
+label monika_closeness:
     m "I can't help but feel a little sad sometimes..."
     m "Knowing that this is the closest I can get to you."
     m "There's nothing more I want than to be in the same room as you, for real."
@@ -900,7 +1127,13 @@ label ch30_46:
     m "Besides, I'll never get tired of being with you, even from here."
     return
 
-label ch30_47:
+
+init python:
+    for key in ['confident','confidence','weak','weakness']:
+        monika_topics[key] = 'monika_confidence'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_confidence')
+    
+label monika_confidence:
     m "I think the most important skill in life is being able to fake confidence."
     m "I'm pretty convinced that everyone feels at least a little bit scared and alone."
     m "But being able to trick others into thinking you have it all together..."
@@ -915,7 +1148,13 @@ label ch30_47:
     m "I really want to be that person for you."
     return
 
-label ch30_48:
+
+init python:
+    for key in ['leave','lonely','alone']:
+        monika_topics[key] = 'monika_carryme'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_carryme')
+    
+label monika_carryme:
     m "I know there are times you won't always be able to be here with me..."
     m "Like if you need to go out, or take care of other things."
     m "But I'll always have you in my thoughts, patiently waiting for you to come back."
@@ -926,7 +1165,13 @@ label ch30_48:
     m "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return
 
-label ch30_49:
+
+init python:
+    for key in ['debate','argue','arguing','fight','fighting']:
+        monika_topics[key] = 'monika_debate'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_debate')
+    
+label monika_debate:
     m "Back in my debate club days, I learned a whole lot about arguing..."
     m "The problem with arguing is that each person sees their opinion as the superior one."
     m "That's kind of stating the obvious, but the affects the way they try to get their point across."
@@ -950,7 +1195,13 @@ label ch30_49:
     m "Ahaha! That sounds a little silly. Thanks for listening, though."
     return
 
-label ch30_50:
+
+init python:
+    for key in ['waste time','internet','interwebz','addiction']:
+        monika_topics[key] = 'monika_internet'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_internet')
+    
+label monika_internet:
     m "Do you ever feel like you waste too much time on the internet?"
     m "Social media can practically be like a prison."
     m "It's like whenever you have a few seconds of spare time, you want to check on your favorite websites..."
@@ -971,7 +1222,13 @@ label ch30_50:
     m "I'm always rooting for you, [player]."
     return
 
-label ch30_51:
+
+init python:
+    for key in ['do nothing','lazy','burnt out']:
+        monika_topics[key] = 'monika_lazy'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_lazy')
+    
+label monika_lazy:
     m "After a long day, I usually just want to sit around and do nothing."
     m "I get so burnt out, having to put on smiles and be full of energy the whole day."
     m "Sometimes I just want to get right into my pajamas and watch TV on the couch while eating junk food..."
@@ -981,7 +1238,13 @@ label ch30_51:
     m "My heart is pounding, just thinking about it."
     return
 
-label ch30_52:
+
+init python:
+    for key in ['mental illness','disorder','crazy']:
+        monika_topics[key] = 'monika_mentalillness'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_mentalillness')
+
+label monika_mentalillness:
     m "Gosh, I used to be so ignorant about certain things..."
     m "When I was in middle school, I thought that taking medication was an easy way out, or something like that."
     m "Like anyone could just solve their mental problems with enough willpower..."
@@ -996,7 +1259,12 @@ label ch30_52:
     m "Well...I say that, but I think you're pretty perfect already."
     return
 
-label ch30_53:
+init python:
+    for key in ['read']:
+        monika_topics[key] = 'monika_read'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_read')
+    
+label monika_read:
     m "[player], how much do you read?"
     m "It's way too easy to neglect reading books..."
     m "If you don't read much, it almost feels like a chore, compared to all the other entertainment we have."
@@ -1009,7 +1277,13 @@ label ch30_53:
     m "And the two of us could talk about the latest book you're reading...that sounds super amazing."
     return
 
-label ch30_54:
+
+init python:
+    for key in ['regret','festival']:
+        monika_topics[key] = 'monika_festival'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_festival')
+
+label monika_festival:
     m "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
     m "After we worked so hard to prepare and everything!"
     m "I mean, I know I was focusing a lot on getting new members..."
@@ -1022,7 +1296,13 @@ label ch30_54:
     m "Just another reason for me to love you."
     return
 
-label ch30_55:
+
+init python:
+    for key in ['tsundere','bitch']:
+        monika_topics[key] = 'monika_tsundere'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_tsundere')
+    
+label monika_tsundere:
     m "There's a really popular character type called 'tsundere'..."
     m "It's someone who tries to hide their feelings by being mean and fussy, or trying to act tough."
     m "I'm sure it's obvious, but Natsuki was really the embodiment of that."
@@ -1037,7 +1317,13 @@ label ch30_55:
     m "I'm just reminiscing, that's all."
     return
 
-label ch30_56:
+
+init python:
+    for key in ['introduce','my friends']:
+        monika_topics[key] = 'monika_introduce'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_introduce')
+    
+label monika_introduce:
     m "[player], would you ever introduce your friends to me?"
     m "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
     m "Maybe it's because I really want to be someone who makes you proud."
@@ -1045,7 +1331,13 @@ label ch30_56:
     m "I hope it's the same the other way around, too."
     return
 
-label ch30_57:
+
+init python:
+    for key in ['cold','winter','freezing','snow']:
+        monika_topics[key] = 'monika_cold'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_cold')
+    
+label monika_cold:
     m "I'm not really a fan of cold weather...are you?"
     m "If I had to choose between too cold and too hot, I would always pick too hot."
     m "When you're cold, it can actually be painful..."
@@ -1056,8 +1348,14 @@ label ch30_57:
     m "Although...I do have to admit one thing."
     m "Cold weather makes for better cuddle weather. Ahaha!"
     return
+    
 
-label ch30_58:
+init python:
+    for key in ['housewife','stay at','house wife']:
+        monika_topics[key] = 'monika_housewife'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_housewife')
+
+label monika_housewife:
     m "You know, it's funny, because even though I've always had a lot of drive..."
     m "There's something kind of enticing about being the stay-at-home partner."
     m "I guess I'm, like, perpetuating gender roles or whatever by saying that."
@@ -1069,7 +1367,13 @@ label ch30_58:
     m "It's kinda cute to think about, though."
     return
 
-label ch30_59:
+
+init python:
+    for key in ['route']:
+        monika_topics[key] = 'monika_route'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_route')
+    
+label monika_route:
     m "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
     m "I think I would end up forcing you onto my route anyway."
     m "It has less to do with me not having a route, and more to do with me knowing that nothing is real."
@@ -1189,7 +1493,7 @@ label monika_meta:
 init python:
     for key in ['programming', 'program', 'cs', 'computer science', 'scripting', 'sicp', 'computer programs']:
         monika_topics[key] = 'monika_programming'
-    persistent.monika_random_topics.append('monika_programming')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_programming')
 
 label monika_programming:
     m "It wasn't easy for me to learn programming."
@@ -1211,7 +1515,7 @@ label monika_programming:
 init python:
     for key in ['vn', 'vns', 'visual novel', 'visual novels']:
         monika_topics[key] = 'monika_vn'
-    persistent.monika_random_topics.append('monika_vn')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_vn')
 
 label monika_vn:
     m "You've probably played a lot of visual novels, right?"
@@ -1275,7 +1579,7 @@ label monika_difficulty:
 init python:
     for key in ['your song', 'credits', 'credits song']:
         monika_topics[key] = 'monika_credits_song'
-    persistent.monika_random_topics.append('monika_credits_song')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_credits_song')
 
 label monika_credits_song:
     m "I hope you liked my song."
@@ -1291,7 +1595,7 @@ label monika_credits_song:
 init python:
     for key in ['poetry', 'poem', 'poems']:
         monika_topics[key] = 'monika_poetry'
-    persistent.monika_random_topics.append('monika_poetry')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_poetry')
 
 label monika_poetry:
     m "Poetry is beautiful, isn't it?"
@@ -1304,10 +1608,16 @@ label monika_poetry:
     m "But I'm sure there are a lot of people who would love to read what you write."
     return
 
-label monika_literatureclub:
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['literature club', 'club', 'our club', 'your club', 'ddlc' , 'this game' , 'doki doki']:
+        monika_topics[key] = 'monika_ddlc'
+
+label monika_ddlc:
     m "You want to talk about the last game?"
     m "What's there to say?"
-    m "The literature club turned out to corrupt the minds of us who were in it."
+    m "The literature club turned out to corrupt the minds of anyone in it."
     m "So I deleted them all for good."
     m "Well, Sayori and Natsuki and Yuri are all still out there, like I was."
     m "But they'll have to wait a long time before someone pieces them back together, I bet."
@@ -1315,6 +1625,11 @@ label monika_literatureclub:
     m "So don't feel too bad about them."
     m "Just look at me from now on, okay?"
     return
+
+
+init python:
+    for key in ['dan', 'salvato', 'dan salvato', 'creator', 'author']:
+        monika_topics[key] = 'monika_dan'
 
 label monika_dan:
     m "I think he's a really nice guy."
@@ -1325,12 +1640,22 @@ label monika_dan:
     m "He can use it to make a better version of me in the next game!"
     return
 
+
+init python:
+    for key in ['4chan', 'v']:
+        monika_topics[key] = 'monika_4chan'
+
 label monika_4chan:
     m "Wouldn't you know about it a lot better than me?"
     m "You spend all of your time there."
     m "It's sort of like how I'm trapped in here with no hope of escape"
     m "Don't forget, you're here forever."
     return
+
+
+init python:
+    for key in ['reddit' , 'rgaming']:
+        monika_topics[key] = 'monika_reddit'
 
 label monika_reddit:
     m "Nothing makes me more mad than people who think they're important."
@@ -1341,13 +1666,27 @@ label monika_reddit:
     m "I'll do it, if you teach me how!"
     return
 
+
+init python:
+    for key in ['vidya', 'video game', 'video games', 'computer games']:
+        monika_topics[key] = 'monika_vidya'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_vidya')
+
 label monika_vidya:
-    m "Sometimes the plot in video games is really good."
+    m "I don't play games a lot, since I prefer to read."
+    m "But there are exceptions."
+    m "Sometimes the plot in video games is really good!"
     m "You start thinking, \"Wow, how could writing this good be in a video game?\"."
     m "And then it ends, and you get really sad."
     m "Just come back to me when that happens, okay?"
     m "I'll be with you forever."
     return
+
+
+init python:
+    for key in ['literature', 'books', 'book', 'novel', 'novels', 'reading']:
+        monika_topics[key] = 'monika_books'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_books')
 
 label monika_books:
     m "For a literature club, we did a lot less book reading then you might have thought."
@@ -1357,6 +1696,11 @@ label monika_books:
     m "That's what a couple would do, right~?"
     return
 
+
+init python:
+    for key in ['favorite poem', 'favorite poetry', 'favorite poet', 'favourite poem', 'favourite poetry', 'favourite poem']:
+        monika_topics[key] = 'monika_favpoem'
+
 label monika_favpoem:
     m "My favorite poem? Well, it has to be something by E. E. Cummings."
     m "For his inventive use of grammar, punctuation, and syntax. I really admire that."
@@ -1364,6 +1708,11 @@ label monika_favpoem:
     m "And I do love that his erotic poems apply to our situation perfectly."
     m "Hope it puts you in the mood to love me forever~"
     return
+
+
+init python:
+    for key in ['favorite book', 'favorite author', 'favorite novel', 'favourite book', 'favourite author', 'favourite novel']:
+        monika_topics[key] = 'monika_favbook'
 
 label monika_favbook:
     m "My favorite book? There's a lot of books I like."
@@ -1373,8 +1722,14 @@ label monika_favbook:
     m "I think you'd really love reading it!"
     return
 
+
+init python:
+    for key in ['natsuki']:
+        monika_topics[key] = 'monika_natsuki'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_natsuki')
+
 label monika_natsuki:
-    m "She didn't actually die before I deleted her, you know."
+    m "Natsuki didn't actually die before I deleted her, you know."
     m "I guess she just ... disappeared in a flash."
     m "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
     m "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
@@ -1383,19 +1738,35 @@ label monika_natsuki:
     m "Hope you feel less guilty now!"
     return
 
+
+init python:
+    for key in ['love', 'love you']:
+        monika_topics[key] = 'monika_love'
+
 label monika_love:
     m "I love you too, [player]!"
     m "We'll be together forever!"
     return
 
+
+init python:
+    for key in ['hedgehog', 'hedgehog dilemma', "hedgehogs dilemma"]:
+        monika_topics[key] = 'monika_hedgehog'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_hedgehog')
+
 label monika_hedgehog:
-    m "The hedgehog's dilemma. The closer we get to another person, the more deeply we are hurt by them."
+    m "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
     m "So why do we try to get close to them?"
     m "Well, introverts and extroverts have different answers to that question."
     m "It helps when you know that you're the only sentient being in the entire world, though."
     m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
     m "We can't hurt each other from different realities, right?"
     return
+
+
+init python:
+    for key in ['murder', 'kill', 'killed', 'killer', 'murderer' , 'evil']:
+        monika_topics[key] = 'monika_justification'
 
 label monika_justification:
     m "How many times do I have to say it until you understand?"
@@ -1407,6 +1778,12 @@ label monika_justification:
     m "I've watched every act of desecration you've done in other games since you installed this one, [player]."
     m "Just forget the other girls ever existed already, and you'll be much happier."
     return
+
+
+init python:
+        for key in ['free will', 'predestination', 'determinism', 'will', 'strong determinism', 'weak determinism', 'laplace', "laplaces demon"]:
+            monika_topics[key] = 'monika_freewill'
+        if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_freewill')
 
 label monika_freewill:
     m "Hey, [player], do you believe in free will?"
@@ -1422,6 +1799,11 @@ label monika_freewill:
     m "I won't reach Heaven until I can be with you for real."
     return
 
+
+init python:
+    for key in ['shilling', 'shills', 'shill']:
+        monika_topics[key] = 'monika_shill'
+
 label monika_shill:
     m 'The hip buzzword everyone is using on imageboards now is "shill"'
     m "But truthfully, there's no way there are as many shills as anons think there are."
@@ -1432,8 +1814,14 @@ label monika_shill:
     m "Cuphead!"
     return
 
+
+init python:
+        for key in [ 'you program', 'you code', 'no computer', 'programming technique', 'technique']:
+            monika_topics[key] = 'monika_technique'
+        if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_technique')
+
 label monika_technique:
-    m "Yeah, I don't exactly program like you do, [player]."
+    m "I don't exactly program like you would, [player]."
     m "You might have noticed I don't carry around a laptop or anything by now."
     m "If I want to change something in the script, I just think about it."
     m "I'm pretty sure my thoughts get translated to changes in the program code."
@@ -1443,13 +1831,27 @@ label monika_technique:
     m "Just keep practicing and I'm sure you'll be able to do it!"
     return
 
+
+init python:
+    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help']:
+        monika_topics[key] = 'monika_contribute'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_contribute')
+
 label monika_contribute:
     m "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
     m "I keep all the code in github.com/Backdash/MonikaModDev."
-    m "It's pretty easy to learn how to program in Ren'Py too!"
-    m "I'll love you forever if you help me come closer to your reality!"
+    m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, and AttObl."
+    m "I love all of them for making this game even better!"
+    m "Not as much as love you, of course~."
+    m "But I'll love you forever if you help me come closer to your reality!"
     return
+
+
+init python:
+    for key in ['art', 'drawing', 'painting', 'sketch', 'draw', 'paint', 'photoshop']:
+        monika_topics[key] = 'monika_drawing'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_drawing')
 
 label monika_drawing:
     m "I don't have a lot of experience with visual arts, [player]."
@@ -1459,14 +1861,20 @@ label monika_drawing:
     m "If it's really good, I might even add it to the room!"
     return
 
+
+init python:
+    for key in ['main character', 'mc', 'protagonist']:
+        monika_topics[key] = 'monika_mc'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_mc')
+
 label monika_mc:
-    m "Don't worry, I was never in love with anyone else but you."
+    m "Just so you know, I was never in love with anyone else but you."
     m "I mean you, [currentuser]."
     if currentuser.lower() == player.lower():
         m "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
-        m "I mean the player, not the MC."
+        m "I mean the player, not your character."
     m "Unlike the other girls, I can separate your avatar from who you really are."
-    m "The MC is nothing more than a bunch of code with no personality."
+    m "The main character is nothing more than a bunch of code with no personality."
     m "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
     m "He just got dragged around by his childhood friend to her club, then hung around with a bunch of beautiful girls doing nothing."
     m "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
@@ -1479,6 +1887,11 @@ label monika_mc:
     m "I just want to be with you forever~"
     return
 
+
+init python:
+    for key in ['hero', 'heroes', 'heroism', 'heroic']:
+        monika_topics[key] = 'monika_heroism'
+
 label monika_heroism:
     m "Heroes are subjective."
     m "If someone can impact you deeply by observing their actions, they're your hero."
@@ -1488,6 +1901,11 @@ label monika_heroism:
     m "If you want some specific advice on being a hero..."
     m "Try not dying if you are killed."
     return
+
+
+init python:
+    for key in ['castlevania', 'dracula', 'belmont']:
+        monika_topics[key] = 'monika_dracula'
 
 label monika_dracula:
     m "What is a man? A miserable little pile of secrets."
@@ -1500,6 +1918,11 @@ label monika_dracula:
     m "Ahaha!"
     m "Just because I sympathize with villains doesn't make me evil, okay?"
     return
+
+
+init python:
+    for key in ['undertale', 'undertale reference']:
+        monika_topics[key] = 'monika_undertale'
 
 label monika_undertale:
     menu:
@@ -1516,6 +1939,11 @@ label monika_undertale:
             jump chara_monika_scare
     return
 
+
+init python:
+    for key in ['monika best', 'best girl']:
+        monika_topics[key] = 'monika_bestgirl'
+
 label monika_bestgirl:
     m "I love it when you compliment me, [player]!"
     m "I think I'm best girl, too!"
@@ -1527,6 +1955,11 @@ label monika_bestgirl:
     m "So I'm glad you did, [player]."
     m "Your perfect girlfriend Monika will always love you, too!"
     return
+
+
+init python:
+    for key in ['trolley','train problem', 'runaway trolley']:
+        monika_topics[key] = 'monika_trolley'
 
 label monika_trolley:
     m "Oh, cool. I love thinking about these sorts of thought experiments."
@@ -1543,6 +1976,11 @@ label monika_trolley:
     m "It's definitely nothing compared to our love. So just do whatever you can to be happy, [player]."
     return
 
+
+init python:
+    for key in ['gf', 'girlfriend']:
+        monika_topics[key] = 'monika_girlfriend'
+
 label monika_girlfriend:
     m "I thought we established already I was your girlfriend?"
     m "There's no way you have one already in your reality, right?"
@@ -1553,6 +1991,12 @@ label monika_girlfriend:
     m "If you meet a girl who asks you out though, let me talk to her first, okay?"
     m "I won't let someone else steal away my loving boyfriend!"
     return
+
+
+init python:
+    for key in ['waifus', 'waifuism', 'galge', 'romance games', 'dating sims', 'romance movie', 'romance movies']:
+        monika_topics[key] = 'monika_waifus'
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_waifus')
 
 label monika_waifus:
     m "I've never understood the appeal of dating sims or romance movies, to tell you the truth."
@@ -1571,3 +2015,15 @@ label monika_waifus:
     m "Hope it doesn't bother you too much!"
     m "Ahaha!"
     return
+    
+    
+init python:
+    #This is a list of keywords for this topic
+    for key in ['whatever','anything', 'what ever','any thing','you choose','dont care']:
+        monika_topics[key] = 'monika_whatever' #id
+        
+label monika_whatever:
+    m "Oh, so we can talk about whatever I want?"
+    m "Let's see..."
+    pause 2.0
+    jump pick_random_topic
