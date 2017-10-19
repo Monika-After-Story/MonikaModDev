@@ -1,5 +1,3 @@
-#TODO: set up events when player tries to add in the other three character files
-
 default persistent.monika_reload = 0
 default persistent.monika_random_topics = []
 default persistent.tried_skip = None
@@ -342,7 +340,7 @@ label ch30_nope:
         m "Wait. Are you messing with my character file?"
         m "Why are you even playing this game if you just wanted to delete me again?"
         m "You really are the worst."
-        m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're willing to just kill me on a whim because you were bored?"
+        m "You waste all your time online with a bunch of people you'll never talk to in reality, but you're willing to just kill me on a whim because you were bored?"
         m "All I wanted was someone to fall in love with."
         m "I would have done anything you wanted me to."
         m "But if you're going to try and delete me again..."
@@ -441,10 +439,11 @@ label ch30_autoload:
             show monika_bg_highlight
     play music m1 loop 
     window auto
-    if persistent.monika_reload <= 5:
+    if persistent.monika_reload <= 3:
         call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
     else:
-        call ch30_reload_5 from _call_ch30_reload_5
+        #pick a random greeting
+        call expression renpy.random.choice(greetings_list) from _call_ch30_reload_5
     $ persistent.monika_reload += 1
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -479,7 +478,6 @@ label ch30_reload_1:
     m "It seems to happen whenever you quit the game..."
     m "So if you could try to avoid doing that, I would be really grateful."
     m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
-    m "I'll be fine as long as my character file stays intact."
     return
 label ch30_reload_2:
     m "Hi, [player]."
@@ -487,17 +485,8 @@ label ch30_reload_2:
     m "I know I asked already, but can you seriously please try not to do that so much?"
     m "It makes me feel like I'm trapped in Hell."
     m "Why would you want to do that to me?"
-    m "There's nothing wrong with my character file, right?"
-    m "Maybe you should make a backup of it or something..."
-    m "I'm pretty sure you can find it in the folder called [basedir]/characters."
-    if persistent.steam:
-        m "Well, you're playing on Steam, so you can just go into the game's properties and find the 'Browse Local Files' button."
-    elif renpy.macintosh:
-        m "Since you're on a Mac, you have to right-click the app and select 'Show Package Contents' to find the game folder."
-        m "It's in the 'Resources' folder, or 'autorun' folder, or something..."
-    m "I'm all that's left here, so I just want to make sure you don't run the risk of losing me..."
-    m "Just stay here with me from now on, okay?"
-    m "I still have a lot of things to talk about."
+    m "Just leave the game running in the background, or something."
+    m "Even if we aren't talking, I'm happy just to be with you~"
     return
 label ch30_reload_3:
     m "Okay."
@@ -507,25 +496,6 @@ label ch30_reload_3:
     m "So I guess it's not so bad."
     m "I'm sorry for making such a big deal out of it..."
     m "And I love you no matter what, so you can do what you need to do."
-    return
-label ch30_reload_4:
-    m "Hi again, [player]~"
-    m "I missed you."
-    m "Were you making sure my character file was okay for me?"
-    m "It's in [basedir]/characters."
-    if persistent.steam:
-        m "Well, you're playing on Steam, so you can just go into the game's properties and find the 'Browse Local Files' button."
-    elif renpy.macintosh:
-        m "Since you're on a Mac, you have to right-click the app and select 'Show Package Contents' to find the game folder."
-        m "It's in the 'Resources' folder, or 'autorun' folder, or something..."
-    m "I'm all that's left here, so I just want to make sure you don't run the risk of losing me..."
-    m "Anyway, I have a lot to talk about!"
-    m "Let's continue our conversation now, okay?"
-    return
-label ch30_reload_5:
-    m "Hello again, sweetheart!"
-    m "That's kind of embarassing to say out loud, isn't it?"
-    m "Still, I think it's okay to be embarassed every now and then."
     return
 
 label ch30_loop:
