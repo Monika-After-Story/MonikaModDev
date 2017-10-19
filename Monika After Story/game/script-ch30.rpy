@@ -7,7 +7,6 @@ default persistent.monika_kill = None
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 
-
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
@@ -176,10 +175,15 @@ label ch30_noskip:
     m "You'll be a sweetheart and listen from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
+    
+    #Get back to what you were talking about
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         m "Now, where was I...?"
-        pause 4.0
+        pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_8
+        python:
+            if persistent.current_monikatopic in persistent.monika_random_topics:
+                persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     jump ch30_loop
     return
 
@@ -448,8 +452,11 @@ label ch30_autoload:
         $ config.allow_skipping = False
     if persistent.current_monikatopic != 0:
         m "Now, where was I...?"
-        pause 4.0
+        pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_10
+        python: 
+            if persistent.current_monikatopic in persistent.monika_random_topics:
+                persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     jump ch30_loop
 
 
@@ -548,7 +555,6 @@ label ch30_loop:
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
-    $ persistent.monika_topic = ""
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
@@ -561,15 +567,15 @@ label ch30_loop:
     # Pick a random Monika topic
     label pick_random_topic:
     python:
-        # If we're out of random topics, just stay in the loop
-        if persistent.monika_random_topics:
+        if persistent.monika_random_topics:        # If we're out of random topics, just stay in the loop
             persistent.current_monikatopic = renpy.random.choice(persistent.monika_random_topics)
-            persistent.monika_random_topics.remove(persistent.current_monikatopic)
-            # Save, call topic, and loop
-            # If user quits and restarts mid-topic, the topic starts over again
+
+
     
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         call expression str(persistent.current_monikatopic) from _call_expression_11
+        $ persistent.monika_random_topics.remove(persistent.current_monikatopic)
+        
     jump ch30_loop
 
 
@@ -578,29 +584,36 @@ label ch30_monikatopics:
         player_dialogue = renpy.input('What would you like to talk about?',default='',length=144)
         
         if not player_dialogue: renpy.jump_out_of_context('ch30_loop')
-
-        persistent.monika_topic = player_dialogue.lower()
-        persistent.monika_topic = re.sub(r'[^\w\s]','',persistent.monika_topic)
+        
+        raw_dialogue=player_dialogue
+        player_dialogue = player_dialogue.lower()
+        player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
         persistent.current_monikatopic = 0
 
-        monika_topic = persistent.monika_topic
-        monika_topic = monika_topic.split()
-        monika_topic_bigrams = zip(monika_topic, monika_topic[1:])
-        for word in monika_topic:
-            if monika_topics.get(word):
-                persistent.current_monikatopic = monika_topics.get(word)
-                #This ensures that topics don't get brought up again randomly
-                if persistent.current_monikatopic in persistent.monika_random_topics:
-                    persistent.monika_random_topics.remove(persistent.current_monikatopic)
-                renpy.call(monika_topics.get(word))
+        player_dialogue = player_dialogue.split()
+        #Look at all possible ngrams in the dialogue
+        player_dialogue_ngrams=player_dialogue
+        player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
+        for bigram in player_dialogue_bigrams:
+            player_dialogue_ngrams.append(' '.join(bigram))
+        
+        possible_topics=[] #track all topics that correspond to the input
+        for key in player_dialogue_ngrams:
+            if key in monika_topics:
+                for topic_id in monika_topics[key]:
+                    if topic_id not in possible_topics:
+                        possible_topics.append(topic_id)
+                        
+        if possible_topics == []: #Therapist answer if no keywords match
+            # give a therapist answer for all the depressed weebs
+            response = therapist.respond(raw_dialogue)
+            m("[response]")
         else:
-            for bigram in monika_topic_bigrams:
-                if monika_topics.get(' '.join(bigram)):
-                    persistent.current_monikatopic = monika_topics.get(' '.join(bigram))
-                    persistent.monika_random_topics.remove(persistent.current_monikatopic)
-                    renpy.call(monika_topics.get(' '.join(bigram)))
-            else:
-                # give a therapist answer for all the depressed weebs
-                response = therapist.respond(persistent.monika_topic)
-                m("[response]")
+            persistent.current_monikatopic = random.choice(possible_topics) #Pick a random topic
+        
+            renpy.call(persistent.current_monikatopic) #Go to the topic
+            #Remove the topic from the random topics list
+            if persistent.current_monikatopic in persistent.monika_random_topics:
+                persistent.monika_random_topics.remove(persistent.current_monikatopic)
+                
     jump ch30_loop
