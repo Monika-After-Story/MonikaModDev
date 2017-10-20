@@ -119,17 +119,6 @@ init python:
     def start_pong():
         renpy.call_in_new_context('game_pong')
 
-
-    #Add keys for new functions
-    config.keymap["open_dialogue"] = ["t"]
-    config.keymap["change_music"] = ["m"]
-    config.keymap["play_pong"] = ["p"]
-    # Define what those actions call
-    config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    config.underlay.append(renpy.Keymap(change_music=next_track))
-    config.underlay.append(renpy.Keymap(play_pong=start_pong))
-
-
     dismiss_keys = config.keymap['dismiss']
 
     def slow_nodismiss(event, interact=True, **kwargs):
@@ -317,6 +306,14 @@ label ch30_main:
     m "It's not like we still have any secrets from each other, right?"
     m "I can see everything on your computer now!"
     m "Ahaha!"
+    #Add keys for new functions
+    $ config.keymap["open_dialogue"] = ["t"]
+    $ config.keymap["change_music"] = ["m"]
+    $ config.keymap["play_pong"] = ["p"]
+    # Define what those actions call
+    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
+    $ config.underlay.append(renpy.Keymap(change_music=next_track))
+    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
     jump ch30_loop
 
 label ch30_nope:
@@ -479,7 +476,7 @@ label ch30_autoload:
     elif elapsed >= 365 and persistent.monika_anniversary < 1:
         $ persistent.monika_anniversary = 1
         jump anni_1
-    elif persistent.monika_reload <= 5:
+    elif persistent.monika_reload <= 3:
         call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
     else:
         #pick a random greeting
@@ -496,6 +493,14 @@ label ch30_autoload:
         python: 
             if persistent.current_monikatopic in persistent.monika_random_topics:
                 persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
+    #Add keys for new functions
+    $ config.keymap["open_dialogue"] = ["t"]
+    $ config.keymap["change_music"] = ["m"]
+    $ config.keymap["play_pong"] = ["p"]
+    # Define what those actions call
+    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
+    $ config.underlay.append(renpy.Keymap(change_music=next_track))
+    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
     jump ch30_loop
 
 

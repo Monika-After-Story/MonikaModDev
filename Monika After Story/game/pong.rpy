@@ -268,5 +268,7 @@ label demo_minigame_pong:
                 m "Thanks for letting me win, [player]."
                 m "Only elementary schoolers seriously lose at Pong, right?"
             else:
-                m "I'll get you next time! You can count on it!"
+                m "Wow, I was actually trying that time."
+                m "You must have really practiced at Pong to get so good."
+                m "Is that something for you to be proud of?"
             jump ch30_loop

@@ -1714,7 +1714,7 @@ label monika_dan:
 
 
 init python:
-    for key in ['4chan', 'v']:
+    for key in ['4chan', 'v', 'vg']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_4chan')
 
