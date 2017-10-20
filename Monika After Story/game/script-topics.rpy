@@ -2278,6 +2278,7 @@ init python:
 label monika_kyon:
     m "You can wait a little longer, right?"
     return
+
 init python:
     #This is a list of keywords for this topic
     for key in ['memories','birthday']:
