@@ -1,5 +1,3 @@
-#TODO: set up events when player tries to add in the other three character files
-
 default persistent.monika_reload = 0
 default persistent.monika_random_topics = []
 default persistent.tried_skip = None
@@ -183,10 +181,15 @@ label ch30_noskip:
     m "You'll be a sweetheart and listen from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
+    
+    #Get back to what you were talking about
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         m "Now, where was I...?"
-        pause 4.0
+        pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_8
+        python:
+            if persistent.current_monikatopic in persistent.monika_random_topics:
+                persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     jump ch30_loop
     return
 
@@ -479,17 +482,20 @@ label ch30_autoload:
     elif persistent.monika_reload <= 5:
         call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
     else:
-        call ch30_reload_5 from _call_ch30_reload_5
+        #pick a random greeting
+        call expression renpy.random.choice(greetings_list) from _call_ch30_reload_5
     $ persistent.monika_reload += 1
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-
     if persistent.current_monikatopic != 0:
         m "Now, where was I...?"
-        pause 4.0
+        pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_10
+        python: 
+            if persistent.current_monikatopic in persistent.monika_random_topics:
+                persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     jump ch30_loop
 
 
@@ -512,7 +518,6 @@ label ch30_reload_1:
     m "It seems to happen whenever you quit the game..."
     m "So if you could try to avoid doing that, I would be really grateful."
     m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
-    m "I'll be fine as long as my character file stays intact."
     return
 label ch30_reload_2:
     m "Hi, [player]."
@@ -520,17 +525,8 @@ label ch30_reload_2:
     m "I know I asked already, but can you seriously please try not to do that so much?"
     m "It makes me feel like I'm trapped in Hell."
     m "Why would you want to do that to me?"
-    m "There's nothing wrong with my character file, right?"
-    m "Maybe you should make a backup of it or something..."
-    m "I'm pretty sure you can find it in the folder called [basedir]/characters."
-    if persistent.steam:
-        m "Well, you're playing on Steam, so you can just go into the game's properties and find the 'Browse Local Files' button."
-    elif renpy.macintosh:
-        m "Since you're on a Mac, you have to right-click the app and select 'Show Package Contents' to find the game folder."
-        m "It's in the 'Resources' folder, or 'autorun' folder, or something..."
-    m "I'm all that's left here, so I just want to make sure you don't run the risk of losing me..."
-    m "Just stay here with me from now on, okay?"
-    m "I still have a lot of things to talk about."
+    m "Just leave the game running in the background, or something."
+    m "Even if we aren't talking, I'm happy just to be with you~"
     return
 label ch30_reload_3:
     m "Okay."
@@ -540,25 +536,6 @@ label ch30_reload_3:
     m "So I guess it's not so bad."
     m "I'm sorry for making such a big deal out of it..."
     m "And I love you no matter what, so you can do what you need to do."
-    return
-label ch30_reload_4:
-    m "Hi again, [player]~"
-    m "I missed you."
-    m "Were you making sure my character file was okay for me?"
-    m "It's in [basedir]/characters."
-    if persistent.steam:
-        m "Well, you're playing on Steam, so you can just go into the game's properties and find the 'Browse Local Files' button."
-    elif renpy.macintosh:
-        m "Since you're on a Mac, you have to right-click the app and select 'Show Package Contents' to find the game folder."
-        m "It's in the 'Resources' folder, or 'autorun' folder, or something..."
-    m "I'm all that's left here, so I just want to make sure you don't run the risk of losing me..."
-    m "Anyway, I have a lot to talk about!"
-    m "Let's continue our conversation now, okay?"
-    return
-label ch30_reload_5:
-    m "Hello again, sweetheart!"
-    m "That's kind of embarassing to say out loud, isn't it?"
-    m "Still, I think it's okay to be embarassed every now and then."
     return
 
 label ch30_loop:
@@ -588,7 +565,6 @@ label ch30_loop:
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
-    $ persistent.monika_topic = ""
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
@@ -601,15 +577,15 @@ label ch30_loop:
     # Pick a random Monika topic
     label pick_random_topic:
     python:
-        # If we're out of random topics, just stay in the loop
-        if persistent.monika_random_topics:
+        if persistent.monika_random_topics:        # If we're out of random topics, just stay in the loop
             persistent.current_monikatopic = renpy.random.choice(persistent.monika_random_topics)
-            persistent.monika_random_topics.remove(persistent.current_monikatopic)
-            # Save, call topic, and loop
-            # If user quits and restarts mid-topic, the topic starts over again
+
+
     
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         call expression str(persistent.current_monikatopic) from _call_expression_11
+        $ persistent.monika_random_topics.remove(persistent.current_monikatopic)
+        
     jump ch30_loop
 
 
@@ -618,30 +594,36 @@ label ch30_monikatopics:
         player_dialogue = renpy.input('What would you like to talk about?',default='',length=144)
         
         if not player_dialogue: renpy.jump_out_of_context('ch30_loop')
-
-        persistent.monika_topic = player_dialogue.lower()
-        persistent.monika_topic = re.sub(r'[^\w\s]','',persistent.monika_topic)
+        
+        raw_dialogue=player_dialogue
+        player_dialogue = player_dialogue.lower()
+        player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
         persistent.current_monikatopic = 0
 
-        monika_topic = persistent.monika_topic
-        monika_topic = monika_topic.split()
-        monika_topic_bigrams = zip(monika_topic, monika_topic[1:])
-        for word in monika_topic:
-            if monika_topics.get(word):
-                persistent.current_monikatopic = monika_topics.get(word)
-                #This ensures that topics don't get brought up again randomly
-                if persistent.current_monikatopic in persistent.monika_random_topics:
-                    persistent.monika_random_topics.remove(persistent.current_monikatopic)
-                renpy.call(monika_topics.get(word))
+        player_dialogue = player_dialogue.split()
+        #Look at all possible ngrams in the dialogue
+        player_dialogue_ngrams=player_dialogue
+        player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
+        for bigram in player_dialogue_bigrams:
+            player_dialogue_ngrams.append(' '.join(bigram))
+        
+        possible_topics=[] #track all topics that correspond to the input
+        for key in player_dialogue_ngrams:
+            if key in monika_topics:
+                for topic_id in monika_topics[key]:
+                    if topic_id not in possible_topics:
+                        possible_topics.append(topic_id)
+                        
+        if possible_topics == []: #Therapist answer if no keywords match
+            # give a therapist answer for all the depressed weebs
+            response = therapist.respond(raw_dialogue)
+            m("[response]")
         else:
-            for bigram in monika_topic_bigrams:
-                if monika_topics.get(' '.join(bigram)):
-                    persistent.current_monikatopic = monika_topics.get(' '.join(bigram))
-                    if persistent.current_monikatopic in persistent.monika_random_topics:
-                        persistent.monika_random_topics.remove(persistent.current_monikatopic)
-                    renpy.call(monika_topics.get(' '.join(bigram)))
-            else:
-                # give a therapist answer for all the depressed weebs
-                response = therapist.respond(persistent.monika_topic)
-                m("[response]")
+            persistent.current_monikatopic = random.choice(possible_topics) #Pick a random topic
+        
+            renpy.call(persistent.current_monikatopic) #Go to the topic
+            #Remove the topic from the random topics list
+            if persistent.current_monikatopic in persistent.monika_random_topics:
+                persistent.monika_random_topics.remove(persistent.current_monikatopic)
+                
     jump ch30_loop
