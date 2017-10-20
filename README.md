@@ -8,7 +8,7 @@ If you have any problems with the game, feel free to raise issues here. Pull req
 
 ### Have an idea for a topic, but don't want to add it yourself?
 
-Use this [suggestion box](http://freesuggestionbox.com/pub/dreoode) to submit full or partial scripts for Monika's topic, and I'll do my best to add it into a future release! The more topics we can add, the better!
+Use this [suggestion box](http://freesuggestionbox.com/pub/dreoode) to submit full or partial scripts for Monika's topic, and it'll get written about eventually.
 
  ### Guide to Adding New Stuff
   You'll need the Ren'Py SDK available [here](https://www.renpy.org/latest.html). Point the project directory to this root folder (you should see Monika After Story available in the Ren'Py launcher).
