@@ -1,12 +1,14 @@
 define persistent.demo = False
 define persistent.steam = False
 define config.developer = False
+define persistent.monika_random_topics = []
+define persistent.monika_random_built = False
 
 python early:
     import singleton
     me = singleton.SingleInstance()
 
-init python:
+init -1 python:
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
@@ -15,98 +17,9 @@ init python:
     renpy.music.register_channel("music_poem", mixer="music", tight=True)
     
     #Lookup tables for Monika input topics
-    #If you're adding to the keys, put everything in lowercase. There's a filter for that in the script.
+    #Add entries with your script in script-topics.rpy
     monika_topics = {}
-    for key in ['little sister', 'imouto']:
-        monika_topics[key] = 'monika_imouto'
-    for key in ['older sister', 'oneesan']:
-        monika_topics[key] = 'monika_oneesan'
-    for key in ['parents', 'family', 'parent', 'father', 'mother', 'mom', 'dad']:
-        monika_topics[key] = 'monika_family'
-    for key in ['anime', 'animes', 'chinese cartoons', 'weeb', 'weeaboo', 'weebs']:
-        monika_topics[key] = 'monika_anime'
-    for key in ['third eye', 'markov', 'elyssa', 'rainier', 'libitina', 'portrait of markov']:
-        monika_topics[key] = 'monika_libitina'
-    for key in ['meta', 'metafiction', 'meta-fiction']:
-        monika_topics[key] = 'monika_meta'
-    for key in ['programming', 'program', 'cs', 'computer science', 'scripting', 'sicp', 'structure and interpretation of computer programs']:
-        monika_topics[key] = 'monika_programming'
-    for key in ['vn', 'vns', 'visual novel', 'visual novels']:
-        monika_topics[key] = 'monika_vn'
-    for key in ['totono', 'kimi to kanojo to kanojo no koi']:
-        monika_topics[key] = 'monika_totono'
-    for key in ['subahibi', 'subarashiki hibi']:
-        monika_topics[key] = 'monika_subahibi'
-    for key in ['difficulty', 'too easy', 'easy mode', 'easymodo']:
-        monika_topics[key] = 'monika_difficulty'
-    for key in ['piano', 'your song', 'credits', 'credits song']:
-        monika_topics[key] = 'monika_piano'
-    for key in ['poetry', 'poem', 'poems']:
-        monika_topics[key] = 'monika_poetry'
-    for key in ['literature club', 'club', 'our club', 'your club']:
-        monika_topics[key] = 'monika_literatureclub'
-    for key in ['ddlc', 'doki doki literature club', 'this game', 'game']:
-        monika_topics[key] = 'monika_ddlc'
-    for key in ['dan', 'salvato', 'dan salvato', 'creator', 'author']:
-        monika_topics[key] = 'monika_dan'
-    for key in ['4chan']:
-        monika_topics[key] = 'monika_4chan'
-    for key in ['reddit']:
-        monika_topics[key] = 'monika_reddit'
-    for key in ['vidya', 'video game', 'video games', 'computer games']:
-        monika_topics[key] = 'monika_vidya'
-    for key in ['literature', 'books', 'book', 'novel', 'novels', 'reading']:
-        monika_topics[key] = 'monika_books'
-    for key in ['favorite poem', 'favorite poetry', 'favorite poet', 'favourite poem', 'favourite poetry', 'favourite poem']:
-        monika_topics[key] = 'monika_favpoem'
-    for key in ['favorite book', 'favorite author', 'favorite novel', 'favourite book', 'favourite author', 'favourite novel']:
-        monika_topics[key] = 'monika_favbook'
-    for key in ['natsuki', 'loli', 'tsundere']:
-        monika_topics[key] = 'monika_natsuki'
-    for key in ['sayori', 'childhood friend']:
-        monika_topics[key] = 'monika_sayori'
-    for key in ['yuri', 'yandere']:
-        monika_topics[key] = 'monika_yuri'
-    for key in ['university', 'uni', 'college']:
-        monika_topics[key] = 'monika_college'
-    for key in ['love', 'i love you', 'love you']:
-        monika_topics[key] = 'monika_love'
-    for key in ['hedgehog', 'hedgehog dilemma', "hedgehog's dilemma"]:
-        monika_topics[key] = 'monika_hedgehog'
-    for key in ['murder', 'kill', 'killed other girls', 'murderer']:
-        monika_topics[key] = 'monika_justification'
-    for key in ['keitai', 'keit-ai', 'kimi no na wa', 'your name', 'shinkai']:
-        monika_topics[key] = 'monika_keitai'
-    for key in ['simulation', 'simulations', 'simulated reality', 'artificial reality']:
-        monika_topics[key] = 'monika_simulated'
-    for key in ['god', 'jesus', 'mohammed', 'religion', 'theodicy', 'problem of evil', 'church', 'gnosticism']:
-        monika_topics[key] = 'monika_religion'
-    for key in ['free will', 'predestination', 'determinism', 'will', 'strong determinism', 'weak determinism', 'demon of laplace', "laplace's demon"]:
-        monika_topics[key] = 'monika_freewill'
-    for key in ['shilling', 'shills', 'shill']:
-        monika_topics[key] = 'monika_shill'
-    for key in ['best programming language', 'programming language', 'how do you code', 'no computer', 'programming technique', 'technique']:
-        monika_topics[key] = 'monika_technique'
-    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help']:
-        monika_topics[key] = 'monika_contribute'
-    for key in ['art', 'drawing', 'painting', 'sketch', 'draw', 'paint', 'photoshop']:
-        monika_topics[key] = 'monika_drawing'
-    for key in ['main character', 'mc', 'protagonist']:
-        monika_topics[key] = 'monika_mc'
-    for key in ['hero', 'heroes', 'heroism', 'heroic']:
-        monika_topics[key] = 'monika_heroism'
-    for key in ['what is a man', 'what is a man?', 'mankind ill needs a savior such as you!', 'your words are as empty as your soul!','mankind ill needs a savior such as you', 'your words are as empty as your soul', 'castlevania', 'dracula', 'belmont']:
-        monika_topics[key] = 'monika_dracula'
-    for key in ['undertale', 'undertale reference']:
-        monika_topics[key] = 'monika_undertale'
-    for key in ['vegetarian', 'vegan', 'vegetarians', 'vegetarianism', 'save the planet', 'vegetables', 'veggies']:
-        monika_topics[key] = 'monika_veggies'
-    for key in ['best girl', "you're best girl", 'you are best girl', 'monika best girl', 'monika is best girl']:
-        monika_topics[key] = 'monika_bestgirl'
-    for key in ['gf', 'tfw no gf', 'girlfriend', 'my girlfriend', 'you are my girlfriend']:
-        monika_topics[key] = 'monika_girlfriend'
-    for key in ['waifus', 'waifuism', 'galge', 'romance games', 'dating sims', 'romance movie', 'romance movies']:
-        monika_topics[key] = 'monika_waifus'
+
         
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)

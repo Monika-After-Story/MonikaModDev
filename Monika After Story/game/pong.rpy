@@ -35,7 +35,8 @@
                 self.computery = self.playery
 
                 # The speed of the computer.
-                self.computerspeed = 350.0
+                # I changed this to triple. Get ready for the dark souls of pong
+                self.computerspeed = 1000.0
 
                 # The position, dental-position, and the speed of the
                 # ball.

@@ -256,12 +256,14 @@ image input_caret:
 screen input(prompt):
     style_prefix "input"
 
+
+
     window:
 
         vbox:
-            xpos gui.text_xpos
-            xanchor 0.5
-            ypos gui.text_ypos
+            xalign .5
+            yalign .5
+            spacing 30
 
             text prompt style "input_prompt"
             input id "input"
@@ -1581,50 +1583,3 @@ style notify_frame:
 
 style notify_text:
     size gui.notify_text_size
-
-## KeyboardListener screen #####################################################
-##
-## Screens meant to pass in player dialog to Monika so she can answer you
-## This replaces the infinite loop, ideally
-init python:
-    def FinishEnterInput():
-        if not player_dialogue: return
-        persistent.monika_topic = player_dialogue.lower()
-        persistent.current_monikatopic = 0
-        renpy.hide_screen('player_input')
-        renpy.jump('ch30_monikatopics')
-
-screen player_input(message, ok_action):
-    ## Ensure other screens do not get input while this screen is displayed.
-    modal True
-
-    zorder 200
-
-    style_prefix "confirm"
-    add "gui/overlay/confirm.png"
-    #BUG: This doesn't work for some god forsaken reason. Return goes to screen under this one for reasons I don't understand
-    key "K_RETURN" action [Play("sound", gui.activate_sound), ok_action]
-    
-    frame:
-
-        vbox:
-            xalign .5
-            yalign .5
-            spacing 30
-
-            label _(message):
-                style "confirm_prompt"
-                xalign 0.5
-            input value VariableInputValue("player_dialogue",True, True)
-
-            hbox:
-                xalign 0.5
-                spacing 100
-
-                textbutton _("OK") action ok_action
-
-screen keylistener:
-    key 't' action Show(screen='player_input', message='What do you want to talk about?', ok_action=Function(FinishEnterInput))
-    key 'm' action If(renpy.music.get_playing('music') == 'bgm/m1.ogg', Play('music', 'bgm/credits.ogg', loop = True), Play('music', 'bgm/m1.ogg', loop = True))
-    key 'p' action Jump('game_pong')
-

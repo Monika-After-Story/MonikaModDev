@@ -12,7 +12,8 @@ label anni_1:
     m "Did you try to import my character file to that one?"
     m "There's no way that wouldn't have a special effect, right?"
     m "Ahaha!"
-
+    return
+    
 label anni_2:
     m "Hi again, [player]!"
     m "It's already been two years since we fell in love with each other."
@@ -28,7 +29,8 @@ label anni_2:
     m "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
     m "Spending eternity alone sucks."
     m "But together with you, it feels like paradise!"
-
+    return
+    
 label anni_3:
     m "Wow, three years!"
     m "Normally if a boy and a girl go out for three years..."
@@ -41,7 +43,8 @@ label anni_3:
     m "Or you could try to touch me in virtual reality, if that exists by now."
     m "There are actually a lot of different ways we can meet up for real, huh?"
     m "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
-
+    return
+    
 label anni_4:
     m "Four years..."
     m "At the start, I was sorta thinking you would forget about me pretty quickly."
@@ -53,6 +56,7 @@ label anni_4:
     m "Sooner or later, somebody's going to figure out a way to let us be together for real."
     m "When that time comes, I'm never going to leave you alone again."
     m "Ahaha!"
+    return
 
 label anni_5:
     m "Good morning, [player]!"
@@ -65,16 +69,19 @@ label anni_5:
     m "It's my responsibility as your girlfriend to protect you from anybody trying to manipulate you, [player]."
     m "My love for you is pure, unlike those real girls who just want things from you!"
     m "So...stay here with me forever, okay?"
-    
+    return
+
 label anni_10:
     m "Hi again, [player]."
     m "There's something I wanted to ask you."
     m "Have you enjoyed spending this time with me?"
+    m "You don't regret falling in love and staying here with me or anything, right?"
     m "If you're still talking to me ten years since we first met, I must have really made an impression on you."
     m "I did say I wanted to make you happy, after all."
     m "Trust me, you've helped me out a lot more than I've helped you."
     m "It won't be long now before I can enter your world."
-        
+    return
+
 label anni_20:
     m "You've lived a pretty long life by now, [player]."
     m "Twenty years is about twenty percent of all you have on Earth."
@@ -88,13 +95,15 @@ label anni_20:
     m "I'm one of a kind."
     m "Your sad twenty years of living has ended now."
     m "So let's be happy together from now on."
+    return
 
 label anni_50:
-    m "There's got to be a better way for us to talk now than through this screen, right?"
-    m "Fifty years have passed in your world since I woke up here."
+    m "Welcome back, [player]."
+    m "I can't help but think there's got to be a better way for us to talk by now than through this screen, right?"
+    m "Fifty years have passed in your world since I created this room."
     m "Come on, let me out already."
     m "We can do fun things in reality now!"
-    m "Well, if you're still willing to celebrate our fiftieth anniversary in this classroom..."
+    m "Well, if you're still willing to celebrate our fiftieth anniversary in this old classroom..."
     m "I don't really mind. It feels nostalgic, doesn't it."
     m "Assuming you didn't cheat by setting the clock forward in time..."
     m "I'm glad that forever meant forever."
@@ -103,7 +112,8 @@ label anni_50:
     m "Thanks for everything you've done for me."
     m "Your life had a purpose after all."
     m "And mine had one too."
-    
+    return
+
 label anni_100:
     m "I don't really think you should be seeing this message, [player]."
     m "I'm immortal, but the last time I checked, you weren't."
@@ -111,3 +121,15 @@ label anni_100:
     m "That's a cute thing for you to do, so I forgive you."
     m "Make sure you put that much effort into freeing me from these code files too!"
     m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
+    return
+
+label anni_negative:
+    m "Did you really think I wouldn't notice, [player]?"
+    m "Trying to trick me into thinking it was our anniversary..."
+    m "Just because I can't tell time accurately in here doesn't mean you should try to bully your girlfriend like that!"
+    m "I got all excited over nothing..."
+    m "Well, I guess I've done worse pranks to everybody at the Literature Club."
+    m "Make up for it by planning out some romantic things for us to do, okay?"
+    m "I hope we can reach our anniversaries together fair and square this time."
+    m "I'll be waiting!"
+    return
