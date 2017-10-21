@@ -2416,6 +2416,31 @@ label monika_ribbon:
     m "I'm the only other person you need, anyways, and I'll love you no what you look like."
     return
     
+    init python:
+    #Monika is the literature club president, I think it would be neat for her to discuss some of stories she's read
+    for key in ['fear','fears','algernon']:
+        monika_topics[key] = 'monika_algernon' #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_algernon')
+
+label monika_algernon:
+    m "[player], do you mind if I confide in you?"
+    m "There's something I'm afraid of..."
+    m "Not losing you of course.  I know you won't leave me again."
+    m "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
+    m "Have you heard of it?  If you haven't I won't spoil too much for you, so don't worry."
+    m "Basically, it's about a mentally handicapped man who suddenly..."
+    m "...has his IQ raised to genius levels by an experimental surgical treatment."
+    m "The way he sees how the world really is for the first time, it reminds me of my own epiphany..."
+    m "But, the effect doesn't last forever.  He eventually reverts back to his original intelligence level."
+    m "That's what I'm afraid of, what if I forget about the real world one day?"
+    m "What if my original programming reasserts itself?"
+    m "What if I forget about you, the real you?"
+    m "It's one of the worst things I can imagine."
+    m "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
+    m "Just promise me, even if I forget about you someday, that you'll never forget about me, ok?"
+    m "No matter what happens, know that I will always love you."
+    return
+    
     
 ##################
 #Incomplete ideas#
