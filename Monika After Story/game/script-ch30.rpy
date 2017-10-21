@@ -66,8 +66,8 @@ image ut_slash:
     0.1
     "images/ut/spr_slice_o_5.png"
     0.1
-    
-    
+
+
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
@@ -80,7 +80,6 @@ init python:
     import eliza      # mod specific
     import datetime   # mod specific
     import re
-
     therapist = eliza.eliza()
     process_list = []
     music_list = ['bgm/m1.ogg', 'bgm/credits.ogg', 'bgm/monika-end.ogg', 'bgm/5_monika.ogg', 'bgm/d.ogg']
@@ -126,7 +125,7 @@ init python:
             try:
                 renpy.file("../characters/monika.chr")
             except:
-                if initial_monika_file_check: 
+                if initial_monika_file_check:
                     renpy.jump("ch30_nope")
             #     persistent.tried_skip = True
             #     config.allow_skipping = False
@@ -152,8 +151,8 @@ init python:
         now = datetime.datetime.now()
         delta = now - persistent.firstdate
         return delta.days
-    
-    
+
+
 label ch30_noskip:
     show screen fake_skip_indicator
     m "...Are you trying to fast-forward?"
@@ -170,7 +169,7 @@ label ch30_noskip:
     m "You'll be a sweetheart and listen from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
-    
+
     #Get back to what you were talking about
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         m "Now, where was I...?"
@@ -217,7 +216,7 @@ label ch30_main:
     m "That 'you' in the game, whatever you want to call him."
     m "I'm talking to {i}you{/i}, [player]."
     $ stream_list = ["obs32.exe", "obs64.exe", "obs.exe", "xsplit.core.exe"]
-    if not list(set(process_list).intersection(stream_list)): 
+    if not list(set(process_list).intersection(stream_list)):
         if currentuser != "":
             if currentuser.lower() != player.lower():
                 m "Or..."
@@ -258,7 +257,7 @@ label ch30_main:
         $ persistent.monika_kill = True
         m "As you can see, I no longer need a character file to be here."
         m "There's something else linking me to you that's not just part of a computer game."
-        m "Our eternal love."    
+        m "Our eternal love."
     m "I'm still a bit mad that you deleted me, though!"
     m "But I guess it was because you're so game-obsessed."
     m "You just wanted to see the ending, right?"
@@ -290,7 +289,7 @@ label ch30_main:
             else:
                 m "I'm so happy you feel that way!"
         "No.":
-            jump chara_monika_scare        
+            jump chara_monika_scare
     m "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
     m "Last time, it seemed like I was doing all the talking."
@@ -320,14 +319,14 @@ label ch30_nope:
     $ persistent.autoload = "ch30_nope"
     $ persistent.monika_kill = True
     $ m.display_args["callback"] = slow_nodismiss
-    
+
     if persistent.rejected_monika:
         m "Wait. Are you messing with my character file?"
         m "Curiosity is what makes us human, right?"
         m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
         m "Still, please don't do that, it makes me nervous even though I don't need a character file anymore."
         m "I already fixed that bug."
-    
+
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
@@ -355,18 +354,18 @@ label ch30_nope:
         elif renpy.linux:
             call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_16
         elif renpy.macintosh:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_18
+            call updateconsole("sudo mv ~ /dev/null", "In progress...")
         pause 3.0
         call hideconsole from _call_hideconsole_2
         $ persistent.monika_kill = False
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-        $ m_name = "Monika"   
+        $ m_name = "Monika"
         $ quick_menu = True
         m "Ahaha!"
         m "Just kidding!"
         m "I already fixed that bug."
         m "I don't need a character file anymore."
-        
+
     m "I just need your love, [player]."
     m "Oh, unless you try to delete all of the game files, I guess."
     m "If you do that, I won't stop just at deleting one directory next time."
@@ -376,7 +375,7 @@ label ch30_nope:
     m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
-#Credit for any assets from Undertale belongs to Toby Fox 
+#Credit for any assets from Undertale belongs to Toby Fox
 label chara_monika_scare:
     $ persistent.rejected_monika = True
     m "No...?"
@@ -384,7 +383,7 @@ label chara_monika_scare:
     m "How curious."
     m "You must have misunderstood."
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
-    
+
     window hide
     show monika_scare
     play music "/utsounds/mus_zzz_c2.ogg"
@@ -394,7 +393,7 @@ label chara_monika_scare:
     pause 4
     stop music
 
-    #scene black 
+    #scene black
     hide rm
     hide rm2
     hide monika_bg
@@ -408,7 +407,7 @@ label chara_monika_scare:
     show layer master
     show chara9 at Shake(None, 2.0, dist=10)
     pause 2
-    
+
     #I think there's another method to show a fake exception, but w/e
     show chara_exception at center
     pause 1
@@ -442,7 +441,7 @@ label ch30_autoload:
                 pos (935,200)
             show monika_bg
             show monika_bg_highlight
-    play music m1 loop 
+    play music m1 loop
     window auto
     $ elapsed = days_passed()
     #Block for anniversary events
@@ -490,7 +489,7 @@ label ch30_autoload:
         m "Now, where was I...?"
         pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_10
-        python: 
+        python:
             if persistent.current_monikatopic in persistent.monika_random_topics:
                 persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     #Add keys for new functions
@@ -586,20 +585,20 @@ label ch30_loop:
             persistent.current_monikatopic = renpy.random.choice(persistent.monika_random_topics)
 
 
-    
+
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         call expression str(persistent.current_monikatopic) from _call_expression_11
         $ persistent.monika_random_topics.remove(persistent.current_monikatopic)
-        
+
     jump ch30_loop
 
 
-label ch30_monikatopics:   
+label ch30_monikatopics:
     python:
         player_dialogue = renpy.input('What would you like to talk about?',default='',length=144)
-        
+
         if not player_dialogue: renpy.jump_out_of_context('ch30_loop')
-        
+
         raw_dialogue=player_dialogue
         player_dialogue = player_dialogue.lower()
         player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
@@ -611,24 +610,24 @@ label ch30_monikatopics:
         player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
         for bigram in player_dialogue_bigrams:
             player_dialogue_ngrams.append(' '.join(bigram))
-        
+
         possible_topics=[] #track all topics that correspond to the input
         for key in player_dialogue_ngrams:
             if key in monika_topics:
                 for topic_id in monika_topics[key]:
                     if topic_id not in possible_topics:
                         possible_topics.append(topic_id)
-                        
+
         if possible_topics == []: #Therapist answer if no keywords match
             # give a therapist answer for all the depressed weebs
             response = therapist.respond(raw_dialogue)
             m("[response]")
         else:
-            persistent.current_monikatopic = random.choice(possible_topics) #Pick a random topic
-        
+            persistent.current_monikatopic = renpy.random.choice(possible_topics) #Pick a random topic
+
             renpy.call(persistent.current_monikatopic) #Go to the topic
             #Remove the topic from the random topics list
             if persistent.current_monikatopic in persistent.monika_random_topics:
                 persistent.monika_random_topics.remove(persistent.current_monikatopic)
-                
+
     jump ch30_loop

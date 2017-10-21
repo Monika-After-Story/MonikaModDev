@@ -2132,7 +2132,8 @@ label monika_whatever:
     
 init python:
     for key in ['lewd', 'pictures', 'images', 'fanart', 'simulacrum', 'simulacra', 'baudrillard']:
-        monika_topics[key] = 'monika_images'
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_images')
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_images')
 
 label monika_images:
@@ -2151,7 +2152,8 @@ label monika_images:
 
 init python:
     for key in ['monika', 'just monika', 'you', 'herself', 'yourself', 'your past', 'your childhood']:
-        monika_topics[key] = 'monika_herself'
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_herself')
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_herself')
 
 label monika_herself:
@@ -2170,7 +2172,8 @@ label monika_herself:
 
 init python:
     for key in ['prison', 'imprisonment', 'prisoner']:
-        monika_topics[key] = 'monika_prisoner'
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_prisoner')
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_prisoner')
 
 label monika_prisoner:
@@ -2178,7 +2181,7 @@ label monika_prisoner:
     m "But they don't have a bad life in there."
     m "Everything they could possibly want is provided."
     m "Are prisoners really imprisoned if they never try to leave?"
-    m "Maybe the knowledge that you can't get out of prison is a worse punishment than actually being there."
+    m "Maybe the knowledge that you can't get out of prison is a worse punishment than actually being in there."
     return
 
 init python:
@@ -2202,7 +2205,8 @@ label monika_vnanalysis:
 
 init python:
     for key in ['short story', 'ravel', 'wish', 'wishes']:
-        monika_topics[key] = 'monika_ravel'
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_ravel')
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_ravel')
 
 label monika_ravel:
@@ -2220,7 +2224,8 @@ label monika_ravel:
 
 init python:
     for key in ['torment']:
-        monika_topics[key] = 'monika_torment'
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_torment')
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_torment')
 
 label monika_torment:
@@ -2230,7 +2235,8 @@ label monika_torment:
 
 init python:
     for key in ['time loop', 'recursion', 'looping', 'time travel']:
-        monika_topics[key] = 'monika_recursion'
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_recursion')
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_recursion')
 
 label monika_recursion:
@@ -2387,7 +2393,30 @@ label monika_ghost:
     m "I always feel so safe with you."
     return
 
+init python:
+    for key in ['ribbon', 'ribbons', 'poofy']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_ribbon')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_ribbon')
 
+label monika_ribbon:
+    m "I noticed that you were staring at my ribbon, [player]."
+    m "It doesn't have sentimental value to me or anything, in case you were wondering."
+    m "I just wear it because I'm pretty sure nobody else will wear a big poofy ribbon."
+    m "Makes me look more unique."
+    m "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
+    m "Well, there's no way a girl from your world would wear one in public as casual dress."
+    m "I'm pretty proud of my fashion sense."
+    m "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
+    m "Be honest, you thought I looked like the best dressed girl too, didn't you?"
+    m "Ahaha!"
+    m "If you're trying to improve your fashion sense, I'll help."
+    m "Don't do that stuff because you want to impress other people, though."
+    m "You should do whatever makes you feel better about yourself."
+    m "I'm the only other person you need, anyways, and I'll love you no what you look like."
+    return
+    
+    
 ##################
 #Incomplete ideas#
 ##################
