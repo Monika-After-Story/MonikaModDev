@@ -2440,7 +2440,93 @@ label monika_algernon:
     m "Just promise me, even if I forget about you someday, that you'll never forget about me, ok?"
     m "No matter what happens, know that I will always love you."
     return
+
+init python:
+    for key in ['water','hydration','dehydration','thirsty','thirst']:
+        monika_topics[key] = 'monika_water' #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_water')
     
+label monika_water:
+    m "Hey [player], you drink plenty of water, right?"
+    m "It's important to drink a good amount of water daily!"
+    m "Hot weather, especially during the summer, can really affect your hydration."
+    m "Dehydration can be really dangerous if you don't drink plenty of water."
+    m "Ahaha!"
+    m "I'm sorry. I worry too much about the little things with you, [player]."
+    m "You probably do take good care of your hydration, I just worry a lot~"
+    m "Just goes to show that I really do care about you so much."
+    return
+
+init python:
+    for key in ['custom build','building computers',' build computers','custom rig']: #too much?
+        monika_topics[key] = 'monika_computer' #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_computer')
+
+label monika_computer:
+    m "Do you like to build computers, [player]?"
+    m "To me it seems like a big puzzle, trying to get every component to the right spots and fit correctly..."
+    m "Not to mention you have to make sure all the wires are correct..."
+    m "..."
+    m "I don't really know how this all works."
+    m "It sure does sound fun though!"
+    m "Maybe if you were to build your own computer sometime, maybe you can show me how it works?"
+    m "I would love to see how it all comes together!"
+    m "And maybe I can learn a thing or two from you."
+    return
+
+init python:
+    for key in ['play','pong','p']:
+        monika_topics[key] = 'monika_pong' #id
+    if not (persistent.monika_random_build) : persistent.monika_random_topics.append('monika_pong')
+
+label monika_pong:
+    m "Hey [player], do you want to play a game of Pong with me?"
+    m "Just remember to hit the 'p' key whenever you feel like playing, okay?"
+    m "Unless you're scared of losing aganist me~"
+    return
+
+init python:
+    for key in ['webcam','camera','my face','smile']:
+        monika_topics[key] = 'monika_playersface' #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_playersface')
+
+label monika_playersface:
+    m "You know, I sometimes?"
+    m "I always think about what your face actually look like..."
+    m "Just being able to constantly see that adoring smile of yours would be so exciting!"
+    m "If only the game could somehow use a webcam or something that's connected to the computer..."
+    m "Just knowing that you're real and I know that you have emotions is enough to make me happy."
+    m "But, I'll always wonder what kind of expressions and faces you make."
+    m "And to see the different emotions you have..."
+    m "Are you shy about showing your face to me?"
+    m "If so, then there's nothing to be shy about, [player], I am your girlfriend after all~"
+    m "Either way, you're beautiful no matter what."
+    m "And I'll always love the way you look regardless."
+    m "Even if I never actually see you, I'll always think about what you really look like."
+    m "Maybe some day I'll know how to see you and be one step closer to you."
+    return
+
+init python:
+    #This is a list of keywords for this topic
+    for key in ['insects','insect','spiders','spider','arachnophobia']:
+        monika_topics[key] = 'monika_spiders' #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_spiders')
+
+label monika_spiders:
+    #I really hope this information is correct, havent played the game in a week so
+    m "Do you happen to remember the poem Natsuki showed you about spiders?"
+    m "She seems to not like spiders all too much."
+    m "Ahaha!"
+    m "It's funny actually, people being scared of very small insects."
+    m "Having the fear of spiders is called Arachnophobia, right?"
+    m "I hope you aren't afraid of spiders, [player], hehe..."
+    m "I'm not really scared of spiders, they're more or less annoying..."
+    m "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
+    m "[player], if you happen to get a really bad spider bite, like with venom and all that..."
+    m "You should really get medical attention as soon as possible."
+    m "I just don't want my boyfriend to get seriously injured by a small spider bite~"
+    m "So be careful around dangerous looking spiders, okay?"
+    return
     
 ##################
 #Incomplete ideas#
@@ -2474,3 +2560,34 @@ label monika_algernon:
 #Have you been cheating on me?
 
 #Real GF^^^^^^^^^^^^^^^^^^^^
+
+#---
+#some other ideas i had in mind, but not sure if want to / dont know how to implement
+#so i figure i'll stick them right next to the others, if you dont mind
+#---
+
+#favorite animal, not sure what to write however
+
+#holidays, probably should be special greetings for another file though
+
+#remind the player to use the 't' key to talk, maybe if player doesnt talk in a very long time
+
+#her phone number, it wouldnt matter in her reality, maybe?
+
+#disrespectful comments towards monika
+
+#worst topic suggestion: 'memes'.
+
+#fanfiction, probably question if any is about her and how it's a good way of writing somehow
+
+#reactions to vulgar langauge?
+
+#if the player is on a laptop or battery, monika will remind to make sure to charge it, if possible?
+
+#originally i wrote a topic "i hate you" or something similar, but i didnt like how it turned out when i finished it, so maybe another time
+
+#i also originally wrote a topic about money, but didnt like how it came out, so probably rewrite later, me having horrible money management skills doesnt help
+
+#monika talking about her room and about her house?
+
+#wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
