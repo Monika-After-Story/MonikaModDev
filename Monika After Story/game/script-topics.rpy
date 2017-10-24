@@ -2416,10 +2416,11 @@ label monika_ribbon:
     m "I'm the only other person you need, anyways, and I'll love you no what you look like."
     return
     
-    init python:
+init python:
     #Monika is the literature club president, I think it would be neat for her to discuss some of stories she's read
     for key in ['fear','fears','algernon']:
-        monika_topics[key] = 'monika_algernon' #id
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_algernon') #id
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_algernon')
 
 label monika_algernon:
@@ -2443,7 +2444,8 @@ label monika_algernon:
 
 init python:
     for key in ['water','hydration','dehydration','thirsty','thirst']:
-        monika_topics[key] = 'monika_water' #id
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_water') #id
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_water')
     
 label monika_water:
@@ -2459,7 +2461,8 @@ label monika_water:
 
 init python:
     for key in ['custom build','building computers',' build computers','custom rig']: #too much?
-        monika_topics[key] = 'monika_computer' #id
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_computer') #id
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_computer')
 
 label monika_computer:
@@ -2476,7 +2479,8 @@ label monika_computer:
 
 init python:
     for key in ['play','pong','p']:
-        monika_topics[key] = 'monika_pong' #id
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_pong') #id
     if not (persistent.monika_random_build) : persistent.monika_random_topics.append('monika_pong')
 
 label monika_pong:
@@ -2487,7 +2491,8 @@ label monika_pong:
 
 init python:
     for key in ['webcam','camera','my face','smile']:
-        monika_topics[key] = 'monika_playersface' #id
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_playersface') #id
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_playersface')
 
 label monika_playersface:
@@ -2509,7 +2514,8 @@ label monika_playersface:
 init python:
     #This is a list of keywords for this topic
     for key in ['insects','insect','spiders','spider','arachnophobia']:
-        monika_topics[key] = 'monika_spiders' #id
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_spiders') #id
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_spiders')
 
 label monika_spiders:
