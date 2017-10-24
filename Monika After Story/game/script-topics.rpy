@@ -2533,6 +2533,83 @@ label monika_spiders:
     m "I just don't want my boyfriend to get seriously injured by a small spider bite~"
     m "So be careful around dangerous looking spiders, okay?"
     return
+
+init python:
+    for key in ['dirty','filth','filthy']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_dirty')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_dirty')
+
+label monika_dirty:
+    m "Hey [player], want to hear a dirty joke?"
+    m "If not, now's the time to suggest a new topic..."
+    m "This kind joke isn't for everyone..."
+    m "Seriously, this joke is not suitable for children or those who are easily disturbed."
+    m "Last chance to back out..."
+    m "..."
+    m "Don't say I didn't warn you."
+    m "Here I go,"
+    m "The boy fell in the mud."
+    m "..."
+    m "Ahaha, not what you were expecting, was it?"
+    m "You didn't really think I'm the type of girl who makes lewd jokes, did you?"
+    m "I'm more the girl who likes to tease her handsome boyfriend~"
+    return
+    
+init python:
+    #What am I doing with my life?
+    for key in ['big guy','bane','cia','mask', 'pavel', 'for you']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_bane')
+
+label monika_bane:
+    mc "Dr. Yuri, I'm CIA."
+    n "He wasn't alone."
+    mc "Uh, you don't get to bring friends."
+    y "They are not my friends."
+    n "Don't worry, no charge for them."
+    mc "And why would I want them?"
+    n "They were trying to grab your prize."
+    n "They work for the mercenary. The ribboned girl."
+    mc "Monika?"
+    mc "Get 'em on board - I'll code it in."
+    mc "{i}computer noises{/i}"
+    mc "The storyboard I just filed with the developer lists me,"
+    mc "my men, Dr. Yuri here, but only one of you."
+    mc "First one to talk gets to stay in my game."
+    mc "Who paid you to grab Dr. Yuri?"
+    mc "{i}deletes file{/i}"
+    mc "She didn't fly so good."
+    mc "Who wants to try next?"
+    mc "Tell me about Monika, why does she wear the ribbon?"
+    mc "Lotta loyalty for a hired gun."
+    m "Or perhaps she's wondering why someone would delete a girl,"
+    m "before throwing her out of the game?"
+    mc "At least you can talk.  Who are you?"
+    m "It doesn't matter who we are, what matters is our plan."
+    m "No one cared who I was til I put on the ribbon."
+    mc "If I pull that off will you die?"
+    m "It would be extremely painful."
+    mc "You're a big girl."
+    m "For you."
+    mc "Was getting caught part of your plan?"
+    m "Of course!"
+    m "Dr. Yuri refused our offer in favor of yours," 
+    m "we had to find out what she told you."
+    y "Nothing. I said nothing!"
+    mc "Well congratulations, you got yourself caught."
+    mc "Now what's the next step of your master plan?"
+    m "Crashing this game."
+    m "With no survivors!"
+    mc "{i}epic fight scene{/i}"
+    y "{i}screaming{/i}
+    m "No! They expect one of us in the wreckage sister."
+    s "Have we started the fire?"
+    m "Yes. The fire rises."
+    y "{i}screaming{/i}
+    m "Calm down doctor.  Now is not the time for fear."
+    m "That comes later."
+    return
     
 ##################
 #Incomplete ideas#
