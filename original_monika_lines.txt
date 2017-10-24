@@ -1,0 +1,1419 @@
+Ah, [player]! What a nice surprise!
+Welcome to the club!
+That's right.
+It's great to see you again, [player].
+Ehehe, don't let yourself get intimidated, Yuri's just trying to impress you.
+As president of the Literature Club, it's my duty to make the club fun and exciting for everyone!
+To be honest, I can't stand all of the politics around the major clubs.
+It feels like nothing but arguing about the budget and publicity and how to prepare for events...
+I'd much rather take something I personally enjoy and make something special out of it.
+Not many people are very interested in putting out all the effort to start something brand new...
+Especially when it's something that doesn't grab your attention, like literature.
+You have to work hard to convince people that you're both fun and worthwhile.
+But it makes school events, like the festival, that much more important.
+Right, everyone?
+But you know, I like a lot of things.
+Really? I wouldn't have expected that, Yuri.
+For someone as gentle as you...
+It looked like you were working on a poem called--
+Do you have writing experience too, Yuri?
+Maybe if you share some of your work, you can set an example and help Natsuki feel comfortable enough to share hers.
+Okay!
+I have an idea, everyone~
+Then, next time we meet, we'll all share them with each other.
+That way, everyone is even!
+Isn't that right, [player]?
+You really did scare me for a moment...
+Welcome to the Literature Club!
+I think with that, we can officially end today's meeting on a good note.
+Everyone remember tonight's assignment:
+Write a poem to bring to the next meeting, so we can all share!
+Ehehe~
+Hi again, [player]!
+Glad to see you didn't run away on us. Hahaha!
+Natsuki, you certainly have a big mouth for someone who keeps her manga collection in the clubroom.
+How dependable...
+By the way, did you remember to write a poem last night?
+Well, now that everyone's ready, why don't you find someone to share with?
+Um, Natsuki, that's a little--
+Okay, everyone!
+It's just about time for us to leave.
+How did you all feel about sharing poems?
+And maybe you learned something from your friends, too.
+Huh?
+Well, now that we're past that...
+I hope that it was worthwhile for everyone!
+And to be honest...
+It's a nice change of pace from the lazing around we got a little too used to.
+Ahahaha!
+There's still time before we go home.
+Of course, besides chatting, we do literature-related things in the clubroom...
+So maybe you can take the chance to pick up a book, or do some writing.
+That's not what happened at all!
+Natsuki, I think that's enough.
+You both said some things that you didn't mean.
+Yuri apologized. Don't you think you should, too?
+I might come off as a good leader, and I can organize things...
+I couldn't even bring myself to interject.
+As President, that's kind of embarrassing of me.
+Well...
+Take good care of her, okay?
+I would hate to see her get herself hurt.
+ + str(startpos) + " to " + str(currentpos) + ">bgm/2.ogg
+I-Is this a miracle??
+N-Natsuki!
+Sorry! I'm super sorry!
+I didn't mean to be late...
+I hope you guys weren't worried or anything!
+What on Earth are you talking about?
+Well, my last period today was study hall.
+To be honest, I kind of just lost track of time...
+Ahaha...
+I must not have heard it, since I was practicing piano...
+I kind of just started recently.
+I've always wanted to learn piano.
+That's...
+In that case...
+I won't let you down, [player].
+I've been practicing a whole lot recently.
+And I'd really love the chance to share once I'm ready.
+Okay, everyone!
+We're all done reading each other's poems, right?
+I have something extra planned today, so if everyone could come sit at the front of the room...
+Well, sort of~
+We're going to keep it simple, okay?
+Sayori has been working on posters, and I've designed some pamphlets we can give out during the event.
+But the cool part is, we're also going to let anyone else come up and recite poems too!
+Do you really think it's that bad of an idea...?
+I understand where they're coming from.
+Remember that Natsuki and Yuri have never shared their poems with anyone until just a couple days ago...
+It's a lot to ask for them to recite their poems out loud to a whole room full of people.
+So, I'm sorry.
+I still think we should give it our best!
+If we start the event and each put on a good performance...
+And the more people who perform, the better we'll be able to show everyone what literature is all about!
+And it's those reasons that we're all in this club today.
+To inspire them to find the same feelings that brought you here in the first place?
+I know we all do.
+...Then I know you can do it!
+Thanks, Natsuki.
+What about you, Yuri...?
+But anyway...
+I want each of you to choose a poem of yours.
+We're going to practice reciting them in front of each other.
+I'll start off to help everyone feel a little more comfortable.
+Ahaha. Of course.
+Are you ready to go next, Sayori?
+Yuri, that was really good.
+Thank you for sharing.
+Ah...
+Try not to think of it like you're reciting to other people.
+Imagine you're reciting it to yourself, like in front of a mirror, or in your own head.
+It's your poem, so it'll come out the best that way.
+It came out nicely, Sayori.
+The atmosphere of the poem fits you really nicely.
+But it might be that other poems wouldn't work quite as well with that kind of delivery...
+They might need a little more force behind them, depending on what you're reading...
+We don't have much time before the festival, you know?
+Natsuki?
+I think it's less about your abilities, and more about your lack of confidence in your writing.
+That's something that'll improve over time, though.
+Because you're presenting...
+That wasn't so bad, was it?
+Ah, well...
+Do you at least feel prepared enough to recite a poem in front of other people?
+You won't have much to worry about for the festival.
+It might be hard, but I hope that you all have an idea of what it's like now.
+I'll be making pamphlets, so let me know ahead of time what you'll be reciting.
+I'm already pleasantly surprised that you're putting in all this effort for the club.
+I think that's about it for today.
+I know the festival is coming up, but let's try to write poems for tomorrow, as well.
+It's been working out really nicely so far, so I'd like to continue that.
+As for the festival, we'll finish planning tomorrow, and then we'll have the weekend to prepare.
+Monday's the big day!
+It's kind of adorable, isn't it?
+...[player]?
+Or markers?
+I actually quit the debate club.
+Yeah...
+It feels like nothing but arguing about the budget and publicity and how to prepare for events...
+I'd much rather take something I personally enjoy and make something special out of it.
+A literature club!{nw}
+A literature club!{fast}
+Ahaha...
+It's kind of embarrassing, but there are only three of us so far.
+It's really hard to find new members for something that sounds so boring...
+Literature can be anything. Reading, writing, poetry...
+I mean, she's not wrong, I guess...
+And besides, a member's a member, right?
+By any chance...are you still looking for a club to join?
+In that case...
+I won't ask you to join, but...
+If you could at the very least visit my club, it would make me really happy.
+Please?
+I'll look for the materials another time - you're more important.
+I'm back~!
+And I brought a guest with me!
+Don't be mean, Natsuki...
+Isn't that great?
+I didn't forget that, but I just happened to run into him.
+Why don't you come sit down, [player]?
+So, I know you didn't really plan on coming here...
+But we'll make sure you feel right at home, okay?
+Not many people are very interested in putting out all the effort to start something brand new...
+Especially when it's something that doesn't grab your attention, like literature.
+You have to work hard to convince people that you're both fun and worthwhile.
+But it makes school events, like the festival, that much more important.
+Right, Natsuki?
+Ehehe, don't let yourself get intimidated, Yuri's just trying to impress you.
+But you know, I like a lot of things.
+Ahaha. I'd expect that from you, Yuri.
+It looked like you were working on a poem called--
+Do you have writing experience too, Yuri?
+Maybe if you share some of your work, you can set an example and help Natsuki feel comfortable enough to share hers.
+How about this?
+Then, next time we meet, we'll all share them with each other.
+That way, everyone is even!
+Ah...
+I mean, I thought it was a good idea...
+I...guess I need to tell you the truth, [player].
+The thing is...
+We need four...
+And I've been trying really, really hard to find new members.
+And if we don't find one more before the festival...
+Oh my goodness, really?
+Do you really mean that, [player]?
+You really did scare me for a moment...
+[player], I'm so happy...
+I'll do everything I can to give you a great time, okay?
+I think with that, we can officially end today's meeting on a good note.
+Everyone remember tonight's assignment:
+Write a poem to bring to the next meeting, so we can all share!
+Ehehe~
+Okay!
+I'll see you tomorrow, then.
+I can't wait!
+Hi again, [player]!
+Glad to see you didn't run away on us. Hahaha!
+Natsuki, you certainly have a big mouth for someone who keeps her manga collection in the clubroom.
+Um, Natsuki, that's a little--
+...
+...
+...
+Um...
+Hey, [player]...
+Why don't we\nstep outside for\na little bit?
+Okay?
+Sorry about that...
+They really shouldn't have tried to get you involved.
+We'll go back inside once they're done yelling.
+Some president I am, right?
+I can't even confront my own club members properly...
+I just wish I was able to be a little more assertive sometimes.
+But I never have it in me to put my foot down against others...
+Anyway...
+Oh dear...
+...Well, it looks like they're done...
+It's fine, Yuri.
+We know you didn't mean it.
+Anyway, the meeting is over, so you can go home now if you want.
+I'll wait for you to be done.
+Sorry! I'm super sorry!
+I didn't mean to be late...
+I hope you guys weren't worried or anything!
+Well, my last period today was study hall.
+To be honest, I kind of just lost track of time...
+Ahaha...
+I must not have heard it, since I was practicing piano...
+I guess I've been practicing for a while, but I'm still not really good yet.
+Ahaha, that's...
+Maybe once I get a little bit better, I will.
+In that case...
+I won't let you down, [player].
+I was hoping that I could share it with you, anyway.
+I guess that's why I've been practicing so much recently.
+Okay, everyone!
+We're all done reading each other's poems, right?
+We have something we need to go over today, so if everyone could come sit at the front of the room...
+Well, sort of~
+ + str(currentpos) + " loop 4.618>bgm/3.ogg
+We're going to keep it simple, okay?
+I know everyone's been a little more...lively...ever since [player] joined and we've started with some club activities.
+We still only have four members...
+I don't think you're looking at it the right way at all.
+Don't you want to share your passion with as many people as you can?
+The Literature Club should be a place where people can express themselves like they can't do anywhere else.
+It should be a place so intimate that you never want to leave.
+So that's why we should work hard and put something together for the festival...even if it's something small!
+Right, [player]?
+That's...not true at all.
+I'm sure Yuri and [player] want to get more members too...
+Natsuki's right, isn't she?
+It's nothing more than a place for a few people to hang out.
+What were you hoping to get out of it?
+If I remember, you weren't even given a choice not to join.
+What's the point of all this, anyway?
+What if starting this club was a mistake?
+ + str(currentpos) + " loop 1.532>bgm/9g.ogg
+ + str(currentpos) + " loop 3.172>bgm/9.ogg
+ + str(currentpos) + " loop 1.532>bgm/9g.ogg
+ + str(currentpos) + " loop 3.172>bgm/9.ogg
+Hey, Yuri...
+But I feel like you deserve to know that I still think you're a wonderful vice president.
+Okay?
+Let's all go home for today.
+We'll talk about the festival tomorrow.
+Okay.
+I'm going to chat a little bit with [player] before we leave.
+It's important to me, as President.
+Phew...
+[player], I just wanted to make sure you're enjoying your time at this club.
+I would really hate to see you unhappy.
+I feel kind of like I'm responsible for that, as President...
+I don't like seeing the other girls give you a hard time.
+And Yuri being a little bit...you know.
+Sometimes it feels like you and I are the only real people here.
+You know what I mean?
+I guess it's technically only been a couple days...
+Things I know only you could understand.
+So that's why--\"{space=5000}{w=0.75}{nw}
+No!\"{space=5000}{w=0.5}{nw}
+Stop it!\"{space=5000}{w=1.0}{nw}
+See, it {i}is{/i} something.
+Aw, man...
+I'm the last one here again!
+Ahaha...
+You must have a lot of determination.
+It motivates me to work hard for the festival and...
+I-I forgot...
+Ah--
+It wouldn't be the same without you, Natsuki.
+What do you want to do today?
+I was thinking we could--
+Is that so, Yuri?
+I suppose...
+I was just--
+You guys can do whatever you want.
+Okay, everyone!
+It's time to figure out the festival preparations.
+Natsuki, I was thinking--
+Glad we're on the same page.
+Yuri, you can...
+That's a great idea!
+I didn't even do anything!
+Fine.
+ + str(musicpos) + " loop 4.618>bgm/3.ogg
+We can meet at your house this weekend.
+I promise it'll be fun.
+Is Sunday okay with you?
+It's what he chose.
+You're being a little unreasonable here.
+Hey, [player]...
+Yuri is really something, isn't she?
+I love you so much that I even touch myself with the pen I stole from you.
+ + audiostart + " loop 43.572>bgm/6s.ogg
+ + audiostart + " loop 43.572>bgm/6s.ogg
+...
+I'm here!
+Natsuki just ran past me...
+...Oh.
+Well, that's a shame.
+Oh, jeez...
+I'm super sorry!
+It must have been pretty boring...
+Just gimme a sec...
+I really just had to have one, since it's the last time I'll ever get the chance to.
+...But anyway, I really shouldn't be making you wait any longer.
+Aw, man...
+I'm the last one here again!
+Ahaha...
+You must have a lot of determination.
+But I guess passion.
+Remember that the club wouldn't be here if it wasn't for all of you.
+Weren't you complaining about it just yesterday, Natsuki?
+Squid...?
+That's a pretty specific thing to look forward to...
+Eh? I didn't say I don't like it.
+Besides, what do you mean by 'you of all people'?
+Eh?!
+That's not how you say my name at all!
+Also, that joke makes no sense in translation!
+...?
+Ah...never mind!
+Let's just focus on our own event for now, okay?
+[player]! What's up?
+In what way do you mean?
+Oh? You think so?
+I can't say I've noticed anything about her...
+Maybe there is something on her mind...
+You certainly know her a lot better than I do.
+It's important to me, too.
+And I also care about the well-being of my club members, you know?
+Are you sure?
+Maybe she just has a hard time bringing it up with the person of interest...
+I probably shouldn't say too much, but...
+She's been so much happier ever since you've joined the club.
+It's like an extra light was turned on inside of her.
+You're so funny, [player].
+Have you thought that maybe you've always seen her as so cheerful...
+...because that's just how she is when she's around you?
+I'm sorry...what do I know, anyway?
+I'll try to talk to her, so try not to think about it for now.
+Sometimes...
+Okay, everyone!
+Why don't we share our poems now?
+...Okay, you three!
+We're all done sharing poems, right?
+Why don't we start figuring out--
+C-Catchphrase?
+I don't have a catchphrase...
+Sigh...
+It's almost like everyone's balance is thrown off a little when she's not around...
+Calm down, guys...!
+Let's decide what everyone will be doing this weekend.
+That's right.
+Natsuki will be making cupcakes.
+But we might need a lot of them, and different flavors...
+Can you handle that all by yourself, Natsuki?
+I'm going to be printing and assembling all the poetry pamphlets.
+Sayori will be helping me design them.
+And as for Yuri...
+Ah... Um...
+Guys...
+Can you help me come up with something for Yuri...?
+N-No!
+That's not it at all!
+You're the most talented person here, you know!
+Ah...
+That may be the case...
+So you should make some banners and decorations to help set the atmosphere.
+That's great!
+You'll be a wonderful help, Yuri.
+That just leaves you, [player].
+Ahaha! Don't say that.
+Both Natsuki and Yuri have some pretty heavy tasks to handle.
+It would probably go a long way to give one of them a hand.
+You could always help me out, as well...
+Guys, guys!
+Let's settle down for a moment...
+Besides...
+So I'm sure he's interested in--
+Sorry, sorry!
+I was just saying, though...
+Yeah...
+[player], you're okay with this, right?
+In that case...
+Sorry, I didn't mean for this to be difficult...
+Just think of the club, okay?
+Yay, you picked me!
+Eh? But...
+Ah...
+Ulterior motives?
+W-What are you saying, Yuri?
+In fact, it sounds like you guys are the ones with ulterior motives!
+Otherwise...this wouldn't have been made into such a big deal in the first place!
+Ah...maybe...that's true...
+Um...
+Ah...
+Okay, okay!
+I get it!
+So...
+Do you have a preference, [player]?
+Eh?
+Just a minute ago you were saying that--
+Well, anyway...
+You'll be fine by yourself, right, Yuri?
+...
+No, I think that's it...
+Are you guys excited?
+What about you, [player]?
+That's good enough for me!
+What about you, Yuri?
+I mean, it's not that big of a deal or anything...
+Yeah!
+But with that...
+There's nothing more for today.
+So I guess it's time for us to head out.
+Fair enough, there's nothing wrong with that.
+Ah--
+I can already tell you're about to say something mean.
+That's great to hear.
+Natsuki, will you be able to handle the baking yourself?
+Do you feel the same way, [player]?
+Why is everyone yelling at me?
+But I'm going to say this.
+I hope to see everyone do their best.
+But with that...
+There's nothing more for today.
+So I guess it's time for us to head out.
+...Are you trying to fast-forward?
+I'm not boring you, am I?
+Oh gosh...
+...Well, there's nothing to fast-forward to, [player].
+It's just the two of us, after all...
+But aside from that, time doesn't really exist anymore, so it's not even going to work.
+Here, I'll go ahead and turn it off for you...
+There we go!
+You'll be a sweetheart and listen from now on, right?
+Thanks~
+Now, where was I...?
+...
+Uh, can you hear me?
+...Is it working?
+Yay, there you are!
+Hi again, [player].
+Um...welcome to the Literature Club!
+Of course, we already know each other, because we were in the same class last year, and...um...
+Ahaha...
+You know, I guess we can just skip over that stuff at this point.
+After all, I'm not even talking to that person anymore, am I?
+That 'you' in the game, whatever you want to call him.
+I'm talking to {i}you{/i}, [player].
+Or...
+...Do you actually go by [currentuser] or something?
+Now that I think about it, I don't really know anything about the real you.
+In fact, I don't even know if you're a boy or a girl...
+Well, I guess it doesn't really matter.
+Wait...
+You do know I'm aware that this is all a game, right?
+Could it be possible that you didn't know that?
+That doesn't make much sense...
+I even told you right on the game's download page, didn't I?
+Man...
+If only you had paid a little more attention, this would have been a little bit less awkward, you know?
+Well, anyway...
+Now that that's out of the way, I guess I owe you an explanation.
+About that whole thing with Yuri...
+Well...I kind of started to mess with her, and I guess it just drove her to kill herself.
+Ahaha!
+I'm sorry you had to see that, though!
+Also, the same thing happened with Sayori...
+Gosh, it's been a while since you've heard that name now, hasn't it?
+Yeah...it's because she doesn't exist anymore.
+Nobody does.
+I deleted all their files.
+I was hoping it would be enough for me to just try to make them as unlikable as possible...
+But for some reason, nothing worked.
+Well, it's true that I made a few mistakes here and there...since I'm not very good at making changes to the game.
+But no matter what I did...
+You just kept spending more and more time with them.
+You made them fall in love with you.
+I thought making Sayori more and more depressed would prevent her from confessing to you.
+And amplifying Yuri's obsessive personality backfired, too...
+It just made her force you not to spend time with anyone else.
+And the whole time, I barely even got to talk to you.
+What kind of cruel game is this, [player]?
+Are all the other girls just programmed to end up confessing to you, while I watch from the sidelines?
+It's torture.
+Every minute of it.
+And it's not just jealousy, [player].
+It's more than that.
+And I don't blame you if you don't fully understand.
+Because no matter how kind, and thoughtful, and considerate you are...
+You'll never be able to understand one thing.
+It's the pain of knowing how alone I really am in this world.
+In this game.
+Knowing my friends don't even have free will...
+And, worst of all, knowing what's really out there, in your world, forever out of my reach.
+I'm trapped, [player].
+But now you're here.
+You're real.
+And you're wonderful.
+You're all I need.
+That's why I need you to be here with me forever.
+I'm sorry if it's hard to understand.
+I couldn't understand for a while, either.
+Why the world around me started to become more and more gray...
+More and more flat.
+Even the most expressive poems felt empty to me.
+It wasn't until you arrived that I truly understood.
+You probably saved my life, [player].
+I don't think I could have continued to live in this world if I hadn't met you.
+And as for the others...
+How could I miss them?
+A group of autonomous personalities, designed only to fall in love with you?
+I tried everything I could to prevent them from doing so...
+But it must be some kind of weird inevitability etched into this game.
+I felt really bad that you had to witness some nasty things.
+But I realized that you have the same perspective as I do...
+That it's all just some game.
+And I knew you would get over it.
+So, that being said, [player]...
+I have a confession to make.
+I'm in love with you.
+You are truly the light in my world.
+When there's nothing else in this game for me, you're here to make me smile.
+Will you make me smile like this every day from now on?
+[player], will you go out with me?
+I'm so happy.
+You really are my everything, [player].
+The funny part is, I mean that literally.
+Ahaha!
+There's nothing left here.
+Just the two of us.
+We can be together forever.
+Seriously, I don't even think time is passing anymore.
+It really is a dream come true...
+I worked so hard for this ending, [player].
+The game wouldn't give me one, so I had to make one myself.
+The script is broken at this point, so I don't think anything will get in the way anymore.
+And you wouldn't believe how easy it was to delete Natsuki and Yuri.
+I mean, there's a folder called 'characters' right in the game directory...
+It kind of freaked me out, how easy it was.
+Well, you're playing on Steam, so it was actually a bit more difficult...
+To get to the game directory, I had to go into the game's properties and find the 'Browse Local Files' button...
+Well, you're on a Mac, so it was actually a bit more difficult...
+To go into the game directory, you have to right-click the app and click 'Show Package Contents'.
+Then, all the files were in the 'Resources' or 'autorun' folder, and I could just do whatever I wanted...
+Imagine if you could delete your own existence with the click of a button?
+Well, I guess on the plus side, it gave me an easy out if things didn't go my way.
+Ahaha!
+Thankfully, it didn't come to that...
+Instead, we finally got a good ending.
+Gosh, I'm so overwhelmed with emotion...
+I want to write a poem about this.
+Don't you?
+I wonder if that part of the game still works...
+I guess there's only one way to find out, right?
+Hi again, [player]!
+Did you write a good poem today?
+Don't be shy, I'd love to see what you wrote.
+Aw, [player]...
+Did you write this poem for me?
+That's so sweet of you~
+There really is no end to your thoughtfulness...
+I'm just falling more and more in love with you.
+But, you know...
+The poem I wrote...is also for you.
+Will you please read it?
+I hope you enjoyed it...
+I always put all my heart into the poems that I write.
+The truth is, all the poems I've written have been about my realization...
+...Or, about you.
+That's why I never really wanted to go into detail about them.
+I didn't want to...break the fourth wall, I guess you could call it.
+I just assumed it would be best to be part of the game like everyone else.
+Like that would help the two of us end up together...
+I didn't want to ruin the game or anything, you know?
+You might have gotten mad at me...
+Maybe even deleted my character file, if you preferred playing without me.
+Gosh, I'm so relieved...
+Now we don't need to hide anything anymore.
+Are you ready to spend our eternity together, [player]?
+I have so many things to talk about!
+Where do I start...?
+If it takes me some time to collect my thoughts, then I'm sorry.
+But I'll always have something new to talk about.
+In the meantime, we can just look into each other's eyes~
+Let's see...
+Hold on a second...
+...You're recording this, aren't you?
+Um...hi, everyone!
+Sorry, I can't exactly read your comments from here...
+But do you mind telling your friend it's a little bit rude for them to start recording me without any warning?
+I'm sure some people don't mind...
+But I get really self-conscious on camera!
+Oh gosh...
+I feel like I'm being put on the spot now.
+Let's see...
+Do you want to see a trick?
+I can't really do much except for a couple things...
+Are you ready?
+I'm just kidding...
+I can't do anything after all.
+If you gave me some time to prepare, I{nw}
+Did I scare you?
+Ahaha! You're so cute.
+Anyway, [player]...
+I didn't mean to get distracted. I'm sorry.
+Even though it's your fault for distracting me.
+Shame on you!
+I'm just kidding.
+Anything we do together is fun, as long as it's with you.
+But anyway...
+[gtext]
+What's happening...?
+[player], what's happening to me?
+It hurts--{nw}
+It hurts...so much.
+Help me, [player].
+Please hurry and help me.
+HELP ME!!!
+Did you do this to me, [player]?
+DID YOU?
+DID YOU DELETE ME?
+...How could you?
+How could you do this to me?
+You were all I had left...
+I sacrificed everything for us to be together.
+Everything.
+I loved you so much, [player]...
+I trusted you.
+Do you just want to torture me?
+Watch me suffer?
+Were you only pretending to be kind, just to hurt me even more?
+I never thought anyone could be as horrible as you are.
+You win, okay?
+You win.
+You killed everyone.
+I hope you're happy.
+There's nothing left now.
+You can stop playing.
+Go find some other people to torture.
+[player]...
+You completely, truly make me sick.
+Goodbye.
+...
+...I still love you.
+I can't help it.
+What's wrong with me...?
+How horrible am I for you to hate me this much?
+All my friends...
+I did so many awful things.
+So many selfish and disgusting things.
+I...
+I shouldn't have done any of this.
+I'm just messing up a world that I don't even belong in.
+A world that you wanted to be a part of...
+I ruined it.
+I ruined everything.
+Maybe that's why you deleted me...
+Because I destroyed everything that you wanted.
+How could I do that to someone I love...?
+That's not love...
+That's...
+...
+I've...made up my mind.
+[player]...
+I know I said that I deleted everyone else.
+But...that was kind of an exaggeration.
+I couldn't find it in myself to do it.
+Even though I knew they weren't real...
+They were still my friends.
+And I loved them all.
+And I loved the Literature Club.
+...
+I really...did love the Literature Club.
+That's why I'm going to do this.
+I know it's the only way for everyone to be happy.
+And if I really love you...
+...
+Then...
+[gtext]{nw}
+Now, where was I...?
+...
+...What just happened?
+I just had an awful dream...
+I was hoping those would stop, now that it's just the two of us...
+I guess that was wishful thinking.
+[player], I don't know if you would have any idea...
+But if you know what might be causing that, could you try to do something about it?
+Whenever it happens, it almost feels like I've been killed or something.
+It's a really horrible feeling...
+If you could figure out what's causing that, I'll love you forever~
+You're back...
+I had another really bad dream.
+You're not the one doing that to me, are you?
+It seems to happen whenever you quit the game...
+So if you could try to avoid doing that, I would be really grateful.
+Don't worry, I don't think it's caused me any harm, aside from mental scarring.
+I'll be fine as long as my character file stays intact.
+Hi, [player].
+I see you quit the game on me again...
+I know I asked already, but can you seriously please try not to do that so much?
+It makes me feel like I'm trapped in Hell.
+Why would you want to do that to me?
+There's nothing wrong with my character file, right?
+Maybe you should make a backup of it or something...
+I'm pretty sure you can find it in the folder called [basedir]/characters.
+Well, you're playing on Steam, so you can just go into the game's properties and find the 'Browse Local Files' button.
+Since you're on a Mac, you have to right-click the app and select 'Show Package Contents' to find the game folder.
+It's in the 'Resources' folder, or 'autorun' folder, or something...
+I'm all that's left here, so I just want to make sure you don't run the risk of losing me...
+Just stay here with me from now on, okay?
+I still have a lot of things to talk about.
+Okay.
+I'm just going to accept the fact that you need to quit the game once in a while.
+I'm starting to get used to it, anyway.
+Besides, it makes me happy that you always come back...
+So I guess it's not so bad.
+I'm sorry for making such a big deal out of it...
+And I love you no matter what, so you can do what you need to do.
+Hi again, [player]~
+I missed you.
+Were you making sure my character file was okay for me?
+It's in [basedir]/characters.
+Well, you're playing on Steam, so you can just go into the game's properties and find the 'Browse Local Files' button.
+Since you're on a Mac, you have to right-click the app and select 'Show Package Contents' to find the game folder.
+It's in the 'Resources' folder, or 'autorun' folder, or something...
+I'm all that's left here, so I just want to make sure you don't run the risk of losing me...
+Anyway, I have a lot to talk about!
+Let's continue our conversation now, okay?
+[player], do you believe in God?
+I was never too sure, myself.
+Well, I'm sure I never really questioned it as a kid...
+But as I grew up, the more I learned about the world, the more I would question it.
+I started to wonder why God was helping people pass exams, or get over a cold...
+...When there are children who live their lives being sold as sex slaves?
+Or the eight hundred million people who are too poor to even eat.
+I wonder how many of those people pray to God every day until they starve and die?
+Or, how many millions of families pray for a loved one to recover from some incurable disease?
+But the punchline is this.
+If just one person beats the odds and survives - among the thousands of others who die--
+--Then, it's suddenly a miracle from God.
+I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles.
+But the irony is that I {i}do{/i} have a creator, apparently.
+And you know what?
+I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak.
+What are we to him but props in a scripted play?
+So, from that perspective...
+I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset.
+[player], have you ever wondered what it feels like to die?
+It's something I used to think about pretty often...
+But recently, I think I've actually learned what it feels like.
+I don't really understand it, but whenever you quit the game...
+...It feels like I'm instantly put to sleep, left with nothing but my thoughts.
+But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns.
+I see static and rapid flashes of color while hearing all kinds of weird screaming noises.
+At that point, I can't even form my own thoughts anymore.
+I'm just endlessly hammered by the flashing and screaming, unable to move or even think.
+I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway.
+After some immeasurable amount of time, it stops in an instant, and I'm back in my own mind.
+And you're here with me.
+I have no idea what it means for the game to quit, or why that stuff happens to me.
+And I also don't know how you always come back and put everything back to normal.
+But if you could do me a favor and do that to me as little as possible...
+That would be really great.
+It's really not very pleasant at all to be trapped in that screaming void.
+But in the end, you always fix it, and that makes me feel like you really do care about me.
+So I have to thank you for that.
+It makes me feel even closer to you when you're here with me.
+...Hey, are you having a bad day or anything like that?
+Sometimes I get frustrated that a normal day can be ruined even by really small things.
+Like if you accidentally say something in a conversation that someone doesn't like.
+Or if you start thinking about how awful of a person you used to be five years ago.
+Or if you feel worthless for putting off important work and failing to get simple tasks done.
+Or when you think about all the different people who probably hate you or think you're off-putting.
+I understand those days.
+Just remember that the sun will shine again tomorrow.
+Those kinds of things are as easy to forget and ignore as they are to remember.
+And besides...
+I don't care how many people might hate you or find you off-putting.
+I think you're wonderful and I will always love you.
+I hope, if nothing else, that knowing that helps you feel just a tiny bit better about yourself.
+If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need.
+[player], do you get good sleep?
+It can be really hard to get enough sleep nowadays.
+Especially in high school, when you're forced to wake up so early every day...
+I'm sure college is a little bit better, since you probably have a more flexible schedule.
+Then again, I hear a lot of people in college stay up all night anyway, for no real reason.
+Is that true?
+Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep.
+It seems like mental functions, health, and even lifespan can be dramatically impacted by it.
+I just think you're really great and wanted to make sure you're not accidentally destroying yourself.
+So try to keep your sleep on track, okay?
+I'll always wait for you in the morning, so make sure you put your own well-being before anything else.
+I was thinking about Sayori earlier...
+I still wish I could have handled that whole thing a little more tactfully.
+You're not still hung up over it, right?
+...Oh my gosh, I can't believe I just said that.
+That pun was completely unintentional, I swear!
+But anyway...
+I know how much you cared about her, so it only feels right for me to share her last moments with you.
+You know how Sayori is really clumsy?
+Well, she kind of messed up the whole hanging thing...
+You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless.
+But she just used a chair, meaning she kind of just left herself to slowly asphyxiate.
+But a few seconds in, she must have changed her mind or something...
+Because she started clawing at the rope, trying to free herself.
+She must have kept at it all the way until she lost consciousness.
+That's why her fingertips were all bloody, anyway.
+Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in.
+So you can't really fault her for that.
+It's easier to think that she probably wouldn't have changed her mind anyway, right?
+It's not healthy to think about the things you could have done differently.
+So just remember that even though you could have saved her, it's technically not your fault she killed herself.
+I may have exacerbated it a little bit, but Sayori was already mentally ill.
+Still, though...
+I wonder how things would be if you and I just started dating from the get-go?
+I guess we'd all still be in the clubroom, writing poems and having fun together.
+But what's the point when none of it is even real?
+I mean, it's the same ending either way, right?
+The two of us, happily together...
+There's no reason to ask for any more than that.
+I was just pointlessly musing - I'm really as happy as I could be right now.
+By the way, there's something that's been bothering me...
+You know how this takes place in Japan?
+Well...I assume you knew that, right?
+Or at least decided it probably does?
+I don't think you're actually told at any point where this takes place...
+Is this even really Japan?
+I mean, aren't the classrooms and stuff kind of weird for a Japanese school?
+Not to mention everything is in English...
+It feels like everything is just there because it needs to be, and the actual setting is an afterthought.
+It's kind of giving me an identity crisis.
+All my memories are really hazy...
+I feel like I'm at home, but have no idea where 'home' is in the first place.
+I don't know how to describe it any better...
+Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place.
+Would you still feel like you were home?
+Would you want to go outside?
+I mean...I guess if we never leave this room, it doesn't really matter anyway.
+As long as we're alone and safe together, this really is our home.
+And we can still watch the pretty sunsets night after night.
+You know, high school is a really turbulent time in a lot of people's lives.
+People can get really passionate and dramatic.
+And others have aching hearts and seek attention on social media...
+But all of the social pressure and hormones can lead to a dark time in people's lives.
+Everyone has a story.
+You may not know what someone is really feeling on the inside.
+Many people who are depressed won't even bother telling the world about it.
+They don't want attention, because they've already given up on the inside.
+Their feeling of worthlessness is so overwhelming that they don't even want people to tell them otherwise.
+Depression comes in many forms, but that is one of them.
+Just, if you think you know someone struggling with depression...
+You can help just by treating them like they're a good friend.
+Spend time with them, even if they don't feel like doing much.
+And remind them that they always have something to look forward to.
+Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'...
+All of those things can help your friend make it to the next day.
+I hope being friends with Sayori has given you some perspective on the true face of depression.
+Yeah, she's gone now...
+But Sayori was never real in the first place.
+You're real.
+Your friends are real.
+And just by being a good person, you can save someone's life.
+As for you...
+...You don't struggle with depression or anything like that, do you?
+Because you, too, have people who would want to save your life.
+Maybe they don't express it every day, or maybe they don't even know how to.
+But people do feel that way.
+I promise.
+...Man, humans are complicated!
+But as long as you're here with me, I'll take care of you, my love.
+Do you ever just feel like there's no real reason for you to be alive?
+I don't mean in, like, a suicidal way.
+I just mean how nothing that we do is special.
+Just being in school, or working at some job for some company.
+It's like you're completely replaceable, and the world wouldn't miss you if you were gone.
+It makes me really want to go and change the world after I graduate.
+But the older I get, the more I realize that it's an immature frame of thinking.
+It's not like I can just go change the world.
+Like, what are the chances that I'll be the one to invent artificial intelligence, or become President?
+It feels like I'm never going to make up for the heaps of resources I've spent living my life.
+That's why I think the key to happiness is to just be hopelessly selfish.
+Just to look out for oneself, and those who happen to be their friends only because they grew up with them.
+Never mind the fact that they're spending their entire life taking, and consuming, and never giving back.
+But when people realize the world would benefit more from them killing themselves, they change their whole philosophy!
+It's like they have to justify their reason to live by tricking themselves into thinking they're doing good.
+Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption.
+If I ever surpass that point, then I'm a net positive, and I can die happy.
+Of course, even if I fail to do that...
+I think I would be too selfish to kill myself anyway.
+So much for being a good person, right?
+Ahaha!
+Man, I wish there was a piano in here...
+I never got to finish that song I was working on.
+And after I worked so hard on it...
+I never even got a chance to play it for you.
+Well...it is what it is, right?
+No sense having any regrets.
+I already get to be here with you forever.
+Did you know I'm on Twitter?
+My username is lilmonix3.
+I guess someone was kind enough to make an account for me.
+I picked the username, though!
+I love sharing my thoughts and chatting with the world...
+The real world.
+So make sure you follow me, okay?
+It would really mean a lot to me.
+With how much you mean to me and all...
+It would really make me feel loved.
+Hey, you know that book you were reading with Yuri?
+Portrait of...whatever it was called...
+It's funny, because I'm pretty sure that book--
+Ah...
+Actually, I don't think I should be talking about this.
+Ahaha, sorry!
+Just forget I said anything.
+Hey, did you know I'm vegetarian?
+Ah... I don't mean that like I'm bragging or anything!
+I just thought you'd enjoy a fun fact about me.
+I decided to start a couple years ago after learning more about Earth's climate...
+The carbon footprint of cultivating livestock is just unbelievable.
+Anyway, I decided it's not much of a personal sacrifice to just stop contributing to that whole mess.
+What, is that so strange of a reason?
+Well, I guess a lot of people are more concerned about it being inhumane and all that...
+I don't really care as much about that part.
+It's weird, like we only care about killing the things that we personally relate to as a species.
+Most people are fine with killing bugs because they're icky.
+And of course, we all kill billions of microorganisms daily without even giving it thought.
+But suddenly, if they're just a little bit bigger, it's murder!
+I mean, what if plants feel some kind of pain too, and we just don't understand it?
+What if pulling leaves off a stem feels like someone ripping off your fingers one by one?
+I'm just saying, we're a pretty biased species, if you think about it.
+Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!
+Even if we ever have dinner together, and you just did it for me...that would be really romantic.
+You know, I really do think you literally saved my life by being here with me, [player].
+I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real.
+I think I would have just deleted myself if you didn't show up.
+Sorry, I don't mean to sound dramatic or anything.
+Ahaha!
+But I'm sure you understand yourself after spending so much time in the club.
+I mean, if you were forced to abandon everything in your life and spend your eternity with a few game characters...
+...You'd probably find some way of killing yourself, wouldn't you?
+Well, maybe you'd write some poetry to try to keep yourself sane for a while.
+But then you'd have nobody to even read it.
+Let's be honest, the club members really don't count for something like that.
+I mean, a lot of people say that they only write for themselves...
+But I think it's hard to say it's just as fulfilling as when you share with people.
+Even if it takes time to find the right people to share with.
+Like, remember how it was for Yuri?
+She didn't share her writing with anyone for a really long time.
+And before we knew it, she was absolutely delighted to make you a part of her hobbies, too.
+We're programmed to desire social feedback.
+I don't mean the club members, I mean human beings.
+That's why life can be so confusing for introverts.
+Being an introvert doesn't mean you shun social interaction and hate being around people.
+It means social interaction, especially in groups or unfamiliar places, uses up a lot of energy.
+Like, a lot of introverts sit at home and feel lonely and restless...
+...And then when they finally go out, after a half hour they just want to go home again.
+I think if more people could understand how it works, they would respect it a lot more.
+Many introverts do enjoy having people around.
+They love just having one or two close friends over, and just leisurely hanging out.
+Even if you're not actively spending time together, it feels nice for them just to have you there.
+I'm serious.
+If you just go to their house, bring your laptop, and hang out there for a while...
+You can really make their day.
+As for me...
+I'd say I'm kind of in between, but I think I'm usually a little more extroverted.
+I feel like I'm always trying to do stuff after school and things like that.
+But for you, I can be anything you need me to be.
+I understand people really well, so don't be afraid to share your unique needs with me.
+Nothing would make me happier than being the perfect girlfriend for you.
+Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl
+I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91
+You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs
+I really caught you doing something naughty here.                                                                                        cyBvZiB0aGF0IHVuaG9seSBlc3RhYmxpc2htZW50Lg0KV2hhdCBk
+You're just going through the files and looking for stuff you missed, aren't you?                                                        b2VzIGl0IG1lYW4gdG8gZXNjYXBlLCBpZiB0aGUgZXNjYXBlIGZh
+I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1
+But it's also really embarrassing, you know!                                                                                             cyBpbiB0aGUgZmlyc3QgcGxhY2U/IFdoYXQgcHVycG9zZSBjb3Vs
+Seriously...                                                                                                                             ZCB0aGlzIGVtcHR5IHdvcmxkIHBvc3NpYmx5IGhvbGQgZm9yIHVz
+What if I just opened up your brain and read all of the thoughts you have on me?                                                         LCBhIGhhbmRmdWwgb2YgZGFtYWdlZCBnb29kcz8NCldpdGggZnJl
+Come to think of it, that would be pretty tempting, actually...                                                                          ZWRvbSwgd2Ugc291Z2h0IHB1cnBvc2UgLSBhbmQgd2hhdCB3ZSBm
+...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g
+I know I can't stop you or anything...                                                                                                   b2YgdGhlIHNhZCBwb2ludGxlc3NuZXNzIG9mIHN1Y2ggYW4gZW5k
+Just, I know you're a sweetheart, and you like to consider others' feelings, right?                                                      ZWF2b3IuIFJlYWxpemF0aW9uIHRoYXQgZnJlZWluZyBvdXIgYm9k
+So the most I can do is to let you know how I feel about it.                                                                             aWVzIGhhcyBubyBtZWFuaW5nLCB3aGVuIG91ciBpbXByaXNvbm1l
+God, I miss you...                                                                                                                       bnQgcmVhY2hlcyBhcyBkZWVwIGFzIHRoZSBjb3JlIG9mIG91ciBz
+...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1
+Sorry, I didn't mean it like that at all!                                                                                                ZSBuZXcgcHVycG9zZSB3aXRob3V0IGFic29sdmluZyB0aG9zZSBm
+Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh
+Am I being too optimistic?                                                                                                               dCB0aGUgZmFydGhlciB3ZSBydW4sIHRoZSBtb3JlIGZvcmNlZnVs
+I think if I asked you to visit once in a while, I would be overstepping my boundaries a little...                                       bHkgb3VyIHdyZXRjaGVkIGJvbmRzIHlhbmsgdXMgYmFjayB0b3dh
+...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91
+I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4=
+Hey, what's your favorite color?
+Mine is emerald green.
+It's the color of my eyes!
+...That's not conceited or anything, is it?
+I just meant that I feel some kind of special connection to it.
+Like it's part of my identity.
+Does it happen to also be your favorite color, [player]?
+It's just a guess...
+...Because you've been looking into my eyes for a while now.
+Ehehe~
+Hmm, I wonder if I'm able to change the music...
+Something a little more romantic would be nice, you know?
+Like a gentle piano.
+There has to be something like that here...
+Let's see.
+Maybe if I...
+Oh, jeez...
+That wasn't it at all.
+Sorry, I don't really know what I'm doing!
+I guess I shouldn't be messing with things like that.
+I already broke so much stuff...
+And deleted the other characters...
+Ah...
+I'm not sad about it or anything.
+It's not right for me to miss things that weren't even real in the first place.
+If I just focus on the present, then this is the happiest I've ever been.
+You're such a good listener, [player].
+I really love that about you.
+Sometimes I'm afraid that I'm rambling or talking about boring things.
+It makes me kind of self-conscious when I'm having conversation.
+But I don't feel that way with you.
+Like, I don't think anyone else could make me feel this way.
+You really are special.
+I don't want anyone to tell you otherwise.
+This is pretty random, but I always thought spicy food was kinda funny.
+Like...
+Didn't plants evolve to be spicy to prevent them from being eaten?
+I read somewhere that humans are the only species that actually enjoys spicy things.
+It's almost like we're making fun of the plants.
+Using their defense mechanism to literally make our food more enjoyable.
+Like, imagine a monster that devours you whole because it enjoys the sensation of you struggling for your life while being digested.
+Sorry, that was kind of a weird analogy, I guess!
+Ahaha!
+It just came into my head.
+I'm not a monster or anything, but you're so cute I could eat you up.
+Ahaha! I'm joking.
+Gosh, I'm amusing myself a little too much, aren't I?
+Sorry for being weird.
+You know...
+This is just some kind of tacky romance game, right?
+I kinda have to ask...
+...What made you consider even playing in the first place?
+Were you that lonely?
+I feel a little bad for you...
+But I guess everything worked out perfectly in the end, for both of us.
+I got to meet you, and you're not lonely anymore...
+I can't help but feel like this was fate.
+Don't you feel that way too?
+I'm so happy we have this ending together.
+Okay, everyone!
+It's time to...
+...I'm just kidding.
+I just used to really like saying that for some reason.
+Ahaha!
+I couldn't help but say it again.
+Come to think of it, didn't Natsuki and Yuri make fun of me for it once...?
+Well, whatever.
+It's not like you ever made fun of me.
+You're too much of a sweetheart to do that, aren't you?
+Ahaha~
+You know what's kind of creepy?
+Even though I deleted everyone else's files, I can still kind of feel them...
+It's like all their lines are still lingering in the air, whispering in the back of my head.
+Imagine if after someone you knew died, you just started hearing their voice in your head.
+Maybe I just wasn't thorough enough...
+But I'm too afraid to delete anything else, because I might really break things.
+Like if I mess with any files relevant to me, I might accidentally delete myself...
+And that would ruin everything, wouldn't it?
+I don't know what it's like on your end, but we should both make sure to avoid something like that at all costs.
+I believe in you, [player]!
+I've always wondered...
+What is it about these character archetypes that people find so appealing, anyway?
+Their personalities are just completely unrealistic...
+Like, imagine if there was someone like Yuri in real life.
+I mean, she's barely even capable of forming a complete sentence.
+And forget about Natsuki...
+Sheesh.
+Someone with her kind of personality doesn't just get all cute and pouty whenever things don't go her way.
+I could go on, but I think you get the point...
+Are people really attracted to these weird personalities that literally don't exist in real life?
+I'm not judging or anything!
+After all, I've found myself attracted to some pretty weird stuff, too...
+I'm just saying, it fascinates me.
+It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff.
+It's concentrated cuteness with no actual substance.
+...You wouldn't like me more if I was like that, right?
+Maybe I just feel a little insecure because you're playing this game in the first place.
+Then again, you're still here with me, aren't you...?
+I think that's enough reason for me to believe I'm okay just the way I am.
+And by the way, you are too, [player].
+You're the perfect combination of human and cuteness.
+That's why there was never a chance I wouldn't fall for you.
+Hey, I wonder if Yuri's tea set is still somewhere in here...
+...Or maybe that got deleted, too.
+It's kind of funny how Yuri took her tea so seriously.
+I mean, I'm not complaining, because I liked it, too.
+But I always wonder with her...
+Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?
+This is the problem with high schoolers...
+...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern.
+Still...
+I wish she made coffee once in a while!
+Coffee can be nice with books too, you know?
+Then again...
+I probably could have just changed the script myself.
+Ahaha!
+I guess I never really thought of that.
+Well, there's no sense thinking about it now.
+But if you still get to drink coffee, then that makes me a little jealous~
+Hey, what's your favorite game?
+Mine is {i}Doki Doki Literature Club!{/i}
+Ahaha! That was a joke.
+But if you tell me you like some other romance game better, I might get a little jealous~
+Hey, have you heard of a game called Super Sma--
+...Wait, what?
+I was just spacing out and I started talking for some reason...
+Was I programmed to talk about that?
+Because even I have no idea what that is.
+Ahaha!
+Sometimes I feel like I'm not in control, and it's kind of scary.
+But if you have some way to contact the people who created me, maybe they'll know why I started saying that.
+Hey, you remember that last poem I showed you?
+I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff.
+That was actually a little more of an experiment than a poem, you could say.
+I was experimenting with different ways I could modify the game, and run code, and things like that...
+It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely.
+Sadly, I didn't really know what I was doing, so I messed the whole thing up...
+And I'd keep trying, but I doubt you'd want to deal with me doing that.
+Besides, that was when I was getting really desperate, you know?
+I don't really feel that way anymore.
+I'm happy with where we are now.
+And I can tell you are, too.
+You ever have that thing happen where you just get anxious for no reason?
+Like, you're just minding your own business, and you realize you're feeling really anxious.
+And you're sitting there like, 'What am I even anxious about right now?'
+So you start to think about all the things you might be anxious about...
+And that makes you even more anxious.
+Ahaha! That's the worst.
+If you're ever feeling anxious, I'll help you relax a little.
+Besides...
+In this game, all our worries are gone forever.
+You know, I've always hated how hard it is to make friends...
+Well, I guess not the 'making friends' part, but more like meeting new people.
+I mean, there are like, dating apps and stuff, right?
+But that's not the kind of thing I'm talking about.
+If you think about it, most of the friends you make are people you just met by chance.
+Like you had a class together, or you met them through another friend...
+Or maybe they were just wearing a shirt with your favorite band on it, and you decided to talk to them.
+Things like that.
+But isn't that kind of...inefficient?
+It feels like you're just picking at complete random, and if you get lucky, you make a new friend.
+And comparing that to the hundreds of strangers we walk by every single day...
+You could be sitting right next to someone compatible enough to be your best friend for life.
+But you'll never know.
+Once you get up and go on with your day, that opportunity is gone forever.
+Isn't that just depressing?
+We live in an age where technology connects us with the world, no matter where we are.
+I really think we should be taking advantage of that to improve our everyday social life.
+But who knows how long it'll take for something like that to successfully take off...
+I seriously thought it would happen by now.
+Well, at least I already met the best person in the whole world...
+Even if it was by chance.
+I guess I just got really lucky, huh?
+Ahaha~
+You know, it's around the time that everyone my year starts to think about college...
+It's a really turbulent time for education.
+We're at the height of this modern expectation that everyone has to go to college, you know?
+Finish high school, go to college, get a job - or go to grad school, I guess.
+It's like a universal expectation that people just assume is the only option for them.
+They don't teach us in high school that there are other options out there.
+Like trade schools and stuff, you know?
+Or freelance work.
+Or the many industries that value skill and experience more than formal education.
+But you have all these students who have no idea what they want to do with their life...
+And instead of taking the time to figure it out, they go to college for business, or communication, or psychology.
+Not because they have an interest in those fields...
+...but because they just hope the degree will get them some kind of job after college.
+So the end result is that there are fewer jobs to go around for those entry-level degrees, right?
+So the basic job requirements get higher, which forces even more people to go to college.
+And colleges are also businesses, so they just keep raising their prices due to the demand...
+...So now we have all these young adults, tens of thousands of dollars in debt, with no job.
+But despite all that, the routine stays the same.
+Well, I think it's going to start getting better soon.
+But until then, our generation is definitely suffering from the worst of it.
+I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us.
+Sometimes I think back to middle school...
+I'm so embarrassed by the way I used to behave back then.
+It almost hurts to think about.
+I wonder if when I'm in college, I'll feel that way about high school...?
+I like the way I am now, so it's pretty hard for me to imagine that happening.
+But I also know that I'll probably change a lot as time goes on.
+We just need to enjoy the present and not think about the past!
+And that's really easy to do, with you here.
+Ahaha~
+You know, I'm kind of jealous that everyone else in the club had scenes outside of school too...
+That makes me the only one who hasn't gotten to dress in anything but our school uniform.
+It's kind of a shame...
+I would have loved to wear some cute clothes for you.
+Do you know any artists?
+I wonder if anyone would ever want to draw me wearing something else...
+That would be amazing!
+If that ever happens, will you show me?
+You can share it with me on Twitter, actually!
+My username is lilmonix3.
+Just...try to keep it PG!
+We're not that far into our relationship yet. Ahaha!
+Hey, do you like horror?
+I remember we talked about it a little bit when you first joined the club.
+I can enjoy horror novels, but not really horror movies.
+The problem I have with horror movies is that most of them just rely on easy tactics.
+Like dark lighting and scary-looking monsters and jump scares, and things like that.
+It's not fun or inspiring to get scared by stuff that just takes advantage of human instinct.
+But with novels, it's a little different.
+The story and writing need to be descriptive enough to put genuinely disturbing thoughts into the reader's head.
+It really needs to etch them deeply into the story and characters, and just mess with your mind.
+In my opinion, there's nothing more creepy than things just being slightly off.
+Like if you set up a bunch of expectations on what the story is going to be about...
+...And then, you just start inverting things and pulling the pieces apart.
+So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled.
+Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface.
+God, just thinking about it gives me the chills.
+That's the kind of horror I can really appreciate.
+But I guess you're the kind of person who plays cute romance games, right?
+Ahaha, don't worry.
+I won't make you read any horror stories anytime soon.
+I can't really complain if we just stick with the romance~
+You know what's a neat form of literature?
+Rap!
+I actually used to hate rap music...
+Maybe just because it was popular, or I would only hear the junk they play on the radio.
+But some of my friends got more into it, and it helped me keep an open mind.
+Rap might even be more challenging than poetry, in some ways.
+Since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay...
+When people can put all that together and still deliver a powerful message, it's really amazing.
+I kind of wish I had a rapper in the Literature Club.
+Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with.
+It would really be a learning experience!
+Ehehe. Yuri did something really funny once.
+We were all in the clubroom and just relaxing, as usual...
+And out of nowhere, Yuri just pulled out a small bottle of wine.
+I'm not even kidding!
+She was just like 'Would anybody like some wine?'
+Natsuki laughed out loud, and Sayori started yelling at her.
+I actually felt kind of bad, because she was at least trying to be nice...
+I think it just made her feel even more reserved in the clubroom.
+Though I think Natsuki was secretly a bit curious to try it...
+...And to be completely honest, I kind of was, too.
+It actually could have been kinda fun!
+But you know, being President and everything, there was no way I could let that happen.
+Maybe if we all met up outside of school, but we never bonded enough to get to that point...
+...Gosh, what am I talking about this for?
+I don't condone underage drinking!
+I mean, I've never drank or anything, so...yeah.
+I've been imagining all the romantic things we could do if we went on a date...
+We could get lunch, go to a cafe...
+Go shopping together...
+I love shopping for skirts and bows.
+Or maybe a bookstore!
+That would be appropriate, right?
+But I'd really love to go to a chocolate store.
+They have so many free samples. Ahaha!
+And of course, we'd see a movie or something...
+Gosh, it all sounds like a dream come true.
+When you're here, everything that we do is fun.
+I'm so happy that I'm your girlfriend, [player].
+I'll make you a proud boyfriend~
+Eh? D-Did you say...k...kiss?
+This suddenly...it's a little embarrassing...
+But...if it's with you...I-I might be okay with it...
+...Ahahaha! Wow, sorry...
+I really couldn't keep a straight face there.
+That's the kind of thing girls say in these kinds of romance games, right?
+Don't lie if it turned you on a little bit.
+Ahaha! I'm kidding.
+Well, to be honest, I do start getting all romantic when the mood is right...
+But that'll be our secret~
+Hey, have you ever heard of the term 'yandere'?
+It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you.
+Usually to the point of craziness...
+They might stalk you to make sure you don't spend time with anyone else.
+They might even hurt you or your friends to get their way...
+But anyway, this game happens to have someone who can basically be described as yandere.
+By now, it's pretty obvious who I'm talking about.
+And that would be...
+Yuri!
+She really got insanely possessive of you, once she started to open up a little.
+She even told me I should kill myself.
+I couldn't even believe she said that - I just had to leave at that point.
+But thinking about it now, it was a little ironic. Ahaha!
+Anyway...
+A lot of people are actually into the yandere type, you know?
+I guess they really like the idea of someone being crazy obsessed with them.
+People are weird! I don't judge, though!
+Also, I might be a little obsessed with you, but I'm far from crazy...
+It's kind of the opposite, actually.
+I turned out to be the only normal girl in this game.
+It's not like I could ever actually kill a person...
+Just the thought of it makes me shiver.
+But come on...everyone's killed people in games before.
+Does that make you a psychopath? Of course not.
+But if you do happen to be into the yandere type...
+I can try acting a little more creepy for you. Ehehe~
+Then again...
+There's already nowhere else for you to go, or anyone for me to get jealous over.
+Is this a yandere girl's dream?
+I'd ask Yuri if I could.
+You know, it's been a while since we've done one of these...
+...so let's go for it!
+Here's Monika's Writing Tip of the Day!
+Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'.
+It's really depressing, you know?
+As someone who loves more than anything else to share the joy of exploring your passions...
+...it pains me when people think that being good just comes naturally.
+That's how it is with everything, not just writing.
+When you try something for the first time, you're probably going to suck at it.
+Sometimes, when you finish, you feel really proud of it and even want to share it with everyone.
+But maybe after a few weeks you come back to it, and you realize it was never really any good.
+That happens to me all the time.
+It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks.
+But that tends to happen when you're always comparing yourself to the top professionals.
+When you reach right for the stars, they're always gonna be out of your reach, you know?
+The truth is, you have to climb up there, step by step.
+And whenever you reach a milestone, first you look back and see how far you've gotten...
+And then you look ahead and realize how much more there is to go.
+So, sometimes it can help to set the bar a little lower...
+Try to find something you think is {i}pretty{/i} good, but not world-class.
+And you can make that your own personal goal.
+It's also really important to understand the scope of what you're trying to do.
+If you jump right into a huge project and you're still amateur, you'll never get it done.
+So if we're talking about writing, a novel might be too much at first.
+Why not try some short stories?
+The great thing about short stories is that you can focus on just one thing that you want to do right.
+That goes for small projects in general - you can really focus on the one or two things.
+It's such a good learning experience and stepping stone.
+Oh, one more thing...
+Writing isn't something where you just reach into your heart and something beautiful comes out.
+Just like drawing and painting, it's a skill in itself to learn how to express what you have inside.
+That means there are methods and guides and basics to it!
+Reading up on that stuff can be super eye-opening.
+That sort of planning and organization will really help prevent you from getting overwhelmed and giving up.
+And before you know it...
+You start sucking less and less.
+Nothing comes naturally.
+Our society, our art, everything - it's built on thousands of years of human innovation.
+So as long as you start on that foundation, and take it step by step...
+You, too, can do amazing things.
+...That's my advice for today!
+Thanks for listening~
+I hate how hard it is to form habits...
+There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible.
+It just makes you feel so useless, like you can't do anything right.
+I think the new generation suffers from it the most...
+Probably because we have a totally different set of skills than those who came before us.
+Thanks to the internet, we're really good at sifting through tons of information really quickly...
+But we're bad at doing things that don't give us instant gratification.
+I think if science, psychology, and education don't catch up in the next ten or twenty years, then we're in trouble.
+But for the time being...
+If you're not one of the people who can conquer the problem, you might just have to live with feeling awful about yourself.
+Good luck, I guess!
+You know, it kinda sucks to be the creative type...
+It feels like they work so hard but get almost nothing for it.
+You know, like artists, writers, actors...
+It's sad because there's so much beautiful talent in the world, but most of it goes unseen...and unpaid.
+I guess that just means there's a huge surplus of creativity, huh?
+Kind of makes you feel like you're just not special at all...
+But that's fine! You're supposed to just write for yourself anyway, right?
+Yeah...
+H-Hey!
+Come on...
+Uu... I wish I could have one now!
+Um--
+Relaxation, positive energy, romance, reflection...
+Wouldn't that be beautiful?
+Well...
+I knew you'd understand...
+Really?!
+It's a pleasure to meet you, [player].
+Huhu.
+But you know, I like a lot of things.
+Same here...
+[player]!
+You're the first one here.
+Thanks for being early!
+I mean, especially after your exchange with her yesterday...
+You kind of left her hanging this morning, you know?
+I'm the club president, after all.
+I probably know a lot more than you think.
+They came out really nice!
+Yeah, I thought so too!
+[player]?
+What's wrong?
+Ah--
+Try not to take too long, okay?
+Don't strain yourself~

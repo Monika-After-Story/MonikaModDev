@@ -1,6 +1,6 @@
 define persistent.demo = False
 define persistent.steam = False
-define config.developer = False
+define config.developer = False #This is the flag for Developer tools
 define persistent.monika_random_topics = []
 define persistent.monika_random_built = False
 
