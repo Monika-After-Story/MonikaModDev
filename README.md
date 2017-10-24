@@ -33,6 +33,7 @@ Example new dialogue code block:
 init python:
     #This is a list of keywords for this topic
     for key in ['my','key','words']:
+        monika_topics.setdefault(key,[])
         monika_topics[key] = 'monika_example' #id
     if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_example')
 
