@@ -3,8 +3,6 @@
 #Make a list of every label that starts with "greeting_", and use that for random greetings during startup
 
 init python:
-    import time
-    current_time = int(time.strftime("%H"))
     greetings_list=[]
     label_list=renpy.get_all_labels()
     for label in label_list:
@@ -18,6 +16,7 @@ label greeting_sweetheart:
     return
     
 label greeting_goodmorning:
+    $ current_time = datetime.datetime.now().time().hour
     if current_time >= 0 and current_time < 6:
         m "Good morning-"
         m "...oh, wait."
