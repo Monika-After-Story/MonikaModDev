@@ -49,4 +49,4 @@ For things more complicated than adding in dialogue, consult Ren'Py tutorials.
 
  ### Join the conversation
  
- If you want to actively participate in building this mod, we now have our own Discord Server that you can join by following this link: https://discord.gg/NFN9d5H
+ If you want to actively participate in building this mod, we now have our own Discord Server that you can join by following this link: https://discord.gg/7P5DnJ4
