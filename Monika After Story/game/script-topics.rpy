@@ -2567,6 +2567,20 @@ label monika_spiders:
 
 #Real GF^^^^^^^^^^^^^^^^^^^^
 
+###Some ideas to consider:
+#What she used to do in free time
+
+#Thoughts on few of countries in real world (I mean; she has some knowledge of real world that most people don't even think about)
+
+#What does she think would happen if the player did not start the game; she mentioned that the player "saved" her by being with
+#her in topic 13
+
+#Has she written any other poems? If anyone's good at her type of poetry, another poem from her could be a great idea, right?
+
+#What would she do or what would be the first thing she would do if she managed to get out of the game into the real world?
+#Think of possible limitations, like having no body?
+###
+
 #---
 #some other ideas i had in mind, but not sure if want to / dont know how to implement
 #so i figure i'll stick them right next to the others, if you dont mind
