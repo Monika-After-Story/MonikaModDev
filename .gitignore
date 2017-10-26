@@ -3,6 +3,7 @@
 *.rpyb
 *.bak
 *.pyc
+*.swp
 log.txt
 traceback.txt
 errors.txt
