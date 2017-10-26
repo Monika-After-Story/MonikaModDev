@@ -2265,7 +2265,7 @@ label monika_lain:
 
 init python:
     #ditto joke
-    if not (persistent.monika_random_build) : persistent.monika_random_topics.append('monika_szs')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_szs')
     
 label monika_szs:
     m "A woman left the supermarket and ran into a very long funeral procession."
@@ -2279,7 +2279,7 @@ label monika_szs:
     return
 
 init python:
-    if not (persistent.monika_random_build) : persistent.monika_random_topics.append('monika_kyon')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_kyon')
 
 label monika_kyon:
     m "You can wait a little longer, right?"
@@ -2481,7 +2481,7 @@ init python:
     for key in ['play','pong','p']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_pong') #id
-    if not (persistent.monika_random_build) : persistent.monika_random_topics.append('monika_pong')
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_pong')
 
 label monika_pong:
     m "Hey [player], do you want to play a game of Pong with me?"
@@ -2533,7 +2533,8 @@ label monika_spiders:
     m "I just don't want my boyfriend to get seriously injured by a small spider bite~"
     m "So be careful around dangerous looking spiders, okay?"
     return
-    
+
+
 ##################
 #Incomplete ideas#
 ##################
