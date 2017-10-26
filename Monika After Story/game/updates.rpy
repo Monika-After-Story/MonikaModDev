@@ -2,13 +2,55 @@
 # Assumes:
 #   persistent.monika_random_topics
 
+#define teststore = None
+#define teststore_t = None
+define prev033 = False
 
-# this needs to run post script-topics
-init 10 python:
+# pre script-topics (which is runlevel 5)
+init 4 python:
+    # check version change
+    # this also handles if version number is None
+    if persistent.version_number != config.version:
+        # mainly force regneration of topics
+        persistent.monika_random_built = False
+
+# create some functions
+init python:
+
+    def addNewTopicIDs():
+        # 
+        # Using some (not so) clever algorithm, adds new TopicIDs
+        # that havent been seen to the persistent random topics list
+        # by comparing persistent.monika_random_topics and
+        # a newly generated topics.monika_topics list
+        #
+        # ASSUMES:
+        #   persistent.monika_random_topics
+        #   topics.monika_topics has been generated and filled
+        #   version number has changed
+        #
+        # SIDE EFFECTS:
+        #   topics.monika_topics is cleared
+        #   persistent.monika_random_topics is extended
+
+        new_topics = list()
+
+        for topic in topics.monika_topics:
+            # seen label check is first because assume longtime player
+            if (not renpy.seen_label(topic) and
+                topic not in persistent.monika_random_topics):
+                new_topics.append(topic)
+
+        # finally extend the persisents
+        persistent.monika_random_topics.extend(new_topics)
+
+        # and clear the topics
+        topics.monika_topics[:] = []
+
 
     def adjustTopicIDs(oldList, changedIDs):
         #
-        # Changes topic IDs in the persistent lists
+        # Changes topic IDs in the oldLists
         # to new IDs in the changedIDs dict
         #
         # IN:
@@ -39,8 +81,9 @@ init 10 python:
         #
         # ASSUMES:
         #   persistent.monika_random_topics
+        #   updates.topics
         
-        changedIDs,newIDs = updates.topics[version_number]
+        changedIDs = updates.topics[version_number]
         
         if changedIDs is not None:
             adjustTopicIDs(
@@ -48,8 +91,6 @@ init 10 python:
                 changedIDs
             )
 
-        if newIDs is not None:
-            persistent.monika_random_topics.extend(newIDs)
 
     def updateGameFrom(startVers):
         #
@@ -58,12 +99,20 @@ init 10 python:
         # IN:
         #   @param startVers - the version number in the parsed
         #       format ("v#####")
+        #
+        # ASSUMES:
+        #   updates.version_updates
         
         while startVers in updates.version_updates:
             renpy.call_in_new_context(
                 updates.version_updates[startVers]
             )
             startVers = updates.version_updates[startVers]
+
+
+
+# this needs to run post script-topics
+init 10 python:
 
     # okay do we have a verison number?
     if persistent.version_number is None:
@@ -106,6 +155,7 @@ label v100:
     python:
         # update!
         updateTopicIDs("v100")
+        addNewTopicIDs()
     
     return        
 
@@ -117,7 +167,7 @@ label v033:
 
         # update!
         updateTopicIDs("v033")
-
+        addNewTopicIDs()
     return
 
 # 0.3.2
@@ -126,7 +176,7 @@ label v032:
 
         # update!
         updateTopicIDs("v032")
-
+        addNewTopicIDs()
     return
 
 # 0.3.1
@@ -134,6 +184,7 @@ label v031:
     python:
         # update!
         updateTopicIDs("v031")
+        addNewTopicIDs()
 
     return
 
@@ -142,6 +193,4 @@ label v030:
     python:
         print("nothing")
         # TODO
-
-
 
