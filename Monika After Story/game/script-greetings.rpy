@@ -42,7 +42,6 @@ label greeting_gooday:
             m "Because I want to try and make sure you're always happy."
             m "Because that's what makes me happy."
             m "So I'll be sure try my best to cheer you up, I promise."
-    m "Anyways..."
     return
 
 label greeting_visit:
