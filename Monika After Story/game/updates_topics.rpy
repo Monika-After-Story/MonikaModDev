@@ -4,7 +4,9 @@
 # start by initalization version update dict
 define updates.version_updates = {}
 
-# key:version number -> v:tuple(changedIDs,newIDs)
+# key:version number -> v:changedIDs
+# changedIDs structure:
+#   k:oldId -> v:newId
 define updates.topics = {}
 
 # runs before updates.rpy
@@ -28,8 +30,8 @@ init 9 python:
         updates.version_updates[vv033] = vv100
         updates.version_updates[vv032] = vv033
         updates.version_updates[vv031] = vv032
-        updates.version_updates[vv030] = vv030
-        updates.version_updates[vv022] = vv022
+        updates.version_updates[vv030] = vv031
+        updates.version_updates[vv022] = vv030
 
 
         # version structures:
@@ -41,11 +43,11 @@ init 9 python:
         newIDs.append("this is new")
         newIDs.append("so is this")
         newIDs.append("this is also new")
-        updates.topics[vv100] = (changedIDs,newIDs)
+        updates.topics[vv100] = changedIDs
 
         # 0.3.2 -> 0.3.3
         newIDs = ["monika_ribbon"]
-        updates.topics[vv033] = (None,newIDs)
+        updates.topics[vv033] = None
 
         # 0.3.1 -> 0.3.2
         changedIDs = dict()
@@ -62,7 +64,7 @@ init 9 python:
             "monika_szs",
             "monika_kyon"
         ]
-        updates.topics[vv032] = (changedIDs,newIDs)
+        updates.topics[vv032] = changedIDs
 
         # 0.3.0 -> 0.3.1
         changedIDs = dict()
@@ -75,7 +77,7 @@ init 9 python:
             "monika_playerswriting",
             "monika_ghost"
         ]
-        updates.topics[vv031] = (changedIDs,newIDs)
+        updates.topics[vv031] = changedIDs
 
         # 0.2.2 -> 0.3.0
         # TODO
