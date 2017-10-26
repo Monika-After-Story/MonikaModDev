@@ -131,7 +131,7 @@ init 10 python:
             # we are in version 0.3.2
             updateGameFrom("v032")
 
-        elif renpy.has_label("monika_monika")
+        elif renpy.has_label("monika_monika"):
             # we are in version 0.3.1
             updateGameFrom("v031")
 
