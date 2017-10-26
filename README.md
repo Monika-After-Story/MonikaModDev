@@ -1,6 +1,6 @@
 # Monika After Story
 
-This is a mod for the free game DDLC from Team Salvato, available for download [here](ddlc.moe). I don't own any part of the game.
+This is a mod for the free game DDLC from Team Salvato, available for download [here](http://ddlc.moe). I don't own any part of the game.
 Check the releases page for the latest build.
 
 Basically, it replaces the end of the original game with a simulator of your eternal life with Monika, featuring new events, handlers, and metacommentary. Think Love Plus meets Totono.
@@ -46,3 +46,7 @@ label monika_example:
 ```
 
 For things more complicated than adding in dialogue, consult Ren'Py tutorials.
+
+ ### Join the conversation
+ 
+ If you want to actively participate in building this mod, we now have our own Discord Server that you can join by following this link: https://discord.gg/7P5DnJ4
