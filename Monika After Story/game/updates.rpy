@@ -122,7 +122,7 @@ init 10 python:
             # TODO
             print("v022")
             
-        elif updates.topics["v033"][1][0] in persistent.monika_random_topics:
+        elif renpy.has_label("monika_ribbon"):
             print("v033")
             # we are in version 0.3.3
             # TODO mgiht have something to do here
@@ -131,14 +131,13 @@ init 10 python:
             # we are in version 0.3.2
             updateGameFrom("v032")
 
-        elif (set(updates.topics["v031"][1]).isdisjoint(persistent.monika_random_topics) and
-                "monika_whispers" not in persistent.monika_random_topics):
-            # we are in version 0.3.0
-            updateGameFrom("v030")
-
-        else:
+        elif renpy.has_label("monika_monika")
             # we are in version 0.3.1
             updateGameFrom("v031")
+
+        else:
+            # we are in version 0.3.0
+            updateGameFrom("v030")
 
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
