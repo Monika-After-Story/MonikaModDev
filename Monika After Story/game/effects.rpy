@@ -308,7 +308,7 @@ init python:
             return rv
 
     def monika_alpha(trans, st, at):
-        trans.alpha = math.pow(math.sin(st / 8), 64) * 1.4
+        trans.alpha = math.pow(math.cos(st / 8), 64) * 1.4
         return 0
 
 image blood_particle_drip:

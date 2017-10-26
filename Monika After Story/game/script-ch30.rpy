@@ -71,8 +71,8 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.ogv",mask="images/cg/monika/window_1.ogv")
-image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.ogv",mask="images/cg/monika/window_2.ogv")
+image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.webm",mask=None)
+image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.webm",mask=None)
 
 init python:
     import subprocess
@@ -354,7 +354,7 @@ label ch30_nope:
         elif renpy.linux:
             call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_16
         elif renpy.macintosh:
-            call updateconsole("sudo mv ~ /dev/null", "In progress...")
+            call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_19
         pause 3.0
         call hideconsole from _call_hideconsole_2
         $ persistent.monika_kill = False

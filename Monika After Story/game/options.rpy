@@ -226,6 +226,7 @@ init python:
     build.classify("game/**.ogg", "audio")
     build.classify("game/**.ttf", "fonts")
     build.classify("game/**.otf", "audio")
+    build.classify("game/**.webm", "images")
 
     build.classify('**~', None)
     build.classify('**.bak', None)
