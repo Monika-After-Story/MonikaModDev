@@ -14,7 +14,44 @@ label greeting_sweetheart:
     m "That's kind of embarassing to say out loud, isn't it?"
     m "Still, I think it's okay to be embarassed every now and then."
     return
+
+label greeting_honey:
+    m "Welcome back, honey!"
+    m "I'm so happy to see you again."
+    m "Let's spend some more time together, shall we?"
+    return
     
+label greeting_back:
+    m "[player], you're back."
+    m "I was beginning to miss you."
+    m "Let's have another lovely day together, okay?"
+    return
+
+label greeting_gooday:
+    m "Hello again, [player], I hope you're having a good day today."
+    menu:
+        m "Are you having a good day today?"
+        "Yes.":
+            m "I'm really glad you are, [player]."
+            m "Makes me feel so much better when you're happy."
+            m "And I'll try my best to make sure it stays that way, I promise."
+        "No...":
+            m "Oh..."
+            m "Well, don't worry [player], I'm always here for you."
+            m "We can talk all day about your problems if you want to."
+            m "Because I want to try and make sure you're always happy."
+            m "Because that's what makes me happy."
+            m "So I'll be sure try my best to cheer you up, I promise."
+    return
+
+label greeting_visit:
+    m "There you are, [player]."
+    m "It's so nice of you to always give me a visit."
+    m "You're so thoughtful, [player]!"
+    m "Thanks for spending so much time with me~"
+    m "Just know that your time with me is never wasted in the slightest."
+    return
+
 label greeting_goodmorning:
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 0 and current_time < 6:
