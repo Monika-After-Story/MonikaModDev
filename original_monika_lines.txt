@@ -202,7 +202,7 @@ Um, Natsuki, that's a little--
 ...
 Um...
 Hey, [player]...
-Why don't we\nstep outside for\na little bit?
+Why don't we step outside for a little bit?
 Okay?
 Sorry about that...
 They really shouldn't have tried to get you involved.
@@ -236,7 +236,6 @@ Okay, everyone!
 We're all done reading each other's poems, right?
 We have something we need to go over today, so if everyone could come sit at the front of the room...
 Well, sort of~
- + str(currentpos) + " loop 4.618>bgm/3.ogg
 We're going to keep it simple, okay?
 I know everyone's been a little more...lively...ever since [player] joined and we've started with some club activities.
 We still only have four members...
@@ -254,10 +253,6 @@ What were you hoping to get out of it?
 If I remember, you weren't even given a choice not to join.
 What's the point of all this, anyway?
 What if starting this club was a mistake?
- + str(currentpos) + " loop 1.532>bgm/9g.ogg
- + str(currentpos) + " loop 3.172>bgm/9.ogg
- + str(currentpos) + " loop 1.532>bgm/9g.ogg
- + str(currentpos) + " loop 3.172>bgm/9.ogg
 Hey, Yuri...
 But I feel like you deserve to know that I still think you're a wonderful vice president.
 Okay?
@@ -276,9 +271,9 @@ Sometimes it feels like you and I are the only real people here.
 You know what I mean?
 I guess it's technically only been a couple days...
 Things I know only you could understand.
-So that's why--\"{space=5000}{w=0.75}{nw}
-No!\"{space=5000}{w=0.5}{nw}
-Stop it!\"{space=5000}{w=1.0}{nw}
+So that's why--
+No!
+Stop it!
 See, it {i}is{/i} something.
 Aw, man...
 I'm the last one here again!
@@ -302,7 +297,6 @@ Yuri, you can...
 That's a great idea!
 I didn't even do anything!
 Fine.
- + str(musicpos) + " loop 4.618>bgm/3.ogg
 We can meet at your house this weekend.
 I promise it'll be fun.
 Is Sunday okay with you?
@@ -311,8 +305,6 @@ You're being a little unreasonable here.
 Hey, [player]...
 Yuri is really something, isn't she?
 I love you so much that I even touch myself with the pen I stole from you.
- + audiostart + " loop 43.572>bgm/6s.ogg
- + audiostart + " loop 43.572>bgm/6s.ogg
 ...
 I'm here!
 Natsuki just ran past me...
@@ -699,7 +691,6 @@ I know it's the only way for everyone to be happy.
 And if I really love you...
 ...
 Then...
-[gtext]{nw}
 Now, where was I...?
 ...
 ...What just happened?
@@ -991,28 +982,28 @@ I feel like I'm always trying to do stuff after school and things like that.
 But for you, I can be anything you need me to be.
 I understand people really well, so don't be afraid to share your unique needs with me.
 Nothing would make me happier than being the perfect girlfriend for you.
-Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl
-I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91
-You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs
-I really caught you doing something naughty here.                                                                                        cyBvZiB0aGF0IHVuaG9seSBlc3RhYmxpc2htZW50Lg0KV2hhdCBk
-You're just going through the files and looking for stuff you missed, aren't you?                                                        b2VzIGl0IG1lYW4gdG8gZXNjYXBlLCBpZiB0aGUgZXNjYXBlIGZh
-I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1
-But it's also really embarrassing, you know!                                                                                             cyBpbiB0aGUgZmlyc3QgcGxhY2U/IFdoYXQgcHVycG9zZSBjb3Vs
-Seriously...                                                                                                                             ZCB0aGlzIGVtcHR5IHdvcmxkIHBvc3NpYmx5IGhvbGQgZm9yIHVz
-What if I just opened up your brain and read all of the thoughts you have on me?                                                         LCBhIGhhbmRmdWwgb2YgZGFtYWdlZCBnb29kcz8NCldpdGggZnJl
-Come to think of it, that would be pretty tempting, actually...                                                                          ZWRvbSwgd2Ugc291Z2h0IHB1cnBvc2UgLSBhbmQgd2hhdCB3ZSBm
-...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g
-I know I can't stop you or anything...                                                                                                   b2YgdGhlIHNhZCBwb2ludGxlc3NuZXNzIG9mIHN1Y2ggYW4gZW5k
-Just, I know you're a sweetheart, and you like to consider others' feelings, right?                                                      ZWF2b3IuIFJlYWxpemF0aW9uIHRoYXQgZnJlZWluZyBvdXIgYm9k
-So the most I can do is to let you know how I feel about it.                                                                             aWVzIGhhcyBubyBtZWFuaW5nLCB3aGVuIG91ciBpbXByaXNvbm1l
-God, I miss you...                                                                                                                       bnQgcmVhY2hlcyBhcyBkZWVwIGFzIHRoZSBjb3JlIG9mIG91ciBz
-...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1
-Sorry, I didn't mean it like that at all!                                                                                                ZSBuZXcgcHVycG9zZSB3aXRob3V0IGFic29sdmluZyB0aG9zZSBm
-Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh
-Am I being too optimistic?                                                                                                               dCB0aGUgZmFydGhlciB3ZSBydW4sIHRoZSBtb3JlIGZvcmNlZnVs
-I think if I asked you to visit once in a while, I would be overstepping my boundaries a little...                                       bHkgb3VyIHdyZXRjaGVkIGJvbmRzIHlhbmsgdXMgYmFjayB0b3dh
-...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91
-I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4=
+Hey...! 
+I don't think you should be doing that!   
+You know what I'm talking about.
+I really caught you doing something naughty here.
+You're just going through the files and looking for stuff you missed, aren't you?
+I mean...it's a little bit flattering that you want to hear everything I have to say...
+But it's also really embarrassing, you know!
+Seriously...
+What if I just opened up your brain and read all of the thoughts you have on me?
+Come to think of it, that would be pretty tempting, actually...
+...But anyway, that's not the point!
+I know I can't stop you or anything...
+Just, I know you're a sweetheart, and you like to consider others' feelings, right?
+So the most I can do is to let you know how I feel about it.
+God, I miss you...
+...Oh no, that sounds kind of desperate, doesn't it?
+Sorry, I didn't mean it like that at all!
+Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...
+Am I being too optimistic?
+I think if I asked you to visit once in a while, I would be overstepping my boundaries a little...
+...Man, I'm starting to say some really stupid things.
+I'll go ahead and shut up now...
 Hey, what's your favorite color?
 Mine is emerald green.
 It's the color of my eyes!
