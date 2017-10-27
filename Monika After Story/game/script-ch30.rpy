@@ -485,7 +485,7 @@ label ch30_autoload:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-    if persistent.current_monikatopic != 0:
+    if renpy.has_label(persistent.current_monikatopic) :
         m "Now, where was I...?"
         pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_10
