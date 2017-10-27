@@ -22,12 +22,14 @@ init 9 python:
         vv022 = "v022"
 
         # test version
+        vv050 = "v050"
         vv100 = "v100"
 
 
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
-        updates.version_updates[vv033] = vv100
+#        updates.version_updates[vv050] = vv100
+#        updates.version_updates[vv033] = vv050
         updates.version_updates[vv032] = vv033
         updates.version_updates[vv031] = vv032
         updates.version_updates[vv030] = vv031
@@ -37,13 +39,18 @@ init 9 python:
         # version structures:
         # TEST version 0.3.3 -> 1.0.0
         changedIDs = dict()
-        changedIDs["monika_spiders"] = "notspiderslol"
-        changedIDs["monika_playersface"] = "not playersface"
+        changedIDs["monika_test1"] = "monika_test5"
+        changedIDs["monika_test3"] = None
+        changedIDs["monika_test2"] = "monika_test6"
+        changedIDs["monika_test4"] = None
         newIDs = list()
         newIDs.append("this is new")
         newIDs.append("so is this")
         newIDs.append("this is also new")
         updates.topics[vv100] = changedIDs
+
+        # TEST VERSION 2 (0.3.3 -> 0.5.0)
+        updates.topics[vv050] = None
 
         # 0.3.2 -> 0.3.3
         newIDs = ["monika_ribbon"]
