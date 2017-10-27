@@ -6,6 +6,15 @@
 #define teststore_t = None
 define prev033 = False
 
+# pre verything (testing)
+init -10 python:
+    import copy
+    old_list = copy.deepcopy(persistent.monika_random_topics)
+
+# preeverything stuff 
+init -10 python:
+    found_monika_ani = persistent.monika_anniversary is not None
+
 # pre script-topics (which is runlevel 5)
 init 4 python:
     # check version change
@@ -16,6 +25,8 @@ init 4 python:
 
 # create some functions
 init python:
+    testing_list = list()
+    teststore = None
 
     def addNewTopicIDs():
         # 
@@ -37,6 +48,8 @@ init python:
 
         for topic in topics.monika_topics:
             # seen label check is first because assume longtime player
+            res = renpy.seen_label(topic)
+            testing_list.append((res,topic))
             if (not renpy.seen_label(topic) and
                 topic not in persistent.monika_random_topics):
                 new_topics.append(topic)
@@ -121,24 +134,30 @@ init 10 python:
             # we are in version 0.2.2 (the horror!)
             # TODO
             print("v022")
+            teststore = "v022"
             
-        elif renpy.has_label("monika_ribbon"):
+        elif (renpy.seen_label("monika_ribbon") or
+                "monika_ribbon" in persistent.monika_random_topics):
             print("v033")
             # we are in version 0.3.3
             # TODO mgiht have something to do here
-
-        elif persistent.monika_anniversary is not None:
+            teststore = "v033"
+        elif found_monika_ani: 
             # we are in version 0.3.2
             updateGameFrom("v032")
-
-        elif renpy.has_label("monika_monika"):
+            teststore = "v032"
+        elif (renpy.seen_label("monika_monika") or
+                "monika_monika" in persistent.monika_random_topics):
             # we are in version 0.3.1
             updateGameFrom("v031")
-
+            teststore = "v031"
         else:
             # we are in version 0.3.0
             updateGameFrom("v030")
+            teststore = "v030"
 
+        # set the version now
+        persistent.version_number = config.version
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
         vvvv_version = "v"+"".join(persistent.version_number.split("."))
@@ -153,8 +172,9 @@ label v100:
     # imaginary super version
     python:
         # update!
-        updateTopicIDs("v100")
-        addNewTopicIDs()
+        #updateTopicIDs("v100")
+        #addNewTopicIDs()
+        print("tesT")
     
     return        
 
