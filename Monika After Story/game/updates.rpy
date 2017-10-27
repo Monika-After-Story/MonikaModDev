@@ -22,6 +22,8 @@ init 4 python:
     if persistent.version_number != config.version:
         # mainly force regneration of topics
         persistent.monika_random_built = False
+        # clearing this to prevent crash
+        persistent.monika_topic = None
 
 # create some functions
 init python:
