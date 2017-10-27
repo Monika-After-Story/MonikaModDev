@@ -28,6 +28,7 @@ init 4 python:
 # create some functions
 init python:
     testing_list = list()
+    testing_chlist = list()
     teststore = None
 
     def addNewTopicIDs():
@@ -73,6 +74,9 @@ init python:
         #   @param changedIDs - dict of changed ids:
         #       key -> old ID
         #       value -> new ID
+        #
+        # ASSUMES:
+        #   persistent._seen_ever
         
         for index in range(0,len(oldList)):
             if oldList[index] in changedIDs:
@@ -81,6 +85,15 @@ init python:
                     oldList.pop(index)
                 else:
                     oldList[index] = newItem
+
+        # now for a complicated alg that changes keys in _seen_ever
+        # except its not that complicated lol
+
+        for oldTopic in changedIDs:
+            if oldTopic in persistent._seen_ever:
+                persistent._seen_ever.pop(oldTopic)
+                if changedIDs[oldTopic] is not None:
+                    persistent._seen_ever[changedIDs[oldTopic]] = True
 
 
     def updateTopicIDs(version_number):
@@ -123,6 +136,9 @@ init python:
                 updates.version_updates[startVers]
             )
             startVers = updates.version_updates[startVers]
+
+        # adding new topics happens here because of logic issues
+        addNewTopicIDs()
 
 
 
@@ -174,11 +190,19 @@ label v100:
     # imaginary super version
     python:
         # update!
-        #updateTopicIDs("v100")
+        updateTopicIDs("v100")
         #addNewTopicIDs()
         print("tesT")
     
     return        
+
+# testing 2 update script
+label v050:
+    # imaginary mid version
+    python:
+        updateTopicIDs("v050")
+
+    return
 
 # actual update scripts
 # 0.3.3
@@ -188,7 +212,6 @@ label v033:
 
         # update!
         updateTopicIDs("v033")
-        addNewTopicIDs()
     return
 
 # 0.3.2
@@ -197,7 +220,6 @@ label v032:
 
         # update!
         updateTopicIDs("v032")
-        addNewTopicIDs()
     return
 
 # 0.3.1
@@ -205,7 +227,6 @@ label v031:
     python:
         # update!
         updateTopicIDs("v031")
-        addNewTopicIDs()
 
     return
 
