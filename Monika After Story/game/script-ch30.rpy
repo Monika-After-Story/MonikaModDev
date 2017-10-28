@@ -79,8 +79,7 @@ init python:
     import os
     import eliza      # mod specific
     import datetime   # mod specific
-    import re
-    import _winreg    # mod specific 
+    import re 
     therapist = eliza.eliza()
     process_list = []
     music_list = ['bgm/m1.ogg', 'bgm/credits.ogg', 'bgm/monika-end.ogg', 'bgm/5_monika.ogg', 'bgm/d.ogg']
@@ -154,26 +153,36 @@ init python:
         return delta.days
     # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
-        # Grab first steam installation directory 
-        # If you're like me, it will miss libraries installed on another drive 
-        aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
-        try:
-            # Check 32 bit 
-            keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam") 
-        except:
-            # Check 64 bit 
+        if os.name == "nt":
+            import _winreg    # mod specific
+            # Grab first steam installation directory 
+            # If you're like me, it will miss libraries installed on another drive 
+            aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
             try:
-               keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
+                # Check 32 bit 
+                keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam") 
             except:
-               # No Steam 
-               return None
-        for i in range(4):
-            # Value Name, Value Data, Value Type 
-            n,installPath,t = _winreg.EnumValue(keyVal, i)
-            if n=="InstallPath": break
-        installPath+="/steamapps"
-        appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
-        return appIds  
+                # Check 64 bit 
+                try:
+                   keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
+                except:
+                   # No Steam 
+                   return None
+            for i in range(4):
+                # Value Name, Value Data, Value Type 
+                n,installPath,t = _winreg.EnumValue(keyVal, i)
+                if n=="InstallPath": break
+            installPath+="/steamapps"
+            appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
+            return appIds  
+        elif os.name == "mac":
+            # Placeholder 
+            return None 
+        elif os.name == "posix":
+            # Placeholder
+            return None 
+        else:
+            return None
 
 label ch30_noskip:
     show screen fake_skip_indicator
