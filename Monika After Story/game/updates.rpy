@@ -1,6 +1,5 @@
 # Module that handles updates between versions
 # Assumes:
-#   persistent.monika_random_topics
 #   updates.topics
 #   updates.version_updates
 #   persistent._seen_ever
@@ -23,8 +22,6 @@ init 4 python:
     # check version change
     # this also handles if version number is None
     if persistent.version_number != config.version:
-        # mainly force regneration of topics
-        persistent.monika_random_built = False
         # clearing this to prevent crash
         persistent.monika_topic = None
 
@@ -33,7 +30,7 @@ init python:
 
     def removeTopicID(topicID):
         #
-        # Removes one topic from both the _seen_ever variable and persistent
+        # Removes one topic from the _seen_ever variable
         # topics list (if it exists in either var) (persistent is also 
         # checked for existence)
         #
@@ -42,49 +39,14 @@ init python:
         #
         # ASSUMES:
         #   persistent._seen_ever
-        #   persistent.monika_random_topics (checks for exisitence)
 
         if renpy.seen_label(topicID):
             persistent._seen_ever.pop(topicID)
 
-        if (persistent.monika_random_topics is not None and
-            topicID in persistent.monika_random_topics):
-            persistent.monika_random_topics.remove(topicID)
 
-    def addNewTopicIDs():
-        # 
-        # Using some (not so) clever algorithm, adds new TopicIDs
-        # that havent been seen to the persistent random topics list
-        # by comparing persistent.monika_random_topics and
-        # a newly generated topics.monika_topics list
+    def adjustTopicIDs(changedIDs):
         #
-        # ASSUMES:
-        #   persistent.monika_random_topics
-        #   topics.monika_topics has been generated and filled
-        #   version number has changed
-        #
-        # SIDE EFFECTS:
-        #   topics.monika_topics is cleared
-        #   persistent.monika_random_topics is extended
-
-        new_topics = list()
-
-        for topic in topics.monika_topics:
-            # seen label check is first because assume longtime player
-            if (not renpy.seen_label(topic) and
-                topic not in persistent.monika_random_topics):
-                new_topics.append(topic)
-
-        # finally extend the persisents
-        persistent.monika_random_topics.extend(new_topics)
-
-        # and clear the topics
-        topics.monika_topics[:] = []
-
-
-    def adjustTopicIDs(oldList, changedIDs):
-        #
-        # Changes topic IDs in the oldLists
+        # Changes labels in persistent._seen_ever
         # to new IDs in the changedIDs dict
         #
         # IN:
@@ -95,23 +57,14 @@ init python:
         #
         # ASSUMES:
         #   persistent._seen_ever
-        
-        for index in range(0,len(oldList)):
-            if oldList[index] in changedIDs:
-                newItem = changedIDs[oldList[index]]
-                if newItem is None:
-                    oldList.pop(index)
-                else:
-                    oldList[index] = newItem
 
         # now for a complicated alg that changes keys in _seen_ever
         # except its not that complicated lol
 
         for oldTopic in changedIDs:
-            if oldTopic in persistent._seen_ever:
-                persistent._seen_ever.pop(oldTopic)
-                if changedIDs[oldTopic] is not None:
-                    persistent._seen_ever[changedIDs[oldTopic]] = True
+            if persistent._seen_ever.pop(oldTopic, False):
+                persistent._seen_ever[changedIDs(oldTopic)] = True
+                    
 
 
     def updateTopicIDs(version_number):
@@ -126,15 +79,15 @@ init python:
         #       updating to
         #
         # ASSUMES:
-        #   persistent.monika_random_topics
+        #   persistent._seen_ever
         #   updates.topics
     
         if version_number in updates.topics:
             changedIDs = updates.topics[version_number]
         
+        
             if changedIDs is not None:
                 adjustTopicIDs(
-                    persistent.monika_random_topics,
                     changedIDs
                 )
 
@@ -156,14 +109,11 @@ init python:
             )
             startVers = updates.version_updates[startVers]
 
-        # adding new topics happens here because of logic issues
-        addNewTopicIDs()
-
 
 # this needs to run post script-topics
 init 10 python:
 
-    # okay do we have a verison number?
+    # okay do we have a version number?
     if persistent.version_number is None:
         # here comes the logic train
         if no_topics_list:

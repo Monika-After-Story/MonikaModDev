@@ -1367,6 +1367,4 @@ default natsuki_23 = None
 #Mod-specific
 default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
-default persistent.monika_random_topics = []
 default persistent.monika_said_topics = []
-default persistent.monika_random_built = False
