@@ -1,19 +1,22 @@
 # Module that handles updates between versions
 # Assumes:
 #   persistent.monika_random_topics
-
-#define teststore = None
-#define teststore_t = None
-define prev033 = False
-
-# pre verything (testing)
-init -10 python:
-    import copy
-    old_list = copy.deepcopy(persistent.monika_random_topics)
+#   updates.topics
+#   updates.version_updates
+#   persistent._seen_ever
+#   persistent.version_number
+#   topics.monika_topics
 
 # preeverything stuff 
 init -10 python:
     found_monika_ani = persistent.monika_anniversary is not None
+    no_topics_list = persistent.monika_random_topics is None
+
+# uncomment these lines if you need to compare pre-update topics to
+# updated topics (have dev = True)
+#    import copy
+#    old_list = copy.deepcopy(persistent.monika_random_topics)
+
 
 # pre script-topics (which is runlevel 5)
 init 4 python:
@@ -27,9 +30,26 @@ init 4 python:
 
 # create some functions
 init python:
-    testing_list = list()
-    testing_chlist = list()
-    teststore = None
+
+    def removeTopicID(topicID):
+        #
+        # Removes one topic from both the _seen_ever variable and persistent
+        # topics list (if it exists in either var) (persistent is also 
+        # checked for existence)
+        #
+        # IN:
+        #   @param topicID - the topicID to remove
+        #
+        # ASSUMES:
+        #   persistent._seen_ever
+        #   persistent.monika_random_topics (checks for exisitence)
+
+        if renpy.seen_label(topicID):
+            persistent._seen_ever.pop(topicID)
+
+        if (persistent.monika_random_topics is not None and
+            topicID in persistent.monika_random_topics):
+            persistent.monika_random_topics.remove(topicID)
 
     def addNewTopicIDs():
         # 
@@ -51,8 +71,6 @@ init python:
 
         for topic in topics.monika_topics:
             # seen label check is first because assume longtime player
-            res = renpy.seen_label(topic)
-            testing_list.append((res,topic))
             if (not renpy.seen_label(topic) and
                 topic not in persistent.monika_random_topics):
                 new_topics.append(topic)
@@ -110,14 +128,15 @@ init python:
         # ASSUMES:
         #   persistent.monika_random_topics
         #   updates.topics
+    
+        if version_number in updates.topics:
+            changedIDs = updates.topics[version_number]
         
-        changedIDs = updates.topics[version_number]
-        
-        if changedIDs is not None:
-            adjustTopicIDs(
-                persistent.monika_random_topics,
-                changedIDs
-            )
+            if changedIDs is not None:
+                adjustTopicIDs(
+                    persistent.monika_random_topics,
+                    changedIDs
+                )
 
 
     def updateGameFrom(startVers):
@@ -141,38 +160,33 @@ init python:
         addNewTopicIDs()
 
 
-
 # this needs to run post script-topics
 init 10 python:
 
     # okay do we have a verison number?
     if persistent.version_number is None:
         # here comes the logic train
-        if persistent.monika_random_topics is None:
+        if no_topics_list:
             # we are in version 0.2.2 (the horror!)
-            # TODO
-            print("v022")
-            teststore = "v022"
+            updateGameFrom("v022")
             
         elif (renpy.seen_label("monika_ribbon") or
                 "monika_ribbon" in persistent.monika_random_topics):
             print("v033")
             # we are in version 0.3.3
-            # TODO mgiht have something to do here
-            teststore = "v033"
+
         elif found_monika_ani: 
             # we are in version 0.3.2
             updateGameFrom("v032")
-            teststore = "v032"
+
         elif (renpy.seen_label("monika_monika") or
                 "monika_monika" in persistent.monika_random_topics):
             # we are in version 0.3.1
             updateGameFrom("v031")
-            teststore = "v031"
+
         else:
             # we are in version 0.3.0
             updateGameFrom("v030")
-            teststore = "v030"
 
         # set the version now
         persistent.version_number = config.version
@@ -185,26 +199,16 @@ init 10 python:
         persistent.version_number = config.version
 
 
-# testing update script
-label v100:
-    # imaginary super version
-    python:
-        # update!
-        updateTopicIDs("v100")
-        #addNewTopicIDs()
-        print("tesT")
-    
-    return        
+# UPDATE SCRIPTS ==============================================================
+# use these to handle conflicting changes or special cases
+# make sure the label is of the format v### and matches a version number
+# defined in updates_topics.rpy.
+#
+# also, always make sure the script ends with a call to updateTopicIDs(),
+# passing in the version number of that script
+#
+# NOTE: the labels here mean we are updating TO this version
 
-# testing 2 update script
-label v050:
-    # imaginary mid version
-    python:
-        updateTopicIDs("v050")
-
-    return
-
-# actual update scripts
 # 0.3.3
 label v033:
     python:
@@ -233,6 +237,10 @@ label v031:
 # 0.3.0
 label v030:
     python:
-        print("nothing")
-        # TODO
+        # the following labels are special cases because of conflicts
+        removeTopicID("monika_piano")
+        removeTopicID("monika_college")
 
+        # update!
+        updateTopicIDs("v030")
+    return
