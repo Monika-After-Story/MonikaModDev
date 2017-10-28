@@ -1,5 +1,4 @@
 default persistent.monika_reload = 0
-default persistent.monika_random_topics = []
 default persistent.tried_skip = None
 default persistent.monika_kill = None
 default persistent.rejected_monika = None
@@ -176,8 +175,8 @@ label ch30_noskip:
         pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_8
         python:
-            if persistent.current_monikatopic in persistent.monika_random_topics:
-                persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
+            if persistent.current_monikatopic in monika_random_topics:
+                monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     jump ch30_loop
     return
 
@@ -490,8 +489,8 @@ label ch30_autoload:
         pause 2.0
         call expression str(persistent.current_monikatopic) from _call_expression_10
         python:
-            if persistent.current_monikatopic in persistent.monika_random_topics:
-                persistent.monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
+            if persistent.current_monikatopic in monika_random_topics:
+                monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     #Add keys for new functions
     $ config.keymap["open_dialogue"] = ["t"]
     $ config.keymap["change_music"] = ["m"]
@@ -581,14 +580,14 @@ label ch30_loop:
     # Pick a random Monika topic
     label pick_random_topic:
     python:
-        if persistent.monika_random_topics:        # If we're out of random topics, just stay in the loop
-            persistent.current_monikatopic = renpy.random.choice(persistent.monika_random_topics)
+        if monika_random_topics:        # If we're out of random topics, just stay in the loop
+            persistent.current_monikatopic = renpy.random.choice(monika_random_topics)
 
 
 
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         call expression str(persistent.current_monikatopic) from _call_expression_11
-        $ persistent.monika_random_topics.remove(persistent.current_monikatopic)
+        $ monika_random_topics.remove(persistent.current_monikatopic)
 
     jump ch30_loop
 
@@ -627,7 +626,7 @@ label ch30_monikatopics:
 
             renpy.call(persistent.current_monikatopic) #Go to the topic
             #Remove the topic from the random topics list
-            if persistent.current_monikatopic in persistent.monika_random_topics:
-                persistent.monika_random_topics.remove(persistent.current_monikatopic)
+            if persistent.current_monikatopic in monika_random_topics:
+                monika_random_topics.remove(persistent.current_monikatopic)
 
     jump ch30_loop

@@ -1,8 +1,6 @@
 define persistent.demo = False
 define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
-define persistent.monika_random_topics = []
-define persistent.monika_random_built = False
 
 python early:
     import singleton
@@ -1310,6 +1308,7 @@ default chapter = 0
 default currentpos = 0
 default faint_effect = None
 
+
 default s_name = "Sayori"
 default m_name = "Monika"
 default n_name = "Natsuki"
@@ -1368,3 +1367,4 @@ default natsuki_23 = None
 #Mod-specific
 default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
+default persistent.monika_said_topics = []
