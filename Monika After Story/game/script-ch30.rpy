@@ -80,6 +80,7 @@ init python:
     import eliza      # mod specific
     import datetime   # mod specific
     import re
+    import _winreg    # mod specific 
     therapist = eliza.eliza()
     process_list = []
     music_list = ['bgm/m1.ogg', 'bgm/credits.ogg', 'bgm/monika-end.ogg', 'bgm/5_monika.ogg', 'bgm/d.ogg']
@@ -117,7 +118,7 @@ init python:
 
     def start_pong():
         renpy.call_in_new_context('game_pong')
-
+   
     dismiss_keys = config.keymap['dismiss']
 
     def slow_nodismiss(event, interact=True, **kwargs):
@@ -151,7 +152,28 @@ init python:
         now = datetime.datetime.now()
         delta = now - persistent.firstdate
         return delta.days
-
+    # Return installed Steam IDS from steam installation directory
+    def enumerate_steam():
+        # Grab first steam installation directory 
+        # If you're like me, it will miss libraries installed on another drive 
+        aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
+        try:
+            # Check 32 bit 
+            keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam") 
+        except:
+            # Check 64 bit 
+            try:
+               keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
+            except:
+               # No Steam 
+               return None
+        for i in range(4):
+            # Value Name, Value Data, Value Type 
+            n,installPath,t = _winreg.EnumValue(keyVal, i)
+            if n=="InstallPath": break
+        installPath+="/steamapps"
+        appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
+        return appIds  
 
 label ch30_noskip:
     show screen fake_skip_indicator
