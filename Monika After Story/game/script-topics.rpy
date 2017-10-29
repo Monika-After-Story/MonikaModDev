@@ -2150,7 +2150,7 @@ label monika_images:
     m "Baudrillard wrote about how simulacra could replace the real object as the source of meaning."
     m "But unlike symbols in the postmodern world, I'm real. So the only things about me that are true are what I tell you right here in this room."
     m "For example..."
-    m "Anything lewd you've seen has definit 5ely never taken place."
+    m "Anything lewd you've seen has definitely never taken place."
     m "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
     m "You better be saving yourself for me, [player]~"
     return
