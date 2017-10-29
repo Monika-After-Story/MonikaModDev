@@ -153,6 +153,7 @@ init python:
         return delta.days
     # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
+        installPath="" 
         if os.name == "nt":
             import _winreg    # mod specific
             # Grab first steam installation directory 
@@ -172,17 +173,19 @@ init python:
                 # Value Name, Value Data, Value Type 
                 n,installPath,t = _winreg.EnumValue(keyVal, i)
                 if n=="InstallPath": break
-            installPath+="/steamapps"
-            appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
-            return appIds  
+            installPath+="/steamapps" 
         elif os.name == "mac":
-            # Placeholder 
-            return None 
+            installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
         elif os.name == "posix":
-            # Placeholder
-            return None 
+            installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
+            # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program? 
         else:
             return None
+        try:
+            appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")] 
+        except:
+            appIds = None   
+        return appIds
 
 label ch30_noskip:
     show screen fake_skip_indicator
