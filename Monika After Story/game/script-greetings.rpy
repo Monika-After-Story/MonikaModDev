@@ -197,5 +197,5 @@ label greeting_latin:
      m "Quid agis ?"
      m "Ahahah"
      m "Latin sounds so pompous and even a simple greeting sounds like a big deal."
-     m "If you're wondering what I said, it's simply "We meet again, how are you?"."
+     m "If you're wondering what I said, it's simply \We meet again, how are you?\."
      return
