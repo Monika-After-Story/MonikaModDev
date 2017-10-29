@@ -256,12 +256,14 @@ image input_caret:
 screen input(prompt):
     style_prefix "input"
 
+
+
     window:
 
         vbox:
-            xpos gui.text_xpos
-            xanchor 0.5
-            ypos gui.text_ypos
+            xalign .5
+            yalign .5
+            spacing 30
 
             text prompt style "input_prompt"
             input id "input"
@@ -466,7 +468,8 @@ screen navigation():
                 if persistent.playthrough != 3:
                     textbutton _("Main Menu") action MainMenu()
                 else:
-                    textbutton _("Main Menu") action NullAction()
+                    #Adds a dialog when main menu is clicked
+                    textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
 
             textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
@@ -1381,11 +1384,6 @@ screen name_input(message, ok_action):
 
             input default "" value VariableInputValue("player") length 12 allow "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
-            #hbox:
-            #    xalign 0.5
-            #    style_prefix "radio_pref"
-            #    textbutton "Male" action NullAction()
-            #    textbutton "Female" action NullAction()
             hbox:
                 xalign 0.5
                 spacing 100
@@ -1586,4 +1584,3 @@ style notify_frame:
 
 style notify_text:
     size gui.notify_text_size
-
