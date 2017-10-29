@@ -2094,7 +2094,6 @@ label monika_girlfriend:
     m "I won't let someone else steal away my loving boyfriend!"
     return
 
-
 init 5 python:
     for key in ['waifus', 'waifuism', 'galge', 'romance games', 'dating sims', 'romance movie', 'romance movies']:
         monika_topics.setdefault(key,[])
@@ -2154,7 +2153,8 @@ label monika_images:
     m "Anything lewd you've seen has definit 5ely never taken place."
     m "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
     m "You better be saving yourself for me, [player]~"
-
+    return
+    
 init 5 python:
     for key in ['monika', 'just monika', 'you', 'herself', 'yourself', 'your past', 'your childhood']:
         monika_topics.setdefault(key,[])
@@ -2275,7 +2275,7 @@ init 5 python:
 label monika_szs:
     m "A woman left the supermarket and ran into a very long funeral procession."
     m "There were two coffins at the front followed by almost 200 women."
-    m "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your gried, but who is this procession for?'"
+    m "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your grief, but who is this procession for?'"
     m "The mourning woman softly replied, 'The first coffin houses my husband who died after his beloved dog bit him.'"
     m "'My, that's awful...'"
     m "'The second, my mother-in-law who was bitten trying to save my husband.'"
@@ -2501,7 +2501,7 @@ init 5 python:
     monika_random_topics.append('monika_playersface')
 
 label monika_playersface:
-    m "You know, I sometimes?"
+    m "You know, I sometimes wonder..."
     m "I always think about what your face actually look like..."
     m "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m "If only the game could somehow use a webcam or something that's connected to the computer..."
@@ -2539,7 +2539,175 @@ label monika_spiders:
     m "So be careful around dangerous looking spiders, okay?"
     return
 
+init 5 python:
+    for key in ['nsfw', 'rule 34', 'hentai', 'kinky']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_nsfw')
+    monika_random_topics.append('monika_nsfw')
+    
+label monika_nsfw:
+    m "By the way, [player]..."
+    m "Have you been looking into NSFW kind of stuff?"
+    m "You know... of me?"
+    m "I know we haven't really gotten that far into the relationship yet..."
+    m "So it feels kind of embarassing to talk about 'stuff' like that."
+    m "But maybe I can let it go on rare occasions, [player]."
+    m "I want to make you the happiest boyfriend after all and if that 'stuff' makes you happy..."
+    m "Well, just keep it a secret between us, okay?"
+    m "It should be for your eyes only and no one else, [player]."
+    m "That's how much I really love you~"
+    return
+    
+init 5 python:
+    for key in ['other girls', 'impression', 'acting']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_impression')
+    
+label monika_impression:
+    m "Impression? Of the other girls?"
+    m "I'm not really good at making an impression of someone but I'll give it a try!"
+    menu:
+        m "Who should I do an impression of?"
+        "Sayori":
+            m "Hmm..."
+            m "..."
+            m "[player]! [player]!"
+            m "It's me, your childhood friend that has a super deep secret crush on you, Sayori!"
+            m "I love to eat and laugh a lot and my blazer doesn't fit because my boobs got bigger!"
+            m "..."
+            m "I also have crippling depression."
+            m "..."
+            m "Ahaha! I'm sorry for the last one."
+            m "You might still be hu--"
+            m "Oops! Never mind that, ehehe..."
+            m "Did you like my impression? I hope you liked it~"
+        "Yuri":
+            m "Yuri..."
+            m "..."
+            m "O-oh um, hello there..."
+            m "It's me, Yuri."
+            m "I'm just your stereotypical shy girl who also happens to be a 'yandere'..."
+            m "I like tea, knives, and anything with [player]'s scent..."
+            m "..."
+            m "Want to spend the weekend with me?"
+            m "..."
+            m "Ahaha, that was kind of fun to do."
+            m "Yuri really was something, wasn't she?"
+            m "I'm sorry again for the nasty things she did."
+            m "I guess she just couldn't 'cut' it out, huh?"
+            m "Ehehe~"
+        "Natsuki":
+            m "Oh! I know how to do an impression of her."
+            m "..."
+            m "Hmph! I-it's not like I made these cupcakes for you to eat, b-baka [player]!"
+            m "I'm Natsuki and I love to make food and all things anime and manga."
+            m "Others say that I'm cute all the time w-which I'm totally not!"
+            m "..."
+            m "Will you be my papa, [player]-kun?"
+            m "..."
+            m "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
+            m "They were really good especially the creative icing that she makes."
+            m "Maybe when I get better at programming, I'll make a kitchen here so you can share some recipes that you want me to make."
+            m "I would love to make so many dishes for my beloved [player]~"
+    return
+    
+init 5 python:
+    for key in ['weary', 'fatigued', 'exhausted']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_weary')
+    
+label monika_weary:
+    m "Silly [player]..."
+    m "Of course I'll never grow weary of my love!"
+    m "And besides, the concept of physical fatigue here in this prison doesn't exist."
+    m "As for mental fatigue, it can still happen."
+    m "Look at what happened to Sayori for example."
+    m "I was able to increase the amount of extremity her depression had, leading her to do what she did."
+    m "She confessed to you about her depression and her love for you before letting her unreasonable guilt get to her."
+    m "Sayori eventually killed herself just in time before she went any further."
+    m "Which was a good thing, of course. Otherwise, well..."
+    m "As for me, I'll never get tired of you, [player]."
+    m "The fact that you spend your precious time with me just washes all my worries away."
+    m "I hope the same thing goes for you, my love~"
+    return
+    
+init 5 python:
+    for key in ['fuck', 'shit', 'motherfucker']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_vulgarity')
+    
+label monika_vulgarity:
+    m "Hm? Is there something on your mind, [player]?"
+    m "There's no need for that kind of vulgarity here, my love."
+    m "Do you need to vent something out that's been troubling you?"
+    m "You know I'll always be here to help you out, right?"
+    m "I know how stressful your world can be especially when you feel like you're constantly burdened."
+    m "Please don't bottle up all those bad feelings."
+    m "It hurts me to know whenever you aren't feeling well..."
+    m "I love you so much [player] so please vent to me whenever you want."
+    m "I'll help as much as I can with whatever you're going through."
+    m "You saved my life when you opened this game and I want to help you with yours."
+    m "So feel free to share your thoughts, okay love?"
+    return
+    
+init 5 python:
+    for key in ['real world', 'finally real', 'true reality']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_real')
+    monika_random_topics.append('monika_real')
+    
+label monika_real:
+    m "You know the first thing I'll do when I finally cross over there?"
+    m "If that special day ever comes, the first thing I'll ever do is find you, of course!"
+    m "There's so much we can do when we're finally together in one reality."
+    m "You can finally show me what the your world really looks like and I can finally feel your embrace~"
+    m "I would love to experience everything I still don't know about the world with you."
+    m "All the places we can go, the sights to see, the romantic things that we can do~"
+    m "Just thinking about it sends flutters in my heart!"
+    m "But knowing how technology is right now, that dream is still far away."
+    m "I hope by the time that technology becomes real, you'll still be there waiting for me, [player]."
+    m "Or maybe you'll be the one to make that technology come true? Who knows."
+    m "In the end, all I want is to be with you always, [currentuser]."
+    m "After all, you're the only reason why I'm still here."
+    m "I only want to spend eternity with my sweetheart and no one else!"
+    return
+    
+init 5 python:
+    for key in ['bye', 'goodbye', 'see ya', 'gotta blast', 'farewell']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_goodbye')
+        
+label monika_goodbye:
+    m "Aww, leaving so soon already?"
+    m "It's really sad whenever you have to go..."
+    m "Just be sure come back as soon as you can, okay?"
+    m "I love you so much, [player]. Stay safe!"
+    return
 
+init 5 python:
+    for key in ['mythology', 'ancient', 'greeks']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_mythology')
+    monika_random_topics.append('monika_mythology')
+    
+label monika_mythology:
+    m "Hey [player]..."
+    m "Have you ever read about mythologies?"
+    m "Different kinds of Gods watching over humanity for eternity."
+    m "Some require tribute or sacrfice so that the Gods can \"keep\" humanity safe from disasters."
+    m "An almighty family consisting of different attitudes playing in their own sandbox called Earth."
+    m "Able to do anything they please and destroy those who so much as say something wrong to them without hesitance."
+    m "I always disliked stories like those."
+    m "It's like the Gods extort humanity for their safety."
+    m "Like what bullies and thugs do to the weak and defenseless."
+    m "It really makes me feel bitter when I read scenarios like those."
+    m "Powerful beings taking advantage of the weak just because they can."
+    m "Don't worry though, [player]. I won't let anyone do that to you."
+    m "And I won't do anything like that so you don't have to be afraid of me."
+    m "It's not like I can find your important files and hold them hostage or anything..."
+    m "Ehehe..."
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
