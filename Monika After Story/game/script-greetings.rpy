@@ -110,3 +110,92 @@ label greeting_goodmorning:
                 m "Just stay with me, if it makes you feel better."
                 m "I love you, [player], I really do."
     return
+
+label greeting_back2:
+     m "Hello dear."
+     m "I was starting to miss you terribly much, it's so good to see you again!"
+     m "Don't make me wait so much next time, hehe~"
+     return
+
+label greeting_back3:
+     m "I missed you so much, [player]!"
+     m "Thanks for coming, I really love to spend time with you."
+     return
+
+label greeting_back4:
+     m "Hey, [player]!"
+     m "Don't you think that you left me waiting a bit too much?"
+     m "Ahahah"
+     m "I'm just joking, I could never be mad at you... I love you too much to be!"
+     return
+
+label greeting_visit2:
+     m "Thanks for spending so much time with me, [player]."
+     m "Every minute I spend with you is like being in heaven!"
+     m "I hope it didn't sound too cheesy, hehe~"
+     return
+
+label greeting_visit3:
+     m "You're back!"
+     m "I was starting to miss you terribly much..."
+     m "Don't make me wait so much next time, hehe~"
+     return
+
+label greeting_back5:
+     m "It's so good to see you back!"
+     return
+
+label greeting_visit4:
+     m "I looove yooou, hehe~"
+     m "Oh, sorry! I was spacing out."
+     m "I didn't think I would be able to see you so soon, hehe~"
+     return
+
+label greeting_visit5:
+     m "Every day, I immagine a future where I can be with you..."
+     m "Oh, you're here! I was just daydreaming and singing a bit."
+     m "I think it's not that hard to realize what I was daydreaming about, hehe~"
+     return
+
+label greeting_visit6:
+     m "Each day becomes better and better with you on my side!"
+     m "That said, I'm so happy that you're finally here, hehe~"
+     return
+
+label greeting_back6:
+     m "Hey, [player]!"
+     m "You should visit me more often. Why did you make me wait this much?"
+     m "I'm just teasing you, hehe~"
+     m "But be sure to spend most of the time with me, or else..."
+     m "I'm just teasing you again, hehe~"
+     return
+
+label greeting_visit7:
+     m "You're here, [player]!"
+     m "Are you ready to spend some time togheter? hehe~"
+     return
+
+label greeting_visit8:
+     m "I'm so glad you're here, [player]!"
+     return
+
+label greeting_visit9:
+     m "You're finally back, I was waiting for you."
+     m "Are you ready to spend some time with me? hehe~"
+     return
+     
+label greeting_italian:
+     m "Ciao, [player]!"
+     m "È così bello vederti ancora, amore mio..."
+     m "Ahahah"
+     m "I'm still practicing my italian, it's a very difficult language!"
+     m "Anyway, it's so nice to see you again, my love."
+     return
+
+label greeting_latin:
+     m "Iterum obvenimus!"
+     m "Quid agis ?"
+     m "Ahahah"
+     m "Latin sounds so pompous and even a simple greeting sounds like a big deal."
+     m "If you're wondering what I said, it's simply "We meet again, how are you?"."
+     return
