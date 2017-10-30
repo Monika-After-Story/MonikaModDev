@@ -78,7 +78,7 @@ init python:
     import os
     import eliza      # mod specific
     import datetime   # mod specific
-    import re
+    import re 
     therapist = eliza.eliza()
     process_list = []
     music_list = ['bgm/m1.ogg', 'bgm/credits.ogg', 'bgm/monika-end.ogg', 'bgm/5_monika.ogg', 'bgm/d.ogg']
@@ -116,7 +116,7 @@ init python:
 
     def start_pong():
         renpy.call_in_new_context('game_pong')
-
+   
     dismiss_keys = config.keymap['dismiss']
 
     def slow_nodismiss(event, interact=True, **kwargs):
@@ -150,7 +150,6 @@ init python:
         now = datetime.datetime.now()
         delta = now - persistent.firstdate
         return delta.days
-
 
 label ch30_noskip:
     show screen fake_skip_indicator
@@ -568,7 +567,7 @@ label ch30_loop:
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
-    if not persistent.tried_skip:
+    if not persistent. tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
