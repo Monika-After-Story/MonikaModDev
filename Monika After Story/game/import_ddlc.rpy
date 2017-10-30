@@ -16,16 +16,23 @@ label import_ddlc_persistent:
         
     #Check if previous MAS data exists
     
+    label .save_merge_or_replace:
     menu:
         "Previous Monika After Story save data has also been found.\nReplace or merge with DDLC save data?"
         "Merge save data.":
-            #Time to merge data
-            pass
+            $merge_previous=True #Time to merge data
+            
         "Delete After Story data.":
-            #Replace
-            pass
+            menu:
+                "Monika After Story data will be deleted. This cannot be undone. Are you sure?"
+                "Yes":
+                    m "You really haven't changed. Have you?"
+                    $merge_previous=False
+                "No":
+                    jump save_merge_or_replace
         "Cancel.":
-            #Go back to previous question
-            pass
+            "DDLC data can be imported later in the Settings menu."
+            return
+            
             
     return
