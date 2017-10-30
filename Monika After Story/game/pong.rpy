@@ -15,7 +15,7 @@
                 # Some displayables we use.
                 self.paddle = Image("pong.png")
                 self.ball = Image("pong_ball.png")
-                self.player = Text(_("(You)"), size=36)
+                self.player = Text(_("[player]"), size=36)
                 self.monika = Text(_("Monika"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
