@@ -468,7 +468,7 @@ screen navigation():
                 if persistent.playthrough != 3:
                     textbutton _("Main Menu") action MainMenu()
                 else:
-                    textbutton _("Main Menu") action NullAction()
+                    textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
 
             textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 

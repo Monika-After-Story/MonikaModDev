@@ -38,6 +38,42 @@ init -1 python:
             return
         if time <= 0: return
         renpy.pause(time)
+    
+        # Return installed Steam IDS from steam installation directory
+    def enumerate_steam():
+        installPath="" 
+        if renpy.windows:
+            import _winreg    # mod specific
+            # Grab first steam installation directory 
+            # If you're like me, it will miss libraries installed on another drive 
+            aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
+            try:
+                # Check 32 bit 
+                keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam") 
+            except:
+                # Check 64 bit 
+                try:
+                   keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
+                except:
+                   # No Steam 
+                   return None
+            for i in range(4):
+                # Value Name, Value Data, Value Type 
+                n,installPath,t = _winreg.EnumValue(keyVal, i)
+                if n=="InstallPath": break
+            installPath+="/steamapps" 
+        elif renpy.mac:
+            installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
+        elif renpy.linux:
+            installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
+            # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program? 
+        else:
+            return None
+        try:
+            appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")] 
+        except:
+            appIds = None   
+        return appIds
 
 
 # Music
