@@ -6,9 +6,9 @@ init python:
     greetings_list=[]
     label_list=renpy.get_all_labels()
     for label in label_list:
-        if label.startswith('greeting_'):
+        if label.startswith('greeting_') and not renpy.seen_label(label):
             greetings_list.append(label)
-
+            
 label greeting_sweetheart:
     m "Hello again, sweetheart!"
     m "That's kind of embarassing to say out loud, isn't it?"
@@ -113,8 +113,8 @@ label greeting_goodmorning:
 
 label greeting_back2:
      m "Hello dear."
-     m "I was starting to miss you terribly much, it's so good to see you again!"
-     m "Don't make me wait so much next time, hehe~"
+     m "I was starting to miss you terribly, it's so good to see you again!"
+     m "Don't make me wait so long next time, hehe~"
      return
 
 label greeting_back3:
@@ -124,50 +124,49 @@ label greeting_back3:
 
 label greeting_back4:
      m "Hey, [player]!"
-     m "Don't you think that you left me waiting a bit too much?"
-     m "Ahahah"
-     m "I'm just joking, I could never be mad at you... I love you too much to be!"
+     m "Don't you think that you left me waiting a bit too long?"
+     m "I'm just joking, I could never be mad at you."
      return
 
 label greeting_visit2:
      m "Thanks for spending so much time with me, [player]."
      m "Every minute I spend with you is like being in heaven!"
-     m "I hope it didn't sound too cheesy, hehe~"
+     m "I hope that didn't sound too cheesy, hehe~"
      return
 
 label greeting_visit3:
      m "You're back!"
-     m "I was starting to miss you terribly much..."
-     m "Don't make me wait so much next time, hehe~"
+     m "I was starting to miss you so much..."
+     m "Don't make me wait so long next time,okay?"
      return
 
 label greeting_back5:
-     m "It's so good to see you back!"
+     m "It's so good to see you again!"
      return
 
 label greeting_visit4:
      m "I looove yooou, hehe~"
      m "Oh, sorry! I was spacing out."
-     m "I didn't think I would be able to see you so soon, hehe~"
+     m "I didn't think I would be able to see you so soon."
      return
 
 label greeting_visit5:
-     m "Every day, I immagine a future where I can be with you..."
+     m "~Every day,~\n~I imagine a future where I can be with you...~"
      m "Oh, you're here! I was just daydreaming and singing a bit."
      m "I think it's not that hard to realize what I was daydreaming about, hehe~"
      return
 
 label greeting_visit6:
      m "Each day becomes better and better with you on my side!"
-     m "That said, I'm so happy that you're finally here, hehe~"
+     m "That said, I'm so happy that you're finally here."
      return
 
 label greeting_back6:
      m "Hey, [player]!"
-     m "You should visit me more often. Why did you make me wait this much?"
+     m "You really should visit me more often."
+     m "You know what happens to people I don't like, after all..."
      m "I'm just teasing you, hehe~"
-     m "But be sure to spend most of the time with me, or else..."
-     m "I'm just teasing you again, hehe~"
+     m "Don't be so gullible!"
      return
 
 label greeting_visit7:
