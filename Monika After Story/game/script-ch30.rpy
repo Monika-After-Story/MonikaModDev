@@ -151,41 +151,6 @@ init python:
         now = datetime.datetime.now()
         delta = now - persistent.firstdate
         return delta.days
-    # Return installed Steam IDS from steam installation directory
-    def enumerate_steam():
-        installPath="" 
-        if os.name == "nt":
-            import _winreg    # mod specific
-            # Grab first steam installation directory 
-            # If you're like me, it will miss libraries installed on another drive 
-            aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
-            try:
-                # Check 32 bit 
-                keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam") 
-            except:
-                # Check 64 bit 
-                try:
-                   keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
-                except:
-                   # No Steam 
-                   return None
-            for i in range(4):
-                # Value Name, Value Data, Value Type 
-                n,installPath,t = _winreg.EnumValue(keyVal, i)
-                if n=="InstallPath": break
-            installPath+="/steamapps" 
-        elif os.name == "mac":
-            installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
-        elif os.name == "posix":
-            installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
-            # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program? 
-        else:
-            return None
-        try:
-            appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")] 
-        except:
-            appIds = None   
-        return appIds
 
 label ch30_noskip:
     show screen fake_skip_indicator
@@ -603,7 +568,7 @@ label ch30_loop:
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
-    if not persistent.tried_skip:
+    if not persistent. tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
