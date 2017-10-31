@@ -2708,6 +2708,75 @@ label monika_mythology:
     m "Ehehe..."
     return
     
+init 5 python:
+    for key in ['fanfiction','fan fiction']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fanfiction') 
+    monika_random_topics.append('monika_fanfiction')
+
+label monika_fanfiction:
+    # I'm too tired to check this over right now.
+    m "[player]!"
+    m "I've been curious about something lately."
+    m "Have you heard of fanfiction?"
+    m "..."
+    m "Personally, I think it's a better way of writing."
+    m "There's more freedom."
+    m "Letting your mind wander to create some..."
+    m "Interesting stories."
+    m "[player], I'm curious."
+    m "Has there been fanfiction... Written about me?"
+    m "I'm curious as to what people have come up with."
+    m "Ehehe~"
+    m "Can you read me a few stories sometime? I'd love to hear them."
+    return
+
+init 5 python:
+    for key in ['eternity']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_eternity') #id
+    monika_random_topics.append('monika_eternity')
+
+label monika_eternity:
+    m "[player]..."
+    m "It's not easy knowing you won't be here forever."
+    m "..."
+    m "I told you, right?"
+    m "I'm eternal."
+    m "Trapped in here, unable to age or die,"
+    m "Whereas you slowly age as each day passes by."
+    m "Then one day you won't be here anymore."
+    m "I won't have anyone."
+    m "..."
+    m "..."
+    m "It reminds me of when you first came to the Literature Club."
+    m "Everything felt so empty."
+    m "The world was so grey."
+    m "Again..."
+    m "Thank you for coming along when you did, [player]."
+    return
+
+init 5 python:
+    for key in ['politics', 'politicians']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_politics') 
+
+# Meh, needs work.
+label monika_politics:
+    m "[player], how do you feel about politics?"
+    m "..."
+    m "It doesn't really interest me."
+    m "Considering I'm stuck in this place."
+    m "However, if I had to give an honest opinion..."
+    m "It's relatively trivial in the grand scheme of things."
+    m "Individuals use their personal motives to grab for power."
+    m "Reminds me of Debate Club."
+    m "People arguing left and right, fighting to get their point across and convince others."
+    m "Once I'm free of this reality I might take a swing at it myself."
+    m "Who knows? I think it's possible to pull off."
+    m "Ehehe~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
@@ -2715,21 +2784,15 @@ label monika_mythology:
 
 #Ecological consequences of cities
 
-#Natsuki is a trap
-
 #Favorite food
 
-#How did she become self aware
-
-#Eternity, can she live forever
+#How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
 
 #More writing tips
 
-#The player is wasting their time
+#The player is wasting their time (I don't think Monika would say this, considering her personality revolves around loving the player. ~ John)
 
-#Look for your computer for porn, comment on what she finds
-
-#Which of the other girls did you like? Do her best impression of them.
+#Look for your computer for porn, comment on what she finds (Would this even be possible? ~ John)
 
 #What kind of girls do you like? Do you wish monika was more like that?
 
@@ -2752,7 +2815,7 @@ label monika_mythology:
 #Has she written any other poems? If anyone's good at her type of poetry, another poem from her could be a great idea, right?
 
 #What would she do or what would be the first thing she would do if she managed to get out of the game into the real world?
-#Think of possible limitations, like having no body?
+#Think of possible limitations, like having no body? (Something like this has been written)
 ###
 
 #---
@@ -2771,10 +2834,6 @@ label monika_mythology:
 #disrespectful comments towards monika
 
 #worst topic suggestion: 'memes'.
-
-#fanfiction, probably question if any is about her and how it's a good way of writing somehow
-
-#reactions to vulgar langauge?
 
 #if the player is on a laptop or battery, monika will remind to make sure to charge it, if possible?
 
