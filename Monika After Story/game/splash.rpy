@@ -238,22 +238,25 @@ label splashscreen:
                 check_path = os.path.expanduser(rv)
                 
             save_path=glob.glob(check_path + 'DDLC*/persistent')
-            save_found = save_path is not None
+            
             
         #If you found a DDLC save
-        if save_found:
+        if save_path:
             $save_path=save_path[0]
             $quick_menu = False
             scene black
             menu:
                 "Would you like to import Doki Doki Literature Club save data into Monika After Story?\n(DDLC will not be affected)"
                 "Yes, import DDLC save data.":
+                    pause 0.3
                     call import_ddlc_persistent
                 "No, do not import.":
+                    pause 0.3
                     pass
                     
             $persistent.has_merged = True
-                        
+        
+        $persistent.first_run = True
             
 
 ## Logic for detecting if the game has been reinstalled    
