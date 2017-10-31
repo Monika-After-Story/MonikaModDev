@@ -2738,7 +2738,6 @@ label monika_disname:
     m "[mcname]"
     m "[player]"
     return
-    
 ##################
 #Incomplete ideas#
 ##################
