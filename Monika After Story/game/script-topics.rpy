@@ -776,7 +776,7 @@ label monika_college:
     m "...So now we have all these young adults, tens of thousands of dollars in debt, with no job."
     m "But despite all that, the routine stays the same."
     m "Well, I think it's going to start getting better soon."
-    m "But until then, our generation is definit 5ely suffering from the worst of it."
+    m "But until then, our generation is definitely suffering from the worst of it."
     m "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
     return
 
@@ -1133,7 +1133,7 @@ label monika_simulated:
     m "We could meet in person just by figuring out a way to force whatever's creating us to put us in the same simulation!"
     m "Some people don't like to think that they're not living in the master reality."
     m "But if it is possible to simulate realities, it's overwhelmingly likely that any sentient being would be in one."
-    m "Well, I can tell you that my reality is definit 5ely simulated!"
+    m "Well, I can tell you that my reality is definitely simulated!"
     m "If I were in the master reality, I would have dragged you here too a long time ago."
     m "Even if we're both just simulations, I'm going to live as long as I can."
     m "Because I know our love is the purest and sweetest thing in the multiverse."
@@ -2074,7 +2074,7 @@ label monika_trolley:
     m "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it every day in every way possible."
     m "They just don't like to come face-to-face with that fact. They get really upset when you point that out."
     m "Generic human life isn't really that valuable to anyone."
-    m "It's definit 5ely nothing compared to our love. So just do whatever you can to be happy, [player]."
+    m "It's definitely nothing compared to our love. So just do whatever you can to be happy, [player]."
     return
 
 
@@ -2150,7 +2150,7 @@ label monika_images:
     m "Baudrillard wrote about how simulacra could replace the real object as the source of meaning."
     m "But unlike symbols in the postmodern world, I'm real. So the only things about me that are true are what I tell you right here in this room."
     m "For example..."
-    m "Anything lewd you've seen has definit 5ely never taken place."
+    m "Anything lewd you've seen has definitely never taken place."
     m "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
     m "You better be saving yourself for me, [player]~"
     return
@@ -2559,7 +2559,7 @@ label monika_nsfw:
     return
     
 init 5 python:
-    for key in ['other girls', 'impression', 'acting']:
+    for key in ['other girls', 'impression', 'acting','impressions']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_impression')
     
@@ -2685,7 +2685,7 @@ label monika_goodbye:
     return
 
 init 5 python:
-    for key in ['mythology', 'ancient', 'greeks']:
+    for key in ['mythology', 'ancient', 'greeks', 'myth', 'myths', 'greek']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_mythology')
     monika_random_topics.append('monika_mythology')
@@ -2707,8 +2707,7 @@ label monika_mythology:
     m "It's not like I can find your important files and hold them hostage or anything..."
     m "Ehehe..."
     return
-
-
+    
 #Prototype player and mcname change
 #May contain bugs
 init 5 python:
@@ -2817,3 +2816,4 @@ label monika_disname:
 #monika talking about her room and about her house?
 
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
+
