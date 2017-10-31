@@ -75,7 +75,6 @@ init -1 python:
             appIds = None   
         return appIds
 
-
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
@@ -1321,6 +1320,11 @@ define _dismiss_pause = config.developer
 
 default persistent.playername = ""
 default player = persistent.playername
+
+#Separate var for mcname
+default persistent.mcname = "" 
+default mcname = persistent.mcname
+
 default persistent.playthrough = 0
 default persistent.yuri_kill = 0
 default persistent.seen_eyes = None

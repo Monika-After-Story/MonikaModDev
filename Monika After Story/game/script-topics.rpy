@@ -2708,6 +2708,36 @@ label monika_mythology:
     m "Ehehe..."
     return
     
+#Prototype player and mcname change
+#May contain bugs
+init 5 python:
+    for key in ['change name']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_newname')
+  
+label monika_newname:
+    if persistent.mcname == "":
+        $ persistent.mcname = persistent.playername
+    m "Change?"
+    menu:
+        m "Choose"
+        "Yesh":
+            $ persistent.playername = renpy.input("name")
+            $ player = persistent.playername
+            m "[mcname]"
+        "Non":
+            m "k"
+    return
+    
+init 5 python:
+    for key in ['display name']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_disname')
+
+label monika_disname:
+    m "[mcname]"
+    m "[player]"
+    return
 ##################
 #Incomplete ideas#
 ##################
@@ -2785,3 +2815,4 @@ label monika_mythology:
 #monika talking about her room and about her house?
 
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
+

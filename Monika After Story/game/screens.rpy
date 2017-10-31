@@ -965,6 +965,13 @@ screen preferences():
                     textbutton _("Unseen Text") action Preference("skip", "toggle")
                     textbutton _("After Choices") action Preference("after choices", "toggle")
                     #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
+            
+                #Disable/Enable space animation AND lens flair in room
+                vbox:
+                    style_prefix "check"
+                    label _("Room Animation")
+                    textbutton _("Disable") action Preference("video sprites", "toggle")
+                
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
@@ -1583,3 +1590,5 @@ style notify_frame:
 
 style notify_text:
     size gui.notify_text_size
+
+
