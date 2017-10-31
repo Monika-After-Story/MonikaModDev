@@ -478,7 +478,7 @@ label ch30_autoload:
     elif elapsed >= 365 and persistent.monika_anniversary < 1:
         $ persistent.monika_anniversary = 1
         jump anni_1
-    elif persistent.monika_reload <= 3: #DEBUG TESTING: CHANGE TO <= 3 AFTERWARDS 10/29/17
+    elif persistent.monika_reload <= 3:
         call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
     else:
         #pick a random greeting
