@@ -62,8 +62,8 @@ init python:
         # except its not that complicated lol
 
         for oldTopic in changedIDs:
-            if updating_persistent['_seen_ever'].pop(oldTopic, False):
-                updating_persistent['_seen_ever'][changedIDs(oldTopic)] = True
+            if updating_persistent._seen_ever.pop(oldTopic,False):
+                updating_persistent._seen_ever[changedIDs(oldTopic)] = True
                 
         return updating_persistent
                     
@@ -83,7 +83,6 @@ init python:
         # ASSUMES:
         #   persistent._seen_ever
         #   updates.topics
-    
         if version_number in updates.topics:
             changedIDs = updates.topics[version_number]
         
