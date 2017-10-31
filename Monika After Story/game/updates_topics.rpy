@@ -188,3 +188,6 @@ init 9 python:
             # monika_piano
             # monika_college was pointing to ch30_31 (monika_middleschool)
         updates.topics[vv030] = changedIDs
+
+        # ensuring no refs to old dicts
+        changedIDs = None
