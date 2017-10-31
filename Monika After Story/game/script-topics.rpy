@@ -41,6 +41,20 @@ label monika_god:
     m "So, from that perspective..."
     m "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
+    
+init python:
+    for key in ['politics','politicians','political']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_politics') #id
+    if not (persistent.monika_random_built) : persistent.monika_random_topics.append('monika_politics')
+
+label monika_politics:
+    m "[player], how do you feel about politics?"
+    m "Personally, it doesn't matter to me since I'm stuck in here..."
+    m "It seems really trivial though, don't you think?"
+    m "However, if I had to give my opinion... Choose who you think is best."
+    m "After all, who better to trust than your own judgement? Ahaha~"
+    return
 
 
 init 5 python:
@@ -2632,7 +2646,7 @@ label monika_weary:
     return
     
 init 5 python:
-    for key in ['fuck', 'shit', 'motherfucker']:
+    for key in ['fuck', 'shit', 'motherfucker', 'cunt', 'asshole', 'bastard', 'bitch', 'asswipe']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_vulgarity')
     
