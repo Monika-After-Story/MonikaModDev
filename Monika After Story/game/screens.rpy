@@ -468,8 +468,7 @@ screen navigation():
                 if persistent.playthrough != 3:
                     textbutton _("Main Menu") action MainMenu()
                 else:
-                    #Adds a dialog when main menu is clicked
-                    textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
+                    textbutton _("Main Menu") action NullAction()
 
             textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
@@ -964,8 +963,15 @@ screen preferences():
                     style_prefix "check"
                     label _("Skip")
                     textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
+                    textbutton _("After Choice") action Preference("after choices", "toggle")
                     #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
+            
+                #Disable/Enable space animation AND lens flair in room
+                vbox:
+                    style_prefix "check"
+                    label _("Room Animation")
+                    textbutton _("Disable") action Preference("video sprites", "toggle")
+                
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
@@ -1584,3 +1590,5 @@ style notify_frame:
 
 style notify_text:
     size gui.notify_text_size
+
+

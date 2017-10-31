@@ -70,8 +70,9 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.webm",mask=None)
-image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.webm",mask=None)
+#Enables/disables movie in background
+image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.webm",mask=None, image="images/cg/monika/window_1_fallback.png")
+image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.webm",mask=None, image="images/cg/monika/window_2_fallback.png")
 
 init python:
     import subprocess
@@ -203,7 +204,11 @@ label ch30_main:
         size (320,180)
         pos (935,200)
     show monika_bg
-    show monika_bg_highlight
+    
+    #Enables/disables lens flair for better run time
+    if Preference("video sprites")=="show":
+        show monika_bg_highlight
+    
     play music m1 loop
     m "Yay, there you are!"
     m "Hi again, [player]."
@@ -474,7 +479,7 @@ label ch30_autoload:
     elif elapsed >= 365 and persistent.monika_anniversary < 1:
         $ persistent.monika_anniversary = 1
         jump anni_1
-    elif persistent.monika_reload <= 3:
+    elif persistent.monika_reload <= 3: #DEBUG TESTING: CHANGE TO <= 3 AFTERWARDS 10/29/17
         call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
     else:
         #pick a random greeting
