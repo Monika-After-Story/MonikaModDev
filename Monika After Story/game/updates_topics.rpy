@@ -19,6 +19,8 @@ init -1 python:
         updates.topics = None
         updates.version_updates.clear()
         updates.version_updates = None
+        # TODO
+        # is there a way to delete a renpy storemodule?
 
 
 # runs before updates.rpy

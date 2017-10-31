@@ -123,8 +123,8 @@ init 10 python:
             
         elif (renpy.seen_label("monika_ribbon") or
                 "monika_ribbon" in persistent.monika_random_topics):
-            print("v033")
             # we are in version 0.3.3
+            updateGameFrom("v033")
 
         elif found_monika_ani: 
             # we are in version 0.3.2
