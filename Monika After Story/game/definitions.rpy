@@ -38,11 +38,6 @@ init -1 python:
             return
         if time <= 0: return
         renpy.pause(time)
-    def mcdefault():
-        if persistent.mcname == "":
-            persistent.mcname == persistent.playername
-        else:
-            mcname == persistent.mcname
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
