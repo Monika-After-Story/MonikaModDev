@@ -4,7 +4,6 @@
 #   updates.version_updates
 #   persistent._seen_ever
 #   persistent.version_number
-#   topics.monika_topics
 
 # preeverything stuff 
 init -10 python:
@@ -110,6 +109,8 @@ init python:
             startVers = updates.version_updates[startVers]
 
 
+
+
 # this needs to run post script-topics
 init 10 python:
 
@@ -140,13 +141,21 @@ init 10 python:
 
         # set the version now
         persistent.version_number = config.version
+
+        # and clear update data
+        clearUpdateStructs()
+
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
         vvvv_version = "v"+"".join(persistent.version_number.split("."))
         # so update!
         updateGameFrom(vvvv_version)
+
         # set the new version
         persistent.version_number = config.version
+
+        # and clear update data
+        clearUpdateStructs()
 
 
 # UPDATE SCRIPTS ==============================================================
@@ -158,6 +167,17 @@ init 10 python:
 # passing in the version number of that script
 #
 # NOTE: the labels here mean we are updating TO this version
+
+# 0.4.0
+label v040:
+    python:
+        # persistent topics are dunzo
+        persistent.monika_random_topics = None
+
+        # update!
+        # uncomment if we actually have changes
+        #persistent = updateTopicIDs("v040")
+    return
 
 # 0.3.3
 label v033:
