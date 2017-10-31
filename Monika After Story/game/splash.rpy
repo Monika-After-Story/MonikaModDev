@@ -1,7 +1,8 @@
 init python:
     menu_trans_time = 1
-    splash_message_default = "You'll never leave me alone again, right?"
+    splash_message_default = "Monika After Story is a Doki Doki Literature Club fan game that is not affiliated with Team Salvato. It is designed to be played only after the official game has been completed, and contains many unmarked spoilers for the official game. Game files for Doki Doki Literature Club are required to play this mod and can be downloaded for free at: http://ddlc.moe"
     splash_messages = [
+    "You'll never leave me alone again, right?",
     "You are my sunshine,\nMy only sunshine",
     "I missed you.",
     "Play with me",
