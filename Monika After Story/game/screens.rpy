@@ -963,7 +963,7 @@ screen preferences():
                     style_prefix "check"
                     label _("Skip")
                     textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choice") action Preference("after choices", "toggle")
+                    textbutton _("After Choices") action Preference("after choices", "toggle")
                     #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
             
                 #Disable/Enable space animation AND lens flair in room
