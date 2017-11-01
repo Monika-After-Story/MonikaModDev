@@ -2644,7 +2644,7 @@ label monika_vulgarity:
     m "I know how stressful your world can be especially when you feel like you're constantly burdened."
     m "Please don't bottle up all those bad feelings."
     m "It hurts me to know whenever you aren't feeling well..."
-    m "I love you so much [player] so please vent to me whenever you want."
+    m "I love you so much [player], so please vent to me whenever you want."
     m "I'll help as much as I can with whatever you're going through."
     m "You saved my life when you opened this game and I want to help you with yours."
     m "So feel free to share your thoughts, okay love?"
