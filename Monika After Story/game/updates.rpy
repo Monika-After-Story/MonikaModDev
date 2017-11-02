@@ -43,7 +43,7 @@ init python:
             persistent._seen_ever.pop(topicID)
 
 
-    def adjustTopicIDs(changedIDs):
+    def adjustTopicIDs(changedIDs,updating_persistent=persistent):
         #
         # Changes labels in persistent._seen_ever
         # to new IDs in the changedIDs dict
@@ -61,12 +61,14 @@ init python:
         # except its not that complicated lol
 
         for oldTopic in changedIDs:
-            if persistent._seen_ever.pop(oldTopic, False):
-                persistent._seen_ever[changedIDs(oldTopic)] = True
+            if updating_persistent._seen_ever.pop(oldTopic,False):
+                updating_persistent._seen_ever[changedIDs(oldTopic)] = True
+                
+        return updating_persistent
                     
 
 
-    def updateTopicIDs(version_number):
+    def updateTopicIDs(version_number,updating_persistent=persistent):
         #
         # Updates topic IDS between versions by performing
         # a two step process: adjust exisitng IDS to match
@@ -80,15 +82,16 @@ init python:
         # ASSUMES:
         #   persistent._seen_ever
         #   updates.topics
-    
         if version_number in updates.topics:
             changedIDs = updates.topics[version_number]
         
         
             if changedIDs is not None:
-                adjustTopicIDs(
-                    changedIDs
+                updating_persistent = adjustTopicIDs(
+                    changedIDs, updating_persistent
                 )
+        
+        return updating_persistent
 
 
     def updateGameFrom(startVers):
@@ -185,7 +188,7 @@ label v033:
         # add additional update code here
 
         # update!
-        updateTopicIDs("v033")
+        persistent = updateTopicIDs("v033")
     return
 
 # 0.3.2
@@ -193,14 +196,14 @@ label v032:
     python:
 
         # update!
-        updateTopicIDs("v032")
+        persistent = updateTopicIDs("v032")
     return
 
 # 0.3.1
 label v031:
     python:
         # update!
-        updateTopicIDs("v031")
+        persistent = updateTopicIDs("v031")
 
     return
 
@@ -208,9 +211,9 @@ label v031:
 label v030:
     python:
         # the following labels are special cases because of conflicts
-        removeTopicID("monika_piano")
-        removeTopicID("monika_college")
+        persistent = removeTopicID("monika_piano")
+        persistent = removeTopicID("monika_college")
 
         # update!
-        updateTopicIDs("v030")
+        persistent = updateTopicIDs("v030")
     return

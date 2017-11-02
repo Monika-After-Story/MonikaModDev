@@ -215,37 +215,81 @@ init python:
 
 
 label splashscreen:
-    # Logic for detecting if the game has been reinstalled
-    python:
-        firstrun = ""
-        try:
-            firstrun = renpy.file("firstrun").read(1)
-        except:
-            with open(config.basedir + "/game/firstrun", "wb") as f:
-                pass
-    if not firstrun: #renpy.loadable("10"):
-        if persistent.first_run and not persistent.do_not_delete:
-            $ quick_menu = False
+    # Logic for first time running MAS
+    #If we haven't merged DDLC data before, ask to do that
+    if not persistent.has_merged:
+        python:
+            import glob
+            
+            # Check for saves in platform-specific location.
+            if renpy.macintosh:
+                rv = "~/Library/RenPy/"
+                check_path = os.path.expanduser(rv)
+
+            elif renpy.windows:
+                if 'APPDATA' in os.environ:
+                    check_path =  os.environ['APPDATA'] + "/RenPy/"
+                else:
+                    rv = "~/RenPy/"
+                    check_path = os.path.expanduser(rv)
+
+            else:
+                rv = "~/.renpy/"
+                check_path = os.path.expanduser(rv)
+                
+            save_path=glob.glob(check_path + 'DDLC*/persistent')
+            
+            
+        #If you found a DDLC save
+        if save_path:
+            $save_path=save_path[0]
+            $quick_menu = False
             scene black
             menu:
-                "A previous save file has been found. Would you like to delete your save data and start over?"
-                "Yes, delete my existing data.":
-                    "Deleting save data...{nw}"
-                    python:
-                        delete_all_saves()
-                        renpy.loadsave.location.unlink_persistent()
-                        renpy.persistent.should_save_persistent = False
-                        renpy.utter_restart()
-                "No, continue where I left off.":
+                "Would you like to import Doki Doki Literature Club save data into Monika After Story?\n(DDLC will not be affected)"
+                "Yes, import DDLC save data.":
+                    pause 0.3
+                    call import_ddlc_persistent
+                "No, do not import.":
+                    pause 0.3
                     pass
+                    
+            $persistent.has_merged = True
+        
+        $persistent.first_run = True
+            
 
-        python:
-            if not firstrun:
-                with open(config.basedir + "/game/firstrun", "w") as f:
-                    f.write("1")
-            #filepath = renpy.file("firstrun").name
-            #open(filepath, "a").close()
-        $ persistent.first_run = True
+## Logic for detecting if the game has been reinstalled    
+#    python:
+#        firstrun = ""
+#        try:
+#            firstrun = renpy.file("firstrun").read(1)
+#        except:
+#            with open(config.basedir + "/game/firstrun", "wb") as f:
+#                pass
+#    if not firstrun: #renpy.loadable("10"):
+#        if persistent.first_run and not persistent.do_not_delete:
+#            $ quick_menu = False
+#            scene black
+#            menu:
+#                "A previous save file has been found. Would you like to delete your save data and start over?"
+#                "Yes, delete my existing data.":
+#                    "Deleting save data...{nw}"
+#                    python:
+#                        delete_all_saves()
+#                        renpy.loadsave.location.unlink_persistent()
+#                        renpy.persistent.should_save_persistent = False
+#                        renpy.utter_restart()
+#                "No, continue where I left off.":
+#                    pass
+
+#        python:
+#            if not firstrun:
+#                with open(config.basedir + "/game/firstrun", "w") as f:
+#                    f.write("1")
+#            #filepath = renpy.file("firstrun").name
+#            #open(filepath, "a").close()
+#        $ persistent.first_run = True
     # if not persistent.first_run:
     #     $ quick_menu = False
     #     scene white
