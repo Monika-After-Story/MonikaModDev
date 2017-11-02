@@ -8,3 +8,10 @@ log.txt
 traceback.txt
 errors.txt
 firstrun
+*.chr
+*.rpa
+*.rpa
+Monika After Story/game/audio.rpa
+*.save
+Monika After Story/game/saves/persistent
+Monika After Story/IPGuidelines.md

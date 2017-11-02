@@ -1,4 +1,4 @@
-## This file contains options that can be changed to customize your game.
+﻿## This file contains options that can be changed to customize your game.
 ##
 ## Lines beginning with two '#' marks are comments, and you shouldn't uncomment
 ## them. Lines beginning with a single '#' mark are commented-out code, and you
@@ -12,18 +12,19 @@
 ##
 ## The _() surrounding the string marks it as eligible for translation.
 
-define config.name = "Monika After Story"
+define config.name = "DDLC Mod Template"
 
 
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
 
-define gui.show_name = False
+define gui.show_name = True
 
 
 ## The version of the game.
 
-define config.version = "0.3.3"
+define config.version = "0.0.0"
+
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -35,7 +36,7 @@ define gui.about = _("")
 ## distribution. This must be ASCII-only, and must not contain spaces, colons,
 ## or semicolons.
 
-define build.name = "Monika_After_Story"
+define build.name = "DDLCModTemplate"
 
 ## Sounds and music ############################################################
 
@@ -122,7 +123,6 @@ default preferences.afm_time = 15
 default preferences.music_volume = 0.75
 default preferences.sfx_volume = 0.75
 
-
 ## Save directory ##############################################################
 ##
 ## Controls the platform-specific place Ren'Py will place the save files for
@@ -134,10 +134,10 @@ default preferences.sfx_volume = 0.75
 ##
 ## Linux: $HOME/.renpy/<config.save_directory>
 ##
-## This generally should not be changed, and if it is, should always be a
-## literal string, not an expression.
+## Generally the same as your build name
+## Should always be a literal string and not an expression
 
-define config.save_directory = "Monika After Story"
+define config.save_directory = "DDLC_Mod_Template"
 
 
 ## Icon
@@ -182,11 +182,19 @@ init python:
             return (float(height) * (float(config.screen_width) / float(config.screen_height)), height)
 
     #config.adjust_view_size = force_integer_multiplier
+
 ## Build configuration #########################################################
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
+## These settings create a set of files suitable for distributing as a mod.
 
 init python:
+
+    ## By default, renpy looks for archive files in the game and common directories
+    ## Mac needs to check in the install directory instead.    
+    #if renpy.mac:
+        
+    
 
     ## The following functions take file patterns. File patterns are case-
     ## insensitive, and matched against the path relative to the base directory,
@@ -206,27 +214,18 @@ init python:
     ## subdirectories, and "**.psd" matches psd files anywhere in the project.
 
     ## Classify files as None to exclude them from the built distributions.
+    
+    ## This is the archive of data for your mod
+    #build.archive(build.name, "all")
 
-    build.archive("scripts", "all")
-    build.archive("images", "all")
-    build.archive("audio", "all")
-    build.archive("fonts", "all")
-
-    build.classify("game/**.jpg", "images")
-    build.classify("game/**.png", "images")
-    build.classify("game/**.rpy", "scripts")
-    build.classify("game/**.rpyc", "scripts")
-    build.classify("game/**.txt", "scripts")
-    build.classify("game/**.chr", "scripts")
-    build.classify("game/**.py", "scripts")
-    build.classify("game/**.pyc", "scripts")
-    build.classify("game/**.wav", "audio")
-    build.classify("game/**.mp3", "audio")
-    build.classify("game/**.ogg", "audio")
-    build.classify("game/**.ttf", "fonts")
-    build.classify("game/**.otf", "audio")
-    build.classify("game/**.webm", "images")
-
+    ## These files get put into your data file
+    build.classify("game/mod_assets/**",build.name)
+    #build.classify("game/**.rpy",build.name) #Optional line to include plaintext scripts
+    build.classify("game/**.rpyc",build.name) #Serialized scripts must be included
+    build.classify("README.html",build.name) #Included help file for mod installation
+    
+    build.package(build.directory_name + "Mod",'zip',build.name,description='DDLC Compatible Mod')
+    
     build.classify('**~', None)
     build.classify('**.bak', None)
     build.classify('**/.**', None)
@@ -240,19 +239,18 @@ init python:
     build.classify('script-regex.txt', None)
     build.classify('/game/10', None)
     build.classify('/game/cache/*.*', None)
-
-    ## To archive files, classify them as 'archive'.
-
-    # build.classify('game/**.png', 'archive')
-    # build.classify('game/**.jpg', 'archive')
+    build.classify('**.rpa',None)
 
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
 
     build.documentation('*.html')
     build.documentation('*.txt')
+    build.documentation('*.md')
 
     build.include_old_themes = False
+    
+    
 
 ## A Google Play license key is required to download expansion files and perform
 ## in-app purchases. It can be found on the "Services & APIs" page of the Google
@@ -264,4 +262,4 @@ init python:
 ## The username and project name associated with an itch.io project, separated
 ## by a slash.
 
-define build.itch_project = "teamsalvato/ddlc"
+# define build.itch_project = "..."
