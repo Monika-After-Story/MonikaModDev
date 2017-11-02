@@ -8,22 +8,22 @@ init python:
     menu_trans_time = 1
     #The default splash message, originally shown in Act 1 and Act 4
     splash_message_default = "This game is an unofficial fan work, unaffiliated with Team Salvato."
-    #Optional splash messages, originally chosen at random in Act 2 and Act 3
     splash_messages = [
-    "Please support Doki Doki Literature Club."
-    "Monika is watching you code."
+    "You are my sunshine,\nMy only sunshine",
+    "I missed you.",
+    "Play with me",
+    "It's just a game, mostly.",
+    "This game is not suitable for children\nor those who are easily disturbed?",
+    "sdfasdklfgsdfgsgoinrfoenlvbd",
+    "null",
+    "I have granted kids to hell",
+    "PM died for this.",
+    "It was only partially your fault.",
+    "This game is not suitable for children\nor those who are easily dismembered.",
+    "Don't forget to backup Monika's character file."
     ]
 
 image splash_warning = ParameterizedText(style="splash_text", xalign=0.5, yalign=0.5)
-
-##Here's where you can change the logo file to whatever you want
-image menu_logo:
-    "/mod_assets/DDLCModTemplateLogo.png"
-    subpixel True
-    xcenter 240
-    ycenter 120
-    zoom 0.60
-    menu_logo_move
     
 image menu_bg:
     topleft
