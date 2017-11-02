@@ -1,6 +1,7 @@
-﻿# This is used for top-level game strucutre.
+# This is used for top-level game strucutre.
 # Should not include any actual events or scripting; only logic and calling other labels.
 
+# For simplicity, I'm taking the MAS lines from the script.rpy that was made. It's basically the same.
 label start:
 
     # Set the ID of this playthrough
@@ -20,25 +21,13 @@ label start:
 
     $ quick_menu = True
     $ style.say_dialogue = style.normal
+    #    $ in_sayori_kill = None
     $ allow_skipping = True
     $ config.allow_skipping = True
-    
-    #This section detemines the "Act Structure" for the game.
-    # persistent.playthrough variable marks each of the major game events (Sayori hanging, etc.)
-    #Here is an example of how you might do that
-    if persistent.playthrough == 0:
-        #Call example script    
-        call example_chapter from _call_example_chapter
-        
-        call script_tutorial from _call_script_tutorial
-        
-    if persistent.playthrough == 1:
-        #Call question and answer script
-        #call q_and_a_script
-        pass
-    
-    return
 
+    #Jump to the space room.
+    jump ch30_main
+    
 label endgame(pause_length=4.0):
     $ quick_menu = False
     stop music fadeout 2.0
