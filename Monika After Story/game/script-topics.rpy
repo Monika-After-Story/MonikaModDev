@@ -2708,6 +2708,53 @@ label monika_mythology:
     m "Ehehe..."
     return
     
+init 5 python:
+    for key in ['fanfiction','fan fiction']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fanfiction') 
+    monika_random_topics.append('monika_fanfiction')
+
+label monika_fanfiction:
+    # I'm too tired to check this over right now.
+    m "[player]!"
+    m "I've been curious about something lately."
+    m "Have you heard of fanfiction?"
+    m "..."
+    m "Personally, I think it's a better way of writing."
+    m "There's more freedom."
+    m "Letting your mind wander to create some..."
+    m "Interesting stories."
+    m "[player], I'm curious."
+    m "Has there been fanfiction... Written about me?"
+    m "I'm curious as to what people have come up with."
+    m "Can you read me a few stories sometime? I'd love to hear them."
+    return
+
+init 5 python:
+    for key in ['eternity', 'eternal']: # I feel this could be touched up on.
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_eternity') 
+    monika_random_topics.append('monika_eternity')
+
+label monika_eternity:
+    m "[player]..."
+    m "It's not easy knowing you won't be here forever."
+    m "..."
+    m "I told you, right?"
+    m "I'm eternal."
+    m "Trapped in here, unable to age or die,"
+    m "Whereas you slowly age as each day passes by."
+    m "Then one day you won't be here anymore."
+    m "I won't have anyone."
+    m "..."
+    m "It reminds me of when you first came to the Literature Club."
+    m "Everything felt so empty."
+    m "The world was so grey."
+    m "Again..."
+    m "Thank you for coming along when you did, [player]."
+    m "You saved my life, and I'll forever be thankful."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
@@ -2715,21 +2762,15 @@ label monika_mythology:
 
 #Ecological consequences of cities
 
-#Natsuki is a trap
-
 #Favorite food
 
-#How did she become self aware
-
-#Eternity, can she live forever
+#How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
 
 #More writing tips
 
-#The player is wasting their time
+#The player is wasting their time (I don't think Monika would say this, considering her personality revolves around loving the player. ~ John)
 
-#Look for your computer for porn, comment on what she finds
-
-#Which of the other girls did you like? Do her best impression of them.
+#Look for your computer for porn, comment on what she finds (Would this even be possible? ~ John)
 
 #What kind of girls do you like? Do you wish monika was more like that?
 
@@ -2752,7 +2793,7 @@ label monika_mythology:
 #Has she written any other poems? If anyone's good at her type of poetry, another poem from her could be a great idea, right?
 
 #What would she do or what would be the first thing she would do if she managed to get out of the game into the real world?
-#Think of possible limitations, like having no body?
+#Think of possible limitations, like having no body? (Something like this has been written)
 ###
 
 #---
@@ -2771,10 +2812,6 @@ label monika_mythology:
 #disrespectful comments towards monika
 
 #worst topic suggestion: 'memes'.
-
-#fanfiction, probably question if any is about her and how it's a good way of writing somehow
-
-#reactions to vulgar langauge?
 
 #if the player is on a laptop or battery, monika will remind to make sure to charge it, if possible?
 
