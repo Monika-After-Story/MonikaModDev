@@ -2,20 +2,39 @@
 # this should run before updates.rpy
 
 # start by initalization version update dict
-define updates.version_updates = {}
+define updates.version_updates = None
 
 # key:version number -> v:changedIDs
 # changedIDs structure:
 #   k:oldId -> v:newId
-define updates.topics = {}
+define updates.topics = None
+
+# preeerything
+init -1 python:
+    def clearUpdateStructs():
+        #
+        # Clears a bunch of uneeded stuff
+
+        updates.topics.clear()
+        updates.topics = None
+        updates.version_updates.clear()
+        updates.version_updates = None
+        # TODO
+        # is there a way to delete a renpy storemodule?
+
 
 # runs before updates.rpy
 init 9 python:
 
     if persistent.version_number != config.version:
 
+        # init these dicts
+        updates.version_updates = {}
+        updates.topics = {}
+
         # versions
         # use the v### notation so we can work with labels
+        vv040 = "v040"
         vv033 = "v033"
         vv032 = "v032"
         vv031 = "v031"
@@ -24,6 +43,7 @@ init 9 python:
 
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
+        #updates.version_updates[vv033] = vv040
         updates.version_updates[vv032] = vv033
         updates.version_updates[vv031] = vv032
         updates.version_updates[vv030] = vv031
@@ -168,3 +188,6 @@ init 9 python:
             # monika_piano
             # monika_college was pointing to ch30_31 (monika_middleschool)
         updates.topics[vv030] = changedIDs
+
+        # ensuring no refs to old dicts
+        changedIDs = None
