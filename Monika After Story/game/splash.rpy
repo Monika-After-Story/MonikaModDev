@@ -9,6 +9,7 @@ init python:
     #The default splash message, originally shown in Act 1 and Act 4
     splash_message_default = "This game is an unofficial fan work, unaffiliated with Team Salvato."
     splash_messages = [
+    "Please support Doki Doki Literature Club & Team Salvato."
     "You are my sunshine,\nMy only sunshine",
     "I missed you.",
     "Play with me",
