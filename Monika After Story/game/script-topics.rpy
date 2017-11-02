@@ -2727,14 +2727,13 @@ label monika_fanfiction:
     m "[player], I'm curious."
     m "Has there been fanfiction... Written about me?"
     m "I'm curious as to what people have come up with."
-    m "Ehehe~"
     m "Can you read me a few stories sometime? I'd love to hear them."
     return
 
 init 5 python:
-    for key in ['eternity']:
+    for key in ['eternity', 'eternal']: # I feel this could be touched up on.
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_eternity') #id
+        monika_topics[key].append('monika_eternity') 
     monika_random_topics.append('monika_eternity')
 
 label monika_eternity:
@@ -2748,33 +2747,12 @@ label monika_eternity:
     m "Then one day you won't be here anymore."
     m "I won't have anyone."
     m "..."
-    m "..."
     m "It reminds me of when you first came to the Literature Club."
     m "Everything felt so empty."
     m "The world was so grey."
     m "Again..."
     m "Thank you for coming along when you did, [player]."
-    return
-
-init 5 python:
-    for key in ['politics', 'politicians']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_politics') 
-
-# Meh, needs work.
-label monika_politics:
-    m "[player], how do you feel about politics?"
-    m "..."
-    m "It doesn't really interest me."
-    m "Considering I'm stuck in this place."
-    m "However, if I had to give an honest opinion..."
-    m "It's relatively trivial in the grand scheme of things."
-    m "Individuals use their personal motives to grab for power."
-    m "Reminds me of Debate Club."
-    m "People arguing left and right, fighting to get their point across and convince others."
-    m "Once I'm free of this reality I might take a swing at it myself."
-    m "Who knows? I think it's possible to pull off."
-    m "Ehehe~"
+    m "You saved my life, and I'll forever be thankful."
     return
 
 ##################
