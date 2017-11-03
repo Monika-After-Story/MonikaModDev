@@ -1,4 +1,4 @@
-﻿## This file contains options that can be changed to customize your game.
+## This file contains options that can be changed to customize your game.
 ##
 ## Lines beginning with two '#' marks are comments, and you shouldn't uncomment
 ## them. Lines beginning with a single '#' mark are commented-out code, and you
@@ -12,19 +12,18 @@
 ##
 ## The _() surrounding the string marks it as eligible for translation.
 
-define config.name = "DDLC Mod Template"
+define config.name = "Monika After Story"
 
 
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
 
-define gui.show_name = True
+define gui.show_name = False
 
 
 ## The version of the game.
 
-define config.version = "0.0.0"
-
+define config.version = "1.0.0"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -36,7 +35,7 @@ define gui.about = _("")
 ## distribution. This must be ASCII-only, and must not contain spaces, colons,
 ## or semicolons.
 
-define build.name = "DDLCModTemplate"
+define build.name = "Monika_After_Story"
 
 ## Sounds and music ############################################################
 
@@ -123,6 +122,7 @@ default preferences.afm_time = 15
 default preferences.music_volume = 0.75
 default preferences.sfx_volume = 0.75
 
+
 ## Save directory ##############################################################
 ##
 ## Controls the platform-specific place Ren'Py will place the save files for
@@ -134,10 +134,10 @@ default preferences.sfx_volume = 0.75
 ##
 ## Linux: $HOME/.renpy/<config.save_directory>
 ##
-## Generally the same as your build name
-## Should always be a literal string and not an expression
+## This generally should not be changed, and if it is, should always be a
+## literal string, not an expression.
 
-define config.save_directory = "DDLC_Mod_Template"
+define config.save_directory = "Monika After Story"
 
 
 ## Icon
@@ -182,7 +182,6 @@ init python:
             return (float(height) * (float(config.screen_width) / float(config.screen_height)), height)
 
     #config.adjust_view_size = force_integer_multiplier
-
 ## Build configuration #########################################################
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
