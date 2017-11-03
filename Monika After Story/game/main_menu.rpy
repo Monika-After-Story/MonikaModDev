@@ -6,8 +6,7 @@ screen main_menu():
     style_prefix "main_menu"
     
     add "menu_bg"
-    add "menu_art_y"
-    add "menu_art_n"
+    #Removed adding other char imgs to avoid red text error
     frame:
         pass
 
@@ -19,7 +18,7 @@ screen main_menu():
     add "menu_particles"
     add "menu_particles"
     add "menu_logo"
-    add "menu_art_s"
+    #Removed adding other char imgs to avoid red text error
     add "menu_particles"
     add "menu_art_m"
     add "menu_fade"
