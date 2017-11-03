@@ -70,8 +70,8 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.webm",mask=None)
-image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.webm",mask=None)
+image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None)
+image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None)
 
 init python:
     import subprocess
