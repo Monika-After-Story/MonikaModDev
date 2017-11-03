@@ -384,7 +384,7 @@ label chara_monika_scare:
 
     window hide
     show monika_scare
-    play music "/utsounds/mus_zzz_c2.ogg"
+    play music "mod_assets/mus_zzz_c2.ogg"
     show layer master:
         zoom 1.0 xalign 0.5 yalign 0 subpixel True
         linear 4 zoom 3.0 yalign 0.15
@@ -398,10 +398,10 @@ label chara_monika_scare:
     hide monika_bg_highlight
     hide monika_scare
 
-    play sound "/utsounds/Swipe.wav"
+    play sound "mod_assets/Swipe.wav"
     show ut_slash at top
     pause 0.6
-    play sound "/utsounds/Hit.wav"
+    play sound "mod_assets/Hit.wav"
     show layer master
     show chara9 at Shake(None, 2.0, dist=10)
     pause 2
