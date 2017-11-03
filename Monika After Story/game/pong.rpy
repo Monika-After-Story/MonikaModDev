@@ -1,6 +1,6 @@
 ﻿init:
 
-    image bg pong field = "pong_field.png"
+    image bg pong field = "mod_assets/pong_field.png"
 
     python:
         def is_morning():
