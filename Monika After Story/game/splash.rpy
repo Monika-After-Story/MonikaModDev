@@ -25,7 +25,18 @@ init python:
     ]
 
 image splash_warning = ParameterizedText(style="splash_text", xalign=0.5, yalign=0.5)
-    
+
+##Here's where you can change the logo file to whatever you want
+image menu_logo:
+    "mod_assets/menu_new.png"
+    subpixel True
+    xcenter 240
+    ycenter 120
+    zoom 0.60
+    menu_logo_move
+
+#Removed rendering below of other char imgs in main menu
+
 image menu_bg:
     topleft
     "gui/menu_bg.png"
@@ -162,16 +173,16 @@ label splashscreen:
         scene tos2
         with Dissolve(1.5)
         pause 1.0
-        
+
         #Optional, load a copy of DDLC save data
         #call import_ddlc_persistent
-        
+
         scene white
         with Dissolve(1.5)
-        
+
         $ persistent.first_run = True
-        
-        
+
+
 
     $ basedir = config.basedir.replace('\\', '/')
 
@@ -250,4 +261,3 @@ label before_main_menu:
 
 label quit:
     return
-
