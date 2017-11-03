@@ -132,7 +132,7 @@
                             hit = True
 
                         if hit:
-                            renpy.sound.play("pong_boop.wav", channel=1)
+                            renpy.sound.play("mod_assets/pong_boop.wav", channel=1)
                             self.bspeed *= 1.20
 
                 # Draw the two paddles.
