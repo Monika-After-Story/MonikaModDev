@@ -13,8 +13,8 @@
                 renpy.Displayable.__init__(self)
 
                 # Some displayables we use.
-                self.paddle = Image("pong.png")
-                self.ball = Image("pong_ball.png")
+                self.paddle = Image("mod_assets/pong.png")
+                self.ball = Image("mod_assets/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
                 self.monika = Text(_("Monika"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
@@ -94,14 +94,14 @@
                 if self.by < ball_top:
                     self.by = ball_top + (ball_top - self.by)
                     self.bdy = -self.bdy
-                    renpy.sound.play("pong_beep.wav", channel=0)
+                    renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
 
                 # Bounce off bottom.
                 ball_bot = self.COURT_BOTTOM - self.BALL_HEIGHT / 2
                 if self.by > ball_bot:
                     self.by = ball_bot - (self.by - ball_bot)
                     self.bdy = -self.bdy
-                    renpy.sound.play("pong_beep.wav", channel=0)
+                    renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
 
                 # This draws a paddle, and checks for bounces.
                 def paddle(px, py, hotside):
