@@ -171,7 +171,7 @@ label greeting_back6:
 
 label greeting_visit7:
      m "You're here, [player]!"
-     m "Are you ready to spend some time togheter? hehe~"
+     m "Are you ready to spend some time together? Ehehe~"
      return
 
 label greeting_visit8:
