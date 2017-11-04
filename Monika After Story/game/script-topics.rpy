@@ -26,8 +26,6 @@ init 11 python:
 #    m "However, it can be pretty jarring to go from one really long, well written entry to one that's only a few sentences long."
 #    m "It works well if you want to read about Stanley Kubrick or the works of Bach..."
 #    m "...But what if you want to read about lesser known Buddhist theology?"
-#    m "Honestly, some people misjudge Wikipedia solely because other people rather than a 'trusted source' create articles."
-#    m "What about the sources the editors specify? Does that not mean anything?"
 #    # Not done, I'd love revisions.
 #    return
 
