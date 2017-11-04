@@ -2323,7 +2323,7 @@ label monika_eyecontact:
     m "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
     m "Maybe that's why I enjoy looking into yours so much."
-    m "I hope you're enjoying looking into mine as well, hehe..."
+    m "I hope you're enjoying looking into mine as well, ehehe..."
     return
     
     
@@ -2533,7 +2533,7 @@ label monika_spiders:
     m "Ahaha!"
     m "It's funny actually, people being scared of very small insects."
     m "Having the fear of spiders is called Arachnophobia, right?"
-    m "I hope you aren't afraid of spiders, [player], hehe..."
+    m "I hope you aren't afraid of spiders, [player], ehehe..."
     m "I'm not really scared of spiders, they're more or less annoying..."
     m "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
     m "[player], if you happen to get a really bad spider bite, like with venom and all that..."
