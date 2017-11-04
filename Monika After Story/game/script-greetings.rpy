@@ -193,8 +193,8 @@ label greeting_italian:
 
 label greeting_latin:
      m "Iterum obvenimus!"
-     m "Quid agis ?"
-     m "Ahahah"
+     m "Quid agis?"
+     m "Ahaha!"
      m "Latin sounds so pompous and even a simple greeting sounds like a big deal."
      m "If you're wondering what I said, it's simply \"We meet again, how are you?\"."
      return
