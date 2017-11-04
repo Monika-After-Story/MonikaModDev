@@ -1,6 +1,6 @@
 define persistent.demo = False
 define persistent.steam = False
-define config.developer = 'auto' #This is the flag for Developer tools
+define config.developer = False #This is the flag for Developer tools
 
 python early:
     import singleton

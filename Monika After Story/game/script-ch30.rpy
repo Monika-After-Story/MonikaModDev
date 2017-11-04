@@ -6,6 +6,7 @@ default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
 
+image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
 image monika_room_highlight:
@@ -421,14 +422,10 @@ label ch30_autoload:
     $ config.allow_skipping = False
     if is_morning():
         if morning_flag != True:
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
+            show blue_sky
+            hide rm
+            hide rm2
             show monika_transparent_day_bg
-            show monika_bg_highlight
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:
@@ -546,14 +543,10 @@ label ch30_reload_3:
 label ch30_loop:
     if is_morning():
         if morning_flag != True:
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
+            show blue_sky
+            hide rm
+            hide rm2
             show monika_transparent_day_bg
-            show monika_bg_highlight
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:
