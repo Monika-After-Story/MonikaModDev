@@ -90,7 +90,7 @@ label import_ddlc_persistent:
         old_persistent = updateTopicIDs("v033",old_persistent)
         clearUpdateStructs()
 
-        dumpPersistentToFile(old_persistent,basedir + '/old_persistent.txt')
+        #dumpPersistentToFile(old_persistent,basedir + '/old_persistent.txt')
 
     #Check if previous MAS data exists
     $merge_previous=False
@@ -313,7 +313,7 @@ label import_ddlc_persistent:
         elif old_persistent.yuri_kill is not None:
             persistent.yuri_kill=old_persistent.yuri_kill
 
-        dumpPersistentToFile(persistent,basedir + '/merged_persistent.txt')
+        #dumpPersistentToFile(persistent,basedir + '/merged_persistent.txt')
     return
 
 label merge_unmatched_names:

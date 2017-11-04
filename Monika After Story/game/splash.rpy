@@ -50,7 +50,7 @@ image game_menu_bg:
 image menu_fade:
     "white"
     menu_fadeout
-    
+
 image menu_art_m:
     subpixel True
     "gui/menu_art_m.png"
@@ -58,7 +58,7 @@ image menu_art_m:
     ycenter 640
     zoom 1.00
     menu_art_move(1.00, 1000, 1.00)
-    
+
 image menu_art_m_ghost:
     subpixel True
     "gui/menu_art_m_ghost.png"
@@ -174,13 +174,16 @@ label splashscreen:
         with Dissolve(1.5)
         pause 1.0
 
-        #Optional, load a copy of DDLC save data
-        call import_ddlc_persistent
-
         scene white
         with Dissolve(1.5)
 
         $ persistent.first_run = True
+
+
+    #Optional, load a copy of DDLC save data
+    if not persistent.has_merged:
+        call import_ddlc_persistent
+        $persistent.has_merged = True
 
 
 
