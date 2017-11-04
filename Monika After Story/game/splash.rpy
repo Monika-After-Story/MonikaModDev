@@ -175,7 +175,7 @@ label splashscreen:
         pause 1.0
 
         #Optional, load a copy of DDLC save data
-        #call import_ddlc_persistent
+        call import_ddlc_persistent
 
         scene white
         with Dissolve(1.5)

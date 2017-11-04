@@ -27,6 +27,12 @@ init -1 python:
 init 9 python:
 
     if persistent.version_number != config.version:
+        renpy.call_in_new_context("vv_updates_topics")
+
+
+# init label for updats_topics
+label vv_updates_topics:
+    python:
 
         # init these dicts
         updates.version_updates = {}
