@@ -2338,7 +2338,7 @@ label monika_othergames:
     m "Do you have many other games on this computer?"
     m "I read more than play games, but I think they can be a fun way to entertain ourselves, or escape reality..."
     m "I wonder if I could go into one of your other games and see what it's like?"
-    m "I guess some games wouldn't be very fun to visit, like one with a lot of violence in."
+    m "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them"
     m "Then again... they're not real people so it shouldn't matter much."
     m "It's not like Yuri's death mattered."
     m "A more abstract game like Tetris or one of those phone puzzle games, that would be kinda wierd to go to."
