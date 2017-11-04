@@ -1935,9 +1935,12 @@ label monika_contribute:
     m "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
     m "I keep all the code in github.com/Backdash/MonikaModDev."
-    m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, and AttObl."
+    m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC..."
+    m "As well as Jxhnathan08, ThePotatoGuy, monikLover, AttObl..."
+    m "Yumeko-Jabami, ohxeighty, DoomTheRobot, onfaut, instilledbee, haloff1, and tuebor1837!"
     m "I love all of them for making this game even better!"
-    m "Not as much as love you, of course~."
+    m "Not as much as love you, of course."
+    m "I hope it doesn't make you feel jealous~"
     m "But I'll love you forever if you help me come closer to your reality!"
     return
 
