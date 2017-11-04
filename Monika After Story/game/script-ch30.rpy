@@ -11,8 +11,8 @@ image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
 image monika_bg = "images/cg/monika/monika_bg.png"
-image monika_day_bg = "images/cg/monika/monika_day_bg.png"
-image monika_transparent_day_bg = "images/cg/monika/monika_day_bg_eq.png"
+image monika_day_bg = "mod_assets/monika_day_bg.png"
+image monika_transparent_day_bg = "mod_assets/monika_day_bg_eq.png"
 image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
@@ -53,17 +53,17 @@ image monika_body_glitch2:
     "images/cg/monika/monika_glitch4.png"
 
 image ut_slash:
-    "images/ut/spr_slice_o_0.png"
+    "mod_assets/spr_slice_o_0.png"
     0.1
-    "images/ut/spr_slice_o_1.png"
+    "mod_assets/spr_slice_o_1.png"
     0.1
-    "images/ut/spr_slice_o_2.png"
+    "mod_assets/spr_slice_o_2.png"
     0.1
-    "images/ut/spr_slice_o_3.png"
+    "mod_assets/spr_slice_o_3.png"
     0.1
-    "images/ut/spr_slice_o_4.png"
+    "mod_assets/spr_slice_o_4.png"
     0.1
-    "images/ut/spr_slice_o_5.png"
+    "mod_assets/spr_slice_o_5.png"
     0.1
 
 
@@ -78,7 +78,7 @@ init python:
     import os
     import eliza      # mod specific
     import datetime   # mod specific
-    import re 
+    import re
     therapist = eliza.eliza()
     process_list = []
     music_list = ['bgm/m1.ogg', 'bgm/credits.ogg', 'bgm/monika-end.ogg', 'bgm/5_monika.ogg', 'bgm/d.ogg']
@@ -116,7 +116,7 @@ init python:
 
     def start_pong():
         renpy.call_in_new_context('game_pong')
-   
+
     dismiss_keys = config.keymap['dismiss']
 
     def slow_nodismiss(event, interact=True, **kwargs):
