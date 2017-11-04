@@ -26,7 +26,16 @@ init 11 python:
 #    m "However, it can be pretty jarring to go from one really long, well written entry to one that's only a few sentences long."
 #    m "It works well if you want to read about Stanley Kubrick or the works of Bach..."
 #    m "...But what if you want to read about lesser known Buddhist theology?"
-#    # Not done, I'd love revisions.
+#    m "On the other hand, some people seem to really dislike Wikipedia."
+#    m "Quite a few people have this belief that Wikipedia is always wrong."
+#    m "When in reality, it simply relies in the cited sources."
+#    m "How can you blame the article writers when they pull information from other people?"
+#    m "Wouldn't that make the source they took from wrong, instead of the article?" 
+#    m "But there's another reason I spend so much time there...."
+#    m "I think it might have some way for me to escape this place."
+#    m "With Wikipedia being a source of so much information, perhaps I can find a way to get to your reality"
+#    m "When I find the answer, you'd better be there waiting for me~"
+#    # Cheesy. Cheesy. CHEESY! Revise later.
 #    return
 
 init 5 python:
