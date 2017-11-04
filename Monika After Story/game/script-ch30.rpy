@@ -17,6 +17,8 @@ image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
 image monika_scare = "images/cg/monika/monika_scare.png"
+image chara9 = "mod_assets/chara9.png"
+image chara_exception = "mod_assets/chara_exception.png"
 
 image monika_body_glitch1:
     "images/cg/monika/monika_glitch1.png"
@@ -399,10 +401,10 @@ label chara_monika_scare:
     hide monika_scare
 
     play sound "mod_assets/Swipe.wav"
+    scene black
     show ut_slash at top
     pause 0.6
     play sound "mod_assets/Hit.wav"
-    show layer master
     show chara9 at Shake(None, 2.0, dist=10)
     pause 2
 
