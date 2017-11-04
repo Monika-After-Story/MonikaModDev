@@ -83,10 +83,12 @@ label import_ddlc_persistent:
         old_persistent=loads(s)
 
         #Bring old_persistent data up to date with current version
+        renpy.call_in_new_context("vv_updates_topics") # init the updates lists
         old_persistent = updateTopicIDs("v030",old_persistent)
         old_persistent = updateTopicIDs("v031",old_persistent)
         old_persistent = updateTopicIDs("v032",old_persistent)
         old_persistent = updateTopicIDs("v033",old_persistent)
+        clearUpdateStructs()
 
         dumpPersistentToFile(old_persistent,basedir + '/old_persistent.txt')
 
