@@ -7,6 +7,7 @@ default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
 
 image monika_room = "images/cg/monika/monika_room.png"
+image monika_day_room = "mod_assets/monika_day_room.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha

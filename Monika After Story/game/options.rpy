@@ -223,7 +223,7 @@ init python:
     build.classify("game/**.rpyc",build.name) #Serialized scripts must be included
     build.classify("README.html",build.name) #Included help file for mod installation
     build.classify("game/python-packages/**.**",build.name)#Additional python pacakges
-    build.classify("icon.**",build.name)
+    build.classify("CustomIcon**.**",build.name)
 
 
     build.package(build.directory_name + "Mod",'zip',build.name,description='DDLC Compatible Mod')
