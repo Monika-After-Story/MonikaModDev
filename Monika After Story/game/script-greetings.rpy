@@ -137,7 +137,7 @@ label greeting_visit2:
 label greeting_visit3:
      m "You're back!"
      m "I was starting to miss you so much..."
-     m "Don't make me wait so long next time,okay?"
+     m "Don't make me wait so long next time, okay?"
      return
 
 label greeting_back5:
