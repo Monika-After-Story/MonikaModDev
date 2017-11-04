@@ -11,8 +11,26 @@ init 11 python:
     for id in monika_random_topics:
         if renpy.seen_label(id):
             monika_random_topics.remove(id)
+            
+# Wikipedia Stub, currently won't be used by Monika.
+#init 5 python:
+#    for key in ['wikipedia', 'research']: # Could use better keywords, but this'll do.
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append('monika_wikipedia') 
+#    monika_random_topics.append('monika_wikipedia')
 
-#Use this topic as an example
+#label monika_wikipedia:
+#    m "[player], do you ever just cruise through Wikipedia to read what's out there? I do it, sometimes for hours at a time."
+#    m "It's fascinating how much is out there!"
+#    m "..."
+#    m "However, it can be pretty jarring to go from one really long, well written entry to one that's only a few sentences long."
+#    m "It works well if you want to read about Stanley Kubrick or the works of Bach..."
+#    m "...But what if you want to read about lesser known Buddhist theology?"
+#    m "Honestly, some people misjudge Wikipedia solely because other people rather than a 'trusted source' create articles."
+#    m "What about the sources the editors specify? Does that not mean anything?"
+#    # Not done, I'd love revisions.
+#    return
+
 init 5 python:
     #This is a list of keywords for this topic
     for key in ['god' , 'jesus' , 'lord' , 'religion' , 'miracle' , 'miracles' , 'gods']:
