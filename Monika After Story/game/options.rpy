@@ -23,7 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "1.0.0"
+define config.version = "0.5.0"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -190,10 +190,10 @@ init python:
 init python:
 
     ## By default, renpy looks for archive files in the game and common directories
-    ## Mac needs to check in the install directory instead.    
+    ## Mac needs to check in the install directory instead.
     #if renpy.mac:
-        
-    
+
+
 
     ## The following functions take file patterns. File patterns are case-
     ## insensitive, and matched against the path relative to the base directory,
@@ -213,7 +213,7 @@ init python:
     ## subdirectories, and "**.psd" matches psd files anywhere in the project.
 
     ## Classify files as None to exclude them from the built distributions.
-    
+
     ## This is the archive of data for your mod
     #build.archive(build.name, "all")
 
@@ -222,9 +222,12 @@ init python:
     #build.classify("game/**.rpy",build.name) #Optional line to include plaintext scripts
     build.classify("game/**.rpyc",build.name) #Serialized scripts must be included
     build.classify("README.html",build.name) #Included help file for mod installation
-    
+    build.classify("game/python-packages/**.**",build.name)#Additional python pacakges
+    build.classify("icon.**",build.name)
+
+
     build.package(build.directory_name + "Mod",'zip',build.name,description='DDLC Compatible Mod')
-    
+
     build.classify('**~', None)
     build.classify('**.bak', None)
     build.classify('**/.**', None)
@@ -248,8 +251,8 @@ init python:
     build.documentation('*.md')
 
     build.include_old_themes = False
-    
-    
+
+
 
 ## A Google Play license key is required to download expansion files and perform
 ## in-app purchases. It can be found on the "Services & APIs" page of the Google
