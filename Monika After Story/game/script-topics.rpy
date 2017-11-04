@@ -2159,7 +2159,7 @@ label monika_images:
     return
     
 init 5 python:
-    for key in ['monika', 'just monika', 'you', 'herself', 'yourself', 'your past', 'your childhood']:
+    for key in ['monika', 'just monika', 'yourself', 'your past', 'your childhood']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_herself')
     monika_random_topics.append('monika_herself')
