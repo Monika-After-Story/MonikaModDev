@@ -6,17 +6,21 @@ default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
 
+image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
+image monika_day_room = "mod_assets/monika_day_room.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
 image monika_bg = "images/cg/monika/monika_bg.png"
-image monika_day_bg = "images/cg/monika/monika_day_bg.png"
-image monika_transparent_day_bg = "images/cg/monika/monika_day_bg_eq.png"
+image monika_day_bg = "mod_assets/monika_day_bg.png"
+image monika_transparent_day_bg = "mod_assets/monika_day_bg_eq.png"
 image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
 image monika_scare = "images/cg/monika/monika_scare.png"
+image chara9 = "mod_assets/chara9.png"
+image chara_exception = "mod_assets/chara_exception.png"
 
 image monika_body_glitch1:
     "images/cg/monika/monika_glitch1.png"
@@ -53,32 +57,32 @@ image monika_body_glitch2:
     "images/cg/monika/monika_glitch4.png"
 
 image ut_slash:
-    "images/ut/spr_slice_o_0.png"
+    "mod_assets/spr_slice_o_0.png"
     0.1
-    "images/ut/spr_slice_o_1.png"
+    "mod_assets/spr_slice_o_1.png"
     0.1
-    "images/ut/spr_slice_o_2.png"
+    "mod_assets/spr_slice_o_2.png"
     0.1
-    "images/ut/spr_slice_o_3.png"
+    "mod_assets/spr_slice_o_3.png"
     0.1
-    "images/ut/spr_slice_o_4.png"
+    "mod_assets/spr_slice_o_4.png"
     0.1
-    "images/ut/spr_slice_o_5.png"
+    "mod_assets/spr_slice_o_5.png"
     0.1
 
 
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="images/cg/monika/window_1.webm",mask=None)
-image room_mask2 = Movie(channel="window_2", play="images/cg/monika/window_2.webm",mask=None)
+image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None)
+image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None)
 
 init python:
     import subprocess
     import os
     import eliza      # mod specific
     import datetime   # mod specific
-    import re 
+    import re
     therapist = eliza.eliza()
     process_list = []
     music_list = ['bgm/m1.ogg', 'bgm/credits.ogg', 'bgm/monika-end.ogg', 'bgm/5_monika.ogg', 'bgm/d.ogg']
@@ -116,7 +120,7 @@ init python:
 
     def start_pong():
         renpy.call_in_new_context('game_pong')
-   
+
     dismiss_keys = config.keymap['dismiss']
 
     def slow_nodismiss(event, interact=True, **kwargs):
@@ -299,7 +303,7 @@ label ch30_main:
     m "Also, I built in something we can do together."
     m "Press 'p' to start a game of Pong with me."
     m "I'll get better over time as I figure out how to program more features into this place..."
-    m "... So just leave me running in the background."
+    m "...So just leave me running in the background."
     m "It's not like we still have any secrets from each other, right?"
     m "I can see everything on your computer now!"
     m "Ahaha!"
@@ -384,7 +388,7 @@ label chara_monika_scare:
 
     window hide
     show monika_scare
-    play music "/utsounds/mus_zzz_c2.ogg"
+    play music "mod_assets/mus_zzz_c2.ogg"
     show layer master:
         zoom 1.0 xalign 0.5 yalign 0 subpixel True
         linear 4 zoom 3.0 yalign 0.15
@@ -398,11 +402,11 @@ label chara_monika_scare:
     hide monika_bg_highlight
     hide monika_scare
 
-    play sound "/utsounds/Swipe.wav"
+    play sound "mod_assets/Swipe.wav"
+    scene black
     show ut_slash at top
     pause 0.6
-    play sound "/utsounds/Hit.wav"
-    show layer master
+    play sound "mod_assets/Hit.wav"
     show chara9 at Shake(None, 2.0, dist=10)
     pause 2
 
@@ -418,14 +422,10 @@ label ch30_autoload:
     $ config.allow_skipping = False
     if is_morning():
         if morning_flag != True:
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
+            show blue_sky
+            hide rm
+            hide rm2
             show monika_transparent_day_bg
-            show monika_bg_highlight
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:
@@ -543,14 +543,10 @@ label ch30_reload_3:
 label ch30_loop:
     if is_morning():
         if morning_flag != True:
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
+            show blue_sky
+            hide rm
+            hide rm2
             show monika_transparent_day_bg
-            show monika_bg_highlight
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:

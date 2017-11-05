@@ -1,6 +1,6 @@
 define persistent.demo = False
 define persistent.steam = False
-define config.developer = 'auto' #This is the flag for Developer tools
+define config.developer = False #This is the flag for Developer tools
 
 python early:
     import singleton
@@ -13,12 +13,12 @@ init -1 python:
     config.keymap['clipboard_voicing'] = []
     config.keymap['toggle_skip'] = []
     renpy.music.register_channel("music_poem", mixer="music", tight=True)
-    
+
     #Lookup tables for Monika input topics
     #Add entries with your script in script-topics.rpy
     monika_topics = {}
 
-        
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos
@@ -38,41 +38,41 @@ init -1 python:
             return
         if time <= 0: return
         renpy.pause(time)
-    
+
         # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
-        installPath="" 
+        installPath=""
         if renpy.windows:
             import _winreg    # mod specific
-            # Grab first steam installation directory 
-            # If you're like me, it will miss libraries installed on another drive 
+            # Grab first steam installation directory
+            # If you're like me, it will miss libraries installed on another drive
             aReg = _winreg.ConnectRegistry(None, _winreg.HKEY_LOCAL_MACHINE)
             try:
-                # Check 32 bit 
-                keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam") 
+                # Check 32 bit
+                keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Valve\Steam")
             except:
-                # Check 64 bit 
+                # Check 64 bit
                 try:
                    keyVal = _winreg.OpenKey(aReg, r"SOFTWARE\Wow6432Node\Valve\Steam")
                 except:
-                   # No Steam 
+                   # No Steam
                    return None
             for i in range(4):
-                # Value Name, Value Data, Value Type 
+                # Value Name, Value Data, Value Type
                 n,installPath,t = _winreg.EnumValue(keyVal, i)
                 if n=="InstallPath": break
-            installPath+="/steamapps" 
+            installPath+="/steamapps"
         elif renpy.mac:
             installPath=os.environ.get("HOME") + "/Library/Application Support/Steam/SteamApps"
         elif renpy.linux:
             installPath=os.environ.get("HOME") + "/.steam/Steam/steamapps" \
-            # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program? 
+            # Possibly also ~/.local/share/Steam/SteamApps/common/Kerbal Space Program?
         else:
             return None
         try:
-            appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")] 
+            appIds = [file[12:-4] for file in os.listdir(installPath) if file.startswith("appmanifest")]
         except:
-            appIds = None   
+            appIds = None
         return appIds
 
 
@@ -1334,6 +1334,7 @@ default persistent.special_poems = None
 default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
+default persistent.has_merged = False
 default in_sayori_kill = None
 default in_yuri_kill = None
 default anticheat = 0

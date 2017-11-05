@@ -1,6 +1,7 @@
-﻿# This is used for top-level game strucutre.
+# This is used for top-level game strucutre.
 # Should not include any actual events or scripting; only logic and calling other labels.
 
+# For simplicity, I'm taking the MAS lines from the script.rpy that was made. It's basically the same.
 label start:
 
     # Set the ID of this playthrough
@@ -24,7 +25,7 @@ label start:
     $ allow_skipping = True
     $ config.allow_skipping = True
 
-    #JUSTMONIKAJUSTMONIKAJUSTMONIKAJUSTMONIKA
+    #Jump to the space room.
     jump ch30_main
     
 label endgame(pause_length=4.0):
