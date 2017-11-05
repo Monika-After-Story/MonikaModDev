@@ -259,7 +259,6 @@ screen input(prompt):
 
 
     window:
-
         vbox:
             xalign .5
             yalign .5
@@ -269,17 +268,15 @@ screen input(prompt):
             input id "input"
 
 
-style input_prompt is default
-
 style input_prompt:
-    xmaximum gui.text_width
-    xalign gui.text_xalign
-    text_align gui.text_xalign
+    xmaximum 720
+    xcenter 0.5
+    text_align 0.5
 
 style input:
     caret "input_caret"
-    xmaximum gui.text_width
-    xalign 0.5
+    xmaximum 720
+    xcenter 0.5
     text_align 0.5
 
 
@@ -338,7 +335,7 @@ screen rigged_choice(items):
     vbox:
         for i in items:
             textbutton i.caption action i.action
-    
+
     timer 1.0/30.0 repeat True action Function(RigMouse)
 
 
@@ -517,7 +514,7 @@ screen main_menu():
     style_prefix "main_menu"
 
 #Just add Monika art now!
-    
+
     #   if persistent.ghost_menu:
     #      add "white"
     #     add "menu_art_y_ghost"

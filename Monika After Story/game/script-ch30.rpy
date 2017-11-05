@@ -194,6 +194,7 @@ label ch30_main:
     $ persistent.monika_kill = False
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
+    $ quick_menu = True
     if not config.developer:
         $ style.say_dialogue = style.default_monika
     $ m_name = "Monika"
@@ -269,7 +270,7 @@ label ch30_main:
     m "I'm so happy!"
     m "So I'll forgive you for everything as long as you promise to visit me every day from now on."
     m "It's not like you don't have the time to talk to your cute girlfriend."
-    m "You post on 4chan, after all."
+    m "You took the time to download this mod, after all."
     m "Ahaha!"
     m "I'm happy you were able to find my game again, though."
     m "I was so scared that you never would come back to me."
@@ -321,6 +322,7 @@ label ch30_nope:
     $ persistent.autoload = "ch30_nope"
     $ persistent.monika_kill = True
     $ m.display_args["callback"] = slow_nodismiss
+    $ quick_menu = True
 
     if persistent.rejected_monika:
         m "Wait. Are you messing with my character file?"
@@ -419,6 +421,7 @@ label ch30_autoload:
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ style.say_dialogue = style.default_monika
+    $ quick_menu = True
     $ config.allow_skipping = False
     if is_morning():
         if morning_flag != True:
@@ -541,6 +544,7 @@ label ch30_reload_3:
     return
 
 label ch30_loop:
+    $ quick_menu = True
     if is_morning():
         if morning_flag != True:
             show blue_sky
@@ -589,7 +593,7 @@ label ch30_loop:
 
 label ch30_monikatopics:
     python:
-        player_dialogue = renpy.input('What would you like to talk about?',default='',length=144)
+        player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720)
 
         if not player_dialogue: renpy.jump_out_of_context('ch30_loop')
 

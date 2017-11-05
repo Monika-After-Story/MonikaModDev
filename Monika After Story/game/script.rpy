@@ -19,15 +19,15 @@ label start:
     $ n_name = "Natsuki"
     $ y_name = "Yuri"
 
-    $ quick_menu = True
     $ style.say_dialogue = style.normal
+    $ quick_menu = True
     #    $ in_sayori_kill = None
     $ allow_skipping = True
     $ config.allow_skipping = True
 
     #Jump to the space room.
     jump ch30_main
-    
+
 label endgame(pause_length=4.0):
     $ quick_menu = False
     stop music fadeout 2.0

@@ -209,7 +209,7 @@ label game_pong:
     call demo_minigame_pong from _call_demo_minigame_pong
 
 label demo_minigame_pong:
-        
+
     window hide None
 
     # Put up the pong background, in the usual fashion.
@@ -219,31 +219,27 @@ label demo_minigame_pong:
     python:
         ui.add(PongDisplayable())
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
-        
+
     # Show Monika's BG again. This is (shamelessly) copied from the script-ch30 since I don't wanna break anything
     if is_morning():
-        show mask_2
-        show mask_3
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_transparent_day_bg
-        show monika_bg_highlight
+        if morning_flag != True:
+            show blue_sky
+            hide rm
+            hide rm2
+            show monika_transparent_day_bg
+            $ morning_flag = True
     elif not is_morning():
-        scene black
-        show mask_2
-        show mask_3
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_bg
-        show monika_bg_highlight
+        if morning_flag != False:
+            $ morning_flag = False
+            scene black
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_bg
+            show monika_bg_highlight
 
     if winner == "monika":
 
@@ -253,14 +249,14 @@ label demo_minigame_pong:
 
         m "You won! Congratulations."
 
-        
+
     menu:
         m "Do you want to play again?"
 
         "Yeah!":
             jump demo_minigame_pong
         "Nah.":
-            
+
             if winner == "monika":
                 m "I can't really get excited for a game this simple..."
                 m "At least we can still hang out with each other."
