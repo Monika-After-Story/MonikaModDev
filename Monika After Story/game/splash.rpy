@@ -177,15 +177,13 @@ label splashscreen:
         scene white
         with Dissolve(1.5)
 
-        $ persistent.first_run = True
-
 
     #Optional, load a copy of DDLC save data
     if not persistent.has_merged:
         call import_ddlc_persistent from _call_import_ddlc_persistent
         $persistent.has_merged = True
 
-
+    $ persistent.first_run = True
 
     $ basedir = config.basedir.replace('\\', '/')
 
@@ -207,7 +205,7 @@ label splashscreen:
     pause 2.5
     hide intro with Dissolve(0.5, alpha=True)
     #You can use random splash messages, as well. By default, they are only shown during certain acts.
-    if persistent.playthrough == 2 and renpy.random.randint(0, 3) == 0:
+    if renpy.random.randint(0, 3) == 0:
         $ splash_message = renpy.random.choice(splash_messages)
     show splash_warning "[splash_message]" with Dissolve(0.5, alpha=True)
     pause 2.0
