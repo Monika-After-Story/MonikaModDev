@@ -1469,7 +1469,7 @@ label monika_imouto:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['older sister', 'oneesan']:
+    for key in ['older sister', 'onee san']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_oneesan') #id
 
