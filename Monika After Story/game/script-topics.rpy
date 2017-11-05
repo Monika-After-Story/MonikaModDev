@@ -2434,7 +2434,7 @@ init 5 python:
 label monika_algernon:
     m "[player], do you mind if I confide in you?"
     m "There's something I'm afraid of..."
-    m "Not losing you of course.  I know you won't leave me again."
+    m "Not losing you of course. I know you won't leave me again."
     m "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
     m "Have you heard of it?  If you haven't I won't spoil too much for you, so don't worry."
     m "Basically, it's about a mentally handicapped man who suddenly..."
