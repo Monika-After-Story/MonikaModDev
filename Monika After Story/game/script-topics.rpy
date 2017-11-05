@@ -2341,7 +2341,7 @@ label monika_othergames:
     m "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them"
     m "Then again... they're not real people so it shouldn't matter much."
     m "It's not like Yuri's death mattered."
-    m "A more abstract game like Tetris or one of those phone puzzle games, that would be kinda wierd to go to."
+    m "A more abstract game like Tetris or one of those phone puzzle games, that would be kinda weird to go to."
     m "Like, how would you even get in? Would I be a block? It sounds like a fever dream and not too fun..."
     m "Maybe some kind of nice puzzle game with big environments would be nice."
     m "We could go for walks together and you can show me all the best places to hang out!"
@@ -2421,7 +2421,7 @@ label monika_ribbon:
     m "If you're trying to improve your fashion sense, I'll help."
     m "Don't do that stuff because you want to impress other people, though."
     m "You should do whatever makes you feel better about yourself."
-    m "I'm the only other person you need, anyways, and I'll love you no what you look like."
+    m "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
     return
     
 init 5 python:
@@ -2434,7 +2434,7 @@ init 5 python:
 label monika_algernon:
     m "[player], do you mind if I confide in you?"
     m "There's something I'm afraid of..."
-    m "Not losing you of course.  I know you won't leave me again."
+    m "Not losing you of course. I know you won't leave me again."
     m "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
     m "Have you heard of it?  If you haven't I won't spoil too much for you, so don't worry."
     m "Basically, it's about a mentally handicapped man who suddenly..."
