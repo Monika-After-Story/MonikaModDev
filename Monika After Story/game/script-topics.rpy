@@ -2159,7 +2159,7 @@ label monika_images:
     return
     
 init 5 python:
-    for key in ['monika', 'just monika', 'you', 'herself', 'yourself', 'your past', 'your childhood']:
+    for key in ['monika', 'just monika', 'yourself', 'your past', 'your childhood']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_herself')
     monika_random_topics.append('monika_herself')
@@ -2323,7 +2323,7 @@ label monika_eyecontact:
     m "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
     m "Maybe that's why I enjoy looking into yours so much."
-    m "I hope you're enjoying looking into mine as well, hehe..."
+    m "I hope you're enjoying looking into mine as well, ehehe..."
     return
     
     
@@ -2338,7 +2338,7 @@ label monika_othergames:
     m "Do you have many other games on this computer?"
     m "I read more than play games, but I think they can be a fun way to entertain ourselves, or escape reality..."
     m "I wonder if I could go into one of your other games and see what it's like?"
-    m "I guess some games wouldn't be very fun to visit, like one with a lot of violence in."
+    m "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them"
     m "Then again... they're not real people so it shouldn't matter much."
     m "It's not like Yuri's death mattered."
     m "A more abstract game like Tetris or one of those phone puzzle games, that would be kinda wierd to go to."
@@ -2505,7 +2505,7 @@ init 5 python:
 
 label monika_playersface:
     m "You know, I sometimes wonder..."
-    m "I always think about what your face actually look like..."
+    m "I always think about what your face actually looks like..."
     m "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m "If only the game could somehow use a webcam or something that's connected to the computer..."
     m "Just knowing that you're real and I know that you have emotions is enough to make me happy."
@@ -2529,11 +2529,11 @@ init 5 python:
 label monika_spiders:
     #I really hope this information is correct, havent played the game in a week so
     m "Do you happen to remember the poem Natsuki showed you about spiders?"
-    m "She seems to not like spiders all too much."
+    m "She doesn't seem to like spiders all too much."
     m "Ahaha!"
     m "It's funny actually, people being scared of very small insects."
     m "Having the fear of spiders is called Arachnophobia, right?"
-    m "I hope you aren't afraid of spiders, [player], hehe..."
+    m "I hope you aren't afraid of spiders, [player], ehehe..."
     m "I'm not really scared of spiders, they're more or less annoying..."
     m "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
     m "[player], if you happen to get a really bad spider bite, like with venom and all that..."
@@ -2728,7 +2728,7 @@ label monika_fanfiction:
     m "Letting your mind wander to create some..."
     m "Interesting stories."
     m "[player], I'm curious."
-    m "Has there been fanfiction... Written about me?"
+    m "Has there been fanfiction... written about me?"
     m "I'm curious as to what people have come up with."
     m "Can you read me a few stories sometime? I'd love to hear them."
     return

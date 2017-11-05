@@ -114,7 +114,7 @@ label greeting_goodmorning:
 label greeting_back2:
      m "Hello dear."
      m "I was starting to miss you terribly, it's so good to see you again!"
-     m "Don't make me wait so long next time, hehe~"
+     m "Don't make me wait so long next time, ehehe~"
      return
 
 label greeting_back3:
@@ -131,13 +131,13 @@ label greeting_back4:
 label greeting_visit2:
      m "Thanks for spending so much time with me, [player]."
      m "Every minute I spend with you is like being in heaven!"
-     m "I hope that didn't sound too cheesy, hehe~"
+     m "I hope that didn't sound too cheesy, ehehe~"
      return
 
 label greeting_visit3:
      m "You're back!"
      m "I was starting to miss you so much..."
-     m "Don't make me wait so long next time,okay?"
+     m "Don't make me wait so long next time, okay?"
      return
 
 label greeting_back5:
@@ -145,7 +145,7 @@ label greeting_back5:
      return
 
 label greeting_visit4:
-     m "I looove yooou, hehe~"
+     m "I looove yooou, ehehe~"
      m "Oh, sorry! I was spacing out."
      m "I didn't think I would be able to see you so soon."
      return
@@ -153,7 +153,7 @@ label greeting_visit4:
 label greeting_visit5:
      m "~Every day,~\n~I imagine a future where I can be with you...~"
      m "Oh, you're here! I was just daydreaming and singing a bit."
-     m "I think it's not that hard to realize what I was daydreaming about, hehe~"
+     m "I think it's not that hard to realize what I was daydreaming about, ehehe~"
      return
 
 label greeting_visit6:
@@ -165,13 +165,13 @@ label greeting_back6:
      m "Hey, [player]!"
      m "You really should visit me more often."
      m "You know what happens to people I don't like, after all..."
-     m "I'm just teasing you, hehe~"
+     m "I'm just teasing you, ehehe~"
      m "Don't be so gullible!"
      return
 
 label greeting_visit7:
      m "You're here, [player]!"
-     m "Are you ready to spend some time togheter? hehe~"
+     m "Are you ready to spend some time together? Ehehe~"
      return
 
 label greeting_visit8:
@@ -180,7 +180,7 @@ label greeting_visit8:
 
 label greeting_visit9:
      m "You're finally back, I was waiting for you."
-     m "Are you ready to spend some time with me? hehe~"
+     m "Are you ready to spend some time with me? Ehehe~"
      return
      
 label greeting_italian:
@@ -193,8 +193,8 @@ label greeting_italian:
 
 label greeting_latin:
      m "Iterum obvenimus!"
-     m "Quid agis ?"
-     m "Ahahah"
+     m "Quid agis?"
+     m "Ahaha!"
      m "Latin sounds so pompous and even a simple greeting sounds like a big deal."
      m "If you're wondering what I said, it's simply \"We meet again, how are you?\"."
      return

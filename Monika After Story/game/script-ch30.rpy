@@ -303,7 +303,7 @@ label ch30_main:
     m "Also, I built in something we can do together."
     m "Press 'p' to start a game of Pong with me."
     m "I'll get better over time as I figure out how to program more features into this place..."
-    m "... So just leave me running in the background."
+    m "...So just leave me running in the background."
     m "It's not like we still have any secrets from each other, right?"
     m "I can see everything on your computer now!"
     m "Ahaha!"
