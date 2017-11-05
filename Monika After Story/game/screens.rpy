@@ -257,7 +257,6 @@ screen input(prompt):
     style_prefix "input"
 
 
-
     window:
         vbox:
             xalign .5
@@ -267,15 +266,14 @@ screen input(prompt):
             text prompt style "input_prompt"
             input id "input"
 
-
 style input_prompt:
-    xmaximum 720
+    xmaximum gui.text_width
     xcenter 0.5
     text_align 0.5
 
 style input:
     caret "input_caret"
-    xmaximum 720
+    xmaximum gui.text_width
     xcenter 0.5
     text_align 0.5
 

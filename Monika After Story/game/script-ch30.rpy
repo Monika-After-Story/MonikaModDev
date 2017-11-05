@@ -593,7 +593,7 @@ label ch30_loop:
 
 label ch30_monikatopics:
     python:
-        player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720)
+        player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
 
         if not player_dialogue: renpy.jump_out_of_context('ch30_loop')
 
