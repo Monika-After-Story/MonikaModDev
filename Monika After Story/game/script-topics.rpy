@@ -2421,7 +2421,7 @@ label monika_ribbon:
     m "If you're trying to improve your fashion sense, I'll help."
     m "Don't do that stuff because you want to impress other people, though."
     m "You should do whatever makes you feel better about yourself."
-    m "I'm the only other person you need, anyways, and I'll love you no what you look like."
+    m "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
     return
     
 init 5 python:
