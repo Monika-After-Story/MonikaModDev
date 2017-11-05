@@ -823,7 +823,7 @@ label monika_outfit:
 
 
 init 5 python:
-    for key in ['horror','scary','distrubing','psychological']:
+    for key in ['horror','scary','disturbing','psychological']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_horror')
     monika_random_topics.append('monika_horror')
