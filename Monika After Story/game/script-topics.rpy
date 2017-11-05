@@ -2341,7 +2341,7 @@ label monika_othergames:
     m "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them"
     m "Then again... they're not real people so it shouldn't matter much."
     m "It's not like Yuri's death mattered."
-    m "A more abstract game like Tetris or one of those phone puzzle games, that would be kinda wierd to go to."
+    m "A more abstract game like Tetris or one of those phone puzzle games, that would be kinda weird to go to."
     m "Like, how would you even get in? Would I be a block? It sounds like a fever dream and not too fun..."
     m "Maybe some kind of nice puzzle game with big environments would be nice."
     m "We could go for walks together and you can show me all the best places to hang out!"
