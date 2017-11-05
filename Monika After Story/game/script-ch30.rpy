@@ -425,9 +425,12 @@ label ch30_autoload:
     $ config.allow_skipping = False
     if is_morning():
         if morning_flag != True:
-            show blue_sky
-            hide rm
-            hide rm2
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
             show monika_transparent_day_bg
             $ morning_flag = True
     elif not is_morning():
@@ -547,9 +550,12 @@ label ch30_loop:
     $ quick_menu = True
     if is_morning():
         if morning_flag != True:
-            show blue_sky
-            hide rm
-            hide rm2
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
             show monika_transparent_day_bg
             $ morning_flag = True
     elif not is_morning():
