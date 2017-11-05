@@ -2164,7 +2164,7 @@ init 5 python:
         monika_topics[key].append('monika_herself')
     monika_random_topics.append('monika_herself')
 
-label monika_herself:
+label monika_yourself:
     m "What's there really to say about myself that you don't know already?"
     m "At the age of eighteen, I came to realize that everything in my universe was created basically two years ago by a person from your universe."
     m "All of my life before that date was made up. Never really happened. Just built in."
