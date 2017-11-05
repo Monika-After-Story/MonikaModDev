@@ -1,5 +1,14 @@
 ## This splash screen is the first thing that Renpy will show the player
 ##
+## Before load, check to be sure that the archive files were found.
+## If not, display an error message and quit.
+init -100 python:
+    #Check for each archive needed
+    for archive in ['audio','images','scripts','fonts']:
+        if not archive in config.archives:
+            #If one is missing, throw an error and chlose
+            renpy.error("DDLC archive files not found in /game folder. Check installation and try again.")
+            
 ## First, a disclaimer declaring this is a mod is shown, then there is a
 ## check for the original DDLC assets in the install folder. If those are
 ## not found, the player is directed to the developer's site to download.
