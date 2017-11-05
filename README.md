@@ -3,16 +3,19 @@ Monika After Story is a mod for the free game [Doki Doki Literature Club](https:
 
 [Releases](https://github.com/Backdash/MonikaModDev/releases) are currently on hold with the transition of MAS to the [DDLCModTemplate](https://github.com/therationalpi/DDLCModTemplate) format.
 
-### "Lightweight" Format & Changes
-With the transition of MAS to the DDLCModTemplate, several things are being redone.
+## Features
 
-#### DDLC Files Hooking
-Instead of being a standalone game, MAS will now work by hooking into DDLC's game files. This means you *must* have DDLC downloaded, and it is recommended you play through the entirety of DDLC before implementing the mod. DDLC can be downloaded for free from http://ddlc.moe
+* Spend forever with Monika!
 
-#### Asset Removal
-With hooking into DDLC, several files have been removed to accomodate the [new guidelines by Team Salvato](http://teamsalvato.com/ip-guidelines/). Any files needed from the original gamae will already be included by hooking into the DDLC archives. New non-script assets needed for the mod should be placed in the mod_assets folder.
+* Dozens of new conversation topics
 
-*Files in the /game folder with the same name as those in DDLC's archives take precedence over the originals. To change specific variables or functions from a script without having to recreate it entirely, overrides.rpy can be used.*
+* You can now talk to Monika to tell her what you'd like to talk about
+
+## Upcoming Features
+
+* New games and activities to do with Monika
+
+* More unique events and story
 
 ### Bugs & Suggestions
 If there are issues with MAS, please file a [bug report](https://github.com/Backdash/MonikaModDev/issues/new?labels=bug&body=Describe%20bug%20and%20steps%20for%20reproduction%20here&title=%5BBug%5D%20-%20).
@@ -55,6 +58,17 @@ label monika_example:
 ```
 
 For things more complicated than simple dialogue, consult the Ren'Py documentation available online.
+
+### "Lightweight" Format & Changes
+With the transition of MAS to the DDLCModTemplate, several things are being redone.
+
+#### DDLC Files Hooking
+Instead of being a standalone game, MAS will now work by hooking into DDLC's game files. This means you *must* have DDLC downloaded, and it is recommended you play through the entirety of DDLC before implementing the mod. DDLC can be downloaded for free from http://ddlc.moe
+
+#### Asset Removal
+With hooking into DDLC, several files have been removed to accomodate the [new guidelines by Team Salvato](http://teamsalvato.com/ip-guidelines/). Any files needed from the original gamae will already be included by hooking into the DDLC archives. New non-script assets needed for the mod should be placed in the mod_assets folder.
+
+*Files in the /game folder with the same name as those in DDLC's archives take precedence over the originals. To change specific variables or functions from a script without having to recreate it entirely, overrides.rpy can be used.*
 
  ### Join the conversation
  If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/7P5DnJ4). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web.
