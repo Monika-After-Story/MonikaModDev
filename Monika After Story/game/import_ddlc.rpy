@@ -272,6 +272,8 @@ label import_ddlc_persistent:
                 persistent.playthrough = old_persistent.playthrough
         elif old_persistent.playthrough is not None:
             persistent.playthrough = old_persistent.playthrough
+        if persistent.playthrough is not None and persistent.playthrough > 3:
+            persistent.playthrough = 3
 
         #seen_eyes
         #Marks if the player saw an easter egg in Act 2 poem game with eyes (1 in 6 chance)
