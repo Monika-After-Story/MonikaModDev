@@ -62,7 +62,7 @@ init python:
 
         for oldTopic in changedIDs:
             if updating_persistent._seen_ever.pop(oldTopic,False):
-                updating_persistent._seen_ever[changedIDs(oldTopic)] = True
+                updating_persistent._seen_ever[changedIDs[oldTopic]] = True
                 
         return updating_persistent
                     
