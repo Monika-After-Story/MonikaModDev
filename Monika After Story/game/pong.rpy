@@ -222,24 +222,20 @@ label demo_minigame_pong:
 
     # Show Monika's BG again. This is (shamelessly) copied from the script-ch30 since I don't wanna break anything
     if is_morning():
-        if morning_flag != True:
-            show blue_sky
-            hide rm
-            hide rm2
-            show monika_transparent_day_bg
-            $ morning_flag = True
+        show blue_sky
+        hide rm
+        hide rm2
+        show monika_transparent_day_bg
     elif not is_morning():
-        if morning_flag != False:
-            $ morning_flag = False
-            scene black
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_bg
-            show monika_bg_highlight
+        scene black
+        show room_mask as rm:
+            size (320,180)
+            pos (30,200)
+        show room_mask2 as rm2:
+            size (320,180)
+            pos (935,200)
+        show monika_bg
+        show monika_bg_highlight
 
     if winner == "monika":
 
