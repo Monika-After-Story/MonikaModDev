@@ -2697,7 +2697,7 @@ label monika_mythology:
     m "Hey [player]..."
     m "Have you ever read about mythologies?"
     m "Different kinds of Gods watching over humanity for eternity."
-    m "Some require tribute or sacrfice so that the Gods can \"keep\" humanity safe from disasters."
+    m "Some require tribute or sacrifice so that the Gods can \"keep\" humanity safe from disasters."
     m "An almighty family consisting of different attitudes playing in their own sandbox called Earth."
     m "Able to do anything they please and destroy those who so much as say something wrong to them without hesitance."
     m "I always disliked stories like those."
