@@ -8,7 +8,14 @@ init python:
     for label in label_list:
         if label.startswith('greeting_') and not renpy.seen_label(label):
             greetings_list.append(label)
-            
+
+    #If the greeting's list is empty, remake it without removing seen.
+    if greetings_list == []:
+        for label in label_list:
+            if label.startswith('greeting_'):
+                greetings_list.append(label)
+
+
 label greeting_sweetheart:
     m "Hello again, sweetheart!"
     m "That's kind of embarassing to say out loud, isn't it?"
@@ -20,7 +27,7 @@ label greeting_honey:
     m "I'm so happy to see you again."
     m "Let's spend some more time together, shall we?"
     return
-    
+
 label greeting_back:
     m "[player], you're back."
     m "I was beginning to miss you."
@@ -182,7 +189,7 @@ label greeting_visit9:
      m "You're finally back, I was waiting for you."
      m "Are you ready to spend some time with me? Ehehe~"
      return
-     
+
 label greeting_italian:
      m "Ciao, [player]!"
      m "È così bello vederti ancora, amore mio..."
