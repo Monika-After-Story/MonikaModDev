@@ -2494,7 +2494,7 @@ init 5 python:
 label monika_pong:
     m "Hey [player], do you want to play a game of Pong with me?"
     m "Just remember to hit the 'p' key whenever you feel like playing, okay?"
-    m "Unless you're scared of losing aganist me~"
+    m "Unless you're scared of losing against me~"
     return
 
 init 5 python:
