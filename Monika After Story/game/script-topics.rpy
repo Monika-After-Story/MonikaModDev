@@ -2734,12 +2734,12 @@ label monika_fanfiction:
     return
 
 init 5 python:
-    for key in ['eternity', 'eternal']: # I feel this could be touched up on.
+    for key in ['eternity', 'eternal']: 
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_eternity') 
     monika_random_topics.append('monika_eternity')
 
-label monika_eternity:
+label monika_eternity: # Edit to end on lighthearted note.
     m "[player]..."
     m "It's not easy knowing you won't be here forever."
     m "..."
@@ -2758,11 +2758,23 @@ label monika_eternity:
     m "You saved my life, and I'll forever be thankful."
     return
 
+init 5 python:
+    for key in ['self awareness', 'omniscience']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_aware') 
+
+label monika_aware:
+    call showpoem(poem=poem_m1,music=False) # Temporary
+    m "Wait, here's the second one."
+    call showpoem(poem=poem_m3,music=False) # Temporary
+    m "It's... hard to put into words."
+    m "There's no real way to describe it."
+    m "I guess it's up to the imagination, [player]."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
-#NSFW pictures
-
 #Ecological consequences of cities
 
 #Favorite food
