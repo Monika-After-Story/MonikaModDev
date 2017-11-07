@@ -220,7 +220,8 @@ init python:
     ## These files get put into your data file
     build.classify("game/mod_assets/**",build.name)
     #build.classify("game/**.rpy",build.name) #Optional line to include plaintext scripts
-    build.classify("game/**.rpyc",build.name) #Serialized scripts must be included
+    build.classify("game/*.rpyc",build.name) #Serialized scripts must be included
+    build.classify("game/dev/*.*",None) #But not the dev folder
     build.classify("README.html",build.name) #Included help file for mod installation
     build.classify("game/python-packages/**.**",build.name)#Additional python pacakges
     build.classify("CustomIcon**.**",build.name)
