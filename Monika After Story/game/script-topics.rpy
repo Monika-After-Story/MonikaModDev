@@ -481,7 +481,7 @@ label monika_listener:
     m "You're such a good listener, [player]."
     m "I really love that about you."
     m "Sometimes I'm afraid that I'm rambling or talking about boring things."
-    m "It makes me kind of self-conscious when I'm having conversation."
+    m "It makes me kind of self-conscious when I'm having a conversation."
     m "But I don't feel that way with you."
     m "Like, I don't think anyone else could make me feel this way."
     m "You really are special."
