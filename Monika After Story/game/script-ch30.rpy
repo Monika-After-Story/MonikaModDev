@@ -638,7 +638,7 @@ label ch30_monikatopics:
             persistent.current_monikatopic = renpy.random.choice(possible_topics) #Pick a random topic
 
             allow_dialogue = False
-            renpy.call(persistent.current_monikatopic) #Go to the topic
+            renpy.call_in_new_context(persistent.current_monikatopic) #Go to the topic
             allow_dialogue = True
             #Remove the topic from the random topics list
             if persistent.current_monikatopic in monika_random_topics:
