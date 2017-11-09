@@ -627,7 +627,7 @@ label ch30_monikatopics:
         for key in player_dialogue_ngrams:
             if key in monika_topics:
                 for topic_id in monika_topics[key]:
-                    if topic_id not in possible_topics:
+                    if not renpy.seen_label(topic_id):
                         possible_topics.append(topic_id)
 
         if possible_topics == []: #Therapist answer if no keywords match
