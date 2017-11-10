@@ -5,6 +5,7 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
+define allow_dialogue = True
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -116,7 +117,8 @@ init python:
         renpy.music.play(song,channel="music",loop=True,synchro_start=True)
 
     def show_dialogue_box():
-        renpy.call_in_new_context('ch30_monikatopics')
+        if allow_dialogue:
+            renpy.call_in_new_context('ch30_monikatopics')
 
     def select_music():
         # check for open menu
@@ -194,7 +196,9 @@ label ch30_noskip:
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         m "Now, where was I...?"
         pause 2.0
+        $ allow_dialogue = False
         call expression str(persistent.current_monikatopic) from _call_expression_8
+        $ allow_dialogue = True
         python:
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
@@ -515,7 +519,9 @@ label ch30_autoload:
     if renpy.has_label(persistent.current_monikatopic) :
         m "Now, where was I...?"
         pause 2.0
+        $ allow_dialogue = False
         call expression str(persistent.current_monikatopic) from _call_expression_10
+        $ allow_dialogue = True
         python:
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
@@ -614,7 +620,9 @@ label ch30_loop:
 
 
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
+        $ allow_dialogue = False
         call expression str(persistent.current_monikatopic) from _call_expression_11
+        $ allow_dialogue = True
         $ monika_random_topics.remove(persistent.current_monikatopic)
 
     jump ch30_loop
@@ -642,7 +650,7 @@ label ch30_monikatopics:
         for key in player_dialogue_ngrams:
             if key in monika_topics:
                 for topic_id in monika_topics[key]:
-                    if topic_id not in possible_topics:
+                    if topic_id not in possible_topics and not renpy.seen_label(topic_id):
                         possible_topics.append(topic_id)
 
         if possible_topics == []: #Therapist answer if no keywords match
@@ -652,7 +660,9 @@ label ch30_monikatopics:
         else:
             persistent.current_monikatopic = renpy.random.choice(possible_topics) #Pick a random topic
 
-            renpy.call(persistent.current_monikatopic) #Go to the topic
+            allow_dialogue = False
+            renpy.call_in_new_context(persistent.current_monikatopic) #Go to the topic
+            allow_dialogue = True
             #Remove the topic from the random topics list
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic)
