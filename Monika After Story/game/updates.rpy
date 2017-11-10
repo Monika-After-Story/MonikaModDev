@@ -211,8 +211,8 @@ label v031:
 label v030:
     python:
         # the following labels are special cases because of conflicts
-        persistent = removeTopicID("monika_piano")
-        persistent = removeTopicID("monika_college")
+        removeTopicID("monika_piano")
+        removeTopicID("monika_college")
 
         # update!
         persistent = updateTopicIDs("v030")
