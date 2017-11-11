@@ -2782,9 +2782,9 @@ init 5 python:
     for key in ['metal gear' , 'wolbachia' , 'kojima' , 'konami']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_mgs') #id
-    monika_random_topics.append('monika_sleep')
+    monika_random_topics.append('monika_mgs')
 
-label monika_sleep:
+label monika_mgs:
     m "You wanna know something funny?"
     m "When I was taking apart the school, I noticed something weird."
     m "There was a basement below our classroom, but we were on the second floor!"
