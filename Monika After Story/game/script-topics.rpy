@@ -2777,6 +2777,21 @@ label monika_eternity:
     m "You saved my life, and I'll forever be thankful."
     return
 
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['metal gear' , 'wolbachia' , 'kojima' , 'konami']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_mgs') #id
+    monika_random_topics.append('monika_sleep')
+
+label monika_sleep:
+    m "You wanna know something funny?"
+    m "When I was taking apart the school, I noticed something weird."
+    m "There was a basement below our classroom, but we were on the second floor!"
+    m "The designers must of planned something there and scrapped it."
+    m "I wonder if there was a keycard to get in there or something..."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
@@ -2786,13 +2801,13 @@ label monika_eternity:
 
 #Favorite food
 
-#How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
+#How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John) (Don't touch this till we find out what's going on with the next game Dan has planned, tbh, considering DDLC was a giant ARG/Advert for it)
 
 #More writing tips
 
 #The player is wasting their time (I don't think Monika would say this, considering her personality revolves around loving the player. ~ John)
 
-#Look for your computer for porn, comment on what she finds (Would this even be possible? ~ John)
+#Look for your computer for porn, comment on what she finds (Would this even be possible? ~ John) (theoretically but you'd trip AVs even more than the game already does)
 
 #What kind of girls do you like? Do you wish monika was more like that?
 
