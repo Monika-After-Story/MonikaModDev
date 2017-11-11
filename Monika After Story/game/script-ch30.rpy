@@ -126,7 +126,7 @@ init python:
     dismiss_keys = config.keymap['dismiss']
 
     def slow_nodismiss(event, interact=True, **kwargs):
-        if not persistent.monika_kill:
+        if not renpy.seen_label("ch30_nope"):
             try:
                 renpy.file("../characters/monika.chr")
             except:
