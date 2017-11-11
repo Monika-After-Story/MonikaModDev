@@ -1093,7 +1093,7 @@ label monika_creative:
 
 
 init 5 python:
-    if persistent.monika_kill
+    if persistent.monika_kill:
         for key in ['delete','deleted','came back']:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_deleted')
@@ -1854,10 +1854,10 @@ label monika_freewill:
 init 5 python:
         for key in ['free will', 'predestination', 'determinism', 'functionalism']:
             monika_topics.setdefault(key,[])
-            monika_topics[key].append('monika_freewill')
-        monika_random_topics.append('monika_freewill')
+            monika_topics[key].append('monika_functionalism')
+        monika_random_topics.append('monika_functionalism')
 
-label monika_freewill:
+label monika_functionalism:
     m "Do you ever think about how people are kind of like computers?"
     m "I mean, a brain is just a calculation machine..."
     m "But instead of transistors and wires, you have neurons."
