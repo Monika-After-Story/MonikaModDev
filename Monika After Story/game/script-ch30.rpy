@@ -1,6 +1,6 @@
 default persistent.monika_reload = 0
 default persistent.tried_skip = None
-default persistent.monika_kill = None
+default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
@@ -197,14 +197,8 @@ label ch30_main:
     #$ persistent.monika_reload = 0
     #$ persistent.yuri_kill = 0
     #$ persistent.monika_kill = False
-    $ persistent.playthrough = 3
-    $ persistent.clearall = True
     $ persistent.autoload = "ch30_main"
     $ config.allow_skipping = False
-    $ persistent.monika_reload = 5
-    $ persistent.yuri_kill = 1
-    $ persistent.monika_kill = False
-    $ persistent.tried_skip = True
     ####### End
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
@@ -221,6 +215,7 @@ label ch30_main:
         size (320,180)
         pos (935,200)
     show monika_bg
+    with fade
     show monika_bg_highlight
     play music m1 loop
     if persistent.monika_kill == True:
@@ -334,7 +329,6 @@ label ch30_main:
 
 label ch30_nope:
     $ persistent.autoload = "ch30_nope"
-    $ persistent.monika_kill = True
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
 
@@ -375,7 +369,6 @@ label ch30_nope:
             call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_19
         pause 3.0
         call hideconsole from _call_hideconsole_2
-        $ persistent.monika_kill = False
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = "Monika"
         $ quick_menu = True
@@ -446,6 +439,7 @@ label ch30_autoload:
                 size (320,180)
                 pos (935,200)
             show monika_transparent_day_bg
+            with dissolve
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:
@@ -458,6 +452,7 @@ label ch30_autoload:
                 size (320,180)
                 pos (935,200)
             show monika_bg
+            with dissolve
             show monika_bg_highlight
     play music m1 loop
     window auto
@@ -573,6 +568,7 @@ label ch30_loop:
                 size (320,180)
                 pos (935,200)
             show monika_transparent_day_bg
+            with dissolve
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:
@@ -585,6 +581,7 @@ label ch30_loop:
                 size (320,180)
                 pos (935,200)
             show monika_bg
+            with dissolve
             show monika_bg_highlight
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
