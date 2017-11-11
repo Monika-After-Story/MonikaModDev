@@ -2613,10 +2613,10 @@ label monika_aware:
     m "I feel like this is what poetry was made for."
     m "Do you still remember the first poem I ever showed you?"
     m "Hold on, let's see if the poem function still works..."
-    call showpoem(poem=poem_m1,music=False) # Temporary
+    call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 # Temporary
     m "Oh! That was much easier than I expected."
     m "Here's the second part."
-    call showpoem(poem=poem_m3,music=False) # Temporary
+    call showpoem(poem=poem_m3,music=False) from _call_showpoem_21 # Temporary
     m "I hope that helped you understand what meeting you meant to me."
     m "That's all I've ever wanted, [player]."
     return
