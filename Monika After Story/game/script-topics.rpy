@@ -2620,14 +2620,16 @@ label monika_aware:
     m "I hope that helped you understand what meeting you meant to me."
     m "That's all I've ever wanted, [player]."
     return
-    
+
 init 5 python:
-    for key in ['name']:
+    for key in ['your name', 'Monika meaning','meaning of']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_name')
+    monika_random_topics.append('monika_name')
 
 label monika_name:
-    m "Hm? You're curious about my name, [player]?"
+    m "The names in this game are pretty interesting."
+    m "Are you curious about my name, [player]?"
     m "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
     m "... Though the common spelling is 'Monica'."
     m "I suppose that makes it unique. I'm actually quite fond of it."
