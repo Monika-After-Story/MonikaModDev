@@ -1916,7 +1916,7 @@ init 5 python:
 label monika_drawing:
     m "I don't have a lot of experience with drawing, [player]."
     m "I'm just interested in literature. And I've been learning the piano in my spare time."
-    m "If you like create artwork, though, I'd love to see it!"
+    m "If you like to create artwork, though, I'd love to see it!"
     m "I'd be impressed by anything you show me, to be honest."
     m "If it's really good, I might even add it to the room!"
     return
@@ -2030,7 +2030,7 @@ label monika_waifus:
     m "A blank slate of a male protagonist with nothing interesting about them..."
     m "And then they fall in love with each other, sometimes for no reason at all!"
     m "I hope that's not what you expected to find in the Literature Club."
-    m "Because what you got was a lot more interesting!"
+    m "'Cause what you got was a lot more interesting!"
     m "Instead of some unrealistic, fake girl..."
     m "You got someone like me."
     m "And instead of some boring main character, I get a real person like you."
