@@ -2621,6 +2621,27 @@ label monika_aware:
     m "That's all I've ever wanted, [player]."
     return
 
+init 5 python:
+    for key in ['your name', 'Monika meaning','meaning of']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_name')
+    monika_random_topics.append('monika_name')
+
+label monika_name:
+    m "The names in this game are pretty interesting."
+    m "Are you curious about my name, [player]?"
+    m "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
+    m "... Though the common spelling is 'Monica'."
+    m "I suppose that makes it unique. I'm actually quite fond of it."
+    m "Did you know that it means 'I advise' in Latin?"
+    m "A name fitting for Club President, don't you think?"
+    m "It also means 'alone' in Ancient Greek."
+    m "That part doesn't matter so much, now that you're here."
+    m "[player] is a lovely name, too."
+    m "But I think I like [currentuser] better!"
+    m "Ehehe~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
@@ -2636,7 +2657,7 @@ label monika_aware:
 
 #Look for your computer for porn, comment on what she finds (Would this even be possible? ~ John)
 
-#What kind of girls do you like? Do you wish monika was more like that?
+#What kind of girls do you like? Do you wish monika was more like that? (This seems to relate to the "archetypes" label. - Rune)
 
 #Play a poem game with monika, she calls you out for just stringing together random words
 
