@@ -1784,7 +1784,7 @@ label monika_natsuki:
     m "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
     m "Sorry, I can't help myself sometimes."
     m "But for what it's worth, you made her the happiest she ever was."
-    m "Hope you don't feel too guily..."
+    m "Hope you don't feel too guilty..."
     m "I certainly don't."
     return
 
@@ -2277,7 +2277,7 @@ label monika_ghost:
     m "All by myself, uncertain if anything around me was real."
     m "I know that some ghosts are real though, if you can really call them 'ghosts.'"
     m "You know how I deleted Sayori?"
-    m "I can still feel their presence now..."
+    m "I can still feel her presence now..."
     m "Would that mean that Sayori's ghost is haunting me, [player]?"
     m "Even if she is, I'm not scared at all, because I know that she can't hurt me."
     m "Besides, how can I be scared? When you're always here with me, [player]."
@@ -2398,7 +2398,7 @@ init 5 python:
 
 label monika_nsfw:
     m "By the way, [player]..."
-    m "Have you been looking into lewd kind of stuff?"
+    m "Have you been looking into lewd kinds of stuff?"
     m "You know... of me?"
     m "I know we haven't really gotten that far into the relationship yet..."
     m "So it feels kind of embarassing to talk about 'stuff' like that."
