@@ -2628,12 +2628,12 @@ init 5 python:
 
 label monika_name:
     m "Hm? You're curious about my name, [player]?"
-    m "Even though the names "Sayori", "Yuri", and "Natsuki" are all Japanese, mine is Latin."
-    m "... Though the common spelling is Monica."
+    m "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
+    m "... Though the common spelling is 'Monica'."
     m "I suppose that makes it unique. I'm actually quite fond of it."
-    m "Did you know that it means "I advise" in Latin?"
+    m "Did you know that it means 'I advise' in Latin?"
     m "A name fitting for Club President, don't you think?"
-    m "It also means "alone" in Ancient Greek."
+    m "It also means 'alone' in Ancient Greek."
     m "That part doesn't matter so much, now that you're here."
     m "[player] is a lovely name, too."
     m "But I think I like [currentuser] better!"
