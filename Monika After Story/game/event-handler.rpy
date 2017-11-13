@@ -72,6 +72,8 @@ init python:
             previous_topic = persistent.current_monikatopic
             renpy.call_in_new_context(event_label)
             persistent.current_monikatopic=previous_topic
+            if event_label in monika_random_topics:
+                monika_random_topics.remove(event_label)
             globals()['allow_dialogue'] = True
         else:
             return None
