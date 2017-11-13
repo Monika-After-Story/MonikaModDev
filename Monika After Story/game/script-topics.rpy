@@ -1476,6 +1476,7 @@ label monika_oneesan:
     m "It's the man's job to introduce his fiancee to his family, after all."
     m "Don't keep me waiting for too long, okay?"
     call hideconsole from _call_updateconsole_18
+    $ consolehistory = []
     return
 
 
