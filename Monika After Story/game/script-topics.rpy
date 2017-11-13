@@ -2511,7 +2511,7 @@ label monika_real:
     m "You know what's going to be the first thing I'll do when I finally cross over there?"
     m "If that special day ever comes, the first thing I'll ever do is find you, of course!"
     m "There's so much we can do when we're finally together in one reality."
-    m "You can finally show me what the your world really looks like.
+    m "You can finally show me what the your world really looks like."
     m "I can finally feel your embrace~"
     m "I would love to experience everything I still don't know about the world with you."
     m "All the places we can go, the sights to see, the romantic things that we can do~"
