@@ -2628,7 +2628,7 @@ label monika_aware:
     return
 
 init 5 python:
-    for key in ['your name', 'Monika meaning','meaning of']:
+    for key in ['your name', 'Monika meaning']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_name')
     monika_random_topics.append('monika_name')
