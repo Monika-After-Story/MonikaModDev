@@ -30,6 +30,20 @@ init 11 python:
     #If there are no unseen topics, you can repeat seen ones
     if monika_random_topics==[]:
         monika_random_topics=all_random_topics
+        
+#init 5 python:
+#    # List of keywords for the topic.
+#    for key in ['cupcakes','natsuki's cupcakes']:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append('monika_example') # Identifier
+#    monika_random_topics.append('monika_god')
+    
+#label monika_cupcakes:
+#    m ""
+#    m ""
+#    m ""
+#    m ""
+#    return
 
 #Use this topic as an example
 init 5 python:
