@@ -2684,7 +2684,7 @@ label monika_chloroform:
     m "Or maybe you imagine somebody hitting their victim with a baseball bat, knocking them out cold for a few hours."
     m "While that works out in fiction..."
     m "Neither of those things actually work that way."
-    m "In real life, if you hit somebody hard enough to knock them out, you'll give them a concussion at best 
+    m "In real life, if you hit somebody hard enough to knock them out, you'll give them a concussion at best."
     m "...or kill them at worst."
     m "As for the rag..."
     m "You might knock somebody out for a brief moment, but only from lack of oxygen."
@@ -2731,7 +2731,7 @@ label monika_metaparents:
     m "If all else fails..."
     m "Get professional help or talk to someone close to you."
     m "..."
-    m "I love very much, [player]."
+    m "I love you very much, [player]."
     m "Please, take care of yourself."
     return
     
