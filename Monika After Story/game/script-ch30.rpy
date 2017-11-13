@@ -189,6 +189,11 @@ label ch30_main:
 
     jump ch30_loop
 
+label continue_event:
+    m "Now, where was I..."
+
+    return
+
 label ch30_noskip:
     show screen fake_skip_indicator
     m "...Are you trying to fast-forward?"

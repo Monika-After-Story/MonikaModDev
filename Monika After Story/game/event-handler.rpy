@@ -81,12 +81,13 @@ init python:
     def restartEvent():
         #
         # This checks if there is a persistent topic, and if there was push it
-        # back on the stack.
+        # back on the stack with a little comment.
         #
         # IN:
         #
         if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
             pushEvent(persistent.current_monikatopic)
+            pushEvent('continue_event')
             persistent.current_monikatopic = 0
 
         return
