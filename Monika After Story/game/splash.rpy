@@ -190,7 +190,6 @@ label splashscreen:
         #Optional, load a copy of DDLC save data
         if not persistent.has_merged:
             call import_ddlc_persistent from _call_import_ddlc_persistent
-            $persistent.has_merged = True
 
         $ persistent.first_run = True
 
