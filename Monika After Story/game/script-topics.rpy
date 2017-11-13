@@ -1970,7 +1970,7 @@ init 5 python:
 label monika_bestgirl:
     m "I love it when you compliment me, [player]!"
     m "I think I'm best girl, too!"
-    m "Even not counting the whole, \"I'm the only one with free will\" thing, how could anybody have preferred the other three girls to me?"
+    m "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
     m "A useless childhood friend who never bothered to confess to you until it was way too late..."
     m "A shy girl who was overdramatic and always taking herself too seriously..."
     m "A moody manga fan obsessed with everything being cute."
@@ -2645,8 +2645,8 @@ label monika_name:
     m "It also means 'alone' in Ancient Greek."
     m "..."
     m "That part doesn't matter so much, now that you're here."
-    m "[player] is a lovely name, too."
-    m "But I think I like [currentuser] better!"
+    m "'[player]' is a lovely name, too."
+    m "But I think I like '[currentuser]' better!"
     m "Ehehe~"
     return
     
