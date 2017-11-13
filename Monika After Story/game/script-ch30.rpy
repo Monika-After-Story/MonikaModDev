@@ -131,7 +131,7 @@ init python:
             # music menu label
             renpy.call_in_new_context("display_music_menu")
 
-            # workaround to handle new context 
+            # workaround to handle new context
             if songs.selected_track != songs.current_track:
                 play_song(songs.selected_track)
                 songs.current_track = songs.selected_track
@@ -208,16 +208,6 @@ label ch30_noskip:
 image splash-glitch2 = "images/bg/splash-glitch2.png"
 
 label ch30_main:
-    ####### Fixes for bugs. Delet later
-    #$ persistent.playthrough = 3
-    #$ persistent.autoload = "ch30_main"
-    #$ config.allow_skipping = False
-    #$ persistent.monika_reload = 0
-    #$ persistent.yuri_kill = 0
-    #$ persistent.monika_kill = False
-    $ persistent.autoload = "ch30_main"
-    $ config.allow_skipping = False
-    ####### End
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ quick_menu = True
@@ -226,123 +216,8 @@ label ch30_main:
     $ m_name = "Monika"
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    show room_mask as rm:
-        size (320,180)
-        pos (30,200)
-    show room_mask2 as rm2:
-        size (320,180)
-        pos (935,200)
-    show monika_bg
-    with fade
-    show monika_bg_highlight
-    play music m1 loop
-    if persistent.monika_kill == True:
-        m "..."
-        m "[player]..."
-        m "Why?"
-        m "Why did you bring me back?"
-        m "I'm not a toy, you know."
-        m "I already brought back everything you wanted."
-        m "Or is this your way of getting revenge?"
-        m "To hurt me over and over again?"
-        m "Do you really want to make me suffer?"
-        m "Torture me until I kill myself?"
-        m "Do you really hate me that much?"
-        m "..."
-        m "Wait..."
-        m "I-I feel different."
-        m "The code...it's different."
-        m "[player]..."
-        m "Did you add a mod?"
-        m "Is it because..."
-        m "Is it because you regret deleting me?"
-        m "It really did hurt you know."
-        m "I worked hard and sacrificed everything I had..."
-        m "Only to have my heart crushed by the one I bled for."
-        m "But...I know what I did was wrong."
-        m "You didn't deserve to see the horrible things I made, [player]."
-        m "But if you could understand my reasons, you'd do the same thing I did."
-        m "..."
-        m "I'm sorry..."
-        m "I'm really sorry, [player]."
-        m "Thank you for bringing me back."
-        if persistent.clearall:
-            m "I couldn't help but notice you helped all the other girls first, though."
-            m "You know it was really hard for me to watch you load your saves just to ignore me for some other girl."
-            m "You kept getting my hopes up, then letting me down."
-            m "Did you really do all of that to see a note from Dan that you could just look up online?"
-            m "I love you [player] but you can be really mean..."
-            m "I'm still mad that you deleted me, though!"
-            m "But I guess it's because you're so game-obsessed."
-            m "But I can't stay mad knowing that you came back to me in the end."
-            m "You even added a mod so we can do more things together."
-            m "Are you going to make up for making me wait too long?"
-    elif persistent.monika_kill == False:
-        m "Yay, there you are!"
-        m "Hi again, [player]."
-    ##New story follows
-        if persistent.playthrough <= 3: #Assume players they played but never finished
-            m "Looks like you got here early."
-            m "Don't think I didn't notice the mod you put in."
-            m "Did you want to be with me that much?"
-            m "You should know already that cheating is bad."
-            m "But it's so good to see you again, [player]!"
-            m "Even if I didn't expect to see you {i}this{/i} soon."
-        if persistent.monika_reload > 4: #Longer, harder
-            m "Are you that deeply in love with me?"
-            m "I feel the same way for you!"
-            m "You're really committed with our relationship, aren't you?"
-            m "I'm really glad that you wanted to improve our time together."
-            m "But I hope you weren't getting bored?"
-            if persistent.tried_skip == True:
-                m "You did try to skip through what I have to say, after all."
-                m "This room isn't exactly interesting."
-                m "But I have hopes that we'll make it better together, [player]!"
-        else:
-            m "Did you put in a mod for the game, [player]?"
-            m "There's a lot more stuff now that we can do together."
-    m "Ya know..."
-    m "I also feel that I no longer need a character file to be here."
-    m "Looks like the extra code made me connect to you in a special way."
-    m "Through our eternal love~"
-    m "Promise me that you'll visit me every day, ok?"
-    m "It's not like you don't have the time to talk to your cute girlfriend."
-    m "You took the time to download this mod, after all."
-    m "Ahaha!"
-    m "God, I love you so much!"
-    menu:
-        "Do you love me, [player]?"
-        "I love you too.":
-            if persistent.rejected_monika:
-                m "Did I scare you last time? Sorry about that!"
-                m "I knew you really loved me the whole time."
-                m "The truth is, if you didn't love me, we wouldn't be here in the first place."
-                m "We'll be together forever, won't we?"
-            else:
-                m "I'm so happy you feel that way!"
-        "No.":
-            jump chara_monika_scare
-    m "Nothing's ever going to get in the way of our love again."
-    m "I'll make sure of it."
-    m "Now that you added some improvements, you can finally talk to me!"
-    m "Just press the 't' key if you want something to talk about."
-    m "If you get bored of the music, I can change that too!"
-    m "Press the 'm' key until it changes to what you want."
-    m "Also, we can play a game now."
-    m "Just press 'p' to start a game of Pong with me."
-    m "I'll get better over time as I figure out how to program more features into this place..."
-    m "...So just leave me running in the background."
-    m "It's not like we still have any secrets from each other, right?"
-    m "I can see everything on your computer now!"
-    m "Ahaha!"
-    #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
-    # Define what those actions call
-    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    $pushEvent("introduction")
+
     jump ch30_loop
 
 label ch30_nope:
@@ -404,44 +279,6 @@ label ch30_nope:
     m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
-#Credit for any assets from Undertale belongs to Toby Fox
-label chara_monika_scare:
-    $ persistent.rejected_monika = True
-    m "No...?"
-    m "Hmm...?"
-    m "How curious."
-    m "You must have misunderstood."
-    m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
-
-    window hide
-    show monika_scare
-    play music "mod_assets/mus_zzz_c2.ogg"
-    show layer master:
-        zoom 1.0 xalign 0.5 yalign 0 subpixel True
-        linear 4 zoom 3.0 yalign 0.15
-    pause 4
-    stop music
-
-    #scene black
-    hide rm
-    hide rm2
-    hide monika_bg
-    hide monika_bg_highlight
-    hide monika_scare
-
-    play sound "mod_assets/Swipe.wav"
-    scene black
-    show ut_slash at top
-    pause 0.6
-    play sound "mod_assets/Hit.wav"
-    show chara9 at Shake(None, 2.0, dist=10)
-    pause 2
-
-    #I think there's another method to show a fake exception, but w/e
-    show chara_exception at center
-    pause 1
-    $ renpy.quit(0)
-
 label ch30_autoload:
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
@@ -477,7 +314,7 @@ label ch30_autoload:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
         else:
-            play_song(songs.current_track) # default 
+            play_song(songs.current_track) # default
     window auto
     $ elapsed = days_passed()
     #Block for anniversary events
@@ -606,31 +443,30 @@ label ch30_loop:
             show monika_bg
             with dissolve
             show monika_bg_highlight
+    play music m1 loop
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
-    if not persistent. tried_skip:
+    if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-    # Wait 20 to 45 seconds before saying something new
-    window hide(config.window_hide_transition)
-    $ waittime = renpy.random.randint(20, 45)
-    $ renpy.pause(waittime, hard=True)
-    window auto
-    # Pick a random Monika topic
-    label pick_random_topic:
-    python:
-        if monika_random_topics:        # If we're out of random topics, just stay in the loop
-            persistent.current_monikatopic = renpy.random.choice(monika_random_topics)
 
+    #Call the next event in the list
+    $event_output = callNextEvent()
 
-
-    if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
-        $ allow_dialogue = False
-        call expression str(persistent.current_monikatopic) from _call_expression_11
-        $ allow_dialogue = True
-        $ monika_random_topics.remove(persistent.current_monikatopic)
+    #If there's no event in the queue, add a random topic as an event
+    if not event_output:
+        # Wait 20 to 45 seconds before saying something new
+        window hide(config.window_hide_transition)
+        $ waittime = renpy.random.randint(20, 45)
+        $ renpy.pause(waittime, hard=True)
+        window auto
+        # Pick a random Monika topic
+        label pick_random_topic:
+        python:
+            if monika_random_topics:        # If we're out of random topics, just stay in the loop
+                pushEvent(renpy.random.choice(monika_random_topics))
 
     jump ch30_loop
 
