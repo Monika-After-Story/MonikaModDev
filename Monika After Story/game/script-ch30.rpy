@@ -86,8 +86,6 @@ init python:
     import re
     therapist = eliza.eliza()
     process_list = []
-    music_list = ['bgm/m1.ogg', 'bgm/credits.ogg', 'bgm/monika-end.ogg', 'bgm/5_monika.ogg', 'bgm/d.ogg']
-    trackNo = 0
     currentuser = ""
     if renpy.windows:
         try:
@@ -110,15 +108,35 @@ init python:
         pass
 
     #Define new functions
+    def play_song(song):
+        #
+        # literally just plays a song onto the music channel
+        #
+        # IN:
+        #   song - song to play
+        renpy.music.play(song,channel="music",loop=True,synchro_start=True)
+
     def show_dialogue_box():
         if allow_dialogue:
             renpy.call_in_new_context('ch30_monikatopics')
 
-    def next_track():
-        #This advances through a list of music choices instead of the previous if-else
-        global trackNo
-        trackNo = (trackNo + 1) % len(music_list)
-        renpy.music.play(music_list[trackNo], channel='music', loop=True)
+    def select_music():
+        # check for open menu
+        if (not songs.menu_open
+            and renpy.get_screen("history") is None
+            and renpy.get_screen("save") is None
+            and renpy.get_screen("load") is None
+            and renpy.get_screen("preferences") is None):
+
+            # music menu label
+            renpy.call_in_new_context("display_music_menu")
+
+            # workaround to handle new context 
+            if songs.selected_track != songs.current_track:
+                play_song(songs.selected_track)
+                songs.current_track = songs.selected_track
+                persistent.current_track = songs.current_track
+
 
     def start_pong():
         renpy.call_in_new_context('game_pong')
@@ -323,7 +341,7 @@ label ch30_main:
     $ config.keymap["play_pong"] = ["p"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=next_track))
+    $ config.underlay.append(renpy.Keymap(change_music=select_music))
     $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
     jump ch30_loop
 
@@ -454,7 +472,12 @@ label ch30_autoload:
             show monika_bg
             with dissolve
             show monika_bg_highlight
-    play music m1 loop
+    #play music m1 loop
+    python:
+        if persistent.current_track is not None:
+            play_song(persistent.current_track)
+        else:
+            play_song(songs.current_track) # default 
     window auto
     $ elapsed = days_passed()
     #Block for anniversary events
@@ -513,7 +536,7 @@ label ch30_autoload:
     $ config.keymap["play_pong"] = ["p"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=next_track))
+    $ config.underlay.append(renpy.Keymap(change_music=select_music))
     $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
     jump ch30_loop
 
