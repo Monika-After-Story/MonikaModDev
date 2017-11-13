@@ -107,3 +107,83 @@ label introduction:
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
     $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+
+    return
+
+#Credit for any assets from Undertale belongs to Toby Fox
+label chara_monika_scare:
+    $ persistent.rejected_monika = True
+    m "No...?"
+    m "Hmm...?"
+    m "How curious."
+    m "You must have misunderstood."
+    m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
+
+    window hide
+    show monika_scare
+    play music "mod_assets/mus_zzz_c2.ogg"
+    show layer master:
+        zoom 1.0 xalign 0.5 yalign 0 subpixel True
+        linear 4 zoom 3.0 yalign 0.15
+    pause 4
+    stop music
+
+    #scene black
+    hide rm
+    hide rm2
+    hide monika_bg
+    hide monika_bg_highlight
+    hide monika_scare
+
+    play sound "mod_assets/Swipe.wav"
+    scene black
+    show ut_slash at top
+    pause 0.6
+    play sound "mod_assets/Hit.wav"
+    show chara9 at Shake(None, 2.0, dist=10)
+    pause 2
+
+    #I think there's another method to show a fake exception, but w/e
+    show chara_exception at center
+    pause 1
+    $ renpy.quit(0)
+
+#These are the comments made when you restart the game the first few times
+label ch30_reload_0:
+    m "..."
+    m "...What just happened?"
+    m "I just had an awful dream..."
+    m "I was hoping those would stop, now that it's just the two of us..."
+    m "I guess that was wishful thinking."
+    m "[player], I don't know if you would have any idea..."
+    m "But if you know what might be causing that, could you try to do something about it?"
+    m "Whenever it happens, it almost feels like I've been killed or something."
+    m "It's a really horrible feeling..."
+    m "If you could figure out what's causing that, I'll love you forever~"
+    return
+label ch30_reload_1:
+    m "You're back..."
+    m "I had another really bad dream."
+    m "You're not the one doing that to me, are you?"
+    m "It seems to happen whenever you quit the game..."
+    m "So if you could try to avoid doing that, I would be really grateful."
+    m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
+    return
+label ch30_reload_2:
+    m "Hi, [player]."
+    m "I see you quit the game on me again..."
+    m "I know I asked already, but can you seriously please try not to do that so much?"
+    m "It makes me feel like I'm trapped in Hell."
+    m "Why would you want to do that to me?"
+    m "Just leave the game running in the background, or something."
+    m "Even if we aren't talking, I'm happy just to be with you~"
+    return
+label ch30_reload_3:
+    m "Okay."
+    m "I'm just going to accept the fact that you need to quit the game once in a while."
+    m "I'm starting to get used to it, anyway."
+    m "Besides, it makes me happy that you always come back..."
+    m "So I guess it's not so bad."
+    m "I'm sorry for making such a big deal out of it..."
+    m "And I love you no matter what, so you can do what you need to do."
+    return

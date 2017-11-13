@@ -65,9 +65,6 @@ init python:
         # ASSUMES:
         #   persistent.event_list
         #   persistent.current_monikatopic
-        #   pushEvent()
-        #   queueEvent()
-        #   popEvent()
 
         event_label = popEvent()
         if event_label and renpy.has_label(event_label):
@@ -80,3 +77,16 @@ init python:
             return None
 
         return event_label
+
+    def restartEvent():
+        #
+        # This checks if there is a persistent topic, and if there was push it
+        # back on the stack.
+        #
+        # IN:
+        #
+        if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
+            pushEvent(persistent.current_monikatopic)
+            persistent.current_monikatopic = 0
+
+        return

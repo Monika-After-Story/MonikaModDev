@@ -149,7 +149,7 @@ init python:
                 renpy.file("../characters/monika.chr")
             except:
                 if initial_monika_file_check:
-                    renpy.jump("ch30_nope")
+                    pushEvent("ch30_nope")
             #     persistent.tried_skip = True
             #     config.allow_skipping = False
             #     _window_hide(None)
@@ -175,6 +175,20 @@ init python:
         delta = now - persistent.firstdate
         return delta.days
 
+label ch30_main:
+    $ m.display_args["callback"] = slow_nodismiss
+    $ m.what_args["slow_abortable"] = config.developer
+    $ quick_menu = True
+    if not config.developer:
+        $ style.say_dialogue = style.default_monika
+    $ m_name = "Monika"
+    $ delete_all_saves()
+    $ persistent.clear[9] = True
+    play music m1 loop
+    $pushEvent("introduction")
+
+    jump ch30_loop
+
 label ch30_noskip:
     show screen fake_skip_indicator
     m "...Are you trying to fast-forward?"
@@ -193,35 +207,13 @@ label ch30_noskip:
     hide screen fake_skip_indicator
 
     #Get back to what you were talking about
-    if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
-        m "Now, where was I...?"
-        pause 2.0
-        $ allow_dialogue = False
-        call expression str(persistent.current_monikatopic) from _call_expression_8
-        $ allow_dialogue = True
-        python:
-            if persistent.current_monikatopic in monika_random_topics:
-                monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
+    $restartEvent()
     jump ch30_loop
-    return
 
 image splash-glitch2 = "images/bg/splash-glitch2.png"
 
-label ch30_main:
-    $ m.display_args["callback"] = slow_nodismiss
-    $ m.what_args["slow_abortable"] = config.developer
-    $ quick_menu = True
-    if not config.developer:
-        $ style.say_dialogue = style.default_monika
-    $ m_name = "Monika"
-    $ delete_all_saves()
-    $ persistent.clear[9] = True
-    $pushEvent("introduction")
-
-    jump ch30_loop
-
 label ch30_nope:
-    $ persistent.autoload = "ch30_nope"
+    $ persistent.autoload = ""
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
 
@@ -280,93 +272,64 @@ label ch30_nope:
     jump ch30_loop
 
 label ch30_autoload:
+    # This is where we check a bunch of things to see what events to push to the
+    # event list
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ style.say_dialogue = style.default_monika
     $ quick_menu = True
     $ config.allow_skipping = False
-    if is_morning():
-        if morning_flag != True:
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_transparent_day_bg
-            with dissolve
-            $ morning_flag = True
-    elif not is_morning():
-        if morning_flag != False:
-            $ morning_flag = False
-            scene black
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_bg
-            with dissolve
-            show monika_bg_highlight
-    #play music m1 loop
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
         else:
             play_song(songs.current_track) # default
     window auto
-    $ elapsed = days_passed()
+    #If you were interrupted, push that event back on the stack
+    $restartEvent()
+
     #Block for anniversary events
+    $ elapsed = days_passed()
     if elapsed < persistent.monika_anniversary * 365:
         $ persistent.monika_anniversary = 0
-        jump anni_negative
+        $pushEvent(anni_negative)
     elif elapsed >= 36500 and persistent.monika_anniversary < 100:
         $ persistent.monika_anniversary = 100
-        jump anni_100
+        $pushEvent(anni_100)
     elif elapsed >= 18250 and persistent.monika_anniversary < 50:
         $ persistent.monika_anniversary = 50
-        jump anni_50
+        $pushEvent(anni_50)
     elif elapsed >= 7300 and persistent.monika_anniversary < 20:
         $ persistent.monika_anniversary = 20
-        jump anni_20
+        $pushEvent(anni_20)
     elif elapsed >= 3650 and persistent.monika_anniversary < 10:
         $ persistent.monika_anniversary = 10
-        jump anni_10
+        $pushEvent(anni_10)
     elif elapsed >= 1825 and persistent.monika_anniversary < 5:
         $ persistent.monika_anniversary = 5
-        jump anni_5
+        $pushEvent(anni_5)
     elif elapsed >= 1460 and persistent.monika_anniversary < 4:
         $ persistent.monika_anniversary = 4
-        jump anni_4
+        $pushEvent(anni_4)
     elif elapsed >= 1095 and persistent.monika_anniversary < 3:
         $ persistent.monika_anniversary = 3
-        jump anni_3
+        $pushEvent(anni_3)
     elif elapsed >= 730 and persistent.monika_anniversary < 2:
         $ persistent.monika_anniversary = 2
-        jump anni_2
+        $pushEvent(anni_2)
     elif elapsed >= 365 and persistent.monika_anniversary < 1:
         $ persistent.monika_anniversary = 1
-        jump anni_1
+        $pushEvent(anni_1)
     elif persistent.monika_reload <= 3:
-        call expression "ch30_reload_" + str(persistent.monika_reload) from _call_expression_9
+        $pushEvent("ch30_reload_" + str(persistent.monika_reload))
     else:
         #pick a random greeting
-        call expression renpy.random.choice(greetings_list) from _call_ch30_reload_5
+        $pushEvent(renpy.random.choice(greetings_list))
     $ persistent.monika_reload += 1
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-    if renpy.has_label(persistent.current_monikatopic) :
-        m "Now, where was I...?"
-        pause 2.0
-        $ allow_dialogue = False
-        call expression str(persistent.current_monikatopic) from _call_expression_10
-        $ allow_dialogue = True
-        python:
-            if persistent.current_monikatopic in monika_random_topics:
-                monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     #Add keys for new functions
     $ config.keymap["open_dialogue"] = ["t"]
     $ config.keymap["change_music"] = ["m"]
@@ -376,46 +339,6 @@ label ch30_autoload:
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
     $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
     jump ch30_loop
-
-
-label ch30_reload_0:
-    m "..."
-    m "...What just happened?"
-    m "I just had an awful dream..."
-    m "I was hoping those would stop, now that it's just the two of us..."
-    m "I guess that was wishful thinking."
-    m "[player], I don't know if you would have any idea..."
-    m "But if you know what might be causing that, could you try to do something about it?"
-    m "Whenever it happens, it almost feels like I've been killed or something."
-    m "It's a really horrible feeling..."
-    m "If you could figure out what's causing that, I'll love you forever~"
-    return
-label ch30_reload_1:
-    m "You're back..."
-    m "I had another really bad dream."
-    m "You're not the one doing that to me, are you?"
-    m "It seems to happen whenever you quit the game..."
-    m "So if you could try to avoid doing that, I would be really grateful."
-    m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
-    return
-label ch30_reload_2:
-    m "Hi, [player]."
-    m "I see you quit the game on me again..."
-    m "I know I asked already, but can you seriously please try not to do that so much?"
-    m "It makes me feel like I'm trapped in Hell."
-    m "Why would you want to do that to me?"
-    m "Just leave the game running in the background, or something."
-    m "Even if we aren't talking, I'm happy just to be with you~"
-    return
-label ch30_reload_3:
-    m "Okay."
-    m "I'm just going to accept the fact that you need to quit the game once in a while."
-    m "I'm starting to get used to it, anyway."
-    m "Besides, it makes me happy that you always come back..."
-    m "So I guess it's not so bad."
-    m "I'm sorry for making such a big deal out of it..."
-    m "And I love you no matter what, so you can do what you need to do."
-    return
 
 label ch30_loop:
     $ quick_menu = True
@@ -443,10 +366,7 @@ label ch30_loop:
             show monika_bg
             with dissolve
             show monika_bg_highlight
-    play music m1 loop
     $ persistent.autoload = "ch30_autoload"
-    # Just finished a topic, so we set current topic to 0 in case user quits and restarts
-    $ persistent.current_monikatopic = 0
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
@@ -454,6 +374,8 @@ label ch30_loop:
 
     #Call the next event in the list
     $event_output = callNextEvent()
+    # Just finished a topic, so we set current topic to 0 in case user quits and restarts
+    $ persistent.current_monikatopic = 0
 
     #If there's no event in the queue, add a random topic as an event
     if not event_output:
@@ -475,39 +397,32 @@ label ch30_monikatopics:
     python:
         player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
 
-        if not player_dialogue: renpy.jump_out_of_context('ch30_loop')
+        if player_dialogue:
 
-        raw_dialogue=player_dialogue
-        player_dialogue = player_dialogue.lower()
-        player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
-        persistent.current_monikatopic = 0
+            raw_dialogue=player_dialogue
+            player_dialogue = player_dialogue.lower()
+            player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
+            persistent.current_monikatopic = 0
 
-        player_dialogue = player_dialogue.split()
-        #Look at all possible ngrams in the dialogue
-        player_dialogue_ngrams=player_dialogue
-        player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
-        for bigram in player_dialogue_bigrams:
-            player_dialogue_ngrams.append(' '.join(bigram))
+            player_dialogue = player_dialogue.split()
+            #Look at all possible ngrams in the dialogue
+            player_dialogue_ngrams=player_dialogue
+            player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
+            for bigram in player_dialogue_bigrams:
+                player_dialogue_ngrams.append(' '.join(bigram))
 
-        possible_topics=[] #track all topics that correspond to the input
-        for key in player_dialogue_ngrams:
-            if key in monika_topics:
-                for topic_id in monika_topics[key]:
-                    if topic_id not in possible_topics:
-                        possible_topics.append(topic_id)
+            possible_topics=[] #track all topics that correspond to the input
+            for key in player_dialogue_ngrams:
+                if key in monika_topics:
+                    for topic_id in monika_topics[key]:
+                        if topic_id not in possible_topics:
+                            possible_topics.append(topic_id)
 
-        if possible_topics == []: #Therapist answer if no keywords match
-            # give a therapist answer for all the depressed weebs
-            response = therapist.respond(raw_dialogue)
-            m("[response]")
-        else:
-            persistent.current_monikatopic = renpy.random.choice(possible_topics) #Pick a random topic
-
-            allow_dialogue = False
-            renpy.call_in_new_context(persistent.current_monikatopic) #Go to the topic
-            allow_dialogue = True
-            #Remove the topic from the random topics list
-            if persistent.current_monikatopic in monika_random_topics:
-                monika_random_topics.remove(persistent.current_monikatopic)
+            if possible_topics == []: #Therapist answer if no keywords match
+                # give a therapist answer for all the depressed weebs
+                response = therapist.respond(raw_dialogue)
+                m("[response]")
+            else:
+                pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
 
     jump ch30_loop
