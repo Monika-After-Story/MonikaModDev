@@ -2658,13 +2658,13 @@ init 5 python:
 
 label monika_cities:
     m "[player], are you scared about what's happening to our environment?"
-    m "Human development has resulted in quite a few problems for Earth. Like global warming or pollution."
-    m "Some of those problems originate from cities."
-    m "The consequences of converting land for urban use and infrastructure are often permanent."
-    m "It's not all that surprising, when you put some thought into it. A higher density of humans means more waste and carbon emissions produced."
-    m "As the global population rises, cities will grow. It's inevitable that once-undisturbed ecosystems will be impacted."
-    m "Even if those areas aren't repurposed for city growth, the decreasing amount of available land will have pressure put on it for other uses."
-    m "... It's pretty terrible. But city life does hold its advantages."
+    m "Human's have created quite a few problems for Earth. Like global warming and pollution."
+    m "Some of those problems are because of cities."
+    m "When people convert land for urban use, those changes are permanent.."
+    m "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emissions."
+    m "And even though global populations aren't growing like they used to, cities are still getting bigger.
+    m "Then again, if people live close together, that leaves more room for open wilderness."
+    m "Maybe it's not as simple as it seems."
     menu:
         m "[currentuser], do you live in a city?"
         "Yes"
