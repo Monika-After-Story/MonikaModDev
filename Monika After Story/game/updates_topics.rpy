@@ -40,7 +40,10 @@ label vv_updates_topics:
 
         # versions
         # use the v### notation so we can work with labels
-        vv040 = "v040"
+        # some versions are unused because no major updates
+        vv051 = "v051"
+        #vv050 = "v050"
+        #vv040 = "v040"
         vv033 = "v033"
         vv032 = "v032"
         vv031 = "v031"
@@ -49,6 +52,10 @@ label vv_updates_topics:
 
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
+        # some version changes skip some numbers because no major updates
+        updates.version_updates[vv033] = vv051
+        #updates.version_updates[vv050] = vv051
+        #updates.version_updates[vv040] = vv050
         #updates.version_updates[vv033] = vv040
         updates.version_updates[vv032] = vv033
         updates.version_updates[vv031] = vv032
@@ -67,6 +74,22 @@ label vv_updates_topics:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+
+        # (0.3.3 - 0.5.0) -> 0.5.1
+        changedIDs = dict()
+        changedIDs["monika_music"] = None
+        changedIDs["monika_keitai"] = None
+        changedIDs["monika_subahibi"] = None
+        changedIDs["monika_reddit"] = None
+        changedIDs["monika_shill"] = None
+        changedIDs["monika_dracula"] = None
+        changedIDs["monika_undertale"] = None
+        changedIDs["monika_recursion"] = None
+        changedIDs["monika_lain"] = None
+        changedIDs["monika_kyon"] = None
+        changedIDs["monika_water"] = None
+        changedIDs["monika_computer"] = None
+        updates.topics[vv051] = changedIDs
 
         # 0.3.1 -> 0.3.2
         changedIDs = dict()
