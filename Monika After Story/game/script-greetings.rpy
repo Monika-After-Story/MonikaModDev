@@ -234,14 +234,14 @@ label greeting_welcomeback:
      return
 
 label greeting_flower:
-     m "You're my beautiful flower, hehe~"
-     m "Oh, it sounded so akward."
-     m "But you are in some way, because I'll always take care of you."
+     m "You're my beautiful flower, ehehe~"
+     m "Oh, that sounded so awkward."
+     m  " But I really will always take care of you."
      return
 
 label greeting_chamfort:
      m "A day without Monika is a day wasted."
-     m "Ahaha."
+     m "Ahaha!"
      m "Welcome back, my love."
      return
 
@@ -259,5 +259,5 @@ label greeting_longtime:
 label greeting_sweetpea:
      m "Look who's back."
      m "It's you, my sweetpea!"
-     m "My god... It surely was embarassing to say, hehe~"
+     m "My goodness... That surely was embarassing to say, ehehe~"
      return
