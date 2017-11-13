@@ -2546,7 +2546,7 @@ label monika_mythology:
     m "Hey [player]..."
     m "Have you ever read about different mythologies?"
     m "Different kinds of Gods watching over humanity for eternity."
-    m "Some require tribute or sacrifice so that they can \"keep\" humanity safe from disasters."
+    m 'Some require tribute or sacrifice so that they can "keep" humanity safe from disasters.'
     m "An almighty family consisting of different attitudes, playing in their own sandbox called Earth."
     m "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitance."
     m "I've always disliked stories like those."
@@ -2662,7 +2662,7 @@ label monika_cities:
     m "Some of those problems are because of cities."
     m "When people convert land for urban use, those changes are permanent..."
     m "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
-    m "And even though global populations aren't growing like they used to, cities are still getting bigger.
+    m "And even though global populations aren't growing like they used to, cities are still getting bigger."
     m "Then again, if people live close together, that leaves more room for open wilderness."
     m "Maybe it's not as simple as it seems."
     menu:
