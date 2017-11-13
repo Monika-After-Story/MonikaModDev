@@ -705,7 +705,7 @@ label monika_lastpoem:
     m "Hey, you remember that last poem I showed you?"
     m "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
     m "That was actually a little more of an experiment than a poem, you could say."
-    m "I was experimenting with different ways I could modify the game, and run code, and things like that..."
+    m "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
     m "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
     m "Sadly, I didn't really know what I was doing, so I messed the whole thing up..."
     m "And I'd keep trying, but I doubt you'd want to deal with me doing that."
@@ -1959,7 +1959,7 @@ label monika_heroism:
     m "If someone really inspires you to improve yourself, they're your hero."
     m "There are all sorts of great people out there in the world."
     m "I hope someone will consider you their hero someday!"
-    m "You don't have to fight in a war or anything. You just have try to help people out, you know?"
+    m "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
     return
 
 init 5 python:
@@ -2661,7 +2661,7 @@ label monika_cities:
     m "Humans have created quite a few problems for Earth. Like global warming and pollution."
     m "Some of those problems are because of cities."
     m "When people convert land for urban use, those changes are permanent..."
-    m "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
+    m "It's not all that surprising, when you put some thought into it. More humans mean more waste and carbon emission."
     m "And even though global populations aren't growing like they used to, cities are still getting bigger."
     m "Then again, if people live close together, that leaves more room for open wilderness."
     m "Maybe it's not as simple as it seems."
