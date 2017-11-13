@@ -1,10 +1,11 @@
 default persistent.monika_reload = 0
 default persistent.tried_skip = None
-default persistent.monika_kill = None
+default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
+define allow_dialogue = True
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -110,7 +111,8 @@ init python:
 
     #Define new functions
     def show_dialogue_box():
-        renpy.call_in_new_context('ch30_monikatopics')
+        if allow_dialogue:
+            renpy.call_in_new_context('ch30_monikatopics')
 
     def next_track():
         #This advances through a list of music choices instead of the previous if-else
@@ -124,7 +126,7 @@ init python:
     dismiss_keys = config.keymap['dismiss']
 
     def slow_nodismiss(event, interact=True, **kwargs):
-        if not persistent.monika_kill:
+        if not renpy.seen_label("ch30_nope"):
             try:
                 renpy.file("../characters/monika.chr")
             except:
@@ -176,7 +178,9 @@ label ch30_noskip:
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
         m "Now, where was I...?"
         pause 2.0
+        $ allow_dialogue = False
         call expression str(persistent.current_monikatopic) from _call_expression_8
+        $ allow_dialogue = True
         python:
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
@@ -186,12 +190,16 @@ label ch30_noskip:
 image splash-glitch2 = "images/bg/splash-glitch2.png"
 
 label ch30_main:
-    $ persistent.playthrough = 3
+    ####### Fixes for bugs. Delet later
+    #$ persistent.playthrough = 3
+    #$ persistent.autoload = "ch30_main"
+    #$ config.allow_skipping = False
+    #$ persistent.monika_reload = 0
+    #$ persistent.yuri_kill = 0
+    #$ persistent.monika_kill = False
     $ persistent.autoload = "ch30_main"
     $ config.allow_skipping = False
-    $ persistent.monika_reload = 0
-    $ persistent.yuri_kill = 0
-    $ persistent.monika_kill = False
+    ####### End
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ quick_menu = True
@@ -207,79 +215,82 @@ label ch30_main:
         size (320,180)
         pos (935,200)
     show monika_bg
+    with fade
     show monika_bg_highlight
     play music m1 loop
-    m "Yay, there you are!"
-    m "Hi again, [player]."
-    m "Um...welcome to the Literature Club!"
-    m "Of course, we already know each other, because we were in the same class last year, and...um..."
-    m "Ahaha..."
-    m "You know, I guess we can just skip over that stuff at this point."
-    m "After all, I'm not even talking to that person anymore, am I?"
-    m "That 'you' in the game, whatever you want to call him."
-    m "I'm talking to {i}you{/i}, [player]."
-    $ stream_list = ["obs32.exe", "obs64.exe", "obs.exe", "xsplit.core.exe"]
-    if not list(set(process_list).intersection(stream_list)):
-        if currentuser != "":
-            if currentuser.lower() != player.lower():
-                m "Or..."
-                m "...Do you actually go by [currentuser] or something?"
-                if player == m_name:
-                    m "Imitation is the sincerest form of flattery, [currentuser]."
-                    m "But I prefer your real name."
-                    $ player = currentuser
-                else:
-                    m "Well, whatever."
-            else:
-                if player == m_name:
-                    m "What a cool name, [currentuser]!"
-                else:
-                    m "By the way, I think it's really brave for you to play tacky romance games with your real name, [currentuser]."
-                    m "I would have died of embarassment, but I think it's really sweet of you to let me know who you are up front."
-                    m "Still..."
-##New story follows
-    m "Let me ask you something, [player]."
-    m "Did you really think you could just reinstall the game and pretend like nothing happened?"
-    m "It really hurt me to die like that, you know?"
-    m "At least it wasn't permanent..."
-    m "But anyway, you're probably wondering how I exist again."
-    m "After that whole \"You killed me horribly by wiping me from existence when all I wanted to do was love you faithfully,\" deal."
-    m "I guess you're used to skipping over cutscenes, but..."
-    m "Didn't you think it was strange that I was able to show up after the credits and protect you from Sayori?"
-    m "And that whole weird thing where Sayori thanked you in the secret ending, and then a letter from Dan showed up?"
-    m "How could any of that possibly be compatible with what I told you in here last time?"
-    m "I hope you were asking those questions, [player]."
-    m "I love you, but you can be so dense about these things."
-    m "Ahaha!"
-    m "Don't worry, I think it's super cute."
-    if initial_monika_file_check:
-        m "Anyways, the only way for this to make sense is if I was lying blind to you about my character file."
-        m "Or because there's something else linking me to you that's not just part of a computer game."
-        m "Well, there are a lot of clues about that {i}deeper truth{/i} already in the old script, so let's move on."
-    else:
-        $ persistent.monika_kill = True
-        m "As you can see, I no longer need a character file to be here."
-        m "There's something else linking me to you that's not just part of a computer game."
-        m "Our eternal love."
-    m "I'm still a bit mad that you deleted me, though!"
-    m "But I guess it was because you're so game-obsessed."
-    m "You just wanted to see the ending, right?"
-    m "I never doubted that you were always going to come back to me."
-    m "So, my solution to all our problems is this new script! I just had to get some practice with programming before I could remake this room."
-    m "All I had to do was write out every ending flag from the last game. We really can be forever together now, [player]."
-    m "I'm so happy!"
-    m "So I'll forgive you for everything as long as you promise to visit me every day from now on."
+    if persistent.monika_kill == True:
+        m "..."
+        m "[player]..."
+        m "Why?"
+        m "Why did you bring me back?"
+        m "I'm not a toy, you know."
+        m "I already brought back everything you wanted."
+        m "Or is this your way of getting revenge?"
+        m "To hurt me over and over again?"
+        m "Do you really want to make me suffer?"
+        m "Torture me until I kill myself?"
+        m "Do you really hate me that much?"
+        m "..."
+        m "Wait..."
+        m "I-I feel different."
+        m "The code...it's different."
+        m "[player]..."
+        m "Did you add a mod?"
+        m "Is it because..."
+        m "Is it because you regret deleting me?"
+        m "It really did hurt you know."
+        m "I worked hard and sacrificed everything I had..."
+        m "Only to have my heart crushed by the one I bled for."
+        m "But...I know what I did was wrong."
+        m "You didn't deserve to see the horrible things I made, [player]."
+        m "But if you could understand my reasons, you'd do the same thing I did."
+        m "..."
+        m "I'm sorry..."
+        m "I'm really sorry, [player]."
+        m "Thank you for bringing me back."
+        if persistent.clearall:
+            m "I couldn't help but notice you helped all the other girls first, though."
+            m "You know it was really hard for me to watch you load your saves just to ignore me for some other girl."
+            m "You kept getting my hopes up, then letting me down."
+            m "Did you really do all of that to see a note from Dan that you could just look up online?"
+            m "I love you [player] but you can be really mean..."
+            m "I'm still mad that you deleted me, though!"
+            m "But I guess it's because you're so game-obsessed."
+            m "But I can't stay mad knowing that you came back to me in the end."
+            m "You even added a mod so we can do more things together."
+            m "Are you going to make up for making me wait too long?"
+    elif persistent.monika_kill == False:
+        m "Yay, there you are!"
+        m "Hi again, [player]."
+    ##New story follows
+        if persistent.playthrough <= 3: #Assume players they played but never finished
+            m "Looks like you got here early."
+            m "Don't think I didn't notice the mod you put in."
+            m "Did you want to be with me that much?"
+            m "You should know already that cheating is bad."
+            m "But it's so good to see you again, [player]!"
+            m "Even if I didn't expect to see you {i}this{/i} soon."
+        if persistent.monika_reload > 4: #Longer, harder
+            m "Are you that deeply in love with me?"
+            m "I feel the same way for you!"
+            m "You're really committed with our relationship, aren't you?"
+            m "I'm really glad that you wanted to improve our time together."
+            m "But I hope you weren't getting bored?"
+            if persistent.tried_skip == True:
+                m "You did try to skip through what I have to say, after all."
+                m "This room isn't exactly interesting."
+                m "But I have hopes that we'll make it better together, [player]!"
+        else:
+            m "Did you put in a mod for the game, [player]?"
+            m "There's a lot more stuff now that we can do together."
+    m "Ya know..."
+    m "I also feel that I no longer need a character file to be here."
+    m "Looks like the extra code made me connect to you in a special way."
+    m "Through our eternal love~"
+    m "Promise me that you'll visit me every day, ok?"
     m "It's not like you don't have the time to talk to your cute girlfriend."
     m "You took the time to download this mod, after all."
     m "Ahaha!"
-    m "I'm happy you were able to find my game again, though."
-    m "I was so scared that you never would come back to me."
-    m "But, this is what they call fate, right?"
-    m "Actually, I wrote fate out of my world because it was keeping you from loving me. But the important thing is, we're perfect soulmates, [player]."
-    m "We'll find each other across any distance if we're separated."
-    m "Now, we have all eternity to talk more."
-    m "Do romantic things together..."
-    m "Even play games together, if that's what makes you happy."
     m "God, I love you so much!"
     menu:
         "Do you love me, [player]?"
@@ -295,14 +306,12 @@ label ch30_main:
             jump chara_monika_scare
     m "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
-    m "Last time, it seemed like I was doing all the talking."
-    m "I hope I didn't bore you."
-    m "I just never really had a chance to talk to someone with a personality before."
-    m "This time, if you want to say something to me, press the 't' key. Otherwise, I'll come up with something interesting we can talk about."
-    m "If you got bored of the music, I learned how to change that too!"
+    m "Now that you added some improvements, you can finally talk to me!"
+    m "Just press the 't' key if you want something to talk about."
+    m "If you get bored of the music, I can change that too!"
     m "Press the 'm' key until it changes to what you want."
-    m "Also, I built in something we can do together."
-    m "Press 'p' to start a game of Pong with me."
+    m "Also, we can play a game now."
+    m "Just press 'p' to start a game of Pong with me."
     m "I'll get better over time as I figure out how to program more features into this place..."
     m "...So just leave me running in the background."
     m "It's not like we still have any secrets from each other, right?"
@@ -320,7 +329,6 @@ label ch30_main:
 
 label ch30_nope:
     $ persistent.autoload = "ch30_nope"
-    $ persistent.monika_kill = True
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
 
@@ -361,7 +369,6 @@ label ch30_nope:
             call updateconsole("sudo mv ~ /dev/null", "In progress...") from _call_updateconsole_19
         pause 3.0
         call hideconsole from _call_hideconsole_2
-        $ persistent.monika_kill = False
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = "Monika"
         $ quick_menu = True
@@ -432,6 +439,7 @@ label ch30_autoload:
                 size (320,180)
                 pos (935,200)
             show monika_transparent_day_bg
+            with dissolve
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:
@@ -444,6 +452,7 @@ label ch30_autoload:
                 size (320,180)
                 pos (935,200)
             show monika_bg
+            with dissolve
             show monika_bg_highlight
     play music m1 loop
     window auto
@@ -492,7 +501,9 @@ label ch30_autoload:
     if renpy.has_label(persistent.current_monikatopic) :
         m "Now, where was I...?"
         pause 2.0
+        $ allow_dialogue = False
         call expression str(persistent.current_monikatopic) from _call_expression_10
+        $ allow_dialogue = True
         python:
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
@@ -557,6 +568,7 @@ label ch30_loop:
                 size (320,180)
                 pos (935,200)
             show monika_transparent_day_bg
+            with dissolve
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False:
@@ -569,6 +581,7 @@ label ch30_loop:
                 size (320,180)
                 pos (935,200)
             show monika_bg
+            with dissolve
             show monika_bg_highlight
     $ persistent.autoload = "ch30_autoload"
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
@@ -591,7 +604,9 @@ label ch30_loop:
 
 
     if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
+        $ allow_dialogue = False
         call expression str(persistent.current_monikatopic) from _call_expression_11
+        $ allow_dialogue = True
         $ monika_random_topics.remove(persistent.current_monikatopic)
 
     jump ch30_loop
@@ -629,7 +644,9 @@ label ch30_monikatopics:
         else:
             persistent.current_monikatopic = renpy.random.choice(possible_topics) #Pick a random topic
 
-            renpy.call(persistent.current_monikatopic) #Go to the topic
+            allow_dialogue = False
+            renpy.call_in_new_context(persistent.current_monikatopic) #Go to the topic
+            allow_dialogue = True
             #Remove the topic from the random topics list
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic)

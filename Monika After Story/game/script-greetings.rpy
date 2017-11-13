@@ -193,8 +193,8 @@ label greeting_visit9:
 label greeting_italian:
      m "Ciao, [player]!"
      m "È così bello vederti ancora, amore mio..."
-     m "Ahahah"
-     m "I'm still practicing my italian, it's a very difficult language!"
+     m "Ahaha!"
+     m "I'm still practicing my Italian, it's a very difficult language!"
      m "Anyway, it's so nice to see you again, my love."
      return
 

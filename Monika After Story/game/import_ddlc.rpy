@@ -187,6 +187,9 @@ label import_ddlc_persistent:
         elif old_persistent._seen_ever is not None:
             persistent._seen_ever=old_persistent._seen_ever
 
+        # after importing/merging _seen_ever, need to redo removeing seen
+        remove_seen_topics()
+
         #Renpy defined list of all seen images
         #Format: dict with (keys) file path (value) Boolean for if seen
         #Example: (u'yuri', u'2m'): True
@@ -272,8 +275,6 @@ label import_ddlc_persistent:
                 persistent.playthrough = old_persistent.playthrough
         elif old_persistent.playthrough is not None:
             persistent.playthrough = old_persistent.playthrough
-        if persistent.playthrough is not None and persistent.playthrough > 3:
-            persistent.playthrough = 3
 
         #seen_eyes
         #Marks if the player saw an easter egg in Act 2 poem game with eyes (1 in 6 chance)
