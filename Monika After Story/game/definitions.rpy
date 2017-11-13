@@ -1405,3 +1405,4 @@ default natsuki_23 = None
 default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
+default persistent.event_list = []

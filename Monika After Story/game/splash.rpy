@@ -191,7 +191,7 @@ label splashscreen:
         if not persistent.has_merged:
             call import_ddlc_persistent from _call_import_ddlc_persistent
 
-    $ persistent.first_run = True
+        $ persistent.first_run = True
 
     $ basedir = config.basedir.replace('\\', '/')
 
