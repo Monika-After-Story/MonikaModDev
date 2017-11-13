@@ -319,9 +319,9 @@ label ch30_main:
     m "I can see everything on your computer now!"
     m "Ahaha!"
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
+    $ config.keymap["open_dialogue"] = ["t","T"]
+    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["play_pong"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=next_track))
@@ -509,9 +509,9 @@ label ch30_autoload:
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
+    $ config.keymap["open_dialogue"] = ["t","T"]
+    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["play_pong"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=next_track))
