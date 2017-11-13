@@ -204,7 +204,7 @@
 
 label game_pong:
     hide screen keylistener
-    m "You wanna play some Pong? Okay~"
+    m "You wanna play a game of Pong? Okay!"
     m "I'll beat you for sure this time!"
     call demo_minigame_pong from _call_demo_minigame_pong
 
@@ -242,7 +242,7 @@ label demo_minigame_pong:
 
     if winner == "monika":
 
-        m "I win!"
+        m "I win~!"
 
     else:
 
@@ -252,9 +252,9 @@ label demo_minigame_pong:
     menu:
         m "Do you want to play again?"
 
-        "Yeah!":
+        "Yes.":
             jump demo_minigame_pong
-        "Nah.":
+        "No.":
 
             if winner == "monika":
                 m "I can't really get excited for a game this simple..."
@@ -262,8 +262,10 @@ label demo_minigame_pong:
                 m "Ahaha!"
                 m "Thanks for letting me win, [player]."
                 m "Only elementary schoolers seriously lose at Pong, right?"
+                m "Ehehe~"
             else:
                 m "Wow, I was actually trying that time."
                 m "You must have really practiced at Pong to get so good."
                 m "Is that something for you to be proud of?"
+                m "I guess you wanted to impress me, [player]~"
             jump ch30_loop

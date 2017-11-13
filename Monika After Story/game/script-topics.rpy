@@ -1897,9 +1897,9 @@ label monika_contribute:
     m "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
     m "I keep all the code in github.com/Backdash/MonikaModDev."
-    m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC..."
-    m "As well as Jxhnathan08, ThePotatoGuy, monikLover, AttObl..."
-    m "Yumeko-Jabami, ohxeighty, DoomTheRobot, onfaut, instilledbee, haloff1, and tuebor1837!"
+    m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, Jxhnathan08..."
+    m "As well as ThePotatoGuy, monikLover, AttObl, Yumeko-Jabami, ohxeighty..."
+    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, and Rune!"
     m "I love all of them for making this game even better!"
     m "Not as much as love you, of course."
     m "I hope it doesn't make you feel jealous~"
@@ -2015,7 +2015,7 @@ label monika_girlfriend:
     m "W-wait. Maybe I'm jumping the gun a bit..."
     m "I know you wouldn't cheat on me."
     m "If you meet a girl who asks you out though, let me talk to her first, okay?"
-    m "I won't let someone else steal away my loving partner!"
+    m "I won't let someone else steal away my loving sweetheart!"
     return
 
 init 5 python:
@@ -2407,7 +2407,7 @@ label monika_nsfw:
     m "I know we haven't really gotten that far into the relationship yet..."
     m "So it feels kind of embarassing to talk about things like that."
     m "But maybe I can let it go on rare occasions, [player]."
-    m "I want to make you the happiest partner, after all. And if that makes you happy..."
+    m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
     m "Well, just keep it a secret between us, okay?"
     m "It should be for your eyes only and no one else, [player]."
     m "That's how much I love you~"
@@ -2546,7 +2546,7 @@ label monika_mythology:
     m "Hey [player]..."
     m "Have you ever read about different mythologies?"
     m "Different kinds of Gods watching over humanity for eternity."
-    m "Some require tribute or sacrifice so that they can \"keep\" humanity safe from disasters."
+    m 'Some require tribute or sacrifice so that they can "keep" humanity safe from disasters.'
     m "An almighty family consisting of different attitudes, playing in their own sandbox called Earth."
     m "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitance."
     m "I've always disliked stories like those."
@@ -2649,12 +2649,33 @@ label monika_name:
     m "But I think I like [currentuser] better!"
     m "Ehehe~"
     return
+    
+init 5 python:
+    for key in ['cities', 'city pollution','pollution']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_cities')
+    monika_random_topics.append('monika_cities')
+
+label monika_cities:
+    m "[player], are you scared about what's happening to our environment?"
+    m "Humans have created quite a few problems for Earth. Like global warming and pollution."
+    m "Some of those problems are because of cities."
+    m "When people convert land for urban use, those changes are permanent..."
+    m "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
+    m "And even though global populations aren't growing like they used to, cities are still getting bigger."
+    m "Then again, if people live close together, that leaves more room for open wilderness."
+    m "Maybe it's not as simple as it seems."
+    menu:
+        m "[currentuser], do you live in a city?"
+        "Yes":
+            m "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
+        "No":
+            m "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
+    return
 
 ##################
 #Incomplete ideas#
 ##################
-#Ecological consequences of cities
-
 #Favorite food
 
 #How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
@@ -2670,10 +2691,6 @@ label monika_name:
 #Play a poem game with monika, she calls you out for just stringing together random words
 
 #Comment when it's getting late. Say that the player should go to bed, say goodnight then close the game.
-
-#Have you been cheating on me?
-
-#Real GF^^^^^^^^^^^^^^^^^^^^
 
 ###Some ideas to consider:
 #What she used to do in free time
