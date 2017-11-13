@@ -68,11 +68,11 @@ init python:
 
         event_label = popEvent()
         if event_label and renpy.has_label(event_label):
-            allow_dialogue = False
+            globals()['allow_dialogue'] = False
             previous_topic = persistent.current_monikatopic
             renpy.call_in_new_context(event_label)
             persistent.current_monikatopic=previous_topic
-            allow_dialogue = True
+            globals()['allow_dialogue'] = True
         else:
             return None
 
