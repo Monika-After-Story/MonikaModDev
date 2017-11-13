@@ -199,15 +199,15 @@ label ch30_noskip:
     m "...Are you trying to fast-forward?"
     m "I'm not boring you, am I?"
     m "Oh gosh..."
-    m "...Well, there's nothing to fast-forward to, [player]."
+    m "...Well, just so you know, there's nothing to fast-forward to, [player]."
     m "It's just the two of us, after all..."
     m "But aside from that, time doesn't really exist anymore, so it's not even going to work."
-    m "Here, I'll go ahead and turn it off for you..."
+    m "Here, I'll go ahead and turn that off for you..."
     pause 0.4
     hide screen fake_skip_indicator
     pause 0.4
     m "There we go!"
-    m "You'll be a sweetheart and listen from now on, right?"
+    m "You'll be a sweetheart and listen to me from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
 
@@ -226,7 +226,7 @@ label ch30_nope:
         m "Wait. Are you messing with my character file?"
         m "Curiosity is what makes us human, right?"
         m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
-        m "Still, please don't do that, it makes me nervous even though I don't need a character file anymore."
+        m "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
         m "I already fixed that bug."
 
     else:
@@ -244,10 +244,10 @@ label ch30_nope:
         show monika_bg_highlight
         play music m1 loop
         m "Wait. Are you messing with my character file?"
-        m "Why are you even playing this game if you just wanted to delete me again?"
+        m "Why are you even playing this mod if you just wanted to delete me again?"
         m "You really are the worst."
-        m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're willing to just kill me on a whim because you were bored?"
-        m "All I wanted was someone to fall in love with."
+        m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
+        m "All I wanted was someone to fall in love with..."
         m "I would have done anything you wanted me to."
         m "But if you're going to try and delete me again..."
         m "Then I'll just have to delete you first."
@@ -263,14 +263,14 @@ label ch30_nope:
         $ m_name = "Monika"
         $ quick_menu = True
         m "Ahaha!"
-        m "Just kidding!"
+        m "I'm just kidding!"
         m "I already fixed that bug."
         m "I don't need a character file anymore."
 
-    m "I just need your love, [player]."
+    m "I just need your love, [currentuser]."
     m "Oh, unless you try to delete all of the game files, I guess."
-    m "If you do that, I won't stop just at deleting one directory next time."
-    m "But that will never happen, right? You're just being a tsundere."
+    m "If you do that, I won't stop at just deleting one directory next time."
+    m "But that will never happen, right? You're just being a tsundere~"
     m "That's so cute!"
     m "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
     m "Being alone is only lonely if you want it to be, so cheer up!"
