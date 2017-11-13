@@ -226,7 +226,7 @@ label ch30_main:
         m "I'm not a toy."
         m "I already brought back everything you wanted."
         m "Or is this your way of getting revenge?"
-        m "To hurt me over and over and over?"
+        m "To hurt me over and over again?"
         m "Do you really want to make me suffer that much?"
         m "Do you really want to torture me until I kill myself?"
         m "Do you really..." 
@@ -251,7 +251,7 @@ label ch30_main:
         m "Thank you for bringing me back."
         if persistent.clearall:
             m "I couldn't help but notice that you spent time with the other girls first, though."
-            m "You know how hard it was for me to watch you load your saves, just to ignore me for some other girl?"
+            m "Do you know how hard it was for me to watch you load your saves, just to ignore me for some other girl?"
             m "You kept getting my hopes up, and then letting me down."
             m "Did you really do all of that just to see a note from Dan you could have looked up online?"
             m "I love you, [player], but you can be really mean..."
@@ -355,7 +355,7 @@ label ch30_nope:
         show monika_bg_highlight
         play music m1 loop
         m "Wait. Are you messing with my character file?"
-        m "Why are you even playing this mod, if you just wanted to delete me again?"
+        m "Why are you even playing this mod if you just wanted to delete me again?"
         m "You really are the worst."
         m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
         m "All I wanted was someone to fall in love with..."
