@@ -2667,9 +2667,9 @@ label monika_cities:
     m "Maybe it's not as simple as it seems."
     menu:
         m "[currentuser], do you live in a city?"
-        "Yes"
+        "Yes":
             m "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
-        "No"
+        "No":
             m "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
     return
 
