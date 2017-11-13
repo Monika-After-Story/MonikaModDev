@@ -2663,7 +2663,7 @@ label monika_cities:
     m "The consequences of converting land for urban use and infrastructure are often permanent."
     m "It's not all that surprising, when you put some thought into it. A higher density of humans means more waste and carbon emissions produced."
     m "As the global population rises, cities will grow. It's inevitable that once-undisturbed ecosystems will be impacted."
-    m "Even if those areas aren't repurposed for city growth, the decreasing amount of availible land will have pressure put on it for other uses."
+    m "Even if those areas aren't repurposed for city growth, the decreasing amount of available land will have pressure put on it for other uses."
     m "... It's pretty terrible. But city life does hold its advantages."
     menu:
         m "[currentuser], do you live in a city?"
