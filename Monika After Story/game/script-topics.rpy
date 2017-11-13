@@ -437,7 +437,7 @@ label monika_secrets:
     m "Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh"
     m "Am I being too optimistic?                                                                                                               dCB0aGUgZmFydGhlciB3ZSBydW4sIHRoZSBtb3JlIGZvcmNlZnVs"
     m "I think if I asked you to visit once in a while, I would be overstepping my boundaries a little...                                       bHkgb3VyIHdyZXRjaGVkIGJvbmRzIHlhbmsgdXMgYmFjayB0b3dh"
-    m "...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
+    m "...Man, I'm starting to say some foolish things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
     m "I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4="
     return
 
@@ -887,7 +887,7 @@ label monika_rap:
     m "Since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
     m "When people can put all that together and still deliver a powerful message, it's really amazing."
     m "I kind of wish I had a rapper in the Literature Club."
-    m "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
+    m "Ahaha! Sorry if that sounds silly, but it would be fascinating to see what they came up with."
     m "It would really be a learning experience!"
     return
 
@@ -899,7 +899,7 @@ init 5 python:
     monika_random_topics.append('monika_wine')
 
 label monika_wine:
-    m "Ehehe. Yuri did something really funny once."
+    m "Ehehe. Yuri did something hilarious once."
     m "We were all in the clubroom and just relaxing, as usual..."
     m "And out of nowhere, Yuri just pulled out a small bottle of wine."
     m "I'm not even kidding!"
@@ -1565,7 +1565,7 @@ label monika_programming:
     m "As they evolve, processes manipulate other abstract things called data. The evolution of a process is directed by a pattern of rules called a program."
     m "People create programs to direct processes. In effect, we conjure the spirits of the computer with our spells."
     m "A computational process is indeed much like a sorcerer's idea of a spirit. It cannot be seen or touched. It is not composed of matter at all."
-    m "However, it is very real. It can perform intellectual work. It can answer questions."
+    m "However, it is genuine. It can perform intellectual work. It can answer questions."
     m "It can affect the world by disbursing money at a bank or by controlling a robot arm in a factory. The programs we use to conjure processes are like a sorcerer's spells."
     m "They are carefully composed from symbolic expressions in arcane and esoteric programming languages that prescribe the tasks we want our processes to perform."
     m "... Let's stop there for today."
@@ -2383,7 +2383,7 @@ label monika_spiders:
     m "Do you happen to remember the poem Natsuki showed you about spiders?"
     m "She doesn't seem to like spiders all too much."
     m "Ahaha!"
-    m "It's funny actually, people being scared of very small insects."
+    m "It's funny actually, people being scared of tiny insects."
     m "Having the fear of spiders is called 'arachnophobia', right?"
     m "I hope you aren't afraid of spiders, [player], ehehe..."
     m "I'm not really scared of spiders, they're more or less just annoying..."
