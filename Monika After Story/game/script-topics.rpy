@@ -2661,7 +2661,7 @@ label monika_cities:
     m "Humans have created quite a few problems for Earth. Like global warming and pollution."
     m "Some of those problems are because of cities."
     m "When people convert land for urban use, those changes are permanent..."
-    m "It's not all that surprising, when you put some thought into it. More humans mean more waste and carbon emission."
+    m "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
     m "And even though global populations aren't growing like they used to, cities are still getting bigger."
     m "Then again, if people live close together, that leaves more room for open wilderness."
     m "Maybe it's not as simple as it seems."
