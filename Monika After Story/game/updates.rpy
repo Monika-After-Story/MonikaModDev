@@ -171,6 +171,13 @@ init 10 python:
 #
 # NOTE: the labels here mean we are updating TO this version
 
+# 0.5.1
+label v051:
+    python:
+        # update!
+        persistent = updateTopicIDs("v051")
+    return
+
 # 0.4.0
 label v040:
     python:

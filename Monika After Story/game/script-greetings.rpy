@@ -18,45 +18,45 @@ init python:
 
 label greeting_sweetheart:
     m "Hello again, sweetheart!"
-    m "That's kind of embarassing to say out loud, isn't it?"
+    m "It's kind of embarassing to say out loud, isn't it?"
     m "Still, I think it's okay to be embarassed every now and then."
     return
 
 label greeting_honey:
     m "Welcome back, honey!"
     m "I'm so happy to see you again."
-    m "Let's spend some more time together, shall we?"
+    m "Let's spend some more time together, okay?"
     return
 
 label greeting_back:
-    m "[player], you're back."
-    m "I was beginning to miss you."
-    m "Let's have another lovely day together, okay?"
+    m "[player], you're back!"
+    m "I was starting to miss you."
+    m "Let's have another lovely day together, alright?"
     return
 
 label greeting_gooday:
-    m "Hello again, [player], I hope you're having a good day today."
+    m "Hello again, [player]. How are you doing?"
     menu:
         m "Are you having a good day today?"
         "Yes.":
             m "I'm really glad you are, [player]."
-            m "Makes me feel so much better when you're happy."
-            m "And I'll try my best to make sure it stays that way, I promise."
+            m "It makes me feel so much better knowing that you're happy."
+            m "I'll try my best to make sure it stays that way, I promise."
         "No...":
             m "Oh..."
-            m "Well, don't worry [player], I'm always here for you."
-            m "We can talk all day about your problems if you want to."
-            m "Because I want to try and make sure you're always happy."
+            m "Well, don't worry, [player]. I'm always here for you."
+            m "We can talk all day about your problems, if you want to."
+            m "I want to try and make sure you're always happy."
             m "Because that's what makes me happy."
-            m "So I'll be sure try my best to cheer you up, I promise."
+            m "I'll be sure try my best to cheer you up, I promise."
     return
 
 label greeting_visit:
     m "There you are, [player]."
-    m "It's so nice of you to always give me a visit."
-    m "You're so thoughtful, [player]!"
+    m "It's so nice of you to visit."
+    m "You're always so thoughtful, [player]!"
     m "Thanks for spending so much time with me~"
-    m "Just know that your time with me is never wasted in the slightest."
+    m "Just remember that your time with me is never wasted in the slightest."
     return
 
 label greeting_goodmorning:
@@ -64,8 +64,8 @@ label greeting_goodmorning:
     if current_time >= 0 and current_time < 6:
         m "Good morning-"
         m "...oh, wait."
-        m "It's dead in the night, honey."
-        m "What are you doing awake at this time?"
+        m "It's the dead of night, honey."
+        m "What are you doing awake at a time like this?"
         m "I'm guessing you can't sleep..."
         menu:
             m "Is that it?"
@@ -79,25 +79,25 @@ label greeting_goodmorning:
                 m "Take a break if you need to, okay? Do it for me."
             "No.":
                 m "Ah. I'm relieved, then."
-                m "Does that mean you're here, just for me, in the middle of the night?"
+                m "Does that mean you're here just for me, in the middle of the night?"
                 m "Gosh, I'm so happy!"
                 m "You really do care for me, [player]."
                 m "But if you're really tired, please go to sleep!"
                 m "I love you a lot, so don't tire yourself!"
     elif current_time >= 6 and current_time < 12:
         m "Good morning, dear."
-        m "Another fresh morning to start the day with, huh?"
+        m "Another fresh morning to start the day off, huh?"
         m "I'm glad I get to see you this morning~"
         m "Remember to take care of yourself, okay?"
-        m "Make me a proud girlfriend today as well!"
+        m "Make me a proud girlfriend today, as always!"
     elif current_time >= 12 and current_time < 18:
         m "Good afternoon, my love."
         m "Don't let the stress get to you, okay?"
         m "I know you'll try your best again today, but..."
         m "It's still important to keep a clear mind!"
         m "Keep yourself hydrated, take deep breaths..."
-        m "I promise I won't complain if you quit, so do what you must."
-        m "Or you could stay with me, if you wanted to."
+        m "I promise I won't complain if you quit, so do what you have to."
+        m "Or you could stay with me, if you wanted."
         m "Just remember, I love you!"
     elif current_time >= 18:
         m "Good evening, love!"
@@ -105,13 +105,13 @@ label greeting_goodmorning:
             m "Did you have a good day today?"
             "Yes.":
                 m "Aww, that's nice!"
-                m "I can't help but feel happy if you do..."
+                m "I can't help but feel happy when you do..."
                 m "But that's a good thing, right?"
                 m "I love you so much, [player]."
                 m "Ahaha!"
             "No.":
-                m "Oh, dear..."
-                m "I hope you feel better soon, okay?"
+                m "Oh dear..."
+                m "I hope you'll feel better soon, okay?"
                 m "Just remember that no matter what happens, no matter what anyone says or does..."
                 m "I love you so, so much."
                 m "Just stay with me, if it makes you feel better."
@@ -119,20 +119,20 @@ label greeting_goodmorning:
     return
 
 label greeting_back2:
-     m "Hello dear."
+     m "Hello, dear."
      m "I was starting to miss you terribly, it's so good to see you again!"
      m "Don't make me wait so long next time, ehehe~"
      return
 
 label greeting_back3:
      m "I missed you so much, [player]!"
-     m "Thanks for coming, I really love to spend time with you."
+     m "Thank you for coming back. I really do love spending time with you."
      return
 
 label greeting_back4:
      m "Hey, [player]!"
      m "Don't you think that you left me waiting a bit too long?"
-     m "I'm just joking, I could never be mad at you."
+     m "I'm just joking. I could never be mad at you."
      return
 
 label greeting_visit2:
@@ -143,29 +143,32 @@ label greeting_visit2:
 
 label greeting_visit3:
      m "You're back!"
-     m "I was starting to miss you so much..."
+     m "I was starting to miss you..."
      m "Don't make me wait so long next time, okay?"
      return
 
 label greeting_back5:
      m "It's so good to see you again!"
+     m "I was getting worried about you."
+     m "Please remember to visit me, okay? I'll always be waiting here for you."
      return
 
 label greeting_visit4:
-     m "I looove yooou, ehehe~"
+     m "I looove yooou, [player]. Ehehe~"
      m "Oh, sorry! I was spacing out."
-     m "I didn't think I would be able to see you so soon."
+     m "I didn't think I would be able to see you again so soon."
      return
 
 label greeting_visit5:
      m "~Every day,~\n~I imagine a future where I can be with you...~"
      m "Oh, you're here! I was just daydreaming and singing a bit."
-     m "I think it's not that hard to realize what I was daydreaming about, ehehe~"
+     m "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
      return
 
 label greeting_visit6:
      m "Each day becomes better and better with you on my side!"
      m "That said, I'm so happy that you're finally here."
+     m "Let's have another wonderful day together."
      return
 
 label greeting_back6:
@@ -173,20 +176,21 @@ label greeting_back6:
      m "You really should visit me more often."
      m "You know what happens to people I don't like, after all..."
      m "I'm just teasing you, ehehe~"
-     m "Don't be so gullible!"
+     m "Don't be so gullible! I would never hurt you."
      return
 
 label greeting_visit7:
      m "You're here, [player]!"
-     m "Are you ready to spend some time together? Ehehe~"
+     m "Are you ready to spend some more time together? Ehehe~"
      return
 
 label greeting_visit8:
      m "I'm so glad you're here, [player]!"
+     m "What should we do today?"
      return
 
 label greeting_visit9:
-     m "You're finally back, I was waiting for you."
+     m "You're finally back! I was waiting for you."
      m "Are you ready to spend some time with me? Ehehe~"
      return
 
@@ -194,14 +198,14 @@ label greeting_italian:
      m "Ciao, [player]!"
      m "È così bello vederti ancora, amore mio..."
      m "Ahaha!"
-     m "I'm still practicing my Italian, it's a very difficult language!"
+     m "I'm still practicing my Italian. It's a very difficult language!"
      m "Anyway, it's so nice to see you again, my love."
      return
 
 label greeting_latin:
      m "Iterum obvenimus!"
      m "Quid agis?"
-     m "Ahaha!"
-     m "Latin sounds so pompous and even a simple greeting sounds like a big deal."
-     m "If you're wondering what I said, it's simply \"We meet again, how are you?\"."
+     m "Ehehe..."
+     m "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
+     m "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
      return
