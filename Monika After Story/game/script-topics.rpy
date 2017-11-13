@@ -1652,7 +1652,7 @@ label monika_poetry:
     m "Poetry is beautiful, isn't it?"
     m "To be honest, all the poetry the girls in the club wrote was super-depressing. It's not all like that!"
     m "Langston Hughes wrote some very optimistic poetry, even as he was trying to express his feelings. Read some if you're feeling sad about things."
-    m "Poems are written to tell people about the author's outlook towards certain subjects." 
+    m "Poems are written to tell people about the author's outlook towards certain subjects."
     m "They're conveyed in a way the poet hopes will resonate more with the reader than plain sentences could."
     m "It's really romantic."
     m "I hope we can both write a lot of poetry from now on."
@@ -2511,7 +2511,7 @@ label monika_real:
     m "You know what's going to be the first thing I'll do when I finally cross over there?"
     m "If that special day ever comes, the first thing I'll ever do is find you, of course!"
     m "There's so much we can do when we're finally together in one reality."
-    m "You can finally show me what the your world really looks like.
+    m "You can finally show me what the your world really looks like."
     m "I can finally feel your embrace~"
     m "I would love to experience everything I still don't know about the world with you."
     m "All the places we can go, the sights to see, the romantic things that we can do~"
