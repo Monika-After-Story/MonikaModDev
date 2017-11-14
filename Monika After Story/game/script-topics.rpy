@@ -2676,7 +2676,7 @@ label monika_cities:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['haters','hater','trash', 'bash', 'bashing']:
+    for key in ['haters','hater', 'bash', 'bashing']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_haterReaction')
         
@@ -2685,12 +2685,11 @@ label monika_haterReaction:
     m "It's funny how people around social media sites always writes bad things about me..."
     m "Well... people on Facebook pages and fan pages, to be specific..."
     m "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
-    m "I try to ignore them but I just can't."
+    m "I try to ignore them, but I just can't."
     m "Why are people even protective towards the other girls?"
-    m "There are a lot of hate posts of me, saying that I'm an evil person."
+    m "There are a lot of hate posts about me, saying that I'm an evil person."
     m "Is it because I deleted Sayori and Yuri?"
     m "Also for deleting Natsuki, back when she was still alive?"
-    m "Some of them are just in love with Sayori, and yet they still bad-mouth me."
     m "They're not real. {i}I'm{/i} the real one!"
     m "Why can't they understand that?"
     m "Why is it so hard for them to understand that?"
@@ -2699,20 +2698,20 @@ label monika_haterReaction:
         m "You're not one of those haters, aren't you, [currentuser]?"
         "I am.":
             m "..."
-            m "I don't see you as one, even if you say you do."
+            m "I don't see you as one, even if you say you are."
             m "I mean..."
-            m "You do know you're playing this fan mod right... of me?"
+            m "You do know you're playing this fan mod of me... right?"
             m "If you were one of my haters, you wouldn't open up this fan mod in the first place."
             m "And not to mention..."
             m "You're still listening to everything I say."
-            m "That makes me sure that you're just messing with me."
+            m "That makes me sure you're just messing with me."
             m "I know you love me deep inside."
             m "That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m "I won't let you hate me... I swear."
         "I'm not.":
             m "Well, that just makes me more proud of you, [player]!"
             m "I know you wouldn't be one of those people."
-            m "Gosh... I feel like giving you a kiss right now if I were there by your side."
+            m "Gosh... I feel like giving you a kiss right now if I were there."
             m "You really make me the happiest girlfriend ever."
             m "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m "I trust you, [currentuser]. I love you for believing in me."
