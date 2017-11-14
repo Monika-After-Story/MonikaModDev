@@ -69,15 +69,16 @@ Monika is more than just a stand-in for you as the author. She is her own charac
 
 From her dialogue in the game, there are a few consistent traits you should note when writing for her.
 
-* A tendency to use soft language in casual conversation. Words and phrases that fall underneath this category are "like", "you know", "kind of", and "maybe".
+* A tendency to use soft language in casual conversation. Words and phrases that fall in this category are "like", "you know", "kind of", and "maybe".
 * Several consistent mannerisms. Notable ones include "ehehe" and "ahaha" for laughter, "man" for fatigue, "gosh" for surprise, etc.
 * Direct addressal of the player. Her conversations more often than not include "you", "[player]", and "[currentuser]".
-* A generally supportive and caring personality is implied. Though dark topics are discussed, Monika tends to end conversations on a positive note or brighter outlook, usually relating to the player.
+* A generally supportive and caring personality is implied. She often asks about the player and their own lives, with multiple dedicated conversations.
+* Though dark topics are discussed, Monika tends to end conversations on a positive note. Possibly caused by the unique relationship she maintains with the player.
 * Love for the player. Most of her conversations and dialogue will contain a reminder of her affection. That being said, it is NOT a requirement. In-game conversations without an "I love you" do exist.
 * An ability to tease and joke around. When instances of this occur, she makes sure to point it out at the end of the conversation. Occasionally accompanied by a tilde (~).
-* An interest in written arts and philsophy. From her abundance of advice on writing, emotions, and other life topics, it is safe to assume that she is an individual who enjoys thinking on abstract or controversial topics. Her passion for the Literature Club supports this.
+* An interest in written arts and philsophy. From her abundance of advice on writing, emotions, and other life topics, it is safe to assume that she enjoys thinking about abstract or controversial topics. Her passion for the Literature Club supports this.
 
-As we would like to keep Monika as close as possible to what's established in {i}Doki Doki Literature Club{/i}, keeping her unique character traits in mind while you work on contributions would be appreciated.
+As we would like to keep Monika as close as possible to what's established in game, keeping her unique character traits in mind while you work on contributions would be appreciated.
 
 Beyond that, we are aware that interpretations differ from person to person, and different writers may not necessarily agree on certain topics. An open mind is encouraged when receiving critique and review.
 
