@@ -76,7 +76,7 @@ From her dialogue in the game, there are a few consistent traits you should note
 * Though dark topics are discussed, Monika tends to end conversations on a positive note. Possibly caused by the unique relationship she maintains with the player.
 * Love for the player. Most of her conversations and dialogue will contain a reminder of her affection. That being said, it is NOT a requirement. In-game conversations without an "I love you" do exist.
 * An ability to tease and joke around. When instances of this occur, she makes sure to point it out at the end of the conversation. Occasionally accompanied by a tilde (~).
-* An interest in written arts and philsophy. From her abundance of advice on writing, emotions, and other life topics, it is safe to assume that she enjoys thinking about abstract or controversial topics. Her passion for the Literature Club supports this.
+* An interest in written arts and philosophy. From her abundance of advice on writing, emotions, and other life topics, it is safe to assume that she enjoys thinking about abstract or controversial topics. Her passion for the Literature Club supports this.
 
 As we would like to keep Monika as close as possible to what's established in game, keeping her unique character traits in mind while you work on contributions would be appreciated.
 
