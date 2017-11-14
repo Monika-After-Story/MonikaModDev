@@ -139,7 +139,15 @@ init python:
 
 
     def start_pong():
-        renpy.call_in_new_context('game_pong')
+        global allow_dialogue
+
+        # locking pong via dialogue and music menu
+        # also this allows pong to lock dialogue as well
+        if allow_dialogue and not songs.menu_open:
+            previous_dialogue = allow_dialogue
+            allow_dialogue = False
+            renpy.call_in_new_context('game_pong')
+            allow_dialogue = previous_dialogue
 
     dismiss_keys = config.keymap['dismiss']
 
