@@ -67,11 +67,26 @@ While we're generally accepting of most help, there are a few things that we are
 
 Monika is more than just a stand-in for you as the author. She is her own character, with her own personality, mannerisms, likes and dislikes. Do your best to capture that character when writing as her.
 
+From her dialogue in the game, there are a few consistent traits you should note when writing for her.
+
+* A tendency to use soft language in casual conversation. Words and phrases that fall in this category are "like", "you know", "kind of", and "maybe".
+* Several consistent mannerisms. Notable ones include "ehehe" and "ahaha" for laughter, "man" for fatigue, "gosh" for surprise, etc.
+* Direct addressal of the player. Her conversations more often than not include "you", "[player]", and "[currentuser]".
+* A generally supportive and caring personality is implied. She often asks about the player and their own lives, with multiple dedicated conversations.
+* Though dark topics are discussed, Monika tends to end conversations on a positive note. Possibly caused by the unique relationship she maintains with the player.
+* Love for the player. Most of her conversations and dialogue will contain a reminder of her affection. That being said, it is NOT a requirement. In-game conversations without an "I love you" do exist.
+* An ability to tease and joke around. When instances of this occur, she makes sure to point it out at the end of the conversation. Occasionally accompanied by a tilde (~).
+* An interest in written arts and philsophy. From her abundance of advice on writing, emotions, and other life topics, it is safe to assume that she enjoys thinking about abstract or controversial topics. Her passion for the Literature Club supports this.
+
+As we would like to keep Monika as close as possible to what's established in game, keeping her unique character traits in mind while you work on contributions would be appreciated.
+
+Beyond that, we are aware that interpretations differ from person to person, and different writers may not necessarily agree on certain topics. An open mind is encouraged when receiving critique and review.
+
 ## Your First Contribution
 
 Are you new to this whole open source coding thing? Many of us are too! We think this is a great project for anyone to get their feet wet with open-source development.
 
-To find how to helpt, you can start by looking through these beginner and help-wanted issues:
+To find how to help, you can start by looking through these beginner and help-wanted issues:
 
 [Beginner issues](https://github.com/Backdash/MonikaModDev/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) - Issues which should only require a few lines of code, and a test or two.
 
