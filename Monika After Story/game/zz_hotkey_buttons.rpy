@@ -67,7 +67,7 @@ screen hkb_overlay():
     style_prefix "hkb"
 
     vbox:
-        xalign 0
+        xalign 0.05
         yalign 0.95
     
         if allow_dialogue:
