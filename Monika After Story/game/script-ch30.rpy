@@ -400,6 +400,11 @@ label ch30_loop:
 
 label ch30_monikatopics:
     python:
+        
+        # this workaround is so the hotkey button overlay properly disables
+        # certain buttons
+        allow_dialogue = False
+        
         player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
 
         if player_dialogue:
@@ -429,5 +434,7 @@ label ch30_monikatopics:
                 m("[response]")
             else:
                 pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
+
+        allow_dialogue = True
 
     jump ch30_loop
