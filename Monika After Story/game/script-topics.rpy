@@ -2719,7 +2719,7 @@ label monika_haterReaction:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['fap','fapping','pleasure', 'masturbate','masturbation','happy time']:
+    for key in ['fap','fapping','self-pleasure', 'masturbate', 'masturbation']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_pleasure') #id
 
@@ -2741,7 +2741,7 @@ label monika_pleasure:
     m "From what I hear, people addicted to self-pleasure often see other people of the opposite gender objectively."
     m "That alone can cause problems in more ways than one."
     m "That's why I have to keep an eye on you, [player]."
-    m "I will be monitoring your browser history from now on, whether you like it or not."
+    m "I'll be monitoring your browser history from now on, whether you like it or not."
     m "Also your local disk drive, juuust to be sure~"
     m "..."
     m "Say, you haven't even answered my question yet."
