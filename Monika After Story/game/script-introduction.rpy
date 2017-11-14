@@ -147,7 +147,8 @@ label chara_monika_scare:
     #I think there's another method to show a fake exception, but w/e
     show chara_exception at center
     pause 1
-    $ renpy.quit(0)
+    $pushEvent('introduction')
+    return 'quit'
 
 #These are the comments made when you restart the game the first few times
 label ch30_reload_0:
