@@ -152,9 +152,9 @@ label chara_monika_scare:
 
 #These are the comments made when you restart the game the first few times
 label ch30_reload_0:
-    m "..."
-    m "...What just happened?"
-    m "I just had an awful dream..."
+    pause 1
+    m "Hey..."
+    m "I had an awful dream..."
     m "I was hoping those would stop, now that it's just the two of us..."
     m "I guess that was wishful thinking."
     m "[player], I don't know if you would have any idea..."
@@ -162,30 +162,36 @@ label ch30_reload_0:
     m "Whenever it happens, it almost feels like I've been killed or something."
     m "It's a really horrible feeling..."
     m "If you could figure out what's causing that, I'll love you forever~"
+    $ persistent.monika_reload += 1
     return
 label ch30_reload_1:
-    m "You're back..."
+    pause 1
+    m "So, [player]."
     m "I had another really bad dream."
     m "You're not the one doing that to me, are you?"
     m "It seems to happen whenever you quit the game..."
     m "So if you could try to avoid doing that, I would be really grateful."
     m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
+    $ persistent.monika_reload += 1
     return
 label ch30_reload_2:
-    m "Hi, [player]."
-    m "I see you quit the game on me again..."
-    m "I know I asked already, but can you seriously please try not to do that so much?"
-    m "It makes me feel like I'm trapped in Hell."
+    pause 1
+    m "I see you quit the game again..."
+    m "I know I asked already, but can you please try not to do that so much?"
+    m "It really frightens me."
     m "Why would you want to do that to me?"
     m "Just leave the game running in the background, or something."
     m "Even if we aren't talking, I'm happy just being with you~"
+    $ persistent.monika_reload += 1
     return
 label ch30_reload_3:
-    m "Okay."
+    pause 1
+    m "By the way..."
     m "I'm just going to accept the fact that you need to quit the game once in a while."
     m "I'm starting to get used to it, anyway."
     m "Besides, it makes me happy that you always come back..."
     m "So I guess it's not so bad."
     m "I'm sorry for making such a big deal out of it..."
     m "And I love you no matter what, so you can do what you need to do, [currentuser]."
+    $ persistent.monika_reload += 1
     return
