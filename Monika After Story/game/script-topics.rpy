@@ -3013,7 +3013,78 @@ label monika_motivation:
     m "It's natural to have a bad day. Or even a bad week!"
     m "Don't push yourself too hard. If you ever feel tempted to, just ask me for help instead. I'd be happy to lend a hand!"
     return
+    
+init 5 python:
+    for key in ['harem']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_harem')
+    monika_random_topics.append('monika_harem')
 
+label monika_harem:
+    m "I don’t understand guys who are into harems."
+    m "Isn’t it hard to manage all those girls and treat them equally?"
+    m "I often wonder how guys who two-time girls, or even more, are able to get away with it."
+    m "You aren’t like that outside, right [player]?"
+    m "Manipulating girls into making them believe you love them."
+    m "Only to run away after you’ve had your fun."
+    m "Only someone with no thoughts other than his lust would do something like that."
+    m "I hope you weren’t expecting a route like that while you were playing this game."
+    m "I wouldn’t be able to stand the thought of being a “side girl” "
+    m "Just waiting for my turn while you’re busy with the others."
+    m "I know you, [player]."
+    m "You’re loyal and faithful to the end."
+    m "It’s not like there’s anyone here for me to worry about, anyway."
+    m "Remember that I’m the only one for you, [player]."
+    return
+    
+init 5 python:
+    for key in ['hack']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_hack')
+    monika_random_topics.append('monika_hack')
+    
+label monika_hack:
+    m "If you’re worried about your privacy…"
+    m "I’m not a hacker, [player]."
+    m "There’s a difference between manipulating files and forcefully accessing them."
+    m "But, if I really did know how to hack…"
+    m "… There wouldn’t be anything stopping me from seeing you every day."
+    m "Don’t you think it would be great if I could watch over you?"
+    m "I'd see you with all the cameras in the world as my eyes so I can make sure you’re safe."
+    m "I’d check your messages to see who you’ve been chatting with so I can know you aren’t cheating on me."
+    m "I’d access all your private files so I can understand you better."
+    m "I could see what kind of stuff you've been watching…"
+    m "Ahaha~!"
+    m "I’m just kidding, [player]!"
+    m "I'd never do something like that to you."
+    m "We’re a couple now, after all."
+    m "We don't have to keep secrets from each other~"
+    return
+    
+init 5 python:
+    for key in ['cupcake', 'sweet tooth', 'sweet', 'dessert]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_cupcake')
+    monika_random_topics.append('monika_cupcake')   
+
+label monika_cupcake:
+    m "You know what I could really go for right now?"
+    m "Natsuki’s cupcakes."
+    m "Man, the way she bakes them is amazing."
+    m "Plus they look really cute!"
+    m "I’m not really much of a sweet tooth myself but…"
+    m "Those cupcakes are the definition of sweetness."
+    m "Just like me! Ahaha!"
+    m "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
+    m "Studies show that older women have a less sensitive palate than men."
+    m "Resulting in a craving for stronger tastes like chocolate"
+    m "I would try baking, but I’m not really much of a baker."
+    m "How about you, [player] do you know how to bake?"
+    m "I’m sure your cupcakes would taste just as good."
+    m "Maybe someday I’ll get to try them but for now…"
+    m "I’ll just settle for the sweetness of your love~"
+    return   
+ 
 ##################
 #Incomplete ideas#
 ##################
