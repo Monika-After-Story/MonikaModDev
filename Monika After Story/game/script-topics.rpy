@@ -2717,6 +2717,41 @@ label monika_haterReaction:
             m "I trust you, [currentuser]. I love you for believing in me."
     return
 
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['fap','fapping','pleasure', 'masturbate','masturbation','happy time']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_pleasure') #id
+
+label monika_pleasure:
+    m "Hey, [player]..."
+    m "Do you... by any chance... pleasure yourself?"
+    m "..."
+    m "It seems a bit awkward to ask-"
+    m "We're not even that deep into our relationship yet! Ahaha~"
+    m "But I have to keep an eye on you."
+    m "I don't really know if you do pleasure yourself stuff whenever you quit the game."
+    m "I hear that people privately do those stuff in your world..."
+    m "Is it really that a good feeling?"
+    m "If you ask me, doing that stuff often can cause a lot of problems."
+    m "Once you start to get addicted, you'll always have the urge to... you know."
+    m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
+    m "Not to mention..."
+    m "Being addicted to the feeling causes you to view the world from a perverted point of view."
+    m "From what I hear, people addicted to self-pleasure often see other people of the opposite gender objectively."
+    m "That alone can cause problems in more ways than one."
+    m "That's why I have to keep an eye on you, [player]."
+    m "I will be monitoring your browser history from now on, whether you like it or not."
+    m "Also your local disk drive, juuust to be sure~"
+    m "..."
+    m "Say, you haven't even answered my question yet."
+    m "Do you... think of other girls other than me... in doing so?"
+    m "Because if you do, I'm gonna be reaaaally jealous~"
+    m "But I guess I can let it slide... for now~"
+    m "I know you're not the kind of person that does that sort of thing."
+    m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
