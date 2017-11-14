@@ -96,10 +96,11 @@ label display_music_menu:
     python:
         import store.songs as songs
         songs.menu_open = True
+        prev_dialogue = allow_dialogue
         allow_dialogue = False
 
     call screen music_menu
 
     $ songs.menu_open = False
-    $ allow_dialogue = True
+    $ allow_dialogue = prev_dialogue
     return
