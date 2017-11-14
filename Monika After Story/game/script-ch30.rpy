@@ -118,7 +118,7 @@ init python:
 
     def show_dialogue_box():
         if allow_dialogue:
-            renpy.call_in_new_context('ch30_monikatopics')
+            renpy.jump('ch30_monikatopics')
 
     def select_music():
         # check for open menu
