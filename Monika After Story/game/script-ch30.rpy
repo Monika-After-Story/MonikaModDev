@@ -355,7 +355,7 @@ label ch30_loop:
             show room_mask2 as rm2:
                 size (320,180)
                 pos (935,200)
-            show monika_transparent_day_bg
+            show monika_day_room
             with dissolve
             $ morning_flag = True
     elif not is_morning():
@@ -368,9 +368,10 @@ label ch30_loop:
             show room_mask2 as rm2:
                 size (320,180)
                 pos (935,200)
-            show monika_bg
+            show monika_room
             with dissolve
             show monika_bg_highlight
+    show monika 1 at t11 zorder 2
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
         $ config.allow_skipping = True
