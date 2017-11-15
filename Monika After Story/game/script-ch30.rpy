@@ -118,7 +118,7 @@ init python:
 
     def show_dialogue_box():
         if allow_dialogue:
-            renpy.call_in_new_context('ch30_monikatopics')
+            renpy.jump('ch30_monikatopics')
 
     def select_music():
         # check for open menu
@@ -139,7 +139,15 @@ init python:
 
 
     def start_pong():
-        renpy.call_in_new_context('game_pong')
+        global allow_dialogue
+
+        # locking pong via dialogue and music menu
+        # also this allows pong to lock dialogue as well
+        if allow_dialogue and not songs.menu_open:
+            previous_dialogue = allow_dialogue
+            allow_dialogue = False
+            renpy.call_in_new_context('game_pong')
+            allow_dialogue = previous_dialogue
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -403,6 +411,11 @@ label ch30_loop:
 
 label ch30_monikatopics:
     python:
+        
+        # this workaround is so the hotkey button overlay properly disables
+        # certain buttons
+        allow_dialogue = False
+        
         player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
 
         if player_dialogue:
@@ -432,5 +445,7 @@ label ch30_monikatopics:
                 m("[response]")
             else:
                 pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
+
+        allow_dialogue = True
 
     jump ch30_loop
