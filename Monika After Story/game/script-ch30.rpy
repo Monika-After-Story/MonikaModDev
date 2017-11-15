@@ -345,9 +345,9 @@ label ch30_autoload:
     else:
         $ config.allow_skipping = False
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
+    $ config.keymap["open_dialogue"] = ["t","T"]
+    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["play_pong"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
@@ -411,11 +411,11 @@ label ch30_loop:
 
 label ch30_monikatopics:
     python:
-        
+
         # this workaround is so the hotkey button overlay properly disables
         # certain buttons
         allow_dialogue = False
-        
+
         player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
 
         if player_dialogue:

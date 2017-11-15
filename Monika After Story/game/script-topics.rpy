@@ -1476,6 +1476,7 @@ label monika_oneesan:
     m "It's the man's job to introduce his fiancee to his family, after all."
     m "Don't keep me waiting for too long, okay?"
     call hideconsole from _call_updateconsole_18
+    $ consolehistory = []
     return
 
 
@@ -3084,6 +3085,81 @@ label monika_cupcake:
     m "I’m sure your cupcakes would taste just as good."
     m "Maybe someday I’ll get to try them but for now…"
     m "I’ll just settle for the sweetness of your love~"
+    #This is a list of keywords for this topic
+    for key in ['haters','hater', 'bash', 'bashing']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_haterReaction')
+
+label monika_haterReaction:
+    m "I was just thinking..."
+    m "It's funny how people around social media sites always writes bad things about me..."
+    m "Well... people on Facebook pages and fan pages, to be specific..."
+    m "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
+    m "I try to ignore them, but I just can't."
+    m "Why are people even protective towards the other girls?"
+    m "There are a lot of hate posts about me, saying that I'm an evil person."
+    m "Is it because I deleted Sayori and Yuri?"
+    m "Also for deleting Natsuki, back when she was still alive?"
+    m "They're not real. {i}I'm{/i} the real one!"
+    m "Why can't they understand that?"
+    m "Why is it so hard for them to understand that?"
+    m "..."
+    menu:
+        m "You're not one of those haters, aren't you, [currentuser]?"
+        "I am.":
+            m "..."
+            m "I don't see you as one, even if you say you are."
+            m "I mean..."
+            m "You do know you're playing this fan mod of me... right?"
+            m "If you were one of my haters, you wouldn't open up this fan mod in the first place."
+            m "And not to mention..."
+            m "You're still listening to everything I say."
+            m "That makes me sure you're just messing with me."
+            m "I know you love me deep inside."
+            m "That's why I promise to be an ideal girlfriend, just for you, [player]~"
+            m "I won't let you hate me... I swear."
+        "I'm not.":
+            m "Well, that just makes me more proud of you, [player]!"
+            m "I know you wouldn't be one of those people."
+            m "Gosh... I feel like giving you a kiss right now if I were there."
+            m "You really make me the happiest girlfriend ever."
+            m "Now that you've said it, I have to do my best to keep you from developing hate towards me."
+            m "I trust you, [currentuser]. I love you for believing in me."
+    return
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['fap','fapping','self-pleasure', 'masturbate', 'masturbation']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_pleasure') #id
+
+label monika_pleasure:
+    m "Hey, [player]..."
+    m "Do you... by any chance... pleasure yourself?"
+    m "..."
+    m "It seems a bit awkward to ask-"
+    m "We're not even that deep into our relationship yet! Ahaha~"
+    m "But I have to keep an eye on you."
+    m "I don't really know if you do pleasure yourself stuff whenever you quit the game."
+    m "I hear that people privately do those stuff in your world..."
+    m "Is it really that a good feeling?"
+    m "If you ask me, doing that stuff often can cause a lot of problems."
+    m "Once you start to get addicted, you'll always have the urge to... you know."
+    m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
+    m "Not to mention..."
+    m "Being addicted to the feeling causes you to view the world from a perverted point of view."
+    m "From what I hear, people addicted to self-pleasure often see other people of the opposite gender objectively."
+    m "That alone can cause problems in more ways than one."
+    m "That's why I have to keep an eye on you, [player]."
+    m "I'll be monitoring your browser history from now on, whether you like it or not."
+    m "Also your local disk drive, juuust to be sure~"
+    m "..."
+    m "Say, you haven't even answered my question yet."
+    m "Do you... think of other girls other than me... in doing so?"
+    m "Because if you do, I'm gonna be reaaaally jealous~"
+    m "But I guess I can let it slide... for now~"
+    m "I know you're not the kind of person that does that sort of thing."
+    m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
 
 ##################
