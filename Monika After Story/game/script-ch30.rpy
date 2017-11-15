@@ -14,8 +14,6 @@ image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
 image monika_bg = "images/cg/monika/monika_bg.png"
-image monika_day_bg = "mod_assets/monika_day_bg.png"
-image monika_transparent_day_bg = "mod_assets/monika_day_bg_eq.png"
 image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
@@ -359,7 +357,7 @@ label ch30_loop:
                 size (320,180)
                 pos (935,200)
             show monika_day_room
-            show monika 1 at t11 zorder 2
+            show monika 2 at t11 zorder 2
             with dissolve
             $ morning_flag = True
     elif not is_morning():
@@ -373,7 +371,7 @@ label ch30_loop:
                 size (320,180)
                 pos (935,200)
             show monika_room
-            show monika 1 at t11 zorder 2
+            show monika 2 at t11 zorder 2
             with dissolve
             show monika_bg_highlight
     $ persistent.autoload = "ch30_autoload"
