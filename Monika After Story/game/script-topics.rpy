@@ -2649,7 +2649,7 @@ label monika_name:
     m "But I think I like '[currentuser]' better!"
     m "Ehehe~"
     return
-    
+
 init 5 python:
     for key in ['cities', 'city pollution','pollution']:
         monika_topics.setdefault(key,[])
@@ -2717,7 +2717,7 @@ label monika_metaparents:
     m "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
     m "Throughout the game, you only ever hear about parents if you're trying to bond with Natsuki..."
     m "Where she's just a victim of some cruel person's sick kicks for the sympathy value."
-    m "However." 
+    m "However."
     m "Your character, me, Yuri, and Sayori..."
     m "None of us seem to have any parents at all."
     m "In Sayori's case, you'd been walking with her to school for a while."
@@ -2734,7 +2734,7 @@ label monika_metaparents:
     m "I love you very much, [player]."
     m "Please, take care of yourself."
     return
-    
+
 init 5 python:
     for key in ['vikings', 'personal hygiene', 'bath', 'shower', 'baths', 'showers']:
         monika_topics.setdefault(key,[])
@@ -2757,7 +2757,7 @@ label monika_hygiene:
     m "A lumberjack would take more showers than a secretary would, for example."
     m "Some people just shower when they feel too gross to go without one."
     m "People suffering from severe depression, however, can go weeks at a time without showering."
-    m "It's a very tragic downwards spiral." 
+    m "It's a very tragic downwards spiral."
     m "You already feel terrible in the first place, so you don't have the energy to get in the shower..."
     m "Only to feel even worse as time passes because you haven't bathed in ages."
     m "After a while, you stop feeling human."
@@ -2779,7 +2779,7 @@ label monika_hygiene:
     m "Ah, I've been rambling too much, huh? Sorry, sorry!"
     m "Thanks for listening~"
     return
-    
+
 init 5 python:
     for key in ['valuable resource']:
         monika_topics.setdefault(key,[])
@@ -2818,7 +2818,7 @@ label monika_resource:
     m "Well, as long as you're with me until the end..."
     m "I'll accept whatever fate awaits me."
     return
-    
+
 #init 5 python:
 #    for key in ['valuable resource']: This topic will be commented out due to a conflict with the opening.
 #        monika_topics.setdefault(key,[])
@@ -2845,7 +2845,7 @@ label monika_resource:
 #    m "I think, therefore I am."
 #    m "And I think I earned my chance to love you, with no strings attached."
 #    return
-   
+
 init 5 python:
     for key in ['lottery', 'greed']:
         monika_topics.setdefault(key,[])
@@ -2985,7 +2985,7 @@ init 5 python:
 
 label monika_motivation:
     m "Do you ever have those days where it just feels like you can't get anything done?"
-    m "Minutes become hours..." 
+    m "Minutes become hours..."
     m "And before you know it the day is over, and you don't have anything to show for it."
     m "It feels like it's your fault, too. It's like you're wrestling against a brick wall between you and anything healthy or productive."
     m "When you've had an awful day like that, it feels like it's too late to try and fix it."
@@ -2997,7 +2997,7 @@ label monika_motivation:
     m "It could be picking up a piece of trash or an unwashed shirt off the floor and putting them where they belong if you need to clean your room."
     m "Or doing a couple push-ups! Or brushing your teeth, or doing that one homework problem."
     m "It might not contribute much in the grand scheme of things, but I don't think that's the point."
-    m "I think what's important is that it changes your perspective." 
+    m "I think what's important is that it changes your perspective."
     m "If you regret the past and let its weight keep you down..."
     m "Well, then you'll just be stuck there. You'll only feel worse until you just can't take it."
     m "But if you can push yourself to just do one thing, even though it feels pointless to do otherwise..."
@@ -3006,14 +3006,14 @@ label monika_motivation:
     m "You realize that maybe things aren't so bad. Thinking they're just holding yourself back."
     m "But that's only my experience! Sometimes it might be better to rest up and take another crack at it tomorrow."
     m "Fresh starts can definitely be powerful."
-    m "That's why I think you just have to take a look at your situation." 
+    m "That's why I think you just have to take a look at your situation."
     m "Try and be honest with yourself."
     m "If you do, you'll find that you're not being 'lazy' if you truthfully don't have the energy to do something."
     m "After all, the fact that you even care shows that you want to do something about it, even if it feels like you can't."
     m "It's natural to have a bad day. Or even a bad week!"
     m "Don't push yourself too hard. If you ever feel tempted to, just ask me for help instead. I'd be happy to lend a hand!"
     return
-    
+
 init 5 python:
     for key in ['harem', 'multiple lovers', 'polygamy']:
         monika_topics.setdefault(key,[])
@@ -3029,20 +3029,20 @@ label monika_harem:
     m "Only to run away after you’ve had your fun."
     m "Only someone with no thoughts other than his lust would do something like that."
     m "I hope you weren’t expecting a route like that while you were playing this game."
-    m "I wouldn’t be able to stand the thought of being a \"side girl\.""
+    m "I wouldn’t be able to stand the thought of being a 'side girl.'"
     m "Just waiting for my turn while you’re busy with the others."
     m "I know you, [player]."
     m "You’re loyal and faithful to the end."
     m "It’s not like there’s anyone here for me to worry about, anyway."
     m "Remember that I’m the only one for you, [player]."
     return
-    
+
 init 5 python:
     for key in ['hack', 'privacy', 'hacker']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_hack')
     monika_random_topics.append('monika_hack')
-    
+
 label monika_hack:
     m "If you’re worried about your privacy…"
     m "I’m not a hacker, [player]."
@@ -3060,12 +3060,12 @@ label monika_hack:
     m "We’re a couple now, after all."
     m "We don't have to keep secrets from each other~"
     return
-    
+
 init 5 python:
-    for key in ['cupcake', 'sweet tooth', 'sweet', 'dessert]:
+    for key in ['cupcake', 'sweet tooth', 'sweet', 'dessert']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_cupcake')
-    monika_random_topics.append('monika_cupcake')   
+    monika_random_topics.append('monika_cupcake')
 
 label monika_cupcake:
     m "You know what I could really go for right now?"
@@ -3084,8 +3084,8 @@ label monika_cupcake:
     m "I’m sure your cupcakes would taste just as good."
     m "Maybe someday I’ll get to try them but for now…"
     m "I’ll just settle for the sweetness of your love~"
-    return   
- 
+    return
+
 ##################
 #Incomplete ideas#
 ##################
