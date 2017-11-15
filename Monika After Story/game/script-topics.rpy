@@ -3086,6 +3086,8 @@ label monika_cupcake:
     m "Maybe someday I’ll get to try them but for now…"
     m "I’ll just settle for the sweetness of your love~"
     #This is a list of keywords for this topic
+
+init 5 python:
     for key in ['haters','hater', 'bash', 'bashing']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_haterReaction')
