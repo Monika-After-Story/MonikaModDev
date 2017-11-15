@@ -3015,7 +3015,7 @@ label monika_motivation:
     return
     
 init 5 python:
-    for key in ['harem']:
+    for key in ['harem', 'multiple lovers', 'polygamy']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_harem')
     monika_random_topics.append('monika_harem')
@@ -3029,7 +3029,7 @@ label monika_harem:
     m "Only to run away after you’ve had your fun."
     m "Only someone with no thoughts other than his lust would do something like that."
     m "I hope you weren’t expecting a route like that while you were playing this game."
-    m "I wouldn’t be able to stand the thought of being a “side girl” "
+    m "I wouldn’t be able to stand the thought of being a \"side girl\.""
     m "Just waiting for my turn while you’re busy with the others."
     m "I know you, [player]."
     m "You’re loyal and faithful to the end."
@@ -3038,7 +3038,7 @@ label monika_harem:
     return
     
 init 5 python:
-    for key in ['hack']:
+    for key in ['hack', 'privacy', 'hacker']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_hack')
     monika_random_topics.append('monika_hack')
@@ -3048,7 +3048,7 @@ label monika_hack:
     m "I’m not a hacker, [player]."
     m "There’s a difference between manipulating files and forcefully accessing them."
     m "But, if I really did know how to hack…"
-    m "… There wouldn’t be anything stopping me from seeing you every day."
+    m "…There wouldn’t be anything stopping me from seeing you every day."
     m "Don’t you think it would be great if I could watch over you?"
     m "I'd see you with all the cameras in the world as my eyes so I can make sure you’re safe."
     m "I’d check your messages to see who you’ve been chatting with so I can know you aren’t cheating on me."
