@@ -292,6 +292,9 @@ label ch30_autoload:
     window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
+    #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
+    if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.events_list:
+    queueEvent('gender')
 
     #Block for anniversary events
     $ elapsed = days_passed()
