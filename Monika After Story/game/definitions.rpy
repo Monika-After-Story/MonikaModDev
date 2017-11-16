@@ -1406,68 +1406,46 @@ default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
 default persistent.event_list = []
-default persistent.gender = "N/A"
-#Gender specific words
+default persistent.gender = None
+
+call set_gender
+
+return
+
+
+#Gender specific word replacement
 #Those are to be used like this "It is [his] pen." Output:
 #"It is his pen." (if the player's gender is declared as male)
 #"It is her pen." (if the player's gender is decalred as female)
 #"It is their pen." (if player's gender is not declared)
 #Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
 #Please remember to update the list if you add more gender exclusive words. ^
-#his/her/their
-if persistent.gender == "M":
-    his = "his"
-elif persistent.gender == "F":
-    his = "her"
-else
-    his = "their"
-#he/she/they
-if persistent.gender == "M":
-    he = "he"
-elif persistent.gender == "F":
-    he = "she"
-else
-    he = "they"
-#he's/she's/they're
-if persistent.gender == "M":
-    hes = "he's"
-elif persistent.gender == "F":
-    hes = "she's"
-else
-    hes = "they're"
-#he is/she is/they are
-if persistent.gender == "M":
-    heis = "he is"
-elif persistent.gender == "F":
-    heis = "she is"
-else
-    heis = "they are"
-#boyfriend/girlfriend/partner
-if persistent.gender == "M":
-    bf = "boyfriend"
-elif persistent.gender == "F":
-    bf = "girlfriend"
-else
-    bf = "partner"
-#man/woman/person
-if persistent.gender == "M":
-    man = "man"
-elif persistent.gender == "F":
-    man = "woman"
-else
-    man = "person"
-#boy/girl/person
-if persistent.gender == "M":
-    boy = "boy"
-elif persistent.gender == "F":
-    boy = "girl"
-else
-    boy = "person"
-
-#This is a template (since I think that few words may be added).
-#if persistent.gender == "M":
-#     = ""
-#elif persistent.gender == "F":
-#     = ""
-#else
-#     = ""
+label set_gender:
+    if persistent.gender == "M":
+        define his = "his"
+        define he = "he"
+        define hes = "he's"
+        define heis = "he is"
+        define bf = "boyfriend"
+        define man = "man"
+        define boy = "boy"
+        define guy = "guy"
+    elif persistent.gender == "F":
+        define his = "her"
+        define he = "she"
+        define hes = "she's"
+        define heis = "she is"
+        define bf = "girlfriend"
+        define man = "woman"
+        define boy = "girl"
+        define guy = "girl"
+    else:
+        define his = "their"
+        define he = "they"
+        define hes = "they're"
+        define heis = "they are"
+        define bf = "partner"
+        define man = "person"
+        define boy = "person"
+        define guy = "person"
+    return
