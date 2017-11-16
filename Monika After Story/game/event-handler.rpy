@@ -70,10 +70,12 @@ init python:
         if event_label and renpy.has_label(event_label):
             globals()['allow_dialogue'] = False
             previous_topic = persistent.current_monikatopic
-            renpy.call_in_new_context(event_label)
+            state_change = renpy.call_in_new_context(event_label)
             persistent.current_monikatopic=previous_topic
             if event_label in monika_random_topics:
                 monika_random_topics.remove(event_label)
+            if state_change == 'quit':
+                renpy.quit(0)
             globals()['allow_dialogue'] = True
         else:
             return None
@@ -87,9 +89,10 @@ init python:
         #
         # IN:
         #
-        if persistent.current_monikatopic is not 0 and persistent.current_monikatopic is not None:
-            pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event')
+        if persistent.current_monikatopic:
+            #don't push greetings back on the stack
+            if not persistent.current_monikatopic.startswith('greeting_'):
+                pushEvent(persistent.current_monikatopic)
+                pushEvent('continue_event')
             persistent.current_monikatopic = 0
-
         return

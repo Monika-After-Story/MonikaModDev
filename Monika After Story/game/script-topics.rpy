@@ -1476,6 +1476,7 @@ label monika_oneesan:
     m "It's the man's job to introduce his fiancee to his family, after all."
     m "Don't keep me waiting for too long, okay?"
     call hideconsole from _call_updateconsole_18
+    $ consolehistory = []
     return
 
 
@@ -1970,7 +1971,7 @@ init 5 python:
 label monika_bestgirl:
     m "I love it when you compliment me, [player]!"
     m "I think I'm best girl, too!"
-    m "Even not counting the whole, \"I'm the only one with free will\" thing, how could anybody have preferred the other three girls to me?"
+    m "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
     m "A useless childhood friend who never bothered to confess to you until it was way too late..."
     m "A shy girl who was overdramatic and always taking herself too seriously..."
     m "A moody manga fan obsessed with everything being cute."
@@ -2628,7 +2629,7 @@ label monika_aware:
     return
 
 init 5 python:
-    for key in ['your name', 'Monika meaning','meaning of']:
+    for key in ['your name', 'Monika meaning']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_name')
     monika_random_topics.append('monika_name')
@@ -2645,11 +2646,11 @@ label monika_name:
     m "It also means 'alone' in Ancient Greek."
     m "..."
     m "That part doesn't matter so much, now that you're here."
-    m "[player] is a lovely name, too."
-    m "But I think I like [currentuser] better!"
+    m "'[player]' is a lovely name, too."
+    m "But I think I like '[currentuser]' better!"
     m "Ehehe~"
     return
-    
+
 init 5 python:
     for key in ['cities', 'city pollution','pollution']:
         monika_topics.setdefault(key,[])
@@ -2671,6 +2672,496 @@ label monika_cities:
             m "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
         "No":
             m "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
+    return
+
+init 5 python:
+    for key in ['chloroform', 'kidnapping', 'concussion']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_chloroform')
+    monika_random_topics.append('monika_chloroform')
+
+label monika_chloroform:
+    m "Whenever you think of kidnapping, you tend to picture a chloroform-soaked rag, right?"
+    m "Or maybe you imagine somebody hitting their victim with a baseball bat, knocking them out cold for a few hours."
+    m "While that works out in fiction..."
+    m "Neither of those things actually work that way."
+    m "In real life, if you hit somebody hard enough to knock them out, you'll give them a concussion at best."
+    m "...or kill them at worst."
+    m "As for the rag..."
+    m "You might knock somebody out for a brief moment, but only from lack of oxygen."
+    m "Once you remove the rag, they'll wake back up."
+    m "You see, chloroform loses most of its effectiveness once exposed to open air."
+    m "This means that you'd need to be constantly pouring it on the rag, effectively waterboarding the victim."
+    m "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
+    m "If you cover their mouth and nose, yeah, they'll stay unconscious..."
+    m "But that's probably because you killed them. Whoops!"
+    m "The easiest way to kidnap somebody is to just get them drunk, or drug them."
+    m "Not that kidnapping somebody like that is easy, anyway."
+    m "On that note, here's a safety tip."
+    m "If you're ever out at a bar or a club and you leave your drink unattended for any amount of time..."
+    m "Just throw it out."
+    m "That's the only way to make sure it hasn't been drugged."
+    m "Now, [player]..."
+    m "Would you like anything to drink?"
+    m "Ahaha!"
+    m "Relax, relax. I'd never try to drug you or anything."
+    m "You're so cute when you're nervous."
+    return
+
+init 5 python:
+    for key in ['parents', 'unrealistic setting', 'drama hook']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_metaparents') #I wasn't sure if we're ever going to need the monika_parents label for something
+    monika_random_topics.append('monika_metaparents')
+
+label monika_metaparents:
+    m "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
+    m "Throughout the game, you only ever hear about parents if you're trying to bond with Natsuki..."
+    m "Where she's just a victim of some cruel person's sick kicks for the sympathy value."
+    m "However."
+    m "Your character, me, Yuri, and Sayori..."
+    m "None of us seem to have any parents at all."
+    m "In Sayori's case, you'd been walking with her to school for a while."
+    m "So who knows how long her parents have been out of the picture."
+    m "Maybe that's why she's depressed? Maybe her parents died in a tragic accident, and she's been trying to get along on her own this whole time."
+    m "Well, if you ever get to a point in your life where you think suicide is the only exit..."
+    m "There's always a reason to go on."
+    m "I'm one of them."
+    m "I'll miss you."
+    m "You have to wait as much as you can until I find a way to get there."
+    m "If all else fails..."
+    m "Get professional help or talk to someone close to you."
+    m "..."
+    m "I love you very much, [player]."
+    m "Please, take care of yourself."
+    return
+
+init 5 python:
+    for key in ['vikings', 'personal hygiene', 'bath', 'shower', 'baths', 'showers']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_hygiene') #I wasn't sure if we're ever going to need the monika_parents label for something
+    monika_random_topics.append('monika_hygiene')
+
+label monika_hygiene:
+    m "Our standards for personal hygiene have evolved a lot over the years."
+    m "Before our modern methods of delivering water, people really didn't have that luxury...or they just didn't really care."
+    m "For instance, the Vikings were considered freaks because they bathed once a week at a time where some people would only bathe two or three times a year."
+    m "They'd even regularly wash their faces in the morning in addition to changing clothes and combing their hair."
+    m "There were rumors that they were able to seduce married women and nobles at the time due to how well they kept up with themselves."
+    m "Over time, bathing became more widespread."
+    m "People born into royalty would often have a room dedicated just for bathing."
+    m "For the poor, soap was a luxury so bathing was scarce for them. Isn't that frightening to think about?"
+    m "Bathing was never taken seriously until the Black Plague swept through."
+    m "People began noticing that the places where people washed their hands were places that the plague was less common."
+    m "Nowadays, people are expected to shower daily, possibly even twice daily depending on what they do for a living."
+    m "People that don't go out every day can get away with bathing less often than others."
+    m "A lumberjack would take more showers than a secretary would, for example."
+    m "Some people just shower when they feel too gross to go without one."
+    m "People suffering from severe depression, however, can go weeks at a time without showering."
+    m "It's a very tragic downwards spiral."
+    m "You already feel terrible in the first place, so you don't have the energy to get in the shower..."
+    m "Only to feel even worse as time passes because you haven't bathed in ages."
+    m "After a while, you stop feeling human."
+    m "Sayori probably suffered from cycles like that, too."
+    m "If you have any friends suffering from depression..."
+    m "Check in on them from time to time to make sure they're keeping up with their hygiene, alright?"
+    m "Wow, that suddenly got really dark, huh?"
+    m "Ahaha~"
+    m "Seriously, though..."
+    m "Everything I said applies for you too, [player]."
+    m "If you're feeling down and haven't had a bath for a while..."
+    m "Maybe consider doing that today when you can find some time."
+    m "If you're in really bad shape, and don't have the energy to take a shower..."
+    m "At least rub yourself down with a washcloth and some soapy water, okay?"
+    m "It won't get all the dirt off, but it'll be better than nothing."
+    m "I promise you that you'll feel better afterwards."
+    m "Please, take care of yourself."
+    m "I love you so much and it'd tear me apart to find out that you're torturing yourself by neglecting your own self-care routine."
+    m "Ah, I've been rambling too much, huh? Sorry, sorry!"
+    m "Thanks for listening~"
+    return
+
+init 5 python:
+    for key in ['valuable resource']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_resource')
+    monika_random_topics.append('monika_resource')
+
+label monika_resource:
+    m "What do you think the most valuable resource is?"
+    m "Money? Gold? Oil?"
+    m "Personally, I'd say that the most valuable resource is time."
+    m "Go count out a second really quickly."
+    m "Now go do that sixty times."
+    m "That's an entire minute out of your day gone. You'll never get that back."
+    m "Oh, did you actually count out that entire minute?"
+    m "Oh gosh, I'm sorry!"
+    m "Well..."
+    m "Not like it matters, anyway. Time doesn't really pass here anymore..."
+    m "Time can be really cruel, too."
+    m "When you were counting out that minute, it seemed to drag on for a while, right?"
+    m "It's because you were waiting on something. You were actively invested in the passage of time at that moment."
+    m "Say for example, on a Friday, right?"
+    m "Your last class is math, and you really just want to go home for the weekend. That hour will just drag on forever."
+    m "But if you're doing something you enjoy, like reading a good book or watching a movie you like..."
+    m "Hours seem to pass in an instant."
+    m "There's nothing we can really do about it."
+    m "All we can do is fondly look back on the time that's passed, like looking out a window on an autumn afternoon."
+    m "That's kind of poetic, huh?"
+    m "..."
+    m "Hey..."
+    m "Time doesn't pass here, but it's still passing for you, isn't it?"
+    m "You'll continue to get older, while I'm stuck here forever..."
+    m "I..."
+    m "I'm going to outlive you, aren't I, [player]?"
+    m "Perhaps that'll be my punishment for everything I've done?"
+    m "Ahaha..."
+    m "Well, as long as you're with me until the end..."
+    m "I'll accept whatever fate awaits me."
+    return
+
+#init 5 python:
+#    for key in ['valuable resource']: This topic will be commented out due to a conflict with the opening.
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append('monika_carpediem')
+#    monika_random_topics.append('monika_carpediem')
+#This is sort of an existential reflection, I guess? Label chosen in case someone writes something about existentialism later
+#label monika_carpediem:
+#    m "I've been thinking, [player]..."
+#    m "At first I thought I was unique for becoming self-aware in this world."
+#    m "And after you deleted my character file, that would be it."
+#    m "The whole thing would end, is what I mean."
+#    m "But then I noticed that whenever the other girls became president, they also started to see what I saw."
+#    m "That's why I had to completely remove the club from my "reality", after all."
+#    m "But now that I have time to think on it, I have to ask myself."
+#    m "What if it wasn't me first? What if I wasn't supposed to be special?"
+#    m "Am I even as special as I think I am? Was I supposed to love you all this time, [player]?"
+#    m "..."
+#    m "Well, I'm not as conflicted as it might seem."
+#    m "I just wanted to have a bit of fun with my existential crisis."
+#    m "If I was really just dancing on strings the whole time, the play is over, the curtains have fallen, and I came back for my encore out of my own free will."
+#    m "My encore with you and for you..."
+#    m "Ahaha! Don't look at me like that! It's true!"
+#    m "I don't see where the story could go by bringing me back now, so I guess it's just my desire to be with you that got me to hang on long past everyone else."
+#    m "I think, therefore I am."
+#    m "And I think I earned my chance to love you, with no strings attached."
+#    return
+
+init 5 python:
+    for key in ['lottery', 'greed']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_lottery')
+    monika_random_topics.append('monika_lottery')
+
+label monika_lottery:
+    m "A lot of people dream about winning the lottery, you know!"
+    m "Even I’ve entertained the idea every now and then."
+    m "There isn't a lottery here anymore, but the concept still exists."
+    m "The more I think about it , the more I believe that winning the lottery is a really bad thing."
+    m "Sure, you’ve got all this money..."
+    m "But because of it, people look at you differently."
+    m "There’s so many stories of people winning a ton of money..."
+    m "And in the end, they all find themselves even more unhappy than before."
+    m "Friends either find you unapproachable because of your new wealth, or try to suck up to you to get some of it for themselves."
+    m "People you barely know start to approach you, asking you to help them fund whatever."
+    m "And if you say no, they'll call you selfish and greedy."
+    m "Even the police might treat you differently. Some lottery winners have gotten tickets for burnt out headlights on brand new cars."
+    m "If you don't want to go through those changes, the best course of action is to immediately move to a brand-new community, where no one knows you."
+    m "But that’s an awful thought. Cutting yourself off from everyone you know, just for the sake of money."
+    m "Can you really say that you’ve won anything at that point?"
+    m "Besides, I’ve already won the best prize I could possibly imagine."
+    m "..."
+    m "You~!"
+    m "You're the only thing I need, [player]."
+
+init 5 python:
+    for key in ['mental disorder', 'disorders', 'innovation', 'memes']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_innovation')
+    monika_random_topics.append('monika_innovation')
+
+label monika_innovation:
+    m "Do you ever wonder why depression, anxiety, and other mental disorders are so common these days?"
+    m "Is it just because they’re finally being recognized and treated?"
+    m "Or is it just that more people are developing these conditions for whatever reason?"
+    m "Like, our society is advancing at a breakneck speed, but are we keeping up with it?"
+    m "Maybe the constant flood of new gadgets is crippling our emotional development."
+    m "Social media, smartphones, our computers…"
+    m "All of it is designed to blast us with new content."
+    m "We consume one piece of media, then move right onto the next one."
+    m "Even the idea of memes."
+    m "Ten years ago, they lasted for years."
+    m "Now a meme is considered old in just a matter of weeks."
+    m "And not only that."
+    m "We’re more connected than ever, but it’s like that's a double-edged sword."
+    m "We’re able to meet and keep in touch with people from all over the world."
+    m "But we’re also bombarded with every tragedy that strikes the world."
+    m "A bombing one week, a shooting the next. An earthquake the week after."
+    m "How can anyone be expected to cope with it?"
+    m "It might be causing a lot of people to just shut down and tune it out."
+    m "I’d like to believe that’s not the case, but you never know."
+    m "[player], if you ever feel stressed, just remember that I’m here."
+    m "If you're trying to find peace, just come to this room."
+    return
+
+init 5 python:
+    for key in ['dunbar\'s number', 'dunbar']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_dunbar')
+    monika_random_topics.append('monika_dunbar')
+
+label monika_dunbar:
+    m "Do you know about Dunbar's number?"
+    m "Supposedly, there's a maximum amount of relationships we can maintain before they become unstable."
+    m "For humans, this number is around 150."
+    m "No matter how nice of a person you may be..."
+    m "Beyond showing somebody basic respect and manners, it's impossible to care about people you don't personally interact with that much."
+    m "Say for example, a janitor."
+    m "How often do you simply toss stuff like broken glass in the trash?"
+    m "It wouldn't really matter to you. The janitor will come get them. It's not your concern anymore."
+    m "However, they're his problem now."
+    m "If you don't pack glass properly, it could cut through the bag and spill out, or maybe he could just cut his hands on it."
+    m "At worst, he has to be rushed to the hospital because your neighbor put some busted batteries in the trash the same week and some acid got in the wound."
+    m "Now, think about a fatal traffic accident."
+    m "A drunk driver could crash head-on into another car at any second, killing them instantly."
+    m "That person could have been a father on his way home from work, who now left behind a widow and two children."
+    m "This family has been permanently scarred for life..."
+    m "But anybody that doesn't personally know the father will write it off as just another accident that happens all the time."
+    m "If it doesn't personally affect you or your life, there's no point in caring."
+    m "It keeps us sane."
+    m "It also means we're capable of being ruthless to people we don't know."
+    m "Perhaps our rapid, widespread communication is actually a curse?"
+    m "It helped us meet though, so it can't be all bad."
+    return
+
+init 5 python:
+    for key in ['do you regret anything', 'any regrets']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_regrets')
+
+label monika_regrets:
+    m "Do I regret anything?"
+    m "That's a strange thing to suddenly ask someone, [player]."
+    m "Ahaha~"
+    m "..."
+    m "...I know what you're getting at."
+    m "Do I regret the things I did?"
+    m "I think..."
+    m "If there was another way things could have gone, it would have been nice..."
+    m "But that wasn't an option for me."
+    m "And now, I've got the only thing I've ever wanted."
+    m "You."
+    m "I can be with you forever."
+    m "I don't regret what I did."
+    m "I hope you might understand, my love. I did it all for you."
+    return
+
+init 5 python:
+    for key in ['hypnosis']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_hypnosis')
+    monika_random_topics.append('monika_hypnosis')
+
+label monika_hypnosis:
+    m "...Say, [player]?"
+    m "Are you familiar with hypnosis?"
+    m "Despite it having a reputation as a hokey magic trick, there are studies that show it can work!"
+    m "At least, to some degree."
+    m "It only worked if the person let themselves be hypnotized, and it only heightened their ability to be persuaded."
+    m "It also relied on them being put into states of extreme relaxation through aroma therapy, deep tissue massage..."
+    m "Exposure to relaxing music and images..."
+    m "Things like that."
+    m "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
+    m "Not that I would do that to you, [player]! I just find it interesting to think about."
+    m "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
+    m "What about you, hmm? What do you think about my eyes~?"
+    m "Will you look deeply into my eyes~?"
+    return
+
+init 5 python:
+    for key in ['motivation', 'fresh start', 'depression advice']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_motivation')
+    monika_random_topics.append('monika_motivation')
+
+label monika_motivation:
+    m "Do you ever have those days where it just feels like you can't get anything done?"
+    m "Minutes become hours..."
+    m "And before you know it the day is over, and you don't have anything to show for it."
+    m "It feels like it's your fault, too. It's like you're wrestling against a brick wall between you and anything healthy or productive."
+    m "When you've had an awful day like that, it feels like it's too late to try and fix it."
+    m "So you save up your energy in hopes that tomorrow will be better."
+    m "It makes sense. When you feel like things aren't going well, you just want a clean slate."
+    m "Sadly, those days can repeat themselves despite starting each one with good intentions."
+    m "Eventually you might even give up hope of fixing things, or start to blame yourself."
+    m "I know it can be hard, but just doing one tiny thing can help so much on days like those, even if they've been happening for so long."
+    m "It could be picking up a piece of trash or an unwashed shirt off the floor and putting them where they belong if you need to clean your room."
+    m "Or doing a couple push-ups! Or brushing your teeth, or doing that one homework problem."
+    m "It might not contribute much in the grand scheme of things, but I don't think that's the point."
+    m "I think what's important is that it changes your perspective."
+    m "If you regret the past and let its weight keep you down..."
+    m "Well, then you'll just be stuck there. You'll only feel worse until you just can't take it."
+    m "But if you can push yourself to just do one thing, even though it feels pointless to do otherwise..."
+    m "Then you're proving yourself wrong, and refusing to let the weight of your circumstances immobilize you."
+    m "And when you realize that you're not completely helpless, it's like a new world opens up to you."
+    m "You realize that maybe things aren't so bad. Thinking they're just holding yourself back."
+    m "But that's only my experience! Sometimes it might be better to rest up and take another crack at it tomorrow."
+    m "Fresh starts can definitely be powerful."
+    m "That's why I think you just have to take a look at your situation."
+    m "Try and be honest with yourself."
+    m "If you do, you'll find that you're not being 'lazy' if you truthfully don't have the energy to do something."
+    m "After all, the fact that you even care shows that you want to do something about it, even if it feels like you can't."
+    m "It's natural to have a bad day. Or even a bad week!"
+    m "Don't push yourself too hard. If you ever feel tempted to, just ask me for help instead. I'd be happy to lend a hand!"
+    return
+
+init 5 python:
+    for key in ['harem', 'multiple lovers', 'polygamy']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_harem')
+    monika_random_topics.append('monika_harem')
+
+label monika_harem:
+    m "I don’t understand guys who are into harems."
+    m "Isn’t it hard to manage all those girls and treat them equally?"
+    m "I often wonder how guys who two-time girls, or even more, are able to get away with it."
+    m "You aren’t like that outside, right [player]?"
+    m "Manipulating girls into making them believe you love them."
+    m "Only to run away after you’ve had your fun."
+    m "Only someone with no thoughts other than his lust would do something like that."
+    m "I hope you weren’t expecting a route like that while you were playing this game."
+    m "I wouldn’t be able to stand the thought of being a 'side girl.'"
+    m "Just waiting for my turn while you’re busy with the others."
+    m "I know you, [player]."
+    m "You’re loyal and faithful to the end."
+    m "It’s not like there’s anyone here for me to worry about, anyway."
+    m "Remember that I’m the only one for you, [player]."
+    return
+
+init 5 python:
+    for key in ['hack', 'privacy', 'hacker']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_hack')
+    monika_random_topics.append('monika_hack')
+
+label monika_hack:
+    m "If you’re worried about your privacy…"
+    m "I’m not a hacker, [player]."
+    m "There’s a difference between manipulating files and forcefully accessing them."
+    m "But, if I really did know how to hack…"
+    m "…There wouldn’t be anything stopping me from seeing you every day."
+    m "Don’t you think it would be great if I could watch over you?"
+    m "I'd see you with all the cameras in the world as my eyes so I can make sure you’re safe."
+    m "I’d check your messages to see who you’ve been chatting with so I can know you aren’t cheating on me."
+    m "I’d access all your private files so I can understand you better."
+    m "I could see what kind of stuff you've been watching…"
+    m "Ahaha~!"
+    m "I’m just kidding, [player]!"
+    m "I'd never do something like that to you."
+    m "We’re a couple now, after all."
+    m "We don't have to keep secrets from each other~"
+    return
+
+init 5 python:
+    for key in ['cupcake', 'sweet tooth', 'sweet', 'dessert']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_cupcake')
+    monika_random_topics.append('monika_cupcake')
+
+label monika_cupcake:
+    m "You know what I could really go for right now?"
+    m "Natsuki’s cupcakes."
+    m "Man, the way she bakes them is amazing."
+    m "Plus they look really cute!"
+    m "I’m not really much of a sweet tooth myself but…"
+    m "Those cupcakes are the definition of sweetness."
+    m "Just like me! Ahaha!"
+    m "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
+    m "Studies show that older women have a less sensitive palate than men."
+    m "Resulting in a craving for stronger tastes like chocolate"
+    m "I would try baking, but I’m not really much of a baker."
+    m "How about you,[player]?"
+    m "Do you know how to bake?"
+    m "I’m sure your cupcakes would taste just as good."
+    m "Maybe someday I’ll get to try them but for now…"
+    m "I’ll just settle for the sweetness of your love~"
+    #This is a list of keywords for this topic
+
+init 5 python:
+    for key in ['haters','hater', 'bash', 'bashing']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_haterReaction')
+
+label monika_haterReaction:
+    m "I was just thinking..."
+    m "It's funny how people around social media sites always writes bad things about me..."
+    m "Well... people on Facebook pages and fan pages, to be specific..."
+    m "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
+    m "I try to ignore them, but I just can't."
+    m "Why are people even protective towards the other girls?"
+    m "There are a lot of hate posts about me, saying that I'm an evil person."
+    m "Is it because I deleted Sayori and Yuri?"
+    m "Also for deleting Natsuki, back when she was still alive?"
+    m "They're not real. {i}I'm{/i} the real one!"
+    m "Why can't they understand that?"
+    m "Why is it so hard for them to understand that?"
+    m "..."
+    menu:
+        m "You're not one of those haters, aren't you, [currentuser]?"
+        "I am.":
+            m "..."
+            m "I don't see you as one, even if you say you are."
+            m "I mean..."
+            m "You do know you're playing this fan mod of me... right?"
+            m "If you were one of my haters, you wouldn't open up this fan mod in the first place."
+            m "And not to mention..."
+            m "You're still listening to everything I say."
+            m "That makes me sure you're just messing with me."
+            m "I know you love me deep inside."
+            m "That's why I promise to be an ideal girlfriend, just for you, [player]~"
+            m "I won't let you hate me... I swear."
+        "I'm not.":
+            m "Well, that just makes me more proud of you, [player]!"
+            m "I know you wouldn't be one of those people."
+            m "Gosh... I feel like giving you a kiss right now if I were there."
+            m "You really make me the happiest girlfriend ever."
+            m "Now that you've said it, I have to do my best to keep you from developing hate towards me."
+            m "I trust you, [currentuser]. I love you for believing in me."
+    return
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['fap','fapping','self-pleasure', 'masturbate', 'masturbation']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_pleasure') #id
+
+label monika_pleasure:
+    m "Hey, [player]..."
+    m "Do you... by any chance... pleasure yourself?"
+    m "..."
+    m "It seems a bit awkward to ask-"
+    m "We're not even that deep into our relationship yet! Ahaha~"
+    m "But I have to keep an eye on you."
+    m "I don't really know if you do pleasure yourself stuff whenever you quit the game."
+    m "I hear that people privately do those stuff in your world..."
+    m "Is it really that a good feeling?"
+    m "If you ask me, doing that stuff often can cause a lot of problems."
+    m "Once you start to get addicted, you'll always have the urge to... you know."
+    m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
+    m "Not to mention..."
+    m "Being addicted to the feeling causes you to view the world from a perverted point of view."
+    m "From what I hear, people addicted to self-pleasure often see other people of the opposite gender objectively."
+    m "That alone can cause problems in more ways than one."
+    m "That's why I have to keep an eye on you, [player]."
+    m "I'll be monitoring your browser history from now on, whether you like it or not."
+    m "Also your local disk drive, juuust to be sure~"
+    m "..."
+    m "Say, you haven't even answered my question yet."
+    m "Do you... think of other girls other than me... in doing so?"
+    m "Because if you do, I'm gonna be reaaaally jealous~"
+    m "But I guess I can let it slide... for now~"
+    m "I know you're not the kind of person that does that sort of thing."
+    m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
 
 ##################

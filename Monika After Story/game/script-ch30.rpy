@@ -14,8 +14,6 @@ image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
 image monika_bg = "images/cg/monika/monika_bg.png"
-image monika_day_bg = "mod_assets/monika_day_bg.png"
-image monika_transparent_day_bg = "mod_assets/monika_day_bg_eq.png"
 image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
@@ -118,7 +116,7 @@ init python:
 
     def show_dialogue_box():
         if allow_dialogue:
-            renpy.call_in_new_context('ch30_monikatopics')
+            renpy.jump('ch30_monikatopics')
 
     def select_music():
         # check for open menu
@@ -139,7 +137,15 @@ init python:
 
 
     def start_pong():
-        renpy.call_in_new_context('game_pong')
+        global allow_dialogue
+
+        # locking pong via dialogue and music menu
+        # also this allows pong to lock dialogue as well
+        if allow_dialogue and not songs.menu_open:
+            previous_dialogue = allow_dialogue
+            allow_dialogue = False
+            renpy.call_in_new_context('game_pong')
+            allow_dialogue = previous_dialogue
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -299,50 +305,53 @@ label ch30_autoload:
         $queueEvent('gender')
 
     #Block for anniversary events
-    if elapsed < persistent.monika_anniversary * 365:
+    if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
         $ persistent.monika_anniversary = 0
         $pushEvent(anni_negative)
-    elif elapsed >= 36500 and persistent.monika_anniversary < 100:
+    elif elapsed >= 36500 and persistent.monika_anniversary < 100 and not renpy.seen_label('anni_100') and not 'anni_100' in persistent.event_list:
         $ persistent.monika_anniversary = 100
         $pushEvent(anni_100)
-    elif elapsed >= 18250 and persistent.monika_anniversary < 50:
+    elif elapsed >= 18250 and persistent.monika_anniversary < 50 and not renpy.seen_label('anni_50') and not 'anni_50' in persistent.event_list:
         $ persistent.monika_anniversary = 50
         $pushEvent(anni_50)
-    elif elapsed >= 7300 and persistent.monika_anniversary < 20:
+    elif elapsed >= 7300 and persistent.monika_anniversary < 20 and not renpy.seen_label('anni_20') and not 'anni_20' in persistent.event_list:
         $ persistent.monika_anniversary = 20
         $pushEvent(anni_20)
-    elif elapsed >= 3650 and persistent.monika_anniversary < 10:
+    elif elapsed >= 3650 and persistent.monika_anniversary < 10 and not renpy.seen_label('anni_10') and not 'anni_10' in persistent.event_list:
         $ persistent.monika_anniversary = 10
         $pushEvent(anni_10)
-    elif elapsed >= 1825 and persistent.monika_anniversary < 5:
+    elif elapsed >= 1825 and persistent.monika_anniversary < 5 and not renpy.seen_label('anni_5') and not 'anni_5' in persistent.event_list:
         $ persistent.monika_anniversary = 5
         $pushEvent(anni_5)
-    elif elapsed >= 1460 and persistent.monika_anniversary < 4:
+    elif elapsed >= 1460 and persistent.monika_anniversary < 4 and not renpy.seen_label('anni_4') and not 'anni_4' in persistent.event_list:
         $ persistent.monika_anniversary = 4
         $pushEvent(anni_4)
-    elif elapsed >= 1095 and persistent.monika_anniversary < 3:
+    elif elapsed >= 1095 and persistent.monika_anniversary < 3 and not renpy.seen_label('anni_3') and not 'anni_3' in persistent.event_list:
         $ persistent.monika_anniversary = 3
         $pushEvent(anni_3)
-    elif elapsed >= 730 and persistent.monika_anniversary < 2:
+    elif elapsed >= 730 and persistent.monika_anniversary < 2 and not renpy.seen_label('anni_2') and not 'anni_2' in persistent.event_list:
         $ persistent.monika_anniversary = 2
         $pushEvent(anni_2)
-    elif elapsed >= 365 and persistent.monika_anniversary < 1:
+    elif elapsed >= 365 and persistent.monika_anniversary < 1 and not renpy.seen_label('anni_1') and not 'anni_1' in persistent.event_list:
         $ persistent.monika_anniversary = 1
         $pushEvent(anni_1)
-    elif persistent.monika_reload <= 3:
-        $pushEvent("ch30_reload_" + str(persistent.monika_reload))
-    else:
-        #pick a random greeting
-        $pushEvent(renpy.random.choice(greetings_list))
-    $ persistent.monika_reload += 1
+
+    #queue up the next reload event it exists and isn't already queue'd
+    $next_reload_event = "ch30_reload_" + str(persistent.monika_reload)
+    if renpy.has_label(next_reload_event) and not next_reload_event in persistent.event_list:
+        $queueEvent(next_reload_event)
+
+    #pick a random greeting
+    $pushEvent(renpy.random.choice(greetings_list))
+
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
+    $ config.keymap["open_dialogue"] = ["t","T"]
+    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["play_pong"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
@@ -359,7 +368,8 @@ label ch30_loop:
             show room_mask2 as rm2:
                 size (320,180)
                 pos (935,200)
-            show monika_transparent_day_bg
+            show monika_day_room
+            show monika 2 at t11 zorder 2
             with dissolve
             $ morning_flag = True
     elif not is_morning():
@@ -372,7 +382,8 @@ label ch30_loop:
             show room_mask2 as rm2:
                 size (320,180)
                 pos (935,200)
-            show monika_bg
+            show monika_room
+            show monika 2 at t11 zorder 2
             with dissolve
             show monika_bg_highlight
     $ persistent.autoload = "ch30_autoload"
@@ -404,6 +415,11 @@ label ch30_loop:
 
 label ch30_monikatopics:
     python:
+
+        # this workaround is so the hotkey button overlay properly disables
+        # certain buttons
+        allow_dialogue = False
+
         player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
 
         if player_dialogue:
@@ -433,5 +449,7 @@ label ch30_monikatopics:
                 m("[response]")
             else:
                 pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
+
+        allow_dialogue = True
 
     jump ch30_loop
