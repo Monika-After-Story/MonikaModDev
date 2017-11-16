@@ -1277,7 +1277,7 @@ default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
 default persistent.event_list = []
-default persistent.gender = None
+default persistent.gender = "M" #Assume gender matches the PC
 
 call set_gender
 
@@ -1293,30 +1293,30 @@ return
 #Please remember to update the list if you add more gender exclusive words. ^
 label set_gender:
     if persistent.gender == "M":
-        define his = "his"
-        define he = "he"
-        define hes = "he's"
-        define heis = "he is"
-        define bf = "boyfriend"
-        define man = "man"
-        define boy = "boy"
-        define guy = "guy"
+        $his = "his"
+        $he = "he"
+        $hes = "he's"
+        $heis = "he is"
+        $bf = "boyfriend"
+        $man = "man"
+        $boy = "boy"
+        $guy = "guy"
     elif persistent.gender == "F":
-        define his = "her"
-        define he = "she"
-        define hes = "she's"
-        define heis = "she is"
-        define bf = "girlfriend"
-        define man = "woman"
-        define boy = "girl"
-        define guy = "girl"
+        $his = "her"
+        $he = "she"
+        $hes = "she's"
+        $heis = "she is"
+        $bf = "girlfriend"
+        $man = "woman"
+        $boy = "girl"
+        $guy = "girl"
     else:
-        define his = "their"
-        define he = "they"
-        define hes = "they're"
-        define heis = "they are"
-        define bf = "partner"
-        define man = "person"
-        define boy = "person"
-        define guy = "person"
+        $his = "their"
+        $he = "they"
+        $hes = "they're"
+        $heis = "they are"
+        $bf = "partner"
+        $man = "person"
+        $boy = "person"
+        $guy = "person"
     return

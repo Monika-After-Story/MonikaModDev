@@ -84,7 +84,7 @@ init python:
     import re
     therapist = eliza.eliza()
     process_list = []
-    currentuser = ""
+    currentuser = persistent.playername #default to the player name
     if renpy.windows:
         try:
             process_list = subprocess.check_output("wmic process get Description", shell=True).lower().replace("\r", "").replace(" ", "").split("\n")
@@ -301,7 +301,7 @@ label ch30_autoload:
 
     $ elapsed = days_passed()
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
-    if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.events_list:
+    if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.event_list:
         $queueEvent('gender')
 
     #Block for anniversary events
