@@ -51,6 +51,9 @@ style music_menu_label_text is game_menu_label_text
 
 style music_menu_return_button is return_button
 
+style music_menu_outer_frame:
+    background "mod_assets/music_menu.png"
+
 screen music_menu():
     modal True
 
@@ -62,7 +65,7 @@ screen music_menu():
         style "music_menu_outer_frame"
 
         hbox:
-            
+
             frame:
                 style "music_menu_navigation_frame"
 
