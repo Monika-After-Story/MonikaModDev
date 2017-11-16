@@ -438,40 +438,37 @@ screen navigation():
 
         spacing gui.navigation_spacing
 
-        if not persistent.autoload or not main_menu:
 
-            if main_menu:
+        if main_menu:
 
-                textbutton _("New Game") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
+            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
 
-            else:
-
-                textbutton _("History") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
-
-                textbutton _("Save Game") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
-
-            textbutton _("Load Game") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
-
-            if _in_replay:
-
-                textbutton _("End Replay") action EndReplay(confirm=True)
-
-            elif not main_menu:
-                textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
-
-            textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
-
-            #textbutton _("About") action ShowMenu("about")
-
-            if renpy.variant("pc"):
-
-                ## Help isn't necessary or relevant to mobile devices.
-                textbutton _("Help") action Help("README.html")
-
-                ## The quit button is banned on iOS and unnecessary on Android.
-                textbutton _("Quit") action Quit(confirm=not main_menu)
         else:
-            timer 1.75 action Start("autoload_yurikill")
+
+            textbutton _("History") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
+
+            textbutton _("Save Game") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
+
+        textbutton _("Load Game") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
+
+        if _in_replay:
+
+            textbutton _("End Replay") action EndReplay(confirm=True)
+
+        elif not main_menu:
+            textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
+
+        textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
+
+        #textbutton _("About") action ShowMenu("about")
+
+        if renpy.variant("pc"):
+
+            ## Help isn't necessary or relevant to mobile devices.
+            textbutton _("Help") action Help("README.html")
+
+            ## The quit button is banned on iOS and unnecessary on Android.
+            textbutton _("Quit") action Quit(confirm=not main_menu)
 
 
 style navigation_button is gui_button
@@ -1004,6 +1001,14 @@ screen preferences():
                         textbutton _("Mute All"):
                             action Preference("all mute", "toggle")
                             style "mute_all_button"
+
+            hbox:
+                textbutton _("Update Version"):
+                    action Jump('update_now')
+                    style "navigation_button"
+
+
+
     text "v[config.version]":
                 xalign 1.0 yalign 1.0
                 xoffset -10 yoffset -10
@@ -1470,6 +1475,12 @@ style confirm_button:
 
 style confirm_button_text is navigation_button_text:
     properties gui.button_text_properties("confirm_button")
+
+## Updater confirm screen
+screen update_confirm():
+    pass
+
+style update_confirm is confirm
 
 
 ## Skip indicator screen #######################################################
