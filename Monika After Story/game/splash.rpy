@@ -163,6 +163,11 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
 
+    #Check for updates
+    $new_version = updater.UpdateVersion('https://github.com/therationalpi/MonikaModDev/updates.json')
+    "Version [new_version] is now available."
+    #$updater.update('https://github.com/therationalpi/MonikaModDev/updates.json')
+
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
     if not persistent.first_run:
