@@ -162,6 +162,11 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
+    scene white
+    $next_version = updater.UpdateVersion('http://s3.us-east-2.amazonaws.com/monikaafterstory/updates.json')
+    "The latest version is [next_version]."
+    $next_version = updater.UpdateVersion('http://s3.us-east-2.amazonaws.com/monikaafterstory/updates.json')
+    "The latest version is [next_version]."
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
@@ -240,7 +245,6 @@ label after_load:
         #Handle however you want, default is to force reset all save data
         $ renpy.utter_restart()
     return
-
 
 
 label autoload:

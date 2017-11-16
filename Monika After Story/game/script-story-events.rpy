@@ -13,7 +13,7 @@ label gender:
         "So, are you male or female?"
         "Male.":
             $persistent.gender = "M"
-            call set_gender
+            call set_gender from _call_set_gender_1
             m "Oh? So you {i}are{/i} a [guy]?"
             m "Ehehe, I suppose that makes sense!"
             m "Not a lot of girls would play a game like this."
@@ -21,7 +21,7 @@ label gender:
             m "Even I can be curious sometimes, you know?"
         "Female.":
             $persistent.gender = "F"
-            call set_gender
+            call set_gender from _call_set_gender_2
             m "Oh? So you're actually a [guy]?"
             m "I hope I didn't say anything to offend you before!"
             m "Though I did suspect it a bit from the beginning... just a little!"
@@ -30,7 +30,7 @@ label gender:
             m "But don't worry. Even if I might ask things like this, it's only out of curiosity."
         "Neither.":
             $persistent.gender = "X"
-            call set_gender
+            call set_gender from _call_set_gender_3
             m "You don't see yourself as a guy or a girl?"
             m "That's very interesting, but I can sort of relate."
             m "Like, I am a girl, but I'm also a character in a computer game..."
