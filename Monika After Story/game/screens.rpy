@@ -1476,12 +1476,58 @@ style confirm_button:
 style confirm_button_text is navigation_button_text:
     properties gui.button_text_properties("confirm_button")
 
-## Updater confirm screen
-screen update_confirm():
-    pass
+##Updating screen
 
-style update_confirm is confirm
+screen update_check(ok_action,cancel_action):
 
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "update_check"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+            if latest_version != None:
+                label _('[latest_version] is now avalable! Install?'):
+                    style "confirm_prompt"
+                    xalign 0.5
+            elif not timeout:
+                label _('Checking for updates...'):
+                    style "confirm_prompt"
+                    xalign 0.5
+            else:
+                label _('No updates available.'):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("Install") action [ok_action, SensitiveIf(latest_version)]
+
+                textbutton _("Cancel") action cancel_action
+
+    timer 5.0 action [SetVariable("timeout",True), renpy.restart_interaction]
+
+    ## Right-click and escape answer "no".
+    #key "game_menu" action no_action
+
+
+style update_check_frame is confirm_frame
+style update_check_prompt is confirm_prompt
+style update_check_prompt_text is confirm_prompt_text
+style update_check_button is confirm_button
+style update_check_button_text is confirm_button_text
 
 ## Skip indicator screen #######################################################
 ##

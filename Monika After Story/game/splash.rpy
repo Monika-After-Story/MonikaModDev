@@ -163,16 +163,12 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     scene white
-    $next_version = updater.UpdateVersion('http://s3.us-east-2.amazonaws.com/monikaafterstory/updates.json')
-    "The latest version is [next_version]."
-    $next_version = updater.UpdateVersion('http://s3.us-east-2.amazonaws.com/monikaafterstory/updates.json')
-    "The latest version is [next_version]."
+    call update_now from _call_update_now
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
     if not persistent.first_run:
         $ quick_menu = False
-        scene white
         pause 0.5
         scene tos
         with Dissolve(1.0)
