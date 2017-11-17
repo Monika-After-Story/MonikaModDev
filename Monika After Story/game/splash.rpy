@@ -163,7 +163,6 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     scene white
-    call update_now from _call_update_now
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
@@ -195,6 +194,9 @@ label splashscreen:
         $ persistent.first_run = True
 
     $ basedir = config.basedir.replace('\\', '/')
+
+    #Check for game updates before loading the game or the splash screen
+    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
