@@ -3204,7 +3204,7 @@ label monika_philosophia:
     m "Existence, knowledge, values, reason, mind, language and even logic!"
     m "They examine every aspect of human existence."
     m "The term 'Philosophia' was probably coined by Pythagoras, or at least, that's what they say..."
-    m "Phylosophy includes various methods to prove a point, may they be written or verbal."
+    m "Philosophy includes various methods to prove a point, may they be written or verbal."
     m "An example of a quite common philosophical question is 'What is the most real?'"
     m "A quite intresting question if you ask me..."
     m "Can we really tell if something is fake? Or real, depending on the point of view..."
