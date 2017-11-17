@@ -75,6 +75,8 @@ image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
 image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None,image="mod_assets/window_1_fallback.png")
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
+image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
+image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
 
 init python:
     import subprocess
@@ -184,10 +186,10 @@ init python:
 label spaceroom:
     if is_morning():
         if morning_flag != True or scene_change:
-            show room_mask as rm:
+            show room_mask3 as rm:
                 size (320,180)
                 pos (30,200)
-            show room_mask2 as rm2:
+            show room_mask4 as rm2:
                 size (320,180)
                 pos (935,200)
             show monika_day_room
