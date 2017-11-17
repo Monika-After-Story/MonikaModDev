@@ -1004,7 +1004,7 @@ screen preferences():
 
             hbox:
                 textbutton _("Update Version"):
-                    action Jump('update_now')
+                    action [SetVariable('check_wait',0), Jump('update_now')]
                     style "navigation_button"
 
 
@@ -1497,7 +1497,7 @@ screen update_check(ok_action,cancel_action):
             spacing 30
 
             if latest_version != None:
-                label _('[latest_version] is now avalable! Install?'):
+                label _('An update is now avalable!'):
                     style "confirm_prompt"
                     xalign 0.5
             elif not timeout:
@@ -1528,6 +1528,72 @@ style update_check_prompt is confirm_prompt
 style update_check_prompt_text is confirm_prompt_text
 style update_check_button is confirm_button
 style update_check_button_text is confirm_button_text
+
+## Updater screen #######################################################
+##
+## This is the screen called when the game needs to update versions
+##
+screen updater:
+
+
+    style_prefix "updater"
+
+    frame:
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _("Updater")
+
+        fixed:
+
+            vbox:
+
+                if u.state == u.ERROR:
+                    text _("An error has occured:")
+                elif u.state == u.CHECKING:
+                    text _("Checking for updates.")
+                elif u.state == u.UPDATE_NOT_AVAILABLE:
+                    text _("Monika After Story is up to date.")
+                elif u.state == u.UPDATE_AVAILABLE:
+                    text _("Version [u.version] is available. Do you want to install it?")
+                elif u.state == u.PREPARING:
+                    text _("Preparing to download the updates.")
+                elif u.state == u.DOWNLOADING:
+                    text _("Downloading the updates.")
+                elif u.state == u.UNPACKING:
+                    text _("Unpacking the updates.")
+                elif u.state == u.FINISHING:
+                    text _("Finishing up.")
+                elif u.state == u.DONE:
+                    text _("The updates have been installed. Monika After Story will now restart.")
+                elif u.state == u.DONE_NO_RESTART:
+                    text _("The updates have been installed.")
+                elif u.state == u.CANCELLED:
+                    text _("The updates were cancelled.")
+
+                if u.message is not None:
+                    null height gui._scale(10)
+                    text "[u.message!q]"
+
+                if u.progress is not None:
+                    null height gui._scale(10)
+                    bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff") thumb None
+
+        hbox:
+
+            spacing gui._scale(25)
+
+            if u.can_proceed:
+                textbutton _("Proceed") action u.proceed
+
+            if u.can_cancel:
+                textbutton _("Cancel") action u.cancel
+
+style updater_button_text is navigation_button_text
+style updater_label is gui_label
+style updater_label_text is game_menu_label_text
+style updater_text is gui_text
 
 ## Skip indicator screen #######################################################
 ##
