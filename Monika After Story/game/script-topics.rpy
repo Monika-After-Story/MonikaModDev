@@ -1938,7 +1938,7 @@ label monika_mc:
     m "Unlike the other girls, I can separate your avatar from who you really are."
     m "The main character is nothing more than a bunch of code with no personality."
     m "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
-    m "He just got dragged around by his childhood friend to then club she was in, and then hung around with a bunch of beautiful girls doing nothing."
+    m "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
     m "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
     m "I guess nobody mentioned that because it was a part of the game. But, yeah. It's just a list of words to me."
     m "I hope you're a lot more romantic than that in real life!"
