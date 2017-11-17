@@ -438,40 +438,37 @@ screen navigation():
 
         spacing gui.navigation_spacing
 
-        if not persistent.autoload or not main_menu:
 
-            if main_menu:
+        if main_menu:
 
-                textbutton _("New Game") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
+            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
 
-            else:
-
-                textbutton _("History") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
-
-                textbutton _("Save Game") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
-
-            textbutton _("Load Game") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
-
-            if _in_replay:
-
-                textbutton _("End Replay") action EndReplay(confirm=True)
-
-            elif not main_menu:
-                textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
-
-            textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
-
-            #textbutton _("About") action ShowMenu("about")
-
-            if renpy.variant("pc"):
-
-                ## Help isn't necessary or relevant to mobile devices.
-                textbutton _("Help") action Help("README.html")
-
-                ## The quit button is banned on iOS and unnecessary on Android.
-                textbutton _("Quit") action Quit(confirm=not main_menu)
         else:
-            timer 1.75 action Start("autoload_yurikill")
+
+            textbutton _("History") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
+
+            textbutton _("Save Game") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
+
+        textbutton _("Load Game") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
+
+        if _in_replay:
+
+            textbutton _("End Replay") action EndReplay(confirm=True)
+
+        elif not main_menu:
+            textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
+
+        textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
+
+        #textbutton _("About") action ShowMenu("about")
+
+        if renpy.variant("pc"):
+
+            ## Help isn't necessary or relevant to mobile devices.
+            textbutton _("Help") action Help("README.html")
+
+            ## The quit button is banned on iOS and unnecessary on Android.
+            textbutton _("Quit") action Quit(confirm=not main_menu)
 
 
 style navigation_button is gui_button
@@ -1004,6 +1001,14 @@ screen preferences():
                         textbutton _("Mute All"):
                             action Preference("all mute", "toggle")
                             style "mute_all_button"
+
+            hbox:
+                textbutton _("Update Version"):
+                    action [SetVariable('check_wait',0), Jump('update_now')]
+                    style "navigation_button"
+
+
+
     text "v[config.version]":
                 xalign 1.0 yalign 1.0
                 xoffset -10 yoffset -10
@@ -1471,6 +1476,124 @@ style confirm_button:
 style confirm_button_text is navigation_button_text:
     properties gui.button_text_properties("confirm_button")
 
+##Updating screen
+
+screen update_check(ok_action,cancel_action):
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "update_check"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+            if latest_version != None:
+                label _('An update is now avalable!'):
+                    style "confirm_prompt"
+                    xalign 0.5
+            elif not timeout:
+                label _('Checking for updates...'):
+                    style "confirm_prompt"
+                    xalign 0.5
+            else:
+                label _('No updates available.'):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("Install") action [ok_action, SensitiveIf(latest_version)]
+
+                textbutton _("Cancel") action cancel_action
+
+    timer 5.0 action [SetVariable("timeout",True), renpy.restart_interaction]
+
+    ## Right-click and escape answer "no".
+    #key "game_menu" action no_action
+
+
+style update_check_frame is confirm_frame
+style update_check_prompt is confirm_prompt
+style update_check_prompt_text is confirm_prompt_text
+style update_check_button is confirm_button
+style update_check_button_text is confirm_button_text
+
+## Updater screen #######################################################
+##
+## This is the screen called when the game needs to update versions
+##
+screen updater:
+
+
+    style_prefix "updater"
+
+    frame:
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _("Updater")
+
+        fixed:
+
+            vbox:
+
+                if u.state == u.ERROR:
+                    text _("An error has occured:")
+                elif u.state == u.CHECKING:
+                    text _("Checking for updates.")
+                elif u.state == u.UPDATE_NOT_AVAILABLE:
+                    text _("Monika After Story is up to date.")
+                elif u.state == u.UPDATE_AVAILABLE:
+                    text _("Version [u.version] is available. Do you want to install it?")
+                elif u.state == u.PREPARING:
+                    text _("Preparing to download the updates.")
+                elif u.state == u.DOWNLOADING:
+                    text _("Downloading the updates.")
+                elif u.state == u.UNPACKING:
+                    text _("Unpacking the updates.")
+                elif u.state == u.FINISHING:
+                    text _("Finishing up.")
+                elif u.state == u.DONE:
+                    text _("The updates have been installed. Monika After Story will now restart.")
+                elif u.state == u.DONE_NO_RESTART:
+                    text _("The updates have been installed.")
+                elif u.state == u.CANCELLED:
+                    text _("The updates were cancelled.")
+
+                if u.message is not None:
+                    null height gui._scale(10)
+                    text "[u.message!q]"
+
+                if u.progress is not None:
+                    null height gui._scale(10)
+                    bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff") thumb None
+
+        hbox:
+
+            spacing gui._scale(25)
+
+            if u.can_proceed:
+                textbutton _("Proceed") action u.proceed
+
+            if u.can_cancel:
+                textbutton _("Cancel") action u.cancel
+
+style updater_button_text is navigation_button_text
+style updater_label is gui_label
+style updater_label_text is game_menu_label_text
+style updater_text is gui_text
 
 ## Skip indicator screen #######################################################
 ##

@@ -162,12 +162,13 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
+    scene white
+    call update_now from _call_update_now
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
     if not persistent.first_run:
         $ quick_menu = False
-        scene white
         pause 0.5
         scene tos
         with Dissolve(1.0)
@@ -240,7 +241,6 @@ label after_load:
         #Handle however you want, default is to force reset all save data
         $ renpy.utter_restart()
     return
-
 
 
 label autoload:

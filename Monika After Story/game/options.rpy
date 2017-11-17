@@ -23,7 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "0.5.1"
+define config.version = "0.6.0"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -213,6 +213,9 @@ init python:
     ## subdirectories, and "**.psd" matches psd files anywhere in the project.
 
     ## Classify files as None to exclude them from the built distributions.
+
+    ##This tells Renpy to build an updater file
+    build.include_update = True
 
     ## This is the archive of data for your mod
     #build.archive(build.name, "all")

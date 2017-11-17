@@ -1279,7 +1279,7 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.gender = "M" #Assume gender matches the PC
 
-call set_gender
+call set_gender from _call_set_gender
 
 return
 
