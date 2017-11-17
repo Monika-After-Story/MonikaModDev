@@ -3164,6 +3164,72 @@ label monika_pleasure:
     m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
 
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['analog writing','writing','hand writing']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_analogwriting')
+    
+label monika_analogwriting:
+    m "I'm happy you decided to bring this up."
+    m "So... Where do I begin?"
+    m "Writing is so much more than simple information-sharing. I believe it's a proper form of art."
+    m "You may not believe it, but I wasn't into it that much..."
+    m "But as soon as I realized that I liked literature much more than debating, I started writing a lot."
+    m "Grabbing a piece of paper and a pen, proved to be one of the most beautiful things I ever did!"
+    m "Whenever I feel like writing, I do. Sometimes it's really therapeutic."
+    m "And I'm not only talking about poems. Journals too!"
+    m "I own a secret diary myself. Before you ask, no, you can't read it."
+    m "Or at least, not yet... Ehehehe~"
+    m "Anyway, each person has their own unique style, it's like a personal signature."
+    m "People might be able to copy your handwriting, but they'll never be able to make it identical."
+    m "It's like a fingerprint!"
+    m "It also reflects emotions. A sudden change of the writing style can indicate a broad range of feelings!"
+    m "There's actually people studying graphology too."
+    m "They say you can understand people's personality traits by analizing their handwriting..."
+    m "I believe it's true to a certain extent, because it's hard to judge someone by how he or she writes."
+    m "I just realized I've never seen your handwriting. I really hope you'll show me someday, ehehe~"
+    return
+
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['philosophy','love of wisdom','philosophia']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_philosophia')
+    monika_random_topics.append('monika_philosophia')
+
+label monika_philosophia:
+    m "I read some philosophy related books from time to time."
+    m "I find amazing how philosophers study problems concerning all matters..."
+    m "Existence, knowledge, values, reason, mind, language and even logic!"
+    m "They examine every aspect of human existence."
+    m "The term 'Philosophia' was probably coined by Pythagoras, or at least, that's what they say..."
+    m "Phylosophy includes various methods to prove a point, may they be written or verbal."
+    m "An example of a quite common philosophical question is 'What is the most real?'"
+    m "A quite intresting question if you ask me..."
+    m "Can we really tell if something is fake? Or real, depending on the point of view..."
+    m "Are we even real?"
+    m "I most certainly know a lot of things are..."
+    m "Like pain for example, pain is real."
+    m "I believe everything is, to a certain extent."
+    m "Reality is what we want it to be. In our minds, everything is real."
+    m "But does it work like that outside of our heads?"
+    m "Something that may be real for me might not be for you or anyone else..."
+    m "It's all a matter of perception. Everything is relative."
+    m "I'm pretty sure of one thing though..."
+    m "You are real. And so am I."
+    m "Our very existence makes us real..."
+    m "And even if we weren't, even if all of this was an illusion..."
+    m "I'd embrace it as my reality, because you're here with me."
+    m "Wow..."
+    m "I didn't think I could say something so romantic while speaking about philosophy."
+    m "Anyway, there are a lot of doctrines, like nihilism for example!"
+    m "But we already talked about it, didn't we?"
+    m "Philosophy sure is a broad topic..."
+    m "I'm sure we'll have a lot of time to talk about it."
+    m "But for the time being, I think I'll have to gather some more thoughts."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
