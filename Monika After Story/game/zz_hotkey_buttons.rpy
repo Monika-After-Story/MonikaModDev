@@ -5,7 +5,7 @@
 # HOTKEY BUTTON SCREEN ========================================================
 # Literally just hotkey buttons
 
-# properties for these new buttons 
+# properties for these new buttons
 # again copied from choice
 define gui.hkb_button_width = 120
 define gui.hkb_button_height = None
@@ -69,20 +69,20 @@ screen hkb_overlay():
     vbox:
         xalign 0.05
         yalign 0.95
-    
+
         if allow_dialogue:
             textbutton _("Talk") action Jump("ch30_monikatopics")
         else:
             textbutton _("Talk"):
-                action NullAction() 
+                action NullAction()
                 style "hkbd_button"
 
         textbutton _("Music") action Function(select_music)
 
         if allow_dialogue:
-            textbutton _("Pong") action Function(start_pong)
+            textbutton _("Games") action Jump("pick_a_game")
         else:
-            textbutton _("Pong"):
+            textbutton _("Games"):
                 action NullAction()
                 style "hkbd_button"
 

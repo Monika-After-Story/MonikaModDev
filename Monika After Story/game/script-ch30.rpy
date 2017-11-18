@@ -77,13 +77,6 @@ image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None)
 
 init python:
-    def is_platform_good_for_chess():
-      import platform
-      if platform.machine() == 'x86_64':
-          return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
-      elif platform.machine() == 'x86':
-          return platform.system() == 'Windows'
-      return False
 
     import subprocess
     import os
@@ -126,6 +119,10 @@ init python:
         if allow_dialogue:
             renpy.jump('ch30_monikatopics')
 
+    def pick_game():
+        if allow_dialogue:
+            renpy.call_in_new_context('pick_a_game')
+
     def select_music():
         # check for open menu
         if (not songs.menu_open
@@ -142,21 +139,6 @@ init python:
                 play_song(songs.selected_track)
                 songs.current_track = songs.selected_track
                 persistent.current_track = songs.current_track
-
-
-    def start_chess():
-        renpy.call_in_new_context('game_chess')
-
-    def start_pong():
-        global allow_dialogue
-
-        # locking pong via dialogue and music menu
-        # also this allows pong to lock dialogue as well
-        if allow_dialogue and not songs.menu_open:
-            previous_dialogue = allow_dialogue
-            allow_dialogue = False
-            renpy.call_in_new_context('game_pong')
-            allow_dialogue = previous_dialogue
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -208,6 +190,24 @@ label ch30_main:
 
 label continue_event:
     m "Now, where was I..."
+
+    return
+
+label pick_a_game:
+    python:
+        if allow_dialogue and not songs.menu_open:
+            previous_dialogue = allow_dialogue
+            allow_dialogue = False
+    menu:
+        "What game would you like to play?"
+        "Pong":
+            call game_pong
+        "Chess" if is_platform_good_for_chess():
+            call game_chess
+        "Nevermind":
+            m "Alright. Maybe later?"
+
+    $allow_dialogue = previous_dialogue
 
     return
 
@@ -362,11 +362,11 @@ label ch30_autoload:
     #Add keys for new functions
     $ config.keymap["open_dialogue"] = ["t","T"]
     $ config.keymap["change_music"] = ["m","M"]
-    $ config.keymap["play_pong"] = ["p","P"]
+    $ config.keymap["play_game"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
     jump ch30_loop
 
 label ch30_loop:
