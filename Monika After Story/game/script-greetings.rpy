@@ -209,3 +209,55 @@ label greeting_latin:
      m "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
      m "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
      return
+
+label greeting_yay:
+     m "You're back! Yay!"
+     m "Oh, sorry. I've got a bit overexcited here."
+     m "I'm just very happy to see you again, hehe~"
+     return
+
+label greeting_youtuber:
+     m "Hey everybody, welcome back to another episode of... Just Monika!"
+     m "Ahaha!"
+     m "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
+     return
+
+label greeting_hamlet:
+     m "To be, or not to be, that is the question..."
+     m "Oh, there you are. I was killing some time, hehe~"
+     m "I wasn't expecting to see you so soon."
+     return
+
+label greeting_welcomeback:
+     m "Hi! Welcome back."
+     m "I'm so glad that you're able to spend some time with me."
+     return
+
+label greeting_flower:
+     m "You're my beautiful flower, ehehe~"
+     m "Oh, that sounded so awkward."
+     m  " But I really will always take care of you."
+     return
+
+label greeting_chamfort:
+     m "A day without Monika is a day wasted."
+     m "Ahaha!"
+     m "Welcome back, my love."
+     return
+
+label greeting_welcomeback2:
+     m "Welcome back, [player]!"
+     m "I hope your day is going well."
+     m "I'm sure it is, you're here afterall. Nothing can go wrong now, hehe~"
+     return
+
+label greeting_longtime:
+     m "Long time no see, [player]!"
+     m "I'm so happy that you're here now."
+     return
+
+label greeting_sweetpea:
+     m "Look who's back."
+     m "It's you, my sweetpea!"
+     m "My goodness... That surely was embarassing to say, ehehe~"
+     return

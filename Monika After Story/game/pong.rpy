@@ -207,6 +207,7 @@ label game_pong:
     m "You wanna play a game of Pong? Okay!"
     m "I'll beat you for sure this time!"
     call demo_minigame_pong from _call_demo_minigame_pong
+    return
 
 label demo_minigame_pong:
 
@@ -268,4 +269,4 @@ label demo_minigame_pong:
                 m "You must have really practiced at Pong to get so good."
                 m "Is that something for you to be proud of?"
                 m "I guess you wanted to impress me, [player]~"
-            jump ch30_loop
+            return
