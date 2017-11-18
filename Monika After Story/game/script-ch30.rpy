@@ -73,8 +73,10 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None)
-image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None)
+image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None,image="mod_assets/window_1_fallback.png")
+image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
+image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
+image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
 
 init python:
 
@@ -174,6 +176,38 @@ init python:
         delta = now - persistent.firstdate
         return delta.days
 
+label spaceroom:
+    if is_morning():
+        if morning_flag != True or scene_change:
+            show room_mask3 as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask4 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_day_room
+            show monika 2 at tinstant zorder 2
+            with dissolve
+            $ morning_flag = True
+    elif not is_morning():
+        if morning_flag != False or scene_change:
+            $ morning_flag = False
+            scene black
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_room
+            show monika 2 at tinstant zorder 2
+            with dissolve
+            #show monika_bg_highlight
+
+    $scene_change = False
+
+    return
+
 label ch30_main:
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
@@ -183,9 +217,9 @@ label ch30_main:
     $ m_name = "Monika"
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    play music m1 loop
-    $pushEvent("introduction")
 
+    $pushEvent('introduction')
+    $callNextEvent()
     jump ch30_loop
 
 label continue_event:
@@ -238,6 +272,7 @@ label ch30_nope:
     $ persistent.autoload = ""
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
+    call spaceroom
 
     if persistent.rejected_monika:
         m "Wait. Are you messing with my character file?"
@@ -249,17 +284,6 @@ label ch30_nope:
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
-        ### TODO: better graphics for this scene?
-        $ persistent.clear[9] = True
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_bg
-        show monika_bg_highlight
-        play music m1 loop
         m "Wait. Are you messing with my character file?"
         m "Why are you even playing this mod if you just wanted to delete me again?"
         m "You really are the worst."
@@ -371,32 +395,7 @@ label ch30_autoload:
 
 label ch30_loop:
     $ quick_menu = True
-    if is_morning():
-        if morning_flag != True:
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_day_room
-            show monika 2 at t11 zorder 2
-            with dissolve
-            $ morning_flag = True
-    elif not is_morning():
-        if morning_flag != False:
-            $ morning_flag = False
-            scene black
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_room
-            show monika 2 at t11 zorder 2
-            with dissolve
-            show monika_bg_highlight
+    call spaceroom
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
         $ config.allow_skipping = True

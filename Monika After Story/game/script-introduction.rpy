@@ -1,5 +1,17 @@
 #This is the introduction event for starting up the game.
 label introduction:
+
+    #Call the original version of the spaceroom, for old-time's sake
+    show room_mask as rm:
+        size (320,180)
+        pos (30,200)
+    show room_mask2 as rm2:
+        size (320,180)
+        pos (935,200)
+    show monika_bg
+    show monika_bg_highlight
+    play music m1 loop
+
     if persistent.monika_kill == True:
         m "..."
         m "[player]..."
