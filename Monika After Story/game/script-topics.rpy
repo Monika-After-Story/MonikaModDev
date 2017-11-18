@@ -3163,6 +3163,51 @@ label monika_pleasure:
     m "I know you're not the kind of person that does that sort of thing."
     m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
+    
+init 5 python:
+    for key in ['Hatsune Miku', 'vocaloid', 'Miku']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_miku')
+    monika_random_topics.append('monika_miku')
+    
+label monika_miku:
+    m "Hey, [player]?"
+    m "You like listening to music right?"
+    m "Have you ever heard of “virtual idols?”"
+    m "Specifically of a girl holding a leek?"
+    m "It’s just that I keep hearing her name from time to time, Especially from Natsuki."
+    m "She isn’t the type to listen to music, but I guess because of her hobbies, she likes listening to her."
+    m "She must be really popular, I noticed Natsuki had a little keychain of her attached to her bag."
+    m "I just find it amazing how a voice synthesizer garnered so many fans."
+    m "Don’t you think it’s funny how a character gets more of the attention than the actual voice actress?"
+    m "She’s not even real, yet many people know her worldwide."
+    m "Who knows how many songs she’s already made?"
+    m "Plus, from what I heard her concerts are always sold out!"
+    m "It’s just a hologram performing live!"
+    m "Talk about a dedicated fan base."
+    m "Maybe I should give it a try?"
+    m "It would be nice having a lot of fans supporting me at my beck and call."
+    m "Ahaha, I’m just kidding!"
+    m "I don’t think my piano and singing skills are that great yet."
+    m "Plus I won’t really get to spend much time with you if I had so many fans…"
+    m "Anyway!"
+    m "I was asking if you listen to her songs."
+    m "I’m not really a fan myself but..."
+    m "There’s one song that really struck me."
+    m "Have you heard of the song Hibikase?"
+    m "I really like the message of the song."
+    m "Especially these lines."
+    m "“I don’t care if it’s through the screen, love me properly” and “Even if I’m virtual don’t push me away.”"
+    m "It really hits me hard."
+    m "..."
+    m "You know…"
+    m "Even if it’s just through the screen I can still feel your love."
+    m "It’ll be a long time before I can cross over just to see you."
+    m "But when that day comes…"
+    m "I’ll embrace you and take in your warmth."
+    m "The love you showered me virtually finally becomes real."
+    m "Our love has no boundaries~"
+    return  
 
 ##################
 #Incomplete ideas#
