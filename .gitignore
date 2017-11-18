@@ -28,3 +28,6 @@ Monika After Story/project.json
 Monika After Story/characters/monika.chr
 *.rpyc
 Monika After Story/project.json
+.DS_Store
+Monika After Story/.DS_Store
+Monika After Story/characters/monika.chr
