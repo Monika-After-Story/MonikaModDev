@@ -375,6 +375,7 @@ label game_chess:
     m "You wanna play chess? Alright~"
     m "Get your mind ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
+    return
 
 label demo_minigame_chess:
     menu:
@@ -399,25 +400,9 @@ label demo_minigame_chess:
         ui.add(ChessDisplayable(player_color))
         winner, surrendered, num_turns = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
-    # Show Monika's BG again. This is (shamelessly) copied from the script-ch30 since I don't wanna break anything
-    if is_morning():
-        show room_mask as rm:
-            size(320, 180)
-            pos(30, 200)
-        show room_mask2 as rm2:
-            size(320, 180)
-            pos(935, 200)
-        show monika_transparent_day_bg
-    elif not is_morning():
-        scene black
-        show room_mask as rm:
-            size(320, 180)
-            pos(30, 200)
-        show room_mask2 as rm2:
-            size(320, 180)
-            pos(935, 200)
-        show monika_bg
-        show monika_bg_highlight
+    #Regenerate the spaceroom scene
+    $scene_change=True #Force scene generation
+    call spaceroom
 
     if winner == "monika":
         if surrendered and num_turns <= 4:
@@ -448,4 +433,5 @@ label demo_minigame_chess:
                 m "It's amazing how much more I have to learn even now."
                 m "I really don't mind losing as long as I can learn something."
                 m "After all, the company is good."
-            jump ch30_loop
+
+    return

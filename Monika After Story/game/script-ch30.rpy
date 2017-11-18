@@ -228,22 +228,21 @@ label continue_event:
     return
 
 label pick_a_game:
-    python:
-        if allow_dialogue and not songs.menu_open:
-            previous_dialogue = allow_dialogue
-            allow_dialogue = False
-    menu:
-        "What game would you like to play?"
-        "Pong":
-            call game_pong
-        "Chess" if is_platform_good_for_chess():
-            call game_chess
-        "Nevermind":
-            m "Alright. Maybe later?"
+    if allow_dialogue and not songs.menu_open:
+        $previous_dialogue = allow_dialogue
+        $allow_dialogue = False
+        menu:
+            "What game would you like to play?"
+            "Pong":
+                call game_pong
+            "Chess" if is_platform_good_for_chess():
+                call game_chess
+            "Nevermind":
+                m "Alright. Maybe later?"
 
-    $allow_dialogue = previous_dialogue
+        $allow_dialogue = previous_dialogue
 
-    return
+    jump ch30_loop
 
 label ch30_noskip:
     show screen fake_skip_indicator
