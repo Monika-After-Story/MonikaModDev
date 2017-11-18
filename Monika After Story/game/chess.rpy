@@ -173,7 +173,7 @@ init:
                     else:
                         self.winner = current_move
 
-            # Recomputes the position of the ball, handles bounces, and
+            # Renders the board, pieces, etc.
             def render(self, width, height, st, at):
                 
                 # Poll Monika for moves if it's her turn
@@ -443,7 +443,7 @@ label demo_minigame_chess:
             if winner == "monika":
                 m "Despite its simple rules, chess is a really intricate game."
                 m "It's alright if you find yourself struggling at times."
-                m "Remember, the important thing is to be able to learn from one's mistakes."
+                m "Remember, the important thing is to be able to learn from your mistakes."
             else:
                 m "It's amazing how much more I have to learn even now."
                 m "I really don't mind losing as long as I can learn something."
