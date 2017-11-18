@@ -27,17 +27,17 @@ init:
         def is_platform_good_for_chess():
             import platform
             if platform.machine() == 'x86_64':
-                return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'MacOSX'
+                return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
             elif platform.machine() == 'x86':
                 return platform.system() == 'Windows'
             return False
 
         def get_mouse_pos():
             vw = config.screen_width * 10000
-            vh = config.screen_height * 10000 
+            vh = config.screen_height * 10000
             pw, ph = renpy.get_physical_size()
             mx, my = pygame.mouse.get_pos()
-            
+
             r = None
             if vw / (vh / 10000) > pw * 10000 / ph:
                 r = vw / pw
@@ -60,7 +60,7 @@ init:
             MONIKA_THREADS = 1
 
             def __init__(self, player_color):
-                
+
                 renpy.Displayable.__init__(self)
 
                 # Some displayables we use.
@@ -175,7 +175,7 @@ init:
 
             # Renders the board, pieces, etc.
             def render(self, width, height, st, at):
-                
+
                 # Poll Monika for moves if it's her turn
                 if self.current_turn != self.player_color:
                     monika_move = self.poll_monika_move()
@@ -193,7 +193,7 @@ init:
 
                 # Prepare the board as a renderer.
                 board = renpy.render(self.board_image, 1280, 720, st, at)
-                
+
                 # Prepare the pieces vector as a renderer.
                 pieces = renpy.render(self.pieces_image, 1280, 720, st, at)
 
@@ -218,7 +218,7 @@ init:
                 def get_piece_render_for_letter(letter):
                     jy = 0 if letter.islower() else 1
                     jx = self.VECTOR_PIECE_POS[letter.upper()]
-                    return pieces.subsurface((jx * self.PIECE_WIDTH, jy * self.PIECE_HEIGHT, 
+                    return pieces.subsurface((jx * self.PIECE_WIDTH, jy * self.PIECE_HEIGHT,
                                               self.PIECE_WIDTH, self.PIECE_HEIGHT))
 
                 mx, my = get_mouse_pos()
@@ -233,18 +233,18 @@ init:
                         y = int((height - (self.BOARD_HEIGHT - self.BOARD_BORDER_HEIGHT * 2)) / 2 + iy * self.PIECE_HEIGHT)
 
                         def render_move(move):
-                            if move is not None and ix == move[0] and iy_orig == move[1]:    
+                            if move is not None and ix == move[0] and iy_orig == move[1]:
                                 if self.player_color == self.current_turn:
                                     r.blit(highlight_magenta, (x, y))
                                 else:
-                                    r.blit(highlight_green, (x, y))    
+                                    r.blit(highlight_green, (x, y))
 
                         render_move(self.last_move_src)
                         render_move(self.last_move_dst)
 
                         # Take care not to render the selected piece twice.
-                        if (self.selected_piece is not None and 
-                            ix == self.selected_piece[0] and 
+                        if (self.selected_piece is not None and
+                            ix == self.selected_piece[0] and
                             iy_orig == self.selected_piece[1]):
                             r.blit(highlight_green, (x, y))
                             continue
@@ -258,12 +258,12 @@ init:
                         if (self.possible_moves and
                             chess.Move.from_uci(possible_move_str) in self.possible_moves):
                             r.blit(highlight_yellow, (x, y))
-                        
+
                         if piece is None:
                             continue
-                        
-                        if (mx >= x and mx < x + self.PIECE_WIDTH and 
-                            my >= y and my < y + self.PIECE_HEIGHT and 
+
+                        if (mx >= x and mx < x + self.PIECE_WIDTH and
+                            my >= y and my < y + self.PIECE_HEIGHT and
                             bool(str(piece).isupper()) == (self.player_color == self.COLOR_WHITE) and
                             self.current_turn == self.player_color and
                             self.selected_piece is None and
@@ -333,19 +333,19 @@ init:
                             piece = str(self.board.piece_at(py * 8 + px))
                             if piece.lower() == 'k' and piece.islower() == (self.player_color == self.COLOR_BLACK):
                                 if st - self.last_clicked_king < 0.2:
-                                    self.winner = 'monika'    
+                                    self.winner = 'monika'
                                     self.winner_confirmed = True
                                     self.surrendered = True
                                 self.last_clicked_king = st
 
                             src = ChessDisplayable.coords_to_uci(px, py)
 
-                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank)) 
-                                                                for file in range(8) 
+                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank))
+                                                                for file in range(8)
                                                                 for rank in range(8)]
                             self.possible_moves = (set(self.board.legal_moves).intersection(all_moves))
                             self.selected_piece = (px, py)
-                            
+
                 # Mousebutton up == possibly release the selected piece
                 if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
                     px, py = get_piece_pos()
@@ -392,7 +392,7 @@ label demo_minigame_chess:
             else:
                 $ player_color = ChessDisplayable.COLOR_BLACK
                 m "Oh look, I drew white! Let's begin!"
-        
+
     window hide None
 
     python:
@@ -426,11 +426,11 @@ label demo_minigame_chess:
             m "I win!"
 
     elif winner == "player":
-        
+
         m "You won! Congratulations."
 
     else:
-        
+
         m "A draw? How boring..."
 
     menu:
