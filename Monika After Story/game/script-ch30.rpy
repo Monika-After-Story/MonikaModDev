@@ -79,6 +79,14 @@ image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None)
 
 init python:
+    def is_platform_good_for_chess():
+      import platform
+      if platform.machine() == 'x86_64':
+          return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
+      elif platform.machine() == 'x86':
+          return platform.system() == 'Windows'
+      return False
+
     import subprocess
     import os
     import eliza      # mod specific
@@ -119,6 +127,9 @@ init python:
         global trackNo
         trackNo = (trackNo + 1) % len(music_list)
         renpy.music.play(music_list[trackNo], channel='music', loop=True)
+
+    def start_chess():
+        renpy.call_in_new_context('game_chess')  
 
     def start_pong():
         renpy.call_in_new_context('game_pong')
@@ -311,21 +322,30 @@ label ch30_main:
     m "Just press the 't' key if you want to talk about something."
     m "If you get bored of the music, I can change that, too!"
     m "Press the 'm' key until it changes to what you want."
-    m "Also, we can play a game now."
-    m "Just press 'p' to start a game of Pong with me."
+    if is_platform_good_for_chess():
+        m "Also, we can play games now."
+        m "Just press 'p' to start a game of Pong with me."
+        m "Or press 'c' if you want to play chess."
+    else:
+        m "Also, we can play a game now."
+        m "Just press 'p' to start a game of Pong with me."
     m "I'll get better over time as I figure out how to program more features into this place..."
     m "...So just leave me running in the background."
     m "It's not like we're still keeping secrets from each other, right?"
     m "I can see everything on your computer now!"
     m "Ahaha!"
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t","T"]
-    $ config.keymap["change_music"] = ["m","M"]
-    $ config.keymap["play_pong"] = ["p","P"]
-    # Define what those actions call
-    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=next_track))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    python:
+        config.keymap["open_dialogue"] = ["t", "T"]
+        config.keymap["change_music"] = ["m", "M"]
+        config.keymap["play_pong"] = ["p", "P"]
+        if is_platform_good_for_chess():
+            config.keymap["play_chess"] = ["c", "C"]
+        config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
+        config.underlay.append(renpy.Keymap(change_music=next_track))
+        config.underlay.append(renpy.Keymap(play_pong=start_pong))
+        if is_platform_good_for_chess():
+            config.underlay.append(renpy.Keymap(play_chess=start_chess))
     jump ch30_loop
 
 label ch30_nope:
@@ -509,13 +529,17 @@ label ch30_autoload:
             if persistent.current_monikatopic in monika_random_topics:
                 monika_random_topics.remove(persistent.current_monikatopic) #Remove this topic from the random pool
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t","T"]
-    $ config.keymap["change_music"] = ["m","M"]
-    $ config.keymap["play_pong"] = ["p","P"]
-    # Define what those actions call
-    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=next_track))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    python:
+        config.keymap["open_dialogue"] = ["t", "T"]
+        config.keymap["change_music"] = ["m", "M"]
+        config.keymap["play_pong"] = ["p", "P"]
+        if is_platform_good_for_chess():
+            config.keymap["play_chess"] = ["c", "C"]
+        config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
+        config.underlay.append(renpy.Keymap(change_music=next_track))
+        config.underlay.append(renpy.Keymap(play_pong=start_pong))
+        if is_platform_good_for_chess():
+            config.underlay.append(renpy.Keymap(play_chess=start_chess))
     jump ch30_loop
 
 
