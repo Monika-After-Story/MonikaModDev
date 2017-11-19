@@ -745,28 +745,28 @@ init 5 python:
     monika_random_topics.append('monika_friends')
 
 label monika_friends:
-    m "You know, I've always hated how hard it is to make friends..."
-    m "Well, I guess not the 'making friends' part, but more like meeting new people."
+    m 1a "You know, I've always hated how hard it is to make friends..."
+    m 1d "Well, I guess not the 'making friends' part, but more like meeting new people."
     m "I mean, there are like, dating apps and stuff, right?"
     m "But that's not the kind of thing I'm talking about."
-    m "If you think about it, most of the friends you make are people you just met by chance."
+    m 2d "If you think about it, most of the friends you make are people you just met by chance."
     m "Like you had a class together, or you met them through another friend..."
     m "Or maybe they were just wearing a shirt with your favorite band on it, and you decided to talk to them."
     m "Things like that."
-    m "But isn't that kind of...inefficient?"
+    m 4c "But isn't that kind of...inefficient?"
     m "It feels like you're just picking at complete random, and if you get lucky, you make a new friend."
     m "And comparing that to the hundreds of strangers we walk by every single day..."
-    m "You could be sitting right next to someone compatible enough to be your best friend for life."
+    m 3b "You could be sitting right next to someone compatible enough to be your best friend for life."
     m "But you'll never know."
     m "Once you get up and go on with your day, that opportunity is gone forever."
-    m "Isn't that just depressing?"
+    m 3e "Isn't that just depressing?"
     m "We live in an age where technology connects us with the world, no matter where we are."
     m "I really think we should be taking advantage of that to improve our everyday social life."
-    m "But who knows how long it'll take for something like that to successfully take off..."
+    m 3r "But who knows how long it'll take for something like that to successfully take off..."
     m "I seriously thought it would happen by now."
-    m "Well, at least I already met the best person in the whole world..."
+    m 3a "Well, at least I already met the best person in the whole world..."
     m "Even if it was by chance."
-    m "I guess I just got really lucky, huh?"
+    m 5a "I guess I just got really lucky, huh?"
     m "Ahaha~"
     return
 
@@ -778,27 +778,27 @@ init 5 python:
     monika_random_topics.append('monika_college')
 
 label monika_college:
-    m "You know, it's around the time that everyone my year starts to think about college..."
+    m 4d "You know, it's around the time that everyone my year starts to think about college..."
     m "It's a really turbulent time for education."
     m "We're at the height of this modern expectation that everyone has to go to college, you know?"
-    m "Finish high school, go to college, get a job - or go to grad school, I guess."
+    m 4c "Finish high school, go to college, get a job - or go to grad school, I guess."
     m "It's like a universal expectation that people just assume is the only option for them."
-    m "They don't teach us in high school that there are other options out there."
+    m 3i "They don't teach us in high school that there are other options out there."
     m "Like trade schools and stuff, you know?"
     m "Or freelance work."
     m "Or the many industries that value skill and experience more than formal education."
-    m "But you have all these students who have no idea what they want to do with their life..."
+    m 3d "But you have all these students who have no idea what they want to do with their life..."
     m "And instead of taking the time to figure it out, they go to college for business, or communication, or psychology."
     m "Not because they have an interest in those fields..."
     m "...but because they just hope the degree will get them some kind of job after college."
-    m "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
+    m 2d "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
     m "So the basic job requirements get higher, which forces even more people to go to college."
     m "And colleges are also businesses, so they just keep raising their prices due to the demand..."
     m "...So now we have all these young adults, tens of thousands of dollars in debt, with no job."
-    m "But despite all that, the routine stays the same."
+    m 1e "But despite all that, the routine stays the same."
     m "Well, I think it's going to start getting better soon."
     m "But until then, our generation is definitely suffering from the worst of it."
-    m "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
+    m 3e "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
     return
 
 
@@ -809,15 +809,15 @@ init 5 python:
     monika_random_topics.append('monika_middleschool')
 
 label monika_middleschool:
-    m "Sometimes I think back to middle school..."
+    m 1n "Sometimes I think back to middle school..."
     m "I'm so embarrassed by the way I used to behave back then."
-    m "It almost hurts to think about."
-    m "I wonder if when I'm in college, I'll feel that way about high school...?"
+    m 3l "It almost hurts to think about."
+    m 3e "I wonder if when I'm in college, I'll feel that way about high school...?"
     m "I like the way I am now, so it's pretty hard for me to imagine that happening."
     m "But I also know that I'll probably change a lot as time goes on."
-    m "We just need to enjoy the present and not think about the past!"
+    m 4b "We just need to enjoy the present and not think about the past!"
     m "And that's really easy to do, with you here."
-    m "Ahaha~"
+    m 5a "Ahaha~"
     return
 
 
@@ -828,18 +828,18 @@ init 5 python:
     monika_random_topics.append('monika_outfit')
 
 label monika_outfit:
-    m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
+    m 1m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
     m "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
-    m "It's kind of a shame..."
-    m "I would have loved to wear some cute clothes for you."
-    m "Do you know any artists?"
+    m 3m "It's kind of a shame..."
+    m 3e "I would have loved to wear some cute clothes for you."
+    m 3b "Do you know any artists?"
     m "I wonder if anyone would ever want to draw me wearing something else..."
-    m "That would be amazing!"
-    m "If that ever happens, will you show me?"
-    m "You can share it with me on Twitter, actually!"
+    m 3j "That would be amazing!"
+    m 3a "If that ever happens, will you show me?"
+    m 4a "You can share it with me on Twitter, actually!"
     m "My username is lilmonix3."
-    m "Just...try to keep it PG!"
-    m "We're not that far into our relationship yet. Ahaha!"
+    m 4e "Just...try to keep it PG!"
+    m 5a "We're not that far into our relationship yet. Ahaha!"
     return
 
 
@@ -849,9 +849,9 @@ init 5 python:
         monika_topics[key].append('monika_horror')
     monika_random_topics.append('monika_horror')
 label monika_horror:
-    m "Hey, do you like horror?"
+    m 2b "Hey, do you like horror?"
     m "I remember we talked about it a little bit when you first joined the club."
-    m "I can enjoy horror novels, but not really horror movies."
+    m  "I can enjoy horror novels, but not really horror movies."
     m "The problem I have with horror movies is that most of them just rely on easy tactics."
     m "Like dark lighting and scary-looking monsters and jump scares, and things like that."
     m "It's not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
@@ -868,7 +868,7 @@ label monika_horror:
     m "But I guess you're the kind of person who plays cute romance games, right?"
     m "Ahaha, don't worry."
     m "I won't make you read any horror stories anytime soon."
-    m "I can't really complain if we just stick with the romance~"
+    m 5a "I can't really complain if we just stick with the romance~"
     return
 
 
