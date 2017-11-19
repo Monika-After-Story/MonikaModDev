@@ -3169,7 +3169,7 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_vocaloid')
         
-label monika_pleasure:
+label monika_vocaloid:
     m "Hey, [player]?" 
     m "You like listening to music right?"
     m "Have you ever heard of "virtual idols"?"
