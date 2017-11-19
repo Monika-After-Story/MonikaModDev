@@ -8,7 +8,7 @@ init -100 python:
         if not archive in config.archives:
             #If one is missing, throw an error and chlose
             renpy.error("DDLC archive files not found in /game folder. Check installation and try again.")
-            
+
 ## First, a disclaimer declaring this is a mod is shown, then there is a
 ## check for the original DDLC assets in the install folder. If those are
 ## not found, the player is directed to the developer's site to download.
@@ -162,12 +162,12 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
+    scene white
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
     if not persistent.first_run:
         $ quick_menu = False
-        scene white
         pause 0.5
         scene tos
         with Dissolve(1.0)
@@ -187,14 +187,16 @@ label splashscreen:
         with Dissolve(1.5)
 
 
-    #Optional, load a copy of DDLC save data
-    if not persistent.has_merged:
-        call import_ddlc_persistent from _call_import_ddlc_persistent
-        $persistent.has_merged = True
+        #Optional, load a copy of DDLC save data
+        if not persistent.has_merged:
+            call import_ddlc_persistent from _call_import_ddlc_persistent
 
-    $ persistent.first_run = True
+        $ persistent.first_run = True
 
     $ basedir = config.basedir.replace('\\', '/')
+
+    #Check for game updates before loading the game or the splash screen
+    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
@@ -241,7 +243,6 @@ label after_load:
         #Handle however you want, default is to force reset all save data
         $ renpy.utter_restart()
     return
-
 
 
 label autoload:

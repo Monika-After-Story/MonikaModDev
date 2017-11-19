@@ -317,6 +317,7 @@ label import_ddlc_persistent:
             persistent.yuri_kill=old_persistent.yuri_kill
 
         #dumpPersistentToFile(persistent,basedir + '/merged_persistent.txt')
+        persistent.has_merged = True
     return
 
 label merge_unmatched_names:
