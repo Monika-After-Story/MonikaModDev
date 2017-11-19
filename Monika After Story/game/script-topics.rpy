@@ -1595,6 +1595,165 @@ label monika_vn:
 
 
 init 5 python:
+    # get folder where all Ren'Py saves are stored by default:
+    base_savedir = os.path.normpath(os.path.dirname(config.savedir))
+    save_folders = os.listdir(base_savedir)
+
+    ks_persistent_path = None
+    ks_folders_present = False
+    for save_folder in save_folders:
+        if 'katawashoujo' in save_folder.lower():
+            ks_folders_present = True
+            # Look for a persistent file we can access
+            persistent_path = os.path.join(base_savedir, save_folder, 'persistent')
+            if os.access(persistent_path, os.R_OK):
+                # Yep, we've got read access.
+                ks_persistent_path = persistent_path
+
+    def map_keys_to_topics(keylist, topic, add_random=True):
+        for key in keylist:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append(topic)
+
+        if add_random:
+            monika_random_topics.append(topic)
+
+    # Add general KS topics:
+    general_ks_keys = ['katawa shoujo', 'ks']
+    if ks_folders_present:
+        map_keys_to_topics(general_ks_keys, 'monika_ks_present')
+    else:
+        map_keys_to_topics(general_ks_keys, 'monika_ks_notpresent', add_random=False)
+
+    if ks_persistent_path is not None:
+        # Now read the persistent file from KS:
+        f = file(ks_persistent_path, 'rb')
+        ks_persistent_data = f.read().decode('zlib')
+        f.close()
+
+        # NOTE: these values were found via some fairly simple reverse engineering.
+        # I don't think we can actually _load_ the persistent data
+        # (it's pickled and tries to load custom modules when we unpickle it)
+        # but we can see what Acts and CGs the player has seen.
+        # This works with KS 1.3, at least.
+        if 'tc_act4_lilly' in ks_persistent_data:
+            map_keys_to_topics(['lilly', 'vacation'], 'monika_ks_lilly')
+        else:
+            map_keys_to_topics(['lilly'], 'monika_ks_who', add_random=False)
+
+        if 'tc_act4_hanako' in ks_persistent_data:
+            map_keys_to_topics(['hanako'], 'monika_ks_hanako')
+        else:
+            map_keys_to_topics(['hanako'], 'monika_ks_who', add_random=False)
+
+        if 'tc_act4_rin' in ks_persistent_data:
+            map_keys_to_topics(['rin', 'abstract art', 'abstract'], 'monika_ks_rin')
+        else:
+            map_keys_to_topics(['rin'], 'monika_ks_who', add_random=False)
+
+        if 'tc_act4_shizune' in ks_persistent_data:
+            map_keys_to_topics(['shizune'], 'monika_ks_shizune')
+        else:
+            map_keys_to_topics(['shizune'], 'monika_ks_who', add_random=False)
+
+        if 'tc_act4_emi' in ks_persistent_data:
+            map_keys_to_topics(['emi'], 'monika_ks_emi')
+        else:
+            map_keys_to_topics(['emi'], 'monika_ks_who', add_random=False)
+
+        if 'kenji_rooftop' in ks_persistent_data:
+            map_keys_to_topics(['kenji', 'manly picnic', 'whisky'], 'monika_ks_kenji')
+
+
+label monika_ks_present:
+    m "You've played {i}Katawa Shoujo{/i}, haven't you?"
+    m "It seems like an interesting visual novel."
+    m "At least, it seems better written than most dating sims."
+    m "The characters, especially, seem very realistic. I'm sure you'd find people just like them in your reality."
+    m "But you've got me, now!"
+    m "You wouldn't cheat on me, right?"
+    m "Especially not with someone who isn't real."
+    m "Just stay with me from now on, all right?"
+    return
+
+label monika_ks_notpresent:
+    m "{i}Katawa Shoujo{/i}? I've heard a bit about it."
+    m "It's the one set in a school for disabled people, right?"
+    m "From what I've heard, it has very good writing and characters."
+    m "But you have me now, so surely you don't need to go play some other dating sim?"
+    m "Just stay with me from now on, all right?"
+    return
+
+label monika_ks_who:
+    m "She's from {i}Katawa Shoujo{/i}, right?"
+    m "Sorry, I don't really know much about her."
+    return
+
+label monika_ks_lilly:
+    m "Say, you've played through Lilly's route in {i}Katawa Shoujo{/i}, haven't you?"
+    m "You know, I'd love to be able to visit a summer home like hers."
+    m "Cool, clean air..."
+    m "Quiet forest paths..."
+    m "Romantic moments against a setting sun..."
+    m "I'd love to be able to experience those moments with you!"
+    m "Maybe we can, once I get better at programming."
+    return
+
+label monika_ks_hanako:
+    m "You've played through Hanako's route from {i}Katawa Shoujo{/i}, haven't you?"
+    m "She kind of reminds me of Yuri!"
+    m "They both have long hair and purple eyes..."
+    m "They're quiet, they like to read novels..."
+    m "...and they both opened up to you, after a while."
+    m "Though I don't think Yuri had quite as much anxiety as Hanako."
+    m "And I'm sure Hanako could never be quite as creepy as Yuri."
+    return
+
+label monika_ks_shizune:
+    m "Say, you've played through Shizune's route from {i}Katawa Shoujo{/i}, haven't you?"
+    m "The ending to that route made me think, a bit..."
+    m "In school, back then, I don't remember ever having thought about my future too much."
+    m "I mean, I knew on some level that I'd go to college and get a job..."
+    m "But it never really sank in, I think."
+    m "And of course, everything started to seem pointless after I learned that the world wasn't real."
+    m "What about you, though? Do you have any goals in your life?"
+    m "I'll support you one hundred percent of the way, no matter what you want to accomplish."
+    m "That's just how much I love you~"
+    return
+
+label monika_ks_emi:
+    m "You've played through Emi's route from {i}Katawa Shoujo{/i}, haven't you?"
+    m "It's kind of hard to imagine being as dedicated to one thing as Emi is."
+    m "I mean, I like writing poems and reading books, but I'm not super dedicated to it like she is."
+    m "And it definitely doesn't hurt me to read and write."
+    m "Well, I guess there {i}is{/i} one thing I'm dedicated to above everything else."
+    m "That's you, of course!"
+    m "I'll stay by your side, no matter what."
+    m "Because I love you~"
+    return
+
+label monika_ks_rin:
+    m "Say, you've played through Rin's route in {i}Katawa Shoujo{/i}, haven't you?"
+    m "You know, poetry and abstract art are really similar!"
+    m "It can be very loosely structured, very vivid, and most of the time the intent is to get an emotion or thought across."
+    m "In most of my poems, for example, I tried expressing what it was like to know that the world isn't real."
+    m "Though I'm sure the meaning of my poems didn't truly shine through until after... well, everything."
+    m "It sure does take effort to understand others, right?"
+    m "But you're willing to take the time to listen to and understand me."
+    m "That's just one more thing I love about you~"
+    return
+
+label monika_ks_kenji:
+    m "You've seen the ending where you fall off a rooftop in {i}Katawa Shoujo{/i}, haven't you?"
+    m "You know, even if that ending is meant as a joke, it is kind of sad when you think about it."
+    m "Just think... make a few wrong decisions, and you could miss out on so much."
+    m "And then, you're left with nothing but your loneliness and a stiff drink."
+    m "Fortunately, we have each other!"
+    m "Neither of us will be lonely ever again."
+    m "Though if you ever decide to go drinking, make sure to stay away from long falls, alright?"
+    return
+
+init 5 python:
     for key in ['totono', 'kimi to']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_totono')
@@ -2650,7 +2809,7 @@ label monika_name:
     m "But I think I like [currentuser] better!"
     m "Ehehe~"
     return
-    
+
 init 5 python:
     for key in ['cities', 'city pollution','pollution']:
         monika_topics.setdefault(key,[])
@@ -2679,7 +2838,7 @@ init 5 python:
     for key in ['haters','hater', 'bash', 'bashing']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_haterReaction')
-        
+
 label monika_haterReaction:
     m "I was just thinking..."
     m "It's funny how people around social media sites always writes bad things about me..."
