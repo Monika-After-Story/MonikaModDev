@@ -69,9 +69,8 @@ init python:
         event_label = popEvent()
         if event_label and renpy.has_label(event_label):
             globals()['allow_dialogue'] = False
-            previous_topic = persistent.current_monikatopic
             state_change = renpy.call_in_new_context(event_label)
-            persistent.current_monikatopic=previous_topic
+            persistent.current_monikatopic=0
             if event_label in monika_random_topics:
                 monika_random_topics.remove(event_label)
             if state_change == 'quit':
