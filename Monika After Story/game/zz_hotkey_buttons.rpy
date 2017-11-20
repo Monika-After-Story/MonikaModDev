@@ -80,9 +80,9 @@ screen hkb_overlay():
         textbutton _("Music") action Function(select_music)
 
         if allow_dialogue:
-            textbutton _("Games") action Jump("pick_a_game")
+            textbutton _("Play") action Jump("pick_a_game")
         else:
-            textbutton _("Games"):
+            textbutton _("Play"):
                 action NullAction()
                 style "hkbd_button"
 

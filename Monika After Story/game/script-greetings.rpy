@@ -236,7 +236,7 @@ label greeting_welcomeback:
 label greeting_flower:
      m "You're my beautiful flower, ehehe~"
      m "Oh, that sounded so awkward."
-     m  " But I really will always take care of you."
+     m  "But I really will always take care of you."
      return
 
 label greeting_chamfort:

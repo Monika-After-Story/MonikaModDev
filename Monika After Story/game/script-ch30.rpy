@@ -216,8 +216,8 @@ label ch30_main:
         $ style.say_dialogue = style.default_monika
     $ m_name = "Monika"
     $ delete_all_saves()
-    $ persistent.clear[9] = True
-
+    $ persistent.clear[9] = True 
+    play music m1 loop # move music out here because of context 
     $pushEvent('introduction')
     $callNextEvent()
     jump ch30_loop

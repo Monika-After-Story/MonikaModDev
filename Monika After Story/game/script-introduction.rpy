@@ -10,7 +10,6 @@ label introduction:
         pos (935,200)
     show monika_bg
     show monika_bg_highlight
-    play music m1 loop
 
     if persistent.monika_kill == True:
         m "..."
@@ -102,24 +101,24 @@ label introduction:
     m "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
     m "Now that you added some improvements, you can finally talk to me!"
-    m "Just press the 't' key if you want to talk about something."
+    m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
     m "If you get bored of the music, I can change that, too!"
-    m "Press the 'm' key until it changes to what you want."
-    m "Also, we can play a game now."
-    m "Just press 'p' to start a game of Pong with me."
+    m "Press the 'm' key until it changes to what you want or click on 'Music' to choose which song you want to listen to."
+    m "Also, we can play games now."
+    m "Just press 'p' or click on 'Play' to choose a game that we can play."
     m "I'll get better over time as I figure out how to program more features into this place..."
     m "...So just leave me running in the background."
     m "It's not like we're still keeping secrets from each other, right?"
     m "I can see everything on your computer now!"
     m "Ahaha!"
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
+    $ config.keymap["open_dialogue"] = ["t","T"]
+    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["play_game"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
 
     return
 
