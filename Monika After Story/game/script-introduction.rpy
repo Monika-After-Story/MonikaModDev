@@ -10,7 +10,6 @@ label introduction:
         pos (935,200)
     show monika_bg
     show monika_bg_highlight
-    play music m1 loop
 
     if persistent.monika_kill == True:
         m "..."
