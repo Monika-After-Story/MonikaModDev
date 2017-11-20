@@ -113,13 +113,13 @@ label introduction:
     m "I can see everything on your computer now!"
     m "Ahaha!"
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
+    $ config.keymap["open_dialogue"] = ["t","T"]
+    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["play_game"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
 
     return
 
