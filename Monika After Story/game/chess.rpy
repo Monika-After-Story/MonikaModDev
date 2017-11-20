@@ -402,7 +402,7 @@ label demo_minigame_chess:
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
-    call spaceroom
+    call spaceroom from _call_spaceroom
 
     if winner == "monika":
         if surrendered and num_turns <= 4:

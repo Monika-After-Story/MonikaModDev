@@ -223,7 +223,7 @@ label demo_minigame_pong:
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
-    call spaceroom
+    call spaceroom from _call_spaceroom_3
 
     if winner == "monika":
 

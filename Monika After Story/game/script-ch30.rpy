@@ -234,9 +234,9 @@ label pick_a_game:
         menu:
             "What game would you like to play?"
             "Pong":
-                call game_pong
+                call game_pong from _call_game_pong
             "Chess" if is_platform_good_for_chess():
-                call game_chess
+                call game_chess from _call_game_chess
             "Nevermind":
                 m "Alright. Maybe later?"
 
@@ -271,7 +271,7 @@ label ch30_nope:
     $ persistent.autoload = ""
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
-    call spaceroom
+    call spaceroom from _call_spaceroom_1
 
     if persistent.rejected_monika:
         m "Wait. Are you messing with my character file?"
@@ -394,7 +394,7 @@ label ch30_autoload:
 
 label ch30_loop:
     $ quick_menu = True
-    call spaceroom
+    call spaceroom from _call_spaceroom_2
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
         $ config.allow_skipping = True
