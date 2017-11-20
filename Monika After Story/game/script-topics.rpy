@@ -3172,7 +3172,7 @@ init 5 python:
 label monika_vocaloid:
     m "Hey, [player]?" 
     m "You like listening to music right?"
-    m "Have you ever heard of "virtual idols"?"
+    m "Have you ever heard of "virtual idols?""
     m "Specifically of a girl holding a leek?"
     m "It's just that I keep hearing her name from time to time, Especially from Natsuki."
     m "Natsuki isn't the type to listen to music, but I guess because of her hobbies, she listens to her."
