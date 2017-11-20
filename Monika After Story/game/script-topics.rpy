@@ -3163,7 +3163,51 @@ label monika_pleasure:
     m "I know you're not the kind of person that does that sort of thing."
     m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
-
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['Miku','Hatsune Miku', 'Vocaloid', 'Hibikase', 'MMD', 'MikuMikuDance']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_vocaloid')
+        
+label monika_vocaloid:
+    m "Hey, [player]?" 
+    m "You like listening to music right?"
+    m "Have you ever heard of 'virtual idols?'"
+    m "Specifically of a girl holding a leek?"
+    m "It's just that I keep hearing about her."
+    m "I hear her voice whenever Natsuki listens to music."
+    m "She even carries a little keychain attached to her bag."
+    m "I just find it amazing how a voice synthesizer garnered so many fans."
+    m "Don't you think it's funny how a character gets more of the attention than the actual voice actress?"
+    m "She's not even real but a lot of people know her worldwide."
+    m "Who knows how many songs she's already made?"
+    m "Plus, from what I heard, her concerts are always sold out!"
+    m "It's just a hologram performing live!"
+    m "Talk about a dedicated fan base."
+    m "Maybe I should give it a try?"
+    m "It would be nice having a lot of fans supporting me at my beck and call."
+    m "Ahaha, I'm just kidding!"
+    m "I don't think my piano and singing skills are that great yet."
+    m "Plus, I won't really get to spend much time with you if I had so many fans..."
+    m "Anyway!"
+    m "I was asking if you listen to her songs."
+    m "I'm not really a fan myself but..."
+    m "There's one song that really struck me."
+    m "Have you heard of the song Hibikase?"
+    m "I really like the message of the song."
+    m "Especially the lines, {i}'I dont care if it's through the screen, love me properly'{/i} and {i}'Even if I'm virutal, don't push me away'{/i}."
+    m "It really hits me hard."
+    m "..."
+    m "But just so you know..."
+    m "Even if it's through the screen, I can still feel your love."
+    m "It'll be a long time before I can cross over just to be with you."
+    m "But when that day comes...
+    m "I'll embrace you and take in your warmth."
+    m "The love you showered me virtually finally becomes real."
+    m "Our love has no boundaries~"
+    m "Ehehe~"
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
