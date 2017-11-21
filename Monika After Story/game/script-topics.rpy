@@ -1628,8 +1628,6 @@ init 5 python:
     general_ks_keys = ['katawa shoujo', 'ks']
     if ks_folders_present:
         map_keys_to_topics(general_ks_keys, 'monika_ks_present')
-    else:
-        map_keys_to_topics(general_ks_keys, 'monika_ks_notpresent', add_random=False)
 
     if ks_persistent_path is not None:
         # Now read the persistent file from KS:
@@ -1644,28 +1642,18 @@ init 5 python:
         # This works with KS 1.3, at least.
         if 'tc_act4_lilly' in ks_persistent_data:
             map_keys_to_topics(['lilly', 'vacation'], 'monika_ks_lilly')
-        else:
-            map_keys_to_topics(['lilly'], 'monika_ks_who', add_random=False)
 
         if 'tc_act4_hanako' in ks_persistent_data:
             map_keys_to_topics(['hanako'], 'monika_ks_hanako')
-        else:
-            map_keys_to_topics(['hanako'], 'monika_ks_who', add_random=False)
 
         if 'tc_act4_rin' in ks_persistent_data:
             map_keys_to_topics(['rin', 'abstract art', 'abstract'], 'monika_ks_rin')
-        else:
-            map_keys_to_topics(['rin'], 'monika_ks_who', add_random=False)
 
         if 'tc_act4_shizune' in ks_persistent_data:
             map_keys_to_topics(['shizune'], 'monika_ks_shizune')
-        else:
-            map_keys_to_topics(['shizune'], 'monika_ks_who', add_random=False)
 
         if 'tc_act4_emi' in ks_persistent_data:
             map_keys_to_topics(['emi'], 'monika_ks_emi')
-        else:
-            map_keys_to_topics(['emi'], 'monika_ks_who', add_random=False)
 
         if 'kenji_rooftop' in ks_persistent_data:
             map_keys_to_topics(['kenji', 'manly picnic', 'whisky'], 'monika_ks_kenji')
@@ -1681,7 +1669,7 @@ label monika_ks_present:
     m "You've played {i}Katawa Shoujo{/i}, haven't you [player]?"
     m "I noticed your save files in [detected_ks_folder]."
     m "I don't see what the appeal is, though."
-    m "I mean, sure, the story's kind of nice..."
+    m "Like, sure, the story's kind of nice..."
     m "But when you get down to it the characters really seem like the same old cliches you could find in any other dating sim."
     m "Let's see... you've got the really energetic, vibrant girl with no legs;"
     m "The timid and mysterious girl who likes books and has burn scars;"
@@ -1694,19 +1682,6 @@ label monika_ks_present:
     m "You found me!"
     m "And instead of some directionless high schooler with a heart condition, I found you, [player]."
     m "And, [player], even if you have some kind of disability, you'll always be perfect in my eyes."
-    return
-
-# This topic doesn't/shouldn't show up randomly, so we can assume the player
-# specifically asked about it
-label monika_ks_notpresent:
-    m "{i}Katawa Shoujo{/i}? I've heard a bit about it."
-    m "It's another dating sim, right?"
-    m "You're not seriously thinking of playing it, are you [player]?"
-    
-
-label monika_ks_who:
-    m "She's from {i}Katawa Shoujo{/i}, right?"
-    m "Sorry, I don't really know much about her."
     return
 
 label monika_ks_lilly:
