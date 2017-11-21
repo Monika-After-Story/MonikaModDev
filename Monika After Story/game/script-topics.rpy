@@ -2752,6 +2752,38 @@ label monika_pleasure:
     m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
 
+init 5 python:
+    for key in ['writing', 'writing tip', 'sharing work']:
+        monika_topics.setdefault(key, [])
+        monika_topics[key].append('monika_writingtip_1')
+    monika_random_topics.append('monika_writingtip')
+
+label monika_writingtip_1:
+    m "You know... we really don't do enough of these so... let's go for it again!"
+    m "Here's Monika's Writing Tip for the Day!"
+    m "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
+    m "You have to remember that we all start out from somewhere, and-"
+    m "Actually, this doesn't just apply to writing, and more to any kind of writing really."
+    m "What I'm trying to say is,"
+    m "Don't be discouraged. No matter what you do. If someone tells you that your writing or work is bad, then be happy!"
+    m "Because that just means that you can improve and be even better than you were before."
+    m "Honestly... it also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m "If you and the rest of the literature club weren't there to help me get better and be more confident in my writing, then I don't think I'll be able to write poetry this good."
+    m "Ahaha, not that I think it's the best of course... I'm not that kind of person, and you know that."
+    m "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me or your friends or family."
+    m "I love you, and I will always support you with the work you wish to pursue."
+    m "Provided its legal of course."
+    m "Though that doesn't mean I'm completely against it. I can keep a secret after all~"
+    m "... One good saying I've heard is this:"
+    m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.''"
+    m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
+    m "I don't seem to remember the person who said that, but regardless, the words are there. And as the person says, the effort one puts forth into something can transcend even one's self."
+    m "So don't be afraid of trying! Keep going forward and eventually, before you know it, you'll make headway!"
+    m "... That's my advice for today!"
+    m "Thanks for listening~"
+    return 
+
 ##################
 #Incomplete ideas#
 ##################
