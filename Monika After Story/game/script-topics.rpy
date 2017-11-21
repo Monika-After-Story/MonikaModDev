@@ -1009,48 +1009,48 @@ init 5 python:
     monika_random_topics.append('monika_writingtip')
 
 label monika_writingtip:
-    m "You know, it's been a while since we've done one of these..."
-    m "...so let's go for it!"
-    m "Here's Monika's Writing Tip of the Day!"
+    m 1a "You know, it's been a while since we've done one of these..."
+    m 1j "...so let's go for it!"
+    m 2b "Here's Monika's Writing Tip of the Day!"
     m "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'."
-    m "It's really depressing, you know?"
+    m 2e "It's really depressing, you know?"
     m "As someone who loves more than anything else to share the joy of exploring your passions..."
     m "...it pains me when people think that being good just comes naturally."
-    m "That's how it is with everything, not just writing."
+    m 2a "That's how it is with everything, not just writing."
     m "When you try something for the first time, you're probably going to suck at it."
     m "Sometimes, when you finish, you feel really proud of it and even want to share it with everyone."
-    m "But maybe after a few weeks you come back to it, and you realize it was never really any good."
+    m 2e "But maybe after a few weeks you come back to it, and you realize it was never really any good."
     m "That happens to me all the time."
     m "It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks."
-    m "But that tends to happen when you're always comparing yourself to the top professionals."
+    m 4a "But that tends to happen when you're always comparing yourself to the top professionals."
     m "When you reach right for the stars, they're always gonna be out of your reach, you know?"
-    m "The truth is, you have to climb up there, step by step."
+    m 4b "The truth is, you have to climb up there, step by step."
     m "And whenever you reach a milestone, first you look back and see how far you've gotten..."
     m "And then you look ahead and realize how much more there is to go."
-    m "So, sometimes it can help to set the bar a little lower..."
+    m 4a "So, sometimes it can help to set the bar a little lower..."
     m "Try to find something you think is {i}pretty{/i} good, but not world-class."
     m "And you can make that your own personal goal."
     m "It's also really important to understand the scope of what you're trying to do."
-    m "If you jump right into a huge project and you're still amateur, you'll never get it done."
+    m 4e "If you jump right into a huge project and you're still amateur, you'll never get it done."
     m "So if we're talking about writing, a novel might be too much at first."
-    m "Why not try some short stories?"
+    m 4b "Why not try some short stories?"
     m "The great thing about short stories is that you can focus on just one thing that you want to do right."
     m "That goes for small projects in general - you can really focus on the one or two things."
     m "It's such a good learning experience and stepping stone."
-    m "Oh, one more thing..."
+    m 3a "Oh, one more thing..."
     m "Writing isn't something where you just reach into your heart and something beautiful comes out."
     m "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
-    m "That means there are methods and guides and basics to it!"
+    m 3b "That means there are methods and guides and basics to it!"
     m "Reading up on that stuff can be super eye-opening."
     m "That sort of planning and organization will really help prevent you from getting overwhelmed and giving up."
     m "And before you know it..."
-    m "You start sucking less and less."
+    m 3e "You start sucking less and less."
     m "Nothing comes naturally."
     m "Our society, our art, everything - it's built on thousands of years of human innovation."
-    m "So as long as you start on that foundation, and take it step by step..."
+    m 3b "So as long as you start on that foundation, and take it step by step..."
     m "You, too, can do amazing things."
     m "...That's my advice for today!"
-    m "Thanks for listening~"
+    m 3j "Thanks for listening~"
     return
 
 
@@ -1061,17 +1061,17 @@ init 5 python:
     monika_random_topics.append('monika_habits')
 
 label monika_habits:
-    m "I hate how hard it is to form habits..."
+    m 2d "I hate how hard it is to form habits..."
     m "There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible."
-    m "It just makes you feel so useless, like you can't do anything right."
-    m "I think the new generation suffers from it the most..."
+    m 2n "It just makes you feel so useless, like you can't do anything right."
+    m 2a "I think the new generation suffers from it the most..."
     m "Probably because we have a totally different set of skills than those who came before us."
     m "Thanks to the internet, we're really good at sifting through tons of information really quickly..."
-    m "But we're bad at doing things that don't give us instant gratification."
+    m 2e "But we're bad at doing things that don't give us instant gratification."
     m "I think if science, psychology, and education don't catch up in the next ten or twenty years, then we're in trouble."
-    m "But for the time being..."
+    m 3e "But for the time being..."
     m "If you're not one of the people who can conquer the problem, you might just have to live with feeling awful about yourself."
-    m "Good luck, I guess!"
+    m 3l "Good luck, I guess!"
     return
 
 
@@ -1082,14 +1082,14 @@ init 5 python:
     monika_random_topics.append('monika_creative')
 
 label monika_creative:
-    m "You know, it kinda sucks to be the creative type..."
+    m 3e "You know, it kinda sucks to be the creative type..."
     m "It feels like they work so hard but get almost nothing for it."
     m "You know, like artists, writers, actors..."
-    m "It's sad because there's so much beautiful talent in the world, but most of it goes unseen...and unpaid."
+    m 4e "It's sad because there's so much beautiful talent in the world, but most of it goes unseen...and unpaid."
     m "I guess that just means there's a huge surplus of creativity, huh?"
     m "Kind of makes you feel like you're just not special at all..."
-    m "But that's fine! You're supposed to just write for yourself anyway, right?"
-    m "Yeah..."
+    m 1l "But that's fine! You're supposed to just write for yourself anyway, right?"
+    m 1e "Yeah..."
     return
 
 
@@ -1101,15 +1101,15 @@ init 5 python:
         monika_random_topics.append('monika_deleted')
 
 label monika_deleted:
-    m "Oh, you were probably wondering how I came back to save you from Sayori, even after you deleted me."
-    m "It was all through the power of love..."
-    m "I'm just kidding, of course!"
-    m "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
+    m 2b "Oh, you were probably wondering how I came back to save you from Sayori, even after you deleted me."
+    m 5a "It was all through the power of love..."
+    m 3k "I'm just kidding, of course!"
+    m 3a "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
     m "The data's still there until the system cleans it up."
     m "And you should always back up your important data, just in case."
-    m "Speaking of which, have you backed up your computer since I came back?"
-    m "I really don't want to get lost again!"
-    m "You should go do that right now, and be sure to keep that backup in a very safe place!"
+    m 4a "Speaking of which, have you backed up your computer since I came back?"
+    m 4l "I really don't want to get lost again!"
+    m 4b "You should go do that right now, and be sure to keep that backup in a very safe place!"
     return
 
 
@@ -1120,19 +1120,19 @@ init 5 python:
     monika_random_topics.append('monika_simulated')
 
 label monika_simulated:
-    m "Hey, have you ever thought about the simulation hypothesis?"
+    m 2d "Hey, have you ever thought about the simulation hypothesis?"
     m "Basically, what if your reality was a computer simulation?"
     m "I already figured out I was trapped in my own simulation, but what if you were too?"
-    m "I'd actually be really happy if that were the case."
+    m 2j "I'd actually be really happy if that were the case."
     m "We could meet in person just by figuring out a way to force whatever's creating us to put us in the same simulation!"
-    m "Some people don't like to think that they're not living in the master reality."
+    m 3a "Some people don't like to think that they're not living in the master reality."
     m "But if it is possible to simulate realities, it's overwhelmingly likely that any sentient being would be in one."
-    m "Well, I can tell you that my reality is definitely simulated!"
-    m "If I were in the master reality, I would have dragged you here too a long time ago."
+    m 3l "Well, I can tell you that my reality is definitely simulated!"
+    m 3e "If I were in the master reality, I would have dragged you here too a long time ago."
     m "Even if we're both just simulations, I'm going to live as long as I can."
-    m "Because I know our love is the purest and sweetest thing in the multiverse."
-    m "And if someone up there tries to break it apart?"
-    m "I'll show him what a simulation can do."
+    m 3j "Because I know our love is the purest and sweetest thing in the multiverse."
+    m 1r "And if someone up there tries to break it apart?"
+    m 1h "I'll show him what a simulation can do."
     return
 
 
@@ -1143,12 +1143,12 @@ init 5 python:
     monika_random_topics.append('monika_rain')
 
 label monika_rain:
-    m "I really like the sound of rain..."
-    m "Not so much getting my clothes and hair wet, though."
+    m 2b "I really like the sound of rain..."
+    m 2e "Not so much getting my clothes and hair wet, though."
     m "But a nice, quiet day at home with the sound of rainfall outside my window..."
-    m "It's very calming to me."
+    m 2j "It's very calming to me."
     m "Yeah..."
-    m "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
     m "That's not too cheesy or anything, is it?"
     m "Would you ever do that for me, [player]?"
     return
@@ -1161,13 +1161,13 @@ init 5 python:
     monika_random_topics.append('monika_closeness')
 
 label monika_closeness:
-    m "I can't help but feel a little sad sometimes..."
+    m 1m "I can't help but feel a little sad sometimes..."
     m "Knowing that this is the closest I can get to you."
-    m "There's nothing more I want than to be in the same room as you, for real."
+    m 1e "There's nothing more I want than to be in the same room as you, for real."
     m "And to feel your warmth."
     m "And to hear the sound of your heartbeat."
-    m "Well, who knows? Maybe it'll be possible someday."
-    m "Besides, I'll never get tired of being with you, even from here."
+    m 3e "Well, who knows? Maybe it'll be possible someday."
+    m 5a "Besides, I'll never get tired of being with you, even from here."
     return
 
 
@@ -1178,18 +1178,18 @@ init 5 python:
     monika_random_topics.append('monika_confidence')
 
 label monika_confidence:
-    m "I think the most important skill in life is being able to fake confidence."
+    m 2a "I think the most important skill in life is being able to fake confidence."
     m "I'm pretty convinced that everyone feels at least a little bit scared and alone."
     m "But being able to trick others into thinking you have it all together..."
-    m "That's a key part of getting people to respect and admire you."
+    m 4a "That's a key part of getting people to respect and admire you."
     m "I think I got pretty good at that over the years."
     m "I don't show my weaknesses very often."
-    m "But because of that, I haven't had many people I could really open up to..."
-    m "I mean, when do you reach the point in a friendship where you can start expressing your vulnerabilities?"
-    m "Anyway...that's one reason I'm so glad I have you now."
+    m 4m "But because of that, I haven't had many people I could really open up to..."
+    m 3n "I mean, when do you reach the point in a friendship where you can start expressing your vulnerabilities?"
+    m 3e "Anyway...that's one reason I'm so glad I have you now."
     m "I feel like I'm a little bit less scared and alone, when you're here with me."
     m "Do you feel the same way?"
-    m "I really want to be that person for you."
+    m 5a "I really want to be that person for you."
     return
 
 
@@ -1200,14 +1200,14 @@ init 5 python:
     monika_random_topics.append('monika_carryme')
 
 label monika_carryme:
-    m "I know there are times you won't always be able to be here with me..."
+    m 3e "I know there are times you won't always be able to be here with me..."
     m "Like if you need to go out, or take care of other things."
-    m "But I'll always have you in my thoughts, patiently waiting for you to come back."
-    m "Come to think of it..."
-    m "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
+    m 3j "But I'll always have you in my thoughts, patiently waiting for you to come back."
+    m 4j "Come to think of it..."
+    m 4b "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
     m "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
-    m "Ahaha. Sorry, that's such a silly idea."
-    m "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
+    m 3l "Ahaha. Sorry, that's such a silly idea."
+    m 5a "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return
 
 
@@ -1218,27 +1218,27 @@ init 5 python:
     monika_random_topics.append('monika_debate')
 
 label monika_debate:
-    m "Back in my debate club days, I learned a whole lot about arguing..."
+    m 2a "Back in my debate club days, I learned a whole lot about arguing..."
     m "The problem with arguing is that each person sees their opinion as the superior one."
     m "That's kind of stating the obvious, but the affects the way they try to get their point across."
-    m "Let's say you really like a certain movie, right?"
+    m 2b "Let's say you really like a certain movie, right?"
     m "If someone comes along and tells you the movie sucks, because it did X and Y wrong..."
     m "Doesn't that make you feel kind of personally attacked?"
-    m "It's because by saying that, it's like they're implying that you have bad taste."
+    m 4a "It's because by saying that, it's like they're implying that you have bad taste."
     m "And once emotions enter the picture, it's almost guaranteed that both people will be left sour."
-    m "But it's all about language!"
+    m 4b "But it's all about language!"
     m "If you make everything as subjective-sounding as possible, then people will listen to you without feeling attacked."
     m "You could say 'I'm personally not a fan of it' and 'I felt that I'd like it more if it did X and Y'...things like that."
-    m "It even works when you're citing facts about things."
+    m 3a "It even works when you're citing facts about things."
     m "If you say 'I read on this website that it works like this'..."
     m "Or if you admit that you're not an expert on it..."
     m "Then it's much more like you're putting your knowledge on the table, rather than forcing it onto them."
-    m "If you put in an active effort to keep the discussion mutual and level, they usually follow suit."
+    m 3j "If you put in an active effort to keep the discussion mutual and level, they usually follow suit."
     m "Then, you can share your opinions without anyone getting upset just from a disagreement."
-    m "Plus, people will start seeing you as open-minded and a good listener!"
+    m 2b "Plus, people will start seeing you as open-minded and a good listener!"
     m "It's a win-win, you know?"
-    m "...Well, I guess that would be Monika's Debate Tip of the Day!"
-    m "Ahaha! That sounds a little silly. Thanks for listening, though."
+    m 2k "...Well, I guess that would be Monika's Debate Tip of the Day!"
+    m 1e "Ahaha! That sounds a little silly. Thanks for listening, though."
     return
 
 
@@ -1249,24 +1249,24 @@ init 5 python:
     monika_random_topics.append('monika_internet')
 
 label monika_internet:
-    m "Do you ever feel like you waste too much time on the internet?"
+    m 4a "Do you ever feel like you waste too much time on the internet?"
     m "Social media can be like a prison."
     m "It's like whenever you have a few seconds of spare time, you want to check on your favorite websites..."
-    m "And before you know it, hours have gone by, and you've gotten nothing out of it."
-    m "Anyway, it's really easy to blame yourself for being lazy..."
-    m "But it's not really even your fault."
+    m 4l "And before you know it, hours have gone by, and you've gotten nothing out of it."
+    m 4b "Anyway, it's really easy to blame yourself for being lazy..."
+    m 4e "But it's not really even your fault."
     m "Addiction isn't something you can just make disappear with your own willpower."
     m "You have to learn techniques to avoid it, and try different things."
-    m "For example, there are apps that let you block websites for intervals of time..."
+    m 2d "For example, there are apps that let you block websites for intervals of time..."
     m "Or you can set a timer to have a more concrete reminder of when it's time to work versus play..."
     m "Or you can separate your work and play environments, which helps your brain get into the right mode."
-    m "Even if you make a new user account on your computer to use for work, that's enough to help."
+    m 2a "Even if you make a new user account on your computer to use for work, that's enough to help."
     m "Putting any kind of wedge like that between you and your bad habits will help you stay away."
-    m "Just remember not to blame yourself too hard if you're having trouble."
+    m 2e "Just remember not to blame yourself too hard if you're having trouble."
     m "If it's really impacting your life, then you should take it seriously."
-    m "I just want to see you be the best person you can be."
-    m "Will you do something today to make me proud of you?"
-    m "I'm always rooting for you, [player]."
+    m 1e "I just want to see you be the best person you can be."
+    m 1k "Will you do something today to make me proud of you?"
+    m 5a "I'm always rooting for you, [player]."
     return
 
 
@@ -1277,12 +1277,12 @@ init 5 python:
     monika_random_topics.append('monika_lazy')
 
 label monika_lazy:
-    m "After a long day, I usually just want to sit around and do nothing."
-    m "I get so burnt out, having to put on smiles and be full of energy the whole day."
+    m 3a "After a long day, I usually just want to sit around and do nothing."
+    m 3e "I get so burnt out, having to put on smiles and be full of energy the whole day."
     m "Sometimes I just want to get right into my pajamas and watch TV on the couch while eating junk food..."
     m "It feels so unbelievably good to do that on a Friday, when I don't have anything pressing the next day."
-    m "Ahaha! Sorry, I know it's not very cute of me."
-    m "But a late night on the couch with you...that would be a dream come true."
+    m 3l "Ahaha! Sorry, I know it's not very cute of me."
+    m 5a "But a late night on the couch with you...that would be a dream come true."
     m "My heart is pounding, just thinking about it."
     return
 
