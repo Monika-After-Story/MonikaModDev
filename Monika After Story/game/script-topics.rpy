@@ -2730,7 +2730,7 @@ label monika_pleasure:
     m "It seems a bit awkward to ask-"
     m "We're not even that deep into our relationship yet! Ahaha~"
     m "But I have to keep an eye on you."
-    m "I don't really know if you do pleasure yourself stuff whenever you quit the game."
+    m "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
     m "I hear that people privately do those stuff in your world..."
     m "Is it really that a good feeling?"
     m "If you ask me, doing that stuff often can cause a lot of problems."
