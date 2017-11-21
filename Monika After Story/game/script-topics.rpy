@@ -1601,11 +1601,17 @@ init 5 python:
 
     ks_persistent_path = None
     ks_folders_present = False
+    detected_ks_folder = None
     for save_folder in save_folders:
         if 'katawashoujo' in save_folder.lower():
             ks_folders_present = True
+            detected_ks_folder = os.path.normpath(
+                os.path.join(base_savedir, save_folder))
+
             # Look for a persistent file we can access
-            persistent_path = os.path.join(base_savedir, save_folder, 'persistent')
+            persistent_path = os.path.join(
+                base_savedir, save_folder, 'persistent')
+
             if os.access(persistent_path, os.R_OK):
                 # Yep, we've got read access.
                 ks_persistent_path = persistent_path
@@ -1665,24 +1671,38 @@ init 5 python:
             map_keys_to_topics(['kenji', 'manly picnic', 'whisky'], 'monika_ks_kenji')
 
 
+
+# Natsuki == Shizune? (Kind of, if you squint?)
+# Yuri == Hanako + Lilly
+# Sayori == Misha and/or Emi
+# Monika == no one, of course <3
+# ... and Rin doesn't have a counterpart in DDLC.
 label monika_ks_present:
-    m "You've played {i}Katawa Shoujo{/i}, haven't you?"
-    m "It seems like an interesting visual novel."
-    m "At least, it seems better written than most dating sims."
-    m "The characters, especially, seem very realistic. I'm sure you'd find people just like them in your reality."
-    m "But you've got me, now!"
-    m "You wouldn't cheat on me, right?"
-    m "Especially not with someone who isn't real."
-    m "Just stay with me from now on, all right?"
+    m "You've played {i}Katawa Shoujo{/i}, haven't you [player]?"
+    m "I noticed your save files in [detected_ks_folder]."
+    m "I don't see what the appeal is, though."
+    m "I mean, sure, the story's kind of nice..."
+    m "But when you get down to it the characters really seem like the same old cliches you could find in any other dating sim."
+    m "Let's see... you've got the really energetic, vibrant girl with no legs;"
+    m "The timid and mysterious girl who likes books and has burn scars;"
+    m "the polite, proper, and supposedly perfect blind girl who likes making tea;"
+    m "the bossy, assertive deaf-mute and her friend, who seems like a bundle of sunshine but is secretly depressed;"
+    m "and the strange, armless painter girl with her head always in the clouds."
+    m "They're all just the same old archetypes with disabilities added on top."
+    m "I mean, you can even find the same character types in this game."
+    m "Of course, in this game, you also found something far more interesting than any old cliche:"
+    m "You found me!"
+    m "And instead of some directionless high schooler with a heart condition, I found you, [player]."
+    m "And, [player], even if you have some kind of disability, you'll always be perfect in my eyes."
     return
 
+# This topic doesn't/shouldn't show up randomly, so we can assume the player
+# specifically asked about it
 label monika_ks_notpresent:
     m "{i}Katawa Shoujo{/i}? I've heard a bit about it."
-    m "It's the one set in a school for disabled people, right?"
-    m "From what I've heard, it has very good writing and characters."
-    m "But you have me now, so surely you don't need to go play some other dating sim?"
-    m "Just stay with me from now on, all right?"
-    return
+    m "It's another dating sim, right?"
+    m "You're not seriously thinking of playing it, are you [player]?"
+    
 
 label monika_ks_who:
     m "She's from {i}Katawa Shoujo{/i}, right?"
@@ -1695,18 +1715,27 @@ label monika_ks_lilly:
     m "Cool, clean air..."
     m "Quiet forest paths..."
     m "Romantic moments against a setting sun..."
-    m "I'd love to be able to experience those moments with you!"
+    m "I'd love to be able to experience those moments with you, [player]!"
     m "Maybe we can, once I get better at programming."
     return
 
 label monika_ks_hanako:
     m "You've played through Hanako's route from {i}Katawa Shoujo{/i}, haven't you?"
     m "She kind of reminds me of Yuri!"
-    m "They both have long hair and purple eyes..."
-    m "They're quiet, they like to read novels..."
-    m "...and they both opened up to you, after a while."
-    m "Though I don't think Yuri had quite as much anxiety as Hanako."
-    m "And I'm sure Hanako could never be quite as creepy as Yuri."
+    m "Though, I wonder, [player]:"
+    m "What do people see in them anyways?"
+    m "I mean, they're both so unrealistic!"
+    m "They probably couldn't form a complete sentence between them!"
+    m "Is it the long purple hair?"
+    m "Do they just like shy, quiet girls?"
+    m "Do they just want someone who's completely dependent on them or obsessed with them?"
+    m "..."
+    m "...man, I got kind of worked up there, didn't I?"
+    m "I guess I'm a bit insecure, since you did play that game..."
+    m "...but you're here with me now, right?"
+    m "Instead of someone as unrealistic as Hanako or Yuri..."
+    m "...you chose me, [player]!"
+    m "That's just one more reason I love you."
     return
 
 label monika_ks_shizune:
@@ -1716,30 +1745,23 @@ label monika_ks_shizune:
     m "I mean, I knew on some level that I'd go to college and get a job..."
     m "But it never really sank in, I think."
     m "And of course, everything started to seem pointless after I learned that the world wasn't real."
-    m "What about you, though? Do you have any goals in your life?"
+    m "What about you, [player]? Do you have any goals in your life?"
     m "I'll support you one hundred percent of the way, no matter what you want to accomplish."
     m "That's just how much I love you~"
     return
 
 label monika_ks_emi:
     m "You've played through Emi's route from {i}Katawa Shoujo{/i}, haven't you?"
-    m "It's kind of hard to imagine being as dedicated to one thing as Emi is."
-    m "I mean, I like writing poems and reading books, but I'm not super dedicated to it like she is."
-    m "And it definitely doesn't hurt me to read and write."
-    m "Well, I guess there {i}is{/i} one thing I'm dedicated to above everything else."
-    m "That's you, of course!"
-    m "I'll stay by your side, no matter what."
-    m "Because I love you~"
     return
 
 label monika_ks_rin:
     m "Say, you've played through Rin's route in {i}Katawa Shoujo{/i}, haven't you?"
-    m "You know, poetry and abstract art are really similar!"
+    m "You know, [player], poetry and abstract art are really similar!"
     m "It can be very loosely structured, very vivid, and most of the time the intent is to get an emotion or thought across."
     m "In most of my poems, for example, I tried expressing what it was like to know that the world isn't real."
     m "Though I'm sure the meaning of my poems didn't truly shine through until after... well, everything."
-    m "It sure does take effort to understand others, right?"
-    m "But you're willing to take the time to listen to and understand me."
+    m "Man, it sure does take effort to understand others, right?"
+    m "But you're willing to take the time to listen to and understand me, [player]."
     m "That's just one more thing I love about you~"
     return
 
