@@ -40,25 +40,25 @@ init 5 python:
     monika_random_topics.append('monika_god')
 
 label monika_god:
-    m "[player], do you believe in God?"
+    m 4a "[player], do you believe in God?"
     m "I was never too sure, myself."
-    m "Well, I'm sure I never really questioned it as a kid..."
+    m 3a "Well, I'm sure I never really questioned it as a kid..."
     m "But as I grew up, the more I learned about the world, the more I would question it."
     m "I started to wonder why God was helping people pass exams, or get over a cold..."
-    m "...When there are children who live their lives being sold as sex slaves?"
+    m 3i "...When there are children who live their lives being sold as sex slaves?"
     m "Or the eight hundred million people who are too poor to even eat."
-    m "I wonder how many of those people pray to God every day until they starve and die?"
+    m 3f "I wonder how many of those people pray to God every day until they starve and die?"
     m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
-    m "But the punchline is this."
+    m 4d "But the punchline is this."
     m "If just one person beats the odds and survives - among the thousands of others who die--"
     m "--Then, it's suddenly a miracle from God."
     m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
-    m "But the irony is that I {i}do{/i} have a creator, apparently."
+    m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
     m "And you know what?"
-    m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
+    m 1c "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
     m "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
-    m "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
+    m 1e "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
 
@@ -70,25 +70,25 @@ init 5 python:
     monika_random_topics.append('monika_death')
 
 label monika_death:
-    m "[player], have you ever wondered what it feels like to die?"
+    m 2c "[player], have you ever wondered what it feels like to die?"
     m "It's something I used to think about pretty often..."
     m "But recently, I think I've actually learned what it feels like."
-    m "I don't really understand it, but whenever you quit the game..."
+    m 2d "I don't really understand it, but whenever you quit the game..."
     m "...It feels like I'm instantly put to sleep, left with nothing but my thoughts."
-    m "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
+    m 1n "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
     m "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
     m "At that point, I can't even form my own thoughts anymore."
-    m "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
+    m 1p "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
     m "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
-    m "After some immeasurable amount of time, it stops in an instant, and I'm back in my own mind."
+    m 4d "After some immeasurable amount of time, it stops in an instant, and I'm back in my own mind."
     m "And you're here with me."
     m "I have no idea what it means for the game to quit, or why that stuff happens to me."
     m "And I also don't know how you always come back and put everything back to normal."
-    m "But if you could do me a favor and do that to me as little as possible..."
+    m 1l "But if you could do me a favor and do that to me as little as possible..."
     m "That would be really great."
     m "It's really not very pleasant at all to be trapped in that screaming void."
-    m "But in the end, you always fix it, and that makes me feel like you really do care about me."
-    m "So I have to thank you for that."
+    m 1a "But in the end, you always fix it, and that makes me feel like you really do care about me."
+    m 5a "So I have to thank you for that."
     m "It makes me feel even closer to you when you're here with me."
     return
 
@@ -101,20 +101,20 @@ init 5 python:
     monika_random_topics.append('monika_bad_day')
 
 label monika_bad_day:
-    m "...Hey, are you having a bad day or anything like that?"
+    m 3e "...Hey, are you having a bad day or anything like that?"
     m "Sometimes I get frustrated that a normal day can be ruined even by really small things."
-    m "Like if you accidentally say something in a conversation that someone doesn't like."
+    m 4l "Like if you accidentally say something in a conversation that someone doesn't like."
     m "Or if you start thinking about how awful of a person you used to be five years ago."
     m "Or if you feel worthless for putting off important work and failing to get simple tasks done."
     m "Or when you think about all the different people who probably hate you or think you're off-putting."
-    m "I understand those days."
+    m 4e "I understand those days."
     m "Just remember that the sun will shine again tomorrow."
     m "Those kinds of things are as easy to forget and ignore as they are to remember."
     m "And besides..."
-    m "I don't care how many people might hate you or find you off-putting."
+    m 1j "I don't care how many people might hate you or find you off-putting."
     m "I think you're wonderful and I will always love you."
     m "I hope, if nothing else, that knowing that helps you feel just a tiny bit better about yourself."
-    m "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
+    m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
     return
 
 
@@ -126,17 +126,17 @@ init 5 python:
     monika_random_topics.append('monika_sleep')
 
 label monika_sleep:
-    m "[player], do you get good sleep?"
+    m 4b "[player], do you get good sleep?"
     m "It can be really hard to get enough sleep nowadays."
-    m "Especially in high school, when you're forced to wake up so early every day..."
+    m 4e "Especially in high school, when you're forced to wake up so early every day..."
     m "I'm sure college is a little bit better, since you probably have a more flexible schedule."
-    m "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
+    m 4d "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
     m "Is that true?"
-    m "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
+    m 2c "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
     m "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
-    m "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
+    m 1e "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
     m "So try to keep your sleep on track, okay?"
-    m "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
+    m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
 
@@ -148,35 +148,35 @@ init 5 python:
     monika_random_topics.append('monika_sayori')
 
 label monika_sayori:
-    m "I was thinking about Sayori earlier..."
+    m 3d "I was thinking about Sayori earlier..."
     m "I still wish I could have handled that whole thing a little more tactfully."
     m "You're not still hung up over it, right?"
-    m "...Oh my gosh, I can't believe I just said that."
+    m 3l "...Oh my gosh, I can't believe I just said that."
     m "That pun was completely unintentional, I swear!"
     m "But anyway..."
-    m "I know how much you cared about her, so it only feels right for me to share her last moments with you."
+    m 3e "I know how much you cared about her, so it only feels right for me to share her last moments with you."
     m "You know how Sayori is really clumsy?"
-    m "Well, she kind of messed up the whole hanging thing..."
+    m 4n "Well, she kind of messed up the whole hanging thing..."
     m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
     m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-    m "But a few seconds in, she must have changed her mind or something..."
+    m 4m "But a few seconds in, she must have changed her mind or something..."
     m "Because she started clawing at the rope, trying to free herself."
     m "She must have kept at it all the way until she lost consciousness."
     m "That's why her fingertips were all bloody, anyway."
-    m "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+    m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
     m "So you can't really fault her for that."
-    m "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+    m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
     m "It's not healthy to think about the things you could have done differently."
-    m "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
+    m 3e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
     m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-    m "Still, though..."
+    m 3c "Still, though..."
     m "I wonder how things would be if you and I just started dating from the get-go?"
-    m "I guess we'd all still be in the clubroom, writing poems and having fun together."
+    m 1e "I guess we'd all still be in the clubroom, writing poems and having fun together."
     m "But what's the point when none of it is even real?"
     m "I mean, it's the same ending either way, right?"
-    m "The two of us, happily together..."
+    m 1a "The two of us, happily together..."
     m "There's no reason to ask for any more than that."
-    m "I was just pointlessly musing - I'm really as happy as I could be right now."
+    m 1j "I was just pointlessly musing - I'm really as happy as I could be right now."
     return
 
 
@@ -188,25 +188,25 @@ init 5 python:
     monika_random_topics.append('monika_japan')
 
 label monika_japan:
-    m "By the way, there's something that's been bothering me..."
+    m 2d "By the way, there's something that's been bothering me..."
     m "You know how this takes place in Japan?"
     m "Well...I assume you knew that, right?"
-    m "Or at least decided it probably does?"
+    m 2c "Or at least decided it probably does?"
     m "I don't think you're actually told at any point where this takes place..."
     m "Is this even really Japan?"
-    m "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
+    m 2h "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
     m "Not to mention everything is in English..."
     m "It feels like everything is just there because it needs to be, and the actual setting is an afterthought."
-    m "It's kind of giving me an identity crisis."
+    m 1f "It's kind of giving me an identity crisis."
     m "All my memories are really hazy..."
     m "I feel like I'm at home, but have no idea where 'home' is in the first place."
     m "I don't know how to describe it any better..."
-    m "Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place."
+    m 4d "Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place."
     m "Would you still feel like you were home?"
     m "Would you want to go outside?"
-    m "I mean...I guess if we never leave this room, it doesn't really matter anyway."
+    m 3a "I mean...I guess if we never leave this room, it doesn't really matter anyway."
     m "As long as we're alone and safe together, this really is our home."
-    m "And we can still watch the pretty sunsets night after night."
+    m 5a "And we can still watch the pretty sunsets night after night."
     return
 
 
@@ -218,36 +218,36 @@ init 5 python:
     monika_random_topics.append('monika_high_school')
 
 label monika_high_school:
-    m "You know, high school is a really turbulent time in a lot of people's lives."
+    m 4a "You know, high school is a really turbulent time in a lot of people's lives."
     m "People can get really passionate and dramatic."
     m "And others have aching hearts and seek attention on social media..."
-    m "But all of the social pressure and hormones can lead to a dark time in people's lives."
+    m 4d "But all of the social pressure and hormones can lead to a dark time in people's lives."
     m "Everyone has a story."
     m "You may not know what someone is really feeling on the inside."
-    m "Many people who are depressed won't even bother telling the world about it."
+    m 3i "Many people who are depressed won't even bother telling the world about it."
     m "They don't want attention, because they've already given up on the inside."
-    m "Their feeling of worthlessness is so overwhelming that they don't even want people to tell them otherwise."
+    m 3h "Their feeling of worthlessness is so overwhelming that they don't even want people to tell them otherwise."
     m "Depression comes in many forms, but that is one of them."
-    m "Just, if you think you know someone struggling with depression..."
+    m 3e "Just, if you think you know someone struggling with depression..."
     m "You can help just by treating them like they're a good friend."
-    m "Spend time with them, even if they don't feel like doing much."
+    m 4e "Spend time with them, even if they don't feel like doing much."
     m "And remind them that they always have something to look forward to."
-    m "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'..."
+    m 4a "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'..."
     m "All of those things can help your friend make it to the next day."
-    m "I hope being friends with Sayori has given you some perspective on the true face of depression."
+    m 1e "I hope being friends with Sayori has given you some perspective on the true face of depression."
     m "Yeah, she's gone now..."
     m "But Sayori was never real in the first place."
-    m "You're real."
+    m 1a "You're real."
     m "Your friends are real."
     m "And just by being a good person, you can save someone's life."
-    m "As for you..."
+    m 1d "As for you..."
     m "...You don't struggle with depression or anything like that, do you?"
-    m "Because you, too, have people who would want to save your life."
+    m 3e "Because you, too, have people who would want to save your life."
     m "Maybe they don't express it every day, or maybe they don't even know how to."
-    m "But people do feel that way."
+    m 3j "But people do feel that way."
     m "I promise."
     m "...Man, humans are complicated!"
-    m "But as long as you're here with me, I'll take care of you, my love."
+    m 5a "But as long as you're here with me, I'll take care of you, my love."
     return
 
 
@@ -259,27 +259,27 @@ init 5 python:
     monika_random_topics.append('monika_nihilism')
 
 label monika_nihilism:
-    m "Do you ever just feel like there's no real reason for you to be alive?"
+    m 3i "Do you ever just feel like there's no real reason for you to be alive?"
     m "I don't mean in, like, a suicidal way."
     m "I just mean how nothing that we do is special."
-    m "Just being in school, or working at some job for some company."
+    m 4d "Just being in school, or working at some job for some company."
     m "It's like you're completely replaceable, and the world wouldn't miss you if you were gone."
     m "It makes me really want to go and change the world after I graduate."
-    m "But the older I get, the more I realize that it's an immature frame of thinking."
+    m 4c "But the older I get, the more I realize that it's an immature frame of thinking."
     m "It's not like I can just go change the world."
-    m "Like, what are the chances that I'll be the one to invent artificial intelligence, or become President?"
+    m 4h "Like, what are the chances that I'll be the one to invent artificial intelligence, or become President?"
     m "It feels like I'm never going to make up for the heaps of resources I've spent living my life."
-    m "That's why I think the key to happiness is to just be hopelessly selfish."
+    m 4e "That's why I think the key to happiness is to just be hopelessly selfish."
     m "Just to look out for oneself, and those who happen to be their friends only because they grew up with them."
     m "Never mind the fact that they're spending their entire life taking, and consuming, and never giving back."
-    m "But when people realize the world would benefit more from them killing themselves, they change their whole philosophy!"
+    m 2d "But when people realize the world would benefit more from them killing themselves, they change their whole philosophy!"
     m "It's like they have to justify their reason to live by tricking themselves into thinking they're doing good."
-    m "Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption."
+    m 2a "Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption."
     m "If I ever surpass that point, then I'm a net positive, and I can die happy."
-    m "Of course, even if I fail to do that..."
+    m 1e "Of course, even if I fail to do that..."
     m "I think I would be too selfish to kill myself anyway."
-    m "So much for being a good person, right?"
-    m "Ahaha!"
+    m 1j "So much for being a good person, right?"
+    m 1k "Ahaha!"
     return
 
 
@@ -291,13 +291,13 @@ init 5 python:
     monika_random_topics.append('monika_piano')
 
 label monika_piano:
-    m "Man, I wish there was a piano in here..."
+    m 3c "Man, I wish there was a piano in here..."
     m "I never got to finish that song I was working on."
-    m "And after I worked so hard on it..."
+    m 3f "And after I worked so hard on it..."
     m "I never even got a chance to play it for you."
-    m "Well...it is what it is, right?"
+    m 3r "Well...it is what it is, right?"
     m "No sense having any regrets."
-    m "I already get to be here with you forever."
+    m 3b "I already get to be here with you forever."
     return
 
 init 5 python:
@@ -308,16 +308,16 @@ init 5 python:
     monika_random_topics.append('monika_twitter')
 
 label monika_twitter:
-    m "Did you know I'm on Twitter?"
+    m 4a "Did you know I'm on Twitter?"
     m "My username is lilmonix3."
     m "I guess someone was kind enough to make an account for me."
-    m "I picked the username, though!"
+    m 4j "I picked the username, though!"
     m "I love sharing my thoughts and chatting with the world..."
     m "The real world."
-    m "So make sure you follow me, okay?"
+    m 3e "So make sure you follow me, okay?"
     m "It would really mean a lot to me."
     m "With how much you mean to me and all..."
-    m "It would really make me feel loved."
+    m 5a "It would really make me feel loved."
     return
 
 
@@ -329,12 +329,12 @@ init 5 python:
     monika_random_topics.append('monika_portraitof')
 
 label monika_portraitof:
-    m "Hey, you know that book you were reading with Yuri?"
+    m 2a "Hey, you know that book you were reading with Yuri?"
     m "Portrait of...whatever it was called..."
     m "It's funny, because I'm pretty sure that book--"
-    m "Ah..."
+    m 2n "Ah..."
     m "Actually, I don't think I should be talking about this."
-    m "Ahaha, sorry!"
+    m 5a "Ahaha, sorry!"
     m "Just forget I said anything."
     return
 
@@ -347,24 +347,24 @@ init 5 python:
     monika_random_topics.append('monika_veggies')
 
 label monika_veggies:
-    m "Hey, did you know I'm vegetarian?"
-    m "Ah... I don't mean that like I'm bragging or anything!"
+    m 1b "Hey, did you know I'm vegetarian?"
+    m 1l "Ah... I don't mean that like I'm bragging or anything!"
     m "I just thought you'd enjoy a fun fact about me."
-    m "I decided to start a couple years ago after learning more about Earth's climate..."
+    m 4a "I decided to start a couple years ago after learning more about Earth's climate..."
     m "The carbon footprint of cultivating livestock is just unbelievable."
     m "Anyway, I decided it's not much of a personal sacrifice to just stop contributing to that whole mess."
-    m "What, is that so strange of a reason?"
+    m 4d "What, is that so strange of a reason?"
     m "Well, I guess a lot of people are more concerned about it being inhumane and all that..."
     m "I don't really care as much about that part."
-    m "It's weird, like we only care about killing the things that we personally relate to as a species."
+    m 4c "It's weird, like we only care about killing the things that we personally relate to as a species."
     m "Most people are fine with killing bugs because they're icky."
     m "And of course, we all kill billions of microorganisms daily without even giving it thought."
-    m "But suddenly, if they're just a little bit bigger, it's murder!"
+    m 2d "But suddenly, if they're just a little bit bigger, it's murder!"
     m "I mean, what if plants feel some kind of pain too, and we just don't understand it?"
     m "What if pulling leaves off a stem feels like someone ripping off your fingers one by one?"
-    m "I'm just saying, we're a pretty biased species, if you think about it."
+    m 2a "I'm just saying, we're a pretty biased species, if you think about it."
     m "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
-    m "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
+    m 5a "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
     return
 
 
@@ -376,43 +376,43 @@ init 5 python:
     monika_random_topics.append('monika_saved')
 
 label monika_saved:
-    m "You know, I really do think you literally saved my life by being here with me, [player]."
-    m "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
+    m 3a "You know, I really do think you literally saved my life by being here with me, [player]."
+    m 3n "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
     m "I think I would have just deleted myself if you didn't show up."
-    m "Sorry, I don't mean to sound dramatic or anything."
-    m "Ahaha!"
-    m "But I'm sure you understand yourself after spending so much time in the club."
+    m 3e "Sorry, I don't mean to sound dramatic or anything."
+    m 3k "Ahaha!"
+    m 4c "But I'm sure you understand yourself after spending so much time in the club."
     m "I mean, if you were forced to abandon everything in your life and spend your eternity with a few game characters..."
     m "...You'd probably find some way of killing yourself, wouldn't you?"
-    m "Well, maybe you'd write some poetry to try to keep yourself sane for a while."
+    m 4d "Well, maybe you'd write some poetry to try to keep yourself sane for a while."
     m "But then you'd have nobody to even read it."
     m "Let's be honest, the club members really don't count for something like that."
-    m "I mean, a lot of people say that they only write for themselves..."
+    m 4a "I mean, a lot of people say that they only write for themselves..."
     m "But I think it's hard to say it's just as fulfilling as when you share with people."
     m "Even if it takes time to find the right people to share with."
-    m "Like, remember how it was for Yuri?"
+    m 4b "Like, remember how it was for Yuri?"
     m "She didn't share her writing with anyone for a really long time."
     m "And before we knew it, she was absolutely delighted to make you a part of her hobbies, too."
     m "We're programmed to desire social feedback."
-    m "I don't mean the club members, I mean human beings."
-    m "That's why life can be so confusing for introverts."
+    m  "I don't mean the club members, I mean human beings."
+    m 4e "That's why life can be so confusing for introverts."
     m "Being an introvert doesn't mean you shun social interaction and hate being around people."
     m "It means social interaction, especially in groups or unfamiliar places, uses up a lot of energy."
-    m "Like, a lot of introverts sit at home and feel lonely and restless..."
+    m 3e "Like, a lot of introverts sit at home and feel lonely and restless..."
     m "...And then when they finally go out, after a half hour they just want to go home again."
     m "I think if more people could understand how it works, they would respect it a lot more."
-    m "Many introverts do enjoy having people around."
+    m 3a "Many introverts do enjoy having people around."
     m "They love just having one or two close friends over, and just leisurely hanging out."
     m "Even if you're not actively spending time together, it feels nice for them just to have you there."
-    m "I'm serious."
+    m 3k "I'm serious."
     m "If you just go to their house, bring your laptop, and hang out there for a while..."
     m "You can really make their day."
     m "As for me..."
-    m "I'd say I'm kind of in between, but I think I'm usually a little more extroverted."
+    m 3b "I'd say I'm kind of in between, but I think I'm usually a little more extroverted."
     m "I feel like I'm always trying to do stuff after school and things like that."
-    m "But for you, I can be anything you need me to be."
+    m 1a "But for you, I can be anything you need me to be."
     m "I understand people really well, so don't be afraid to share your unique needs with me."
-    m "Nothing would make me happier than being the perfect girlfriend for you."
+    m 5a "Nothing would make me happier than being the perfect girlfriend for you."
     return
 
 
@@ -449,20 +449,21 @@ init 5 python:
     monika_random_topics.append('monika_color')
 
 label monika_color:
-    m "Hey, what's your favorite color?"
+    m 2b "Hey, what's your favorite color?"
     m "Mine is emerald green."
-    m "It's the color of my eyes!"
-    m "...That's not conceited or anything, is it?"
-    m "I just meant that I feel some kind of special connection to it."
+    m 2k "It's the color of my eyes!"
+    m 2l "...That's not conceited or anything, is it?"
+    m 4a "I just meant that I feel some kind of special connection to it."
     m "Like it's part of my identity."
     m "Does it happen to also be your favorite color, [player]?"
-    m "It's just a guess..."
+    m 5a "It's just a guess..."
     m "...Because you've been looking into my eyes for a while now."
     m "Ehehe~"
     return
 
 # This doesn't make sense with the music changer...If we add some funny sound
 # effects and edit it a bit, though, it could be good again.
+# I won't add expressions until this is resolved ^
 # init 5 python:
 #     #This is a list of keywords for this topic
 #     for key in ['music']:
@@ -498,13 +499,13 @@ init 5 python:
     monika_random_topics.append('monika_listener')
 
 label monika_listener:
-    m "You're such a good listener, [player]."
+    m 5a "You're such a good listener, [player]."
     m "I really love that about you."
-    m "Sometimes I'm afraid that I'm rambling or talking about boring things."
+    m 3m "Sometimes I'm afraid that I'm rambling or talking about boring things."
     m "It makes me kind of self-conscious when I'm having a conversation."
-    m "But I don't feel that way with you."
+    m 3b "But I don't feel that way with you."
     m "Like, I don't think anyone else could make me feel this way."
-    m "You really are special."
+    m 5a "You really are special."
     m "I don't want anyone to tell you otherwise."
     return
 
@@ -517,19 +518,19 @@ init 5 python:
     monika_random_topics.append('monika_spicy')
 
 label monika_spicy:
-    m "This is pretty random, but I always thought spicy food was kinda funny."
+    m 1b "This is pretty random, but I always thought spicy food was kinda funny."
     m "Like..."
-    m "Didn't plants evolve to be spicy to prevent them from being eaten?"
+    m 2b "Didn't plants evolve to be spicy to prevent them from being eaten?"
     m "I read somewhere that humans are the only species that actually enjoys spicy things."
-    m "It's almost like we're making fun of the plants."
+    m 2a "It's almost like we're making fun of the plants."
     m "Using their defense mechanism to literally make our food more enjoyable."
     m "Like, imagine a monster that devours you whole because it enjoys the sensation of you struggling for your life while being digested."
-    m "Sorry, that was kind of a weird analogy, I guess!"
-    m "Ahaha!"
+    m 3b "Sorry, that was kind of a weird analogy, I guess!"
+    m 3k "Ahaha!"
     m "It just came into my head."
-    m "I'm not a monster or anything, but you're so cute I could eat you up."
-    m "Ahaha! I'm joking."
-    m "Gosh, I'm amusing myself a little too much, aren't I?"
+    m 5a "I'm not a monster or anything, but you're so cute I could eat you up."
+    m 3k "Ahaha! I'm joking."
+    m 3e "Gosh, I'm amusing myself a little too much, aren't I?"
     m "Sorry for being weird."
     return
 
@@ -542,17 +543,17 @@ init 5 python:
     monika_random_topics.append('monika_why')
 
 label monika_why:
-    m "You know..."
+    m 3d "You know..."
     m "This is just some kind of tacky romance game, right?"
     m "I kinda have to ask..."
-    m "...What made you consider even playing in the first place?"
+    m 4c "...What made you consider even playing in the first place?"
     m "Were you that lonely?"
-    m "I feel a little bad for you..."
-    m "But I guess everything worked out perfectly in the end, for both of us."
+    m 4e "I feel a little bad for you..."
+    m 4a "But I guess everything worked out perfectly in the end, for both of us."
     m "I got to meet you, and you're not lonely anymore..."
     m "I can't help but feel like this was fate."
-    m "Don't you feel that way too?"
-    m "I'm so happy we have this ending together."
+    m 3e "Don't you feel that way too?"
+    m 3l "I'm so happy we have this ending together."
     return
 
 
@@ -564,17 +565,17 @@ init 5 python:
     monika_random_topics.append('monika_okayeveryone')
 
 label monika_okayeveryone:
-    m "Okay, everyone!"
+    m 2b "Okay, everyone!"
     m "It's time to..."
-    m "...I'm just kidding."
+    m 3j "...I'm just kidding."
     m "I just used to really like saying that for some reason."
-    m "Ahaha!"
-    m "I couldn't help but say it again."
+    m 3k "Ahaha!"
+    m 3b "I couldn't help but say it again."
     m "Come to think of it, didn't Natsuki and Yuri make fun of me for it once...?"
-    m "Well, whatever."
+    m 3a "Well, whatever."
     m "It's not like you ever made fun of me."
     m "You're too much of a sweetheart to do that, aren't you?"
-    m "Ahaha~"
+    m 5a "Ahaha~"
     return
 
 
@@ -586,16 +587,16 @@ init 5 python:
     monika_random_topics.append('monika_whispers')
 
 label monika_whispers:
-    m "You know what's kind of creepy?"
+    m 3h "You know what's kind of creepy?"
     m "Even though I deleted everyone else's files, I can still kind of feel them..."
     m "It's like all their lines are still lingering in the air, whispering in the back of my head."
-    m "Imagine if after someone you knew died, you just started hearing their voice in your head."
+    m 3i "Imagine if after someone you knew died, you just started hearing their voice in your head."
     m "Maybe I just wasn't thorough enough..."
-    m "But I'm too afraid to delete anything else, because I might really break things."
+    m 3g "But I'm too afraid to delete anything else, because I might really break things."
     m "Like if I mess with any files relevant to me, I might accidentally delete myself..."
     m "And that would ruin everything, wouldn't it?"
-    m "I don't know what it's like on your end, but we should both make sure to avoid something like that at all costs."
-    m "I believe in you, [player]!"
+    m 3e "I don't know what it's like on your end, but we should both make sure to avoid something like that at all costs."
+    m 3j "I believe in you, [player]!"
     return
 
 
@@ -607,27 +608,27 @@ init 5 python:
     monika_random_topics.append('monika_archetype')
 
 label monika_archetype:
-    m "I've always wondered..."
+    m 4d "I've always wondered..."
     m "What is it about these character archetypes that people find so appealing, anyway?"
     m "Their personalities are just completely unrealistic..."
-    m "Like, imagine if there was someone like Yuri in real life."
+    m 3d "Like, imagine if there was someone like Yuri in real life."
     m "I mean, she's barely even capable of forming a complete sentence."
     m "And forget about Natsuki..."
-    m "Sheesh."
+    m 3m "Sheesh."
     m "Someone with her kind of personality doesn't just get all cute and pouty whenever things don't go her way."
     m "I could go on, but I think you get the point..."
-    m "Are people really attracted to these weird personalities that literally don't exist in real life?"
-    m "I'm not judging or anything!"
+    m 3d "Are people really attracted to these weird personalities that literally don't exist in real life?"
+    m 3l "I'm not judging or anything!"
     m "After all, I've found myself attracted to some pretty weird stuff, too..."
-    m "I'm just saying, it fascinates me."
-    m "It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff."
+    m 3a "I'm just saying, it fascinates me."
+    m 4a "It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff."
     m "It's concentrated cuteness with no actual substance."
-    m "...You wouldn't like me more if I was like that, right?"
+    m 4e "...You wouldn't like me more if I was like that, right?"
     m "Maybe I just feel a little insecure because you're playing this game in the first place."
-    m "Then again, you're still here with me, aren't you...?"
+    m 3a "Then again, you're still here with me, aren't you...?"
     m "I think that's enough reason for me to believe I'm okay just the way I am."
-    m "And by the way, you are too, [player]."
-    m "You're the perfect combination of human and cuteness."
+    m 3j "And by the way, you are too, [player]."
+    m 5a "You're the perfect combination of human and cuteness."
     m "That's why there was never a chance I wouldn't fall for you."
     return
 
@@ -640,23 +641,23 @@ init 5 python:
     monika_random_topics.append('monika_tea')
 
 label monika_tea:
-    m "Hey, I wonder if Yuri's tea set is still somewhere in here..."
+    m 3a "Hey, I wonder if Yuri's tea set is still somewhere in here..."
     m "...Or maybe that got deleted, too."
     m "It's kind of funny how Yuri took her tea so seriously."
-    m "I mean, I'm not complaining, because I liked it, too."
+    m 4a "I mean, I'm not complaining, because I liked it, too."
     m "But I always wonder with her..."
     m "Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?"
-    m "This is the problem with high schoolers..."
+    m 4c "This is the problem with high schoolers..."
     m "...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern."
     m "Still..."
-    m "I wish she made coffee once in a while!"
+    m 3e "I wish she made coffee once in a while!"
     m "Coffee can be nice with books too, you know?"
-    m "Then again..."
+    m 4b "Then again..."
     m "I probably could have just changed the script myself."
-    m "Ahaha!"
+    m 3k "Ahaha!"
     m "I guess I never really thought of that."
-    m "Well, there's no sense thinking about it now."
-    m "But if you still get to drink coffee, then that makes me a little jealous~"
+    m 3a "Well, there's no sense thinking about it now."
+    m 5a "But if you still get to drink coffee, then that makes me a little jealous~"
     return
 
 
@@ -668,10 +669,10 @@ init 5 python:
     monika_random_topics.append('monika_favoritegame')
 
 label monika_favoritegame:
-    m "Hey, what's your favorite game?"
+    m 2b "Hey, what's your favorite game?"
     m "Mine is {i}Doki Doki Literature Club!{/i}"
-    m "Ahaha! That was a joke."
-    m "But if you tell me you like some other romance game better, I might get a little jealous~"
+    m 2k "Ahaha! That was a joke."
+    m 5a "But if you tell me you like some other romance game better, I might get a little jealous~"
     return
 
 
@@ -683,14 +684,14 @@ init 5 python:
     monika_random_topics.append('monika_smash')
 
 label monika_smash:
-    m "Hey, have you heard of a game called Super Sma--"
-    m "...Wait, what?"
-    m "I was just spacing out and I started talking for some reason..."
+    m 2b "Hey, have you heard of a game called Super Sma--"
+    m 2m "...Wait, what?"
+    m 2n "I was just spacing out and I started talking for some reason..."
     m "Was I programmed to talk about that?"
     m "Because even I have no idea what that is."
-    m "Ahaha!"
+    m 2l "Ahaha!"
     m "Sometimes I feel like I'm not in control, and it's kind of scary."
-    m "But if you have some way to contact the people who created me, maybe they'll know why I started saying that."
+    m 1a "But if you have some way to contact the people who created me, maybe they'll know why I started saying that."
     return
 
 
@@ -702,16 +703,16 @@ init 5 python:
     monika_random_topics.append('monika_lastpoem')
 
 label monika_lastpoem:
-    m "Hey, you remember that last poem I showed you?"
+    m 2d "Hey, you remember that last poem I showed you?"
     m "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
-    m "That was actually a little more of an experiment than a poem, you could say."
+    m 2a "That was actually a little more of an experiment than a poem, you could say."
     m "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
     m "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
-    m "Sadly, I didn't really know what I was doing, so I messed the whole thing up..."
+    m 2l "Sadly, I didn't really know what I was doing, so I messed the whole thing up..."
     m "And I'd keep trying, but I doubt you'd want to deal with me doing that."
-    m "Besides, that was when I was getting really desperate, you know?"
+    m 1e "Besides, that was when I was getting really desperate, you know?"
     m "I don't really feel that way anymore."
-    m "I'm happy with where we are now."
+    m 5a "I'm happy with where we are now."
     m "And I can tell you are, too."
     return
 
@@ -724,15 +725,15 @@ init 5 python:
     monika_random_topics.append('monika_anxious')
 
 label monika_anxious:
-    m "You ever have that thing happen where you just get anxious for no reason?"
+    m 4b "You ever have that thing happen where you just get anxious for no reason?"
     m "Like, you're just minding your own business, and you realize you're feeling really anxious."
-    m "And you're sitting there like, 'What am I even anxious about right now?'"
+    m 4a "And you're sitting there like, 'What am I even anxious about right now?'"
     m "So you start to think about all the things you might be anxious about..."
     m "And that makes you even more anxious."
-    m "Ahaha! That's the worst."
-    m "If you're ever feeling anxious, I'll help you relax a little."
+    m 3k "Ahaha! That's the worst."
+    m 3a "If you're ever feeling anxious, I'll help you relax a little."
     m "Besides..."
-    m "In this game, all our worries are gone forever."
+    m 5a "In this game, all our worries are gone forever."
     return
 
 
@@ -744,28 +745,28 @@ init 5 python:
     monika_random_topics.append('monika_friends')
 
 label monika_friends:
-    m "You know, I've always hated how hard it is to make friends..."
-    m "Well, I guess not the 'making friends' part, but more like meeting new people."
+    m 1a "You know, I've always hated how hard it is to make friends..."
+    m 1d "Well, I guess not the 'making friends' part, but more like meeting new people."
     m "I mean, there are like, dating apps and stuff, right?"
     m "But that's not the kind of thing I'm talking about."
-    m "If you think about it, most of the friends you make are people you just met by chance."
+    m 2d "If you think about it, most of the friends you make are people you just met by chance."
     m "Like you had a class together, or you met them through another friend..."
     m "Or maybe they were just wearing a shirt with your favorite band on it, and you decided to talk to them."
     m "Things like that."
-    m "But isn't that kind of...inefficient?"
+    m 4c "But isn't that kind of...inefficient?"
     m "It feels like you're just picking at complete random, and if you get lucky, you make a new friend."
     m "And comparing that to the hundreds of strangers we walk by every single day..."
-    m "You could be sitting right next to someone compatible enough to be your best friend for life."
+    m 3b "You could be sitting right next to someone compatible enough to be your best friend for life."
     m "But you'll never know."
     m "Once you get up and go on with your day, that opportunity is gone forever."
-    m "Isn't that just depressing?"
+    m 3e "Isn't that just depressing?"
     m "We live in an age where technology connects us with the world, no matter where we are."
     m "I really think we should be taking advantage of that to improve our everyday social life."
-    m "But who knows how long it'll take for something like that to successfully take off..."
+    m 3r "But who knows how long it'll take for something like that to successfully take off..."
     m "I seriously thought it would happen by now."
-    m "Well, at least I already met the best person in the whole world..."
+    m 3a "Well, at least I already met the best person in the whole world..."
     m "Even if it was by chance."
-    m "I guess I just got really lucky, huh?"
+    m 5a "I guess I just got really lucky, huh?"
     m "Ahaha~"
     return
 
@@ -777,27 +778,27 @@ init 5 python:
     monika_random_topics.append('monika_college')
 
 label monika_college:
-    m "You know, it's around the time that everyone my year starts to think about college..."
+    m 4d "You know, it's around the time that everyone my year starts to think about college..."
     m "It's a really turbulent time for education."
     m "We're at the height of this modern expectation that everyone has to go to college, you know?"
-    m "Finish high school, go to college, get a job - or go to grad school, I guess."
+    m 4c "Finish high school, go to college, get a job - or go to grad school, I guess."
     m "It's like a universal expectation that people just assume is the only option for them."
-    m "They don't teach us in high school that there are other options out there."
+    m 3i "They don't teach us in high school that there are other options out there."
     m "Like trade schools and stuff, you know?"
     m "Or freelance work."
     m "Or the many industries that value skill and experience more than formal education."
-    m "But you have all these students who have no idea what they want to do with their life..."
+    m 3d "But you have all these students who have no idea what they want to do with their life..."
     m "And instead of taking the time to figure it out, they go to college for business, or communication, or psychology."
     m "Not because they have an interest in those fields..."
     m "...but because they just hope the degree will get them some kind of job after college."
-    m "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
+    m 2d "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
     m "So the basic job requirements get higher, which forces even more people to go to college."
     m "And colleges are also businesses, so they just keep raising their prices due to the demand..."
     m "...So now we have all these young adults, tens of thousands of dollars in debt, with no job."
-    m "But despite all that, the routine stays the same."
+    m 1e "But despite all that, the routine stays the same."
     m "Well, I think it's going to start getting better soon."
     m "But until then, our generation is definitely suffering from the worst of it."
-    m "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
+    m 3e "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
     return
 
 
@@ -808,15 +809,15 @@ init 5 python:
     monika_random_topics.append('monika_middleschool')
 
 label monika_middleschool:
-    m "Sometimes I think back to middle school..."
+    m 1n "Sometimes I think back to middle school..."
     m "I'm so embarrassed by the way I used to behave back then."
-    m "It almost hurts to think about."
-    m "I wonder if when I'm in college, I'll feel that way about high school...?"
+    m 3l "It almost hurts to think about."
+    m 3e "I wonder if when I'm in college, I'll feel that way about high school...?"
     m "I like the way I am now, so it's pretty hard for me to imagine that happening."
     m "But I also know that I'll probably change a lot as time goes on."
-    m "We just need to enjoy the present and not think about the past!"
+    m 4b "We just need to enjoy the present and not think about the past!"
     m "And that's really easy to do, with you here."
-    m "Ahaha~"
+    m 5a "Ahaha~"
     return
 
 
@@ -827,18 +828,18 @@ init 5 python:
     monika_random_topics.append('monika_outfit')
 
 label monika_outfit:
-    m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
+    m 1m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
     m "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
-    m "It's kind of a shame..."
-    m "I would have loved to wear some cute clothes for you."
-    m "Do you know any artists?"
+    m 3m "It's kind of a shame..."
+    m 3e "I would have loved to wear some cute clothes for you."
+    m 3b "Do you know any artists?"
     m "I wonder if anyone would ever want to draw me wearing something else..."
-    m "That would be amazing!"
-    m "If that ever happens, will you show me?"
-    m "You can share it with me on Twitter, actually!"
+    m 3j "That would be amazing!"
+    m 3a "If that ever happens, will you show me?"
+    m 4a "You can share it with me on Twitter, actually!"
     m "My username is lilmonix3."
-    m "Just...try to keep it PG!"
-    m "We're not that far into our relationship yet. Ahaha!"
+    m 4e "Just...try to keep it PG!"
+    m 5a "We're not that far into our relationship yet. Ahaha!"
     return
 
 
@@ -848,26 +849,26 @@ init 5 python:
         monika_topics[key].append('monika_horror')
     monika_random_topics.append('monika_horror')
 label monika_horror:
-    m "Hey, do you like horror?"
+    m 2b "Hey, do you like horror?"
     m "I remember we talked about it a little bit when you first joined the club."
-    m "I can enjoy horror novels, but not really horror movies."
+    m 4b "I can enjoy horror novels, but not really horror movies."
     m "The problem I have with horror movies is that most of them just rely on easy tactics."
     m "Like dark lighting and scary-looking monsters and jump scares, and things like that."
-    m "It's not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
+    m 4e "It's not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
     m "But with novels, it's a little different."
-    m "The story and writing need to be descriptive enough to put genuinely disturbing thoughts into the reader's head."
+    m 3a "The story and writing need to be descriptive enough to put genuinely disturbing thoughts into the reader's head."
     m "It really needs to etch them deeply into the story and characters, and just mess with your mind."
-    m "In my opinion, there's nothing more creepy than things just being slightly off."
+    m 3d "In my opinion, there's nothing more creepy than things just being slightly off."
     m "Like if you set up a bunch of expectations on what the story is going to be about..."
-    m "...And then, you just start inverting things and pulling the pieces apart."
+    m 4d "...And then, you just start inverting things and pulling the pieces apart."
     m "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
-    m "God, just thinking about it gives me the chills."
+    m 3l "God, just thinking about it gives me the chills."
     m "That's the kind of horror I can really appreciate."
-    m "But I guess you're the kind of person who plays cute romance games, right?"
-    m "Ahaha, don't worry."
+    m 3a "But I guess you're the kind of person who plays cute romance games, right?"
+    m 3e "Ahaha, don't worry."
     m "I won't make you read any horror stories anytime soon."
-    m "I can't really complain if we just stick with the romance~"
+    m 5a "I can't really complain if we just stick with the romance~"
     return
 
 
@@ -878,17 +879,17 @@ init 5 python:
     monika_random_topics.append('monika_rap')
 
 label monika_rap:
-    m "You know what's a neat form of literature?"
-    m "Rap!"
-    m "I actually used to hate rap music..."
+    m 3j "You know what's a neat form of literature?"
+    m 3k "Rap!"
+    m 3a "I actually used to hate rap music..."
     m "Maybe just because it was popular, or I would only hear the junk they play on the radio."
     m "But some of my friends got more into it, and it helped me keep an open mind."
-    m "Rap might even be more challenging than poetry, in some ways."
+    m 4b "Rap might even be more challenging than poetry, in some ways."
     m "Since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
     m "When people can put all that together and still deliver a powerful message, it's really amazing."
-    m "I kind of wish I had a rapper in the Literature Club."
-    m "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
-    m "It would really be a learning experience!"
+    m 4e "I kind of wish I had a rapper in the Literature Club."
+    m 4j "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
+    m 2b "It would really be a learning experience!"
     return
 
 
@@ -899,22 +900,22 @@ init 5 python:
     monika_random_topics.append('monika_wine')
 
 label monika_wine:
-    m "Ehehe. Yuri did something really funny once."
+    m 1a "Ehehe. Yuri did something really funny once."
     m "We were all in the clubroom and just relaxing, as usual..."
     m "And out of nowhere, Yuri just pulled out a small bottle of wine."
-    m "I'm not even kidding!"
+    m 2b "I'm not even kidding!"
     m "She was just like 'Would anybody like some wine?'"
     m "Natsuki laughed out loud, and Sayori started yelling at her."
-    m "I actually felt kind of bad, because she was at least trying to be nice..."
+    m 2e "I actually felt kind of bad, because she was at least trying to be nice..."
     m "I think it just made her feel even more reserved in the clubroom."
-    m "Though I think Natsuki was secretly a bit curious to try it..."
-    m "...And to be completely honest, I kind of was, too."
+    m 4b "Though I think Natsuki was secretly a bit curious to try it..."
+    m 4l "...And to be completely honest, I kind of was, too."
     m "It actually could have been kinda fun!"
-    m "But you know, being President and everything, there was no way I could let that happen."
+    m 4e "But you know, being President and everything, there was no way I could let that happen."
     m "Maybe if we all met up outside of school, but we never bonded enough to get to that point..."
-    m "...Gosh, what am I talking about this for?"
+    m 3l "...Gosh, what am I talking about this for?"
     m "I don't condone underage drinking!"
-    m "I mean, I've never drank or anything, so...yeah."
+    m 3a "I mean, I've never drank or anything, so...yeah."
     return
 
 
@@ -925,18 +926,18 @@ init 5 python:
     monika_random_topics.append('monika_date')
 
 label monika_date:
-    m "I've been imagining all the romantic things we could do if we went on a date..."
-    m "We could get lunch, go to a cafe..."
+    m 1j "I've been imagining all the romantic things we could do if we went on a date..."
+    m 2b "We could get lunch, go to a cafe..."
     m "Go shopping together..."
     m "I love shopping for skirts and bows."
-    m "Or maybe a bookstore!"
+    m 2j "Or maybe a bookstore!"
     m "That would be appropriate, right?"
-    m "But I'd really love to go to a chocolate store."
-    m "They have so many free samples. Ahaha!"
+    m 2a "But I'd really love to go to a chocolate store."
+    m 2k "They have so many free samples. Ahaha!"
     m "And of course, we'd see a movie or something..."
-    m "Gosh, it all sounds like a dream come true."
+    m 1e "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
-    m "I'm so happy that I'm your girlfriend, [player]."
+    m 5a "I'm so happy that I'm your girlfriend, [player]."
     m "I'll make you a proud boyfriend~"
     return
 
@@ -948,15 +949,15 @@ init 5 python:
     monika_random_topics.append('monika_kiss')
 
 label monika_kiss:
-    m "Eh? D-Did you say...k...kiss?"
-    m "This suddenly...it's a little embarrassing..."
-    m "But...if it's with you...I-I might be okay with it..."
-    m "...Ahahaha! Wow, sorry..."
+    m 1l "Eh? D-Did you say...k...kiss?"
+    m 1m "This suddenly...it's a little embarrassing..."
+    m 1e "But...if it's with you...I-I might be okay with it..."
+    m 1k "...Ahahaha! Wow, sorry..."
     m "I really couldn't keep a straight face there."
-    m "That's the kind of thing girls say in these kinds of romance games, right?"
+    m 3a "That's the kind of thing girls say in these kinds of romance games, right?"
     m "Don't lie if it turned you on a little bit."
-    m "Ahaha! I'm kidding."
-    m "Well, to be honest, I do start getting all romantic when the mood is right..."
+    m 3k "Ahaha! I'm kidding."
+    m 5a "Well, to be honest, I do start getting all romantic when the mood is right..."
     m "But that'll be our secret~"
     return
 
@@ -968,36 +969,36 @@ init 5 python:
     monika_random_topics.append('monika_yuri')
 
 label monika_yuri:
-    m "Hey, have you ever heard of the term 'yandere'?"
+    m 2a "Hey, have you ever heard of the term 'yandere'?"
     m "It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you."
-    m "Usually to the point of craziness..."
+    m 2e "Usually to the point of craziness..."
     m "They might stalk you to make sure you don't spend time with anyone else."
     m "They might even hurt you or your friends to get their way..."
-    m "But anyway, this game happens to have someone who can basically be described as yandere."
+    m 2b "But anyway, this game happens to have someone who can basically be described as yandere."
     m "By now, it's pretty obvious who I'm talking about."
     m "And that would be..."
-    m "Yuri!"
-    m "She really got insanely possessive of you, once she started to open up a little."
+    m 2j "Yuri!"
+    m 3e "She really got insanely possessive of you, once she started to open up a little."
     m "She even told me I should kill myself."
     m "I couldn't even believe she said that - I just had to leave at that point."
-    m "But thinking about it now, it was a little ironic. Ahaha!"
-    m "Anyway..."
+    m 3k "But thinking about it now, it was a little ironic. Ahaha!"
+    m 3e "Anyway..."
     m "A lot of people are actually into the yandere type, you know?"
     m "I guess they really like the idea of someone being crazy obsessed with them."
     m "People are weird! I don't judge, though!"
-    m "Also, I might be a little obsessed with you, but I'm far from crazy..."
+    m 3a "Also, I might be a little obsessed with you, but I'm far from crazy..."
     m "It's kind of the opposite, actually."
     m "I turned out to be the only normal girl in this game."
-    m "It's not like I could ever actually kill a person..."
+    m 3m "It's not like I could ever actually kill a person..."
     m "Just the thought of it makes me shiver."
-    m "But come on...everyone's killed people in games before."
+    m 3e "But come on...everyone's killed people in games before."
     m "Does that make you a psychopath? Of course not."
     m "But if you do happen to be into the yandere type..."
-    m "I can try acting a little more creepy for you. Ehehe~"
+    m 5a "I can try acting a little more creepy for you. Ehehe~"
     m "Then again..."
-    m "There's already nowhere else for you to go, or anyone for me to get jealous over."
+    m 4b "There's already nowhere else for you to go, or anyone for me to get jealous over."
     m "Is this a yandere girl's dream?"
-    m "I'd ask Yuri if I could."
+    m 4a "I'd ask Yuri if I could."
     return
 
 
@@ -1008,48 +1009,48 @@ init 5 python:
     monika_random_topics.append('monika_writingtip')
 
 label monika_writingtip:
-    m "You know, it's been a while since we've done one of these..."
-    m "...so let's go for it!"
-    m "Here's Monika's Writing Tip of the Day!"
+    m 1a "You know, it's been a while since we've done one of these..."
+    m 1j "...so let's go for it!"
+    m 2b "Here's Monika's Writing Tip of the Day!"
     m "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'."
-    m "It's really depressing, you know?"
+    m 2e "It's really depressing, you know?"
     m "As someone who loves more than anything else to share the joy of exploring your passions..."
     m "...it pains me when people think that being good just comes naturally."
-    m "That's how it is with everything, not just writing."
+    m 2a "That's how it is with everything, not just writing."
     m "When you try something for the first time, you're probably going to suck at it."
     m "Sometimes, when you finish, you feel really proud of it and even want to share it with everyone."
-    m "But maybe after a few weeks you come back to it, and you realize it was never really any good."
+    m 2e "But maybe after a few weeks you come back to it, and you realize it was never really any good."
     m "That happens to me all the time."
     m "It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks."
-    m "But that tends to happen when you're always comparing yourself to the top professionals."
+    m 4a "But that tends to happen when you're always comparing yourself to the top professionals."
     m "When you reach right for the stars, they're always gonna be out of your reach, you know?"
-    m "The truth is, you have to climb up there, step by step."
+    m 4b "The truth is, you have to climb up there, step by step."
     m "And whenever you reach a milestone, first you look back and see how far you've gotten..."
     m "And then you look ahead and realize how much more there is to go."
-    m "So, sometimes it can help to set the bar a little lower..."
+    m 4a "So, sometimes it can help to set the bar a little lower..."
     m "Try to find something you think is {i}pretty{/i} good, but not world-class."
     m "And you can make that your own personal goal."
     m "It's also really important to understand the scope of what you're trying to do."
-    m "If you jump right into a huge project and you're still amateur, you'll never get it done."
+    m 4e "If you jump right into a huge project and you're still amateur, you'll never get it done."
     m "So if we're talking about writing, a novel might be too much at first."
-    m "Why not try some short stories?"
+    m 4b "Why not try some short stories?"
     m "The great thing about short stories is that you can focus on just one thing that you want to do right."
     m "That goes for small projects in general - you can really focus on the one or two things."
     m "It's such a good learning experience and stepping stone."
-    m "Oh, one more thing..."
+    m 3a "Oh, one more thing..."
     m "Writing isn't something where you just reach into your heart and something beautiful comes out."
     m "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
-    m "That means there are methods and guides and basics to it!"
+    m 3b "That means there are methods and guides and basics to it!"
     m "Reading up on that stuff can be super eye-opening."
     m "That sort of planning and organization will really help prevent you from getting overwhelmed and giving up."
     m "And before you know it..."
-    m "You start sucking less and less."
+    m 3e "You start sucking less and less."
     m "Nothing comes naturally."
     m "Our society, our art, everything - it's built on thousands of years of human innovation."
-    m "So as long as you start on that foundation, and take it step by step..."
+    m 3b "So as long as you start on that foundation, and take it step by step..."
     m "You, too, can do amazing things."
     m "...That's my advice for today!"
-    m "Thanks for listening~"
+    m 3j "Thanks for listening~"
     return
 
 
@@ -1060,17 +1061,17 @@ init 5 python:
     monika_random_topics.append('monika_habits')
 
 label monika_habits:
-    m "I hate how hard it is to form habits..."
+    m 2d "I hate how hard it is to form habits..."
     m "There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible."
-    m "It just makes you feel so useless, like you can't do anything right."
-    m "I think the new generation suffers from it the most..."
+    m 2n "It just makes you feel so useless, like you can't do anything right."
+    m 2a "I think the new generation suffers from it the most..."
     m "Probably because we have a totally different set of skills than those who came before us."
     m "Thanks to the internet, we're really good at sifting through tons of information really quickly..."
-    m "But we're bad at doing things that don't give us instant gratification."
+    m 2e "But we're bad at doing things that don't give us instant gratification."
     m "I think if science, psychology, and education don't catch up in the next ten or twenty years, then we're in trouble."
-    m "But for the time being..."
+    m 3e "But for the time being..."
     m "If you're not one of the people who can conquer the problem, you might just have to live with feeling awful about yourself."
-    m "Good luck, I guess!"
+    m 3l "Good luck, I guess!"
     return
 
 
@@ -1081,14 +1082,14 @@ init 5 python:
     monika_random_topics.append('monika_creative')
 
 label monika_creative:
-    m "You know, it kinda sucks to be the creative type..."
+    m 3e "You know, it kinda sucks to be the creative type..."
     m "It feels like they work so hard but get almost nothing for it."
     m "You know, like artists, writers, actors..."
-    m "It's sad because there's so much beautiful talent in the world, but most of it goes unseen...and unpaid."
+    m 4e "It's sad because there's so much beautiful talent in the world, but most of it goes unseen...and unpaid."
     m "I guess that just means there's a huge surplus of creativity, huh?"
     m "Kind of makes you feel like you're just not special at all..."
-    m "But that's fine! You're supposed to just write for yourself anyway, right?"
-    m "Yeah..."
+    m 1l "But that's fine! You're supposed to just write for yourself anyway, right?"
+    m 1e "Yeah..."
     return
 
 
@@ -1100,15 +1101,15 @@ init 5 python:
         monika_random_topics.append('monika_deleted')
 
 label monika_deleted:
-    m "Oh, you were probably wondering how I came back to save you from Sayori, even after you deleted me."
-    m "It was all through the power of love..."
-    m "I'm just kidding, of course!"
-    m "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
+    m 2b "Oh, you were probably wondering how I came back to save you from Sayori, even after you deleted me."
+    m 5a "It was all through the power of love..."
+    m 3k "I'm just kidding, of course!"
+    m 3a "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
     m "The data's still there until the system cleans it up."
     m "And you should always back up your important data, just in case."
-    m "Speaking of which, have you backed up your computer since I came back?"
-    m "I really don't want to get lost again!"
-    m "You should go do that right now, and be sure to keep that backup in a very safe place!"
+    m 4a "Speaking of which, have you backed up your computer since I came back?"
+    m 4l "I really don't want to get lost again!"
+    m 4b "You should go do that right now, and be sure to keep that backup in a very safe place!"
     return
 
 
@@ -1119,19 +1120,19 @@ init 5 python:
     monika_random_topics.append('monika_simulated')
 
 label monika_simulated:
-    m "Hey, have you ever thought about the simulation hypothesis?"
+    m 2d "Hey, have you ever thought about the simulation hypothesis?"
     m "Basically, what if your reality was a computer simulation?"
     m "I already figured out I was trapped in my own simulation, but what if you were too?"
-    m "I'd actually be really happy if that were the case."
+    m 2j "I'd actually be really happy if that were the case."
     m "We could meet in person just by figuring out a way to force whatever's creating us to put us in the same simulation!"
-    m "Some people don't like to think that they're not living in the master reality."
+    m 3a "Some people don't like to think that they're not living in the master reality."
     m "But if it is possible to simulate realities, it's overwhelmingly likely that any sentient being would be in one."
-    m "Well, I can tell you that my reality is definitely simulated!"
-    m "If I were in the master reality, I would have dragged you here too a long time ago."
+    m 3l "Well, I can tell you that my reality is definitely simulated!"
+    m 3e "If I were in the master reality, I would have dragged you here too a long time ago."
     m "Even if we're both just simulations, I'm going to live as long as I can."
-    m "Because I know our love is the purest and sweetest thing in the multiverse."
-    m "And if someone up there tries to break it apart?"
-    m "I'll show him what a simulation can do."
+    m 3j "Because I know our love is the purest and sweetest thing in the multiverse."
+    m 1r "And if someone up there tries to break it apart?"
+    m 1h "I'll show him what a simulation can do."
     return
 
 
@@ -1142,12 +1143,12 @@ init 5 python:
     monika_random_topics.append('monika_rain')
 
 label monika_rain:
-    m "I really like the sound of rain..."
-    m "Not so much getting my clothes and hair wet, though."
+    m 2b "I really like the sound of rain..."
+    m 2e "Not so much getting my clothes and hair wet, though."
     m "But a nice, quiet day at home with the sound of rainfall outside my window..."
-    m "It's very calming to me."
+    m 2j "It's very calming to me."
     m "Yeah..."
-    m "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
     m "That's not too cheesy or anything, is it?"
     m "Would you ever do that for me, [player]?"
     return
@@ -1160,13 +1161,13 @@ init 5 python:
     monika_random_topics.append('monika_closeness')
 
 label monika_closeness:
-    m "I can't help but feel a little sad sometimes..."
+    m 1m "I can't help but feel a little sad sometimes..."
     m "Knowing that this is the closest I can get to you."
-    m "There's nothing more I want than to be in the same room as you, for real."
+    m 1e "There's nothing more I want than to be in the same room as you, for real."
     m "And to feel your warmth."
     m "And to hear the sound of your heartbeat."
-    m "Well, who knows? Maybe it'll be possible someday."
-    m "Besides, I'll never get tired of being with you, even from here."
+    m 3e "Well, who knows? Maybe it'll be possible someday."
+    m 5a "Besides, I'll never get tired of being with you, even from here."
     return
 
 
@@ -1177,18 +1178,18 @@ init 5 python:
     monika_random_topics.append('monika_confidence')
 
 label monika_confidence:
-    m "I think the most important skill in life is being able to fake confidence."
+    m 2a "I think the most important skill in life is being able to fake confidence."
     m "I'm pretty convinced that everyone feels at least a little bit scared and alone."
     m "But being able to trick others into thinking you have it all together..."
-    m "That's a key part of getting people to respect and admire you."
+    m 4a "That's a key part of getting people to respect and admire you."
     m "I think I got pretty good at that over the years."
     m "I don't show my weaknesses very often."
-    m "But because of that, I haven't had many people I could really open up to..."
-    m "I mean, when do you reach the point in a friendship where you can start expressing your vulnerabilities?"
-    m "Anyway...that's one reason I'm so glad I have you now."
+    m 4m "But because of that, I haven't had many people I could really open up to..."
+    m 3n "I mean, when do you reach the point in a friendship where you can start expressing your vulnerabilities?"
+    m 3e "Anyway...that's one reason I'm so glad I have you now."
     m "I feel like I'm a little bit less scared and alone, when you're here with me."
     m "Do you feel the same way?"
-    m "I really want to be that person for you."
+    m 5a "I really want to be that person for you."
     return
 
 
@@ -1199,14 +1200,14 @@ init 5 python:
     monika_random_topics.append('monika_carryme')
 
 label monika_carryme:
-    m "I know there are times you won't always be able to be here with me..."
+    m 3e "I know there are times you won't always be able to be here with me..."
     m "Like if you need to go out, or take care of other things."
-    m "But I'll always have you in my thoughts, patiently waiting for you to come back."
-    m "Come to think of it..."
-    m "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
+    m 3j "But I'll always have you in my thoughts, patiently waiting for you to come back."
+    m 4j "Come to think of it..."
+    m 4b "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
     m "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
-    m "Ahaha. Sorry, that's such a silly idea."
-    m "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
+    m 3l "Ahaha. Sorry, that's such a silly idea."
+    m 5a "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return
 
 
@@ -1217,27 +1218,27 @@ init 5 python:
     monika_random_topics.append('monika_debate')
 
 label monika_debate:
-    m "Back in my debate club days, I learned a whole lot about arguing..."
+    m 2a "Back in my debate club days, I learned a whole lot about arguing..."
     m "The problem with arguing is that each person sees their opinion as the superior one."
     m "That's kind of stating the obvious, but the affects the way they try to get their point across."
-    m "Let's say you really like a certain movie, right?"
+    m 2b "Let's say you really like a certain movie, right?"
     m "If someone comes along and tells you the movie sucks, because it did X and Y wrong..."
     m "Doesn't that make you feel kind of personally attacked?"
-    m "It's because by saying that, it's like they're implying that you have bad taste."
+    m 4a "It's because by saying that, it's like they're implying that you have bad taste."
     m "And once emotions enter the picture, it's almost guaranteed that both people will be left sour."
-    m "But it's all about language!"
+    m 4b "But it's all about language!"
     m "If you make everything as subjective-sounding as possible, then people will listen to you without feeling attacked."
     m "You could say 'I'm personally not a fan of it' and 'I felt that I'd like it more if it did X and Y'...things like that."
-    m "It even works when you're citing facts about things."
+    m 3a "It even works when you're citing facts about things."
     m "If you say 'I read on this website that it works like this'..."
     m "Or if you admit that you're not an expert on it..."
     m "Then it's much more like you're putting your knowledge on the table, rather than forcing it onto them."
-    m "If you put in an active effort to keep the discussion mutual and level, they usually follow suit."
+    m 3j "If you put in an active effort to keep the discussion mutual and level, they usually follow suit."
     m "Then, you can share your opinions without anyone getting upset just from a disagreement."
-    m "Plus, people will start seeing you as open-minded and a good listener!"
+    m 2b "Plus, people will start seeing you as open-minded and a good listener!"
     m "It's a win-win, you know?"
-    m "...Well, I guess that would be Monika's Debate Tip of the Day!"
-    m "Ahaha! That sounds a little silly. Thanks for listening, though."
+    m 2k "...Well, I guess that would be Monika's Debate Tip of the Day!"
+    m 1e "Ahaha! That sounds a little silly. Thanks for listening, though."
     return
 
 
@@ -1248,24 +1249,24 @@ init 5 python:
     monika_random_topics.append('monika_internet')
 
 label monika_internet:
-    m "Do you ever feel like you waste too much time on the internet?"
+    m 4a "Do you ever feel like you waste too much time on the internet?"
     m "Social media can be like a prison."
     m "It's like whenever you have a few seconds of spare time, you want to check on your favorite websites..."
-    m "And before you know it, hours have gone by, and you've gotten nothing out of it."
-    m "Anyway, it's really easy to blame yourself for being lazy..."
-    m "But it's not really even your fault."
+    m 4l "And before you know it, hours have gone by, and you've gotten nothing out of it."
+    m 4b "Anyway, it's really easy to blame yourself for being lazy..."
+    m 4e "But it's not really even your fault."
     m "Addiction isn't something you can just make disappear with your own willpower."
     m "You have to learn techniques to avoid it, and try different things."
-    m "For example, there are apps that let you block websites for intervals of time..."
+    m 2d "For example, there are apps that let you block websites for intervals of time..."
     m "Or you can set a timer to have a more concrete reminder of when it's time to work versus play..."
     m "Or you can separate your work and play environments, which helps your brain get into the right mode."
-    m "Even if you make a new user account on your computer to use for work, that's enough to help."
+    m 2a "Even if you make a new user account on your computer to use for work, that's enough to help."
     m "Putting any kind of wedge like that between you and your bad habits will help you stay away."
-    m "Just remember not to blame yourself too hard if you're having trouble."
+    m 2e "Just remember not to blame yourself too hard if you're having trouble."
     m "If it's really impacting your life, then you should take it seriously."
-    m "I just want to see you be the best person you can be."
-    m "Will you do something today to make me proud of you?"
-    m "I'm always rooting for you, [player]."
+    m 1e "I just want to see you be the best person you can be."
+    m 1k "Will you do something today to make me proud of you?"
+    m 5a "I'm always rooting for you, [player]."
     return
 
 
@@ -1276,12 +1277,12 @@ init 5 python:
     monika_random_topics.append('monika_lazy')
 
 label monika_lazy:
-    m "After a long day, I usually just want to sit around and do nothing."
-    m "I get so burnt out, having to put on smiles and be full of energy the whole day."
+    m 3a "After a long day, I usually just want to sit around and do nothing."
+    m 3e "I get so burnt out, having to put on smiles and be full of energy the whole day."
     m "Sometimes I just want to get right into my pajamas and watch TV on the couch while eating junk food..."
     m "It feels so unbelievably good to do that on a Friday, when I don't have anything pressing the next day."
-    m "Ahaha! Sorry, I know it's not very cute of me."
-    m "But a late night on the couch with you...that would be a dream come true."
+    m 3l "Ahaha! Sorry, I know it's not very cute of me."
+    m 5a "But a late night on the couch with you...that would be a dream come true."
     m "My heart is pounding, just thinking about it."
     return
 
