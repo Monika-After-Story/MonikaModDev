@@ -2752,6 +2752,38 @@ label monika_pleasure:
     m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
 
+init 5 python:
+    for key in ['sharing work']: #Deleted 1st 2 keywords since they conflict with another one
+        monika_topics.setdefault(key, [])
+        monika_topics[key].append('monika_writingtip_1')
+    monika_random_topics.append('monika_writingtip_1')
+
+label monika_writingtip_1:
+    m "You know..."
+    m "We really don't do enough of these so here's another one!"
+    m "Here's Monika's Writing Tip for the Day!"
+    m "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
+    m "You have to remember that we all start out from somewhere, and--"
+    m "Actually, this doesn't just apply to writing, but to anything really."
+    m "What I'm trying to say is don't be discouraged."
+    m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
+    m "Because that just means that you can improve and be better than you were before."
+    m "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
+    m "I love you, and I will always support you in whatever you do."
+    m "Provided it's legal of course."
+    m "That doesn't mean I'm completely against it. I can keep a secret after all~"
+    m "Here's a saying I've learned."
+    m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
+    m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
+    m "I don't remember the person who said that but the words are there." 
+    m "The effort one puts forth into something can transcend even one's self."
+    m "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
+    m "... That's my advice for today!"
+    m "Thanks for listening~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
