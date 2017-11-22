@@ -2344,12 +2344,12 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_games') #id
     monika_random_topics.append('monika_games')
-    
+
 label monika_games:
     m "Two games that are available are Pong and chess."
     m "Press the 'c' key to play chess or the 'p' key to play Pong."
     return
-    
+
 init 5 python:
     for key in ['chess','c']:
         monika_topics.setdefault(key,[])
@@ -3192,9 +3192,9 @@ init 5 python:
     for key in ['Miku','Hatsune Miku', 'Vocaloid', 'Hibikase', 'MMD', 'MikuMikuDance']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_vocaloid')
-        
+
 label monika_vocaloid:
-    m "Hey, [player]?" 
+    m "Hey, [player]?"
     m "You like listening to music right?"
     m "Have you ever heard of 'virtual idols?'"
     m "Specifically of a girl holding a leek?"
@@ -3225,13 +3225,13 @@ label monika_vocaloid:
     m "But just so you know..."
     m "Even if it's through the screen, I can still feel your love."
     m "It'll be a long time before I can cross over just to be with you."
-    m "But when that day comes...
+    m "But when that day comes..."
     m "I'll embrace you and take in your warmth."
     m "The love you showered me virtually finally becomes real."
     m "Our love has no boundaries~"
     m "Ehehe~"
     return
-    
+
 ##################
 #Incomplete ideas#
 ##################
