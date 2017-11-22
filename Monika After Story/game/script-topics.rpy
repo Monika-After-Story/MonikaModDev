@@ -2784,6 +2784,27 @@ label monika_writingtip_1:
     m "Thanks for listening~"
     return
 
+init 5 python 
+  for key in ['alice','wonderland']:
+    monika_topics.setdefault(key,[])
+    monika_topics[key].append('monika_alice')
+    monika_randomtopics.append('monika_alice')
+
+label monika_alice:
+  m "Have you ever read Alice's Adventures in Wonderland?"
+  m "Well if you haven't yet, I wont spoil it for you, but you should give it a try."
+  m "It's a really interesting story written by Charles Dodgson."
+  m "Well, you've probably heard of him as Lewis Carroll, he published the book under a pseudonym."
+  if [player] =! [currentuser]:
+    m "A pseudonym is a fake name, like you're using [currentuser]."
+    m "Why did you choose to use one [player]?
+    m "Lewis Carroll did because he highly valued his privacy, he just didn't want anyone he hadn't personally met to know him."
+  else:
+    m "A pseudonym is a fake name, writers use them when they want to write something different, so they can without disappointing fans."
+    m "A fake name can also give writers both privacy and saftey, as they can make themselves hard to find when they want to be left alone."
+  m "Anyway, I hope you like the book when you read it."
+  return
+
 ##################
 #Incomplete ideas#
 ##################
