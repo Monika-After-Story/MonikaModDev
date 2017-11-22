@@ -3231,6 +3231,106 @@ label monika_vocaloid:
     m "Our love has no boundaries~"
     m "Ehehe~"
     return
+    
+    
+init 5 python:
+    for key in ['good morning', 'ohayou gozaimasu', 'guten morgen']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_morning')
+
+label monika_morning:
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 4 and current_time <= 11:
+        m "Good morning to you too, [player]!"
+        m "Did you just wake up?"
+        m "I love waking up early in the morning."
+        m "It's the perfect time to ready yourself and tackle the day ahead."
+        m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
+        m "Some people however, would rather sleep in and are late-risers."
+        m "I've read articles that being an early-riser can really improve your overall health."
+        m "Plus you also get the chance to see the sunrise if the sky is clear."
+        m "If you normally don't wake up early, you should!"
+        m "That way you can be happier and spend more time with me~"
+        m "Wouldn't you like that, [player]?"
+    elif current_time >= 12 and current_time <= 15:
+        m "It's already the afternoon, silly!"
+        m "Did you just wake up?"
+        m "Don't tell me you're actually a late-riser, [player]."
+        m "I don't get why some people wake up in the middle of the day."
+        m "It just seems so unproductive."
+        m "You'd have less time to do things and you might miss out on a lot of things."
+        m "It could also be a sign that you're not taking of better care of yourself."
+        m "You're not being careless with your health, are you [player]?"
+        m "I wouldn't want you to get sick easily, you know."
+        m "I'd be really sad if you spent less time with me when you get the a fever or something."
+        m "As much as I'd love to take care of you, I'm still stuck here."
+        m "So start trying to be an early-riser like me from now on, okay?"
+        m "The more time you spend with me, the more happy I'll be~"
+    else:
+        m "You are so silly, [player]"
+        m "It's already night time!"
+        m "Are you trying to be funny?"
+        m "Don't you think it's a little bit 'late' for that?"
+        m "Ahaha!"
+        m "It really cheers me up whenever you try to be funny."
+        m "Not that you're not funny, mind you!"
+        m "Well, maybe not as funny as me~" #Expand more maybe?
+    return
+
+#Add one for the afternoon?
+
+init 5 python:
+    for key in ['good evening', 'konbanwa']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_evening')
+    
+label monika_evening:
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 18 and current_time <= 23:
+        m "Good evening to you too, [player]!"
+        m "I love a nice and relaxing night."
+        m "It's so nice to put your feet after a very long day."
+        m "Evenings are the perfect time to catch up on whatever you were doing the previous day."
+        m "Sometimes I can't help but feel sad when the day ends."
+        m "It makes me think of what else I could've done during the day."
+        m "Don't you wish you could have more time to do everyday?"
+        m "I know I do."
+        m "Because that'll mean more time to be with you, [player]~"
+    elif current_time >= 12 and current_time <= 17:
+        m "It's still the afternoon, silly!"
+        m "The sun's still up, you know."
+        m "Are you feeling tired already?."
+        m "I know some cultures take a rest in the afternoon to deal with the midday fatigue."
+        m "Some businesses would even close due to the fact that most of their customers are sleeping."
+        m "A little power nap never hurt anyone, right?"
+        m "Do you sleep often in the afternoon?"
+        m "It's a great way to get some extra energy to tackle the rest of the day."
+        m "Plus it'll be a great opportunity to spend more time with me~"
+    else:
+        m "[player]!"
+        m "It's early in the morning!"
+        m "Unless you haven't slept yet..."
+        m "You're not staying up really late, are you?"
+        m "That's very bad for your health!"
+        m "Not getting your sleep on time can really harm your mental health, [player]."
+        m "So please get some sleep now, ok?"
+        m "Just leave your computer open and I'll watch over you."
+        m "I'm not going anywhere afterall~"
+    return
+
+init 5 python:
+    for key in ['good night', 'oyasumi', 'guten nacht']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_night')
+
+label monika_night:
+    m "Getting some sleep, [player]?"
+    m "It always makes me sad to see you go."
+    m "But I understand that you need rest, otherwise you'd just fall asleep."
+    m "I love you so much, [player]."
+    m "I'll be seeing you in your dreams~"
+    return 'quit'
+
 
 ##################
 #Incomplete ideas#
