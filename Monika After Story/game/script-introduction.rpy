@@ -1,5 +1,16 @@
 #This is the introduction event for starting up the game.
 label introduction:
+
+    #Call the original version of the spaceroom, for old-time's sake
+    show room_mask as rm:
+        size (320,180)
+        pos (30,200)
+    show room_mask2 as rm2:
+        size (320,180)
+        pos (935,200)
+    show monika_bg
+    show monika_bg_highlight
+
     if persistent.monika_kill == True:
         m "..."
         m "[player]..."
@@ -94,20 +105,24 @@ label introduction:
     m "If you get bored of the music, I can change that, too!"
     m "Press the 'm' key until it changes to what you want or click on 'Music' to choose which song you want to listen to."
     m "Also, we can play games now."
+<<<<<<< HEAD
     m "Just press 'p' or click on 'Game' to choose a game that we can play."
+=======
+    m "Just press 'p' or click on 'Play' to choose a game that we can play."
+>>>>>>> next-release
     m "I'll get better over time as I figure out how to program more features into this place..."
     m "...So just leave me running in the background."
     m "It's not like we're still keeping secrets from each other, right?"
     m "I can see everything on your computer now!"
     m "Ahaha!"
     #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t"]
-    $ config.keymap["change_music"] = ["m"]
-    $ config.keymap["play_pong"] = ["p"]
+    $ config.keymap["open_dialogue"] = ["t","T"]
+    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["play_game"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
 
     return
 

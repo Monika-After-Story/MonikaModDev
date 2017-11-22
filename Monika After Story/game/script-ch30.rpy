@@ -73,10 +73,13 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None)
-image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None)
+image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None,image="mod_assets/window_1_fallback.png")
+image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
+image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
+image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
 
 init python:
+
     import subprocess
     import os
     import eliza      # mod specific
@@ -118,6 +121,10 @@ init python:
         if allow_dialogue:
             renpy.jump('ch30_monikatopics')
 
+    def pick_game():
+        if allow_dialogue:
+            renpy.call_in_new_context('pick_a_game')
+
     def select_music():
         # check for open menu
         if (not songs.menu_open
@@ -134,18 +141,6 @@ init python:
                 play_song(songs.selected_track)
                 songs.current_track = songs.selected_track
                 persistent.current_track = songs.current_track
-
-
-    def start_pong():
-        global allow_dialogue
-
-        # locking pong via dialogue and music menu
-        # also this allows pong to lock dialogue as well
-        if allow_dialogue and not songs.menu_open:
-            previous_dialogue = allow_dialogue
-            allow_dialogue = False
-            renpy.call_in_new_context('game_pong')
-            allow_dialogue = previous_dialogue
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -181,6 +176,38 @@ init python:
         delta = now - persistent.firstdate
         return delta.days
 
+label spaceroom:
+    if is_morning():
+        if morning_flag != True or scene_change:
+            show room_mask3 as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask4 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_day_room
+            show monika 1 at tinstant zorder 2
+            with dissolve
+            $ morning_flag = True
+    elif not is_morning():
+        if morning_flag != False or scene_change:
+            $ morning_flag = False
+            scene black
+            show room_mask as rm:
+                size (320,180)
+                pos (30,200)
+            show room_mask2 as rm2:
+                size (320,180)
+                pos (935,200)
+            show monika_room
+            show monika 1 at tinstant zorder 2
+            with dissolve
+            #show monika_bg_highlight
+
+    $scene_change = False
+
+    return
+
 label ch30_main:
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
@@ -190,15 +217,32 @@ label ch30_main:
     $ m_name = "Monika"
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    play music m1 loop
-    $pushEvent("introduction")
-
+    play music m1 loop # move music out here because of context
+    $pushEvent('introduction')
+    $callNextEvent()
     jump ch30_loop
 
 label continue_event:
     m "Now, where was I..."
 
     return
+
+label pick_a_game:
+    if allow_dialogue and not songs.menu_open:
+        $previous_dialogue = allow_dialogue
+        $allow_dialogue = False
+        menu:
+            "What game would you like to play?"
+            "Pong":
+                call game_pong from _call_game_pong
+            "Chess" if is_platform_good_for_chess():
+                call game_chess from _call_game_chess
+            "Nevermind":
+                m "Alright. Maybe later?"
+
+        $allow_dialogue = previous_dialogue
+
+    jump ch30_loop
 
 label ch30_noskip:
     show screen fake_skip_indicator
@@ -227,6 +271,7 @@ label ch30_nope:
     $ persistent.autoload = ""
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
+    call spaceroom from _call_spaceroom_1
 
     if persistent.rejected_monika:
         m "Wait. Are you messing with my character file?"
@@ -238,17 +283,6 @@ label ch30_nope:
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
-        ### TODO: better graphics for this scene?
-        $ persistent.clear[9] = True
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_bg
-        show monika_bg_highlight
-        play music m1 loop
         m "Wait. Are you messing with my character file?"
         m "Why are you even playing this mod if you just wanted to delete me again?"
         m "You really are the worst."
@@ -351,41 +385,16 @@ label ch30_autoload:
     #Add keys for new functions
     $ config.keymap["open_dialogue"] = ["t","T"]
     $ config.keymap["change_music"] = ["m","M"]
-    $ config.keymap["play_pong"] = ["p","P"]
+    $ config.keymap["play_game"] = ["p","P"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_pong=start_pong))
+    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
     jump ch30_loop
 
 label ch30_loop:
     $ quick_menu = True
-    if is_morning():
-        if morning_flag != True:
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_day_room
-            show monika 2 at t11 zorder 2
-            with dissolve
-            $ morning_flag = True
-    elif not is_morning():
-        if morning_flag != False:
-            $ morning_flag = False
-            scene black
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_room
-            show monika 2 at t11 zorder 2
-            with dissolve
-            show monika_bg_highlight
+    call spaceroom from _call_spaceroom_2
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
         $ config.allow_skipping = True

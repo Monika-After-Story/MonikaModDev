@@ -2340,7 +2340,30 @@ label monika_algernon:
     return
 
 init 5 python:
-    for key in ['play','pong','p']:
+    for key in ['play','game']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_games') #id
+    monika_random_topics.append('monika_games')
+    
+label monika_games:
+    m "Two games that are available are Pong and chess."
+    m "Press the 'c' key to play chess or the 'p' key to play Pong."
+    return
+    
+init 5 python:
+    for key in ['chess','c']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_chess') #id
+    monika_random_topics.append('monika_chess')
+
+label monika_chess:
+    m "Hey [player], we can play chess, you know?"
+    m "All you have to do is hit the 'c' key."
+    m "I have some chess experience, but I don't feel quite as confident as with Pong~"
+    return
+
+init 5 python:
+    for key in ['pong','p']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_pong') #id
     monika_random_topics.append('monika_pong')
