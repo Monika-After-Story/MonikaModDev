@@ -3231,6 +3231,35 @@ label monika_vocaloid:
     m "Our love has no boundaries~"
     m "Ehehe~"
     return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in [‘Japanese’ , ‘language’ , ‘languages’]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_japanese’) #id
+    monika_random_topics.append('monika_japanese’)
+
+label monika_japanese:
+    m “Wanna know what language I found really cool?”
+    m “Japanese!”
+    m "It's such a fascinating language. I'm not that good at it, though.”
+    m "It's interesting to think about what things would be like if your native language was different."
+    m "Like, I can't even imagine thinking in a different language, let alone speaking and writing in it."
+    menu:
+        m "Do you know any languages other than English?"
+        "Yes":
+            menu:
+                m "You do?! Do you know Japanese?"
+                "Yes.":
+                    m "That's wonderful! Perhaps you could spend some time teaching me, ehehe~"
+                "No.":
+                    m "Oh, okay. That's still amazing of you, [player]. To be honest, I'm a little jealous that you can do such a thing."
+                    m "Yet another item on the list of reasons that you are amazing! Ehehe~"
+        "No":
+            m "That's okay! Learning another language is a very difficult and tedious process."
+            m "Maybe if I take the time to learn more Japanese, I'll know languages than you!"
+            m "Ahaha! It's okay [player]. All this means is that I'll be able to love you in Japanese as well~"
+    return
 
 ##################
 #Incomplete ideas#
