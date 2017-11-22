@@ -186,7 +186,7 @@ label spaceroom:
                 size (320,180)
                 pos (935,200)
             show monika_day_room
-            show monika 2 at tinstant zorder 2
+            show monika 1 at tinstant zorder 2
             with dissolve
             $ morning_flag = True
     elif not is_morning():
@@ -200,7 +200,7 @@ label spaceroom:
                 size (320,180)
                 pos (935,200)
             show monika_room
-            show monika 2 at tinstant zorder 2
+            show monika 1 at tinstant zorder 2
             with dissolve
             #show monika_bg_highlight
 
@@ -216,8 +216,8 @@ label ch30_main:
         $ style.say_dialogue = style.default_monika
     $ m_name = "Monika"
     $ delete_all_saves()
-    $ persistent.clear[9] = True 
-    play music m1 loop # move music out here because of context 
+    $ persistent.clear[9] = True
+    play music m1 loop # move music out here because of context
     $pushEvent('introduction')
     $callNextEvent()
     jump ch30_loop
