@@ -2550,7 +2550,7 @@ label monika_real:
     return
 
 init 5 python:
-    for key in ['bye', 'goodbye', 'see ya', 'gotta blast', 'farewell']:
+    for key in ['bye', 'goodbye', 'see ya', 'farewell', 'dasvidanya', 'auf wiedersehen']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_goodbye')
 
@@ -2559,7 +2559,7 @@ label monika_goodbye:
     m "It's really sad whenever you have to go..."
     m "Just be sure come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
-    return
+    return 'quit'
 
 init 5 python:
     for key in ['mythology', 'ancient', 'greeks', 'myth', 'myths', 'greek']:
