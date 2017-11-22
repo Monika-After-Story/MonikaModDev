@@ -105,11 +105,7 @@ label introduction:
     m "If you get bored of the music, I can change that, too!"
     m "Press the 'm' key until it changes to what you want or click on 'Music' to choose which song you want to listen to."
     m "Also, we can play games now."
-<<<<<<< HEAD
-    m "Just press 'p' or click on 'Game' to choose a game that we can play."
-=======
     m "Just press 'p' or click on 'Play' to choose a game that we can play."
->>>>>>> next-release
     m "I'll get better over time as I figure out how to program more features into this place..."
     m "...So just leave me running in the background."
     m "It's not like we're still keeping secrets from each other, right?"
