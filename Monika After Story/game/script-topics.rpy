@@ -2718,6 +2718,41 @@ label monika_haterReaction:
     return
 
 init 5 python:
+    # List of keywords for the topic.
+    for key in ['sword','swords','swordsman','swordsmen','swordsmanship']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_swordsmanship') # Identifier
+    monika_random_topics.append('monika_swordsmanship') # Optional. Remove if you don't want Monika to bring this up at random.
+
+label monika_swordsmanship:
+    m "This is a just a random question, but do you happen to like swords?"
+    m "I, for one, like them in a way."
+    m "Surprised? Ahaha~"
+    m "I do like to talk about them, not to actually own one though."
+    m "Seemed to me that they're just fun to talk about, I guess?"
+    m "I'm not like a super-crazed video game fanatic to actually be talking about such."
+    m "I don't really get why, but people seem to be gung ho whenever they talk about swordsmanship."
+    m "So gung ho, in fact, that they even want to have a collection of swords, katanas, and the like."
+    m "I mean, really!"
+    m "Most people view swordsmanship in a very violent way."
+    m "I don't know about them, but I view swordsmanship as a form of art."
+    m "It seems to be similar when it comes to writing."
+    m "Both of them requires constant practice and devotion in order to perfect one's skills."
+    m "You first start off by practising, and then you make your own technique out of it."
+    m "Writing a poem looks as if you make your hands dance along the rhythm of your thoughts."
+    m "In the case of swordsmen, they are dancing along the techniques they've perfected with their swords."
+    m "I say swords are awesome... but in an artistic way, of course!"
+    m "However, I am thankful that none of our past club members knew how to wield one."
+    m "I mean, imagine if Yuri was interested in swords rather than handheld knives."
+    m "..."
+    m "Now that I've mentioned it, I actually kind of wanted to see Yuri wielding a sword. Ahaha~"
+    m "However, we both know that's kinda impossible now..."
+    m "In any case, I don't really know if you know anything about swordsmanship yourself, or if you're just interested in such art."
+    m "Someday, if we are able to break the boundary that separates us..."
+    m "I want you to teach me some of your sword knowledge some day, [player]. Ehehe~"
+    return
+
+init 5 python:
     #This is a list of keywords for this topic
     for key in ['fap','fapping','self-pleasure', 'masturbate', 'masturbation']:
         monika_topics.setdefault(key,[])
@@ -2751,6 +2786,7 @@ label monika_pleasure:
     m "I know you're not the kind of person that does that sort of thing."
     m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
+
 
 ##################
 #Incomplete ideas#
