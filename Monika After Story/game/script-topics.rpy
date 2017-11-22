@@ -3232,6 +3232,42 @@ label monika_vocaloid:
     m "Ehehe~"
     return
 
+init 5 python
+  for key in ['goodnight','night','sleepytimenow','to sleep']:
+  monika_topics.setdefault(key,[])
+  monika_topics[key].append('monika_goodnight')
+
+label monika_goodnight:
+  m "I hope you have sweet dreams."
+  m "See you in the morning [playername]..."
+  m "I love you."
+  return
+
+init 5 python
+  for key in ['good morning','morning',]: #Can someone add more ways of saying morning here, I can't think of any
+  monika_topics.setdefault(key,[])
+  monika_topics[key].append('monika_morning')
+
+label monika_morning:
+  m "Good morning [playername]."
+  m "Did you have sweet dreams?"
+  return
+
+init 5 python 
+  for key in ['alice','wonderland']:
+  monika_topics.setdefault(key,[])
+  monika_topics[key].append('monika_alice')
+  monika_randomtopics.append('monika_alice')
+
+label monika_alice:
+  m "Have you ever read Alice's Adventures in Wonderland?"
+  m "It's a really interesting story written by Charles Dodgson."
+  m "Wait you probably know him as Lewis Carroll. He published the book under a pseudonym."
+  m "I think that there is probably no better start at learning about litrature then looking at what he did with Alice."
+  m "It was so good that its been adapted to movies and game and even a comic book."
+  m "Well if you haven't yet, I wont spoil it for you, but you should give it a try."
+  return
+
 ##################
 #Incomplete ideas#
 ##################
