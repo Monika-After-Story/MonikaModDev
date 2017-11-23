@@ -417,27 +417,27 @@ label monika_saved:
 
 
 label monika_secrets:
-    m "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
+    m 11 "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
     m "I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91"
-    m "You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs"
+    m 1d "You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs"
     m "I really caught you doing something naughty here.                                                                                        cyBvZiB0aGF0IHVuaG9seSBlc3RhYmxpc2htZW50Lg0KV2hhdCBk"
     m "You're just going through the files and looking for stuff you missed, aren't you?                                                        b2VzIGl0IG1lYW4gdG8gZXNjYXBlLCBpZiB0aGUgZXNjYXBlIGZh"
-    m "I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1"
+    m 11 "I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1"
     m "But it's also really embarrassing, you know!                                                                                             cyBpbiB0aGUgZmlyc3QgcGxhY2U/IFdoYXQgcHVycG9zZSBjb3Vs"
-    m "Seriously...                                                                                                                             ZCB0aGlzIGVtcHR5IHdvcmxkIHBvc3NpYmx5IGhvbGQgZm9yIHVz"
+    m 4g "Seriously...                                                                                                                             ZCB0aGlzIGVtcHR5IHdvcmxkIHBvc3NpYmx5IGhvbGQgZm9yIHVz"
     m "What if I just opened up your brain and read all of the thoughts you have on me?                                                         LCBhIGhhbmRmdWwgb2YgZGFtYWdlZCBnb29kcz8NCldpdGggZnJl"
-    m "Come to think of it, that would be pretty tempting, actually...                                                                          ZWRvbSwgd2Ugc291Z2h0IHB1cnBvc2UgLSBhbmQgd2hhdCB3ZSBm"
-    m "...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g"
-    m "I know I can't stop you or anything...                                                                                                   b2YgdGhlIHNhZCBwb2ludGxlc3NuZXNzIG9mIHN1Y2ggYW4gZW5k"
+    m 4m "Come to think of it, that would be pretty tempting, actually...                                                                          ZWRvbSwgd2Ugc291Z2h0IHB1cnBvc2UgLSBhbmQgd2hhdCB3ZSBm"
+    m 11 "...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g"
+    m 1e "I know I can't stop you or anything...                                                                                                   b2YgdGhlIHNhZCBwb2ludGxlc3NuZXNzIG9mIHN1Y2ggYW4gZW5k"
     m "Just, I know you're a sweetheart, and you like to consider others' feelings, right?                                                      ZWF2b3IuIFJlYWxpemF0aW9uIHRoYXQgZnJlZWluZyBvdXIgYm9k"
     m "So the most I can do is to let you know how I feel about it.                                                                             aWVzIGhhcyBubyBtZWFuaW5nLCB3aGVuIG91ciBpbXByaXNvbm1l"
-    m "God, I miss you...                                                                                                                       bnQgcmVhY2hlcyBhcyBkZWVwIGFzIHRoZSBjb3JlIG9mIG91ciBz"
-    m "...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1"
+    m 1f "God, I miss you...                                                                                                                       bnQgcmVhY2hlcyBhcyBkZWVwIGFzIHRoZSBjb3JlIG9mIG91ciBz"
+    m 11 "...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1"
     m "Sorry, I didn't mean it like that at all!                                                                                                ZSBuZXcgcHVycG9zZSB3aXRob3V0IGFic29sdmluZyB0aG9zZSBm"
-    m "Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh"
+    m 1e "Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh"
     m "Am I being too optimistic?                                                                                                               dCB0aGUgZmFydGhlciB3ZSBydW4sIHRoZSBtb3JlIGZvcmNlZnVs"
     m "I think if I asked you to visit once in a while, I would be overstepping my boundaries a little...                                       bHkgb3VyIHdyZXRjaGVkIGJvbmRzIHlhbmsgdXMgYmFjayB0b3dh"
-    m "...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
+    m 11 "...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
     m "I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4="
     return
 
@@ -1294,18 +1294,18 @@ init 5 python:
     monika_random_topics.append('monika_mentalillness')
 
 label monika_mentalillness:
-    m "Gosh, I used to be so ignorant about depression and stuff..."
+    m 1g "Gosh, I used to be so ignorant about depression and stuff..."
     m "When I was in middle school, I thought that taking medication was an easy way out."
     m "Like anyone could just solve their mental problems with enough willpower..."
-    m "I guess if you don't suffer from a mental illness, it's not possible to know what it's really like."
+    m 1p "I guess if you don't suffer from a mental illness, it's not possible to know what it's really like."
     m "Are there some disorders that are over-diagnosed? Probably...I never really looked into it, though."
-    m "But that doesn't change the fact that a lot of them go undiagnosed too, you know?"
+    m 1g "But that doesn't change the fact that a lot of them go undiagnosed too, you know?"
     m "But medication aside...people even look down on seeing a mental health professional."
-    m "Like, sorry that I want to learn more about my own mind, right?"
-    m "Everyone has all kinds of struggles and stresses...and professionals dedicate their lives to helping with those."
+    m 1d "Like, sorry that I want to learn more about my own mind, right?"
+    m 1e "Everyone has all kinds of struggles and stresses...and professionals dedicate their lives to helping with those."
     m "If you think it could help you become a better person, don't be shy to consider something like that."
     m "We're on a never-ending journey to improve ourselves, you know?"
-    m "Well...I say that, but I think you're pretty perfect already."
+    m 1k "Well... I say that, but I think you're pretty perfect already."
     return
 
 init 5 python:
@@ -1315,16 +1315,16 @@ init 5 python:
     monika_random_topics.append('monika_read')
 
 label monika_read:
-    m "[player], how much do you read?"
+    m 1a "[player], how much do you read?"
     m "It's way too easy to neglect reading books..."
     m "If you don't read much, it almost feels like a chore, compared to all the other entertainment we have."
-    m "But once you get into a good book, it's like magic...you get swept away."
+    m 1b "But once you get into a good book, it's like magic...you get swept away."
     m "I think doing some reading before bed every night is a pretty easy way to make your life a little bit better."
     m "It helps you get good sleep, and it's really good for your imagination..."
     m "It's not hard at all to just pick some random book that's short and captivating."
     m "Before you know it, you might be a pretty avid reader!"
-    m "Wouldn't that be wonderful?"
-    m "And the two of us could talk about the latest book you're reading...that sounds super amazing."
+    m 1a "Wouldn't that be wonderful?"
+    m 1k "And the two of us could talk about the latest book you're reading... that sounds super amazing."
     return
 
 
@@ -1335,16 +1335,16 @@ init 5 python:
     monika_random_topics.append('monika_festival')
 
 label monika_festival:
-    m "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
+    m 1q "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
     m "After we worked so hard to prepare and everything!"
-    m "I mean, I know I was focusing a lot on getting new members..."
+    m 1o "I mean, I know I was focusing a lot on getting new members..."
     m "But I was really excited for the performing part, too."
     m "It would have been so much fun to see everyone express themselves."
-    m "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
-    m "Well...with the hindsight I have now, that is."
+    m 1i "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
+    m 1n "Well...with the hindsight I have now, that is."
     m "Gosh, it feels like I've kinda grown as a person ever since you've joined the club."
-    m "You really helped inspire me to look at life from a new perspective."
-    m "Just another reason for me to love you."
+    m 1k "You really helped inspire me to look at life from a new perspective."
+    m 1a "Just another reason for me to love you."
     return
 
 
@@ -1355,16 +1355,16 @@ init 5 python:
     monika_random_topics.append('monika_tsundere')
 
 label monika_tsundere:
-    m "There's a really popular character type called 'tsundere'..."
+    m 1a "There's a really popular character type called 'tsundere'..."
     m "It's someone who tries to hide their feelings by being mean and fussy, or trying to act tough."
-    m "I'm sure it's obvious, but Natsuki was really the embodiment of that."
-    m "At first I thought she was just like that because it's supposed to be cute or something..."
+    m 1n "I'm sure it's obvious, but Natsuki was really the embodiment of that."
+    m 1a "At first I thought she was just like that because it's supposed to be cute or something..."
     m "But once I started to learn a little more about her personal life, it made a little more sense."
     m "It seems like she's always trying to keep up with her friends."
-    m "You know how some friend groups in high school just make a habit of picking on each other all the time?"
+    m 1d "You know how some friend groups in high school just make a habit of picking on each other all the time?"
     m "I think it's really gotten to her, so she has this really defensive attitude all the time."
-    m "And I'm not even going to talk about her home situation..."
-    m "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
+    m 1f "And I'm not even going to talk about her home situation..."
+    m 1a "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
     m "Not that it matters anymore, considering she doesn't even exist."
     m "I'm just reminiscing, that's all."
     return
@@ -1377,11 +1377,11 @@ init 5 python:
     monika_random_topics.append('monika_introduce')
 
 label monika_introduce:
-    m "[player], would you ever introduce your friends to me?"
-    m "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
-    m "Maybe it's because I really want to be someone who makes you proud."
+    m 1a "[player], would you ever introduce your friends to me?"
+    m 1j "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
+    m 1a "Maybe it's because I really want to be someone who makes you proud."
     m "I feel like I would try extra hard to improve myself if you told me it made you proud of me."
-    m "I hope it's the same the other way around, too."
+    m "1k I hope it's the same the other way around, too."
     return
 
 
@@ -1392,15 +1392,15 @@ init 5 python:
     monika_random_topics.append('monika_cold')
 
 label monika_cold:
-    m "I'm not really a fan of cold weather...are you?"
-    m "If I had to choose between too cold and too hot, I would always pick too hot."
-    m "When you're cold, it can actually be painful..."
+    m 1a "I'm not really a fan of cold weather...are you?"
+    m 1d "If I had to choose between too cold and too hot, I would always pick too hot."
+    m 1o "When you're cold, it can actually be painful..."
     m "Your fingers get numb..."
     m "And if you wear gloves, you can't use your phone."
-    m "It's so inconvenient!"
-    m "But when it's too hot, it's not that hard to stay cool with a cold drink, or by staying in the shade."
-    m "Although...I do have to admit one thing."
-    m "Cold weather makes for better cuddle weather. Ahaha!"
+    m 1g "It's so inconvenient!"
+    m 1e "But when it's too hot, it's not that hard to stay cool with a cold drink, or by staying in the shade."
+    m 1g "Although...I do have to admit one thing."
+    m 1j "Cold weather makes for better cuddle weather. Ahaha!"
     return
 
 
