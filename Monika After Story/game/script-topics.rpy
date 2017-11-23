@@ -2791,7 +2791,7 @@ init 5 python:
    monika_random_topics.append('monika_japanese')
 
 label monika_japanese:
-    m "I don’t mean to sound like Natsuki but.."
+    m "I don't mean to sound like Natsuki but.."
     m "Wanna know what language I find really cool?"
     m "Japanese!"
     m "It's such a fascinating language. I'm not that good at it, though."
