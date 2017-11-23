@@ -3330,7 +3330,26 @@ label monika_night:
     m "I love you so much, [player]."
     m "I'll be seeing you in your dreams~"
     return 'quit'
+    
+init 5 python:
+    for key in ['closet']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_closet')
+    monika_random_topics.append('closet')
 
+label monika_closet
+    m "By the way..."
+    m "What were you and Yuri doing in the closet?"
+    m "When I opened the door, I noticed the room was all dark."
+    m "You weren't doing anything... weird, in there, were you?"
+    m "Ahaha!"
+    m "Just teasing you~"
+    m "I know that you had your hand on her chest, [player]."
+    m "Judging by the way you looked, you seemed more embarrassed than relieved when I opened the door."
+    m "I know you aren't the type to force girls to go inside dark closets with you."
+    m "You're more romantic than that."
+    m "So I'm expecting a lot more than just a dark closet~"
+    return 
 
 ##################
 #Incomplete ideas#
