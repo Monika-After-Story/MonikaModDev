@@ -1227,7 +1227,7 @@ label monika_debate:
     m 4a "It's because by saying that, it's like they're implying that you have bad taste."
     m "And once emotions enter the picture, it's almost guaranteed that both people will be left sour."
     m 4b "But it's all about language!"
-    m "If you make everything as constructive as possible, then people will listen to you without feeling attacked."
+    m "If you make everything as subjective-sounding as possible, then people will listen to you without feeling attacked."
     m "You could say 'I'm personally not a fan of it' and 'I felt that I'd like it more if it did X and Y'...things like that."
     m 3a "It even works when you're citing facts about things."
     m "If you say 'I read on this website that it works like this'..."
