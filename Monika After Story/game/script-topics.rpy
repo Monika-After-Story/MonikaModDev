@@ -3349,7 +3349,7 @@ label monika_closet
     m "I know you aren't the type to force girls to go inside dark closets with you."
     m "You're more romantic than that."
     m "So I'm expecting a lot more than just a dark closet~"
-    return 'quit'
+    return 
 
 ##################
 #Incomplete ideas#
