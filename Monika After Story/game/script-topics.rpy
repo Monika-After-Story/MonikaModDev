@@ -2796,7 +2796,7 @@ label monika_japanese:
     m "Japanese!"
     m "It's such a fascinating language. I'm not that good at it, though."
     m "It's interesting to think about what things would be like if your native language was different."
-    m "Like, I can't even imagine thinking in a different language, let alone speaking and writing in it."
+    m "Like, I can't even imagine what it would be like if my native language was different, let alone speaking and writing in it."
     menu:
         m "Do you know any languages other than English?"
         "Yes":
