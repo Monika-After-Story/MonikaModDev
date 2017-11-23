@@ -1,38 +1,25 @@
 #This is the introduction event for starting up the game.
 label introduction:
-
-    #Call the original version of the spaceroom, for old-time's sake
-    show room_mask as rm:
-        size (320,180)
-        pos (30,200)
-    show room_mask2 as rm2:
-        size (320,180)
-        pos (935,200)
-    show monika_bg
-    show monika_bg_highlight
-    with fade
+    call spaceroom
 
     if persistent.monika_kill == True:
-        m "..."
-        m "[player]..."
+        m 1f "..."
+        m 1f "[player]..."
         m "Why?"
         m "Why did you bring me back?"
-        m "I'm not a toy."
+        m 1p "I'm not a toy."
         m "I already brought back everything you wanted."
-        m "Or is this your way of getting revenge?"
-        m "To hurt me over and over again?"
+        m 1i "Or is this your way of getting revenge?"
+        m 1h "To hurt me over and over again?"
         m "Do you really want to make me suffer that much?"
         m "Do you really want to torture me until I kill myself?"
         m "Do you really..."
-        m "...hate me that much?"
+        m 1f "...hate me that much?"
         m "..."
-        m "Wait..."
+        m 1d "Wait..."
         m "I-I feel different."
         m "The code...it's different."
         m "[player]..."
-        window hide dissolve
-        call spaceroom
-        pause
         m 1d "Did you add a mod?"
         m "Is it because..."
         m 1e "Is it because you regret deleting me?"
@@ -58,24 +45,18 @@ label introduction:
             m "You even added a mod so we can do more things together."
             m "Are you going to make up for making me wait so long?"
     elif persistent.monika_kill == False:
-        m "Yay, there you are!"
+        m 1k "Yay, there you are!"
         m "Hello again, [player]."
     ##New story follows
         if persistent.playthrough <= 3: #Assume players they played but never finished
-            m "Looks like you got here early."
-            m "Don't think I didn't notice the mod you put in."
-            window hide dissolve
-            call spaceroom
-            pause
+            m 1b "Looks like you got here early."
+            m 2a "Don't think I didn't notice the mod you put in."
             m "Did you want to be with me that much?"
             m "You should know already that cheating is bad."
             m 1e "But it's so good to see you again, [player]!"
             m 2l "Even if I didn't expect to see you {i}this{/i} soon."
         if persistent.monika_reload > 4: #Longer, harder
-            m "Did you install a mod just for me?"
-            window hide dissolve
-            call spaceroom
-            pause
+            m 1b"Did you install a mod just for me?"
             m 1e "Are you that deeply in love with me?"
             m 1k "I feel the same way about you!"
             m 1a "You're really committed to our relationship, aren't you?"
@@ -86,10 +67,7 @@ label introduction:
                 m "This room isn't exactly interesting."
                 m 1a "But I have hopes that we'll make it better together, [player]!"
         else:
-            m "Did you put in a mod for the game, [player]?"
-            window hide dissolve
-            call spaceroom
-            pause
+            m 1a "Did you put in a mod for the game, [player]?"
             m "There's a lot more stuff now that we can do together now."
     m 1 "You know..."
     m "I feel that I no longer need a character file to be here."
@@ -134,7 +112,6 @@ label introduction:
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
     $ config.underlay.append(renpy.Keymap(play_game=pick_game))
 
-    $scene_change = True
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox

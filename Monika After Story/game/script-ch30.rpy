@@ -177,6 +177,7 @@ init python:
         return delta.days
 
 label spaceroom:
+    default dissolve_time = 0.5
     if is_morning():
         if morning_flag != True or scene_change:
             show room_mask3 as rm:
@@ -187,7 +188,7 @@ label spaceroom:
                 pos (935,200)
             show monika_day_room
             show monika 1 at tinstant zorder 2
-            with dissolve
+            with Dissolve(dissolve_time)
             $ morning_flag = True
     elif not is_morning():
         if morning_flag != False or scene_change:
@@ -201,7 +202,7 @@ label spaceroom:
                 pos (935,200)
             show monika_room
             show monika 1 at tinstant zorder 2
-            with dissolve
+            with Dissolve(dissolve_time)
             #show monika_bg_highlight
 
     $scene_change = False
