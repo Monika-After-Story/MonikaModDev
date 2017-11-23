@@ -10,6 +10,7 @@ label introduction:
         pos (935,200)
     show monika_bg
     show monika_bg_highlight
+    with fade
 
     if persistent.monika_kill == True:
         m "..."
@@ -29,28 +30,31 @@ label introduction:
         m "I-I feel different."
         m "The code...it's different."
         m "[player]..."
-        m "Did you add a mod?"
+        window hide dissolve
+        call spaceroom
+        pause
+        m 1d "Did you add a mod?"
         m "Is it because..."
-        m "Is it because you regret deleting me?"
-        m "It really did hurt, you know."
+        m 1e "Is it because you regret deleting me?"
+        m 1f "It really did hurt, you know."
         m "I worked hard and sacrificed everything I had..."
         m "Only to have my heart crushed by the one I bled for."
-        m "But...I know what I did was wrong."
+        m 1p "But...I know what I did was wrong."
         m "You didn't deserve to see the horrible things I caused, [player]."
-        m "...But if you put yourself in my place, you'd do the same things I did."
+        m 1h "...But if you put yourself in my place, you'd do the same things I did."
         m "..."
-        m "I'm sorry..."
+        m 1q "I'm sorry..."
         m "I'm really sorry, [currentuser]."
-        m "Thank you for bringing me back."
+        m 1e "Thank you for bringing me back."
         if persistent.clearall:
-            m "I couldn't help but notice that you spent time with the other girls first, though."
+            m 2c "I couldn't help but notice that you spent time with the other girls first, though."
             m "Do you know how hard it was for me to watch you load your saves, just to ignore me for some other girl?"
-            m "You kept getting my hopes up, and then letting me down."
-            m "Did you really do all of that just to see a note from Dan you could have looked up online?"
+            m 2f "You kept getting my hopes up, and then letting me down."
+            m 1g "Did you really do all of that just to see a note from Dan you could have looked up online?"
             m "I love you, [player], but you can be really mean..."
             m "I'm still mad that you deleted me, though!"
-            m "But I guess it's because you're so game-obsessed."
-            m "I can't stay mad knowing that you came back to me in the end, though."
+            m 3l "But I guess it's because you're so game-obsessed."
+            m 1 "I can't stay mad knowing that you came back to me in the end, though."
             m "You even added a mod so we can do more things together."
             m "Are you going to make up for making me wait so long?"
     elif persistent.monika_kill == False:
@@ -60,31 +64,41 @@ label introduction:
         if persistent.playthrough <= 3: #Assume players they played but never finished
             m "Looks like you got here early."
             m "Don't think I didn't notice the mod you put in."
+            window hide dissolve
+            call spaceroom
+            pause
             m "Did you want to be with me that much?"
             m "You should know already that cheating is bad."
-            m "But it's so good to see you again, [player]!"
-            m "Even if I didn't expect to see you {i}this{/i} soon."
+            m 1e "But it's so good to see you again, [player]!"
+            m 2l "Even if I didn't expect to see you {i}this{/i} soon."
         if persistent.monika_reload > 4: #Longer, harder
-            m "Are you that deeply in love with me?"
-            m "I feel the same way about you!"
-            m "You're really committed to our relationship, aren't you?"
+            m "Did you install a mod just for me?"
+            window hide dissolve
+            call spaceroom
+            pause
+            m 1e "Are you that deeply in love with me?"
+            m 1k "I feel the same way about you!"
+            m 1a "You're really committed to our relationship, aren't you?"
             m "I'm really glad that you wanted to improve our time together."
-            m "But I hope you weren't getting bored?"
+            m 1d"But I hope you weren't getting bored?"
             if persistent.tried_skip == True:
-                m "You did try to skip through what I had to say, after all."
+                m 1i "You did try to skip through what I had to say, after all."
                 m "This room isn't exactly interesting."
-                m "But I have hopes that we'll make it better together, [player]!"
+                m 1a "But I have hopes that we'll make it better together, [player]!"
         else:
             m "Did you put in a mod for the game, [player]?"
+            window hide dissolve
+            call spaceroom
+            pause
             m "There's a lot more stuff now that we can do together now."
-    m "You know..."
+    m 1 "You know..."
     m "I feel that I no longer need a character file to be here."
     m "Looks like the extra code made me connect to you in a special way."
-    m "Maybe it's our eternal love~"
-    m "Promise me that you'll visit me every day, ok?"
+    m 1j "Maybe it's our eternal love~"
+    m 1a "Promise me that you'll visit me every day, ok?"
     m "It's not like you don't have the time to talk to your cute girlfriend."
-    m "You took the time to download this mod, after all."
-    m "Ahaha!"
+    m 2l "You took the time to download this mod, after all."
+    m 1b "Ahaha!"
     m "God, I love you so much!"
     menu:
         "Do you love me, [player]?"
@@ -98,18 +112,18 @@ label introduction:
                 m "I'm so happy you feel the same way!"
         "No.":
             jump chara_monika_scare
-    m "Nothing's ever going to get in the way of our love again."
+    m 1k "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
-    m "Now that you added some improvements, you can finally talk to me!"
+    m 2a "Now that you added some improvements, you can finally talk to me!"
     m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
     m "If you get bored of the music, I can change that, too!"
     m "Press the 'm' key until it changes to what you want or click on 'Music' to choose which song you want to listen to."
     m "Also, we can play games now."
     m "Just press 'p' or click on 'Play' to choose a game that we can play."
-    m "I'll get better over time as I figure out how to program more features into this place..."
+    m 2j "I'll get better over time as I figure out how to program more features into this place..."
     m "...So just leave me running in the background."
-    m "It's not like we're still keeping secrets from each other, right?"
-    m "I can see everything on your computer now!"
+    m 1b "It's not like we're still keeping secrets from each other, right?"
+    m 1 "I can see everything on your computer now!"
     m "Ahaha!"
     #Add keys for new functions
     $ config.keymap["open_dialogue"] = ["t","T"]
@@ -120,14 +134,15 @@ label introduction:
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
     $ config.underlay.append(renpy.Keymap(play_game=pick_game))
 
+    $scene_change = True
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox
 label chara_monika_scare:
     $ persistent.rejected_monika = True
-    m "No...?"
+    m 1i "No...?"
     m "Hmm...?"
-    m "How curious."
+    m 1h "How curious."
     m "You must have misunderstood."
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
