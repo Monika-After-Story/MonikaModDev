@@ -3351,10 +3351,23 @@ label monika_closet
     m "So I'm expecting a lot more than just a dark closet~"
     return 
 
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['happy', 'good mood']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_playerhappy') #id
+
+label monika_playerhappy:
+    m "That's wonderful. I'm happy when you're happy."
+    m "[player], if you're ever feeling down, come to me and I'll do my best to cheer you up."
+    m "I love you and that I'll always be here for you. Don't you ever forget that."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
 #Favorite food
+#meditation
 
 #How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
 
