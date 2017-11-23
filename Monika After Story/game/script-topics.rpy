@@ -2797,7 +2797,7 @@ label monika_pseudonym:
     m "Lewis Carroll's real name is Charles Dodgson and he was a mathmatition and a scientist, but he loved literacy and word play in particular."
     if [player] =! [currentuser]:
         m "[player], you know your using a pseudonym right now?"
-        m "Why did you choose to use one [currentuser]?
+        m "Why did you choose to use one [currentuser]?"
         m "Lewis Carroll did because he highly valued his privacy, he just didn't want anyone he hadn't personally met to know him."
     else:
         m "A pseudonym can also help writers when they want to write something different, so they can without disappointing fans."
@@ -2805,7 +2805,7 @@ label monika_pseudonym:
     m "You know I have one too? Its my twitter account lilmonx3. Maybe if I write something there people will know me as lilmonx3 instead of Monika."
     m "That would be strange, being known mostly as your pen name."
     if [player] =! [currentuser]:
-    m "Don't worry [currentuser], I won't forget your name. I love you, even when you want to be called something else for a while.
+    m "Don't worry [currentuser], I won't forget your name. I love you, even when you want to be called something else for a while."
     else:
     m "Do you have a pseudonym [player]? I bet it's a really neat one, maybe if I learn it I will forget your real name. Hehehe"
     return
