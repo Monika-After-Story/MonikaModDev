@@ -2808,7 +2808,7 @@ label monika_pseudonym:
     m "Don't worry [currentuser], I won't forget your name. I love you, even when you want to be called something else for a while.
     else:
     m "Do you have a pseudonym [player]? I bet it's a really neat one, maybe if I learn it I will forget your real name. Hehehe"
-  return
+    return
 
 ##################
 #Incomplete ideas#
