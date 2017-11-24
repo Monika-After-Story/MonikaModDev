@@ -2847,18 +2847,18 @@ label monika_japanese:
             m "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
     return    
 
-init 5 python 
+init 5 python:
     for key in ['lewis carroll','pseudonym','pen name']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_pseudonym')
-        monika_randomtopics.append('monika_pseudonym')
+       monika_topics.setdefault(key,[])
+       monika_topics[key].append('monika_pseudonym')#id
+    monika_random_topics.append('monika_pseudonym')
 
 label monika_pseudonym:
     m "You know what's really cool? Pen names."
     m "Pen names or pseudonyms are names that writers use when they want privacy or protection or for fun."
     m "A well known pen name is Lewis Carroll, he wrote a lot, but he is most well known for Alice in wonderland."
     m "Lewis Carroll's real name is Charles Dodgson and he was a mathmatition and a scientist, but he loved literacy and word play in particular."
-    if [player] =! [currentuser]:
+    if [player] != [currentuser]:
         m "[player], you know your using a pseudonym right now?"
         m "Why did you choose to use one [currentuser]?"
         m "Lewis Carroll did because he highly valued his privacy, he just didn't want anyone he hadn't personally met to know him."
@@ -2867,10 +2867,10 @@ label monika_pseudonym:
         m "Or if the writer wants to publish something with another publisher as the publisher they work with only has right to whats written under the pen name."
     m "You know I have one too? Its my twitter account lilmonx3. Maybe if I write something there people will know me as lilmonx3 instead of Monika."
     m "That would be strange, being known mostly as your pen name."
-    if [player] =! [currentuser]:
-    m "Don't worry [currentuser], I won't forget your name. I love you, even when you want to be called something else for a while."
+    if [player] != [currentuser]:
+         m "Don't worry [currentuser], I won't forget your name. I love you, even when you want to be called something else for a while."
     else:
-    m "Do you have a pseudonym [player]? I bet it's a really neat one, maybe if I learn it I will forget your real name. Hehehe"
+         m "Do you have a pseudonym [player]? I bet it's a really neat one, maybe if I learn it I will forget your real name. Hehehe"
     return
 
 ##################
