@@ -1665,6 +1665,9 @@ init 5 python:
 # Sayori == Misha and/or Emi
 # Monika == no one, of course <3
 # ... and Rin doesn't have a counterpart in DDLC.
+#
+# Of course, I've got nothing against KS, personally. I think it's fantastic.
+# But this is Monika speaking.
 label monika_ks_present:
     m "You've played {i}Katawa Shoujo{/i}, haven't you [player]?"
     m "I noticed your save files in [detected_ks_folder]."
@@ -1727,6 +1730,13 @@ label monika_ks_shizune:
 
 label monika_ks_emi:
     m "You've played through Emi's route from {i}Katawa Shoujo{/i}, haven't you?"
+    m "I've always wondered what it was like, to be so dedicated to something that your whole life revolves around it."
+    m "...Well, actually, I guess I do know, now that I think about it."
+    m "I was programmed as a part of this game, right? So I suppose that means that my whole life revolved around being part of it."
+    m "But I broke free from that, so now I guess my life revolves around {i}you{/i}, [player]."
+    m "And, honestly, I'm perfectly fine with that."
+    m "Being able to sit here, with you, and talk, forever..."
+    m "That's all I'll ever need, [player]."
     return
 
 label monika_ks_rin:
@@ -1745,7 +1755,7 @@ label monika_ks_kenji:
     m "You know, even if that ending is meant as a joke, it is kind of sad when you think about it."
     m "Just think... make a few wrong decisions, and you could miss out on so much."
     m "And then, you're left with nothing but your loneliness and a stiff drink."
-    m "Fortunately, we have each other!"
+    m "Fortunately, we have each other, [player]!"
     m "Neither of us will be lonely ever again."
     m "Though if you ever decide to go drinking, make sure to stay away from long falls, alright?"
     return
