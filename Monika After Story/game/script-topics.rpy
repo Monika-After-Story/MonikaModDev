@@ -1294,18 +1294,18 @@ init 5 python:
     monika_random_topics.append('monika_mentalillness')
 
 label monika_mentalillness:
-    m "Gosh, I used to be so ignorant about depression and stuff..."
+    m 2m "Gosh, I used to be so ignorant about depression and stuff..."
     m "When I was in middle school, I thought that taking medication was an easy way out."
-    m "Like anyone could just solve their mental problems with enough willpower..."
+    m 2n "Like anyone could just solve their mental problems with enough willpower..."
     m "I guess if you don't suffer from a mental illness, it's not possible to know what it's really like."
-    m "Are there some disorders that are over-diagnosed? Probably...I never really looked into it, though."
-    m "But that doesn't change the fact that a lot of them go undiagnosed too, you know?"
+    m 3n "Are there some disorders that are over-diagnosed? Probably...I never really looked into it, though."
+    m 3e "But that doesn't change the fact that a lot of them go undiagnosed too, you know?"
     m "But medication aside...people even look down on seeing a mental health professional."
-    m "Like, sorry that I want to learn more about my own mind, right?"
+    m 4e "Like, sorry that I want to learn more about my own mind, right?"
     m "Everyone has all kinds of struggles and stresses...and professionals dedicate their lives to helping with those."
-    m "If you think it could help you become a better person, don't be shy to consider something like that."
+    m 3j "If you think it could help you become a better person, don't be shy to consider something like that."
     m "We're on a never-ending journey to improve ourselves, you know?"
-    m "Well...I say that, but I think you're pretty perfect already."
+    m 5a "Well...I say that, but I think you're pretty perfect already."
     return
 
 init 5 python:
@@ -1315,16 +1315,16 @@ init 5 python:
     monika_random_topics.append('monika_read')
 
 label monika_read:
-    m "[player], how much do you read?"
-    m "It's way too easy to neglect reading books..."
+    m 2a "[player], how much do you read?"
+    m 2e "It's way too easy to neglect reading books..."
     m "If you don't read much, it almost feels like a chore, compared to all the other entertainment we have."
-    m "But once you get into a good book, it's like magic...you get swept away."
+    m 4b "But once you get into a good book, it's like magic...you get swept away."
     m "I think doing some reading before bed every night is a pretty easy way to make your life a little bit better."
     m "It helps you get good sleep, and it's really good for your imagination..."
-    m "It's not hard at all to just pick some random book that's short and captivating."
+    m 4j "It's not hard at all to just pick some random book that's short and captivating."
     m "Before you know it, you might be a pretty avid reader!"
-    m "Wouldn't that be wonderful?"
-    m "And the two of us could talk about the latest book you're reading...that sounds super amazing."
+    m 4k "Wouldn't that be wonderful?"
+    m 5a "And the two of us could talk about the latest book you're reading...that sounds super amazing."
     return
 
 
@@ -1335,16 +1335,16 @@ init 5 python:
     monika_random_topics.append('monika_festival')
 
 label monika_festival:
-    m "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
+    m 3e "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
     m "After we worked so hard to prepare and everything!"
     m "I mean, I know I was focusing a lot on getting new members..."
-    m "But I was really excited for the performing part, too."
+    m 3l "But I was really excited for the performing part, too."
     m "It would have been so much fun to see everyone express themselves."
-    m "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
-    m "Well...with the hindsight I have now, that is."
-    m "Gosh, it feels like I've kinda grown as a person ever since you've joined the club."
+    m 4a "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
+    m 4m "Well...with the hindsight I have now, that is."
+    m 4j "Gosh, it feels like I've kinda grown as a person ever since you've joined the club."
     m "You really helped inspire me to look at life from a new perspective."
-    m "Just another reason for me to love you."
+    m 5a "Just another reason for me to love you."
     return
 
 
@@ -1355,18 +1355,18 @@ init 5 python:
     monika_random_topics.append('monika_tsundere')
 
 label monika_tsundere:
-    m "There's a really popular character type called 'tsundere'..."
+    m 2a "There's a really popular character type called 'tsundere'..."
     m "It's someone who tries to hide their feelings by being mean and fussy, or trying to act tough."
-    m "I'm sure it's obvious, but Natsuki was really the embodiment of that."
+    m 2b "I'm sure it's obvious, but Natsuki was really the embodiment of that."
     m "At first I thought she was just like that because it's supposed to be cute or something..."
-    m "But once I started to learn a little more about her personal life, it made a little more sense."
+    m 2e "But once I started to learn a little more about her personal life, it made a little more sense."
     m "It seems like she's always trying to keep up with her friends."
-    m "You know how some friend groups in high school just make a habit of picking on each other all the time?"
+    m 4e "You know how some friend groups in high school just make a habit of picking on each other all the time?"
     m "I think it's really gotten to her, so she has this really defensive attitude all the time."
-    m "And I'm not even going to talk about her home situation..."
-    m "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
-    m "Not that it matters anymore, considering she doesn't even exist."
-    m "I'm just reminiscing, that's all."
+    m 4m "And I'm not even going to talk about her home situation..."
+    m 3e "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
+    m 3l "Not that it matters anymore, considering she doesn't even exist."
+    m 3a "I'm just reminiscing, that's all."
     return
 
 
@@ -1377,11 +1377,11 @@ init 5 python:
     monika_random_topics.append('monika_introduce')
 
 label monika_introduce:
-    m "[player], would you ever introduce your friends to me?"
+    m 3b "[player], would you ever introduce your friends to me?"
     m "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
-    m "Maybe it's because I really want to be someone who makes you proud."
-    m "I feel like I would try extra hard to improve myself if you told me it made you proud of me."
-    m "I hope it's the same the other way around, too."
+    m 3j "Maybe it's because I really want to be someone who makes you proud."
+    m 3k "I feel like I would try extra hard to improve myself if you told me it made you proud of me."
+    m 5a "I hope it's the same the other way around, too."
     return
 
 
