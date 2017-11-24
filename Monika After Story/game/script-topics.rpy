@@ -1106,7 +1106,7 @@ label monika_deleted:
     m 3k "I'm just kidding, of course!"
     m 3a "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
     m "The data's still there until the system cleans it up."
-    m "And you should always backup your important data, just in case."
+    m "And you should always back up your important data, just in case."
     m 4a "Speaking of which, have you backed up your computer since I came back?"
     m 4l "I really don't want to get lost again!"
     m 4b "You should go do that right now, and be sure to keep that backup in a very safe place!"
@@ -3350,6 +3350,18 @@ label monika_closet
     m "You're more romantic than that."
     m "So I'm expecting a lot more than just a dark closet~"
     return 
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['good mood']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_playerhappy') #id
+
+label monika_playerhappy:
+    m "That's wonderful! I'm happy when you're happy."
+    m "Know that you can always come up to me and I'll cheer up, [player]."
+    m "I love you and I'll always be here for you so don't you ever forget that~"
+    return
 
 ##################
 #Incomplete ideas#
