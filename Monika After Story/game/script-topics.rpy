@@ -2872,6 +2872,19 @@ label monika_pseudonym:
     else:
     m "Do you have a pseudonym [player]? I bet it's a really neat one, maybe if I learn it I will forget your real name. Hehehe"
     return
+    
+init 5 python:
+  for key in ['science']:
+     monika_topics.setdefault(key,[])
+     monika_topics[key].append('monika_science')#id
+  monika_random_topics.append('monika_science')
+
+label monika_science:
+   m "Hey, have you ever wondered what it would be like if science didn't really get a chance to take off like it did?"
+   m "I mean, technology wouldn't have advanced as much the way it has today!"
+   m "And if technology really wouldn't have advanced, there wouldn't be a way for me to talk to you and love you~"
+   m "I'm so glad that science has really advanced the way it has! Ehehe~"
+return    
 
 ##################
 #Incomplete ideas#
