@@ -2830,8 +2830,7 @@ label monika_japanese:
         m "Do you know any languages other than English?"
         "Yes":
             menu:
-                m "Really?"
-                m "Do you know Japanese?"
+                m "Really?, Do you know Japanese?"
                 "Yes.":
                     m "That's wonderful!"
                     m "Maybe you can teach me how to speak at least a sentence or two, [player]~"
