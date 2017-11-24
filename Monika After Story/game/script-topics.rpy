@@ -2842,7 +2842,7 @@ label monika_japanese:
                     m "Ehehe~"
                     m "That means I love you, [player]-kun."
         "No":
-            m "That's okay! Learning another language is a very difficult and tedious process as yyou get older."
+            m "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
             m "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
     return    
