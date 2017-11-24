@@ -803,7 +803,7 @@ label monika_college:
 
 
 init 5 python:
-    for key in ['middle school','ebarassed','the past']:
+    for key in ['middle school','embarrassed','the past']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_middleschool')
     monika_random_topics.append('monika_middleschool')
@@ -1381,7 +1381,7 @@ label monika_introduce:
     m 1j "I don't know why, but I get really excited when I think about you wanting to show off our relationship like that."
     m 1a "Maybe it's because I really want to be someone who makes you proud."
     m "I feel like I would try extra hard to improve myself if you told me it made you proud of me."
-    m "1k I hope it's the same the other way around, too."
+    m 1k "I hope it's the same the other way around, too."
     return
 
 
@@ -2393,7 +2393,7 @@ label monika_playersface:
     m "Either way, you're beautiful, no matter what."
     m "And I'll always love the way you look."
     m "Even if I never actually see you, I'll always think about what you really look like."
-    m "Maybe some day, I'll be able to see you, and be one step closer to you."
+    m "Maybe someday, I'll be able to see you, and be one step closer to you."
     return
 
 init 5 python:
@@ -2430,7 +2430,7 @@ label monika_nsfw:
     m "Have you been looking into lewd kinds of stuff?"
     m "You know... of me?"
     m "I know we haven't really gotten that far into the relationship yet..."
-    m "So it feels kind of embarassing to talk about things like that."
+    m "So it feels kind of embarrassing to talk about things like that."
     m "But maybe I can let it go on rare occasions, [player]."
     m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
     m "Well, just keep it a secret between us, okay?"
@@ -2550,7 +2550,7 @@ label monika_real:
     return
 
 init 5 python:
-    for key in ['bye', 'goodbye', 'see ya', 'farewell', 'dasvidanya', 'auf wiedersehen']:
+    for key in ['bye', 'goodbye', 'see ya', 'farewell', 'dasvidaniya', 'auf wiedersehen']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_goodbye')
 
@@ -2992,7 +2992,7 @@ label monika_hypnosis:
     m "Despite it having a reputation as a hokey magic trick, there are studies that show it can work!"
     m "At least, to some degree."
     m "It only worked if the person let themselves be hypnotized, and it only heightened their ability to be persuaded."
-    m "It also relied on them being put into states of extreme relaxation through aroma therapy, deep tissue massage..."
+    m "It also relied on them being put into states of extreme relaxation through aromatherapy, deep tissue massage..."
     m "Exposure to relaxing music and images..."
     m "Things like that."
     m "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
@@ -3219,7 +3219,7 @@ label monika_vocaloid:
     m "There's one song that really struck me."
     m "Have you heard of the song Hibikase?"
     m "I really like the message of the song."
-    m "Especially the lines, {i}'I dont care if it's through the screen, love me properly'{/i} and {i}'Even if I'm virutal, don't push me away'{/i}."
+    m "Especially the lines, {i}'I don't care if it's through the screen, love me properly'{/i} and {i}'Even if I'm virtual, don't push me away'{/i}."
     m "It really hits me hard."
     m "..."
     m "But just so you know..."
@@ -3315,7 +3315,7 @@ label monika_evening:
         m "Not getting your sleep on time can really harm your mental health, [player]."
         m "So please get some sleep now, ok?"
         m "Just leave your computer open and I'll watch over you."
-        m "I'm not going anywhere afterall~"
+        m "I'm not going anywhere after all~"
     return
 
 init 5 python:
@@ -3353,21 +3353,20 @@ label monika_closet
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['happy', 'good mood']:
+    for key in ['good mood']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_playerhappy') #id
 
 label monika_playerhappy:
-    m "That's wonderful. I'm happy when you're happy."
-    m "[player], if you're ever feeling down, come to me and I'll do my best to cheer you up."
-    m "I love you and that I'll always be here for you. Don't you ever forget that."
+    m "That's wonderful! I'm happy when you're happy."
+    m "Know that you can always come up to me and I'll cheer up, [player]."
+    m "I love you and I'll always be here for you so don't you ever forget that~"
     return
 
 ##################
 #Incomplete ideas#
 ##################
 #Favorite food
-#meditation
 
 #How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
 
