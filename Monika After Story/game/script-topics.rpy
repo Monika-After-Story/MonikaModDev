@@ -2718,6 +2718,36 @@ label monika_haterReaction:
     return
 
 init 5 python:
+    # List of keywords for the topic.
+    for key in ['sword','swords','swordsman','swordsmen','swordsmanship']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_swordsmanship') # Identifier
+    monika_random_topics.append('monika_swordsmanship') # Optional. Remove if you don't want Monika to bring this up at random.
+
+label monika_swordsmanship:
+    m "Do you like swords, [player]?"
+    m "I actually like them in a way."
+    m "Surprised? Ahaha~"
+    m "I like talking about them, but not enough not to actually own one."
+    m "I'm not really an enthusiast when it comes to swords."
+    m "I don't really get why people would be obsessed over something that could hurt others."
+    m "Most would even have a large collection of them in different varieties."
+    m "But there are those who like them for the swordsmanship."
+    m "It's fascinating that it's actually a form of art."
+    m "Similar to writing."
+    m "Both of them requires constant practice and devotion in order to perfect one's skills."
+    m "You start off by practicing, and then you make your own technique out of it."
+    m "Writing a poem makes you form your own way to build it in a graceful but imaginative way."
+    m "For those who practice swordsmanship, they build their technique forms through practice and inspiration from other practitioners of swordsmanship."
+    m "I can understand how the sword can be the pen of the battlefield."
+    m "But then again..."
+    m "The pen is mightier than the sword!"
+    m "Ahaha!"
+    m "In any case, I don't know if you're into swordsmanship yourself."
+    m "If you are, I'd love to learn it with you, [player]~"
+    return
+
+init 5 python:
     #This is a list of keywords for this topic
     for key in ['fap','fapping','self-pleasure', 'masturbate', 'masturbation']:
         monika_topics.setdefault(key,[])
@@ -2755,10 +2785,10 @@ label monika_pleasure:
 init 5 python:
     for key in ['sharing work']: #Deleted 1st 2 keywords since they conflict with another one
         monika_topics.setdefault(key, [])
-        monika_topics[key].append('monika_writingtip_1')
-    monika_random_topics.append('monika_writingtip_1')
+        monika_topics[key].append('monika_writingtip1')
+    monika_random_topics.append('monika_writingtip1')
 
-label monika_writingtip_1:
+label monika_writingtip1:
     m "You know..."
     m "We really don't do enough of these so here's another one!"
     m "Here's Monika's Writing Tip for the Day!"
