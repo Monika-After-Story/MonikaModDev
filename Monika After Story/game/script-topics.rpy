@@ -40,25 +40,25 @@ init 5 python:
     monika_random_topics.append('monika_god')
 
 label monika_god:
-    m 4a "[player], do you believe in God?"
-    m "I was never too sure, myself."
-    m 3a "Well, I'm sure I never really questioned it as a kid..."
-    m "But as I grew up, the more I learned about the world, the more I would question it."
-    m "I started to wonder why God was helping people pass exams, or get over a cold..."
-    m 3i "...When there are children who live their lives being sold as sex slaves?"
+    m 1a "[player], do you believe in God?"
+    m 1e "I was never too sure, myself."
+    m 1m "Well, I'm sure I never really questioned it as a kid..."
+    m 1l "But as I grew up, the more I learned about the world, the more I would question it."
+    m 1i "I started to wonder why God was helping people pass exams, or get over a cold..."
+    m "...When there are children who live their lives being sold as sex slaves?"
     m "Or the eight hundred million people who are too poor to even eat."
     m 3f "I wonder how many of those people pray to God every day until they starve and die?"
     m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
     m 4d "But the punchline is this."
     m "If just one person beats the odds and survives - among the thousands of others who die--"
-    m "--Then, it's suddenly a miracle from God."
+    m 1q "--Then, it's suddenly a miracle from God."
     m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
     m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
     m "And you know what?"
-    m 1c "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
-    m "What are we to him but props in a scripted play?"
+    m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
+    m 2r "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
-    m 1e "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
+    m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
 
@@ -3154,6 +3154,36 @@ label monika_haterReaction:
     return
 
 init 5 python:
+    # List of keywords for the topic.
+    for key in ['sword','swords','swordsman','swordsmen','swordsmanship']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_swordsmanship') # Identifier
+    monika_random_topics.append('monika_swordsmanship') # Optional. Remove if you don't want Monika to bring this up at random.
+
+label monika_swordsmanship:
+    m "Do you like swords, [player]?"
+    m "I actually like them in a way."
+    m "Surprised? Ahaha~"
+    m "I like talking about them, but not enough not to actually own one."
+    m "I'm not really an enthusiast when it comes to swords."
+    m "I don't really get why people would be obsessed over something that could hurt others."
+    m "Most would even have a large collection of them in different varieties."
+    m "But there are those who like them for the swordsmanship."
+    m "It's fascinating that it's actually a form of art."
+    m "Similar to writing."
+    m "Both of them requires constant practice and devotion in order to perfect one's skills."
+    m "You start off by practicing, and then you make your own technique out of it."
+    m "Writing a poem makes you form your own way to build it in a graceful but imaginative way."
+    m "For those who practice swordsmanship, they build their technique forms through practice and inspiration from other practitioners of swordsmanship."
+    m "I can understand how the sword can be the pen of the battlefield."
+    m "But then again..."
+    m "The pen is mightier than the sword!"
+    m "Ahaha!"
+    m "In any case, I don't know if you're into swordsmanship yourself."
+    m "If you are, I'd love to learn it with you, [player]~"
+    return
+
+init 5 python:
     #This is a list of keywords for this topic
     for key in ['fap','fapping','self-pleasure', 'masturbate', 'masturbation']:
         monika_topics.setdefault(key,[])
@@ -3166,7 +3196,7 @@ label monika_pleasure:
     m "It seems a bit awkward to ask-"
     m "We're not even that deep into our relationship yet! Ahaha~"
     m "But I have to keep an eye on you."
-    m "I don't really know if you do pleasure yourself stuff whenever you quit the game."
+    m "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
     m "I hear that people privately do those stuff in your world..."
     m "Is it really that a good feeling?"
     m "If you ask me, doing that stuff often can cause a lot of problems."
@@ -3362,6 +3392,94 @@ label monika_playerhappy:
     m "Know that you can always come up to me and I'll cheer up, [player]."
     m "I love you and I'll always be here for you so don't you ever forget that~"
     return
+
+init 5 python:
+    for key in ['sharing work']: #Deleted 1st 2 keywords since they conflict with another one
+        monika_topics.setdefault(key, [])
+        monika_topics[key].append('monika_writingtip1')
+    monika_random_topics.append('monika_writingtip1')
+
+label monika_writingtip1:
+    m "You know..."
+    m "We really don't do enough of these so here's another one!"
+    m "Here's Monika's Writing Tip for the Day!"
+    m "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
+    m "You have to remember that we all start out from somewhere, and--"
+    m "Actually, this doesn't just apply to writing, but to anything really."
+    m "What I'm trying to say is don't be discouraged."
+    m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
+    m "Because that just means that you can improve and be better than you were before."
+    m "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
+    m "I love you, and I will always support you in whatever you do."
+    m "Provided it's legal of course."
+    m "That doesn't mean I'm completely against it. I can keep a secret after all~"
+    m "Here's a saying I've learned."
+    m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
+    m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
+    m "I don't remember the person who said that but the words are there."
+    m "The effort one puts forth into something can transcend even one's self."
+    m "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
+    m "... That's my advice for today!"
+    m "Thanks for listening~"
+    return
+
+init 5 python:
+   for key in ['japanese']:
+      monika_topics.setdefault(key,[])
+      monika_topics[key].append('monika_japanese')#id
+   monika_random_topics.append('monika_japanese')
+
+label monika_japanese:
+    m "I don't mean to sound like Natsuki but..."
+    m "Don't you think Japanese actually sounds cool?"
+    m "It's such a fascinating language. I'm not fluent in it, though."
+    m "It's interesting to think about what things would be like if your native language was different."
+    m "Like, I can't even imagine what it would be like if I never knew English."
+    menu:
+        m "Do you know any languages other than English?"
+        "Yes":
+            menu:
+                m "Really? Do you know Japanese?"
+                "Yes.":
+                    m "That's wonderful!"
+                    m "Maybe you can teach me how to speak at least a sentence or two, [player]~"
+                "No.":
+                    m "Oh I see. That's alright!"
+                    m "If you want to learn Japanese, here's a phrase I can teach you."
+                    m "{i}Aishiteru, [player]-kun{/i}."
+                    m "Ehehe~"
+                    m "That means I love you, [player]-kun."
+        "No":
+            m "That's okay! Learning another language is a very difficult and tedious process as you get older."
+            m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
+            m "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
+    return
+
+init 5 python:
+    for key in ['lewis carroll', 'pseudonym', 'pseudonyms', 'pen name', 'pen names', 'charles dodgson']:
+       monika_topics.setdefault(key,[])
+       monika_topics[key].append('monika_penname')#id
+    monika_random_topics.append('monika_penname')
+
+label monika_penname:
+    m "You know what's really cool? Pen names."
+    m "Most writers usually use them for privacy and to keep their identity a secret."
+    m "They keep it hidden from everyone just so it won't affect their personal lives."
+    m "Pen names also help writers create something totally different from their usual style of writing."
+    m "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
+    if [currentuser] != [player]:
+        m "Is '[player]' a pseudonym that you're using?"
+        m "You're using two different names after all."
+        m "'[currentuser] and [player].'"
+    m "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
+    m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
+    m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
+    m "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+    m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m "There's no need to know more about me though, [player]."
+    m "You already know that I'm in love with you after all~"
 
 ##################
 #Incomplete ideas#
