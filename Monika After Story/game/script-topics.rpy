@@ -3231,8 +3231,8 @@ label monika_vocaloid:
     m "Our love has no boundaries~"
     m "Ehehe~"
     return
-    
-    
+
+
 init 5 python:
     for key in ['good morning', 'ohayou gozaimasu', 'guten morgen']:
         monika_topics.setdefault(key,[])
@@ -3283,7 +3283,7 @@ init 5 python:
     for key in ['good evening', 'konbanwa']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_evening')
-    
+
 label monika_evening:
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 18 and current_time <= 23:
@@ -3330,14 +3330,14 @@ label monika_night:
     m "I love you so much, [player]."
     m "I'll be seeing you in your dreams~"
     return 'quit'
-    
+
 init 5 python:
     for key in ['closet']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_closet')
     monika_random_topics.append('closet')
 
-label monika_closet
+label monika_closet:
     m "By the way..."
     m "What were you and Yuri doing in the closet?"
     m "When I opened the door, I noticed the room was all dark."
@@ -3349,7 +3349,7 @@ label monika_closet
     m "I know you aren't the type to force girls to go inside dark closets with you."
     m "You're more romantic than that."
     m "So I'm expecting a lot more than just a dark closet~"
-    return 
+    return
 
 init 5 python:
     #This is a list of keywords for this topic
