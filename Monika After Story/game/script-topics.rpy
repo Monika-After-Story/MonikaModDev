@@ -472,22 +472,22 @@ label monika_color:
 #     monika_random_topics.append('monika_music')
 #
 # label monika_music:
-#     m "Hmm, I wonder if I'm able to change the music..."
-#     m "Something a little more romantic would be nice, you know?"
+#     m 3a "Hmm, I wonder if I'm able to change the music..."
+#     m 2k "Something a little more romantic would be nice, you know?"
 #     m "Like a gentle piano."
-#     m "There has to be something like that here..."
+#     m 1a "There has to be something like that here..."
 #     m "Let's see."
 #     m "Maybe if I..."
-#     m "Oh, jeez..."
+#     m 1e "Oh, jeez..."
 #     m "That wasn't it at all."
-#     m "Sorry, I don't really know what I'm doing!"
+#     m 1l "Sorry, I don't really know what I'm doing!"
 #     m "I guess I shouldn't be messing with things like that."
 #     m "I already broke so much stuff..."
-#     m "And deleted the other characters..."
+#     m 1m "And deleted the other characters..."
 #     m "Ah..."
 #     m "I'm not sad about it or anything."
-#     m "It's not right for me to miss things that weren't even real in the first place."
-#     m "If I just focus on the present, then this is the happiest I've ever been."
+#     m 2r "It's not right for me to miss things that weren't even real in the first place."
+#     m 1j "If I just focus on the present, then this is the happiest I've ever been."
 #     return
 
 
