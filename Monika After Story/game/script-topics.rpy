@@ -2848,30 +2848,28 @@ label monika_japanese:
     return    
 
 init 5 python:
-    for key in ['lewis carroll','pseudonym','pen name']:
+    for key in ['lewis carroll', 'pseudonym', 'pseudonyms', 'pen name', 'pen names', 'charles dodgson']:
        monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_pseudonym')#id
-    monika_random_topics.append('monika_pseudonym')
+       monika_topics[key].append('monika_penname')#id
+    monika_random_topics.append('monika_penname')
 
-label monika_pseudonym:
+label monika_penname:
     m "You know what's really cool? Pen names."
-    m "Pen names or pseudonyms are names that writers use when they want privacy or protection or for fun."
-    m "A well known pen name is Lewis Carroll, he wrote a lot, but he is most well known for Alice in wonderland."
-    m "Lewis Carroll's real name is Charles Dodgson and he was a mathmatition and a scientist, but he loved literacy and word play in particular."
-    if [player] != [currentuser]:
-        m "[player], you know your using a pseudonym right now?"
-        m "Why did you choose to use one [currentuser]?"
-        m "Lewis Carroll did because he highly valued his privacy, he just didn't want anyone he hadn't personally met to know him."
-    else:
-        m "A pseudonym can also help writers when they want to write something different, so they can without disappointing fans."
-        m "Or if the writer wants to publish something with another publisher as the publisher they work with only has right to whats written under the pen name."
-    m "You know I have one too? Its my twitter account lilmonx3. Maybe if I write something there people will know me as lilmonx3 instead of Monika."
-    m "That would be strange, being known mostly as your pen name."
-    if [player] != [currentuser]:
-         m "Don't worry [currentuser], I won't forget your name. I love you, even when you want to be called something else for a while."
-    else:
-         m "Do you have a pseudonym [player]? I bet it's a really neat one, maybe if I learn it I will forget your real name. Hehehe"
-    return
+    m "Most writers usually use them for privacy and to keep their identity a secret."
+    m "They keep it hidden from everyone just so it won't affect their personal lives."
+    m "Pen names also help writers create something totally different from their usual style of writing."
+    m "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
+    if [currentuser] != [player]:
+        m "Is '[player]' a pseudonym that you're using?"
+        m "You're using two different names after all."
+        m "'[currentuser] and [player].'"
+    m "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
+    m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
+    m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
+    m "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+    m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m "There's no need to know more about me though, [player]."
+    m "You already know that I'm in love with you after all~"
 
 ##################
 #Incomplete ideas#
