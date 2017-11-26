@@ -219,7 +219,7 @@ label greeting_yay:
 label greeting_youtuber:
      m "Hey everybody, welcome back to another episode of... Just Monika!"
      m "Ahaha!"
-     m "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
+     m "I was impersonating a Youtuber. I hope I gave you a good laugh, hehe~"
      return
 
 label greeting_hamlet:
