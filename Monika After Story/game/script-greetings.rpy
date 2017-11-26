@@ -248,7 +248,7 @@ label greeting_chamfort:
 label greeting_welcomeback2:
      m "Welcome back, [player]!"
      m "I hope your day is going well."
-     m "I'm sure it is, you're here afterall. Nothing can go wrong now, hehe~"
+     m "I'm sure it is, you're here after all. Nothing can go wrong now, hehe~"
      return
 
 label greeting_longtime:
