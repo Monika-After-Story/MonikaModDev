@@ -3383,14 +3383,14 @@ label monika_closet:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['good mood']:
+    for key in ['good mood', 'I am happy']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_playerhappy') #id
 
 label monika_playerhappy:
     m "That's wonderful! I'm happy when you're happy."
     m "Know that you can always come up to me and I'll cheer up, [player]."
-    m "I love you and I'll always be here for you so don't you ever forget that~"
+    m "I love you and I'll always be here for you. Don't you ever forget that."
     return
 
 init 5 python:
