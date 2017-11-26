@@ -3383,14 +3383,14 @@ label monika_closet:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['good mood']:
+    for key in ['good mood', 'I am happy']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_playerhappy') #id
 
 label monika_playerhappy:
     m "That's wonderful! I'm happy when you're happy."
     m "Know that you can always come up to me and I'll cheer up, [player]."
-    m "I love you and I'll always be here for you so don't you ever forget that~"
+    m "I love you and I'll always be here for you. Don't you ever forget that."
     return
 
 init 5 python:
@@ -3426,35 +3426,34 @@ label monika_writingtip1:
     return
 
 init 5 python:
-   for key in ['japanese']:
+   for key in ['italian', 'italiano']:
       monika_topics.setdefault(key,[])
-      monika_topics[key].append('monika_japanese')#id
-   monika_random_topics.append('monika_japanese')
+      monika_topics[key].append('monika_italian')#id
+   monika_random_topics.append('monika_italian')
 
-label monika_japanese:
-    m "I don't mean to sound like Natsuki but..."
-    m "Don't you think Japanese actually sounds cool?"
-    m "It's such a fascinating language. I'm not fluent in it, though."
-    m "It's interesting to think about what things would be like if your native language was different."
+label monika_italian:
+    m 1a "Italian is such an amazing language."
+    m 1m "I'm not really fluent in it, though."
+    m 1a "It's interesting to think about what things would be like if my native language was Italian. Or any other language, for that matter."
     m "Like, I can't even imagine what it would be like if I never knew English."
     menu:
-        m "Do you know any languages other than English?"
+        m 1b "Do you know any languages other than English?"
         "Yes":
             menu:
-                m "Really? Do you know Japanese?"
-                "Yes.":
-                    m "That's wonderful!"
-                    m "Maybe you can teach me how to speak at least a sentence or two, [player]~"
-                "No.":
-                    m "Oh I see. That's alright!"
-                    m "If you want to learn Japanese, here's a phrase I can teach you."
-                    m "{i}Aishiteru, [player]-kun{/i}."
+                m "Really? Do you know Italian?"
+                "Yes":
+                    m 1k "That's wonderful!"
+                    m 5a "Maybe we can spend some time practicing Italian together, [player]. Ehehe~"
+                "No":
+                    m 1e "Oh I see. That's alright!"
+                    m 4a "If you want to learn Italian, here's a phrase I can teach you."
+                    m 4b "{i}Ti amo, [player]{/i}."
+                    m 5a "That means 'I love you, [player].'"
                     m "Ehehe~"
-                    m "That means I love you, [player]-kun."
         "No":
-            m "That's okay! Learning another language is a very difficult and tedious process as you get older."
-            m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
-            m "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
+            m 1k "That's okay! Learning another language is a very difficult and tedious process as you get older."
+            m 2k "Maybe if I take the time to become fluent in Italian, I'll know more languages than you!"
+            m 5a "Ahaha! It's okay, [player]. It just means that I can say 'I love you' in more ways than one!"
     return
 
 init 5 python:
