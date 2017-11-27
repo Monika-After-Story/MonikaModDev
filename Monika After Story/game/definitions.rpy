@@ -1192,6 +1192,15 @@ define _dismiss_pause = config.developer
 
 default persistent.playername = ""
 default player = persistent.playername
+
+## Name change variables
+#Name for Protag-kun
+default persistent.mcname = ""
+default mcname = persistent.mcname
+
+#Stopper for Name Change event
+default persistent.said_no = False
+
 default persistent.playthrough = 0
 default persistent.yuri_kill = 0
 default persistent.seen_eyes = None
