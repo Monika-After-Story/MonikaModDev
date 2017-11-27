@@ -3483,6 +3483,56 @@ label monika_penname:
     m "There's no need to know more about me though, [player]."
     m "You already know that I'm in love with you after all~"
 
+init 5 python:
+    for key in ['change name']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_changename')
+
+label monika_changename:
+    if persistent.said_no == True:
+        m "Have you changed your mind, [player]?"
+        m "That's good to hear."
+    m "You want to change your name?"
+    menu:
+        "Yes":
+            m "Just type 'Nevermind' if you change your mind."
+            $ done = False
+            while not done:
+                $ tempname = renpy.input("What do you want me to call you?")
+                if tempname == "Nevermind" or tempname == "nevermind":
+                    if persistent.said_no == True:
+                        m "[player]!"
+                        m "Please stop teasing me~"
+                        m "I really do want to know what you want me to call you!"
+                        m "I won't judge no matter how ridiculous it might be."
+                        m "So don't be shy and just tell me, [player]~"
+                        $ done = True
+                    else:
+                        m "Oh, alright then [player]."
+                        m "Tell me whenever you change your mind, ok?"
+                        $ done = True
+                elif tempname == "" or tempname.isspace():
+                    m "..."
+                    m "You have to give me a name, [player]!"
+                    m "I swear you're just so silly sometimes."
+                    m "Try again!"
+                else:
+                    $ persistent.mcname = player
+                    $ mcname = player
+                    $ persistent.playername = tempname
+                    $ player = tempname
+                    m "Ok then!"
+                    m "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+                    $ done = True
+        "No":
+            if persistent.said_no == True:
+                m "Jeez~"
+                m "When are you going to tell me?"
+            m "You don't have to be embarassed, [player]."
+            m "Just let me know if you had a change of heart, ok?"
+    return
+
+
 ##################
 #Incomplete ideas#
 ##################
