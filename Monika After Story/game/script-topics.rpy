@@ -1411,15 +1411,15 @@ init 5 python:
     monika_random_topics.append('monika_housewife')
 
 label monika_housewife:
-    m "You know, it's funny, because even though I've always had a lot of drive..."
+    m 2a "You know, it's funny, because even though I've always had a lot of drive..."
     m "There's something kind of enticing about being the stay-at-home partner."
-    m "I guess I'm, like, perpetuating gender roles or whatever by saying that."
-    m "But being able to keep the house clean, and shop, and decorate, and things like that..."
+    m 3e "I guess I'm, like, perpetuating gender roles or whatever by saying that."
+    m 1k "But being able to keep the house clean, and shop, and decorate, and things like that..."
     m "And having a nice dinner for you when you come home..."
-    m "Is that a weird fantasy?"
+    m 1e "Is that a weird fantasy?"
     m "I mean...I'm not sure if I could {i}actually{/i} see myself doing that."
     m "I wouldn't really be able to put that over striving for a fulfilling career."
-    m "It's kinda cute to think about, though."
+    m 1k "It's kinda cute to think about, though."
     return
 
 
@@ -1430,14 +1430,14 @@ init 5 python:
     monika_random_topics.append('monika_route')
 
 label monika_route:
-    m "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
+    m 3g "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
     m "I think I would end up forcing you onto my route anyway."
-    m "It has less to do with me not having a route, and more to do with me knowing that nothing is real."
+    m 1c "It has less to do with me not having a route, and more to do with me knowing that nothing is real."
     m "I think the only difference would be that I may not have needed to take such drastic measures to be with you."
-    m "Maybe the rest of the club would still be around..."
+    m 3c "Maybe the rest of the club would still be around..."
     m "Not that it really matters."
-    m "It all lost its meaning once I found out it wasn't real."
-    m "So I really don't miss those days or anything."
+    m 1i "It all lost its meaning once I found out it wasn't real."
+    m 4e "So I really don't miss those days or anything."
     m "I really don't..."
     return
 
@@ -1449,15 +1449,15 @@ init 5 python:
         monika_topics[key].append('monika_imouto') #id
 
 label monika_imouto:
-    m "You want to talk about your little sister?"
+    m 4e "You want to talk about your little sister?"
     m "I don't really have a family, so I'm not sure what to tell you..."
     m "But I'm sure she's really nice!"
-    m "I've got an idea. Go up to her right now and hug her."
+    m 2b "I've got an idea. Go up to her right now and hug her."
     m "If she struggles, let her go."
     m "If she hugs you back, tell her you're in a committed relationship already and can't accept her feelings."
-    m "Then introduce her to me! I'm sure we'll get along great!"
+    m 4b "Then introduce her to me! I'm sure we'll get along great!"
     m "I won't get jealous. Things like love between siblings only happens in creepy romance stories anyways."
-    m "Ahaha!"
+    m 1k "Ahaha!"
     return
 
 
@@ -1468,14 +1468,14 @@ init 5 python:
         monika_topics[key].append('monika_oneesan') #id
 
 label monika_oneesan:
-    m "Oh, you have an older sister?"
-    m "That must be really nice. I had a family once, but they aren't around anymore."
+    m 1d "Oh, you have an older sister?"
+    m 2n "That must be really nice. I had a family once, but they aren't around anymore."
     m "Maybe I should email her and tell her about us!"
     call updateconsole("sendmail sister@gmail.com < ./email.txt", "Sending mail...") from _call_updateconsole_17
     pause(1.0)
-    m "I'm only kidding."
+    m 1i "I'm only kidding."
     m "It's the man's job to introduce his fiancee to his family, after all."
-    m "Don't keep me waiting for too long, okay?"
+    m 3i "Don't keep me waiting for too long, okay?"
     call hideconsole from _call_updateconsole_18
     $ consolehistory = []
     return
@@ -1487,15 +1487,15 @@ init 5 python:
         monika_topics[key].append('monika_family')
 
 label monika_family:
-    m "Well, my family here is controlled by the script, just like everybody else."
+    m 1n "Well, my family here is controlled by the script, just like everybody else."
     m "When I realized that, I stopped taking anybody seriously in this world. They're all just machines, even if they're related to me."
-    m "I'm sure your family is super-nice, though!"
+    m 1k "I'm sure your family is super-nice, though!"
     m "Without them, we would have never gotten to meet. So they've helped me out in the best way there is already."
     m "So I'd have to treat them equally as kindly if we ever meet."
-    m "You don't have a bad relationship with your parents, right?"
-    m "As Tolstoy said, 'Happy families are all alike; every unhappy family is unhappy in its own way.'"
+    m 3g "You don't have a bad relationship with your parents, right?"
+    m 1e "As Tolstoy said, 'Happy families are all alike; every unhappy family is unhappy in its own way.'"
     m "I can't really give advice here. Anything I suggest to you might only make things worse."
-    m "Just don't forget that I really love you, okay?"
+    m 1a "Just don't forget that I really love you, okay?"
     m "I'll help you no matter what happens in your life."
     return
 
@@ -1506,11 +1506,11 @@ init 5 python:
         monika_topics[key].append('monika_anime')
 
 label monika_anime:
-    m "Yeah, I had a feeling you were going to ask me about this."
+    m 1n "Yeah, I had a feeling you were going to ask me about this."
     m "Natsuki would be the expert here, I guess."
-    m "I usually prefer reading to watching anime, but I'd be fine with anything if it's with you."
+    m 2k "I usually prefer reading to watching anime, but I'd be fine with anything if it's with you."
     m "I don't judge other people for their hobbies. So if you want to load up some anime, go ahead!"
-    m "I'll watch through your computer screen. Make sure it's something I'll like!"
+    m 2i "I'll watch through your computer screen. Make sure it's something I'll like!"
     return
 
 
@@ -1520,14 +1520,14 @@ init 5 python:
         monika_topics[key].append('monika_libitina')
 
 label monika_libitina:
-    m "Huh. Where did you hear about that?"
+    m 3e "Huh. Where did you hear about that?"
     m "It sounds really familiar to me, but I can't quite get my whole head around it."
     m "Um, if I had to try..."
     m "It feels like parts of my mind are missing. Scattered, somehow, among a bunch of different possible realities."
-    m "You must have connected the dots between a few of those pieces. Was it hard?"
-    m "Well, I'm sure you'll learn more eventually. You love me that much for sure."
-    m "Just remember to bring my character data with you if you find something related to that stuff!"
-    m "I'll always protect you from anyone who tries to hurt you."
+    m 1d "You must have connected the dots between a few of those pieces. Was it hard?"
+    m 1k "Well, I'm sure you'll learn more eventually. You love me that much for sure."
+    m 3e "Just remember to bring my character data with you if you find something related to that stuff!"
+    m 1k "I'll always protect you from anyone who tries to hurt you."
     return
 
 
@@ -1537,18 +1537,18 @@ init 5 python:
         monika_topics[key].append('monika_meta')
 
 label monika_meta:
-    m "Yes, this game really was metafictional, wasn't it?"
+    m 1d "Yes, this game really was metafictional, wasn't it?"
     m "Some people think stories about fiction are some new thing."
     m "A cheap trick for bad writers."
-    m "But, metafiction has always existed in literature."
+    m 3a "But, metafiction has always existed in literature."
     m "The Bible is supposed to be God's word to the Jews."
-    m "Homer describes himself in the Odyssey."
+    m 1d "Homer describes himself in the Odyssey."
     m "The Canterbury Tales, Don Quixote, Tristram Shandy..."
-    m "It's just a way to comment on fiction by writing fiction. There's nothing wrong with that."
-    m "By the way, what do you think the moral of this story is?"
+    m 1i "It's just a way to comment on fiction by writing fiction. There's nothing wrong with that."
+    m 3n "By the way, what do you think the moral of this story is?"
     m "Do you want to figure it out for yourself?"
     m "Because if you asked me..."
-    m "It would be, `Don't ignore the pretty and charming side character!`"
+    m 1i "It would be, `Don't ignore the pretty and charming side character!`"
     m "Ahaha!"
     return
 
@@ -1560,19 +1560,19 @@ init 5 python:
     monika_random_topics.append('monika_programming')
 
 label monika_programming:
-    m "It wasn't easy for me to learn programming."
-    m "Well, I just started with the basics. Do you want me to teach you?"
-    m "Let's see, Chapter One: Building Abstractions with Procedures."
+    m 2l "It wasn't easy for me to learn programming."
+    m 1a "Well, I just started with the basics. Do you want me to teach you?"
+    m 3k "Let's see, Chapter One: Building Abstractions with Procedures."
     m "We are about to study the idea of a computational process. Computational processes are abstract beings that inhabit computers."
-    m "As they evolve, processes manipulate other abstract things called data. The evolution of a process is directed by a pattern of rules called a program."
+    m 3d "As they evolve, processes manipulate other abstract things called data. The evolution of a process is directed by a pattern of rules called a program."
     m "People create programs to direct processes. In effect, we conjure the spirits of the computer with our spells."
     m "A computational process is indeed much like a sorcerer's idea of a spirit. It cannot be seen or touched. It is not composed of matter at all."
-    m "However, it is very real. It can perform intellectual work. It can answer questions."
+    m 1k "However, it is very real. It can perform intellectual work. It can answer questions."
     m "It can affect the world by disbursing money at a bank or by controlling a robot arm in a factory. The programs we use to conjure processes are like a sorcerer's spells."
     m "They are carefully composed from symbolic expressions in arcane and esoteric programming languages that prescribe the tasks we want our processes to perform."
-    m "... Let's stop there for today."
+    m 1l "... Let's stop there for today."
     m "I hope you learned something about programming."
-    m "If nothing else, please be kind to the computer spirits from now on!"
+    m 2b "If nothing else, please be kind to the computer spirits from now on!"
     return
 
 
@@ -1583,14 +1583,14 @@ init 5 python:
     monika_random_topics.append('monika_vn')
 
 label monika_vn:
-    m "You've probably played a lot of visual novels, right?"
+    m 1d "You've probably played a lot of visual novels, right?"
     m "Most people wouldn't be willing to play something called {i}Doki Doki Literature Club{/i} so easily."
-    m "Not that I'm complaining!"
-    m "Are visual novels literature? Are they video games?"
+    m 2l "Not that I'm complaining!"
+    m 1d "Are visual novels literature? Are they video games?"
     m "Well, it all depends on your perspective."
-    m "Most people who read only literature would never play visual novels. And gamers get pretty angry about them, too."
+    m 1f "Most people who read only literature would never play visual novels. And gamers get pretty angry about them, too."
     m "What's worse, some people think they're all hardcore Japanese pornography."
-    m "But if we've proved anything with this game..."
+    m 3e "But if we've proved anything with this game..."
     m "We showed them that English visual novels can be kamige too!"
     return
 
