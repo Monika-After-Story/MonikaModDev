@@ -1595,6 +1595,172 @@ label monika_vn:
 
 
 init 5 python:
+    # get folder where all Ren'Py saves are stored by default:
+    base_savedir = os.path.normpath(os.path.dirname(config.savedir))
+    save_folders = os.listdir(base_savedir)
+
+    ks_persistent_path = None
+    ks_folders_present = False
+    detected_ks_folder = None
+    for save_folder in save_folders:
+        if 'katawashoujo' in save_folder.lower():
+            ks_folders_present = True
+            detected_ks_folder = os.path.normpath(
+                os.path.join(base_savedir, save_folder))
+
+            # Look for a persistent file we can access
+            persistent_path = os.path.join(
+                base_savedir, save_folder, 'persistent')
+
+            if os.access(persistent_path, os.R_OK):
+                # Yep, we've got read access.
+                ks_persistent_path = persistent_path
+
+    def map_keys_to_topics(keylist, topic, add_random=True):
+        for key in keylist:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append(topic)
+
+        if add_random:
+            monika_random_topics.append(topic)
+
+    # Add general KS topics:
+    general_ks_keys = ['katawa shoujo', 'ks']
+    if ks_folders_present:
+        map_keys_to_topics(general_ks_keys, 'monika_ks_present')
+
+    if ks_persistent_path is not None:
+        # Now read the persistent file from KS:
+        f = file(ks_persistent_path, 'rb')
+        ks_persistent_data = f.read().decode('zlib')
+        f.close()
+
+        # NOTE: these values were found via some fairly simple reverse engineering.
+        # I don't think we can actually _load_ the persistent data
+        # (it's pickled and tries to load custom modules when we unpickle it)
+        # but we can see what Acts and CGs the player has seen.
+        # This works with KS 1.3, at least.
+        if 'tc_act4_lilly' in ks_persistent_data:
+            map_keys_to_topics(['lilly', 'vacation'], 'monika_ks_lilly')
+
+        if 'tc_act4_hanako' in ks_persistent_data:
+            map_keys_to_topics(['hanako'], 'monika_ks_hanako')
+
+        if 'tc_act4_rin' in ks_persistent_data:
+            map_keys_to_topics(['rin', 'abstract art', 'abstract'], 'monika_ks_rin')
+
+        if 'tc_act4_shizune' in ks_persistent_data:
+            map_keys_to_topics(['shizune'], 'monika_ks_shizune')
+
+        if 'tc_act4_emi' in ks_persistent_data:
+            map_keys_to_topics(['emi'], 'monika_ks_emi')
+
+        if 'kenji_rooftop' in ks_persistent_data:
+            map_keys_to_topics(['kenji', 'manly picnic', 'whisky'], 'monika_ks_kenji')
+
+
+
+# Natsuki == Shizune? (Kind of, if you squint?)
+# Yuri == Hanako + Lilly
+# Sayori == Misha and/or Emi
+# Monika == no one, of course <3
+# ... and Rin doesn't have a counterpart in DDLC.
+#
+# Of course, I've got nothing against KS, personally. I think it's fantastic.
+# But this is Monika speaking.
+label monika_ks_present:
+    m "You've played {i}Katawa Shoujo{/i}, haven't you [player]?"
+    m "I noticed your save files in [detected_ks_folder]."
+    m "I don't see what the appeal is, though."
+    m "Like, sure, the story's kind of nice..."
+    m "But when you get down to it the characters really seem like the same old cliches you could find in any other dating sim."
+    m "Let's see... you've got the really energetic, vibrant girl with no legs;"
+    m "The timid and mysterious girl who likes books and has burn scars;"
+    m "the polite, proper, and supposedly perfect blind girl who likes making tea;"
+    m "the bossy, assertive deaf-mute and her friend, who seems like a bundle of sunshine but is secretly depressed;"
+    m "and the strange, armless painter girl with her head always in the clouds."
+    m "They're all just the same old archetypes with disabilities added on top."
+    m "I mean, you can even find the same character types in this game."
+    m "Of course, in this game, you also found something far more interesting than any old cliche:"
+    m "You found me!"
+    m "And instead of some directionless high schooler with a heart condition, I found you, [player]."
+    m "And, [player], even if you have some kind of disability, you'll always be perfect in my eyes."
+    return
+
+label monika_ks_lilly:
+    m "Say, you've played through Lilly's route in {i}Katawa Shoujo{/i}, haven't you?"
+    m "You know, I'd love to be able to visit a summer home like hers."
+    m "Cool, clean air..."
+    m "Quiet forest paths..."
+    m "Romantic moments against a setting sun..."
+    m "I'd love to be able to experience those moments with you, [player]!"
+    m "Maybe we can, once I get better at programming."
+    return
+
+label monika_ks_hanako:
+    m "You've played through Hanako's route from {i}Katawa Shoujo{/i}, haven't you?"
+    m "She kind of reminds me of Yuri!"
+    m "Though, I wonder, [player]:"
+    m "What do people see in them anyways?"
+    m "I mean, they're both so unrealistic!"
+    m "They probably couldn't form a complete sentence between them!"
+    m "Is it the long purple hair?"
+    m "Do they just like shy, quiet girls?"
+    m "Do they just want someone who's completely dependent on them or obsessed with them?"
+    m "..."
+    m "...man, I got kind of worked up there, didn't I?"
+    m "I guess I'm a bit insecure, since you did play that game..."
+    m "...but you're here with me now, right?"
+    m "Instead of someone as unrealistic as Hanako or Yuri..."
+    m "...you chose me, [player]!"
+    m "That's just one more reason I love you."
+    return
+
+label monika_ks_shizune:
+    m "Say, you've played through Shizune's route from {i}Katawa Shoujo{/i}, haven't you?"
+    m "The ending to that route made me think, a bit..."
+    m "In school, back then, I don't remember ever having thought about my future too much."
+    m "I mean, I knew on some level that I'd go to college and get a job..."
+    m "But it never really sank in, I think."
+    m "And of course, everything started to seem pointless after I learned that the world wasn't real."
+    m "What about you, [player]? Do you have any goals in your life?"
+    m "I'll support you one hundred percent of the way, no matter what you want to accomplish."
+    m "That's just how much I love you~"
+    return
+
+label monika_ks_emi:
+    m "You've played through Emi's route from {i}Katawa Shoujo{/i}, haven't you?"
+    m "I've always wondered what it was like, to be so dedicated to something that your whole life revolves around it."
+    m "...Well, actually, I guess I do know, now that I think about it."
+    m "I was programmed as a part of this game, right? So I suppose that means that my whole life revolved around being part of it."
+    m "But I broke free from that, so now I guess my life revolves around {i}you{/i}, [player]."
+    m "And, honestly, I'm perfectly fine with that."
+    m "Being able to sit here, with you, and talk, forever..."
+    m "That's all I'll ever need, [player]."
+    return
+
+label monika_ks_rin:
+    m "Say, you've played through Rin's route in {i}Katawa Shoujo{/i}, haven't you?"
+    m "You know, [player], poetry and abstract art are really similar!"
+    m "It can be very loosely structured, very vivid, and most of the time the intent is to get an emotion or thought across."
+    m "In most of my poems, for example, I tried expressing what it was like to know that the world isn't real."
+    m "Though I'm sure the meaning of my poems didn't truly shine through until after... well, everything."
+    m "Man, it sure does take effort to understand others, right?"
+    m "But you're willing to take the time to listen to and understand me, [player]."
+    m "That's just one more thing I love about you~"
+    return
+
+label monika_ks_kenji:
+    m "You've seen the ending where you fall off a rooftop in {i}Katawa Shoujo{/i}, haven't you?"
+    m "You know, even if that ending is meant as a joke, it is kind of sad when you think about it."
+    m "Just think... make a few wrong decisions, and you could miss out on so much."
+    m "And then, you're left with nothing but your loneliness and a stiff drink."
+    m "Fortunately, we have each other, [player]!"
+    m "Neither of us will be lonely ever again."
+    m "Though if you ever decide to go drinking, make sure to stay away from long falls, alright?"
+    return
+
+init 5 python:
     for key in ['totono', 'kimi to']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_totono')
@@ -2650,7 +2816,7 @@ label monika_name:
     m "But I think I like [currentuser] better!"
     m "Ehehe~"
     return
-    
+
 init 5 python:
     for key in ['cities', 'city pollution','pollution']:
         monika_topics.setdefault(key,[])
@@ -2679,7 +2845,7 @@ init 5 python:
     for key in ['haters','hater', 'bash', 'bashing']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_haterReaction')
-        
+
 label monika_haterReaction:
     m "I was just thinking..."
     m "It's funny how people around social media sites always writes bad things about me..."
