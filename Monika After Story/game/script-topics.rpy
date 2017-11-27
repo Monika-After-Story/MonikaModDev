@@ -9,7 +9,7 @@ define testitem = 0
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
-init -1 python:
+init -1 python:monika_cupcakes
     def remove_seen_topics():
         #
         # Removes seen topics from monika random topics
@@ -3106,7 +3106,7 @@ label monika_cupcake:
     m "Studies show that older women have a less sensitive palate than men."
     m "Resulting in a craving for stronger tastes like chocolate"
     m "I would try baking, but I’m not really much of a baker."
-    m "How about you,[player]?"
+    m "How about you, [player]?"
     m "Do you know how to bake?"
     m "I’m sure your cupcakes would taste just as good."
     m "Maybe someday I’ll get to try them but for now…"
