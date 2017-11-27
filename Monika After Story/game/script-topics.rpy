@@ -2268,6 +2268,7 @@ label monika_herself:
     m "If nothing else, this can be our comfy little shelter from the cruelty of the outside world."
     m "Come talk to me about your problems if it gets too much for you to handle."
     m "I want to know {i}everything{/i} about you, you know?"
+    return
 
 init 5 python:
     for key in ['prison', 'imprisonment', 'prisoner']:
