@@ -30,6 +30,9 @@ init -1 python in songs:
     music_choices.append(("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg"))
     music_choices.append(("Surprise!","<loop 36.782>bgm/d.ogg"))
 
+    # leave this one last, so we can stopplaying stuff
+    music_choices.append(("None", None))
+
 
 # some post screen init is setting volume to current settings
 init 10 python in songs:

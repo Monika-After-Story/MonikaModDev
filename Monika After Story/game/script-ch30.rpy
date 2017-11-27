@@ -114,8 +114,11 @@ init python:
         # literally just plays a song onto the music channel
         #
         # IN:
-        #   song - song to play
-        renpy.music.play(song,channel="music",loop=True,synchro_start=True)
+        #   song - song to play. If None, the channel is stopped
+        if song is None:
+            renpy.music.stop(channel="music")
+        else:
+            renpy.music.play(song,channel="music",loop=True,synchro_start=True)
 
     def mute_music():
         #
