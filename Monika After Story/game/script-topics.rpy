@@ -2869,6 +2869,20 @@ label monika_penname:
     m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m "There's no need to know more about me though, [player]."
     m "You already know that I'm in love with you after all~"
+    
+init 5 python:
+  for key in ['science']:
+     monika_topics.setdefault(key,[])
+     monika_topics[key].append('monika_science')#id
+  monika_random_topics.append('monika_science')
+
+label monika_science:
+   m 1b "Hey, have you ever wondered what it would be like if science didn't really get the chance to take off like it did?"
+   m 1n "I mean, technology wouldn't be so advanced today if it wasn’t for the advancements in science back in the past ."
+   m 1d "If technology didn't thrive the way it has done over the past 50 years, there wouldn't be a way for me to talk to you"
+   m 1b "In my opinion, the internet has been the greatest thing to happen to mankind ever since Isaac Newton figured out the way gravity works."
+   m 1k "If the internet wasn't invented there wouldn't be a way for you to download the game, and we would never have fallen in love."
+return    
 
 ##################
 #Incomplete ideas#
