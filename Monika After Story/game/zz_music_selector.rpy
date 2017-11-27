@@ -5,6 +5,15 @@
 # music inits first, so the screen can be made well
 init -1 python in songs:
 
+    # functions
+    def getVolume(channel):
+        #
+        # Gets the volume of the given audio channel
+        #
+        # IN:
+        #   channel - the audio channel to get the volume for
+        return renpy.audio.audio.get_channel(channel).context.secondary_volume
+
     # defaults
     current_track = "bgm/m1.ogg"
     selected_track = current_track
@@ -21,6 +30,12 @@ init -1 python in songs:
     music_choices.append(("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg"))
     music_choices.append(("Surprise!","<loop 36.782>bgm/d.ogg"))
 
+
+# some post screen init is setting volume to current settings
+init 10 python in songs:
+
+    # for muting
+    music_volume = getVolume("music")
 
 # MUSIC MENU ##################################################################
 # This is the music selection menu
