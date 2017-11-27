@@ -40,3 +40,46 @@ label gender:
             m "Because your happiness is the most important thing to me."
 
     m "Remember that I'll always love you unconditionally, [currentuser]."
+
+label preferedname:
+    m "I've been wondering about your name."
+    m "Is '[player]' really your name?"
+    if currentuser == player:
+        m "I mean, it's the same as your computer's name..."
+        m "You're using '[currentuser]' and '[player]'."
+        m "Either that or you must really like that pseudonym."
+    m "Do you want me to call you something else?"
+    menu:
+        "Yes":
+            $ done = False
+            m "Ok, just type 'Nevermind' if you change your mind, [player]."
+            while not done:
+                #Could add an elif that takes off special characters
+                $ tempname = renpy.input("Tell me what is it.")
+                if tempname == "Nevermind" or tempname == "nevermind":
+                    m "Oh I see."
+                    m "Well, just tell me whenever you want to be called something else, [player]."
+                    $ persistent.said_no = True
+                    $ done = True
+                elif tempname == "" or tempname.isspace():
+                    m "..."
+                    m "You have to give me a name, [player]!"
+                    m "I swear you're just so silly sometimes."
+                    m "Try again!"
+                elif tempname == player:
+                    m "..."
+                    m "That's the same name you have right now, silly!"
+                    m "Try again~"
+                else:
+                    $ persistent.mcname = player
+                    $ mcname = player
+                    $ persistent.playername = tempname
+                    $ player = tempname
+                    m "[player], huh?"
+                    m "I'll be calling you {i}'[player]'{/i} from now on, ehehe~"
+                    $ done = True
+        "No":
+            m "Oh... ok then, if you say so."
+            m "Just tell me whenever you change your mind, [player]."
+            $ done = True
+            $ persistent.said_no = True
