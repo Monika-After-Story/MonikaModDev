@@ -31,6 +31,8 @@ init 11 python:
     if monika_random_topics==[]:
         monika_random_topics=all_random_topics
 
+#BEGIN ORIGINAL TOPICS
+
 #Use this topic as an example
 init 5 python:
     #This is a list of keywords for this topic
@@ -1441,7 +1443,7 @@ label monika_route:
     m "I really don't..."
     return
 
-
+#END ORIGINAL TOPICS
 init 5 python:
     #This is a list of keywords for this topic
     for key in ['little sister', 'imouto']:
