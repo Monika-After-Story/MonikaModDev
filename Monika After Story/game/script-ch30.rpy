@@ -117,6 +117,20 @@ init python:
         #   song - song to play
         renpy.music.play(song,channel="music",loop=True,synchro_start=True)
 
+    def mute_music():
+        #
+        # mutes the music channel
+        #
+        # ASSUMES:
+        #   songs.music_volume
+        curr_volume = songs.getVolume("music")
+        if curr_volume > 0.0:
+            songs.music_volume = songs.getVolume("music")
+            renpy.music.set_volume(0.0, channel="music")
+        else:
+            renpy.music.set_volume(songs.music_volume, channel="music")
+        
+
     def show_dialogue_box():
         if allow_dialogue:
             renpy.jump('ch30_monikatopics')
@@ -385,12 +399,14 @@ label ch30_autoload:
         $ config.allow_skipping = False
     #Add keys for new functions
     $ config.keymap["open_dialogue"] = ["t","T"]
-    $ config.keymap["change_music"] = ["m","M"]
+    $ config.keymap["change_music"] = ["noshift_m","noshift_M"]
     $ config.keymap["play_game"] = ["p","P"]
+    $ config.keymap["mute_music"] = ["shift_m","shift_M"]
     # Define what those actions call
     $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
     $ config.underlay.append(renpy.Keymap(change_music=select_music))
     $ config.underlay.append(renpy.Keymap(play_game=pick_game))
+    $ config.underlay.append(renpy.Keymap(mute_music=mute_music))
     jump ch30_loop
 
 label ch30_loop:
