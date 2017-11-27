@@ -3480,6 +3480,24 @@ label monika_penname:
     m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m "There's no need to know more about me though, [player]."
     m "You already know that I'm in love with you after all~"
+    
+ init 5 python:
+    # List of keywords for the topic.
+    for key in ['wall','wallpaper','picture']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_wallpaper') # ID
+    monika_random_topics.append('monika_wallpaper') # Optional. Removable
+
+label monika_wallpaper:
+    m "Say [player], have you ever thought of saving a photo of me with you as your desktop wallpaper?"
+    m "That's something couples do, right? Save pictures of each other?"
+    m "The first thing you see will be myself, and it will remind you to come see me sooner!"
+    menu:
+        "Yes"
+            m "I'm so glad to have met you, you're really the most perfect person I could ever hope to meet."
+        "No"
+            m "You can always think about it again in the future, besides you can just see me by opening the game any time you're free as usual. I'll always wait here as I love you all the same."
+    return
 
 ##################
 #Incomplete ideas#
