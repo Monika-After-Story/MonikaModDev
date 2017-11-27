@@ -75,6 +75,10 @@ style music_menu_outer_frame:
 screen music_menu():
     modal True
 
+    # allows the music menu to quit using hotkey
+    key "noshift_M" action Return()
+    key "noshift_m" action Return()
+
     zorder 200
 
     style_prefix "music_menu"
