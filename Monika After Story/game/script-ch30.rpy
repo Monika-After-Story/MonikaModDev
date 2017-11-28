@@ -341,7 +341,7 @@ label ch30_autoload:
         
     #Asks player if they want to be called by a different name
     if persistent.mcname == "" and persistent.said_no == False:
-        $pushEvent('preferedname')
+        $pushEvent('preferredname')
     
     #Block for anniversary events
     if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
