@@ -338,7 +338,11 @@ label ch30_autoload:
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
     if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.event_list:
         $queueEvent('gender')
-
+        
+    #Asks player if they want to be called by a different name
+    if persistent.mcname == "" and persistent.said_no == False:
+        $pushEvent('preferredname')
+    
     #Block for anniversary events
     if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
         $ persistent.monika_anniversary = 0
