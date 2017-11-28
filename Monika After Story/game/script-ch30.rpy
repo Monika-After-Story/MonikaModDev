@@ -128,7 +128,7 @@ init python:
         #   songs.music_volume
         curr_volume = songs.getVolume("music")
         if curr_volume > 0.0:
-            songs.music_volume = songs.getVolume("music")
+            songs.music_volume = curr_volume
             renpy.music.set_volume(0.0, channel="music")
         else:
             renpy.music.set_volume(songs.music_volume, channel="music")
