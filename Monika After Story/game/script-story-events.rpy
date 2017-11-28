@@ -55,13 +55,13 @@ label preferedname:
             m "Ok, just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 #Could add an elif that takes off special characters
-                $ tempname = renpy.input("Tell me what is it.")
-                if tempname == "Nevermind" or tempname == "nevermind":
+                $ tempname = renpy.input("Tell me what is it.").strip(' \t\n\r')
+                if tempname == "nevermind":
                     m "Oh I see."
                     m "Well, just tell me whenever you want to be called something else, [player]."
                     $ persistent.said_no = True
                     $ done = True
-                elif tempname == "" or tempname.isspace():
+                elif tempname == "":
                     m "..."
                     m "You have to give me a name, [player]!"
                     m "I swear you're just so silly sometimes."
