@@ -3498,8 +3498,8 @@ label monika_changename:
             m "Just type 'Nevermind' if you change your mind."
             $ done = False
             while not done:
-                $ tempname = renpy.input("What do you want me to call you?")
-                if tempname == "Nevermind" or tempname == "nevermind":
+                $ tempname = renpy.input("What do you want me to call you?").strip(' \t\n\r')
+                if tempname == "nevermind":
                     if persistent.said_no == True:
                         m "[player]!"
                         m "Please stop teasing me~"
@@ -3511,11 +3511,15 @@ label monika_changename:
                         m "Oh, alright then [player]."
                         m "Tell me whenever you change your mind, ok?"
                         $ done = True
-                elif tempname == "" or tempname.isspace():
+                elif tempname == "":
                     m "..."
                     m "You have to give me a name, [player]!"
                     m "I swear you're just so silly sometimes."
                     m "Try again!"
+                elif tempname == player:
+                    m "..."
+                    m "That's the same name you have right now, silly!"
+                    m "Try again~"
                 else:
                     $ persistent.mcname = player
                     $ mcname = player
