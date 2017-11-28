@@ -41,7 +41,7 @@ label gender:
 
     m "Remember that I'll always love you unconditionally, [currentuser]."
 
-label preferedname:
+label preferredname:
     m "I've been wondering about your name."
     m "Is '[player]' really your name?"
     if currentuser == player:
