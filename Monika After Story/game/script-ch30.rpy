@@ -340,7 +340,7 @@ label ch30_autoload:
         $queueEvent('gender')
         
     #Asks player if they want to be called by a different name
-    if persistent.mcname == "" and persistent.said_no == False:
+    if not renpy.seen_label('preferredname') and not 'preferredname' in persistent.event_list:
         $pushEvent('preferredname')
     
     #Block for anniversary events
