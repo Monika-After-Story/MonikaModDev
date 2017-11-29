@@ -379,7 +379,7 @@ label game_chess:
 
 label demo_minigame_chess:
     menu:
-        m 2a "What color would suit you?"
+        m "What color would suit you?"
 
         "White":
             $ player_color = ChessDisplayable.COLOR_WHITE
@@ -416,10 +416,10 @@ label demo_minigame_chess:
 
     else:
 
-        m 2e "A draw? How boring..."
+        m "A draw? How boring..."
 
     menu:
-        m 1a "Do you want to play again?"
+        m "Do you want to play again?"
 
         "Yes.":
             jump demo_minigame_chess

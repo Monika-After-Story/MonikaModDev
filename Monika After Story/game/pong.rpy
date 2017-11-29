@@ -235,7 +235,7 @@ label demo_minigame_pong:
 
 
     menu:
-        m 2a "Do you want to play again?"
+        m "Do you want to play again?"
 
         "Yes.":
             jump demo_minigame_pong
