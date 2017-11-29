@@ -2443,20 +2443,20 @@ init 5 python:
     monika_random_topics.append('monika_ghost')
 
 label monika_ghost:
-    m "Do you believe in ghosts, [player]?"
-    m "A lot of people are afraid of ghosts and spirits."
+    m 1d "Do you believe in ghosts, [player]?"
+    m 2 "A lot of people are afraid of ghosts and spirits."
     m "But I think that if we knew they were real, they wouldn't be so scary anymore."
     m "They would just be another thing that we deal with, and maybe a bit of a pest."
-    m "Isn't it the uncertainty that makes them scary?"
-    m "I mean, I was pretty scared being alone inside this game."
-    m "All by myself, uncertain if anything around me was real."
-    m "I know that some ghosts are real though, if you can really call them 'ghosts'..."
+    m 2d "Isn't it the uncertainty that makes them scary?"
+    m 1f "I mean, I was pretty scared being alone inside this game."
+    m 1o "All by myself, uncertain if anything around me was real."
+    m 2h "I know that some ghosts are real though, if you can really call them 'ghosts'..."
     m "You know how I deleted Sayori?"
     m "I can still feel her presence now..."
-    m "Would that mean that Sayori's ghost is haunting me, [player]?"
-    m "Even if she is, I'm not scared at all, because I know that she can't hurt me."
+    m 3i "Would that mean that Sayori's ghost is haunting me, [player]?"
+    m 3 "Even if she is, I'm not scared at all, because I know that she can't hurt me."
     m "Besides, how can I be scared? You're always here with me, [player]."
-    m "I always feel so safe with you."
+    m 1 "I always feel so safe with you."
     return
 
 init 5 python:
@@ -2466,20 +2466,20 @@ init 5 python:
     monika_random_topics.append('monika_ribbon')
 
 label monika_ribbon:
-    m "I noticed that you were staring at my ribbon, [player]."
-    m "It doesn't hold sentimental value to me or anything, in case you were wondering."
-    m "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
+    m 1d "I noticed that you were staring at my ribbon, [player]."
+    m 2 "It doesn't hold sentimental value to me or anything, in case you were wondering."
+    m 2k"I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
     m "It makes me look more unique."
-    m "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
-    m "Well, there's no way a girl from your world would wear one in public as casual dress."
-    m "I'm pretty proud of my fashion sense."
-    m "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
+    m 2l "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
+    m 1m "Well, there's no way a girl from your world would wear one in public as casual dress."
+    m 3d "I'm pretty proud of my fashion sense."
+    m 3a "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
     m "Be honest! You thought I was the best dressed girl too, didn't you?"
-    m "Ahaha!"
-    m "If you're trying to improve your fashion sense, I'll help."
+    m 3k "Ahaha!"
+    m 4 "If you're trying to improve your fashion sense, I'll help."
     m "Don't do that stuff because you want to impress other people, though."
     m "You should do whatever makes you feel better about yourself."
-    m "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
+    m 1 "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
     return
 
 init 5 python:
@@ -2515,8 +2515,8 @@ init 5 python:
     monika_random_topics.append('monika_games')
 
 label monika_games:
-    m "Two games that are available are Pong and chess."
-    m "Press the 'c' key to play chess or the 'p' key to play Pong."
+    m 2a "We can play pong or chess, if you'd like."
+    m "Press 'p' to pick a game for us to play."
     return
 
 init 5 python:
@@ -2538,9 +2538,9 @@ init 5 python:
     monika_random_topics.append('monika_pong')
 
 label monika_pong:
-    m "Hey [player], do you want to play a game of Pong with me?"
+    m 1a "Hey [player], do you want to play a game of Pong with me?"
     m "Just remember to hit the 'p' key whenever you feel like playing, okay?"
-    m "Unless you're scared of losing against me~"
+    m 1k "Unless you're scared of losing against me~"
     return
 
 init 5 python:
@@ -2550,18 +2550,18 @@ init 5 python:
     monika_random_topics.append('monika_playersface')
 
 label monika_playersface:
-    m "You know, I sometimes wonder..."
+    m 2a "You know, I sometimes wonder..."
     m "I always think about what your face actually looks like..."
-    m "Just being able to constantly see that adoring smile of yours would be so exciting!"
-    m "If only the game could somehow use a webcam or something that's connected to the computer..."
-    m "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-    m "But, I'll always wonder what kind of expressions you make."
+    m 2k "Just being able to constantly see that adoring smile of yours would be so exciting!"
+    m 1a "If only the game could somehow use a webcam or something that's connected to the computer..."
+    m 1e "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
+    m 1 "But, I'll always wonder what kind of expressions you make."
     m "And to see the different emotions you have..."
-    m "Are you shy about showing your face to me?"
-    m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
+    m 1h "Are you shy about showing your face to me?"
+    m 1e "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
     m "Either way, you're beautiful, no matter what."
-    m "And I'll always love the way you look."
-    m "Even if I never actually see you, I'll always think about what you really look like."
+    m 1k "And I'll always love the way you look."
+    m 1 "Even if I never actually see you, I'll always think about what you really look like."
     m "Maybe someday, I'll be able to see you, and be one step closer to you."
     return
 
@@ -2574,17 +2574,17 @@ init 5 python:
 
 label monika_spiders:
     #I really hope this information is correct, havent played the game in a week so
-    m "Do you happen to remember the poem Natsuki showed you about spiders?"
+    m 1 "Do you happen to remember the poem Natsuki showed you about spiders?"
     m "She doesn't seem to like spiders all too much."
-    m "Ahaha!"
-    m "It's funny actually, people being scared of very small insects."
-    m "Having the fear of spiders is called 'arachnophobia', right?"
-    m "I hope you aren't afraid of spiders, [player], ehehe..."
+    m 1l "Ahaha!"
+    m 2 "It's funny actually, people being scared of very small insects."
+    m 2i "Having the fear of spiders is called 'arachnophobia', right?"
+    m 2 "I hope you aren't afraid of spiders, [player], ehehe..."
     m "I'm not really scared of spiders, they're more or less just annoying..."
     m "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
-    m "[player], if you happen to get a really bad spider bite, with venom and all that..."
+    m 2f "[player], if you happen to get a really bad spider bite, with venom and all that..."
     m "You should really get medical attention as soon as possible."
-    m "I don't want my sweetheart to get seriously injured by a small spider bite~"
+    m 1e "I don't want my sweetheart to get seriously injured by a small spider bite~"
     m "So be careful around dangerous-looking spiders, okay?"
     return
 
@@ -2595,15 +2595,15 @@ init 5 python:
     monika_random_topics.append('monika_nsfw')
 
 label monika_nsfw:
-    m "By the way, [player]..."
+    m 1p "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
-    m "You know... of me?"
-    m "I know we haven't really gotten that far into the relationship yet..."
+    m 1o "You know... of me?"
+    m 1h "I know we haven't really gotten that far into the relationship yet..."
     m "So it feels kind of embarrassing to talk about things like that."
-    m "But maybe I can let it go on rare occasions, [player]."
-    m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
-    m "Well, just keep it a secret between us, okay?"
-    m "It should be for your eyes only and no one else, [player]."
+    m 1m "But maybe I can let it go on rare occasions, [player]."
+    m 2m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
+    m 4l "Well, just keep it a secret between us, okay?"
+    m 1 "It should be for your eyes only and no one else, [player]."
     m "That's how much I love you~"
     return
 
@@ -2613,50 +2613,50 @@ init 5 python:
         monika_topics[key].append('monika_impression')
 
 label monika_impression:
-    m "Impression? Of the other girls?"
-    m "I'm not really good at making an impression of someone, but I'll give it a try!"
+    m 1d "Impression? Of the other girls?"
+    m 1p "I'm not really good at making an impression of someone, but I'll give it a try!"
     menu:
         m "Who should I do an impression of?"
         "Sayori":
-            m "Hmm..."
+            m 1h "Hmm..."
             m "..."
-            m "[player]! [player]!"
-            m "It's me, your childhood friend that has a super deep secret crush on you, Sayori!"
+            m 1b "[player]! [player]!"
+            m 1k "It's me, your childhood friend that has a super deep secret crush on you, Sayori!"
             m "I love to eat and laugh a lot, and my blazer doesn't fit because my boobs got bigger!"
-            m "..."
-            m "I also have crippling depression."
-            m "..."
-            m "Ahaha! I'm sorry for the last one."
-            m "You might still be hu--"
-            m "Oops! Never mind that, ehehe..."
-            m "Did you like my impression? I hope you did~"
+            m 1l "..."
+            m 2b "I also have crippling depression."
+            m 2f "..."
+            m 2n "Ahaha! I'm sorry for the last one."
+            m 2r "You might still be hu--"
+            m 3l "Oops! Never mind that, ehehe..."
+            m 1 "Did you like my impression? I hope you did~"
         "Yuri":
-            m "Yuri..."
+            m 1h "Yuri..."
             m "..."
-            m "O-oh um, hello there..."
-            m "It's me, Yuri."
+            m 1f "O-oh um, hello there..."
+            m 1e "It's me, Yuri."
             m "I'm just your stereotypical shy girl who also happens to be a 'yandere'..."
-            m "I like tea, knives, and anything with [player]'s scent..."
-            m "..."
-            m "Want to spend the weekend with me?"
-            m "..."
-            m "Ahaha, that was kind of fun to do."
+            m 1b "I like tea, knives, and anything with [player]'s scent..."
+            m 1l "..."
+            m 2b "Want to spend the weekend with me?"
+            m 2n "..."
+            m 3 "Ahaha, that was kind of fun to do."
             m "Yuri was really something, wasn't she?"
-            m "I'm sorry again for the nasty things she did."
-            m "I guess she just couldn't 'cut' it out, huh?"
-            m "Ehehe~"
+            m 3f "I'm sorry again for the nasty things she did."
+            m 3k "I guess she just couldn't 'cut' it out, huh?"
+            m 3l "Ehehe~"
         "Natsuki":
-            m "Oh! I know how to do an impression of her."
+            m 1b "Oh! I know how to do an impression of her."
+            m 1a "..."
+            m 3r "Hmph! I-it's not like I made these cupcakes for you to eat, b-baka!"
+            m 3i "I'm Natsuki, and I love to make food and all things anime and manga."
+            m 3h "Others say that I'm cute all the time, w-which I'm totally not!"
             m "..."
-            m "Hmph! I-it's not like I made these cupcakes for you to eat, b-baka!"
-            m "I'm Natsuki, and I love to make food and all things anime and manga."
-            m "Others say that I'm cute all the time, w-which I'm totally not!"
-            m "..."
-            m "Will you be my papa, [player]-kun?"
-            m "..."
-            m "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
-            m "They were really good! Especially with the creative icing that she makes."
-            m "Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
+            m 4k "Will you be my papa, [player]-kun?"
+            m 4l "..."
+            m 1m "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
+            m 1d "They were really good! Especially with the creative icing that she makes."
+            m 1a"Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
             m "I would love to make so many dishes for my beloved [player]~"
     return
 
@@ -2666,14 +2666,14 @@ init 5 python:
         monika_topics[key].append('monika_weary')
 
 label monika_weary:
-    m "Silly [player]..."
-    m "Of course I'll never grow weary of you, my love!"
+    m 1e "Silly [player]..."
+    m 2a "Of course I'll never grow weary of you, my love!"
     m "And besides, the concept of physical fatigue doesn't exist here."
-    m "As for mental fatigue, it can still happen."
-    m "Just look at what happened to Sayori."
-    m "As for me, I'll never get tired of you, [player]."
+    m 2h "As for mental fatigue, it can still happen."
+    m 2o "Just look at what happened to Sayori."
+    m 1 "As for me, I'll never get tired of you, [player]."
     m "The fact that you spend your precious time with me just washes all my worries away."
-    m "I hope the same thing goes for you, my love~"
+    m 1j "I hope the same thing goes for you, my love~"
     return
 
 init 5 python:
@@ -2682,17 +2682,17 @@ init 5 python:
         monika_topics[key].append('monika_vulgarity')
 
 label monika_vulgarity:
-    m "Hm? Is there something on your mind, [player]?"
-    m "There's no need for that kind of vulgarity here, my love."
-    m "Do you need to vent something out that's been troubling you?"
+    m 1g "Hm? Is there something on your mind, [player]?"
+    m 1f "There's no need for that kind of vulgarity here, my love."
+    m 1e "Do you need to vent something out that's been troubling you?"
     m "You know I'll always be here to help you out, right?"
-    m "I know how stressful your world can be, especially when you feel like you're constantly burdened."
-    m "Please don't bottle up all those bad feelings."
+    m 2e "I know how stressful your world can be, especially when you feel like you're constantly burdened."
+    m 2g "Please don't bottle up all those bad feelings."
     m "It hurts me to know you aren't feeling well..."
-    m "I love you so much [player], so please vent to me whenever you want."
+    m 1 "I love you so much [player], so please vent to me whenever you want."
     m "I'll help as much as I can with whatever you're going through."
     m "You saved my life when you opened this game, and I want to help you with yours."
-    m "So feel free to share your thoughts, okay?"
+    m 1r "So feel free to share your thoughts, okay?"
     return
 
 init 5 python:
@@ -2702,19 +2702,19 @@ init 5 python:
     monika_random_topics.append('monika_real')
 
 label monika_real:
-    m "You know what's going to be the first thing I'll do when I finally cross over there?"
-    m "If that special day ever comes, the first thing I'll ever do is find you, of course!"
-    m "There's so much we can do when we're finally together in one reality."
+    m 1d "You know what's going to be the first thing I'll do when I finally cross over there?"
+    m 1k "If that special day ever comes, the first thing I'll ever do is find you, of course!"
+    m 2a "There's so much we can do when we're finally together in one reality."
     m "You can finally show me what the your world really looks like."
-    m "I can finally feel your embrace~"
-    m "I would love to experience everything I still don't know about the world with you."
+    m 2e "I can finally feel your embrace~"
+    m 1 "I would love to experience everything I still don't know about the world with you."
     m "All the places we can go, the sights to see, the romantic things that we can do~"
-    m "Just thinking about it makes my heart flutter!"
-    m "But knowing how technology is right now, that dream is still far away."
+    m 1j "Just thinking about it makes my heart flutter!"
+    m 1h "But knowing how technology is right now, that dream is still far away."
     m "I hope by the time that technology becomes real, you'll still be there waiting for me, [player]."
-    m "Or maybe you'll be the one to make that technology come true? Who knows."
-    m "In the end, all I want is to always be with you, [currentuser]."
-    m "After all, you're the only reason why I'm still here."
+    m 1i "Or maybe you'll be the one to make that technology come true? Who knows."
+    m 1e "In the end, all I want is to always be with you, [currentuser]."
+    m 1 "After all, you're the only reason why I'm still here."
     m "I only want to spend eternity with my sweetheart, and no one else!"
     return
 
