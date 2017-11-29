@@ -3552,7 +3552,7 @@ label monika_zombie:
     m "Sure, society could be torn apart by the efforts of many great beasts..."
     m "But zombies can do it in a heartbeat."
     m "A lot of monsters are created to scare you at face value..."
-    m "But zombies have a far subtler touch to them in order to make them so menacing, I'd like to think."
+    m "But zombies have a far subtler touch to them in order to make them so intimidating, I'd like to think."
     m "For example, you might be able to deal with one or maybe even a few of them by yourself."
     m "But when there is just this hivemind of thoughtless savages, all coming at you at once, how can you feel anything besides pure fear?"
     m "You don't get that same feeling with other monsters."
