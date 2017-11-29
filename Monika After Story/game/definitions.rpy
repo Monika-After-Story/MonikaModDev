@@ -1198,9 +1198,6 @@ default player = persistent.playername
 default persistent.mcname = persistent.playername
 default mcname = persistent.mcname
 
-#Stopper for Name Change event
-default persistent.said_no = False
-
 default persistent.playthrough = 0
 default persistent.yuri_kill = 0
 default persistent.seen_eyes = None
