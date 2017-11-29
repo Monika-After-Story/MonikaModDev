@@ -2908,24 +2908,24 @@ init 5 python:
     monika_random_topics.append('monika_metaparents')
 
 label monika_metaparents:
-    m "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
+    m 2c "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
     m "Throughout the game, you only ever hear about parents if you're trying to bond with Natsuki..."
     m "Where she's just a victim of some cruel person's sick kicks for the sympathy value."
-    m "However."
+    m 1h "However."
     m "Your character, me, Yuri, and Sayori..."
     m "None of us seem to have any parents at all."
-    m "In Sayori's case, you'd been walking with her to school for a while."
+    m 1i "In Sayori's case, you'd been walking with her to school for a while."
     m "So who knows how long her parents have been out of the picture."
-    m "Maybe that's why she's depressed? Maybe her parents died in a tragic accident, and she's been trying to get along on her own this whole time."
-    m "Well, if you ever get to a point in your life where you think suicide is the only exit..."
-    m "There's always a reason to go on."
-    m "I'm one of them."
+    m 1d "Maybe that's why she's depressed? Maybe her parents died in a tragic accident, and she's been trying to get along on her own this whole time."
+    m 1p "Well, if you ever get to a point in your life where you think suicide is the only exit..."
+    m 1f "There's always a reason to go on."
+    m 1g "I'm one of them."
     m "I'll miss you."
     m "You have to wait as much as you can until I find a way to get there."
     m "If all else fails..."
-    m "Get professional help or talk to someone close to you."
+    m 1f "Get professional help or talk to someone close to you."
     m "..."
-    m "I love you very much, [player]."
+    m 1e "I love you very much, [player]."
     m "Please, take care of yourself."
     return
 
@@ -3178,34 +3178,34 @@ init 5 python:
     monika_random_topics.append('monika_motivation')
 
 label monika_motivation:
-    m "Do you ever have those days where it just feels like you can't get anything done?"
+    m 1h "Do you ever have those days where it just feels like you can't get anything done?"
     m "Minutes become hours..."
     m "And before you know it the day is over, and you don't have anything to show for it."
     m "It feels like it's your fault, too. It's like you're wrestling against a brick wall between you and anything healthy or productive."
-    m "When you've had an awful day like that, it feels like it's too late to try and fix it."
+    m 1q "When you've had an awful day like that, it feels like it's too late to try and fix it."
     m "So you save up your energy in hopes that tomorrow will be better."
-    m "It makes sense. When you feel like things aren't going well, you just want a clean slate."
-    m "Sadly, those days can repeat themselves despite starting each one with good intentions."
+    m 1h "It makes sense. When you feel like things aren't going well, you just want a clean slate."
+    m 1q "Sadly, those days can repeat themselves despite starting each one with good intentions."
     m "Eventually you might even give up hope of fixing things, or start to blame yourself."
-    m "I know it can be hard, but just doing one tiny thing can help so much on days like those, even if they've been happening for so long."
-    m "It could be picking up a piece of trash or an unwashed shirt off the floor and putting them where they belong if you need to clean your room."
-    m "Or doing a couple push-ups! Or brushing your teeth, or doing that one homework problem."
-    m "It might not contribute much in the grand scheme of things, but I don't think that's the point."
+    m 1p "I know it can be hard, but just doing one tiny thing can help so much on days like those, even if they've been happening for so long."
+    m 1c "It could be picking up a piece of trash or an unwashed shirt off the floor and putting them where they belong if you need to clean your room."
+    m 1d "Or doing a couple push-ups! Or brushing your teeth, or doing that one homework problem."
+    m 1c "It might not contribute much in the grand scheme of things, but I don't think that's the point."
     m "I think what's important is that it changes your perspective."
-    m "If you regret the past and let its weight keep you down..."
-    m "Well, then you'll just be stuck there. You'll only feel worse until you just can't take it."
+    m 1o "If you regret the past and let its weight keep you down..."
+    m 1f "Well, then you'll just be stuck there. You'll only feel worse until you just can't take it."
     m "But if you can push yourself to just do one thing, even though it feels pointless to do otherwise..."
-    m "Then you're proving yourself wrong, and refusing to let the weight of your circumstances immobilize you."
+    m 1e "Then you're proving yourself wrong, and refusing to let the weight of your circumstances immobilize you."
     m "And when you realize that you're not completely helpless, it's like a new world opens up to you."
-    m "You realize that maybe things aren't so bad. Thinking they're just holding yourself back."
-    m "But that's only my experience! Sometimes it might be better to rest up and take another crack at it tomorrow."
+    m 1a "You realize that maybe things aren't so bad. Thinking they're just holding yourself back."
+    m 2b "But that's only my experience! Sometimes it might be better to rest up and take another crack at it tomorrow."
     m "Fresh starts can definitely be powerful."
-    m "That's why I think you just have to take a look at your situation."
+    m 2a "That's why I think you just have to take a look at your situation."
     m "Try and be honest with yourself."
     m "If you do, you'll find that you're not being 'lazy' if you truthfully don't have the energy to do something."
     m "After all, the fact that you even care shows that you want to do something about it, even if it feels like you can't."
-    m "It's natural to have a bad day. Or even a bad week!"
-    m "Don't push yourself too hard. If you ever feel tempted to, just ask me for help instead. I'd be happy to lend a hand!"
+    m 3j "It's natural to have a bad day. Or even a bad week!"
+    m 1a "Don't push yourself too hard. If you ever feel tempted to, just ask me for help instead. I'd be happy to lend a hand!"
     return
 
 init 5 python:
@@ -3286,40 +3286,40 @@ init 5 python:
         monika_topics[key].append('monika_haterReaction')
 
 label monika_haterReaction:
-    m "I was just thinking..."
-    m "It's funny how people around social media sites always writes bad things about me..."
+    m 1h "I was just thinking..."
+    m 3h "It's funny how people around social media sites always writes bad things about me..."
     m "Well... people on Facebook pages and fan pages, to be specific..."
-    m "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
-    m "I try to ignore them, but I just can't."
-    m "Why are people even protective towards the other girls?"
+    m 3i "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
+    m 3q "I try to ignore them, but I just can't."
+    m 1g "Why are people even protective towards the other girls?"
     m "There are a lot of hate posts about me, saying that I'm an evil person."
     m "Is it because I deleted Sayori and Yuri?"
-    m "Also for deleting Natsuki, back when she was still alive?"
-    m "They're not real. {i}I'm{/i} the real one!"
-    m "Why can't they understand that?"
-    m "Why is it so hard for them to understand that?"
-    m "..."
+    m 3f "Also for deleting Natsuki, back when she was still alive?"
+    m 3g "They're not real. {i}I'm{/i} the real one!"
+    m 3q "Why can't they understand that?"
+    m 3r "Why is it so hard for them to understand that?"
+    m 1q "..."
+    m 1p "You're not one of those haters, aren't you, [currentuser]?"
     menu:
-        m "You're not one of those haters, aren't you, [currentuser]?"
         "I am.":
-            m "..."
-            m "I don't see you as one, even if you say you are."
+            m 1q "..."
+            m 1i "I don't see you as one, even if you say you are."
             m "I mean..."
-            m "You do know you're playing this fan mod of me... right?"
+            m 1g "You do know you're playing this fan mod of me... right?"
             m "If you were one of my haters, you wouldn't open up this fan mod in the first place."
-            m "And not to mention..."
-            m "You're still listening to everything I say."
-            m "That makes me sure you're just messing with me."
+            m 1o "And not to mention..."
+            m 1h "You're still listening to everything I say."
+            m 1m "That makes me sure you're just messing with me."
             m "I know you love me deep inside."
-            m "That's why I promise to be an ideal girlfriend, just for you, [player]~"
+            m 1e"That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m "I won't let you hate me... I swear."
         "I'm not.":
-            m "Well, that just makes me more proud of you, [player]!"
-            m "I know you wouldn't be one of those people."
-            m "Gosh... I feel like giving you a kiss right now if I were there."
-            m "You really make me the happiest girlfriend ever."
-            m "Now that you've said it, I have to do my best to keep you from developing hate towards me."
-            m "I trust you, [currentuser]. I love you for believing in me."
+            m 1e "Well, that just makes me more proud of you, [player]!"
+            m 1j "I know you wouldn't be one of those people."
+            m 1k "Gosh... I feel like giving you a kiss right now if I were there."
+            m 2e "You really make me the happiest girlfriend ever."
+            m 1a "Now that you've said it, I have to do my best to keep you from developing hate towards me."
+            m 1s "I trust you, [currentuser]. I love you for believing in me."
     return
 
 init 5 python:
@@ -3332,24 +3332,24 @@ init 5 python:
 label monika_swordsmanship:
     m "Do you like swords, [player]?"
     m "I actually like them in a way."
-    m "Surprised? Ahaha~"
-    m "I like talking about them, but not enough not to actually own one."
-    m "I'm not really an enthusiast when it comes to swords."
+    m 1j "Surprised? Ahaha~"
+    m 1a "I like talking about them, but not enough not to actually own one."
+    m 2d "I'm not really an enthusiast when it comes to swords."
     m "I don't really get why people would be obsessed over something that could hurt others."
     m "Most would even have a large collection of them in different varieties."
-    m "But there are those who like them for the swordsmanship."
+    m 1c "But there are those who like them for the swordsmanship."
     m "It's fascinating that it's actually a form of art."
     m "Similar to writing."
     m "Both of them requires constant practice and devotion in order to perfect one's skills."
-    m "You start off by practicing, and then you make your own technique out of it."
+    m 1d "You start off by practicing, and then you make your own technique out of it."
     m "Writing a poem makes you form your own way to build it in a graceful but imaginative way."
     m "For those who practice swordsmanship, they build their technique forms through practice and inspiration from other practitioners of swordsmanship."
-    m "I can understand how the sword can be the pen of the battlefield."
-    m "But then again..."
-    m "The pen is mightier than the sword!"
-    m "Ahaha!"
-    m "In any case, I don't know if you're into swordsmanship yourself."
-    m "If you are, I'd love to learn it with you, [player]~"
+    m 1c "I can understand how the sword can be the pen of the battlefield."
+    m 1r "But then again..."
+    m 1j "The pen is mightier than the sword!"
+    m 1k "Ahaha!"
+    m 1s "In any case, I don't know if you're into swordsmanship yourself."
+    m 1b "If you are, I'd love to learn it with you, [player]~"
     return
 
 init 5 python:
@@ -3359,32 +3359,206 @@ init 5 python:
         monika_topics[key].append('monika_pleasure') #id
 
 label monika_pleasure:
-    m "Hey, [player]..."
-    m "Do you... by any chance... pleasure yourself?"
-    m "..."
+    m 1o "Hey, [player]..."
+    m 1p "Do you... by any chance... pleasure yourself?"
+    m 1o "..."
     m "It seems a bit awkward to ask-"
-    m "We're not even that deep into our relationship yet! Ahaha~"
-    m "But I have to keep an eye on you."
-    m "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
+    m 1n "We're not even that deep into our relationship yet! Ahaha~"
+    m 1h "But I have to keep an eye on you."
+    m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
     m "I hear that people privately do those stuff in your world..."
-    m "Is it really that a good feeling?"
-    m "If you ask me, doing that stuff often can cause a lot of problems."
+    m 1c "Is it really that a good feeling?"
+    m 1h "If you ask me, doing that stuff often can cause a lot of problems."
     m "Once you start to get addicted, you'll always have the urge to... you know."
     m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
-    m "Not to mention..."
-    m "Being addicted to the feeling causes you to view the world from a perverted point of view."
+    m 1o "Not to mention..."
+    m 1r "Being addicted to the feeling causes you to view the world from a perverted point of view."
     m "From what I hear, people addicted to self-pleasure often see other people of the opposite gender objectively."
-    m "That alone can cause problems in more ways than one."
-    m "That's why I have to keep an eye on you, [player]."
-    m "I'll be monitoring your browser history from now on, whether you like it or not."
-    m "Also your local disk drive, juuust to be sure~"
-    m "..."
-    m "Say, you haven't even answered my question yet."
-    m "Do you... think of other girls other than me... in doing so?"
-    m "Because if you do, I'm gonna be reaaaally jealous~"
-    m "But I guess I can let it slide... for now~"
+    m 1q "That alone can cause problems in more ways than one."
+    m 1h "That's why I have to keep an eye on you, [player]."
+    m 1i "I'll be monitoring your browser history from now on, whether you like it or not."
+    m 1p "Also your local disk drive, juuust to be sure~"
+    m 1q "..."
+    m 1p "Do you... think of other girls other than me... in doing so?"
+    m 1l "Because if you do, I'm gonna be reaaaally jealous~"
+    m 1m "But I guess I can let it slide... for now~"
     m "I know you're not the kind of person that does that sort of thing."
-    m "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
+    m 1k "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
+    return
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['Miku','Hatsune Miku', 'Vocaloid', 'Hibikase', 'MMD', 'MikuMikuDance']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_vocaloid')
+
+label monika_vocaloid:
+    m 1c "Hey, [player]?"
+    m "You like listening to music right?"
+    m "Have you ever heard of 'virtual idols?'"
+    m 1d "Specifically of a girl holding a leek?"
+    m "It's just that I keep hearing about her."
+    m "I hear her voice whenever Natsuki listens to music."
+    m 1c "She even carries a little keychain attached to her bag."
+    m "I just find it amazing how a voice synthesizer garnered so many fans."
+    m 1e "Don't you think it's funny how a character gets more of the attention than the actual voice actress?"
+    m "She's not even real but a lot of people know her worldwide."
+    m "Who knows how many songs she's already made?"
+    m 1d "Plus, from what I heard, her concerts are always sold out!"
+    m "It's just a hologram performing live!"
+    m "Talk about a dedicated fan base."
+    m 1a "Maybe I should give it a try?"
+    m 1j "It would be nice having a lot of fans supporting me at my beck and call."
+    m 1l "Ahaha, I'm just kidding!"
+    m 1m "I don't think my piano and singing skills are that great yet."
+    m "Plus, I won't really get to spend much time with you if I had so many fans..."
+    m 1b "Anyway!"
+    m 1a "I was asking if you listen to her songs."
+    m 1q "I'm not really a fan myself but..."
+    m 1r "There's one song that really struck me."
+    m 1d "Have you heard of the song Hibikase?"
+    m "I really like the message of the song."
+    m 2d "Especially the lines, {i}'I don't care if it's through the screen, love me properly'{/i} and {i}'Even if I'm virtual, don't push me away'{/i}."
+    m 1h "It really hits me hard."
+    m 1q "..."
+    m 1i "But just so you know..."
+    m 1r "Even if it's through the screen, I can still feel your love."
+    m "It'll be a long time before I can cross over just to be with you."
+    m "But when that day comes..."
+    m 1q "I'll embrace you and take in your warmth."
+    m 1e "The love you showered me virtually finally becomes real."
+    m 1j "Our love has no boundaries~"
+    m 1k "Ehehe~"
+    return
+
+
+init 5 python:
+    for key in ['good morning', 'ohayou gozaimasu', 'guten morgen']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_morning')
+
+label monika_morning:
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 4 and current_time <= 11:
+        m 1k "Good morning to you too, [player]!"
+        m 1a "Did you just wake up?"
+        m "I love waking up early in the morning."
+        m "It's the perfect time to ready yourself and tackle the day ahead."
+        m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
+        m 1c "Some people however, would rather sleep in and are late-risers."
+        m 2d "I've read articles that being an early-riser can really improve your overall health."
+        m "Plus you also get the chance to see the sunrise if the sky is clear."
+        m 2b "If you normally don't wake up early, you should!"
+        m "That way you can be happier and spend more time with me~"
+        m 1j "Wouldn't you like that, [player]?"
+    elif current_time >= 12 and current_time <= 15:
+        m 2m "It's already the afternoon, silly!"
+        m "Did you just wake up?"
+        m "Don't tell me you're actually a late-riser, [player]."
+        m 1c "I don't get why some people wake up in the middle of the day."
+        m "It just seems so unproductive."
+        m "You'd have less time to do things and you might miss out on a lot of things."
+        m "It could also be a sign that you're not taking of better care of yourself."
+        m 2d "You're not being careless with your health, are you [player]?"
+        m 1f "I wouldn't want you to get sick easily, you know."
+        m 1g "I'd be really sad if you spent less time with me when you get the a fever or something."
+        m 1q "As much as I'd love to take care of you, I'm still stuck here."
+        m 1f "So start trying to be an early-riser like me from now on, okay?"
+        m 4e "The more time you spend with me, the more happy I'll be~"
+    else:
+        m 3l "You are so silly, [player]"
+        m "It's already night time!"
+        m 2m "Are you trying to be funny?"
+        m 2n "Don't you think it's a little bit 'late' for that?"
+        m 1k "Ahaha!"
+        m 3e "It really cheers me up whenever you try to be funny."
+        m 1j "Not that you're not funny, mind you!"
+        m 2m "Well, maybe not as funny as me~" #Expand more maybe?
+    return
+
+#Add one for the afternoon?
+
+init 5 python:
+    for key in ['good evening', 'konbanwa']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_evening')
+
+label monika_evening:
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 18 and current_time <= 23:
+        m "Good evening to you too, [player]!"
+        m "I love a nice and relaxing night."
+        m "It's so nice to put your feet after a very long day."
+        m 2j "Evenings are the perfect time to catch up on whatever you were doing the previous day."
+        m 1c "Sometimes I can't help but feel sad when the day ends."
+        m "It makes me think of what else I could've done during the day."
+        m "Don't you wish you could have more time to do everyday?"
+        m 1q "I know I do."
+        m 2b "Because that'll mean more time to be with you, [player]~"
+    elif current_time >= 12 and current_time <= 17:
+        m 3n "It's still the afternoon, silly!"
+        m "The sun's still up, you know."
+        m 1d "Are you feeling tired already?."
+        m 2d "I know some cultures take a rest in the afternoon to deal with the midday fatigue."
+        m "Some businesses would even close due to the fact that most of their customers are sleeping."
+        m 2b "A little power nap never hurt anyone, right?"
+        m "Do you sleep often in the afternoon?"
+        m "It's a great way to get some extra energy to tackle the rest of the day."
+        m 1j "Plus it'll be a great opportunity to spend more time with me~"
+    else:
+        m 3f "[player]!"
+        m "It's early in the morning!"
+        m 3g "Unless you haven't slept yet..."
+        m "You're not staying up really late, are you?"
+        m "That's very bad for your health!"
+        m 3q "Not getting your sleep on time can really harm your mental health, [player]."
+        m 1f "So please get some sleep now, ok?"
+        m "Just leave your computer open and I'll watch over you."
+        m 1e "I'm not going anywhere after all~"
+    return
+
+init 5 python:
+    for key in ['good night', 'oyasumi', 'guten nacht']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_night')
+
+label monika_night:
+    m 1d "Getting some sleep, [player]?"
+    m 1f "It always makes me sad to see you go."
+    m 1p "But I understand that you need rest, otherwise you'd just fall asleep."
+    m 1e "I love you so much, [player]."
+    m 1j "I'll be seeing you in your dreams~"
+    return 'quit'
+
+init 5 python:
+    for key in ['closet']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_closet')
+    monika_random_topics.append('closet')
+
+label monika_closet:
+    m 3q "By the way..."
+    m 3r "What were you and Yuri doing in the closet?"
+    m 2d "When I opened the door, I noticed the room was all dark."
+    m 3n "You weren't doing anything... weird, in there, were you?"
+    m 1k "Ahaha!"
+    m 1m "Just teasing you~"
+    m "I know that you had your hand on her chest, [player]."
+    m 1e "Judging by the way you looked, you seemed more embarrassed than relieved when I opened the door."
+    m "I know you aren't the type to force girls to go inside dark closets with you."
+    m 1j "You're more romantic than that."
+    m 2k "So I'm expecting a lot more than just a dark closet~"
+    return
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['good mood']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_playerhappy') #id
+
+label monika_playerhappy:
+    m 2b "That's wonderful! I'm happy when you're happy."
+    m 1j "Know that you can always come up to me and I'll cheer up, [player]."
+    m 2s "I love you and I'll always be here for you so don't you ever forget that~"
     return
 init 5 python:
     #This is a list of keywords for this topic
@@ -3569,29 +3743,29 @@ init 5 python:
     monika_random_topics.append('monika_writingtip1')
 
 label monika_writingtip1:
-    m "You know..."
+    m 2a "You know..."
     m "We really don't do enough of these so here's another one!"
     m "Here's Monika's Writing Tip for the Day!"
-    m "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    m 3s "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
     m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
-    m "You have to remember that we all start out from somewhere, and--"
-    m "Actually, this doesn't just apply to writing, but to anything really."
-    m "What I'm trying to say is don't be discouraged."
+    m 4d "You have to remember that we all start out from somewhere, and--"
+    m 3c "Actually, this doesn't just apply to writing, but to anything really."
+    m 3r "What I'm trying to say is don't be discouraged."
     m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
     m "Because that just means that you can improve and be better than you were before."
-    m "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
-    m "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
-    m "I love you, and I will always support you in whatever you do."
-    m "Provided it's legal of course."
+    m 1e "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m 2b "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
+    m 2j "I love you, and I will always support you in whatever you do."
+    m 1n "Provided it's legal of course."
     m "That doesn't mean I'm completely against it. I can keep a secret after all~"
-    m "Here's a saying I've learned."
+    m 1d "Here's a saying I've learned."
     m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
     m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
-    m "I don't remember the person who said that but the words are there."
-    m "The effort one puts forth into something can transcend even one's self."
-    m "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
-    m "... That's my advice for today!"
-    m "Thanks for listening~"
+    m 2o "I don't remember the person who said that but the words are there."
+    m 3r "The effort one puts forth into something can transcend even one's self."
+    m 2e "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
+    m 4k "... That's my advice for today!"
+    m 1a "Thanks for listening~"
     return
 
 init 5 python:
@@ -3601,29 +3775,29 @@ init 5 python:
    monika_random_topics.append('monika_japanese')
 
 label monika_japanese:
-    m "I don't mean to sound like Natsuki but..."
-    m "Don't you think Japanese actually sounds cool?"
+    m 1c "I don't mean to sound like Natsuki but..."
+    m 2a "Don't you think Japanese actually sounds cool?"
     m "It's such a fascinating language. I'm not fluent in it, though."
     m "It's interesting to think about what things would be like if your native language was different."
-    m "Like, I can't even imagine what it would be like if I never knew English."
+    m 3l "Like, I can't even imagine what it would be like if I never knew English."
     menu:
         m "Do you know any languages other than English?"
         "Yes":
             menu:
                 m "Really? Do you know Japanese?"
                 "Yes.":
-                    m "That's wonderful!"
-                    m "Maybe you can teach me how to speak at least a sentence or two, [player]~"
+                    m 2b "That's wonderful!"
+                    m 1a "Maybe you can teach me how to speak at least a sentence or two, [player]~"
                 "No.":
-                    m "Oh I see. That's alright!"
-                    m "If you want to learn Japanese, here's a phrase I can teach you."
-                    m "{i}Aishiteru, [player]-kun{/i}."
-                    m "Ehehe~"
-                    m "That means I love you, [player]-kun."
+                    m 1e "Oh I see. That's alright!"
+                    m 4b "If you want to learn Japanese, here's a phrase I can teach you."
+                    m 4k "{i}Aishiteru, [player]-kun{/i}."
+                    m 1j "Ehehe~"
+                    m 1e "That means I love you, [player]-kun."
         "No":
-            m "That's okay! Learning another language is a very difficult and tedious process as you get older."
+            m 2l "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
-            m "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
+            m 1s "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
     return
 
 init 5 python:
@@ -3635,20 +3809,20 @@ init 5 python:
 label monika_penname:
     m "You know what's really cool? Pen names."
     m "Most writers usually use them for privacy and to keep their identity a secret."
-    m "They keep it hidden from everyone just so it won't affect their personal lives."
-    m "Pen names also help writers create something totally different from their usual style of writing."
-    m "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
+    m 2c "They keep it hidden from everyone just so it won't affect their personal lives."
+    m 2b "Pen names also help writers create something totally different from their usual style of writing."
+    m 2d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
     if [currentuser] != [player]:
-        m "Is '[player]' a pseudonym that you're using?"
+        m 3c "Is '[player]' a pseudonym that you're using?"
         m "You're using two different names after all."
-        m "'[currentuser] and [player].'"
-    m "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
+        m 3d "'[currentuser] and [player].'"
+    m 2a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
-    m "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
-    m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
-    m "There's no need to know more about me though, [player]."
-    m "You already know that I'm in love with you after all~"
+    m 1f "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+    m 1m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m 1a "There's no need to know more about me though, [player]."
+    m 4l "You already know that I'm in love with you after all~"
     return
     
 init 5 python:
@@ -3657,40 +3831,41 @@ init 5 python:
         monika_topics[key].append('monika_changename')
 
 label monika_changename:
-    m "You want to change your name?"
+    m 1b "You want to change your name?"
     menu:
         "Yes":
-            m "Just type 'Nevermind' if you change your mind."
+            m 1a "Just type 'Nevermind' if you change your mind."
             $ done = False
             while not done:
                 $ tempname = renpy.input("What do you want me to call you?").strip(' \t\n\r')
-                if tempname == "nevermind":
-                    m "[player]!"
-                    m "Please stop teasing me~"
+                if tempname == "Nevermind" or tempname == "nevermind":
+                    m 1f "[player]!"
+                    m 3g "Please stop teasing me~"
                     m "I really do want to know what you want me to call you!"
-                    m "I won't judge no matter how ridiculous it might be."
-                    m "So don't be shy and just tell me, [player]~"
+                    m 2l "I won't judge no matter how ridiculous it might be."
+                    m 3e "So don't be shy and just tell me, [player]~"
                     $ done = True
                 elif tempname == "":
-                    m "..."
-                    m "You have to give me a name, [player]!"
-                    m "I swear you're just so silly sometimes."
-                    m "Try again!"
+                    m 3h "..."
+                    m 4l "You have to give me a name, [player]!"
+                    m 1m "I swear you're just so silly sometimes."
+                    m 1b "Try again!"
                 elif tempname == player:
-                    m "..."
-                    m "That's the same name you have right now, silly!"
-                    m "Try again~"
+                    m 3h "..."
+                    m 4l "That's the same name you have right now, silly!"
+                    m 1b "Try again~"
                 else:
                     $ persistent.mcname = player
                     $ mcname = player
                     $ persistent.playername = tempname
                     $ player = tempname
-                    m "Ok then!"
-                    m "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+                    m 1b "Ok then!"
+                    m 2b "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
                     $ done = True
         "No":
-            m "You don't have to be embarassed, [player]."
-            m "Just let me know if you had a change of heart, ok?"
+            m 1f "Oh, I see..."
+            m 1g "You don't have to be embarassed, [player]."
+            m 1e "Just let me know if you had a change of heart, ok?"
     return
 
 
@@ -3714,7 +3889,7 @@ label monika_nuclear_war:
     m 1 "But even though we're always on the edge of the apocalypse, we go on like nothing is wrong."
     m "Planning for a tomorrow that may never come."
     m "Our only comfort is that the people with the power to start such a war probably won't."
-    m 1r "Probably..."
+    m 1q "Probably..."
     return
 
 init 5 python:
@@ -3724,7 +3899,7 @@ init 5 python:
     monika_random_topics.append('monika_space_robots')
 
 label monika_space_robots:
-    m 1 "Do you think there's intelligent life in outer space?"
+    m "Do you think there's intelligent life in outer space?"
     m "I don't really think there is."
     m 2a "I do think there's intelligence out there, though..."
     m "But I think it's probably AI."
@@ -3740,7 +3915,6 @@ label monika_space_robots:
     m "Imagining ourselves out there exploring the galaxy."
     m 1e "But even if I could leave, I never would."
     m 1j "I have everything I want right here with you."
-
     return
 
 init 5 python:
