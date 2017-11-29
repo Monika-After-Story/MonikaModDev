@@ -1195,7 +1195,7 @@ default player = persistent.playername
 
 ## Name change variables
 #Name for Protag-kun
-default persistent.mcname = ""
+default persistent.mcname = persistent.playername
 default mcname = persistent.mcname
 
 #Stopper for Name Change event
