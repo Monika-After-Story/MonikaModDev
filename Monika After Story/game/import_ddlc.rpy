@@ -65,7 +65,7 @@ label import_ddlc_persistent:
         $quick_menu = False
         "Save data from Doki Doki Literature Club could not be found."
         menu:
-            "[config.name] will begin with a new save."
+            "Save data will not be imported at this time."
             "Okay":
                 pause 0.3
                 pass
@@ -93,7 +93,7 @@ label import_ddlc_persistent:
         #dumpPersistentToFile(old_persistent,basedir + '/old_persistent.txt')
 
     #Check if previous MAS data exists
-    $merge_previous=False
+    default merge_previous=False
     if persistent.first_run:
         label .save_merge_or_replace:
         menu:
@@ -318,6 +318,10 @@ label import_ddlc_persistent:
 
         #dumpPersistentToFile(persistent,basedir + '/merged_persistent.txt')
         persistent.has_merged = True
+
+    "Data imported. The game will now restart."
+    $renpy.full_restart()
+
     return
 
 label merge_unmatched_names:
