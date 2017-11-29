@@ -3536,6 +3536,54 @@ label monika_changename:
             m "Just let me know if you had a change of heart, ok?"
     return
 
+init 5 python:
+    for key in ['zombie', 'zeds', 'undead', 'meat bag', 'George Romero', 'walkers']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_zombie')
+    monika_random_topics.append('monika_zombie')
+
+label monika_zombie:
+    m "Hey, this might sound a bit weird coming from someone like me..."
+    m "But, I'm really fascinated by the concept of zombies, believe it or not."
+    m "The whole idea of society falling into a state of decay, and being forced to drop everything you're doing..."
+    m "All because of this unforeseen, undead pandemic that could potentially rival the 'Black Death' in terms of severity. "
+    m "I mean, think about your everyday schedule."
+    m "Do you honestly think you can still do all that with those things outside?"
+    m "Sure, society could be torn apart by the efforts of many great beasts..."
+    m "But zombies can do it in a heartbeat."
+    m "A lot of monsters are created to scare you at face value..."
+    m "But zombies have a far subtler touch to them in order to make them so menacing, I'd like to think."
+    m "For example, you might be able to deal with one or maybe even a few of them by yourself."
+    m "But when there is just this hivemind of thoughtless savages, all coming at you at once, how can you feel anything besides pure fear?"
+    m "You don't get that same feeling with other monsters."
+    m "As an enemy, they're ambiguous."
+    m "They're not like vampires for example, who need blood to keep themselves nourished."
+    m "So, why do zombies need to eat flesh and brains?"
+    m "They don't have a sense of fear either."
+    m "Usually when you exploit the weakness of a monster, they're usually scared or become more cautious of you."
+    m "However, zombies are simply relentless, and they'll go through {i}anything{/i} just to get to you."
+    m "Not to mention, on an existential level, they're terrifying."
+    m "Those zombies used to be people too, you know?"
+    m "Could you even live with yourself knowing you were forced to defend yourself against someone you once knew, or even loved?"
+    m "You would always be looking over your shoulder at every turn, every opportunity."
+    m "Even when you have a place you call home, you still don't feel safe."
+    m "You won't ever feel safe."
+    m "You'll never know if the meal you just ate will be your last."
+    m "Or even the last person you spoke with, the person you shared your genuine thoughts and feelings with, might not be alive shortly after."
+    m "..."
+    m "Ahaha, you know, despite liking the concept."
+    m "I wouldn't want to live in a scenario like that."
+    m "I mean what are the chances of you and I surviving such a catastrophic situation?"
+    m "[player], what if you got infected somehow?"
+    m "Gosh, I don't even want to think about that."
+    m "There's no way I could end your existence for my own safety..."
+    m "Ahaha!"
+    m "I'm thinking way too much about this."
+    m "Well, regardless, if anything bad were to happen..."
+    m "I'll be by your side."
+    m "Forever~"
+   return
+    
 
 ##################
 #Incomplete ideas#
