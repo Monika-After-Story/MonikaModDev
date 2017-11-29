@@ -3649,7 +3649,8 @@ label monika_penname:
     m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m "There's no need to know more about me though, [player]."
     m "You already know that I'm in love with you after all~"
-
+    return
+    
 init 5 python:
     for key in ['change name']: #Could use some mor key words
         monika_topics.setdefault(key,[])
@@ -3713,8 +3714,7 @@ label monika_nuclear_war:
     m 1 "But even though we're always on the edge of the apocalypse, we go on like nothing is wrong."
     m "Planning for a tomorrow that may never come."
     m "Our only comfort is that the people with the power to start such a war probably won't."
-    m "Probably..."
-
+    m 1r "Probably..."
     return
 
 init 5 python:
