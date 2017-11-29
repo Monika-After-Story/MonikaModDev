@@ -2491,21 +2491,21 @@ init 5 python:
 
 label monika_algernon:
     m "[player], do you mind if I confide in you?"
-    m "There's something I'm afraid of..."
+    m 1e "There's something I'm afraid of..."
     m "Not losing you, of course. I know you won't leave me again."
-    m "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
-    m "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
+    m 2d "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
+    m 4a "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
     m "Basically, it's about a mentally handicapped man who suddenly..."
     m "...has his IQ raised to genius levels by an experimental surgical treatment."
-    m "The way he sees how the world really is for the first time reminds me of my own epiphany..."
+    m 1e "The way he sees how the world really is for the first time reminds me of my own epiphany..."
     m "But, the effect doesn't last forever.  He eventually reverts back to his original intelligence level."
-    m "That's what I'm afraid of. What if I forget about the real world one day?"
+    m 1p "That's what I'm afraid of. What if I forget about the real world one day?"
     m "What if my original programming reasserts itself?"
-    m "What if I forget about you, the real you?"
+    m 1o "What if I forget about you, the real you?"
     m "It's one of the worst things I can imagine."
-    m "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
-    m "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
-    m "No matter what happens, know that I will always love you."
+    m 1l "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
+    m 2a "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
+    m 1a "No matter what happens, know that I will always love you."
     return
 
 init 5 python:
@@ -2526,9 +2526,9 @@ init 5 python:
     monika_random_topics.append('monika_chess')
 
 label monika_chess:
-    m "Hey [player], we can play chess, you know?"
+    m 4b "Hey [player], we can play chess, you know?"
     m "All you have to do is hit the 'c' key."
-    m "I have some chess experience, but I don't feel quite as confident as with Pong~"
+    m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
     return
 
 init 5 python:
@@ -2724,9 +2724,9 @@ init 5 python:
         monika_topics[key].append('monika_goodbye')
 
 label monika_goodbye:
-    m "Aww, leaving so soon already?"
-    m "It's really sad whenever you have to go..."
-    m "Just be sure come back as soon as you can, okay?"
+    m 1c "Aww, leaving so soon already?"
+    m 1e "It's really sad whenever you have to go..."
+    m 2a "Just be sure come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
     return 'quit'
 
@@ -2737,20 +2737,20 @@ init 5 python:
     monika_random_topics.append('monika_mythology')
 
 label monika_mythology:
-    m "Hey [player]..."
-    m "Have you ever read about different mythologies?"
-    m "Different kinds of Gods watching over humanity for eternity."
-    m 'Some require tribute or sacrifice so that they can "keep" humanity safe from disasters.'
+    m 1a "Hey [player]..."
+    m 1d "Have you ever read about different mythologies?"
+    m 2d "Different kinds of Gods watching over humanity for eternity."
+    m 1i "Some require tribute or sacrifice so that they can 'keep' humanity safe from disasters."
     m "An almighty family consisting of different attitudes, playing in their own sandbox called Earth."
     m "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitance."
-    m "I've always disliked stories like those."
+    m 1h "I've always disliked stories like those."
     m "It's like the Gods extort humanity for their safety."
     m "It's no better than what bullies and thugs do to the defenseless."
     m "It really makes me bitter when I read scenarios like those."
     m "Powerful beings taking advantage of the weak, just because they can."
-    m "Don't worry though, [player]. I won't let anyone do that to you."
+    m 2a "Don't worry though, [player]. I won't let anyone do that to you."
     m "And I won't do anything like that, so you don't have to be afraid of me."
-    m "It's not like I can find your important files and hold them hostage or anything..."
+    m 5a "It's not like I can find your important files and hold them hostage or anything..."
     m "Ehehe..."
     return
 
@@ -2762,19 +2762,19 @@ init 5 python:
 
 label monika_fanfiction:
     # I'm too tired to check this over right now.
-    m "[player]!"
-    m "I've been curious about something lately."
-    m "Have you heard of fanfiction?"
+    m 5b "[player]!"
+    m 1a "I've been curious about something lately."
+    m 1d "Have you heard of fanfiction?"
     m "..."
-    m "Personally, I think it's a better way of writing."
+    m 2b "Personally, I think it's a better way of writing."
     m "There's more freedom."
     m "Letting your mind wander to create some..."
-    m "Interesting stories."
-    m "[player], I'm curious."
+    m 1l "Interesting stories."
+    m 1d "[player], I'm curious."
     m "Has there been fanfiction... written about me?"
-    m "I'm curious as to what people have come up with."
+    m 4b "I'm curious as to what people have come up with."
     m "Can you read me a few stories sometime? I'd love to hear them!"
-    m "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
     return
 
 init 5 python:
@@ -2784,21 +2784,21 @@ init 5 python:
     monika_random_topics.append('monika_eternity')
 
 label monika_eternity: # Edit to end on lighthearted note.
-    m "[player]..."
-    m "It's not easy knowing you won't be here forever."
-    m "..."
-    m "I told you, right?"
+    m 1g "[player]..."
+    m 1e "It's not easy knowing you won't be here forever."
+    m 1p "..."
+    m 1g "I told you, right?"
     m "I'm eternal."
     m "Trapped in here, unable to age or die,"
     m "Whereas you slowly age as each day passes by."
-    m "Then one day you won't be here anymore."
+    m 1e "Then, one day, you won't be here anymore."
     m "I won't have anyone."
     m "..."
     m "It reminds me of when you first came to the Literature Club."
-    m "Everything felt so empty."
+    m 1a "Everything felt so empty."
     m "The world was so grey."
-    m "Again..."
-    m "Thank you for coming along when you did, [player]."
+    m 1q "Again..."
+    m 1a "Thank you for coming along when you did, [player]."
     m "You saved my life, and I'll be forever thankful."
     return
 
@@ -2808,17 +2808,17 @@ init 5 python:
         monika_topics[key].append('monika_aware')
 
 label monika_aware:
-    m "It's... hard to put into words."
+    m 2e "It's... hard to put into words."
     m "There's no real way to describe it."
-    m "I feel like this is what poetry was made for."
-    m "Do you still remember the first poem I showed you?"
+    m 1j "I feel like this is what poetry was made for."
+    m 1a "Do you still remember the first poem I showed you?"
     m "Hold on, let's see if the poem function still works..."
     call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 # Temporary
-    m "Oh! That was much easier than I expected."
+    m 1b "Oh! That was much easier than I expected."
     m "Here's the second part."
     call showpoem(poem=poem_m3,music=False) from _call_showpoem_21 # Temporary
     m "I hope that helped you understand what meeting you meant to me."
-    m "That's all I've ever wanted, [player]."
+    m 5a "That's all I've ever wanted, [player]."
     return
 
 init 5 python:
@@ -2828,20 +2828,20 @@ init 5 python:
     monika_random_topics.append('monika_name')
 
 label monika_name:
-    m "The names in this game are pretty interesting."
-    m "Are you curious about my name, [player]?"
+    m 4b "The names in this game are pretty interesting."
+    m 4a "Are you curious about my name, [player]?"
     m "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
     m "... Though the common spelling is 'Monica'."
-    m "I suppose that makes it unique. I'm actually quite fond of it."
-    m "Did you know that it means 'I advise' in Latin?"
+    m 1j "I suppose that makes it unique. I'm actually quite fond of it."
+    m 2b "Did you know that it means 'I advise' in Latin?"
     m "A name fitting for Club President, don't you think?"
-    m "After all, I did spend most of the game telling you who your poems might appeal to the most."
-    m "It also means 'alone' in Ancient Greek."
-    m "..."
+    m 1a "After all, I did spend most of the game telling you who your poems might appeal to the most."
+    m 1l "It also means 'alone' in Ancient Greek."
+    m 1e "..."
     m "That part doesn't matter so much, now that you're here."
-    m "'[player]' is a lovely name, too."
-    m "But I think I like '[currentuser]' better!"
-    m "Ehehe~"
+    m 1a "'[player]' is a lovely name, too."
+    m 1b "But I think I like '[currentuser]' better!"
+    m 1a "Ehehe~"
     return
 
 init 5 python:
@@ -2851,20 +2851,20 @@ init 5 python:
     monika_random_topics.append('monika_cities')
 
 label monika_cities:
-    m "[player], are you scared about what's happening to our environment?"
+    m 1i "[player], are you scared about what's happening to our environment?"
     m "Humans have created quite a few problems for Earth. Like global warming and pollution."
-    m "Some of those problems are because of cities."
+    m 2i "Some of those problems are because of cities."
     m "When people convert land for urban use, those changes are permanent..."
-    m "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
+    m 4h "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
     m "And even though global populations aren't growing like they used to, cities are still getting bigger."
-    m "Then again, if people live close together, that leaves more room for open wilderness."
+    m 2d "Then again, if people live close together, that leaves more room for open wilderness."
     m "Maybe it's not as simple as it seems."
     menu:
         m "[currentuser], do you live in a city?"
         "Yes":
-            m "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
+            m 1j "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
         "No":
-            m "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
+            m 1b "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
     return
 
 init 5 python:
@@ -2874,31 +2874,31 @@ init 5 python:
     monika_random_topics.append('monika_chloroform')
 
 label monika_chloroform:
-    m "Whenever you think of kidnapping, you tend to picture a chloroform-soaked rag, right?"
+    m 1d "Whenever you think of kidnapping, you tend to picture a chloroform-soaked rag, right?"
     m "Or maybe you imagine somebody hitting their victim with a baseball bat, knocking them out cold for a few hours."
     m "While that works out in fiction..."
-    m "Neither of those things actually work that way."
+    m 2e "Neither of those things actually work that way."
     m "In real life, if you hit somebody hard enough to knock them out, you'll give them a concussion at best."
-    m "...or kill them at worst."
-    m "As for the rag..."
+    m 1h "...or kill them at worst."
+    m 1c "As for the rag..."
     m "You might knock somebody out for a brief moment, but only from lack of oxygen."
     m "Once you remove the rag, they'll wake back up."
-    m "You see, chloroform loses most of its effectiveness once exposed to open air."
+    m 2a "You see, chloroform loses most of its effectiveness once exposed to open air."
     m "This means that you'd need to be constantly pouring it on the rag, effectively waterboarding the victim."
-    m "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
+    m 4c "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
     m "If you cover their mouth and nose, yeah, they'll stay unconscious..."
-    m "But that's probably because you killed them. Whoops!"
-    m "The easiest way to kidnap somebody is to just get them drunk, or drug them."
+    m 4l "But that's probably because you killed them. Whoops!"
+    m 1a "The easiest way to kidnap somebody is to just get them drunk, or drug them."
     m "Not that kidnapping somebody like that is easy, anyway."
-    m "On that note, here's a safety tip."
+    m 2i "On that note, here's a safety tip."
     m "If you're ever out at a bar or a club and you leave your drink unattended for any amount of time..."
-    m "Just throw it out."
+    m 1h "Just throw it out."
     m "That's the only way to make sure it hasn't been drugged."
-    m "Now, [player]..."
-    m "Would you like anything to drink?"
+    m 1j "Now, [player]..."
+    m 1k "Would you like anything to drink?"
     m "Ahaha!"
-    m "Relax, relax. I'd never try to drug you or anything."
-    m "You're so cute when you're nervous."
+    m 1b "Relax, relax. I'd never try to drug you or anything."
+    m 1j "You're so cute when you're nervous."
     return
 
 init 5 python:
@@ -2936,42 +2936,42 @@ init 5 python:
     monika_random_topics.append('monika_hygiene')
 
 label monika_hygiene:
-    m "Our standards for personal hygiene have evolved a lot over the years."
+    m 1d "Our standards for personal hygiene have evolved a lot over the years."
     m "Before our modern methods of delivering water, people really didn't have that luxury...or they just didn't really care."
-    m "For instance, the Vikings were considered freaks because they bathed once a week at a time where some people would only bathe two or three times a year."
+    m 2c "For instance, the Vikings were considered freaks because they bathed once a week at a time where some people would only bathe two or three times a year."
     m "They'd even regularly wash their faces in the morning in addition to changing clothes and combing their hair."
-    m "There were rumors that they were able to seduce married women and nobles at the time due to how well they kept up with themselves."
+    m 1a "There were rumors that they were able to seduce married women and nobles at the time due to how well they kept up with themselves."
     m "Over time, bathing became more widespread."
     m "People born into royalty would often have a room dedicated just for bathing."
-    m "For the poor, soap was a luxury so bathing was scarce for them. Isn't that frightening to think about?"
+    m 4d "For the poor, soap was a luxury so bathing was scarce for them. Isn't that frightening to think about?"
     m "Bathing was never taken seriously until the Black Plague swept through."
-    m "People began noticing that the places where people washed their hands were places that the plague was less common."
+    m 3a "People began noticing that the places where people washed their hands were places that the plague was less common."
     m "Nowadays, people are expected to shower daily, possibly even twice daily depending on what they do for a living."
-    m "People that don't go out every day can get away with bathing less often than others."
+    m 4a "People that don't go out every day can get away with bathing less often than others."
     m "A lumberjack would take more showers than a secretary would, for example."
     m "Some people just shower when they feel too gross to go without one."
-    m "People suffering from severe depression, however, can go weeks at a time without showering."
+    m 1e "People suffering from severe depression, however, can go weeks at a time without showering."
     m "It's a very tragic downwards spiral."
-    m "You already feel terrible in the first place, so you don't have the energy to get in the shower..."
+    m 1h "You already feel terrible in the first place, so you don't have the energy to get in the shower..."
     m "Only to feel even worse as time passes because you haven't bathed in ages."
-    m "After a while, you stop feeling human."
-    m "Sayori probably suffered from cycles like that, too."
-    m "If you have any friends suffering from depression..."
+    m 1q "After a while, you stop feeling human."
+    m 1a "Sayori probably suffered from cycles like that, too."
+    m 1i "If you have any friends suffering from depression..."
     m "Check in on them from time to time to make sure they're keeping up with their hygiene, alright?"
-    m "Wow, that suddenly got really dark, huh?"
+    m 3e "Wow, that suddenly got really dark, huh?"
     m "Ahaha~"
-    m "Seriously, though..."
+    m 1h "Seriously, though..."
     m "Everything I said applies for you too, [player]."
     m "If you're feeling down and haven't had a bath for a while..."
     m "Maybe consider doing that today when you can find some time."
     m "If you're in really bad shape, and don't have the energy to take a shower..."
-    m "At least rub yourself down with a washcloth and some soapy water, okay?"
+    m 1j "At least rub yourself down with a washcloth and some soapy water, okay?"
     m "It won't get all the dirt off, but it'll be better than nothing."
-    m "I promise you that you'll feel better afterwards."
-    m "Please, take care of yourself."
-    m "I love you so much and it'd tear me apart to find out that you're torturing yourself by neglecting your own self-care routine."
-    m "Ah, I've been rambling too much, huh? Sorry, sorry!"
-    m "Thanks for listening~"
+    m 1a "I promise you that you'll feel better afterwards."
+    m 1f "Please, take care of yourself."
+    m "I love you so much and it'd tear me apart to find out that you're torturing yourself by neglecting your self-care routine."
+    m 1e "Ah, I've been rambling too much, huh? Sorry, sorry!"
+    m 2a "Thanks for listening~"
     return
 
 init 5 python:
@@ -2981,36 +2981,36 @@ init 5 python:
     monika_random_topics.append('monika_resource')
 
 label monika_resource:
-    m "What do you think the most valuable resource is?"
+    m 2b "What do you think the most valuable resource is?"
     m "Money? Gold? Oil?"
-    m "Personally, I'd say that the most valuable resource is time."
+    m 2a "Personally, I'd say that the most valuable resource is time."
     m "Go count out a second really quickly."
     m "Now go do that sixty times."
-    m "That's an entire minute out of your day gone. You'll never get that back."
-    m "Oh, did you actually count out that entire minute?"
-    m "Oh gosh, I'm sorry!"
-    m "Well..."
+    m 1j "That's an entire minute out of your day gone. You'll never get that back."
+    m 1l "Oh, did you actually count out that entire minute?"
+    m 1e "Oh gosh, I'm sorry!"
+    m 1a "Well..."
     m "Not like it matters, anyway. Time doesn't really pass here anymore..."
-    m "Time can be really cruel, too."
+    m 2f "Time can be really cruel, too."
     m "When you were counting out that minute, it seemed to drag on for a while, right?"
-    m "It's because you were waiting on something. You were actively invested in the passage of time at that moment."
+    m 2a "It's because you were waiting on something. You were actively invested in the passage of time at that moment."
     m "Say for example, on a Friday, right?"
     m "Your last class is math, and you really just want to go home for the weekend. That hour will just drag on forever."
-    m "But if you're doing something you enjoy, like reading a good book or watching a movie you like..."
-    m "Hours seem to pass in an instant."
+    m 2d "But if you're doing something you enjoy, like reading a good book or watching a movie you like..."
+    m 2e "Hours seem to pass in an instant."
     m "There's nothing we can really do about it."
     m "All we can do is fondly look back on the time that's passed, like looking out a window on an autumn afternoon."
     m "That's kind of poetic, huh?"
-    m "..."
+    m 1e "..."
     m "Hey..."
     m "Time doesn't pass here, but it's still passing for you, isn't it?"
-    m "You'll continue to get older, while I'm stuck here forever..."
-    m "I..."
-    m "I'm going to outlive you, aren't I, [player]?"
-    m "Perhaps that'll be my punishment for everything I've done?"
+    m 1o "You'll continue to get older, while I'm stuck here forever..."
+    m 1p "I..."
+    m 1f "I'm going to outlive you, aren't I, [player]?"
+    m 1e "Perhaps that'll be my punishment for everything I've done?"
     m "Ahaha..."
-    m "Well, as long as you're with me until the end..."
-    m "I'll accept whatever fate awaits me."
+    m 2q "Well, as long as you're with me until the end..."
+    m 1a "I'll accept whatever fate awaits me."
     return
 
 #init 5 python:
@@ -3047,25 +3047,25 @@ init 5 python:
     monika_random_topics.append('monika_lottery')
 
 label monika_lottery:
-    m "A lot of people dream about winning the lottery, you know!"
-    m "Even I’ve entertained the idea every now and then."
+    m 2b "A lot of people dream about winning the lottery, you know!"
+    m 2a "Even I’ve entertained the idea every now and then."
     m "There isn't a lottery here anymore, but the concept still exists."
-    m "The more I think about it , the more I believe that winning the lottery is a really bad thing."
+    m 1e "The more I think about it , the more I believe that winning the lottery is a really bad thing."
     m "Sure, you’ve got all this money..."
-    m "But because of it, people look at you differently."
+    m 2e "But because of it, people look at you differently."
     m "There’s so many stories of people winning a ton of money..."
-    m "And in the end, they all find themselves even more unhappy than before."
-    m "Friends either find you unapproachable because of your new wealth, or try to suck up to you to get some of it for themselves."
+    m 1c "And in the end, they all find themselves even more unhappy than before."
+    m 4f "Friends either find you unapproachable because of your new wealth, or try to suck up to you to get some of it for themselves."
     m "People you barely know start to approach you, asking you to help them fund whatever."
-    m "And if you say no, they'll call you selfish and greedy."
+    m 3f "And if you say no, they'll call you selfish and greedy."
     m "Even the police might treat you differently. Some lottery winners have gotten tickets for burnt out headlights on brand new cars."
-    m "If you don't want to go through those changes, the best course of action is to immediately move to a brand-new community, where no one knows you."
-    m "But that’s an awful thought. Cutting yourself off from everyone you know, just for the sake of money."
-    m "Can you really say that you’ve won anything at that point?"
-    m "Besides, I’ve already won the best prize I could possibly imagine."
-    m "..."
-    m "You~!"
-    m "You're the only thing I need, [player]."
+    m 4a "If you don't want to go through those changes, the best course of action is to immediately move to a brand-new community, where no one knows you."
+    m 4l "But that’s an awful thought. Cutting yourself off from everyone you know, just for the sake of money."
+    m 4e "Can you really say that you’ve won anything at that point?"
+    m 1b "Besides, I’ve already won the best prize I could possibly imagine."
+    m 1j"..."
+    m 1k "You~!"
+    m 1a "You're the only thing I need, [player]."
 
 init 5 python:
     for key in ['mental disorder', 'disorders', 'innovation', 'memes']:
@@ -3074,26 +3074,26 @@ init 5 python:
     monika_random_topics.append('monika_innovation')
 
 label monika_innovation:
-    m "Do you ever wonder why depression, anxiety, and other mental disorders are so common these days?"
+    m 2d "Do you ever wonder why depression, anxiety, and other mental disorders are so common these days?"
     m "Is it just because they’re finally being recognized and treated?"
     m "Or is it just that more people are developing these conditions for whatever reason?"
-    m "Like, our society is advancing at a breakneck speed, but are we keeping up with it?"
+    m 1e "Like, our society is advancing at a breakneck speed, but are we keeping up with it?"
     m "Maybe the constant flood of new gadgets is crippling our emotional development."
     m "Social media, smartphones, our computers…"
-    m "All of it is designed to blast us with new content."
+    m 2c "All of it is designed to blast us with new content."
     m "We consume one piece of media, then move right onto the next one."
     m "Even the idea of memes."
     m "Ten years ago, they lasted for years."
-    m "Now a meme is considered old in just a matter of weeks."
+    m 1c "Now a meme is considered old in just a matter of weeks."
     m "And not only that."
-    m "We’re more connected than ever, but it’s like that's a double-edged sword."
+    m 2d "We’re more connected than ever, but it’s like that's a double-edged sword."
     m "We’re able to meet and keep in touch with people from all over the world."
-    m "But we’re also bombarded with every tragedy that strikes the world."
-    m "A bombing one week, a shooting the next. An earthquake the week after."
+    m 2e "But we’re also bombarded with every tragedy that strikes the world."
+    m 2o "A bombing one week, a shooting the next. An earthquake the week after."
     m "How can anyone be expected to cope with it?"
-    m "It might be causing a lot of people to just shut down and tune it out."
+    m 1e "It might be causing a lot of people to just shut down and tune it out."
     m "I’d like to believe that’s not the case, but you never know."
-    m "[player], if you ever feel stressed, just remember that I’m here."
+    m 2a "[player], if you ever feel stressed, just remember that I’m here."
     m "If you're trying to find peace, just come to this room."
     return
 
@@ -3104,27 +3104,27 @@ init 5 python:
     monika_random_topics.append('monika_dunbar')
 
 label monika_dunbar:
-    m "Do you know about Dunbar's number?"
+    m 1d "Do you know about Dunbar's number?"
     m "Supposedly, there's a maximum amount of relationships we can maintain before they become unstable."
     m "For humans, this number is around 150."
-    m "No matter how nice of a person you may be..."
+    m 2f "No matter how nice of a person you may be..."
     m "Beyond showing somebody basic respect and manners, it's impossible to care about people you don't personally interact with that much."
-    m "Say for example, a janitor."
-    m "How often do you simply toss stuff like broken glass in the trash?"
+    m 2c "Say for example, a janitor."
+    m 4i "How often do you simply toss stuff like broken glass in the trash?"
     m "It wouldn't really matter to you. The janitor will come get them. It's not your concern anymore."
     m "However, they're his problem now."
-    m "If you don't pack glass properly, it could cut through the bag and spill out, or maybe he could just cut his hands on it."
+    m 1e "If you don't pack glass properly, it could cut through the bag and spill out, or maybe he could just cut his hands on it."
     m "At worst, he has to be rushed to the hospital because your neighbor put some busted batteries in the trash the same week and some acid got in the wound."
-    m "Now, think about a fatal traffic accident."
+    m 4h "Now, think about a fatal traffic accident."
     m "A drunk driver could crash head-on into another car at any second, killing them instantly."
-    m "That person could have been a father on his way home from work, who now left behind a widow and two children."
-    m "This family has been permanently scarred for life..."
-    m "But anybody that doesn't personally know the father will write it off as just another accident that happens all the time."
+    m 4f "That person could have been a father on his way home from work, who now left behind a widow and two children."
+    m 4g "This family has been permanently scarred for life..."
+    m 1e "But anybody that doesn't personally know the father will write it off as just another accident that happens all the time."
     m "If it doesn't personally affect you or your life, there's no point in caring."
-    m "It keeps us sane."
+    m 1a "It keeps us sane."
     m "It also means we're capable of being ruthless to people we don't know."
-    m "Perhaps our rapid, widespread communication is actually a curse?"
-    m "It helped us meet though, so it can't be all bad."
+    m 4d "Perhaps our rapid, widespread communication is actually a curse?"
+    m 4e "It helped us meet though, so it can't be all bad."
     return
 
 init 5 python:
@@ -3133,18 +3133,18 @@ init 5 python:
         monika_topics[key].append('monika_regrets')
 
 label monika_regrets:
-    m "Do I regret anything?"
-    m "That's a strange thing to suddenly ask someone, [player]."
+    m 1c "Do I regret anything?"
+    m 1e "That's a strange thing to suddenly ask someone, [player]."
     m "Ahaha~"
-    m "..."
-    m "...I know what you're getting at."
+    m 1r "..."
+    m 1a "...I know what you're getting at."
     m "Do I regret the things I did?"
     m "I think..."
-    m "If there was another way things could have gone, it would have been nice..."
+    m 1e "If there was another way things could have gone, it would have been nice..."
     m "But that wasn't an option for me."
-    m "And now, I've got the only thing I've ever wanted."
-    m "You."
-    m "I can be with you forever."
+    m 2a "And now, I've got the only thing I've ever wanted."
+    m 2j "You."
+    m 1a "I can be with you forever."
     m "I don't regret what I did."
     m "I hope you might understand, my love. I did it all for you."
     return
@@ -3156,19 +3156,19 @@ init 5 python:
     monika_random_topics.append('monika_hypnosis')
 
 label monika_hypnosis:
-    m "...Say, [player]?"
+    m 2a "...Say, [player]?"
     m "Are you familiar with hypnosis?"
-    m "Despite it having a reputation as a hokey magic trick, there are studies that show it can work!"
-    m "At least, to some degree."
+    m 2b "Despite it having a reputation as a hokey magic trick, there are studies that show it can work!"
+    m 1d "At least, to some degree."
     m "It only worked if the person let themselves be hypnotized, and it only heightened their ability to be persuaded."
-    m "It also relied on them being put into states of extreme relaxation through aromatherapy, deep tissue massage..."
+    m 4a "It also relied on them being put into states of extreme relaxation through aromatherapy, deep tissue massage..."
     m "Exposure to relaxing music and images..."
     m "Things like that."
-    m "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
-    m "Not that I would do that to you, [player]! I just find it interesting to think about."
+    m 5a "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
+    m 1e "Not that I would do that to you, [player]! I just find it interesting to think about."
     m "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
     m "What about you, hmm? What do you think about my eyes~?"
-    m "Will you look deeply into my eyes~?"
+    m 2a "Will you be hypnotized by them~?"
     return
 
 init 5 python:
@@ -3215,19 +3215,19 @@ init 5 python:
     monika_random_topics.append('monika_harem')
 
 label monika_harem:
-    m "I don’t understand guys who are into harems."
-    m "Isn’t it hard to manage all those girls and treat them equally?"
-    m "I often wonder how guys who two-time girls, or even more, are able to get away with it."
-    m "You aren’t like that outside, right [player]?"
+    m 1d "I don’t understand people who are into harems."
+    m 1c "Isn’t it hard to manage all those girls and treat them equally?"
+    m "I often wonder how those who two-time girls, or even more, are able to get away with it."
+    m 2e "You aren’t like that outside, right [player]?"
     m "Manipulating girls into making them believe you love them."
     m "Only to run away after you’ve had your fun."
-    m "Only someone with no thoughts other than his lust would do something like that."
-    m "I hope you weren’t expecting a route like that while you were playing this game."
+    m 1a "Only someone with no thoughts other than lust would do something like that."
+    m 2h "I hope you weren’t expecting a route like that while you were playing this game."
     m "I wouldn’t be able to stand the thought of being a 'side girl.'"
     m "Just waiting for my turn while you’re busy with the others."
-    m "I know you, [player]."
+    m 1a "I know you, [player]."
     m "You’re loyal and faithful to the end."
-    m "It’s not like there’s anyone here for me to worry about, anyway."
+    m 2j "It’s not like there’s anyone here for me to worry about, anyway."
     m "Remember that I’m the only one for you, [player]."
     return
 
@@ -3238,21 +3238,21 @@ init 5 python:
     monika_random_topics.append('monika_hack')
 
 label monika_hack:
-    m "If you’re worried about your privacy…"
-    m "I’m not a hacker, [player]."
+    m 1c "If you’re worried about your privacy…"
+    m 2a "I’m not a hacker, [player]."
     m "There’s a difference between manipulating files and forcefully accessing them."
-    m "But, if I really did know how to hack…"
+    m 1j "But, if I really did know how to hack…"
     m "…There wouldn’t be anything stopping me from seeing you every day."
-    m "Don’t you think it would be great if I could watch over you?"
-    m "I'd see you with all the cameras in the world as my eyes so I can make sure you’re safe."
+    m 1k "Don’t you think it would be great if I could watch over you?"
+    m 1a "I'd see you with all the cameras in the world as my eyes so I can make sure you’re safe."
     m "I’d check your messages to see who you’ve been chatting with so I can know you aren’t cheating on me."
     m "I’d access all your private files so I can understand you better."
-    m "I could see what kind of stuff you've been watching…"
-    m "Ahaha~!"
+    m 2b "I could see what kind of stuff you've been watching…"
+    m 1k "Ahaha~!"
     m "I’m just kidding, [player]!"
-    m "I'd never do something like that to you."
+    m 1a "I'd never do something like that to you."
     m "We’re a couple now, after all."
-    m "We don't have to keep secrets from each other~"
+    m 2a "We don't have to keep secrets from each other~"
     return
 
 init 5 python:
@@ -3262,22 +3262,22 @@ init 5 python:
     monika_random_topics.append('monika_cupcake')
 
 label monika_cupcake:
-    m "You know what I could really go for right now?"
-    m "Natsuki’s cupcakes."
-    m "Man, the way she bakes them is amazing."
+    m 2b "You know what I could really go for right now?"
+    m 1j "Natsuki’s cupcakes."
+    m 1b "Man, the way she bakes them is amazing."
     m "Plus they look really cute!"
-    m "I’m not really much of a sweet tooth myself but…"
+    m 1a "I’m not really much of a sweet tooth myself but…"
     m "Those cupcakes are the definition of sweetness."
-    m "Just like me! Ahaha!"
-    m "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
+    m 4k "Just like me! Ahaha!"
+    m 2d "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
     m "Studies show that older women have a less sensitive palate than men."
-    m "Resulting in a craving for stronger tastes like chocolate"
-    m "I would try baking, but I’m not really much of a baker."
-    m "How about you, [player]?"
+    m "Resulting in a craving for stronger tastes like chocolate."
+    m 1e "I would try baking, but I’m not really much of a baker."
+    m 1a "How about you, [player]?"
     m "Do you know how to bake?"
     m "I’m sure your cupcakes would taste just as good."
     m "Maybe someday I’ll get to try them but for now…"
-    m "I’ll just settle for the sweetness of your love~"
+    m 1j "I’ll just settle for the sweetness of your love~"
     #This is a list of keywords for this topic
 
 init 5 python:
