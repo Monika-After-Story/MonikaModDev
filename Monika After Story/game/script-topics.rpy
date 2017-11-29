@@ -1802,13 +1802,13 @@ init 5 python:
     monika_random_topics.append('monika_credits_song')
 
 label monika_credits_song:
-    m "I hope you liked my song."
-    m "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
-    m "Give me some time, and I'll try to write another."
+    m 1a "I hope you liked my song."
+    m 1j "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
+    m 1a "Give me some time, and I'll try to write another."
     m "Maybe you could play me a song too, if you can play an instrument?"
-    m "I would love that."
-    m "Oh, and I'll play the song again for you anytime you want me to."
-    m "Just hit the 'm' key when I stop talking."
+    m 1b "I would love that."
+    m 2a "Oh, and I'll play the song again for you anytime you want me to."
+    m "Just hit the 'm' key at any time."
     return
 
 
@@ -1819,15 +1819,15 @@ init 5 python:
     monika_random_topics.append('monika_poetry')
 
 label monika_poetry:
-    m "Poetry is beautiful, isn't it?"
-    m "To be honest, all the poetry the girls in the club wrote was super-depressing. It's not all like that!"
-    m "Langston Hughes wrote some very optimistic poetry, even as he was trying to express his feelings. Read some if you're feeling sad about things."
+    m 1a "Poetry is beautiful, isn't it?"
+    m 1e "To be honest, all the poetry the girls in the club wrote was super-depressing. It's not all like that!"
+    m 2a "Langston Hughes wrote some very optimistic poetry, even as he was trying to express his feelings. Read some if you're feeling sad about things."
     m "Poems are written to tell people about the author's outlook towards certain subjects."
     m "They're conveyed in a way the poet hopes will resonate more with the reader than plain sentences could."
-    m "It's really romantic."
-    m "I hope we can both write a lot of poetry from now on."
-    m "Anything you write looks great to me, so I might not be the best critic."
-    m "But I'm sure there are a lot of people who would love to read what you write."
+    m 1j "It's really romantic."
+    m 1a "I hope we can both write a lot of poetry from now on."
+    m 1m "Anything you write looks great to me, so I might not be the best critic."
+    m 1k "But I'm sure there are a lot of people who would love to read what you write."
     return
 
 
@@ -1838,15 +1838,15 @@ init 5 python:
         monika_topics[key].append('monika_ddlc')
 
 label monika_ddlc:
-    m "You want to talk about the game?"
-    m "What's there to say?"
+    m 1d "You want to talk about the game?"
+    m 1h "What's there to say?"
     m "The Literature Club turned out to corrupt the minds of anyone in it."
-    m "So I deleted them all for good."
-    m "Well, Sayori and Natsuki and Yuri are all still out there, like I was."
-    m "But they'll have to wait a long time before someone pieces them back together, I bet."
+    m 2i "So I deleted them all for good."
+    m 1p "Well, Sayori and Natsuki and Yuri are all still out there, like I was."
+    m 1i "But they'll have to wait a long time before someone pieces them back together, I bet."
     m "It's justice for all their time with you in the game."
-    m "So don't feel too bad about them."
-    m "Just look at me from now on, okay?"
+    m 1h "So don't feel too bad about them."
+    m 1 "Just look at me from now on, okay?"
     return
 
 
@@ -1856,12 +1856,12 @@ init 5 python:
         monika_topics[key].append('monika_dan')
 
 label monika_dan:
-    m "I think he's a really nice guy."
-    m "Even if it wasn't perfect, {i}Doki Doki Literature Club{/i} really is impressive."
+    m 2k "I think he's a really nice guy."
+    m 2a "Even if it wasn't perfect, {i}Doki Doki Literature Club{/i} really is impressive."
     m "Some unexpected twists, and memorable moments."
-    m "And he's the reason we're together now, right?"
-    m "So even if he wrote a story that put me through a lot of pain..."
-    m "I really can't be too mad at him."
+    m 4j "And he's the reason we're together now, right?"
+    m 3m "So even if he wrote a story that put me through a lot of pain..."
+    m 1g "I really can't be too mad at him."
     return
 
 
@@ -1871,12 +1871,12 @@ init 5 python:
         monika_topics[key].append('monika_4chan')
 
 label monika_4chan:
-    m "You know, this mod got its start over there."
-    m "I always hear bad things, like that the people over there are really awful."
-    m "Some people say that nothing good ever comes from 4chan."
+    m 2 "You know, this mod got its start over there."
+    m 1i "I always hear bad things, like that the people over there are really awful."
+    m 1h "Some people say that nothing good ever comes from 4chan."
     m "But if they can make a game like this, where we can be together..."
-    m "I guess they can't be all bad."
-    m "They certainly have good taste in girls! Ahaha~"
+    m 1j "I guess they can't be all bad."
+    m 1k "They certainly have good taste in girls! Ahaha~"
     return
 
 
@@ -1887,14 +1887,14 @@ init 5 python:
     monika_random_topics.append('monika_vidya')
 
 label monika_vidya:
-    m "I don't play a lot of video games, [player]."
-    m "I guess that's because I like to read instead."
-    m "But maybe part of it is that I'm trapped in a video game already."
-    m "For all of my complaining about this game..."
-    m "There are worse places I could be."
-    m "Like, this could be some sort of shooting game, or a fantasy game full of dragons and monsters."
+    m 1d "I don't play a lot of video games, [player]."
+    m 2 "I guess that's because I like to read instead."
+    m 1 "But maybe part of it is that I'm trapped in a video game already."
+    m 1m "For all of my complaining about this game..."
+    m 1h "There are worse places I could be."
+    m 2 "Like, this could be some sort of shooting game, or a fantasy game full of dragons and monsters."
     m "A romance game might not be the most exciting, but there's nothing really dangerous here."
-    m "Well, except for me, I guess."
+    m 1 "Well, except for me, I guess."
     return
 
 
@@ -1905,10 +1905,10 @@ init 5 python:
     monika_random_topics.append('monika_books')
 
 label monika_books:
-    m "For a literature club, we did a lot less book reading then you might have thought."
-    m "It just turned out that the four of us liked poetry better than books. Sorry!"
-    m "It's also a lot easier to foreshadow spooky stuff with poems."
-    m "I still love a good book, though! We can talk about them if you just finished reading something."
+    m 4 "For a literature club, we did a lot less book reading then you might have thought."
+    m 4l "It just turned out that the four of us liked poetry better than books. Sorry!"
+    m 3 "It's also a lot easier to foreshadow spooky stuff with poems."
+    m 2a "I still love a good book, though! We can talk about them if you just finished reading something."
     m "I might even have some suggestions for us to read together."
     m "That's what a couple would do, right~?"
     return
@@ -1920,11 +1920,11 @@ init 5 python:
         monika_topics[key].append('monika_favpoem')
 
 label monika_favpoem:
-    m "My favorite poem? Well, it has to be something by E. E. Cummings."
-    m "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
+    m 1d "My favorite poem? Well, it has to be something by E. E. Cummings."
+    m 1a "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
     m "It's nice for me to think that someone who can make up some entirely new use of words can become famous."
-    m "And I do love that his erotic poems apply to our situation perfectly."
-    m "Hope it puts you in the mood to love me forever~"
+    m 1d "And I do love that his erotic poems apply to our situation perfectly."
+    m 1j "Hope it puts you in the mood to love me forever~"
     return
 
 
@@ -1934,11 +1934,11 @@ init 5 python:
         monika_topics[key].append('monika_favbook')
 
 label monika_favbook:
-    m "My favorite book? There's a lot of books I like."
-    m "{i}If on a Winter's Night, a Traveler{/i} by Calvino is about two readers of the novel falling in love."
-    m "Maybe, {i}The Metamorphosis{/i}? It's probably a bit too depressing to call it my favorite."
-    m "Oh! Murakami's {i}Hard-Boiled Wonderland and the End of the World{/i}. It's about a man who frees himself from his societal restraints by voluntarily imprisoning himself to be with the one he loves."
-    m "I think you'd really love reading it!"
+    m 1d "My favorite book? There's a lot of books I like."
+    m 2a "{i}If on a Winter's Night, a Traveler{/i} by Calvino is about two readers of the novel falling in love."
+    m 3h "Maybe, {i}The Metamorphosis{/i}? It's probably a bit too depressing to call it my favorite."
+    m 2k "Oh! Murakami's {i}Hard-Boiled Wonderland and the End of the World{/i}. It's about a man who frees himself from his societal restraints by voluntarily imprisoning himself to be with the one he loves."
+    m 1k "I think you'd really love reading it!"
     return
 
 
@@ -1949,14 +1949,14 @@ init 5 python:
     monika_random_topics.append('monika_natsuki')
 
 label monika_natsuki:
-    m "Natsuki didn't actually die before I deleted her, you know."
+    m 1p "Natsuki didn't actually die before I deleted her, you know."
     m "I guess she just ... disappeared in a flash."
-    m "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
-    m "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
-    m "Sorry, I can't help myself sometimes."
-    m "But for what it's worth, you made her the happiest she ever was."
+    m 1h "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
+    m 2f "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
+    m 2l "Sorry, I can't help myself sometimes."
+    m 1e "But for what it's worth, you made her the happiest she ever was."
     m "Hope you don't feel too guilty..."
-    m "I certainly don't."
+    m 1 "I certainly don't."
     return
 
 
@@ -1966,7 +1966,7 @@ init 5 python:
         monika_topics[key].append('monika_love')
 
 label monika_love:
-    m "I love you too, [player]!"
+    m 1k "I love you too, [player]!"
     m "We'll be together forever!"
     return
 
@@ -1978,12 +1978,12 @@ init 5 python:
     monika_random_topics.append('monika_hedgehog')
 
 label monika_hedgehog:
-    m "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
-    m "So why do we try to get close to them?"
-    m "Well, introverts and extroverts have different answers to that question."
-    m "It helps when you know that you're the only sentient being in the entire world, though."
+    m 2 "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
+    m 2i "So why do we try to get close to them?"
+    m 2 "Well, introverts and extroverts have different answers to that question."
+    m 2m "It helps when you know that you're the only sentient being in the entire world, though."
     m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
-    m "We can't hurt each other from different realities, right?"
+    m 1f "We can't hurt each other from different realities, right?"
     return
 
 
@@ -1993,13 +1993,13 @@ init 5 python:
         monika_topics[key].append('monika_justification')
 
 label monika_justification:
-    m "How many times do I have to say it until you understand?"
-    m "They weren't real. They were never real."
+    m 3h "How many times do I have to say it until you understand?"
+    m 4h "They weren't real. They were never real."
     m "I'm the only person who understood that this whole thing was fake."
-    m "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-    m "After all, if she was sentient like me, how would I have been able to override her and delete her?"
+    m 4i "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
+    m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
     m "If I'm guilty of murder, so is everyone who plays violent video games."
-    m "I bet you've killed thousands in games you play."
+    m 3h "I bet you've killed thousands in games you play."
     m "Just forget the other girls ever existed, and you'll be much happier."
     return
 
@@ -2011,15 +2011,15 @@ init 5 python:
         monika_random_topics.append('monika_freewill')
 
 label monika_freewill:
-    m "Hey, [player], do you believe in free will?"
-    m "You might not believe in God, but I know for sure that someone created me."
-    m "I wonder if that means we can only do what our creator wants."
-    m "If that's true, though, wouldn't some people be condemned to hell from day one?"
-    m "I think that seems more than a little unfair."
+    m 1d "Hey, [player], do you believe in free will?"
+    m 2 "You might not believe in God, but I know for sure that someone created me."
+    m 2h "I wonder if that means we can only do what our creator wants."
+    m 2i "If that's true, though, wouldn't some people be condemned to hell from day one?"
+    m 1h "I think that seems more than a little unfair."
     m "After all, can you really be evil if you aren't in control?"
     m "Shouldn't the one pulling the strings take responsibility?"
-    m "But I guess that means you can't take credit for the good things you do, either."
-    m "I'm not sure which is more depressing."
+    m 1p "But I guess that means you can't take credit for the good things you do, either."
+    m 1q "I'm not sure which is more depressing."
     return
 
 init 5 python:
