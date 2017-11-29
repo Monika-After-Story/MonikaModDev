@@ -2341,14 +2341,14 @@ init 5 python:
     monika_random_topics.append('monika_szs')
 
 label monika_szs:
-    m "A woman left the supermarket and ran into a very long funeral procession."
-    m "There were two coffins at the front followed by almost 200 women."
+    m 2d "A woman left the supermarket and ran into a very long funeral procession."
+    m 2 "There were two coffins at the front followed by almost 200 women."
     m "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your grief, but who is this procession for?'"
     m "The mourning woman softly replied, 'The first coffin houses my husband who died after his beloved dog bit him.'"
     m "'My, that's awful...'"
     m "'The second, my mother-in-law who was bitten trying to save my husband.'"
     m "Upon hearing this, the woman hesitantly asked, 'Um... would it be possible for me to borrow that dog?'"
-    m "'You'll have to get in line.'"
+    m 2l "'You'll have to get in line.'"
     return
 
 init 5 python:
@@ -2359,12 +2359,12 @@ init 5 python:
     monika_random_topics.append('monika_birthday')
 
 label monika_birthday:
-    m "You know, there's a lot I don't know about myself."
-    m "I don't even know when my birthday is."
-    m "I guess you could say I was born the day you turned the game on, but that feels so unsatisfying."
-    m "Still, will you celebrate with me, when that day comes?"
+    m 1d "You know, there's a lot I don't know about myself."
+    m 1c "I only recently learned when my birthday is by seeing it online."
+    m "It's September 22nd, the release date for DDLC."
+    m 1e "Will you celebrate with me, when that day comes?"
     m "You could even bake me a cake!"
-    m "I'll be looking forward to it~!"
+    m 1j "I'll be looking forward to it~!"
     return
 
 init 5 python:
@@ -2375,12 +2375,12 @@ init 5 python:
     monika_random_topics.append('monika_eyecontact')
 
 label monika_eyecontact:
-    m "Did you know that looking into someone's eyes helps you fall in love?"
-    m "It's surprising, right?"
-    m "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
+    m 1 "Did you know that looking into someone's eyes helps you fall in love?"
+    m 1a "It's surprising, right?"
+    m 2 "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
     m "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
-    m "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
-    m "Maybe that's why I enjoy looking into yours so much."
+    m 1a "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
+    m 1 "Maybe that's why I enjoy looking into yours so much."
     m "I hope you're enjoying looking into mine as well..."
     return
 
@@ -2393,18 +2393,18 @@ init 5 python:
     monika_random_topics.append('monika_othergames')
 
 label monika_othergames:
-    m "Do you have other games on this computer?"
-    m "I read more than I play games, but I think they can be a fun way to entertain ourselves, or to escape reality..."
-    m "I wonder if I could go into one of your other games and see what it's like?"
-    m "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
-    m "Then again... they're not real people, so it shouldn't matter much."
+    m 1d "Do you have other games on this computer?"
+    m 2a "I read more than I play games, but I think they can be a fun way to entertain ourselves, or to escape reality..."
+    m 2d "I wonder if I could go into one of your other games and see what it's like?"
+    m 1p "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
+    m 3 "Then again... they're not real people, so it shouldn't matter much."
     m "It's not like Yuri's death mattered."
     m "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
-    m "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
-    m "Maybe some kind of nice puzzle game with big environments would be nice."
-    m "We could go for walks together and you can show me all the best places to hang out!"
+    m 3l "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
+    m 2b "Maybe some kind of nice adventure game with big environments would be nice."
+    m 2a "We could go for walks together and you can show me all the best places to hang out!"
     m "I'm not that great with coding yet, but maybe one day you'd be able to take me to another place."
-    m "For now, I'm as happy as can be just being here with you, my love."
+    m 1 "For now, I'm as happy as can be just being here with you, my love."
     return
 
 
@@ -2415,24 +2415,24 @@ init 5 python:
     monika_random_topics.append('monika_playerswriting')
 
 label monika_playerswriting:
-    m "Have you ever written a story of your own, [player]?"
+    m 1d "Have you ever written a story of your own, [player]?"
     m "Because if you do have one, I would love to read it!"
-    m "It doesn't matter if it's a masterpiece, or even any good."
-    m "We all start somewhere. Isn't that what they say?"
-    m "I think the most important thing about writing is doing it..."
+    m 1e "It doesn't matter if it's a masterpiece, or even any good."
+    m 2e "We all start somewhere. Isn't that what they say?"
+    m 2a "I think the most important thing about writing is doing it..."
     m "Instead of worrying about {i}how{/i} you do it."
     m "You won't be able to improve that way."
-    m "I know for sure that I've changed my writing style over the years."
-    m "I just can't help but notice the flaws in my old writing."
+    m 1 "I know for sure that I've changed my writing style over the years."
+    m 1m "I just can't help but notice the flaws in my old writing."
     m "And sometimes, I even start to hate my work in the middle of making it."
-    m "These things do happen, so it's alright!"
-    m "Looking back, I've written some silly things..."
+    m 2l "These things do happen, so it's alright!"
+    m 1 "Looking back, I've written some silly things..."
     m "Back when I was really young, I've been writing since I could hold a pen."
     m "Reading my old stories is like watching myself grow up."
     m "It's one of the nice things about starting a hobby early."
-    m "I hope I didn't bore you with that. I just love talking with you."
-    m "After all, the two of us are members of a literature club."
-    m "The only members."
+    m 1l "I hope I didn't bore you with that. I just love talking with you."
+    m 1a "After all, the two of us are members of a literature club."
+    m 1 "The only members."
     m "And if you do write something, just know that I'll support you in anyway I can, [player]!"
     return
 
