@@ -3705,7 +3705,7 @@ label monika_nuclear_war:
     m 2h "The cold war might be over, but plenty of weapons are still out there."
     m "You probably have a nuclear missile pointed at where you live right now, ready to be launched."
     m "And if it was, it could circle the globe in less than an hour."
-    m 3n "You wouldn't have time to evacuate.
+    m 3n "You wouldn't have time to evacuate."
     m "Only enough to panic and suffer the dread of imminent death."
     m 1r "At least it would be over quickly when the bomb hit."
     m 1i "Well, if you're close to the blast, that is."
