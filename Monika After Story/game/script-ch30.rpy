@@ -156,7 +156,7 @@ init python:
             #     _window_hide(None)
             #     pause(2.0)
             #     renpy.jump("ch30_end")
-            if  config.skipping:#and not config.developer:
+            if  config.skipping and not config.developer:
                 persistent.tried_skip = True
                 config.skipping = False
                 config.allow_skipping = False
@@ -322,9 +322,10 @@ label ch30_autoload:
     # event list
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
-    $ style.say_dialogue = style.default_monika
+    if not config.developer:
+        $ style.say_dialogue = style.default_monika
+        $ config.allow_skipping = False
     $ quick_menu = True
-    $ config.allow_skipping = False
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
@@ -338,11 +339,11 @@ label ch30_autoload:
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
     if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.event_list:
         $queueEvent('gender')
-        
+
     #Asks player if they want to be called by a different name
     if not renpy.seen_label('preferredname') and not 'preferredname' in persistent.event_list:
         $pushEvent('preferredname')
-    
+
     #Block for anniversary events
     if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
         $ persistent.monika_anniversary = 0
