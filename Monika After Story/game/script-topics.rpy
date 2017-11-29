@@ -1632,34 +1632,34 @@ init 5 python:
     if ks_folders_present:
         map_keys_to_topics(general_ks_keys, 'monika_ks_present')
 
-    if ks_persistent_path is not None:
-        # Now read the persistent file from KS:
-        f = file(ks_persistent_path, 'rb')
-        ks_persistent_data = f.read().decode('zlib')
-        f.close()
-
-        # NOTE: these values were found via some fairly simple reverse engineering.
-        # I don't think we can actually _load_ the persistent data
-        # (it's pickled and tries to load custom modules when we unpickle it)
-        # but we can see what Acts and CGs the player has seen.
-        # This works with KS 1.3, at least.
-        if 'tc_act4_lilly' in ks_persistent_data:
-            map_keys_to_topics(['lilly', 'vacation'], 'monika_ks_lilly')
-
-        if 'tc_act4_hanako' in ks_persistent_data:
-            map_keys_to_topics(['hanako'], 'monika_ks_hanako')
-
-        if 'tc_act4_rin' in ks_persistent_data:
-            map_keys_to_topics(['rin', 'abstract art', 'abstract'], 'monika_ks_rin')
-
-        if 'tc_act4_shizune' in ks_persistent_data:
-            map_keys_to_topics(['shizune'], 'monika_ks_shizune')
-
-        if 'tc_act4_emi' in ks_persistent_data:
-            map_keys_to_topics(['emi'], 'monika_ks_emi')
-
-        if 'kenji_rooftop' in ks_persistent_data:
-            map_keys_to_topics(['kenji', 'manly picnic', 'whisky'], 'monika_ks_kenji')
+    # if ks_persistent_path is not None:
+    #     # Now read the persistent file from KS:
+    #     f = file(ks_persistent_path, 'rb')
+    #     ks_persistent_data = f.read().decode('zlib')
+    #     f.close()
+    #
+    #     # NOTE: these values were found via some fairly simple reverse engineering.
+    #     # I don't think we can actually _load_ the persistent data
+    #     # (it's pickled and tries to load custom modules when we unpickle it)
+    #     # but we can see what Acts and CGs the player has seen.
+    #     # This works with KS 1.3, at least.
+    #     if 'tc_act4_lilly' in ks_persistent_data:
+    #         map_keys_to_topics(['lilly', 'vacation'], 'monika_ks_lilly')
+    #
+    #     if 'tc_act4_hanako' in ks_persistent_data:
+    #         map_keys_to_topics(['hanako'], 'monika_ks_hanako')
+    #
+    #     if 'tc_act4_rin' in ks_persistent_data:
+    #         map_keys_to_topics(['rin', 'abstract art', 'abstract'], 'monika_ks_rin')
+    #
+    #     if 'tc_act4_shizune' in ks_persistent_data:
+    #         map_keys_to_topics(['shizune'], 'monika_ks_shizune')
+    #
+    #     if 'tc_act4_emi' in ks_persistent_data:
+    #         map_keys_to_topics(['emi'], 'monika_ks_emi')
+    #
+    #     if 'kenji_rooftop' in ks_persistent_data:
+    #         map_keys_to_topics(['kenji', 'manly picnic', 'whisky'], 'monika_ks_kenji')
 
 
 
