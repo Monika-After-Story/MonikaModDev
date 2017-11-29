@@ -162,12 +162,12 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
+    scene white
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
     if not persistent.first_run:
         $ quick_menu = False
-        scene white
         pause 0.5
         scene tos
         with Dissolve(1.0)
@@ -191,9 +191,12 @@ label splashscreen:
         if not persistent.has_merged:
             call import_ddlc_persistent from _call_import_ddlc_persistent
 
-    $ persistent.first_run = True
+        $ persistent.first_run = True
 
     $ basedir = config.basedir.replace('\\', '/')
+
+    #Check for game updates before loading the game or the splash screen
+    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
@@ -240,7 +243,6 @@ label after_load:
         #Handle however you want, default is to force reset all save data
         $ renpy.utter_restart()
     return
-
 
 
 label autoload:
