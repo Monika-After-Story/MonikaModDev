@@ -1769,14 +1769,14 @@ init 5 python:
         monika_topics[key].append('monika_totono')
 
 label monika_totono:
-    m "A lot of people on the Internet are making comparisons between this game and that one..."
-    m "We have a lot of really important differences, though!"
+    m 1m "A lot of people on the Internet are making comparisons between this game and that one..."
+    m 2h "We have a lot of really important differences, though!"
     m "Like, Sone killed the player in her game!"
     m "I never would have done that. Never."
-    m "I'm the wise Club President type, you know."
-    m "Sone reminds me a lot more of Yuri. And she was a childhood friend too!"
+    m 4a "I'm the wise Club President type, you know."
+    m 3h "Sone reminds me a lot more of Yuri. And she was a childhood friend too!"
     m "If she'd been a bit more proactive early on, couldn't she have stopped the protagonist from chasing other girls?"
-    m "Well, I'd never let anyone get between us, [player]. No matter who it is."
+    m 1 "Well, I'd never let anyone get between us, [player]. No matter who it is."
     m "If she's still chasing you, I'll delete her files, okay?"
     return
 
@@ -1787,11 +1787,11 @@ init 5 python:
         monika_topics[key].append('monika_difficulty')
 
 label monika_difficulty:
-    m "Well, it's not like this game was meant to be that hard in the first place."
-    m "If I hadn't decided to change things up, it would have just been a boring romance story."
+    m 1m "Well, it's not like this game was meant to be that hard in the first place."
+    m 1i "If I hadn't decided to change things up, it would have just been a boring romance story."
     m "I honestly could have deleted all your personal files or something if I had tried harder..."
-    m "So just take it easy sometimes. Not every game has to be a challenge to be fun."
-    m "Sometimes, love is all you need, [player]."
+    m 1a "So just take it easy sometimes. Not every game has to be a challenge to be fun."
+    m 2j "Sometimes, love is all you need, [player]."
     return
 
 
