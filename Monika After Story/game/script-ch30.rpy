@@ -197,6 +197,7 @@ label spaceroom:
     default dissolve_time = 0.5
     if is_morning():
         if morning_flag != True or scene_change:
+            $ morning_flag = True
             show room_mask3 as rm:
                 size (320,180)
                 pos (30,200)
@@ -206,7 +207,6 @@ label spaceroom:
             show monika_day_room
             show monika 1 at tinstant zorder 2
             with Dissolve(dissolve_time)
-            $ morning_flag = True
     elif not is_morning():
         if morning_flag != False or scene_change:
             $ morning_flag = False
