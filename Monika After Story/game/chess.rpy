@@ -103,14 +103,15 @@ init:
                 def open_stockfish(path):
                     return subprocess.Popen([renpy.loader.transfn(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
+                is_64_bit = sys.maxsize > 2**32
                 if platform.system() == 'Windows':
-                    if platform.machine() == 'x86':
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe')
-                    elif platform.machine() == 'x86_64':
+                    if is_64_bit:
                         self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe')
-                elif platform.system() == 'Linux' and platform.machine() == 'x86_64':
+                    else:
+                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe')
+                elif platform.system() == 'Linux' and is_64_bit:
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_linux_x64')
-                elif platform.system() == 'Darwin' and platform.machine() == 'x86_64':
+                elif platform.system() == 'Darwin' and is_64_bit:
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_macosx_x64')
 
                 # Set Monika's parameters
