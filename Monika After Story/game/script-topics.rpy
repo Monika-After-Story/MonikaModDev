@@ -3536,6 +3536,31 @@ label monika_changename:
             m "Just let me know if you had a change of heart, ok?"
     return
 
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['home']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_home_memories')#id
+    monika_random_topics.append('monika_home_memories')
+    
+label monika_home_memories:
+    m 1b "[player], how is it like, where you live?"
+    m "You know... I would stay with you if I could. Would that be alright?"
+    m 2k "We would be able to do so much! You could show me around, and maybe we could even live together."
+    m "Imagine all the memories we'd make together. It would be a dream come true."
+    m 1b "The memories I have of my home would be nothing compared to the ones i'd have with you."
+    m "Have I ever told you about my childhood home? I had a pretty normal life. I even had my own personal library."
+    m 4a "That's where my love for literature started. My parents were very supportive because of my good grades."
+    m 4j "They all had their own talents, and I felt like most of my success came from them."
+    m "My mother was really athletic in her younger days, so I wanted to follow in her footsteps."
+    m "And my father played a lot of instruments in his free time. It was his music that inspired me to pickup the piano in the first place."
+    m 5a "I'm sure you heard me playing on most of the game's soundtrack, haven't you?"
+    m 1o "But even through all my effort in life, I always felt like I was missing something."
+    m "I stayed optimistic everyday, trying to find it."
+    m 1n "It turns out, that missing piece was you."
+    m "If Sayori didn't drag you into the literature club, I don't know if I ever would have found you. Maybe it was fate?"
+    m 3e "Yeah, I know it's fate. Because you found me, too. And with you, I'm complete."
+    return
 
 ##################
 #Incomplete ideas#
