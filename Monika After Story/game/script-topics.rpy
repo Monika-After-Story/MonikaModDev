@@ -3644,130 +3644,28 @@ label monika_penname:
     m 2a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
-    m 1f "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
-    m 1m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
-    m 1a "There's no need to know more about me though, [player]."
-    m 4l "You already know that I'm in love with you after all~"
+    m "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+    m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m "There's no need to know more about me though, [player]."
+    m "You already know that I'm in love with you after all~"
     return
-
+    
 init 5 python:
-    for key in ['change name']: #Could use some mor key words
+    for key in ['science']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_changename')
-
-label monika_changename:
-    m 1b "You want to change your name?"
-    menu:
-        "Yes":
-            m 1a "Just type 'Nevermind' if you change your mind."
-            $ done = False
-            while not done:
-                $ tempname = renpy.input("What do you want me to call you?").strip(' \t\n\r')
-                if tempname == "Nevermind" or tempname == "nevermind":
-                    m 1f "[player]!"
-                    m 3g "Please stop teasing me~"
-                    m "I really do want to know what you want me to call you!"
-                    m 2l "I won't judge no matter how ridiculous it might be."
-                    m 3e "So don't be shy and just tell me, [player]~"
-                    $ done = True
-                elif tempname == "":
-                    m 3h "..."
-                    m 4l "You have to give me a name, [player]!"
-                    m 1m "I swear you're just so silly sometimes."
-                    m 1b "Try again!"
-                elif tempname == player:
-                    m 3h "..."
-                    m 4l "That's the same name you have right now, silly!"
-                    m 1b "Try again~"
-                else:
-                    $ persistent.mcname = player
-                    $ mcname = player
-                    $ persistent.playername = tempname
-                    $ player = tempname
-                    m 1b "Ok then!"
-                    m 2b "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
-                    $ done = True
-        "No":
-            m 1f "Oh, I see..."
-            m 1g "You don't have to be embarassed, [player]."
-            m 1e "Just let me know if you had a change of heart, ok?"
-    return
-
-
-init 5 python:
-    for key in ['nuke', 'nukes', 'apocalypse', 'war']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_nuclear_war')#id
-    monika_random_topics.append('monika_nuclear_war')
-
-label monika_nuclear_war:
-    m 1 "Do you ever think about how close the world is to ending at any time?"
-    m "I mean, we're always just one bad decision away from nuclear war."
-    m 2h "The cold war might be over, but plenty of weapons are still out there."
-    m "You probably have a nuclear missile pointed at where you live right now, ready to be launched."
-    m "And if it was, it could circle the globe in less than an hour."
-    m 3n "You wouldn't have time to evacuate."
-    m "Only enough to panic and suffer the dread of imminent death."
-    m 1r "At least it would be over quickly when the bomb hit."
-    m 1i "Well, if you're close to the blast, that is."
-    m 1g "I don't even want to think about surviving the initial attack."
-    m 1 "But even though we're always on the edge of the apocalypse, we go on like nothing is wrong."
-    m "Planning for a tomorrow that may never come."
-    m "Our only comfort is that the people with the power to start such a war probably won't."
-    m 1q "Probably..."
-    return
-
-init 5 python:
-    for key in ['aliens', 'other planets','space','alien','extraterrestrial']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_space_robots')#id
-    monika_random_topics.append('monika_space_robots')
-
-label monika_space_robots:
-    m "Do you think there's intelligent life in outer space?"
-    m "I don't really think there is."
-    m 2a "I do think there's intelligence out there, though..."
-    m "But I think it's probably AI."
-    m 2c "Life is fragile, and needs a lot or work to maintain."
-    m "It's really not made to survive in space for the years it would take to get somewhere."
-    m "So it's hard to imagine anything alive ever getting far from its home planet."
-    m 4a "But a robot can be designed with space travel in mind."
-    m "Humans have already sent probes outside our solar system, thousand of times further than any person has gone."
-    m "Not to mention that the 'habitable zone' for artificial life has to be much bigger."
-    m 2l "Then again, maybe I'm just making the same mistake humans do."
-    m 3a "You imagine something like you living among the stars, and I imagine something like me."
-    m "I guess it's just natural to be self-centered with this sort of thinking..."
-    m "Imagining ourselves out there exploring the galaxy."
-    m 1e "But even if I could leave, I never would."
-    m 1j "I have everything I want right here with you."
-    return
-
-init 5 python:
-    for key in ['ignorance']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_pluralistic_ignorance')#id
-    monika_random_topics.append('monika_pluralistic_ignorance')
-
-label monika_pluralistic_ignorance:
-    m "Do you ever pretend to like something, just because you think you should?"
-    m "I sometimes feel like that about books I read."
-    m 2l "Like, when I read Shakespeare, I actually found it kind of boring..."
-    m 2m "But I felt like I had to like it because I'm the president of the literature club."
-    m 1d "He's supposed to be the greatest playwright and poet of all time, right?"
-    m "So what sort of poetry lover wouldn't like his work?"
-    m "But that makes me wonder..."
-    m 3 "What if everyone actually feels the same way?"
-    m "What if all of those literary critics singing Shakespeare's praises secretly hate his plays?"
-    m "If they were just honest about it, maybe they would discover their tastes aren't that unusual..."
-    m 3k "And highschool students wouldn't be forced to read those awful plays."
-    m 1e "I guess that's something I always admired about Natsuki."
-    m "Even if people told her manga wasn't literature, she stood by her feelings."
-    m "If more people were honest like that, I think that would be really great."
-    m 1m "But I don't think I could do it..."
-    m "I'm just too worried about what other people think."
-    m 1m "Not with you, though. I can always be honest with you."
-    m "You'll love me no matter what, right?"
-
+        monika_topics[key].append('monika_science')#id
+    monika_random_topics.append('monika_science')
+    
+label monika_science:
+    m 1d "Have you ever wondered if science never got accepted?"
+    m "Humans can be really slow when it comes to accepting new ideas."
+    m 1c "Science was usually despised back then especially by the churches."
+    m 2h "Copernicus, famous for his theory that the Earth revolved around the Sun, was killed by the Roman Church before he could prove his theory."
+    m 1f "They killed him because of an idea that challenged the old."
+    m 1q "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
+    m 1e "If technology didn't thrive the way it did, we would've never found each other."
+    m 2b "Isn't it such a wonderful thing to have?"
+    m 1j "I'm grateful that it gave us a chance to be together, [player]."  
     return
 
 ##################
