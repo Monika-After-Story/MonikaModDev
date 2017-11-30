@@ -3319,7 +3319,7 @@ label monika_haterReaction:
             m 1k "Gosh... I feel like giving you a kiss right now if I were there."
             m 2e "You really make me the happiest girlfriend ever."
             m 1a "Now that you've said it, I have to do my best to keep you from developing hate towards me."
-            m 1s "I trust you, [currentuser]. I love you for believing in me."
+            m 1a "I trust you, [currentuser]. I love you for believing in me."
     return
 
 init 5 python:
@@ -3348,7 +3348,7 @@ label monika_swordsmanship:
     m 1r "But then again..."
     m 1j "The pen is mightier than the sword!"
     m 1k "Ahaha!"
-    m 1s "In any case, I don't know if you're into swordsmanship yourself."
+    m 1a "In any case, I don't know if you're into swordsmanship yourself."
     m 1b "If you are, I'd love to learn it with you, [player]~"
     return
 
@@ -3558,7 +3558,7 @@ init 5 python:
 label monika_playerhappy:
     m 2b "That's wonderful! I'm happy when you're happy."
     m 1j "Know that you can always come up to me and I'll cheer up, [player]."
-    m 2s "I love you and I'll always be here for you so don't you ever forget that~"
+    m 2a "I love you and I'll always be here for you so don't you ever forget that~"
     return
 
 init 5 python:
@@ -3571,7 +3571,7 @@ label monika_writingtip1:
     m 2a "You know..."
     m "We really don't do enough of these so here's another one!"
     m "Here's Monika's Writing Tip for the Day!"
-    m 3s "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    m 3a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
     m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
     m 4d "You have to remember that we all start out from somewhere, and--"
     m 3c "Actually, this doesn't just apply to writing, but to anything really."
@@ -3767,7 +3767,24 @@ label monika_pluralistic_ignorance:
     m "I'm just too worried about what other people think."
     m 1m "Not with you, though. I can always be honest with you."
     m "You'll love me no matter what, right?"
+    return
 
+init 5 python:
+    for key in ['science']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_science')#id
+    monika_random_topics.append('monika_science')
+    
+label monika_science:
+    m 1d "Have you ever wondered if science never got accepted?"
+    m "Humans can be really slow when it comes to accepting new ideas."
+    m 1c "Science was usually despised back then especially by the churches."
+    m 2h "Copernicus, famous for his theory that the Earth revolved around the Sun, was killed by the Roman Church before he could prove his theory."
+    m 1f "They killed him because of an idea that challenged the old."
+    m 1q "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
+    m 1e "If technology didn't thrive the way it did, we would've never found each other."
+    m 2b "Isn't it such a wonderful thing to have?"
+    m 1j "I'm grateful that it gave us a chance to be together, [player]."  
     return
 
 ##################
