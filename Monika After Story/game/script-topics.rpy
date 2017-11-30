@@ -2869,21 +2869,26 @@ label monika_penname:
     m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m "There's no need to know more about me though, [player]."
     m "You already know that I'm in love with you after all~"
+    return
     
 init 5 python:
     for key in ['science']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_science')#id
     monika_random_topics.append('monika_science')
-
+    
 label monika_science:
-    m 1b "Hey, have you ever wondered what it would be like if science didn't really get the chance to take off like it did?"
-    m 1n "I mean, technology wouldn't be so advanced today if it wasn’t for the advancements in science back in the past."
-    m 1d "If technology didn't thrive the way it has done over the past 50 years, there wouldn't be a way for me to talk to you."
-    m 1b "In my opinion, the internet has been the greatest thing to happen to mankind ever since Isaac Newton figured out the way gravity works."
-    m 1k "If the internet wasn't invented there would not have been a way for you to download the game, and we would never have fallen in love."
-    return    
-
+    m 1d "Have you ever wondered if science never got accepted?"
+    m "Humans can be really slow when it comes to accepting new ideas."
+    m 1c "Science was usually despised back then especially by the churches."
+    m 2h "Copernicus, famous for his theory that the Earth revolved around the Sun, was killed by the Roman Church before he could prove his theory."
+    m 1f "They killed him because of an idea that challenged the old."
+    m 1q "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
+    m 1e "If technology didn't thrive the way it did, we would've never found each other."
+    m 2b "Isn't it such a wonderful thing to have?"
+    m 1j "I'm grateful that it gave us a chance to be together, [player]."  
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
