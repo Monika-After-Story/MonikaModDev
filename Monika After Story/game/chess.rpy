@@ -26,11 +26,11 @@ init:
 
         def is_platform_good_for_chess():
             import platform
-            if platform.machine() == 'x86_64':
+            import sys
+            if sys.maxsize > 2**32:
                 return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
-            elif platform.machine() == 'x86':
+            else:
                 return platform.system() == 'Windows'
-            return False
 
         def get_mouse_pos():
             vw = config.screen_width * 10000
