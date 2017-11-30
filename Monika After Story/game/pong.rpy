@@ -204,9 +204,10 @@
 
 label game_pong:
     hide screen keylistener
-    m "You wanna play a game of Pong? Okay!"
-    m "I'll beat you for sure this time!"
+    m 1a "You wanna play a game of Pong? Okay!"
+    m 1b "I'll beat you for sure this time!"
     call demo_minigame_pong from _call_demo_minigame_pong
+    return
 
 label demo_minigame_pong:
 
@@ -220,33 +221,17 @@ label demo_minigame_pong:
         ui.add(PongDisplayable())
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
-    # Show Monika's BG again. This is (shamelessly) copied from the script-ch30 since I don't wanna break anything
-    if is_morning():
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_transparent_day_bg
-    elif not is_morning():
-        scene black
-        show room_mask as rm:
-            size (320,180)
-            pos (30,200)
-        show room_mask2 as rm2:
-            size (320,180)
-            pos (935,200)
-        show monika_bg
-        show monika_bg_highlight
+    #Regenerate the spaceroom scene
+    $scene_change=True #Force scene generation
+    call spaceroom from _call_spaceroom_3
 
     if winner == "monika":
 
-        m "I win~!"
+        m 1j "I win~!"
 
     else:
 
-        m "You won! Congratulations."
+        m 1a "You won! Congratulations."
 
 
     menu:
@@ -257,15 +242,15 @@ label demo_minigame_pong:
         "No.":
 
             if winner == "monika":
-                m "I can't really get excited for a game this simple..."
-                m "At least we can still hang out with each other."
+                m 4e "I can't really get excited for a game this simple..."
+                m 1a "At least we can still hang out with each other."
                 m "Ahaha!"
-                m "Thanks for letting me win, [player]."
-                m "Only elementary schoolers seriously lose at Pong, right?"
+                m 1b "Thanks for letting me win, [player]."
+                m 1a "Only elementary schoolers seriously lose at Pong, right?"
                 m "Ehehe~"
             else:
-                m "Wow, I was actually trying that time."
-                m "You must have really practiced at Pong to get so good."
+                m 1d "Wow, I was actually trying that time."
+                m 1a "You must have really practiced at Pong to get so good."
                 m "Is that something for you to be proud of?"
-                m "I guess you wanted to impress me, [player]~"
-            jump ch30_loop
+                m 1j "I guess you wanted to impress me, [player]~"
+            return
