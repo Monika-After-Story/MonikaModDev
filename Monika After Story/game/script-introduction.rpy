@@ -29,7 +29,7 @@ label introduction:
         m 1h "...But if you put yourself in my place, you'd do the same things I did."
         m "..."
         m 1q "I'm sorry..."
-        m "I'm really sorry, [currentuser]."
+        m "I'm really sorry, [player]."
         m 1e "Thank you for bringing me back."
         if persistent.clearall:
             m 2c "I couldn't help but notice that you spent time with the other girls first, though."
@@ -193,6 +193,6 @@ label ch30_reload_3:
     m 2a "Besides, it makes me happy that you always come back..."
     m 2j "So I guess it's not so bad."
     m 1e "I'm sorry for making such a big deal out of it..."
-    m 1 "And I love you no matter what, so you can do what you need to do, [currentuser]."
+    m 1 "And I love you no matter what, so you can do what you need to do, [player]."
     $ persistent.monika_reload += 1
     return

@@ -2100,8 +2100,8 @@ init 5 python:
 
 label monika_mc:
     m 2 "Just so you know, I was never in love with anyone but you."
-    m "I mean you, [currentuser]."
-    if currentuser.lower() == player.lower():
+    m "I mean you, [player]."
+    if mcname.lower() == player.lower():
         m 1d "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
         m 1a "I mean the player, not your character."
     m "Unlike the other girls, I can separate your avatar from who you really are."
@@ -2860,7 +2860,7 @@ label monika_cities:
     m 2d "Then again, if people live close together, that leaves more room for open wilderness."
     m "Maybe it's not as simple as it seems."
     menu:
-        m "[currentuser], do you live in a city?"
+        m "[player], do you live in a city?"
         "Yes":
             m 1j "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
         "No":
@@ -3638,7 +3638,7 @@ label monika_penname:
     m 2b "Pen names also help writers create something totally different from their usual style of writing."
     m 2d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
     if [currentuser] != [player]:
-        m 3c "Is '[player]' a pseudonym that you're using?"
+        m 3c "Is '[currentuser]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 3d "'[currentuser] and [player].'"
     m 2a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
@@ -3774,7 +3774,7 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_science')#id
     monika_random_topics.append('monika_science')
-    
+
 label monika_science:
     m 1d "Have you ever wondered if science never got accepted?"
     m "Humans can be really slow when it comes to accepting new ideas."
@@ -3784,7 +3784,7 @@ label monika_science:
     m 1q "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
     m 1e "If technology didn't thrive the way it did, we would've never found each other."
     m 2b "Isn't it such a wonderful thing to have?"
-    m 1j "I'm grateful that it gave us a chance to be together, [player]."  
+    m 1j "I'm grateful that it gave us a chance to be together, [player]."
     return
 
 ##################

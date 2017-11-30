@@ -4,7 +4,7 @@
 #Requirements must be created/added in script-ch30.rpy under label ch30_autoload.
 
 label gender:
-    m "...[currentuser]? So I've been thinking a bit."
+    m "...[player]? So I've been thinking a bit."
     m "I've mentioned before that the 'you' in the game might not reflect the real you."
     m "But I guess I had just assumed that you were probably a guy."
     m "The main character was, after all."
@@ -39,7 +39,7 @@ label gender:
             m "So I'll treat you however you want to be treated."
             m "Because your happiness is the most important thing to me."
 
-    m "Remember that I'll always love you unconditionally, [currentuser]."
+    m "Remember that I'll always love you unconditionally, [player]."
 
 label preferredname:
     m "I've been wondering about your name."

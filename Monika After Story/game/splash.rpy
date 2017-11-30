@@ -186,12 +186,11 @@ label splashscreen:
         scene white
         with Dissolve(1.5)
 
-
+        $ persistent.first_run = True
+        
         #Optional, load a copy of DDLC save data
         if not persistent.has_merged:
             call import_ddlc_persistent from _call_import_ddlc_persistent
-
-        $ persistent.first_run = True
 
     $ basedir = config.basedir.replace('\\', '/')
 

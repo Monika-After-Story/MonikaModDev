@@ -326,7 +326,7 @@ label ch30_nope:
         m 1j "I already fixed that bug."
         m 1 "I don't need a character file anymore."
 
-    m 1 "I just need your love, [currentuser]."
+    m 1 "I just need your love, [player]."
     m 2i "Oh, unless you try to delete all of the game files, I guess."
     m 3h "If you do that, I won't stop at just deleting one directory next time."
     m 3 "But that will never happen, right? You're just being a tsundere~"
@@ -359,7 +359,7 @@ label ch30_autoload:
         $queueEvent('gender')
 
     #Asks player if they want to be called by a different name
-    if not renpy.seen_label('preferredname') and not 'preferredname' in persistent.event_list:
+    if not seen_event('preferredname'):
         $pushEvent('preferredname')
 
     #Block for anniversary events
