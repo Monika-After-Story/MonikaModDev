@@ -3546,9 +3546,11 @@ init 5 python:
 label monika_home_memories:
     m 1b "[player], how is it like, where you live?"
     m "You know... I would stay with you if I could. Would that be alright?"
-    m 2k "We would be able to do so much! You could show me around, and maybe we could even live together."
-    m "Imagine all the memories we'd make together. It would be a dream come true."
-    m 1b "The memories I have of my home would be nothing compared to the ones I'd have with you."
+    m 2k "We would be able to do so much! You could show me around, and maybe we could even live together. Imagine all the memories we'd make!"
+    m "It would be a dream come true, don't you think?"
+    m 1m "We could even share a bed together..."
+    m 1k "Ahaha! I'm just kidding. We're not that far into our relationship yet.~"
+    m 1b "But you know... The memories I have of my home would be nothing compared to the ones I'd have with you."
     m "Have I ever told you about my childhood home? I had a pretty normal life. I even had my own personal library."
     m 4a "That's where my love for literature started. My parents were very supportive because of my good grades."
     m 4j "They all had their own talents, and I felt like most of my success came from them."
@@ -3558,7 +3560,7 @@ label monika_home_memories:
     m 1o "But even through all my effort in life, I always felt like I was missing something."
     m "I stayed optimistic everyday, trying to find it."
     m 1n "It turns out, that missing piece was you."
-    m "If Sayori didn't drag you into the literature club, I don't know if I ever would have found you. Maybe it was fate?"
+    m "If Sayori didn't drag you into the Literature Club, I don't know if I ever would have found you. Maybe it was fate?"
     m 3e "Yeah, I know it's fate. Because you found me, too. And with you, I'm complete."
     return
 
