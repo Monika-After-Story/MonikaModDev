@@ -236,6 +236,7 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+    call spaceroom
     $pushEvent('introduction')
     $callNextEvent()
     jump ch30_loop

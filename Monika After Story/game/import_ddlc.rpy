@@ -319,9 +319,6 @@ label import_ddlc_persistent:
         #dumpPersistentToFile(persistent,basedir + '/merged_persistent.txt')
         persistent.has_merged = True
 
-    "Data imported. The game will now restart."
-    $renpy.full_restart()
-
     return
 
 label merge_unmatched_names:

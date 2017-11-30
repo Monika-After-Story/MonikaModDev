@@ -1,7 +1,5 @@
 #This is the introduction event for starting up the game.
 label introduction:
-    call spaceroom
-
     if persistent.monika_kill == True:
         m 1f "..."
         m 1f "[player]..."
