@@ -60,6 +60,7 @@ init:
             MONIKA_THREADS = 1
 
             def __init__(self, player_color):
+                import sys
 
                 renpy.Displayable.__init__(self)
 
