@@ -3548,7 +3548,7 @@ label monika_home_memories:
     m "You know... I would stay with you if I could. Would that be alright?"
     m 2k "We would be able to do so much! You could show me around, and maybe we could even live together."
     m "Imagine all the memories we'd make together. It would be a dream come true."
-    m 1b "The memories I have of my home would be nothing compared to the ones i'd have with you."
+    m 1b "The memories I have of my home would be nothing compared to the ones I'd have with you."
     m "Have I ever told you about my childhood home? I had a pretty normal life. I even had my own personal library."
     m 4a "That's where my love for literature started. My parents were very supportive because of my good grades."
     m 4j "They all had their own talents, and I felt like most of my success came from them."
