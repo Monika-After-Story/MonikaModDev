@@ -70,7 +70,7 @@ init python:
         else:
             return False
 
-       
+
     def restartEvent():
         #
         # This checks if there is a persistent topic, and if there was push it
@@ -96,23 +96,23 @@ init python:
 #   persistent.event_list
 #   persistent.current_monikatopic
 label call_next_event:
-    
-    $ event_label = popEvent()
+
+    $event_label = popEvent()
     if event_label and renpy.has_label(event_label):
 
         $ allow_dialogue = False
         call expression event_label
         $ persistent.current_monikatopic=0
-        
+
         if event_label in monika_random_topics:
-            $ monika_random_topics.remove(event_label)
+            $monika_random_topics.remove(event_label)
 
         if _return == 'quit':
             $ renpy.quit(0)
 
         $ allow_dialogue = True
+        show monika 1 at tinstant zorder 2 #Return monika to normal pose
     else:
-        return
+        return False
 
     return event_label
-

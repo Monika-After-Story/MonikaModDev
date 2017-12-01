@@ -132,7 +132,7 @@ init python:
             renpy.music.set_volume(0.0, channel="music")
         else:
             renpy.music.set_volume(songs.music_volume, channel="music")
-   
+
     def set_keymaps():
         #
         # Sets the keymaps
@@ -454,6 +454,8 @@ label ch30_loop:
         python:
             if monika_random_topics:        # If we're out of random topics, just stay in the loop
                 pushEvent(renpy.random.choice(monika_random_topics))
+
+    $_return = None
 
     jump ch30_loop
 

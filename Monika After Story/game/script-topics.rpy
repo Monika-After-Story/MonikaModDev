@@ -881,7 +881,7 @@ init 5 python:
     monika_random_topics.append('monika_rap')
 
 label monika_rap:
-    m 3j "You know what's a neat form of literature?"
+    m 3j "You know what's a neat form of literature?"
     m 3k "Rap!"
     m 3a "I actually used to hate rap music..."
     m "Maybe just because it was popular, or I would only hear the junk they play on the radio."
