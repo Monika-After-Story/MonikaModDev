@@ -1,5 +1,7 @@
 #This is the introduction event for starting up the game.
 label introduction:
+    $ import store.hkb_button as hkb_button
+    $ hkb_button.enabled = False
     if persistent.monika_kill == True:
         m 1f "..."
         m 1f "[player]..."
@@ -103,6 +105,7 @@ label introduction:
     m "Ahaha!"
 
     $ set_keymaps()
+    $ hkb_button.enabled = True
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox
