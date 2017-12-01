@@ -3616,7 +3616,7 @@ label monika_japanese:
                 "No.":
                     m 1e "Oh I see. That's alright!"
                     m 4b "If you want to learn Japanese, here's a phrase I can teach you."
-                    m 4k "{i}Aishiteru, [player]-kun{/i}."
+                    m 4k "{i}Aishiteru yo, [player]-kun{/i}."
                     m 1j "Ehehe~"
                     m 1e "That means I love you, [player]-kun."
         "No":
@@ -3846,3 +3846,5 @@ label monika_science:
 #monika talking about her room and about her house?
 
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
+
+#encourage player to take a rest after long periods of programs such as MS word/Xcode open (is it even possible? -Yuki)
