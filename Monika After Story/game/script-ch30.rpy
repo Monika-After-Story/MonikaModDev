@@ -277,6 +277,7 @@ label pick_a_game:
             "Nevermind":
                 m "Alright. Maybe later?"
 
+        show monika 1 at tinstant zorder 2
         $allow_dialogue = previous_dialogue
 
     jump ch30_loop

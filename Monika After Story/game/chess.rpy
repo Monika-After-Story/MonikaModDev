@@ -101,15 +101,17 @@ init:
                     # This is the last-resort check, the availability of the chess game should be checked independently beforehand.
                     raise ArchitectureError('Your operating system does not support the chess game.')
 
-                def open_stockfish(path):
-                    return subprocess.Popen([renpy.loader.transfn(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                def open_stockfish(path,startupinfo=None):
+                    return subprocess.Popen([renpy.loader.transfn(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,startupinfo=startupinfo)
 
                 is_64_bit = sys.maxsize > 2**32
                 if platform.system() == 'Windows':
+                    startupinfo = subprocess.STARTUPINFO()
+                    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     if is_64_bit:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe')
+                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe',startupinfo)
                     else:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe')
+                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe',startupinfo)
                 elif platform.system() == 'Linux' and is_64_bit:
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_linux_x64')
                 elif platform.system() == 'Darwin' and is_64_bit:
