@@ -3622,7 +3622,7 @@ label monika_japanese:
         "No":
             m 2l "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
-            m 1s "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
+            m 1a "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
     return
 
 init 5 python:
