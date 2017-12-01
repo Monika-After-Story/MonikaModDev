@@ -85,6 +85,8 @@ init python:
     import eliza      # mod specific
     import datetime   # mod specific
     import re
+    import store.songs as songs
+    import store.hkb_button as hkb_button
     therapist = eliza.eliza()
     process_list = []
     currentuser = persistent.playername #default to the player name
@@ -162,7 +164,8 @@ init python:
 
     def select_music():
         # check for open menu
-        if (not songs.menu_open
+        if (songs.enabled
+            and not songs.menu_open
             and renpy.get_screen("history") is None
             and renpy.get_screen("save") is None
             and renpy.get_screen("load") is None
@@ -266,6 +269,8 @@ label continue_event:
 
 label pick_a_game:
     if allow_dialogue and not songs.menu_open:
+        $ songs.enabled = False
+        $ hkb_button.enabled = False
         $previous_dialogue = allow_dialogue
         $allow_dialogue = False
         menu:
@@ -279,6 +284,8 @@ label pick_a_game:
 
         show monika 1 at tinstant zorder 2
         $allow_dialogue = previous_dialogue
+        $ songs.enabled = True
+        $ hkb_button.enabled = True
 
     jump ch30_loop
 
