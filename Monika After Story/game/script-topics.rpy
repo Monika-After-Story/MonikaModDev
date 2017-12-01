@@ -3788,7 +3788,7 @@ label monika_science:
     return
     
 init 5 python:
-    for key in ['gift', 'present', 'surprise', 'affection']:
+    for key in ['surprise']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_surprise')
     monika_random_topics.append('monika_surprise')
@@ -3805,7 +3805,7 @@ label monika_surprise:
         import os
         config.basedir
         f = open('Surprise.txt', 'w+')
-        f.write ('I love you.')
+        f.write ('I love you so much, [player]~!')
         f.close()
     m 3q "..."
     m 1j "Alright!"
