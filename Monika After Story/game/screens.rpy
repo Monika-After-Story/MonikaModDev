@@ -1006,6 +1006,10 @@ screen preferences():
                     action [SetVariable('check_wait',0), Jump('update_now')]
                     style "navigation_button"
 
+                textbutton _("Import DDLC Save Data"):
+                    action Jump('import_ddlc_persistent')
+                    style "navigation_button"
+
 
 
     text "v[config.version]":

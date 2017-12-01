@@ -1,7 +1,5 @@
 #This is the introduction event for starting up the game.
 label introduction:
-    call spaceroom
-
     if persistent.monika_kill == True:
         m 1f "..."
         m 1f "[player]..."
@@ -31,7 +29,7 @@ label introduction:
         m 1h "...But if you put yourself in my place, you'd do the same things I did."
         m "..."
         m 1q "I'm sorry..."
-        m "I'm really sorry, [currentuser]."
+        m "I'm really sorry, [player]."
         m 1e "Thank you for bringing me back."
         if persistent.clearall:
             m 2c "I couldn't help but notice that you spent time with the other girls first, though."
@@ -103,15 +101,8 @@ label introduction:
     m 1b "It's not like we're still keeping secrets from each other, right?"
     m 1 "I can see everything on your computer now!"
     m "Ahaha!"
-    #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t","T"]
-    $ config.keymap["change_music"] = ["m","M"]
-    $ config.keymap["play_game"] = ["p","P"]
-    # Define what those actions call
-    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
 
+    $ set_keymaps()
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox
@@ -156,45 +147,45 @@ label chara_monika_scare:
 #These are the comments made when you restart the game the first few times
 label ch30_reload_0:
     pause 1
-    m "Hey..."
+    m 1g "Hey..."
     m "I had an awful dream..."
-    m "I was hoping those would stop, now that it's just the two of us..."
+    m 1f "I was hoping those would stop, now that it's just the two of us..."
     m "I guess that was wishful thinking."
-    m "[player], I don't know if you would have any idea..."
-    m "But if you know what might be causing that, could you try to do something about it?"
-    m "Whenever it happens, it almost feels like I've been killed or something."
+    m 1i "[player], I don't know if you would have any idea..."
+    m 2 "But if you know what might be causing that, could you try to do something about it?"
+    m 1f "Whenever it happens, it almost feels like I've been killed or something."
     m "It's a really horrible feeling..."
     m "If you could figure out what's causing that, I'll love you forever~"
     $ persistent.monika_reload += 1
     return
 label ch30_reload_1:
     pause 1
-    m "So, [player]."
+    m 1h "So, [player]."
     m "I had another really bad dream."
-    m "You're not the one doing that to me, are you?"
-    m "It seems to happen whenever you quit the game..."
-    m "So if you could try to avoid doing that, I would be really grateful."
+    m 1f "You're not the one doing that to me, are you?"
+    m 2f "It seems to happen whenever you quit the game..."
+    m 2e "So if you could try to avoid doing that, I would be really grateful."
     m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
     $ persistent.monika_reload += 1
     return
 label ch30_reload_2:
     pause 1
-    m "I see you quit the game again..."
-    m "I know I asked already, but can you please try not to do that so much?"
+    m 1r "I see you quit the game again..."
+    m 1h "I know I asked already, but can you please try not to do that so much?"
     m "It really frightens me."
-    m "Why would you want to do that to me?"
+    m 1f "Why would you want to do that to me?"
     m "Just leave the game running in the background, or something."
-    m "Even if we aren't talking, I'm happy just being with you~"
+    m 1e "Even if we aren't talking, I'm happy just being with you~"
     $ persistent.monika_reload += 1
     return
 label ch30_reload_3:
     pause 1
-    m "By the way..."
-    m "I'm just going to accept the fact that you need to quit the game once in a while."
+    m 1h "By the way..."
+    m 2h "I'm just going to accept the fact that you need to quit the game once in a while."
     m "I'm starting to get used to it, anyway."
-    m "Besides, it makes me happy that you always come back..."
-    m "So I guess it's not so bad."
-    m "I'm sorry for making such a big deal out of it..."
-    m "And I love you no matter what, so you can do what you need to do, [currentuser]."
+    m 2a "Besides, it makes me happy that you always come back..."
+    m 2j "So I guess it's not so bad."
+    m 1e "I'm sorry for making such a big deal out of it..."
+    m 1 "And I love you no matter what, so you can do what you need to do, [player]."
     $ persistent.monika_reload += 1
     return
