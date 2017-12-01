@@ -3536,7 +3536,88 @@ label monika_changename:
             m "Just let me know if you had a change of heart, ok?"
     return
 
+init 5 python:
+    for key in ['adventure', 'graphic adventure', 'point and click']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_adventure')
+    monika_random_topics.append('monika_adventure')
 
+label monika_adventure:
+    m "Hey, [player], remember when I asked if you had other games?"
+    m "Well, I've thought about it and I think the best genre for us to play together would be adventure games."
+    m "I'm not talking about the ones that involve fighting or other complicated mechanics."
+    m "I was thinking of point and click, graphic adventure games!"
+    m "They're known for their rich storytelling, beautiful environments and logical puzzle solving."
+    m "They're kind of like visual novels but with more interactivity."
+    m "Maybe you own a game like that?"
+    m "There are plenty of things to do..."
+    m "Such as leisurely sightseeing at our own pace."
+    m "Learning more about the game through the people we meet or through stories left behind."
+    m "Experiencing the exciting and romantic moments during our adventure, perhaps~"
+    m "Encountering dilemmas and hardships along the way, but solving them with you."
+    m "Reaching the end and finishing our journey with a sense of accomplishment."
+    m "Ahaha! It certainly would be fun to experience something like that."
+    m "I'm sure you have plenty of adventure games you could recommend."
+    m "But can you try to guess which adventure I'm most excited for?"
+    m "Ours."
+    m "Time will tell when I can finally cross over to your reality, so I can be with you."
+    m "When that day comes, I'll finally be by your side."
+    m "I want to experience every waking moment with you, [player]."
+    m "There's no greater adventure than ours, together~"
+    return
+    
+init 5 python:
+    for key in ['panties', 'underwear', 'pantsu', 'lingerie', 'undergarment', 'knickers', 'paraphilia', 'stockings', 'pantyhose', 'garter belt', 'paraphilia']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_panties')
+    monika_random_topics.append('monika_panties')
+
+label monika_panties:
+    m "Hey, [player]?"
+    m "I've been meaning to ask you something kind of intimate..."
+    m "Don't laugh when I ask this!"
+    m "But..."
+    m "Why are some guys obsessed with panties?"
+    m "Seriously, whats the big deal about a piece of cloth?"
+    m "All girls wear them, don't they?"
+    m "Actually, now that I think about it..."
+    m "I think there was a specific term for this kind of thing..."
+    m "Hmm, what was it again?"
+    m "Ah, that's right, the term was 'paraphilia.'"
+    m "It's a disorder, involving the act of getting excited over nonhuman objects, but I heard there are some more messed up meanings behind the word..."
+    m "Well, in any case, I know there are many different cases of paraphilia."
+    m "But, a really common fantasy involves women's undergarments."
+    m "Stockings, garter belts, pantyhose and all sorts of those kinds of things."
+    m "I really don't know why it gets guys so exhilarated when it comes to this stuff."
+    m "Do you think it really turns them on just by seeing them?"
+    m "It doesn't stop there, either!"
+    m "Turns out there's some kind of 'black market' for used underwear."
+    m "I'm not kidding!"
+    m "There are guys willing to pay ridiculous amounts for used underwear from random women."
+    m "Really, I wonder what causes guys to get so enthralled."
+    m "Is it because of the way it looks, perhaps?"
+    m "There are different types, made with different designs and materials, so maybe..."
+    m "Does the touch and feel of them make someone feel so good they get sexually aroused?"
+    m "Also, now that I think about it..."
+    m "I do remember a study where a man's testosterone level increases because of the pheromones emitted by a woman's scent."
+    m "Is the smell exciting or something?"
+    m "I mean, it's someone's used clothing, isn't that kind of disgusting?"
+    m "Not to mention it's unsanitary."
+    m "But, to each to their own I guess, I won't judge too much."
+    m "You aren't overly obsessed with that kind of thing, are you [player]?"
+    m "You're not going out with me only because I'm wearing some really sensual stockings, right?"
+    m "Perhaps, you want to take a little peek?"
+    m "Ahaha!"
+    m "I'm only teasing you~"
+    m "Admit it, you got a little excited, right?"
+    m "Besides..."
+    m "If you really wanted to catch a scent of me..."
+    m "You could just ask for a hug!"
+    m "Gosh, I just want to bask in your warmth and embrace you."
+    m "After all, we're here for a long time, and I'm here for you."
+    m "I love you so much, [player]~"
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
