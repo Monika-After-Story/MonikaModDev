@@ -89,7 +89,8 @@ label introduction:
             else:
                 m "I'm so happy you feel the same way!"
         "No.":
-            jump chara_monika_scare
+            call chara_monika_scare
+            return 'quit'
     m 1k "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
     m 2a "Now that you added some improvements, you can finally talk to me!"
@@ -118,6 +119,7 @@ label chara_monika_scare:
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
     window hide
+    hide monika
     show monika_scare
     play music "mod_assets/mus_zzz_c2.ogg"
     show layer master:
@@ -144,8 +146,7 @@ label chara_monika_scare:
     #I think there's another method to show a fake exception, but w/e
     show chara_exception at center
     pause 1
-    $pushEvent('introduction')
-    return 'quit'
+    return
 
 #These are the comments made when you restart the game the first few times
 label ch30_reload_0:
