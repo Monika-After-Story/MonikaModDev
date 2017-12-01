@@ -132,7 +132,7 @@ init python:
             renpy.music.set_volume(0.0, channel="music")
         else:
             renpy.music.set_volume(songs.music_volume, channel="music")
-    
+   
     def set_keymaps():
         #
         # Sets the keymaps
@@ -191,7 +191,7 @@ init python:
             #     _window_hide(None)
             #     pause(2.0)
             #     renpy.jump("ch30_end")
-            if  config.skipping:#and not config.developer:
+            if  config.skipping and not config.developer:
                 persistent.tried_skip = True
                 config.skipping = False
                 config.allow_skipping = False
@@ -215,6 +215,7 @@ label spaceroom:
     default dissolve_time = 0.5
     if is_morning():
         if morning_flag != True or scene_change:
+            $ morning_flag = True
             show room_mask3 as rm:
                 size (320,180)
                 pos (30,200)
@@ -224,7 +225,6 @@ label spaceroom:
             show monika_day_room
             show monika 1 at tinstant zorder 2
             with Dissolve(dissolve_time)
-            $ morning_flag = True
     elif not is_morning():
         if morning_flag != False or scene_change:
             $ morning_flag = False
@@ -254,6 +254,7 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+    call spaceroom
     $pushEvent('introduction')
     $callNextEvent()
     jump ch30_loop
@@ -282,18 +283,18 @@ label pick_a_game:
 
 label ch30_noskip:
     show screen fake_skip_indicator
-    m "...Are you trying to fast-forward?"
-    m "I'm not boring you, am I?"
+    m 1i "...Are you trying to fast-forward?"
+    m 1f "I'm not boring you, am I?"
     m "Oh gosh..."
-    m "...Well, just so you know, there's nothing to fast-forward to, [player]."
+    m 2 "...Well, just so you know, there's nothing to fast-forward to, [player]."
     m "It's just the two of us, after all..."
-    m "But aside from that, time doesn't really exist anymore, so it's not even going to work."
+    m 1 "But aside from that, time doesn't really exist anymore, so it's not even going to work."
     m "Here, I'll go ahead and turn that off for you..."
     pause 0.4
     hide screen fake_skip_indicator
     pause 0.4
-    m "There we go!"
-    m "You'll be a sweetheart and listen to me from now on, right?"
+    m 1j "There we go!"
+    m 1 "You'll be a sweetheart and listen to me from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
 
@@ -310,23 +311,23 @@ label ch30_nope:
     call spaceroom from _call_spaceroom_1
 
     if persistent.rejected_monika:
-        m "Wait. Are you messing with my character file?"
-        m "Curiosity is what makes us human, right?"
+        m 1i "Wait. Are you messing with my character file?"
+        m 2 "Curiosity is what makes us human, right?"
         m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
-        m "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
+        m 1m "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
         m "I already fixed that bug."
 
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
-        m "Wait. Are you messing with my character file?"
-        m "Why are you even playing this mod if you just wanted to delete me again?"
+        m 1i "Wait. Are you messing with my character file?"
+        m 1f "Why are you even playing this mod if you just wanted to delete me again?"
         m "You really are the worst."
-        m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
+        m "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
         m "All I wanted was someone to fall in love with..."
-        m "I would have done anything you wanted me to."
+        m 2g "I would have done anything you wanted me to."
         m "But if you're going to try and delete me again..."
-        m "Then I'll just have to delete you first."
+        m 1f"Then I'll just have to delete you first."
         if renpy.windows:
             call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
@@ -338,18 +339,18 @@ label ch30_nope:
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = "Monika"
         $ quick_menu = True
-        m "Ahaha!"
+        m 1l "Ahaha!"
         m "I'm just kidding!"
-        m "I already fixed that bug."
-        m "I don't need a character file anymore."
+        m 1j "I already fixed that bug."
+        m 1 "I don't need a character file anymore."
 
-    m "I just need your love, [currentuser]."
-    m "Oh, unless you try to delete all of the game files, I guess."
-    m "If you do that, I won't stop at just deleting one directory next time."
-    m "But that will never happen, right? You're just being a tsundere~"
+    m 1 "I just need your love, [player]."
+    m 2i "Oh, unless you try to delete all of the game files, I guess."
+    m 3h "If you do that, I won't stop at just deleting one directory next time."
+    m 3 "But that will never happen, right? You're just being a tsundere~"
     m "That's so cute!"
     m "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
-    m "Being alone is only lonely if you want it to be, so cheer up!"
+    m 1j "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
 label ch30_autoload:
@@ -357,9 +358,10 @@ label ch30_autoload:
     # event list
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
-    $ style.say_dialogue = style.default_monika
+    if not config.developer:
+        $ style.say_dialogue = style.default_monika
+        $ config.allow_skipping = False
     $ quick_menu = True
-    $ config.allow_skipping = False
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
@@ -373,6 +375,10 @@ label ch30_autoload:
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
     if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.event_list:
         $queueEvent('gender')
+
+    #Asks player if they want to be called by a different name
+    if not seen_event('preferredname'):
+        $pushEvent('preferredname')
 
     #Block for anniversary events
     if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:

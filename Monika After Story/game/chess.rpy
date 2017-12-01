@@ -372,8 +372,8 @@ init:
 
 label game_chess:
     hide screen keylistener
-    m "You wanna play chess? Alright~"
-    m "Get your mind ready!"
+    m 1b "You want to play chess? Alright~"
+    m 1a "Get ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
     return
 
@@ -389,10 +389,10 @@ label demo_minigame_chess:
             $ choice = random.randint(0, 1) == 0
             if choice:
                 $ player_color = ChessDisplayable.COLOR_WHITE
-                m "Oh look, I drew black! Let's begin!"
+                m 2a "Oh look, I drew black! Let's begin!"
             else:
                 $ player_color = ChessDisplayable.COLOR_BLACK
-                m "Oh look, I drew white! Let's begin!"
+                m 2a "Oh look, I drew white! Let's begin!"
 
     window hide None
 
@@ -406,13 +406,13 @@ label demo_minigame_chess:
 
     if winner == "monika":
         if surrendered and num_turns <= 4:
-            m "Come on, don't give up so easily."
+            m 1e "Come on, don't give up so easily."
         else:
-            m "I win!"
+            m 1b "I win!"
 
     elif winner == "player":
 
-        m "You won! Congratulations."
+        m 2a "You won! Congratulations."
 
     else:
 
@@ -426,12 +426,12 @@ label demo_minigame_chess:
         "No.":
 
             if winner == "monika":
-                m "Despite its simple rules, chess is a really intricate game."
-                m "It's alright if you find yourself struggling at times."
-                m "Remember, the important thing is to be able to learn from your mistakes."
+                m 2d "Despite its simple rules, chess is a really intricate game."
+                m 1a "It's okay if you find yourself struggling at times."
+                m 1j "Remember, the important thing is to be able to learn from your mistakes."
             else:
-                m "It's amazing how much more I have to learn even now."
-                m "I really don't mind losing as long as I can learn something."
-                m "After all, the company is good."
+                m 2b "It's amazing how much more I have to learn even now."
+                m 2a "I really don't mind losing as long as I can learn something."
+                m 1j "After all, the company is good."
 
     return

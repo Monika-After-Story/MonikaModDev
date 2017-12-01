@@ -55,6 +55,21 @@ init python:
 
         return event_label
 
+    def seen_event(event_label):
+        #
+        # This checks if an event has either been seen or is already on the
+        # event list.
+        #
+        # IN:
+        #   event_lable = The label for the event to be checked
+        #
+        # ASSUMES:
+        #   persistent.event_list
+        if renpy.seen_label(event_label) or event_label in persistent.event_list:
+            return True
+        else:
+            return False
+
     def callNextEvent():
         #
         # This calls the next event in the list. It returns the name of the
