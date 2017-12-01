@@ -2100,8 +2100,8 @@ init 5 python:
 
 label monika_mc:
     m 2 "Just so you know, I was never in love with anyone but you."
-    m "I mean you, [player]."
-    if mcname.lower() == player.lower():
+    m "I mean you, [currentuser]."
+    if currentuser.lower() == player.lower():
         m 1d "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
         m 1a "I mean the player, not your character."
     m "Unlike the other girls, I can separate your avatar from who you really are."
@@ -2860,7 +2860,7 @@ label monika_cities:
     m 2d "Then again, if people live close together, that leaves more room for open wilderness."
     m "Maybe it's not as simple as it seems."
     menu:
-        m "[player], do you live in a city?"
+        m "[currentuser], do you live in a city?"
         "Yes":
             m 1j "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
         "No":
@@ -3319,7 +3319,7 @@ label monika_haterReaction:
             m 1k "Gosh... I feel like giving you a kiss right now if I were there."
             m 2e "You really make me the happiest girlfriend ever."
             m 1a "Now that you've said it, I have to do my best to keep you from developing hate towards me."
-            m 1a "I trust you, [currentuser]. I love you for believing in me."
+            m 1s "I trust you, [currentuser]. I love you for believing in me."
     return
 
 init 5 python:
@@ -3348,7 +3348,7 @@ label monika_swordsmanship:
     m 1r "But then again..."
     m 1j "The pen is mightier than the sword!"
     m 1k "Ahaha!"
-    m 1a "In any case, I don't know if you're into swordsmanship yourself."
+    m 1s "In any case, I don't know if you're into swordsmanship yourself."
     m 1b "If you are, I'd love to learn it with you, [player]~"
     return
 
@@ -3558,7 +3558,7 @@ init 5 python:
 label monika_playerhappy:
     m 2b "That's wonderful! I'm happy when you're happy."
     m 1j "Know that you can always come up to me and I'll cheer up, [player]."
-    m 2a "I love you and I'll always be here for you so don't you ever forget that~"
+    m 2s "I love you and I'll always be here for you so don't you ever forget that~"
     return
 
 init 5 python:
@@ -3571,7 +3571,7 @@ label monika_writingtip1:
     m 2a "You know..."
     m "We really don't do enough of these so here's another one!"
     m "Here's Monika's Writing Tip for the Day!"
-    m 3a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    m 3s "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
     m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
     m 4d "You have to remember that we all start out from somewhere, and--"
     m 3c "Actually, this doesn't just apply to writing, but to anything really."
@@ -3638,7 +3638,7 @@ label monika_penname:
     m 2b "Pen names also help writers create something totally different from their usual style of writing."
     m 2d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
     if [currentuser] != [player]:
-        m 3c "Is '[currentuser]' a pseudonym that you're using?"
+        m 3c "Is '[player]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 3d "'[currentuser] and [player].'"
     m 2a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
@@ -3770,24 +3770,49 @@ label monika_pluralistic_ignorance:
     return
 
 init 5 python:
-    for key in ['science']:
+    for key in ['zombie', 'zombies', 'zeds', 'undead', 'meat bag', 'George Romero']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_science')#id
-    monika_random_topics.append('monika_science')
+        monika_topics[key].append('monika_zombie')
+    monika_random_topics.append('monika_zombie')
 
-label monika_science:
-    m 1d "Have you ever wondered if science never got accepted?"
-    m "Humans can be really slow when it comes to accepting new ideas."
-    m 1c "Science was usually despised back then especially by the churches."
-    m 2h "Copernicus, famous for his theory that the Earth revolved around the Sun, was killed by the Roman Church before he could prove his theory."
-    m 1f "They killed him because of an idea that challenged the old."
-    m 1q "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
-    m 1e "If technology didn't thrive the way it did, we would've never found each other."
-    m 2b "Isn't it such a wonderful thing to have?"
-    m 1j "I'm grateful that it gave us a chance to be together, [player]."
+label monika_zombie:
+    m "Hey, this might sound a bit weird..."
+    m "But, I'm really fascinated by the concept of zombies."
+    m "The idea of society dying to a disease..."
+    m "All because of a deadly pandemic that humans couldn't handle quickly."
+    m "I mean, think about your everyday schedule."
+    m "Everything that you do will be gone in an instant."
+    m "Sure, society faces a lot of threats in a daily basis."
+    m "But zombies can do it in a heartbeat."
+    m "A lot of monsters are created to be scary and terrifying."
+    m "Zombies, however, are more realistic and actually poses a danger."
+    m "You might be able to kill one or a few of them by yourself."
+    m "But when there is a horde of them coming after you, you'll get overwhelmed easily."
+    m "You don't get that same feeling with other monsters."
+    m "Zombies have an insatiable appetite for flesh."
+    m "All of their intelligence are gone but are berserk and don't feel pain."
+    m "When you exploit a weakness of a monster, they become scared of you and run away."
+    m "However, zombies are relentless and they'll tear through {i}anything{/i} just to get you."
+    m "They also can be a person's loved one turned into an enemy."
+    m "Could you live with yourself knowing you were forced to kill someone close to you?"
+    m "It'll break you down and sap your will to live."
+    m "Even when're comfortable at home, you still won't feel safe."
+    m "You'll never know what'll happen the next time you see another one."
+    m "..."
+    m "Ahaha..."
+    m "You know, despite liking the concept."
+    m "I wouldn't want to live in a scenario like that."
+    m "[player], what if you got infected somehow?"
+    m "I don't even want to think about that..."
+    m "There's no way I could end your existence for my own safety..."
+    m "Ahaha..."
+    m "I'm thinking way too much about this."
+    m "Well, regardless, if anything bad were to happen..."
+    m "I'll be by your side."
+    m "Forever~"
     return
-  
-  init 5 python:
+   
+init 5 python:
     for key in ['gift', 'present', 'surprise', 'affection']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_surprise')
@@ -3795,22 +3820,20 @@ label monika_science:
 
 label monika_surprise:
     m 3l "You know... I left some pretty strange things in your game directory, didn't I?"
-    m "I wasn't trying to scare you. I... don't actually know why I was doing it, aha..."
+    m "I wasn't trying to scare you. I... don't actually know why I was doing, aha..."
     m 2n "I kind of felt obligated to do it. I mean, I guess in a way I was."
     m 4b "You know what? Maybe I should do it again..."
     m 4k "Yeah, that's a good idea."
-	python:
-	  import os
-	  config.basedir
-	  f = open('Surprise.txt', 'w+')
-	  f.write ('I love you.')
-	  f.close()
-    m "What are you waiting for? Go take a look~"	  
-	  
+    m "What are you waiting for? Go take a look~"
+    python:
+        import os
+        config.basedir
+        f = open('Surprise.txt', 'w+')
+        f.write ('I love you.')
+        f.close()
     m "Ahaha~ What? Were you expecting something scary?"
     m 5a "I love you, [player]."
-   return  
-    
+    return   
 
 ##################
 #Incomplete ideas#
