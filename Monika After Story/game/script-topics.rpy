@@ -3786,6 +3786,33 @@ label monika_science:
     m 2b "Isn't it such a wonderful thing to have?"
     m 1j "I'm grateful that it gave us a chance to be together, [player]."
     return
+    
+init 5 python:
+    for key in ['surprise']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_surprise')
+    monika_random_topics.append('monika_surprise')
+    
+label monika_surprise:
+    m 3m "You know..."
+    m 2n "I left some pretty strange things in your game directory, didn't I?"
+    m 3o "I wasn't trying to scare you."
+    m 2n "I...don't actually know why I was doing it, ahaha..."
+    m 2f "I kind of felt obligated to do it."
+    m 2c "You know what? Maybe I should do it again..."
+    m 1b "Yeah, that's a good idea."
+    python:
+        import os
+        config.basedir
+        f = open('Surprise.txt', 'w+')
+        f.write ('I love you so much, [player]~!')
+        f.close()
+    m 3q "..."
+    m 1j "Alright!"
+    m 1a "What are you waiting for? Go take a look!"        
+    m 2k "Ahaha~ What? Are you expecting something scary?"
+    m 5k "I love you so much, [player]~"
+    return       
 
 ##################
 #Incomplete ideas#
