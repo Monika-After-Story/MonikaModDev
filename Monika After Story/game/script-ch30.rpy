@@ -235,7 +235,10 @@ label ch30_main:
     $ m_name = "Monika"
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    play music m1 loop # move music out here because of context
+
+    # mov spaceroom call out here because CONTEXT
+    call spaceroom
+    play music m1 loop 
     $pushEvent('introduction')
     $callNextEvent()
     jump ch30_loop
