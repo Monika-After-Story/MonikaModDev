@@ -132,7 +132,25 @@ init python:
             renpy.music.set_volume(0.0, channel="music")
         else:
             renpy.music.set_volume(songs.music_volume, channel="music")
-        
+    
+    def set_keymaps():
+        #
+        # Sets the keymaps
+        #
+        # ASSUMES:
+        #   config.keymap
+        #   config.underlay
+        #Add keys for new functions
+        config.keymap["open_dialogue"] = ["t","T"]
+        config.keymap["change_music"] = ["noshift_m","noshift_M"]
+        config.keymap["play_game"] = ["p","P"]
+        config.keymap["mute_music"] = ["shift_m","shift_M"]
+        # Define what those actions call
+        config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
+        config.underlay.append(renpy.Keymap(change_music=select_music))
+        config.underlay.append(renpy.Keymap(play_game=pick_game))
+        config.underlay.append(renpy.Keymap(mute_music=mute_music))
+
 
     def show_dialogue_box():
         if allow_dialogue:
@@ -400,16 +418,8 @@ label ch30_autoload:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-    #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t","T"]
-    $ config.keymap["change_music"] = ["noshift_m","noshift_M"]
-    $ config.keymap["play_game"] = ["p","P"]
-    $ config.keymap["mute_music"] = ["shift_m","shift_M"]
-    # Define what those actions call
-    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
-    $ config.underlay.append(renpy.Keymap(mute_music=mute_music))
+
+    $ set_keymaps()
     jump ch30_loop
 
 label ch30_loop:
