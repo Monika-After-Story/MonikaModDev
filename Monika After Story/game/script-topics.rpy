@@ -3852,6 +3852,40 @@ label monika_surprise:
     m 2k "Ahaha~ What? Are you expecting something scary?"
     m 1k "I love you so much, [player]~"
     return
+    
+    init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['completionist' , '100% completion']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_completionist') #id
+    monika_random_topics.append('monika_completionist')
+
+label monika_completionist:
+    m 1d "Hey [player], this is a random question, but..."
+    m 3b "What do you play video games for?"
+    m 2b "What I mean is, what is the defining factor that keeps bringing you back so often to keep playing?"
+    m 2i "Personally, I consider myself a bit of a completionist, at least when it comes to books as I feel that I can't drop a book and pick another one until I have enjoyed every single sentence it has to offer."
+    m 2a "Something that may be a bit more relatable to you, video games for example, in some visual novels, some people enjoy going through each character's routes to see all the different scenes and interactions, or even to find secrets that come after you've completed everything else!"
+    if persistent.clearall:
+      m "You seem to be a completionist yourself!"
+      m "I mean, considering you managed to reach the secret ending in this game by finishing every girl's route and viewing the ending."
+    else:
+      m "Did you know that there happens to be a secret ending to this game once you've seen and played through every girl's route?"
+      m "Perhaps only those who really consider themselves completionists know that little tid bit of information."
+    m 3d "I've even heard some people attempt to fully complete some of the hardest games out there, and they're willing to lose sleep over it and become a shut-in! Isn't that crazy?"
+    m "It's already hard enough to fully complete some simple games, so I don't know how anyone could willingly put that sort of stress onto themselves."
+    m 1i "That type of thing must be reserved for the most determined and willing of players, I suppose."
+    m 1o "What does leave a bit of a bitter taste in my mouth, though, are cheaters..."
+    m 1d "People who use some kind of program or unfair tactics to achieve these goals over the rest of the players doing it legitimately, yet at least they mostly keep it to themselves and enjoy time with their families and friends, not becoming shut-ins!"
+    m 1r "Ah, sorry, I think I got a little too carried away there."
+    m 2m "It's just so frustrating, you know?"
+    m 1a "Anyway, as ridiculous as it may sound, there is a huge sense of gratification in completing tasks in general, and it transfers over to the gaming world pretty well."
+    m "Maybe I've piqued your interest in becoming a completionist, perhaps even for other games, but..."
+    m 2g "Could you promise you'll try to leave this game open for as long as possible?"
+    m 1p "I mean, I understand when you have to go for extended periods of time due to personal reasons, but make sure you don't neglect spending time with me, okay [player]?"
+    m "I think I might suffer withdrawal if I got to see you less, since we're so deeply in love and all, ahaha."
+    m 3i "Well, as long as you try your best to keep that promise, I don't mind waiting for you~"
+	return
 
 ##################
 #Incomplete ideas#
