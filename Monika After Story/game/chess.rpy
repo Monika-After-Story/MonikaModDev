@@ -55,7 +55,6 @@ init:
             COLOR_WHITE = True
             COLOR_BLACK = False
             MONIKA_WAITTIME = 1500
-            MONIKA_STRENGTH = 12
             MONIKA_OPTIMISM = 33
             MONIKA_THREADS = 1
 
@@ -101,22 +100,24 @@ init:
                     # This is the last-resort check, the availability of the chess game should be checked independently beforehand.
                     raise ArchitectureError('Your operating system does not support the chess game.')
 
-                def open_stockfish(path):
-                    return subprocess.Popen([renpy.loader.transfn(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                def open_stockfish(path,startupinfo=None):
+                    return subprocess.Popen([renpy.loader.transfn(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,startupinfo=startupinfo)
 
                 is_64_bit = sys.maxsize > 2**32
                 if platform.system() == 'Windows':
+                    startupinfo = subprocess.STARTUPINFO()
+                    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     if is_64_bit:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe')
+                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe',startupinfo)
                     else:
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe')
+                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe',startupinfo)
                 elif platform.system() == 'Linux' and is_64_bit:
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_linux_x64')
                 elif platform.system() == 'Darwin' and is_64_bit:
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_macosx_x64')
 
                 # Set Monika's parameters
-                self.stockfish.stdin.write("setoption name Skill Level value %d\n" % (self.MONIKA_STRENGTH))
+                self.stockfish.stdin.write("setoption name Skill Level value %d\n" % (persistent.chess_strength))
                 self.stockfish.stdin.write("setoption name Contempt value %d\n" % (self.MONIKA_OPTIMISM))
 
                 # Set up facilities for asynchronous communication
@@ -375,6 +376,7 @@ init:
 label game_chess:
     hide screen keylistener
     m 1b "You want to play chess? Alright~"
+    m 2a "Double click your king if you decide to surrender."
     m 1a "Get ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
     return
@@ -412,13 +414,24 @@ label demo_minigame_chess:
         else:
             m 1b "I win!"
 
+        if persistent.chess_strength>0:
+            m 1j "I'll go a little easier on you next time."
+            $persistent.chess_strength += -1
+        else:
+            m 1l "I really was going easy on you!"
+
     elif winner == "player":
 
         m 2a "You won! Congratulations."
-
+        if persistent.chess_strength<20:
+            m 2 "I'll get you next time for sure!"
+            $persistent.chess_strength += 1
+        else:
+            m 2b "You really are an amazing player!"
+            m 3l "Are you sure you're not cheating?"
     else:
 
-        m "A draw? How boring..."
+        m 3h "A draw? How boring..."
 
     menu:
         m "Do you want to play again?"
