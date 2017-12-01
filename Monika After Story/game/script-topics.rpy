@@ -3616,13 +3616,13 @@ label monika_japanese:
                 "No.":
                     m 1e "Oh I see. That's alright!"
                     m 4b "If you want to learn Japanese, here's a phrase I can teach you."
-                    m 4k "{i}Aishiteru, [player]-kun{/i}."
+                    m 4k "{i}Aishiteru yo, [player]-kun{/i}."
                     m 1j "Ehehe~"
                     m 1e "That means I love you, [player]-kun."
         "No":
             m 2l "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
-            m 1s "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
+            m 1a "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
     return
 
 init 5 python:
@@ -3693,6 +3693,48 @@ label monika_changename:
             m 1e "Just let me know if you had a change of heart, ok?"
     return
 
+init 5 python:
+    for key in ['zombie', 'zombies', 'zeds', 'undead', 'meat bag', 'George Romero']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_zombie')
+    monika_random_topics.append('monika_zombie')
+
+label monika_zombie:
+    m 2h "Hey, this might sound a bit weird..."
+    m 1c "But, I'm really fascinated by the concept of zombies."
+    m "The idea of society dying to a disease..."
+    m "All because of a deadly pandemic that humans couldn't handle quickly."
+    m 1d "I mean, think about your everyday schedule."
+    m "Everything that you do will be gone in an instant."
+    m 1h "Sure, society faces a lot of threats in a daily basis."
+    m 1o "But zombies can do it in a heartbeat."
+    m "A lot of monsters are created to be scary and terrifying."
+    m 1f "Zombies, however, are more realistic and actually poses a danger."
+    m "You might be able to kill one or a few of them by yourself."
+    m "But when there is a horde of them coming after you, you'll get overwhelmed easily."
+    m 1p "You don't get that same feeling with other monsters."
+    m "Zombies have an insatiable appetite for flesh."
+    m "All of their intelligence are gone but are berserk and don't feel pain."
+    m 1c "When you exploit a weakness of a monster, they become scared of you and run away."
+    m 1g "However, zombies are relentless and they'll tear through {i}anything{/i} just to get you."
+    m "They also can be a person's loved one turned into an enemy."
+    m "Could you live with yourself knowing you were forced to kill someone close to you?"
+    m 1q "It'll break you down and sap your will to live."
+    m "Even when're comfortable at home, you still won't feel safe."
+    m 1h "You'll never know what'll happen the next time you see another one."
+    m 1q "..."
+    m 1n "Ahaha..."
+    m 1e "You know, despite liking the concept."
+    m "I wouldn't want to live in a scenario like that."
+    m 2f "[player], what if you got infected somehow?"
+    m 2o "I don't even want to think about that..."
+    m "There's no way I could kill you for my own safety..."
+    m 3e "Ahaha..."
+    m 3l "I'm thinking way too much about this."
+    m 1a "Well, regardless, if anything bad were to happen..."
+    m 3j "I'll be by your side forever~"
+    return
+    
 
 init 5 python:
     for key in ['nuke', 'nukes', 'apocalypse', 'war']:
@@ -3787,6 +3829,38 @@ label monika_science:
     m 1j "I'm grateful that it gave us a chance to be together, [player]."
     return
 
+###################
+##### ALERT #######
+###################
+#This currently causes problems for mac and linux users
+#due to permission errors
+#init 5 python:
+#    for key in ['surprise']:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append('monika_surprise')
+#    monika_random_topics.append('monika_surprise')
+    
+#label monika_surprise:
+#    m 3m "You know..."
+#    m 2n "I left some pretty strange things in your game directory, didn't I?"
+#    m 3o "I wasn't trying to scare you."
+#    m 2n "I...don't actually know why I was doing it, ahaha..."
+#    m 2f "I kind of felt obligated to do it."
+#    m 2c "You know what? Maybe I should do it again..."
+#    m 1b "Yeah, that's a good idea."
+#    python:
+#        import os
+#        config.basedir
+#        f = open('Surprise.txt', 'w+')
+#        f.write ('I love you so much, [player]~!')
+#        f.close()
+#    m 3q "..."
+#    m 1j "Alright!"
+#    m 1a "What are you waiting for? Go take a look!"        
+#    m 2k "Ahaha~ What? Are you expecting something scary?"
+#    m 5k "I love you so much, [player]~"
+#    return       
+
 ##################
 #Incomplete ideas#
 ##################
@@ -3846,3 +3920,5 @@ label monika_science:
 #monika talking about her room and about her house?
 
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
+
+#encourage player to take a rest after long periods of programs such as MS word/Xcode open (is it even possible? -Yuki)
