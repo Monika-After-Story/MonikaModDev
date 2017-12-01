@@ -3792,23 +3792,27 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_surprise')
     monika_random_topics.append('monika_surprise')
-
+    
 label monika_surprise:
-    m 3l "You know... I left some pretty strange things in your game directory, didn't I?"
-    m "I wasn't trying to scare you. I... don't actually know why I was doing it, aha..."
-    m 2n "I kind of felt obligated to do it. I mean, I guess in a way I was."
-    m 4b "You know what? Maybe I should do it again..."
-    m 4k "Yeah, that's a good idea."
+    m 3m "You know..."
+    m 2n "I left some pretty strange things in your game directory, didn't I?"
+    m 3o "I wasn't trying to scare you."
+    m 2n "I...don't actually know why I was doing it, ahaha..."
+    m 2f "I kind of felt obligated to do it."
+    m 2c "You know what? Maybe I should do it again..."
+    m 1b "Yeah, that's a good idea."
     python:
         import os
         config.basedir
         f = open('Surprise.txt', 'w+')
         f.write ('I love you.')
         f.close()
-    m "What are you waiting for? Go take a look~"        
-    m "Ahaha~ What? Were you expecting something scary?"
-    m 5a "I love you, [player]."
-    return    
+    m 3q "..."
+    m 1j "Alright!"
+    m 1a "What are you waiting for? Go take a look!"        
+    m 2k "Ahaha~ What? Are you expecting something scary?"
+    m 5k "I love you so much, [player]~"
+    return       
 
 ##################
 #Incomplete ideas#
