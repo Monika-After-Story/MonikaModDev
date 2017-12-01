@@ -3795,17 +3795,17 @@ label monika_science:
 
 label monika_surprise:
     m 3l "You know... I left some pretty strange things in your game directory, didn't I?"
-    m "I wasn't trying to scare you. I... don't actually know why I was doing, aha..."
+    m "I wasn't trying to scare you. I... don't actually know why I was doing it, aha..."
     m 2n "I kind of felt obligated to do it. I mean, I guess in a way I was."
     m 4b "You know what? Maybe I should do it again..."
     m 4k "Yeah, that's a good idea."
-	m "What are you waiting for? Go take a look~"
 	python:
 	  import os
 	  config.basedir
 	  f = open('Surprise.txt', 'w+')
 	  f.write ('I love you.')
 	  f.close()
+    m "What are you waiting for? Go take a look~"	  
 	  
     m "Ahaha~ What? Were you expecting something scary?"
     m 5a "I love you, [player]."
