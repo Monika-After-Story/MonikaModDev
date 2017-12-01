@@ -70,32 +70,7 @@ init python:
         else:
             return False
 
-    def callNextEvent():
-        #
-        # This calls the next event in the list. It returns the name of the
-        # event called or None if the list is empty or the label is invalid
-        #
-        # IN:
-        #
-        # ASSUMES:
-        #   persistent.event_list
-        #   persistent.current_monikatopic
-
-        event_label = popEvent()
-        if event_label and renpy.has_label(event_label):
-            globals()['allow_dialogue'] = False
-            state_change = renpy.call_in_new_context(event_label)
-            persistent.current_monikatopic=0
-            if event_label in monika_random_topics:
-                monika_random_topics.remove(event_label)
-            if state_change == 'quit':
-                renpy.quit(0)
-            globals()['allow_dialogue'] = True
-        else:
-            return None
-
-        return event_label
-
+       
     def restartEvent():
         #
         # This checks if there is a persistent topic, and if there was push it
@@ -110,3 +85,34 @@ init python:
                 pushEvent('continue_event')
             persistent.current_monikatopic = 0
         return
+
+
+
+
+# This calls the next event in the list. It returns the name of the
+# event called or None if the list is empty or the label is invalid
+#
+# ASSUMES:
+#   persistent.event_list
+#   persistent.current_monikatopic
+label call_next_event:
+    
+    $ event_label = popEvent()
+    if event_label and renpy.has_label(event_label):
+
+        $ allow_dialogue = False
+        call expression event_label
+        $ persistent.current_monikatopic=0
+        
+        if event_label in monika_random_topics:
+            $ monika_random_topics.remove(event_label)
+
+        if _return == 'quit':
+            $ renpy.quit(0)
+
+        $ allow_dialogue = True
+    else:
+        return
+
+    return event_label
+

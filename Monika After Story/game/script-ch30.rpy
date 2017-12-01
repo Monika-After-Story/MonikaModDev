@@ -256,7 +256,7 @@ label ch30_main:
     play music m1 loop # move music out here because of context
     call spaceroom
     $pushEvent('introduction')
-    $callNextEvent()
+    call call_next_event
     jump ch30_loop
 
 label continue_event:
@@ -438,12 +438,12 @@ label ch30_loop:
         $ config.allow_skipping = False
 
     #Call the next event in the list
-    $event_output = callNextEvent()
+    call call_next_event
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
     #If there's no event in the queue, add a random topic as an event
-    if not event_output:
+    if not _return:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
         $ waittime = renpy.random.randint(20, 45)
