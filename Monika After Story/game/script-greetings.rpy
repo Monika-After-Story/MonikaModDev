@@ -262,7 +262,7 @@ label greeting_sweetpea:
      m 1l "My goodness... That surely was embarassing to say, ehehe~"
      return
      
-     label greeting_glitch:
+label greeting_glitch:
      hide monika
      show yuri glitch
      y "{cps=500}[player]?!{nw}{/cps}"
