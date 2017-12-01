@@ -261,3 +261,26 @@ label greeting_sweetpea:
      m 2k "It's you, my sweetpea!"
      m 1l "My goodness... That surely was embarassing to say, ehehe~"
      return
+     
+label greeting_glitch:
+     hide monika
+     show yuri glitch
+     y "{cps=500}[player]?!{nw}{/cps}"
+     hide yuri glitch
+     show yuri glitch2
+     play sound "sfx/glitch3.ogg"
+     pause 0.1
+     hide yuri glitch2
+     show yuri glitch
+     pause 0.3
+     hide yuri glitch
+     show monika 4n at tinstant zorder 2
+     m 1d "[player]!"
+     hide monika
+     show monika 4l at tinstant zorder 2
+     extend " Nevermind that I was just..."
+     pause 0.1
+     extend " playing with the code a little."
+     m 3l "That was all! There is nobody else here but us... forever~"
+     m 2j "I love you, [player]!"
+     return
