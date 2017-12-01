@@ -275,12 +275,12 @@ label greeting_glitch:
      pause 0.3
      hide yuri glitch
      show monika 4n at tinstant zorder 2
-     m "[player]!"
+     m 1d "[player]!"
      hide monika
      show monika 4l at tinstant zorder 2
      extend " Nevermind that I was just..."
      pause 0.1
      extend " playing with the code a little."
-     m 3k "That was all! There is nobody else here but us... forever~"
-     m 3e "I love you."
+     m 3l "That was all! There is nobody else here but us... forever~"
+     m 2j "I love you, [player]!"
      return
