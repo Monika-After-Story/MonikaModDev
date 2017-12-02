@@ -2342,27 +2342,6 @@ label monika_algernon:
     return
     
 init 5 python:
-    #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
-    for key in ['burning', 'fahrenheit' 'ray bradbury' ]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_fahrenheit)
-    monika_random_topics.append('monika_fahrenheit')
-
-label monika_ferinhiet:
-    m "[player], have you ever heard of Ray Bradbury?"
-    m "He wrote a book called {i}Fahrenheit 451{/i}."
-    m "It's about a dystopian future where all books are thought as useless and are immediately burned."
-    m "To me that sounds like a Nightmare! Aside from being trapped in here of course."
-    m "How would society be able to function as free-thinking people?"
-    m "I can tell it has happend before as the story has basis in human history."
-    m "[player], Make me a promise."
-    m "You will never, EVER burn a book in your life."
-    m "I forgive you if you have already done it before, but no more from now on."
-    m "The thought of the priceless beauty of the printed word being wrecklessly destroyed like that..."
-    m "It's too much for my heart to take!"
-    return
-    
-init 5 python:
     for key in ['play','game']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_games') #id
@@ -3557,6 +3536,27 @@ label monika_changename:
             m "Just let me know if you had a change of heart, ok?"
     return
 
+init 5 python:
+    #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
+    for key in ['fahrenheit 451', 'ray bradbury']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fahrenheit451')
+    monika_random_topics.append('monika_fahrenheit451')
+
+label monika_fahrenheit451:
+    m 2c "[player], have you ever heard of Ray Bradbury?"
+    m 2d "He wrote a book called {i}Fahrenheit 451{/i}."
+    m "It's about a dystopian future where all books are thought as useless and are immediately burned."
+    m 3f "I can't imagine a world where knowledge is forbidden and destroyed."
+    m "It seems that there're others that actually hide books to contain free thinking from people."
+    m 3p "Human history has a funny way of repeating itself."
+    m 1f "[player], make me a promise."
+    m "To never, {i}ever{/i} burn a book."
+    m "I'll forgive you if have done it before."
+    m 1o "But the thought of not allowing yourself to learn from them makes me a bit sad."
+    m 2g "You'd be missing out on so much!"
+    m 3f "It's too much for my heart to take!"
+    return
 
 ##################
 #Incomplete ideas#
