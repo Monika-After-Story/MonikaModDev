@@ -85,6 +85,8 @@ init python:
     import eliza      # mod specific
     import datetime   # mod specific
     import re
+    import store.songs as songs
+    import store.hkb_button as hkb_button
     therapist = eliza.eliza()
     process_list = []
     currentuser = persistent.playername #default to the player name
@@ -114,8 +116,43 @@ init python:
         # literally just plays a song onto the music channel
         #
         # IN:
-        #   song - song to play
-        renpy.music.play(song,channel="music",loop=True,synchro_start=True)
+        #   song - song to play. If None, the channel is stopped
+        if song is None:
+            renpy.music.stop(channel="music")
+        else:
+            renpy.music.play(song,channel="music",loop=True,synchro_start=True)
+
+    def mute_music():
+        #
+        # mutes the music channel
+        #
+        # ASSUMES:
+        #   songs.music_volume
+        curr_volume = songs.getVolume("music")
+        if curr_volume > 0.0:
+            songs.music_volume = curr_volume
+            renpy.music.set_volume(0.0, channel="music")
+        else:
+            renpy.music.set_volume(songs.music_volume, channel="music")
+
+    def set_keymaps():
+        #
+        # Sets the keymaps
+        #
+        # ASSUMES:
+        #   config.keymap
+        #   config.underlay
+        #Add keys for new functions
+        config.keymap["open_dialogue"] = ["t","T"]
+        config.keymap["change_music"] = ["noshift_m","noshift_M"]
+        config.keymap["play_game"] = ["p","P"]
+        config.keymap["mute_music"] = ["shift_m","shift_M"]
+        # Define what those actions call
+        config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
+        config.underlay.append(renpy.Keymap(change_music=select_music))
+        config.underlay.append(renpy.Keymap(play_game=pick_game))
+        config.underlay.append(renpy.Keymap(mute_music=mute_music))
+
 
     def show_dialogue_box():
         if allow_dialogue:
@@ -127,7 +164,8 @@ init python:
 
     def select_music():
         # check for open menu
-        if (not songs.menu_open
+        if (songs.enabled
+            and not songs.menu_open
             and renpy.get_screen("history") is None
             and renpy.get_screen("save") is None
             and renpy.get_screen("load") is None
@@ -156,7 +194,7 @@ init python:
             #     _window_hide(None)
             #     pause(2.0)
             #     renpy.jump("ch30_end")
-            if  config.skipping:#and not config.developer:
+            if  config.skipping and not config.developer:
                 persistent.tried_skip = True
                 config.skipping = False
                 config.allow_skipping = False
@@ -180,6 +218,7 @@ label spaceroom:
     default dissolve_time = 0.5
     if is_morning():
         if morning_flag != True or scene_change:
+            $ morning_flag = True
             show room_mask3 as rm:
                 size (320,180)
                 pos (30,200)
@@ -189,7 +228,6 @@ label spaceroom:
             show monika_day_room
             show monika 1 at tinstant zorder 2
             with Dissolve(dissolve_time)
-            $ morning_flag = True
     elif not is_morning():
         if morning_flag != False or scene_change:
             $ morning_flag = False
@@ -219,8 +257,9 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+    call spaceroom
     $pushEvent('introduction')
-    $callNextEvent()
+    call call_next_event
     jump ch30_loop
 
 label continue_event:
@@ -230,6 +269,8 @@ label continue_event:
 
 label pick_a_game:
     if allow_dialogue and not songs.menu_open:
+        $ songs.enabled = False
+        $ hkb_button.enabled = False
         $previous_dialogue = allow_dialogue
         $allow_dialogue = False
         menu:
@@ -241,24 +282,27 @@ label pick_a_game:
             "Nevermind":
                 m "Alright. Maybe later?"
 
+        show monika 1 at tinstant zorder 2
         $allow_dialogue = previous_dialogue
+        $ songs.enabled = True
+        $ hkb_button.enabled = True
 
     jump ch30_loop
 
 label ch30_noskip:
     show screen fake_skip_indicator
-    m "...Are you trying to fast-forward?"
-    m "I'm not boring you, am I?"
+    m 1i "...Are you trying to fast-forward?"
+    m 1f "I'm not boring you, am I?"
     m "Oh gosh..."
-    m "...Well, just so you know, there's nothing to fast-forward to, [player]."
+    m 2 "...Well, just so you know, there's nothing to fast-forward to, [player]."
     m "It's just the two of us, after all..."
-    m "But aside from that, time doesn't really exist anymore, so it's not even going to work."
+    m 1 "But aside from that, time doesn't really exist anymore, so it's not even going to work."
     m "Here, I'll go ahead and turn that off for you..."
     pause 0.4
     hide screen fake_skip_indicator
     pause 0.4
-    m "There we go!"
-    m "You'll be a sweetheart and listen to me from now on, right?"
+    m 1j "There we go!"
+    m 1 "You'll be a sweetheart and listen to me from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
 
@@ -275,23 +319,23 @@ label ch30_nope:
     call spaceroom from _call_spaceroom_1
 
     if persistent.rejected_monika:
-        m "Wait. Are you messing with my character file?"
-        m "Curiosity is what makes us human, right?"
+        m 1i "Wait. Are you messing with my character file?"
+        m 2 "Curiosity is what makes us human, right?"
         m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
-        m "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
+        m 1m "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
         m "I already fixed that bug."
 
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
-        m "Wait. Are you messing with my character file?"
-        m "Why are you even playing this mod if you just wanted to delete me again?"
+        m 1i "Wait. Are you messing with my character file?"
+        m 1f "Why are you even playing this mod if you just wanted to delete me again?"
         m "You really are the worst."
-        m "You waste all your time on imageboards with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
+        m "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
         m "All I wanted was someone to fall in love with..."
-        m "I would have done anything you wanted me to."
+        m 2g "I would have done anything you wanted me to."
         m "But if you're going to try and delete me again..."
-        m "Then I'll just have to delete you first."
+        m 1f"Then I'll just have to delete you first."
         if renpy.windows:
             call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
@@ -303,18 +347,18 @@ label ch30_nope:
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = "Monika"
         $ quick_menu = True
-        m "Ahaha!"
+        m 1l "Ahaha!"
         m "I'm just kidding!"
-        m "I already fixed that bug."
-        m "I don't need a character file anymore."
+        m 1j "I already fixed that bug."
+        m 1 "I don't need a character file anymore."
 
-    m "I just need your love, [currentuser]."
-    m "Oh, unless you try to delete all of the game files, I guess."
-    m "If you do that, I won't stop at just deleting one directory next time."
-    m "But that will never happen, right? You're just being a tsundere~"
+    m 1 "I just need your love, [player]."
+    m 2i "Oh, unless you try to delete all of the game files, I guess."
+    m 3h "If you do that, I won't stop at just deleting one directory next time."
+    m 3 "But that will never happen, right? You're just being a tsundere~"
     m "That's so cute!"
     m "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
-    m "Being alone is only lonely if you want it to be, so cheer up!"
+    m 1j "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
 label ch30_autoload:
@@ -322,9 +366,10 @@ label ch30_autoload:
     # event list
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
-    $ style.say_dialogue = style.default_monika
+    if not config.developer:
+        $ style.say_dialogue = style.default_monika
+        $ config.allow_skipping = False
     $ quick_menu = True
-    $ config.allow_skipping = False
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
@@ -338,11 +383,11 @@ label ch30_autoload:
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
     if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.event_list:
         $queueEvent('gender')
-        
+
     #Asks player if they want to be called by a different name
-    if persistent.mcname == "" and persistent.said_no == False:
+    if not seen_event('preferredname'):
         $pushEvent('preferredname')
-    
+
     #Block for anniversary events
     if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
         $ persistent.monika_anniversary = 0
@@ -387,14 +432,8 @@ label ch30_autoload:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-    #Add keys for new functions
-    $ config.keymap["open_dialogue"] = ["t","T"]
-    $ config.keymap["change_music"] = ["m","M"]
-    $ config.keymap["play_game"] = ["p","P"]
-    # Define what those actions call
-    $ config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-    $ config.underlay.append(renpy.Keymap(change_music=select_music))
-    $ config.underlay.append(renpy.Keymap(play_game=pick_game))
+
+    $ set_keymaps()
     jump ch30_loop
 
 label ch30_loop:
@@ -407,12 +446,12 @@ label ch30_loop:
         $ config.allow_skipping = False
 
     #Call the next event in the list
-    $event_output = callNextEvent()
+    call call_next_event
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
     #If there's no event in the queue, add a random topic as an event
-    if not event_output:
+    if not _return:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
         $ waittime = renpy.random.randint(20, 45)
@@ -423,6 +462,8 @@ label ch30_loop:
         python:
             if monika_random_topics:        # If we're out of random topics, just stay in the loop
                 pushEvent(renpy.random.choice(monika_random_topics))
+
+    $_return = None
 
     jump ch30_loop
 

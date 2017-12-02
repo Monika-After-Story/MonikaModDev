@@ -1195,11 +1195,8 @@ default player = persistent.playername
 
 ## Name change variables
 #Name for Protag-kun
-default persistent.mcname = ""
+default persistent.mcname = persistent.playername
 default mcname = persistent.mcname
-
-#Stopper for Name Change event
-default persistent.said_no = False
 
 default persistent.playthrough = 0
 default persistent.yuri_kill = 0
@@ -1287,6 +1284,7 @@ default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.gender = "M" #Assume gender matches the PC
+default persistent.chess_strength = 3
 
 call set_gender from _call_set_gender
 
