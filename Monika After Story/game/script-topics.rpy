@@ -2257,7 +2257,6 @@ init 5 python:
     for key in ['monika', 'just monika', 'yourself', 'your past', 'your childhood']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_herself')
-    monika_random_topics.append('monika_herself')
 
 label monika_herself:
     m 1d "What's there really to say about myself that you don't know already?"
