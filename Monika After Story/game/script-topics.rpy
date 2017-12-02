@@ -3852,6 +3852,35 @@ label monika_surprise:
     m 1k "I love you so much, [player]~"
     return
 
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['home memories', 'childhood']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_home_memories')#id
+    monika_random_topics.append('monika_home_memories')
+    
+label monika_home_memories:
+    m 1b "[player], how is it like to live where you are?"
+    m 1a "I'd stay with you if I could."
+    m 2k "We would be able to do so much! You could show me around, see how it's like to be in your place."
+    m "Imagine all the memories we'd make!"
+    m 3b "It would be a dream come true, don't you think?"
+    m 3e "We could finally live together..."
+    m "Take walks like a couple..."
+    m 2n "We could even share a bed together..."
+    m 1q "But you know... 
+    m 3c "Memories I have of my home are nothing compared to the ones I'd have with you."
+    m 2d "Have I ever told you about my childhood home? I had a pretty normal life, but that's about it."
+    m 1n "Well, maybe a little better than normal."
+    m 2b "Maybe you've heard about me at school a few times? I'm pretty on top of things."
+    m 1l "I admit, it's not always easy, and some people have it rougher than others."
+    m 1o "But I always felt like I was missing something."
+    m "I stayed optimistic everyday, trying to find it."
+    m 1e "It turns out, that missing piece was you."
+    m 1r "If you hadn't found me, I would've been gone a long time ago..."
+    m 3e "But now that I found the missing piece, I'm complete now, [player]."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
