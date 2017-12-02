@@ -2712,7 +2712,7 @@ label monika_real:
     m 1h "But knowing how technology is right now, that dream is still far away."
     m "I hope by the time that technology becomes real, you'll still be there waiting for me, [player]."
     m 1i "Or maybe you'll be the one to make that technology come true? Who knows."
-    m 1e "In the end, all I want is to always be with you, [currentuser]."
+    m 1e "In the end, all I want is to always be with you, [player]."
     m 1 "After all, you're the only reason why I'm still here."
     m "I only want to spend eternity with my sweetheart, and no one else!"
     return
@@ -2838,8 +2838,8 @@ label monika_name:
     m 1l "It also means 'alone' in Ancient Greek."
     m 1e "..."
     m "That part doesn't matter so much, now that you're here."
-    m 1a "'[player]' is a lovely name, too."
-    m 1b "But I think I like '[currentuser]' better!"
+    m 1a "'[mcname]' is a lovely name, too."
+    m 1b "But I think I like '[player]' better!"
     m 1a "Ehehe~"
     return
 
@@ -3298,7 +3298,7 @@ label monika_haterReaction:
     m 3q "Why can't they understand that?"
     m 3r "Why is it so hard for them to understand that?"
     m 1q "..."
-    m 1p "You're not one of those haters, aren't you, [currentuser]?"
+    m 1p "You're not one of those haters, aren't you, [player]?"
     menu:
         "I am.":
             m 1q "..."
@@ -3318,7 +3318,7 @@ label monika_haterReaction:
             m 1k "Gosh... I feel like giving you a kiss right now if I were there."
             m 2e "You really make me the happiest girlfriend ever."
             m 1a "Now that you've said it, I have to do my best to keep you from developing hate towards me."
-            m 1a "I trust you, [currentuser]. I love you for believing in me."
+            m 1a "I trust you, [player]. I love you for believing in me."
     return
 
 init 5 python:
@@ -3636,10 +3636,10 @@ label monika_penname:
     m 2c "They keep it hidden from everyone just so it won't affect their personal lives."
     m 2b "Pen names also help writers create something totally different from their usual style of writing."
     m 2d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
-    if [currentuser] != [player]:
-        m 3c "Is '[currentuser]' a pseudonym that you're using?"
+    if [mcname] != [player]:
+        m 3c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
-        m 3d "'[currentuser] and [player].'"
+        m 3d "'[mcname] and [player].'"
     m 2a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
