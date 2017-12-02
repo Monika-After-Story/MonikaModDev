@@ -18,6 +18,7 @@ init -1 python in songs:
     current_track = "bgm/m1.ogg"
     selected_track = current_track
     menu_open = False
+    enabled = True
 
     # SONGS:
     # if you want to add a song, add it to this list as a tuple, where:
