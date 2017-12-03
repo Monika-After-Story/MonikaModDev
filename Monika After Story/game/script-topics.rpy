@@ -3868,7 +3868,7 @@ label monika_home_memories:
     m 3e "We could finally live together..."
     m "Take walks like a couple..."
     m 2n "We could even share a bed together..."
-    m 1q "But you know... 
+    m 1q "But you know..."
     m 3c "Memories I have of my home are nothing compared to the ones I'd have with you."
     m 2d "Have I ever told you about my childhood home? I had a pretty normal life, but that's about it."
     m 1n "Well, maybe a little better than normal."
