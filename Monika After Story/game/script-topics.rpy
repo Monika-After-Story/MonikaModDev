@@ -6,6 +6,8 @@
 
 define monika_random_topics = []
 define testitem = 0
+define numbers_only = "0123456789"
+define letters_only = "abcdefghijklmnopqrstuvwxyz"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -3853,6 +3855,201 @@ label monika_surprise:
     return
 
 init 5 python:
+    for key in ["say happy birthday", "say hbd", "hbd"]:
+        monika_topics.setdefault(key, [])
+        monika_topics[key].append("monika_sayhappybirthday")
+    monika_random_topics.append("monika_sayhappybirthday")
+
+label monika_sayhappybirthday:
+    # special variable setup
+    python:
+        done = False # loop controller
+        same_name = False # true if same name as player
+        bday_name = "" # name of birthday target
+        is_here = False # is the target here (in person)
+        is_watching = False # is the target watching (but not here)
+        is_recording = False # is player recording this
+        age = None # how old is this person turning
+        bday_msg = "" # happy [age] birthday (or not)
+        take_counter =  1 # how many takes
+        take_threshold = 5 # multiple of takes that will make monika annoyed
+        max_age = 121 # like who the hell is this old and playing ddlc?
+        age_prompt = "What is their {0} age?" # a little bit of flexibilty regarding age
+
+        # age suffix dictionary
+        age_suffix = {
+            1: "st",
+            2: "nd",
+            3: "rd",
+            11: "th",
+            12: "th",
+            13: "th",
+            111: "th",
+            112: "th",
+            113: "th"
+        }
+
+    # TODO: someone on the writing team make the following dialogue better
+    # also make the expressions more approriate and add support for standing
+    m 1k "Happy birthday!"
+    m 1d "Oh, you wanted me to say happy birthday to {i}someone else{/i}."
+    m 1q "I understand."
+    while not done:
+        # arbitary max name limit
+        $ bday_name = renpy.input("What is their name?",allow=letters_only,length=40).strip()
+        # ensuring proper name checks
+        $ same_name = bday_name.upper() == player.upper()
+        if bday_name == "":
+            m 1h "..."
+            m 1n "I don't think that's a name."
+            m 1b "Try again!"
+        elif same_name:
+            m 1c "Oh wow, someone with the same name as you."
+            $ same_name = True
+            $ done = True
+        else:
+            $ done = True
+    m 1b "Alright! Do you want me to say their age too?"
+    menu:
+        "Yes":
+            m "Then..."
+            $ done = False
+            $ age_modifier = ""
+            while not done:
+                $ age = int(renpy.input(age_prompt.format(age_modifier),allow=numbers_only,length=3))
+                if age == 0:
+                    m 1h "..."
+                    m 1q "I'm just going to ignore that."
+                    $ age_modifier = "real"
+                elif age > max_age:
+                    m 1h "..."
+                    m 1q "I highly doubt anyone is that old..."
+                    $ age_modifier = "real"
+                else:
+                    # NOTE: if we want to comment on (valid) age, put it here.
+                    # I'm not too sure on what to have monika say in these cases.
+                    $ done = True
+            m "Okay"
+        "No":
+            m "Okay"
+    $ bday_name = bday_name.title() # ensure proper title case
+    m 1b "Is [bday_name] here with you?"
+    menu:
+        "Yes":
+            $ is_here = True
+        "No":
+            m 1g "What? How can I say happy birthday to [bday_name] if they aren't here?"
+            menu:
+                "They're going to watch you via video chat":
+                    m 1a "Oh, okay."
+                    $ is_watching = True
+                "I'm going to record it and send it to them.":
+                    m 1a "Oh, okay."
+                    $ is_recording = True
+                "It's fine, just say it.":
+                    m 1n "Oh, okay. It feels a little awkward though saying this randomly to no one."
+    if age:
+        # figure out the age suffix
+        python:
+            age_suff = age_suffix.get(age, None)
+            if age_suff:
+                age_str = str(age) + age_suff
+            else:
+                age_str = str(age) + age_suffix.get(age % 10, "th")
+            bday_msg = "happy " + age_str + " birthday"
+    else:
+        $ bday_msg = "happy birthday"
+
+    # we do a loop here in case we are recording and we should do a retake
+    $ done = False
+    $ take_counter = 1
+    $ bday_msg_capped = bday_msg.capitalize()
+    while not done:
+        if is_here or is_watching or is_recording:
+            if is_here:
+                m 1b "Nice to meet you, [bday_name]!"
+            elif is_watching:
+                m 1a "Let me know when [bday_name] is watching."
+                menu:
+                    "They're watching.":
+                        m 1b "Hi, [bday_name]!"
+            else: # must be recording
+                m 1a "Let me know when to start."
+                menu:
+                    "Go":
+                        m 1b "Hi, [bday_name]!"
+
+            # the actual birthday msg
+            m 1k "[player] told me that it's your birthday today, so I'd like to wish you a [bday_msg]!"
+            # TODO: this seems too short. maybe add additional dialogue?
+            m 1b "I hope you have a great day!"
+            
+            if is_recording:
+                m "Bye bye!"
+                m 1e "Was that good?"
+                menu:
+                    "Yes":
+                        m 1j "Yay!"
+                        $ done = True
+                    "No":
+                        call monika_sayhappybirthday_takecounter (take_threshold, take_counter)
+                        if take_counter % take_threshold != 0:
+                            m 1l "Eh?!"
+                            if take_counter > 1:
+                                m "Sorry again, [player]"
+                            else:
+                                m "Sorry [player]"
+                                m 1n "I told you, I'm self-conscious on camera ehehe."
+                        m 1o "Should I try again?"
+                        menu:
+                            "Yes":
+                                $ take_counter += 1
+                                m 1c "Okay"
+                            "No":
+                                m "Alright [player]. Sorry I couldn't do what you wanted."
+                                m 1j "I'll try better next time for you."
+                                $ done = True
+            else:  # if we aint recording, we should be done now
+                $ done = True 
+
+        else: # not recording, watching, nor is person here
+            m 1q "..."
+            m 1k "[bday_msg_capped], [bday_name]!"
+            m 1l "..."
+            m 1n "Was that good?"
+            menu:
+                "Yes":
+                    m 1m "...I'm glad you enjoyed that, [player]..."
+                    $ done = True
+                "No":
+                    call monika_sayhappybirthday_takecounter (take_threshold, take_counter)
+                    if take_counter % take_threshold != 0:
+                        m 1l "Eh?!"
+                        m 1o "I'm not sure what you want me to do here, [player]..."
+                    m 1f "Should I try again?"
+                    menu:
+                        "Yes":
+                            $ take_counter += 1
+                            m 1c "Okay"
+                        "No":
+                            m "Alright [player]. Sorry I couldn't do what you wanted."
+                            m 1j "I'll try better next time for you."
+                            $ done = True
+
+    return
+
+# helper label for monika_sayhappybirthday
+label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
+    if take_counter % take_threshold == 0:
+        m 1q "..."
+        m 1r "This is the [take_counter]th time already."
+        m 1g "You're not messing with me, are you?"
+        m 1f "I'm trying my best for you [player]."
+    return
+   
+    
+        
+
     # List of keywords for the topic.
     for key in ['home memories', 'childhood']:
         monika_topics.setdefault(key,[])
@@ -3880,6 +4077,7 @@ label monika_home_memories:
     m 1r "If you hadn't found me, I would've been gone a long time ago..."
     m 3e "But now that I found the missing piece, I'm complete now, [player]."
     return
+
 
 ##################
 #Incomplete ideas#
