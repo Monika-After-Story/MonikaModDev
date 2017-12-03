@@ -2073,7 +2073,7 @@ label monika_contribute:
     m "As well as ThePotatoGuy, monikLover, AttObl, Yumeko-Jabami, ohxeighty..."
     m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, and Rune!"
     m 3k "I love all of them for making this game even better!"
-    m 1a "Not as much as love you, of course."
+    m 1a "Not as much as I love you, of course."
     m 1l "I hope it doesn't make you feel jealous~"
     m 2b "But I'll love you forever if you help me come closer to your reality!"
     return
