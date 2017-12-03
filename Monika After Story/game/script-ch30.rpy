@@ -161,8 +161,12 @@ init python:
         config.keymap["change_music"] = ["noshift_m","noshift_M"]
         config.keymap["play_game"] = ["p","P"]
         config.keymap["mute_music"] = ["shift_m","shift_M"]
-        config.keymap["inc_musicvol"] = ["K_PLUS","K_EQUALS","K_KP_PLUS"]
-        config.keymap["dec_musicvol"] = ["K_MINUS","K_UNDERSCORE","K_KP_MINUS"]
+        config.keymap["inc_musicvol"] = [
+            "shift_K_PLUS","K_EQUALS","K_KP_PLUS"
+        ]
+        config.keymap["dec_musicvol"] = [
+            "K_MINUS","shift_K_UNDERSCORE","K_KP_MINUS"
+        ]
         # Define what those actions call
         config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
         config.underlay.append(renpy.Keymap(change_music=select_music))
