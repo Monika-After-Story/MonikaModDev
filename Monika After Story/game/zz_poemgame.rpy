@@ -9,33 +9,87 @@ init python:
 #   import random
 
     # the PoemWord class.
-    # TODO: should we add monika points? hmmmm
+    #
+    # ATTRIBUTES:
+    #   word - the word this PoemWord represents (string)
+    #   sPoint - the amount of poitns this gives sayori (int)
+    #   nPoint - the amount of points this gives natsuki (int)
+    #   yPoint - the amount of points this gives yuri (int)
+    #   mPoint - the amount of points this gives monika (int)
+    #   glitch - True means this a glitch word, false if not
+    #
     class PoemWord:
-        def __init__(self, word, sPoint, nPoint, yPoint, glitch=False):
+        def __init__(self, word, sPoint, nPoint, yPoint, mPoint, glitch=False):
             self.word = word
             self.sPoint = sPoint
             self.nPoint = nPoint
             self.yPoint = yPoint
+            self.mPoint = mPoint
             self.glitch = glitch
+
+    
+    # poemword list class. Allows us to dynamically create Poemwords for 
+    # the poem minigame
+    #
+    # ATTIRBUTES:
+    #   wordlist - list of PoemWords this contains
+    #   wordfile - name/path of file this list is generated from. If None, this
+    #       list was not generated from a file.
+    #
+    class PoemWordList:
+        def __init__(self, wordfile=None):
+            #
+            # Contrusctor for PoemWord list
+            #
+            # If a wordfile is passed in, the file will be read
+            self.wordlist = list()
+            self.wordfile = wordfile
+
+            if wordfile:
+                self.readInFile(wordfile)
+
+
+        def readInFile(self, wordfile):
+            # copied from poemgame (with adjustments)
+            #
+            # Reads in a file into the wordlist
+            #
+            # NOTE: On the poemwords file
+            #   The file must consist of the following format:
+            #       word,#1,#2,#3,#4
+            #   WHERE:
+            #       word - the word we want in the poem
+            #       #1 - the points this word gives to sayori
+            #       #2 - the points this word gives to natsuki
+            #       #3 - the points this word gives to yuri
+            #       #4 - the points this word gives to monika
+            #   (LINES that strat with # are ignored)
+            #
+            # IN:
+            #   wordfile - the filename/path of the file to read words
+            with renpy.file(wordfile) as words:
+                for line in words:
+        
+                    line = line.strip()
+
+                    if line == '' or line[0] == '#': continue
+
+                    x = line.split(',')
+                    self.wordlist.append(
+                        PoemWord(
+                            x[0], 
+                            float(x[1]), 
+                            float(x[2]), 
+                            float(x[3]),
+                            float(x[4])
+                        )
+                    )           
 
 
     # these are the thresholds for liking / disliking a poem
     # NOTE: do we need these?
     POEM_DISLIKE_THRESHOLD = 29
     POEM_LIKE_THRESHOLD = 45
-
-    # generating the word list
-    full_wordlist = []
-    with renpy.file('poemwords.txt') as wordfile:
-        for line in wordfile:
-
-            line = line.strip()
-
-            if line == '' or line[0] == '#': continue
-
-
-            x = line.split(',')
-            full_wordlist.append(PoemWord(x[0], float(x[1]), float(x[2]), float(x[3])))
 
 
 
