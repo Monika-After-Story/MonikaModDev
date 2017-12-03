@@ -4048,7 +4048,7 @@ label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
    
     
         
-
+init 5 python:
     # List of keywords for the topic.
     for key in ['home memories', 'childhood']:
         monika_topics.setdefault(key,[])
@@ -4159,7 +4159,7 @@ label monika_panties:
     m 1k "I love you so much, [player]~"
     return
     
-
+init 5 python:
     #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
     for key in ['fahrenheit 451', 'ray bradbury']:
         monika_topics.setdefault(key,[])
