@@ -41,6 +41,13 @@ init 10 python in songs:
     # for muting
     music_volume = getVolume("music")
 
+# non store post inint stuff
+init 10 python:
+
+    # ensure proper current track is set
+    store.songs.current_track = persistent.current_track
+    store.songs.selected_track = store.songs.current_track
+
 # MUSIC MENU ##################################################################
 # This is the music selection menu
 ###############################################################################
