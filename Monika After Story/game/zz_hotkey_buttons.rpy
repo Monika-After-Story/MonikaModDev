@@ -1,6 +1,12 @@
 # Module that handles hotkey button screen
 #
 
+init -1 python in hkb_button:
+
+    # new property to disable buttons
+    # set to False to disable buttons
+    enabled = True
+
 
 # HOTKEY BUTTON SCREEN ========================================================
 # Literally just hotkey buttons
@@ -70,16 +76,21 @@ screen hkb_overlay():
         xalign 0.05
         yalign 0.95
 
-        if allow_dialogue:
+        if allow_dialogue and store.hkb_button.enabled:
             textbutton _("Talk") action Jump("ch30_monikatopics")
         else:
             textbutton _("Talk"):
                 action NullAction()
                 style "hkbd_button"
 
-        textbutton _("Music") action Function(select_music)
+        if store.hkb_button.enabled:
+            textbutton _("Music") action Function(select_music)
+        else:
+            textbutton _("Music"):
+                action NullAction()
+                style "hkbd_button"
 
-        if allow_dialogue:
+        if allow_dialogue and store.hkb_button.enabled:
             textbutton _("Play") action Jump("pick_a_game")
         else:
             textbutton _("Play"):

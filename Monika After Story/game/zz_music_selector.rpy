@@ -5,10 +5,67 @@
 # music inits first, so the screen can be made well
 init -1 python in songs:
 
+    # functions
+    def adjustVolume(channel="music",up=True):
+        #
+        # Adjusts the volume of the given channel by the volume bump value
+        #
+        # IN:
+        #   channel - the channel to adjust volume
+        #       (DEFAULT: music)
+        #   up - True means increase volume, False means decrease
+        #       (DEFAULT: True)
+        direct = 1
+        if not up:
+            direct = -1
+
+        # volume checks
+        new_vol = getVolume(channel)+(direct*vol_bump)
+        if new_vol < 0.0:
+            new_vol = 0.0
+        elif new_vol > 1.0:
+            new_vol = 1.0
+        
+        renpy.music.set_volume(new_vol, channel=channel)
+
+    def getVolume(channel):
+        #
+        # Gets the volume of the given audio channel
+        #
+        # IN:
+        #   channel - the audio channel to get the volume for
+        #
+        # RETURNS:
+        #   The volume of the given audio channel (as a double/float)
+        return renpy.audio.audio.get_channel(channel).context.secondary_volume
+
+    def getPlayingMusicName():
+        #
+        # Gets the name of the currently playing song.
+        #
+        # IN:
+        #   channel - the audio channel to get the playing file 
+        #
+        # RETURNS:
+        #   The name of the currently playing song, as defined here in
+        #   music_choices, Or None if nothing is currently playing
+        #
+        # ASSUMES:
+        #   music_choices (songs store)
+        curr_filename = renpy.music.get_playing()
+        if curr_filename:
+            for name,song in music_choices:
+                if curr_filename == song:
+                    return name
+        return None
+
+
     # defaults
     current_track = "bgm/m1.ogg"
     selected_track = current_track
     menu_open = False
+    enabled = True
+    vol_bump = 0.1 # how much to increase volume by
 
     # SONGS:
     # if you want to add a song, add it to this list as a tuple, where:
@@ -21,6 +78,22 @@ init -1 python in songs:
     music_choices.append(("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg"))
     music_choices.append(("Surprise!","<loop 36.782>bgm/d.ogg"))
 
+    # leave this one last, so we can stopplaying stuff
+    music_choices.append(("None", None))
+
+
+# some post screen init is setting volume to current settings
+init 10 python in songs:
+
+    # for muting
+    music_volume = getVolume("music")
+
+# non store post inint stuff
+init 10 python:
+
+    # ensure proper current track is set
+    store.songs.current_track = persistent.current_track
+    store.songs.selected_track = store.songs.current_track
 
 # MUSIC MENU ##################################################################
 # This is the music selection menu
@@ -56,6 +129,10 @@ style music_menu_outer_frame:
 
 screen music_menu():
     modal True
+
+    # allows the music menu to quit using hotkey
+    key "noshift_M" action Return()
+    key "noshift_m" action Return()
 
     zorder 200
 

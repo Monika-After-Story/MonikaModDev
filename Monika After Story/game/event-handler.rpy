@@ -55,31 +55,21 @@ init python:
 
         return event_label
 
-    def callNextEvent():
+    def seen_event(event_label):
         #
-        # This calls the next event in the list. It returns the name of the
-        # event called or None if the list is empty or the label is invalid
+        # This checks if an event has either been seen or is already on the
+        # event list.
         #
         # IN:
+        #   event_lable = The label for the event to be checked
         #
         # ASSUMES:
         #   persistent.event_list
-        #   persistent.current_monikatopic
-
-        event_label = popEvent()
-        if event_label and renpy.has_label(event_label):
-            globals()['allow_dialogue'] = False
-            state_change = renpy.call_in_new_context(event_label)
-            persistent.current_monikatopic=0
-            if event_label in monika_random_topics:
-                monika_random_topics.remove(event_label)
-            if state_change == 'quit':
-                renpy.quit(0)
-            globals()['allow_dialogue'] = True
+        if renpy.seen_label(event_label) or event_label in persistent.event_list:
+            return True
         else:
-            return None
+            return False
 
-        return event_label
 
     def restartEvent():
         #
@@ -95,3 +85,34 @@ init python:
                 pushEvent('continue_event')
             persistent.current_monikatopic = 0
         return
+
+
+
+
+# This calls the next event in the list. It returns the name of the
+# event called or None if the list is empty or the label is invalid
+#
+# ASSUMES:
+#   persistent.event_list
+#   persistent.current_monikatopic
+label call_next_event:
+
+    $event_label = popEvent()
+    if event_label and renpy.has_label(event_label):
+
+        $ allow_dialogue = False
+        call expression event_label
+        $ persistent.current_monikatopic=0
+
+        if event_label in monika_random_topics:
+            $monika_random_topics.remove(event_label)
+
+        if _return == 'quit':
+            $ renpy.quit(0)
+
+        $ allow_dialogue = True
+        show monika 1 at tinstant zorder 2 #Return monika to normal pose
+    else:
+        return False
+
+    return event_label

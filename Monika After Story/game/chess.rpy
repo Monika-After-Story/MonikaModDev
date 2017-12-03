@@ -26,11 +26,11 @@ init:
 
         def is_platform_good_for_chess():
             import platform
-            if platform.machine() == 'x86_64':
+            import sys
+            if sys.maxsize > 2**32:
                 return platform.system() == 'Windows' or platform.system() == 'Linux' or platform.system() == 'Darwin'
-            elif platform.machine() == 'x86':
+            else:
                 return platform.system() == 'Windows'
-            return False
 
         def get_mouse_pos():
             vw = config.screen_width * 10000
@@ -55,11 +55,11 @@ init:
             COLOR_WHITE = True
             COLOR_BLACK = False
             MONIKA_WAITTIME = 1500
-            MONIKA_STRENGTH = 12
             MONIKA_OPTIMISM = 33
             MONIKA_THREADS = 1
 
             def __init__(self, player_color):
+                import sys
 
                 renpy.Displayable.__init__(self)
 
@@ -100,21 +100,24 @@ init:
                     # This is the last-resort check, the availability of the chess game should be checked independently beforehand.
                     raise ArchitectureError('Your operating system does not support the chess game.')
 
-                def open_stockfish(path):
-                    return subprocess.Popen([renpy.loader.transfn(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                def open_stockfish(path,startupinfo=None):
+                    return subprocess.Popen([renpy.loader.transfn(path)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,startupinfo=startupinfo)
 
+                is_64_bit = sys.maxsize > 2**32
                 if platform.system() == 'Windows':
-                    if platform.machine() == 'x86':
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe')
-                    elif platform.machine() == 'x86_64':
-                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe')
-                elif platform.system() == 'Linux' and platform.machine() == 'x86_64':
+                    startupinfo = subprocess.STARTUPINFO()
+                    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                    if is_64_bit:
+                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x64.exe',startupinfo)
+                    else:
+                        self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe',startupinfo)
+                elif platform.system() == 'Linux' and is_64_bit:
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_linux_x64')
-                elif platform.system() == 'Darwin' and platform.machine() == 'x86_64':
+                elif platform.system() == 'Darwin' and is_64_bit:
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_macosx_x64')
 
                 # Set Monika's parameters
-                self.stockfish.stdin.write("setoption name Skill Level value %d\n" % (self.MONIKA_STRENGTH))
+                self.stockfish.stdin.write("setoption name Skill Level value %d\n" % (persistent.chess_strength))
                 self.stockfish.stdin.write("setoption name Contempt value %d\n" % (self.MONIKA_OPTIMISM))
 
                 # Set up facilities for asynchronous communication
@@ -372,8 +375,9 @@ init:
 
 label game_chess:
     hide screen keylistener
-    m "You wanna play chess? Alright~"
-    m "Get your mind ready!"
+    m 1b "You want to play chess? Alright~"
+    m 2a "Double click your king if you decide to surrender."
+    m 1a "Get ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
     return
 
@@ -389,10 +393,10 @@ label demo_minigame_chess:
             $ choice = random.randint(0, 1) == 0
             if choice:
                 $ player_color = ChessDisplayable.COLOR_WHITE
-                m "Oh look, I drew black! Let's begin!"
+                m 2a "Oh look, I drew black! Let's begin!"
             else:
                 $ player_color = ChessDisplayable.COLOR_BLACK
-                m "Oh look, I drew white! Let's begin!"
+                m 2a "Oh look, I drew white! Let's begin!"
 
     window hide None
 
@@ -406,17 +410,28 @@ label demo_minigame_chess:
 
     if winner == "monika":
         if surrendered and num_turns <= 4:
-            m "Come on, don't give up so easily."
+            m 1e "Come on, don't give up so easily."
         else:
-            m "I win!"
+            m 1b "I win!"
+
+        if persistent.chess_strength>0:
+            m 1j "I'll go a little easier on you next time."
+            $persistent.chess_strength += -1
+        else:
+            m 1l "I really was going easy on you!"
 
     elif winner == "player":
 
-        m "You won! Congratulations."
-
+        m 2a "You won! Congratulations."
+        if persistent.chess_strength<20:
+            m 2 "I'll get you next time for sure!"
+            $persistent.chess_strength += 1
+        else:
+            m 2b "You really are an amazing player!"
+            m 3l "Are you sure you're not cheating?"
     else:
 
-        m "A draw? How boring..."
+        m 3h "A draw? How boring..."
 
     menu:
         m "Do you want to play again?"
@@ -426,12 +441,12 @@ label demo_minigame_chess:
         "No.":
 
             if winner == "monika":
-                m "Despite its simple rules, chess is a really intricate game."
-                m "It's alright if you find yourself struggling at times."
-                m "Remember, the important thing is to be able to learn from your mistakes."
+                m 2d "Despite its simple rules, chess is a really intricate game."
+                m 1a "It's okay if you find yourself struggling at times."
+                m 1j "Remember, the important thing is to be able to learn from your mistakes."
             else:
-                m "It's amazing how much more I have to learn even now."
-                m "I really don't mind losing as long as I can learn something."
-                m "After all, the company is good."
+                m 2b "It's amazing how much more I have to learn even now."
+                m 2a "I really don't mind losing as long as I can learn something."
+                m 1j "After all, the company is good."
 
     return
