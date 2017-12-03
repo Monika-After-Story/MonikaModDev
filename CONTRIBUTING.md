@@ -98,6 +98,24 @@ At this point, you're ready to make your changes! Feel free to ask for help; eve
 
 >If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch so it's easier to merge.
 
+## Submitting a Pull Request
+
+![Guide 1](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide1.png?raw=True)
+
+Click the pencil icon to start editing.
+
+![Guide 2](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide2.png?raw=True)
+
+When you're done making changes, click propose file change.
+
+![Guide 3](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide3.png?raw=True)
+
+Click create pull request.
+
+![Guide 4](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide4.png?raw=True)
+
+Add an appropriate title and a description of the changes you made, before you create your pull request.
+
 # Join us!
 
 You can chat with the core team on [our development Discord channel](https://discord.gg/MRKPk4). We're always friendly to new contributors, and it's not just a great place to get help but also just a fun place to hang out with like-minded DDLC fans.
