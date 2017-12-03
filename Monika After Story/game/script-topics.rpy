@@ -7,6 +7,7 @@
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
+define letters_only = "abcdefghijklmnopqrstuvwxyz"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -3872,15 +3873,20 @@ label monika_sayhappybirthday:
         bday_msg = "" # happy [age] birthday (or not)
         take_counter =  1 # how many takes
         take_threshold = 5 # multiple of takes that will make monika annoyed
+        max_age = 121 # like who the hell is this old and playing ddlc?
+        age_prompt = "What is their {0} age?" # a little bit of flexibilty regarding age
 
         # age suffix dictionary
         age_suffix = {
-            "1": "st",
-            "2": "nd",
-            "3": "rd",
-            "11": "th",
-            "12": "th",
-            "13": "th"
+            1: "st",
+            2: "nd",
+            3: "rd",
+            11: "th",
+            12: "th",
+            13: "th",
+            111: "th",
+            112: "th",
+            113: "th"
         }
 
     # TODO: someone on the writing team make the following dialogue better
@@ -3889,7 +3895,8 @@ label monika_sayhappybirthday:
     m 1d "Oh, you wanted me to say happy birthday to {i}someone else{/i}."
     m 1q "I understand."
     while not done:
-        $ bday_name = renpy.input("What is their name?").strip()
+        # arbitary max name limit
+        $ bday_name = renpy.input("What is their name?",allow=letters_only,length=40).strip()
         # ensuring proper name checks
         $ same_name = bday_name.upper() == player.upper()
         if bday_name == "":
@@ -3905,13 +3912,22 @@ label monika_sayhappybirthday:
     m 1b "Alright! Do you want me to say their age too?"
     menu:
         "Yes":
+            m "Then..."
             $ done = False
+            $ age_modifier = ""
             while not done:
-                $ age = renpy.input("Then what is their age?",allow=numbers_only)
-                if age == "0":
+                $ age = int(renpy.input(age_prompt.format(age_modifier),allow=numbers_only,length=3))
+                if age == 0:
                     m 1h "..."
                     m 1q "I'm just going to ignore that."
+                    $ age_modifier = "real"
+                elif age > max_age:
+                    m 1h "..."
+                    m 1q "I highly doubt anyone is that old..."
+                    $ age_modifier = "real"
                 else:
+                    # NOTE: if we want to comment on (valid) age, put it here.
+                    # I'm not too sure on what to have monika say in these cases.
                     $ done = True
             m "Okay"
         "No":
@@ -3937,10 +3953,10 @@ label monika_sayhappybirthday:
         python:
             age_suff = age_suffix.get(age, None)
             if age_suff:
-                age = age + age_suff
+                age_str = str(age) + age_suff
             else:
-                age = age + age_suffix.get(age[-1], "th")
-            bday_msg = "happy " + age + " birthday"
+                age_str = str(age) + age_suffix.get(age % 10, "th")
+            bday_msg = "happy " + age_str + " birthday"
     else:
         $ bday_msg = "happy birthday"
 
