@@ -2340,7 +2340,7 @@ label monika_algernon:
     m "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m "No matter what happens, know that I will always love you."
     return
-
+    
 init 5 python:
     for key in ['play','game']:
         monika_topics.setdefault(key,[])
@@ -3618,6 +3618,29 @@ label monika_panties:
     m 1k "I love you so much, [player]~"
     return
     
+
+    #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
+    for key in ['fahrenheit 451', 'ray bradbury']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fahrenheit451')
+    monika_random_topics.append('monika_fahrenheit451')
+
+label monika_fahrenheit451:
+    m 2c "[player], have you ever heard of Ray Bradbury?"
+    m 2d "He wrote a book called {i}Fahrenheit 451{/i}."
+    m "It's about a dystopian future where all books are thought as useless and are immediately burned."
+    m 3f "I can't imagine a world where knowledge is forbidden and destroyed."
+    m "It seems that there're others that actually hide books to contain free thinking from people."
+    m 3p "Human history has a funny way of repeating itself."
+    m 1f "[player], make me a promise."
+    m "To never, {i}ever{/i} burn a book."
+    m "I'll forgive you if have done it before."
+    m 1o "But the thought of not allowing yourself to learn from them makes me a bit sad."
+    m 2g "You'd be missing out on so much!"
+    m 3f "It's too much for my heart to take!"
+    return
+
+
 ##################
 #Incomplete ideas#
 ##################

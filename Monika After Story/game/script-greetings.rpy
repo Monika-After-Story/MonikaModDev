@@ -261,3 +261,9 @@ label greeting_sweetpea:
      m "It's you, my sweetpea!"
      m "My goodness... That surely was embarassing to say, ehehe~"
      return
+
+label greeting_surprised:
+     m "Oh, hello [player]!"
+     m "Sorry, you surprised me there a little."
+     m "How have you been?"
+     return
