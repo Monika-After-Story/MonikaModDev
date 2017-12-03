@@ -3858,7 +3858,6 @@ init 5 python:
     for key in ["say happy birthday", "say hbd", "hbd"]:
         monika_topics.setdefault(key, [])
         monika_topics[key].append("monika_sayhappybirthday")
-    monika_random_topics.append("monika_sayhappybirthday")
 
 label monika_sayhappybirthday:
     # special variable setup
