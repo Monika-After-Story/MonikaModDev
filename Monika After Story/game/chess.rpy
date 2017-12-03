@@ -112,8 +112,10 @@ init:
                     else:
                         self.stockfish = open_stockfish('mod_assets/stockfish_8_windows_x32.exe',startupinfo)
                 elif platform.system() == 'Linux' and is_64_bit:
+                    os.chmod(config.basedir + '/game/mod_assets/stockfish_8_linux_x64',0755)
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_linux_x64')
                 elif platform.system() == 'Darwin' and is_64_bit:
+                    os.chmod(config.basedir + '/game/mod_assets/stockfish_8_macosx_x64',0755)
                     self.stockfish = open_stockfish('mod_assets/stockfish_8_macosx_x64')
 
                 # Set Monika's parameters

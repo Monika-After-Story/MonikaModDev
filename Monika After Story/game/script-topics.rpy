@@ -2062,7 +2062,7 @@ label monika_technique:
 
 
 init 5 python:
-    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help']:
+    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help', 'credits']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_contribute')
     monika_random_topics.append('monika_contribute')
@@ -2073,7 +2073,10 @@ label monika_contribute:
     m 2a "I keep all the code in github.com/Backdash/MonikaModDev."
     m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, Jxhnathan08..."
     m "As well as ThePotatoGuy, monikLover, AttObl, Yumeko-Jabami, ohxeighty..."
-    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, and Rune!"
+    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, Rune..."
+    m "TheAloofPotato, NotSoGiantDad, Mario, Kadava, Subzero, Neko-chr, ThePyClone..."
+    m "badooga, synnical, stmobo, dmarab, MadHaetter."
+    m "Hopefully I didn't leave anyone out..."
     m 3k "I love all of them for making this game even better!"
     m 1a "Not as much as I love you, of course."
     m 1l "I hope it doesn't make you feel jealous~"
@@ -3993,7 +3996,7 @@ label monika_sayhappybirthday:
                         m 1j "Yay!"
                         $ done = True
                     "No":
-                        call monika_sayhappybirthday_takecounter (take_threshold, take_counter)
+                        call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter
                         if take_counter % take_threshold != 0:
                             m 1l "Eh?!"
                             if take_counter > 1:
@@ -4023,7 +4026,7 @@ label monika_sayhappybirthday:
                     m 1m "...I'm glad you enjoyed that, [player]..."
                     $ done = True
                 "No":
-                    call monika_sayhappybirthday_takecounter (take_threshold, take_counter)
+                    call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter_1
                     if take_counter % take_threshold != 0:
                         m 1l "Eh?!"
                         m 1o "I'm not sure what you want me to do here, [player]..."
@@ -4263,6 +4266,32 @@ label monika_music2:
         m 1e "It's okay to dream though, isn't it [player]?"
         m 5a "Maybe one day, we can make that dream come true~"
 
+=======
+    for key in ['confidence', ‘initiative’, 'success', "vulnerability"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_confidence')
+    monika_random_topics.append('monika_confidence')
+
+label monika_confidence:
+    m "[player], do you ever feel like you lack the initiative to do something?"
+    m "Sometimes, when I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
+    m "Almost as if everything around me comes to a standstill."
+    m "It feels like my will to approach a task confidently, like writing and sharing literature with people, just vanishes."
+    m "However, I've been working towards it with due diligence, and I firmly believe being able to take initiative in situations is a very important skill to have."
+    m "That's something that I, personally, find very comforting."
+    m "I've broken it down into a three-step process that can be applied to anyone! It's still a work-in-progress, so take it with a grain of salt."
+    m "Step one!"
+    m "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
+    m "Step two!"
+    m "Building up and fortifying your confidence is really important. Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
+    m "Eventually, these things you once struggled to get done will be completed as if they were acts of valor!"
+    m "Step three!"
+    m "Try your best to stay open-minded and willing to learn at all times. Nobody is perfect, and everyone is able to teach each other something. This can help you learn to understand things from other people's perspectives in situations, and inspire others to do the same."
+    m "And that's it, really."
+    m "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
+    m "Ahaha, I'm only joking about that last part."
+    m "In all seriousness, I'm really glad I have you here, [player]..."
+    m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind girlfriend would I be if I didn't return the favor~?"
     return
 
 ##################
