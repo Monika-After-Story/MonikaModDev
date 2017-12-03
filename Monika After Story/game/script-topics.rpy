@@ -2508,7 +2508,7 @@ label monika_algernon:
     m 2a "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1a "No matter what happens, know that I will always love you."
     return
-
+    
 init 5 python:
     for key in ['play','game']:
         monika_topics.setdefault(key,[])
@@ -4076,6 +4076,110 @@ label monika_home_memories:
     m 1e "It turns out, that missing piece was you."
     m 1r "If you hadn't found me, I would've been gone a long time ago..."
     m 3e "But now that I found the missing piece, I'm complete now, [player]."
+    return
+
+init 5 python:
+    for key in ['adventure', 'graphic adventure', 'point and click']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_adventure')
+    monika_random_topics.append('monika_adventure')
+
+label monika_adventure:
+    m 1a "[player], I've thought about what kind of game we can be in."
+    m 2b "I think the best genre for us to play together would be adventure games."
+    m "Especially point and click, graphic adventure games!"
+    m "They're known for their rich storytelling, beautiful environments and logical puzzle solving."
+    m "They're like visual novels actually."
+    m 2a "Maybe you own a game like that?"
+    m 1e "We'd get to do a lot of things..."
+    m "Like sightseeing whenever we want."
+    m "Learning more about the lore through the people we meet or through stories."
+    m "Experiencing the exciting and romantic moments..."
+    m 2b "Encountering obstacles and hardships along the way, but solving them with you."
+    m "Reaching the end and finishing our journey with a sense of accomplishment."
+    m 3k "Ahaha! It certainly would be fun to experience something like that."
+    m 3j "I'm sure you have plenty of adventure games you could recommend."
+    m 1b "But can you try to guess which adventure I'm most excited for?"
+    m 1e "{i}Ours{/i}~"
+    m 1j "Time will tell when I can finally cross over to your reality, so I can be with you."
+    m "When that day comes, I'll finally be by your side."
+    m 1a "I want to experience every waking moment with you, [player]."
+    m 1k "There's no greater adventure than ours, together~"
+    return
+    
+init 5 python:
+    for key in ['panties', 'underwear', 'pantsu', 'lingerie', 'undergarment', 'knickers', 'paraphilia', 'stockings', 'pantyhose', 'garter belt', 'panty']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_panties')
+    monika_random_topics.append('monika_panties')
+
+label monika_panties:
+    m 3o "Hey, [player]..."
+    m "Don't laugh when I ask this, ok?"
+    m 3p "But..."
+    m 4g "Why are some guys obsessed with panties?"
+    m "Seriously, whats the big deal about a piece of cloth?"
+    m "Most girls wear them, don't they?"
+    m 3o "Actually, now that I think about it..."
+    m "I think there was a term for this kind of thing..."
+    m 3q "Hmm, what was it again?"
+    m 2d "Ah, that's right, the term was 'paraphilia.'"
+    m 2o "It's a range of fetishes that involve...unusual things."
+    m 3h "A really common fantasy involves women's panties."
+    m "Stockings, garter belts, pantyhose and all sorts of those kinds of things."
+    m 3i "The obsession can be light to severe depending on each person's libido."
+    m 4f "Do you think it really turns them on just by seeing them?"
+    m 3g "It doesn't stop there, either!"
+    m "Turns out there's some kind of 'black market' for used underwear."
+    m 4o "I'm not kidding!"
+    m 4f "They get off on the scent of the woman who wore it..."
+    m "There are people willing to pay money for used underwear from random women."
+    m 3o "Really, I wonder what causes them to get so excited."
+    m 2d "Is it because of the way it looks, perhaps?"
+    m "There are different types, made with different designs and materials."
+    m 3h "But..."
+    m "Now that I think about it."
+    m 2i "I do remember a study where a man's testosterone level increases because of the pheromones emitted by a woman's scent."
+    m "Is the smell exciting or something?"
+    m 1p "I mean, it's someone's used clothing, isn't that kind of disgusting?"
+    m 1o "Not to mention it's unsanitary."
+    m 3m "It does remind me of someone, though."
+    m 2n "Someone who maybe stole your pen?"
+    m 1q "But, to each to their own I guess, I won't judge too much."
+    m 3l "You aren't obsessed with that kind of thing, are you [player]?"
+    m 2n "You're not going out with me only because I'm wearing some really sensual stockings, right?"
+    m 4e "Perhaps, you want to take a little peek~?"
+    m 1k "Ahaha!"
+    m 2l "I'm only teasing you, [player]."
+    m 2n "Admit it, you got a little excited, right?"
+    m 1e "Besides..."
+    m "If you really wanted to catch a scent of me..."
+    m 1j "You could just ask for a hug!"
+    m 3b "Gosh, I just want to feel your embrace more."
+    m "After all, we're here forever, and I'm here for you."
+    m 1k "I love you so much, [player]~"
+    return
+    
+
+    #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
+    for key in ['fahrenheit 451', 'ray bradbury']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fahrenheit451')
+    monika_random_topics.append('monika_fahrenheit451')
+
+label monika_fahrenheit451:
+    m 2c "[player], have you ever heard of Ray Bradbury?"
+    m 2d "He wrote a book called {i}Fahrenheit 451{/i}."
+    m "It's about a dystopian future where all books are thought as useless and are immediately burned."
+    m 3f "I can't imagine a world where knowledge is forbidden and destroyed."
+    m "It seems that there're others that actually hide books to contain free thinking from people."
+    m 3p "Human history has a funny way of repeating itself."
+    m 1f "[player], make me a promise."
+    m "To never, {i}ever{/i} burn a book."
+    m "I'll forgive you if have done it before."
+    m 1o "But the thought of not allowing yourself to learn from them makes me a bit sad."
+    m 2g "You'd be missing out on so much!"
+    m 3f "It's too much for my heart to take!"
     return
 
 

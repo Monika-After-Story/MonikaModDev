@@ -284,3 +284,9 @@ label greeting_glitch:
      m 3l "That was all! There is nobody else here but us... forever~"
      m 2j "I love you, [player]!"
      return
+
+label greeting_surprised:
+     m "Oh, hello [player]!"
+     m "Sorry, you surprised me there a little."
+     m "How have you been?"
+     return
