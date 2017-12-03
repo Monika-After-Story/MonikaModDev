@@ -12,7 +12,31 @@ init -1 python in songs:
         #
         # IN:
         #   channel - the audio channel to get the volume for
+        #
+        # RETURNS:
+        #   The volume of the given audio channel (as a double/float)
         return renpy.audio.audio.get_channel(channel).context.secondary_volume
+
+    def getPlayingMusicName():
+        #
+        # Gets the name of the currently playing song.
+        #
+        # IN:
+        #   channel - the audio channel to get the playing file 
+        #
+        # RETURNS:
+        #   The name of the currently playing song, as defined here in
+        #   music_choices, Or None if nothing is currently playing
+        #
+        # ASSUMES:
+        #   music_choices (songs store)
+        curr_filename = renpy.music.get_playing()
+        if curr_filename:
+            for name,song in music_choices:
+                if curr_filename == song:
+                    return name
+        return None
+
 
     # defaults
     current_track = "bgm/m1.ogg"
@@ -40,6 +64,13 @@ init 10 python in songs:
 
     # for muting
     music_volume = getVolume("music")
+
+# non store post inint stuff
+init 10 python:
+
+    # ensure proper current track is set
+    store.songs.current_track = persistent.current_track
+    store.songs.selected_track = store.songs.current_track
 
 # MUSIC MENU ##################################################################
 # This is the music selection menu
