@@ -3994,7 +3994,7 @@ label monika_sayhappybirthday:
                         m 1j "Yay!"
                         $ done = True
                     "No":
-                        call monika_sayhappybirthday_takecounter (take_threshold, take_counter)
+                        call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter
                         if take_counter % take_threshold != 0:
                             m 1l "Eh?!"
                             if take_counter > 1:
@@ -4024,7 +4024,7 @@ label monika_sayhappybirthday:
                     m 1m "...I'm glad you enjoyed that, [player]..."
                     $ done = True
                 "No":
-                    call monika_sayhappybirthday_takecounter (take_threshold, take_counter)
+                    call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter_1
                     if take_counter % take_threshold != 0:
                         m 1l "Eh?!"
                         m 1o "I'm not sure what you want me to do here, [player]..."
