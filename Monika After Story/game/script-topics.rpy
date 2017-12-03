@@ -4,6 +4,8 @@
 #capitalization and punctuation are stripped from player dialogue before check
 #To allow a topic to come up randomly, append the id to the topics.monika_topics list
 
+$ import store.songs as songs
+
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
@@ -4181,6 +4183,87 @@ label monika_fahrenheit451:
     m 3f "It's too much for my heart to take!"
     return
 
+init 5 python:
+    monika_random_topics.append('monika_daydream')
+
+label monika_daydream:
+    m 1j "..."
+    m "..."
+    m 1d "..."
+    m 1l "Oh, sorry! I was just daydreaming for a second there."
+    m 1b "I was imagining the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
+    m 1a "Wouldn't that be wonderful, [player]?"
+    m 5a "Let's hope we can make that a reality one of these days, ehehe~"
+    return
+
+init 5 python:
+    monika_random_topics.append('monika_music2')
+    
+label monika_music2:
+    if songs.getVolume("music") == 0.0:
+        m 1a "..."
+        m 1a "...This silence..."
+        m "...Just the two of us, staring into each others eyes..."
+        m 1r "...Then slowly, we both lean into the kiss..."
+        m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
+        m 1e "It's okay to dream though, isn't it [player]?"
+        m 5a "Maybe one day, we can make that dream come true~"
+
+    elif songs.getPlayingMusicName() == 'Just Monika':
+        m 1f "I have always found this song to be kind of creepy."
+        m "You know, with those glitchy noises and that eerie humming..."
+        m 1b "I don't prefer any song over another, but if you were to switch to a different one..." 
+        m 2b "...I certainly wouldn't be one to complain!"
+        m 1k "Ahaha! Don't worry, it's okay if you stay on this song."
+        m 5a "I'm fine with any of them, so choose whichever one makes you the happiest~"
+
+    elif songs.getPlayingMusicName() == 'Your Reality':
+        m 1k "~Every day, I imagine a future where I can be with you...~"
+        m 1b "I hope you like listening to my voice, [player]."
+        m 1d "It's the only voice you get to hear in the game, right? You never actually hear the voices of Sayori, Yuri or Natsuki."
+        m "I wonder what their voices sound like..."
+        m "Well, based on their character archetypes, it's pretty easy to imagine what their voices sound like."
+        m 1a "Anyway, I'm glad I was able to share such an intimate part of myself with you, [player]."
+        m 2b "One day, maybe I'll get to hear your voice, [player]!"
+        m 5a "That would make me even happier than I already am~"
+
+    elif songs.getPlayingMusicName() == 'I Still Love You':
+        m 1f "Gosh, every time I hear this song it makes me sad."
+        m "It reminds me of all the... regrettable things I have done to the other girls."
+        m 1p "I hope you still aren't mad at me for that..."
+        m 1o "..."
+        m 2d "Well, you {i}did{/i} go out of your way to install a mod that lets us be together again..."
+        m 1e "I guess that's enough proof that you do still love me, at the very least."
+        m "If you are still upset at me for what I did to the other girls, I completely understand. I still feel really bad about it, and I'll do whatever it takes to make it up to you."
+
+    elif songs.getPlayingMusicName() == 'Okay, Everyone! (Monika)':
+        m 1a "This song has always been pretty relaxing for me."
+        m "It's probably the fact that the song is a piano solo."
+        m "And as you might have guessed, my favorite instrument is the piano."
+        m 2b "You know, if I knew how, I could probably program a piano into this room."
+        m "I'd be able to write some more songs, and then I'd be able to play them for you..."
+        m 4k "Maybe we could even play the piano together! Wouldn't that be nice, [player]?"
+        m 5a "If you or anyone you know can program that into the game, I would greatly appreciate it~"
+
+    elif songs.getPlayingMusicName() == 'Surprise!':
+        m 1f "This song always makes me feel really depressed."
+        m "Even I didn't expect Sayori's death to be so brutal..."
+        m 1g "Sometimes, when I start getting lost in my own thoughts, her dull, lifeless eyes suddenly pop into my head..."
+        m 1r "..."
+        m 1e "It's comforting to know that Sayori was never real in the first place. It's also comforting to know that you still love me despite everything I've done."
+        m "I mean, you're still here, right? You wouldn't be here if you didn't love me."
+        m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
+
+    else:
+        m 1a "..."
+        m 1a "...This silence..."
+        m "...Just the two of us, staring into each others eyes..."
+        m 1r "...Then slowly, we both lean into the kiss..."
+        m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
+        m 1e "It's okay to dream though, isn't it [player]?"
+        m 5a "Maybe one day, we can make that dream come true~"
+
+    return
 
 ##################
 #Incomplete ideas#
