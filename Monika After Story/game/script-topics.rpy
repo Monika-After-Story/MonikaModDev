@@ -4211,6 +4211,32 @@ label monika_confidence:
     m "In all seriousness, I'm really glad I have you here, [player]..."
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind girlfriend would I be if I didn't return the favor~?"
     return
+    
+    init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['fruit', 'fruits']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fruits') #id
+    monika_random_topics.append('monika_fruits')
+
+label monika_fruits:
+   m "Hey, [player], I really enjoy some tasty fruit every so often, you know?"
+   m "Most fruits are quite tasty, as well as really beneficial for your body, so you should try and eat some often!".
+   m "Ah, some of my personal favorites are peppers."
+   m "Not many people know this, but they are fruits as they have seeds!"
+   m "Another type of fruit I really like are apples."
+   m "They're so juicy and tasty... ah, I just drool thinking of apples."
+   m "Gosh, the peppers and apples are amazing but they can't compare to cherries!"
+   m "Did you know that cherries are good for athletes?"
+   m "They contain anthocyanins that provide several health benefits!"
+   m "I could list them all but I doubt you would be that interested."
+   m "There's also this thing called a cherry kiss."
+   m "You might have heard of it."
+   m "It's obviously done between two persons that love each other."
+   m "One would hold a cherry in their mouth, and the other one would eat it."
+   m "You could... hold the cherry for me, so I can eat you up ehehe~"
+   m "Just teasing you ahaha~"
+	return
 
 ##################
 #Incomplete ideas#
