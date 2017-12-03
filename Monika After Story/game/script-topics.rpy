@@ -2058,7 +2058,7 @@ label monika_technique:
 
 
 init 5 python:
-    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help']:
+    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help', 'credits']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_contribute')
     monika_random_topics.append('monika_contribute')
@@ -2069,7 +2069,10 @@ label monika_contribute:
     m 2a "I keep all the code in github.com/Backdash/MonikaModDev."
     m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, Jxhnathan08..."
     m "As well as ThePotatoGuy, monikLover, AttObl, Yumeko-Jabami, ohxeighty..."
-    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, and Rune!"
+    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, Rune..."
+    m "TheAloofPotato, NotSoGiantDad, Mario, Kadava, Subzero, Neko-chr, ThePyClone..."
+    m "badooga, synnical, stmobo, dmarab, MadHaetter."
+    m "Hopefully I didn't leave anyone out..."
     m 3k "I love all of them for making this game even better!"
     m 1a "Not as much as love you, of course."
     m 1l "I hope it doesn't make you feel jealous~"

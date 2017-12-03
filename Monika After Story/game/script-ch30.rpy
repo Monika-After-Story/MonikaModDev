@@ -254,9 +254,9 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
-    call spaceroom
+    call spaceroom from _call_spaceroom_4
     $pushEvent('introduction')
-    call call_next_event
+    call call_next_event from _call_call_next_event
     jump ch30_loop
 
 label continue_event:
@@ -439,7 +439,7 @@ label ch30_loop:
         $ config.allow_skipping = False
 
     #Call the next event in the list
-    call call_next_event
+    call call_next_event from _call_call_next_event_1
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
