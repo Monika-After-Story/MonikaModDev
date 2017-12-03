@@ -135,6 +135,20 @@ init python:
         else:
             renpy.music.set_volume(songs.music_volume, channel="music")
 
+    def inc_musicvol():
+        #
+        # increases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        songs.adjustVolume()
+
+    def dec_musicvol():
+        #
+        # decreases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        songs.adjustVolume(up=False)
+
     def set_keymaps():
         #
         # Sets the keymaps
@@ -147,11 +161,15 @@ init python:
         config.keymap["change_music"] = ["noshift_m","noshift_M"]
         config.keymap["play_game"] = ["p","P"]
         config.keymap["mute_music"] = ["shift_m","shift_M"]
+        config.keymap["inc_musicvol"] = ["K_PLUS","K_EQUALS","K_KP_PLUS"]
+        config.keymap["dec_musicvol"] = ["K_MINUS","K_UNDERSCORE","K_KP_MINUS"]
         # Define what those actions call
         config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
         config.underlay.append(renpy.Keymap(change_music=select_music))
         config.underlay.append(renpy.Keymap(play_game=pick_game))
         config.underlay.append(renpy.Keymap(mute_music=mute_music))
+        config.underlay.append(renpy.Keymap(inc_musicvol=inc_musicvol))
+        config.underlay.append(renpy.Keymap(dec_musicvol=dec_musicvol))
 
 
     def show_dialogue_box():
