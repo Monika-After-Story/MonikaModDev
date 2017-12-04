@@ -2730,7 +2730,7 @@ init 5 python:
 label monika_goodbye:
     m 1c "Aww, leaving so soon already?"
     m 1e "It's really sad whenever you have to go..."
-    m 2a "Just be sure come back as soon as you can, okay?"
+    m 2a "Just be sure to come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
     return 'quit'
 
