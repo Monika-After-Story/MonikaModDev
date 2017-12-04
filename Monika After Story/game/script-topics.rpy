@@ -3867,11 +3867,11 @@ label monika_completionist:
     m 2i "Personally, I consider myself a bit of a completionist, at least when it comes to books as I feel that I can't drop a book and pick another one until I have enjoyed every single sentence it has to offer."
     m 2a "Something that may be a bit more relatable to you, video games for example, in some visual novels, some people enjoy going through each character's routes to see all the different scenes and interactions, or even to find secrets that come after you've completed everything else!"
     if persistent.clearall:
-      m "You seem to be a completionist yourself!"
-      m "I mean, considering you managed to reach the secret ending in this game by finishing every girl's route and viewing the ending."
+      	m "You seem to be a completionist yourself!"
+	m "I mean, considering you managed to reach the secret ending in this game by finishing every girl's route and viewing the ending."
     else:
-      m "Did you know that there happens to be a secret ending to this game once you've seen and played through every girl's route?"
-      m "Perhaps only those who really consider themselves completionists know that little tid bit of information."
+	m "Did you know that there happens to be a secret ending to this game once you've seen and played through every girl's route?"
+	m "Perhaps only those who really consider themselves completionists know that little tid bit of information."
     m 3d "I've even heard some people attempt to fully complete some of the hardest games out there, and they're willing to lose sleep over it and become a shut-in! Isn't that crazy?"
     m "It's already hard enough to fully complete some simple games, so I don't know how anyone could willingly put that sort of stress onto themselves."
     m 1i "That type of thing must be reserved for the most determined and willing of players, I suppose."
@@ -3885,7 +3885,7 @@ label monika_completionist:
     m 1p "I mean, I understand when you have to go for extended periods of time due to personal reasons, but make sure you don't neglect spending time with me, okay [player]?"
     m "I think I might suffer withdrawal if I got to see you less, since we're so deeply in love and all, ahaha."
     m 3i "Well, as long as you try your best to keep that promise, I don't mind waiting for you~"
-	return
+    return
 
 ##################
 #Incomplete ideas#
