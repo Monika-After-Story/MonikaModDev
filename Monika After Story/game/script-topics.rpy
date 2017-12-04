@@ -3391,11 +3391,13 @@ label monika_pleasure:
     m "I know you're not the kind of person that does that sort of thing."
     m 1k "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
+    
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['Miku','Hatsune Miku', 'Vocaloid', 'Hibikase', 'MMD', 'MikuMikuDance']:
+    for key in ['miku', 'hatsune miku', 'vocaloid', 'hibikase', 'mmd', 'mikumikudance']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_vocaloid')
+    monika_random_topics.append('monika_vocaloid')
 
 label monika_vocaloid:
     m 1c "Hey, [player]?"
