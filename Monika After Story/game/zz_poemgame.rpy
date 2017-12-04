@@ -22,7 +22,7 @@ init -4 python:
     #   mPoint - the amount of points this gives monika (int)
     #   glitch - True means this a glitch word, false if not
     #
-    class MASPoemWord()
+    class MASPoemWord():
         def __init__(self, word, sPoint, nPoint, yPoint, mPoint, glitch=False):
             self.word = word
             self.sPoint = sPoint
@@ -362,12 +362,12 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
 
     # flow validation
     if not mas_validator.validateFlow(flow):
-        flow = mas_pg_consts.DISPLAY_MODE
+        $ flow = mas_pg_consts.DISPLAY_MODE
     
     # flow bools so we dont have == all the time
-    in_display_mode = flow == mas_pg_consts.DISPLAY_MODE
-    in_stock_mode = flow == mas_pg_consts.STOCK_MODE
-    in_monika_mode = flow == mas_pg_consts.MONIKA_MODE
+    $ in_display_mode = flow == mas_pg_consts.DISPLAY_MODE
+    $ in_stock_mode = flow == mas_pg_consts.STOCK_MODE
+    $ in_monika_mode = flow == mas_pg_consts.MONIKA_MODE
 
     # TODO: do we need to paramterize this?
     stop music fadeout 2.0
@@ -420,7 +420,7 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
         play music music_obj
     elif music_filename:
         # calling a function from script-ch30
-        play_song(music_filename)
+        $ play_song(music_filename)
 
     # else no music lol
 
