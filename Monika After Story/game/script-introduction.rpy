@@ -118,6 +118,10 @@ label chara_monika_scare:
     m "You must have misunderstood."
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
+    # this is a 2 step process
+    $ config.overlay_screens.remove("hkb_overlay")
+    hide screen hkb_overlay
+
     window hide
     hide monika
     show monika_scare
