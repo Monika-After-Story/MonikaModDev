@@ -108,6 +108,8 @@ Click the pencil icon to start editing.
 
 When you're done making changes, click propose file change.
 
+Note: If you're writing dialogue, do NOT use capital letters on keywords. The input lowercases all strings, hence making capitalized letters in keywords unreachable.
+
 ![Guide 3](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide3.png?raw=True)
 
 Click create pull request.
