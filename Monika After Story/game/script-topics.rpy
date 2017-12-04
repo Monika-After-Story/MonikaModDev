@@ -4,6 +4,8 @@
 #capitalization and punctuation are stripped from player dialogue before check
 #To allow a topic to come up randomly, append the id to the topics.monika_topics list
 
+$ import store.songs as songs
+
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
