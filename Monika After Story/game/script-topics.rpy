@@ -4211,13 +4211,12 @@ label monika_confidence:
     m "In all seriousness, I'm really glad I have you here, [player]..."
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind girlfriend would I be if I didn't return the favor~?"
     return
-    
-    init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['fruit', 'fruits']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_fruits') #id
-    monika_random_topics.append('monika_fruits')
+
+init 5 python:
+        for key in ["fruit", "fruits"]:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append('monika_fruits')
+        monika_random_topics.append('monika_fruits')
 
 label monika_fruits:
    m "Hey, [player], I really enjoy some tasty fruit every so often, you know?"
