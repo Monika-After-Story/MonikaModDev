@@ -4301,6 +4301,7 @@ label monika_music2:
         m 1e "It's okay to dream though, isn't it [player]?"
         m 5a "Maybe one day, we can make that dream come true~"
 
+    init 5 python:
     for key in ["confidence", "initiative", "success", "vulnerability"]:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_confidence_2')
