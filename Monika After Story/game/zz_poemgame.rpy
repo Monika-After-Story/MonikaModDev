@@ -80,7 +80,7 @@ init -4 python:
 
                     x = line.split(',')
                     self.wordlist.append(
-                        PoemWord(
+                        MASPoemWord(
                             x[0], 
                             float(x[1]), 
                             float(x[2]), 
@@ -148,6 +148,30 @@ init -4 python:
         def __str__(self):
             return self.msg
 
+# FUNCTIONS -------------------------------------------------------------------
+
+    def glitchWord(word, odds_space=5, odds_other=5):
+        #
+        # Glitches the given word by replacing characters with spaces or
+        # other chars
+        #
+        # IN:
+        #   word - the word to glitch
+        #   odds_space - the odds that a space will replace a character
+        #       Use an int here. Odds are calculated like (1 out of x)
+        #       (Default: 5)
+        #   odds_other - the odds that a random unicode character will replace
+        #       a character. Use an int here. Odds are calculated the same as
+        #       odds_space.
+        #       (Default: 5)
+        s = list(word)
+        for k in range(len(word)):
+            if random.randint(1, odds_space) == 1:
+                s[k] = ' '
+            elif random.randint(1, odds_other) == 1:
+                s[k] = random.choice(nonunicode)
+        return "".join(s)
+
 # poemgame related cosntants
 init -10 python in mas_poemgame_consts:
     
@@ -161,6 +185,9 @@ init -10 python in mas_poemgame_consts:
     # NOTE: do we need these?
     POEM_DISLIKE_THRESHOLD = 29
     POEM_LIKE_THRESHOLD = 45
+
+    # default filename for poemwords
+    POEM_FILE = "poemwords.txt"
 
     # flow constants
     DISPLAY_MODE = 0
@@ -236,8 +263,13 @@ init -2 python in mas_poemgame_val:
 #   glitch_nb - True will use the glitched notebook. False will use regular
 #       one.
 #       (Default: False)   
-#   glitch_words - True will display words with glitches. False will not
+#   glitch_words - True will display ALL words with glitches. False will not
+#       NOTE: This effect is purely visible. If you want the glitchable words
+#       that cause the scare, use glitch_wordscare
 #       (Default: False)
+#   glitch_wordscare - True will occasionally create glitched words that launch
+#       the glitch scare. 
+#       NOTE: 
 #   music_obj - music to play during the mini game (music object, NOT FILENAME)
 #       Set to None to use music_filename.
 #       NOTE: Takes precenence over music_filename
@@ -322,7 +354,7 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
         show_monika=True,show_natsuki=False,show_sayori=False,show_yuri=False,
         glitch_nb=False,show_poemhelp=False,total_words=20,poem_wordlist=None,
         sticker_pt=None,one_counter=False,only_monika=False,
-        glitch_words=False):
+        glitch_words=False,glitch_baa=True):
 
     $ import store.mas_poemgamestickers as mas_stickers
     $ import store.mas_poemgame_val as mas_validator
@@ -404,7 +436,7 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
     # okay here begins the main flow
     python:
 
-        # makes the poem game go into glitch mode
+        # makes the poem game go into glitch mode (white display)
         poemgame_glitch = False
 
         # plays the baa sound (which is a glitch thing i think)
@@ -426,11 +458,12 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
             }
         
         # the list of words
-        if not only_monika and not only_monika_glitch:
+        if not in_monika_mode:
             if poem_wordlist:
                 wordlist = list(poem_wordlist.wordlist)
             else:
-                wordlist = list(full_wordlist) # default wordlist
+                pw_list = MASPoemWordList(mas_pg_consts.POEM_FILE)
+                wordlist = list(pw_list.wordlist)
 
         # the following handles the positioning and time between a sticker
         if sticker_pt:
@@ -462,22 +495,18 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
                 for i in range(5): # rows
 
                     # monika mode:
-                    if only_monika or only_monika_glitch:
+                    if in_monika_mode:
                         s = list("Monika")
+#                    else:
 
-                        # glitch part only:
-                        if only_monika_glitch:
-                            for k in range(6):
-                                if random.randint(0, 4) == 0:
-                                    s[k] = ' '
-                                elif random.randint(0, 4) == 0:
-                                    s[k] = random.choice(nonunicode)
-                        word = MASPoemWord("".join(s), 0, 0, 0, 0, False)
-                    elif persistent.playthrough == 2 and not poemgame_glitch and chapter >= 1 and progress < numWords and random.randint(0, 400) == 0:
-                        word = PoemWord(glitchtext(80), 0, 0, 0, True)
-                    else:
-                        word = random.choice(wordlist)
-                        wordlist.remove(word)
+
+
+#                        word = MASPoemWord("".join(s), 0, 0, 0, 0, False)
+#                    elif persistent.playthrough == 2 and not poemgame_glitch and chapter >= 1 and progress < numWords and random.randint(0, 400) == 0:
+#                        word = PoemWord(glitchtext(80), 0, 0, 0, True)
+#                    else:
+#                        word = random.choice(wordlist)
+#                        wordlist.remove(word)
                     ui.textbutton(word.word, clicked=ui.returns(word), text_style="poemgame_text", xpos=x, ypos=i * 56 + ystart)
                 ui.close()
             
