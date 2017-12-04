@@ -3868,31 +3868,32 @@ label monika_icecream:
     m "Hey [player], what's your favourite kind of ice cream?"
     m "And no, I'm not a type of ice cream ehehe~."
     m "Personally, I just can't get enough of mint flavoured ice cream!"
-	menu:
-		m "What about you [player], do you like mint ice cream?"
-	 
-		"Yes.":
-			m "Ah, I'm so glad somebody loves mint ice cream as much as I do~"
-			m "Maybe we really were meant to be!"
-			m "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
-			m "Flavours which are unique just like how mint is, perhaps you've heard of them, but..."
-			m "There's super weird stuff like fried ice cream which is really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
-			m "Gosh, just imagining the taste makes me practically drool..."
-			m "There's some more strange stuff that is just as appealing, if not more, like honeycomb and bubblegum ice cream!"
-			m "Now, I know it may he hard to take my word for some of those, but you shouldn't judge a book by it's cover, you know?"
-			m "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
-	   
-		"No.":
-			m "Aww, that's a shame..."
-			m "I really can't understand how somebody couldn't at least like the taste."
-			m "The refreshing feeling that washes over your tongue and throat."
-			m "The lovely texture that forms it along with the sweetness."
-			m "The sharp biting sensation it generates and the obviously minty taste."
-			m "I feel like no flavour can compare, to be honest."
-			m "Ah, I could go on and on about this stuff, you know?"
-			m "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
-	return
-  
+    menu:
+        m "What about you [player], do you like mint ice cream?"
+
+        "Yes.":
+            m "Ah, I'm so glad somebody loves mint ice cream as much as I do~"
+            m "Maybe we really were meant to be!"
+            m "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
+            m "Flavours which are unique just like how mint is, perhaps you've heard of them, but..."
+            m "There's super weird stuff like fried ice cream which is really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
+            m "Gosh, just imagining the taste makes me practically drool..."
+            m "There's some more strange stuff that is just as appealing, if not more, like honeycomb and bubblegum ice cream!"
+            m "Now, I know it may he hard to take my word for some of those, but you shouldn't judge a book by it's cover, you know?"
+            m "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
+
+        "No.":
+            m "Aww, that's a shame..."
+            m "I really can't understand how somebody couldn't at least like the taste."
+            m "The refreshing feeling that washes over your tongue and throat."
+            m "The lovely texture that forms it along with the sweetness."
+            m "The sharp biting sensation it generates and the obviously minty taste."
+            m "I feel like no flavour can compare, to be honest."
+            m "Ah, I could go on and on about this stuff, you know?"
+            m "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
+    return
+
+init 5 python:
     for key in ["say happy birthday", "say hbd", "hbd"]:
         monika_topics.setdefault(key, [])
         monika_topics[key].append("monika_sayhappybirthday")
@@ -4220,30 +4221,30 @@ label monika_fahrenheit451:
     return
 
 init 5 python:
-    for key in ['confidence', ‘initiative’, 'success', "vulnerability"]:
+    for key in ["confidence", "initiative", "success", "vulnerability"]:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_confidence')
-    monika_random_topics.append('monika_confidence')
+        monika_topics[key].append('monika_confidence_2')
+    monika_random_topics.append('monika_confidence_2')
 
-label monika_confidence:
-    m "[player], do you ever feel like you lack the initiative to do something?"
-    m "Sometimes, when I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
+label monika_confidence_2:
+    m 1g "[player], do you ever feel like you lack the initiative to do something?"
+    m 1f "Sometimes, when I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
     m "Almost as if everything around me comes to a standstill."
     m "It feels like my will to approach a task confidently, like writing and sharing literature with people, just vanishes."
-    m "However, I've been working towards it with due diligence, and I firmly believe being able to take initiative in situations is a very important skill to have."
+    m 2a "However, I've been working towards it with due diligence, and I firmly believe being able to take initiative in situations is a very important skill to have."
     m "That's something that I, personally, find very comforting."
-    m "I've broken it down into a three-step process that can be applied to anyone! It's still a work-in-progress, so take it with a grain of salt."
-    m "Step one!"
+    m 2j "I've broken it down into a three-step process that can be applied to anyone! It's still a work-in-progress, so take it with a grain of salt."
+    m 2a "Step one!"
     m "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
-    m "Step two!"
+    m 2b "Step two!"
     m "Building up and fortifying your confidence is really important. Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
-    m "Eventually, these things you once struggled to get done will be completed as if they were acts of valor!"
-    m "Step three!"
+    m 3j "Eventually, these things you once struggled to get done will be completed as if they were acts of valor!"
+    m 2a "Step three!"
     m "Try your best to stay open-minded and willing to learn at all times. Nobody is perfect, and everyone is able to teach each other something. This can help you learn to understand things from other people's perspectives in situations, and inspire others to do the same."
-    m "And that's it, really."
-    m "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
-    m "Ahaha, I'm only joking about that last part."
-    m "In all seriousness, I'm really glad I have you here, [player]..."
+    m 1d "And that's it, really."
+    m 2k "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
+    m 1l "Ahaha, I'm only joking about that last part."
+    m 1 "In all seriousness, I'm really glad I have you here, [player]..."
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind girlfriend would I be if I didn't return the favor~?"
     return
 
