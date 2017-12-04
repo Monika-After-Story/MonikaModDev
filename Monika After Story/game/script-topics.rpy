@@ -3865,32 +3865,31 @@ init 5 python:
     monika_random_topics.append('monika_icecream')
 
 label monika_icecream:
-    m "Hey [player], what's your favourite kind of ice cream?"
-    m "And no, I'm not a type of ice cream ehehe~."
-    m "Personally, I just can't get enough of mint flavoured ice cream!"
+    m 2a "Hey [player], what's your favourite kind of ice cream?"
+    m 4l "And no, I'm not a type of ice cream ehehe~."
+    m 3a "Personally, I just can't get enough of mint flavoured ice cream!"
     menu:
         m "What about you [player], do you like mint ice cream?"
-
         "Yes.":
-            m "Ah, I'm so glad somebody loves mint ice cream as much as I do~"
+            m 2j "Ah, I'm so glad somebody loves mint ice cream as much as I do~"
             m "Maybe we really were meant to be!"
-            m "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
-            m "Flavours which are unique just like how mint is, perhaps you've heard of them, but..."
-            m "There's super weird stuff like fried ice cream which is really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
-            m "Gosh, just imagining the taste makes me practically drool..."
-            m "There's some more strange stuff that is just as appealing, if not more, like honeycomb and bubblegum ice cream!"
-            m "Now, I know it may he hard to take my word for some of those, but you shouldn't judge a book by it's cover, you know?"
-            m "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
+            m 2a "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
+            m "Flavors which are unique just like how mint is, perhaps you've heard of them, but..."
+            m 2b "There's super weird stuff like fried ice cream which is really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
+            m 3n "Gosh, just imagining the taste makes me practically drool..."
+            m 1a "There's some more strange stuff that is just as appealing, if not more, like honeycomb and bubblegum ice cream!"
+            m 1l "Now, I know it may be hard to take my word for some of those, but you shouldn't judge a book by it's cover, you know?"
+            m 1k "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
 
         "No.":
-            m "Aww, that's a shame..."
+            m 1f "Aww, that's a shame..."
             m "I really can't understand how somebody couldn't at least like the taste."
-            m "The refreshing feeling that washes over your tongue and throat."
+            m 1e "The refreshing feeling that washes over your tongue and throat."
             m "The lovely texture that forms it along with the sweetness."
-            m "The sharp biting sensation it generates and the obviously minty taste."
-            m "I feel like no flavour can compare, to be honest."
-            m "Ah, I could go on and on about this stuff, you know?"
-            m "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
+            m 1j "The sharp biting sensation it generates and the obviously minty taste."
+            m "I feel like no flavor can compare, to be honest."
+            m 2b "Ah, I could go on and on about this stuff, you know?"
+            m 4a "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
     return
 
 init 5 python:
