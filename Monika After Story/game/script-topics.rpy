@@ -3722,7 +3722,7 @@ label monika_zombie:
     m "But when there is a horde of them coming after you, you'll get overwhelmed easily."
     m 1p "You don't get that same feeling with other monsters."
     m "Zombies have an insatiable appetite for flesh."
-    m "All of their intelligence are gone but are berserk and don't feel pain."
+    m "All of their intelligence is gone; they're berserk and don't feel pain."
     m 1c "When you exploit a weakness of a monster, they become scared of you and run away."
     m 1g "However, zombies are relentless and they'll tear through {i}anything{/i} just to get you."
     m "They also can be a person's loved one turned into an enemy."
