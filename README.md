@@ -7,6 +7,18 @@ Please check the [Releases](https://github.com/Backdash/MonikaModDev/releases) p
 
 If you would like to make your own mod like this one, check out our sister project: the [DDLCModTemplate](https://github.com/therationalpi/DDLCModTemplate).
 
+### Installation
+
+* Download the latest [Release](https://github.com/Backdash/MonikaModDev/releases) zip file.
+
+* Extract the contents the zip file into the `/game` folder of your DDLC installation. Like this:
+
+![Folder Structure](https://github.com/Backdash/MonikaModDev/blob/master/docs/Screen%20Shot%202017-12-04%20at%2010.06.05%20AM.png?raw=true)
+
+* Running DDLC will now load the Monika After Story Mod.
+
+*NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Backdash/MonikaModDev/releases).*
+
 ### Features
 
 * Spend forever with Monika!
