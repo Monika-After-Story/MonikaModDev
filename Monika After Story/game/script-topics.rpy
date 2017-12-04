@@ -4180,37 +4180,36 @@ label monika_fahrenheit451:
     m 2g "You'd be missing out on so much!"
     m 3f "It's too much for my heart to take!"
     return
-init python 5
-	for key in ['piggy bank', 'saving coins', 'saving money']:
-	    monika_topics.setdefault(key,[])
-	    monika_topics[key].append(monika_piggybank) #id
-	monika_random_topics.append('monika_piggybank')
-
+    
+init 5 python:
+    for key in ['piggy bank', 'saving coins', 'saving money']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_piggybank') #id
+    monika_random_topics.append('monika_piggybank')
 
 label monika_piggybank:
     m 1a "Do you have a piggy bank, [player]?"
-    m 2i "Not many people do these days." 
+    m 2c "Not many people do these days." 
     m "Coins are often disregarded as worthless."
     m 2b "But they really do begin to add up!"
-    m 1d "One man in Florida went on his daily walk and searched his local car washes for loose change everyday."
+    m 2d "I read that there was once a man that searched his local car washes for loose change everyday in his walks."
     m 1b "In a decade he turned in all of his coins for a total of 21,495 dollars!"
-    m "That's a whole lot of cash!"
-    m 1i "Of course not everybody has time for that everyday."
-    m "Instead they just throw their loose change into their piggy banks."
+    m 1a "That's a whole lot of cash!"
+    m 1o "Of course not everybody has time for that everyday."
+    m 1c "Instead they just throw their loose change into their piggy banks."
     m "Some people like to set goals for what they want to purchase with their saved funds."
     m "Usually under normal conditions they wouldn't ever find the freed up money to purchase that item."
-    m "And even if they do, Humans have been scientifically proven to dislike spending money."
-    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really help"
-    m "You get convinced that you are pretty much getting the item for free."
+    m 2d "And even if they do, most people don't like spending money needlessly."
+    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really convinces that you are pretty much getting the item for free."
     m 3h "But in the end, a guitar always costs the same as a guitar."
-    m 3j "So psychologically speaking, I think that's pretty neat~!"
-    m 1g "However, some piggy banks do have a problem..."
+    m 3j "So psychologically speaking, I think that's pretty neat!"
+    m 1p "However, some piggy banks do have a problem..."
     m "Sometimes you have to break the piggy bank to get the coins..."
-    m "So you might end up losing money buying a new bank."
-    m 4l "Fortunately most piggy banks don't do that anymore."
+    m 2o "So you might end up losing money buying a new bank."
+    m 4b "Fortunately most piggy banks don't do that anymore."
     m 2a "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
     m 1k "Maybe if you save up enough coins you can buy me a really nice gift." 
-    m "I would do the same for you, [player]!"
+    m 3e "I would do the same for you, [player]!"
     return
 
 
