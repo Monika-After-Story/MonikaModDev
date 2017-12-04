@@ -4147,6 +4147,37 @@ label monika_adventure:
     return
 
 init 5 python:
+    # List of keywords for the topic.
+    for key in ['rock','rock and roll','rock n roll','rock 'n roll']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_rock') # Identifier
+    monika_random_topics.append('monika_rock') # Optional. Remove if you don't want Monika to bring this up at random.
+
+label monika_rock:
+    m "You wanna know a cool form of literature?"
+    m "Rock and roll!"
+    m "Yep, you read that right. Rock and roll!"
+    m "It's kinda disheartening to know that most people think that rock and roll is just a bunch of noises."
+    m "To tell you the truth, I did once judged rock too."
+    m "But now I think about it, most rock and roll music can be really meaningful when you try to read over the lyrics."
+    m "Most rock songs convey a story through symbolisms, which normal listeners wouldn't understand the first time they hear a rock song."
+    m "In fact, it's hard to compose lyrics for just one rock song."
+    m "Writing good lyrics for a rock genre requires a lot of emphasis on the wordplay."
+    m "Plus, you need to have a clear and concise message throughout the whole song."
+    m "Now when you put that together, you have yourself a masterpiece!"
+    m "Like writing a good poem, lyric writing is easier said than done."
+    m "I've been thinking though..."
+    m "I kind of want to try writing a rock song for a change."
+    m "Ahaha! Writing a rock and roll song probably isn't something you'd expect coming from someone such as myself."
+    m "A little trivia, it's kinda funny how rock and roll started out as a evolution of blues and jazz music."
+    m "Rock suddenly became a prominent genre, and it gave birth to other sub-genres as well."
+    m "Metal, hard rock, classical rock, and more!"
+    m "Ah, I've been rambling for a while now. Sorry, sorry."
+    m "If you wanna blast on some good 'ol rock 'n roll, go ahead, [player]."
+    m "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
+    return
+
+init 5 python:
     for key in ['panties', 'underwear', 'pantsu', 'lingerie', 'undergarment', 'knickers', 'paraphilia', 'stockings', 'pantyhose', 'garter belt', 'panty']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_panties')
