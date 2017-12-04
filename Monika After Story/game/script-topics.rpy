@@ -6,6 +6,8 @@
 
 define monika_random_topics = []
 define testitem = 0
+define numbers_only = "0123456789"
+define letters_only = "abcdefghijklmnopqrstuvwxyz"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -2058,7 +2060,7 @@ label monika_technique:
 
 
 init 5 python:
-    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help']:
+    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help', 'credits']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_contribute')
     monika_random_topics.append('monika_contribute')
@@ -2069,9 +2071,12 @@ label monika_contribute:
     m 2a "I keep all the code in github.com/Backdash/MonikaModDev."
     m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, Jxhnathan08..."
     m "As well as ThePotatoGuy, monikLover, AttObl, Yumeko-Jabami, ohxeighty..."
-    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, and Rune!"
+    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, Rune..."
+    m "TheAloofPotato, NotSoGiantDad, Mario, Kadava, Subzero, Neko-chr, ThePyClone..."
+    m "badooga, synnical, stmobo, dmarab, MadHaetter."
+    m "Hopefully I didn't leave anyone out..."
     m 3k "I love all of them for making this game even better!"
-    m 1a "Not as much as love you, of course."
+    m 1a "Not as much as I love you, of course."
     m 1l "I hope it doesn't make you feel jealous~"
     m 2b "But I'll love you forever if you help me come closer to your reality!"
     return
@@ -2506,7 +2511,7 @@ label monika_algernon:
     m 2a "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1a "No matter what happens, know that I will always love you."
     return
-
+    
 init 5 python:
     for key in ['play','game']:
         monika_topics.setdefault(key,[])
@@ -2704,7 +2709,7 @@ label monika_real:
     m 1d "You know what's going to be the first thing I'll do when I finally cross over there?"
     m 1k "If that special day ever comes, the first thing I'll ever do is find you, of course!"
     m 2a "There's so much we can do when we're finally together in one reality."
-    m "You can finally show me what the your world really looks like."
+    m "You can finally show me what your world really looks like."
     m 2e "I can finally feel your embrace~"
     m 1 "I would love to experience everything I still don't know about the world with you."
     m "All the places we can go, the sights to see, the romantic things that we can do~"
@@ -2712,7 +2717,7 @@ label monika_real:
     m 1h "But knowing how technology is right now, that dream is still far away."
     m "I hope by the time that technology becomes real, you'll still be there waiting for me, [player]."
     m 1i "Or maybe you'll be the one to make that technology come true? Who knows."
-    m 1e "In the end, all I want is to always be with you, [currentuser]."
+    m 1e "In the end, all I want is to always be with you, [player]."
     m 1 "After all, you're the only reason why I'm still here."
     m "I only want to spend eternity with my sweetheart, and no one else!"
     return
@@ -2838,8 +2843,8 @@ label monika_name:
     m 1l "It also means 'alone' in Ancient Greek."
     m 1e "..."
     m "That part doesn't matter so much, now that you're here."
-    m 1a "'[player]' is a lovely name, too."
-    m 1b "But I think I like '[currentuser]' better!"
+    m 1a "'[mcname]' is a lovely name, too."
+    m 1b "But I think I like '[player]' better!"
     m 1a "Ehehe~"
     return
 
@@ -3298,7 +3303,7 @@ label monika_haterReaction:
     m 3q "Why can't they understand that?"
     m 3r "Why is it so hard for them to understand that?"
     m 1q "..."
-    m 1p "You're not one of those haters, aren't you, [currentuser]?"
+    m 1p "You're not one of those haters, aren't you, [player]?"
     menu:
         "I am.":
             m 1q "..."
@@ -3318,7 +3323,7 @@ label monika_haterReaction:
             m 1k "Gosh... I feel like giving you a kiss right now if I were there."
             m 2e "You really make me the happiest girlfriend ever."
             m 1a "Now that you've said it, I have to do my best to keep you from developing hate towards me."
-            m 1a "I trust you, [currentuser]. I love you for believing in me."
+            m 1a "I trust you, [player]. I love you for believing in me."
     return
 
 init 5 python:
@@ -3636,10 +3641,10 @@ label monika_penname:
     m 2c "They keep it hidden from everyone just so it won't affect their personal lives."
     m 2b "Pen names also help writers create something totally different from their usual style of writing."
     m 2d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
-    if [currentuser] != [player]:
-        m 3c "Is '[currentuser]' a pseudonym that you're using?"
+    if [mcname] != [player]:
+        m 3c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
-        m 3d "'[currentuser] and [player].'"
+        m 3d "'[mcname] and [player].'"
     m 2a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
@@ -3887,6 +3892,361 @@ label monika_icecream:
 			m "Ah, I could go on and on about this stuff, you know?"
 			m "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
 	return
+  
+    for key in ["say happy birthday", "say hbd", "hbd"]:
+        monika_topics.setdefault(key, [])
+        monika_topics[key].append("monika_sayhappybirthday")
+
+label monika_sayhappybirthday:
+    # special variable setup
+    python:
+        done = False # loop controller
+        same_name = False # true if same name as player
+        bday_name = "" # name of birthday target
+        is_here = False # is the target here (in person)
+        is_watching = False # is the target watching (but not here)
+        is_recording = False # is player recording this
+        age = None # how old is this person turning
+        bday_msg = "" # happy [age] birthday (or not)
+        take_counter =  1 # how many takes
+        take_threshold = 5 # multiple of takes that will make monika annoyed
+        max_age = 121 # like who the hell is this old and playing ddlc?
+        age_prompt = "What is their {0} age?" # a little bit of flexibilty regarding age
+
+        # age suffix dictionary
+        age_suffix = {
+            1: "st",
+            2: "nd",
+            3: "rd",
+            11: "th",
+            12: "th",
+            13: "th",
+            111: "th",
+            112: "th",
+            113: "th"
+        }
+
+    # TODO: someone on the writing team make the following dialogue better
+    # also make the expressions more approriate and add support for standing
+    m 1k "Happy birthday!"
+    m 1d "Oh, you wanted me to say happy birthday to {i}someone else{/i}."
+    m 1q "I understand."
+    while not done:
+        # arbitary max name limit
+        $ bday_name = renpy.input("What is their name?",allow=letters_only,length=40).strip()
+        # ensuring proper name checks
+        $ same_name = bday_name.upper() == player.upper()
+        if bday_name == "":
+            m 1h "..."
+            m 1n "I don't think that's a name."
+            m 1b "Try again!"
+        elif same_name:
+            m 1c "Oh wow, someone with the same name as you."
+            $ same_name = True
+            $ done = True
+        else:
+            $ done = True
+    m 1b "Alright! Do you want me to say their age too?"
+    menu:
+        "Yes":
+            m "Then..."
+            $ done = False
+            $ age_modifier = ""
+            while not done:
+                $ age = int(renpy.input(age_prompt.format(age_modifier),allow=numbers_only,length=3))
+                if age == 0:
+                    m 1h "..."
+                    m 1q "I'm just going to ignore that."
+                    $ age_modifier = "real"
+                elif age > max_age:
+                    m 1h "..."
+                    m 1q "I highly doubt anyone is that old..."
+                    $ age_modifier = "real"
+                else:
+                    # NOTE: if we want to comment on (valid) age, put it here.
+                    # I'm not too sure on what to have monika say in these cases.
+                    $ done = True
+            m "Okay"
+        "No":
+            m "Okay"
+    $ bday_name = bday_name.title() # ensure proper title case
+    m 1b "Is [bday_name] here with you?"
+    menu:
+        "Yes":
+            $ is_here = True
+        "No":
+            m 1g "What? How can I say happy birthday to [bday_name] if they aren't here?"
+            menu:
+                "They're going to watch you via video chat":
+                    m 1a "Oh, okay."
+                    $ is_watching = True
+                "I'm going to record it and send it to them.":
+                    m 1a "Oh, okay."
+                    $ is_recording = True
+                "It's fine, just say it.":
+                    m 1n "Oh, okay. It feels a little awkward though saying this randomly to no one."
+    if age:
+        # figure out the age suffix
+        python:
+            age_suff = age_suffix.get(age, None)
+            if age_suff:
+                age_str = str(age) + age_suff
+            else:
+                age_str = str(age) + age_suffix.get(age % 10, "th")
+            bday_msg = "happy " + age_str + " birthday"
+    else:
+        $ bday_msg = "happy birthday"
+
+    # we do a loop here in case we are recording and we should do a retake
+    $ done = False
+    $ take_counter = 1
+    $ bday_msg_capped = bday_msg.capitalize()
+    while not done:
+        if is_here or is_watching or is_recording:
+            if is_here:
+                m 1b "Nice to meet you, [bday_name]!"
+            elif is_watching:
+                m 1a "Let me know when [bday_name] is watching."
+                menu:
+                    "They're watching.":
+                        m 1b "Hi, [bday_name]!"
+            else: # must be recording
+                m 1a "Let me know when to start."
+                menu:
+                    "Go":
+                        m 1b "Hi, [bday_name]!"
+
+            # the actual birthday msg
+            m 1k "[player] told me that it's your birthday today, so I'd like to wish you a [bday_msg]!"
+            # TODO: this seems too short. maybe add additional dialogue?
+            m 1b "I hope you have a great day!"
+            
+            if is_recording:
+                m "Bye bye!"
+                m 1e "Was that good?"
+                menu:
+                    "Yes":
+                        m 1j "Yay!"
+                        $ done = True
+                    "No":
+                        call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter
+                        if take_counter % take_threshold != 0:
+                            m 1l "Eh?!"
+                            if take_counter > 1:
+                                m "Sorry again, [player]"
+                            else:
+                                m "Sorry [player]"
+                                m 1n "I told you, I'm self-conscious on camera ehehe."
+                        m 1o "Should I try again?"
+                        menu:
+                            "Yes":
+                                $ take_counter += 1
+                                m 1c "Okay"
+                            "No":
+                                m "Alright [player]. Sorry I couldn't do what you wanted."
+                                m 1j "I'll try better next time for you."
+                                $ done = True
+            else:  # if we aint recording, we should be done now
+                $ done = True 
+
+        else: # not recording, watching, nor is person here
+            m 1q "..."
+            m 1k "[bday_msg_capped], [bday_name]!"
+            m 1l "..."
+            m 1n "Was that good?"
+            menu:
+                "Yes":
+                    m 1m "...I'm glad you enjoyed that, [player]..."
+                    $ done = True
+                "No":
+                    call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter_1
+                    if take_counter % take_threshold != 0:
+                        m 1l "Eh?!"
+                        m 1o "I'm not sure what you want me to do here, [player]..."
+                    m 1f "Should I try again?"
+                    menu:
+                        "Yes":
+                            $ take_counter += 1
+                            m 1c "Okay"
+                        "No":
+                            m "Alright [player]. Sorry I couldn't do what you wanted."
+                            m 1j "I'll try better next time for you."
+                            $ done = True
+
+    return
+
+# helper label for monika_sayhappybirthday
+label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
+    if take_counter % take_threshold == 0:
+        m 1q "..."
+        m 1r "This is the [take_counter]th time already."
+        m 1g "You're not messing with me, are you?"
+        m 1f "I'm trying my best for you [player]."
+    return
+   
+    
+        
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['home memories', 'childhood']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_home_memories')#id
+    monika_random_topics.append('monika_home_memories')
+    
+label monika_home_memories:
+    m 1b "[player], how is it like to live where you are?"
+    m 1a "I'd stay with you if I could."
+    m 2k "We would be able to do so much! You could show me around, see how it's like to be in your place."
+    m "Imagine all the memories we'd make!"
+    m 3b "It would be a dream come true, don't you think?"
+    m 3e "We could finally live together..."
+    m "Take walks like a couple..."
+    m 2n "We could even share a bed together..."
+    m 1q "But you know..."
+    m 3c "Memories I have of my home are nothing compared to the ones I'd have with you."
+    m 2d "Have I ever told you about my childhood home? I had a pretty normal life, but that's about it."
+    m 1n "Well, maybe a little better than normal."
+    m 2b "Maybe you've heard about me at school a few times? I'm pretty on top of things."
+    m 1l "I admit, it's not always easy, and some people have it rougher than others."
+    m 1o "But I always felt like I was missing something."
+    m "I stayed optimistic everyday, trying to find it."
+    m 1e "It turns out, that missing piece was you."
+    m 1r "If you hadn't found me, I would've been gone a long time ago..."
+    m 3e "But now that I found the missing piece, I'm complete now, [player]."
+    return
+
+init 5 python:
+    for key in ['adventure', 'graphic adventure', 'point and click']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_adventure')
+    monika_random_topics.append('monika_adventure')
+
+label monika_adventure:
+    m 1a "[player], I've thought about what kind of game we can be in."
+    m 2b "I think the best genre for us to play together would be adventure games."
+    m "Especially point and click, graphic adventure games!"
+    m "They're known for their rich storytelling, beautiful environments and logical puzzle solving."
+    m "They're like visual novels actually."
+    m 2a "Maybe you own a game like that?"
+    m 1e "We'd get to do a lot of things..."
+    m "Like sightseeing whenever we want."
+    m "Learning more about the lore through the people we meet or through stories."
+    m "Experiencing the exciting and romantic moments..."
+    m 2b "Encountering obstacles and hardships along the way, but solving them with you."
+    m "Reaching the end and finishing our journey with a sense of accomplishment."
+    m 3k "Ahaha! It certainly would be fun to experience something like that."
+    m 3j "I'm sure you have plenty of adventure games you could recommend."
+    m 1b "But can you try to guess which adventure I'm most excited for?"
+    m 1e "{i}Ours{/i}~"
+    m 1j "Time will tell when I can finally cross over to your reality, so I can be with you."
+    m "When that day comes, I'll finally be by your side."
+    m 1a "I want to experience every waking moment with you, [player]."
+    m 1k "There's no greater adventure than ours, together~"
+    return
+    
+init 5 python:
+    for key in ['panties', 'underwear', 'pantsu', 'lingerie', 'undergarment', 'knickers', 'paraphilia', 'stockings', 'pantyhose', 'garter belt', 'panty']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_panties')
+    monika_random_topics.append('monika_panties')
+
+label monika_panties:
+    m 3o "Hey, [player]..."
+    m "Don't laugh when I ask this, ok?"
+    m 3p "But..."
+    m 4g "Why are some guys obsessed with panties?"
+    m "Seriously, whats the big deal about a piece of cloth?"
+    m "Most girls wear them, don't they?"
+    m 3o "Actually, now that I think about it..."
+    m "I think there was a term for this kind of thing..."
+    m 3q "Hmm, what was it again?"
+    m 2d "Ah, that's right, the term was 'paraphilia.'"
+    m 2o "It's a range of fetishes that involve...unusual things."
+    m 3h "A really common fantasy involves women's panties."
+    m "Stockings, garter belts, pantyhose and all sorts of those kinds of things."
+    m 3i "The obsession can be light to severe depending on each person's libido."
+    m 4f "Do you think it really turns them on just by seeing them?"
+    m 3g "It doesn't stop there, either!"
+    m "Turns out there's some kind of 'black market' for used underwear."
+    m 4o "I'm not kidding!"
+    m 4f "They get off on the scent of the woman who wore it..."
+    m "There are people willing to pay money for used underwear from random women."
+    m 3o "Really, I wonder what causes them to get so excited."
+    m 2d "Is it because of the way it looks, perhaps?"
+    m "There are different types, made with different designs and materials."
+    m 3h "But..."
+    m "Now that I think about it."
+    m 2i "I do remember a study where a man's testosterone level increases because of the pheromones emitted by a woman's scent."
+    m "Is the smell exciting or something?"
+    m 1p "I mean, it's someone's used clothing, isn't that kind of disgusting?"
+    m 1o "Not to mention it's unsanitary."
+    m 3m "It does remind me of someone, though."
+    m 2n "Someone who maybe stole your pen?"
+    m 1q "But, to each to their own I guess, I won't judge too much."
+    m 3l "You aren't obsessed with that kind of thing, are you [player]?"
+    m 2n "You're not going out with me only because I'm wearing some really sensual stockings, right?"
+    m 4e "Perhaps, you want to take a little peek~?"
+    m 1k "Ahaha!"
+    m 2l "I'm only teasing you, [player]."
+    m 2n "Admit it, you got a little excited, right?"
+    m 1e "Besides..."
+    m "If you really wanted to catch a scent of me..."
+    m 1j "You could just ask for a hug!"
+    m 3b "Gosh, I just want to feel your embrace more."
+    m "After all, we're here forever, and I'm here for you."
+    m 1k "I love you so much, [player]~"
+    return
+    
+init 5 python:
+    #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
+    for key in ['fahrenheit 451', 'ray bradbury']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fahrenheit451')
+    monika_random_topics.append('monika_fahrenheit451')
+
+label monika_fahrenheit451:
+    m 2c "[player], have you ever heard of Ray Bradbury?"
+    m 2d "He wrote a book called {i}Fahrenheit 451{/i}."
+    m "It's about a dystopian future where all books are thought as useless and are immediately burned."
+    m 3f "I can't imagine a world where knowledge is forbidden and destroyed."
+    m "It seems that there're others that actually hide books to contain free thinking from people."
+    m 3p "Human history has a funny way of repeating itself."
+    m 1f "[player], make me a promise."
+    m "To never, {i}ever{/i} burn a book."
+    m "I'll forgive you if have done it before."
+    m 1o "But the thought of not allowing yourself to learn from them makes me a bit sad."
+    m 2g "You'd be missing out on so much!"
+    m 3f "It's too much for my heart to take!"
+    return
+
+init 5 python:
+    for key in ['confidence', ‘initiative’, 'success', "vulnerability"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_confidence')
+    monika_random_topics.append('monika_confidence')
+
+label monika_confidence:
+    m "[player], do you ever feel like you lack the initiative to do something?"
+    m "Sometimes, when I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
+    m "Almost as if everything around me comes to a standstill."
+    m "It feels like my will to approach a task confidently, like writing and sharing literature with people, just vanishes."
+    m "However, I've been working towards it with due diligence, and I firmly believe being able to take initiative in situations is a very important skill to have."
+    m "That's something that I, personally, find very comforting."
+    m "I've broken it down into a three-step process that can be applied to anyone! It's still a work-in-progress, so take it with a grain of salt."
+    m "Step one!"
+    m "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
+    m "Step two!"
+    m "Building up and fortifying your confidence is really important. Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
+    m "Eventually, these things you once struggled to get done will be completed as if they were acts of valor!"
+    m "Step three!"
+    m "Try your best to stay open-minded and willing to learn at all times. Nobody is perfect, and everyone is able to teach each other something. This can help you learn to understand things from other people's perspectives in situations, and inspire others to do the same."
+    m "And that's it, really."
+    m "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
+    m "Ahaha, I'm only joking about that last part."
+    m "In all seriousness, I'm really glad I have you here, [player]..."
+    m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind girlfriend would I be if I didn't return the favor~?"
+    return
+
 ##################
 #Incomplete ideas#
 ##################

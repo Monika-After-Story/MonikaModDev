@@ -101,7 +101,7 @@ label call_next_event:
     if event_label and renpy.has_label(event_label):
 
         $ allow_dialogue = False
-        call expression event_label
+        call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 
         if event_label in monika_random_topics:
