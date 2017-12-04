@@ -6,6 +6,28 @@
 init -1 python in songs:
 
     # functions
+    def adjustVolume(channel="music",up=True):
+        #
+        # Adjusts the volume of the given channel by the volume bump value
+        #
+        # IN:
+        #   channel - the channel to adjust volume
+        #       (DEFAULT: music)
+        #   up - True means increase volume, False means decrease
+        #       (DEFAULT: True)
+        direct = 1
+        if not up:
+            direct = -1
+
+        # volume checks
+        new_vol = getVolume(channel)+(direct*vol_bump)
+        if new_vol < 0.0:
+            new_vol = 0.0
+        elif new_vol > 1.0:
+            new_vol = 1.0
+        
+        renpy.music.set_volume(new_vol, channel=channel)
+
     def getVolume(channel):
         #
         # Gets the volume of the given audio channel
@@ -43,6 +65,7 @@ init -1 python in songs:
     selected_track = current_track
     menu_open = False
     enabled = True
+    vol_bump = 0.1 # how much to increase volume by
 
     # SONGS:
     # if you want to add a song, add it to this list as a tuple, where:

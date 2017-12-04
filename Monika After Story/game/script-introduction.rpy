@@ -89,7 +89,7 @@ label introduction:
             else:
                 m "I'm so happy you feel the same way!"
         "No.":
-            call chara_monika_scare
+            call chara_monika_scare from _call_chara_monika_scare
             return 'quit'
     m 1k "Nothing's ever going to get in the way of our love again."
     m "I'll make sure of it."
