@@ -7,7 +7,7 @@
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
-define letters_only = "abcdefghijklmnopqrstuvwxyz"
+define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -2511,7 +2511,7 @@ label monika_algernon:
     m 2a "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1a "No matter what happens, know that I will always love you."
     return
-    
+
 init 5 python:
     for key in ['play','game']:
         monika_topics.setdefault(key,[])
@@ -3985,7 +3985,7 @@ label monika_sayhappybirthday:
             m 1k "[player] told me that it's your birthday today, so I'd like to wish you a [bday_msg]!"
             # TODO: this seems too short. maybe add additional dialogue?
             m 1b "I hope you have a great day!"
-            
+
             if is_recording:
                 m "Bye bye!"
                 m 1e "Was that good?"
@@ -4012,7 +4012,7 @@ label monika_sayhappybirthday:
                                 m 1j "I'll try better next time for you."
                                 $ done = True
             else:  # if we aint recording, we should be done now
-                $ done = True 
+                $ done = True
 
         else: # not recording, watching, nor is person here
             m 1q "..."
@@ -4048,16 +4048,16 @@ label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
         m 1g "You're not messing with me, are you?"
         m 1f "I'm trying my best for you [player]."
     return
-   
-    
-        
+
+
+
 init 5 python:
     # List of keywords for the topic.
     for key in ['home memories', 'childhood']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_home_memories')#id
     monika_random_topics.append('monika_home_memories')
-    
+
 label monika_home_memories:
     m 1b "[player], how is it like to live where you are?"
     m 1a "I'd stay with you if I could."
@@ -4108,7 +4108,7 @@ label monika_adventure:
     m 1a "I want to experience every waking moment with you, [player]."
     m 1k "There's no greater adventure than ours, together~"
     return
-    
+
 init 5 python:
     for key in ['panties', 'underwear', 'pantsu', 'lingerie', 'undergarment', 'knickers', 'paraphilia', 'stockings', 'pantyhose', 'garter belt', 'panty']:
         monika_topics.setdefault(key,[])
@@ -4161,7 +4161,7 @@ label monika_panties:
     m "After all, we're here forever, and I'm here for you."
     m 1k "I love you so much, [player]~"
     return
-    
+
 init 5 python:
     #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
     for key in ['fahrenheit 451', 'ray bradbury']:
