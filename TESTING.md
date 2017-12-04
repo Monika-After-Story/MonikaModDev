@@ -1,5 +1,5 @@
 # Testing Flow / Bug Testing
-This is a separate section from the [CONTRIBUTING.md](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md) document. It will contain a small guide on testing for bugs & fixing them accordingly, which is crucial to do before submitting a Pull Request to the repository. 
+This is a separate section from the [CONTRIBUTING.md](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md) document. It will contain a small guide on testing things you wish to implement for bugs & other issues, which is crucial to do before submitting a Pull Request to the repository. 
 
 ## Setting Up
 ### The Tools
