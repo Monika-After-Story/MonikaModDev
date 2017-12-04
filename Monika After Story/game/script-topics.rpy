@@ -3853,11 +3853,10 @@ label monika_surprise:
     m 1k "I love you so much, [player]~"
     return
     
-    init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['completionist' , '100% completion']:
+init 5 python:
+    for key in ["completionist" "100% completion"]:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_completionist') #id
+        monika_topics[key].append('monika_completionist')
     monika_random_topics.append('monika_completionist')
 
 label monika_completionist:
