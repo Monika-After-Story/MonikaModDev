@@ -282,6 +282,7 @@ label greeting_glitch:
      pause 0.1
      extend " playing with the code a little."
      m 3l "That was all! There is nobody else here but us... forever~"
+     $ monika_clone1 = "Yes"
      m 2j "I love you, [player]!"
      return
 
