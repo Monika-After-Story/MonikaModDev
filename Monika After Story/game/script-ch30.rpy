@@ -487,7 +487,8 @@ label ch30_autoload:
     else:
         $ config.allow_skipping = False
 
-    $ set_keymaps()
+    if not persistent.is_monika_in_room:
+        $ set_keymaps()
     jump ch30_loop
 
 label ch30_loop:

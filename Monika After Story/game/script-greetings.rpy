@@ -345,4 +345,5 @@ label i_greeting_monikaroom:
         else:
             play_song(songs.current_track) # default
         HKBShowButtons()
+        set_keymaps()
     return    
