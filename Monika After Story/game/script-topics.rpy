@@ -296,7 +296,7 @@ init 5 python:
         monika_topics[key].append('monika_piano') #id
     monika_random_topics.append('monika_piano')
 
-label monika_piano: #Isn't this inaccurate? She has played her song by this point.
+label monika_piano:
     m 3c "Man, I wish there was a piano in here..."
     m "I never got to finish that song I was working on."
     m 3f "And after I worked so hard on it..."
