@@ -421,7 +421,7 @@ label ch30_autoload:
             import random
             persistent.is_monika_in_room = (
                 not seen_event("i_greeting_monikaroom")
-                and random.randint(1,1) == 1
+                and random.randint(1,20) == 1
             )
 
         if not persistent.is_monika_in_room:
