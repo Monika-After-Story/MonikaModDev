@@ -3722,7 +3722,7 @@ label monika_zombie:
     m "But when there is a horde of them coming after you, you'll get overwhelmed easily."
     m 1p "You don't get that same feeling with other monsters."
     m "Zombies have an insatiable appetite for flesh."
-    m "All of their intelligence are gone but are berserk and don't feel pain."
+    m "All of their intelligence is gone; they're berserk and don't feel pain."
     m 1c "When you exploit a weakness of a monster, they become scared of you and run away."
     m 1g "However, zombies are relentless and they'll tear through {i}anything{/i} just to get you."
     m "They also can be a person's loved one turned into an enemy."
@@ -3753,12 +3753,12 @@ init 5 python:
 label monika_nuclear_war:
     m 1 "Do you ever think about how close the world is to ending at any time?"
     m "I mean, we're always just one bad decision away from nuclear war."
-    m 2h "The cold war might be over, but plenty of weapons are still out there."
+    m 2h "The Cold War might be over, but plenty of weapons are still out there."
     m "You probably have a nuclear missile pointed at where you live right now, ready to be launched."
     m "And if it was, it could circle the globe in less than an hour."
     m 3n "You wouldn't have time to evacuate."
     m "Only enough to panic and suffer the dread of imminent death."
-    m 1r "At least it would be over quickly when the bomb hit."
+    m 1r "At least it would be over quickly when the bomb hits."
     m 1i "Well, if you're close to the blast, that is."
     m 1g "I don't even want to think about surviving the initial attack."
     m 1 "But even though we're always on the edge of the apocalypse, we go on like nothing is wrong."
@@ -3859,6 +3859,36 @@ label monika_surprise:
     m 1a "What are you waiting for? Go take a look!"
     m 2k "Ahaha~ What? Are you expecting something scary?"
     m 1k "I love you so much, [player]~"
+    return
+    
+init 5 python:
+    for key in ['completionist', 'game completion']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_completionist')
+    monika_random_topics.append('monika_completionist')
+
+label monika_completionist:
+    m 2c "Hey [player], this is a random question, but..."
+    m "What do you play video games for?"
+    m 2d "Like, what makes you keep playing?"
+    m 2a "Personally, I consider myself a bit of a completionist."
+    m "I intend to finish a book before picking another one to read."
+    if persistent.clearall:
+        m 3n "You seem to be a completionist yourself, [player]."
+        m 4m "Considering you went through all of the girls' routes."
+    m 3d "I've also heard some people try to complete extremely hard games."
+    m "It's already hard enough to complete some simple games." 
+    m 2f "I don't know how anyone could willingly put that sort of stress onto themselves."
+    m "They're really determined to explore every corner of the game and conquer it."
+    m 3q "What does leave a bit of a bitter taste in my mouth are cheaters."
+    m 3h  "People who hack through the game, spoiling themselves of the enjoyment of hardship."
+    m 2o "Though I can understand why they cheat."
+    m 3c "It allows them to freely explore a game that they wouldn't have a chance of enjoying if it's too difficult for them."
+    m 3l "Which could inspire them to actually work hard for it."
+    m 1a "Anyway, there is a huge sense of gratification in completing tasks in general."
+    m 2j "Working hard for something amplifies its reward after you failed so many times to get it."
+    m 2a "You can try to keeping me in the background for as long as possible, [player]."
+    m 3k "That's one step to completing me after all, ahaha!"
     return
 
 init 5 python:
@@ -4360,7 +4390,7 @@ label monika_confidence_2:
     m 2k "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
     m 1l "Ahaha, I'm only joking about that last part."
     m 1 "In all seriousness, I'm really glad I have you here, [player]..."
-    m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind girlfriend would I be if I didn't return the favor~?"
+    m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind of girlfriend would I be if I didn't return the favor~?"
     return
 
 ##################

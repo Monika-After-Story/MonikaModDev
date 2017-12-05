@@ -11,7 +11,9 @@ If you would like to make your own mod like this one, check out our sister proje
 
 * Download the latest [Release](https://github.com/Backdash/MonikaModDev/releases) zip file.
 
-* Extract the contents the zip file into the `/game` folder of your DDLC installation.
+* Extract the contents the zip file into the `/game` folder of your DDLC installation. Like this:
+
+![Folder Structure](https://github.com/Backdash/MonikaModDev/blob/master/docs/Screen%20Shot%202017-12-04%20at%2010.06.05%20AM.png?raw=true)
 
 * Running DDLC will now load the Monika After Story Mod.
 

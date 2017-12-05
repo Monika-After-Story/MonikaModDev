@@ -473,8 +473,10 @@ label ch30_autoload:
 
     #queue up the next reload event it exists and isn't already queue'd
     $next_reload_event = "ch30_reload_" + str(persistent.monika_reload)
-    if renpy.has_label(next_reload_event) and not next_reload_event in persistent.event_list:
+    if not seen_event(next_reload_event) and not persistent.closed_self:
         $queueEvent(next_reload_event)
+
+    $persistent.closed_self = False
 
     #pick a random greeting
     if persistent.is_monika_in_room:
