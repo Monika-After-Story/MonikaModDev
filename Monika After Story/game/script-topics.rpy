@@ -4364,7 +4364,7 @@ label monika_confidence_2:
     
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['birds' , 'pets']:
+    for key in ["birds" , "pets"]:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_pets') #id
     monika_random_topics.append('monika_pets')
