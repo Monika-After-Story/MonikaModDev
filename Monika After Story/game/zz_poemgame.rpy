@@ -150,7 +150,10 @@ init -4 python:
 
 # FUNCTIONS -------------------------------------------------------------------
 
-    def glitchWord(word, odds_space=5, odds_other=5):
+    from mas_poemgame_constants import ODDS_SPACE
+    from mas_poemgame_constants import ODDS_OTHER
+
+    def glitchWord(word, odds_space=ODDS_SPACE, odds_other=ODDS_OTHER):
         #
         # Glitches the given word by replacing characters with spaces or
         # other chars
@@ -159,11 +162,11 @@ init -4 python:
         #   word - the word to glitch
         #   odds_space - the odds that a space will replace a character
         #       Use an int here. Odds are calculated like (1 out of x)
-        #       (Default: 5)
+        #       (Default: ODDS_SPACE) - Defined in mas_poemgame_constants
         #   odds_other - the odds that a random unicode character will replace
         #       a character. Use an int here. Odds are calculated the same as
         #       odds_space.
-        #       (Default: 5)
+        #       (Default: ODDS_OTHER) - Defined in mas_poemgame_constants
         s = list(word)
         for k in range(len(word)):
             if random.randint(1, odds_space) == 1:
@@ -193,6 +196,13 @@ init -10 python in mas_poemgame_consts:
     DISPLAY_MODE = 0
     STOCK_MODE = 1
     MONIKA_MODE = 2
+
+    # glitch words odds
+    ODDS_SPACE = 5
+    ODDS_OTHER = 5
+
+    # glitch word scare odds
+    ODDS_SCARE = 400
 
 # store to handle sticker generation
 init -2 python in mas_poemgamestickers:
@@ -245,67 +255,107 @@ init -2 python in mas_poemgame_val:
 #   (REQUIRED)
 #   flow - what are we trying to do with this minigame. This changes the
 #       returned values: 
+#
 #       (these are from mas_poemgame_constants)
 #       DISPLAY_MODE - glitch/display mode. Nothing is returned. 
-#       STOCK_MODE - stock minigame mode. Returns the point totals for each 
-#           character in a dict of the following format:
-#               "sayori": <pts>
-#               "natsuki": <pts>
-#               "yuri": <pts>
-#               "monika": <pts>
+#
+#       STOCK_MODE - stock minigame mode. 
+#           If only_winner is True:
+#               Returns only the winner and points as Tuple:
+#                   [0] -> name of winner (defined in mas_poemgame_constants)
+#                   [1] -> pts they won
+#           else:
+#               Returns the point totals for each character in a dict of the 
+#               following format: (keys are defined in mas_poemgame_constants)
+#                   "sayori": <pts>
+#                   "natsuki": <pts>
+#                   "yuri": <pts>
+#                   "monika": <pts>
+#
 #       MONIKA_MODE - poemgame as it was in Act 3. Slightly configurable
 #           Nothing is returned.
+#
 #       TODO: add more flows? when we need them ofc
 #
 #       NOTE: If the given flow is none of the above, DISPLAY_MODE is assumed
 #
 #   (CONFIGURATION OPTIONS): (ORDER DOES NOT MATCH INPUT PARAMS)
+#
 #   glitch_nb - True will use the glitched notebook. False will use regular
 #       one.
 #       (Default: False)   
-#   glitch_words - True will display ALL words with glitches. False will not
+#
+#   glitch_words - Tuple of the following format:
+#           [0] -> True means display gltich words, false means no
+#               (If None, default False)
+#           [1] -> odds that a space appears instead of a letter (1 out of x)
+#               (If None, default is in glitchWord())
+#           [2] -> odds that a nonunicode appears instead of a letter (1 out 
+#               of x)
+#               (If None, default is in glitchWord())
+#       If the tuple is None (or is not of length 3), the default values are
+#       used. (SEE glitchWord())
 #       NOTE: This effect is purely visible. If you want the glitchable words
 #       that cause the scare, use glitch_wordscare
-#       (Default: False)
-#   glitch_wordscare - True will occasionally create glitched words that launch
-#       the glitch scare. 
-#       NOTE: 
-#   music_obj - music to play during the mini game (music object, NOT FILENAME)
-#       Set to None to use music_filename.
-#       NOTE: Takes precenence over music_filename
-#       (default: t4, which is the regular poem minigame song)
+#       (Default: None)
+#
+#   glitch_wordscare - Tuple of the following format:
+#           [0] -> True means display glitch words that cause the scare
+#               (If None, default False)
+#           [1] -> odds that one of these glitch words will appear (1 out of x)
+#               (If None, default is 400)
+#       If the tuple is None (or is not of length 2), the default values are
+#       used.
+#       NOTE: This is the glitch that causes a scare. If you want purely
+#       visisble glitch words, use glitch_words
+#       (Default: None)
+#
 #   music_filename - filename of the music to play. Set music to None to use
 #       this param. 
 #       NOTE: NO checks are made for the existence of this file. Please no
 #       bully.
-#       NOTE: music_obj takes precendence over this
-#       (Default: None)
+#       (Default: audio.t4 - the defualt poem game audio)
+#
 #   one_counter - True will apply the glitch that made the poem counter 
 #       display 1 over and over again instead of the approriate number. False
 #       will do regular counting
 #       (Default: False)
+#
+#   only_winner - True will the return value of STOCK_MODE the following tuple:
+#           [0] -> name of winning girl (defined in mas_poemgame_constants)
+#           [1] -> the amount of points this girl received
+#       False will return what is described above in flow.
+#       (Default: False)
+#
 #   poem_wordlist - MASPoemWordList of the poemwords to use this game.
 #       If None, the default full_wordlist defined in script-poemgame is used.
 #       NOTE: If this is None, show_monika is IGNORED. This is to ensure
 #       compatibility with the stock PoemWord class
+#
 #   show_monika - True will display monika and her related actions. False will
 #       not. 
 #       (Default: True)
+#
 #   show_natsuki - True will display natsuki and her related actions. False 
 #       will not.
 #       (Default: False)
+#
 #   show_poemhelp - True will display the poem help screen. False will not
 #       (Default: False)
+#
 #   show_sayori - True will display sayori and her related actions. False will
 #       not.
 #       (Default: False)
+#
 #   show_yuri - True will display yuri and her related actions. False will not.
 #       (Default: False)
+#
 #   sticker_pt - a dict of the format described in the generateStickers 
 #       function above. If a show_x arg is False, their key:value in this dict
 #       will be ignored.
 #       If none, the default one from generateStickers is used
 #       (Default: None)
+#
 #   total_words - Number of words that can be picked this game
 #       (Default: 20)
 #       (Default: None)
@@ -313,8 +363,8 @@ init -2 python in mas_poemgame_val:
 #   (DISPLAY_MODE OPTIONS)
 #   glitch_nb
 #   glitch_words
+#   glitch_wordscare
 #   music_filename
-#   music_obj
 #   one_counter
 #   poem_wordlist
 #   show_monika
@@ -328,9 +378,10 @@ init -2 python in mas_poemgame_val:
 #   (STOCK_MODE OPTIONS)
 #   glitch_nb
 #   glitch_words
+#   glitch_wordscare
 #   music_filename
-#   music_obj
 #   one_counter
+#   only_winner
 #   poem_wordlist
 #   show_monika
 #   show_natsuki
@@ -343,18 +394,18 @@ init -2 python in mas_poemgame_val:
 #   (MONIKA_MODE OPTIONS)
 #   glitch_nb
 #   glitch_words
+#   glitch_wordscare
 #   music_filename
-#   music_obj
 #   one_counter
 #   show_poemhelp
 #   sticker_pt
 #   total_words
 #
-label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
-        show_monika=True,show_natsuki=False,show_sayori=False,show_yuri=False,
-        glitch_nb=False,show_poemhelp=False,total_words=20,poem_wordlist=None,
-        sticker_pt=None,one_counter=False,only_monika=False,
-        glitch_words=False,glitch_baa=True):
+label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
+        show_natsuki=False,show_sayori=False,show_yuri=False,glitch_nb=False,
+        show_poemhelp=False,total_words=20,poem_wordlist=None,sticker_pt=None,
+        one_counter=False,only_monika=False,glitch_words=None,
+        glitch_wordscare=None,only_winner=False,
 
     $ import store.mas_poemgamestickers as mas_stickers
     $ import store.mas_poemgame_val as mas_validator
@@ -368,6 +419,36 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
     $ in_display_mode = flow == mas_pg_consts.DISPLAY_MODE
     $ in_stock_mode = flow == mas_pg_consts.STOCK_MODE
     $ in_monika_mode = flow == mas_pg_consts.MONIKA_MODE
+
+    # arg processing
+    python:
+        
+        # glitch word processing
+        # not None, is length 3, and first item is True
+        if (glitch_words is not None
+            and len(glitch_words) >= 3 
+            and glitch_words[0]):
+
+            if not glitch_words[1]: # None
+                glitch_words[1] = mas_pg_consts.ODDS_SPACE
+            if not glitch_words[2]: # None
+                glitch_words[2] = mas_pg_Consts.ODDS_OTHER
+
+        else: # None, or length < 3, or first item is False
+            glitch_words = None
+
+        # glitch word scare processing
+        # not None, is length 2, and first item is True
+        if (glitch_wordscare is not None
+            and len(glitch_wordscare) >= 2 
+            and gltich_wordscare[0]):
+
+            if not glitch_wordscare[1]: # None
+                glitch_wordscare[1] = mas_pg_consts.ODDS_SCARE
+
+        else: # None, or length < 2, or first item is False
+            glitch_wordscare = None
+
 
     # TODO: do we need to paramterize this?
     stop music fadeout 2.0
@@ -496,20 +577,38 @@ label mas_poem_minigame (flow,music_obj=t4,music_filename=None,
 
                     # monika mode:
                     if in_monika_mode:
-                        s = list("Monika")
-#                    else:
 
+                        # are we displaying a word that causes glitch scare?
+                        if (glitch_wordscare 
+                            and random.randint(1,glitch_wordscare[1]) == 1):
+                            
+                            word = MASPoemWord(glitchtext(7), 0, 0, 0, 0, True)
 
+                        # are we displaying a glitched Monika
+                        elif glitch_words:
+                            word = MASPoemWord(
+                                glitchWord(
+                                    "Monika", glitch_words[1], glitch_words[2]
+                                ),
+                                0, 0, 0, 0, False
+                            )
 
-#                        word = MASPoemWord("".join(s), 0, 0, 0, 0, False)
-#                    elif persistent.playthrough == 2 and not poemgame_glitch and chapter >= 1 and progress < numWords and random.randint(0, 400) == 0:
-#                        word = PoemWord(glitchtext(80), 0, 0, 0, True)
-#                    else:
-#                        word = random.choice(wordlist)
-#                        wordlist.remove(word)
+                        # regular Monika
+                        else:
+                            word = MASPoemWord("Monika", 0, 0, 0, 0, False)
+
+                    # display or stock mode
+                    else:
+                        word = random.choice(wordlist)
+                        wordlist.remove(word)
+
+                    # display the word as a textbutton
                     ui.textbutton(word.word, clicked=ui.returns(word), text_style="poemgame_text", xpos=x, ypos=i * 56 + ystart)
+
+                # close this ui i guess
                 ui.close()
             
+            # wait for user to hit a word
             t = ui.interact()
             if not poemgame_glitch:
                 if t.glitch:
