@@ -101,7 +101,7 @@ label monika_death:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['bad day' , 'sad' , 'unhappy']:
+    for key in ['bad day', 'sad' , 'unhappy']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_bad_day') #id
     monika_random_topics.append('monika_bad_day')
@@ -188,7 +188,7 @@ label monika_sayori:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['japan', 'there' , 'here']:
+    for key in ['game location', 'your location', 'club school']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_japan') #id
     monika_random_topics.append('monika_japan')
@@ -259,7 +259,7 @@ label monika_high_school:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['meaningless' , 'nihilism' , 'nihilist' , 'purpose' , 'meaning']:
+    for key in ['meaningless' , 'nihilism' , 'nihilist' , 'no purpose']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_nihilism') #id
     monika_random_topics.append('monika_nihilism')
@@ -421,7 +421,7 @@ label monika_saved:
     m 5a "Nothing would make me happier than being the perfect girlfriend for you."
     return
 
-
+#Why does this have expressions? Monika won't ever say this ingame.
 label monika_secrets:
     m 11 "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
     m "I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91"
@@ -499,7 +499,7 @@ label monika_color:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['listen','listening','i understand', 'i agree']:
+    for key in ['listening', 'understanding', 'listener']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_listener')
     monika_random_topics.append('monika_listener')
@@ -565,7 +565,7 @@ label monika_why:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['okay everyone']:
+    for key in ['okay everyone','your saying', 'catch phrase']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_okayeveryone')
     monika_random_topics.append('monika_okayeveryone')
@@ -608,7 +608,7 @@ label monika_whispers:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['archetypes','stereotype','stereotypes','archetype','trope']:
+    for key in ['archetypes', 'stereotype' , 'stereotypes' , 'archetype']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_archetype')
     monika_random_topics.append('monika_archetype')
@@ -641,7 +641,7 @@ label monika_archetype:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['tea','coffee','caffeine']:
+    for key in ['tea', 'tea set']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_tea')
     monika_random_topics.append('monika_tea')
@@ -703,7 +703,7 @@ label monika_smash:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['last poem', 'your poem']:
+    for key in ['last poem', 'your poem', 'previous poem', 'final poem']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_lastpoem')
     monika_random_topics.append('monika_lastpoem')
@@ -745,7 +745,7 @@ label monika_anxious:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['friends','friend','meet','meeting','new people']:
+    for key in ['new friends' , 'new friend' , 'new people']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_friends')
     monika_random_topics.append('monika_friends')
@@ -1143,7 +1143,7 @@ label monika_simulated:
 
 
 init 5 python:
-    for key in ['rain','sound','weather']:
+    for key in ['rain','weather']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_rain')
     monika_random_topics.append('monika_rain')
@@ -1200,7 +1200,7 @@ label monika_confidence:
 
 
 init 5 python:
-    for key in ['leave','lonely','alone']:
+    for key in ['leave', 'be lonely' , 'be alone' , 'loner']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_carryme')
     monika_random_topics.append('monika_carryme')
@@ -1218,7 +1218,7 @@ label monika_carryme:
 
 
 init 5 python:
-    for key in ['debate','argue','arguing','fight','fighting']:
+    for key in ['debate','argue','arguing','fighting']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_debate')
     monika_random_topics.append('monika_debate')
@@ -1335,7 +1335,7 @@ label monika_read:
 
 
 init 5 python:
-    for key in ['regret','festival']:
+    for key in ['your regret','festival']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_festival')
     monika_random_topics.append('monika_festival')
@@ -1411,7 +1411,7 @@ label monika_cold:
 
 
 init 5 python:
-    for key in ['housewife','stay at','house wife']:
+    for key in ['housewife','stay at home','house wife']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_housewife')
     monika_random_topics.append('monika_housewife')
@@ -1430,7 +1430,7 @@ label monika_housewife:
 
 
 init 5 python:
-    for key in ['route']:
+    for key in ['your route','your story', 'monika after story', 'after story']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_route')
     monika_random_topics.append('monika_route')
@@ -1488,7 +1488,7 @@ label monika_oneesan:
 
 
 init 5 python:
-    for key in ['parents', 'family', 'parent', 'father', 'mother', 'mom', 'dad']:
+    for key in ['your family', 'your father', 'your mother', 'your mom', 'your dad']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_family')
 
@@ -1837,7 +1837,7 @@ label monika_poetry:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['literature club', 'club', 'our club', 'your club', 'ddlc' , 'this game' , 'doki doki']:
+    for key in ['literature club', 'club', 'our club', 'your club', 'ddlc' , 'this game', 'doki doki']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_ddlc')
 
@@ -1903,7 +1903,7 @@ label monika_vidya:
 
 
 init 5 python:
-    for key in ['literature', 'books', 'book', 'novel', 'novels', 'reading']:
+    for key in ['literature', 'books', 'novel', 'novels', 'reading']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_books')
     monika_random_topics.append('monika_books')
@@ -1965,7 +1965,7 @@ label monika_natsuki:
 
 
 init 5 python:
-    for key in ['love', 'love you']:
+    for key in ['in love', 'love you', 'my love']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_love')
 
@@ -1992,7 +1992,7 @@ label monika_hedgehog:
 
 
 init 5 python:
-    for key in ['murder', 'kill', 'killed', 'killer', 'murderer' , 'evil']:
+    for key in ['killed them', 'killer', 'murderer' , 'you are evil', 'murdered']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_justification')
 
@@ -2009,7 +2009,7 @@ label monika_justification:
 
 
 init 5 python:
-        for key in ['free will', 'predestination', 'determinism', 'will', 'strong determinism', 'weak determinism', 'laplace', "laplaces demon"]:
+        for key in ['free will', 'determinism', 'strong determinism', 'weak determinism', 'laplace', 'laplace\s demon']:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_freewill')
         monika_random_topics.append('monika_freewill')
@@ -2027,7 +2027,7 @@ label monika_freewill:
     return
 
 init 5 python:
-        for key in ['free will', 'predestination', 'determinism', 'functionalism']:
+        for key in ['predestination', 'functionalism']:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_functionalism')
         monika_random_topics.append('monika_functionalism')
@@ -2062,7 +2062,7 @@ label monika_technique:
 
 
 init 5 python:
-    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help', 'credits']:
+    for key in ['github', 'contribute', 'contribution', 'credits', 'mod']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_contribute')
     monika_random_topics.append('monika_contribute')
@@ -2231,7 +2231,7 @@ label monika_whatever:
 #New dialogue additions follow
 
 init 5 python:
-    for key in ['lewd', 'pictures', 'images', 'fanart', 'simulacrum', 'simulacra', 'baudrillard']:
+    for key in ['images', 'fanart', 'simulacrum', 'simulacra', 'baudrillard']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_images')
     monika_random_topics.append('monika_images')
@@ -2241,11 +2241,9 @@ label monika_images:
     m 1a "Are you one of them, [player]?"
     menu:
         m "Have you drawn art of me?"
-
         "Yes.":
             m 1b "Really? I'm very flattered!"
             m 1k "I think I might even love you more, now that I know you're so talented."
-
         "No.":
             m 1l "I can't draw, myself, so it's okay if you aren't good at drawing either."
     m 1h "There's one thing I want you to understand about art of me, though."
@@ -2261,7 +2259,7 @@ label monika_images:
     return
 
 init 5 python:
-    for key in ['monika', 'just monika', 'yourself', 'your past', 'your childhood']:
+    for key in ['about you', 'just monika', 'your past', 'your childhood', 'your life']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_herself')
 
@@ -2280,7 +2278,7 @@ label monika_herself:
     return
 
 init 5 python:
-    for key in ['prison', 'imprisonment', 'prisoner']:
+    for key in ['zoo', 'imprisonment', 'prisoner']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_prisoner')
     monika_random_topics.append('monika_prisoner')
@@ -2359,7 +2357,7 @@ label monika_szs:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['memories','birthday']:
+    for key in ['your memories','your birthday']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_birthday') #id
     monika_random_topics.append('monika_birthday')
@@ -2466,7 +2464,7 @@ label monika_ghost:
     return
 
 init 5 python:
-    for key in ['ribbon', 'ribbons', 'poofy']:
+    for key in ['your ribbon', 'your ribbons', 'poofy']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_ribbon')
     monika_random_topics.append('monika_ribbon')
@@ -2490,7 +2488,7 @@ label monika_ribbon:
 
 init 5 python:
     #Monika is the literature club president, I think it would be neat for her to discuss some of stories she's read
-    for key in ['fear','fears','algernon']:
+    for key in ['you fear','your fears','your fear','algernon']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_algernon') #id
     monika_random_topics.append('monika_algernon')
@@ -2550,7 +2548,7 @@ label monika_pong:
     return
 
 init 5 python:
-    for key in ['webcam','camera','my face','smile']:
+    for key in ['webcam','camera','my face','my smile']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_playersface') #id
     monika_random_topics.append('monika_playersface')
@@ -2614,7 +2612,7 @@ label monika_nsfw:
     return
 
 init 5 python:
-    for key in ['other girls', 'impression', 'acting','impressions']:
+    for key in ['other girls', 'impression', ,'do impressions']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_impression')
 
@@ -2667,7 +2665,7 @@ label monika_impression:
     return
 
 init 5 python:
-    for key in ['weary', 'fatigued', 'exhausted']:
+    for key in ['you weary', 'you fatigued', 'you exhausted', 'you tired']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_weary')
 
@@ -2683,7 +2681,7 @@ label monika_weary:
     return
 
 init 5 python:
-    for key in ['fuck', 'shit', 'motherfucker']:
+    for key in ['fuck', 'shit', 'motherfucker', 'damn', 'damnit' ,'cunt']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_vulgarity')
 
@@ -2737,7 +2735,7 @@ label monika_goodbye:
     return 'quit'
 
 init 5 python:
-    for key in ['mythology', 'ancient', 'greeks', 'myth', 'myths', 'greek']:
+    for key in ['mythology', 'ancient greeks', 'myth', 'myths']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_mythology')
     monika_random_topics.append('monika_mythology')
@@ -2828,7 +2826,7 @@ label monika_aware:
     return
 
 init 5 python:
-    for key in ['your name', 'Monika meaning']:
+    for key in ['your name', 'monika meaning']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_name')
     monika_random_topics.append('monika_name')
@@ -2851,7 +2849,7 @@ label monika_name:
     return
 
 init 5 python:
-    for key in ['cities', 'city pollution','pollution']:
+    for key in ['with cities', 'city pollution','pollution']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_cities')
     monika_random_topics.append('monika_cities')
@@ -2908,9 +2906,9 @@ label monika_chloroform:
     return
 
 init 5 python:
-    for key in ['parents', 'unrealistic setting', 'drama hook']:
+    for key in ['your parents', 'drama hook']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_metaparents') #I wasn't sure if we're ever going to need the monika_parents label for something
+        monika_topics[key].append('monika_metaparents')
     monika_random_topics.append('monika_metaparents')
 
 label monika_metaparents:
@@ -2936,7 +2934,7 @@ label monika_metaparents:
     return
 
 init 5 python:
-    for key in ['vikings', 'personal hygiene', 'bath', 'shower', 'baths', 'showers']:
+    for key in ['vikings', 'personal hygiene', 'bath often', 'shower often', 'bathe alot', 'shower alot', 'baths', 'showers']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_hygiene') #I wasn't sure if we're ever going to need the monika_parents label for something
     monika_random_topics.append('monika_hygiene')
@@ -2981,7 +2979,7 @@ label monika_hygiene:
     return
 
 init 5 python:
-    for key in ['valuable resource']:
+    for key in ['valuable resource','oil','time is valuable']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_resource')
     monika_random_topics.append('monika_resource')
@@ -3047,7 +3045,7 @@ label monika_resource:
 #    return
 
 init 5 python:
-    for key in ['lottery', 'greed']:
+    for key in ['lottery']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_lottery')
     monika_random_topics.append('monika_lottery')
@@ -3238,7 +3236,7 @@ label monika_harem:
     return
 
 init 5 python:
-    for key in ['hack', 'privacy', 'hacker']:
+    for key in ['hack me', 'my privacy', 'hacker']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_hack')
     monika_random_topics.append('monika_hack')
@@ -3330,7 +3328,7 @@ label monika_haterReaction:
 
 init 5 python:
     # List of keywords for the topic.
-    for key in ['sword','swords','swordsman','swordsmen','swordsmanship']:
+    for key in ['like sword','like swords','love sword','love swords','swordsman','swordsmen','swordsmanship']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_swordsmanship') # Identifier
     monika_random_topics.append('monika_swordsmanship') # Optional. Remove if you don't want Monika to bring this up at random.
