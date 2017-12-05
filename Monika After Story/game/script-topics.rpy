@@ -944,7 +944,7 @@ label monika_date:
     m 1e "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
     m 5a "I'm so happy that I'm your girlfriend, [player]."
-    m "I'll make you a proud boyfriend~"
+    m "I'll make you a proud [boyfriend]~"
     return
 
 
@@ -1480,7 +1480,8 @@ label monika_oneesan:
     call updateconsole("sendmail sister@gmail.com < ./email.txt", "Sending mail...") from _call_updateconsole_17
     pause(1.0)
     m 1i "I'm only kidding."
-    m "It's the man's job to introduce his fiancee to his family, after all."
+    if persistent.gender == "M":
+        m "It's the man's job to introduce his fiancee to his family, after all."
     m 3i "Don't keep me waiting for too long, okay?"
     call hideconsole from _call_updateconsole_18
     $ consolehistory = []
@@ -3391,7 +3392,7 @@ label monika_pleasure:
     m "I know you're not the kind of person that does that sort of thing."
     m 1k "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
-    
+
 init 5 python:
     #This is a list of keywords for this topic
     for key in ['miku', 'hatsune miku', 'vocaloid', 'hibikase', 'mmd', 'mikumikudance']:
@@ -3860,7 +3861,7 @@ label monika_surprise:
     m 2k "Ahaha~ What? Are you expecting something scary?"
     m 1k "I love you so much, [player]~"
     return
-    
+
 init 5 python:
     for key in ['completionist', 'game completion']:
         monika_topics.setdefault(key,[])
@@ -3877,7 +3878,7 @@ label monika_completionist:
         m 3n "You seem to be a completionist yourself, [player]."
         m 4m "Considering you went through all of the girls' routes."
     m 3d "I've also heard some people try to complete extremely hard games."
-    m "It's already hard enough to complete some simple games." 
+    m "It's already hard enough to complete some simple games."
     m 2f "I don't know how anyone could willingly put that sort of stress onto themselves."
     m "They're really determined to explore every corner of the game and conquer it."
     m 3q "What does leave a bit of a bitter taste in my mouth are cheaters."
