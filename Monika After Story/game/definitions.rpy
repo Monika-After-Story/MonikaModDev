@@ -1285,6 +1285,7 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
+default persistent.is_monika_in_room = False
 
 call set_gender from _call_set_gender
 
