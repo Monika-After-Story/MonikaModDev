@@ -101,7 +101,7 @@ label monika_death:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['bad day' , 'im sad' , 'am sad' , 'unhappy']:
+    for key in ['bad day', 'sad' , 'unhappy']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_bad_day') #id
     monika_random_topics.append('monika_bad_day')
@@ -188,7 +188,7 @@ label monika_sayori:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['japan', 'are we' , 'are you', 'is here', 'is there']:
+    for key in ['game location', 'your location', 'club school']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_japan') #id
     monika_random_topics.append('monika_japan')
@@ -259,7 +259,7 @@ label monika_high_school:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['meaningless' , 'nihilism' , 'nihilist' , 'no purpose' , 'meaning']:
+    for key in ['meaningless' , 'nihilism' , 'nihilist' , 'no purpose']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_nihilism') #id
     monika_random_topics.append('monika_nihilism')
@@ -499,7 +499,7 @@ label monika_color:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['am listening','i understand', 'i agree']:
+    for key in ['listening', 'understanding', 'listener']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_listener')
     monika_random_topics.append('monika_listener')
@@ -565,7 +565,7 @@ label monika_why:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['okay everyone','your saying']:
+    for key in ['okay everyone','your saying', 'catch phrase']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_okayeveryone')
     monika_random_topics.append('monika_okayeveryone')
@@ -608,7 +608,7 @@ label monika_whispers:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['archetypes','stereotype','stereotypes','archetype']:
+    for key in ['archetypes', 'stereotype' , 'stereotypes' , 'archetype']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_archetype')
     monika_random_topics.append('monika_archetype')
@@ -641,7 +641,7 @@ label monika_archetype:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['want tea','want coffee','need caffeine']:
+    for key in ['tea', 'tea set']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_tea')
     monika_random_topics.append('monika_tea')
@@ -703,7 +703,7 @@ label monika_smash:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['last poem', 'your poem', 'previous poem']:
+    for key in ['last poem', 'your poem', 'previous poem', 'final poem']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_lastpoem')
     monika_random_topics.append('monika_lastpoem')
@@ -745,7 +745,7 @@ label monika_anxious:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['new friends','new friend','meet','meeting','new people']:
+    for key in ['new friends' , 'new friend' , 'new people']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_friends')
     monika_random_topics.append('monika_friends')
@@ -1200,7 +1200,7 @@ label monika_confidence:
 
 
 init 5 python:
-    for key in ['leave','be lonely','be alone']:
+    for key in ['leave', 'be lonely' , 'be alone' , 'loner']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_carryme')
     monika_random_topics.append('monika_carryme')
@@ -1430,7 +1430,7 @@ label monika_housewife:
 
 
 init 5 python:
-    for key in ['your route','had a route']:
+    for key in ['your route','your story', 'monika after story', 'after story']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_route')
     monika_random_topics.append('monika_route')
@@ -1965,7 +1965,7 @@ label monika_natsuki:
 
 
 init 5 python:
-    for key in ['in love', 'love you']:
+    for key in ['in love', 'love you', 'my love']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_love')
 
@@ -1992,7 +1992,7 @@ label monika_hedgehog:
 
 
 init 5 python:
-    for key in ['murder', 'killed them', 'killer', 'murderer' , 'you are evil']:
+    for key in ['killed them', 'killer', 'murderer' , 'you are evil', 'murdered']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_justification')
 
@@ -2009,7 +2009,7 @@ label monika_justification:
 
 
 init 5 python:
-        for key in ['free will','determinism', 'strong determinism', 'weak determinism', 'laplace', 'laplace\s demon']:
+        for key in ['free will', 'determinism', 'strong determinism', 'weak determinism', 'laplace', 'laplace\s demon']:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_freewill')
         monika_random_topics.append('monika_freewill')
@@ -2027,7 +2027,7 @@ label monika_freewill:
     return
 
 init 5 python:
-        for key in ['brain','predestination', 'determinism', 'functionalism']:
+        for key in ['predestination', 'functionalism']:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_functionalism')
         monika_random_topics.append('monika_functionalism')
@@ -2062,8 +2062,7 @@ label monika_technique:
 
 
 init 5 python:
-    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help', 'credits']:
-
+    for key in ['github', 'contribute', 'contribution', 'credits', 'mod']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_contribute')
     monika_random_topics.append('monika_contribute')
@@ -2232,7 +2231,7 @@ label monika_whatever:
 #New dialogue additions follow
 
 init 5 python:
-    for key in ['pictures', 'images', 'fanart', 'simulacrum', 'simulacra', 'baudrillard']:
+    for key in ['images', 'fanart', 'simulacrum', 'simulacra', 'baudrillard']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_images')
     monika_random_topics.append('monika_images')
@@ -2242,11 +2241,9 @@ label monika_images:
     m 1a "Are you one of them, [player]?"
     menu:
         m "Have you drawn art of me?"
-
         "Yes.":
             m 1b "Really? I'm very flattered!"
             m 1k "I think I might even love you more, now that I know you're so talented."
-
         "No.":
             m 1l "I can't draw, myself, so it's okay if you aren't good at drawing either."
     m 1h "There's one thing I want you to understand about art of me, though."
@@ -2491,7 +2488,7 @@ label monika_ribbon:
 
 init 5 python:
     #Monika is the literature club president, I think it would be neat for her to discuss some of stories she's read
-    for key in ['you fear','your fears','your fear','you afraid','algernon']:
+    for key in ['you fear','your fears','your fear','algernon']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_algernon') #id
     monika_random_topics.append('monika_algernon')
@@ -2668,7 +2665,7 @@ label monika_impression:
     return
 
 init 5 python:
-    for key in ['weary of me', 'you fatigued', 'you exhausted']:
+    for key in ['you weary', 'you fatigued', 'you exhausted', 'you tired']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_weary')
 
