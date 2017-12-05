@@ -4361,6 +4361,40 @@ label monika_confidence_2:
     m 1 "In all seriousness, I'm really glad I have you here, [player]..."
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind of girlfriend would I be if I didn't return the favor~?"
     return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['birds' , 'pets']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_pets') #id
+    monika_random_topics.append('monika_pets')
+
+label monika_pets:
+    m "Hey [player], have you ever had a pet?"
+    m "I was kind of thinking that it would be nice to have a pet for company."
+    m "It would be fun for us to take care of it!"
+    m "I bet you can't guess what sort of pet I'd like..."
+    m "You're probably thinking of a cat or a dog, but that's just too boring."
+    m "The pet I'd like is something I saw in a book."
+    m "It was the 'Handbook of the Birds of the World.' Our library had the whole set!"
+    m "I loved looking at the gorgeous illustrations and reading about exotic birds."
+    m "At first, I thought some sort of thrush would make a nice pet, but I found something amazing in the sixth volume!"
+    m "An emerald bird called the Resplendant Quetzal."
+    m "They're very rare, solitary birds that sing beautiful songs."
+    m "Does that remind you of anyone?"
+    m "I'd feel really bad if I programmed one to be a pet, though."
+    m "Quetzals are born to be free."
+	m "They die in captivity. That's why you rarely seem them in zoos."
+    m "Even if it isn't real, it feels wrong to keep one trapped in this room."
+    m "... I can't bring myself to do something like that, after experiencing it for myself."
+    m "And if I made it less real then what's the point?"
+	m "A plush bird would be nice, though!"
+    m "..."
+    m "Sorry, I rambled a bit, [player]."
+    m "Until I find a way out, could you promise to keep me from feeling too lonely?"
+    m "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite"
+	return
+	
 
 ##################
 #Incomplete ideas#
