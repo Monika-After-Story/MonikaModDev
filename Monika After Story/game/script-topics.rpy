@@ -669,7 +669,7 @@ label monika_tea:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in []:
+    for key in ['favorite game']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_favoritegame')
     monika_random_topics.append('monika_favoritegame')
@@ -1837,7 +1837,7 @@ label monika_poetry:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['literature club', 'club', 'our club', 'your club', 'ddlc' , 'this game']:
+    for key in ['literature club', 'club', 'our club', 'your club', 'ddlc' , 'this game', 'doki doki']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_ddlc')
 
@@ -2906,9 +2906,9 @@ label monika_chloroform:
     return
 
 init 5 python:
-    for key in ['your parents', 'sayori's parents', 'natsuki's parents', 'yuri's parents', 'unrealistic setting', 'drama hook']:
+    for key in ['your parents', 'drama hook']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_metaparents') #I wasn't sure if we're ever going to need the monika_parents label for something
+        monika_topics[key].append('monika_metaparents')
     monika_random_topics.append('monika_metaparents')
 
 label monika_metaparents:
