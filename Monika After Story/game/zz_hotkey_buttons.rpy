@@ -1,24 +1,6 @@
 # Module that handles hotkey button screen
 #
 
-init python:
-
-    # function to hide buttons
-    def HKBHideButtons():
-        #
-        # Hides the hkb buttons
-        #
-        config.overlay_screens.remove("hkb_overlay")
-        renpy.hide("hkb_overlay")
-
-    # function to show buttons
-    def HKBShowButtons():
-        #
-        # Shows the hkb buttons
-        #
-        config.overlay_screens.append("hkb_overlay")
-
-
 init -1 python in hkb_button:
 
     # new property to disable buttons
@@ -116,5 +98,5 @@ screen hkb_overlay():
                 style "hkbd_button"
 
 
-init 10 python:
-    HKBShowButtons()
+init python:
+    config.overlay_screens.append("hkb_overlay")
