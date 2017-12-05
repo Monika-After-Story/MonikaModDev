@@ -419,7 +419,10 @@ label ch30_autoload:
         # we'll say 1 in 20 
         if not config.developer:
             import random
-            persistent.is_monika_in_room = random.randint(1,20) == 1
+            persistent.is_monika_in_room = (
+                not seen_event("i_greeting_monikaroom")
+                and random.randint(1,1) == 1
+            )
 
         if not persistent.is_monika_in_room:
             if persistent.current_track is not None:
