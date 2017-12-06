@@ -3910,10 +3910,10 @@ label monika_icecream:
             m "Maybe we really were meant to be!"
             m 2a "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
             m "Flavors which are unique just like how mint is, perhaps you've heard of them, but..."
-            m 2b "There's super weird stuff like fried ice cream which is really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
+            m 2b "There's super weird stuff like fried ice cream which is a really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
             m 3n "Gosh, just imagining the taste makes me practically drool..."
             m 1a "There's some more strange stuff that is just as appealing, if not more, like honeycomb and bubblegum ice cream!"
-            m 1l "Now, I know it may be hard to take my word for some of those, but you shouldn't judge a book by it's cover, you know?"
+            m 1l "Now, I know it may be hard to take my word for some of those, but you shouldn't judge a book by its cover, you know?"
             m 1k "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
 
         "No.":
