@@ -11,7 +11,7 @@ label monika_snow
     m "I’d be nowhere near properly dressed if it started snowing!"
     m "It would probably be so cold that you’d have to keep me warm, ehehe~"
     m  "Actually! Let’s see what I can do..."
-   call updateconsole("os.create(snow.jpg)", "Adding snow...") from _call_updateconsole_20
+   call updateconsole ("renpy.file(\"snow.jpg\")", "snow.jpg does not exist.") from _call_updateconsole_20
     pause(1.0)
     m "... Oh! Maybe some other time, ahaha~"
     m "Even if it’s not too chilly, staying cozy is still nice." 
