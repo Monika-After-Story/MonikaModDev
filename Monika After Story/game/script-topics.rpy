@@ -4213,29 +4213,29 @@ label monika_confidence:
     return
 
 init 5 python:
-        for key in ["fruit", "fruits"]:
-            monika_topics.setdefault(key,[])
-            monika_topics[key].append('monika_fruits')
-        monika_random_topics.append('monika_fruits')
+    for key in ['fruit', 'fruits', 'cherry', 'cherries', 'bell peppers', 'tomato', 'tomatoes', 'bell pepper']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fruits')
+    monika_random_topics.append('monika_fruits')
 
 label monika_fruits:
-   m "Hey, [player], I really enjoy some tasty fruit every so often, you know?"
-   m "Most fruits are quite tasty, as well as really beneficial for your body, so you should try and eat some often!".
-   m "Ah, some of my personal favorites are peppers."
-   m "Not many people know this, but they are fruits as they have seeds!"
-   m "Another type of fruit I really like are apples."
-   m "They're so juicy and tasty... ah, I just drool thinking of apples."
-   m "Gosh, the peppers and apples are amazing but they can't compare to cherries!"
-   m "Did you know that cherries are good for athletes?"
-   m "They contain anthocyanins that provide several health benefits!"
-   m "I could list them all but I doubt you would be that interested."
-   m "There's also this thing called a cherry kiss."
-   m "You might have heard of it."
-   m "It's obviously done between two persons that love each other."
-   m "One would hold a cherry in their mouth, and the other one would eat it."
-   m "You could... hold the cherry for me, so I can eat you up ehehe~"
-   m "Just teasing you ahaha~"
-	return
+    m 2a "[player], did you know I enjoy a tasty, juicy fruit once in a while?"
+    m "Most are quite tasty, as well as beneficial for your body."
+    m 3m "A lot of people actually mistake some fruits as vegetables."
+    m 2a "The best examples are bell peppers and tomatoes."
+    m "They're usually eaten along with other vegetables so people often mistake them for veggies."
+    m 4b "Cherries, however, are very delicious."
+    m 4a "Did you know that cherries are also good for athletes?"
+    m 3n "I could list all it's benefits but I doubt you'd be that interested."
+    m 3a "There's also this thing called a cherry kiss."
+    m 3b "You might have heard of it, [player]~"
+    m 3m "It's obviously done by two people who are into each other."
+    m "One would hold a cherry in their mouth, and the other one would eat it."
+    m 2e "You could... hold the cherry for me."
+    m 4k "That way I can eat you up!"
+    m 2l "Ehehe~"
+    m "Just teasing you, [player]~"
+    return
 
 ##################
 #Incomplete ideas#
