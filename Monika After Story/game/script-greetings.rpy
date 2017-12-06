@@ -336,7 +336,7 @@ label i_greeting_monikaroom:
                     call spaceroom(hide_monika=True)
     m 2a "Now I'll just grab a table and a chair..."
     $ is_sitting = True
-    show monika 1 at l32
+    show monika 1 at ls32
     m 1a "What shall we do today?"
     python:
         persistent.is_monika_in_room = False
