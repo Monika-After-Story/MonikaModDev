@@ -566,7 +566,13 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 pstring = str(progress)
 
             # word counter display
-            ui.text(pstring + "/" + str(numWords), style="poemgame_text", xpos=810, ypos=80, color='#000')
+            ui.text(
+                pstring + "/" + str(numWords), 
+                style="poemgame_text", 
+                xpos=810, 
+                ypos=80, 
+                color='#000'
+            )
 
             # word display
             for j in range(2):  # columns
@@ -603,7 +609,13 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                         wordlist.remove(word)
 
                     # display the word as a textbutton
-                    ui.textbutton(word.word, clicked=ui.returns(word), text_style="poemgame_text", xpos=x, ypos=i * 56 + ystart)
+                    ui.textbutton(
+                        word.word, 
+                        clicked=ui.returns(word), 
+                        text_style="poemgame_text", 
+                        xpos=x, 
+                        ypos=i * 56 + ystart
+                    )
 
                 # close this ui i guess
                 ui.close()
