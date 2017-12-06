@@ -417,14 +417,10 @@ label ch30_autoload:
     python:
         # random chance to do monika in room greeting
         # we'll say 1 in 20 
-        if not config.developer:
-            import random
-            persistent.is_monika_in_room = (
-                not seen_event("i_greeting_monikaroom")
-                and random.randint(1,20) == 1
-            )
+        import random
+        is_monika_in_room = random.randint(1,1) == 1
 
-        if not persistent.is_monika_in_room:
+        if not is_monika_in_room:
             if persistent.current_track is not None:
                 play_song(persistent.current_track)
             else:
@@ -482,7 +478,7 @@ label ch30_autoload:
     $persistent.closed_self = False
 
     #pick a random greeting
-    if persistent.is_monika_in_room:
+    if is_monika_in_room:
         $ pushEvent("i_greeting_monikaroom")
     else:
         $pushEvent(renpy.random.choice(greetings_list))
@@ -500,7 +496,7 @@ label ch30_loop:
     $ quick_menu = True
 
     # this event can call spaceroom
-    if not persistent.is_monika_in_room:
+    if not is_monika_in_room:
         call spaceroom from _call_spaceroom_2
 
     $ persistent.autoload = "ch30_autoload"

@@ -294,52 +294,74 @@ label greeting_surprised:
 label i_greeting_monikaroom:
     scene black
     $ HKBHideButtons()
+    # atm, making this a persistent makes it easier to test as well as allows
+    # users who didnt see the entire event a chance to see it again.
+#    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
+    if persistent.seen_monika_in_room:
+        menu:
+            "Knock":
+                jump monikaroom_greeting_knock
+    else:
+        menu:
+            "Open door":
+                jump monikaroom_greeting_opendoor
+            "Knock":
+                jump monikaroom_greeting_knock
+    # NOTE: return is expected in monikaroom_greeting_post
+
+
+label monikaroom_greeting_opendoor:
+    $ is_sitting = False # monika standing up for this
+    call spaceroom(start_bg="bedroom",hide_monika=True)
+    m 2i "~Is it love if I take you, or is it love if I set you free?~"
+    show monika 1 at l32
+    m 1g "[player]!"
+    m 3g "Don't just barge into my room like that!"
+    show monika 1 at hf32
+    m 5b "A girl's room is very important to her.."
+    m 5a "But I'm glad to see you again."
+    show monika 1 at t32
+    m 3a "Just give me a few seconds to setup, okay?"
+    show monika 1 at t31
+    m 2d "..."
+    show monika 1 at t33 zorder 3
+    m 1d "...and..."
+    if is_morning():
+        show monika_day_room with wipeleft
+    else:
+        show monika_room with wipeleft
+    show monika 1 at t32
+    m 3a "There we go."
     menu:
-        "Open door":
-            $ is_sitting = False # monika standing up for this
-            call spaceroom(start_bg="bedroom",hide_monika=True)
-            m 2i "~Is it love if I take you, or is it love if I set you free?~"
-            show monika 1 at l32
-            m 1g "[player]!"
-            m 3g "Don't just barge into my room like that!"
-            show monika 1 at hf32
-            m 5b "A girl's room is very important to her.."
-            m 5a "But I'm glad to see you again."
-            show monika 1 at t32
-            m 3a "Just give me a few seconds to setup, okay?"
-            show monika 1 at t31
-            m 2d "..."
-            show monika 1 at t33 zorder 3
-            m 1d "...and..."
-            if is_morning():
-                show monika_day_room with wipeleft
-            else:
-                show monika_room with wipeleft
-            show monika 1 at t32
-            m 3a "There we go."
-            menu:
-                "...the window..":
-                    show monika 1 at h32
-                    m 1l "Oops! Forgot about that."
-                    show monika 1 at t21
-                    m "Hold on..."
-                    hide bedroom
-                    m 2j "All fixed!"
-                    show monika 1 at lhide
-                    hide monika
-        "Knock":
-            m "Who is it?"
-            menu:
-                "It's me":
-                    m "[player]!"
-                    m "Hold on, let me get ready..."
-                    call spaceroom(hide_monika=True)
+        "...the window..":
+            show monika 1 at h32
+            m 1l "Oops! Forgot about that."
+            show monika 1 at t21
+            m "Hold on..."
+            hide bedroom
+            m 2j "All fixed!"
+            show monika 1 at lhide
+            hide monika
+    $ persistent.seen_monika_in_room = True
+    jump monikaroom_greeting_post
+    # NOTE: return is expected in monikaroom_greeting_post
+
+label monikaroom_greeting_knock:
+    m "Who is it?"
+    menu:
+        "It's me":
+            m "[player]!"
+            m "Hold on, let me get ready..."
+            call spaceroom(hide_monika=True)
+    jump monikaroom_greeting_post
+    # NOTE: return is expected in monikaroom_greeting_post
+
+label monikaroom_greeting_post:
     m 2a "Now I'll just grab a table and a chair..."
     $ is_sitting = True
     show monika 1 at ls32
     m 1a "What shall we do today?"
     python:
-        persistent.is_monika_in_room = False
         if persistent.current_track is not None:
             play_song(persistent.current_track)
         else:
@@ -347,3 +369,5 @@ label i_greeting_monikaroom:
         HKBShowButtons()
         set_keymaps()
     return    
+
+
