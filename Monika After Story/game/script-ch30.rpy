@@ -418,7 +418,7 @@ label ch30_autoload:
         # random chance to do monika in room greeting
         # we'll say 1 in 20 
         import random
-        is_monika_in_room = random.randint(1,1) == 1
+        is_monika_in_room = random.randint(1,20) == 1
 
         if not is_monika_in_room:
             if persistent.current_track is not None:
