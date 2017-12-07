@@ -3294,7 +3294,7 @@ init 5 python:
 
 label monika_haterReaction:
     m 1h "I was just thinking..."
-    m 3h "It's funny how people around social media sites always writes bad things about me..."
+    m 3h "It's funny how people around social media sites always write bad things about me..."
     m "Well... people on Facebook pages and fan pages, to be specific..."
     m 3i "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
     m 3q "I try to ignore them, but I just can't."
