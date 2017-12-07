@@ -420,6 +420,7 @@ label ch30_autoload:
         import random
         is_monika_in_room = random.randint(1,20) == 1
 
+
         if not is_monika_in_room:
             if persistent.current_track is not None:
                 play_song(persistent.current_track)
@@ -479,7 +480,8 @@ label ch30_autoload:
 
     #pick a random greeting
     if is_monika_in_room:
-        $ pushEvent("i_greeting_monikaroom")
+        if persistent.current_monikatopic != "i_greeting_monikaroom":
+            $ pushEvent("i_greeting_monikaroom")
     else:
         $pushEvent(renpy.random.choice(greetings_list))
 
