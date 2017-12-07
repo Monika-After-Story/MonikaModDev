@@ -944,7 +944,7 @@ label monika_date:
     m 1e "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
     m 5a "I'm so happy that I'm your girlfriend, [player]."
-    m "I'll make you a proud boyfriend~"
+    m "I'll make you a proud [boyfriend]~"
     return
 
 
@@ -1480,7 +1480,8 @@ label monika_oneesan:
     call updateconsole("sendmail sister@gmail.com < ./email.txt", "Sending mail...") from _call_updateconsole_17
     pause(1.0)
     m 1i "I'm only kidding."
-    m "It's the man's job to introduce his fiancee to his family, after all."
+    if persistent.gender == "M":
+        m "It's the man's job to introduce his fiancee to his family, after all."
     m 3i "Don't keep me waiting for too long, okay?"
     call hideconsole from _call_updateconsole_18
     $ consolehistory = []
@@ -3391,7 +3392,7 @@ label monika_pleasure:
     m "I know you're not the kind of person that does that sort of thing."
     m 1k "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
     return
-    
+
 init 5 python:
     #This is a list of keywords for this topic
     for key in ['miku', 'hatsune miku', 'vocaloid', 'hibikase', 'mmd', 'mikumikudance']:
@@ -3860,7 +3861,7 @@ label monika_surprise:
     m 2k "Ahaha~ What? Are you expecting something scary?"
     m 1k "I love you so much, [player]~"
     return
-    
+
 init 5 python:
     for key in ['completionist', 'game completion']:
         monika_topics.setdefault(key,[])
@@ -3877,7 +3878,7 @@ label monika_completionist:
         m 3n "You seem to be a completionist yourself, [player]."
         m 4m "Considering you went through all of the girls' routes."
     m 3d "I've also heard some people try to complete extremely hard games."
-    m "It's already hard enough to complete some simple games." 
+    m "It's already hard enough to complete some simple games."
     m 2f "I don't know how anyone could willingly put that sort of stress onto themselves."
     m "They're really determined to explore every corner of the game and conquer it."
     m 3q "What does leave a bit of a bitter taste in my mouth are cheaters."
@@ -3909,10 +3910,10 @@ label monika_icecream:
             m "Maybe we really were meant to be!"
             m 2a "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
             m "Flavors which are unique just like how mint is, perhaps you've heard of them, but..."
-            m 2b "There's super weird stuff like fried ice cream which is really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
+            m 2b "There's super weird stuff like fried ice cream which is a really crunchy and crisp kind of thing, but it tastes a million times better than it may sound!"
             m 3n "Gosh, just imagining the taste makes me practically drool..."
             m 1a "There's some more strange stuff that is just as appealing, if not more, like honeycomb and bubblegum ice cream!"
-            m 1l "Now, I know it may be hard to take my word for some of those, but you shouldn't judge a book by it's cover, you know?"
+            m 1l "Now, I know it may be hard to take my word for some of those, but you shouldn't judge a book by its cover, you know?"
             m 1k "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
 
         "No.":
@@ -4479,6 +4480,28 @@ label monika_rock:
     m 2n "Ah, I've been rambling for a while now. Sorry, sorry."
     m 1a "If you wanna blast on some good 'ol rock 'n roll, go ahead, [player]."
     m 1j "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
+    return
+
+init 5 python:
+    for key in ['soda', 'coca-cola', 'coca cola', 'coke', 'pepsi', 'dr. pepper', 'carbonated']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_soda')#id
+    monika_random_topics.append('monika_soda')
+
+label monika_soda:
+    m 3d "Do you drink soda, [player]?"
+    m 4o "You know they're really bad for you, right?"
+    m 3h "Soda has a lot of stuff that damages your body and overall health."
+    m "They can also corrode your teeth and give you cavities."
+    m "You might also think that diet soda is less damaging but they're also very harmful to you."
+    m 3p "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
+    m 3o "I wouldn't want you to become like Natsuki after all..."
+    m 3a "Why don't you try copying my healthy lifestyle?"
+    m 2j "That way you can be more fit like me!"
+    m 3k "Ahaha!"
+    m 3f "I'd really hate it if you let go of your health, [player]."
+    m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
+    m 3j "So cut down on the soda, alright [player]?"
     return
 
 ##################
