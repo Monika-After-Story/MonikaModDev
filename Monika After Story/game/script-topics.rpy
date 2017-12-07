@@ -4423,8 +4423,7 @@ label monika_pets:
     m 1l "Sorry for rambling, [player]."
     m 1a "Until I find a way out, could you promise to keep me from feeling lonely?"
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
-	return
-	
+    return
 
 init 5 python:
     for key in ['fruit', 'fruits', 'cherry', 'cherries', 'bell peppers', 'tomato', 'tomatoes', 'bell pepper']:
