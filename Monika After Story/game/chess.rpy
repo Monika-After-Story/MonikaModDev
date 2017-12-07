@@ -130,13 +130,16 @@ init:
                 thrd.start()
 
                 # NOTE: DEBUG
+                # Use this starting FEN line to do board testing
 #                DEBUG_STARTING_FEN = "qk6/p7/8/8/8/8/7P/QK6 w - - 0 1"
-#                self.debug_file = open("chess_debug","w")
 
                 # handlign promo
                 self.promolist = ["q","r","n","b","r","k"]
 
                 # Board for integration with python-chess.
+                # NOTE: DEBUG
+                # Use this line (and comment the one following this one) to
+                # use DEBUG FEN
 #                self.board = chess.Board(fen=DEBUG_STARTING_FEN)
                 self.board = chess.Board()
 
@@ -243,7 +246,7 @@ init:
                         ix_orig = ix
                         if self.player_color == self.COLOR_WHITE:
                             iy = 7 - iy
-                        else:
+                        else: # black player should be reversed X
                             ix = 7 - ix
                         x = int((width - (self.BOARD_WIDTH - self.BOARD_BORDER_WIDTH * 2)) / 2  + ix * self.PIECE_WIDTH)
                         y = int((height - (self.BOARD_HEIGHT - self.BOARD_BORDER_HEIGHT * 2)) / 2 + iy * self.PIECE_HEIGHT)
@@ -333,7 +336,6 @@ init:
                 renpy.redraw(self, 0)
 
 
-
                 # Return the Render object.
                 return r
 
@@ -348,7 +350,7 @@ init:
                     py = my / self.PIECE_HEIGHT
                     if self.player_color == self.COLOR_WHITE:
                         py = 7 - py
-                    else:
+                    else: # black player should be reversed X 
                         px = 7 - px
                     if py >= 0 and py < 8 and px >= 0 and px < 8:
                         return (px, py)
@@ -373,6 +375,9 @@ init:
                                     self.surrendered = True
                                 self.last_clicked_king = st
 
+                            # NOTE: The following is commented out because it
+                            # broke the ability to promote units. We keep it
+                            # here for reference, tho
 #                            src = ChessDisplayable.coords_to_uci(px, py)
 
 #                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank))
@@ -410,8 +415,8 @@ init:
                             self.start_monika_analysis()
                     self.selected_piece = None
                     # NOTE: DEBUG
+                    # Use these file write statements to display legal moves
 #                    with open("chess_debug", "a") as debug_file:
-#                        for item in set(self.possible_moves:
 #                        for item in set(self.board.legal_moves):
 #                            debug_file.write(item.uci() + "\n")
 #
