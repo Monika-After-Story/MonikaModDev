@@ -4450,6 +4450,37 @@ label monika_fruits:
     m "Just teasing you, [player]~"
     return
 
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['rock music','classic rock','heavy metal']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_rock') # Identifier
+    monika_random_topics.append('monika_rock') # Optional. Remove if you don't want Monika to bring this up at random.
+
+label monika_rock:
+    m 2a "You wanna know a cool form of literature?"
+    m 2k "Rock and roll!"
+    m 2j "That's right. Rock and roll!"
+    m 3o "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
+    m "To tell you the truth, I judged rock too."
+    m 2c "They're no different with poems, actually."
+    m "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
+    m 3d "In fact, it's hard to compose lyrics for just one rock song."
+    m "Writing good lyrics for a rock genre requires a lot of emphasis on the wordplay."
+    m "Plus, you need to have a clear and concise message throughout the whole song."
+    m 2b "Now when you put that together, you have yourself a masterpiece!"
+    m "Like writing a good poem, lyric writing is easier said than done."
+    m 3c "I've been thinking though..."
+    m 3a "I kind of want to try writing a rock song for a change."
+    m 4k "Ahaha! Writing a rock and roll song probably isn't something you'd expect coming from someone like me."
+    m 3a "It's kinda funny how rock and roll started out as a evolution of blues and jazz music."
+    m "Rock suddenly became a prominent genre, and it gave birth to other sub-genres as well."
+    m 2b "Metal, hard rock, classical rock, and more!"
+    m 2n "Ah, I've been rambling for a while now. Sorry, sorry."
+    m 1a "If you wanna blast on some good 'ol rock 'n roll, go ahead, [player]."
+    m 1j "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
