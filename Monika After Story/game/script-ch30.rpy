@@ -236,38 +236,60 @@ init python:
         delta = now - persistent.firstdate
         return delta.days
 
-label spaceroom:
+# IN:
+#   start_bg - the background image we want to start with. Use this for 
+#       special greetings. None uses the default spaceroom images.
+#       NOTE: This is called using renpy.show(), so pass the string name of
+#           the image you want (NOT FILENAME)
+#       NOTE: You're responsible for setting spaceroom back to normal though
+#       (Default: None)
+#   hide_mask - True will hide the mask, false will not
+#       (Default: False)
+#   hide_monika - True will hide monika, false will not
+#       (Default: False)
+label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
     if is_morning():
         if morning_flag != True or scene_change:
             $ morning_flag = True
-            show room_mask3 as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask4 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_day_room
-            show monika 1 at tinstant zorder 2
-            with Dissolve(dissolve_time)
+            if not hide_mask:
+                show room_mask3 as rm:
+                    size (320,180)
+                    pos (30,200)
+                show room_mask4 as rm2:
+                    size (320,180)
+                    pos (935,200)
+            if start_bg:
+                $ renpy.show(start_bg)
+            else:
+                show monika_day_room
+            if not hide_monika:
+                show monika 1 at tinstant zorder 2
+                with Dissolve(dissolve_time)
     elif not is_morning():
         if morning_flag != False or scene_change:
             $ morning_flag = False
             scene black
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_room
-            show monika 1 at tinstant zorder 2
-            with Dissolve(dissolve_time)
-            #show monika_bg_highlight
+            if not hide_mask:
+                show room_mask as rm:
+                    size (320,180)
+                    pos (30,200)
+                show room_mask2 as rm2:
+                    size (320,180)
+                    pos (935,200)
+            if start_bg:
+                $ renpy.show(start_bg)
+            else:
+                show monika_room
+                #show monika_bg_highlight
+            if not hide_monika:
+                show monika 1 at tinstant zorder 2
+                with Dissolve(dissolve_time)
 
     $scene_change = False
 
     return
+
 
 label ch30_main:
     $ m.display_args["callback"] = slow_nodismiss
@@ -393,10 +415,19 @@ label ch30_autoload:
         $ config.allow_skipping = False
     $ quick_menu = True
     python:
-        if persistent.current_track is not None:
-            play_song(persistent.current_track)
-        else:
-            play_song(songs.current_track) # default
+
+        # random chance to do monika in room greeting
+        # we'll say 1 in 20 
+        import random
+        is_monika_in_room = random.randint(1,1) == 1
+
+
+        if not is_monika_in_room:
+            if persistent.current_track is not None:
+                play_song(persistent.current_track)
+            else:
+                play_song(songs.current_track) # default
+
     window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
@@ -450,7 +481,11 @@ label ch30_autoload:
     $persistent.closed_self = False
 
     #pick a random greeting
-    $pushEvent(renpy.random.choice(greetings_list))
+    if is_monika_in_room:
+        if persistent.current_monikatopic != "i_greeting_monikaroom":
+            $ pushEvent("i_greeting_monikaroom")
+    else:
+        $pushEvent(renpy.random.choice(greetings_list))
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -462,7 +497,11 @@ label ch30_autoload:
 
 label ch30_loop:
     $ quick_menu = True
-    call spaceroom from _call_spaceroom_2
+
+    # this event can call spaceroom
+    if not is_monika_in_room:
+        call spaceroom from _call_spaceroom_2
+
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
         $ config.allow_skipping = True
