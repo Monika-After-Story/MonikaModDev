@@ -944,7 +944,7 @@ label monika_date:
     m 1e "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
     m 5a "I'm so happy that I'm your girlfriend, [player]."
-    m "I'll make you a proud [boyfriend]~"
+    m "I'll make you a proud boyfriend~"
     return
 
 
