@@ -4342,12 +4342,14 @@ init 5 python:
 
 label monika_confidence_2:
     m 1g "[player], do you ever feel like you lack the initiative to do something?"
-    m 1f "Sometimes, when I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
+    m 1f "When I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
     m "Almost as if everything around me comes to a standstill."
-    m "It feels like my will to approach a task confidently, like writing and sharing literature with people, just vanishes."
-    m 2a "However, I've been working towards it with due diligence, and I firmly believe being able to take initiative in situations is a very important skill to have."
+    m "It feels like my will to approach a task confidently, like sharing my literature with people, just vanishes."
+    m 2a "However, I've been working towards it with due diligence and have determined something..."
+    m "I firmly believe being able to take initiative in situations is a very important skill to have."
     m "That's something that I, personally, find very comforting."
-    m 2j "I've broken it down into a three-step process that can be applied to anyone! It's still a work-in-progress, so take it with a grain of salt."
+    m 2j "I've broken it down into a three-step process that can be applied to anyone!"
+    m "It's still a work-in-progress, however, so take it with a grain of salt."
     m 2a "Step one!"
     m "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
     m 2b "Step two!"
@@ -4355,13 +4357,15 @@ label monika_confidence_2:
     m "Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
     m 3j "Eventually, these things you once struggled to get done will be completed as if they were acts of valor!"
     m 2a "Step three!"
-    m "Try your best to stay open-minded and willing to learn at all times. Nobody is perfect, and everyone is able to teach each other something."
+    m "Try your best to stay open-minded and willing to learn at all times."
+    m "Nobody is perfect, and everyone is able to teach each other something new."
     m 1b "This can help you learn to understand things from other people's perspectives in situations, and inspire others to do the same."
     m 1d "And that's it, really."
     m 2k "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
     m 1l "Ahaha, I'm only joking about that last part."
-    m 1 "In all seriousness, I'm really glad I have you here, [player]..."
-    m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind of girlfriend would I be if I didn't return the favor~?"
+    m 1a "In all seriousness, I'm really glad I have you here, [player]..."
+    m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
+    m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
 
 ##################
