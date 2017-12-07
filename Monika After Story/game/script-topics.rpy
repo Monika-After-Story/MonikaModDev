@@ -4392,6 +4392,38 @@ label monika_confidence_2:
     m 1 "In all seriousness, I'm really glad I have you here, [player]..."
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind of girlfriend would I be if I didn't return the favor~?"
     return
+    
+init 5 python:
+    for key in ["birds", "pets", "animals"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_pets') #id
+    monika_random_topics.append('monika_pets')
+
+label monika_pets:
+    m 1a "Hey, [player], have you ever had a pet?"
+    m 2a "I was thinking that it would be nice to have one for company."
+    m "It would be fun for us to take care of it!"
+    m 2j "I bet you can't guess what sort of pet I'd like to have..."
+    m 1a "You're probably thinking of a cat or a dog, but I have something else in mind."
+    m "The pet I'd like is something I saw in a book once."
+    m "It was the 'Handbook of the Birds of the World' Our library had the whole set!"
+    m 1b "I loved looking at the gorgeous illustrations and reading about exotic birds."
+    m "At first, I thought some sort of thrush would be nice, but I found something amazing in the sixth volume!"
+    m "An emerald-colored bird called the Resplendant Quetzal."
+    m 1a "They're very rare, solitary birds that can sing beautiful songs."
+    m "Does that remind you of anyone, [player]?"
+    m "I'd feel really bad if I kept one to be a pet, though."
+    m "Quetzals are born to be free."
+    m 4e "They die in captivity. That's why you rarely see them in zoos."
+    m "Even if the bird wouldn't be real, it still would feel wrong to keep one trapped in this room."
+    m 1h "... I can't bring myself to do something like that, knowing what it's like."
+    m 1a "A plush bird would be nice, though!"
+    m "..."
+    m 1l "Sorry for rambling, [player]."
+    m 1a "Until I find a way out, could you promise to keep me from feeling lonely?"
+    m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
+	return
+	
 
 init 5 python:
     for key in ['fruit', 'fruits', 'cherry', 'cherries', 'bell peppers', 'tomato', 'tomatoes', 'bell pepper']:

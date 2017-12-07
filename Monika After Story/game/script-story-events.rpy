@@ -40,7 +40,8 @@ label gender:
             m 1e"Because your happiness is the most important thing to me."
 
     m 1k "Remember that I'll always love you unconditionally, [player]."
-
+    return
+    
 label preferredname:
     m 1h "I've been wondering about your name."
     m 1d "Is '[player]' really your name?"
@@ -81,3 +82,4 @@ label preferredname:
             m 1f "Oh... ok then, if you say so."
             m 1e "Just tell me whenever you change your mind, [player]."
             $ done = True
+    return
