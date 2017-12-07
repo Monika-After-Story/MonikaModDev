@@ -4363,36 +4363,34 @@ label monika_confidence_2:
     return
     
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ["birds" , "pets", "animals"]:
+    for key in ["birds", "pets", "animals"]:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_pets') #id
     monika_random_topics.append('monika_pets')
 
 label monika_pets:
-    m "Hey [player], have you ever had a pet?"
-    m "I was kind of thinking that it would be nice to have a pet for company."
+    m 1a "Hey, [player], have you ever had a pet?"
+    m 2a "I was thinking that it would be nice to have one for company."
     m "It would be fun for us to take care of it!"
-    m "I bet you can't guess what sort of pet I'd like..."
-    m "You're probably thinking of a cat or a dog, but that's just too boring."
-    m "The pet I'd like is something I saw in a book."
-    m "It was the 'Handbook of the Birds of the World.' Our library had the whole set!"
-    m "I loved looking at the gorgeous illustrations and reading about exotic birds."
-    m "At first, I thought some sort of thrush would make a nice pet, but I found something amazing in the sixth volume!"
-    m "An emerald bird called the Resplendant Quetzal."
-    m "They're very rare, solitary birds that sing beautiful songs."
-    m "Does that remind you of anyone?"
-    m "I'd feel really bad if I programmed one to be a pet, though."
+    m 2j "I bet you can't guess what sort of pet I'd like to have..."
+    m 1a "You're probably thinking of a cat or a dog, but I have something else in mind."
+    m "The pet I'd like is something I saw in a book once."
+    m "It was the 'Handbook of the Birds of the World' Our library had the whole set!"
+    m 1b "I loved looking at the gorgeous illustrations and reading about exotic birds."
+    m "At first, I thought some sort of thrush would be nice, but I found something amazing in the sixth volume!"
+    m "An emerald-colored bird called the Resplendant Quetzal."
+    m 1a "They're very rare, solitary birds that can sing beautiful songs."
+    m "Does that remind you of anyone, [player]?"
+    m "I'd feel really bad if I kept one to be a pet, though."
     m "Quetzals are born to be free."
-	m "They die in captivity. That's why you rarely seem them in zoos."
-    m "Even if it isn't real, it feels wrong to keep one trapped in this room."
-    m "... I can't bring myself to do something like that, after experiencing it for myself."
-    m "And if I made it less real then what's the point?"
-	m "A plush bird would be nice, though!"
+    m 4e "They die in captivity. That's why you rarely see them in zoos."
+    m "Even if the bird wouldn't be real, it still would feel wrong to keep one trapped in this room."
+    m 1h "... I can't bring myself to do something like that, knowing what it's like."
+    m 1a "A plush bird would be nice, though!"
     m "..."
-    m "Sorry, I rambled a bit, [player]."
-    m "Until I find a way out, could you promise to keep me from feeling too lonely?"
-    m "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite"
+    m 1l "Sorry for rambling, [player]."
+    m 1a "Until I find a way out, could you promise to keep me from feeling lonely?"
+    m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
 	return
 	
 
