@@ -3698,7 +3698,7 @@ label monika_changename:
                     $ done = True
         "No":
             m 1f "Oh, I see..."
-            m 1g "You don't have to be embarassed, [player]."
+            m 1g "You don't have to be embarrassed, [player]."
             m 1e "Just let me know if you had a change of heart, ok?"
     return
 
@@ -4190,7 +4190,7 @@ label monika_panties:
     m "Don't laugh when I ask this, ok?"
     m 3p "But..."
     m 4g "Why are some guys obsessed with panties?"
-    m "Seriously, whats the big deal about a piece of cloth?"
+    m "Seriously, what's the big deal about a piece of cloth?"
     m "Most girls wear them, don't they?"
     m 3o "Actually, now that I think about it..."
     m "I think there was a term for this kind of thing..."
@@ -4274,7 +4274,7 @@ label monika_music2:
     if songs.getVolume("music") == 0.0:
         m 1a "..."
         m 1a "...This silence..."
-        m "...Just the two of us, staring into each others eyes..."
+        m "...Just the two of us, staring into each other's eyes..."
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
@@ -4351,7 +4351,8 @@ label monika_confidence_2:
     m 2a "Step one!"
     m "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
     m 2b "Step two!"
-    m "Building up and fortifying your confidence is really important. Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
+    m "Building up and fortifying your confidence is really important."
+    m "Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
     m 3j "Eventually, these things you once struggled to get done will be completed as if they were acts of valor!"
     m 2a "Step three!"
     m "Try your best to stay open-minded and willing to learn at all times. Nobody is perfect, and everyone is able to teach each other something."
