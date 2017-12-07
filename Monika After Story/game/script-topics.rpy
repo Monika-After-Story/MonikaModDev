@@ -4370,14 +4370,19 @@ init 5 python:
     monika_random_topics.append('monika_soda')
 
 label monika_soda:
-    m 1d "Hey [player], did you know that drinking soda can cause a lot of health problems?"
-    m "Due to its high sugar content, soda eats away at your enamel, giving you cavities and other teeth related conditions."
-    m 1f "That same sugar content increases your risk of getting diabetes and heart disease later in life."
-    m "You may think that diet soda is healthier, but the artificial sweeteners they put in it actually make it worse than regular soda!"
-    m "Some evidence suggests that the consumption of these sweeteners can damage important blood vessels and cause strokes."  
-    m "The occasional soda is alright, but I would advise against drinking soda regularly."
-    m 1e "I would hate to see you damage your body, [player]. I want to make sure that you are as healthy as you can be."
-    m 1b "So cut down on the soda, alright [player]?"
+    m 3d "Do you drink soda, [player]?"
+    m 4o "You know they're really bad for you, right?"
+    m 3h "Soda has a lot of stuff that damages your body and overall health."
+    m "They can also corrode your teeth and give you cavities."
+    m "You might also think that diet soda is less damaging but they're also very harmful to you."
+    m 3p "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
+    m 3o "I wouldn't want you to become like Natsuki after all..."
+    m 3a "Why don't you try copying my healthy lifestyle?"
+    m 2j "That way you can be more fit like me!"
+    m 3k "Ahaha!"
+    m 3f "I'd really hate it if you let go of your health, [player]."
+    m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
+    m 3j "So cut down on the soda, alright [player]?"
     return
 
 ##################
