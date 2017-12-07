@@ -130,15 +130,15 @@ init:
                 thrd.start()
 
                 # NOTE: DEBUG
-                DEBUG_STARTING_FEN = "k7/p7/8/8/8/8/7P/7K w - - 0 1"
+#                DEBUG_STARTING_FEN = "qk6/p7/8/8/8/8/7P/QK6 w - - 0 1"
 #                self.debug_file = open("chess_debug","w")
 
                 # handlign promo
                 self.promolist = ["q","r","n","b","r","k"]
 
                 # Board for integration with python-chess.
-                self.board = chess.Board(fen=DEBUG_STARTING_FEN)
-#                self.board = chess.Board()
+#                self.board = chess.Board(fen=DEBUG_STARTING_FEN)
+                self.board = chess.Board()
 
                 self.player_color = player_color
                 self.selected_piece = None
@@ -240,14 +240,16 @@ init:
                 for ix in range(8):
                     for iy in range(8):
                         iy_orig = iy
+                        ix_orig = ix
                         if self.player_color == self.COLOR_WHITE:
                             iy = 7 - iy
-#                            ix = 7 - ix
+                        else:
+                            ix = 7 - ix
                         x = int((width - (self.BOARD_WIDTH - self.BOARD_BORDER_WIDTH * 2)) / 2  + ix * self.PIECE_WIDTH)
                         y = int((height - (self.BOARD_HEIGHT - self.BOARD_BORDER_HEIGHT * 2)) / 2 + iy * self.PIECE_HEIGHT)
 
                         def render_move(move):
-                            if move is not None and ix == move[0] and iy_orig == move[1]:
+                            if move is not None and ix_orig == move[0] and iy_orig == move[1]:
                                 if self.player_color == self.current_turn:
                                     r.blit(highlight_magenta, (x, y))
                                 else:
@@ -258,18 +260,18 @@ init:
 
                         # Take care not to render the selected piece twice.
                         if (self.selected_piece is not None and
-                            ix == self.selected_piece[0] and
+                            ix_orig == self.selected_piece[0] and
                             iy_orig == self.selected_piece[1]):
                             r.blit(highlight_green, (x, y))
                             continue
 
-                        piece = self.board.piece_at(iy_orig * 8 + ix)
+                        piece = self.board.piece_at(iy_orig * 8 + ix_orig)
 
                         possible_move_str = None
                         blit_rendered = False
                         if self.possible_moves:
                             possible_move_str = (ChessDisplayable.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) +
-                                                 ChessDisplayable.coords_to_uci(ix, iy_orig))
+                                                 ChessDisplayable.coords_to_uci(ix_orig, iy_orig))
                             if chess.Move.from_uci(possible_move_str) in self.possible_moves:
                                 r.blit(highlight_yellow, (x, y))
                                 blit_rendered = True
@@ -346,6 +348,8 @@ init:
                     py = my / self.PIECE_HEIGHT
                     if self.player_color == self.COLOR_WHITE:
                         py = 7 - py
+                    else:
+                        px = 7 - px
                     if py >= 0 and py < 8 and px >= 0 and px < 8:
                         return (px, py)
                     return (None, None)
@@ -369,11 +373,11 @@ init:
                                     self.surrendered = True
                                 self.last_clicked_king = st
 
-                            src = ChessDisplayable.coords_to_uci(px, py)
+#                            src = ChessDisplayable.coords_to_uci(px, py)
 
-                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank))
-                                                                for file in range(8)
-                                                                for rank in range(8)]
+#                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank))
+#                                                                for file in range(8)
+#                                                                for rank in range(8)]
 #                            legal_moves = set(self.board.legal_moves).intersection(all_moves)
 #                            p_legal_moves = set(self.board.pseudo_legal_moves).intersection(all_moves)
 #                            self.possible_moves = legal_moves.union(p_legal_moves)
