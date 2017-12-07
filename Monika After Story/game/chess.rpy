@@ -242,7 +242,7 @@ init:
                         iy_orig = iy
                         if self.player_color == self.COLOR_WHITE:
                             iy = 7 - iy
-                            ix = 7 - ix
+#                            ix = 7 - ix
                         x = int((width - (self.BOARD_WIDTH - self.BOARD_BORDER_WIDTH * 2)) / 2  + ix * self.PIECE_WIDTH)
                         y = int((height - (self.BOARD_HEIGHT - self.BOARD_BORDER_HEIGHT * 2)) / 2 + iy * self.PIECE_HEIGHT)
 
