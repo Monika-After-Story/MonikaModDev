@@ -324,6 +324,12 @@ init:
 
                 # Mousebutton down == possibly select the piece to move
                 if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+
+                    # NOTE: DEBUG
+                    mxx, myy = get_mouse_pos()
+                    with open("chess_debug", "a") as debug_file:
+                        debug_file.write("["+str(mxx)+","+str(myy)+"] \n")
+
                     if self.winner and not self.winner_confirmed:
                         self.winner_confirmed = True
                     else:
