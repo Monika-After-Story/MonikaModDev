@@ -315,13 +315,13 @@ label monikaroom_greeting_opendoor:
     call spaceroom(start_bg="bedroom",hide_monika=True)
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32
-    m 1g "[player]!"
-    m 3g "Don't just barge into my room like that!"
+    m 1d "E-Eh?! [player]!"
+    m 3g "You surprised me, suddenly showing up like that!"
     show monika 1 at hf32
-    m 5b "A girl's room is very important to her.."
-    m 5a "But I'm glad to see you again."
+    m 5b "I didn't have enough time to get ready!"
+    m 5a "But thank you for coming back, [player]."
     show monika 1 at t32
-    m 3a "Just give me a few seconds to setup, okay?"
+    m 3a "Just give me a few seconds to set everything up, okay?"
     show monika 1 at t31
     m 2d "..."
     show monika 1 at t33 zorder 3
@@ -331,15 +331,15 @@ label monikaroom_greeting_opendoor:
     else:
         show monika_room with wipeleft
     show monika 1 at t32
-    m 3a "There we go."
+    m 3a "There we go!"
     menu:
-        "...the window..":
+        "...the window...":
             show monika 1 at h32
-            m 1l "Oops! Forgot about that."
+            m 1l "Oops! I forgot about that~"
             show monika 1 at t21
             m "Hold on..."
             hide bedroom
-            m 2j "All fixed!"
+            m 2j "And... all fixed!"
             show monika 1 at lhide
             hide monika
     $ persistent.seen_monika_in_room = True
@@ -347,20 +347,20 @@ label monikaroom_greeting_opendoor:
     # NOTE: return is expected in monikaroom_greeting_post
 
 label monikaroom_greeting_knock:
-    m "Who is it?"
+    m "Who is it~?"
     menu:
-        "It's me":
-            m "[player]!"
-            m "Hold on, let me get ready..."
+        "It's me.":
+            m 1b "[player]! I'm so happy that you're back!"
+            m 1j "Hold on, let me tidy up..."
             call spaceroom(hide_monika=True)
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 
 label monikaroom_greeting_post:
-    m 2a "Now I'll just grab a table and a chair..."
+    m 2a "Now, just let me grab a table and a chair..."
     $ is_sitting = True
     show monika 1 at ls32
-    m 1a "What shall we do today?"
+    m 1a "What shall we do today, [player]?"
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
@@ -368,6 +368,6 @@ label monikaroom_greeting_post:
             play_song(songs.current_track) # default
         HKBShowButtons()
         set_keymaps()
-    return    
+    return
 
 
