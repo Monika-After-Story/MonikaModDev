@@ -4363,6 +4363,23 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind of girlfriend would I be if I didn't return the favor~?"
     return
 
+init 5 python:
+    for key in ['soda', 'coca-cola', 'coca cola', 'coke', 'pepsi', 'dr. pepper', 'carbonated']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_soda')#id
+    monika_random_topics.append('monika_soda')
+
+label monika_soda:
+    m 1d "Hey [player], did you know that drinking soda can cause a lot of health problems?"
+    m "Due to its high sugar content, soda eats away at your enamel, giving you cavities and other teeth related conditions."
+    m 1f "That same sugar content increases your risk of getting diabetes and heart disease later in life."
+    m "You may think that diet soda is healthier, but the artificial sweeteners they put in it actually make it worse than regular soda!"
+    m "Some evidence suggests that the consumption of these sweeteners can damage important blood vessels and cause strokes."  
+    m "The occasional soda is alright, but I would advise against drinking soda regularly."
+    m 1e "I would hate to see you damage your body, [player]. I want to make sure that you are as healthy as you can be."
+    m 1b "So cut down on the soda, alright [player]?"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
