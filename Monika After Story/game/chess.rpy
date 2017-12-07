@@ -138,6 +138,7 @@ init:
 
                 # Board for integration with python-chess.
                 self.board = chess.Board(fen=DEBUG_STARTING_FEN)
+#                self.board = chess.Board()
 
                 self.player_color = player_color
                 self.selected_piece = None
@@ -241,6 +242,7 @@ init:
                         iy_orig = iy
                         if self.player_color == self.COLOR_WHITE:
                             iy = 7 - iy
+                            ix = 7 - ix
                         x = int((width - (self.BOARD_WIDTH - self.BOARD_BORDER_WIDTH * 2)) / 2  + ix * self.PIECE_WIDTH)
                         y = int((height - (self.BOARD_HEIGHT - self.BOARD_BORDER_HEIGHT * 2)) / 2 + iy * self.PIECE_HEIGHT)
 
@@ -412,7 +414,7 @@ init:
 #                    with open("chess_debug_2", "a") as debug_file:
 #                        for item in set(self.board.pseudo_legal_moves):
 #                            debug_file.write(item.uci() + "\n")
-#                    self.possible_moves = set([])
+                    self.possible_moves = set([])
 
                 # If we have a winner, return him or her. Otherwise, ignore the current event.
                 if self.winner and self.winner_confirmed:
