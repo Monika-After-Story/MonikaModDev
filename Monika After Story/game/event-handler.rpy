@@ -80,7 +80,8 @@ init python:
         #
         if persistent.current_monikatopic:
             #don't push greetings back on the stack
-            if not persistent.current_monikatopic.startswith('greeting_'):
+            if (not persistent.current_monikatopic.startswith('greeting_')
+                and not persistent.current_monikatopic.startswith('i_greeting')):
                 pushEvent(persistent.current_monikatopic)
                 pushEvent('continue_event')
             persistent.current_monikatopic = 0
