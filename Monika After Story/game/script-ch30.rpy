@@ -392,6 +392,7 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
+    call set_gender
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
