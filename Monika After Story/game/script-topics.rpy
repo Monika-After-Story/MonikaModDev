@@ -4497,7 +4497,7 @@ label monika_otaku:
             
         "No.":
             m "Really?"
-	     m "I find that hard to beleive."
+	     m "I find that hard to believe."
 	     m "This isn't exactly a game that your average person picks up and plays."
     m "I only assumed because you're playing a game like this, after all."
     m "Don't worry, I'm not one to judge, ahaha."
