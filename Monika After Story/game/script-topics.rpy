@@ -4308,6 +4308,7 @@ label monika_music2:
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
         m 5a "Maybe one day, we can make that dream come true~"
+    return
 
 init 5 python:
     for key in ["confidence", "initiative", "success", "vulnerability"]:
