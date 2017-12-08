@@ -182,7 +182,7 @@ init python:
 
     def pick_game():
         if allow_dialogue:
-            renpy.call_in_new_context('pick_a_game')
+            renpy.call('pick_a_game')
 
     def select_music():
         # check for open menu
@@ -291,8 +291,6 @@ label continue_event:
 
 label pick_a_game:
     if allow_dialogue and not songs.menu_open:
-        $ songs.enabled = False
-        $ hkb_button.enabled = False
         $previous_dialogue = allow_dialogue
         $allow_dialogue = False
         menu:

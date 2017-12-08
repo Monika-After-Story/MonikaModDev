@@ -144,6 +144,10 @@ init:
                 # handlign promo
                 self.promolist = ["q","r","n","b","r","k"]
 
+                # separate handling of music menu open because the songs store
+                # is for main renpy interaction
+                self.music_menu_open = False
+
                 # Board for integration with python-chess.
                 # NOTE: DEBUG
                 # Use this line (and comment the one following this one) to
@@ -441,6 +445,33 @@ init:
 #                            debug_file.write(item.uci() + "\n")
                     self.possible_moves = set([])
 
+                # KEYMAP workarounds:
+                if ev.type == pygame.KEYUP:
+
+                    # music menu // muting
+                    if ev.key == pygame.K_m:
+
+                        # muting
+                        if ev.mod & pygame.KMOD_SHIFT:
+                            mute_music()
+                        elif not self.music_menu_open:
+                            self.music_menu_open = True
+                            select_music()
+                        else: # the menu is already open
+                            self.music_menu_open = False
+
+                    # volume increase
+                    if (ev.key == pygame.K_PLUS 
+                            or ev.key == pygame.K_EQUALS 
+                            or ev.key == pygame.K_KP_PLUS):
+                        inc_musicvol()
+
+                    # volume decrease
+                    if (ev.key == pygame.K_MINUS
+                            or ev.key == pygame.K_UNDERSCORE
+                            or ev.key == pygame.K_KP_MINUS):
+                        dec_musicvol()
+
                 # If we have a winner, return him or her. Otherwise, ignore the current event.
                 if self.winner and self.winner_confirmed:
                     return (self.winner, self.surrendered, self.num_turns)
@@ -477,7 +508,7 @@ label demo_minigame_chess:
 
     python:
         ui.add(ChessDisplayable(player_color))
-        winner, surrendered, num_turns = ui.interact(suppress_overlay=True, suppress_underlay=True)
+        winner, surrendered, num_turns = ui.interact(suppress_underlay=True)
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
