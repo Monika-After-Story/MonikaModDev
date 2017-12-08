@@ -477,7 +477,7 @@ label demo_minigame_chess:
 
     python:
         ui.add(ChessDisplayable(player_color))
-        winner, surrendered, num_turns = ui.interact(suppress_overlay=True, suppress_underlay=True)
+        winner, surrendered, num_turns = ui.interact(suppress_underlay=True)
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
