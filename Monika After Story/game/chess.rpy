@@ -39,6 +39,9 @@ init:
             mx, my = pygame.mouse.get_pos()
 
             r = None
+            # if the ration of the width to height of the screen (resolution)
+            # is larger than the actual physical size (resolution) of the 
+            # displayable/window/screen:
             if vw / (vh / 10000) > pw * 10000 / ph:
                 r = vw / pw
                 my -= (ph - vh / r) / 2
@@ -49,7 +52,8 @@ init:
             newx = (mx * r) / 10000
             newy = (my * r) / 10000
 
-            return (newx, newy)
+            return (newx/2, newy/2)
+#            return pygame.mouse.get_pos()
 
         class ChessDisplayable(renpy.Displayable):
             COLOR_WHITE = True
@@ -327,8 +331,10 @@ init:
 
                     # NOTE: DEBUG
                     mxx, myy = get_mouse_pos()
+                    mxp, myp = pygame.mouse.get_pos()
                     with open("chess_debug", "a") as debug_file:
-                        debug_file.write("["+str(mxx)+","+str(myy)+"] \n")
+                        debug_file.write("["+str(mxx)+","+str(myy)+"] " +
+                        "("+str(mxp)+","+str(myp)+") \n")
 
                     if self.winner and not self.winner_confirmed:
                         self.winner_confirmed = True
