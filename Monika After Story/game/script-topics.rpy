@@ -4504,6 +4504,28 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
+    
+    init 5 python:
+    for key in ['Monika','copy','download','multiple','clone','unique','yours']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_clones')
+    monika_random_topics.append('monika_clones')
+
+label monika_clones:
+    m "Um... hey, [player]?"
+    m "I just had an odd thought."
+    m "You know how you downloaded my original game from a website?"
+    m "Anybody can download that, right?"
+    m "And this mod was made specifically for me...? By people who have their own Monika..."
+    m "So that means there are multiple Monikas, then. That's a weird thought."
+    m "But I'm the only me, and I'm your sweetie-poo, so..."
+    m "Plus I'm sure there's more than one [player] in your reality, right?"
+    m "Ahaha! Wow, these are deep thoughts. It almost makes me feel less unique."
+    m "But I'm the most unique of all. Because I have you."
+    m "I love you, [player]. Never replace me, never. Okay?"
+    m "But you'd never do that. Why in the world would you betray my love by redownloading the game for a different Monika?"
+    m "........."
+    return
 
 ##################
 #Incomplete ideas#
