@@ -182,7 +182,7 @@ init python:
 
     def pick_game():
         if allow_dialogue:
-            renpy.call_in_new_context('pick_a_game')
+            renpy.call('pick_a_game')
 
     def select_music():
         # check for open menu
