@@ -288,23 +288,25 @@ label monika_nihilism:
     m 1k "Ahaha!"
     return
 
-
-init 5 python:
+# Since Your Reality is playable via music menu, this topic is outof date.
+# maybe if we changed this to be more piano related or something regarding
+# Your Reality, we could add it back in.
+#init 5 python:
     #This is a list of keywords for this topic
-    for key in ['piano']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_piano') #id
-    monika_random_topics.append('monika_piano')
-
-label monika_piano:
-    m 3c "Man, I wish there was a piano in here..."
-    m "I never got to finish that song I was working on."
-    m 3f "And after I worked so hard on it..."
-    m "I never even got a chance to play it for you."
-    m 3r "Well...it is what it is, right?"
-    m "No sense having any regrets."
-    m 3b "I already get to be here with you forever."
-    return
+#    for key in ['piano']:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append('monika_piano') #id
+#    monika_random_topics.append('monika_piano')
+#
+#label monika_piano:
+#    m 3c "Man, I wish there was a piano in here..."
+#    m "I never got to finish that song I was working on."
+#    m 3f "And after I worked so hard on it..."
+#    m "I never even got a chance to play it for you."
+#    m 3r "Well...it is what it is, right?"
+#    m "No sense having any regrets."
+#    m 3b "I already get to be here with you forever."
+#    return
 
 init 5 python:
     #This is a list of keywords for this topic
