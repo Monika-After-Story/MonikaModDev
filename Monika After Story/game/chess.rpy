@@ -36,9 +36,17 @@ init:
             vw = config.screen_width * 10000
             vh = config.screen_height * 10000
             pw, ph = renpy.get_physical_size()
+            dw, dh = pygame.display.get_surface().get_size()
             mx, my = pygame.mouse.get_pos()
 
+            # converts the mouse coordinates from pygame to physical size
+            # NEEDED FOR UI SCALING OTHER THAN 100%
+            mx = (mx * pw) / dw
+            my = (my * ph) / dh
+
             r = None
+            # this part calculates the "true" position 
+            # it can handle weirdly sized screens
             if vw / (vh / 10000) > pw * 10000 / ph:
                 r = vw / pw
                 my -= (ph - vh / r) / 2
@@ -358,6 +366,14 @@ init:
 
                 # Mousebutton down == possibly select the piece to move
                 if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+
+                    # NOTE: DEBUG
+#                    mxx, myy = get_mouse_pos()
+#                    mxp, myp = pygame.mouse.get_pos()
+#                    with open("chess_debug", "a") as debug_file:
+#                        debug_file.write("["+str(mxx)+","+str(myy)+"] " +
+#                        "("+str(mxp)+","+str(myp)+") \n")
+
                     if self.winner and not self.winner_confirmed:
                         self.winner_confirmed = True
                     else:
