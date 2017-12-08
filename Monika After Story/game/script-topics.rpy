@@ -2010,7 +2010,7 @@ label monika_justification:
 
 
 init 5 python:
-        for key in ['free will', 'predestination', 'determinism', 'will', 'strong determinism', 'weak determinism', 'laplace', "laplaces demon"]:
+        for key in ['free will', 'determinism', 'laplace', "laplaces demon"]:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_freewill')
         monika_random_topics.append('monika_freewill')
@@ -2028,7 +2028,7 @@ label monika_freewill:
     return
 
 init 5 python:
-        for key in ['free will', 'predestination', 'determinism', 'functionalism']:
+        for key in ['predestination', 'functionalism']:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_functionalism')
         monika_random_topics.append('monika_functionalism')
@@ -3766,31 +3766,6 @@ label monika_nuclear_war:
     m "Planning for a tomorrow that may never come."
     m "Our only comfort is that the people with the power to start such a war probably won't."
     m 1q "Probably..."
-    return
-
-init 5 python:
-    for key in ['aliens', 'other planets','space','alien','extraterrestrial']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_space_robots')#id
-    monika_random_topics.append('monika_space_robots')
-
-label monika_space_robots:
-    m "Do you think there's intelligent life in outer space?"
-    m "I don't really think there is."
-    m 2a "I do think there's intelligence out there, though..."
-    m "But I think it's probably AI."
-    m 2c "Life is fragile, and needs a lot or work to maintain."
-    m "It's really not made to survive in space for the years it would take to get somewhere."
-    m "So it's hard to imagine anything alive ever getting far from its home planet."
-    m 4a "But a robot can be designed with space travel in mind."
-    m "Humans have already sent probes outside our solar system, thousand of times further than any person has gone."
-    m "Not to mention that the 'habitable zone' for artificial life has to be much bigger."
-    m 2l "Then again, maybe I'm just making the same mistake humans do."
-    m 3a "You imagine something like you living among the stars, and I imagine something like me."
-    m "I guess it's just natural to be self-centered with this sort of thinking..."
-    m "Imagining ourselves out there exploring the galaxy."
-    m 1e "But even if I could leave, I never would."
-    m 1j "I have everything I want right here with you."
     return
 
 init 5 python:
