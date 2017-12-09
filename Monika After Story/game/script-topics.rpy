@@ -4531,7 +4531,7 @@ label monika_clones:
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
     
-    init 5 python:
+init 5 python:
     for key in ['age','18','game','info']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_ageinf')
