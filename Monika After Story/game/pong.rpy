@@ -217,8 +217,7 @@ label demo_minigame_pong:
     scene bg pong field
 
     # natsuki scare setup if appropriate  
-    $ tempname = persistent.playername.lower()
-    if tempname == "natsuki":
+    if persistent.playername.lower() == "natsuki":
         $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
 
         # we'll take advantage of Okay everyone's sync with natsuki's version
@@ -234,10 +233,8 @@ label demo_minigame_pong:
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
     # natsuki scare if appropriate
-    $ tempname = persistent.playername.lower()
-    if tempname == "natsuki":
+    if persistent.playername.lower() == "natsuki":
         call natsuki_name_scare(playing_okayev=playing_okayev)
-    $ tempname = None
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation

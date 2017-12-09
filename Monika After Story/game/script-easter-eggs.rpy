@@ -1,5 +1,15 @@
 # script stuff that is actually easter eggs
 
+# sayori music chnage/scare
+label sayori_name_scare:
+    python:
+        store.songs.initMusicChoices(sayori=True)
+        play_song(songs.sayori_track)
+        persistent.current_track = songs.sayori_track
+        store.songs.selected_track = songs.sayori_track
+        store.songs.current_track = songs.sayori_track
+    return
+
 # yuri scare
 label yuri_name_scare:
 #    show yuri 3s zorder 2 at t11

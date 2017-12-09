@@ -71,10 +71,19 @@ label preferredname:
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
                 else:
-                    $ persistent.mcname = player
-                    $ mcname = player
-                    $ persistent.playername = tempname
-                    $ player = tempname
+                    # sayori name check
+                    if tempname.lower() == "sayori":
+                        call sayori_name_scare
+                    elif persistent.playername.lower() == "sayori":
+                        $ songs.initMusicChoices()
+
+                    python:
+                        
+                        persistent.mcname = player
+                        mcname = player
+                        persistent.playername = tempname
+                        player = tempname
+
                     m 1b "'[player]', huh?"
                     m 2k "I'll be calling you {i}'[player]'{/i} from now on, ehehe~"
                     $ done = True
