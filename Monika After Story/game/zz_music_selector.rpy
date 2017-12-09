@@ -59,28 +59,44 @@ init -1 python in songs:
                     return name
         return None
 
+    def initMusicChoices(sayori=False):
+        #
+        # Sets up the music choices list
+        #
+        # IN:
+        #   sayori - True if the player name is sayori, which means only
+        #       allow Surprise in the player
+
+        global music_choices
+        music_choices = list()
+        # SONGS:
+        # if you want to add a song, add it to this list as a tuple, where:
+        # [0] -> Title of song
+        # [1] -> Path to song
+        if not sayori:
+            music_choices.append(("Just Monika","bgm/m1.ogg"))
+            music_choices.append(("Your Reality","bgm/credits.ogg"))
+            music_choices.append(("I Still Love You","bgm/monika-end.ogg"))
+            music_choices.append(("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg"))
+
+        # sayori only allows this
+        music_choices.append(("Surprise!",sayori_track))
+
+        if not sayori:
+            # leave this one last, so we can stopplaying stuff
+            music_choices.append(("None", None))
+
 
     # defaults
     current_track = "bgm/m1.ogg"
     selected_track = current_track
+    sayori_track = "<loop 36.782>bgm/d.ogg"
     menu_open = False
     enabled = True
     vol_bump = 0.1 # how much to increase volume by
 
-    # SONGS:
-    # if you want to add a song, add it to this list as a tuple, where:
-    # [0] -> Title of song
-    # [1] -> Path to song
+    # contains the song list
     music_choices = list()
-    music_choices.append(("Just Monika","bgm/m1.ogg"))
-    music_choices.append(("Your Reality","bgm/credits.ogg"))
-    music_choices.append(("I Still Love You","bgm/monika-end.ogg"))
-    music_choices.append(("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg"))
-    music_choices.append(("Surprise!","<loop 36.782>bgm/d.ogg"))
-
-    # leave this one last, so we can stopplaying stuff
-    music_choices.append(("None", None))
-
 
 # some post screen init is setting volume to current settings
 init 10 python in songs:
@@ -92,8 +108,17 @@ init 10 python in songs:
 init 10 python:
 
     # ensure proper current track is set
-    store.songs.current_track = persistent.current_track
-    store.songs.selected_track = store.songs.current_track
+    if persistent.playername.lower() == "sayori":
+        store.songs.current_track = store.songs.sayori_track
+        store.songs.selected_track = store.songs.sayori_track
+    else:
+        store.songs.current_track = persistent.current_track
+        store.songs.selected_track = store.songs.current_track
+
+    # song choice generation
+    store.songs.initMusicChoices(
+        sayori=persistent.playername.lower() == "sayori"
+    )
 
 # MUSIC MENU ##################################################################
 # This is the music selection menu

@@ -128,8 +128,11 @@ init python:
         #
         # ASSUMES:
         #   songs.music_volume
+        #   persistent.playername
+
         curr_volume = songs.getVolume("music")
-        if curr_volume > 0.0:
+        # sayori cannot mute
+        if curr_volume > 0.0 and persistent.playername.lower() != "sayori":
             songs.music_volume = curr_volume
             renpy.music.set_volume(0.0, channel="music")
         else:
@@ -147,7 +150,12 @@ init python:
         # decreases the volume of the music channel by the value defined in
         # songs.vol_bump
         #
-        songs.adjustVolume(up=False)
+        # ASSUMES:
+        #   persistent.playername
+
+        # sayori cannot make the volume quieter
+        if persistent.playername.lower() != "sayori":
+            songs.adjustVolume(up=False)
 
     def set_keymaps():
         #
