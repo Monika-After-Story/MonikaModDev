@@ -111,6 +111,25 @@ init python:
         pass
 
     #Define new functions
+
+    def enable_esc():
+        #
+        # Enables the escape key so you can go to the game menu
+        # 
+        # ASSUMES:
+        #   config.keymap
+        if "K_ESCAPE" not in config.keymap["game_menu"]:
+            config.keymap["game_menu"].append("K_ESCAPE")
+
+    def disable_esc():
+        #
+        # disables the escape key so you cant go to game menu
+        #
+        # ASSUMES:
+        #   config.keymap
+        if "K_ESCAPE" in config.keymap["game_menu"]: 
+           config.keymap["game_menu"].remove("K_ESCAPE")
+
     def play_song(song):
         #
         # literally just plays a song onto the music channel
@@ -128,8 +147,11 @@ init python:
         #
         # ASSUMES:
         #   songs.music_volume
+        #   persistent.playername
+
         curr_volume = songs.getVolume("music")
-        if curr_volume > 0.0:
+        # sayori cannot mute
+        if curr_volume > 0.0 and persistent.playername.lower() != "sayori":
             songs.music_volume = curr_volume
             renpy.music.set_volume(0.0, channel="music")
         else:
@@ -147,7 +169,12 @@ init python:
         # decreases the volume of the music channel by the value defined in
         # songs.vol_bump
         #
-        songs.adjustVolume(up=False)
+        # ASSUMES:
+        #   persistent.playername
+
+        # sayori cannot make the volume quieter
+        if persistent.playername.lower() != "sayori":
+            songs.adjustVolume(up=False)
 
     def set_keymaps():
         #
@@ -414,19 +441,28 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
-    python:
 
-        # random chance to do monika in room greeting
-        # we'll say 1 in 20 
-        import random
-        is_monika_in_room = random.randint(1,20) == 1
+    $ tempname = persistent.playername.lower()
 
+    # yuri scare incoming. No monikaroom when yuri is the name
+    if tempname == "yuri":
+        call yuri_name_scare
+        $ is_monika_in_room = False
+    else:
+        python:
+            # random chance to do monika in room greeting
+            # we'll say 1 in 20 
+            import random
+            is_monika_in_room = random.randint(1,20) == 1   
 
-        if not is_monika_in_room:
-            if persistent.current_track is not None:
-                play_song(persistent.current_track)
-            else:
-                play_song(songs.current_track) # default
+    # reset tempname
+    $ tempname = None
+
+    if not is_monika_in_room:
+        if persistent.current_track:
+            $ play_song(persistent.current_track)
+        else:
+            $ play_song(songs.current_track) # default
 
     window auto
     #If you were interrupted, push that event back on the stack

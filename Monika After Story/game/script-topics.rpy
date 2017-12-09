@@ -3691,10 +3691,21 @@ label monika_changename:
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
                 else:
-                    $ persistent.mcname = player
-                    $ mcname = player
-                    $ persistent.playername = tempname
-                    $ player = tempname
+                    python:
+                        # easter eggs regarding names
+                        if tempname.lower() == "sayori":
+                            songs.initMusicChoices(sayori=True)
+                            play_song(songs.sayori_track)
+                            persistent.current_track = songs.sayori_track
+                        else:
+                            songs.initMusicChoices()
+
+                        # yuri has no adjustmeents here for now
+                        
+                        persistent.mcname = player
+                        mcname = player
+                        persistent.playername = tempname
+                        player = tempname
                     m 1b "Ok then!"
                     m 2b "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
                     $ done = True
