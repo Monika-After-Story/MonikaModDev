@@ -4542,7 +4542,7 @@ label monika_clones:
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
     
-    init 5 python:
+init 5 python:
     for key in ['challenge','disgusting','hot dog','gross','steak']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_hotsteak')
@@ -4560,8 +4560,8 @@ label monika_hotsteak:
     m 2e "And your health means the world to me."
     m 3f "I'm not saying you should become vegetarian like I am."
     m "But I wouldn't oppose if you did."
-        menu:
-        m "Or are you already?"
+    m "Or are you already?"
+    menu:
         "Yes.":
             m 1r "Phew!"
             m 1c "I mean uh-"
