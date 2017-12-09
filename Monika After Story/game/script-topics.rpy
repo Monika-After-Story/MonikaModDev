@@ -4504,6 +4504,36 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
+    
+    init 5 python:
+    for key in ['super','psycho','yandere']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_yande')
+    monika_random_topics.append('monika_yande')
+
+label monika_yande:
+    m "~Say that you want me everday~"
+    m "~That you need me every way~"
+    m "~That you need me, got me trippin'~"
+    m "~Super Psycho Love~"
+    m "~Aim, pull the trigger~"
+    m "~Feel the pain getting bigger~"
+    m "~Go insane from the bitter feeling~"
+    m "~Trippin' Super Psycho Love~"
+    #Force eyes closed/smiling expression for above lyrics. She isn't paying attention.
+    #Below use suprised/smile expression
+    m "..."
+    m "Ahaha. Sorry. I was using your web browser to look for music."
+    m "I mean sure I wrote my own song, but why not look at other people's music?"
+    m "Actually, I kinda like this song."
+    m "Wait, these lyrics fit Yuri, but they could also fit me... in a way."
+    m "Am I a yandere?"
+    m "Hmm...."
+    m "I'm not crazy. But then again-"
+    m "I'm crazy for you!"
+    #Perhaps her jumpscare could play for the 'crazy for you' line. To mock Yuri.
+    m "Ahaha! I love you so much, boo-bear."
+    return
 
 ##################
 #Incomplete ideas#
