@@ -1,3 +1,9 @@
+label monika_christmas
+    m "[player]! Do you know what day it is?'
+    m "Of course you do. It's Christmas!"
+    
+
+
 label monika_snow
     m "Does it ever snow where you live, [player]?"
     m "I've always liked the peaceful aura it seems to give off."
