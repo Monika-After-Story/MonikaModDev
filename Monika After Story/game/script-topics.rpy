@@ -4344,6 +4344,32 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
+    
+      init 5 python:
+    for key in ['write','writing','tips','monikas_writing_tips']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_write')
+    monika_random_topics.append('monika_write')
+
+label monika_write:
+    m "I'm having fun doing these, so..."
+    m "Here's Monika's Writing Tip of the Day!"
+    m "Make sure you always write down any ideas you think of."
+    m "Why?"
+    m "What if you thought of one of the best ideas ever?"
+    m "Even if you don't like it, write it down."
+    m "Maybe you can inspire someone else."
+    m "Maybe you may look back on it a few years or months later and continue it."
+    m "You never know!"
+    m "It's always good to have a sort of journal."
+    m "To write down your feelings, but also to write down your ideas!"
+    m "Just make sure the journal has a lock."
+    m "In case you don't want peeping toms to be looking into your private thoughts~"
+    m "Just know, [player], I will love anything you write!"
+    m "...That's my advice for today!
+    m "Thanks for listening~"
+    return
+    
 
 ##################
 #Incomplete ideas#
