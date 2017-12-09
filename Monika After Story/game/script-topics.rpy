@@ -3699,6 +3699,8 @@ label monika_changename:
                             persistent.current_track = songs.sayori_track
                         else:
                             songs.initMusicChoices()
+
+                        # yuri has no adjustmeents here for now
                         
                         persistent.mcname = player
                         mcname = player
