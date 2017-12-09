@@ -4513,7 +4513,7 @@ label monika_soda:
 
 label monika_yande:
     m "~Say that you want me everday~"
-    m "~That you need me every way~"
+    m "~That you want me every way~"
     m "~That you need me, got me trippin'~"
     m "~Super Psycho Love~"
     m "~Aim, pull the trigger~"
@@ -4523,16 +4523,14 @@ label monika_yande:
     #Force eyes closed/smiling expression for above lyrics. She isn't paying attention.
     #Below use suprised/smile expression
     m "..."
-    m "Ahaha. Sorry. I was using your web browser to look for music."
-    m "I mean sure I wrote my own song, but why not look at other people's music?"
+    m "Ahaha. Sorry. I was using your web browser to look for music. I mean sure I wrote my own song, but why not look at other people's music?"
     m "Actually, I kinda like this song."
-    m "Wait, these lyrics fit Yuri, but they could also fit me... in a way."
-    m "Am I a yandere?"
+    m "Wait, these lyrics fit Yuri, but they could also fit me... in a way. Am I a yandere?"
     m "Hmm...."
     m "I'm not crazy. But then again-"
     m "I'm crazy for you!"
     #Perhaps her jumpscare could play for the 'crazy for you' line. To mock Yuri.
-    m "Ahaha! I love you so much, boo-bear."
+    m "Ahaha! Sorry, boo-bear. I couldn't resist."
     return
 
 ##################
