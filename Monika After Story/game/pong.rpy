@@ -216,10 +216,28 @@ label demo_minigame_pong:
     # Put up the pong background, in the usual fashion.
     scene bg pong field
 
+    # natsuki scare setup if appropriate  
+    $ tempname = persistent.playername.lower()
+    if tempname == "natsuki":
+        $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
+
+        # we'll take advantage of Okay everyone's sync with natsuki's version
+        if playing_okayev:
+            $ currentpos = get_pos(channel="music")
+            $ adjusted_t5 = "<from " + str(currentpos) + " loop 4.444>bgm/5_natsuki.ogg"
+            stop music fadeout 2.0
+            $ renpy.music.play(adjusted_t5, fadein=2.0, tight=True) 
+
     # Run the pong minigame, and determine the winner.
     python:
         ui.add(PongDisplayable())
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
+
+    # natsuki scare if appropriate
+    $ tempname = persistent.playername.lower()
+    if tempname == "natsuki":
+        call natsuki_name_scare(playing_okayev=playing_okayev)
+    $ tempname = None
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
