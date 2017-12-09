@@ -4505,7 +4505,7 @@ label monika_soda:
     m 3j "So cut down on the soda, alright [player]?"
     return
     
-    init 5 python:
+init 5 python:
     for key in ['copy', 'clone','unique']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_clones')
