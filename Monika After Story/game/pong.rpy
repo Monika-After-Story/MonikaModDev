@@ -221,6 +221,12 @@ label demo_minigame_pong:
         ui.add(PongDisplayable())
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
+    # natsuki scare if appropriate
+    $ tempname = persistent.playername.lower()
+    if tempname == "natsuki":
+        call natsuki_name_scare
+    $ tempname = None
+
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
     call spaceroom from _call_spaceroom_3
