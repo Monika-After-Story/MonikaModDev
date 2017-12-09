@@ -442,10 +442,8 @@ label ch30_autoload:
         $ config.allow_skipping = False
     $ quick_menu = True
 
-    $ tempname = persistent.playername.lower()
-
     # yuri scare incoming. No monikaroom when yuri is the name
-    if tempname == "yuri":
+    if persistent.playername.lower() == "yuri":
         call yuri_name_scare
         $ is_monika_in_room = False
     else:
@@ -454,9 +452,6 @@ label ch30_autoload:
             # we'll say 1 in 20 
             import random
             is_monika_in_room = random.randint(1,20) == 1   
-
-    # reset tempname
-    $ tempname = None
 
     if not is_monika_in_room:
         if persistent.current_track:
