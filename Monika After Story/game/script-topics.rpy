@@ -4541,6 +4541,42 @@ label monika_clones:
     m 1j "You'll always be my special rose."
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
+    
+    init 5 python:
+    for key in ['challenge','disgusting','hot dog','gross','steak']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_hotsteak')
+    monika_random_topics.append('monika_hotsteak')
+
+label monika_hotsteak:
+    m 1c "Have you heard of these events called hot dog contests?"
+    m 4i "Like... ew."
+    m "Why would you even do that to yourself?"
+    m 3f "Don't they have any idea as to how many animals they're eating?"
+    m "And the fact that hot dogs are made of-"
+    m 1o "..."
+    m "I'm so glad I'm a vegetarian."
+    m 1n "I hope you've never partaken in such a thing. It's not the best for your health."
+    m 2e "And your health means the world to me."
+    m 3f "I'm not saying you should become vegetarian like I am."
+    m "But I wouldn't oppose if you did."
+        menu:
+        m "Or are you already?"
+        "Yes.":
+            m 1r "Phew!"
+            m 1c "I mean uh-"
+            m "That's good, really!"
+            m 5a "Yet another thing that shows we're alike, my love."
+
+        "No.":
+            m 1c "..."
+            m "......"
+            m 5b "How dare you! I mean really."
+            m 1c "..."
+            m 4k "I'm just playing with you, sweetheart. Ahaha!"
+            m "It doesn't matter to me what you eat."
+            m 1f " But you could always keep it in mind, I suppose."
+    return
 
 ##################
 #Incomplete ideas#
