@@ -4482,6 +4482,48 @@ label monika_rock:
     m 1a "If you wanna blast on some good 'ol rock 'n roll, go ahead, [player]."
     m 1j "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
     return
+    
+init 5 python:
+    for key in ['otaku']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_otaku')#id
+    monika_random_topics.append('monika_otaku')
+
+label monika_otaku:
+    m "Hey, [player]?"
+    menu:
+        m "You're an otaku right?"
+
+        "Yes.":
+            m "I can't say I'm surprised really."
+            
+        "No.":
+            m "Really?"
+	     m "I find that hard to believe."
+	     m "This isn't exactly a game that your average person picks up and plays."
+    m "I only assumed because you're playing a game like this, after all."
+    m "Don't worry, I'm not one to judge, ahaha."
+    m "You shouldn't be ashamed of yourself if being an otaku is your thing, you know."
+    m "I'm being serious, there isn't anything wrong with that."
+    m "Natsuki is an otaku too, remember?"
+    m "I only want to know if you're perhaps overly obsessed with anime and manga."
+    m "Like those hardcore otakus that don't bathe and never leave home..."
+    m "Those who have nothing to do but watch anime and read manga all day..."
+    m "Make references to anime as much as possible by quoting them on a daily basis..."
+    m "Even having body pillows of random anime girls..."
+    m "Like, seriously?"
+    m "It's not that I despise them, it's just that they're..."
+    m "Immersed."
+    m "Way too immersed, if you ask me."
+    m "It's as if they can't tell the difference between fantasy and reality anymore."
+    m "You aren't like that right, [player]?"
+    m "If you're an otaku, I respect that."
+    m "Just remember not to get too into that kind of thing, alright?"
+    m "After all, there's a big difference between obsession and dedication."
+    m "I wouldn't want to be replaced by some two-dimensional cutout."
+    m "Besides, if you ever want to escape from reality..."
+    m "I can be your real life fantasy instead~"
+    return
 
 init 5 python:
     for key in ['soda', 'coca-cola', 'coca cola', 'coke', 'pepsi', 'dr. pepper', 'carbonated']:
