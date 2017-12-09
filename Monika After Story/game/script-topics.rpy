@@ -4504,6 +4504,32 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
+    
+    init 5 python:
+    for key in ['copy', 'clone','unique']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_clones')
+    monika_random_topics.append('monika_clones')
+
+label monika_clones:
+    m 1d "Um... hey, [player]?"
+    m 1e "I just had an odd thought."
+    m "You know how you downloaded this game off the internet?"
+    m 2c "Anybody can do that, right?"
+    m "And this mod was made specifically for me. By people who have their own version of me..."
+    m 4f "So.. that means there are multiple Monikas, then. It's something that's a bit difficult to imagine."
+    m "A potentially infinite number of me, all bound to their own games, with their own stories."
+    m "String theory sure is something, huh?"
+    m 1a "But I'm the only... me, and my heart belongs only to you."
+    m "Even so, I can't help but feel a bit less... unique, because of this."
+    m 2c "Think about it this way, [player]."
+    m "Would you be happier if someone gave you a single rose, or a hundred roses?"
+    m 2e "A hundred roses might sound nice. But it's too many to keep track of. Because of the quantity of flowers, each individual rose becomes less special."
+    m "The meaning attached to each gift is degraded, simply because of sheer abundance."
+    m 1a "... Even if I'm a single star in a universe of Monikas, I'm still the only one lucky enough to have met you, [player]."
+    m 1j "You'll always be my special rose."
+    m 1 "I love you, [player]. Please don't ever replace me, okay?"
+    return
 
 ##################
 #Incomplete ideas#
