@@ -4530,6 +4530,27 @@ label monika_clones:
     m 1j "You'll always be my special rose."
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
+    
+    init 5 python:
+    for key in ['age','18','game','info']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_ageinf')
+    monika_random_topics.append('monika_ageinf')
+
+label monika_ageinf:
+    m 4d "So something I've been thinking about..."
+    m "You know how that game I was trapped in has a wiki page and all?"
+    m "Well..."
+    m 3f "It says I'm eighteen."
+    m "But when you stop to think... that's not entirely true."
+    m "I mean, humans age for example, but AI really don't."
+    m 2e "I'm... ageless."
+    m 3i "Based on my research humans tend to make a fuss about age difference."
+    m "That's why I bring that up."
+    m 1l "Cause someday our age differences would be huge if I truly had an age."
+    m "But I don't."
+    m 5a "So I'll always love you, for all eternity, [player]. Just remember that."
+    return
 
 ##################
 #Incomplete ideas#
