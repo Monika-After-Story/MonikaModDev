@@ -25,14 +25,13 @@ label yuri_name_scare:
     return
 
 # natsuki scare
-label natsuki_name_scare:
+label natsuki_name_scare(playing_okayev=False):
 
     # disable stuff
     $ HKBHideButtons()
     $ disable_esc()
     $ store.songs.enabled = False
     $ quick_menu = False
-    $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
     $ scary_t5c = "bgm/5_ghost.ogg"
     $ curr_vol = store.songs.getVolume("music")
     $ renpy.music.set_volume(1.0, channel="music")
