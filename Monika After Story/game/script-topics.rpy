@@ -13,16 +13,17 @@ define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
-init -1 python:monika_cupcakes
+init -1 python:
     def remove_seen_topics():
         #
         # Removes seen topics from monika random topics
         #
         # ASSUMES:
         #   monika_random_topics
-        for id in monika_random_topics:
-            if renpy.seen_label(id):
-                monika_random_topics.remove(id)
+        global monika_random_topics
+        for index in range(len(monika_random_topics)-1, -1, -1):
+            if renpy.seen_label(monika_random_topics[index]):
+                monika_random_topics.pop(index)
 
 init 11 python:
     #List of all random topics
@@ -32,7 +33,7 @@ init 11 python:
     remove_seen_topics()
 
     #If there are no unseen topics, you can repeat seen ones
-    if monika_random_topics==[]:
+    if len(monika_random_topics) == 0:
         monika_random_topics=all_random_topics
 
 #BEGIN ORIGINAL TOPICS
