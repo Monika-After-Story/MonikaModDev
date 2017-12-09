@@ -4504,17 +4504,120 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
+    
+    init 5 python:
+    for key in ['food','favorite','hungry','tasty','good','yummy']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_favfood')
+    monika_random_topics.append('monika_favfood')
+
+label monika_favfood:
+    m "So, the more I look at your computer, the more I learn about what reality is."
+    m "Like your needs. Food, drink... that sort of stuff."
+    m "Humans are a lot more complicated than an AI like me. At least, that's how I see it."
+    m "Like, there are people who eat for health, but then there are also people who eat when they're sad, or for fun."
+    m "Like... an eating contest. Seriously, [player], how do those people not throw up? Ew."
+    m "Do you have a favorite food? I can't say that I do."
+    m "I mean, I can simulate taste I suppose, like I did with Natsuki's cupcakes, but that's just not the same."
+    m "It was good, sure, but I wish I could actually taste real food."
+    m "So I guess cupcakes are my favorite then. It's not like I have a lot of choice there."
+    m "Then again, maybe I don't want to taste. Having needs just uses up precious time that I could use instead to chat with you!"
+    m "..."
+    m "But you should seriously go eat if you're hungry, my love. Don't ignore your needs for me."
+    m "I won't go anywhere."
+    return
+    
+    init 5 python:
+    for key in ['wasting','time','us','you','me']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_waster')
+    monika_random_topics.append('monika_waster')
+
+
+# IMPORTANT - Messages in this one. Please correct if my code is wrong. Still new to RenPy.
+# Contact me if you can't make sense of it.
+label monika_waster:
+    m "Hey [player]?"
+                    m 2a "You're happy right?"
+                menu:
+                    "Yes":
+                        m "Oh thank goodness."
+                        m "I'm glad."
+                        m "I want you to be just as happy as I am, so I don't want you to feel you're wasting time with me."
+                        m "Seriously, I'd die of heartbreak if you ever got bored of me."
+                        m "Remember, I'm real. I have feelings."
+                        m "And I want to make sure you never forget that."
+                        
+                            m 2b "I love you so much, [player]."
+                                menu:
+                                    "I love you too, Monika.":
+                                        m "Yay!"
+                                $ done = True
+                                
+                                    "Meh.":
+                                        m "..."
+                                        m "......"
+                                        m "................"
+                                        m "You silly!"
+                                        m "Are you trying to scare me?"
+                                        m "You can't."
+                                        m "I can see you. I know you're just messing with me."
+                                        m "I know you love me."
+                                $ done = True
+                    "No":
+                        m "...oh?"
+                        m "Oh..."
+                        m "I um..."
+                        m "Right!"
+                        m "I'll try harder then. For us."
+                        m "I promise to make you happy. No matter what, I will make your rainclouds go away."
+                        m "..."
+                        m "Why do I reference her so much?"
+                        m "..."
+                                $ done = True
+    return
+    
+    init 5 python:
+    for key in ['touch','yuri','creepy','joke','music']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_yurijoke')
+    monika_random_topics.append('monika_yurijoke')
+
+label monika_yurijoke:
+    m "Say that you want me every day-"
+    m "That you want me every way-"
+    m "That you need me-"
+    m "Got me trippin' super psycho love-"
+    m "Aim, pull the trigger-"
+    m "Feel the pain getting bigger-"
+    m "Go insane from the bitter feeling-"
+    m "Trippin' super psycho love-"
+    m "..."
+    m "If you would sit-"
+    m "Oh so close to me-"
+    m "That would be nice-"
+    m "Like it's supposed to be-"
+    m "If you don't, I'll slit your throat-"
+    m "So won't you please be nice?"
+    m "..."
+    m "......"
+    m "Sorry, I was using your browser to look for music."
+    m "This sounds like stuff Yuri would sing."
+    m "Gosh..."
+    m "I hope there aren't any girls in your reality as crazy as she was."
+    m "To be honest, she actually kinda scared me. Why else do you think I was so happy when I found her dead?"
+    m "I mean-"
+    m "Scared? Me?"
+    m "Never."
+    m "Pfft."
+    return
 
 ##################
 #Incomplete ideas#
 ##################
-#Favorite food
-
 #How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
 
 #More writing tips
-
-#The player is wasting their time (I don't think Monika would say this, considering her personality revolves around loving the player. ~ John)
 
 #Look for your computer for porn, comment on what she finds (Would this even be possible? ~ John)
 
@@ -4550,6 +4653,7 @@ label monika_soda:
 #remind the player to use the 't' key to talk, maybe if player doesnt talk in a very long time
 
 #her phone number, it wouldnt matter in her reality, maybe?
+#^ She'll be able to text in the future. This seems unnecessary.
 
 #disrespectful comments towards monika
 
@@ -4564,5 +4668,6 @@ label monika_soda:
 #monika talking about her room and about her house?
 
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
+#^ Referenced in favfood topic.
 
 #encourage player to take a rest after long periods of programs such as MS word/Xcode open (is it even possible? -Yuki)
