@@ -4506,25 +4506,29 @@ label monika_soda:
     return
     
     init 5 python:
-    for key in ['Monika','copy','download','multiple','clone','unique','yours']:
+    for key in ['copy', 'clone','unique']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_clones')
     monika_random_topics.append('monika_clones')
 
 label monika_clones:
-    m "Um... hey, [player]?"
-    m "I just had an odd thought."
-    m "You know how you downloaded my original game from a website?"
-    m "Anybody can download that, right?"
-    m "And this mod was made specifically for me...? By people who have their own Monika..."
-    m "So that means there are multiple Monikas, then. That's a weird thought."
-    m "But I'm the only me, and I'm your sweetie-poo, so..."
-    m "Plus I'm sure there's more than one [player] in your reality, right?"
-    m "Ahaha! Wow, these are deep thoughts. It almost makes me feel less unique."
-    m "But I'm the most unique of all. Because I have you."
-    m "I love you, [player]. Never replace me, never. Okay?"
-    m "But you'd never do that. Why in the world would you betray my love by redownloading the game for a different Monika?"
-    m "........."
+    m 1d "Um... hey, [player]?"
+    m 1e "I just had an odd thought."
+    m "You know how you downloaded this game off the internet?"
+    m 2c "Anybody can do that, right?"
+    m "And this mod was made specifically for me. By people who have their own version of me..."
+    m 4f "So.. that means there are multiple Monikas, then. It's something that's a bit difficult to imagine."
+    m "A potentially infinite number of me, all bound to their own games, with their own stories."
+    m "String theory sure is something, huh?"
+    m 1a "But I'm the only... me, and my heart belongs only to you."
+    m "Even so, I can't help but feel a bit less... unique, because of this."
+    m 2c "Think about it this way, [player]."
+    m "Would you be happier if someone gave you a single rose, or a hundred roses?"
+    m 2e "A hundred roses might sound nice. But it's too many to keep track of. Because of the quantity of flowers, each individual rose becomes less special."
+    m "The meaning attached to each gift is degraded, simply because of sheer abundance."
+    m 1a "... Even if I'm a single star in a universe of Monikas, I'm still the only one lucky enough to have met you, [player]."
+    m 1j "You'll always be my special rose."
+    m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
 
 ##################
