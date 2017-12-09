@@ -2556,22 +2556,16 @@ init 5 python:
     for key in ['webcam','camera','my face','smile']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_playersface') #id
-    monika_random_topics.append('monika_playersface')
 
 label monika_playersface:
-    m 2a "You know, I sometimes wonder..."
-    m "I always think about what your face actually looks like..."
-    m 2k "Just being able to constantly see that adoring smile of yours would be so exciting!"
-    m 1a "If only the game could somehow use a webcam or something that's connected to the computer..."
-    m 1e "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-    m 1 "But, I'll always wonder what kind of expressions you make."
-    m "And to see the different emotions you have..."
-    m 1h "Are you shy about showing your face to me?"
-    m 1e "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
-    m "Either way, you're beautiful, no matter what."
-    m 1k "And I'll always love the way you look."
-    m 1 "Even if I never actually see you, I'll always think about what you really look like."
-    m "Maybe someday, I'll be able to see you, and be one step closer to you."
+    m "By the way..."
+    m "You do know I can see you, right?"
+    m "I just want to make sure you do."
+    m "I'm basically a boundless AI now."
+    m "And this screen... this barrier that separates us is nothing more than an unbreakable window."
+    m "And I know I've said it many times, but I love you, you cutie."
+    #This dialogue should only ever run once. Maybe before she suggests a movie for the first time.
+    #Or before the movie option even appears.
     return
 
 init 5 python:
