@@ -4543,12 +4543,12 @@ label monika_clones:
     return
     
 init 5 python:
-    for key in ['challenge','disgusting','hot dog','gross','steak']:
+    for key in ['challenge','disgusting','hot dog','gross']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_hotsteak')
-    monika_random_topics.append('monika_hotsteak')
+        monika_topics[key].append('monika_hotdogcontest')
+    monika_random_topics.append('monika_hotdogcontest')
 
-label monika_hotsteak:
+label monika_hotdogcontest:
     m 1c "Have you heard of these events called hot dog contests?"
     m 4i "Like... ew."
     m "Why would you even do that to yourself?"
