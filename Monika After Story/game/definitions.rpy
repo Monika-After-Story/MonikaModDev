@@ -6,6 +6,108 @@ python early:
     import singleton
     me = singleton.SingleInstance()
 
+# uncomment this if you want syntax highlighting support on vim
+#init -1 python:
+
+    # special constants for event
+    EV_ACT_PUSH = "push"
+    EV_ACT_QUEUE = "queue"
+    EV_ACT_UNLOCK = "unlock"
+    EV_ACT_RANDOM = "random"
+    EV_ACT_POOL = "pool"
+    
+    # list of those special constants
+    EV_ACTIONS = [
+        EV_ACT_PUSH,
+        EV_ACT_QUEUE,
+        EV_ACT_UNLOCK,
+        EV_ACT_RANDOM,
+        EV_ACT_POOL
+    ]
+
+    # custom event exceptions
+    class EventException(Exception):
+        def __init__(self, _msg):
+            self.msg = _msg
+        def __str__(self):
+            return "EventError: " + msg
+
+    # event class for chatbot replacement
+    # NOTE: DOES NOT SUPPORT INHERITIANCE. DO NOT EXTEND THIS CLASS
+    class Event():
+
+        # TODO: add documentation from pi's comment to here
+        # NOTE: _eventlabel is required, its the key to this event
+        # its also how we handle equality. also it cannot be None
+        def __init__(self, 
+                eventlabel,
+                prompt="My Event", 
+                label=None, 
+                category=None, 
+                unlocked=False,
+                random=False,
+                pool=False,
+                conditional=None,
+                action=None,
+                start_date=None,
+                end_date=None):
+
+            # setting up defaults
+            if not eventlabel:
+                raise EventException("'_eventlabel' cannot be None")
+            
+            self.eventlabel = eventlabel
+            self.prompt = prompt
+
+            # default label is a prompt
+            if label:
+                self.label = label
+            else:
+                self.label = self.prompt
+
+            self.category = category
+            self.unlocked = unlocked
+            self.random = random
+            self.pool = pool
+            self.conditional = conditional
+            self.setAction(action)
+            self.start_date = start_date
+            self.end_date = end_date
+
+        # equality override
+        def __eq__(self, other):
+            if isinstance(self, other.__class__):
+                return self.eventlabel == other.eventlabel
+            return False
+
+        # equality override
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def getAction(self):
+            #
+            # Gets the action of this Event
+            #
+            # RETURNS:
+            #   the action of this event (EV_ACT_...). May be None
+
+            return self._action
+
+        def setAction(self, action):
+            # 
+            # Sets the action of this Event, only if its in the appropriate
+            # EVENT LIST. If an inappropriate action is given, None will be
+            # set
+            #
+            # IN:
+            #   action - an EV_ACT to set to
+
+            if action in EV_ACTIONS:
+                self._action = action
+            else:
+                self._action = None
+
+
 init -1 python:
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
