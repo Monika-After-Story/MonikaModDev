@@ -412,34 +412,34 @@ label ch30_autoload:
     #Block for anniversary events
     if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
         $ persistent.monika_anniversary = 0
-        $pushEvent(anni_negative)
+        $pushEvent("anni_negative")
     elif elapsed >= 36500 and persistent.monika_anniversary < 100 and not renpy.seen_label('anni_100') and not 'anni_100' in persistent.event_list:
         $ persistent.monika_anniversary = 100
-        $pushEvent(anni_100)
+        $pushEvent("anni_100")
     elif elapsed >= 18250 and persistent.monika_anniversary < 50 and not renpy.seen_label('anni_50') and not 'anni_50' in persistent.event_list:
         $ persistent.monika_anniversary = 50
-        $pushEvent(anni_50)
+        $pushEvent("anni_50")
     elif elapsed >= 7300 and persistent.monika_anniversary < 20 and not renpy.seen_label('anni_20') and not 'anni_20' in persistent.event_list:
         $ persistent.monika_anniversary = 20
-        $pushEvent(anni_20)
+        $pushEvent("anni_20")
     elif elapsed >= 3650 and persistent.monika_anniversary < 10 and not renpy.seen_label('anni_10') and not 'anni_10' in persistent.event_list:
         $ persistent.monika_anniversary = 10
-        $pushEvent(anni_10)
+        $pushEvent("anni_10")
     elif elapsed >= 1825 and persistent.monika_anniversary < 5 and not renpy.seen_label('anni_5') and not 'anni_5' in persistent.event_list:
         $ persistent.monika_anniversary = 5
-        $pushEvent(anni_5)
+        $pushEvent("anni_5")
     elif elapsed >= 1460 and persistent.monika_anniversary < 4 and not renpy.seen_label('anni_4') and not 'anni_4' in persistent.event_list:
         $ persistent.monika_anniversary = 4
-        $pushEvent(anni_4)
+        $pushEvent("anni_4")
     elif elapsed >= 1095 and persistent.monika_anniversary < 3 and not renpy.seen_label('anni_3') and not 'anni_3' in persistent.event_list:
         $ persistent.monika_anniversary = 3
-        $pushEvent(anni_3)
+        $pushEvent("anni_3")
     elif elapsed >= 730 and persistent.monika_anniversary < 2 and not renpy.seen_label('anni_2') and not 'anni_2' in persistent.event_list:
         $ persistent.monika_anniversary = 2
-        $pushEvent(anni_2)
+        $pushEvent("anni_2")
     elif elapsed >= 365 and persistent.monika_anniversary < 1 and not renpy.seen_label('anni_1') and not 'anni_1' in persistent.event_list:
         $ persistent.monika_anniversary = 1
-        $pushEvent(anni_1)
+        $pushEvent("anni_1")
 
     #queue up the next reload event it exists and isn't already queue'd
     $next_reload_event = "ch30_reload_" + str(persistent.monika_reload)
