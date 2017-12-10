@@ -4558,8 +4558,8 @@ label monika_hotdogcontest:
     m 2e "And your health means the world to me."
     m 3f "I'm not saying you should become vegetarian like I am."
     m "But I wouldn't oppose if you did."
-    m "Or are you already?"
     menu:
+    m "Or are you already?"
         "Yes.":
             m 1r "Phew!"
             m 1c "I mean uh-"
