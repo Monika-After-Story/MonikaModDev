@@ -4575,7 +4575,7 @@ label monika_weddingring:
     m 3a "I mean, we're already in a relationship. So, why not show off that love and dedication?"
     m 3b "It would help keep those... unwanted suitors away from you, too."
     m "It doesn't have to be a wedding ring, per say."
-    m 5a "But if you'd wear a one, even if it's just a promise ring, on your ring finger for me..."
+    m 5a "But if you'd wear one, even if it's just a promise ring, on your ring finger for me..."
     m "It would make me really happy."
     m 1f "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
     m 5a "And then I could wear it forever."
