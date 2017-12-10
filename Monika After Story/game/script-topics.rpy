@@ -13,17 +13,16 @@ define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
-init -1 python:
+init -1 python:monika_cupcakes
     def remove_seen_topics():
         #
         # Removes seen topics from monika random topics
         #
         # ASSUMES:
         #   monika_random_topics
-        global monika_random_topics
-        for index in range(len(monika_random_topics)-1, -1, -1):
-            if renpy.seen_label(monika_random_topics[index]):
-                monika_random_topics.pop(index)
+        for id in monika_random_topics:
+            if renpy.seen_label(id):
+                monika_random_topics.remove(id)
 
 init 11 python:
     #List of all random topics
@@ -33,7 +32,7 @@ init 11 python:
     remove_seen_topics()
 
     #If there are no unseen topics, you can repeat seen ones
-    if len(monika_random_topics) == 0:
+    if monika_random_topics==[]:
         monika_random_topics=all_random_topics
 
 #BEGIN ORIGINAL TOPICS
@@ -4344,6 +4343,59 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
+    
+init 5 python:
+    for key in ["orchestra", "instruments", "band"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_orchestra')
+    monika_random_topics.append('monika_orchestra')
+
+label monika_orchestra:
+
+ m 2d "Hey [player], do you like orchestras?"
+ m 1a "I love the way that so many different instruments can get together and create such wonderous music."
+ m "It must take determination and passion to practice countless of hours for just a few songs..."
+ m "Playing piano is the closest I can get to experiencing music firsthand."
+ m 1f "That reminds me, I still haven't gotten around finishing that song I was writing for you..."
+ m 1g "...Well, that's a shame, I really wanted you to hear it!"
+
+#First encounter with topic:
+ m 1d "What about you, [player]? Do you play any instruments?"
+ menu: 
+
+#Choice 1 (Yes)
+  "Yes.":
+   $persistent.instrument = True
+   m 1b "Really? Which instrument do you play?"
+   $ done = False
+    
+   while not done:
+    $ instrumentname = renpy.input('Which instrument do you play?').strip(' \t\n\r')
+    $ persistent.instrumentname = instrumentname
+    m 1a "Wow, I always wanted to try the [instrumentname] out!"
+    m "Its sound is simply enchanting..."
+    m "Are you any good at it?"
+    m "I would love to hear you play a song on it for me!"
+    m "Perhaps you even could teach me how to play it sometime~"
+    m 4b "Maybe I'll become better than you!"
+    m 1k "Ehehe~"
+    return
+#Choice 1 (No)
+  "No.":
+   $persistent.instrument = False
+   m 1i "I see..."
+   m 1e "You should try to pick up an instrument that you like sometime!"
+   m 2b "I really had fun learning the piano and creating my own melodies~"
+   m "Besides, I heard that playing music has tons of benefits!"
+   m "For example, it helps to relieve stress..."
+   m "...And gives you a sense of achievement..."
+   m 1n "Ah, was I rambling again?"
+   m "Sorry!"
+   m 1a"Anyway, you should really learn an instrument, maybe we could play together sometime~"
+   return
+
+    
+   
 
 ##################
 #Incomplete ideas#
