@@ -281,6 +281,16 @@ init -2 python in mas_poemgame_val:
 #
 #   (CONFIGURATION OPTIONS): (ORDER DOES NOT MATCH INPUT PARAMS)
 #
+#   glitch_baa - Tuple of the following format:
+#           [0] -> True means do the baa glitch, false means no
+#               (If None, default False)
+#           [1] -> odds that the baa glitch occurs (1 out of x)
+#               (If None, default 10)
+#       If the tuple is None (or is not of length 2), the default values are
+#       used.
+#       NOTE: Only is active if glitch_wordscare is used.
+#       (Default: None)
+#
 #   glitch_nb - True will use the glitched notebook. False will use regular
 #       one.
 #       (Default: False)   
@@ -361,6 +371,7 @@ init -2 python in mas_poemgame_val:
 #       (Default: None)
 #
 #   (DISPLAY_MODE OPTIONS)
+#   glitch_baa
 #   glitch_nb
 #   glitch_words
 #   glitch_wordscare
@@ -376,6 +387,7 @@ init -2 python in mas_poemgame_val:
 #   total_words
 #
 #   (STOCK_MODE OPTIONS)
+#   glitch_baa
 #   glitch_nb
 #   glitch_words
 #   glitch_wordscare
@@ -392,6 +404,7 @@ init -2 python in mas_poemgame_val:
 #   total_words
 #
 #   (MONIKA_MODE OPTIONS)
+#   glitch_baa
 #   glitch_nb
 #   glitch_words
 #   glitch_wordscare
@@ -405,7 +418,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         show_natsuki=False,show_sayori=False,show_yuri=False,glitch_nb=False,
         show_poemhelp=False,total_words=20,poem_wordlist=None,sticker_pt=None,
         one_counter=False,only_monika=False,glitch_words=None,
-        glitch_wordscare=None,only_winner=False,
+        glitch_wordscare=None,only_winner=False,glitch_baa=None
 
     $ import store.mas_poemgamestickers as mas_stickers
     $ import store.mas_poemgame_val as mas_validator
@@ -517,11 +530,12 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
     # okay here begins the main flow
     python:
 
-        # makes the poem game go into glitch mode (white display)
-        poemgame_glitch = False
+        if glitch_wordscare:
+            # makes the poem game go into glitch mode (white display)
+            poemgame_glitch = False
 
-        # plays the baa sound (which is a glitch thing i think)
-        played_baa = False
+            # plays the baa sound (which is a glitch thing i think)
+            played_baa = False
 
         # current word progress
         progress = 1
@@ -622,7 +636,8 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             
             # wait for user to hit a word
             t = ui.interact()
-            if not poemgame_glitch:
+
+            if glitch_wordscare and not poemgame_glitch:
                 if t.glitch:
                     poemgame_glitch = True
                     renpy.music.play(audio.t4g)
