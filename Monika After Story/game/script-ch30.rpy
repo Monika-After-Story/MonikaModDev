@@ -270,6 +270,7 @@ label spaceroom:
     return
 
 label ch30_main:
+    #$ laziness_called = 0
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ quick_menu = True
@@ -528,4 +529,43 @@ label ch30_monikatopics:
 
         allow_dialogue = True
 
+    jump ch30_loop
+
+# Function for lazy weebs who can't open a website
+#label ch30_laziness:
+    #$ allow_dialogue = False # Making buttons gray
+    # $ laziness_called = 1 # How many times we asked to open something?
+    # $ laziness_threshold = 5 # How many times we can use this function before Monika get's annoyed?
+    #$ url = renpy.input('What site we should visit?',default='',pixel_width=720,length=50) # We're displaying a prompt
+    #m "Opening your browser right now, sweetheartie~{nw}" # Displaying a friendly message that she would open a web browser
+    #python: # Python code block
+    #    import webbrowser as wb # Importing webbrowser module
+    #    wb.open_new_tab(url) # Opening the URL link
+    #$ url = "" # Cleaning the variable
+    # laziness_called + 1 # Making call counter bigger
+    # She would be annoyed after 5 times in 1 minute
+    # if laziness_called % laziness_threshold == 0:
+    #    # If you are asked too much times, then she gets annoyed
+    #    m "[player], you're not messing with me, are you?"
+    #$ allow_dialogue = True # Returning buttons to their previous state
+    #jump ch30_loop # Jumping to the loop
+        
+# Function to go somewhere else!
+label ch30_go:
+    $ allow_dialogue = False
+    menu:
+        m "Where we would go?"
+
+        "Classroom":
+            "Stub."
+
+        "Corridor":
+            "Stub."
+
+        "Closet":
+            "Stub."
+
+        "Nevermind":
+            pass
+    $ allow_dialogue = True
     jump ch30_loop
