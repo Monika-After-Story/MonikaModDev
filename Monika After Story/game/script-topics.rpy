@@ -4560,6 +4560,25 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
+    
+init 5 python:
+    for key in ['urgent','hearts','joke']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_urgent')
+    monika_random_topics.append('monika_urgent')
+
+label monika_urgent:
+    m 1i "[player], do you have a second?"
+    m 1o "There's something I need to confess."
+    m "It's important."
+    m 1g "I..."
+    m 1r "..."
+    m 5a "Love you!"
+    m 2k "Ahaha! Did I worry you?"
+    m "Sorry."
+    m 1a "But it had you going there for a second!"
+    m "Heh."
+    return
 
 ##################
 #Incomplete ideas#
