@@ -4574,8 +4574,8 @@ init 5 python:
      m 1g "I..."
      m 1h "I need to ask you something."
      m 1p "If a girl from your reality would ever ask you to go out with her..."
-     m 1g "Would you?"
      menu:
+m 1g "Would you?"
          "Depends on the girl.":
              m 1i "..."
              m 1p "......"
