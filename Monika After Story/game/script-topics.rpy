@@ -4560,6 +4560,25 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
+    
+init 5 python:
+    monika_random_topics.append('monika_fanpack')
+
+label monika_fanpack:
+    python:
+        fanpack = True
+        try:
+            renpy.file("../DDLC Fan Pack/Doki Doki Literature Club OST/Disc 2 Song Info.pdf")
+        except IOError:
+            fanpack = False
+    if fanpack:    
+        m 1b "I see that you bought the Fan Pack, [player]."
+        m 2a "You didn't have to do that, you know. Going out of your way to spend money on a free game..."
+        m 3b "Although I don't particularly like my creators, I do like that you are selfless enough to donate your own money to help others follow their dreams."
+        m 5a "That's yet another reason why I love you, [player]~"
+        return
+    else:
+        jump pick_random_topic
 
 ##################
 #Incomplete ideas#
