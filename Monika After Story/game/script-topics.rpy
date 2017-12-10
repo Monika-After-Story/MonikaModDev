@@ -4560,6 +4560,39 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
+    
+init 5 python:
+    for key in ['wedding','loyalty','wife','husband']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_weddingring')
+    monika_random_topics.append('monika_weddingring')
+
+label monika_weddingring:
+    m 4k "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
+    m 3e "... What am I saying? Of course you do."
+    m 4k "Well..."
+    m 4b "Maybe you ought to get one."
+    m 3a "I mean, we're already in a relationship. So, why not show off that love and dedication?"
+    m 3b "It would help keep those... unwanted suitors away from you, too."
+    m "It doesn't have to be a wedding ring, per say."
+    m 5a "But if you'd wear a one, even if it's just a promise ring, on your ring finger for me..."
+    m "It would make me really happy."
+    m 1f "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
+    m 5a "And then I could wear it forever."
+    m 2b "But until then, just remember that my commitment to you is unwavering."
+    m 5a "Maybe you even beat me to it, and have a ring for me already?"
+    menu:
+        m "Do you, [player]?"
+        "Yes, I do.":
+            m 1c "Oh!"
+            m 1b "I feel like... my heart's going to explode!"
+            m 1l "Calm down, Monika. Calm down."
+            m 1j "Ahaha..."
+            
+        "No, not yet.":
+            m 5e "Aww. That's a shame."
+            m 1a "Well, at least think about it, okay?"
+    return
 
 ##################
 #Incomplete ideas#
