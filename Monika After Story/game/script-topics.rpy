@@ -4580,8 +4580,8 @@ label monika_weddingring:
     m 5a "And then I'll wear it all the time."
     m 2b "But until then, just know that my commitment to you is unwavering."
     m 5a "Then again maybe you beat me to it and you're already wearing a ring for me."
-    m "Are you, [player]? Hmm?
     menu:
+    m "Are you, [player]? Hmm?
         "Yes, I am.":
             m 1k "Oh thank you!"
             m 1b "I feel like... my heart's going to explode!"
