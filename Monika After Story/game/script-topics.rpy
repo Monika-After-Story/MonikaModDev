@@ -4559,7 +4559,7 @@ label monika_hotdogcontest:
     m 3f "I'm not saying you should become vegetarian like I am."
     m "But I wouldn't oppose if you did."
     menu:
-    m "Or are you already?"
+        m "Or are you already?"
         "Yes.":
             m 1r "Phew!"
             m 1c "I mean uh-"
