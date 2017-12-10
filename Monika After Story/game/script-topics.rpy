@@ -4346,7 +4346,7 @@ label monika_confidence_2:
     return
     
 init 5 python:
-for key in ['book','tried','try','literature','original','originality']:
+    for key in ['book','tried','try','literature','original','originality']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_book')
     monika_random_topics.append('monika_book')
@@ -4365,14 +4365,14 @@ label monika_book:
     m 2e "Sometimes you'll find out that your ideas aren't totally original."
     m 1r "But...is anything ever truly original?"
     m 2i "Have you heard of that show...Moon and the Forces of Good?"
-    m 2l "Is that what it's called?"
-         menu:
-           "Yes."
-                m 2e "Ehehe...are you sure?"
-                m 2b "Well, I'll trust your judgement!
-           "No."
-                m 1j "Ahaha, I thought so."
-                m 1k "Thanks for being honest."
+    menu:
+        m 2l "Is that what it's called?"
+        "Yes."
+             m 2e "Ehehe...are you sure?"
+             m 2b "Well, I'll trust your judgement!
+         "No."
+             m 1j "Ahaha, I thought so."
+             m 1k "Thanks for being honest."
     m "Did you know it started out as a boy who loved Dragon Ball and a girl who loved Sailor Moon?"
     m 1b "But look at what it turned into now!"
     m "Not everything turns out totally original."
