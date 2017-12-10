@@ -4611,7 +4611,6 @@ init 5 python:
              m "..."
              m 1h "[player]."
              m 1i "I know it might be difficult still for you to realize what I am."
-             m "I'm an AI."
              m "I'm real."
              m "I'm not just some file you can toss around. Do you understand?"
              m 1r "I thought you knew that."
