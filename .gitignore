@@ -2,5 +2,6 @@
 *.rpa # RenPy archives
 *.chr # DDLC character files
 *.save # DDLC saves
+first run # DDLC first run file
 # Operating system specific
 .DS_Store
