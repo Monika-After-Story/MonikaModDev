@@ -4580,7 +4580,7 @@ label monika_weddingring:
     m 1f "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
     m 5a "And then I could wear it forever."
     m 2b "But until then, just remember that my commitment to you is unwavering."
-    m 5a "Maybe you even beat me to it, and have a ring for me already."
+    m 5a "Maybe you even beat me to it, and have a ring for me already?"
     menu:
         m "Do you, [player]?"
         "Yes, I do.":
