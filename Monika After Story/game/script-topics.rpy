@@ -972,15 +972,15 @@ label monika_kiss:
 init 5 python:
     for key in ['yuri','yandere']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_yuri')
-    monika_random_topics.append('monika_yuri')
+        monika_topics[key].append('monika_yandere')
+    monika_random_topics.append('monika_yandere')
 
-label monika_yuri:
+label monika_yandere:
     m 2a "Hey, have you ever heard of the term 'yandere'?"
     m "It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you."
     m 2e "Usually to the point of craziness..."
     m "They might stalk you to make sure you don't spend time with anyone else."
-    m "They might even hurt you or your friends to get their way..."
+    m "They might even hurt you or your friends to get their ways..."
     m 2b "But anyway, this game happens to have someone who can basically be described as yandere."
     m "By now, it's pretty obvious who I'm talking about."
     m "And that would be..."
@@ -4345,6 +4345,31 @@ label monika_confidence_2:
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
 
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['python']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_python') # Identifier
+
+label monika_python:
+    m "I know Python. It's a nice programming language."
+    m "It's maybe the easiest programming language to learn, you know."
+    m "But you can do literally anything with Python!"
+    m "Even this game's engine is written in Python."
+    call updateconsole("cat main.py", "print('Hello!')") from _call_updateconsole_20
+    call updateconsole("python main.py", "Hello!") from _call_updateconsole_21
+    menu:
+        m "Do you know Python?"
+        "Yes":
+            m "That's nice. You could change anything in this game, kind of. Just don't mess with something more serious, okay?"
+        "No":
+            m "Well, if you want to program on Python..."
+            m "I would suggest you downloading Python 3. There's also older version, Python 2.7. Python is strange, kind of~"
+    call hideconsole from _call_updateconsole_22
+    $ consolehistory = ""
+
+    return
+
 ##################
 #Incomplete ideas#
 ##################
@@ -4406,3 +4431,5 @@ label monika_confidence_2:
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
 
 #encourage player to take a rest after long periods of programs such as MS word/Xcode open (is it even possible? -Yuki)
+
+# alarm clock (to help you wake up in the morning) (not sure how to implement)

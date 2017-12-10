@@ -83,6 +83,20 @@ screen hkb_overlay():
                 action NullAction()
                 style "hkbd_button"
 
+        if allow_dialogue and store.hkb_button.enabled:
+            textbutton _("Go") action Jump("ch30_go")
+        else:
+            textbutton _("Go"):
+                action NullAction()
+                style "hkbd_button"
+
+        #if allow_dialogue and store.hkb_button.enabled:
+        #    textbutton _("Visit") action Jump("ch30_laziness")
+        #else:
+        #    textbutton _("Visit"):
+        #        action NullAction()
+        #        style "hkbd_button"
+
         if store.hkb_button.enabled:
             textbutton _("Music") action Function(select_music)
         else:
