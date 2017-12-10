@@ -4568,13 +4568,12 @@ init 5 python:
     monika_random_topics.append('monika_weddingring')
 
 label monika_weddingring:
-    m 1b "Interesting..."
     m 4k "My love, did you know when two people confess their feelings for each other, they wear rings?"
     m 3e "What am I saying? Of course you do."
     m 4k "Well..."
     m 4b "Maybe you ought to get one."
     m 3a "I mean, we love each other. So, why not show off that love and dedication?"
-    m "It doesn't have to be a wedding per say."
+    m "It doesn't have to be a wedding ring per say."
     m 5a "But if you'd wear a ring on your ring finger, or even just a promise ring..."
     m "That'd really make me happy."
     m 1f "I wish I could get one too. But in time I'm sure I'll get better at creating things in here."
