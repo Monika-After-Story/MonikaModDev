@@ -4561,7 +4561,7 @@ label monika_ageinf:
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
     
-    init 5 python:
+init 5 python:
     # List of keywords for the topic.
     for key in ['rules','law','laws']:
         monika_topics.setdefault(key,[])
