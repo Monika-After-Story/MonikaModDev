@@ -4561,6 +4561,48 @@ label monika_ageinf:
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
+init 5 python:
+    for key in ['otaku', 'neet']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_otaku')
+    monika_random_topics.append('monika_otaku')
+    
+label monika_otaku:
+    m "Hey, [player]?"
+    menu:
+        m "You watch anime and read manga, right?"
+        "Yes":
+            m "I can't say I'm surprised really." 
+            
+        "No":
+            m "Oh, really?"
+            m "That's a little surprising, honestly..."
+            m "This isn't exactly the sort of game that your average person picks up and plays, but to each their own."
+    m "I only assumed because you're playing a game like this, after all."
+    m "Don't worry, I'm not one to judge, ahaha."
+    m "You shouldn't be ashamed of yourself if watching anime or reading manga is your thing, you know."
+    m "I'm being serious, there isn't anything wrong with that."
+    m "After all, Natsuki reads manga too, remember?"
+    m "Really, society is way too judgemental nowadays."
+    m "It's not like the moment you watch anime is the day you become a 'shut-in' for your entire life."
+    m "It's just a hobby you know?"
+    m "Nothing more, nothing else."
+    m "But..."
+    m "I can't really deny that hardcore otakus like that exist."
+    m "Like, seriously?"
+    m "It's not that I despise them or anything like that, it's just that they're..."
+    m "Immersed."
+    m "Way too immersed, if you ask me."
+    m "It's as if they can't tell the difference between fantasy and reality anymore."
+    m "You aren't like that right, [player]?"
+    m "If you're an otaku, I respect that."
+    m "Just remember not to get too into that kind of thing, alright?"
+    m "After all, there's a big difference between obsession and dedication."
+    m "I wouldn't want to be replaced by some two-dimensional cutout."
+    m "Besides, if you ever want to escape from reality..."
+    m "I can be your real life fantasy instead~"
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
