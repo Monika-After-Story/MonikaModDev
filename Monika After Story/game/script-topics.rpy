@@ -4540,6 +4540,45 @@ label monika_clones:
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
 
+init 5 python:
+    for key in ['meditation', 'meditate']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_meditation')
+    monika_random_topics.append('monika_meditation')
+
+label monika_meditation:
+    m 1a "You might be wondering how I was able to do so many activities without running out of time for myself."
+    m "You know, stuff like debate club, sports, schoolwork, hanging out with friends..."
+    m 1f "The truth is, I {i}did{/i} run out of time for myself. This caused a lot of problems."
+    m "I was doing fine for a while, but at one point all of the stress and anxiety finally caught up to me."
+    m 1g "I was constantly in a state of panic and anxiety, and I never had any time to relax."
+    m 2c "That's when I realized that I needed a 'brain break' of sorts..."
+    m "...a time where I could just forget about everything that was going on in my life."
+    m 1a "So, every night before I went to sleep, I took ten minutes of my time to meditate."
+    m 1r "I got comfortable, closed my eyes, and only focused on the movement of my body as I breathed..."
+    m 1a "Meditating really helped to improve my mental and emotional health."
+    m "I was finally able to manage my stress and feel calmer throughout the day."
+    menu:
+        m 2b "[player], do you ever take the time to meditate?"
+
+        "Yes.":
+            m 1k "Really? That's wonderful!"
+            m 1b "I always worry that you could be feeling troubled or burdened, but now I feel a bit relieved."
+            m 1j "Knowing that you are taking steps to reduce stress and anxiety really makes me happy, [player]."
+
+        "No.":
+            m 1a "I see. Well, if you are ever feeling stressed or anxious, I would definitely recommend that you try a bit of meditation."
+            m "In addition to the effects it had on me, meditation also has links to the improvement of your sleep, your immune system, and even your lifespan."
+            m 2a "If you are interested in meditation, there are plenty of resources on the internet to help you get started."
+            m "Whether it's a guided meditation video, a breath counting trick, or something else..."
+            m 2j "...you can use the internet to make it so that meditation is a stress-free process!"
+            m 1k "Ahaha! Just a little pun there, [player]."
+
+    m 1b "Anyway... if you ever want a peaceful environment where you can relax and forget about your problems, you can always come here and spend time with me."
+    m 1e "I love you, and I'll always try to help you if you are feeling down."
+    m 5a "Don't you ever forget that, [player]~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
