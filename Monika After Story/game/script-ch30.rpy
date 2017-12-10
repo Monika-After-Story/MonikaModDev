@@ -396,6 +396,15 @@ label ch30_autoload:
             play_song(persistent.current_track)
         else:
             play_song(songs.current_track) # default
+
+        # name changes if necessary
+        if not persistent.mcname or len(persistent.mcname) == 0:
+            persistent.mcname = persistent.playername
+            mcname = persistent.mcname
+          
+        if not currentuser or len(currentuser) == 0:
+            currentuser = persistent.playername
+
     window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
