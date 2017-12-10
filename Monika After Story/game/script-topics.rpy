@@ -4561,6 +4561,49 @@ label monika_ageinf:
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
+init 5 python:
+    for key in ["orchestra", "instruments", "band"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_orchestra')
+    monika_random_topics.append('monika_orchestra')
+
+label monika_orchestra:
+    m 2d "Hey [player], do you like orchestras?"
+    m 1a "I love the way that so many different instruments can get together and create such wonderous music."
+    m "It must take determination and passion to practice countless of hours for just a few songs..."
+    m "Playing piano is the closest I can get to experiencing music firsthand."
+    m 1f "That reminds me, I still haven't gotten around finishing that song I was writing for you..."
+    m 1g "...Well, that's a shame, I really wanted you to hear it!"
+
+#First encounter with topic:
+    m 1d "What about you, [player]?"
+    menu: 
+        "Yes.":
+            $persistent.instrument = True
+            m 1b "Really? Which instrument do you play?"
+            $ instrumentname = renpy.input('What instrument do you play?').strip(' \t\n\r')
+            $ persistent.instrumentname = instrumentname
+            m 1a "Wow, I always wanted to try the [instrumentname] out!"
+            m "Its sound is simply enchanting..."
+            m "Are you any good at it?"
+            m "I would love to hear you play a song on it for me!"
+            m "Perhaps you even could teach me how to play it sometime~"
+            m 4b "Maybe I'll become better than you!"
+            m 1k "Ehehe~"
+        "No.":
+            $persistent.instrument = False
+            m 1i "I see..."
+            m 1e "You should try to pick up an instrument that you like sometime!"
+            m 2b "I really had fun learning the piano and creating my own melodies~"
+            m "Besides, I heard that playing music has tons of benefits!"
+            m "For example, it helps to relieve stress..."
+            m "...And gives you a sense of achievement..."
+            m 1n "Ah, was I rambling again?"
+            m "Sorry!"
+            m 1a"Anyway, you should really learn an instrument, maybe we could play together sometime~"
+    return
+
+
 ##################
 #Incomplete ideas#
 ##################
