@@ -1,33 +1,7 @@
-*~
-*.rpyc
-*.rpyb
-*.bak
-*.pyc
-*.swp
-log.txt
-traceback.txt
-errors.txt
-firstrun
-*.chr
-*.rpa
-*.rpa
-Monika After Story/game/audio.rpa
-*.save
-Monika After Story/game/saves/persistent
-Monika After Story/IPGuidelines.md
-*.rpa
-*.rpa
-Monika After Story/game/screens.rpyc
-Monika After Story/old_persistent.txt
-Monika After Story/merged_persistent.txt
-Monika After Story/game/screens.rpyc
-Monika After Story/project.json
-*.chr
-*.rpyc
-Monika After Story/project.json
-Monika After Story/characters/monika.chr
-*.rpyc
-Monika After Story/project.json
+*.rpyc # RenPy compiled files
+*.rpa # RenPy archives
+*.chr # DDLC character files
+*.save # DDLC saves
+first run # DDLC first run file
+# Operating system specific
 .DS_Store
-Monika After Story/.DS_Store
-Monika After Story/characters/monika.chr
