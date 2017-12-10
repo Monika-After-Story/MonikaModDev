@@ -4345,7 +4345,7 @@ label monika_confidence_2:
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
     
-    init 5 python:
+init 5 python:
     for key in ['cheesy','love']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_cheesy')
