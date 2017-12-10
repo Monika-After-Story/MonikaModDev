@@ -4346,7 +4346,7 @@ label monika_confidence_2:
     return
     
 init 5 python:
-    for key in ['write','writing','tips','monikas_writing_tips']:
+    for key in ['write','tips']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_write')
     monika_random_topics.append('monika_write')
