@@ -4367,10 +4367,10 @@ label monika_book:
     m 2i "Have you heard of that show...Moon and the Forces of Good?"
     menu:
         m 2l "Is that what it's called?"
-        "Yes."
+        "Yes.":
              m 2e "Ehehe...are you sure?"
              m 2b "Well, I'll trust your judgement!
-         "No."
+         "No.":
              m 1j "Ahaha, I thought so."
              m 1k "Thanks for being honest."
     m "Did you know it started out as a boy who loved Dragon Ball and a girl who loved Sailor Moon?"
