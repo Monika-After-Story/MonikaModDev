@@ -4344,6 +4344,28 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
+    
+    init 5 python:
+    for key in ['cheesy','love']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_cheesy')
+    monika_random_topics.append('monika_cheesy')
+
+label monika_cheesy:
+    m "Hey, [player]."
+    m "Remember how I told you that I feel romantic when the moment is right?"
+    m 4k "Well i'm feeling that way now."
+    m 1j "Ehehe~"
+    m "Just understand, [player]."
+    m 1e "I care for you very much."
+    m 1e "I don't know what I would've done if you hadn't downloaded this mod."
+    m 1j "Thank you for caring about me as well."
+    m "I love you with all my heart, [player]."
+    m "You make my year!"
+    m 1j "Ehehe~"
+    m "Too cheesy?"
+    m "Oh well, it's how I feel!"
+    return
 
 ##################
 #Incomplete ideas#
