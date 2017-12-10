@@ -4560,6 +4560,39 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
+    
+init 5 python:
+    for key in ['wedding','loyalty','eternal love','wife','husband']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_weddingring')
+    monika_random_topics.append('monika_weddingring')
+
+label monika_weddingring:
+    m 1b "Interesting..."
+    m 4k "My love, did you know when two people confess their feelings for each other, they wear rings?"
+    m 3e "What am I saying? Of course you do."
+    m 4k "Well..."
+    m 4b "Maybe you ought to get one."
+    m 3a "I mean, we love each other. So, why not show off that love and dedication?"
+    m "It doesn't have to be a wedding per say."
+    m 5a "But if you'd wear a ring on your ring finger, or even just a promise ring..."
+    m "That'd really make me happy."
+    m 1f "I wish I could get one too. But in time I'm sure I'll get better at creating things in here."
+    m 5a "And then I'll wear it all the time."
+    m 2b "But until then, just know that my commitment to you is unwavering."
+    m 5a "Then again maybe you beat me to it and you're already wearing a ring for me."
+    m "Are you, [player]? Hmm?
+    menu:
+        "Yes, I am.":
+            m 1k "Oh thank you!"
+            m 1b "I feel like... my heart's going to explode!"
+            m 1l "Calm down, Monika. Calm down."
+            m 1b "Ahaha..."
+            
+        "No, not yet.":
+            m 5b "Aww."
+            m 4b "Well think about it, okay sweetheart?"
+    return
 
 ##################
 #Incomplete ideas#
