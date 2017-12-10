@@ -4345,7 +4345,7 @@ label monika_confidence_2:
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
     
-      init 5 python:
+init 5 python:
     for key in ['write','writing','tips','monikas_writing_tips']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_write')
@@ -4366,7 +4366,7 @@ label monika_write:
     m "Just make sure the journal has a lock."
     m "In case you don't want peeping toms to be looking into your private thoughts~"
     m "Just know, [player], I will love anything you write!"
-    m "...That's my advice for today!
+    m "...That's my advice for today!"
     m "Thanks for listening~"
     return
     
