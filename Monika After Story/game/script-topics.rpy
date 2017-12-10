@@ -4594,6 +4594,32 @@ label monika_weddingring:
             m 1a "Well, at least think about it, okay?"
     return
 
+init 5 python:
+    for key in ['sport','sports']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_sports')
+    monika_random_topics.append('monika_sports')
+
+label monika_sports:
+    m 1a "I've been thinking about stuff we can do together."
+    m "You know, when I finally find a way into your reality."
+    m 1k "Sports are always fun!"
+    m 1a "It can be a great way to get exercise and stay fit."
+    m "Soccer and tennis are nice examples."
+    m 2b "Soccer requires a lot of teamwork and coordination. The moment you finally succeed and score a goal is absolutely thrilling!"
+    m "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
+    m 1l "... Though the long rallies can be a little tiring, ehehe~"
+    m 1a "Do you like playing sports, [player]?"
+    menu:
+        "Yes.":
+            m 1k "Maybe we could play together sometime in the future. It would be wonderful."
+            m 1b "But don't expect me to go easy on you. ahaha!"
+        "No.":
+            m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
+            m "I would hate to see you get sick because of something like that..."
+        
+    return
+
 ##################
 #Incomplete ideas#
 ##################
