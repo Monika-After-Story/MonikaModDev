@@ -4621,12 +4621,12 @@ label monika_sports:
     return
     
 init 5 python:
-    for key in ['coffee']:
+    for key in ['caffeine']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_coffee')#id
-    monika_random_topics.append('monika_coffee')
+        monika_topics[key].append('monika_caffeine')#id
+    monika_random_topics.append('monika_caffeine')
 
-label monika_coffee:
+label monika_caffeine:
     m 1b "Do you drink much coffee, [player]?"
     m "I tend to enjoy a nice cup of coffee in the mornings."
     m 1j "The warmth is really soothing, and the energy helps me stay focused."
