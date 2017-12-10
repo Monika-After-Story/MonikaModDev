@@ -204,6 +204,9 @@ init -10 python in mas_poemgame_consts:
     # glitch word scare odds
     ODDS_SCARE = 400
 
+    # BAA ssound odds
+    ODDS_BAA = 10
+
 # store to handle sticker generation
 init -2 python in mas_poemgamestickers:
     import store.mas_poemgame_consts as mas_pg_consts
@@ -459,6 +462,20 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             if not glitch_wordscare[1]: # None
                 glitch_wordscare[1] = mas_pg_consts.ODDS_SCARE
 
+            # stuff glitchword scare handles
+            # makes the poem game go into glitch mode (white display)
+            poemgame_glitch = False
+
+            if (glitch_baa is not None
+                and len(glitch_baa) >= 2
+                and glitch_baa[0]):
+
+                # plays the baa sound which is a glitch sound
+                played_baa = False
+
+                if not glitch_baa[1]: # None
+                    glitch_baa[1] = mas_pg_consts.ODDS_BAA
+
         else: # None, or length < 2, or first item is False
             glitch_wordscare = None
 
@@ -529,13 +546,6 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
     # okay here begins the main flow
     python:
-
-        if glitch_wordscare:
-            # makes the poem game go into glitch mode (white display)
-            poemgame_glitch = False
-
-            # plays the baa sound (which is a glitch thing i think)
-            played_baa = False
 
         # current word progress
         progress = 1
