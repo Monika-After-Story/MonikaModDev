@@ -4543,15 +4543,16 @@ label monika_sports:
     m 1k "Sports are always fun!"
     m 1a "It can be a great way to get exercise and stay fit."
     m "Soccer and tennis are nice examples."
-    m 2b "Soccer requires a lot of teamwork and coordination is scoring every points. The moment of success is thrilling!"
-    m "Playing tennis helps improve hand-eye coordination, and keeps you on your toes."
-    m 1l "...Though the long rallies can be a little tiring, ehehe~"
+    m 2b "Soccer requires a lot of teamwork and coordination. The moment you finally succeed and score a goal is absolutely thrilling!"
+    m "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
+    m 1l "... Though the long rallies can be a little tiring, ehehe~"
     m 1a "Do you like playing sports, [player]?"
     menu:
         "Yes.":
-            m 1k "Maybe we could play some sports together sometime in the future. It would be a marvelous time."
+            m 1k "Maybe we could play together sometime in the future. It would be wonderful."
+            m 1b "But don't expect me to go easy on you. ahaha!"
         "No.":
-            m 1e "Oh... Well, that’s okay, but I hope you’re getting enough exercise!"
+            m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
         
     return
