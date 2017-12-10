@@ -4562,7 +4562,7 @@ label monika_ageinf:
     return
     
 init 5 python:
-    for key in ['wedding','loyalty','eternal love','wife','husband']:
+    for key in ['wedding','loyalty','wife','husband']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_weddingring')
     monika_random_topics.append('monika_weddingring')
