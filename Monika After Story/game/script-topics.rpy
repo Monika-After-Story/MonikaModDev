@@ -4620,6 +4620,47 @@ label monika_sports:
         
     return
 
+init 5 python:
+    for key in ['otaku', 'neet']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_otaku')
+    monika_random_topics.append('monika_otaku')
+    
+label monika_otaku:
+    m 1a "Hey, [player]?"
+    menu:
+        m 2b "You watch anime and read manga, right?"
+        "Yes":
+            m 1a "I can't say I'm surprised, really." 
+            
+        "No":
+            m 1c "Oh, really?"
+            m 1m "That's a little surprising, honestly..."
+            m 1a "This isn't exactly the sort of game that your average person would pick up and play, but to each their own, I suppose."
+    m 2a "I only asked because you're playing a game like this, after all."
+    m 1j "Don't worry, I'm not one to judge, ahaha~"
+    m 1a "You shouldn't be ashamed if you're into that sort of thing, you know."
+    m 2i "I'm being serious. There isn't anything wrong with liking anime or manga."
+    m 1a "After all, Natsuki reads manga too, remember?"
+    m 2i "Really, society is way too judgemental nowadays."
+    m "It's not like the moment you watch anime is the moment you become a 'shut-in' for the rest of your life."
+    m "It's just a hobby, you know?"
+    m 1a "Nothing more than an interest."
+    m "But..."
+    m "I can't deny that hardcore otakus do exist."
+    m 1e "It's not like I despise them, or anything like that, it's just that they're..."
+    m 1c "Immersed."
+    m "Way too immersed, if you ask me."
+    m 1e "It's as if they can't tell the difference between fantasy and reality anymore."
+    m 1d "You aren't like that, right, [player]?"
+    m "If you're an otaku, I respect that."
+    m 2l "Just remember not to get too into that kind of thing, okay?"
+    m 2a "After all, there's a big difference between obsession and dedication."
+    m "I wouldn't want to be replaced by some two-dimensional cutout."
+    m "Besides, if you ever want to escape from reality..."
+    m 1k "I can be your real-life fantasy instead~"
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
