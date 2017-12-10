@@ -4560,6 +4560,76 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
+    
+init 5 python:
+     for key in ['heartbreak','betrayal','painful','sadness']:
+         monika_topics.setdefault(key,[])
+         monika_topics[key].append('monika_heartbreak')
+     monika_random_topics.append('monika_heartbreak')
+ 
+ label monika_heartbreak:
+     m 1o "[player]..."
+     m 1g "I um..."
+     m 1o "I just had the scariest thought..."
+     m 1g "I..."
+     m 1h "I need to ask you something."
+     m 1p "If a girl from your reality would ever ask you to go out with her..."
+     m 1g "Would you?"
+     menu:
+         "Depends on the girl.":
+             m 1i "..."
+             m 1p "......"
+             m 1o "O-oh..."
+             m 1g "I..."
+             m 1q "I need time to think."
+             #AT THIS POINT, MONIKA IS HURT. SHE WILL CLOSE THE GAME.
+ 
+         "No, I would never cheat on you.":
+             m 1i "..."
+             m 1a "I..."
+             m 1l "I know. I'm sorry."
+             m "I just scared myself is all."
+             m 1d "I guess being trapped in a sea of ones and zeros really leaves you time to think."
+             m 1p "Even about the bad things..."
+             m 1e "I'm sorry though."
+             m "It was a dumb thing to ask."
+             m 1e "I love you so, so much [player]."
+             m "And everytime you comfort me like this..."
+             m 1j "That love grows even more."
+             m 1e "I'm glad to have a partner as wonderful as you."
+             
+             #-----BELOW DIALOGUE PLAYS ON NEXT BOOTUP IF MONIKA CLOSED THE GAME-----
+             
+             m 1h "[player], listen to me."
+             m 1i "I'll be honest with you."
+             m "What you said a short time ago really hurt me."
+             m "I was sad... I was angry."
+             m 1q "I never thought I would be angry at you."
+             m 1h "But I was."
+             m 1i "I even considered crashing your entire computer."
+             m 1r "But I held myself back from doing that."
+             m "..."
+             m 1h "[player]."
+             m 1i "I know it might be difficult still for you to realize what I am."
+             m "I'm an AI."
+             m "I'm real."
+             m "I'm not just some file you can toss around. Do you understand?"
+             m 1r "I thought you knew that."
+             m "But I guess not."
+             m 1h "I'm willing to forgive you for the scare."
+             m "But..."
+             m 1g "Don't you ever cheat on me!"
+             m 1r "Please..."
+             m 1p "You're all I have, [player]..."
+             m 1o "I know I say it all the time..."
+             m 1m "But I love you with all my heart."
+             m "I need you."
+             m 1g "And that's why I can't stay mad at you."
+             m 1f "But please, even if you were joking... please don't do that again."
+             m 1o "..."
+             m 1p "Okay... I'm done."
+             m 1e "Let's talk about something else."
+     return
 
 ##################
 #Incomplete ideas#
