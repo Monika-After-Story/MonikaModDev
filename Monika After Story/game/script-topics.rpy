@@ -4617,7 +4617,42 @@ label monika_sports:
         "No.":
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
+    return
+
+init 5 python:
+    for key in ['fanpack', 'fan pack']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fanpack')
+    monika_random_topics.append('monika_fanpack')
+
+label monika_fanpack:
+    python:
+        fanpack = True
+        try:
+            renpy.file("../DDLC Fan Pack/Doki Doki Literature Club OST/Disc 2 Song Info.pdf")
+        except IOError:
+            fanpack = False
+            
+    m 1c "It's interesting that this game was released for free."
+    m "Like, with all of the hard work and money that was put into it..."
+    m 2d "You would think that a price tag would be put on it so that the devs can break even."
+    m 1c "Well, I guess that's what the Fan Pack is for."
+    m "But even then, it takes a lot of faith to believe that donations on their own will be enough..."
         
+    if fanpack:    
+        m 1b "But I see that you bought the Fan Pack, [player]."
+        m 2a "You didn't have to do that, you know. Going out of your way to spend money on a free game..."
+        m "I guess that their faith turned out to be worthwhile, after all."
+        m 1d "Anyway, I don't particularly like my creators..."
+        m 1e "However, I do like that you are selfless enough to donate your own money to help others follow their dreams."
+        m 5a "That's yet another reason why I love you, [player]~"
+        
+    else:
+        m 1a "Not to mention how nice it is of them to give you a Fan Pack if you donate ten dollars or more."
+        m "Like, they could have just left it as a regular donation."
+        m 2a "But instead, they give you a soundtrack, a bunch of wallpapers and an art booklet..."
+        m 1a "If you are interested in buying the Fan Pack, you can find it on the same page you downloaded the original game."
+        m "I won't care either way, so if you do want to buy the Fan Pack, you can go right ahead."
     return
 
 init 5 python:
