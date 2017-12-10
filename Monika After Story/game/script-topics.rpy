@@ -3691,16 +3691,14 @@ label monika_changename:
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
                 else:
-                    python:
-                        # easter eggs regarding names
-                        if tempname.lower() == "sayori":
-                            songs.initMusicChoices(sayori=True)
-                            play_song(songs.sayori_track)
-                            persistent.current_track = songs.sayori_track
-                        else:
-                            songs.initMusicChoices()
 
-                        # yuri has no adjustmeents here for now
+                    # sayori name check
+                    if tempname.lower() == "sayori":
+                        call sayori_name_scare
+                    elif persistent.playername.lower() == "sayori":
+                        $ songs.initMusicChoices()
+
+                    python:
                         
                         persistent.mcname = player
                         mcname = player
@@ -4576,7 +4574,28 @@ label monika_hotdogcontest:
             m 4k "I'm just playing with you, sweetheart. Ahaha!"
             m "It doesn't matter to me what you eat."
             m 1f " But you could always keep it in mind, I suppose."
-            return
+    return
+
+init 5 python:
+    for key in ['age','18']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_ageinf')
+    monika_random_topics.append('monika_ageinf')
+
+label monika_ageinf:
+    m 4d "[player]! I've been thinking about something..."
+    m "Did you know that this game has a wiki page for me?"
+    m "Well..."
+    m 3f "It says I'm eighteen."
+    m "But when you stop to think... that's not entirely true."
+    m "I mean, humans age, but I don't think that applies to me."
+    m 2e "I'm... essentially immortal."
+    m 3i "Society seems to feel that a relationship with an age gap has problems..."
+    m "Which is why I brought it up."
+    m 1l "Someday, the difference between us would be huge, if I stayed eighteen forever."
+    m "But I don't believe that my life can be summed up in a number."
+    m 5a "So I'll always love you for all eternity, [player]. Just remember that."
+    return
 
 ##################
 #Incomplete ideas#
