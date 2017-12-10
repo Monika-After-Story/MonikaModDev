@@ -4576,7 +4576,7 @@ label monika_hotdogcontest:
             m 4k "I'm just playing with you, sweetheart. Ahaha!"
             m "It doesn't matter to me what you eat."
             m 1f " But you could always keep it in mind, I suppose."
-    return
+            return
 
 ##################
 #Incomplete ideas#
