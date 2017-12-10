@@ -4375,6 +4375,7 @@ label monika_music2:
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
         m 5a "Maybe one day, we can make that dream come true~"
+    return
 
 init 5 python:
     for key in ["confidence", "initiative", "success", "vulnerability"]:
@@ -4661,6 +4662,31 @@ label monika_otaku:
     m 1k "I can be your real-life fantasy instead~"
     return
     
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['rules','law','laws']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_law') # Identifier
+    monika_random_topics.append('monika_law') # Optional. Remove if you don't want Monika to bring this up at random.
+
+label monika_law:
+    m 1d "Hey, [player]..."
+    m "Have you ever intentionally done anything against the law before?"
+    m "You always hear about people breaking the law on purpose, whether it's for small things, or a much bigger purpose."
+    m 2i "In fact, thousands of people break the law everyday without even knowing it."
+    m "I mean, even the smallest of infractions!"
+    m "In my opinion, a lot of the petty laws are quite silly and unnecessary."
+    m "Some of which don't really serve a greater purpose for the general public."
+    m "I'm sure there is a reason they exist, I just haven't really found a way to justify them yet."
+    m 1l "Sorry if this came off as a bit of a weird question, ahaha."
+    m "I just want to make sure you don't get in trouble..."
+    m 1o "I don't even want to imagine what it would be like without you here by my side."
+    m "Knowing you are locked up in some cell and I'm unable to do anything about it..."
+    m "Please do your best to avoid any conflict with the law, okay [player]?"
+    m 1r "It would be truly devastating to find out I might not get to see you again for a really long time."
+    m "I'll just make sure to appreciate you as much as I can while you're here with me~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
