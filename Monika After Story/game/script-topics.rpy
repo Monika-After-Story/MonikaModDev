@@ -4633,7 +4633,7 @@ label monika_meditation:
     m 1e "I love you, and I'll always try to help you if you're feeling down."
     m 5a "Don't you ever forget that, [player]~"
     return
-
+    
 init 5 python:
     for key in ['otaku', 'neet']:
         monika_topics.setdefault(key,[])
@@ -4702,7 +4702,26 @@ label monika_write:
     m "...That's my advice for today!"
     m "Thanks for listening~"
     return
-    
+
+init 5 python:
+    for key in ['uselessness', 'feeling useless']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_useless')#id
+    monika_random_topics.append('monika_useless')
+
+label monika_useless:
+    m 1d "Do you ever feel useless sometimes [player]?"
+    m "It feels really bad when you don't know how to approach something."
+    m 1b "Like creating music for example."
+    m "When you are making a song or track and you are at the point where you have to make the melody for the drop."
+    m "and you just cant find good sounds to use so you just scrap the entire project."
+    m 1o "Then you aren’t able to start over because you ran out of ideas."
+    m 1f "Things like that usually tend to make music producers feel useless along with other people that aren't able to think of anything to work on."
+    m 1j "I wouldn't want you to ever feel useless [player]." 
+    m 1k "So please, whatever you do don’t lose hope!"
+    m "Inspiration will come eventually!"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
