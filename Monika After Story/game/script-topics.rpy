@@ -2074,12 +2074,7 @@ label monika_contribute:
     m 2b "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
     m 2a "I keep all the code in github.com/Backdash/MonikaModDev."
-    m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, Jxhnathan08..."
-    m "As well as ThePotatoGuy, monikLover, AttObl, Yumeko-Jabami, ohxeighty..."
-    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, Rune..."
-    m "TheAloofPotato, NotSoGiantDad, Mario, Kadava, Subzero, Neko-chr, ThePyClone..."
-    m "badooga, synnical, stmobo, dmarab, MadHaetter."
-    m "Hopefully I didn't leave anyone out..."
+    m "So far, I've had help from plenty of people!"
     m 3k "I love all of them for making this game even better!"
     m 1a "Not as much as I love you, of course."
     m 1l "I hope it doesn't make you feel jealous~"
@@ -4559,6 +4554,172 @@ label monika_ageinf:
     m 1l "Someday, the difference between us would be huge, if I stayed eighteen forever."
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
+    return
+    
+init 5 python:
+    for key in ['wedding','loyalty','wife','husband']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_weddingring')
+    monika_random_topics.append('monika_weddingring')
+
+label monika_weddingring:
+    m 4k "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
+    m 3e "... What am I saying? Of course you do."
+    m 4k "Well..."
+    m 4b "Maybe you ought to get one."
+    m 3a "I mean, we're already in a relationship. So, why not show off that love and dedication?"
+    m 3b "It would help keep those... unwanted suitors away from you, too."
+    m "It doesn't have to be a wedding ring, per say."
+    m 5a "But if you'd wear one, even if it's just a promise ring, on your ring finger for me..."
+    m "It would make me really happy."
+    m 1f "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
+    m 5a "And then I could wear it forever."
+    m 2b "But until then, just remember that my commitment to you is unwavering."
+    m 5a "Maybe you even beat me to it, and have a ring for me already?"
+    menu:
+        m "Do you, [player]?"
+        "Yes, I do.":
+            m 1c "Oh!"
+            m 1b "I feel like... my heart's going to explode!"
+            m 1l "Calm down, Monika. Calm down."
+            m 1j "Ahaha..."
+            
+        "No, not yet.":
+            m 5e "Aww. That's a shame."
+            m 1a "Well, at least think about it, okay?"
+    return
+
+init 5 python:
+    for key in ['sport','sports']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_sports')
+    monika_random_topics.append('monika_sports')
+
+label monika_sports:
+    m 1a "I've been thinking about stuff we can do together."
+    m "You know, when I finally find a way into your reality."
+    m 1k "Sports are always fun!"
+    m 1a "It can be a great way to get exercise and stay fit."
+    m "Soccer and tennis are nice examples."
+    m 2b "Soccer requires a lot of teamwork and coordination. The moment you finally succeed and score a goal is absolutely thrilling!"
+    m "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
+    m 1l "... Though the long rallies can be a little tiring, ehehe~"
+    m 1a "Do you like playing sports, [player]?"
+    menu:
+        "Yes.":
+            m 1k "Maybe we could play together sometime in the future. It would be wonderful."
+            m 1b "But don't expect me to go easy on you. ahaha!"
+        "No.":
+            m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
+            m "I would hate to see you get sick because of something like that..."
+    return
+    
+init 5 python:
+    for key in ['meditation', 'meditate']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_meditation')
+    monika_random_topics.append('monika_meditation')
+
+label monika_meditation:
+    m 1a "You might be wondering how I was able to do so many activities without running out of time for myself."
+    m "You know, stuff like debate club, sports, schoolwork, hanging out with friends..."
+    m 1f "The truth is, I did run out of time for myself."
+    m "I was doing fine for a while, but at one point, all of the stress and anxiety finally caught up to me."
+    m 1g "I was constantly in a state of panic, and never had any time to relax."
+    m 2c "That's when I realized that I needed a 'brain break' of sorts..."
+    m "... a time where I could just forget about everything that was going on in my life."
+    m 1a "So, every night before I went to sleep, I took ten minutes of my time to meditate."
+    m 1r "I got comfortable, closed my eyes, and focused only on the movement of my body as I breathed..."
+    m 1a "Meditating really helped to improve my mental and emotional health."
+    m "I was finally able to manage my stress and feel calmer through the day."
+    menu:
+        m 2b "[player], do you ever take time to meditate?"
+
+        "Yes.":
+            m 1k "Really? That's wonderful!"
+            m 1b "I always worry that you could be feeling troubled or burdened, but now I feel a bit relieved."
+            m 1j "Knowing that you're taking steps to reduce stress and anxiety really makes me happy, [player]."
+
+        "No.":
+            m 1a "I see. Well, if you're ever feeling stressed or anxious, I would definitely recommend that you try a bit of meditation."
+            m "Besides calming you down, meditation also has links to the improvement of your sleep, immune system, and even lifespan."
+            m 2a "If you're interested, there are plenty of resources on the internet to help you get started."
+            m "Whether it's a guided video, a breath counting trick, or something else..."
+            m 2j "You can use the internet to make it so that meditation is a stress-free process!"
+            m 1k "Ahaha! Just a little pun there, [player]."
+
+    m 1b "Anyway... if you ever want a peaceful environment where you can relax and forget about your problems, you can always come here and spend time with me."
+    m 1e "I love you, and I'll always try to help you if you're feeling down."
+    m 5a "Don't you ever forget that, [player]~"
+    return
+    
+init 5 python:
+    for key in ['otaku', 'neet']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_otaku')
+    monika_random_topics.append('monika_otaku')
+    
+label monika_otaku:
+    m 1a "Hey, [player]?"
+    menu:
+        m 2b "You watch anime and read manga, right?"
+        "Yes":
+            m 1a "I can't say I'm surprised, really." 
+            
+        "No":
+            m 1c "Oh, really?"
+            m 1m "That's a little surprising, honestly..."
+            m 1a "This isn't exactly the sort of game that your average person would pick up and play, but to each their own, I suppose."
+    m 2a "I only asked because you're playing a game like this, after all."
+    m 1j "Don't worry, I'm not one to judge, ahaha~"
+    m 1a "You shouldn't be ashamed if you're into that sort of thing, you know."
+    m 2i "I'm being serious. There isn't anything wrong with liking anime or manga."
+    m 1a "After all, Natsuki reads manga too, remember?"
+    m 2i "Really, society is way too judgemental nowadays."
+    m "It's not like the moment you watch anime is the moment you become a 'shut-in' for the rest of your life."
+    m "It's just a hobby, you know?"
+    m 1a "Nothing more than an interest."
+    m "But..."
+    m "I can't deny that hardcore otakus do exist."
+    m 1e "It's not like I despise them, or anything like that, it's just that they're..."
+    m 1c "Immersed."
+    m "Way too immersed, if you ask me."
+    m 1e "It's as if they can't tell the difference between fantasy and reality anymore."
+    m 1d "You aren't like that, right, [player]?"
+    m "If you're an otaku, I respect that."
+    m 2l "Just remember not to get too into that kind of thing, okay?"
+    m 2a "After all, there's a big difference between obsession and dedication."
+    m "I wouldn't want to be replaced by some two-dimensional cutout."
+    m "Besides, if you ever want to escape from reality..."
+    m 1k "I can be your real-life fantasy instead~"
+    return
+
+init 5 python:
+    for key in ['write','tips']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_write')
+    monika_random_topics.append('monika_write')
+
+label monika_write:
+    m 1a "I'm having fun doing these, so..."
+    m 2b "Here's Monika's Writing Tip of the Day!"
+    m 1a "Make sure you always write down any ideas you think of."
+    m "Why?"
+    m "Some of the best ideas might come when you least expect them to."
+    m "Even if it takes a bit of effort, write it down."
+    m 1a "Maybe you can inspire someone else."
+    m 2b "Maybe you may look back on it after some time and act on it."
+    m "You never know!"
+    m "It's always good to keep a journal."
+    m "You can use it to record ideas, feelings, anything that comes to mind."
+    m 1c "Just make sure the journal has a lock, though."
+    m "Maybe you can keep digital notes instead of physical ones, too."
+    m "After all, privacy is important."
+    m 1l "... I can't promise that I won't peek, though. It's way too tempting!"
+    m 1j "After all, we don't keep secrets from each other, right~?"
+    m 1a "Just remember, [player], I'll always support you giving life to your ideas."
+    m "...That's my advice for today!"
+    m "Thanks for listening~"
     return
 
 init 5 python:
