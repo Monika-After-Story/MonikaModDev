@@ -131,7 +131,7 @@ Place return at the last line, after the last sentence of your dialogue.
 ![Guide 3](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide3.png?raw=True)
 
 If you're writing dialogue with choices, simply write "menu":". All lines in a menu must be indented. 
-Dialogue in a particular choice must have an addtional indent.
+Dialogue in a particular choice must have an addtional indent. (**IMPORTANT**: Do NOT place an expression on the line that will serve as the question, it will make the game crash.)
 
 The line below the menu will act as the question. Choices are on the same line, but end with a colon (:).
 
