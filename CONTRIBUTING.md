@@ -124,7 +124,7 @@ Use the title of your topic as a label. (**IMPORTANT:** Please make sure that th
 
 When writing dialogue always start with m **#X** " and end with".
 
-For **#X** refer to the [cheat sheet](https://github.com/Backdash/MonikaModDev/blob/master/docs/MonikaCheatsheet.jpg) for the numbers and letters. (**IMPORTANT:** Do NOT use the following expression **2b** it does not work and can break the line of code.)
+For **#X** refer to the [cheat sheet](https://github.com/Backdash/MonikaModDev/blob/master/docs/MonikaCheatsheet.jpg) for the numbers and letters.
 
 Place return at the last line, after the last sentence of your dialogue.
 
