@@ -2,8 +2,20 @@ label monika_christmas
     m "[player]! Do you know what day it is?'
     m "Of course you do. It's Christmas!"
     
-
-
+label monika_cozy
+m 2a "Do you know the one thing I love about the cold weather, [player]?"
+    m 3j "Anything warm feels really nice~"
+    m 3a "Those who get cold hands really appreciate that feeling."
+    m "It's like feeling a loved one's embrace~"
+    m 2b "You also get to wear your winter clothes that have been stuck in your closet."
+    m "Finally being able to you whip out your winter fashion set is always a treat."
+    m 4e "But you know what the best way to warm yourself up is?"
+    m "Cuddling with the one you love in front of the fireplace~"
+    m 2m "Just sitting there under a warm blanket, sharing a hot beverage."
+    m 3e "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather everyday!"
+    m 1j "I'd never let you go once I got a hold of you, [player]~"
+    return
+    
 label monika_snow
     m "Does it ever snow where you live, [player]?"
     m "I've always liked the peaceful aura it seems to give off."
