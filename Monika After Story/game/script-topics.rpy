@@ -4698,6 +4698,34 @@ label monika_otaku:
     m "Besides, if you ever want to escape from reality..."
     m 1k "I can be your real-life fantasy instead~"
     return
+
+init 5 python:
+    for key in ['write','tips']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_write')
+    monika_random_topics.append('monika_write')
+
+label monika_write:
+    m 1a "I'm having fun doing these, so..."
+    m 2b "Here's Monika's Writing Tip of the Day!"
+    m 1a "Make sure you always write down any ideas you think of."
+    m "Why?"
+    m "Some of the best ideas might come when you least expect them to."
+    m "Even if it takes a bit of effort, write it down."
+    m 1a "Maybe you can inspire someone else."
+    m 2b "Maybe you may look back on it after some time and act on it."
+    m "You never know!"
+    m "It's always good to keep a journal."
+    m "You can use it to record ideas, feelings, anything that comes to mind."
+    m 1c "Just make sure the journal has a lock, though."
+    m "Maybe you can keep digital notes instead of physical ones, too."
+    m "After all, privacy is important."
+    m 1l "... I can't promise that I won't peek, though. It's way too tempting!"
+    m 1j "After all, we don't keep secrets from each other, right~?"
+    m 1a "Just remember, [player], I'll always support you giving life to your ideas."
+    m "...That's my advice for today!"
+    m "Thanks for listening~"
+    return
     
 ##################
 #Incomplete ideas#
