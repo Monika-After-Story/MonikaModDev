@@ -3690,7 +3690,7 @@ label monika_changename:
 
                     # sayori name check
                     if tempname.lower() == "sayori":
-                        call sayori_name_scare
+                        call sayori_name_scare from _call_sayori_name_scare_1
                     elif persistent.playername.lower() == "sayori":
                         $ songs.initMusicChoices()
 
