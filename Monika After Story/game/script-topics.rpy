@@ -4569,15 +4569,15 @@ init 5 python:
 
 label monika_urgent:
     m 1i "[player], do you have a second?"
-    m 1o "There's something I need to confess."
+    m 1o "There's something I need to tell you."
     m "It's important."
     m 1g "I..."
-    m 1r "..."
-    m 5a "Love you!"
-    m 2k "Ahaha! Did I worry you?"
-    m "Sorry."
-    m 1a "But it had you going there for a second!"
-    m "Heh."
+    m 1m "..."
+    m 1k "Love you!"
+    m 2a "Ahaha~! Did I have you worried?"
+    m 1l "Sorry~"
+    m 1a "I wish I could see the look on your face right now!"
+    m 1j "I'm sure it's adorable~"
     return
 
 ##################
