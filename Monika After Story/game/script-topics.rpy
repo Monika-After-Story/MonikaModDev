@@ -4729,6 +4729,7 @@ label monika_write:
     
 init 5 python:
     for key in ['feature','boobs','sight','personality']:
+        monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_standsout')
     monika_random_topics.append('monika_standsout')
 
