@@ -1,5 +1,5 @@
 label monika_christmas
-    m "[player]! Do you know what day it is?'
+    m "[player]! Do you know what day it is?"
     m "Of course you do. It's Christmas!"
     
 label monika_cozy
