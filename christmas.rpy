@@ -3,7 +3,7 @@ label monika_christmas
     m "Of course you do. It's Christmas!"
     
 label monika_cozy
-m 2a "Do you know the one thing I love about the cold weather, [player]?"
+    m 2a "Do you know the one thing I love about the cold weather, [player]?"
     m 3j "Anything warm feels really nice~"
     m 3a "Those who get cold hands really appreciate that feeling."
     m "It's like feeling a loved one's embrace~"
