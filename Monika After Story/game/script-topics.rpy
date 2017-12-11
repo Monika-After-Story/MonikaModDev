@@ -4703,6 +4703,23 @@ label monika_write:
     m "Thanks for listening~"
     return
     
+    init 5 python:
+    for key in ['mistletoe']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_mistletoe')
+    monika_random_topics.append('monika_mistletoe')
+
+label monika_mistletoe
+    m 1a "Say,[player]."  
+    m 2b "You've heard of the tradition about mistletoe right?"
+    m 1a "It's where people would have to kiss under the plant during the festive season."
+    m 2d "The tradition actually dates back to ancient Norse Mythology, though."
+    m "Most versions of the story tell the tale of Baldur, who was killed with an arrow made out of mistletoe."
+    m 1n "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
+    m 1a "Ahaha~"
+    
+    
+    
 ##################
 #Incomplete ideas#
 ##################
