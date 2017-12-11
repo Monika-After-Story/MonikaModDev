@@ -4898,7 +4898,7 @@ label monika_standsout:
                             m 2a "I bet your hair is beautiful, my love."
                             m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
                 
-       "Your sweet, soft lips.":
+        "Your sweet, soft lips.":
             m 1m "Aww. You're too sweet to me."
             m 3g "I want to kiss you so badly right now."
             m "But... I can't..."
@@ -4906,7 +4906,7 @@ label monika_standsout:
             m 3r "Maybe someday."
             m 1m "I'll just have to imagine the feeling until then."
        
-       "Your boobs.":
+        "Your boobs.":
             m 1h "..."
             m 1i "Silly."
             m 1l "I'm not even going to entertain that."
