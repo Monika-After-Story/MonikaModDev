@@ -4744,8 +4744,8 @@ label monika_standsout:
             m "I wish I could see your eyes."
             m 1i "Actually, what color are your eyes?"
             menu:
-               m "I need to know now."
-               "Brown.":
+                m "I need to know now."
+                "Brown.":
                     m 3b "Brown, huh?"
                     m "I wish I could see them."
                     m 2j "The stunning shade of rich mahogany. Or welcoming like that of a soft teddy bear."
@@ -4805,8 +4805,8 @@ label monika_standsout:
                     m 3a "I hope whenever you see a white ribbon, you'll think of me."
                     m 1h "Now I'm curious. What is your hair color?"
                     menu:
-                       m "Tell me."
-                       "Brown.":
+                        m "Tell me."
+                        "Brown.":
                             m 3b "Brown, huh?"
                             m "The same as mine!"
                             m 2j "The stunning shade of rich mahogany. Or welcoming like that of a soft teddy bear."
@@ -4856,8 +4856,8 @@ label monika_standsout:
                     m 1i "Now I'm curious."
                     m "What's your hair color, love?"
                     menu:
-                       m "Tell me."
-                       "Brown.":
+                        m "Tell me."
+                        "Brown.":
                             m 3b "Brown, huh?"
                             m "The same as mine!"
                             m 2j "The stunning shade of rich mahogany. Or welcoming like that of a soft teddy bear."
