@@ -80,7 +80,8 @@ init python:
         #
         if persistent.current_monikatopic:
             #don't push greetings back on the stack
-            if not persistent.current_monikatopic.startswith('greeting_'):
+            if (not persistent.current_monikatopic.startswith('greeting_')
+                and not persistent.current_monikatopic.startswith('i_greeting')):
                 pushEvent(persistent.current_monikatopic)
                 pushEvent('continue_event')
             persistent.current_monikatopic = 0
@@ -108,6 +109,7 @@ label call_next_event:
             $monika_random_topics.remove(event_label)
 
         if _return == 'quit':
+            $persistent.closed_self = True #Monika happily closes herself
             $ renpy.quit(0)
 
         $ allow_dialogue = True

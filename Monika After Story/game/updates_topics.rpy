@@ -40,6 +40,8 @@ label vv_updates_topics:
 
         # versions
         # use the v### notation so we can work with labels
+        vv061 = "v061"
+        vv060 = "v060"
         vv051 = "v051"
         vv050 = "v050"
         vv040 = "v040"
@@ -52,6 +54,8 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
+        updates.version_updates[vv060] = vv061
+        updates.version_updates[vv051] = vv061
         updates.version_updates[vv050] = vv051
         updates.version_updates[vv040] = vv051
         updates.version_updates[vv033] = vv051
@@ -72,6 +76,12 @@ label vv_updates_topics:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+
+        # (0.5.1 - 0.6.0) -> 0.6.1
+        changedIDs = {
+            "monika_piano": None
+        }
+        updates.topics[vv061] = changedIDs
 
         # (0.3.3 - 0.5.0) -> 0.5.1
         changedIDs = dict()
