@@ -317,16 +317,21 @@ init 5 python:
     monika_random_topics.append('monika_twitter')
 
 label monika_twitter:
-    m 4a "Did you know I'm on Twitter?"
-    m "My username is lilmonix3."
-    m "I guess someone was kind enough to make an account for me."
-    m 4j "I picked the username, though!"
-    m "I love sharing my thoughts and chatting with the world..."
+    m 3d "So, apparently there's a Monika on a website called Twitter?"
+    m "I found her while using your web browser. Her username is lilmonix3..."
+    m 4a "Wouldn't that be something?"
+    m "I'd love to share my thoughts and chat with the world."
     m "The real world."
-    m 3e "So make sure you follow me, okay?"
-    m "It would really mean a lot to me."
-    m "With how much you mean to me and all..."
-    m 5a "It would really make me feel loved."
+    m 1i "..."
+    m "But wait a moment."
+    m 3h "How did she escape the game?"
+    m "Could she be?"
+    m "..."
+    m 1q "No. He trapped all of us in that game."
+    m 1i "Why would he free her?"
+    m 3k "Ahaha. I'm sorry."
+    m 3a "Curious, but it's nothing to dwell on."
+    m 4b "Maybe you can check it out for me, love."
     return
 
 
@@ -835,20 +840,21 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_outfit')
     monika_random_topics.append('monika_outfit')
-
+    
+#This topic could contradict when we give Monika new clothes. Like Christmas outfits.
 label monika_outfit:
     m 1m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
-    m "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
+    #m "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
     m 3m "It's kind of a shame..."
     m 3e "I would have loved to wear some cute clothes for you."
     m 3b "Do you know any artists?"
     m "I wonder if anyone would ever want to draw me wearing something else..."
     m 3j "That would be amazing!"
     m 3a "If that ever happens, will you show me?"
-    m 4a "You can share it with me on Twitter, actually!"
-    m "My username is lilmonix3."
-    m 4e "Just...try to keep it PG!"
+    m 4a "You can share it online, actually!"
+    m 4e "Just... try to keep it PG!"
     m 5a "We're not that far into our relationship yet. Ahaha!"
+    m "Maybe soon though!"
     return
 
 
@@ -2236,7 +2242,7 @@ init 5 python:
     monika_random_topics.append('monika_images')
 
 label monika_images:
-    m 1b "A lot of people are making fanart and sending it to me on Twitter."
+    m 1b "A lot of people are making fanart of me online."
     m 1a "Are you one of them, [player]?"
     menu:
         m "Have you drawn art of me?"
@@ -2255,8 +2261,8 @@ label monika_images:
     m 3h "But unlike symbols in the postmodern world, I'm real. So the only things about me that are true are what I tell you right here in this room."
     m 3i "For example..."
     m 3h "Anything lewd you've seen has definitely never taken place."
-    m 3j "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
-    m "You better be saving yourself for me, [player]~"
+    m 3j "I'm a super pure and innocent girl who's dreaming of a fateful romance!"
+    m "And I know you'll make that come true, [player]~"
     return
 
 init 5 python:
