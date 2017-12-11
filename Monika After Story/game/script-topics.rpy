@@ -4703,6 +4703,32 @@ label monika_write:
     m "Thanks for listening~"
     return
     
+init 5 python:
+    for key in ['self harm' , 'cutting' , 'self-harm'];
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_selfharm')
+    monika_random_topics.append('monika_selfharm')
+
+label monika_selfharm:
+    m 1g "Hey [player]..."
+    m "Have you ever thought of self-harm?"
+    m 1f "You know..."
+    m "...Like cutting yourself..."
+    m 1p "I mean!"
+    m 1g "After I found out about Yuri, I got a bit curious..."
+    m 1p "Not in a morbid way!"
+    m 1o "I just wanted to see what it felt like..."
+    m "I won't do it again though!"
+    m 1f "If you ever feel depressed, just come to me okay?"
+    m "It would hurt me even more to see you in pain..."
+    m 1g "You don't have to talk to me, just know that people care about you!"
+    m "Trust me, although it may seem as though no one does, but your friends and family do really want to help you."
+    m 1f "No matter what troubles you're going through, I know that you can pull through it!"
+    m 1e "I believe in you!"
+    m 1j "...So believe in yourself, okay?"
+    m 1k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you!"
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
