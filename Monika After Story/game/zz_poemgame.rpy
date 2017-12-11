@@ -207,6 +207,9 @@ init -10 python in mas_poemgame_consts:
     # BAA ssound odds
     ODDS_BAA = 10
 
+    # glitch soudn odds
+    ODDS_GLTICH_SOUND = 3
+
 # store to handle sticker generation
 init -2 python in mas_poemgamestickers:
     import store.mas_poemgame_consts as mas_pg_consts
@@ -286,7 +289,7 @@ init -2 python in mas_poemgame_val:
 #
 #   glitch_baa - Tuple of the following format:
 #           [0] -> True means do the baa glitch, false means no
-#               (If None, default False)
+#               (If None, default True)
 #           [1] -> odds that the baa glitch occurs (1 out of x)
 #               (If None, default 10)
 #       If the tuple is None (or is not of length 2), the default values are
@@ -321,6 +324,18 @@ init -2 python in mas_poemgame_val:
 #       used.
 #       NOTE: This is the glitch that causes a scare. If you want purely
 #       visisble glitch words, use glitch_words
+#       (Default: None)
+#
+#   glitch_wordscare_sound - Tuple of the following format:
+#           [0] -> True means play the glitch sound if a glictch word was
+#               clicked, False will not
+#               (If None, default True)
+#           [1] -> odds that a glitch sound will play (1 out of x)
+#               NOTE: these odds are applied after glitch_baa, if that is True
+#               (If None, default 3)
+#       If the tuple is None (or is not of length 2), the deafult vlaues are
+#       used.
+#       NOTE: Only active if glitch_wordscare is used.
 #       (Default: None)
 #
 #   music_filename - filename of the music to play. Set music to None to use
@@ -378,6 +393,7 @@ init -2 python in mas_poemgame_val:
 #   glitch_nb
 #   glitch_words
 #   glitch_wordscare
+#   glitch_wordscare_sound
 #   music_filename
 #   one_counter
 #   poem_wordlist
@@ -394,6 +410,7 @@ init -2 python in mas_poemgame_val:
 #   glitch_nb
 #   glitch_words
 #   glitch_wordscare
+#   glitch_wordscare_sound
 #   music_filename
 #   one_counter
 #   only_winner
@@ -411,6 +428,7 @@ init -2 python in mas_poemgame_val:
 #   glitch_nb
 #   glitch_words
 #   glitch_wordscare
+#   glitch_wordscare_sound
 #   music_filename
 #   one_counter
 #   show_poemhelp
@@ -466,15 +484,30 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             # makes the poem game go into glitch mode (white display)
             poemgame_glitch = False
 
-            if (glitch_baa is not None
-                and len(glitch_baa) >= 2
-                and glitch_baa[0]):
+            # baa checking
+            if (glitch_baa is None or (
+                len(glitch_baa) >= 2
+                and glitch_baa[0])):
 
                 # plays the baa sound which is a glitch sound
                 played_baa = False
 
                 if not glitch_baa[1]: # None
                     glitch_baa[1] = mas_pg_consts.ODDS_BAA
+
+            else: # length < 2, or first item is False
+                glitch_baa = None
+
+            # glitch_wordscare_sound checking
+            if (glitch_wordscare_sound is None or (
+                len(glitch_wordscare_sound) >= 2
+                and glitch_wordscare_sound[0])):
+
+                if not glitch_wordscare_sound[1]: # None
+                    glitch_wordscare_sound[1] = mas_pg_consts.ODDS_GLTICH_SOUND
+
+            else: # length < 2, or first item is False
+                glitch_wordscare_sound = None
 
         else: # None, or length < 2, or first item is False
             glitch_wordscare = None
@@ -654,6 +687,18 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                     renpy.scene()
                     renpy.show("white")
                     renpy.show("y_sticker glitch", at_list=[sticker_glitch])
+            elif poemgame_glitch:
+                if (not glitch_baa 
+                    and not played_baa
+                    and random.randint(1, glitch_baa[1]) == 1):
+                    renpy.play("gui/sfx/baa.ogg")
+                    played_baa = True
+                elif (not glitch_wordscare_sound
+                    and random.randint(1, glitch_wordscare_sound[1]) == 1):
+                    renpy.play(gui.activate_sound_glitch)
+
+           else:
+
                 elif persistent.playthrough != 3:
                     renpy.play(gui.activate_sound)
                     if persistent.playthrough == 0:
@@ -672,12 +717,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                         elif persistent.playthrough == 2 and chapter == 2: renpy.show("y_sticker_cut hop")
                         else: renpy.show("y_sticker hop")
             else:
-                r = random.randint(0, 10)
-                if r == 0 and not played_baa:
-                    renpy.play("gui/sfx/baa.ogg")
-                    played_baa = True
-                elif r <= 5: renpy.play(gui.activate_sound_glitch)
-            sPointTotal += t.sPoint
+                           sPointTotal += t.sPoint
             nPointTotal += t.nPoint
             yPointTotal += t.yPoint
             progress += 1
