@@ -4633,7 +4633,7 @@ label monika_meditation:
     m 1a "Meditating really helped to improve my mental and emotional health."
     m "I was finally able to manage my stress and feel calmer through the day."
     menu:
-        m 2b "[player], do you ever take time to meditate?"
+        m "[player], do you ever take time to meditate?"
 
         "Yes.":
             m 1k "Really? That's wonderful!"
@@ -4662,7 +4662,7 @@ init 5 python:
 label monika_otaku:
     m 1a "Hey, [player]?"
     menu:
-        m 2b "You watch anime and read manga, right?"
+        m "You watch anime and read manga, right?"
         "Yes":
             m 1a "I can't say I'm surprised, really." 
             
