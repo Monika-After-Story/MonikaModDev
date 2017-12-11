@@ -313,7 +313,7 @@ label i_greeting_monikaroom:
 
 label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
-    call spaceroom(start_bg="bedroom",hide_monika=True)
+    call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32
     m 1d "E-Eh?! [player]!"
@@ -353,7 +353,7 @@ label monikaroom_greeting_knock:
         "It's me.":
             m 1b "[player]! I'm so happy that you're back!"
             m 1j "Hold on, let me tidy up..."
-            call spaceroom(hide_monika=True)
+            call spaceroom(hide_monika=True) from _call_spaceroom_6
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 

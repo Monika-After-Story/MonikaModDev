@@ -234,7 +234,7 @@ label demo_minigame_pong:
 
     # natsuki scare if appropriate
     if persistent.playername.lower() == "natsuki":
-        call natsuki_name_scare(playing_okayev=playing_okayev)
+        call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation

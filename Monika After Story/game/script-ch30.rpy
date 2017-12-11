@@ -440,11 +440,11 @@ label ch30_autoload:
         $ config.allow_skipping = False
     $ quick_menu = True
 
-    call set_gender
+    call set_gender from _call_set_gender
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
-        call yuri_name_scare
+        call yuri_name_scare from _call_yuri_name_scare
         $ is_monika_in_room = False
     else:
         python:
