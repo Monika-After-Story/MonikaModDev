@@ -4697,11 +4697,10 @@ label monika_orchestra:
             m "...And gives you a sense of achievement..."
             m 1n "Ah, was I rambling again?"
             m "Sorry!"
-            m 1a"Anyway, you should really learn an instrument, maybe we could play together sometime~"
+            m 1a "Anyway, you should really learn an instrument, maybe we could play together sometime~"
     return
 
-
-=======
+init 5 python:
     for key in ['otaku', 'neet']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_otaku')
