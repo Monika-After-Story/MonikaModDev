@@ -4736,14 +4736,14 @@ label monika_standsout:
     m 2a "Hey, [player]? What about me stands out the most to you?"
     m "I know it's a random question. Maybe even a bit silly."
     m 5a "But I'm dying to know."
-         menu:
+    menu:
               m "So...?"
               "Your beautiful, green eyes of course.":
                   m 4k "Aww, really?"
                   m 4e "Thank you, sweetheart."
                   m "I wish I could see your eyes."
                   m 1i "Actually, what color are your eyes?"
-                      menu:
+                  menu:
                           m 5a "I need to know now."
                           "Brown.":
                               m 3b "Brown, huh?"
@@ -4798,13 +4798,13 @@ label monika_standsout:
                 m 5a "Silky smooth?"
                 m 3b "Well I'm glad it looks that way."
                 m "After all, I try to look my best for my sweetheart."
-                   menu:
+                menu:
                       m 5a "Do you like the ribbon? I thought it complimented well."
                       "Of course!":
                          m 3k "I'm glad!"
                          m 3a "I hope whenever you see a white ribbon, you'll think of me."
                          m 1h "Now I'm curious. What is your hair color?"
-                            menu:
+                         menu:
                                m 5a "Tell me."
                                "Brown.":
                                    m 3b "Brown, huh?"
@@ -4855,7 +4855,7 @@ label monika_standsout:
                     m 1h "Hmmm..."
                     m 1i "Now I'm curious."
                     m "What's your hair color, love?"
-                            menu:
+                    menu:
                                m 5a "Tell me."
                                "Brown.":
                                    m 3b "Brown, huh?"
