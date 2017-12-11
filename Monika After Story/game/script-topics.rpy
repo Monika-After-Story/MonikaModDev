@@ -3690,7 +3690,7 @@ label monika_changename:
 
                     # sayori name check
                     if tempname.lower() == "sayori":
-                        call sayori_name_scare
+                        call sayori_name_scare from _call_sayori_name_scare_1
                     elif persistent.playername.lower() == "sayori":
                         $ songs.initMusicChoices()
 
@@ -4635,6 +4635,47 @@ label monika_meditation:
     return
 
 init 5 python:
+    for key in ["orchestra", "instruments", "band"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_orchestra')
+    monika_random_topics.append('monika_orchestra')
+
+label monika_orchestra:
+    m 2d "Hey, [player], do you listen to orchestral music?"
+    m 1a "I love the way that so many different instruments can get together and create such wonderful music."
+    m "It must take a lot of dedication to practice countless hours for a few songs..."
+    m "Playing piano is the closest I can get to experiencing that firsthand."
+    m 1j "That reminds me, if you ever want me to play for you..."
+    m 1a "You can always select my song in the music menu."
+
+#First encounter with topic:
+    m "What about you, [player]? Do you play an instrument?"
+    menu: 
+        "Yes.":
+            $persistent.instrument = True
+            m 1b "Really? What do you play?"
+            $ instrumentname = renpy.input('What instrument do you play?').strip(' \t\n\r')
+            $ persistent.instrumentname = instrumentname
+            m 1a "Wow, I've always wanted to try the [instrumentname] out!"
+            m 2b "I would love to hear you play for me."
+            m "Maybe you could teach me how to play, too~"
+            m 5a "Oh! Would a duet between the [instrumentname] and the piano would sound nice?"
+            m 1j "Ehehe~"
+        "No.":
+            $persistent.instrument = False
+            m 1i "I see..."
+            m 1e "You should try to pick up an instrument that interests you, sometime."
+            m 2b "Playing the piano opened up a whole new world of expression for me. It's an incredibly rewarding experience."
+            m "Besides, playing music has tons of benefits!"
+            m "For example, it can help relieve stress, and also gives you a sense of achievement."
+            m "Writing down some of your own compositions is fun, too! I often lost track of time practicing because of how immersed I was."
+            m 1l "Ah, was I rambling again, [player]?"
+            m "Sorry!"
+            m 1a "Anyhow, you should really see if anything catches your fancy."
+            m "I would be very happy to hear you play."
+    return
+
+init 5 python:
     for key in ['otaku', 'neet']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_otaku')
@@ -4702,9 +4743,9 @@ label monika_write:
     m "...That's my advice for today!"
     m "Thanks for listening~"
     return
-    
+
 init 5 python:
-    for key in ['self harm' , 'cutting' , 'self-harm'];
+    for key in ['self harm' , 'cutting' , 'self-harm']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_selfharm')
     monika_random_topics.append('monika_selfharm')
@@ -4729,6 +4770,7 @@ label monika_selfharm:
     m 1k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you!"
     return
     
+
 ##################
 #Incomplete ideas#
 ##################
