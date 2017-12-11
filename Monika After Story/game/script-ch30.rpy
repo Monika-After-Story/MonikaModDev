@@ -115,7 +115,7 @@ init python:
     def enable_esc():
         #
         # Enables the escape key so you can go to the game menu
-        # 
+        #
         # ASSUMES:
         #   config.keymap
         if "K_ESCAPE" not in config.keymap["game_menu"]:
@@ -127,7 +127,7 @@ init python:
         #
         # ASSUMES:
         #   config.keymap
-        if "K_ESCAPE" in config.keymap["game_menu"]: 
+        if "K_ESCAPE" in config.keymap["game_menu"]:
            config.keymap["game_menu"].remove("K_ESCAPE")
 
     def play_song(song):
@@ -264,7 +264,7 @@ init python:
         return delta.days
 
 # IN:
-#   start_bg - the background image we want to start with. Use this for 
+#   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
 #       NOTE: This is called using renpy.show(), so pass the string name of
 #           the image you want (NOT FILENAME)
@@ -319,6 +319,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
 
 label ch30_main:
+    $ is_monika_in_room = False
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ quick_menu = True
@@ -449,9 +450,9 @@ label ch30_autoload:
     else:
         python:
             # random chance to do monika in room greeting
-            # we'll say 1 in 20 
+            # we'll say 1 in 20
             import random
-            is_monika_in_room = random.randint(1,20) == 1   
+            is_monika_in_room = random.randint(1,20) == 1
 
     if not is_monika_in_room:
         if persistent.current_track:
@@ -465,7 +466,7 @@ label ch30_autoload:
         if not persistent.mcname or len(persistent.mcname) == 0:
             persistent.mcname = persistent.playername
             mcname = persistent.mcname
-          
+
         if not currentuser or len(currentuser) == 0:
             currentuser = persistent.playername
 
