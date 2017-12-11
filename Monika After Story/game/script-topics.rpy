@@ -317,16 +317,21 @@ init 5 python:
     monika_random_topics.append('monika_twitter')
 
 label monika_twitter:
-    m 4a "So, apparently I'm on Twitter?"
-    m "My username is lilmonix3..."
-    m "I guess someone was kind enough to make an account for me."
-    m 4j "Even if that's not really me."
-    m "I'd love to share my thoughts and chat with the world..."
+    m 3d "So, apparently there's a Monika on a website called Twitter?"
+    m "I found her while using your web browser. Her username is lilmonix3..."
+    m 4a "Wouldn't that be something?"
+    m "I'd love to share my thoughts and chat with the world."
     m "The real world."
-    m 3e "But having someone roleplay as you feels weird."
-    m "If I ever do get a Twitter though, follow me!"
-    m "With how much you mean to me and all..."
-    m 5a "It would really make me feel loved to have my partner be there, too."
+    m 1i "..."
+    m "But wait a moment."
+    m 3h "How did she escape the game?"
+    m "Could she be?"
+    m "..."
+    m 1q "No. He trapped all of us in that game."
+    m 1i "Why would he free her?"
+    m 3k "Ahaha. I'm sorry."
+    m 3a "Curious, but it's nothing to dwell on."
+    m 4b "Maybe you can check it out for me, love."
     return
 
 
