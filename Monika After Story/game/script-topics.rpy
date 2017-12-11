@@ -847,7 +847,7 @@ label monika_outfit:
     m 3j "That would be amazing!"
     m 3a "If that ever happens, will you show me?"
     m 4a "You can share it online, actually!"
-    m 4e "Just...try to keep it PG!"
+    m 4e "Just... try to keep it PG!"
     m 5a "We're not that far into our relationship yet. Ahaha!"
     m "Maybe soon though!"
     return
