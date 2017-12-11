@@ -4795,7 +4795,7 @@ label monika_standsout:
             m "And of course that's a good thing all around."
             m 5a "Thank you, [player]."
        
-        "Your silky smooth hair, of course.":
+        "Your silky smooth hair is amazing.":
             m 5a "Silky smooth?"
             m 3b "Well I'm glad it looks that way."
             m "After all, I try to look my best for my sweetheart."
