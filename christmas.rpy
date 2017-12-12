@@ -1,7 +1,32 @@
-label monika_christmas [Placeholder]
+label monika_christmas
     m 1j "[player]! Do you know what day it is?"
     m 4k "Of course you do. It's Christmas!"
     m 5a "Merry Christmas, my snowflake!"
+    m 1a "Ahaha! I can't believe that it's finally here!"
+    m 1e "And I'm so, so happy that you decided to spend some of it with me."
+    m 2c "Do remember to go share the holiday cheer with your family and friends, though."
+    m 2j "After all, they're important, too. And I'm sure that they would love to see you on this special day."
+    m 1e "..."
+    m "Hey..."
+    m "...[player], I love you."
+    m "Maybe it's just the snow, or the decorations, or even the mistletoe getting to me..."
+    m "Ah-"
+    m 1l "I didn't set one up! Please don't be worried!"
+    m 1m "Ehehe..."
+    m 1e "..My heart's fluttering like crazy right now, [player]."
+    m "To think that you'd actually come and visit me on such a wonderful holiday..."
+    m "Don't get me wrong, I knew that you would, but..."
+    m "Actually having you here with me on Christmas, with just the two of us..."
+    m 1j "Ahaha~"
+    m 2b "It's what every couple dreams about during the holidays, no?"
+    m 1a "Snuggling up against each other by a fireplace, watching the snow gently fall..."
+    m 1j "I'm forever grateful I got this chance because of you, [player]."
+    m "I love you. Forever and ever."
+    m "Merry Christmas, [player]."
+    
+label monika_decorations [WIP]
+    m "I put a lot of effort into making these decorations, you know!"
+    m 1j "I'm glad all that work paid off, even if you'll only see them for a bit."
     
 label monika_cozy
     m 2a "Do you know the one thing I love about the cold weather, [player]?"
