@@ -1,9 +1,9 @@
 label monika_christmas
     m 1j "[player]! Do you know what day it is?"
     m 4k "Of course you do. It's Christmas!"
-    m 5a "Merry Christmas, my snowflake!"
+    m 5a "Merry Christmas, snowflake!"
     m 1a "Ahaha! I can't believe that it's finally here!"
-    m 1e "And I'm so, so happy that you decided to spend some of it with me."
+    m 1e "I'm so, so happy that you decided to spend some of it with me."
     m 2c "Do remember to go share the holiday cheer with your family and friends, though."
     m 2j "After all, they're important, too. And I'm sure that they would love to see you on this special day."
     m 1e "..."
