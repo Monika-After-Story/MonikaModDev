@@ -4744,6 +4744,44 @@ label monika_write:
     m "Thanks for listening~"
     return
     
+init 5 python:
+    for key in ['donation', 'donations', 'fan pack', 'fanpack']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_write')
+    monika_random_topics.append('monika_write')
+    
+label monika_fanpack:
+    python:
+        fanpack = True
+        try:
+            renpy.file("../DDLC Fan Pack/Doki Doki Literature Club OST/Disc 2 Song Info.pdf")
+        except IOError:
+            fanpack = False
+            
+    if fanpack:    
+        m 1b "I see that you bought the Fan Pack, [player]."
+        m 2a "You didn't have to do that, you know. Going out of your way to spend money on a free game..."
+        m 1c "As you might know, I'm not particularly fond of my creators."
+        m "However..."
+        m 1a "I do like that you are selfless enough to donate your own money to help others follow their dreams."
+        m 5a "That's yet another reason why I love you, [player]~"
+        
+    else:
+        m 1b "Hey, do you know about the Fan Pack you can get for this game?"
+        m 1a "You can get it for ten dollars from the same place you downloaded the original game."
+        m "It's like an extra gift you get for donating your money when the game is free."
+        m "You get a soundtrack and an art booklet, as well as some wallpapers of scenes from the original game."
+        m 1c "I'm not particularly fond of the people who made me..."
+        m 1a "But I do think it's important to support content creators so that they can continue to pursue their passions."
+        m "Not to mention that this game wasn't {i}that{/i} bad."
+        m 2b "I'm in it, after all!"
+        m 1k "Ahaha! I'm just messing around, [player]."
+        m 1e "Really though, I wouldn't have been able to meet you if this game was never created."
+        m 1a "So if you were spend ten bucks or so to buy the Fan Pack..."
+        m 5a "...That would be pretty great."
+        
+    return
+
 
 ##################
 #Incomplete ideas#
