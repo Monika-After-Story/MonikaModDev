@@ -4538,10 +4538,11 @@ label monika_ageinf:
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
     
-for key in ['wedding','loyalty','wife','husband']:
-    monika_topics.setdefault(key,[])
-    monika_topics[key].append('monika_weddingring')
-monika_random_topics.append('monika_weddingring')
+init 5 python:
+    for key in ['wedding','loyalty','wife','husband']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_weddingring')
+    monika_random_topics.append('monika_weddingring')
 
 label monika_weddingring:
     m 4k "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
