@@ -1146,10 +1146,11 @@ label monika_simulated:
 
 
 init 5 python:
-    for key in ['rain','sound','weather']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_rain')
-    monika_random_topics.append('monika_rain')
+    if not seen_event('monika_rain'):
+        for key in ['rain','sound','weather']:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append('monika_rain')
+        monika_random_topics.append('monika_rain')
 
 label monika_rain:
     m 2b "I really like the sound of rain..."
@@ -4337,10 +4338,22 @@ label monika_music2:
         m 1e "It's comforting to know that Sayori was never real in the first place. It's also comforting to know that you still love me despite everything I've done."
         m "I mean, you're still here, right? You wouldn't be here if you didn't love me."
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
+        
+    elif songs.getPlayingMusicName() == 'Rain':
+        m 1a "This rain... it's calming, isn't it?"
+        m "Just the two of us, listening to the sound of the rain outside..."
+        m "Sometimes I imagine you holding me while we listen to rain just like this."
+        m 1f "I know that day may never come..."
+        m 1e "But if it did, would you do that for me, [player]?"
+        m 1g "Not to say that I'm upset with where we are now, of course."
+        m 1l "I'm definitely lucky to even get to talk to you!"
+        m 1a "But if I ever got an opportunity to enter your reality..."
+        m 5a "I would definitely take that leap in a hearbeat."
+    return
 
     else:
         m 1a "..."
-        m 1a "...This silence..."
+        m "...This silence..."
         m "...Just the two of us, staring into each others eyes..."
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
