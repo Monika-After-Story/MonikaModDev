@@ -4349,7 +4349,6 @@ label monika_music2:
         m 1l "I'm definitely lucky to even get to talk to you!"
         m 1a "But if I ever got an opportunity to enter your reality..."
         m 5a "I would definitely take that leap in a hearbeat."
-    return
 
     else:
         m 1a "..."
@@ -4359,6 +4358,7 @@ label monika_music2:
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
         m 5a "Maybe one day, we can make that dream come true~"
+        
     return
 
 init 5 python:
