@@ -4744,6 +4744,24 @@ label monika_write:
     m "Thanks for listening~"
     return
     
+init 5 python:
+    for key in ['urgent','hearts','joke']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_urgent')
+    monika_random_topics.append('monika_urgent')
+
+label monika_urgent:
+    m 2d "[player], do you have a second?"
+    m 3o "There's something I need to tell you."
+    m 1f "It's important."
+    m 1g "I..."
+    m 1m "..."
+    m 1k "Love you!"
+    m 2a "Ahaha~! Did I have you worried?"
+    m 1l "Sorry~"
+    m 1j "I wish I could see the look on your face right now!"
+    m 1k "I'm sure it's adorable~"
+    return
 
 ##################
 #Incomplete ideas#
