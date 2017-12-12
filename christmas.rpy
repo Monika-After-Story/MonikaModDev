@@ -128,7 +128,7 @@ label monika_snowman
     m 4g "Just standing there all alone. It has to be nerve wrecking."
     m 1o "Being alone..."
     m 1p "I know how that feels. Or I used to anyway."
-    m 1k "Before I found the love of my life!"
+    m 1k "But then I found the love of my life!"
     m 2b "I bet it's not all bad though."
     m "You could witness the starry night skies and the beauty of the falling snow."
     m 2a "Even an aurora is possible!"
@@ -138,7 +138,7 @@ label monika_snowman
     m "What if you were my icy snowhunk?"
     menu:
         "I'd watch time and scenery pass by."
-            m 1k "You feel the same way too!"
+            m 1k "You feel the same way, too!"
             m 3b "Wouldn't it just be breathtaking?"
             m 1k "You'd better save a spot for me though!"
         
