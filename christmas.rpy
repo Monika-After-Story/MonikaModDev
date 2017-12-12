@@ -34,7 +34,7 @@ label monika_cozy
     m 3a "Those who get cold hands really appreciate that feeling."
     m "It's like feeling a loved one's embrace~"
     m 2b "You also get to wear your winter clothes that have been stuck in your closet."
-    m "Finally being able to you whip out your winter fashion set is always a treat."
+    m "Finally being able to whip out your winter fashion set is always a treat."
     m 2a "But you know what the best way to warm yourself up is?"
     m "Cuddling with the one you love in front of the fireplace~"
     m 2a "Just sitting there under a warm blanket, sharing a hot beverage."
