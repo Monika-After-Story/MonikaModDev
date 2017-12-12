@@ -1,6 +1,7 @@
 label monika_christmas
-    m "[player]! Do you know what day it is?"
-    m "Of course you do. It's Christmas!"
+    m 1j "[player]! Do you know what day it is?"
+    m 4k "Of course you do. It's Christmas!"
+    m 5a "Merry Christmas, my snowflake!"
     
 label monika_cozy
     m 2a "Do you know the one thing I love about the cold weather, [player]?"
@@ -17,23 +18,23 @@ label monika_cozy
     return
     
 label monika_snow
-    m "Does it ever snow where you live, [player]?"
-    m "I've always liked the peaceful aura it seems to give off."
-    m "It usually accompanies the holiday season in a lot of places, too."
-    m "After reading a bit about other seasons that come and go, I don't think I'd enjoy a sweltering summer very much..."
-    m "It’s just that I'd prefer a balmy and gentle heat more, ahaha."
-    m "But snow just sounds so much more... tranquil and intimate, you know?"
+    m 5a "Does it ever snow where you live, [player]?"
+    m 4j "I've always liked the peaceful aura it seems to give off."
+    m 4b "It usually accompanies the holiday season in a lot of places, too."
+    m 1c "After reading a bit about other seasons that come and go, I don't think I'd enjoy a sweltering summer very much..."
+    m 1n "It’s just that I'd prefer a balmy and gentle heat more, ahaha."
+    m 3b "But snow just sounds so much more... tranquil and intimate, you know?"
     m "There’s a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
-    m "..."
-    m "I wonder what my world inside here would be like if the weather changed all the time..."
+    m 1c "..."
+    m 4d "I wonder what my world inside here would be like if the weather changed all the time..."
     m "I’d be nowhere near properly dressed if it started snowing!"
-    m "It would probably be so cold that you’d have to keep me warm, ehehe~"
-    m  "Actually! Let’s see what I can do..."
+    m 5a "It would probably be so cold that you’d have to keep me warm, ehehe~"
+    m 4i "Actually! Let’s see what I can do..."
    call updateconsole ("renpy.file(\"snow.jpg\")", "snow.jpg does not exist.") from _call_updateconsole_20
     pause(1.0)
-    m "... Oh! Maybe some other time, ahaha~"
-    m "Even if it’s not too chilly, staying cozy is still nice." 
-    m "It’s the perfect way to pass time, don’t you think~?"
+    m 1q "... Oh! Maybe some other time, ahaha~"
+    m 3f "Even if it’s not too chilly, staying cozy is still nice." 
+    m 5a "It’s the perfect way to pass time, don’t you think~?"
    call hideconsole from _call_updateconsole_21
     $ consolehistory = []
     return
@@ -77,7 +78,7 @@ label monika_iceskating
     m "I love you, [player]~"
     
 label monika_whatiwant
-    m "Oh, [player], isn't it lovely around the holidays?
+    m 5a "Oh, [player], isn't it lovely around the holidays?
     m "I hope you don't mind, but I tried my hand at a poem for the occasion."
     m "Here goes."
     m "..."
