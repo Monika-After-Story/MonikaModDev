@@ -1387,11 +1387,19 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
+default persistent.closed_self = False
+default persistent.seen_monika_in_room = False
 
-call set_gender from _call_set_gender
+default his = "his"
+default he = "he"
+default hes = "he's"
+default heis = "he is"
+default bf = "boyfriend"
+default man = "man"
+default boy = "boy"
+default guy = "guy"
 
 return
-
 
 #Gender specific word replacement
 #Those are to be used like this "It is [his] pen." Output:

@@ -40,7 +40,8 @@ label gender:
             m 1e"Because your happiness is the most important thing to me."
 
     m 1k "Remember that I'll always love you unconditionally, [player]."
-
+    return
+    
 label preferredname:
     m 1h "I've been wondering about your name."
     m 1d "Is '[player]' really your name?"
@@ -70,10 +71,19 @@ label preferredname:
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
                 else:
-                    $ persistent.mcname = player
-                    $ mcname = player
-                    $ persistent.playername = tempname
-                    $ player = tempname
+                    # sayori name check
+                    if tempname.lower() == "sayori":
+                        call sayori_name_scare from _call_sayori_name_scare
+                    elif persistent.playername.lower() == "sayori":
+                        $ songs.initMusicChoices()
+
+                    python:
+                        
+                        persistent.mcname = player
+                        mcname = player
+                        persistent.playername = tempname
+                        player = tempname
+
                     m 1b "'[player]', huh?"
                     m 2k "I'll be calling you {i}'[player]'{/i} from now on, ehehe~"
                     $ done = True
@@ -81,3 +91,4 @@ label preferredname:
             m 1f "Oh... ok then, if you say so."
             m 1e "Just tell me whenever you change your mind, [player]."
             $ done = True
+    return
