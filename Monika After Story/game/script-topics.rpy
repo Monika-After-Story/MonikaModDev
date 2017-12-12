@@ -3537,10 +3537,10 @@ label monika_night:
     return 'quit'
 
 init 5 python:
-    for key in ['closet']:
+    for key in ['closet', 'scary yuri']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_closet')
-    monika_random_topics.append('closet')
+    monika_random_topics.append('monika_closet')
 
 label monika_closet:
     m 3q "By the way..."
