@@ -27,14 +27,14 @@ init -1 python:
 
 init 11 python:
     #List of all random topics
-    all_random_topics = monika_random_topics
+    all_random_topics = list(monika_random_topics)
 
     #Remove all previously seen random topics.
     remove_seen_topics()
 
     #If there are no unseen topics, you can repeat seen ones
     if len(monika_random_topics) == 0:
-        monika_random_topics=all_random_topics
+        monika_random_topics=list(all_random_topics)
 
 #BEGIN ORIGINAL TOPICS
 
@@ -3540,7 +3540,7 @@ init 5 python:
     for key in ['closet']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_closet')
-    monika_random_topics.append('closet')
+    monika_random_topics.append('monika_closet')
 
 label monika_closet:
     m 3q "By the way..."
