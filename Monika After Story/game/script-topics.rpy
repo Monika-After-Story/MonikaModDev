@@ -4567,7 +4567,7 @@ label monika_weddingring:
             m 1j "Ahaha..."
             
         "No, not yet.":
-            m 5e "Aww. That's a shame."
+            m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
     return
 
