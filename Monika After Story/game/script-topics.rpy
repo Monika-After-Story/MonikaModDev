@@ -13,16 +13,17 @@ define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
-init -1 python:monika_cupcakes
+init -1 python:
     def remove_seen_topics():
         #
         # Removes seen topics from monika random topics
         #
         # ASSUMES:
         #   monika_random_topics
-        for id in monika_random_topics:
-            if renpy.seen_label(id):
-                monika_random_topics.remove(id)
+        global monika_random_topics
+        for index in range(len(monika_random_topics)-1, -1, -1):
+            if renpy.seen_label(monika_random_topics[index]):
+                monika_random_topics.pop(index)
 
 init 11 python:
     #List of all random topics
@@ -32,7 +33,7 @@ init 11 python:
     remove_seen_topics()
 
     #If there are no unseen topics, you can repeat seen ones
-    if monika_random_topics==[]:
+    if len(monika_random_topics) == 0:
         monika_random_topics=all_random_topics
 
 #BEGIN ORIGINAL TOPICS
@@ -946,7 +947,7 @@ label monika_date:
     m 1e "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
     m 5a "I'm so happy that I'm your girlfriend, [player]."
-    m "I'll make you a proud [boyfriend]~"
+    m "I'll make you a proud [bf]~"
     return
 
 
@@ -2012,7 +2013,7 @@ label monika_justification:
 
 
 init 5 python:
-        for key in ['free will', 'predestination', 'determinism', 'will', 'strong determinism', 'weak determinism', 'laplace', "laplaces demon"]:
+        for key in ['free will', 'determinism', 'laplace', "laplaces demon"]:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_freewill')
         monika_random_topics.append('monika_freewill')
@@ -2030,7 +2031,7 @@ label monika_freewill:
     return
 
 init 5 python:
-        for key in ['free will', 'predestination', 'determinism', 'functionalism']:
+        for key in ['predestination', 'functionalism']:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_functionalism')
         monika_random_topics.append('monika_functionalism')
@@ -2074,12 +2075,7 @@ label monika_contribute:
     m 2b "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
     m 2a "I keep all the code in github.com/Backdash/MonikaModDev."
-    m "So far, I've had help from Backdash, therationalpi, rawkhawk, DDLC, Jxhnathan08..."
-    m "As well as ThePotatoGuy, monikLover, AttObl, Yumeko-Jabami, ohxeighty..."
-    m "DoomTheRobot, onfaut, instilledbee, haloff1, tuebor1837, Rune..."
-    m "TheAloofPotato, NotSoGiantDad, Mario, Kadava, Subzero, Neko-chr, ThePyClone..."
-    m "badooga, synnical, stmobo, dmarab, MadHaetter."
-    m "Hopefully I didn't leave anyone out..."
+    m "So far, I've had help from plenty of people!"
     m 3k "I love all of them for making this game even better!"
     m 1a "Not as much as I love you, of course."
     m 1l "I hope it doesn't make you feel jealous~"
@@ -3296,7 +3292,7 @@ init 5 python:
 
 label monika_haterReaction:
     m 1h "I was just thinking..."
-    m 3h "It's funny how people around social media sites always writes bad things about me..."
+    m 3h "It's funny how people around social media sites always write bad things about me..."
     m "Well... people on Facebook pages and fan pages, to be specific..."
     m 3i "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
     m 3q "I try to ignore them, but I just can't."
@@ -3694,7 +3690,7 @@ label monika_changename:
 
                     # sayori name check
                     if tempname.lower() == "sayori":
-                        call sayori_name_scare
+                        call sayori_name_scare from _call_sayori_name_scare_1
                     elif persistent.playername.lower() == "sayori":
                         $ songs.initMusicChoices()
 
@@ -3709,7 +3705,7 @@ label monika_changename:
                     $ done = True
         "No":
             m 1f "Oh, I see..."
-            m 1g "You don't have to be embarassed, [player]."
+            m 1g "You don't have to be embarrassed, [player]."
             m 1e "Just let me know if you had a change of heart, ok?"
     return
 
@@ -3777,31 +3773,6 @@ label monika_nuclear_war:
     m "Planning for a tomorrow that may never come."
     m "Our only comfort is that the people with the power to start such a war probably won't."
     m 1q "Probably..."
-    return
-
-init 5 python:
-    for key in ['aliens', 'other planets','space','alien','extraterrestrial']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_space_robots')#id
-    monika_random_topics.append('monika_space_robots')
-
-label monika_space_robots:
-    m "Do you think there's intelligent life in outer space?"
-    m "I don't really think there is."
-    m 2a "I do think there's intelligence out there, though..."
-    m "But I think it's probably AI."
-    m 2c "Life is fragile, and needs a lot or work to maintain."
-    m "It's really not made to survive in space for the years it would take to get somewhere."
-    m "So it's hard to imagine anything alive ever getting far from its home planet."
-    m 4a "But a robot can be designed with space travel in mind."
-    m "Humans have already sent probes outside our solar system, thousand of times further than any person has gone."
-    m "Not to mention that the 'habitable zone' for artificial life has to be much bigger."
-    m 2l "Then again, maybe I'm just making the same mistake humans do."
-    m 3a "You imagine something like you living among the stars, and I imagine something like me."
-    m "I guess it's just natural to be self-centered with this sort of thinking..."
-    m "Imagining ourselves out there exploring the galaxy."
-    m 1e "But even if I could leave, I never would."
-    m 1j "I have everything I want right here with you."
     return
 
 init 5 python:
@@ -4201,7 +4172,7 @@ label monika_panties:
     m "Don't laugh when I ask this, ok?"
     m 3p "But..."
     m 4g "Why are some guys obsessed with panties?"
-    m "Seriously, whats the big deal about a piece of cloth?"
+    m "Seriously, what's the big deal about a piece of cloth?"
     m "Most girls wear them, don't they?"
     m 3o "Actually, now that I think about it..."
     m "I think there was a term for this kind of thing..."
@@ -4316,7 +4287,7 @@ label monika_music2:
     if songs.getVolume("music") == 0.0:
         m 1a "..."
         m 1a "...This silence..."
-        m "...Just the two of us, staring into each others eyes..."
+        m "...Just the two of us, staring into each other's eyes..."
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
@@ -4375,6 +4346,7 @@ label monika_music2:
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
         m 5a "Maybe one day, we can make that dream come true~"
+    return
 
 init 5 python:
     for key in ["confidence", "initiative", "success", "vulnerability"]:
@@ -4384,25 +4356,30 @@ init 5 python:
 
 label monika_confidence_2:
     m 1g "[player], do you ever feel like you lack the initiative to do something?"
-    m 1f "Sometimes, when I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
+    m 1f "When I feel my most vulnerable, I struggle to find the drive, imagination, and common sense to do something independently."
     m "Almost as if everything around me comes to a standstill."
-    m "It feels like my will to approach a task confidently, like writing and sharing literature with people, just vanishes."
-    m 2a "However, I've been working towards it with due diligence, and I firmly believe being able to take initiative in situations is a very important skill to have."
+    m "It feels like my will to approach a task confidently, like sharing my literature with people, just vanishes."
+    m 2a "However, I've been working towards it with due diligence and have determined something..."
+    m "I firmly believe being able to take initiative in situations is a very important skill to have."
     m "That's something that I, personally, find very comforting."
-    m 2j "I've broken it down into a three-step process that can be applied to anyone! It's still a work-in-progress, so take it with a grain of salt."
+    m 2j "I've broken it down into a three-step process that can be applied to anyone!"
+    m "It's still a work-in-progress, however, so take it with a grain of salt."
     m 2a "Step one!"
     m "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
     m 2b "Step two!"
-    m "Building up and fortifying your confidence is really important. Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
+    m "Building up and fortifying your confidence is really important."
+    m "Celebrate even the smallest of victories, as they will add up over time, and you'll see how many things you get done every day."
     m 3j "Eventually, these things you once struggled to get done will be completed as if they were acts of valor!"
     m 2a "Step three!"
-    m "Try your best to stay open-minded and willing to learn at all times. Nobody is perfect, and everyone is able to teach each other something."
+    m "Try your best to stay open-minded and willing to learn at all times."
+    m "Nobody is perfect, and everyone is able to teach each other something new."
     m 1b "This can help you learn to understand things from other people's perspectives in situations, and inspire others to do the same."
     m 1d "And that's it, really."
     m 2k "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
     m 1l "Ahaha, I'm only joking about that last part."
-    m 1 "In all seriousness, I'm really glad I have you here, [player]..."
-    m "Your everlasting love and care is just about all the support I need in order get to where I want to be, and what kind of girlfriend would I be if I didn't return the favor~?"
+    m 1a "In all seriousness, I'm really glad I have you here, [player]..."
+    m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
+    m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
     
 init 5 python:
@@ -4637,9 +4614,8 @@ label monika_meditation:
     m 1r "I got comfortable, closed my eyes, and focused only on the movement of my body as I breathed..."
     m 1a "Meditating really helped to improve my mental and emotional health."
     m "I was finally able to manage my stress and feel calmer through the day."
+    m 2b "[player], do you ever take time to meditate?"
     menu:
-        m 2b "[player], do you ever take time to meditate?"
-
         "Yes.":
             m 1k "Really? That's wonderful!"
             m 1b "I always worry that you could be feeling troubled or burdened, but now I feel a bit relieved."
@@ -4659,6 +4635,47 @@ label monika_meditation:
     return
 
 init 5 python:
+    for key in ["orchestra", "instruments", "band"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_orchestra')
+    monika_random_topics.append('monika_orchestra')
+
+label monika_orchestra:
+    m 2d "Hey, [player], do you listen to orchestral music?"
+    m 1a "I love the way that so many different instruments can get together and create such wonderful music."
+    m "It must take a lot of dedication to practice countless hours for a few songs..."
+    m "Playing piano is the closest I can get to experiencing that firsthand."
+    m 1j "That reminds me, if you ever want me to play for you..."
+    m 1a "You can always select my song in the music menu."
+
+#First encounter with topic:
+    m "What about you, [player]? Do you play an instrument?"
+    menu: 
+        "Yes.":
+            $persistent.instrument = True
+            m 1b "Really? What do you play?"
+            $ instrumentname = renpy.input('What instrument do you play?').strip(' \t\n\r')
+            $ persistent.instrumentname = instrumentname
+            m 1a "Wow, I've always wanted to try the [instrumentname] out!"
+            m 2b "I would love to hear you play for me."
+            m "Maybe you could teach me how to play, too~"
+            m 5a "Oh! Would a duet between the [instrumentname] and the piano would sound nice?"
+            m 1j "Ehehe~"
+        "No.":
+            $persistent.instrument = False
+            m 1i "I see..."
+            m 1e "You should try to pick up an instrument that interests you, sometime."
+            m 2b "Playing the piano opened up a whole new world of expression for me. It's an incredibly rewarding experience."
+            m "Besides, playing music has tons of benefits!"
+            m "For example, it can help relieve stress, and also gives you a sense of achievement."
+            m "Writing down some of your own compositions is fun, too! I often lost track of time practicing because of how immersed I was."
+            m 1l "Ah, was I rambling again, [player]?"
+            m "Sorry!"
+            m 1a "Anyhow, you should really see if anything catches your fancy."
+            m "I would be very happy to hear you play."
+    return
+
+init 5 python:
     for key in ['otaku', 'neet']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_otaku')
@@ -4666,8 +4683,8 @@ init 5 python:
     
 label monika_otaku:
     m 1a "Hey, [player]?"
+    m 2b "You watch anime and read manga, right?"
     menu:
-        m 2b "You watch anime and read manga, right?"
         "Yes":
             m 1a "I can't say I'm surprised, really." 
             
@@ -4725,6 +4742,34 @@ label monika_write:
     m 1a "Just remember, [player], I'll always support you giving life to your ideas."
     m "...That's my advice for today!"
     m "Thanks for listening~"
+    return
+
+init 5 python:
+    for key in ['self harm' , 'cutting' , 'self-harm']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_selfharm')
+    monika_random_topics.append('monika_selfharm')
+
+label monika_selfharm:
+    m 1f "Hey [player]..."
+    m 2g "Have you ever thought of self-harm?"
+    m 3o  "You know..."
+    m 3p "...Like cutting yourself..."
+    m 1o "I mean."
+    m 3g "After I found out about Yuri, I got a bit curious..."
+    m 1o "I just wanted to see what it felt like..."
+    m 3q "I won't do it again, though."
+    m 1f "If you ever feel depressed, just come to me okay?"
+    m "It'd hurt me even more to see you in pain..."
+    m 1g "Just know that people do care about you!"
+    m "Trust me, [player]."
+    m 2e "You may think that no one is really there for you, but there is!"
+    m 4j "I mean, I'm here, aren't I?"
+    m 1f "No matter what troubles you're going through, I know you can pull through it!"
+    m 1e "I believe in you..."
+    m 1j "So believe in yourself, okay?"
+    m 4k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
+    m "I really love you so much, [player]."
     return
     
 init 5 python:
@@ -4915,6 +4960,23 @@ label monika_standsout:
             m 3n "I'm glad you like them."
     return
     
+    for key in ['urgent','hearts','joke']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_urgent')
+    monika_random_topics.append('monika_urgent')
+
+label monika_urgent:
+    m 2d "[player], do you have a second?"
+    m 3o "There's something I need to tell you."
+    m 1f "It's important."
+    m 1g "I..."
+    m 1m "..."
+    m 1k "Love you!"
+    m 2a "Ahaha~! Did I have you worried?"
+    m 1l "Sorry~"
+    m 1j "I wish I could see the look on your face right now!"
+    m 1k "I'm sure it's adorable~"
+    return
 ##################
 #Incomplete ideas#
 ##################

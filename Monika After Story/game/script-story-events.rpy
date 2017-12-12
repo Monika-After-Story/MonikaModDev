@@ -73,7 +73,7 @@ label preferredname:
                 else:
                     # sayori name check
                     if tempname.lower() == "sayori":
-                        call sayori_name_scare
+                        call sayori_name_scare from _call_sayori_name_scare
                     elif persistent.playername.lower() == "sayori":
                         $ songs.initMusicChoices()
 

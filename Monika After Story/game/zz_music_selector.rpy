@@ -55,18 +55,23 @@ init -1 python in songs:
         curr_filename = renpy.music.get_playing()
 
         # check for brackets (so we can confine the check to filename only)
-        bracket_endex = curr_filename.find(">")
-        if bracket_endex >= 0:
-            curr_filename = curr_filename[bracket_endex:]
+        if curr_filename: # None check
+            bracket_endex = curr_filename.find(">")
+
+            if bracket_endex >= 0:
+                curr_filename = curr_filename[bracket_endex:]
 
         if curr_filename:
             for name,song in music_choices:
 
                 # bracket check
-                bracket_endex = song.find(">")
+                if song: # None check
+                    bracket_endex = song.find(">")
 
-                if bracket_endex >= 0:
-                    check_song = song[bracket_endex:]
+                    if bracket_endex >= 0:
+                        check_song = song[bracket_endex:]
+                    else:
+                        check_song = song
                 else:
                     check_song = song
 

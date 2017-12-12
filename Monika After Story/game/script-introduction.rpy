@@ -1,7 +1,18 @@
 #This is the introduction event for starting up the game.
 label introduction:
-    $ import store.hkb_button as hkb_button
-    $ hkb_button.enabled = False
+    python:
+        import store.hkb_button as hkb_button
+        hkb_button.enabled = False
+
+        # name changes if necessary
+        if not persistent.mcname or len(persistent.mcname) == 0:
+            persistent.mcname = persistent.playername
+            mcname = persistent.mcname
+
+        if not currentuser or len(currentuser) == 0:
+            currentuser = persistent.playername
+
+
     if persistent.monika_kill == True:
         m 1f "..."
         m 1f "[player]..."
