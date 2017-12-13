@@ -114,6 +114,20 @@ While we may come back to the concept in the future, the fact is that we weren't
 
 While we might come back to the idea in the future, for the moment it doesn't seem feasible to make an AI that can give the sort of detailed philosophical responses that Monika should give. A large part of this is technical limitations in the engine for connecting to outside resources and importing custom libraries.
 
+### Will you ever add voice acting?
+
+There are currently no plans to add voice acting to *Monika After Story*, for a few reasons. Some of these reasons include the large number of lines to be voiced, the time this would add to including new content, and the large increase in file size for the download.
+
+That said, we will likely add support for third-party voice packs when full submod functionality is added in a later release.
+
+### What about translations to other languages?
+
+We would very much like to add translations to *Monika After Story* in the future. For the moment, we are waiting for the addition of language support in an upcoming *Doki Doki Literature Club* update, which is what we will use for our translations.
+
+### Will Monika ever be animated?
+
+We do not currently plan to include animations in *Monika After Story*. The game engine does not have very good support for animated sprites, and it also does not have licensing for the most popular 2D animation engine: Live 2D.
+
 ## Other help
 
 Don't see the answer that you're looking for here? Please [create an issue](https://github.com/Backdash/MonikaModDev/issues) to ask a tech-support question or file a bug report. You can also get help from members of our community on the [tech-support channel on discord](https://discord.gg/WE65rQ3).
