@@ -4723,11 +4723,11 @@ label monika_homework:
            m 2g "I don't want my sweetheart to be struggling in school or work, okay?"
            m 1b "I'm sure you'll be just fine, ahaha~"
        "No.":
-          m 1a "I'm glad to hear that then."
-          m 1d "Some people have a hard time dealing with work and it starts to pile up a lot."
-          m 1a "So keep up the good work, [player]. Don't stress yourself out too much."
-          m "I believe in you~"
-          return
+           m 1a "I'm glad to hear that then."
+           m 1d "Some people have a hard time dealing with work and it starts to pile up a lot."
+           m 1a "So keep up the good work, [player]. Don't stress yourself out too much."
+           m "I believe in you~"
+    return
     
     
 ##################
