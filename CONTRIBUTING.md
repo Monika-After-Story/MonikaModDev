@@ -104,7 +104,7 @@ At this point, you're ready to make your changes! Feel free to ask for help; eve
 
 ![Guide 1](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide1.png?raw=True)
 
-Before you make dialogue ensure the branch is set to **content**, NOT **master**.
+Before you make dialogue ensure the branch is set to **content**, NOT **master**. However, if you're writing jokes set the branch to **jokes-concept**
 
 If you're planning to write multiple topics, please submit a pull request with all the topics inside it.
 
