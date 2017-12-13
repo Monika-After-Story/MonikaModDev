@@ -4798,18 +4798,22 @@ init 5 python:
     monika_random_topics.append('monika_ghop')
 
 label monika_ghop:
-    m 2d "Have you heard of a genre of music called glitch hop?"
-    m 3o "It's basically hip hop, but with added glitchy effects."
-    m 1f "While glitched music can sound creepy at times~"
-    m 1g "It's pretty incredible how some artists can make it sound just the opposite."
-    m 1m "By using beat repeaters, skipping, chopping, and bit crush reduction~"
-    m 1k "With a high and steady BPM~"
-    m 2a "You can make something really catchy!"
-    m 1l "If you like playing Pong with me, there's a song I found you might like [player]."
-    m 1j "It's called 'Press Start'~"
-    m 1k "And it kind of gives off that retro feel."
-    m "I wouldn't mind listening to that sometime."
-    m "I'm kind of the queen of glitch, and you're my king. So it fits!"
+    m 4b "Have you heard of a genre of music called glitch hop?"
+    m "It's basically hip hop, but with added glitched effects."
+    m 1o "Sure, glitched music can be scary at times~"
+    m 1d "But that's because it usually sounds wrong."
+    m 2d "Did you notice how when I was messing with the game before, the music messed up a lot?"
+    m "It sounded out of place, because your mind imagines the normal version and tries to fill the glitched gaps."
+    m 1b "However, if you can reorganize these abnormal sounds, it can become something completely different."
+    m 1k "It's pretty incredible how some artists can make it sound just the opposite. Even cheery at times."
+    m 4d "By using beat repeaters, skipping, chopping, and bit crush reduction~"
+    m "With a high and steady BPM~"
+    m 3a "You can make something really catchy!"
+    m 4d "If you like playing Pong with me, there's a song I found you might like [player]."
+    m "It's called 'Press Start'~"
+    m 3j "And it kind of gives off that retro feel."
+    m 3a "I wouldn't mind listening to that sometime."
+    m 5a "I'm kind of the queen of glitch, and you're my king. So it fits!"
     return
 
 ##################
