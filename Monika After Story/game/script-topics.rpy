@@ -1161,6 +1161,7 @@ label monika_rain:
     m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
     m "That's not too cheesy or anything, is it?"
     m "Would you ever do that for me, [player]?"
+    initMusicChoices()
     return
 
 
