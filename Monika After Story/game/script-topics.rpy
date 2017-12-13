@@ -4790,6 +4790,27 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    for key in ['glitch','hiphop','techniques']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_ghop')
+    monika_random_topics.append('monika_ghop')
+
+label monika_ghop:
+    m 2d "Have you heard of a genre of music called glitch hop?"
+    m 3o "It's basically hip hop, but with added glitchy effects."
+    m 1f "While glitched music can sound creepy at times~"
+    m 1g "It's pretty incredible how some artists can make it sound just the opposite."
+    m 1m "By using beat repeaters, skipping, chopping, and bit crush reduction~"
+    m 1k "With a high and steady BPM~"
+    m 2a "You can make something really catchy!"
+    m 1l "If you like playing Pong with me, there's a song I found you might like [player]."
+    m 1j "It's called 'Press Start'~"
+    m 1k "And it kind of gives off that retro feel."
+    m "I wouldn't mind listening to that sometime."
+    m "I'm kind of the queen of glitch, and you're my king. So it fits!"
+    return
 
 ##################
 #Incomplete ideas#
