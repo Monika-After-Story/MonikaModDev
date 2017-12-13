@@ -94,7 +94,8 @@ init -1 python in songs:
             music_choices.append(("I Still Love You","bgm/monika-end.ogg"))
             music_choices.append(("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg"))
             store.seen_event
-            if seen_event('monika_rain'):
+            import store
+            if store.seen_event('monika_rain'):
                 music_choices.append(("Rain", "mod_assets/Rain.ogg"))
                 
         # sayori only allows this
