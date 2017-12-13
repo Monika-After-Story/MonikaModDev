@@ -4813,7 +4813,8 @@ label monika_ghop:
     m "It's called 'Press Start'~"
     m 3j "And it kind of gives off that retro feel."
     m 3a "I wouldn't mind listening to that sometime."
-    m 5a "I'm kind of the queen of glitch, and you're my king. So it fits!"
+    m 5a "I'm kind of the queen of glitches after all, and you're my king. So it fits!"
+    m 1a "If you do put it on, be sure to mute the music in here, and I'll listen along!"
     return
 
 ##################
