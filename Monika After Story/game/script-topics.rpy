@@ -4791,6 +4791,42 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
 
+
+init 5 python:
+    for key in ["joke", "jokes", "humour", "comedy"]:
+        monika_topics.setdefault(key, [])
+        monika_topics[key].append("monika_jokes_topic")
+    # no random for now
+
+label monika_jokes_topic:
+    m "Hey [player], I think telling each other some good jokes could bring us closer together, you know?"
+    m "I know quite a few jokes, but I was wondering if maybe you knew any."
+    menu:
+        m "Do you know any good jokes?"
+        "Yes":
+            m "Ah, do you mind letting me hear some?"
+            python:
+                # since jokes are stored as dicts, we need to preprocess to send them
+                # to display menu
+                monika_jokeslist = list()
+                
+                # NOTE: python 2: iteritems()
+                # NOTE: python 3: items()
+                # NOTE: MASSIVE BUG ALERT, dont let the jokes list run dry.
+                # TODO: build a check to ensure the list doesnt run dry
+                for label,prompt in monika_jokes.iteritems():
+                    monika_jokeslist.append((prompt,label))
+
+                # now call the menu
+                result_label = renpy.display_menu(monika_jokeslist)
+
+            # and the resulting label
+            call expression result_label from _joke_sub_expression
+        "No":
+            m "this is test dialogue"
+    return
+
+
 ##################
 #Incomplete ideas#
 ##################
