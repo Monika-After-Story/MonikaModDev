@@ -4747,8 +4747,8 @@ label monika_write:
 init 5 python:
     for key in ['donation', 'donations', 'fan pack', 'fanpack']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_write')
-    monika_random_topics.append('monika_write')
+        monika_topics[key].append('monika_fanpack')
+    monika_random_topics.append('monika_fanpack')
     
 label monika_fanpack:
     python:
