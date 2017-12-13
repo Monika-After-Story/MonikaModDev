@@ -4809,7 +4809,7 @@ label monika_ghop:
     m 4d "By using beat repeaters, skipping, chopping, and bit crush reduction~"
     m "With a high and steady BPM~"
     m 3a "You can make something really catchy!"
-    m 4d "If you like playing Pong with me, there's a song I found you might like, [player]."
+    m 4d "If you like playing Pong with me, there's a song I found you might enjoy, [player]."
     m "It's called 'Press Start'~"
     m 3j "And it kind of gives off that retro feel."
     m 3a "I wouldn't mind listening to that sometime."
