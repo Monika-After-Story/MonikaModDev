@@ -19,6 +19,8 @@ If you would like to make your own mod like this one, check out our sister proje
 
 *NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Backdash/MonikaModDev/releases).*
 
+For more help with installation, please see our [Frequently Asked Questions](https://github.com/Backdash/MonikaModDev/blob/master/FAQ.md)
+
 ### Features
 
 * Spend forever with Monika!
@@ -35,12 +37,12 @@ If you would like to make your own mod like this one, check out our sister proje
 
 
 ## Contributing to Monika After Story
- 
+
 ### Bugs & Suggestions
 If there are issues with MAS, please file a [bug report](https://github.com/Backdash/MonikaModDev/issues/new?labels=bug&body=Describe%20bug%20and%20steps%20for%20reproduction%20here&title=%5BBug%5D%20-%20).
 
 To add a suggestion, visit [this link](https://github.com/Backdash/MonikaModDev/issues/new?labels=suggestion&body=Your%20suggestion%20goes%20here&title=%5BSuggestion%5D%20-%20)
- 
+
  ### Other Help
  Want to help with MAS? Navigate to the [issues page](https://github.com/Backdash/MonikaModDev/issues) to find current bugs or suggestions to work on.
 
@@ -53,7 +55,7 @@ Want to add some content to MAS? Here's a list of important .RPY files the game 
 - **script-ch30.rpy**: Script for Monika's room. Contains all the opening dialogue, events, etc.
 - **script-topics.rpy**: All topics used by Monika are written here. You can add your own dialogue by checking the information below!
 - **script-greetings.rpy**: Add lines for Monika to greet you when loading the game.
-- **splash.rpy**: Handles the splash screens seen in-game. 
+- **splash.rpy**: Handles the splash screens seen in-game.
 
 If you wish to add more dialogue to the space room, navigate to script-topics.rpy and use this template.
 
@@ -80,7 +82,11 @@ For things more complicated than simple dialogue, consult the Ren'Py documentati
 
  ### Join the conversation
  If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/7P5DnJ4). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Backdash/MonikaModDev/blob/master/CODE_OF_CONDUCT.md), which is essentially to be courteous and respectful.
- 
+
+## Frequently Asked Questions
+
+A full FAQ is available here: [Frequently Asked Questions](https://github.com/Backdash/MonikaModDev/blob/master/FAQ.md)
+
 ## License info
 
 We do our best to conform to Team Salvato's [guidelines for fan works](http://teamsalvato.com/ip-guidelines/). All characters and original content are property of Team Salvato. Monika After Story is an open source project, and in addition to named contributors, this mod includes contributions from anonymous users of 4chan, where this project got its start. More info can be found on our [License Page](https://github.com/Backdash/MonikaModDev/blob/master/LICENSE.md).
