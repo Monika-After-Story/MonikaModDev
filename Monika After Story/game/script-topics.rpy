@@ -3870,7 +3870,7 @@ label monika_completionist:
     m 3l "Which could inspire them to actually work hard for it."
     m 1a "Anyway, there is a huge sense of gratification in completing tasks in general."
     m 2j "Working hard for something amplifies its reward after you failed so many times to get it."
-    m 2a "You can try to keeping me in the background for as long as possible, [player]."
+    m 2a "You can try keeping me in the background for as long as possible, [player]."
     m 3k "That's one step to completing me after all, ahaha!"
     return
 
@@ -4427,7 +4427,7 @@ label monika_fruits:
     m "They're usually eaten along with other vegetables so people often mistake them for veggies."
     m 4b "Cherries, however, are very delicious."
     m 4a "Did you know that cherries are also good for athletes?"
-    m 3n "I could list all it's benefits but I doubt you'd be that interested."
+    m 3n "I could list all its benefits, but I doubt you'd be that interested."
     m 3a "There's also this thing called a cherry kiss."
     m 3b "You might have heard of it, [player]~"
     m 3m "It's obviously done by two people who are into each other."
