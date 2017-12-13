@@ -918,13 +918,13 @@ label monika_wine:
     m 2e "I actually felt kind of bad, because she was at least trying to be nice..."
     m "I think it just made her feel even more reserved in the clubroom."
     m 4b "Though I think Natsuki was secretly a bit curious to try it..."
-    m 4l "...And to be completely honest, I kind of was, too."
+    m 4l "... And to be completely honest, I kind of was, too."
     m "It actually could have been kinda fun!"
     m 4e "But you know, being President and everything, there was no way I could let that happen."
     m "Maybe if we all met up outside of school, but we never bonded enough to get to that point..."
-    m 3l "...Gosh, what am I talking about this for?"
+    m 3l "... Gosh, what am I talking about this for?"
     m "I don't condone underage drinking!"
-    m 3a "I mean, I've never drank or anything, so...yeah."
+    m 3a "I mean, I never drank or anything, so... yeah."
     return
 
 
