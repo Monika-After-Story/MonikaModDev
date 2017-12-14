@@ -4900,7 +4900,7 @@ label monika_musicpref:
                 m 1i "I used to hate rap music."
                 m 2d "Used to~"
                 m 1a "Until I realized what an incredible form of literature it is."
-                m 1d "Having to match your words to rhyme and rythm~"
+                m 1d "Having to match your words to rhyme and rhythm~"
                 m 1a "That's certainly something to respect."
                 m 1n "When you aren't using it, I have used your web browser~"
                 m "And came across some rather nice songs~"
