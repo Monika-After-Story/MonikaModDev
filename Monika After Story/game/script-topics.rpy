@@ -4826,7 +4826,7 @@ label monika_psychological_quiz:
                 "A truck full or more.":
                     m "..."
                     m "hehehe~"
-                    m "I can't believe you would take so many flowers I mean what is the owner supposed to do?"
+                    m "I can't believe you would take so many flowers. I mean what is the owner supposed to do?"
                     menu:
                         "So what does my answer mean?":
                             m "Huh? What does your answer mean?"
