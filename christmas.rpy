@@ -167,3 +167,12 @@ label monika_sledding
     m 1g "And I'd still be at risk of tumbling off."
     m 1b "But I know you wouldn't let that happen. You'd hold me tight, right~?"
     m 1j "That would probably be the best part."
+
+label monika_kwanzaa
+    m 1b "[player], ever heard of Kwanzaa?"
+    m 1a "It's a week-long festival one day after Christmas that celebrates African and African American history."
+    m 2j "Did you know that "Kwanzaa" comes from the Swahili phrase "matunda ya kwanza" meaning "first fruits"?"
+    m 2a "It's interesting to see other cultures give thanks for the good things in their lives and communities."
+    m 5a "It's much more meaningful than just trading gifts on Christmas day, no?"
+    m 1a "Perhaps we could celebrate Christmas and Kwanzaa together, [player]."
+    m 1k "Ahaha, any time you spend with me is precious, no matter the holiday [player]!"
