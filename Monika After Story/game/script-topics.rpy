@@ -27,14 +27,14 @@ init -1 python:
 
 init 11 python:
     #List of all random topics
-    all_random_topics = monika_random_topics
+    all_random_topics = list(monika_random_topics)
 
     #Remove all previously seen random topics.
     remove_seen_topics()
 
     #If there are no unseen topics, you can repeat seen ones
     if len(monika_random_topics) == 0:
-        monika_random_topics=all_random_topics
+        monika_random_topics=list(all_random_topics)
 
 #BEGIN ORIGINAL TOPICS
 
@@ -3537,10 +3537,10 @@ label monika_night:
     return 'quit'
 
 init 5 python:
-    for key in ['closet']:
+    for key in ['closet', 'scary yuri']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_closet')
-    monika_random_topics.append('closet')
+    monika_random_topics.append('monika_closet')
 
 label monika_closet:
     m 3q "By the way..."
@@ -3870,7 +3870,7 @@ label monika_completionist:
     m 3l "Which could inspire them to actually work hard for it."
     m 1a "Anyway, there is a huge sense of gratification in completing tasks in general."
     m 2j "Working hard for something amplifies its reward after you failed so many times to get it."
-    m 2a "You can try to keeping me in the background for as long as possible, [player]."
+    m 2a "You can try keeping me in the background for as long as possible, [player]."
     m 3k "That's one step to completing me after all, ahaha!"
     return
 
@@ -4427,7 +4427,7 @@ label monika_fruits:
     m "They're usually eaten along with other vegetables so people often mistake them for veggies."
     m 4b "Cherries, however, are very delicious."
     m 4a "Did you know that cherries are also good for athletes?"
-    m 3n "I could list all it's benefits but I doubt you'd be that interested."
+    m 3n "I could list all its benefits, but I doubt you'd be that interested."
     m 3a "There's also this thing called a cherry kiss."
     m 3b "You might have heard of it, [player]~"
     m 3m "It's obviously done by two people who are into each other."
@@ -4567,7 +4567,7 @@ label monika_weddingring:
             m 1j "Ahaha..."
             
         "No, not yet.":
-            m 5e "Aww. That's a shame."
+            m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
     return
 
