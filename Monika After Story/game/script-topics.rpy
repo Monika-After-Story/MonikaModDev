@@ -4832,7 +4832,7 @@ label monika_psychological_quiz:
                             m "Huh? What does your answer mean?"
                             m "The amount of flowers you took reveals the size of your love.~"
                             m "I love you a truckload [player].~"
-        "2"
+        "2":
             m "There is a cage for animals in front of you."
             m "How many cats are in the cage?"
             $ cat_number = int(renpy.input(allow=numbers_only,length=2))
