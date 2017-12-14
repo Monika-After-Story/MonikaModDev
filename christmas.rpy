@@ -120,3 +120,37 @@ label monika_whatiwant
     m 3b "Don't worry about getting me a present."
     m 3a "After all, I have you. And that's all I want."
     m 1k "I love you with all my heart, [player]."
+    
+label monika_snowman
+    m 1q "Hmm..."
+    m 3b "[player], have you ever stopped to think about what the life of a snowman is like?"
+    m 1a "Like, I know they're not alive, but..."
+    m "Just standing there, all by themselves. It must get lonely, from time to time."
+    m 1e "..."
+    m "I know how that feels. Or I used to, anyway."
+    m 1j "But then I found the love of my life!"
+    m 2b "I bet it's not all bad, though."
+    m "You could watch the snow fall, or admire the stars."
+    m 2a "Even an aurora is possible!"
+    m 1j "Just imagine it!"
+    m 5a "I'd be a happy, little snow lady."
+    m "What about you, sweetie?"
+    m "What would you do, if you were made of snow?"
+    menu:
+        "I'd watch the scenery change as time passes."
+            m 1k "I feel the same way, too!"
+            m 3b "Wouldn't it just be breathtaking?"
+            m 1k "You'd better save a spot for me. though~!"
+        
+        "I'd melt for you."
+            m 1k "Ahaha!"
+            m 1a "That was so cheesy!"
+            m 1e "And yet, so sweet."
+            m 1a "Thank you, love."
+        
+        "I'd freeze up!"
+            m 1k "Ahaha!"
+            m 1a "Technically, it would be too late to worry about something like that."
+            m 1e "Maybe being a snowman wouldn't be too great."
+            m 5a "A warm fire with your loved one and a steaming cup of hot chocolate is much better, no?"
+            
