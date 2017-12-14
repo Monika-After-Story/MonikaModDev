@@ -4835,6 +4835,7 @@ label monika_jokes_topic:
 
             # and the resulting label
             call expression result_label from _joke_sub_expression
+            $ p2m_jokes.pop(result_label, None)
         "No":
             m "this is test dialogue"
     return
