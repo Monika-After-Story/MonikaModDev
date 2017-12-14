@@ -4935,7 +4935,7 @@ label monika_musicpref:
                 m 3c "But mute the music here, otherwise I can't listen along."
                 m 3e "And..."
                 m "If you could play the occasional bit of orchestra~"
-                m 5a "That's be amazing too, my love."
+                m 5a "That'd be amazing too, my love."
             
             "It's not in here...":
                 m 1g "Oh no..."
