@@ -4703,6 +4703,71 @@ label monika_write:
     m "Thanks for listening~"
     return
     
+init 5 python:
+    for key in ['Psychological Quiz']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('Monika_Psychological_Quiz')
+    monika_random_topics.append('Monika_Psychological_Quiz')
+
+label Monika_Psychological_Quiz:
+    python:
+        cat_number = none
+    m "Hey [player]."
+    m "So I've been looking into some experiments online as of late and I came across a good one"
+    menu:
+        m "Do you want to try 1 or 2?"
+        "1":
+            m "You are in a field of flowers."
+            m "The owner has told you that you may take as many as you would like home with you."
+            menu:
+                m "How many do you take?"
+                "Just a few."
+                    m "..."
+                    m "uh this means that..."
+                    m "You don't really like flowers all that much. ahaha"
+                "Enough for a Large Bouquet."
+                    m "..."
+                    m "hehehe~"
+                    m "Huh? What does that mean?"
+                    m "The amount of flowers you took reveals the size of your love.~"
+                    m "I love you a bouquet amount too [player]~"
+                "A truck full or more."
+                    m "..."
+                    m "hehehe~"
+                    m "I can't believe you would take so many flowers I mean what is the owner supposed to do?"
+                    m "Huh? What does your answer mean?"
+                    m "The amount of flowers you took reveals the size of your love.~"
+                    m "I love you a truckload [player].~"
+        "2"
+            m "There is a cage for animals in front of you."
+            m "How many cats are in the cage?"
+            $ cat_number = int(renpy.input(allow=numbers_only,length=2))
+            if cat_number > 5:
+                m "Waah?"
+                m "That's way too many."
+                m "Huh? What does the answer mean?"
+                m "The amount of cats in the cage reveals the number of kids you want.~"
+                m "But really [player], Thats way too many..."
+            elif cat_number > 3:
+                m "[player]..."
+                m "I'll be sure to do my best!~"
+                m "Huh? What does the answer mean?"
+                m "The amount of cats in the cage reveals the number of kids you want.~"
+                m "I would be happy to..."
+                m "Forget I said anything [player]!"
+            elif cat_number > 1:
+                m "..."
+                m "Thats doable."
+                m "The amount of cats in the cage reveals the number of kids you want.~"
+                m "I will do my best.~"
+            else:
+                m "Yeah that works [player].~"
+                m "Huh? What does the answer mean?"
+                m "The amount of cats in the cage reveals the number of kids you want.~"                
+                m "It's fine if you don't want any kids."
+                m "That just means I have you all to myself.~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
