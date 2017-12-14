@@ -4937,7 +4937,7 @@ label monika_musicpref:
                 m "If you could play the occasional bit of orchestra~"
                 m 5a "That's be amazing too, my love."
             
-            "It's not here...":
+            "It's not in here...":
                 m 1g "Oh no..."
                 m 1p "I'm sorry, love."
                 m 1o "I guess I didn't offer all the different types for you."
