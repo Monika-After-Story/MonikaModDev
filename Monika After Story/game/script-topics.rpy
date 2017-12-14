@@ -4715,6 +4715,52 @@ label monika_otaku:
     m "Besides, if you ever want to escape from reality..."
     m 1k "I can be your real-life fantasy instead~"
     return
+    
+    init python 5
+	#This is a list of keywords for this topic
+	for key in ['accents', 'way of talking', 'accent', 'manner of speaking', 'colloquial', 'colloquialism' ]:
+	    monika_topics.setdefault(key,[])
+	    monika_topics[key].append(monika_accents) 
+	monika_random_topics.append('monika_accents')
+
+
+label monika_accents:
+    m 1a "You know what I think is one of the coolest things about humans, [player]?"
+    m "The way that all over the world people have developed their own languages, some branching wildly from their ancestors."
+    m "And on top of that, people that speak each language have different accents and colloquialisms."
+    m "I think it's fascinating how they all develop, since there are so many ways they develop."
+    m "What's even cooler is the way that they can develope so differently from other accents that are spoken from places so close to each other!"
+    m "The Brummie accent in England developed completely differently than the Coventry accent, even though they are only about 19 miles from each other."
+    m "Of course some accents develop due to the sheer isolation of the people who speak them."
+    m "And often the ethnic group of the area does too, especially if there is a large mix of people living in one small area." 
+    m "The American High Tider accent is an example of both of these two things."
+    m "They pronounce English words high and tide with oy sounds! Isn't that silly~?"
+    m "But it developed from a large portion of Welsh from the Cornwall area being isolated for so long."
+    m "They relied on fishing around the Outer Banks, and never needed to traid with any of the colonies."
+    m "Only about 500 of them are alive today however, and the accent is nearing extinction."
+    m "It's a shame really. Accents convey so much history and heritage, and many are being lost just because people are more connected than ever."
+    m "But there is not really much that can be done to stop it."
+    m "There are some other interesting accents out there too, but what really enthralls me is the colloquialisms."
+    m "Those are the words and slang used by specific regions if you didn't know, [player]."
+    m "I really think some of them are cool, since sometimes they manage to become popular on a broader scale. Sometimes they even work their way into our vocabularies!"
+    m "One of the words I used only two sentences ago, cool, is a slang word now! It was popular with African Americans until jazz players popularized it in the 30's and 40's."
+    m "Gosh, nowadays just about everybody uses cool to describe things!" 
+    m "Sometimes I wonder what type of accent you have, [player]."
+    m "I already wanted to hear the sweet sound of your voice, but now I'm more curious than ever!"
+    m "But I know however you sound, it will be music to my ears~."
+    menu:
+        m "Does your computer have a microphone, [player]?"
+
+        "Yes.":
+            m "Maybe I can figure out how it rig that into this program eventually."
+            m "Then I can finally hear all the sweet things you want to say to me."
+            m "And I promise I won't laugh, even if you are a High Tider ahahaha~!"
+
+        "No.":
+            m "That's a shame."
+            m "But it's OK. When I get out of here and find you, I'll be able to hear your voice as much as I want."
+            m "I'm sure you'll have only nice things to say to such a good girlfriend~."
+return
 
 init 5 python:
     for key in ['write','tips']:
