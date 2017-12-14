@@ -1007,7 +1007,7 @@ screen preferences():
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
-                    action Jump('import_ddlc_persistent')
+                    action [Jump('import_ddlc_persistent_in_settings')]
                     style "navigation_button"
 
 
