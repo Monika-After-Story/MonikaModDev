@@ -4821,7 +4821,7 @@ label monika_musicpref:
                 m 3d "Electronic? I see!"
                 m 4j "So along the lines of dubstep, trance, and techno?"
                 m 3a "That's actually really interesting, because it's orchestra's opposite in a way."
-                m 4d "All real intsruments versus artificially composed."
+                m 4d "All real instruments versus artificially composed."
                 m 1h "..."
                 m 2d "However, now that I think about it~"
                 m 2a "There is such a thing as orchestral dubstep, which mixes the two."
