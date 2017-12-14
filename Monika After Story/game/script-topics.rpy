@@ -4791,7 +4791,10 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
     
-label monika_musicpref
+init 5 python:
+    if seen_event('monika_musicpref'):
+        return
+    else:
     for key in ['pref','interest','taste']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_musicpref')
@@ -4800,9 +4803,6 @@ label monika_musicpref
 #Topic should only ever appear once.
     
 label monika_musicpref:
-    if seen_label('monika_musicpref'):
-        return
-    else:
         m 4b "Did you know that my favorite type of music is orchestral?"
         m 3j "Maybe I mentioned that already, but I just love the way that it sounds."
         m 3a "Just the thought of how so much meaning and story is behind a single work is fascinating."
