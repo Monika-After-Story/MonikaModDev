@@ -1,33 +1,149 @@
-# Module holding jokes that monika can tell
+# Module holding jokes that you can tell to monika
+# as well as jokes monika tells to you
 #
+# TODO: add some way to do toggling of dark jokes
+#   and differenetiating of dark jokes
+#   
+# NOTE: consider doing a tag system
+
+# we need some persists
+# dict of following format:
+# "p2m": p2m_jokes dict
+# "m2p": m2p_jokes list
+default persistent.monika_jokes = {}
+
 
 # pre stuff
 init -1 python:
 
-    # list of monika jokes
+    # list of jokes we tell monika
     # key -> the name of the label the joke leads to
     # value -> the joke (starter) we want to display
-    monika_jokes = dict()
+    p2m_jokes = dict()
 
-    # first item of the list is the caption
-    # NOTE: DO NOT CHANGE
-#    monika_jokes.append(("Do you know any good jokes?", None))
+    # list of jokes monika tells us
+    # each elem is the name of the label of the joke
+    m2p_jokes = list()
 
-    def removeJoke(joke):
+    def removeSeenJokes():
         #
-        # Removes a joke from the monika jokes dict cleanly
+        # Removes both jokes that we have already told monika and jokes that
+        # monika has already told us from their appropriate structures
+        #
+        # ASSUMES:
+        #   p2m_jokes
+        #   m2p_jokes
+
+        # lets start with p2m
+        global p2m_jokes
+        for key in p2m_jokes:
+            if renpy.seen_label(key):
+                p2m_jokes.pop(key)
+
+        # now for m2p
+        global m2p_jokes
+        for index in range(len(m2p_jokes)-1, -1, -1):
+            if renpy.seen_label(m2p_jokes[index]):
+                m2p_jokes.pop(index)
+
+    def randomlyRemoveFromDictPool(pool, n):
+        #
+        # randomly returns n number of items from the given pool. The pool 
+        # must be a dict. If there are less than n items in the pool, then the
+        # pool is returned. Returned items are removed from the pool.
         #
         # IN:
-        #   joke - the joke to remove (key)
+        #   pool - dict that we want to retrieve from
+        #   n - number of items to remove off the pool
         #
         # RETURNS:
-        #   the joke that was removed (or None if no removal occured)
+        #   n number of items, randomly selected if n < len(pool), the pool
+        #       itself otherwise
+        
+        if len(pool) <= n:
+            return pool
 
-        global monika_jokes
-        return monika_jokes.pop(joke,None)
+        # remove n number of items
+        keys = pool.keys()
+        removed = dict()
+        for i in range(0,n):
+            sel_key = renpy.random.choice(keys)
+            removed[sel_key] = pool.pop(sel_key)
+        return removed
+
+    def randomlyRemoveFromListPool(pool, n):
+        #
+        # randomly returns n number of items from teh given pool. The pool 
+        # must be a list. If there are less than n items in the pool, then the 
+        # pool is returned. Returned items are removed from teh pool.
+        #
+        # IN:
+        #   pool - list that we want to retrieve from
+        #   n - number of items to remove off the pool
+        #
+        # RETURNS:
+        #   n number of items, randomly seelcted if n < len(pool), the pool
+        #       itself otherwise
+        
+        if len(pool) <= n:
+            return pool
+
+        # remove n number of items
+        removed = list()
+        for i in range(0,n):
+            item = renpy.random.choice(pool)
+            removed.append(pool.remove(item))
+        return removed
+
+init -1 python in mas_jokes_consts:
+    # only one main const for now
+    # only 3 choices at a time
+    OPTION_MAX = 3
+
+# post stuff
+init 10 python:
+    # copy of the total player 2 monika jokes dict
+    all_p2m_jokes = dict(p2m_jokes)
+
+    # copy of the total monika 2 player jokes list
+    all_m2p_jokes = list(m2p_jokes)
+
+    # remove seen shit
+    removeSeenJokes()
+
+    # empty lists mean we need to reset
+    if len(p2m_jokes) == 0:
+        p2m_jokes = dict(all_p2m_jokes)
+
+    if len(m2p_jokes) == 0:
+        m2p_jokes = list(all_m2p_jokes)
+
+    # fill up the daily jokes list
+    # NOTE: since we are waiting on daily limiting, this is currently set
+    # to only showcasing 3 jokes per launch.
+    import store.mas_jokes_consts as mjc:
+#    p2m_jokes_avail = mjc.OPTION_MAX  # number of player 2 monika jokes avail
+#    m2p_jokes_avail = mjc.OPTION_MAX  # number of monika 2 player jokes avail
+    jokes_available = mjc.OPTION_MAX
+
+    # length checks to ensure we dont go pull too many
+#    if len(p2m_jokes) < p2m_jokes_avail:
+#        p2m_jokes_avail = len(p2m_jokes)
+#    if len(m2p_jokes) < m2p_jokes_avail:
+#        m2p_jokes_avail = len(m2p_jokes)
+
+    # now remove from the pool
+    # the daily player 2 monika jokes dict
+#    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
+    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, jokes_available)
+
+    # the daily monika 2 player jokes list
+#    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
+    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, jokes_available)
+
 
 init 5 python:
-    monika_jokes["joke_okidoki"] = "Doki Doki is not Oki Doki"
+    p2m_jokes["joke_okidoki"] = "Doki Doki is not Oki Doki"
 
 label joke_okidoki:
     m "Ahaha, what makes you say that?"
@@ -36,13 +152,11 @@ label joke_okidoki:
     m "I mean, take a glance at the bright side of our situation, [player]."
     m "For instance, since you're here, and I'm here, that means we're both together!"
     m "Since we love each other so much, I hope you can understand the lengths I had to go to even reach this point..."
-    # joke removal test
-    $ removeJoke("joke_okidoki")
     return
 
 
 init 5 python:
-    monika_jokes["joke_cantopener"] = "What do you call a broken can opener?"
+    p2m_jokes["joke_cantopener"] = "What do you call a broken can opener?"
 
 label joke_cantopener:
     m "Well, I'm not sure!"
@@ -63,11 +177,10 @@ label joke_cantopener:
             m "Ah, I'm sorry if that came off as a little harsh, [player]."
             m "I only want to help you improve, after all."
             m "I'm sure your next joke will be great! Ehehe~"
-    $ removeJoke("joke_cantopener")
     return
 
 init 5 python:
-    monika_jokes["joke_threewishes"] = ("Three guys, who are stranded on an "+
+    p2m_jokes["joke_threewishes"] = ("Three guys, who are stranded on an "+
         "island, find a magic lantern which contains a genie, who will grant "+
         "three wishes.")
 
@@ -90,11 +203,10 @@ label joke_threewishes:
                     m "A comedian too? Now I have even more reasons to love you!"
                     m "..."
                     m "Have I mentioned how happy I am to be here with you?"
-    $ removeJoke("joke_threewishes")
     return
 
 init 5 python:
-    monika_jokes["joke_sayorihobby"] = ("What would have been Sayori's " +
+    p2m_jokes["joke_sayorihobby"] = ("What would have been Sayori's " +
     "favorite hobby?")
 
 label joke_sayorihobby:
@@ -114,5 +226,4 @@ label joke_sayorihobby:
             m "Gosh, I can't believe you would do something like that [player]!"
             m "Unless that wasn't your intention..."
             m "I'll give you benefit of the doubt, because I love you so much, but please try to cut down on these kinds of jokes from now on."
-    $ removeJoke("joke_sayorihobby")
     return

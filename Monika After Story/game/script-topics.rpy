@@ -4806,15 +4806,28 @@ label monika_jokes_topic:
         "Yes":
             m "Ah, do you mind letting me hear some?"
             python:
+                # check to ensure we arent dry
+                if len(daily_p2m_jokes) == 0:
+
+                    # check to ensure the dynamic dict isnt dry
+                    if len(p2m_jokes) == 0:
+                        # yikes, we dry, better fill this up
+                        p2m_jokes = dict(all_p2m_jokes)
+
+                    # alright, lets get stuff from the pool
+                    daily_p2m_jokes.update(
+                        randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
+                    )
+
                 # since jokes are stored as dicts, we need to preprocess to send them
                 # to display menu
-                monika_jokeslist = list()
-                
+                p2m_jokeslist = list()
+
                 # NOTE: python 2: iteritems()
                 # NOTE: python 3: items()
                 # NOTE: MASSIVE BUG ALERT, dont let the jokes list run dry.
                 # TODO: build a check to ensure the list doesnt run dry
-                for label,prompt in monika_jokes.iteritems():
+                for label,prompt in daily_p2m_jokes.iteritems():
                     monika_jokeslist.append((prompt,label))
 
                 # now call the menu
