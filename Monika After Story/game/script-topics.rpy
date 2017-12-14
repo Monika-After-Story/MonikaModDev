@@ -4947,6 +4947,8 @@ label monika_musicpref:
                 m "Just mute the mod's music so I can listen along~"
                 m 2a "And don't forget about the occasional orchestral track~"
                 m 5a "For me!"
+                
+    return
 
 ##################
 #Incomplete ideas#
