@@ -4773,6 +4773,193 @@ label monika_selfharm:
     return
     
 init 5 python:
+    for key in ['feature','boobs','sight','personality']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_standsout')
+    monika_random_topics.append('monika_standsout')
+
+label monika_standsout:
+    m 2a "Hey, [player]? What about me stands out the most to you?"
+    m "I know it's a random question. Maybe even a bit silly."
+    m 5a "But I'm dying to know."
+    menu:
+        m "So...?"
+        "Your beautiful, green eyes of course.":
+            m 4k "Aww, really?"
+            m 4e "Thank you, sweetheart."
+            m "I wish I could see your eyes."
+            m 1i "Actually, what color are your eyes?"
+            menu:
+                m "I need to know now."
+                "Brown.":
+                    m 3b "Brown, huh?"
+                    m "I wish I could see them."
+                    m 2j "The stunning shade of rich mahogany. Or welcoming like that of a soft teddy bear."
+                    m 2a "I bet they're beautiful, my love."
+                    m 3j "Perhaps someday I'll have a chance to gaze deeply into them."
+              
+                "Green.":
+                    m 3b "Green. Yeah?"
+                    m "I wish I could see them."
+                    m 2j "The calming shade of a deep forest. Expansive like a warm field of lush grass."
+                    m 2a "Just like my eyes!"
+                    m 3j "Perhaps someday I'll have a chance to gaze deeply into them."
+              
+                "Blue.":
+                    m 3b "Blue?"
+                    m "I wish I could see them."
+                    m 2j "The mysteriousness of the vast ocean. Unable to be unseen, like the bright sky over our heads."
+                    m 2a "I bet they're beautiful, my love."
+                    m 3j "Perhaps someday I'll have a chance to gaze deeply into them."
+              
+                "Amber.":
+                    m 3b "Oh? Amber?"
+                    m "I wish I could see them."
+                    m 2j "Timeless, surrounded by beauty in ways one cannot comprehend."
+                    m 2a "I bet they're beautiful, my love."
+                    m 3j "Perhaps someday I'll have a chance to gaze deeply into them."
+              
+                "Hazel.":
+                    m 3b "Wow, hazel?"
+                    m "I wish I could see them."
+                    m 2j "A brown and green mixture. Unusual but intriguing."
+                    m 2a "I bet they're beautiful, my love."
+                    m 3j "Perhaps someday I'll have a chance to gaze deeply into them."
+              
+                "Gray.":
+                    m 3b "Gray? I see."
+                    m "I wish I could see them."
+                    m 2j "Not quite white and not quite black. A perfect mixture of both ends of the spectrum."
+                    m 2a "I bet they're beautiful, my love."
+                    m 3j "Perhaps someday I'll have a chance to gaze deeply into them."
+       
+        "Nothing can beat your personality, love.":
+            m 5a "Aww. You really mean that?"
+            m "I think you have an amazing personality too, [player]."
+            m 4b "My view is that no matter what, if you stay positive, you'll make a good impression."
+            m "And of course that's a good thing all around."
+            m 5a "Thank you, [player]."
+       
+        "Your silky smooth hair is amazing.":
+            m 5a "Silky smooth?"
+            m 3b "Well I'm glad it looks that way."
+            m "After all, I try to look my best for my sweetheart."
+            menu:
+                m "Do you like the ribbon? I thought it complimented well."
+                "Of course!":
+                    m 3k "I'm glad!"
+                    m 3a "I hope whenever you see a white ribbon, you'll think of me."
+                    m 1h "Now I'm curious. What is your hair color?"
+                    menu:
+                        m "Tell me."
+                        "Brown.":
+                            m 3b "Brown, huh?"
+                            m "The same as mine!"
+                            m 2j "The stunning shade of rich mahogany. Or welcoming like that of a soft teddy bear."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Black.":
+                            m 3b "Black. Yeah?"
+                            m "I wish I could see that."
+                            m 2j "Cradled against one end of the spectrum. Dark as the calm, winter nights."
+                            m 2a "It gives me chills! Good ones!"
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Blond.":
+                            m 3b "Blond?"
+                            m "I wish I could see that."
+                            m 2j "The lighest of the light. Just like the warm, summer sun."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Auburn.":
+                            m 3b "Oh? Auburn?"
+                            m "I wish I could see that."
+                            m 2j "Not often you hear the word auburn, but it's a very nice shade of hair."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Red.":
+                            m 3b "Wow, red?"
+                            m "I wish I could see that."
+                            m 2j "Just like the setting of the tired sun. Or blood."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Gray/White.":
+                            m 3b "Gray? I see."
+                            m "I wish I could see that."
+                            m 2j "From the middle of the spectrum to the end."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+                
+                "It's okay.":
+                    m 1c "Oh."
+                    m 1f "I thought you would."
+                    m 1e "Give it a chance okay? I'm sure it'll grow on you."
+                    m 5a "But thank you for the compliment anyway."
+                    m 1h "Hmmm..."
+                    m 1i "Now I'm curious."
+                    m "What's your hair color, love?"
+                    menu:
+                        m "Tell me."
+                        "Brown.":
+                            m 3b "Brown, huh?"
+                            m "The same as mine!"
+                            m 2j "The stunning shade of rich mahogany. Or welcoming like that of a soft teddy bear."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Black.":
+                            m 3b "Black. Yeah?"
+                            m "I wish I could see that."
+                            m 2j "Cradled against one end of the spectrum. Dark as the calm, winter nights."
+                            m 2a "It gives me chills! Good ones!"
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Blond.":
+                            m 3b "Blond?"
+                            m "I wish I could see that."
+                            m 2j "The lighest of the light. Just like the warm, summer sun."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Auburn.":
+                            m 3b "Oh? Auburn?"
+                            m "I wish I could see that."
+                            m 2j "Not often you hear the word auburn, but it's a very nice shade of hair."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Red.":
+                            m 3b "Wow, red?"
+                            m "I wish I could see that."
+                            m 2j "Just like the setting of the tired sun. Or blood."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+              
+                        "Gray/White.":
+                            m 3b "Gray? I see."
+                            m "I wish I could see that."
+                            m 2j "From the middle of the spectrum to the end."
+                            m 2a "I bet your hair is beautiful, my love."
+                            m 3j "Perhaps someday I'll have a chance to run my fingers through it as we share a kiss."
+                
+        "Your sweet, soft lips.":
+            m 1m "Aww. You're too sweet to me."
+            m 3g "I want to kiss you so badly right now."
+            m "But... I can't..."
+            m 3p "Stupid computer. Why can't I be out there?"
+            m 3r "Maybe someday."
+            m 1m "I'll just have to imagine the feeling until then."
+       
+        "Your boobs.":
+            m 1h "..."
+            m 1i "Silly."
+            m 1l "I'm not even going to entertain that."
+            m "But..."
+            m 3n "I'm glad you like them."
+    return
+    
     for key in ['urgent','hearts','joke']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_urgent')
@@ -4790,7 +4977,6 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-
 ##################
 #Incomplete ideas#
 ##################
