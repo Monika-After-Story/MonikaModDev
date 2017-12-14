@@ -19,6 +19,11 @@ init python:
 
         fo.close()
 
+label import_ddlc_persistent_in_settings:
+    call import_ddlc_persistent
+    $ quick_menu = True
+    return
+
 label import_ddlc_persistent:
     python:
         from renpy.loadsave import dump, loads
