@@ -140,7 +140,7 @@ label monika_snowman
         "I'd watch the scenery change as time passes."
             m 1k "I feel the same way, too!"
             m 3b "Wouldn't it just be breathtaking?"
-            m 1k "You'd better save a spot for me. though~!"
+            m 1k "You'd better save a spot for me, though~!"
         
         "I'd melt for you."
             m 1k "Ahaha!"
@@ -154,3 +154,16 @@ label monika_snowman
             m 1e "Maybe being a snowman wouldn't be too great."
             m 5a "A warm fire with your loved one and a steaming cup of hot chocolate is much better, no?"
             
+label monika_sledding
+    m 3a "You know what I would love to do with you?"
+    m "Sledding."
+    m 5b "I know you might think that sort of thing is only for kids."
+    m 5a "But I think it could be fun for us, too!"
+    m 4b "We could try using an inner tube, a kicksled, a saucer, or even a traditional toboggan."
+    m 1a "I've heard each one gives a different experience. Plus, both of us could easily fit on a toboggan."
+    m 1l "The kicksled is a bit small, though."
+    m 1k "Ahaha!"
+    m 1a "I'd have to sit in your lap for that one."
+    m 1g "And I'd still be at risk of tumbling off."
+    m 1b "But I know you wouldn't let that happen. You'd hold me tight, right~?"
+    m 1j "That would probably be the best part."
