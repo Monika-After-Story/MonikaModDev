@@ -15,7 +15,7 @@ python early:
     EV_ACT_UNLOCK = "unlock"
     EV_ACT_RANDOM = "random"
     EV_ACT_POOL = "pool"
-    
+
     # list of those special constants
     EV_ACTIONS = [
         EV_ACT_PUSH,
@@ -39,11 +39,11 @@ python early:
         # TODO: add documentation from pi's comment to here
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
-        def __init__(self, 
+        def __init__(self,
                 eventlabel,
-                prompt="My Event", 
-                label=None, 
-                category=None, 
+                prompt="My Event",
+                label=None,
+                category=None,
                 unlocked=False,
                 random=False,
                 pool=False,
@@ -55,7 +55,7 @@ python early:
             # setting up defaults
             if not eventlabel:
                 raise EventException("'_eventlabel' cannot be None")
-            
+
             self.eventlabel = eventlabel
             self.prompt = prompt
 
@@ -94,7 +94,7 @@ python early:
             return self._action
 
         def setAction(self, action):
-            # 
+            #
             # Sets the action of this Event, only if its in the appropriate
             # EVENT LIST. If an inappropriate action is given, None will be
             # set
@@ -1389,6 +1389,7 @@ default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent.seen_monika_in_room = False
+default persistent.playerxp = 0
 
 default his = "his"
 default he = "he"
