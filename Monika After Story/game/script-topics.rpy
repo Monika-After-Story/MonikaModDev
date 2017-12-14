@@ -4921,7 +4921,7 @@ label monika_musicpref:
                 m 3a "But I'm sure you have your own playlist of the very best of pop!"
                 m 4b "If you ever want to play it~"
                 m "Mute the music here so I can listen, too."
-                m 5a "And don't forget to add an orchestral piece or two!"
+                m 5a "And don't forget to add an orchestral piece for me!"
             
             "Folk."
                 m 2b "The oldest of the old, huh?"
