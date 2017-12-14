@@ -99,7 +99,6 @@ label monika_death:
     m "It makes me feel even closer to you when you're here with me."
     return
 
-
 init 5 python:
     #This is a list of keywords for this topic
     for key in ['bad day' , 'sad' , 'unhappy']:
@@ -4412,6 +4411,44 @@ label monika_pets:
     m 1a "Until I find a way out, could you promise to keep me from feeling lonely?"
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
+    
+    
+    init 5 python:
+    # List of keywords for the topic.
+    for key in ['dog','dogs','puppy','puppies']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('dog_discussion') # Identifier
+
+label dog_discussion:
+    m 1b "Oh, do you like dogs?"
+    m 1a "Not only are they fun to play with..."
+    m 3i "Having a pet has been shown to help with things like anxiety and depression."
+    m 2j "I actually prefer birds, but I like all animals."
+    m 1o "Though maybe not as much as Natuski did..."
+    m "She was always so embarassed to like cute things. I wish she could have been more accepting of her own interests."
+    m 2q "I suppose her environment had a hand in that."
+    m 1f "If any of your friends have interests they care a lot about, make sure to always be supportive, okay?"
+    m "You never know how much a casual dismissal might hurt someone."
+    m 4e "Knowing you, [player], I'm sure you'd never want to do that."
+    return
+
+
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['cat','cats','kitten','kittens']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('cat_discussion') # Identifier
+
+label cat_discussion:
+    m 1b "Cats are pretty cute, aren't they?"
+    m "Despite looking so elegant, they always seem to end up in funny situations."
+    m 1a "It's no wonder they're so popular on the internet."
+    m 2b "Did you know the ancient Egyptians considered cats sacred?"
+    m 1a "Really? Well it is pretty common knowledge these days."
+    m 1c "You know, people today still really love cats."
+    m "It makes you think, doesn't it? The more people change, the more they stay the same."
+    return
+
 
 init 5 python:
     for key in ['fruit', 'fruits', 'cherry', 'cherries', 'bell peppers', 'tomato', 'tomatoes', 'bell pepper']:
