@@ -50,7 +50,8 @@ python early:
                 conditional=None,
                 action=None,
                 start_date=None,
-                end_date=None):
+                end_date=None,
+                unlock_date=None):
 
             # setting up defaults
             if not eventlabel:
@@ -73,6 +74,7 @@ python early:
             self.setAction(action)
             self.start_date = start_date
             self.end_date = end_date
+            self.unlock_date = unlock_date
 
         # equality override
         def __eq__(self, other):
@@ -106,6 +108,64 @@ python early:
                 self._action = action
             else:
                 self._action = None
+
+        @staticmethod
+        def getSortedKeys(events, include_none=False):
+            #
+            # Returns a list of eventlables (keys) of the given dict of events
+            # sorted by the field unlock_date. The list is sorted in 
+            # chronological order (oldest first). Events with an unlock_date 
+            # of None are not included unless include_none is True, in which 
+            # case, Nones are put after everything else
+            #
+            # IN:
+            #   events - dict of events of the following format:
+            #       eventlabel: event object
+            #   include_none - True means we include events that have None for
+            #       unlock_date int he sorted key list, False means we dont
+            #       (Default: False)
+            #
+            # RETURNS:
+            #   list of eventlabels (keys), sorted in chronological order.
+            #   OR: None if the given events is empty or all unlock_date fields
+            #   were None and include_none is False
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.values() # python 2
+
+            # none check
+            if include_none:
+                none_labels = list()
+
+            # insertion sort
+            eventlabels = list()
+            for ev in ev_list:
+
+                if ev.unlock_date is not None:
+                    index = 0
+
+                    while (index < len(eventlabels) 
+                            and ev.unlock_date > events[
+                                eventlabels[index]
+                            ].unlock_date):
+                        index += 1
+                    eventlabels.insert(index, ev.eventlabel)
+
+                elif include_none: # eventlabel was none
+                    none_labels.append(ev.eventlabel)
+
+            if include_none:
+                eventlabels.extend(none_labels)
+
+            # final sanity check 
+            if len(eventlabels) == 0:
+                return None
+
+            return eventlabels
 
 
 init -1 python:
