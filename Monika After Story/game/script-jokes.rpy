@@ -10,19 +10,69 @@
 # dict of following format:
 # "p2m": p2m_jokes dict
 # "m2p": m2p_jokes list
-default persistent.monika_jokes = {}
+# default persistent.monika_jokes = {}
+# NOTE: If we are trying to make a label work for both monika and player, 
+#   it requires some complexity added to the label, particularly two 
+#   different paths. The label must have support for this.
 
 
 # pre stuff
 init -1 python:
 
+    class MASJokeException(Exception):
+        def __init__(self, msg):
+            str.msg = msg
+        def __str__(self):
+            return "MASJokeError: " + self.msg
+
+    # alright, im making this a class instead. its just easier to handle
+    #
+    # This class handles represntations of MASJokes and attributes
+    #
+    # PROPERTIES:
+    #   jokelabel - the label this joke resides at (existence is checked,
+    #       please only create this class post init level 5)
+    #       NOTE: will raise a MASJokeException if the jokelabel doesnt exist
+    #       (REQUIRED)
+    #   is_m2p - True if this joke is one that monika can tell the player
+    #       False means this joke is one the player tells monika
+    #       NOTE: If false, Prompt is REQUIRED
+    #       (Default: True)
+    #   prompt - the prompt to show on the button for this joke
+    #       NOTE: Only required if is_p2m is True.
+    #       NOTE: Will raise a MASJokeException if None while is_m2p is False
+    #   is_dark - True if this joke is a dark joke, False if not
+    #       (Default: False)
+    #   is_dad - True if this joke is a dad joke, False if not
+    #       (Default: False)
+    class MASJoke():
+        def __init__(self, 
+                jokelabel,
+                is_m2p=True,
+                prompt=None,
+                is_dark=False,
+                is_dad=False):
+
+            # sanity checks
+            if not jokelabel:
+                raise MASJokeException("jokelabel cannot be None")
+            if not renpy.has_label(jokelabel):
+                raise MASJokeException("'"+jokelabel+"' does not exist")
+            if not is_m2p and not prompt:
+                raise MASJokeException("prompt cannot be None")
+
+            self.jokelabel = jokelabel
+            self.is_m2p = is_m2p
+            self.prompt = prompt
+            self.is_dark = is_dark
+            self.is_dad = is_dad
+
     # list of jokes we tell monika
-    # key -> the name of the label the joke leads to
-    # value -> the joke (starter) we want to display
-    p2m_jokes = dict()
+    # each elem is a MASJoke
+    p2m_jokes = list()
 
     # list of jokes monika tells us
-    # each elem is the name of the label of the joke
+    # each elem is a MASJoke
     m2p_jokes = list()
 
     def removeSeenJokes():
@@ -96,12 +146,17 @@ init -1 python:
         return removed
 
 init -1 python in mas_jokes_consts:
-    # only one main const for now
     # only 3 choices at a time
     OPTION_MAX = 3
 
+    # how many jokes can we say? 
+    # per day?
+    JOKE_DAILY_MAX = 3
+
 # post stuff
 init 10 python:
+    from copy import deepcopy
+
     # copy of the total player 2 monika jokes dict
     all_p2m_jokes = dict(p2m_jokes)
 
@@ -122,28 +177,32 @@ init 10 python:
     # NOTE: since we are waiting on daily limiting, this is currently set
     # to only showcasing 3 jokes per launch.
     import store.mas_jokes_consts as mjc:
-#    p2m_jokes_avail = mjc.OPTION_MAX  # number of player 2 monika jokes avail
-#    m2p_jokes_avail = mjc.OPTION_MAX  # number of monika 2 player jokes avail
-    jokes_available = mjc.OPTION_MAX
+    p2m_jokes_avail = mjc.OPTION_MAX  # number of player 2 monika jokes avail
+    m2p_jokes_avail = mjc.OPTION_MAX  # number of monika 2 player jokes avail
+    jokes_available = mjc.JOKE_DAILY_MAX # number of jokes m and p exchange
 
     # length checks to ensure we dont go pull too many
-#    if len(p2m_jokes) < p2m_jokes_avail:
-#        p2m_jokes_avail = len(p2m_jokes)
-#    if len(m2p_jokes) < m2p_jokes_avail:
-#        m2p_jokes_avail = len(m2p_jokes)
+    if len(p2m_jokes) < p2m_jokes_avail:
+        p2m_jokes_avail = len(p2m_jokes)
+    if len(m2p_jokes) < m2p_jokes_avail:
+        m2p_jokes_avail = len(m2p_jokes)
 
     # now remove from the pool
     # the daily player 2 monika jokes dict
-#    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
-    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, jokes_available)
+    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
+#    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, jokes_available)
 
     # the daily monika 2 player jokes list
-#    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
-    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, jokes_available)
+    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
+#    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, jokes_available)
 
 
 init 5 python:
-    p2m_jokes["joke_okidoki"] = "Doki Doki is not Oki Doki"
+    p2m_jokes.append(MASJoke(
+        "joke_okidoki",
+        is_m2p=False,
+        prompt="Doki Doki is not Oki Doki"
+    ))
 
 label joke_okidoki:
     m "Ahaha, what makes you say that?"
@@ -156,7 +215,11 @@ label joke_okidoki:
 
 
 init 5 python:
-    p2m_jokes["joke_cantopener"] = "What do you call a broken can opener?"
+    p2m_jokes.append(MASJoke(
+        "joke_cantopener",
+        is_m2p=False,
+        prompt="What do you call a broken can opener?"
+    ))
 
 label joke_cantopener:
     m "Well, I'm not sure!"
@@ -180,9 +243,13 @@ label joke_cantopener:
     return
 
 init 5 python:
-    p2m_jokes["joke_threewishes"] = ("Three guys, who are stranded on an "+
+    p2m_jokes.append(MASJoke(
+        "joke_threewishes",
+        is_m2p=False,
+        prompt=("Three guys, who are stranded on an "+
         "island, find a magic lantern which contains a genie, who will grant "+
         "three wishes.")
+    ))
 
 label joke_threewishes:
     m "Oh, what things will they wish for I wonder?"
@@ -206,8 +273,11 @@ label joke_threewishes:
     return
 
 init 5 python:
-    p2m_jokes["joke_sayorihobby"] = ("What would have been Sayori's " +
-    "favorite hobby?")
+    p2m_jokes.append(MASJoke(
+        "joke_sayorihobby",
+        is_m2p=False,
+        prompt="What would have been Sayori's favorite hobby?"
+    ))
 
 label joke_sayorihobby:
     m "I think she's quite good at art, and probably enjoyed it a lot!"

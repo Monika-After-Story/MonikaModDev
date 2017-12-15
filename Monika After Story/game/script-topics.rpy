@@ -4799,45 +4799,51 @@ init 5 python:
     # no random for now
 
 label monika_jokes_topic:
-    m "Hey [player], I think telling each other some good jokes could bring us closer together, you know?"
-    m "I know quite a few jokes, but I was wondering if maybe you knew any."
-    menu:
-        m "Do you know any good jokes?"
-        "Yes":
-            m "Ah, do you mind letting me hear some?"
-            python:
-                # check to ensure we arent dry
-                if len(daily_p2m_jokes) == 0:
+    if jokes_available > 0:
+        m "Hey [player], I think telling each other some good jokes could bring us closer together, you know?"
+        m "I know quite a few jokes, but I was wondering if maybe you knew any."
+        menu:
+            m "Do you know any good jokes?"
+            "Yes":
+                m "Ah, do you mind letting me hear some?"
+                python:
+                    # TODO: this is all broken
+                    # check to ensure we arent dry
+                    if len(daily_p2m_jokes) == 0:
 
-                    # check to ensure the dynamic dict isnt dry
-                    if len(p2m_jokes) == 0:
-                        # yikes, we dry, better fill this up
-                        p2m_jokes = dict(all_p2m_jokes)
+                        # check to ensure the dynamic dict isnt dry
+                        if len(p2m_jokes) == 0:
+                            # yikes, we dry, better fill this up
+                            p2m_jokes = dict(all_p2m_jokes)
 
-                    # alright, lets get stuff from the pool
-                    daily_p2m_jokes.update(
-                        randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
-                    )
+                        # alright, lets get stuff from the pool
+                        daily_p2m_jokes.update(
+                            randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
+                        )
 
-                # since jokes are stored as dicts, we need to preprocess to send them
-                # to display menu
-                p2m_jokeslist = list()
+                    # since jokes are stored as dicts, we need to preprocess to send them
+                    # to display menu
+                    p2m_jokeslist = list()
 
-                # NOTE: python 2: iteritems()
-                # NOTE: python 3: items()
-                # NOTE: MASSIVE BUG ALERT, dont let the jokes list run dry.
-                # TODO: build a check to ensure the list doesnt run dry
-                for label,prompt in daily_p2m_jokes.iteritems():
-                    monika_jokeslist.append((prompt,label))
+                    # NOTE: python 2: iteritems()
+                    # NOTE: python 3: items()
+                    # NOTE: MASSIVE BUG ALERT, dont let the jokes list run dry.
+                    # TODO: build a check to ensure the list doesnt run dry
+                    for label,prompt in daily_p2m_jokes.iteritems():
+                        p2m_jokeslist.append((prompt,label))
 
-                # now call the menu
-                result_label = renpy.display_menu(monika_jokeslist)
+                    # now call the menu
+                    result_label = renpy.display_menu(p2m_jokeslist)
 
-            # and the resulting label
-            call expression result_label from _joke_sub_expression
-            $ p2m_jokes.pop(result_label, None)
-        "No":
-            m "this is test dialogue"
+                # and the resulting label
+                call expression result_label from _joke_sub_expression
+                $ p2m_jokes.pop(result_label, None)
+            "No":
+                m "Alright, I'll tell you a joke"
+                # TODO tell jokes 
+    else:
+        # TODO: better dialogue for no more available jokes
+        m "No more jokes today I hate you"
     return
 
 
