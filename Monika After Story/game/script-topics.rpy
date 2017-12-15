@@ -4806,8 +4806,8 @@ label monika_coff:
     m 3p "How? I'm not sure. I'm no coffee scientist."
     m 3d "But if you look it up, the research shows."
     m 4a "Personally I prefer iced coffee. It tends to be sweeter."
-    m 3b "But even just a cup of day can help you reach new heights~"
-    m "And when writing, it can save you."
+    m 3b "But even just a cup a day can help you reach new heights~"
+    m "And when writing, it can save you from writer's block."
     m 3l "Now I need a coffee machine in here."
     return
 
