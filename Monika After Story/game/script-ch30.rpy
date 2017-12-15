@@ -447,6 +447,7 @@ label ch30_autoload:
 
     call set_gender from _call_set_gender
 
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -477,6 +478,27 @@ label ch30_autoload:
     window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
+
+    #Grant XP for time spent away from the game
+    python:
+        if len(persistent.sessions)>=2:
+            away_experience_time=time.time()-persistent.sessions[-2][1] #Time since end of previous session
+            away_xp=0
+
+            #Ignore anything beyond 3 days
+            if away_experience_time > (360*24*3):
+                away_experience_time=360*24*3
+
+            #Give 5 xp per hour for everything beyond 1 day
+            if away_experience_time > (360*24):
+                away_xp =+ 5*(away_experience_time-360*24)/360.0
+                away_experience_time = 360*24
+
+            #Give 10 xp per hour for the first 24 hours
+            away_xp =+ 10*away_experience_time/360.0
+
+            #Grant the away XP
+            grant_xp(away_xp)
 
     $ elapsed = days_passed()
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
@@ -554,6 +576,17 @@ label ch30_loop:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
+
+    #Check time based events and grant time xp
+    python:
+        try:
+            calendar_last_checked
+        except:
+            calendar_last_checked=time.time()
+        if time.time()-calendar_last_checked>60: #Check no more than once a minute
+            idle_xp=(time.time()-calendar_last_checked)/60
+            grant_xp(idle_xp)
+            calendar_last_checked=time.time()
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
