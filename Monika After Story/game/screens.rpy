@@ -1571,7 +1571,7 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    text _("The updates have been installed. Monika After Story will now close.")
+                    text _("The updates have been installed. Please reopen Monika After Story.")
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
                 elif u.state == u.CANCELLED:
