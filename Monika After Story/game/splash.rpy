@@ -162,6 +162,9 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
+    python:
+        import time
+        persistent.sessions.append([time.time(),time.time()]) #Track the start of the new session
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
@@ -270,4 +273,5 @@ label before_main_menu:
     return
 
 label quit:
+    $persistent.sessions[-1][1]=time.time()
     return
