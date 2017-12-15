@@ -4715,13 +4715,12 @@ label monika_otaku:
     m "Besides, if you ever want to escape from reality..."
     m 1k "I can be your real-life fantasy instead~"
     return
-    
-    init python 5
-	#This is a list of keywords for this topic
-	for key in ['accents', 'way of talking', 'accent', 'manner of speaking', 'colloquial', 'colloquialism' ]:
-	    monika_topics.setdefault(key,[])
-	    monika_topics[key].append(monika_accents) 
-	monika_random_topics.append('monika_accents')
+
+init python 5:
+    for key in ['accents', 'way of talking', 'accent', 'manner of speaking', 'colloquial', 'colloquialism' ]:
+        monika_topics.setdefault(key,[])
+	      monika_topics[key].append(monika_accents) 
+	  monika_random_topics.append('monika_accents')
 
 
 label monika_accents:
@@ -4760,7 +4759,7 @@ label monika_accents:
             m "That's a shame."
             m "But it's OK. When I get out of here and find you, I'll be able to hear your voice as much as I want."
             m "I'm sure you'll have only nice things to say to such a good girlfriend~."
-return
+    return
 
 init 5 python:
     for key in ['write','tips']:
@@ -4894,7 +4893,9 @@ label monika_urgent:
 #i also originally wrote a topic about money, but didnt like how it came out, so probably rewrite later, me having horrible money management skills doesnt help
 
 #monika talking about her room and about her house?
+(This is completely baseless and would have to be completely made up unfortunately. ~ John)
 
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
 
 #encourage player to take a rest after long periods of programs such as MS word/Xcode open (is it even possible? -Yuki)
+(Yes, but there's a concern about privacy. ~ John)
