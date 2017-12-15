@@ -84,8 +84,16 @@ init -1 python in data_points:
         datetime(2020,12,12,12,12)
     ]
 
+    ud1 = None
+    ud2 = datetime(2001,10,10)
+    ud3 = datetime(1990,10,10)
+    ud4 = datetime(2010,10,10)
 
 
+    unlock_dates = [ud1, ud2, ud3, ud4]
+
+    s_unlock_dates = [ud3, ud2, ud4]
+    sn_unlock_dates = [ud3, ud2, ud4, ud1]
 
 
 init python:
@@ -105,7 +113,8 @@ init python:
                 dpts.conditionals[i],
                 dpts.actions[i],
                 dpts.start_dates[i],
-                dpts.end_dates[i]
+                dpts.end_dates[i],
+                dpts.unlock_dates[i]
             )
         persistent.begin_test = False
 
@@ -140,5 +149,41 @@ init python:
             results += testCase("action", v._action, dpts.actions[dex])
             results += testCase("start_date", v.start_date, dpts.start_dates[dex])
             results += testCase("end_date", v.end_date, dpts.end_dates[dex])
+            results += testCase("unlock_date", v.unlock_date, dpts.unlock_dates[dex])
             results += "\n"
         return results
+
+    # test sorting
+    # returns a string of the results
+    def testSort():
+
+        # sorting, no NONe
+        sorted_keys = Event.getSortedKeys(persistent.serial_objs)
+        results = "SORTING, NO NONE:\n\n"
+        dex = 0
+        for k in sorted_keys:
+            results += testCase(
+                k, 
+                persistent.serial_objs[k].unlock_date,
+                dpts.s_unlock_dates[dex]
+            )
+            dex += 1
+
+        # sorting,  with None
+        sorted_keys = Event.getSortedKeys(
+            persistent.serial_objs,
+            include_none=True
+        )
+        results += "\n\nSORTING, WITH NONE:\n\n"
+        dex = 0
+        for k in sorted_keys:
+            results += testCase(
+                k,
+                persistent.serial_objs[k].unlock_date,
+                dpts.sn_unlock_dates[dex]
+            )
+            dex += 1
+
+        results += "\n"
+        return results
+
