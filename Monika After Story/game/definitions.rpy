@@ -1290,6 +1290,7 @@ default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False}
 default persistent.sessions=[]
 default persistent.playerxp = 0
+default persistent.idlexp_total = 0
 
 default his = "his"
 default he = "he"

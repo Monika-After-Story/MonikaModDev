@@ -479,12 +479,15 @@ label ch30_autoload:
     #If you were interrupted, push that event back on the stack
     $restartEvent()
 
-    #Grant XP for time spent away from the game
+    #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
-        if len(persistent.sessions)>=2:
+        if len(persistent.sessions)>=2 and persistent.closed_self:
             away_experience_time=time.time()-persistent.sessions[-2][1] #Time since end of previous session
             away_xp=0
 
+            #Reset the idlexp total if monika has had at least 6 hours of rest
+            if away_experience_time >= 6*360:
+                persistent.idlexp_total=0
             #Ignore anything beyond 3 days
             if away_experience_time > (360*24*3):
                 away_experience_time=360*24*3
@@ -585,6 +588,11 @@ label ch30_loop:
             calendar_last_checked=time.time()
         if time.time()-calendar_last_checked>60: #Check no more than once a minute
             idle_xp=(time.time()-calendar_last_checked)/60
+            persistent.idlexp_total =+ idle_xp
+            if persistent.idlexp_total>=120: # never grant more than 120 xp in a session
+                idle_xp = idle_xp-(persistent.idlexp-120) #Remove excess XP
+                persistent.idlexp=120
+
             grant_xp(idle_xp)
             calendar_last_checked=time.time()
 
