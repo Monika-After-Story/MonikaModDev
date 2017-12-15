@@ -1499,7 +1499,7 @@ screen update_check(ok_action,cancel_action):
             yalign .5
             spacing 30
 
-            $latest_version = updater.UpdateVersion('http://da605edcsie7i.cloudfront.net/updates.json',check_interval=0)
+            $latest_version = updater.UpdateVersion('http://updates.monikaafterstory.com/updates.json',check_interval=0)
             if latest_version != None:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
