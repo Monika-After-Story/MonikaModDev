@@ -4808,7 +4808,8 @@ label monika_coff:
     m 4a "Personally I prefer iced coffee. It tends to be sweeter."
     m 3b "But even just a cup a day can help you reach new heights~"
     m "And when writing, it can save you from writer's block."
-    m 3l "Now I need a coffee machine in here."
+    m 3f "..."
+    m 3l "Now I just need a coffee machine in here."
     return
 
 ##################
