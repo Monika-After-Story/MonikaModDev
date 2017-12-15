@@ -1287,6 +1287,9 @@ default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent.seen_monika_in_room = False
+default persistent.ever_won = {'pong':False,'chess':False}
+default persistent.sessions=[]
+default persistent.playerxp = 0
 
 default his = "his"
 default he = "he"

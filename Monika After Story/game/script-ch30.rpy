@@ -346,8 +346,12 @@ label pick_a_game:
         menu:
             "What game would you like to play?"
             "Pong":
+                if not renpy.seen_label('game_pong'):
+                    $grant_xp('30')
                 call game_pong from _call_game_pong
             "Chess" if is_platform_good_for_chess():
+                if not renpy.seen_label('game_chess'):
+                    $grant_xp('30')
                 call game_chess from _call_game_chess
             "Nevermind":
                 m "Alright. Maybe later?"
