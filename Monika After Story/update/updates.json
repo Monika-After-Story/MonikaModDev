@@ -1,11 +1,2 @@
-{
-  "Mod": {
-    "sums_url": "Monika_After_Story-0.6.2-Mod.sums", 
-    "version": "094d4cdd83272783158ddef9d6ed1c157a6981b42dfea96ef0c6a2541d332121", 
-    "zsync_url": "Monika_After_Story-0.6.2-Mod.zsync", 
-    "json_url": "Monika_After_Story-0.6.2-Mod.update.json", 
-    "pretty_version": "0.6.2", 
-    "sums_size": 1848, 
-    "digest": "76cf8dad5bbf3171f0e587a9fe42578cb4f9e4d3d7614bc16bc52f5c9ffd4526"
-  }
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>updates.json</Key><RequestId>92A25029AB2D02EA</RequestId><HostId>n4oseBg+wNOS2CQQX9IOPeqcO5IqNZZ+OZxL/uRB7Z1IPvtrpHRoOsveBtvzpktOjgil/5kRNc8=</HostId></Error>
