@@ -1499,7 +1499,7 @@ screen update_check(ok_action,cancel_action):
             yalign .5
             spacing 30
 
-            $latest_version = updater.UpdateVersion('http://s3.us-east-2.amazonaws.com/monikaafterstory/updates.json',check_interval=0)
+            $latest_version = updater.UpdateVersion('http://da605edcsie7i.cloudfront.net/updates.json',check_interval=0)
             if latest_version != None:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
@@ -1596,6 +1596,7 @@ screen updater:
                 textbutton _("Cancel") action Return()
 
 style updater_button_text is navigation_button_text
+style updater_button is confirm_button
 style updater_label is gui_label
 style updater_label_text is game_menu_label_text
 style updater_text is gui_text
