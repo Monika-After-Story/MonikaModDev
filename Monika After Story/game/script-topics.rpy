@@ -4719,9 +4719,8 @@ label monika_otaku:
 init python 5:
     for key in ['accents', 'way of talking', 'accent', 'manner of speaking', 'colloquial', 'colloquialism' ]:
         monika_topics.setdefault(key,[])
-	      monika_topics[key].append(monika_accents) 
-	  monika_random_topics.append('monika_accents')
-
+        monika_topics[key].append("monika_accents") 
+    monika_random_topics.append('monika_accents')
 
 label monika_accents:
     m 1a "You know what I think is one of the coolest things about humans, [player]?"
