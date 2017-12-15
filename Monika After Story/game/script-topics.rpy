@@ -4659,7 +4659,7 @@ label monika_orchestra:
             m 1a "Wow, I've always wanted to try the [instrumentname] out!"
             m 2b "I would love to hear you play for me."
             m "Maybe you could teach me how to play, too~"
-            m 5a "Oh! Would a duet between the [instrumentname] and the piano would sound nice?"
+            m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
             m 1j "Ehehe~"
         "No.":
             $persistent.instrument = False
