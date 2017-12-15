@@ -30,7 +30,7 @@ python early:
         def __init__(self, _msg):
             self.msg = _msg
         def __str__(self):
-            return "EventError: " + msg
+            return "EventError: " + self.msg
 
     # event class for chatbot replacement
     # NOTE: DOES NOT SUPPORT INHERITIANCE. DO NOT EXTEND THIS CLASS
