@@ -21,5 +21,5 @@ label update_now:
         call screen update_check(Return(True),Return(False))
 
         if _return:
-            $updater.update('http://s3.us-east-2.amazonaws.com/monikaafterstory/updates.json')
+            $updater.update('http://s3.us-east-2.amazonaws.com/monikaafterstory/updates.json',restart=True)
     return
