@@ -103,7 +103,7 @@ label monika_iceskating
     m "I love you, [player]~"
     
 label monika_whatiwant
-    m 5a "Oh, [player], isn't it lovely around the holidays?
+    m 5a "Oh, [player], isn't it lovely around the holidays?"
     m "I hope you don't mind, but I have a little something special to say today."
     m 5b "Here goes."
     m 5l "Ehehe, I hope it's not too cheesy..."
