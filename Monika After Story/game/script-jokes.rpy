@@ -15,6 +15,9 @@
 #   it requires some complexity added to the label, particularly two 
 #   different paths. The label must have support for this.
 
+# okay we actually need some persits
+default persistent.allow_dark_jokes = False
+default persistent.allow_dad_jokes = False
 
 # pre stuff
 init -1 python:
