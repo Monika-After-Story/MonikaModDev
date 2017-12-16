@@ -6,6 +6,168 @@ python early:
     import singleton
     me = singleton.SingleInstance()
 
+# uncomment this if you want syntax highlighting support on vim
+#init -1 python:
+
+    # special constants for event
+    EV_ACT_PUSH = "push"
+    EV_ACT_QUEUE = "queue"
+    EV_ACT_UNLOCK = "unlock"
+    EV_ACT_RANDOM = "random"
+    EV_ACT_POOL = "pool"
+
+    # list of those special constants
+    EV_ACTIONS = [
+        EV_ACT_PUSH,
+        EV_ACT_QUEUE,
+        EV_ACT_UNLOCK,
+        EV_ACT_RANDOM,
+        EV_ACT_POOL
+    ]
+
+    # custom event exceptions
+    class EventException(Exception):
+        def __init__(self, _msg):
+            self.msg = _msg
+        def __str__(self):
+            return "EventError: " + self.msg
+
+    # event class for chatbot replacement
+    # NOTE: DOES NOT SUPPORT INHERITIANCE. DO NOT EXTEND THIS CLASS
+    class Event():
+
+        # TODO: add documentation from pi's comment to here
+        # NOTE: _eventlabel is required, its the key to this event
+        # its also how we handle equality. also it cannot be None
+        def __init__(self,
+                eventlabel,
+                prompt="My Event",
+                label=None,
+                category=None,
+                unlocked=False,
+                random=False,
+                pool=False,
+                conditional=None,
+                action=None,
+                start_date=None,
+                end_date=None,
+                unlock_date=None):
+
+            # setting up defaults
+            if not eventlabel:
+                raise EventException("'_eventlabel' cannot be None")
+
+            self.eventlabel = eventlabel
+            self.prompt = prompt
+
+            # default label is a prompt
+            if label:
+                self.label = label
+            else:
+                self.label = self.prompt
+
+            self.category = category
+            self.unlocked = unlocked
+            self.random = random
+            self.pool = pool
+            self.conditional = conditional
+            self.setAction(action)
+            self.start_date = start_date
+            self.end_date = end_date
+            self.unlock_date = unlock_date
+
+        # equality override
+        def __eq__(self, other):
+            if isinstance(self, other.__class__):
+                return self.eventlabel == other.eventlabel
+            return False
+
+        # equality override
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        def getAction(self):
+            #
+            # Gets the action of this Event
+            #
+            # RETURNS:
+            #   the action of this event (EV_ACT_...). May be None
+
+            return self._action
+
+        def setAction(self, action):
+            #
+            # Sets the action of this Event, only if its in the appropriate
+            # EVENT LIST. If an inappropriate action is given, None will be
+            # set
+            #
+            # IN:
+            #   action - an EV_ACT to set to
+
+            if action in EV_ACTIONS:
+                self._action = action
+            else:
+                self._action = None
+
+        @staticmethod
+        def getSortedKeys(events, include_none=False):
+            #
+            # Returns a list of eventlables (keys) of the given dict of events
+            # sorted by the field unlock_date. The list is sorted in
+            # chronological order (oldest first). Events with an unlock_date
+            # of None are not included unless include_none is True, in which
+            # case, Nones are put after everything else
+            #
+            # IN:
+            #   events - dict of events of the following format:
+            #       eventlabel: event object
+            #   include_none - True means we include events that have None for
+            #       unlock_date int he sorted key list, False means we dont
+            #       (Default: False)
+            #
+            # RETURNS:
+            #   list of eventlabels (keys), sorted in chronological order.
+            #   OR: None if the given events is empty or all unlock_date fields
+            #   were None and include_none is False
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.values() # python 2
+
+            # none check
+            if include_none:
+                none_labels = list()
+
+            # insertion sort
+            eventlabels = list()
+            for ev in ev_list:
+
+                if ev.unlock_date is not None:
+                    index = 0
+
+                    while (index < len(eventlabels)
+                            and ev.unlock_date > events[
+                                eventlabels[index]
+                            ].unlock_date):
+                        index += 1
+                    eventlabels.insert(index, ev.eventlabel)
+
+                elif include_none: # eventlabel was none
+                    none_labels.append(ev.eventlabel)
+
+            if include_none:
+                eventlabels.extend(none_labels)
+
+            # final sanity check
+            if len(eventlabels) == 0:
+                return None
+
+            return eventlabels
+
+
 init -1 python:
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
