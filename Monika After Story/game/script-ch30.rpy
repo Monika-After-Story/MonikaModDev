@@ -494,11 +494,11 @@ label ch30_autoload:
 
             #Give 5 xp per hour for everything beyond 1 day
             if away_experience_time > times.FULL_XP_AWAY_TIME:
-                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time-times.FULL_XP_AWAY_TIME)/360.0
+                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time-times.FULL_XP_AWAY_TIME)/3600.0
                 away_experience_time = times.FULL_XP_AWAY_TIME
 
             #Give 10 xp per hour for the first 24 hours
-            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time/360.0
+            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time/3600.0
 
             #Grant the away XP
             grant_xp(away_xp)
