@@ -4790,6 +4790,23 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    for key in ['cheese','soup','grilled']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_gcheese')
+    monika_random_topics.append('monika_gcheese')
+
+label monika_gcheese:
+    m 2d "You know, a lot of people tend to get vegans and vegetarians mixed up."
+    m "But there's a big difference between us."
+    m 1i "While vegans avoid anything made from an animal~"
+    m 1b "We vegetarians just prefer to avoid the consumption of flesh."
+    m 2n "Personally I can't imagine being vegan."
+    m 3l "If I were, then I couldn't enjoy things like grilled cheese!"
+    m 4b "And who doesn't love that? Mix it with tomato soup."
+    m 3k "Yum! Ehehe~"
+    return
 
 ##################
 #Incomplete ideas#
