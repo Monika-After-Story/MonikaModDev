@@ -38,7 +38,8 @@ init 11 python:
 
 #BEGIN ORIGINAL TOPICS
 
-#Use this topic as an example
+
+
 init 5 python:
     #This is a list of keywords for this topic
     for key in ['god' , 'jesus' , 'lord' , 'religion' , 'miracle' , 'miracles' , 'gods']:
