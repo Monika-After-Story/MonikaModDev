@@ -4791,14 +4791,14 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
     
-    init 5 python:
+init 5 python:
     #This is a list of keywords for this topic
     for key in ['happy' , 'mood']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_happiness') #id
     monika_random_topics.append('monika_happiness')
 
-label monika_hapiness:
+label monika_happiness:
     m 1d "[player], are you happy?"
     m 1g "Not just to be here with me I mean, but with your life in general."
     m 3n "Its ok if you aren't. I can certainly understand being unhappy."
