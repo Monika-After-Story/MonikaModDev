@@ -4790,6 +4790,33 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+    init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['happy' , 'sad' , 'unhappy' , 'mood']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_happiness') #id
+    monika_random_topics.append('monika_happiness')
+
+label monika_hapiness:
+    m 1d "[player], are you happy?"
+    m 1g "Not just to be here with me I mean, but with your life in general."
+    m 3n "Its ok if you aren't. I can certainly understand being unhappy."
+    m 1p "After all, without you [player] my life would be completely unbearable."
+    m "..."
+    m 1h "Isn't it funny how deep the capacity for human suffering is compared to our ability to feel happiness?"
+    m 3b "I'm as happy as I could be knowing that you care about me, [player] ."
+    m 3g "Yet, if something were to happen to you, the sadness I would feel would be even stronger."
+    m 1p "It would destroy me."
+    m "..."
+    m 1c "I suppose it's understandable why we notice the bad more than the good..."
+    m "If humans didn't react so strongly to the bad then they wouldn't have survived in the past when things were always so dangerous."
+    m 3r "Of course, in the modern world this anxiety response is very overdone for almost everything that stresses us out."
+    m 1h "You may get nervous about your future or about doing well in important social situations..."
+    m 1e "-but always remember to put things into perspective and be grateful for how safe your life really is."
+    m 3j "And besides, you have a cute girlfriend who is always rooting for you to succeed."
+    m 1k "That's something to be very happy about!"
+    return
 
 ##################
 #Incomplete ideas#
