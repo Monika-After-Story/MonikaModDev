@@ -371,3 +371,14 @@ label monikaroom_greeting_post:
         set_keymaps()
     return
 
+label greeting_japan:
+     m 3k "Oh, kon'nichiwa [player]!"
+     m 3a "Ehehe~"
+     m 4e "Sorry, I don't really know Japanese."
+     m 3p "Let's see..."
+     m 3k "Watashi ha itsumademo anata no mono desu!"
+     m 3o "Was... that right?"
+     m 3n "I guess using a translator in your web browser isn't the best."
+     m 3a "What I meant was~"
+     m 3j "I'll be yours forever."
+     return
