@@ -167,3 +167,14 @@ label monika_sledding
     m 1g "And I'd still be at risk of tumbling off."
     m 1b "But I know you wouldn't let that happen. You'd hold me tight, right~?"
     m 1j "That would probably be the best part."
+
+label monika_mistletoe
+    m 1a "Say, [player]."
+    m 2b "You've heard about the mistletoe tradition, right?"
+    m 1j "When lovers end up underneath the decoration, they're expected to kiss."
+    m 1a "It actually originated from Victorian England!"
+    m "A man was allowed to kiss any woman standing underneath mistletoe..."
+    m 1l "And any woman who refused the kiss was cursed with bad luck."
+    m 1j "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
+    m 2b "...Maybe I can even add one in here!"
+    m 1a "Ehehe~"
