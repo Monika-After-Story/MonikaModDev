@@ -4791,7 +4791,7 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
     
-    init 5 python:
+init 5 python:
     # List of keywords for the topic.
     for key in ['marry','marriage','propose']:
         monika_topics.setdefault(key,[])
