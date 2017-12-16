@@ -4804,10 +4804,8 @@ label monika_coff:
     m 4d "But studies have shown coffee is actually pretty good for you!"
     m 3b "It can help protect the body against various diseases, and even ensure a healthy heart."
     m 3p "How? I'm not sure. I'm no coffee scientist."
-    m 3d "But if you look it up, the research shows."
-    m 4a "Personally I prefer iced coffee. It tends to be sweeter."
-    m 3b "But even just a cup a day can help you reach new heights~"
-    m "And when writing, it can save you from writer's block."
+    m 3d "But if you look it up, the research shows that there's an inkling of truth here."
+    m 4a "Personally I prefer iced coffee. It tends to be sweeter, but still has the same benefits."
     m 3f "..."
     m 3l "Now I just need a coffee machine in here."
     return
