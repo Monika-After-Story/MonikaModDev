@@ -4793,7 +4793,7 @@ label monika_urgent:
     
     init 5 python:
     #This is a list of keywords for this topic
-    for key in ['happy' , 'sad' , 'unhappy' , 'mood']:
+    for key in ['happy' , 'unhappy' , 'mood']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_happiness') #id
     monika_random_topics.append('monika_happiness')
