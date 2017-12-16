@@ -4804,7 +4804,7 @@ label monika_gcheese:
     m 1b "We vegetarians just prefer to avoid the consumption of flesh."
     m 2n "Personally I can't imagine being vegan."
     m 3l "If I were, then I couldn't enjoy things like grilled cheese!"
-    m 4b "And who doesn't love that? Mix it with tomato soup."
+    m 4b "And who doesn't love that? Mix it with tomato soup, and~"
     m 3k "Yum! Ehehe~"
     return
 
