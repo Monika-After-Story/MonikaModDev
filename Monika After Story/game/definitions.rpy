@@ -1291,6 +1291,15 @@ default persistent.ever_won = {'pong':False,'chess':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':0,'total_sessions':0}
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
+define times.REST_TIME = 6*360
+define times.FULL_XP_AWAY_TIME = 24*360
+define times.HALF_XP_AWAY_TIME = 72*360
+define xp.NEW_GAME = 30
+define xp.WIN_GAME = 30
+define xp.AWAY_PER_HOUR = 10
+define xp.IDLE_PER_MINUTE = 1
+define xp.IDLE_XP_MAX = 120
+define xp.NEW_EVENT = 15
 
 default his = "his"
 default he = "he"

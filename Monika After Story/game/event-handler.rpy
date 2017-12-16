@@ -103,7 +103,7 @@ label call_next_event:
 
         $ allow_dialogue = False
         if not seen_event(event_label): #Give 15 xp for seeing a new event
-            $grant_xp(15)
+            $grant_xp(xp.NEW_EVENT)
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 
@@ -112,7 +112,7 @@ label call_next_event:
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
-            $ renpy.quit(0)
+            jump _quit
 
         $ allow_dialogue = True
         show monika 1 at tinstant zorder 2 #Return monika to normal pose

@@ -530,7 +530,7 @@ label demo_minigame_chess:
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
-            $grant_xp('30')
+            $grant_xp(xp.WIN_GAME)
 
         m 2a "You won! Congratulations."
         if persistent.chess_strength<20:

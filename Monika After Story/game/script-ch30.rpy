@@ -347,11 +347,11 @@ label pick_a_game:
             "What game would you like to play?"
             "Pong":
                 if not renpy.seen_label('game_pong'):
-                    $grant_xp('30')
+                    $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
             "Chess" if is_platform_good_for_chess():
                 if not renpy.seen_label('game_chess'):
-                    $grant_xp('30')
+                    $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
             "Nevermind":
                 m "Alright. Maybe later?"
@@ -486,19 +486,19 @@ label ch30_autoload:
             away_xp=0
 
             #Reset the idlexp total if monika has had at least 6 hours of rest
-            if away_experience_time >= 6*360:
+            if away_experience_time >= times.REST_TIME:
                 persistent.idlexp_total=0
             #Ignore anything beyond 3 days
-            if away_experience_time > (360*24*3):
-                away_experience_time=360*24*3
+            if away_experience_time > times.HALF_XP_AWAY_TIME:
+                away_experience_time=times.HALF_XP_AWAY_TIME
 
             #Give 5 xp per hour for everything beyond 1 day
-            if away_experience_time > (360*24):
-                away_xp =+ 5*(away_experience_time-360*24)/360.0
-                away_experience_time = 360*24
+            if away_experience_time > times.FULL_XP_AWAY_TIME:
+                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time-times.FULL_XP_AWAY_TIME)/360.0
+                away_experience_time = times.FULL_XP_AWAY_TIME
 
             #Give 10 xp per hour for the first 24 hours
-            away_xp =+ 10*away_experience_time/360.0
+            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time/360.0
 
             #Grant the away XP
             grant_xp(away_xp)
@@ -587,11 +587,11 @@ label ch30_loop:
         except:
             calendar_last_checked=persistent.sessions['current_session_start']
         if time.time()-calendar_last_checked>60: #Check no more than once a minute
-            idle_xp=(time.time()-calendar_last_checked)/60
+            idle_xp=xp.IDLE_PER_MINUTE*(time.time()-calendar_last_checked)/60.0
             persistent.idlexp_total =+ idle_xp
-            if persistent.idlexp_total>=120: # never grant more than 120 xp in a session
-                idle_xp = idle_xp-(persistent.idlexp-120) #Remove excess XP
-                persistent.idlexp=120
+            if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
+                idle_xp = idle_xp-(persistent.idlexp-xp.IDLE_XP_MAX) #Remove excess XP
+                persistent.idlexp=xp.IDLE_XP_MAX
 
             grant_xp(idle_xp)
             calendar_last_checked=time.time()
