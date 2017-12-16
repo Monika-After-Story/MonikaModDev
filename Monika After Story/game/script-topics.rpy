@@ -39,22 +39,6 @@ init 11 python:
 #BEGIN ORIGINAL TOPICS
 
 
-#Use this topic as an example
-init 5 python:
-    # List of keywords for the topic.
-    for key in ['film''movie']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_movie') #id
-
-label monika_movie:
-    m 1b "Do you want to watch a movie with me?!" 
-    m 1q"..."
-    m 1g "jeez, I can't go to the cinema with you."
-    m 1o"..."
-    m 1k "but I gues you can put the movie in the computer"
-    m  1l "and I will watch it through the screen!"
-    m  1a "and remember put a movie that both of us can enjoy."
-    return
 
 init 5 python:
     #This is a list of keywords for this topic
