@@ -377,7 +377,7 @@ label greeting_spanish:
      m "hehehe~"
      m "That was spanish"
      m "Oh, by the way."
-        menu:
+     menu:
             m "You know I love you right?~"
             "yes":
                 m "Te amo~"
