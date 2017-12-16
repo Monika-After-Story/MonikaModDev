@@ -4790,6 +4790,28 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+label monika_snow
+    m "Does it ever snow where you live, [player]?"
+    m "I've always liked the peaceful aura it seems to give off.
+    m  “It usually accompanies the holiday season in a lot of places, too. "
+    m "After reading a bit about other seasons that come and go, I don't think I'd enjoy sweltering summer heat very much..."
+    m "It’s just that I'd enjoy a balmy and gentle heat more, ahaha."
+    m "But snow just sounds so much more... tranquil and intimate, you know?"
+    m "There’s a quiet beauty in watching a soft blanket in ice tuck the world away to sleep.”
+    m "..."
+    m "I wonder what my world inside here would be like the weather changed all the time..."
+    m "I’m nowhere near properly dressed if it started snowing!"
+    m "It would probably be so cold that you’d have to keep me warm, ehehe~"
+    m  “Actually! Let’s see what I can do…”
+   call updateconsole("os.create(snow.jpg)”, "Adding snow...") from _call_updateconsole_17
+    pause(1.0)
+    m “... Oh! Maybe some other time, ahaha~”
+    m "Even if it’s not too chilly, being with you still makes me feel cozy."
+    m "It’s the perfect way to pass time, don’t you think~?"
+   call hideconsole from _call_updateconsole_18
+    $ consolehistory = []
+    return
 
 ##################
 #Incomplete ideas#
