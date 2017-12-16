@@ -137,7 +137,7 @@ The line below the menu will act as the question. Choices are on the same line, 
 
 You don't necesasarily have to write as yes or no, it can be written in any way as long as it makes sense as a choice.
 
-After making your edits refer to Pull Request Guide below so you can submit it.
+After making your edits refer to the Pull Request Guide below so you can submit it.
 
 ## Submitting a Pull Request
 
