@@ -371,3 +371,14 @@ label monikaroom_greeting_post:
         set_keymaps()
     return
 
+label greeting_spanish:
+     m "Hola, [player]!"
+     m "Sabes que te quiero?~"
+     m "hehehe~"
+     m "That was spanish"
+     m "Oh, by the way."
+     menu:
+        m "You know I love you right?~"
+        "yes":
+            m "Te amo~"
+    return
