@@ -481,8 +481,8 @@ label ch30_autoload:
 
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
-        if len(persistent.sessions)>=2 and persistent.closed_self:
-            away_experience_time=time.time()-persistent.sessions[-2][1] #Time since end of previous session
+        if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
+            away_experience_time=time.time()-persistent.sessions['last_session_end'] #Time since end of previous session
             away_xp=0
 
             #Reset the idlexp total if monika has had at least 6 hours of rest
@@ -585,7 +585,7 @@ label ch30_loop:
         try:
             calendar_last_checked
         except:
-            calendar_last_checked=time.time()
+            calendar_last_checked=persistent.sessions['current_session_start']
         if time.time()-calendar_last_checked>60: #Check no more than once a minute
             idle_xp=(time.time()-calendar_last_checked)/60
             persistent.idlexp_total =+ idle_xp
