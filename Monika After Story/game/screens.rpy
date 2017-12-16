@@ -1499,6 +1499,7 @@ screen update_check(ok_action,cancel_action):
             yalign .5
             spacing 30
 
+            $latest_version = updater.UpdateVersion('http://updates.monikaafterstory.com/updates.json',check_interval=0)
             if latest_version != None:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
@@ -1538,6 +1539,7 @@ style update_check_button_text is confirm_button_text
 ##
 screen updater:
 
+    modal True
 
     style_prefix "updater"
 
@@ -1569,7 +1571,7 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    text _("The updates have been installed. Monika After Story will now restart.")
+                    text _("The updates have been installed. Please reopen Monika After Story.")
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
                 elif u.state == u.CANCELLED:
@@ -1591,9 +1593,10 @@ screen updater:
                 textbutton _("Proceed") action u.proceed
 
             if u.can_cancel:
-                textbutton _("Cancel") action u.cancel
+                textbutton _("Cancel") action Return()
 
 style updater_button_text is navigation_button_text
+style updater_button is confirm_button
 style updater_label is gui_label
 style updater_label_text is game_menu_label_text
 style updater_text is gui_text
