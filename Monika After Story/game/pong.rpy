@@ -216,7 +216,7 @@ label demo_minigame_pong:
     # Put up the pong background, in the usual fashion.
     scene bg pong field
 
-    # natsuki scare setup if appropriate  
+    # natsuki scare setup if appropriate
     if persistent.playername.lower() == "natsuki":
         $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
 
@@ -225,7 +225,7 @@ label demo_minigame_pong:
             $ currentpos = get_pos(channel="music")
             $ adjusted_t5 = "<from " + str(currentpos) + " loop 4.444>bgm/5_natsuki.ogg"
             stop music fadeout 2.0
-            $ renpy.music.play(adjusted_t5, fadein=2.0, tight=True) 
+            $ renpy.music.play(adjusted_t5, fadein=2.0, tight=True)
 
     # Run the pong minigame, and determine the winner.
     python:
@@ -245,6 +245,10 @@ label demo_minigame_pong:
         m 1j "I win~!"
 
     else:
+        #Give player XP if this is their first win
+        if not persistent.ever_won['pong']:
+            $persistent.ever_won['pong'] = True
+            $grant_xp(xp.WIN_GAME)
 
         m 1a "You won! Congratulations."
 

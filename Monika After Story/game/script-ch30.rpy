@@ -346,8 +346,12 @@ label pick_a_game:
         menu:
             "What game would you like to play?"
             "Pong":
+                if not renpy.seen_label('game_pong'):
+                    $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
             "Chess" if is_platform_good_for_chess():
+                if not renpy.seen_label('game_chess'):
+                    $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
             "Nevermind":
                 m "Alright. Maybe later?"
@@ -443,6 +447,7 @@ label ch30_autoload:
 
     call set_gender from _call_set_gender
 
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -473,6 +478,30 @@ label ch30_autoload:
     window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
+
+    #Grant XP for time spent away from the game if Monika was put to sleep right
+    python:
+        if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
+            away_experience_time=time.time()-persistent.sessions['last_session_end'] #Time since end of previous session
+            away_xp=0
+
+            #Reset the idlexp total if monika has had at least 6 hours of rest
+            if away_experience_time >= times.REST_TIME:
+                persistent.idlexp_total=0
+            #Ignore anything beyond 3 days
+            if away_experience_time > times.HALF_XP_AWAY_TIME:
+                away_experience_time=times.HALF_XP_AWAY_TIME
+
+            #Give 5 xp per hour for everything beyond 1 day
+            if away_experience_time > times.FULL_XP_AWAY_TIME:
+                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time-times.FULL_XP_AWAY_TIME)/3600.0
+                away_experience_time = times.FULL_XP_AWAY_TIME
+
+            #Give 10 xp per hour for the first 24 hours
+            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time/3600.0
+
+            #Grant the away XP
+            grant_xp(away_xp)
 
     $ elapsed = days_passed()
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
@@ -550,6 +579,22 @@ label ch30_loop:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
+
+    #Check time based events and grant time xp
+    python:
+        try:
+            calendar_last_checked
+        except:
+            calendar_last_checked=persistent.sessions['current_session_start']
+        if time.time()-calendar_last_checked>60: #Check no more than once a minute
+            idle_xp=xp.IDLE_PER_MINUTE*(time.time()-calendar_last_checked)/60.0
+            persistent.idlexp_total =+ idle_xp
+            if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
+                idle_xp = idle_xp-(persistent.idlexp-xp.IDLE_XP_MAX) #Remove excess XP
+                persistent.idlexp=xp.IDLE_XP_MAX
+
+            grant_xp(idle_xp)
+            calendar_last_checked=time.time()
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1

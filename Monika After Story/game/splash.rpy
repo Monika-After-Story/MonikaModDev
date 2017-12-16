@@ -162,6 +162,10 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
+    python:
+        import time
+        persistent.sessions['current_session_start']=time.time()
+        persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
@@ -270,4 +274,6 @@ label before_main_menu:
     return
 
 label quit:
+    $persistent.sessions['last_session_end']=time.time()
+    $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
     return
