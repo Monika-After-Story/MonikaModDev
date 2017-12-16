@@ -4790,6 +4790,22 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+    init 5 python:
+    # List of keywords for the topic.
+    for key in ['marry','marriage','propose']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_marriage') # Identifier
+        
+label monika_marriage:
+    m "M..marriage?"
+    m 1m "I think it's a bit too early for marriage..."
+    m 1n "I mean I'm really happy that you said that."
+    m "But I think it's better for us to learn more about each other."
+    m "Not only that I don't want this place to be the spot where I get proposed to."
+    m "I prefer to be proposed to in a more romantic place."
+    m 1k "Though I'm fine with anywhere you want, [player]."
+    return
 
 ##################
 #Incomplete ideas#
