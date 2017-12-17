@@ -4791,6 +4791,42 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
 
+# For George Orwell's Nineteen Eighty-Four, Monika avoids political usage,
+# as it reminds her of the debate club, but more the interpretation of language
+# and thought, which she would feel better connected with.
+# I did not use the 'Big Brother','surveillance' keywords, 
+# because either they may get used on other topics
+	
+init 5 python:
+    for key in ['1984','Nineteen Eighty-Four','Ingsoc','newspeak','George Orwell']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_1984')
+    monika_random_topics.append('monika_1984')
+
+label monika_1984
+	m 1a "[player], you know about the book Nineteen Eighty-Four?"
+	m "It was written by George Orwell."
+	m 4a "It is popularly thought about with surveillance and Big Brother. And said and used frequently in the debate club I left."
+	m "That is not what I want to bring up, [player]."
+	m "There was something different I got out of this~"
+	m 1c "Like how language is manipulated here? They called this manipulation Newspeak."
+	m 1r "The government in this book, Ingsoc, was creating this language to control people's thoughts by not just creating words."
+	m 1h "But destroying them! They were reducing grammar and vocabulary to bare basics so you couldn't even think of anything else but them."
+	m "Even to be reduced to not express your own feelings and emotions with yourself!"
+	m "There was this person that worked for them named Syme who said this:"
+	m 1r "'It's a beautiful thing, the destruction of words. Of course the great wastage is in the verbs and adjectives,
+	m "but there are hundreds of nouns that can be got rid of as well.'"
+	m 1c "That's not a beautiful thing! That's a really terrible thing to do!"
+	m "They were planning to change all of literature. Novels. Books. Poems."
+	m "Poems would look like what the main character of this game made."
+	m "Just a string of random words, meaningless, without feeling."
+	m 1a "Language should always stay colorful ..."
+	m "... expressive ..."
+	m 1b "... and romantic~"
+	m 1q "I would not know what to do if I lived in such a society where I would not have enough words to express myself ..."
+	m 1j "... let alone not be able to express my love to you [player]~"
+	return
+
 ##################
 #Incomplete ideas#
 ##################
