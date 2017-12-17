@@ -103,7 +103,7 @@ label monika_iceskating
     m "I love you, [player]~"
     
 label monika_whatiwant
-    m 5a "Oh, [player], isn't it lovely around the holidays?
+    m 5a "Oh, [player], isn't it lovely around the holidays?"
     m "I hope you don't mind, but I have a little something special to say today."
     m 5b "Here goes."
     m 5l "Ehehe, I hope it's not too cheesy..."
@@ -168,6 +168,7 @@ label monika_sledding
     m 1b "But I know you wouldn't let that happen. You'd hold me tight, right~?"
     m 1j "That would probably be the best part."
 
+
 label monika_kwanzaa
     m 1b "[player], ever heard of Kwanzaa?"
     m 1a "It's a week-long festival one day after Christmas that celebrates African and African American history."
@@ -176,3 +177,31 @@ label monika_kwanzaa
     m 5a "It's much more meaningful than just trading gifts on Christmas day, no?"
     m 1a "Perhaps we could celebrate Christmas and Kwanzaa together, [player]."
     m 1k "Ahaha, any time you spend with me is precious, no matter the holiday [player]!"
+
+label monika_mistletoe
+    m 1a "Say, [player]."
+    m 2b "You've heard about the mistletoe tradition, right?"
+    m 1j "When lovers end up underneath the decoration, they're expected to kiss."
+    m 1a "It actually originated from Victorian England!"
+    m "A man was allowed to kiss any woman standing underneath mistletoe..."
+    m 1l "And any woman who refused the kiss was cursed with bad luck."
+    m 1j "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
+    m 2b "...Maybe I can even add one in here!"
+    m 1a "Ehehe~"
+    
+ label monika_relax
+    m 3j "Isn't winter a beautiful time of year, [player]?"
+    m 3a "The glistening, white snow, the bright and colorful lights~"
+    m 4b "I love it."
+    m 1e "..."
+    m 1e "There are a few dangers, though."
+    m "Like blizzards, or icy roads..."
+    m 1p "And the cold, of course."
+    m 2a "If it gets bad, just stay home and stay safe, okay?"
+    m 1d "After all, when the weather gets bad..."
+    m 1a "Isn't it best to relax at home?"
+    m 1b "Wearing pajamas, drinking hot chocolate, reading a good book, and..."
+    m 1j "Talking to me."
+    m 1j "Ehehe~"
+    m 1d "But seriously, don't go outside if it gets too bad."
+    m 1a "Please stay safe, [player]."
