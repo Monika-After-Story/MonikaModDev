@@ -3494,11 +3494,11 @@ label monika_evening:
     if current_time >= 18 and current_time <= 23:
         m "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m "It's so nice to put your feet after a very long day."
+        m "It's so nice to put your feet up after a very long day."
         m 2j "Evenings are the perfect time to catch up on whatever you were doing the previous day."
         m 1c "Sometimes I can't help but feel sad when the day ends."
         m "It makes me think of what else I could've done during the day."
-        m "Don't you wish you could have more time to do everyday?"
+        m "Don't you wish you could have more time to do things every day?"
         m 1q "I know I do."
         m 2b "Because that'll mean more time to be with you, [player]~"
     elif current_time >= 12 and current_time <= 17:
@@ -4659,7 +4659,7 @@ label monika_orchestra:
             m 1a "Wow, I've always wanted to try the [instrumentname] out!"
             m 2b "I would love to hear you play for me."
             m "Maybe you could teach me how to play, too~"
-            m 5a "Oh! Would a duet between the [instrumentname] and the piano would sound nice?"
+            m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
             m 1j "Ehehe~"
         "No.":
             $persistent.instrument = False
