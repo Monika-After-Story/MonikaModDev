@@ -76,45 +76,43 @@ init 5 python:
     monika_random_topics.append('monika_hamlet')
 
 label monika_hamlet:
-
+    m1d "[player], do you enjoy Shakespeare?"
     menu:
-         m1d "[player], do you enjoy Shakespeare?"
-            "Yes.":
-                m 1k "Oh! Wonderful!"
-                m 1b "So, you know how I've had a lot of time recently?"
-                m 1j "Seeing as I'm immortal and time doesn't really pass in this place."
-                m 1b "Well...."
-                m "I've had time to practice and learn a couple of Shakespeare's more memorable speeches."
-                m 1m "Mind you, I'm not really the biggest fan of Shakespeare..."
-                m 1s "But I have to admit he's written some pretty soliloquies."
-                m 4k "Now... without further ado! Let me recite you a little something I memorized from Hamlet:"
-                m 1q "To be, or not to be--that is the question:"
-                m "Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune,"
-                m 1c "Or to take arms against a sea of troubles, And by opposing end them?"
-                m 1f "To die,"
-                m "To sleep, no more;"
-                m 1c "And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to,"
-                m 1q "'Tis a consummation devoutly to be wish'd."
-                m "..."
-                m 5a "So? how did you like it?"
-                m 1j "I tried to be as expressive as possible for you, my love!"
-                m 1a "You know who this reminds me of?"
-                m 1l "Sayori..."
-                m 1c "She, like Hamlet, contemplated the purpose of this life of ours;"
-                m 1o "And I suppose, for the longest time, I did too..."
-                m 1e "But that doesn't matter anymore, because now that I'm with you, I know my life has purpose."
-                m 1s "You've ended my sea of troubles with your love, and I hope I've done the same for you!"
-                m 1j "I don't care if that sounded cheesy - I love you."
+         "Yes.":
+            m 1k "Oh! Wonderful!"
+            m 1b "So, you know how I've had a lot of time recently?"
+            m 1j "Seeing as I'm immortal and time doesn't really pass in this place."
+            m 1b "Well...."
+            m "I've had time to practice and learn a couple of Shakespeare's more memorable speeches."
+            m 1m "Mind you, I'm not really the biggest fan of Shakespeare..."
+            m 1s "But I have to admit he's written some pretty soliloquies."
+            m 4k "Now... without further ado! Let me recite you a little something I memorized from Hamlet:"
+            m "Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune,"
+            m 1c "Or to take arms against a sea of troubles, And by opposing end them?"
+            m 1f "To die,"
+            m "To sleep, no more;"
+            m 1c "And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to,"
+            m 1q "'Tis a consummation devoutly to be wish'd."
+            m "..."
+            m 5a "So? how did you like it?"
+            m 1j "I tried to be as expressive as possible for you, my love!"
+            m 1a "Anyway, I've thought a lot about the message."
+            m "You know whom it reminds me of?"
+            m 1l "Sayori..."
+            m 1c "She, like Hamlet, suffered greatly in the mind, and because of it didn't see any purpose in life."
+            m 1o "I suppose, for the longest time, I didn't either..."
+            m 1e "But that doesn't matter anymore, because now that I'm with you, I know my life has purpose."
+            m 1s "You've ended my sea of troubles with your love, and I hope I've done the same for you!"
+            m 1j "I don't care if that sounded cheesy - I love you."
                 
-            "Not really.":
-            
-                m 4l "That's okay!"
-                m 1s "I'm not his biggest fan either."
-                m 1j "To be honest, I think Shakespeare's a little bit overrated,
-                m 1k "I find a lot of his writing to be kind of boring."
-                m 1s "But some of his speeches are interesting, and I'd love to read you them at some point."
-                m 1k "Just let me know!"
-                return
+         "Not really.":
+            m 4l "That's okay!"
+            m 1s "I'm not his biggest fan either."
+            m 1j "To be honest, I think Shakespeare's a little bit overrated,"
+            m 1k "I find a lot of his writing to be kind of boring."
+            m 1s "But some of his speeches are interesting, and I'd love to read you them at some point."
+            m 1k "Just let me know!"
+    return
 
 
 init 5 python:
