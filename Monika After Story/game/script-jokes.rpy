@@ -70,6 +70,35 @@ init -1 python:
             self.is_dark = is_dark
             self.is_dad = is_dad
 
+        @staticmethod
+        def filterJoke(joke):
+            #
+            # Filters the given joke accoridng to persistent rule
+            #
+            # IN:
+            #   joke - MASJoke object to filter
+            #
+            # RETURNS:
+            #   True if the joke passes the filter, false otherwise
+            #
+            # ASSUMES:
+            #   persistent.allow_dark_jokes
+            #   persistent.allow_dad_jokes
+
+            # sanity check
+            if not joke:
+                return False
+
+            # let the filtering begin
+            if not persistent.allow_dark_jokes and joke.is_dark:
+                return False
+
+            if not persistent.allow_dad_jokes and joke.is_dad:
+                return False
+
+            # pass filtering rules
+            return True
+
     # list of jokes we tell monika
     # each elem is a MASJoke
     p2m_jokes = list()
@@ -78,26 +107,20 @@ init -1 python:
     # each elem is a MASJoke
     m2p_jokes = list()
 
-    def removeSeenJokes():
+    def removeSeenJokes(pool):
         #
         # Removes both jokes that we have already told monika and jokes that
         # monika has already told us from their appropriate structures
         #
-        # ASSUMES:
-        #   p2m_jokes
-        #   m2p_jokes
+        # IN:
+        #   pool - list of MASJokes to remove jokes from
+        #
+        # OUT:
+        #   pool - list of MASJokes with seen jokes removed
 
-        # lets start with p2m
-        global p2m_jokes
-        for key in p2m_jokes:
-            if renpy.seen_label(key):
-                p2m_jokes.pop(key)
-
-        # now for m2p
-        global m2p_jokes
-        for index in range(len(m2p_jokes)-1, -1, -1):
-            if renpy.seen_label(m2p_jokes[index]):
-                m2p_jokes.pop(index)
+        for index in range(len(pool)-1, -1, -1):
+            if renpy.seen_label(pool[index].jokelabel):
+                pool.pop(index)
 
     def randomlyRemoveFromDictPool(pool, n):
         #
@@ -148,6 +171,32 @@ init -1 python:
             removed.append(pool.remove(item))
         return removed
 
+
+    def filterPool(pool):
+        #
+        # Filters the given pool according to persistent rules. 
+        # The returned list is a reference copy only
+        #
+        # IN:
+        #   pool - the pool to filter. Assumed to be a list of MASJoke objects
+        #
+        # RETURNS:
+        #   a list of MASJoke objects that have been filtered. These are
+        #   reference opies.
+        
+        # sanity checks
+        if not pool or len(pool) == 0:
+            return pool
+
+        # lets apply filtering!!
+        new_pool = list()
+
+        for joke in pool:
+            if MASJoke.filterJoke(joke):
+                new_pool.append(joke)
+
+        return new_pool
+
 init -1 python in mas_jokes_consts:
     # only 3 choices at a time
     OPTION_MAX = 3
@@ -161,20 +210,25 @@ init 10 python:
     from copy import deepcopy
 
     # copy of the total player 2 monika jokes dict
-    all_p2m_jokes = dict(p2m_jokes)
+    all_p2m_jokes = deepcopy(p2m_jokes)
 
     # copy of the total monika 2 player jokes list
-    all_m2p_jokes = list(m2p_jokes)
+    all_m2p_jokes = deepcopy(m2p_jokes)
 
     # remove seen shit
-    removeSeenJokes()
+    removeSeenJokes(p2m_jokes)
+    removeSeenJokes(m2p_jokes)
 
     # empty lists mean we need to reset
     if len(p2m_jokes) == 0:
-        p2m_jokes = dict(all_p2m_jokes)
+        p2m_jokes = deepcopy(all_p2m_jokes)
 
     if len(m2p_jokes) == 0:
-        m2p_jokes = list(all_m2p_jokes)
+        m2p_jokes = deepcopy(all_m2p_jokes)
+
+    # FILTER jokes
+    p2m_jokes = filterPool(p2m_jokes)
+    m2p_jokes = filterPool(m2p_jokes)
 
     # fill up the daily jokes list
     # NOTE: since we are waiting on daily limiting, this is currently set
@@ -192,8 +246,9 @@ init 10 python:
 
     # now remove from the pool
     # the daily player 2 monika jokes dict
-    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
+#    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
 #    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, jokes_available)
+    daily_p2m_jokes = randomlyRemoveFromListPool(p2m_jokes, p2m_jokes_avail)
 
     # the daily monika 2 player jokes list
     daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
