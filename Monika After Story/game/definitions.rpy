@@ -34,9 +34,41 @@ python early:
 
     # event class for chatbot replacement
     # NOTE: DOES NOT SUPPORT INHERITIANCE. DO NOT EXTEND THIS CLASS
+    #
+    # PROPERTIES:
+    #   eventlabel - the identifier for this event. basically the label that
+    #       this event is tied to. MUST BE UNIQUE
+    #       NOTE: REQUIRED
+    #   prompt - String label shown on the button for this topic in the prompt
+    #       menu
+    #       (Default: "My Event")
+    #   label - Optional plain text name of the event, good for calendars
+    #       (Default: prompt)
+    #   category - Tuple of string that define the category structure for the
+    #       event in the prompt menu
+    #       (Default: None)
+    #   unlocked - True if the event appears in the prompt menu, False if not
+    #       (Default: False)
+    #   random - True if the event appears in the prompt menu, False if not
+    #       (Default: False)
+    #   pool - True if the event is in the pool of prompts that get drawn from
+    #       when new prompts become randomly available, False if not
+    #       (Default: False)
+    #   conditional - string that is a conditional expression that can be
+    #       executed via eval. This is checked at various points to determine
+    #       if this event gets pushed to the stack or not
+    #       (Default: None)
+    #   action - an EV_ACTION constant that tells us what to do if the 
+    #       conditional is True (See EV_ACTIONS and EV_ACT_...)
+    #       (Default: None)
+    #   start_date - Timestamp for when this event is available
+    #       (Default: None)
+    #   end_date - Timestamp for when this event is no longer available
+    #       (Default: None)
+    #   unlock_date - Timestamp for when this event is unlocked
+    #       (Default: None)
     class Event():
 
-        # TODO: add documentation from pi's comment to here
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
         def __init__(self,
@@ -86,6 +118,24 @@ python early:
         def __ne__(self, other):
             return not self.__eq__(other)
 
+        # copy override
+        def __copy__(self):
+            cls = self.__class__
+            newEvent = cls.__new__(cls)
+            newEvent.__dict__.update(self.__dict__)
+            return newEvent
+
+        # deepcopy override
+        def __deepcopy__(self, memo):
+            from copy import deepcopy
+            cls = self.__class__
+            newEvent = cls.__new__(cls)
+            memo[id(self)] = newEvent
+            # python 2 is iteritems
+            for k,v in self.__dict__.iteritems():
+                setattr(newEvent, k, deepcopy(v, memo))
+            return newEvent
+
         def getAction(self):
             #
             # Gets the action of this Event
@@ -108,6 +158,149 @@ python early:
                 self._action = action
             else:
                 self._action = None
+
+        @staticmethod
+        def __filterEvent(
+                event,
+                category=None,
+                unlocked=None,
+                random=None,
+                pool=None,
+                action=None):
+            #
+            # Filters the given event object accoridng to the given filters
+            # NOTE: NO SANITY CHECKS
+            #
+            # For variable explanations, please see the static method
+            #   filterEvents
+            #
+            # RETURNS:
+            #   True if this event passes the filter, False if not
+
+            # collections allow us to match all
+            from collections import Counter
+
+            # now lets filter
+            if unlocked is not None and event.unlocked != unlocked:
+                return False
+            
+            if random is not None and event.random != random:
+                return False
+
+            if pool is not None and event.pool != pool:
+                return False
+
+            if category is not None:
+                # USE OR LOGIC
+                if (category[0]
+                        and len(
+                            set(category[1]).intersection(set(event.category))
+                        ) == 0):
+                    return False
+
+                # USE AND logic
+                elif Counter(category[1]) != Counter(event.category):
+                    return False
+
+            if action is not None:
+                # use OR logic
+                if (action[0]
+                        and len(
+                            set(action[1]).intersection(set(event.action))
+                        ) == 0):
+                    return False
+
+                # use AND logic
+                elif Counter(action[1]) != Counter(event.action):
+                    return False
+              
+            # we've passed all the filtering rules somehow
+            return True
+
+        @staticmethod
+        def filterEvents(
+                events, 
+                full_copy=False, 
+                category=None,
+                unlocked=None,
+                random=None,
+                pool=None,
+                action=None):
+            #
+            # Filters the given events dict according to the given filters.
+            # HOW TO USE: Use ** to pass in a dict of filters. they must match
+            # the names we use here.
+            # 
+            # IN:
+            #   events - the dict of events we want to filter
+            #   full_copy - True means we create a new dict with deepcopies of
+            #       the events. False will only copy references
+            #       (Default: False)
+            #
+            #   FILTERING RULES: (recommend to use **kwargs)
+            #   NOTE: None means we ignore that filtering rule
+            #   category - Tuple of the following format:
+            #       [0]: True means we use OR logic. False means AND logic.
+            #       [1]: Tuple/list of strings that to match category.
+            #       (Default: None)
+            #       NOTE: If either element is None, we ignore this filteirng
+            #           rule.
+            #   unlocked - boolean value to match unlocked attribute.
+            #       (Default: None)
+            #   random - boolean value to match random attribute
+            #       (Default: None)
+            #   pool - boolean value to match pool attribute
+            #       (Default: None)
+            #   action - Tuple of the following format:
+            #       [0]: True means we use OR logic, False means AND logic.
+            #       [1]: Tuple/list of strings/EV_ACTIONS to match action
+            #       (Default: None)
+            #       NOTE: if either element is None, we ignore this filtering
+            #       rule.
+            #
+            # RETURNS:
+            #   if full_copy is True, we return a completely separate copy of
+            #   Events (in a new dict) with the given filters applied
+            #   If full_copy is False, we return a copy of references of the
+            #   Events (in a new dict) with the given filters applied
+            #   if the given events is None, empty, or kwargs is None, events
+            #   is returned.
+
+            # sanity check
+            if not events or len(events) == 0 or not kwargs:
+                return events
+
+            # copy check
+            if full_copy:
+                from copy import deepcopy
+
+            # setting up rules
+            if (category and (
+                    len(category) < 2 
+                    or category[0] is None 
+                    or category[1] is None)):
+                category = None
+            if action and (
+                    len(action) < 2 
+                    or action[0] is None 
+                    or action[1] is None)):
+                action = None
+
+            filt_ev_dict = dict()
+
+            # python 2
+            for k,v in events.iteritems():
+                # time to apply filtering rules
+                if Event.filterEvent(v,category=category, unlocked=unlocked,
+                        random=random, pool=pool, action=action):
+
+                    # copy check
+                    if full_copy:
+                        filt_ev_dict[k] = deepcopy(v)
+                    else:
+                        filt_ev_dict[k] = v
+
+            return filt_ev_dict
 
         @staticmethod
         def getSortedKeys(events, include_none=False):
