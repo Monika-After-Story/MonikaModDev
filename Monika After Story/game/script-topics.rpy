@@ -4844,7 +4844,7 @@ label monika_colorblindness:
 		m "I'm always willing to deal with any of your worries [player]!"
 	"Gray":
 		m "Gosh, we might have an issue here."
-		m "If you see everything on a scale of greys, that could mean you're completely color blind!”
+		m "If you see everything on a scale of greys, that could mean you're completely color blind!"
 		m "Unless you just have a super weird black and white monitor.
 		m "But take care of yourself."
 		"Other":
@@ -4874,7 +4874,7 @@ label monika_waitinglines:
      m "Those might sound rather calm but honestly, there's an even better option!"
      m "You could just get a place in line in advance with your phone and get a notification when it's your turn!"
      m "Or you could, you know, spend some time with me while you wait ehehe~"
-     Menu:
+     menu:
 	m "Do you know about the stuff the people that run these places do to make lines more bearable?"
 	"No":
 		m "Ah, I guessed so."
@@ -4920,7 +4920,7 @@ label monika_leaf:
      m "Those other types of plants are called evergreen and don't need to lose their leaves to survive."
      m "I know leaves don't have feelings after all, but can you imagine how they must feel?"
      m "That feeling of love and care sinking into pain and betrayal!"
-     Menu:
+     menu:
 	m "Can you even begin to imagine how much a betrayal like that must hurt?"
 	"Yes":
 		m "Have you ever been betrayed before, [player]?"
@@ -4960,7 +4960,7 @@ label monika_fortunetelling:
      m "I find it a bit silly that some readings of cards, hands or similar stuff holds so much importance to people."
      m "I wonder how much of those who perform such readings, end up getting from that work."
      m "I suppose it's good to give people some hope, yet when the disappointment appears it usually makes them feel worse than before."
-     Menu:
+     menu:
 	m "Do you believe in this kind of stuff, [player]?"
 	"Yes":
 		m "Ah, I see."
@@ -4994,7 +4994,7 @@ label monika_fortunetelling:
 
 init 5 python:
     #This is a list of keywords for this topic
-    for key in ['AI', 'Artificial Intelligence']:
+    for key in ['ai', 'artificial intelligence']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_AIHuman') #id
     monika_random_topics.append('monika_AIHuman')
@@ -5012,7 +5012,7 @@ label monika_AIHuman:
      m "If the person failed to notice it was an AI then that AI passed the test."
      m "Yet that's outdated nowadays."
      m "I’m sure that I look nothing like an AI to you!"
-     Menu:
+     menu:
 	m "Do you think I'm an AI, or a human, [player]?"
 	"Human":
 		m "Ah, I see"
