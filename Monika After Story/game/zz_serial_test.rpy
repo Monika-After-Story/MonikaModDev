@@ -33,11 +33,23 @@ init -1 python in data_points:
         ("string401", "string402", "string403", "string404")
     ]
 
+    m_categorys = [
+        ((True,("string101","string401")), ("test1", "test4")),
+        ((False,("string301", "string302")), ("test3",)),
+        (None, ("test1","test2","test3","test4"))
+    ]
+
     unlockeds = [
         True,
         False,
         False,
         True
+    ]
+
+    m_unlockeds = [
+        (True,("test1","test4")),
+        (False,("test2","test3")),
+        (None, ("test1","test2","test3","test4"))
     ]
 
     randoms = [
@@ -47,11 +59,23 @@ init -1 python in data_points:
         True
     ]
 
+    m_randoms = [
+        (True, ("test2", "test4")),
+        (False, ("test1", "test3")),
+        (None, ("test1","test2","test3","test4"))
+    ]
+
     pools = [
         True,
         True,
         False,
         True
+    ]
+    
+    m_pools = [
+        (True, ("test1","test2","test4")),
+        (False, ("test3",)),
+        (None, ("test1","test2","test3","test4"))
     ]
 
     conditionals = [
@@ -66,6 +90,12 @@ init -1 python in data_points:
         "random",
         "push",
         None
+    ]
+
+    m_actions = [
+        (("queue","random"),("test1","test2")),
+        (("push",),("test3",)),
+        (None, ("test1","test2","test3","test4"))
     ]
 
     from datetime import datetime
@@ -131,6 +161,12 @@ init python:
         return ("[" + str(found == expec) + "]-" + name + "-> F: " 
             + str(found) + " E: " + str(expec) + "\n")
 
+    # test fun for collections
+    def testCaseColl(name, found, expec):
+        from collections import Counter
+        return ("[" + str(Counter(found) == Counter(expec)) + "]-" + name +
+            "-> F: " + str(found) + " E: " + str(expec) + "\n")
+
     # test function
     # returns a string of the results
     def testSerial():
@@ -187,3 +223,58 @@ init python:
         results += "\n"
         return results
 
+    # test filtering
+    # returns a string of results
+    def testFilter():
+
+        results = ""
+        ev_list = persistent.serial_objs
+
+        # lets start with category
+        results += "FILTER CATEGORY:\n\n"
+        for i,o in dpts.m_categorys:
+            filt_ev = Event.filterEvents(
+                persistent.serial_objs,full_copy=True,category=i
+            ).keys()
+            results += testCaseColl("category",filt_ev,o)
+
+        results += "\nFILTER UNLOCKS:\n\n"
+        for i,o in dpts.m_unlockeds:
+            filt_ev = Event.filterEvents(
+                persistent.serial_objs,unlocked=i
+            ).keys()
+            results += testCaseColl("unlocked",filt_ev,o)
+
+        results += "\nFILTER RANDOMS:\n\n"
+        for i,o in dpts.m_randoms:
+            filt_ev = Event.filterEvents(
+                persistent.serial_objs,random=i
+            ).keys()
+            results += testCaseColl("random",filt_ev,o)
+
+        results += "\nFILTER POOLS:\n\n"
+        for i,o in dpts.m_pools:
+            filt_ev = Event.filterEvents(
+                persistent.serial_objs,pool=i
+            ).keys()
+            results += testCaseColl("pool",filt_ev,o)
+
+        results += "\nFILTER actions\n\n"
+        for i,o in dpts.m_actions:
+            filt_ev = Event.filterEvents(
+                persistent.serial_objs,action=i
+            ).keys()
+            results += testCaseColl("action", filt_ev, o)
+
+        results += "\nCUSTOM FILTER:\n\n"
+        filt_ev = Event.filterEvents(
+            persistent.serial_objs,
+            category=(True, ("string101","string302","string404")),
+            unlocked=True,
+            random=False,
+            pool=True,
+            action=("queue",)
+        ).keys()
+        results += testCaseColl("custom", filt_ev, ("test1",))
+
+        return results

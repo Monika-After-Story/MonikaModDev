@@ -160,7 +160,7 @@ python early:
                 self._action = None
 
         @staticmethod
-        def __filterEvent(
+        def _filterEvent(
                 event,
                 category=None,
                 unlocked=None,
@@ -192,27 +192,16 @@ python early:
 
             if category is not None:
                 # USE OR LOGIC
-                if (category[0]
-                        and len(
-                            set(category[1]).intersection(set(event.category))
-                        ) == 0):
-                    return False
+                if category[0]:
+                    if len(set(category[1]).intersection(set(event.category))) == 0:
+                        return False
 
                 # USE AND logic
                 elif Counter(category[1]) != Counter(event.category):
                     return False
 
-            if action is not None:
-                # use OR logic
-                if (action[0]
-                        and len(
-                            set(action[1]).intersection(set(event.action))
-                        ) == 0):
-                    return False
-
-                # use AND logic
-                elif Counter(action[1]) != Counter(event.action):
-                    return False
+            if action is not None and event.getAction() not in action:
+                return False
               
             # we've passed all the filtering rules somehow
             return True
@@ -251,23 +240,25 @@ python early:
             #       (Default: None)
             #   pool - boolean value to match pool attribute
             #       (Default: None)
-            #   action - Tuple of the following format:
-            #       [0]: True means we use OR logic, False means AND logic.
-            #       [1]: Tuple/list of strings/EV_ACTIONS to match action
+            #   action - Tuple/list of strings/EV_ACTIONS to match action
+            #       NOTE: OR logic is applied
             #       (Default: None)
-            #       NOTE: if either element is None, we ignore this filtering
-            #       rule.
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
             #   Events (in a new dict) with the given filters applied
             #   If full_copy is False, we return a copy of references of the
             #   Events (in a new dict) with the given filters applied
-            #   if the given events is None, empty, or kwargs is None, events
-            #   is returned.
+            #   if the given events is None, empty, or no filters are given,
+            #   events is returned
 
             # sanity check
-            if not events or len(events) == 0 or not kwargs:
+            if (not events or len(events) == 0 or (
+                    category is None
+                    and unlocked is None
+                    and random is None
+                    and pool is None
+                    and action is None)):
                 return events
 
             # copy check
@@ -280,10 +271,7 @@ python early:
                     or category[0] is None 
                     or category[1] is None)):
                 category = None
-            if action and (
-                    len(action) < 2 
-                    or action[0] is None 
-                    or action[1] is None)):
+            if action and len(action) == 0:
                 action = None
 
             filt_ev_dict = dict()
@@ -291,7 +279,7 @@ python early:
             # python 2
             for k,v in events.iteritems():
                 # time to apply filtering rules
-                if Event.filterEvent(v,category=category, unlocked=unlocked,
+                if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action):
 
                     # copy check
