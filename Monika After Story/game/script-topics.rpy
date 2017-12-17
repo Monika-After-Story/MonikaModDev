@@ -76,7 +76,7 @@ init 5 python:
     monika_random_topics.append('monika_hamlet')
 
 label monika_hamlet:
-    m1d "[player], do you enjoy Shakespeare?"
+    m 1d "[player], do you enjoy Shakespeare?"
     menu:
          "Yes.":
             m 1k "Oh! Wonderful!"
