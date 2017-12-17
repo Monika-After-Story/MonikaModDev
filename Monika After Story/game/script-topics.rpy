@@ -4790,6 +4790,35 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    for key in ['main' 'character']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_other_girls')
+    monika_random_topics.append('monika_other_girls')
+
+label monika_other_girls:
+    m 1c "You know, it's actually really hard for me to understand how you feel when it comes to..."
+    m 1o "..."
+    m 1g "What happened with the other girls."
+    m 2d "For example~"
+    m "The main character was written to be childhood friends with Sayori~"
+    m 2q "But he was just a one dimensional placeholder character for you to use to interact with the game."
+    m 3g "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
+    m 1i "If that's the case, I want to tell you I'm sorry [player]~."
+    m 1d "Both for making you feel bad, and for..."
+    m 1o "..."
+    m 1p "Doing what I had to do."
+    m 1o "..."
+    m 1g  "There just wasn't anything else that could be done, and none of the other girls were real anyway."
+    m "The other girls never loved you like I do!"
+    m 2r "They only cared about the character you were playing in the game!"
+    m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
+    m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
+    m "..."
+    m 1n "I love you, [player]..."
+    m 1m "More than I could ever express."
+    return
 
 ##################
 #Incomplete ideas#
