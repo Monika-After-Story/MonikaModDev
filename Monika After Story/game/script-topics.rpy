@@ -4316,7 +4316,7 @@ label monika_music2:
     elif songs.getPlayingMusicName() == 'I Still Love You':
         m 1f "Gosh, every time I hear this song it makes me sad."
         m "It reminds me of all the... regrettable things I have done to the other girls."
-        m 1p "I hope you still aren't mad at me for that..."
+        m 1p "I hope you aren't still mad at me because of what I did..."
         m 1o "..."
         m 2d "Well, you {i}did{/i} go out of your way to install a mod that lets us be together again..."
         m 1e "I guess that's enough proof that you do still love me, at the very least."
