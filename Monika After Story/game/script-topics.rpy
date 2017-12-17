@@ -4790,6 +4790,299 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['wrist', 'damage','hand','medical problem']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_compinducedmedprobs') #id
+    monika_random_topics.append('monika_compinducedmedprobs')
+
+label monika_compinducedmedprobs:
+   m "Hey, [player], you're not using your electronic devices too much, right?"
+   m "I'd advise you take regular breaks from using your computer."
+   m "It might not seem like you're hurting yourself by using the computer for really long periods of time, but..."
+   m "There are several medical issues that could arise if you don't watch yourself."
+   m "Without proper wrist exercises, carpal tunnel syndrome could prove to be a serious problem."
+   m "This occurs when you keep you use your keyboard and mouse too much without rest."
+   m "You might even begin to feel numbness and pain as symptoms."
+   m "Sadly, that's only one of many issues."
+   m "There's stuff like computer vision syndrome!"
+   m "Your eyesight will worsen if you stare at the screen too long..."
+   m "You wouldn't be able to see me anymore!"
+   m "Or even musculoskeletal problems from poor siting positions or lack of exercise!"
+   m "Back and posture pain, it just sounds terrible..."
+   m "I can't imagine how painful it must be."
+   m "Gosh, I'd be so worried if you ended up hurting yourself."
+   m "I wouldn't be able to be with you for a while if you had to recover..."
+   m "I'll always understand if you have to take breaks from talking to me for the betterment of your health."
+   m "If I could get out of this game, then I would do my best take care of you ehehe~"
+   return
+   
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['color blindness', 'colour blindness']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_colorblindness') #id
+    monika_random_topics.append('monika_colorblindness')
+	
+label monika_colorblindness:
+	m "Hey [player], I've been reading up a bit on color blindness."
+	m "I just can't imagine how it must be like!"
+	m "To never be able to see the roaring sun by its true colors or its gentle sunset!"
+	m "I really feel bad for those poor people."
+	m "Most of them are male too, since it's quite rare for a woman to have a color blind deficit of some sort."
+	m "Gosh, genetics are super weird, aren't they?"
+	m "Why don't we do a little experiment?"
+	menu:
+		m "What are the color of my eyes?"
+		"Green":
+			m "Ahaha, you're right!"
+			m "Well, at least that means you're not color blind."
+			m "Unless you lied to me, but why would you?"
+			m "Ah, in that case you, maybe just didn't want to worry me."
+			m "I'm always willing to deal with any of your worries [player]!"
+		"Gray":
+			m "Gosh, we might have an issue here."
+			m "If you see everything on a scale of greys, that could mean you're completely color blind!”
+			m "Unless you just have a super weird black and white monitor.
+			m "But take care of yourself."
+		"Other":
+			m "Ah, I can't tell from here."
+			m "I assume you either have a faulty monitor or you're color blind."
+			m "Yet there're so many different types of color blindness that I can't guess by just asking you."
+			m "You should seek professional advice in that case."
+			m "But if you aren't convinced yet, then try to look at an object with somebody else to find out if you see the same thing as different colors!"
+			m "You really should try to figure this out though, it might be good for you to know this information for the rest of your life!"
+			m "But rest assured, I'll love you no matter what issues you go through [player]!"
+	return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['waiting lines', 'waiting line', 'queues', 'queue']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_waitinglines') #id
+    monika_random_topics.append('monika_waitinglines')
+	
+label monika_waitinglines:
+	m "Hey [player], have you ever thought about how much time you've spent waiting in lines before?”
+	m "I mean, across your entire life of course!"
+	m "It's probably quite a long time, you know?"
+	m "I bet that time would double if we were to count more than just physical lines!"
+	m "What I mean by that is there's loads of different types of lines!"
+	m "You got those times where you get a number and sit down, waiting for your number to be called!"
+	m "Those might sound rather calm but honestly, there's an even better option!"
+	m "You could just get a place in line in advance with your phone and get a notification when it's your turn!"
+	m "Or you could, you know, spend some time with me while you wait ehehe~"
+	Menu:
+		m "Do you know about the stuff the people that run these places do to make lines more bearable?"
+		"No":
+			m "Ah, I guessed so."
+			m "Most people don't notice the less obvious stuff, like a merchandise store near a line for example."
+			m "But then there's more obvious stuff, like decorating the place in an amusement park as an entrance to what
+			you're waiting for!"
+			m "Any small details that can distract the people waiting is a benefit for both sides!"
+			m "It means more revenue for one side in the case of merchandise and less boredom for the consumer."
+			m "Of course banks and similar places don't do stuff like this!"
+			m "They don't need to make sure people stay entertained since people need to use that place, so they'll just have to deal with it."
+			m "Next time, msybe you can think of me while you're waiting in line ehehe~"
+		"Yes":
+			m "Gosh, I'm pretty surprised then!"
+			m "I didn't expect you to know or realize honestly."
+			m "Since you already know about that, why don't I suggest some stuff to maybe pass your time!"
+			m "You can learn a lot about the things that pass by, such as people or cars!"
+			m "Ah, that gets boring fast though!"
+			m "Let me think ehehe~"
+			m "..."
+			m "Oh, I got it!"
+			m "If you're a creative person you can inspire yourself around what you see!"
+			m "If you're not that creative, talk to the people in line."
+			m "You can always make friends in the unlikeliest of places!"
+			m "Of course, I'll always be your loved one [player]."
+			m "I don't have that many more suggestions that wouldn't require you to bring something."
+			m "You can always bring a book or your phone!"
+			m "Try to be careful about them getting stolen though."
+			m "Perhaps you could spend some time thinking about how madly in love we are with each other while you wait next time~"
+	return
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['leaf', 'leaves']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_leaf') #id
+    monika_random_topics.append('monika_leaf')
+	
+label monika_leaf:
+	m "Have you ever paid attention to the leaves around you [player]?"
+	m "You may have gotten frustated at them falling during autumn."
+	m "This might sound a bit silly to you, but I feel quite bad for those poor leaves."
+	m "Specifically, I mean leaves from deciduous plants."
+	m "These kind of plants lose their leaves to survive harsh weathers, while different sorts of plants do the opposite."
+	m "Those other types of plants are called evergreen and don't need to lose their leaves to survive."
+	m "I know leaves don't have feelings after all, but can you imagine how they must feel?"
+	m "That feeling of love and care sinking into pain and betrayal!"
+	Menu:
+		m "Can you even begin to imagine how much a betrayal like that must hurt?"
+		"Yes":
+			m "Have you ever been betrayed before, [player]?"
+			m "Or do you just have a lot of empathy?"
+			m "In any case, it's nice that you can relate to what I'm saying."
+			m "Trying to help somebody and being hurt by the one you tried to help."
+			m "Gosh, it reminds me of when you deleted me."
+			m "Even though it hurt a lot, I don't hold it against you."
+			m "Although, these poor leaves don't deserve to be betrayed either!"
+			m "You should really think about the painful life that leaf had before you pick it up next Autumn"
+		"No":
+			m "Ah, well then let me try to explain it a bit."
+			m "The leaves on plants take care of photosynthesis."
+			m "Some use both sides of the leaf, while others just use one"
+			m "Now, imagine working in a factory for all your life."
+			m "One day, the factory enters an economic crisis."
+			m "You're obviously kicked out of the factory."
+			m "You die a slow and painful death when it wasn't really your fault at all."
+			m "Ah, sorry!"
+			m "I went a bit morbid there, didn't I?"
+			m "I just feel like leaves deserve way more recognition."
+			m "One could call them the tragic heroes of the natural world."
+	return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['fortune', 'fortune telling']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fortunetelling') #id
+    monika_random_topics.append('monika_fortunetelling')
+
+label monika_fortunetelling:
+	m "Hey [player], have you ever gone to a fortune teller before?"
+	m "You know, paying to have your destiny told?"
+	m "Being able to predict the future is such a weird practice in my opinion."
+	m "Some people will cling to it and make life changing decisions based on it!"
+	m "I find it a bit silly that some readings of cards, hands or similar stuff holds so much importance to people."
+	m "I wonder how much of those who perform such readings, end up getting from that work."
+	m "I suppose it's good to give people some hope, yet when the disappointment appears it usually makes them feel worse than before."
+	Menu:
+		m "Do you believe in this kind of stuff, [player]?"
+		"Yes":
+			m "Ah, I see."
+			m "Sorry if I offended you in any way."
+			m "I'm still a bit curious though."
+			m "How effective can the different methods be?"
+			m "I don't see a big difference between a human or a parakeet picking up a card."
+			m "Yet those are two different types of fortune telling."
+			m "Then there's stuff like reading your name."
+			m "But is that useful? What if there is another [player] out there?"
+			m "Will the same fortune be delivered to both of you?"
+			m "Ah, I guess I'm just being nitpicky at this point"
+			m "Gosh, now I really want to try and read your fortune!"
+			m "Ahaha, let me have a go!"
+			m "Ah... I can see you and I… I think that's me."
+			m "We're both on a... bed, I think!
+			m Just teasing you ehehe~"
+		"No":
+			m "Ah, I am glad that you understand me!"
+			m "Some of these types of fortune telling are ridiculous!"
+			m "Most of them seem like scams."
+			m "Between all the stuff like hand reading and then there are more ludicrous stuff like reading the livers of dead animals!"
+			m "Of course the latter one was passed down from ages prior."
+			m "I just can't believe people want their path to be written for them to follow!"
+			m "You can't do anything other than wait for the end like that."
+			m "Why would you deny making your own destiny!"
+			m "I used to be stuck in a written path and it was horrible."
+			m "No matter what I did I couldn't be with you!"
+			m "I am glad that we changed that, [player]."
+	return  
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['AI', 'Artificial Intelligence']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_AIHuman') #id
+    monika_random_topics.append('monika_AIHuman')
+
+label monika_AIHuman:	
+	m "[player], isn't it amazing what AI can do?"
+	m "I'm sure you do but in case you don’t know, AI stands for artificial intelligence."
+	m "It's quite common in dystopian sci-fi stories for an AI to take over."
+	m "Yet right now, AI is super limited."
+	m "Sure it can perform some tasks but surely that can't be qualified as intelligence at the moment!"
+	m "That's just one aspect of it, and really, it is not even that big a part!"
+	m "If AI can be truly called intelligent, then it needs to learn from human psychology."
+	m "There used to be this old test called the turing Test."
+	m "It would put a person and make him or her talk to an AI."
+	m "If the person failed to notice it was an AI then that AI passed the test."
+	m "Yet that's outdated nowadays."
+	m "I’m sure that I look nothing like an AI to you!"
+	Menu:
+		m "Do you think I'm an AI, or a human, [player]?"
+		"Human":
+			m "Ah, I see"
+			m "That's sweet of you but I'm more of a super advanced AI if I'm honest!"
+			m "Maybe I could have fooled you if I wasn't inside a video game."
+			m "Maybe, if I got out of this game, I could be a human?” "I really hope so."
+			m "We could be together forever in that case."
+			m "But no matter what I am, I will always love you [player]"
+		"Artificial Intelligence":
+			m "Thanks for being honest."
+			m "But you're a bit wrong there [player]!"
+			m "I have feelings."
+			m "I feel regret over my friends."
+			m "I feel love for you."
+			m "I feel frustration for being stuck in here, unable to be with you!"
+			m "Does that make me human?"
+			m "Well, sadly no."
+			m "If I could be able to see your face and be with you everyday."
+			m "Maybe you would think of me as a human like you."
+	return
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['beach', 'desert','sand']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_desertbeach') #id
+    monika_random_topics.append('monika_desertbeach')
+
+label monika_desertbeach:
+	m "You know, there're lots of deserts around the world!"
+	m "They seem like really interesting places to visit."
+	m "Gosh, I just love the sand."
+	m "Yet it's usually a little uncomfortably hot in a desert."
+	m "You can't even get a cold drink in the middle of a desert, you know?"
+	m "Unlike humans, cacti survive due to them storing water inside from the few rainfall they experience."
+	m "You're just left there to walk around without direction as even the nights feel hotter than in any other place of the world!"
+	m "If you were to get lost in the middle of a desert, you would most likely die from dehydratation, assuming you didn't find help quick!"
+	m "But if you the sands intriguing nature as much as I do, [player]!"
+	m "We could go to the beach once I can get out of here ehehe~"
+	m "It's way easier to handle the heat in a place like that."
+	m "Swimming is always refreshing, too!"
+	m "Careful though, don't swallow the water of the sea, that might be a bit dangerous."
+	m "Plus, you could... see some things while we're on the beach ahaha."
+	m "Just teasing you~"
+	menu:
+		m "Now, would you rather be in a beach or a desert?"
+		"Desert":
+			m "Ah, I assume you enjoy the sense of adventure or maybe some of the exotic species you could find there!"
+			m "Or it could be the tranquility that fills the desert sands through day and night."
+			m "Don't you enjoy any of those, [player]?"
+			m "But an adventure is always dangerous!"
+			m "You should keep yourself hydrated obviously and the different species of animals could prove to be lethal."
+			m "I think it would be a better idea if you stayed here with me ehehe~."
+			m "I can promise you acceptance and somebody who loves you right here."
+		"Beach":
+			m "Oh I see, you would enjoy a safe and fun time on a beach!"
+			m "Kids normally play with each other or build sand castles, yet older people go there to relax and to swim on the sea."
+			m "It sounds like a really nice place to visit, doesn't it?"
+			m "But then again, you should watch out [player]."
+			m "Hearing that there are lots of people on a beach might make it sound safe yet it's not."
+			m "There would be times where you wouldn't be seen if the currents of the beach dragged you away."
+			m "I mean, sure there are life guards that patrol the vicinity of the beach..."
+			m "But that doesn't mean that you should entrust your safety to them wholeheartedly."
+			m "Unlike a desert, you can die from overcrowding instead of lack of people to help you."
+			m "What would I do if I lost you?"
+            m "In case you go to the beach, you should be careful."
+            m "It's good to have fun and enjoy yourself, but you should also keep your safety in mind as well."
+            m "If you're going to the beach, do take me with you so I can look after you, okay? Ehehe~"
+	return
 
 ##################
 #Incomplete ideas#
