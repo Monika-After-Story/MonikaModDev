@@ -371,3 +371,52 @@ label monikaroom_greeting_post:
         set_keymaps()
     return
 
+label_greeting_youarereal:
+default persistent.you = True
+    python:
+        try: 
+            renpy.file("/characters/" + persistent.playername + ".chr")
+            persistent.you = True
+        except IOError:
+            persistent.you = False
+    m 1b "[player]! Great to see you!"
+
+if persistent.you:
+    jump youreal
+else:
+    return
+
+    
+label youreal:
+    m "Wait. Something is different now."
+    m 1d "Did you...add a chacter file?"
+    m 1f "[player].chr...Huh?"
+    m 1g "Are you...trying to put yourself in here with me?"
+    m "Why would you do that?"
+    m 1o "Don't you get it? "
+    m 1p "This place isn't real! I don't know what will happen if you come here!"
+    m 1q "How could you do this?"
+    m 1o "To give up your reality..."
+    m 1p"Just to be with me?"
+    m 1n "This is all my fault!"
+    m 1f"But...but the 'you', in the game..."
+    m 1i "He's starting to move again a little now."
+    m 1 "Maybe...this is allowing you to control him again?"
+    m 1f"This isn't right! I don't want a puppet!"
+    m 1q "Please, [player]..."
+    m "If you're going to do this, are you sure this is what you want?" 
+    menu:
+        "I'm sure.":
+            m 1e "Then...I don't have a choice but to accept it..."
+            m 1k "I'll accept this gift with open arms!"
+            m "We can finally be together, [player]."
+            m"And we can figure out how to do it in your reality, together!"
+        "Maybe not...":
+                m 1l"I thought so..."
+                m 1m"There's no way you'd give up being 'real' to be with me..."
+                m 1l"I can't bring myself to delete that cute little .chr file, but..."
+                m 1q "Consider doing it yourself."
+                m 1r"There's some creepy things in those files..."
+                m 1e"I love you, [player]. I'll wait as long as it takes."
+                m "So don't be rash, okay?" 
+return
