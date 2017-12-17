@@ -4796,10 +4796,10 @@ init 5 python:
     for key in ["joke", "jokes", "humour", "comedy"]:
         monika_topics.setdefault(key, [])
         monika_topics[key].append("monika_jokes_topic")
-    # no random for now
+    # no random for now or ever
 
 label monika_jokes_topic:
-    if jokes_available > 0:
+    if persistent.jokes_available > 0:
         m "Hey [player], I think telling each other some good jokes could bring us closer together, you know?"
         m "I know quite a few jokes, but I was wondering if maybe you knew any."
         menu:
@@ -4807,40 +4807,62 @@ label monika_jokes_topic:
             "Yes":
                 m "Ah, do you mind letting me hear some?"
                 python:
-                    # TODO: this is all broken
                     # check to ensure we arent dry
                     if len(daily_p2m_jokes) == 0:
 
                         # check to ensure the dynamic dict isnt dry
                         if len(p2m_jokes) == 0:
                             # yikes, we dry, better fill this up
-                            p2m_jokes = dict(all_p2m_jokes)
+                            from copy import deepcopy
+                            p2m_jokes = filterPool(deepcopy(all_p2m_jokes))
+
+                        # lenggth checkas always
+                        if len(p2m_jokes) < p2m_jokes_avail:
+                            p2m_jokes_avail = len(p2m_jokes)
 
                         # alright, lets get stuff from the pool
-                        daily_p2m_jokes.update(
-                            randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
+                        daily_p2m_jokes.extend(
+                            randomlyRemoveFromListPool(p2m_jokes, p2m_jokes_avail)
                         )
 
-                    # since jokes are stored as dicts, we need to preprocess to send them
-                    # to display menu
+                    # using display menu requires a processing
                     p2m_jokeslist = list()
-
-                    # NOTE: python 2: iteritems()
-                    # NOTE: python 3: items()
-                    # NOTE: MASSIVE BUG ALERT, dont let the jokes list run dry.
-                    # TODO: build a check to ensure the list doesnt run dry
-                    for label,prompt in daily_p2m_jokes.iteritems():
-                        p2m_jokeslist.append((prompt,label))
+                    for joke in daily_p2m_jokes:
+                        p2m_jokeslist.append((joke.prompt,joke))
 
                     # now call the menu
-                    result_label = renpy.display_menu(p2m_jokeslist)
+                    sel_joke = renpy.display_menu(p2m_jokeslist)
 
                 # and the resulting label
-                call expression result_label from _joke_sub_expression
-                $ p2m_jokes.pop(result_label, None)
+                call expression sel_joke.jokelabel from _p2m_joke_subexp
+                $ daily_p2m_jokes.remove(sel_joke)
+                $ persistent.jokes_available -= 1
             "No":
                 m "Alright, I'll tell you a joke"
-                # TODO tell jokes 
+                python:
+                    # check to ensure we arent dry
+                    if len(daily_m2p_jokes) == 0:
+
+                        # check to ensure the dynamic dict isnt dry
+                        if len(m2p_jokes) == 0:
+                            # yikes, we dry, better be moist
+                            from copy import deepcopy
+                            m2p_jokes = filterPool(deepcopy(all_m2p_jokes))
+
+                        # lench tcheck
+                        if len(m2p_jokes) < m2p_jokes_avail:
+                            m2p_jokes_avail = len(m2p_jokes)
+
+                        # alright, grab from pool
+                        daily_m2p_jokes.extend(
+                            randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
+                        )
+
+                    # now pick one monika
+                    sel_joke = renpy.random.choice(daily_m2p_jokes)
+                call expression sel_joke.jokelabel from _m2p_joke_subexp
+                $ daily_m2p_jokes.remove(sel_joke)
+                $ persistent.jokes_available -= 1
     else:
         # TODO: better dialogue for no more available jokes
         m "No more jokes today I hate you"

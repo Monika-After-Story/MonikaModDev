@@ -18,6 +18,7 @@
 # okay we actually need some persits
 default persistent.allow_dark_jokes = False
 default persistent.allow_dad_jokes = False
+default persistent.jokes_available = 0
 
 # pre stuff
 init -1 python:
@@ -122,31 +123,6 @@ init -1 python:
             if renpy.seen_label(pool[index].jokelabel):
                 pool.pop(index)
 
-    def randomlyRemoveFromDictPool(pool, n):
-        #
-        # randomly returns n number of items from the given pool. The pool 
-        # must be a dict. If there are less than n items in the pool, then the
-        # pool is returned. Returned items are removed from the pool.
-        #
-        # IN:
-        #   pool - dict that we want to retrieve from
-        #   n - number of items to remove off the pool
-        #
-        # RETURNS:
-        #   n number of items, randomly selected if n < len(pool), the pool
-        #       itself otherwise
-        
-        if len(pool) <= n:
-            return pool
-
-        # remove n number of items
-        keys = pool.keys()
-        removed = dict()
-        for i in range(0,n):
-            sel_key = renpy.random.choice(keys)
-            removed[sel_key] = pool.pop(sel_key)
-        return removed
-
     def randomlyRemoveFromListPool(pool, n):
         #
         # randomly returns n number of items from teh given pool. The pool 
@@ -158,17 +134,18 @@ init -1 python:
         #   n - number of items to remove off the pool
         #
         # RETURNS:
-        #   n number of items, randomly seelcted if n < len(pool), the pool
-        #       itself otherwise
+        #   n number of items, randomly selected, or len(pool) number of items
+        #   if n < len(pool)
         
-        if len(pool) <= n:
-            return pool
+        if len(pool) < n:
+            n = len(pool)
 
         # remove n number of items
         removed = list()
         for i in range(0,n):
             item = renpy.random.choice(pool)
-            removed.append(pool.remove(item))
+            removed.append(item)
+            pool.remove(item)
         return removed
 
 
@@ -186,7 +163,7 @@ init -1 python:
         
         # sanity checks
         if not pool or len(pool) == 0:
-            return pool
+            return list(pool)
 
         # lets apply filtering!!
         new_pool = list()
@@ -233,10 +210,14 @@ init 10 python:
     # fill up the daily jokes list
     # NOTE: since we are waiting on daily limiting, this is currently set
     # to only showcasing 3 jokes per launch.
-    import store.mas_jokes_consts as mjc:
+    import store.mas_jokes_consts as mjc
     p2m_jokes_avail = mjc.OPTION_MAX  # number of player 2 monika jokes avail
     m2p_jokes_avail = mjc.OPTION_MAX  # number of monika 2 player jokes avail
-    jokes_available = mjc.JOKE_DAILY_MAX # number of jokes m and p exchange
+
+    # TODO: integrate the daily portion of prompt-system with this to ensure
+    # daily limit of jokes
+    # number of jokes m and p exchange
+    persistent.jokes_available = mjc.JOKE_DAILY_MAX 
 
     # length checks to ensure we dont go pull too many
     if len(p2m_jokes) < p2m_jokes_avail:
@@ -254,6 +235,9 @@ init 10 python:
     daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
 #    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, jokes_available)
 
+#=============================================================================#
+# PLAYER 2 MONIKA JOKES
+#=============================================================================#
 
 init 5 python:
     p2m_jokes.append(MASJoke(
@@ -334,7 +318,8 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_sayorihobby",
         is_m2p=False,
-        prompt="What would have been Sayori's favorite hobby?"
+        prompt="What would have been Sayori's favorite hobby?",
+        is_dark=True
     ))
 
 label joke_sayorihobby:
@@ -354,4 +339,41 @@ label joke_sayorihobby:
             m "Gosh, I can't believe you would do something like that [player]!"
             m "Unless that wasn't your intention..."
             m "I'll give you benefit of the doubt, because I love you so much, but please try to cut down on these kinds of jokes from now on."
+    return
+
+
+#=============================================================================#
+# MONIKA 2 PLAYER JOKES
+#=============================================================================#
+
+init 5 python:
+    m2p_jokes.append(MASJoke(
+        "m_joke_test",
+        is_m2p=True
+    ))
+
+label m_joke_test:
+    m "did u know that this is a test"
+    return
+
+init 5 python:
+    m2p_jokes.append(MASJoke(
+        "m_joke_dad_test",
+        is_m2p=True,
+        is_dad=True
+    ))
+
+label m_joke_dad_test:
+    m "this is a dad joke apparently"
+    return
+
+init 5 python:
+    m2p_jokes.append(MASJoke(
+        "m_joke_dark_test",
+        is_m2p=True,
+        is_dark=True
+    ))
+
+label m_joke_dark_test:
+    m "this is dark joke okay"
     return
