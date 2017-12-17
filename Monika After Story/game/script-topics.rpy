@@ -4790,6 +4790,38 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    for key in ['failure','goal','stars','firefly']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_ffly')
+    monika_random_topics.append('monika_ffly')
+
+label monika_ffly:
+    m 1d "[player], tell me something. Do you have a dream, a goal?"
+    m 3a "What is it?"
+    m 4b "Well, whatever it may be, big or small, I want to remind you of something~"
+    m 3k "Never give up."
+    m 4b "You got that? Never. Even when things seem hard."
+    m 1o "..."
+    m 2e "Think about it this way~"
+    m 2b "The stars are always out, my love, yet at night is when they shine brightest."
+    m 1k "And you will shine too."
+    m 3g "You may come across rough patches~"
+    m "Thinking you'll never make it~"
+    m 3b "But you will."
+    m 4d "There are times moving forward that you'll feel as fragile as a firefly."
+    m 4b "Yet they too shine brightly, coming out every night to give it their all~"
+    m "Shining without a care in the world, as if they're saying~"
+    m 3j "I'm right here."
+    m 3b "So you do the same."
+    m "Give it your all, put your heart into it, and never let failure break you."
+    m 3d "No matter what."
+    m 4b "Because striving to be greater is our nature. It's what we do."
+    m 3b "And most of all, remember~"
+    m 1k "I've got you. I'm here for you."
+    m 1b "I know you can do it."
+    return
 
 ##################
 #Incomplete ideas#
