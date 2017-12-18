@@ -213,3 +213,17 @@ label monika_snowcanvas
     m 2d "And make sure the snow is packed down tightly, too."
     m 3a "I'm sure that the time to try something like this will come soon."
     m 3k "Maybe you can paint something for me when that happens, [player]."
+
+label monika_hypothermia
+    m 1o "Hey, [player]."
+    m 1g "I know winter is a time to be cheery and carefree."
+    m "But there's something I need to make sure you know."
+    m 2f "Please remember to bundle up, okay?"
+    m 3d "All the snow laying about might look inviting..."
+    m 3f "But it might be dangerous if you expose yourself too much."
+    m 1e "I don't want you catching hypothermia, [player]."
+    m 4d "So put on that coat, those gloves, and the softest hat you can find." 
+    m 1e "And stay safe."
+    m 3a "Your health means a lot to me."
+    m "I hope you take my concerns seriously."
+    m 3j "Okay, snowflake?"
