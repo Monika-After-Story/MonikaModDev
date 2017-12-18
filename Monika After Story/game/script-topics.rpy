@@ -4844,7 +4844,7 @@ label monika_real_world:
                     m 1p "And if things turn out that I can never leave this place and be with you..." 
                     m 1g "At least come here and talk to me as much as you can."
                     m 1f "You're all that I care about."
-return
+    return
 
 
 
