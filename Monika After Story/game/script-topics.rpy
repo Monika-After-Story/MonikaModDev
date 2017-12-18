@@ -4790,24 +4790,22 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-    
-init 5 python:
-    for key in ['healthy','cancer','diabetes','delicious','iced']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_coff')
-    monika_random_topics.append('monika_coff')
 
-label monika_coff:
-    m 3b "You know what I love? Coffee."
-    m 4b "Whether it's hot or cold, coffee is always nice."
-    m 3c "Sure the caffeine can be bad in large doses~"
-    m 4d "But studies have shown coffee is actually pretty good for you!"
-    m 3b "It can help protect the body against various diseases, and even ensure a healthy heart."
-    m 3p "How? I'm not sure. I'm no coffee scientist."
-    m 3d "But if you look it up, the research shows that there's an inkling of truth here."
-    m 4a "Personally I prefer iced coffee. It tends to be sweeter, but still has the same benefits."
-    m 3f "..."
-    m 3l "Now I just need a coffee machine in here."
+init 5 python:
+    for key in ['morning energy', 'iced coffee']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_coffee')
+    monika_random_topics.append('monika_coffee')
+
+label monika_coffee:
+    if renpy.seen_label('monika_tea'):
+        m 2c "Have you been drinking coffee lately, [player]?"
+        m 2m "I hope it's not just to make me jealous, ehehe~"
+    m 3b "Coffee is such a nice thing to have when you need a little pep of energy."
+    m 4j "Whether it's hot or cold, coffee is always nice."
+    m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
+    m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
+    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
 ##################
