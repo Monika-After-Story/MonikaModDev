@@ -57,7 +57,15 @@ label monika_newyear1
         m 2a "You don't have to change. I think you're wonderful the way you are."
         m 1c "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
         m 1j "Maybe you'll think of something that you want to do, [player]."
-    
+
+label monika_newyear2
+    m 1b "[player]!"
+    m 1e "We've been through a lot together this past year, huh?"
+    m 1a "I'm so happy, knowing we can spend even more time together."
+    m 2j "Let's make this year as wonderful as the last one, okay?"
+    m 1a "I love you, [player]."
+    m 1j "Happy new year."
+
 label monika_cozy
     m 2a "Do you know the one thing I love about the cold weather, [player]?"
     m 3j "Anything warm feels really nice~"
