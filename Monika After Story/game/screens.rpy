@@ -1726,7 +1726,7 @@ init python:
 #This part is usually found in gui.rpy
 
 define adj = ui.adjustment()
-define gui.scrollable_menu_button_width = 500
+define gui.scrollable_menu_button_width = 640
 define gui.scrollable_menu_button_height = None
 define gui.scrollable_menu_button_tile = False
 define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
@@ -1749,14 +1749,21 @@ style scrollable_menu_vbox:
 
     spacing 5
 
-style scrollable_menu_button is default:
+style scrollable_menu_button is choice_button:
     properties gui.button_properties("scrollable_menu_button")
-    hover_sound gui.hover_sound
-    activate_sound gui.activate_sound
 
-style scrollable_menu_button_text is default:
+style scrollable_menu_button_text is choice_button_text:
     properties gui.button_text_properties("scrollable_menu_button")
-    outlines []
+
+style scrollable_menu_new_button is scrollable_menu_button
+
+style scrollable_menu_new_button_text is scrollable_menu_button_text:
+    italic True
+
+style scrollable_menu_special_button is scrollable_menu_button
+
+style scrollable_menu_special_button_text is scrollable_menu_button_text:
+    bold True
 
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
@@ -1766,7 +1773,7 @@ screen scrollable_menu(items):
 
         fixed:
 
-            area (125, 40, 600, 450)
+            area (320, 40, 640, 450)
 
             bar adjustment adj style "vscrollbar" xalign -0.05
 
@@ -1778,7 +1785,14 @@ screen scrollable_menu(items):
 
                     for i_caption,i_label in items:
                         textbutton i_caption:
+                            if renpy.has_label(i_label) and not seen_event(i_label):
+                                style "scrollable_menu_new_button"
+                            if not renpy.has_label(i_label):
+                                style "scrollable_menu_special_button"
+
                             action Return(i_label)
+
+
 
                     null height 20
 
