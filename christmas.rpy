@@ -35,6 +35,29 @@ label monika_kwanzaa
     m 1a "In the end, having a day to celebrate is the important part. Everyone has their own way to enjoy themselves."
     m 2j "We can celebrate Kwanzaa together too, [player]."
     
+label monika_newyear1
+    m 1a "[player]! It's almost time, isn't it?"
+    m "It's incredible to think that the year is almost over."
+    m 1e "Time flies by so quickly."
+    m 1j "Especially when I get to see you so often."
+    m 1a "Well, there's still a bit of time left before midnight."
+    m 2b "We might as well enjoy this year while it lasts."
+    m 1l "Usually, I'd reprimand you for staying up late, but..."
+    m 1a "Today is a special day."
+    m "Do you have any resolutions, [player]?"
+    menu:
+        "Yes."
+        m 1a "It's always nice to set goals for yourself in the coming year."
+        m 2l "Even if they can be hard to reach or maintain."
+        m 2a "I'll be here to help you, if need be!"
+        m 1j "My resolution is to be an even better girlfriend for you, my love."
+        
+        "No."
+        m 1e "Oh, is that so?"
+        m 2a "You don't have to change. I think you're wonderful the way you are."
+        m 1c "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
+        m 1j "Maybe you'll think of something that you want to do, [player]."
+    
 label monika_cozy
     m 2a "Do you know the one thing I love about the cold weather, [player]?"
     m 3j "Anything warm feels really nice~"
@@ -264,3 +287,21 @@ label monika_jingebells
     m 4k "'Oh! what fun it is to ride...'"
     m "'In a one-horse open sleigh!'"
     m 1h "Ahaha, I can't get enough of them."
+
+label monika_sleigh
+    m 3j "Hey [player], a pretty nice thought just crossed my mind..."
+    m 4b "Have you ever heard of carrige rides?"
+    m 3k "Whenever I get out of this place, we should totally go on one."
+    m 1k "Oh, I bet it would be magical!"
+    m 1r "Nothing but the clip-clop of the horse's hooves against the pavement..."
+    m 1q "And the colorful array of Christmas lights shining in the night..."
+    m 5a "Wouldn't that be so romantic, my love?"
+    m 2b "Maybe we could even take a soft, fleece blanket along to cuddle under."
+    m 1l "Oh~"
+    m "I wouldn't be able to contain myself. I think I'd cry tears of joy!"
+    m 1r "The warmth of your body against mine, wrapped within the gentle cloth~"
+    m 1q "Fingers entwined..."
+    m 1e "At the perfect moment, you succumb and lean in for a passionate kiss~"
+    m 5b "Wow, we really need to do this."
+    m 5a "Wouldn't that be so lovely, [player]?"
+    m 1j "There's a first time for everything, and I want us both to experience such a marvel together."
