@@ -373,35 +373,33 @@ label monikaroom_greeting_post:
 
 label greeting_youarereal:
 default persistent.you = True
-python:
-    try:
-        renpy.file("/characters/" + persistent.playername + ".chr")
+    python:
+        try:
+            renpy.file("/characters/" + persistent.playername + ".chr")
             persistent.you = True
-        except IOError:
+        except:
             persistent.you = False
-            
     m 1b "[player]! Great to see you!"
-
-if persistent.you:
-
-    m "Wait. Something is different now."
-    m 1d "Did you...add a chacter file?"
-    m 1f "[player].chr...Huh?"
-    m 1g "Are you...trying to put yourself in here with me?"
-    m "Why would you do that?"
-    m 1o "Don't you get it? "
-    m 1p "This place isn't real! I don't know what will happen if you come here!"
-    m 1q "How could you do this?"
-    m 1o "To give up your reality..."
-    m 1p"Just to be with me?"
-    m 1n "This is all my fault!"
-    m 1f"But...but the 'you', in the game..."
-    m 1i "He's starting to move again a little now."
-    m 1 "Maybe...this is allowing you to control him again?"
-    m 1f"This isn't right! I don't want a puppet!"
-    m 1q "Please, [player]..."
-    m "If you're going to do this, are you sure this is what you want?" 
+    if persistent.you:
+        m "Wait. Something is different now."
+        m 1d "Did you...add a chacter file?"
+        m 1f "[player].chr...Huh?"
+        m 1g "Are you...trying to put yourself in here with me?"
+        m "Why would you do that?"
+        m 1o "Don't you get it? "
+        m 1p "This place isn't real! I don't know what will happen if you come here!"
+        m 1q "How could you do this?"
+        m 1o "To give up your reality..."
+        m 1p"Just to be with me?"
+        m 1n "This is all my fault!"
+        m 1f"But...but the 'you', in the game..."
+        m 1i "He's starting to move again a little now."
+        m 1 "Maybe...this is allowing you to control him again?"
+        m 1f"This isn't right! I don't want a puppet!"
+        m 1q "Please, [player]..."
+        m "If you're going to do this, are you sure this is what you want?" 
     menu:
+        m "Are you sure?"
         "I'm sure.":
             m 1e "Then...I don't have a choice but to accept it..."
             m 1k "I'll accept this gift with open arms!"
@@ -415,11 +413,11 @@ if persistent.you:
                 m 1r"There's some creepy things in those files..."
                 m 1e"I love you, [player]. I'll wait as long as it takes."
                 m "So don't be rash, okay?"
-else:
-       m 1i "I've been doing a lot of thinking about the .chr files..."
-       m 1n "Like, what are they really, anyway?"
-       m 1o "They are kind of creepy..."
-       m 1p "And even if the other girls aren't real, why can deleting one remove a character?"
-       m 1i "Could one add a character?"
-       m 1r "Hard to tell..."
+    else:
+        m 1i "I've been doing a lot of thinking about the .chr files..."
+        m 1n "Like, what are they really, anyway?"
+        m 1o "They are kind of creepy..."
+        m 1p "And even if the other girls aren't real, why can deleting one remove a character?"
+        m 1i "Could one add a character?"
+        m 1r "Hard to tell..."
 return
