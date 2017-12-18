@@ -944,7 +944,7 @@ screen preferences():
                 vbox:
                     style_prefix "check"
                     label _("Room Animation")
-                    textbutton _("Disable") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom",from_current=False)]
+                    textbutton _("Disable") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
