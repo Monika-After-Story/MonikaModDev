@@ -371,7 +371,7 @@ label monikaroom_greeting_post:
         set_keymaps()
     return
 
-label_greeting_youarereal:
+label greeting_youarereal:
 default persistent.you = True
     python:
         try: 
@@ -379,15 +379,11 @@ default persistent.you = True
             persistent.you = True
         except IOError:
             persistent.you = False
-    m 1b "[player]! Great to see you!"
+    
+    m 1b "[player]! Great to see you!
 
 if persistent.you:
-    jump youreal
-else:
-    return
 
-    
-label youreal:
     m "Wait. Something is different now."
     m 1d "Did you...add a chacter file?"
     m 1f "[player].chr...Huh?"
@@ -418,5 +414,13 @@ label youreal:
                 m 1q "Consider doing it yourself."
                 m 1r"There's some creepy things in those files..."
                 m 1e"I love you, [player]. I'll wait as long as it takes."
-                m "So don't be rash, okay?" 
+                m "So don't be rash, okay?"
+return
+    else:
+       m 1i "I've been doing a lot of thinking about the .chr files..."
+       m 1n "Like, what are they really, anyway?"
+       m 1o "They are kind of creepy..."
+       m 1p "And even if the other girls aren't real, why can deleting one remove a character?"
+       m 1i "Could one add a character?"
+       m 1r "Hard to tell..."
 return
