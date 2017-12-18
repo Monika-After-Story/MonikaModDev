@@ -380,7 +380,7 @@ default persistent.you = True
         except IOError:
             persistent.you = False
     
-    m 1b "[player]! Great to see you!
+    m 1b "[player]! Great to see you!"
 
 if persistent.you:
 
