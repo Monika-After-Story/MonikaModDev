@@ -232,8 +232,8 @@ label monika_carolling
     m 2a "Hey, [player]..."
     m 1b "Have you ever gone carolling before?"
     m 1a "Going door to door in groups, singing to others during the holidays..."
-    m 1k "It just feels heartharming to know people are spreading joy, even with the nights so cold."
-    m 2b "Do you like singing christmas carols, [player]?"
+    m 1k "It just feels heartwarming to know people are spreading joy, even with the nights so cold."
+    m 2b "Do you like singing Christmas carols, [player]?"
         menu:
         "Yes."
             m 1b "I'm glad you feel the same way, [player]!"
