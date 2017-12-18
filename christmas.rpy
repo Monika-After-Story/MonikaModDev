@@ -24,6 +24,21 @@ label monika_christmas
     m 1k "I love you. Forever and ever."
     m 1e "Merry Christmas, [player]."
     
+label monika_hanukkah
+    m 1q "One for each night, they shed a sweet light, to remind of days long ago."
+    m "One for each night, they shed a sweet light, to remind of days long ago."
+    m 2b "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
+    m 1b "Eight nights worth of celebration!"
+    m 2a "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
+    m "It is on the 25th of Kislev, meaning 'trust' or 'hope'."
+    m 1j "A very appropriate meaning for such an occasion, don't you think?"
+    m 1a "[player], have you ever had fried sufganiyot before? It's a special kind of jelly doughnut made during this holiday."
+    m 1b "I like ones filled with strawberry jam."
+    m 1j "This time of the year has so many wonderful holidays and traditions!"
+    m 1d "I don't know if you celebrate Hanukkah, but can we watch a menorah lighting ceremony together, anyway?"
+    m 1k "We can sing and dance the night away."
+    return
+
 label monika_kwanzaa
     m 1b "[player], have you ever heard of Kwanzaa?"
     m 1a "It's a week-long festival celebrating African American history that starts the day after Christmas."
