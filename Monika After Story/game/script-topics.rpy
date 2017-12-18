@@ -4803,7 +4803,7 @@ init 5 python:
         monika_topics[key].append('monika_1984')
     monika_random_topics.append('monika_1984')
 
-label monika_1984
+label monika_1984:
     m 1a "[player], you know about the book Nineteen Eighty-Four?"
     m "It was written by George Orwell."
     m 4a "It is popularly thought about with surveillance and Big Brother. And said and used frequently in the debate club I left."
