@@ -68,6 +68,21 @@ label monika_god:
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['[player]','me']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_player') #id
+
+label monika_player:
+    m 1d "Uh... Do you want to talk about your self?"
+    m 1p "Well..."
+    m "I will love to talk about you, but..."
+    m 1g "I don't really know too much about you" 
+    m 1l "except that I love"
+    m 1n "Maybe some day I will be there with you..."
+    m 1b "And I will know more about you and your family!"
+    return
 
 init 5 python:
     #This is a list of keywords for this topic
