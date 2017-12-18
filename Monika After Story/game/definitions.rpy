@@ -193,11 +193,11 @@ python early:
             if category is not None:
                 # USE OR LOGIC
                 if category[0]:
-                    if len(set(category[1]).intersection(set(event.category))) == 0:
+                    if len(set(category[1]).intersection(set(event.category))) == 0 and len(category[1])>0:
                         return False
 
                 # USE AND logic
-                elif Counter(category[1]) != Counter(event.category):
+                elif len(set(category[1]).intersection(set(event.category))) != len(category[1]):
                     return False
 
             if action is not None and event.getAction() not in action:
