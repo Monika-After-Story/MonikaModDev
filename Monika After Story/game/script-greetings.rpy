@@ -373,13 +373,13 @@ label monikaroom_greeting_post:
 
 label greeting_youarereal:
 default persistent.you = True
-    python:
-        try: 
-            renpy.file("/characters/" + persistent.playername + ".chr")
+python:
+    try:
+        renpy.file("/characters/" + persistent.playername + ".chr")
             persistent.you = True
         except IOError:
             persistent.you = False
-    
+            
     m 1b "[player]! Great to see you!"
 
 if persistent.you:
@@ -415,8 +415,7 @@ if persistent.you:
                 m 1r"There's some creepy things in those files..."
                 m 1e"I love you, [player]. I'll wait as long as it takes."
                 m "So don't be rash, okay?"
-return
-    else:
+else:
        m 1i "I've been doing a lot of thinking about the .chr files..."
        m 1n "Like, what are they really, anyway?"
        m 1o "They are kind of creepy..."
