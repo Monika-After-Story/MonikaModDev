@@ -28,7 +28,7 @@ label monika_kwanzaa
     m 1b "[player], have you ever heard of Kwanzaa?"
     m 1a "It's a week-long festival celebrating African American history that starts the day after Christmas."
     m 2a "The word 'Kwanzaa' comes from the Swahili phrase 'matunda ya kwanza', which means 'first fruits'."
-    m "Even if Christmas is main event for many, other holidays are always interesting to learn about."
+    m "Even if Christmas is the main event for many, other holidays are always interesting to learn about."
     m 5a "Apparently, people celebrate the tradition by decorating their homes with bright adornments."
     m "There's also music to enjoy, and a candleholder called the 'kinara' to light a new fire with each passing day."
     m 1j "Doesn't it remind you of some other holdiays? The concepts certainly seem familiar."
