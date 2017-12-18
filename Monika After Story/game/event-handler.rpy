@@ -135,11 +135,12 @@ label prompt_menu:
     $main_prompt_menu = [("Latest","prompts_latest"),("Categories","prompts_categories")]
     call screen scrollable_menu(main_prompt_menu)
 
+    $unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True, unlocked=True)
     call expression _return
 
     jump ch30_loop
 
-label prompts_latest:
+label prompts_latest(unlocked_events=[]):
 
     #Get list of unlocked prompts, sorted by unlock date
     python:
@@ -147,8 +148,8 @@ label prompts_latest:
         sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
         latest_prompt_menu = []
-        for i in range(0,len(sorted_event_keys)):
-            latest_prompt_menu.append([unlocked_events[sorted_event_keys[i]].prompt,sorted_event_keys[i]])
+        for event in sorted_event_keys:
+            latest_prompt_menu.append([unlocked_events[event].prompt,event])
 
     call screen scrollable_menu(latest_prompt_menu)
 
@@ -157,4 +158,48 @@ label prompts_latest:
     return
 
 label prompts_categories:
+
+    $current_category = []
+    $picked_event = False
+    while not picked_event:
+        python:
+            #Get list of unlocked events in this category
+            unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True,category=[False,current_category],unlocked=True)
+            sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
+
+            prompt_category_menu = []
+            #Make a list of categories
+
+            #Make a list of all categories
+            subcategories=set([])
+            for event in sorted_event_keys:
+                if unlocked_events[event].category is not None:
+                    new_categories=set(unlocked_events[event].category).difference(set(current_category))
+                    subcategories=subcategories.union(new_categories)
+
+            subcategories = list(subcategories)
+            for category in sorted(subcategories, key=lambda s: s.lower()):
+                #Don't list additional subcategories if adding them wouldn't change the same you are looking at
+                test_unlock = Event.filterEvents(persistent.event_database,full_copy=True,category=[False,current_category+[category]],unlocked=True)
+
+                if len(test_unlock) != len(sorted_event_keys):
+                    prompt_category_menu.append([category.capitalize() + "...",category])
+
+
+            #If we do have a category picked, make a list of the keys
+            if sorted_event_keys is not None:
+                for event in sorted_event_keys:
+                    prompt_category_menu.append([unlocked_events[event].prompt,event])
+
+        call screen scrollable_menu(prompt_category_menu) nopredict
+
+        if _return in subcategories:
+            $current_category.append(_return)
+        else:
+            $picked_event = True
+            $pushEvent(_return)
+
+    return
+
+
     return
