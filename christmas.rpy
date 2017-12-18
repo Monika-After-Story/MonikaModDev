@@ -24,9 +24,16 @@ label monika_christmas
     m 1k "I love you. Forever and ever."
     m 1e "Merry Christmas, [player]."
     
-label monika_decorations [WIP]
-    m "I put a lot of effort into making these decorations, you know!"
-    m 1j "I'm glad all that work paid off, even if you'll only see them for a bit."
+label monika_kwanzaa
+    m 1b "[player], have you ever heard of Kwanzaa?"
+    m 1a "It's a week-long festival celebrating African American history that starts the day after Christmas."
+    m 2a "The word 'Kwanzaa' comes from the Swahili phrase 'matunda ya kwanza', which means 'first fruits'."
+    m "Even if Christmas is main event for many, other holidays are always interesting to learn about."
+    m 5a "Apparently, people celebrate the tradition by decorating their homes with bright adornments."
+    m "There's also music to enjoy, and a candleholder called the 'kinara' to light a new fire with each passing day."
+    m 1j "Doesn't it remind you of some other holdiays? The concepts certainly seem familiar."
+    m 1a "In the end, having a day to celebrate is the important part. Everyone has their own way to enjoy themselves."
+    m 2j "We can celebrate Kwanzaa together too, [player]."
     
 label monika_cozy
     m 2a "Do you know the one thing I love about the cold weather, [player]?"
