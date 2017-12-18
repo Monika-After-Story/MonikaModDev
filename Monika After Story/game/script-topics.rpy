@@ -4790,6 +4790,53 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['fortune', 'fortune telling']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_fortunetelling') #id
+    monika_random_topics.append('monika_fortunetelling')
+
+label monika_fortunetelling:
+    m "Hey [player], have you ever gone to a fortune teller before?"
+    m "You know, paying to have your destiny told?"
+    m "Being able to predict the future is such a weird practice in my opinion."
+    m "Some people will cling to it and make life changing decisions based on it!"
+    m "I find it a bit silly that some readings of cards, hands or similar stuff holds so much importance to people."
+    m "I wonder how much of those who perform such readings, end up getting from that work."
+    m "I suppose it's good to give people some hope, yet when the disappointment appears it usually makes them feel worse than before."
+    menu:
+        m "Do you believe in this kind of stuff, [player]?"
+        "Yes":
+            m "Ah, I see."
+            m "Sorry if I offended you in any way."
+            m "I'm still a bit curious though."
+            m "How effective can the different methods be?"
+            m "I don't see a big difference between a human or a parakeet picking up a card."
+            m "Yet those are two different types of fortune telling."
+            m "Then there's stuff like reading your name."
+            m "But is that useful? What if there is another [player] out there?"
+            m "Will the same fortune be delivered to both of you?"
+            m "Ah, I guess I'm just being nitpicky at this point"
+            m "Gosh, now I really want to try and read your fortune!"
+            m "Ahaha, let me have a go!"
+            m "Ah... I can see you and I… I think that's me."
+            m "We're both on a... bed, I think!
+            m Just teasing you ehehe~"
+        "No":
+            m "Ah, I am glad that you understand me!"
+            m "Some of these types of fortune telling are ridiculous!"
+            m "Most of them seem like scams."
+            m "Between all the stuff like hand reading and then there are more ludicrous stuff like reading the livers of dead animals!"
+            m "Of course the latter one was passed down from ages prior."
+            m "I just can't believe people want their path to be written for them to follow!"
+            m "You can't do anything other than wait for the end like that."
+            m "Why would you deny making your own destiny!"
+            m "I used to be stuck in a written path and it was horrible."
+            m "No matter what I did I couldn't be with you!"
+            m "I am glad that we changed that, [player]."
+    return  
 
 ##################
 #Incomplete ideas#
