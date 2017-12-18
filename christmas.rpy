@@ -202,3 +202,14 @@ label monika_mistletoe
     m 1j "Ehehe~"
     m 1d "But seriously, don't go outside if it gets too bad."
     m 1a "Please stay safe, [player]."
+
+label monika_snowcanvas
+    m 2a "Have you ever looked at snow and thought it resembles a blank canvas?"
+    m 1e "I know I'm not as artistically inclined as someone like Yuri..."
+    m 4b "But packing a few spray bottles with water and food coloring could make for a fun day!"
+    m 3b "Just step outside and let your imagination run wild!"
+    m 1a "Doesn't having so much space to paint sound wonderful?"
+    m 1l "Although... don't draw anything indecent, okay?"
+    m 2d "And make sure the snow is packed down tightly, too."
+    m 3a "I'm sure that the time to try something like this will come soon."
+    m 3k "Maybe you can paint something for me when that happens, [player]."
