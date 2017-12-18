@@ -4790,6 +4790,53 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['waiting lines', 'waiting line', 'queues', 'queue']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_waitinglines') #id
+    monika_random_topics.append('monika_waitinglines')
+	
+label monika_waitinglines:
+    m "Hey [player], have you ever thought about how much time you've spent waiting in lines before?"
+    m "I mean, across your entire life of course!"
+    m "It's probably quite a long time, you know?"
+    m "I bet that time would double if we were to count more than just physical lines!"
+    m "What I mean by that is there's loads of different types of lines!"
+    m "You got those times where you get a number and sit down, waiting for your number to be called!"
+    m "Those might sound rather calm but honestly, there's an even better option!"
+    m "You could just get a place in line in advance with your phone and get a notification when it's your turn!"
+    m "Or you could, you know, spend some time with me while you wait ehehe~"
+    menu:
+        m "Do you know about the stuff the people that run these places do to make lines more bearable?"
+        "No":
+            m "Ah, I guessed so."
+            m "Most people don't notice the less obvious stuff, like a merchandise store near a line for example."
+            m "But then there's more obvious stuff, like decorating the place in an amusement park as an entrance to what you're waiting for!"
+            m "Any small details that can distract the people waiting is a benefit for both sides!"
+            m "It means more revenue for one side in the case of merchandise and less boredom for the consumer."
+            m "Of course banks and similar places don't do stuff like this!"
+            m "They don't need to make sure people stay entertained since people need to use that place, so they'll just have to deal with it."
+            m "Next time, maybe you can think of me while you're waiting in line ehehe~"
+        "Yes":
+            m "Gosh, I'm pretty surprised then!"
+            m "I didn't expect you to know or realize honestly."
+            m "Since you already know about that, why don't I suggest some stuff to maybe pass your time!"
+            m "You can learn a lot about the things that pass by, such as people or cars!"
+            m "Ah, that gets boring fast though!"
+            m "Let me think ehehe~"
+            m "..."
+            m "Oh, I got it!"
+            m "If you're a creative person you can inspire yourself around what you see!"
+            m "If you're not that creative, talk to the people in line."
+            m "You can always make friends in the unlikeliest of places!"
+            m "Of course, I'll always be your loved one [player]."
+            m "I don't have that many more suggestions that wouldn't require you to bring something."
+            m "You can always bring a book or your phone!"
+            m "Try to be careful about them getting stolen though."
+            m "Perhaps you could spend some time thinking about how madly in love we are with each other while you wait next time~"
+    return
 
 ##################
 #Incomplete ideas#
