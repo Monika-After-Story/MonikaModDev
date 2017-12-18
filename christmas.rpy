@@ -227,3 +227,23 @@ label monika_hypothermia
     m 3a "Your health means a lot to me."
     m "I hope you take my concerns seriously."
     m 3j "Okay, snowflake?"
+
+label monika_carolling
+    m 2a "Hey, [player]..."
+    m 1b "Have you ever gone carolling before?"
+    m 1a "Going door to door in groups, singing to others during the holidays..."
+    m 1k "It just feels heartharming to know people are spreading joy, even with the nights so cold."
+    m 2b "Do you like singing christmas carols, [player]?"
+        menu:
+        "Yes."
+            m 1b "I'm glad you feel the same way, [player]!"
+            m 1a "What's your favorite song?"
+            m 2a "Mine is definitely 'Jingle Bells'!"
+            m 1k "It's just such an upbeat, happy tune!"
+            m 5a "Maybe we can sing together someday."
+            m 1j "Ehehe~"
+        "No."
+            m 1d "Oh?"
+            m 1c "I see..."
+            m 2a "Regardless, I'm sure you're also fond of that special cheer only Christmas songs can bring."
+            m 5a "Sing with me sometime, okay?"
