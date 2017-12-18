@@ -4825,7 +4825,7 @@ label monika_1984
     m 1b "... and romantic~"
     m 1q "I would not know what to do if I lived in such a society where I would not have enough words to express myself ..."
     m 1j "... let alone not be able to express my love to you [player]~"
-	return
+    return
 
 ##################
 #Incomplete ideas#
