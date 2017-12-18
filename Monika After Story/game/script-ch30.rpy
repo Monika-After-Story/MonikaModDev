@@ -545,6 +545,8 @@ label ch30_loop:
     # this event can call spaceroom
     if not is_monika_in_room:
         call spaceroom from _call_spaceroom_2
+    else:
+        $ is_monika_in_room = False
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
