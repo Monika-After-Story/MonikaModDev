@@ -4790,6 +4790,55 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['beach', 'desert','sand']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_desertbeach') #id
+    monika_random_topics.append('monika_desertbeach')
+
+label monika_desertbeach:
+    m "You know, there're lots of deserts around the world!"
+    m "They seem like really interesting places to visit."
+    m "Gosh, I just love the sand."
+    m "Yet it's usually a little uncomfortably hot in a desert."
+    m "You can't even get a cold drink in the middle of a desert, you know?"
+    m "Unlike humans, cacti survive due to them storing water inside from the few rainfall they experience."
+    m "You're just left there to walk around without direction as even the nights feel hotter than in any other place of the world!"
+    m "If you were to get lost in the middle of a desert, you would most likely die from dehydratation, assuming you didn't find help quick!"
+    m "But if you the sands intriguing nature as much as I do, [player]!"
+    m "We could go to the beach once I can get out of here ehehe~"
+    m "It's way easier to handle the heat in a place like that."
+    m "Swimming is always refreshing, too!"
+    m "Careful though, don't swallow the water of the sea, that might be a bit dangerous."
+    m "Plus, you could... see some things while we're on the beach ahaha."
+    m "Just teasing you~"
+    menu:
+        m "Now, would you rather be in a beach or a desert?"
+        "Desert":
+            m "Ah, I assume you enjoy the sense of adventure or maybe some of the exotic species you could find there!"
+            m "Or it could be the tranquility that fills the desert sands through day and night."
+            m "Don't you enjoy any of those, [player]?"
+            m "But an adventure is always dangerous!"
+            m "You should keep yourself hydrated obviously and the different species of animals could prove to be lethal."
+            m "I think it would be a better idea if you stayed here with me ehehe~."
+            m "I can promise you acceptance and somebody who loves you right here."
+        "Beach":
+            m "Oh I see, you would enjoy a safe and fun time on a beach!"
+            m "Kids normally play with each other or build sand castles, yet older people go there to relax and to swim on the sea."
+            m "It sounds like a really nice place to visit, doesn't it?"
+            m "But then again, you should watch out [player]."
+            m "Hearing that there are lots of people on a beach might make it sound safe yet it's not."
+            m "There would be times where you wouldn't be seen if the currents of the beach dragged you away."
+            m "I mean, sure there are life guards that patrol the vicinity of the beach..."
+            m "But that doesn't mean that you should entrust your safety to them wholeheartedly."
+            m "Unlike a desert, you can die from overcrowding instead of lack of people to help you."
+            m "What would I do if I lost you?"
+            m "In case you go to the beach, you should be careful."
+            m "It's good to have fun and enjoy yourself, but you should also keep your safety in mind as well."
+            m "If you're going to the beach, do take me with you so I can look after you, okay? Ehehe~"
+    return
 
 ##################
 #Incomplete ideas#
