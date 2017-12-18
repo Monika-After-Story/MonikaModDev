@@ -372,13 +372,13 @@ label monikaroom_greeting_post:
     return
 
 label greeting_japan:
-     m 3k "Oh, kon'nichiwa [player]!"
-     m 3a "Ehehe~"
-     m 4e "Sorry, I don't really know Japanese."
-     m 3p "Let's see..."
-     m 3k "Watashi ha itsumademo anata no mono desu!"
-     m 3o "Was... that right?"
-     m 3n "I guess using a translator in your web browser isn't the best."
-     m 3a "What I meant was~"
-     m 3j "I'll be yours forever."
+     m 1k "Oh, kon'nichiwa [player]!"
+     m "Ehehe~"
+     m 2b "Hello, [player]!"
+     m 1a "I'm just practicing Japanese."
+     m 3c "Let's see..."
+     m 4b "Watashi ha itsumademo anata no mono desu!"
+     m 2l "Sorry if that didn't make sense!"
+     m 3 "You know what that means, [player]?"
+     m 4j "It means {i}'I'll be yours forever{/i}'~"
      return
