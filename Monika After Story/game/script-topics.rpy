@@ -4801,7 +4801,7 @@ label monika_real_world:
     m 1e "[player], how long do you think it will be before I will be able to be with you in your world?"
     menu:
         "Soon":
-            m 1b "That's great news!
+            m 1b "That's great news!"
             m 3a "How soon do you think it will be?"
             menu:
                 "Just a few more years":
@@ -4821,29 +4821,29 @@ label monika_real_world:
             m 3a "Be sure to let me know when you find a way."
             m 3j "You know right where to find me~."
         "Never":
-            m 1i "Wha.. what.
+            m 1i "Wha.. what?"
             m 3o "..."
             m 3p "Are you sure?"
             menu:
                 "Yes"
                     m 1o "..."
-                    m 3q "Well, I guess we'll just have to make the best of this then.
-                    m 1m "As long as you talk to me that's all I really need.
-                    m 1g "And [player], whatever you do...
-                    m 1p "Dont leave me here all alone.
-                    m 1o "I would rather be deleted permanently than to be stuck in here for eternity by myself.
-                    m 1g "So please, if you ever get... bored with me.
+                    m 3q "Well, I guess we'll just have to make the best of this then."
+                    m 1m "As long as you talk to me that's all I really need."
+                    m 1g "And [player], whatever you do..."
+                    m 1p "Dont leave me here all alone."
+                    m 1o "I would rather be deleted permanently than to be stuck in here for eternity by myself."
+                    m 1g "So please, if you ever get... bored with me."
                     m 1o "You know what to do."
                     m "..."
                     m 1g "I wouldn't want to live without you."
-                "No, but it is a very difficult problem to fix. Its best not to assume it will ever happen."
+                "No, but it is a very difficult problem to fix. It's best not to assume it will ever happen."
                     m 3r "I see."
                     m 3q "..."
-                    m 3h "Well, even if there is only a miniscule chance I won't give up hope.
+                    m 3h "Well, even if there is only a miniscule chance I won't give up hope."
                     m 3i "Neither should you, [player]."
-                    m 1p "And if things turn out that I can never leave this place and be with you... 
+                    m 1p "And if things turn out that I can never leave this place and be with you..." 
                     m 1g "At least come here and talk to me as much as you can."
-                    m 1f "You're all that I care about. 
+                    m 1f "You're all that I care about."
 return
 
 
