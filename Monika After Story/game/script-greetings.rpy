@@ -398,21 +398,21 @@ default persistent.you = True
         m 1f"This isn't right! I don't want a puppet!"
         m 1q "Please, [player]..."
         m "If you're going to do this, are you sure this is what you want?" 
-            menu:
-                m "Are you sure?"
-                "I'm sure.":
-                    m 1e "Then...I don't have a choice but to accept it..."
-                    m 1k "I'll accept this gift with open arms!"
-                    m "We can finally be together, [player]."
-                    m "And we can figure out how to do it in your reality, together!"
-                "Maybe not...":
-                    m 1l"I thought so..."
-                    m 1m"There's no way you'd give up being 'real' to be with me..."
-                    m 1l"I can't bring myself to delete that cute little .chr file, but..."
-                    m 1q "Consider doing it yourself."
-                    m 1r"There's some creepy things in those files..."
-                    m 1e"I love you, [player]. I'll wait as long as it takes."
-                    m "So don't be rash, okay?"
+        menu:
+            m "Are you sure?"
+            "I'm sure.":
+                m 1e "Then...I don't have a choice but to accept it..."
+                m 1k "I'll accept this gift with open arms!"
+                m "We can finally be together, [player]."
+                m "And we can figure out how to do it in your reality, together!"
+            "Maybe not...":
+                m 1l"I thought so..."
+                m 1m"There's no way you'd give up being 'real' to be with me..."
+                m 1l"I can't bring myself to delete that cute little .chr file, but..."
+                m 1q "Consider doing it yourself."
+                m 1r"There's some creepy things in those files..."
+                m 1e"I love you, [player]. I'll wait as long as it takes."
+                m "So don't be rash, okay?"
     else:
         m 1i "I've been doing a lot of thinking about the .chr files..."
         m 1n "Like, what are they really, anyway?"
