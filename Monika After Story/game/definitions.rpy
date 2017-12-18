@@ -58,7 +58,7 @@ python early:
     #       executed via eval. This is checked at various points to determine
     #       if this event gets pushed to the stack or not
     #       (Default: None)
-    #   action - an EV_ACTION constant that tells us what to do if the 
+    #   action - an EV_ACTION constant that tells us what to do if the
     #       conditional is True (See EV_ACTIONS and EV_ACT_...)
     #       (Default: None)
     #   start_date - Timestamp for when this event is available
@@ -183,7 +183,7 @@ python early:
             # now lets filter
             if unlocked is not None and event.unlocked != unlocked:
                 return False
-            
+
             if random is not None and event.random != random:
                 return False
 
@@ -202,14 +202,14 @@ python early:
 
             if action is not None and event.getAction() not in action:
                 return False
-              
+
             # we've passed all the filtering rules somehow
             return True
 
         @staticmethod
         def filterEvents(
-                events, 
-                full_copy=False, 
+                events,
+                full_copy=False,
                 category=None,
                 unlocked=None,
                 random=None,
@@ -219,7 +219,7 @@ python early:
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
             # the names we use here.
-            # 
+            #
             # IN:
             #   events - the dict of events we want to filter
             #   full_copy - True means we create a new dict with deepcopies of
@@ -267,8 +267,8 @@ python early:
 
             # setting up rules
             if (category and (
-                    len(category) < 2 
-                    or category[0] is None 
+                    len(category) < 2
+                    or category[0] is None
                     or category[1] is None)):
                 category = None
             if action and len(action) == 0:
@@ -295,7 +295,7 @@ python early:
             #
             # Returns a list of eventlables (keys) of the given dict of events
             # sorted by the field unlock_date. The list is sorted in
-            # chronological order (oldest first). Events with an unlock_date
+            # chronological order (newest first). Events with an unlock_date
             # of None are not included unless include_none is True, in which
             # case, Nones are put after everything else
             #
@@ -330,7 +330,7 @@ python early:
                     index = 0
 
                     while (index < len(eventlabels)
-                            and ev.unlock_date > events[
+                            and ev.unlock_date < events[
                                 eventlabels[index]
                             ].unlock_date):
                         index += 1
@@ -1626,6 +1626,7 @@ default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
 default persistent.event_list = []
+default persistent.event_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False

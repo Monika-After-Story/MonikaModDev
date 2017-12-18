@@ -126,3 +126,35 @@ label call_next_event:
 label unlock_prompt:
     pass #placeholder
     return
+
+#
+
+label prompt_menu:
+
+    #Top level menu
+    $main_prompt_menu = [("Latest","prompts_latest"),("Categories","prompts_categories")]
+    call screen scrollable_menu(main_prompt_menu)
+
+    call expression _return
+
+    jump ch30_loop
+
+label prompts_latest:
+
+    #Get list of unlocked prompts, sorted by unlock date
+    python:
+        unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True, unlocked=True)
+        sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
+
+        latest_prompt_menu = []
+        for i in range(0,len(sorted_event_keys)):
+            latest_prompt_menu.append([unlocked_events[sorted_event_keys[i]].prompt,sorted_event_keys[i]])
+
+    call screen scrollable_menu(latest_prompt_menu)
+
+    $pushEvent(_return)
+
+    return
+
+label prompts_categories:
+    return
