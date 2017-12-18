@@ -37,14 +37,8 @@ init 11 python:
         monika_random_topics=list(all_random_topics)
 
 #BEGIN ORIGINAL TOPICS
-
-#Use this topic as an example
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['god' , 'jesus' , 'lord' , 'religion' , 'miracle' , 'miracles' , 'gods']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_god') #id
-    monika_random_topics.append('monika_god')
+    persistent.event_database.setdefault('monika_god',Event(eventlabel="monika_god",category=['philosophy'],prompt="What do you think of god?",unlocked=True,unlock_date=10))
 
 label monika_god:
     m 1a "[player], do you believe in God?"
@@ -68,13 +62,8 @@ label monika_god:
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['death' , 'dying' , 'die' , 'afterlife']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_death') #id
-    monika_random_topics.append('monika_death')
+    persistent.event_database.setdefault('monika_death',Event(eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",unlocked=True,unlock_date=100))
 
 label monika_death:
     m 1c "[player], have you ever wondered what it feels like to die?"
@@ -99,13 +88,8 @@ label monika_death:
     m "It makes me feel even closer to you when you're here with me."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['bad day' , 'sad' , 'unhappy']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_bad_day') #id
-    monika_random_topics.append('monika_bad_day')
+    persistent.event_database.setdefault('monika_bad_day',Event(eventlabel="monika_bad_day",prompt="Want to hear about my day?",unlocked=False,unlock_date=5))
 
 label monika_bad_day:
     m 3e "...Hey, are you having a bad day or anything like that?"
@@ -124,13 +108,8 @@ label monika_bad_day:
     m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['sleep' , 'tired' , 'sleepy' , 'exhausted']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_sleep') #id
-    monika_random_topics.append('monika_sleep')
+    persistent.event_database.setdefault('monika_sleep',Event(eventlabel="monika_sleep",category=['advice'],prompt="I'm tired.",unlocked=True,unlock_date=5))
 
 label monika_sleep:
     m 4b "[player], do you get good sleep?"
@@ -146,13 +125,8 @@ label monika_sleep:
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['sayori', 'childhood friend']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_sayori') #id
-    monika_random_topics.append('monika_sayori')
+    persistent.event_database.setdefault('monika_sayori',Event(eventlabel="monika_sayori",category=['characters','Sayori'],prompt="Sayori hung herself.",unlocked=True))
 
 label monika_sayori:
     m 3d "I was thinking about Sayori earlier..."
@@ -186,13 +160,8 @@ label monika_sayori:
     m 1j "I was just pointlessly musing - I'm really as happy as I could be right now."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['japan', 'there' , 'here']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_japan') #id
-    monika_random_topics.append('monika_japan')
+    persistent.event_database.setdefault('monika_japan',Event(eventlabel="monika_japan",category=['characters','Monika'],prompt="Where is DDLC set?",unlocked=True))
 
 label monika_japan:
     m 2d "By the way, there's something that's been bothering me..."
@@ -3695,7 +3664,7 @@ label monika_changename:
                         $ songs.initMusicChoices()
 
                     python:
-                        
+
                         persistent.mcname = player
                         mcname = player
                         persistent.playername = tempname
@@ -4235,7 +4204,7 @@ label monika_fahrenheit451:
     m 2g "You'd be missing out on so much!"
     m 3f "It's too much for my heart to take!"
     return
-    
+
 init 5 python:
     for key in ['piggy bank', 'saving coins', 'saving money']:
         monika_topics.setdefault(key,[])
@@ -4244,7 +4213,7 @@ init 5 python:
 
 label monika_piggybank:
     m 1a "Do you have a piggy bank, [player]?"
-    m 2c "Not many people do these days." 
+    m 2c "Not many people do these days."
     m "Coins are often disregarded as worthless."
     m 2b "But they really do begin to add up!"
     m 2d "I read that there was once a man that searched his local car washes for loose change everyday in his walks."
@@ -4263,7 +4232,7 @@ label monika_piggybank:
     m 2o "So you might end up losing money buying a new bank."
     m 4b "Fortunately most piggy banks don't do that anymore."
     m 2a "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
-    m 1k "Maybe if you save up enough coins you can buy me a really nice gift." 
+    m 1k "Maybe if you save up enough coins you can buy me a really nice gift."
     m 3e "I would do the same for you, [player]!"
     return
 
@@ -4381,7 +4350,7 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
-    
+
 init 5 python:
     for key in ["birds", "pets", "animals"]:
         monika_topics.setdefault(key,[])
@@ -4490,7 +4459,7 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
-    
+
 init 5 python:
     for key in ['copy', 'clone','unique']:
         monika_topics.setdefault(key,[])
@@ -4516,7 +4485,7 @@ label monika_clones:
     m 1j "You'll always be my special rose."
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
-    
+
 init 5 python:
     for key in ['age','18']:
         monika_topics.setdefault(key,[])
@@ -4537,7 +4506,7 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
-    
+
 init 5 python:
     for key in ['wedding','loyalty','wife','husband']:
         monika_topics.setdefault(key,[])
@@ -4565,7 +4534,7 @@ label monika_weddingring:
             m 1b "I feel like... my heart's going to explode!"
             m 1l "Calm down, Monika. Calm down."
             m 1j "Ahaha..."
-            
+
         "No, not yet.":
             m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
@@ -4595,7 +4564,7 @@ label monika_sports:
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
     return
-    
+
 init 5 python:
     for key in ['meditation', 'meditate']:
         monika_topics.setdefault(key,[])
@@ -4650,7 +4619,7 @@ label monika_orchestra:
 
 #First encounter with topic:
     m "What about you, [player]? Do you play an instrument?"
-    menu: 
+    menu:
         "Yes.":
             $persistent.instrument = True
             m 1b "Really? What do you play?"
@@ -4680,14 +4649,14 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_otaku')
     monika_random_topics.append('monika_otaku')
-    
+
 label monika_otaku:
     m 1a "Hey, [player]?"
     m 2b "You watch anime and read manga, right?"
     menu:
         "Yes":
-            m 1a "I can't say I'm surprised, really." 
-            
+            m 1a "I can't say I'm surprised, really."
+
         "No":
             m 1c "Oh, really?"
             m 1m "That's a little surprising, honestly..."
@@ -4771,7 +4740,7 @@ label monika_selfharm:
     m 4k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m "I really love you so much, [player]."
     return
-    
+
 init 5 python:
     for key in ['urgent','hearts','joke']:
         monika_topics.setdefault(key,[])
