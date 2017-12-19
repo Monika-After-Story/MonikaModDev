@@ -1,8 +1,7 @@
 #This file contains all of monika's topics she can talk about
-#Each entry should start with a list of keywords, which correspond to a single id
-#Keys should be lower case, one or two words, with no punctuation
-#capitalization and punctuation are stripped from player dialogue before check
-#To allow a topic to come up randomly, append the id to the topics.monika_topics list
+#Each entry should start with a database entry, including the appropriate flags
+#to either be a random topic, a prompt "pool" topics, or a special conditional
+#or date-dependent event with an appropriate action
 
 $ import store.songs as songs
 
@@ -11,34 +10,22 @@ define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-# we are going to define removing seen topics as a function,
-# as we need to call it dynamically upon import
-init -1 python:
-    def remove_seen_topics():
-        #
-        # Removes seen topics from monika random topics
-        #
-        # ASSUMES:
-        #   monika_random_topics
-        global monika_random_topics
-        for index in range(len(monika_random_topics)-1, -1, -1):
-            if renpy.seen_label(monika_random_topics[index]):
-                monika_random_topics.pop(index)
-
-init 11 python:
-    #List of all random topics
-    all_random_topics = list(monika_random_topics)
-
-    #Remove all previously seen random topics.
-    remove_seen_topics()
-
-    #If there are no unseen topics, you can repeat seen ones
-    if len(monika_random_topics) == 0:
-        monika_random_topics=list(all_random_topics)
-
 #BEGIN ORIGINAL TOPICS
+#Use this topic as a template for adding new topics, be sure to delete any
+#fields you don't plan to use
 init 5 python:
-    persistent.event_database.setdefault('monika_god',Event(eventlabel="monika_god",category=['philosophy'],prompt="What do you think of god?",unlocked=True,unlock_date=10))
+    persistent.event_database.setdefault('monika_god',Event(eventlabel='monika_god',
+                                                            prompt="Thoughts on God.",
+                                                            category=['philosophy'],
+                                                            unlocked=False,
+                                                            random=True,
+                                                            pool=False,
+                                                            conditional=None,
+                                                            action=None,
+                                                            start_date=None,
+                                                            end_date=None,
+                                                            unlock_date=None
+                                                            ))
 
 label monika_god:
     m 1a "[player], do you believe in God?"
@@ -63,7 +50,7 @@ label monika_god:
     return
 
 init 5 python:
-    persistent.event_database.setdefault('monika_death',Event(eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",unlocked=True,unlock_date=100))
+    persistent.event_database.setdefault('monika_death',Event(eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
 
 label monika_death:
     m 1c "[player], have you ever wondered what it feels like to die?"
@@ -89,7 +76,7 @@ label monika_death:
     return
 
 init 5 python:
-    persistent.event_database.setdefault('monika_bad_day',Event(eventlabel="monika_bad_day",prompt="Want to hear about my day?",unlocked=False,unlock_date=5))
+    persistent.event_database.setdefault('monika_bad_day',Event(eventlabel="monika_bad_day",prompt="Want to hear about my day?",random=True))
 
 label monika_bad_day:
     m 3e "...Hey, are you having a bad day or anything like that?"
