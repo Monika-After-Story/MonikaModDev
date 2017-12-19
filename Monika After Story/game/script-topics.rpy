@@ -4792,19 +4792,18 @@ label monika_urgent:
     return
     
 init 5 python:
-    # List of keywords for the topic.
-    for key in ['marry','marriage','propose']:
+    for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_marriage') # Identifier
+        monika_topics[key].append('monika_marriage')
         
 label monika_marriage:
-    m "M..marriage?"
-    m 1m "I think it's a bit too early for marriage..."
-    m 1n "I mean I'm really happy that you said that."
-    m "But I think it's better for us to learn more about each other."
-    m "Not only that I don't want this place to be the spot where I get proposed to."
-    m "I prefer to be proposed to in a more romantic place."
-    m 1k "Though I'm fine with anywhere you want, [player]."
+    m 3m "M-marriage?"
+    m 4n "I think it's a bit too early for marriage..."
+    m 1e "I mean, I'm really happy that you want that, [player]."
+    m 1c "But I think I should get out of here first before we can do that."
+    m 3o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+    m 3q "I want that special moment to happen when we can finally be together..."
+    m 1k "So until then, save yourself for me, [player]~"
     return
 
 ##################
