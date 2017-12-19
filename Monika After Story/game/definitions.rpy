@@ -370,16 +370,16 @@ python early:
                 if not date_based and events[ev].conditional is not None:
                     if eval(events[ev].conditional) and events[ev].getAction is not None:
                         #Perform the event's action
-                        if events[ev]._action == EV_ACT_PUSH:
+                        if events[ev].getAction() == EV_ACT_PUSH:
                             pushEvent(ev)
-                        elif events[ev]._action == EV_ACT_QUEUE:
+                        elif events[ev].getAction() == EV_ACT_QUEUE:
                             queueEvent(ev)
-                        elif events[ev]._action == EV_ACT_UNLOCK:
+                        elif events[ev].getAction() == EV_ACT_UNLOCK:
                             events[ev].unlocked = True
                             events[ev].unlock_date = time.time()
-                        elif events[ev]._action == EV_ACT_RANDOM:
+                        elif events[ev].getAction() == EV_ACT_RANDOM:
                             events[ev].random = True
-                        elif events[ev]._action == EV_ACT_POOL:
+                        elif events[ev].getAction() == EV_ACT_POOL:
                             events[ev].pool = True
 
                         #Clear the conditional
@@ -425,18 +425,18 @@ python early:
                         event_time = False
 
 
-                if event_time and events[ev]._action is not None:
+                if event_time and events[ev].getAction() is not None:
                     #Perform the event's action
-                    if events[ev]._action == EV_ACT_PUSH:
+                    if events[ev].getAction() == EV_ACT_PUSH:
                         pushEvent(ev)
-                    elif events[ev]._action == EV_ACT_QUEUE:
+                    elif events[ev].getAction() == EV_ACT_QUEUE:
                         queueEvent(ev)
-                    elif events[ev]._action == EV_ACT_UNLOCK:
+                    elif events[ev].getAction() == EV_ACT_UNLOCK:
                         events[ev].unlocked = True
                         events[ev].unlock_date = time.time()
-                    elif events[ev]._action == EV_ACT_RANDOM:
+                    elif events[ev].getAction() == EV_ACT_RANDOM:
                         events[ev].random = True
-                    elif events[ev]._action == EV_ACT_POOL:
+                    elif events[ev].getAction() == EV_ACT_POOL:
                         events[ev].pool = True
 
                     #Clear the conditional
