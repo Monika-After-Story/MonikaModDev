@@ -41,7 +41,7 @@ python early:
     #       NOTE: REQUIRED
     #   prompt - String label shown on the button for this topic in the prompt
     #       menu
-    #       (Default: "My Event")
+    #       (Default: eventlabel)
     #   label - Optional plain text name of the event, good for calendars
     #       (Default: prompt)
     #   category - Tuple of string that define the categories for the event
@@ -72,7 +72,7 @@ python early:
         # its also how we handle equality. also it cannot be None
         def __init__(self,
                 eventlabel,
-                prompt="My Event",
+                prompt=None,
                 label=None,
                 category=None,
                 unlocked=False,
@@ -89,7 +89,12 @@ python early:
                 raise EventException("'_eventlabel' cannot be None")
 
             self.eventlabel = eventlabel
-            self.prompt = prompt
+
+            # default prompt is the eventlabel
+            if prompt:
+                self.prompt = prompt
+            else:
+                self.prompt = self.eventlabel
 
             # default label is a prompt
             if label:
