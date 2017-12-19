@@ -24,7 +24,10 @@ transform hangman_missed_chars:
     xanchor 0 yanchor 0 xpos 780 ypos 105
 
 transform hangman_display_word:
-    xcenter 975 yanchor 0 ypos 450
+    xcenter 975 yanchor 0 ypos 475
+
+transform hangman_hangman:
+    xanchor 0 yanchor 0 xpos 880 ypos 125
 
 # we want monika on a kind of offset to the left
 transform hangman_monika:
@@ -97,10 +100,15 @@ init -1 python in hangman:
     # hangman image properties
 #    HM_IMG_XPOS = 0
 #    HM_IMG_YPOS = 0
-    HM_IMG_ZORDER = 10
+#    HM_IMG_ZORDER = 10
 
     # hangman AT list
+#    HM_IMG_ATLIST = [
+#        "hangman_hangman"
+#    ]
 
+    # hangman tag
+#    HM_IMG_TAG = "hmg_hanging_man"
 
 # post processing
 init 10 python:
@@ -129,7 +137,7 @@ init 10 python:
 # entry point for the hangman game
 label hangman_game_start:
     $ import store.hangman as hmg
-    m "You want to play Hangman? Okay!"
+    m 2b "You want to play Hangman? Okay!"
     # setup positions
     show monika at hangman_monika
     show hm_frame at hangman_board zorder 5
@@ -149,14 +157,14 @@ label hangman_game_start:
         )
 
     # show missed label 
-    show text missed_label zorder 10 as mis_label at hangman_missed_label
+    show text missed_label zorder 10 as hmg_mis_label at hangman_missed_label
     
     # FALL THROUGH TO NEXT LABEL
 
 # looping location for the hangman game
 label hangman_game_loop:
-    m "I'll think of a word"
-    pause 1
+    m 1a "I'll think of a word"
+    pause 0.7
    
     python:
         # refill the list if empty
@@ -177,7 +185,7 @@ label hangman_game_loop:
 #               hmg.WORD_XPOS_START + (hmg,LETTER_SPACE * dex),
 #               hmg.WORD_YPOS_START
 #           )
-        
+    
     m "Alright, I've got one"
 
     # main loop for hangman game
@@ -215,8 +223,11 @@ label hangman_game_loop:
                 kerning=hmg.LETTER_SPACE
             )
 
-        show text display_text zorder 10 as dis_text at hangman_display_word
-        show text missed_text zorder 10 as mis_text at hangman_missed_chars
+        # show disables
+        show text display_text zorder 10 as hmg_dis_text at hangman_display_word
+        show text missed_text zorder 10 as hmg_mis_text at hangman_missed_chars
+        $ hm_display = hmg.HM_IMG_NAME + str(chances)
+        show expression hm_display zorder 10 as hmg_hanging_man at hangman_hangman
 
         if chances == 0:
             $ done = True
@@ -251,11 +262,15 @@ label hangman_game_loop:
                 # remove letter from being entered agin
                 avail_letters.remove(guess)
 
-            # HIDE all text for next round
-            hide text dis_text
-            hide text mis_text
-
+            # HIDE displayables
+            hide text hmg_dis_text
+            hide text hmg_mis_text
+            hide hmg_hanging_man
 
 
     jump hangman_game_loop
 
+# end of game flow
+label hangman_game_end:
+    m "Some factoids about hangmang"
+    return
