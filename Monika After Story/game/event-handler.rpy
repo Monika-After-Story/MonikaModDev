@@ -129,7 +129,7 @@ label call_next_event:
 label unlock_prompt:
     python:
         import time
-        pool_event_keys = Event.filterEvents(persistent.event_database,unlocked=False,pool=True)
+        pool_event_keys = Event.filterEvents(persistent.event_database,unlocked=False,pool=True).keys()
 
         if len(pool_event_keys)>0:
             unlock_event = renpy.random.choice(pool_event_keys)
@@ -158,11 +158,14 @@ label prompt_menu:
     menu:
         m "Pick something to talk about?"
 
-        "Unseen" if len(unseen_events)>0:
+        "{b}Unseen.{/b}" if len(unseen_events)>0:
             call show_prompt_list(unseen_events)
 
-        "Categories":
-            call prompts_categories
+        "Ask a question.":
+            call prompts_categories(True)
+
+        "Repeat conversation.":
+            call prompts_categories(False)
 
         "Nevermind":
             $_return = None
@@ -184,14 +187,14 @@ label show_prompt_list(sorted_event_keys):
 
     return
 
-label prompts_categories:
+label prompts_categories(pool=True):
 
     $current_category = []
     $picked_event = False
     while not picked_event:
         python:
             #Get list of unlocked events in this category
-            unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True,category=[False,current_category],unlocked=True)
+            unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True,category=[False,current_category],unlocked=True,pool=pool)
             sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
             prompt_category_menu = []
