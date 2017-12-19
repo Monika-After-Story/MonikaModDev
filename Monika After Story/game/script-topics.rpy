@@ -1408,10 +1408,11 @@ label monika_route:
 
 #END ORIGINAL TOPICS
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['little sister', 'imouto']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_imouto') #id
+    persistent.event_database.setdefault('monika_imouto',Event(eventlabel='monika_imouto',
+                                                            prompt="Do you like little sisters?",
+                                                            category=['family'],
+                                                            pool=True,
+                                                            ))
 
 label monika_imouto:
     m 4e "You want to talk about your little sister?"
