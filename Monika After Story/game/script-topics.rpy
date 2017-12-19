@@ -16,6 +16,7 @@ define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 init 5 python:
     persistent.event_database.setdefault('monika_god',Event(eventlabel='monika_god',
                                                             prompt="Thoughts on God.",
+                                                            label=None,
                                                             category=['philosophy'],
                                                             unlocked=False,
                                                             random=True,
@@ -4747,12 +4748,12 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-    
+
 init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
-        
+
 label monika_marriage:
     m 3m "M-marriage?"
     m 4n "I think it's a bit too early for marriage..."
