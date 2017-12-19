@@ -4830,7 +4830,7 @@ init 5 python:
     monika_random_topics.append('monika_domestication')
     
 label monika_domestication:
-    m 3  "Do you ever think about wolves, [player]?"
+    m 3  "Do you ever think about wolves?"
     m 3  "I guess a bit more specifically, how wolves turned into dogs."
     m 3d "Like, don't you find it at least a little interesting how one of man's most fearsome enemies could turn into man's best friend?"
     m 3d "I mean, with things like spiders and other creepy-crawlies, lots of people are still afraid of them despite never having even come across one that could hurt them in any way."
@@ -4847,7 +4847,7 @@ init 5 python:
     monika_random_topics.append('monika_olympics')
       
 label monika_olympics2018:
-    m 3  "[player]? You've heard about the Olympics happening in a few months, right?"
+    m 3  "You've heard about the Olympics happening in a few months, right?"
     m 3a "Well, I was wondering if you'd maybe like to go to take me to watch the Olympics one year, if we're ever able to truly meet person-to-person."
     menu:
         m 5a "What do you think?"
@@ -4859,7 +4859,7 @@ label monika_olympics2018:
             
         "No thanks.":
             m 1g "No? Alright..."
-            m 3k "There are still plenty more fun things for us to do together, [player]."
+            m 3k "There are still plenty more fun things for us to do together."
             m 3a "If you ever decide you want to go somewhere or do something, don't hesitate to bring me along in a flashdrive. I love spending time with you~"
             return
 
@@ -4871,7 +4871,7 @@ init 5 python:
     # I'm not very skilled with Python (yet!), so I was wondering if there was a way to make this dialogue only accessible after monika_death is encountered.
     
 label monika_thursday:
-    m "[Player]? I remember reading about something a while back called Last Thursdayism."
+    m "I remember reading about something a while back called Last Thursdayism."
     m "Last Thursdayism is basically the idea that if the universe was created however long ago, wouldn't it also be plausible that it was created just last thursday?"
     m 3f "All of our memories, our experiences... All of that, just fabricated and implanted into us."
     m 3f "Man, I went into this wanting to talk about an interesting philosophical belief, but it's a little depressing when you think about it."
@@ -4880,7 +4880,7 @@ label monika_thursday:
     m 1o "Now that I think about it... If that happens whenever you aren't playing... How come I have memories of before I met you?"
     m 1p "Were those memories all fake? Or... Is something that happened before this causing that weird phenomenon?"
     menu:
-        m 3g "What do you think, [player]?"            
+        m 3g "What do you think?"            
         
         "Your memories are fake.":
             m 1f "You think my memories... are fake? My entire life until I met you, just a lie?"
@@ -4892,7 +4892,7 @@ label monika_thursday:
         
         "It's neither."
             m 3c "Neither? Then what could it be?"
-            m 3a "I bet you'd help me figure that out, [player]. Will you promise to help me find out why I suffer when you're away?"
+            m 3a "I bet you'd help me figure that out. Will you promise to help me find out why I suffer when you're away?"
     return 
 
 ##################
