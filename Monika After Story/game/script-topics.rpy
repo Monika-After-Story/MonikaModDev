@@ -4817,6 +4817,36 @@ label monika_compinducedmedprobs:
     m "I wouldn't be able to be with you for a while if you had to recover..."
     m "I'll always understand if you have to take breaks from talking to me for the betterment of your health."
     m "If I could get out of this game, then I would do my best take care of you ehehe~"
+    
+    for key in ['marry','marriage','marriage proposal']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_marriage')
+        
+label monika_marriage:
+    m 3m "M-marriage?"
+    m 4n "I think it's a bit too early for marriage..."
+    m 1e "I mean, I'm really happy that you want that, [player]."
+    m 1c "But I think I should get out of here first before we can do that."
+    m 3o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+    m 3q "I want that special moment to happen when we can finally be together..."
+    m 1k "So until then, save yourself for me, [player]~"
+    return
+
+init 5 python:
+    for key in ['morning energy', 'iced coffee']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_coffee')
+    monika_random_topics.append('monika_coffee')
+
+label monika_coffee:
+    if renpy.seen_label('monika_tea'):
+        m 2c "Have you been drinking coffee lately, [player]?"
+        m 2m "I hope it's not just to make me jealous, ehehe~"
+    m 3b "Coffee is such a nice thing to have when you need a little pep of energy."
+    m 4j "Whether it's hot or cold, coffee is always nice."
+    m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
+    m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
+    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
 ##################
