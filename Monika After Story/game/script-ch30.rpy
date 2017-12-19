@@ -205,7 +205,7 @@ init python:
 
     def show_dialogue_box():
         if allow_dialogue:
-            renpy.jump('ch30_monikatopics')
+            renpy.jump('prompt_menu')
 
     def pick_game():
         if allow_dialogue:
@@ -444,10 +444,6 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
-
-    call set_gender from _call_set_gender
-
-
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -504,50 +500,12 @@ label ch30_autoload:
             grant_xp(away_xp)
 
     $ elapsed = days_passed()
-    #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
-    if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.event_list:
-        $queueEvent('gender')
 
-    #Asks player if they want to be called by a different name
-    if not seen_event('preferredname'):
-        $pushEvent('preferredname')
+    #Run actions for any events that need to be changed based on a condition
+    $ persistent.event_database=Event.checkConditionals(persistent.event_database)
 
-    #Block for anniversary events
-    if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
-        $ persistent.monika_anniversary = 0
-        $pushEvent("anni_negative")
-    elif elapsed >= 36500 and persistent.monika_anniversary < 100 and not renpy.seen_label('anni_100') and not 'anni_100' in persistent.event_list:
-        $ persistent.monika_anniversary = 100
-        $pushEvent("anni_100")
-    elif elapsed >= 18250 and persistent.monika_anniversary < 50 and not renpy.seen_label('anni_50') and not 'anni_50' in persistent.event_list:
-        $ persistent.monika_anniversary = 50
-        $pushEvent("anni_50")
-    elif elapsed >= 7300 and persistent.monika_anniversary < 20 and not renpy.seen_label('anni_20') and not 'anni_20' in persistent.event_list:
-        $ persistent.monika_anniversary = 20
-        $pushEvent("anni_20")
-    elif elapsed >= 3650 and persistent.monika_anniversary < 10 and not renpy.seen_label('anni_10') and not 'anni_10' in persistent.event_list:
-        $ persistent.monika_anniversary = 10
-        $pushEvent("anni_10")
-    elif elapsed >= 1825 and persistent.monika_anniversary < 5 and not renpy.seen_label('anni_5') and not 'anni_5' in persistent.event_list:
-        $ persistent.monika_anniversary = 5
-        $pushEvent("anni_5")
-    elif elapsed >= 1460 and persistent.monika_anniversary < 4 and not renpy.seen_label('anni_4') and not 'anni_4' in persistent.event_list:
-        $ persistent.monika_anniversary = 4
-        $pushEvent("anni_4")
-    elif elapsed >= 1095 and persistent.monika_anniversary < 3 and not renpy.seen_label('anni_3') and not 'anni_3' in persistent.event_list:
-        $ persistent.monika_anniversary = 3
-        $pushEvent("anni_3")
-    elif elapsed >= 730 and persistent.monika_anniversary < 2 and not renpy.seen_label('anni_2') and not 'anni_2' in persistent.event_list:
-        $ persistent.monika_anniversary = 2
-        $pushEvent("anni_2")
-    elif elapsed >= 365 and persistent.monika_anniversary < 1 and not renpy.seen_label('anni_1') and not 'anni_1' in persistent.event_list:
-        $ persistent.monika_anniversary = 1
-        $pushEvent("anni_1")
-
-    #queue up the next reload event it exists and isn't already queue'd
-    $next_reload_event = "ch30_reload_" + str(persistent.monika_reload)
-    if not seen_event(next_reload_event) and not persistent.closed_self:
-        $queueEvent(next_reload_event)
+    #Run actions for any events that are based on the clock
+    $ persistent.event_database=Event.checkCalendar(persistent.event_database)
 
     $persistent.closed_self = False
 
@@ -582,11 +540,19 @@ label ch30_loop:
 
     #Check time based events and grant time xp
     python:
+        import time
         try:
             calendar_last_checked
         except:
             calendar_last_checked=persistent.sessions['current_session_start']
         if time.time()-calendar_last_checked>60: #Check no more than once a minute
+            #Run actions for any events that need to be changed based on a condition
+            persistent.event_database=Event.checkConditionals(persistent.event_database)
+
+            #Run actions for any events that are based on the clock
+            persistent.event_database=Event.checkCalendar(persistent.event_database)
+
+            #Assign XP for time spent with Monika
             idle_xp=xp.IDLE_PER_MINUTE*(time.time()-calendar_last_checked)/60.0
             persistent.idlexp_total =+ idle_xp
             if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
