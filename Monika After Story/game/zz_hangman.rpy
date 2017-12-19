@@ -15,7 +15,16 @@ image hm_frame = "mod_assets/hangman/hm_frame.png"
 
 # TRANSFORMS
 transform hangman_board:
-    xcenter 975 ypos 100 alpha 0.7
+    xanchor 0 yanchor 0 xpos 675 ypos 100 alpha 0.7
+
+transform hangman_missed_label:
+    xanchor 0 yanchor 0 xpos 680 ypos 105
+
+transform hangman_missed_chars:
+    xanchor 0 yanchor 0 xpos 780 ypos 105
+
+transform hangman_display_word:
+    xcenter 975 yanchor 0 ypos 450
 
 # we want monika on a kind of offset to the left
 transform hangman_monika:
@@ -30,8 +39,8 @@ style hangman_text:
     outlines []
     kerning 10.0
 
-init -1 python:
-    
+#init -1 python:
+
     # defining a class to contain a hangman letter
     #
     # NOTE: we might not need this (OR might). Keep for reference
@@ -58,8 +67,10 @@ init -1 python in hangman:
 
     # CONSTANTS
     # starting point of the letter generation
-    WORD_XPOS_START = 760
-    WORD_YPOS_START = 210
+#    WORD_XPOS_START = 760
+#    WORD_YPOS_START = 210
+#    WORD_XALIGN_START = 0.0
+#    WORD_YALIGN_START = 0.0
 
     # spacing between rendered letters
     LETTER_SPACE = 10.0
@@ -71,13 +82,30 @@ init -1 python in hangman:
     WORD_COLOR = "#fff"
 
     # other props
-    MISS_LABEL_XPOS_START = 190
-    MISS_LABEL_YPOS_START = -530
-    MISS_LETTERS_XPOS_START = 260
-    MISS_LETTERS_YPOS_START = -460
+#    MISS_LABEL_XPOS_START = 190
+#    MISS_LABEL_YPOS_START = -530
+#    MISS_LETTERS_XPOS_START = 260
+#    MISS_LETTERS_YPOS_START = -460
+#    MISS_LABEL_XALIGN_START = 0.0
+#    MISS_LABEL_YALIGN_START = 0.0
+#    MISS_LETTERS_XALIGN_START = 0.0
+#    MISS_LETTERS_YALIGN_START = 0.0
+
+    # hangman visual stuff
+    HM_IMG_NAME = "hm_"
+
+    # hangman image properties
+#    HM_IMG_XPOS = 0
+#    HM_IMG_YPOS = 0
+    HM_IMG_ZORDER = 10
+
+    # hangman AT list
+
 
 # post processing
 init 10 python:
+    
+    # setting up wordlist
     from store.hangman import hm_words, all_hm_words
     with renpy.file("poemwords.txt") as words:
         for line in words:
@@ -87,6 +115,16 @@ init 10 python:
             if len(line) != 0 and line[0] != "#":
                 hm_words.append(line.split(",")[0])
     all_hm_words = list(hm_words)
+
+    # setting up image names
+    renpy.image("hm_6","mod_assets/hangman/hm_6.png")
+    renpy.image("hm_5","mod_assets/hangman/hm_5.png")
+    renpy.image("hm_4","mod_assets/hangman/hm_4.png")
+    renpy.image("hm_3","mod_assets/hangman/hm_3.png")
+    renpy.image("hm_2","mod_assets/hangman/hm_2.png")
+    renpy.image("hm_1","mod_assets/hangman/hm_1.png")
+    renpy.image("hm_0","mod_assets/hangman/hm_0.png")
+
 
 # entry point for the hangman game
 label hangman_game_start:
@@ -100,8 +138,10 @@ label hangman_game_start:
         # setup constant displayabels
         missed_label = Text(
             "Missed:", 
-            xpos=hmg.MISS_LABEL_XPOS_START,
-            ypos=hmg.MISS_LABEL_YPOS_START,
+#            xpos=hmg.MISS_LABEL_XPOS_START,
+#            ypos=hmg.MISS_LABEL_YPOS_START,
+#            xalign=hmg.MISS_LABEL_XALIGN_START,
+#            yalign=hmg.MISS_LABEL_YALIGN_START,
             font=hmg.WORD_FONT,
             color=hmg.WORD_COLOR,
             size=hmg.WORD_SIZE,
@@ -109,7 +149,7 @@ label hangman_game_start:
         )
 
     # show missed label 
-    show text missed_label zorder 10 as mis_label
+    show text missed_label zorder 10 as mis_label at hangman_missed_label
     
     # FALL THROUGH TO NEXT LABEL
 
@@ -151,8 +191,10 @@ label hangman_game_loop:
         python:
             display_text = Text(
                 "".join(display_word), 
-                xpos=hmg.WORD_XPOS_START,
-                ypos=hmg.WORD_YPOS_START,
+#                xpos=hmg.WORD_XPOS_START,
+#                ypos=hmg.WORD_YPOS_START,
+#                xalign=hmg.WORD_XALIGN_START,
+#                yalign=hmg.WORD_YALIGN_START,
                 font=hmg.WORD_FONT,
                 color=hmg.WORD_COLOR,
                 size=hmg.WORD_SIZE,
@@ -162,8 +204,10 @@ label hangman_game_loop:
 
             missed_text = Text(
                 missed,
-                xpos=hmg.MISS_LETTERS_XPOS_START,
-                ypos=hmg.MISS_LETTERS_YPOS_START,
+#                xpos=hmg.MISS_LETTERS_XPOS_START,
+#                ypos=hmg.MISS_LETTERS_YPOS_START,
+#                xalign=hmg.MISS_LETTERS_XALIGN_START,
+#                yalign=hmg.MISS_LETTERS_YALIGN_START,
                 font=hmg.WORD_FONT,
                 color=hmg.WORD_COLOR,
                 size=hmg.WORD_SIZE,
@@ -171,8 +215,8 @@ label hangman_game_loop:
                 kerning=hmg.LETTER_SPACE
             )
 
-        show text display_text zorder 10 as dis_text
-        show text missed_text zorder 10 as mis_text
+        show text display_text zorder 10 as dis_text at hangman_display_word
+        show text missed_text zorder 10 as mis_text at hangman_missed_chars
 
         if chances == 0:
             $ done = True
