@@ -139,14 +139,17 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
+    $allow_dialogue = False
 
     #Top level menu
     $main_prompt_menu = [("Latest","prompts_latest"),("Categories","prompts_categories")]
     call screen scrollable_menu(main_prompt_menu)
 
     $unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True, unlocked=True)
-    call expression _return
+    if _return:
+        call expression _return
 
+    $allow_dialogue = True
     jump ch30_loop
 
 label prompts_latest(unlocked_events=[]):
@@ -163,6 +166,7 @@ label prompts_latest(unlocked_events=[]):
     call screen scrollable_menu(latest_prompt_menu)
 
     $pushEvent(_return)
+
 
     return
 
@@ -207,8 +211,5 @@ label prompts_categories:
         else:
             $picked_event = True
             $pushEvent(_return)
-
-    return
-
 
     return
