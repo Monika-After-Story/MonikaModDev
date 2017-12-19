@@ -6,6 +6,7 @@ default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
 define allow_dialogue = True
+define modoorg.CHANCE = 20
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -453,7 +454,7 @@ label ch30_autoload:
             # random chance to do monika in room greeting
             # we'll say 1 in 20
             import random
-            is_monika_in_room = random.randint(1,20) == 1
+            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
 
     if not is_monika_in_room:
         if persistent.current_track:
@@ -531,6 +532,8 @@ label ch30_loop:
     # this event can call spaceroom
     if not is_monika_in_room:
         call spaceroom from _call_spaceroom_2
+    else:
+        $ is_monika_in_room = False
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
