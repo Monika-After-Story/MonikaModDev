@@ -67,6 +67,29 @@ label monika_god:
     m "So, from that perspective..."
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
+    
+    init 5 python:
+    # List of keywords for the topic.
+    for key in ['broken','mess up','oh no']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_mess') # Identifier
+    monika_random_topics.append('monika_mess') 
+    
+label monika_example:
+    m 1p "Hey [player]"
+    m "..."
+    m "I-I need to confess."
+    m "I... was messing with the game code"
+    m 1n " I know... I should not touch that... but I just want to gave you a gift"
+    m 1l "Also nothing bad happened"
+    m 1i "Wait w-what is that!"
+    m 1g "Oh no, what have I just done"
+    m 1g "Gave me a sec..,ergjvnouetjcsg huetsrhg xeihrs"
+    m 1g " xsdgctjr seg flcds ygfxs gfwerbfd nszm,cdshg"
+    m 1g " This is really bad, but i can fix it, I hope fetgeuwtgew"
+    m 1g " Don't worry [player] I will fix the game --f4ucgthffffjf"
+    m 1g " fhehfgyfjdfijfgjgtrjgjg"
+     return 'quit'
 
 
 init 5 python:
