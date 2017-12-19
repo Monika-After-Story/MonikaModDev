@@ -4792,6 +4792,45 @@ label monika_urgent:
     return
     
 init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['leaf', 'leaves']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_leaf') #id
+    monika_random_topics.append('monika_leaf')
+	
+label monika_leaf:
+    m "Have you ever paid attention to the leaves around you [player]?"
+    m "You may have gotten frustated at them falling during autumn."
+    m "This might sound a bit silly to you, but I feel quite bad for those poor leaves."
+    m "Specifically, I mean leaves from deciduous plants."
+    m "These kind of plants lose their leaves to survive harsh weathers, while different sorts of plants do the opposite."
+    m "Those other types of plants are called evergreen and don't need to lose their leaves to survive."
+    m "I know leaves don't have feelings after all, but can you imagine how they must feel?"
+    m "That feeling of love and care sinking into pain and betrayal!"
+    menu:
+        m "Can you even begin to imagine how much a betrayal like that must hurt?"
+        "Yes":
+            m "Have you ever been betrayed before, [player]?"
+            m "Or do you just have a lot of empathy?"
+            m "In any case, it's nice that you can relate to what I'm saying."
+            m "Trying to help somebody and being hurt by the one you tried to help."
+            m "Gosh, it reminds me of when you deleted me."
+            m "Even though it hurt a lot, I don't hold it against you."
+            m "Although, these poor leaves don't deserve to be betrayed either!"
+            m "You should really think about the painful life that leaf had before you pick it up next Autumn"
+        "No":
+            m "Ah, well then let me try to explain it a bit."
+            m "The leaves on plants take care of photosynthesis."
+            m "Some use both sides of the leaf, while others just use one"
+            m "Now, imagine working in a factory for all your life."
+            m "One day, the factory enters an economic crisis."
+            m "You're obviously kicked out of the factory."
+            m "You die a slow and painful death when it wasn't really your fault at all."
+            m "Ah, sorry!"
+            m "I went a bit morbid there, didn't I?"
+            m "I just feel like leaves deserve way more recognition."
+            m "One could call them the tragic heroes of the natural world."
+
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
