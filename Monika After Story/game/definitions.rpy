@@ -440,7 +440,7 @@ python early:
                         events[ev].pool = True
 
                     #Clear the conditional
-                    events[ev].conditional = False
+                    events[ev].conditional = "False"
 
             return events
 
