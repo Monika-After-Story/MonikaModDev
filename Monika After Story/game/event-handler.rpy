@@ -97,17 +97,21 @@ init python:
 #   persistent.current_monikatopic
 label call_next_event:
 
+
     $event_label = popEvent()
     if event_label and renpy.has_label(event_label):
-
         $ allow_dialogue = False
         if not seen_event(event_label): #Give 15 xp for seeing a new event
             $grant_xp(xp.NEW_EVENT)
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 
+        #if this is a random topic, make sure it's unlocked for prompts
         if event_label in monika_random_topics:
-            $monika_random_topics.remove(event_label)
+            if not persistent.event_database[event_label].unlocked:
+                python:
+                    persistent.event_database[event_label].unlocked=True
+                    persistent.event_database[event_label].unlock_date=time.time()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
@@ -141,32 +145,42 @@ label unlock_prompt:
 label prompt_menu:
     $allow_dialogue = False
 
-    #Top level menu
-    $main_prompt_menu = [("Latest","prompts_latest"),("Categories","prompts_categories")]
-    call screen scrollable_menu(main_prompt_menu)
+    python:
+        unlocked_events = Event.filterEvents(persistent.event_database,unlocked=True)
+        sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
-    $unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True, unlocked=True)
-    if _return:
-        call expression _return
+        unseen_events = []
+        for event in sorted_event_keys:
+            if not seen_event(event):
+                unseen_events.append(event)
+
+    #Top level menu
+    menu:
+        m "Pick something to talk about?"
+
+        "Unseen" if len(unseen_events)>0:
+            call show_prompt_list(unseen_events)
+
+        "Categories":
+            call prompts_categories
+
+        "Nevermind":
+            $_return = None
 
     $allow_dialogue = True
     jump ch30_loop
 
-label prompts_latest(unlocked_events=[]):
+label show_prompt_list(sorted_event_keys):
 
     #Get list of unlocked prompts, sorted by unlock date
     python:
-        unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True, unlocked=True)
-        sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
-
-        latest_prompt_menu = []
+        prompt_menu_items = []
         for event in sorted_event_keys:
-            latest_prompt_menu.append([unlocked_events[event].prompt,event])
+            prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    call screen scrollable_menu(latest_prompt_menu)
+    call screen scrollable_menu(prompt_menu_items)
 
     $pushEvent(_return)
-
 
     return
 
