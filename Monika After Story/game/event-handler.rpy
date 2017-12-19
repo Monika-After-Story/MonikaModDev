@@ -123,7 +123,15 @@ label call_next_event:
 # This either picks an event from the pool or events or, sometimes offers a set
 # of three topics to get an event from.
 label unlock_prompt:
-    pass #placeholder
+    python:
+        import time
+        pool_event_keys = Event.filterEvents(persistent.event_database,unlocked=False,pool=True)
+
+        if len(pool_event_keys)>0:
+            unlock_event = renpy.random.choice(pool_event_keys)
+            persistent.event_database[unlock_event].unlocked = True
+            persistent.event_database[unlock_event].unlock_date = time.time()
+
     return
 
 #The prompt menu is what pops up when hitting the "Talk" button, it shows a list
