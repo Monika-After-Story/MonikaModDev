@@ -187,11 +187,11 @@ label monika_japan:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['school' , 'high school' , 'depression' , 'depressed']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_high_school') #id
-    monika_random_topics.append('monika_high_school')
+    persistent.event_database.setdefault('monika_high_school',Event(eventlabel="monika_high_school",
+                                                                    category=['Monika','school'],
+                                                                    prompt="Tell me about your school life.",
+                                                                    unlocked=False,conditional='get_level()>10',
+                                                                    action=EV_ACT_UNLOCK))
 
 label monika_high_school:
     m 4a "You know, high school is a really turbulent time in a lot of people's lives."
@@ -228,11 +228,11 @@ label monika_high_school:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['meaningless' , 'nihilism' , 'nihilist' , 'purpose' , 'meaning']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_nihilism') #id
-    monika_random_topics.append('monika_nihilism')
+    persistent.event_database.setdefault('monika_nihilism',Event(eventlabel="monika_nihilism",
+                                                                    category=['philosophy'],
+                                                                    prompt="Nihilism is cool",
+                                                                    unlocked=False,start_date=1513655951,
+                                                                    action=EV_ACT_UNLOCK))
 
 label monika_nihilism:
     m 3i "Do you ever just feel like there's no real reason for you to be alive?"

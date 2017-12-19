@@ -44,12 +44,11 @@ python early:
     #       (Default: "My Event")
     #   label - Optional plain text name of the event, good for calendars
     #       (Default: prompt)
-    #   category - Tuple of string that define the category structure for the
-    #       event in the prompt menu
+    #   category - Tuple of string that define the categories for the event
     #       (Default: None)
     #   unlocked - True if the event appears in the prompt menu, False if not
     #       (Default: False)
-    #   random - True if the event appears in the prompt menu, False if not
+    #   random - True if the event can appear in random chatter, False if not
     #       (Default: False)
     #   pool - True if the event is in the pool of prompts that get drawn from
     #       when new prompts become randomly available, False if not
@@ -347,6 +346,102 @@ python early:
                 return None
 
             return eventlabels
+
+        @staticmethod
+        def checkConditionals(events):
+            #
+            # This checks the conditionals for all of the events in the event list
+            # if any evaluate to true, run the desired action then clear the
+            # conditional.
+            import time
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.keys() # python 2
+
+            # insertion sort
+            for ev in ev_list:
+                #Calendar events use a different function
+                date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
+                if not date_based and events[ev].conditional is not None:
+                    if eval(events[ev].conditional) and events[ev].getAction is not None:
+                        #Perform the event's action
+                        if events[ev]._action == EV_ACT_PUSH:
+                            pushEvent(ev)
+                        elif events[ev]._action == EV_ACT_QUEUE:
+                            queueEvent(ev)
+                        elif events[ev]._action == EV_ACT_UNLOCK:
+                            events[ev].unlocked = True
+                            events[ev].unlock_date = time.time()
+                        elif events[ev]._action == EV_ACT_RANDOM:
+                            events[ev].random = True
+                        elif events[ev]._action == EV_ACT_POOL:
+                            events[ev].pool = True
+
+                        #Clear the conditional
+                        events[ev].conditional = None
+
+            return events
+
+        @staticmethod
+        def checkCalendar(events):
+            #
+            # This checks the date for all events to see if they are active.
+            # If they are active, then it checks for a conditional, and evaluates
+            # if an action should be run.
+            import time
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.keys() # python 2
+
+            current_time = time.time()
+            # insertion sort
+            for ev in ev_list:
+                event_time = True
+
+                #If the event has no time-dependence, don't check it
+                if (events[ev].start_date is None) and (events[ev].end_date is None):
+                    event_time = False
+
+                #Calendar must be based on a date
+                if events[ev].start_date is not None:
+                    if events[ev].start_date > current_time:
+                        event_time = False
+
+                if events[ev].end_date is not None:
+                    if events[ev].end_date <= current_time:
+                        event_time = False
+
+                if events[ev].conditional is not None:
+                    if not eval(events[ev].conditional):
+                        event_time = False
+
+
+                if event_time and events[ev]._action is not None:
+                    #Perform the event's action
+                    if events[ev]._action == EV_ACT_PUSH:
+                        pushEvent(ev)
+                    elif events[ev]._action == EV_ACT_QUEUE:
+                        queueEvent(ev)
+                    elif events[ev]._action == EV_ACT_UNLOCK:
+                        events[ev].unlocked = True
+                        events[ev].unlock_date = time.time()
+                    elif events[ev]._action == EV_ACT_RANDOM:
+                        events[ev].random = True
+                    elif events[ev]._action == EV_ACT_POOL:
+                        events[ev].pool = True
+
+                    #Clear the conditional
+                    events[ev].conditional = False
+
+            return events
 
 
 init -1 python:

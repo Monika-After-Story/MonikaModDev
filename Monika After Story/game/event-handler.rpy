@@ -89,7 +89,6 @@ init python:
 
 
 
-
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
@@ -127,7 +126,9 @@ label unlock_prompt:
     pass #placeholder
     return
 
-#
+#The prompt menu is what pops up when hitting the "Talk" button, it shows a list
+#of options for talking to Monika, including the ability to ask her questions
+#pulled from a random set of prompts.
 
 label prompt_menu:
 
