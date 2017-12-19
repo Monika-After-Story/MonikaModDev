@@ -577,6 +577,11 @@ label ch30_loop:
         # Pick a random Monika topic
         label pick_random_topic:
         python:
+            all_random_topics = Event.filterEvents(persistent.event_database,random=True).keys()
+            monika_random_topics = all_random_topics
+            for topic in all_random_topics:
+                if seen_event(topic):
+                    monika_random_topics.remove(topic)
             if len(monika_random_topics) > 0:  # still have topics
                 pushEvent(renpy.random.choice(monika_random_topics))
             else: # no topics left
@@ -584,47 +589,5 @@ label ch30_loop:
                 pushEvent(renpy.random.choice(monika_random_topics))
 
     $_return = None
-
-    jump ch30_loop
-
-
-label ch30_monikatopics:
-    python:
-
-        # this workaround is so the hotkey button overlay properly disables
-        # certain buttons
-        allow_dialogue = False
-
-        player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
-
-        if player_dialogue:
-
-            raw_dialogue=player_dialogue
-            player_dialogue = player_dialogue.lower()
-            player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
-            persistent.current_monikatopic = 0
-
-            player_dialogue = player_dialogue.split()
-            #Look at all possible ngrams in the dialogue
-            player_dialogue_ngrams=player_dialogue
-            player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
-            for bigram in player_dialogue_bigrams:
-                player_dialogue_ngrams.append(' '.join(bigram))
-
-            possible_topics=[] #track all topics that correspond to the input
-            for key in player_dialogue_ngrams:
-                if key in monika_topics:
-                    for topic_id in monika_topics[key]:
-                        if topic_id not in possible_topics:
-                            possible_topics.append(topic_id)
-
-            if possible_topics == []: #Therapist answer if no keywords match
-                # give a therapist answer for all the depressed weebs
-                response = therapist.respond(raw_dialogue)
-                m("[response]")
-            else:
-                pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
-
-        allow_dialogue = True
 
     jump ch30_loop
