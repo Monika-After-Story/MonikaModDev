@@ -36,7 +36,8 @@ init -1 python in data_points:
     m_categorys = [
         ((True,("string101","string401")), ("test1", "test4")),
         ((False,("string301", "string302")), ("test3",)),
-        (None, ("test1","test2","test3","test4"))
+        (None, ("test1","test2","test3","test4")),
+        ((True,list()),("test1","test2","test3","test4"))
     ]
 
     unlockeds = [

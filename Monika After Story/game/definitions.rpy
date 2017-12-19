@@ -193,7 +193,7 @@ python early:
             if category is not None:
                 # USE OR LOGIC
                 if category[0]:
-                    if len(set(category[1]).intersection(set(event.category))) == 0 and len(category[1])>0:
+                    if len(set(category[1]).intersection(set(event.category))) == 0:
                         return False
 
                 # USE AND logic
@@ -269,7 +269,8 @@ python early:
             if (category and (
                     len(category) < 2
                     or category[0] is None
-                    or category[1] is None)):
+                    or category[1] is None
+                    or len(category[1]) == 0)):
                 category = None
             if action and len(action) == 0:
                 action = None
