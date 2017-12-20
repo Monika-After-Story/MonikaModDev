@@ -1,14 +1,20 @@
 # Module that does hangman man
 #
 
+# hangman stuff only
+define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?"
+
 # IMAGES-----------
 # hangman
-image hm_head = "mod_assets/hangman/hm_head.png"
-image hm_leftarm = "mod_assets/hangman/hm_leftarm.png"
-image hm_rightarm = "mod_assets/hangman/hm_rightarm.png"
-image hm_leftleg = "mod_assets/hangman/hm_leftleg.png"
-image hm_rightleg = "mod_assets/hangman/hm_rightleg.png"
-image hm_torso = "mod_assets/hangman/hm_torso.png"
+image hm_6 = "mod_assets/hangman/hm_6.png"
+image hm_5 = "mod_assets/hangman/hm_5.png"
+image hm_4 = "mod_assets/hangman/hm_4.png"
+image hm_3 = "mod_assets/hangman/hm_3.png"
+image hm_2 = "mod_assets/hangman/hm_2.png"
+image hm_1 = "mod_assets/hangman/hm_1.png"
+image hm_0 = "mod_assets/hangman/hm_0.png"
+image hm_s1 = "mod_assets/hangman/hm_s1.png"
+image hm_s2 = "mod_assets/hangman/hm_s2.png"
 
 # frame
 image hm_frame = "mod_assets/hangman/hm_frame.png"
@@ -30,8 +36,11 @@ transform hangman_hangman:
     xanchor 0 yanchor 0 xpos 880 ypos 125
 
 # we want monika on a kind of offset to the left
-transform hangman_monika:
-    tcommon(330)
+transform hangman_monika(z=0.80):
+    tcommon(330,z=z)
+
+transform hangman_monika_i(z=0.80):
+    tinstant(330,z=z)
 
 # styles for words
 style hangman_text:
@@ -69,12 +78,6 @@ init -1 python in hangman:
     all_hm_words = list()
 
     # CONSTANTS
-    # starting point of the letter generation
-#    WORD_XPOS_START = 760
-#    WORD_YPOS_START = 210
-#    WORD_XALIGN_START = 0.0
-#    WORD_YALIGN_START = 0.0
-
     # spacing between rendered letters
     LETTER_SPACE = 10.0
 
@@ -84,59 +87,59 @@ init -1 python in hangman:
     WORD_OUTLINE = []
     WORD_COLOR = "#fff"
 
-    # other props
-#    MISS_LABEL_XPOS_START = 190
-#    MISS_LABEL_YPOS_START = -530
-#    MISS_LETTERS_XPOS_START = 260
-#    MISS_LETTERS_YPOS_START = -460
-#    MISS_LABEL_XALIGN_START = 0.0
-#    MISS_LABEL_YALIGN_START = 0.0
-#    MISS_LETTERS_XALIGN_START = 0.0
-#    MISS_LETTERS_YALIGN_START = 0.0
-
     # hangman visual stuff
     HM_IMG_NAME = "hm_"
 
-    # hangman image properties
-#    HM_IMG_XPOS = 0
-#    HM_IMG_YPOS = 0
-#    HM_IMG_ZORDER = 10
-
-    # hangman AT list
-#    HM_IMG_ATLIST = [
-#        "hangman_hangman"
-#    ]
-
-    # hangman tag
-#    HM_IMG_TAG = "hmg_hanging_man"
+    # hint
+    HM_HINT = "{0} would like this word the most."
 
 # post processing
 init 10 python:
     
     # setting up wordlist
     from store.hangman import hm_words, all_hm_words
-    with renpy.file("poemwords.txt") as words:
-        for line in words:
+    from copy import deepcopy
 
-            line = line.strip()
+    # for now, lets use full_wordlist defined in poemgame
+    # this is a list of PoemWord objects
+    for word in full_wordlist:
+        
+        winner = ""
 
-            if len(line) != 0 and line[0] != "#":
-                hm_words.append(line.split(",")[0])
-    all_hm_words = list(hm_words)
+        # figure out who likes this word the most
+        if word.sPoint > word.nPoint and word.sPoint > word.yPoint:
+            winner = "Sayori" # sayori
+
+        elif word.nPoint > word.yPoint:
+            winner = "Natsuki" # natsuki
+
+        else:
+            winner = "Yuri" # yuri
+
+        hm_words.append((word.word, winner))
+
+    all_hm_words = deepcopy(hm_words)
+
+#   NOTE: this is in case we decide to change wordlist
+#    with renpy.file("poemwords.txt") as words:
+#        for line in words:
+#
+#            line = line.strip()
+#
+#            if len(line) != 0 and line[0] != "#":
+#
+#                # word, sPt, nPt, yPt
+#                hm_words.append(line.split(",")[0]) 
+#    all_hm_words = list(hm_words)
 
     # setting up image names
-    renpy.image("hm_6","mod_assets/hangman/hm_6.png")
-    renpy.image("hm_5","mod_assets/hangman/hm_5.png")
-    renpy.image("hm_4","mod_assets/hangman/hm_4.png")
-    renpy.image("hm_3","mod_assets/hangman/hm_3.png")
-    renpy.image("hm_2","mod_assets/hangman/hm_2.png")
-    renpy.image("hm_1","mod_assets/hangman/hm_1.png")
-    renpy.image("hm_0","mod_assets/hangman/hm_0.png")
+
 
 
 # entry point for the hangman game
-label hangman_game_start:
+label game_hangman:
     $ import store.hangman as hmg
+    $ from copy import deepcopy
     m 2b "You want to play Hangman? Okay!"
     # setup positions
     show monika at hangman_monika
@@ -146,10 +149,6 @@ label hangman_game_start:
         # setup constant displayabels
         missed_label = Text(
             "Missed:", 
-#            xpos=hmg.MISS_LABEL_XPOS_START,
-#            ypos=hmg.MISS_LABEL_YPOS_START,
-#            xalign=hmg.MISS_LABEL_XALIGN_START,
-#            yalign=hmg.MISS_LABEL_YALIGN_START,
             font=hmg.WORD_FONT,
             color=hmg.WORD_COLOR,
             size=hmg.WORD_SIZE,
@@ -163,18 +162,19 @@ label hangman_game_start:
 
 # looping location for the hangman game
 label hangman_game_loop:
-    m 1a "I'll think of a word"
+    m 1a "I'll think of a word..."
     pause 0.7
    
     python:
         # refill the list if empty
         if len(hmg.hm_words) == 0:
-            hmg.hm_words = list(hmg.all_hm_wordS)
+            hmg.hm_words = deepcopy(hmg.all_hm_wordS)
 
         # randomly pick word
-        #word = renpy.random.choice(hmg.hm_words)
-        word = "uncontrollable"
-        display_word = list("_" * len(word))
+        word = renpy.random.choice(hmg.hm_words)
+        #word = "uncontrollable" DEBUG
+        display_word = list("_" * len(word[0]))
+        hm_hint = hmg.HM_HINT.format(word[1])
       
         # turn the word into hangman letters
         # NOTE: might not need this (or might). keep for reference
@@ -187,22 +187,18 @@ label hangman_game_loop:
 #           )
     
     m "Alright, I've got one"
-
+    m "[hm_hint]"
     # main loop for hangman game
     $ done = False
     $ win = False
     $ chances = 6
     $ missed = ""
-    $ avail_letters = list(l_letters_only)
+    $ avail_letters = list(hm_ltrs_only)
     while not done:
         # create displayables
         python:
             display_text = Text(
                 "".join(display_word), 
-#                xpos=hmg.WORD_XPOS_START,
-#                ypos=hmg.WORD_YPOS_START,
-#                xalign=hmg.WORD_XALIGN_START,
-#                yalign=hmg.WORD_YALIGN_START,
                 font=hmg.WORD_FONT,
                 color=hmg.WORD_COLOR,
                 size=hmg.WORD_SIZE,
@@ -212,10 +208,6 @@ label hangman_game_loop:
 
             missed_text = Text(
                 missed,
-#                xpos=hmg.MISS_LETTERS_XPOS_START,
-#                ypos=hmg.MISS_LETTERS_YPOS_START,
-#                xalign=hmg.MISS_LETTERS_XALIGN_START,
-#                yalign=hmg.MISS_LETTERS_YALIGN_START,
                 font=hmg.WORD_FONT,
                 color=hmg.WORD_COLOR,
                 size=hmg.WORD_SIZE,
@@ -226,8 +218,56 @@ label hangman_game_loop:
         # show disables
         show text display_text zorder 10 as hmg_dis_text at hangman_display_word
         show text missed_text zorder 10 as hmg_mis_text at hangman_missed_chars
+
+        # sayori easter egg
+        if persistent.playername.lower() == "sayori" and chances == 0:
+
+            # disable hotkeys, music and more
+            $ disable_esc()
+            $ store.songs.enabled = False
+            $ store.hkb_button.enabled = False
+
+            # setup glitch text
+            $ hm_glitch_word = glitchtext(20) + "?"
+            $ style.say_dialogue = style.edited
+
+            # show hanging sayori
+            show hm_s2 zorder 10 at hangman_hangman
+
+            # hide monika and display glitch version
+            hide monika 
+            show monika_body_glitch1 as mbg zorder 3 at hangman_monika_i(z=1.0)
+
+            # tear screen and glitch sound
+            show screen tear(20, 0.1, 0.1, 0, 40)
+            play sound "sfx/s_kill_glitch1.ogg"
+            pause 0.2
+            stop sound
+            hide screen tear
+
+            # display weird text
+            m "{cps=*2}[hm_glitch_word]{/cps}{nw}"
+
+            # tear screen and glitch sound
+            show screen tear(20, 0.1, 0.1, 0, 40)
+            play sound "sfx/s_kill_glitch1.ogg"
+            pause 0.2
+            stop sound
+            hide screen tear
+
+            # hide scary shit and return to normal
+            hide mbg
+            show monika 1 at hangman_monika_i
+            hide hm_s2
+            $ style.say_dialogue = style.normal
+            $ store.songs.enabled = True
+            $ store.hkb_button.enabled = True
+            $ enable_esc()
+
         $ hm_display = hmg.HM_IMG_NAME + str(chances)
+
         show expression hm_display zorder 10 as hmg_hanging_man at hangman_hangman
+
 
         if chances == 0:
             $ done = True
@@ -241,7 +281,7 @@ label hangman_game_loop:
                 bad_input = True
                 while bad_input:
                     guess = renpy.input(
-                        "Guess a letter:",
+                        "Guess a letter: (Type '?' to repeat the hint) ",
                         allow="".join(avail_letters),
                         length=1
                     )
@@ -249,28 +289,57 @@ label hangman_game_loop:
                     if len(guess) != 0:
                         bad_input = False
                 
-                # parse input
-                if guess in word:
-                    for index in range(0,len(word)):
-                        if guess == word[index]:
-                            display_word[index] = guess
-                else:
-                    chances -= 1
-                    missed += guess
-                    # TODO display hangman adjustment
+            # parse input
+            if guess == "?": # hint text
+                m "[hm_hint]"
+            else:
+                python:
+                    if guess in word:
+                        for index in range(0,len(word)):
+                            if guess == word[index]:
+                                display_word[index] = guess
+                    else:
+                        chances -= 1
+                        missed += guess
 
-                # remove letter from being entered agin
-                avail_letters.remove(guess)
+                    # remove letter from being entered agin
+                    avail_letters.remove(guess)
 
             # HIDE displayables
             hide text hmg_dis_text
             hide text hmg_mis_text
             hide hmg_hanging_man
 
+    # post loop
+    if win:
+        m 1j "Wow you guessed the word correctly!"
+        m "Good job!"
+        $ grant_xp(xp.WIN_GAME)
+    else:
+        m 1l "Better luck next time~"
 
-    jump hangman_game_loop
+    # try again?
+    menu:
+        m "Would you like to play again?"
+        "Yes":
+            jump hangman_game_loop
+        "No":
+            jump hangman_game_end
+
+    # RETURN AT END 
 
 # end of game flow
 label hangman_game_end:
-    m "Some factoids about hangmang"
+    # hide the stuff
+    hide hmg_hanging_man
+    hide hmg_mis_label
+    hide hmg_dis_text
+    hide hmg_mis_text
+    hide hm_frame
+    show monika at t32
+
+    m 1d "Hangman is actually a pretty hard game."
+    m "You need to have a good vocabulary to be able to guess different words."
+    m 1j "The best way to improve that is to read more books!"
+    m 1a "I'll be very happy if you do that for me, [player]"
     return

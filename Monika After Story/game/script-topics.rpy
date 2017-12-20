@@ -10,7 +10,6 @@ define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-define l_letters_only = "abcdefghijklmnopqrstuvwxyz"
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
