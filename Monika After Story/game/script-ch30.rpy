@@ -464,12 +464,12 @@ label ch30_autoload:
     python:
 
         # name changes if necessary
-        if not persistent.mcname or len(persistent.mcname) == 0:
-            persistent.mcname = persistent.playername
-            mcname = persistent.mcname
-
         if not currentuser or len(currentuser) == 0:
             currentuser = persistent.playername
+        if not persistent.mcname or len(persistent.mcname) == 0:
+            persistent.mcname = currentuser
+            mcname = currentuser
+
 
     window auto
     #If you were interrupted, push that event back on the stack
