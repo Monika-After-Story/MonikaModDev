@@ -2520,7 +2520,7 @@ init 5 python:
     monika_random_topics.append('monika_games')
 
 label monika_games:
-    m 2a "We can play pong or chess, if you'd like."
+    m 2a "We can play pong, chess, or hangman, if you'd like."
     m "Press 'p' to pick a game for us to play."
     return
 

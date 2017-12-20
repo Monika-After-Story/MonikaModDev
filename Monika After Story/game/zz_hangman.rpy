@@ -142,7 +142,7 @@ init 10 python:
 label game_hangman:
     $ import store.hangman as hmg
     $ from copy import deepcopy
-    m 2b "You want to play Hangman? Okay!"
+    m 2b "You want to play hangman? Okay!"
     # setup positions
     show monika at hangman_monika
     show hm_frame at hangman_board zorder 5
