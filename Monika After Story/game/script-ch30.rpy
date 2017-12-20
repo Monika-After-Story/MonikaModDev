@@ -353,6 +353,10 @@ label pick_a_game:
                 if not renpy.seen_label('game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
+            "Hangman":
+                if not renpy.seen_label("game_hangman"):
+                    $ grant_xp(xp.NEW_GAME)
+                call game_hangman from _call_game_hangman
             "Nevermind":
                 m "Alright. Maybe later?"
 
