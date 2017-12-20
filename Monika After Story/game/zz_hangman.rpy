@@ -172,9 +172,14 @@ label hangman_game_loop:
 
         # randomly pick word
         word = renpy.random.choice(hmg.hm_words)
-        #word = "uncontrollable" DEBUG
+        hmg.hm_words.remove(word)
+
+        # setup display word and hint
         display_word = list("_" * len(word[0]))
         hm_hint = hmg.HM_HINT.format(word[1])
+
+        # we dont need PoemWord anymore
+        word = word[0]
       
         # turn the word into hangman letters
         # NOTE: might not need this (or might). keep for reference
