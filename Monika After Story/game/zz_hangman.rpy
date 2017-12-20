@@ -369,5 +369,5 @@ label hangman_game_end:
     m 1d "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
     m 1j "The best way to improve that is to read more books!"
-    m 1a "I'll be very happy if you do that for me, [player]."
+    m 1a "I'd be very happy if you do that for me, [player]."
     return
