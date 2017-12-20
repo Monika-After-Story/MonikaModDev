@@ -2,15 +2,15 @@
 # transform to have monika just chill
 image monika_waiting_img:
     "monika 1a"
-    pause 1.0
+    1.0
     "monika 1c"
-    pause 1.0
+    1.0
     "monika 1h"
-    pause 1.0
+    1.0
     "monika 1o"
-    pause 1.0
+    1.0
     "monika 1g"
-    pause 1.0
+    1.0
     repeat
 
 ##Check all conditionals are valid
