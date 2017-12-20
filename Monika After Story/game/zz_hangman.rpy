@@ -13,8 +13,31 @@ image hm_3 = "mod_assets/hangman/hm_3.png"
 image hm_2 = "mod_assets/hangman/hm_2.png"
 image hm_1 = "mod_assets/hangman/hm_1.png"
 image hm_0 = "mod_assets/hangman/hm_0.png"
-image hm_s1 = "mod_assets/hangman/hm_s1.png"
-image hm_s2 = "mod_assets/hangman/hm_s2.png"
+
+# sayori
+image hm_s:
+    block:
+
+        # this block handles images
+        block:
+            choice:
+                "mod_assets/hangman/hm_s1.png"
+            choice:
+                "mod_assets/hangman/hm_s2.png"
+
+        # this block makes the image flicker
+        # the numbers are times to display
+        block: 
+            choice:
+                0.075
+            choice:
+                0.09
+            choice:
+                0.05
+        repeat
+
+#image hm_s1 = "mod_assets/hangman/hm_s1.png"
+#image hm_s2 = "mod_assets/hangman/hm_s2.png"
 
 # frame
 image hm_frame = "mod_assets/hangman/hm_frame.png"
@@ -245,7 +268,7 @@ label hangman_game_loop:
             $ style.say_dialogue = style.edited
 
             # show hanging sayori
-            show hm_s2 zorder 10 at hangman_hangman
+            show hm_s zorder 10 at hangman_hangman
 
             # hide monika and display glitch version
             hide monika 
@@ -271,7 +294,7 @@ label hangman_game_loop:
             # hide scary shit and return to normal
             hide mbg
             show monika 1 at hangman_monika_i
-            hide hm_s2
+            hide hm_s
             $ style.say_dialogue = style.normal
             $ store.songs.enabled = True
             $ store.hkb_button.enabled = True
