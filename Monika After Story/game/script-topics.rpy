@@ -4413,13 +4413,13 @@ label monika_pets:
     return
     
     
-    init 5 python:
+init 5 python:
     # List of keywords for the topic.
     for key in ['dog','dogs','puppy','puppies']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('dog_discussion') # Identifier
+        monika_topics[key].append('monika_dogs') # Identifier
 
-label dog_discussion:
+label monika_dogs:
     m 1b "Oh, do you like dogs?"
     m 1a "Not only are they fun to play with..."
     m 3i "Having a pet has been shown to help with things like anxiety and depression."
@@ -4437,9 +4437,9 @@ init 5 python:
     # List of keywords for the topic.
     for key in ['cat','cats','kitten','kittens']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('cat_discussion') # Identifier
+        monika_topics[key].append('monika_cats') # Identifier
 
-label cat_discussion:
+label monika_cats:
     m 1b "Cats are pretty cute, aren't they?"
     m "Despite looking so elegant, they always seem to end up in funny situations."
     m 1a "It's no wonder they're so popular on the internet."
