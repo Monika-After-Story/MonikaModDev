@@ -2532,7 +2532,7 @@ init 5 python:
 
 label monika_chess:
     m 4b "Hey [player], we can play chess, you know?"
-    m "All you have to do is hit the 'c' key."
+    m "All you have to do is hit the 'p' key and select 'Chess'."
     m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
     return
 
