@@ -4792,7 +4792,7 @@ label monika_urgent:
     return
     
 init 5 python:
-    for key in ['main' 'character']:
+    for key in ['main' , 'character']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_other_girls')
     monika_random_topics.append('monika_other_girls')
@@ -4818,6 +4818,7 @@ label monika_other_girls:
     m "..."
     m 1n "I love you, [player]..."
     m 1m "More than I could ever express."
+    return
 
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
