@@ -2,7 +2,7 @@
 #
 
 # hangman stuff only
-define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?"
+define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!"
 
 # IMAGES-----------
 # hangman
@@ -276,6 +276,7 @@ label hangman_game_loop:
 
         if chances == 0:
             $ done = True
+            m 1j "Better luck next time~"
         elif "_" not in display_word:
             $ done = True
             $ win = True
@@ -286,7 +287,8 @@ label hangman_game_loop:
                 bad_input = True
                 while bad_input:
                     guess = renpy.input(
-                        "Guess a letter: (Type '?' to repeat the hint) ",
+                        "Guess a letter: (Type '?' to repeat the hint, " +
+                        "'!' to give up)",
                         allow="".join(avail_letters),
                         length=1
                     )
@@ -297,6 +299,18 @@ label hangman_game_loop:
             # parse input
             if guess == "?": # hint text
                 m "[hm_hint]"
+            elif guess == "!": # give up dialogue
+                $ done = True
+                hide hmg_hanging_man
+                show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
+                m 1n "[player]..."
+                m "You should at least play to the end..."
+                m 1f "Giving up so easily is a sign of poor resolve."
+                if chances > 1:
+                    m "I mean, you only had to miss [chances] more letters to lose."
+                else:
+                    m "I mean, you only had to miss [chances] more letter to lose."
+                m 1e "Can you play to the end next time, [player]? For me?"
             else:
                 python:
                     if guess in word:
@@ -310,18 +324,16 @@ label hangman_game_loop:
                     # remove letter from being entered agin
                     avail_letters.remove(guess)
 
-            # HIDE displayables
-            hide text hmg_dis_text
-            hide text hmg_mis_text
-            hide hmg_hanging_man
+                # HIDE displayables
+                hide text hmg_dis_text
+                hide text hmg_mis_text
+                hide hmg_hanging_man
 
     # post loop
     if win:
-        m 1j "Wow you guessed the word correctly!"
-        m "Good job!"
+        m 1j "Wow, you guessed the word correctly!"
+        m "Good job, [player]!"
         $ grant_xp(xp.WIN_GAME)
-    else:
-        m 1l "Better luck next time~"
 
     # try again?
     menu:
