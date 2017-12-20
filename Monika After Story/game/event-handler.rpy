@@ -1,3 +1,18 @@
+
+# transform to have monika just chill
+image monika_waiting_img:
+    "monika 1a"
+    pause 1.0
+    "monika 1c"
+    pause 1.0
+    "monika 1h"
+    pause 1.0
+    "monika 1o"
+    pause 1.0
+    "monika 1g"
+    pause 1.0
+    repeat
+
 ##Check all conditionals are valid
 init 100 python:
     for event in persistent.event_database:
@@ -192,7 +207,11 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
+    hide monika
+    show monika_waiting_img at i32
     call screen scrollable_menu(prompt_menu_items)
+    hide monika_waiting_img
+    show monika 1a at i32
 
     $pushEvent(_return)
 
