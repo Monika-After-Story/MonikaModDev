@@ -86,6 +86,8 @@ init -1 python in hangman:
     WORD_SIZE = 30
     WORD_OUTLINE = []
     WORD_COLOR = "#fff"
+    WORD_COLOR_GET = "#CC6699"
+    WORD_COLOR_MISS = "#000"
 
     # hangman visual stuff
     HM_IMG_NAME = "hm_"
@@ -199,13 +201,19 @@ label hangman_game_loop:
     $ chances = 6
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
+    $ dt_color = hmg.WORD_COLOR
     while not done:
         # create displayables
         python:
+            if chances == 0:
+                dt_color = hmg.WORD_COLOR_MISS
+            elif "_" not in display_word:
+                dt_color = hmg.WORD_COLOR_GET
+
             display_text = Text(
                 "".join(display_word), 
                 font=hmg.WORD_FONT,
-                color=hmg.WORD_COLOR,
+                color=dt_color,
                 size=hmg.WORD_SIZE,
                 outlines=hmg.WORD_OUTLINE,
                 kerning=hmg.LETTER_SPACE
@@ -320,6 +328,9 @@ label hangman_game_loop:
                     else:
                         chances -= 1
                         missed += guess
+                        if chances == 0:
+                            # show the word you lost
+                            display_word = word
 
                     # remove letter from being entered agin
                     avail_letters.remove(guess)
