@@ -2514,7 +2514,7 @@ label monika_algernon:
     return
 
 init 5 python:
-    for key in ['play','game']:
+    for key in ['play','game','games','chess','pong','hangman','hang man']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_games') #id
     monika_random_topics.append('monika_games')
@@ -2524,29 +2524,30 @@ label monika_games:
     m "Press 'p' to pick a game for us to play."
     return
 
-init 5 python:
-    for key in ['chess','c']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_chess') #id
-    monika_random_topics.append('monika_chess')
+#Commenting this stuff out instead of deleting it in case some of the lines are reused in the prompt system
+#init 5 python:
+#    for key in ['chess','c']:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append('monika_chess') #id
+#    monika_random_topics.append('monika_chess')
 
-label monika_chess:
-    m 4b "Hey [player], we can play chess, you know?"
-    m "All you have to do is hit the 'c' key."
-    m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
-    return
+#label monika_chess:
+#    m 4b "Hey [player], we can play chess, you know?"
+#    m "All you have to do is hit the 'c' key."
+#    m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
+#    return
 
-init 5 python:
-    for key in ['pong','p']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_pong') #id
-    monika_random_topics.append('monika_pong')
+#init 5 python:
+#    for key in ['pong','p']:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append('monika_pong') #id
+#    monika_random_topics.append('monika_pong')
 
-label monika_pong:
-    m 1a "Hey [player], do you want to play a game of Pong with me?"
-    m "Just remember to hit the 'p' key whenever you feel like playing, okay?"
-    m 1k "Unless you're scared of losing against me~"
-    return
+#label monika_pong:
+#    m 1a "Hey [player], do you want to play a game of Pong with me?"
+#    m "Just remember to hit the 'p' key whenever you feel like playing, okay?"
+#    m 1k "Unless you're scared of losing against me~"
+#    return
 
 init 5 python:
     for key in ['webcam','camera','my face','smile']:
