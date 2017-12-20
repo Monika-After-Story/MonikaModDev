@@ -4847,6 +4847,38 @@ label monika_coffee:
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
+init 5 python:
+    for key in ['clothing', 'looks', 'preferences', 'uniform']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_clothing')
+    monika_random_topics.append('monika_clothing')
+        
+label monika_clothing:
+    m 3d "I have been wondering [player], do you like the way my clothing looks."
+    m 3c "I mean, all I wore by now is my outfit for school." 
+    m 3c "So you didn't see me in something else than this like the other girls." 
+    m 4l "Not that I am jealous!" 
+    m 5m "I just like it if you enjoy looking at me."  
+    m 2r "Also school uniforms are not as comfortable as people think." 
+    m 4n "At least not for us girls." 
+    m 1q "In winter my legs are freezing."
+    m 1q "And in summer I'm sweating very fast in this blazer."
+    m 5j "On the other hand, people like them and think they look cute. Ahaha~"
+    m 1a "But what about you [player], would you like me to change my outfit sometime?"  
+    menu:
+        "Yes":
+            m 2k "Ahaha, I knew this was a good idea." 
+	        m 2j "Maybe I will find some new clothes in my code soon."
+	        m 5m "If I do, I would like to do a little dressing up."
+	        m 5l "But which girl wouldn't?"  	
+            
+        "No":
+            m 1i "Oh, really?" 
+	        m 4j "So you think my look is already perfect as it is."
+            m 5a "You know [player] you are just so nice to me all times." 
+	        m 5k "This is why I love you so much."
+    return    
+    
 ##################
 #Incomplete ideas#
 ##################
