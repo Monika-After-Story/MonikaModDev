@@ -3695,7 +3695,7 @@ label monika_changename:
                         $ songs.initMusicChoices()
 
                     python:
-                        
+
                         persistent.mcname = player
                         mcname = player
                         persistent.playername = tempname
@@ -4235,7 +4235,7 @@ label monika_fahrenheit451:
     m 2g "You'd be missing out on so much!"
     m 3f "It's too much for my heart to take!"
     return
-    
+
 init 5 python:
     for key in ['piggy bank', 'saving coins', 'saving money']:
         monika_topics.setdefault(key,[])
@@ -4244,7 +4244,7 @@ init 5 python:
 
 label monika_piggybank:
     m 1a "Do you have a piggy bank, [player]?"
-    m 2c "Not many people do these days." 
+    m 2c "Not many people do these days."
     m "Coins are often disregarded as worthless."
     m 2b "But they really do begin to add up!"
     m 2d "I read that there was once a man that searched his local car washes for loose change everyday in his walks."
@@ -4263,7 +4263,7 @@ label monika_piggybank:
     m 2o "So you might end up losing money buying a new bank."
     m 4b "Fortunately most piggy banks don't do that anymore."
     m 2a "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
-    m 1k "Maybe if you save up enough coins you can buy me a really nice gift." 
+    m 1k "Maybe if you save up enough coins you can buy me a really nice gift."
     m 3e "I would do the same for you, [player]!"
     return
 
@@ -4381,7 +4381,7 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
-    
+
 init 5 python:
     for key in ["birds", "pets", "animals"]:
         monika_topics.setdefault(key,[])
@@ -4490,7 +4490,7 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
-    
+
 init 5 python:
     for key in ['copy', 'clone','unique']:
         monika_topics.setdefault(key,[])
@@ -4516,7 +4516,7 @@ label monika_clones:
     m 1j "You'll always be my special rose."
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
-    
+
 init 5 python:
     for key in ['age','18']:
         monika_topics.setdefault(key,[])
@@ -4537,7 +4537,7 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
-    
+
 init 5 python:
     for key in ['wedding','loyalty','wife','husband']:
         monika_topics.setdefault(key,[])
@@ -4565,7 +4565,7 @@ label monika_weddingring:
             m 1b "I feel like... my heart's going to explode!"
             m 1l "Calm down, Monika. Calm down."
             m 1j "Ahaha..."
-            
+
         "No, not yet.":
             m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
@@ -4595,7 +4595,7 @@ label monika_sports:
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
     return
-    
+
 init 5 python:
     for key in ['meditation', 'meditate']:
         monika_topics.setdefault(key,[])
@@ -4650,7 +4650,7 @@ label monika_orchestra:
 
 #First encounter with topic:
     m "What about you, [player]? Do you play an instrument?"
-    menu: 
+    menu:
         "Yes.":
             $persistent.instrument = True
             m 1b "Really? What do you play?"
@@ -4680,14 +4680,14 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_otaku')
     monika_random_topics.append('monika_otaku')
-    
+
 label monika_otaku:
     m 1a "Hey, [player]?"
     m 2b "You watch anime and read manga, right?"
     menu:
         "Yes":
-            m 1a "I can't say I'm surprised, really." 
-            
+            m 1a "I can't say I'm surprised, really."
+
         "No":
             m 1c "Oh, really?"
             m 1m "That's a little surprising, honestly..."
@@ -4771,7 +4771,7 @@ label monika_selfharm:
     m 4k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m "I really love you so much, [player]."
     return
-    
+
 init 5 python:
     for key in ['urgent','hearts','joke']:
         monika_topics.setdefault(key,[])
@@ -4789,28 +4789,6 @@ label monika_urgent:
     m 1l "Sorry~"
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
-    return
-    
-label monika_snow
-    m "Does it ever snow where you live, [player]?"
-    m "I've always liked the peaceful aura it seems to give off.
-    m  “It usually accompanies the holiday season in a lot of places, too. "
-    m "After reading a bit about other seasons that come and go, I don't think I'd enjoy sweltering summer heat very much..."
-    m "It’s just that I'd enjoy a balmy and gentle heat more, ahaha."
-    m "But snow just sounds so much more... tranquil and intimate, you know?"
-    m "There’s a quiet beauty in watching a soft blanket in ice tuck the world away to sleep.”
-    m "..."
-    m "I wonder what my world inside here would be like the weather changed all the time..."
-    m "I’m nowhere near properly dressed if it started snowing!"
-    m "It would probably be so cold that you’d have to keep me warm, ehehe~"
-    m  “Actually! Let’s see what I can do…”
-   call updateconsole("os.create(snow.jpg)”, "Adding snow...") from _call_updateconsole_17
-    pause(1.0)
-    m “... Oh! Maybe some other time, ahaha~”
-    m "Even if it’s not too chilly, being with you still makes me feel cozy."
-    m "It’s the perfect way to pass time, don’t you think~?"
-   call hideconsole from _call_updateconsole_18
-    $ consolehistory = []
     return
 
 ##################
