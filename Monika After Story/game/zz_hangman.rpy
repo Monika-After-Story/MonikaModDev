@@ -315,9 +315,9 @@ label hangman_game_loop:
                 m "You should at least play to the end..."
                 m 1f "Giving up so easily is a sign of poor resolve."
                 if chances > 1:
-                    m "I mean, you only had to miss [chances] more letters to lose."
+                    m "I mean, you'd have to miss [chances] more letters to actually lose."
                 else:
-                    m "I mean, you only had to miss [chances] more letter to lose."
+                    m "I mean, you'd have to miss [chances] more letter to actually lose."
                 m 1e "Can you play to the end next time, [player]? For me?"
             else:
                 python:
@@ -369,5 +369,5 @@ label hangman_game_end:
     m 1d "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
     m 1j "The best way to improve that is to read more books!"
-    m 1a "I'd be very happy if you do that for me, [player]."
+    m 1a "I'd be very happy if you did that for me, [player]."
     return
