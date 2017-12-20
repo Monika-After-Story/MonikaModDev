@@ -4792,31 +4792,30 @@ label monika_urgent:
     return
     
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['happy' , 'mood']:
+    for key in ['happiness']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_happiness') #id
+        monika_topics[key].append('monika_happiness')
     monika_random_topics.append('monika_happiness')
 
 label monika_happiness:
-    m 1d "[player], are you happy?"
-    m 1g "Not just to be here with me I mean, but with your life in general."
-    m 3n "Its ok if you aren't. I can certainly understand being unhappy."
-    m 1p "After all, without you my life would be completely unbearable."
-    m "..."
-    m 1h "Isn't it funny how deep the capacity for human suffering is compared to our ability to feel happiness?"
-    m 3b "I'm as happy as I could be knowing that you care about me, [player] ."
-    m 3g "Yet, if something were to happen to you, the sadness I would feel would be even stronger."
-    m 1p "It would destroy me."
-    m "..."
-    m 1c "I suppose it's understandable why we notice the bad more than the good..."
-    m "If humans didn't react so strongly to the bad then they wouldn't have survived in the past when things were always so dangerous."
-    m 3r "Of course, in the modern world this anxiety response is very overdone for almost everything that stresses us out."
-    m 1h "You may get nervous about your future or about doing well in important social situations~"
-    m 1e "But always remember to put things into perspective and be grateful for how safe your life really is."
-    m 3j "And besides, you have a cute girlfriend who is always rooting for you to succeed."
-    m 1k "That's something to be very happy about!"
+    m 2d "[player], are you happy?"
+    m 1c "With your life in general, I mean."
+    m 3o "It's ok if you aren't. I can understand you being unhappy, [player]."
+    m 2e "After all, without you, my life would be completely unbearable."
+    m 2d "Isn't it funny that we're able to suffer more than be happy?"
+    m 4j "I'm as happy as I could be knowing that you love me, [player]."
+    m 4p "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
+    m 1q "It would destroy me."
+    m 1h "I guess it's understandable why we notice bad things happening to us more than good..."
+    m 3o"If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m 1c "Like how you would get nervous about your future or social situations, for example."
+    m 3f "You try your best to make the best out of them but if you fail, you'd feel really horrible."
+    m 3e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
+    m 2b "And besides, your cute girlfriend is always rooting for you~"
+    m 2k "Now that's something to be very happy about!"
+    return
     
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
