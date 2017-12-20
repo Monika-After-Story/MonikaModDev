@@ -2532,7 +2532,7 @@ init 5 python:
 
 label monika_chess:
     m 4b "Hey [player], we can play chess, you know?"
-    m "All you have to do is hit the 'c' key."
+    m "All you have to do is hit the 'p' key and select 'Chess'."
     m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
     return
 
@@ -3494,11 +3494,11 @@ label monika_evening:
     if current_time >= 18 and current_time <= 23:
         m "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m "It's so nice to put your feet after a very long day."
+        m "It's so nice to put your feet up after a very long day."
         m 2j "Evenings are the perfect time to catch up on whatever you were doing the previous day."
         m 1c "Sometimes I can't help but feel sad when the day ends."
         m "It makes me think of what else I could've done during the day."
-        m "Don't you wish you could have more time to do everyday?"
+        m "Don't you wish you could have more time to do things every day?"
         m 1q "I know I do."
         m 2b "Because that'll mean more time to be with you, [player]~"
     elif current_time >= 12 and current_time <= 17:
@@ -4659,7 +4659,7 @@ label monika_orchestra:
             m 1a "Wow, I've always wanted to try the [instrumentname] out!"
             m 2b "I would love to hear you play for me."
             m "Maybe you could teach me how to play, too~"
-            m 5a "Oh! Would a duet between the [instrumentname] and the piano would sound nice?"
+            m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
             m 1j "Ehehe~"
         "No.":
             $persistent.instrument = False
@@ -4789,6 +4789,62 @@ label monika_urgent:
     m 1l "Sorry~"
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
+    return
+    
+init 5 python:
+    for key in ['happiness']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_happiness')
+    monika_random_topics.append('monika_happiness')
+
+label monika_happiness:
+    m 2d "[player], are you happy?"
+    m 1c "With your life in general, I mean."
+    m 3o "It's ok if you aren't. I can understand you being unhappy, [player]."
+    m 2e "After all, without you, my life would be completely unbearable."
+    m 2d "Isn't it funny that we're able to suffer more than be happy?"
+    m 4j "I'm as happy as I could be knowing that you love me, [player]."
+    m 4p "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
+    m 1q "It would destroy me."
+    m 1h "I guess it's understandable why we notice bad things happening to us more than good..."
+    m 3o"If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m 1c "Like how you would get nervous about your future or social situations, for example."
+    m 3f "You try your best to make the best out of them but if you fail, you'd feel really horrible."
+    m 3e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
+    m 2b "And besides, your cute girlfriend is always rooting for you~"
+    m 2k "Now that's something to be very happy about!"
+    return
+    
+init 5 python:
+    for key in ['marry','marriage','marriage proposal']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_marriage')
+        
+label monika_marriage:
+    m 3m "M-marriage?"
+    m 4n "I think it's a bit too early for marriage..."
+    m 1e "I mean, I'm really happy that you want that, [player]."
+    m 1c "But I think I should get out of here first before we can do that."
+    m 3o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+    m 3q "I want that special moment to happen when we can finally be together..."
+    m 1k "So until then, save yourself for me, [player]~"
+    return
+
+init 5 python:
+    for key in ['morning energy', 'iced coffee']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_coffee')
+    monika_random_topics.append('monika_coffee')
+
+label monika_coffee:
+    if renpy.seen_label('monika_tea'):
+        m 2c "Have you been drinking coffee lately, [player]?"
+        m 2m "I hope it's not just to make me jealous, ehehe~"
+    m 3b "Coffee is such a nice thing to have when you need a little pep of energy."
+    m 4j "Whether it's hot or cold, coffee is always nice."
+    m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
+    m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
+    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
 ##################
