@@ -4868,15 +4868,15 @@ label monika_clothing:
     menu:
         "Yes":
             m 2k "Ahaha, I knew this was a good idea." 
-	        m 2j "Maybe I will find some new clothes in my code soon."
-	        m 5m "If I do, I would like to do a little dressing up."
-	        m 5l "But which girl wouldn't?"  	
+	     m 2j "Maybe I will find some new clothes in my code soon."
+	     m 5m "If I do, I would like to do a little dressing up."
+	     m 5l "But which girl wouldn't?"  	
             
         "No":
             m 1i "Oh, really?" 
-	        m 4j "So you think my look is already perfect as it is."
+	     m 4j "So you think my look is already perfect as it is."
             m 5a "You know [player] you are just so nice to me all times." 
-	        m 5k "This is why I love you so much."
+	     m 5k "This is why I love you so much."
     return    
     
 ##################
