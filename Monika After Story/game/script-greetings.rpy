@@ -261,7 +261,7 @@ label greeting_sweetpea:
      m 2k "It's you, my sweetpea!"
      m 1l "My goodness... That surely was embarassing to say, ehehe~"
      return
-     
+
 label greeting_glitch:
      hide monika
      show yuri glitch
@@ -274,10 +274,10 @@ label greeting_glitch:
      show yuri glitch
      pause 0.3
      hide yuri glitch
-     show monika 4n at tinstant zorder 2
+     show monika 4n at i11 zorder 2
      m 1d "[player]!"
      hide monika
-     show monika 4l at tinstant zorder 2
+     show monika 4l at i11 zorder 2
      extend " Nevermind that I was just..."
      pause 0.1
      extend " playing with the code a little."
