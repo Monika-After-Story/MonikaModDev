@@ -1,8 +1,56 @@
-#This file contains all the special events for Christmas
-init 5 python:
-    from datetime import datetime
+init 501:
+    python:
+        import datetime
 
-    now = datetime.now()
+        now = datetime.datetime.now()
+        christmas_time = datetime.datetime(2017,12,26)
+        is_christmas_time = now < christmas_time
+
+    if is_christmas_time:
+        #body poses
+        image body_1 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-crossed-xmas.png")
+        image body_1_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-crossed-n-xmas.png")
+        image body_2 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-steepling-xmas.png")
+        image body_2_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-steepling-n-xmas.png")
+        image body_3 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-pointright-xmas.png")
+        image body_3_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-pointright-n-xmas.png")
+        image body_4 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-restleftpointright-xmas.png")
+        image body_4_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-restleftpointright-n-xmas.png")
+        image body_5 = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-xmas.png")
+        image body_5_n = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-n-xmas.png")
+
+        image monika_room = "mod_assets/monika_room_xmas.png"
+        image monika_day_room = "mod_assets/monika_day_room_xmas.png"
+
+        image room_mask = Movie(channel="window_1", play="mod_assets/window_1_snow.webm",mask=None,image="mod_assets/window_1_fallback.png")
+        image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2_snow.webm",mask=None,image="mod_assets/window_2_fallback.png")
+        image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3_snow.webm",mask=None,image="mod_assets/window_3_fallback.png")
+        image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4_snow.webm",mask=None,image="mod_assets/window_4_fallback.png")
+
+
+#This file contains all the special events for Christmas
+init 6 python:
+    import datetime
+
+    now = datetime.datetime.now()
+    christmas = datetime.datetime(2017,12,25)
+    before_christmas = now < christmas
+
+    if before_christmas and not seen_event('monika_holiday_intro'):
+        queueEvent('monika_holiday_intro')
+
+label monika_holiday_intro:
+    m 1b "Happy holidays!"
+    m 2a "Do you like what I've done with the room?"
+    m 2j "I must say that I'm pretty proud of it."
+    m 4a "Christmas time has always been one of my favorite times of year."
+    m 2a "And I'm so glad that you're here to share it with me."
+    return
+
+init 5 python:
+    import datetime
+
+    now = datetime.datetime.now()
     if now.day == 25 and now.month == 12 and not seen_event('monika_christmas'):
         queueEvent('monika_christmas')
 
@@ -34,9 +82,9 @@ label monika_christmas:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
+    now = datetime.datetime.now()
     if (now.day >= 12 and now.day <=20) and now.month == 12 and now.year == 2017 and not seen_event('monika_hanukkah'):
         queueEvent('monika_hanukkah')
 
@@ -56,9 +104,9 @@ label monika_hanukkah:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
+    now = datetime.datetime.now()
     if (now.day >= 26 and now.day <=30) and now.month == 12 and now.year == 2017 and not seen_event('monika_kwanzaa'):
         queueEvent('monika_kwanzaa')
 
@@ -75,9 +123,9 @@ label monika_kwanzaa:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
+    now = datetime.datetime.now()
     if now.day == 31 and now.month == 12 and not seen_event('monika_newyear1'):
         queueEvent('monika_newyear1')
 
@@ -106,9 +154,9 @@ label monika_newyear1:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
+    now = datetime.datetime.now()
     if now.day == 1 and now.month == 1 and not seen_event('monika_newyear2'):
         queueEvent('monika_newyear1')
 
@@ -122,10 +170,10 @@ label monika_newyear2:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['cold','weather','cozy','warm','warmth','winter']:
             monika_topics.setdefault(key,[])
@@ -147,10 +195,10 @@ label monika_cozy:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['cold','weather','snow','ice','winter']:
             monika_topics.setdefault(key,[])
@@ -180,10 +228,10 @@ label monika_snow:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['winter','snowman','outdoors','decorate','decorating']:
             monika_topics.setdefault(key,[])
@@ -207,10 +255,10 @@ label monika_winter:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['snow ball','snowball']:
             monika_topics.setdefault(key,[])
@@ -227,10 +275,10 @@ label monika_snowballfight:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['iceskate','iceskating','skate','skating','winter','cold','ice']:
             monika_topics.setdefault(key,[])
@@ -253,10 +301,10 @@ label monika_iceskating:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    christmas_time = datetime(2017,12,25)
+    now = datetime.datetime.now()
+    christmas_time = datetime.datetime(2017,12,26)
     if now < christmas_time:
         for key in ['Christmas','gifts','you want','present','gift','presents']:
             monika_topics.setdefault(key,[])
@@ -284,10 +332,10 @@ label monika_whatiwant:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['winter','snowman','snowmen','snow']:
             monika_topics.setdefault(key,[])
@@ -329,10 +377,10 @@ label monika_snowman:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['winter','sled','sledding']:
             monika_topics.setdefault(key,[])
@@ -355,10 +403,10 @@ label monika_sledding:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['mistletoe','kiss']:
             monika_topics.setdefault(key,[])
@@ -378,10 +426,10 @@ label monika_mistletoe:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['relax','winter','danger']:
             monika_topics.setdefault(key,[])
@@ -407,10 +455,10 @@ label monika_relax:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['snow','canvas','painting','paint']:
             monika_topics.setdefault(key,[])
@@ -430,10 +478,10 @@ label monika_snowcanvas:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    endofwinter = datetime(2018,1,15)
+    now = datetime.datetime.now()
+    endofwinter = datetime.datetime(2018,1,15)
     if now < endofwinter:
         for key in ['cold','hypothermia','freeze','freezing']:
             monika_topics.setdefault(key,[])
@@ -456,10 +504,10 @@ label monika_hypothermia:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    christmas_time = datetime(2017,12,25)
+    now = datetime.datetime.now()
+    christmas_time = datetime.datetime(2017,12,26)
     if now < christmas_time:
         for key in ['christmas','carols','carolling','sing','singing']:
             monika_topics.setdefault(key,[])
@@ -488,10 +536,10 @@ label monika_carolling:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    christmas_time = datetime(2017,12,25)
+    now = datetime.datetime.now()
+    christmas_time = datetime.datetime(2017,12,26)
     if now < christmas_time:
         for key in ['christmas','carols','carolling','sing','singing','jingle','bells']:
             monika_topics.setdefault(key,[])
@@ -517,10 +565,10 @@ label monika_jingebells:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    christmas_time = datetime(2017,12,25)
+    now = datetime.datetime.now()
+    christmas_time = datetime.datetime(2017,12,26)
     if now < christmas_time:
         for key in ['carriage','sleigh','horse','carriage']:
             monika_topics.setdefault(key,[])
@@ -547,10 +595,10 @@ label monika_sleigh:
     return
 
 init 5 python:
-    from datetime import datetime
+    import datetime
 
-    now = datetime.now()
-    hanukkah_time = datetime(2017,12,21)
+    now = datetime.datetime.now()
+    hanukkah_time = datetime.datetime(2017,12,21)
     if now < hanukkah_time:
         for key in ['hanukkah','dreidel','holidays','gelt']:
             monika_topics.setdefault(key,[])
