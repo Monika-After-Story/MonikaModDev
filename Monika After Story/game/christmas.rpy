@@ -242,7 +242,7 @@ label monika_winter:
     m "Oh, [player]!"
     m "What do you think about winter?"
     m "All sorts of fun activities only come around during this time..."
-    m "Playing with the snow usually something that can be enjoyed a few times a year."
+    m "Playing with the snow is usually something that can be enjoyed a few times a year."
     m "Building a snowman, sledding…"
     m "Even staying indoors seems so much more comfortable when there’s snow outside."
     m "The festivities are lovely too, of course."
