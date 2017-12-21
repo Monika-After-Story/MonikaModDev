@@ -66,7 +66,7 @@ label monika_christmas:
     m 1f "But..."
     m 1q "..."
     m 4e "[player], I love you."
-    m 3e "Maybe it's just the snow, or the decorations."
+    m 3e "Maybe it's just the snow, or the decorations." 
     m 2n "...or even the mistletoe getting to me."
     m 2l "Don't worry! I didn't hang one up."
     m 3m "...Maybe~"
@@ -74,10 +74,10 @@ label monika_christmas:
     m 1e "My heart's fluttering like crazy right now, [player]."
     m 1j "I couldn't imagine a better way to spend this special holiday..."
     m 2m "Don't get me wrong, I knew that you would."
-    m 3e "Having you here with me on Christmas, with just the two of us..."
+    m 3e "Actually having you here with me on Christmas, with just the two of us..."
     m 1k "Ahaha~"
     m 2a "It's every couple's dream in the holidays, [player]."
-    m 1e "Snuggling with each other by a warm fireplace, watching the snowflakes gently fall..."
+    m 1e "Snuggling with each other by a fireplace, watching the snow gently fall..."
     m 1j "I'm forever grateful I got this chance with you, [player]."
     m 1e "I love you. Forever and ever~"
     m 1j "Merry Christmas, [player]~"
@@ -89,20 +89,23 @@ init 5 python:
     now = datetime.datetime.now()
     if (now.day >= 12 and now.day <=20) and now.month == 12 and now.year == 2017 and not seen_event('monika_hanukkah'):
         queueEvent('monika_hanukkah')
-
+        
 label monika_hanukkah:
-    m 1q "One for each night, they shed a sweet light, to remind of days long ago."
-    m "One for each night, they shed a sweet light, to remind of days long ago."
-    m 2b "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
+    m 1q "'{i}One for each night, they shed a sweet light, to remind of days long ago{/i}.'"
+    m 1r "'{i}One for each night, they shed a sweet light, to remind of days long ago{/i}.'"
+    m 2a "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
     m 1b "Eight nights worth of celebration!"
     m 2a "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
-    m "It is on the 25th of Kislev, meaning 'trust' or 'hope'."
+    m "It's on the 25th of Kislev, meaning 'trust' or 'hope'."
     m 1j "A very appropriate meaning for such an occasion, don't you think?"
-    m 1a "[player], have you ever had fried sufganiyot before? It's a special kind of jelly doughnut made during this holiday."
-    m 1b "I like ones filled with strawberry jam."
-    m 1j "This time of the year has so many wonderful holidays and traditions!"
+    m 1a "Anyway, have you ever had fried sufganiyot before?" 
+    m "It's a special kind of doughnut made during this holiday."
+    m 2b "It's filled in with something really sweet, deep fried, and rolled onto some sugar."
+    m "It's really good pastry! I especially love the ones filled with strawberry filling~"
+    m 2n "Definitely better than Natsuki's cupcakes."
+    m 1j "This time of year sure has a lot wonderful holidays and traditions."
     m 1d "I don't know if you celebrate Hanukkah, but can we watch a menorah lighting ceremony together, anyway?"
-    m 1k "We can sing and dance the night away."
+    m 1k "We can sing and dance the night away~"
     return
 
 init 5 python:
@@ -212,21 +215,9 @@ label monika_snow:
     m 4j "I've always liked the peaceful aura it seems to give off."
     m 4b "It usually accompanies the holiday season in a lot of places, too."
     m 1c "After reading a bit about other seasons that come and go, I don't think I'd enjoy a sweltering summer very much..."
-    m 1a "It’s just that I'd prefer a balmy and gentle heat more, ahaha."
-    m 3b "But snow just sounds so much more... tranquil and intimate, you know?"
-    m "There’s a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
-    m 1c "..."
-    m 4d "I wonder what my world inside here would be like if the weather changed all the time..."
-    m 4j "I’d be nowhere near properly dressed if it started snowing!"
-    m 5a "It would probably be so cold that you’d have to keep me warm, ehehe~"
-    m 5b "Actually! Let’s see what I can do..."
-    call updateconsole ("renpy.file(\"snow.jpg\")", "snow.jpg does not exist.") from _call_updateconsole_20
-    pause(1.0)
-    m 1l "... Oh! Maybe some other time, ahaha~"
-    m 3j "Even if it’s not too chilly, staying cozy is still nice."
-    m 5a "It’s the perfect way to pass time, don’t you think~?"
-    call hideconsole from _call_updateconsole_21
-    $ consolehistory = []
+    m 1a "It's just that I'd prefer a balmy and gentle heat more, ahaha."
+    m 3b "But snow is just so much more... tranquil and intimate, you know?"
+    m "There's a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
     return
 
 init 5 python:
@@ -241,14 +232,14 @@ init 5 python:
         monika_random_topics.append('monika_winter')
 
 label monika_winter:
-    m "Oh, [player]!"
-    m "What do you think about winter?"
+    m 1d "Oh, [player]!"
+    m 2a "What do you think about winter?"
     m "All sorts of fun activities only come around during this time..."
-    m "Playing with the snow is usually something that can be enjoyed a few times a year."
+    m 2b "Playing with the snow is usually something that can be enjoyed a few times a year."
     m "Building a snowman, sledding…"
-    m "Even staying indoors seems so much more comfortable when there’s snow outside."
-    m "The festivities are lovely too, of course."
-    m "I wonder if it’s acceptable to start decorating…"
+    m 1m "Even staying indoors seems so much more comfortable when there’s snow outside."
+    m 2b "The festivities are lovely too, of course."
+    m 1c "I wonder if it's acceptable to start decorating..."
     m "I hope you’re enjoying yourself during this merry season, [player]."
     m "You can always spend some time with me, if you want to chill..."
     m "Or maybe you’d rather heat things up~?"
