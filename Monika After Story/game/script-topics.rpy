@@ -4792,6 +4792,30 @@ label monika_urgent:
     return
     
 init 5 python:
+    for key in ['happiness']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_happiness')
+    monika_random_topics.append('monika_happiness')
+
+label monika_happiness:
+    m 2d "[player], are you happy?"
+    m 1c "With your life in general, I mean."
+    m 3o "It's ok if you aren't. I can understand you being unhappy, [player]."
+    m 2e "After all, without you, my life would be completely unbearable."
+    m 2d "Isn't it funny that we're able to suffer more than be happy?"
+    m 4j "I'm as happy as I could be knowing that you love me, [player]."
+    m 4p "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
+    m 1q "It would destroy me."
+    m 1h "I guess it's understandable why we notice bad things happening to us more than good..."
+    m 3o"If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m 1c "Like how you would get nervous about your future or social situations, for example."
+    m 3f "You try your best to make the best out of them but if you fail, you'd feel really horrible."
+    m 3e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
+    m 2b "And besides, your cute girlfriend is always rooting for you~"
+    m 2k "Now that's something to be very happy about!"
+    return
+    
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
