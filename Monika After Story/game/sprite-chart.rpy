@@ -3,14 +3,14 @@
 define is_sitting = True
 
 #body poses
-image body_1 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-crossed.png")
-image body_1_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-crossed-n.png")
-image body_2 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-steepling.png")
-image body_2_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-steepling-n.png")
-image body_3 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-pointright.png")
-image body_3_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-pointright-n.png")
-image body_4 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-restleftpointright.png")
-image body_4_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-restleftpointright-n.png")
+image body_1 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-steepling.png")
+image body_1_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-steepling-n.png")
+image body_2 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-crossed.png")
+image body_2_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-crossed-n.png")
+image body_3 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-restleftpointright.png")
+image body_3_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-restleftpointright-n.png")
+image body_4 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-pointright.png")
+image body_4_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-pointright-n.png")
 image body_5 = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning.png")
 image body_5_n = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-n.png")
 
