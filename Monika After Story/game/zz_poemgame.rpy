@@ -279,16 +279,25 @@ init -2 python in mas_poemgame_fun:
         #   mas_poemgame_consts
 
         # build a list of point values
-        girl_points = [
-            (mas_pgc.SAYORI, getPointValue(sayori, word.sPoint)),
-            (mas_pgc.NATSUKI, getPointValue(natsuki, word.nPoint)),
-            (mas_pgc.YURI, getPointValue(yuri, word.yPoint))
-        ]
+        girl_points = list()
 
+        # we want monika to be in there first, because she has tiebreaker
+        # rules
         if mas:
             girl_points.append(
                 (mas_pgc.MONIKA, getPointValue(monika, word.mPoint))
             )
+
+        # add the rest of the girls
+        girl_points.append(
+            (mas_pgc.SAYORI, getPointValue(sayori, word.sPoint))
+        )
+        girl_points.append(
+            (mas_pgc.NATSUKI, getPointValue(natsuki, word.nPoint))
+        )
+        girl_points.append(
+            (mas_pgc.YURI, getPointValue(yuri, word.yPoint))
+        )
 
         # now get the largest from this list
         largest = 0
@@ -696,14 +705,13 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             }
         
         # the list of words
-        # TODO: okay this is bad because we need some way to do regular
-        # PoemWords incase they dont pass us a list
         if not in_monika_mode:
             if poem_wordlist:
-                wordlist = list(poem_wordlist.wordlist)
+                wordlist = deepcopy(poem_wordlist.wordlist)
             else:
-                pw_list = MASPoemWordList(mas_pg_consts.POEM_FILE)
-                wordlist = list(pw_list.wordlist)
+                #pw_list = MASPoemWordList(mas_pg_consts.POEM_FILE)
+                #wordlist = list(pw_list.wordlist)
+                wordlist = deepcopy(full_wordlist)
 
         # the following handles the positioning and time between a sticker
 #        if sticker_pt:
@@ -817,7 +825,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 if in_monika_mode and hop_monika:
                     # monika mode only has monika
                     renpy.show("m_sticker hop")
-                elif in_stock_mode:
+                else:
                     word_winner = mas_fun.getWinner(
                         t,
                         show_sayori,
@@ -827,18 +835,17 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                         mas=poem_wordlist is not None
                     )
 
-                if t.sPoint >= 3 and show_sayori 
-
-                    if persistent.playthrough == 0:
-                        if t.sPoint >= 3:
-                            renpy.show("s_sticker hop")
-                        if t.nPoint >= 3:
-                            renpy.show("n_sticker hop")
-                        if t.yPoint >= 3:
-                            renpy.show("y_sticker hop")
+                    if show_monika and word_winner == mas_pgc.MONIKA:
+                        renpy.show("m_sticker hop")
+                    elif show_sayori and word_winner == mas_pgc.SAYORI:
+                        renpy.show("s_sticker hop")
+                    elif show_natsuki and word_winner == mas_pgc.NATSUKI:
+                        renpy.show("n_sticker hop")
+                    #elif show_yuri and word_winner == mas_pgc.YURI:
                     else:
-                        if persistent.playthrough == 2 and chapter == 2 and random.randint(0,10) == 0: renpy.show("m_sticker hop")
-                        elif t.nPoint > t.yPoint: renpy.show("n_sticker hop")
+                        renpy.show("y_sticker hop")
+
+
                         elif persistent.playthrough == 2 and not persistent.seen_sticker and random.randint(0,100) == 0:
                             renpy.show("y_sticker hopg")
                             persistent.seen_sticker = True
