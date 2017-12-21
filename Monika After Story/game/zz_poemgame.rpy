@@ -90,53 +90,57 @@ init -4 python:
                     )           
 
     # Sticker Time and position class
-    # TODO: full description
+    #
+    # the values here control the offsetting posititions and time for random
+    # hopping. 
+    # NOTE: all the attributes change overtime, so we're not going to use this
+    #   class anymore
     #
     # ATTR:
-    #   time - TODO   
-    #   pos - TODO
-    #   offset - TODO
-    #   zoom - TODO
+    #   time - time the sitcker will wait and not do anything
+    #   pos - starting position of the sticker
+    #   offset - amount of offset to move the sticker
+    #   zoom - amount of zoom to give to the sticker
     #
-    class MASStickerTimePos:
-        def __init__(self, time=None, pos=None, offset=None, zoom=None):
-
-            if time:
-                self.time = time
-            else:
-                self.time = renpy.random.random() * 4 + 4
-
-            if pos:
-                self.pos = pos
-            else:
-                self.pos = renpy.random.randint(-1,1)
-
-            if offset:
-                self.offset = offset
-            else:
-                self.offset = 0
-
-            if zoom:
-                self.zoom = zoom
-            else:
-                self.zoom = 1
-
+#    class MASStickerTimePos:
+#        def __init__(self, time=None, pos=None, offset=None, zoom=None):
+#
+#            if time:
+#                self.time = time
+#            else:
+#                self.time = renpy.random.random() * 4 + 4
+#
+#            if pos:
+#                self.pos = pos
+#            else:
+#                self.pos = renpy.random.randint(-1,1)
+#
+#            if offset:
+#                self.offset = offset
+#            else:
+#                self.offset = 0
+#
+#            if zoom:
+#                self.zoom = zoom
+#            else:
+#                self.zoom = 1
+#
     # creating the default stickers:
-    class MASStickerSayori(MASStickerTimePos):
-        def __init__(self):
-            MASStickerTimePos.__init__(self)
-
-    class MASStickerNatsuki(MASStickerTimePos):
-        def __init__(self):
-            MASStickerTimePos.__init__(self)
-
-    class MASStickerYuri(MASStickerTimePos):
-        def __init__(self):
-            MASStickerTimePos.__init__(self)
-
-    class MASStickerMonika(MASStickerTimePos):
-        def __init__(self):
-            MASStickerTimePos.__init__(self)
+#    class MASStickerSayori(MASStickerTimePos):
+#        def __init__(self):
+#            MASStickerTimePos.__init__(self)
+#
+#    class MASStickerNatsuki(MASStickerTimePos):
+#        def __init__(self):
+#            MASStickerTimePos.__init__(self)
+#
+#    class MASStickerYuri(MASStickerTimePos):
+#        def __init__(self):
+#            MASStickerTimePos.__init__(self)
+#
+#    class MASStickerMonika(MASStickerTimePos):
+#        def __init__(self):
+#            MASStickerTimePos.__init__(self)
 
 # EXCEPTIONS ------------------------------------------------------------------
     
@@ -211,12 +215,13 @@ init -10 python in mas_poemgame_consts:
     ODDS_GLTICH_SOUND = 3
 
 # store to handle sticker generation
-init -2 python in mas_poemgamestickers:
-    import store.mas_poemgame_consts as mas_pg_consts
+ # init -2 python in mas_poemgamestickers:
+#    import store.mas_poemgame_consts as mas_pg_consts
 
     # functions
-    def generateStickers():
+#    def generateStickers():
         #
+        # NOTE: not needed for now
         # Generates a dict of stickers you can use with the poem game.
         # This is so we dont overwrite the defaults
         #
@@ -226,19 +231,76 @@ init -2 python in mas_poemgamestickers:
         #       "natsuki": MASStickerNatsuki object
         #       "yuri": MASStickerYuri object
         #       "monika": MASStickerMonika object
-        sticker_pos_time = {
-            mas_pg_consts.SAYORI: MASStickerSayori(),
-            mas_pg_consts.NATSUKI: MASStickerNatsuki(),
-            mas_pg_consts.YURI: MASStickerYuri(),
-            mas_pg_consts.MONIKA: MASStickerMonika()
-        }
-        return sticker_pos_time
+#        sticker_pos_time = {
+#            mas_pg_consts.SAYORI: MASStickerSayori(),
+#            mas_pg_consts.NATSUKI: MASStickerNatsuki(),
+#            mas_pg_consts.YURI: MASStickerYuri(),
+#            mas_pg_consts.MONIKA: MASStickerMonika()
+#        }
+#        return sticker_pos_time
 
-# store to handle poem-related validations
-init -2 python in mas_poemgame_val:
-    import store.mas_poemgame_consts as mas_pg_consts
+# store to handle mas_poemgame functions
+init -2 python in mas_poemgame_fun:
+    import store.mas_poemgame_consts as mas_pgc
     
     # functions
+    def getPointValue(condition, point):
+        #
+        # Returns the point value if the given condition is true, otherwise
+        # returns 0
+        #
+        # IN:
+        #   condition - the condition to evaluate
+        #   point - the point value to return
+        #
+        # RETURNS: the point value if condition is True, 0 otherwise
+
+        if condition:
+            return point
+
+        return 0
+
+    def getWinner(word, sayori, natsuki, yuri, monika, mas=False):
+        #
+        # Checks the given PoemWord (or MASPoemWord) and returns the winner
+        # The value returned is a constant in mas_poemgame_consts
+        #
+        # IN:
+        #   word - the PoemWord (or MASPoemWord) to check
+        #   sayori - True means sayori is visible, False means she is not
+        #   natsuki - True means natsuki is visible, False means she is not
+        #   yuri - True means yuri is visible, False means she is not
+        #   monika - True means monika is visible, False means she is not
+        #   mas - True means we are checking a MASPoemWord, False means a
+        #       regular PoemWord
+        #       (Default: False)
+        #
+        # RETURNS: The girl with the highest score, as a constnat defined in
+        #   mas_poemgame_consts
+
+        # build a list of point values
+        girl_points = [
+            (mas_pgc.SAYORI, getPointValue(sayori, word.sPoint)),
+            (mas_pgc.NATSUKI, getPointValue(natsuki, word.nPoint)),
+            (mas_pgc.YURI, getPointValue(yuri, word.yPoint))
+        ]
+
+        if mas:
+            girl_points.append(
+                (mas_pgc.MONIKA, getPointValue(monika, word.mPoint))
+            )
+
+        # now get the largest from this list
+        largest = 0
+        largestValue = girl_points[largest][1]
+        for index in range(1,len(girl_points)):
+            if girl_points[index][1] > largestValue:
+                largestValue = girl_points[index][1]
+                largest = index
+
+        # return our result
+        return girl_points[largest][0]
+
     def validateFlow(flow):
         #
         # Validates the given flow if it is appropriate for the poemgame
@@ -249,13 +311,16 @@ init -2 python in mas_poemgame_val:
         # RETURNS:
         #   True if flow is valid, false if not
         return (
-            flow == mas_pg_consts.DISPLAY_MODE 
-            or flow == mas_pg_consts.STOCK_MODE
-            or flow == mas_pg_consts.MONIKA_MODE
+            flow == mas_pgc.DISPLAY_MODE 
+            or flow == mas_pgc.STOCK_MODE
+            or flow == mas_pgc.MONIKA_MODE
         )
 
 
-# To complete stop music, set both music params to None
+# completely configurable poemgame call.
+# NOTE: well, almost configurable
+# NOTE: disables skipping 
+# NOTE: spaceroom is replaced. You will need to call spaceroom after this
 #
 # IN:
 #   (REQUIRED)
@@ -263,13 +328,19 @@ init -2 python in mas_poemgame_val:
 #       returned values: 
 #
 #       (these are from mas_poemgame_constants)
-#       DISPLAY_MODE - glitch/display mode. Nothing is returned. 
+#       DISPLAY_MODE - glitch/display mode.
+#           If gather_words is True:
+#               Returns list of words selected
+#           else:
+#               Nothing
 #
 #       STOCK_MODE - stock minigame mode. 
 #           If only_winner is True:
 #               Returns only the winner and points as Tuple:
 #                   [0] -> name of winner (defined in mas_poemgame_constants)
 #                   [1] -> pts they won
+#               If gather_words is True:
+#                   [2] -> list of words selected
 #           else:
 #               Returns the point totals for each character in a dict of the 
 #               following format: (keys are defined in mas_poemgame_constants)
@@ -277,15 +348,32 @@ init -2 python in mas_poemgame_val:
 #                   "natsuki": <pts>
 #                   "yuri": <pts>
 #                   "monika": <pts>
+#               If gather _words is True:
+#                   "words": list of words selected
 #
 #       MONIKA_MODE - poemgame as it was in Act 3. Slightly configurable
-#           Nothing is returned.
+#           If gather_words is True:
+#               Returns list of words selected
+#           else:
+#               Nothing
 #
 #       TODO: add more flows? when we need them ofc
 #
 #       NOTE: If the given flow is none of the above, DISPLAY_MODE is assumed
 #
 #   (CONFIGURATION OPTIONS): (ORDER DOES NOT MATCH INPUT PARAMS)
+#
+#   gather_words - True will include a list of the selected words in the 
+#       return, False will not
+#       NOTE: The types of objects in this list may be different:
+#           If we are in monika_mode, then this will be a list of 
+#               MASPoemWord objects
+#           If poem_wordlist is not given, then this will be a list of
+#               PoemWord objects
+#           If poem_wordlist is given, then this will be the same type as the
+#               objects in poem_wordlist
+#       NOTE: The returned objects are deepcopied
+#       (Default: False)
 #
 #   glitch_baa - Tuple of the following format:
 #           [0] -> True means do the baa glitch, false means no
@@ -338,6 +426,14 @@ init -2 python in mas_poemgame_val:
 #       NOTE: Only active if glitch_wordscare is used.
 #       (Default: None)
 #
+#   hop_monika - True means monika will hop when a word is selected in monika
+#       mode. False will not
+#       NOTE: Only applies to Monika mode hopping
+#       (Default: False)
+#
+#   sel_sound - Filename of the sound to play when a word is selected
+#       (Default: gui.activate_sound)
+#
 #   music_filename - filename of the music to play. Set music to None to use
 #       this param. 
 #       NOTE: NO checks are made for the existence of this file. Please no
@@ -378,17 +474,12 @@ init -2 python in mas_poemgame_val:
 #   show_yuri - True will display yuri and her related actions. False will not.
 #       (Default: False)
 #
-#   sticker_pt - a dict of the format described in the generateStickers 
-#       function above. If a show_x arg is False, their key:value in this dict
-#       will be ignored.
-#       If none, the default one from generateStickers is used
-#       (Default: None)
-#
 #   total_words - Number of words that can be picked this game
 #       (Default: 20)
 #       (Default: None)
 #
 #   (DISPLAY_MODE OPTIONS)
+#   gather_words
 #   glitch_baa
 #   glitch_nb
 #   glitch_words
@@ -397,15 +488,16 @@ init -2 python in mas_poemgame_val:
 #   music_filename
 #   one_counter
 #   poem_wordlist
+#   sel_sound
 #   show_monika
 #   show_natsuki
 #   show_poemhelp
 #   show_sayori
 #   show_yuri
-#   sticker_pt
 #   total_words
 #
 #   (STOCK_MODE OPTIONS)
+#   gather_words
 #   glitch_baa
 #   glitch_nb
 #   glitch_words
@@ -415,38 +507,40 @@ init -2 python in mas_poemgame_val:
 #   one_counter
 #   only_winner
 #   poem_wordlist
+#   sel_sound
 #   show_monika
 #   show_natsuki
 #   show_poemhelp
 #   show_sayori
 #   show_yuri
-#   sticker_pt
 #   total_words
 #
 #   (MONIKA_MODE OPTIONS)
+#   gather_words
 #   glitch_baa
 #   glitch_nb
 #   glitch_words
 #   glitch_wordscare
 #   glitch_wordscare_sound
+#   hop_monika
 #   music_filename
 #   one_counter
+#   sel_sound
 #   show_poemhelp
-#   sticker_pt
 #   total_words
 #
 label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         show_natsuki=False,show_sayori=False,show_yuri=False,glitch_nb=False,
-        show_poemhelp=False,total_words=20,poem_wordlist=None,sticker_pt=None,
+        show_poemhelp=False,total_words=20,poem_wordlist=None,
         one_counter=False,only_monika=False,glitch_words=None,
-        glitch_wordscare=None,only_winner=False,glitch_baa=None
+        glitch_wordscare=None,only_winner=False,glitch_baa=None,
+        gather_words=False,hop_sound=gui.activate_sound,hop_monika=False,
 
     $ import store.mas_poemgamestickers as mas_stickers
-    $ import store.mas_poemgame_val as mas_validator
-    $ import store.mas_poemgame_constants as mas_pg_consts
+    $ import store.mas_poemgame_fun as mas_fun
 
     # flow validation
-    if not mas_validator.validateFlow(flow):
+    if not mas_fun.validateFlow(flow):
         $ flow = mas_pg_consts.DISPLAY_MODE
     
     # flow bools so we dont have == all the time
@@ -480,10 +574,6 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             if not glitch_wordscare[1]: # None
                 glitch_wordscare[1] = mas_pg_consts.ODDS_SCARE
 
-            # stuff glitchword scare handles
-            # makes the poem game go into glitch mode (white display)
-            poemgame_glitch = False
-
             # baa checking
             if (glitch_baa is None or (
                 len(glitch_baa) >= 2
@@ -512,15 +602,18 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         else: # None, or length < 2, or first item is False
             glitch_wordscare = None
 
-
-    # TODO: do we need to paramterize this?
-    stop music fadeout 2.0
-
+        # gather words processing
+        if gather_words:
+            from copy import deepcopy
+            selected_words = list()
+ 
     # glitch the notebook?
     if glitch_nb:
         scene bg notebook-glitch
     else:
         scene bg notebook
+
+    #
 
     # bottom quick menu. atm, we probably dont need this
     # show screen quick_menu
@@ -553,11 +646,14 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
     # the scene transition
     # TODO: do we need to parameterize this?
-    if transition:
-        with dissolve_scene_full
+#    if transition:
+#        with dissolve_scene_full
 
     # for reference:
     # play music ghostmenu
+
+    # TODO: do we need to paramterize this?
+    stop music fadeout 2.0
 
     # music playing
     if music_obj: # music object is not None
@@ -580,6 +676,10 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
     # okay here begins the main flow
     python:
 
+        # stuff glitchword scare handles
+        # makes the poem game go into glitch mode (white display)
+        poemgame_glitch = False
+
         # current word progress
         progress = 1
 
@@ -596,6 +696,8 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             }
         
         # the list of words
+        # TODO: okay this is bad because we need some way to do regular
+        # PoemWords incase they dont pass us a list
         if not in_monika_mode:
             if poem_wordlist:
                 wordlist = list(poem_wordlist.wordlist)
@@ -604,10 +706,10 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 wordlist = list(pw_list.wordlist)
 
         # the following handles the positioning and time between a sticker
-        if sticker_pt:
-            sticker_pos_time = sticker_pt
-        else:
-            sticker_pos_time = mas_stickers.generateStickers()
+#        if sticker_pt:
+#            sticker_pos_time = sticker_pt
+#        else:
+#            sticker_pos_time = mas_stickers.generateStickers()
 
         # as always, have loop controllers
         done = False
@@ -680,13 +782,22 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             # wait for user to hit a word
             t = ui.interact()
 
+            # get the word if we need to
+            if gather_words:
+                selected_words.append(deepcopy(t))
+
+            # wordscare glitch
             if glitch_wordscare and not poemgame_glitch:
+                
+                # then check this word is a glitch word
                 if t.glitch:
                     poemgame_glitch = True
                     renpy.music.play(audio.t4g)
                     renpy.scene()
                     renpy.show("white")
                     renpy.show("y_sticker glitch", at_list=[sticker_glitch])
+
+            # we've been glitched!
             elif poemgame_glitch:
                 if (not glitch_baa 
                     and not played_baa
@@ -696,11 +807,28 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 elif (not glitch_wordscare_sound
                     and random.randint(1, glitch_wordscare_sound[1]) == 1):
                     renpy.play(gui.activate_sound_glitch)
+            
+            # do sticker hopping!
+            else:
+                if sel_sound:
+                    renpy.play(sel_sound)
 
-           else:
+                # check for mode
+                if in_monika_mode and hop_monika:
+                    # monika mode only has monika
+                    renpy.show("m_sticker hop")
+                elif in_stock_mode:
+                    word_winner = mas_fun.getWinner(
+                        t,
+                        show_sayori,
+                        show_natsuki,
+                        show_yuri,
+                        show_monika,
+                        mas=poem_wordlist is not None
+                    )
 
-                elif persistent.playthrough != 3:
-                    renpy.play(gui.activate_sound)
+                if t.sPoint >= 3 and show_sayori 
+
                     if persistent.playthrough == 0:
                         if t.sPoint >= 3:
                             renpy.show("s_sticker hop")
