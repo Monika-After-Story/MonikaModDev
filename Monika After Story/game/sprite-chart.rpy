@@ -115,8 +115,8 @@ image monika 4 = ConditionSwitch(
             'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
             )
 image monika 5 = ConditionSwitch(
-            'is_sitting and morning_flag',im.FactorScale(im.Composite((2560,1483),(0,0),"mod_assets/monika/1.png", (1002,211),"mod_assets/monika/s.png"),0.625),
-            'is_sitting and not morning_flag',im.FactorScale(im.Composite((2560,1483),(0,0),"mod_assets/monika/1-n.png", (1002,211),"mod_assets/monika/s-n.png"),0.625),
+            'is_sitting and morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5",(0,0),"face_a_l"),zoom=1.25),
+            'is_sitting and not morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5_n",(0,0),"face_a_l_n"),zoom=1.25),
             'not is_sitting',im.Composite((960, 960), (0, 0), "monika/3a.png")
             )
 
