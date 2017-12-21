@@ -383,3 +383,18 @@ label greeting_japan:
      m 3 "You know what that means, [player]?"
      m 4j "It means {i}'I'll be yours forever{/i}'~"
      return
+
+label greeting_oniichan
+    m "Welcome back, Onii-chan!"
+    m "...That sounded a bit weird, didn't it."
+    m "I was trying something new, sorry ehehe~"
+    menu:
+        m "Do you like being called that [player]?"
+        Yes:
+            m "Oh?? Then maybe I'll call you that more often~"
+            m "Anyway, it's good seeing you again [player]."
+        No:
+            m "You don't?"
+            m "That's ok, i was just trying something out anyways."
+            m "Anyway, it's good seeing you again [player]."
+    return
