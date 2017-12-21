@@ -343,6 +343,7 @@ label monikaroom_greeting_opendoor:
             m 2j "And... all fixed!"
             show monika 1 at lhide
             hide monika
+            $ renpy.hide("bedroom")
     $ persistent.seen_monika_in_room = True
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post

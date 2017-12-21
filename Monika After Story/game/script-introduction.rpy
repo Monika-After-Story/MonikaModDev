@@ -5,12 +5,11 @@ label introduction:
         hkb_button.enabled = False
 
         # name changes if necessary
-        if not persistent.mcname or len(persistent.mcname) == 0:
-            persistent.mcname = persistent.playername
-            mcname = persistent.mcname
-
         if not currentuser or len(currentuser) == 0:
             currentuser = persistent.playername
+        if not persistent.mcname or len(persistent.mcname) == 0:
+            persistent.mcname = currentuser
+            mcname = currentuser
 
 
     if persistent.monika_kill == True:
