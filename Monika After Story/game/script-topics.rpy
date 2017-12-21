@@ -4790,7 +4790,7 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-    
+
 init 5 python:
     for key in ['main','character']:
         monika_topics.setdefault(key,[])
@@ -4820,6 +4820,7 @@ label monika_other_girls:
     m 1m "More than I could ever express."
     return
 
+init 5 python:
     for key in ['happiness']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_happiness')
@@ -4842,12 +4843,12 @@ label monika_happiness:
     m 2b "And besides, your cute girlfriend is always rooting for you~"
     m 2k "Now that's something to be very happy about!"
     return
-    
+
 init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
-        
+
 label monika_marriage:
     m 3m "M-marriage?"
     m 4n "I think it's a bit too early for marriage..."
