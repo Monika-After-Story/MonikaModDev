@@ -4823,6 +4823,49 @@ label monika_trapped:
     m "Remember that i am always with you if you ever feel that way~"
     return
 
+init 5 python:
+    for key in ['hanukkah','chanukah','menorah','latkes','suganiyot','anukah']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_hanukkah')
+    monika_random_topics.append('monika_hanukkah')
+
+label monika_hanukkah:
+    m 1q "One for each night, they shed a sweet light, to remind of days long ago~"
+    m "One for each night, they shed a sweet light, to remind of days long ago~"
+    m 2e "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
+    m "Hanukkah is a time of remembrance of such traditions but it is also of celebration."
+    m 1b "And a celebration it is! Eight nights worth~"
+    m 1a "Have you had fried sufganiyot before? It's a specific kind of jelly doughnut made during that holiday."
+    m "I like ones filled with strawberry jam~"
+    m 1b "This time of the year has so many wonderful holidays and traditions!"
+    m 1d "I do not know if you celebrate the holiday or not [player], but can we watch a menorah lighting ceremony together anyway?"
+    m 1k "We can hold hands while we sing and dance the night away~"
+    return
+
+init 5 python:
+    for key in ['coffee']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_coffee')#id
+    monika_random_topics.append('monika_coffee')
+
+label monika_coffee:
+    m 1b "Do you drink much coffee, [player]?"
+    m "I tend to enjoy a nice cup of coffee in the mornings."
+    m 1j "The warmth is really soothing, and the energy helps me stay focused."
+    m 1b "Did you know that Scandinavian countries tend to drink the most coffee per capita?"
+    m "Statistics show that Finland tends to drink two kilograms per capita more than the next highest ranked nations, which happen to be Norway and the Netherlands."
+    m "Many bygone philosophers were also known for indulging in lots of caffiene."
+    m "People like Voltaire and Balzac were said to drink forty to fifty cups a day."
+    m 1e "Doesn't seem too healthy, huh?"
+    m 1b "Of course, Voltaire lived to the old age of eighty-three."
+    m "Balzac, on the other hand, died of heart failure at fifty-one."
+    m 1d "I suppose you could say there really is such thing as 'too much of a good thing', but I don't know..."
+    m 1j "I'm not sure I could ever get enough of you~"
+    m "ehehe~"
+    m "If you like coffee, just promise me you won't overdo it like a philosopher, okay?"
+    m "Coffee is good, but not as good as being healthy."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
