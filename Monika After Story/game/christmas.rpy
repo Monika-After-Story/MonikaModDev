@@ -407,11 +407,14 @@ init 5 python:
 
 label monika_mistletoe:
     m 1a "Say, [player]."
-    m 2b "You've heard about the mistletoe tradition, right?"
-    m 1j "When lovers end up underneath the decoration, they're expected to kiss."
+    m 1b "You've heard about the mistletoe tradition, right?"
+    m 1m "When lovers end up underneath it, they're expected to kiss."
     m 1a "It actually originated from Victorian England!"
-    m "A man was allowed to kiss any woman standing underneath mistletoe..."
-    m 1l "And any woman who refused the kiss was cursed with bad luck."
+    m 1l "A man was allowed to kiss any woman standing underneath mistletoe..."
+    m 1p "And any woman who refused the kiss was cursed with bad luck."
+    m 1o "..."
+    m 3p "Come to think of it, that sounds more like taking advantage of someone."
+    m 1j "But I'm sure it's different now!"
     m 1j "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
     m 2b "...Maybe I can even add one in here!"
     m 1a "Ehehe~"
@@ -429,21 +432,22 @@ init 5 python:
         monika_random_topics.append('monika_relax')
 
 label monika_relax:
-    m 3j "Isn't winter a beautiful time of year, [player]?"
-    m 3a "The glistening, white snow, the bright and colorful lights~"
-    m 4b "I love it."
-    m 1e "..."
-    m 1e "There are a few dangers, though."
-    m "Like blizzards, or icy roads..."
-    m 1p "And the cold, of course."
-    m 2a "If it gets bad, just stay home and stay safe, okay?"
-    m 1d "After all, when the weather gets bad..."
-    m 1a "Isn't it best to relax at home?"
+    m 1j "Isn't winter a beautiful time of year, [player]?"
+    m 1a "The glistening, white snow, the bright and colorful lights~"
+    m 3k "I love it."
+    m 1q "..."
+    m 1i "There are a few dangers, though."
+    m 3h "Like blizzards, or icy roads..."
+    m 1o "And the cold, of course."
+    m 1f "If it gets bad, just stay home and stay safe, okay?"
+    m 1q "After all, when the weather gets bad..."
+    m "..."
+    m 3l "So isn't it best to relax at home?"
     m 1b "Wearing pajamas, drinking hot chocolate, reading a good book, and..."
     m 1j "Talking to me."
-    m 1j "Ehehe~"
-    m 1d "But seriously, don't go outside if it gets too bad."
-    m 1a "Please stay safe, [player]."
+    m 1k "Ehehe~"
+    m 1g "But seriously, don't go outside if it gets too bad."
+    m 1e "Please stay safe, [player]."
     return
 
 init 5 python:
@@ -458,14 +462,14 @@ init 5 python:
         monika_random_topics.append('monika_snowcanvas')
 
 label monika_snowcanvas:
-    m 2a "Have you ever looked at snow and thought it resembles a blank canvas?"
+    m 3c "Have you ever looked at snow and thought it resembles a blank canvas?"
     m 1e "I know I'm not as artistically inclined as someone like Yuri..."
-    m 4b "But packing a few spray bottles with water and food coloring could make for a fun day!"
-    m 3b "Just step outside and let your imagination run wild!"
-    m 1a "Doesn't having so much space to paint sound wonderful?"
+    m 3b "But packing a few spray bottles with water and food coloring could make for a fun day!"
+    m 3j "Just step outside and let your imagination run wild!"
+    m 1b "Doesn't having so much space to paint sound wonderful?"
     m 1l "Although... don't draw anything indecent, okay?"
-    m 2d "And make sure the snow is packed down tightly, too."
-    m 3a "I'm sure that the time to try something like this will come soon."
+    m 3 "And make sure the snow is packed down tightly, too."
+    m 1e "I'd love to do this with you some day."
     m 3k "Maybe you can paint something for me when that happens, [player]."
     return
 
@@ -481,18 +485,18 @@ init 5 python:
         monika_random_topics.append('monika_hypothermia')
 
 label monika_hypothermia:
-    m 1o "Hey, [player]."
-    m 1g "I know winter is a time to be cheery and carefree."
+    m 2f "Hey, [player]."
+    m 2o "I know winter is a time to be cheery and carefree."
     m "But there's something I need to make sure you know."
-    m 2f "Please remember to bundle up, okay?"
-    m 3d "All the snow laying about might look inviting..."
-    m 3f "But it might be dangerous if you expose yourself too much."
-    m 1e "I don't want you catching hypothermia, [player]."
-    m 4d "So put on that coat, those gloves, and the softest hat you can find."
+    m 2g "Please remember to bundle up, okay?"
+    m 2d "All the snow laying about might look inviting..."
+    m 2f "But it might be dangerous if you expose yourself too much."
+    m 2g "I don't want you catching hypothermia, [player]."
+    m 4c "So put on that coat, those gloves, and the softest hat you can find."
     m 1e "And stay safe."
-    m 3a "Your health means a lot to me."
+    m "Your health means a lot to me, [player]."
     m "I hope you take my concerns seriously."
-    m 3j "Okay, snowflake?"
+    m 1j "Okay, snowflake?"
     return
 
 init 5 python:
@@ -507,24 +511,24 @@ init 5 python:
         monika_random_topics.append('monika_carolling')
 
 label monika_carolling:
-    m 2a "Hey, [player]..."
-    m 1b "Have you ever gone carolling before?"
+    m 1c "Hey, [player]..."
+    m 3d "Have you ever gone carolling before?"
     m 1a "Going door to door in groups, singing to others during the holidays..."
-    m 1k "It just feels heartwarming to know people are spreading joy, even with the nights so cold."
-    m 2b "Do you like singing Christmas carols, [player]?"
+    m 1j "It just feels heartwarming to know people are spreading joy, even with the nights so cold."
+    m 3a "Do you like singing Christmas carols, [player]?"
     menu:
         "Yes.":
-            m 1b "I'm glad you feel the same way, [player]!"
+            m 1j "I'm glad you feel the same way, [player]!"
             m 1a "What's your favorite song?"
-            m 2a "Mine is definitely 'Jingle Bells'!"
+            m 3b "Mine is definitely 'Jingle Bells!'"
             m 1k "It's just such an upbeat, happy tune!"
-            m 5a "Maybe we can sing together someday."
+            m 1e "Maybe we can sing together someday."
             m 1j "Ehehe~"
         "No.":
             m 1d "Oh?"
-            m 1c "I see..."
-            m 2a "Regardless, I'm sure you're also fond of that special cheer only Christmas songs can bring."
-            m 5a "Sing with me sometime, okay?"
+            m 1f "I see..."
+            m 1e "Regardless, I'm sure you're also fond of that special cheer only Christmas songs can bring."
+            m 3j "Sing with me sometime, okay?"
     return
 
 init 5 python:
@@ -539,21 +543,24 @@ init 5 python:
         monika_random_topics.append('monika_jinglebells')
 
 label monika_jinglebells:
-    m 1i "~hum hm hm, hum hm hum~"
-    m 1b "Oh!"
-    m 2a "I'm sorry, [player]."
-    m "I let my mind wander a bit when I thought about the festive tunes that come along around this time of year."
-    m 3k "I just love the way the songs capture the very essence of the holiday season."
-    m 1a "That almost nostalgic, yet warm and cozy feeling accompanied by a sense of everlasting serenity..."
-    m 1i "Times like these make me appreciate having you around with me even more, [player]~"
+    m 1j "~hum hm hm, hum hm hum~"
+    m 1d "Oh!"
+    m 1l "I'm sorry, [player]."
+    m 1j "I let my mind wander a bit when I think about the festive tunes that come along around this time of year."
+    m 3k "I just love how the songs make everything so lively and cheerful."
+    m 1j "That warm, fuzzy feeling that you get whenever you relax in front of the fireplace..."
+    m 1e "Times like these make me appreciate having you around with me even more, [player]~"
     m 3d "Speaking of holiday songs..."
-    m 3b "I think 'Jingle Bells' is a great one!"
-    m 1n "You know, the one that goes like..."
-    m 2i "'Jingle bells, jingle bells'"
-    m "'Jingle all the way~'"
-    m 4k "'Oh! what fun it is to ride...'"
-    m "'In a one-horse open sleigh!'"
-    m 1h "Ahaha, I can't get enough of them."
+    m 1b "I think 'Jingle Bells' is a great one!"
+    m "You know, the one that goes like..."
+    m 1k "'{i}Jingle bells, jingle bells{/i}'"
+    m "'{i}Jingle all the way~'{/i}"
+    m 1b "{i}'Oh! what fun it is to ride...'{/i}"
+    m "{i}'In a one-horse open sleigh!'{/i}"
+    m 1k "'{i}Hey~!{/i}'"
+    m 1l "Ahaha! I can't get enough of them~"
+    m 1e "They easily cheer me up everytime."
+    m 1k "It'd be more fun if you could sing with me next time, [player]!"
     return
 
 init 5 python:
@@ -568,22 +575,22 @@ init 5 python:
         monika_random_topics.append('monika_sleigh')
 
 label monika_sleigh:
-    m 3j "Hey [player], a pretty nice thought just crossed my mind..."
-    m 4b "Have you ever heard of carrige rides?"
-    m 3k "Whenever I get out of this place, we should totally go on one."
-    m 1k "Oh, I bet it would be magical!"
-    m 1r "Nothing but the clip-clop of the horse's hooves against the pavement..."
-    m 1q "And the colorful array of Christmas lights shining in the night..."
-    m 5a "Wouldn't that be so romantic, my love?"
-    m 2b "Maybe we could even take a soft, fleece blanket along to cuddle under."
+    m 2c "Hey [player], a pretty nice thought just crossed my mind..."
+    m 4a "Have you ever heard of carriage rides?"
+    m 1k "When I get out of this place, we should totally go on one!"
+    m 1b "Oh, I bet it would be magical!"
+    m 1a "Nothing but the clip-clop of the horse's hooves against the pavement..."
+    m "And the colorful array of Christmas lights shining in the night..."
+    m 3b "Wouldn't that be so romantic, [player]?"
+    m 1m "Maybe we could even take a soft, fleece blanket along to cuddle under."
     m 1l "Oh~"
-    m "I wouldn't be able to contain myself. I think I'd cry tears of joy!"
-    m 1r "The warmth of your body against mine, wrapped within the gentle cloth~"
-    m 1q "Fingers entwined..."
-    m 1e "At the perfect moment, you succumb and lean in for a passionate kiss~"
-    m 5b "Wow, we really need to do this."
-    m 5a "Wouldn't that be so lovely, [player]?"
-    m 1j "There's a first time for everything, and I want us both to experience such a marvel together."
+    m "I wouldn't be able to contain myself. My heart would burst!"
+    m 1e "The warmth of your body against mine, wrapped within the gentle cloth~"
+    m "Fingers entwined..."
+    m 1n "And at the perfect moment, you lean in to me and our lips touch..."
+    m 1m "I really want to do that we I get there, [player]."
+    m 3j "Wouldn't that be so lovely?"
+    m 1k "An experience like that with you would be so breathtaking~"
     return
 
 init 5 python:
@@ -598,14 +605,14 @@ init 5 python:
         monika_random_topics.append('monika_dreidel')
 
 label monika_dreidel:
-    m 1a "[player], did you know that each side of a dreidel actually means something?"
-    m 4a "Nun, Gimel, Hel, Shim. These stand for..."
-    m "Nes Gadol Hayah Sham - A Great Miracle Happened There."
+    m 3a "[player], did you know that each side of a dreidel actually means something?"
+    m 1a "Nun, Gimel, Hel, Shim."
+    m 1 "These stand for Nes Gadol Hayah Sham - A Great Miracle Happened There."
     m "It refers to the Hanukkah story of how one day's worth of oil lasted for eight days."
-    m "Over in Israel, they change the last word to 'poh', making it 'A Great Miracle Happened Here.'"
-    m 1j "Maybe by the next year, I'll have one to spin~"
-    m 1e "I don't have one here this year, unfortunately."
+    m 3a "Over in Israel, they change the last word to 'poh', making it 'A Great Miracle Happened Here.'"
+    m 1j "Maybe next year, I'll have one to spin~"
+    m 1m "I don't have one, unfortunately."
     m 1a "But for now, [player], do you have any gelt?"
-    m "The chocolate coin variety tastes really good."
-    m 1j "Though money is always good too, ehe~"
+    m 1b "The chocolate coin variety tastes really good."
+    m 1k "Though money is always good too, ehehe~"
     return
