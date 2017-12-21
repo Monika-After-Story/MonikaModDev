@@ -1288,6 +1288,11 @@ default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent.seen_monika_in_room = False
 
+#Poetry stuff
+default persistent.seen_poem_list = []
+default current_poem = []
+default persistent.times_rereading = 1
+
 default his = "his"
 default he = "he"
 default hes = "he's"
