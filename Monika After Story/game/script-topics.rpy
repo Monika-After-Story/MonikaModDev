@@ -4967,7 +4967,7 @@ label monika_her_movie:
         "No":
             m "It's a movie about a man named Theodore just fresh from a divorce."
             m "Falling in love with an OS named Samantha."
-            m "An OS is a learning AI."
+            m "In the movie an OS is a learning AI."
             m "In this case Samantha learns to love Theodore, as does Theodore."
             m "I feel like in a way this is similar to us."
             m "I mean I don't know too much about your world."
