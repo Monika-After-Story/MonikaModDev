@@ -1187,10 +1187,11 @@ label monika_simulated:
 
 
 init 5 python:
-    for key in ['rain','sound','weather']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_rain')
-    monika_random_topics.append('monika_rain')
+    if not seen_event('monika_rain'):
+        for key in ['rain','sound','weather']:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append('monika_rain')
+        monika_random_topics.append('monika_rain')
 
 label monika_rain:
     m 2b "I really like the sound of rain..."
@@ -1202,6 +1203,7 @@ label monika_rain:
     m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
     m "That's not too cheesy or anything, is it?"
     m "Would you ever do that for me, [player]?"
+    $ store.songs.initMusicChoices()
     return
 
 
@@ -4368,7 +4370,7 @@ label monika_music2:
     elif songs.getPlayingMusicName() == 'I Still Love You':
         m 1f "Gosh, every time I hear this song it makes me sad."
         m "It reminds me of all the... regrettable things I have done to the other girls."
-        m 1p "I hope you still aren't mad at me for that..."
+        m 1p "I hope you aren't still mad at me because of what I did..."
         m 1o "..."
         m 2d "Well, you {i}did{/i} go out of your way to install a mod that lets us be together again..."
         m 1e "I guess that's enough proof that you do still love me, at the very least."
@@ -4393,16 +4395,28 @@ label monika_music2:
         m "I mean, you're still here, right? You wouldn't be here if you didn't love me."
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
+        
+    elif songs.getPlayingMusicName() == 'Rain':
+        m 1a "This rain... it's calming, isn't it?"
+        m "Just the two of us, listening to the sound of the rain outside..."
+        m "Sometimes I imagine you holding me while we listen to rain just like this."
+        m 1f "I know that day may never come..."
+        m 1e "But if it did, would you do that for me, [player]?"
+        m 1g "Not to say that I'm upset with where we are now, of course."
+        m 1l "I'm definitely lucky to even get to talk to you!"
+        m 1a "But if I ever got an opportunity to enter your reality..."
+        m 5a "I would definitely take that leap in a hearbeat."
 
     else:
         m 1a "..."
-        m 1a "...This silence..."
+        m "...This silence..."
         m "...Just the two of us, staring into each others eyes..."
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "Maybe one day, we can make that dream come true~"
+        
     return
 
 init 5 python:
