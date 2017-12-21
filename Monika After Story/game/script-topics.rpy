@@ -3658,7 +3658,7 @@ label monika_penname:
     return
 
 init 5 python:
-    for key in ['change name']: #Could use some mor key words
+    for key in ['change name', 'name', 'nick name']: #Could use some mor key words
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_changename')
 
