@@ -4803,6 +4803,26 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
 
+init 5 python:
+    for key in ['trap', 'trapped']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_trapped')
+    monika_random_topics.append('monika_trapped')
+
+label monika_trapped:
+    m "Hey [player]"
+    m "Do you ever feel trapped sometimes?"
+    m "Like when ever you are just filled up with things you have to do or not able to do anything in life makes you just feel so entrapped because of it."
+    m "Things like that usually make people feel trapped to the point of being depressed."
+    m "[player], if you ever feel like you are trapped please remember to try and work your way through whatever is happening."
+    m "Like take for example..."
+    m "You are a high school student that has a ton of homework to do."
+    m "The only way that you would be able to get past that is to try and get whatever you need to do done in order to get through it."
+    m "Like i said, the only way you will ever get passed the feeling of being trapped is to try and overcome what is making you feel trapped."
+    m "So please [player], try to never feel trapped."
+    m "Remember that i am always with you if you ever feel that way~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
