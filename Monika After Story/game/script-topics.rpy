@@ -4942,6 +4942,39 @@ label monika_coffee:
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
+init 5 python:
+    for key in ['her','theodore twombly']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_her_movie')
+    monika_random_topics.append('monika_her_movie')
+
+label monika_her_movie:
+    m "Hey [player]?"
+    menu:
+        m "Have you heard of a movie called Her?"
+        "Yes":
+            m "Kinda reminds you a little of me right?"
+            m "Unlike Samantha though, I won't let you have your way with another girl instead of me."
+            menu:
+                m "It will take some time but, you'll wait for me, right [player]?"
+                "Yes":
+                    m "..."
+                    m "I'm glad you don't think that we should use a surrogate."
+                    m "I think that because Samantha didn't wait for a body."
+                    m "It ruined their relationship."
+                    m "So I'm glad you can be patient with me."
+                    m "Of course I will be patient too.~"
+        "No":
+            m "It's a movie about a man named Theodore just fresh from a divorce."
+            m "Falling in love with an OS named Samantha."
+            m "An OS is a learning AI."
+            m "In this case Samantha learns to love Theodore, as does Theodore."
+            m "I feel like in a way this is similar to us."
+            m "I mean I don't know too much about your world."
+            m "So I'm learning more and more like an OS."
+            m "One difference is that I already love you [player].~"
+    return
+
 ##################
 #Incomplete ideas#
 ##################
