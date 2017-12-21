@@ -292,7 +292,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             else:
                 show monika_day_room
             if not hide_monika:
-                show monika 1 at i11 zorder 2
+                show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
     elif not is_morning():
         if morning_flag != False or scene_change:
@@ -311,7 +311,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 show monika_room
                 #show monika_bg_highlight
             if not hide_monika:
-                show monika 1 at i11 zorder 2
+                show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
 
     $scene_change = False
