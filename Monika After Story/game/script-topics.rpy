@@ -25,9 +25,21 @@ init -1 python:
             if renpy.seen_label(monika_random_topics[index]):
                 monika_random_topics.pop(index)
 
+    # EXCEPTION CLass incase of bad labels
+    class MASTopicLabelException(Exception):
+        def __init__(self, msg):
+            self.msg = msg
+        def __str__(self):
+            return "MASTopicLabelException: " + self.msg
+
 init 11 python:
     #List of all random topics
     all_random_topics = list(monika_random_topics)
+
+    # go through the topics list and ensure the labels exist
+    for topic in monika_random_topics:
+        if not renpy.has_label(topic):
+            raise MASTopicLabelException("topic '" + topic + "' does not exist.")
 
     #Remove all previously seen random topics.
     remove_seen_topics()
