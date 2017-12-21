@@ -548,7 +548,7 @@ init 5 python:
             monika_topics[key].append('monika_jinglebells') #id
         monika_random_topics.append('monika_jinglebells')
 
-label monika_jingebells:
+label monika_jinglebells:
     m 1i "~hum hm hm, hum hm hum~"
     m 1b "Oh!"
     m 2a "I'm sorry, [player]."
