@@ -8,14 +8,14 @@ init 501:
 
     if is_christmas_time:
         #body poses
-        image body_1 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-crossed-xmas.png")
-        image body_1_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-crossed-n-xmas.png")
-        image body_2 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-steepling-xmas.png")
-        image body_2_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-steepling-n-xmas.png")
-        image body_3 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-pointright-xmas.png")
-        image body_3_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-pointright-n-xmas.png")
-        image body_4 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-restleftpointright-xmas.png")
-        image body_4_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-restleftpointright-n-xmas.png")
+        image body_1 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-steepling-xmas.png")
+        image body_1_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-steepling-n-xmas.png")
+        image body_2 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-crossed-xmas.png")
+        image body_2_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-crossed-n-xmas.png")
+        image body_3 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-restleftpointright-xmas.png")
+        image body_3_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-restleftpointright-n-xmas.png")
+        image body_4 = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-xmas.png",(0,0),"mod_assets/monika/arms-pointright-xmas.png")
+        image body_4_n = im.Composite((1280,742),(0,0),"mod_assets/monika/torso-n-xmas.png",(0,0),"mod_assets/monika/arms-pointright-n-xmas.png")
         image body_5 = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-xmas.png")
         image body_5_n = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-n-xmas.png")
 
@@ -66,7 +66,7 @@ label monika_christmas:
     m 1f "But..."
     m 1q "..."
     m 4e "[player], I love you."
-    m 3e "Maybe it's just the snow, or the decorations." 
+    m 3e "Maybe it's just the snow, or the decorations."
     m 2n "...or even the mistletoe getting to me."
     m 2l "Don't worry! I didn't hang one up."
     m 3m "...Maybe~"
