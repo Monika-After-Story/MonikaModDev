@@ -217,7 +217,7 @@ label monika_snow:
     m 1c "After reading a bit about other seasons that come and go, I don't think I'd enjoy a sweltering summer very much..."
     m 1a "It's just that I'd prefer a balmy and gentle heat more, ahaha."
     m 3b "But snow is just so much more... tranquil and intimate, you know?"
-    m "There's a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
+    m 1e "There's a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
     return
 
 init 5 python:
@@ -240,11 +240,11 @@ label monika_winter:
     m 1m "Even staying indoors seems so much more comfortable when there’s snow outside."
     m 2b "The festivities are lovely too, of course."
     m 1c "I wonder if it's acceptable to start decorating..."
-    m "I hope you’re enjoying yourself during this merry season, [player]."
-    m "You can always spend some time with me, if you want to chill..."
-    m "Or maybe you’d rather heat things up~?"
-    m "Ahaha! I'm only teasing you, [player]~"
-    m "Just do be sure to visit often, okay?"
+    m 1 "But I hope you’re enjoying yourself during this merry season, [player]."
+    m 1a "You can always spend some time with me, if you want to chill..."
+    m 2m "Or maybe you’d rather heat things up~?"
+    m 3l "Ahaha! I'm only teasing you, [player]~"
+    m 1j "Just do be sure to visit often, okay?"
     return
 
 init 5 python:
@@ -258,13 +258,12 @@ init 5 python:
             monika_topics[key].append('monika_snowballfight') #id
 
 label monika_snowballfight:
-    m "Snowball fighting!?"
-    m "Having one with you sounds like a ton of fun, [player]!"
-    m "Well, I’d still have to figure out how to get some snow in here, ahaha..."
-    m "Fair warning, though..."
-    m "I've got quite the throwing arm."
-    m "So I certainly won't be going easy on you!"
-    m "Maybe you’re better at snowball fights than Pong~?"
+    m 1a "Snowball fighting?"
+    m 2k "Having one with you sounds like a ton of fun, [player]!"
+    m 2r "Fair warning, though..."
+    m 2n "I've got quite the throwing arm."
+    m 1j "So I certainly won't be going easy on you!"
+    m 1m "Maybe you're better at snowball fights than Pong~?"
     return
 
 init 5 python:
@@ -279,18 +278,17 @@ init 5 python:
         monika_random_topics.append('monika_iceskating')
 
 label monika_iceskating:
-    m "Hey, [player], do you know how to ice skate?"
-    m "It's a very admirable skill to pick up!"
-    m "Especially for those people who can do all those nifty tricks."
-    m "I mean, it's hard enough to keep your balance on ice in the first place."
-    m "Being able to turn it into a performance is really impressive."
-    m "There’s actually quite a variety of ways to ice skate!"
-    m "Figure skating, speed skating, and even theatrical performances!"
-    m "..."
-    m "While doing something like that sounds like a great time..."
-    m "I don't know if I'll be able to join in on the fun anytime soon."
-    m "But having you here with me is enough to keep me happy, [player]."
-    m "I love you, [player]~"
+    m 2d "Hey, [player], do you know how to ice skate?"
+    m 2b "It's a really cool thing to learn!"
+    m 1a "Especially for those who can do a lot of athletic tricks."
+    m 3n "I mean, it's hard enough to keep your balance on ice in the first place."
+    m 2e "Being able to turn it into a performance is really impressive."
+    m 2c "There's actually a lot of ways to ice skate!"
+    m "Figure skating, speed skating, and even in theatrical performances!"
+    m 1o "Though, while doing something like that sounds like a great time..."
+    m 2n "I don't know if I'll be able to join in on the fun anytime soon."
+    m 1e "But having you here with me is enough to keep me happy."
+    m 1k "I love you so much, [player]~"
     return
 
 init 5 python:
@@ -306,22 +304,23 @@ init 5 python:
 
 label monika_whatiwant:
     m 5a "Oh, [player], isn't it lovely around the holidays?"
-    m "I hope you don't mind, but I have a little something special to say today."
-    m 5b "Here goes."
-    m 5l "Ehehe, I hope it's not too cheesy..."
+    m 5b "I hope you don't mind, but I have a little something special to say today."
+    m 1j "Ehehe, I hope it's not too cheesy..."
+    m 3l "Here goes."
     m 1r "..."
-    m 1j "You really are the joy to my world, [player]."
+    m 1e "You really are the joy to my world, [player]."
     m "A thousand glittering stars couldn't match your brilliance."
-    m 1e "This melancholy, frostbitten heart of mine needs only your warmth to beat anew."
+    m 1 "This melancholy, frostbitten heart of mine needs only your warmth to beat anew."
     m "Underneath the sprawling branches of yonder Christmas tree..."
-    m "You'll always be the only present I will ever need."
+    m 1e "You'll always be the only present I will ever need."
     m 1r "..."
-    m 3e "Aha! I can't believe I said something so embarassing."
-    m "Sorry if I sounded a bit funny! Winter's always a wonderful time to read some lengthy works."
-    m 1c "... I wasn't lying, though."
-    m 3b "Don't worry about getting me a present."
-    m 3a "After all, I have you. And that's all I want."
-    m 1k "I love you with all my heart, [player]."
+    m 4l "Ahaha! Sorry if that sounded too serious!"
+    m 2a "Winter's a wonderful time to read some lengthy works."
+    m 1q "But..."
+    m 1r "I wasn't lying, [player]."
+    m 3e "Don't worry about getting me a present."
+    m 4j "After all, I have you. And that's all I want."
+    m 1k "I love you with all my heart, [player]~"
     return
 
 init 5 python:
@@ -336,36 +335,37 @@ init 5 python:
         monika_random_topics.append('monika_snowman')
 
 label monika_snowman:
-    m 1q "Hmm..."
-    m 3b "[player], have you ever stopped to think about what the life of a snowman is like?"
-    m 1a "Like, I know they're not alive, but..."
+    m 2q "Hmm..."
+    m 2c "[player], have you ever stopped to think about what the life of a snowman is like?"
+    m 2o "Like, I know they're not alive, but..."
     m "Just standing there, all by themselves. It must get lonely, from time to time."
-    m 1e "..."
-    m "I know how that feels. Or I used to, anyway."
-    m 1j "But then I found the love of my life!"
-    m 2b "I bet it's not all bad, though."
-    m "You could watch the snow fall, or admire the stars."
-    m 2a "Even an aurora is possible!"
+    m 1q "..."
+    m 1i "I know how that feels."
+    m 3p "Or I used to, anyway."
+    m 1a "But then I found the love of my life!"
+    m 1c "I bet it's not all bad, though."
+    m 1 "You could watch the snow fall, or admire the stars."
+    m 1a "Or see an aurora!"
     m 1j "Just imagine it!"
-    m 5a "I'd be a happy, little snow lady."
-    m "What about you, sweetie?"
-    m "What would you do, if you were made of snow?"
+    m 1j "I'd be a happy, little snow lady."
+    m 1a "What about you, [player]?"
+    m 3 "What would you do, if you were made of snow?"
     menu:
         "I'd watch the scenery change as time passes.":
             m 1k "I feel the same way, too!"
             m 3b "Wouldn't it just be breathtaking?"
-            m 1k "You'd better save a spot for me, though~!"
+            m 1k "You better save a spot for me, though~!"
 
         "I'd melt for you.":
             m 1k "Ahaha!"
-            m 1a "That was so cheesy!"
+            m 1l "That was so cheesy!"
             m 1e "And yet, so sweet."
-            m 1a "Thank you, love."
+            m 1j "Thank you, [player]."
 
         "I'd freeze up!":
             m 1k "Ahaha!"
-            m 1a "Technically, it would be too late to worry about something like that."
-            m 1e "Maybe being a snowman wouldn't be too great."
+            m 3e "Technically, it would be too late to worry about something like that."
+            m 1m "Maybe being a snowman wouldn't be too great."
             m 5a "A warm fire with your loved one and a steaming cup of hot chocolate is much better, no?"
     return
 
@@ -382,16 +382,15 @@ init 5 python:
 
 label monika_sledding:
     m 3a "You know what I would love to do with you?"
-    m "Sledding."
-    m 5b "I know you might think that sort of thing is only for kids."
-    m 5a "But I think it could be fun for us, too!"
-    m 4b "We could try using an inner tube, a kicksled, a saucer, or even a traditional toboggan."
-    m 1a "I've heard each one gives a different experience. Plus, both of us could easily fit on a toboggan."
+    m 1j "Sledding!"
+    m 2a "You might think it's only for kids, but I think it could be fun for us, too!"
+    m 4 "We could try using an inner tube, a kicksled, a saucer, or even a traditional toboggan."
+    m "I've heard each one gives a different experience. Plus, both of us could easily fit on a toboggan."
     m 1l "The kicksled is a bit small, though."
     m 1k "Ahaha!"
-    m 1a "I'd have to sit in your lap for that one."
-    m 1g "And I'd still be at risk of tumbling off."
-    m 1b "But I know you wouldn't let that happen. You'd hold me tight, right~?"
+    m 1m "I'd have to sit in your lap for that one."
+    m 1n "And I'd still be at risk of tumbling off."
+    m 1e "But I know you wouldn't let that happen. You'd hold me tight, right~?"
     m 1j "That would probably be the best part."
     return
 
