@@ -4855,7 +4855,7 @@ init 5 python:
     monika_random_topics.append('monika_waitinglines')
     
 label monika_waitinglines:
-    m "Hey [player], have you ever thought about how much time you've spent waiting in lines before?”
+    m "Hey [player], have you ever thought about how much time you've spent waiting in lines before?"
     m "I mean, across your entire life of course!"
     m "It's probably quite a long time, you know?"
     m "I bet that time would at least double if we were to count every time you had to wait, no matter how short."
