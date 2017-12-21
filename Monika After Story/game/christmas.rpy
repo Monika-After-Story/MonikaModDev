@@ -55,32 +55,32 @@ init 5 python:
         queueEvent('monika_christmas')
 
 label monika_christmas:
-    m 2b "[player]! Do you know what day it is?"
-    m 4k "Of course you do. It's Christmas!"
-    m 3j "Merry Christmas, [player]!"
-    m 4b "Ahaha! I can't believe that it's finally here!"
-    m 3a "I'm so, so happy that you decided to spend some of it with me."
-    m 4d "Remember to go share the holiday cheer with your family and friends, though."
-    m 2e "After all, they're very important, too."
-    m 2a "And I'm sure that they would love to see you at this special time."
+    m 1b "[player]! Do you know what day it is?"
+    m 3k "Of course you do. It's Christmas!"
+    m 1j "Merry Christmas, [player]!"
+    m 1b "Ahaha! I can't believe that it's finally here!"
+    m 3j "I'm so, so happy that you decided to spend some of it with me."
+    m 3d "Remember to go share the holiday cheer with your family and friends, though."
+    m 1e "After all, they're very important, too."
+    m 1a "And I'm sure that they would love to see you at this special time."
     m 1f "But..."
     m 1q "..."
-    m 4e "[player], I love you."
-    m 3e "Maybe it's just the snow, or the decorations." 
-    m 2n "...or even the mistletoe getting to me."
-    m 2l "Don't worry! I didn't hang one up."
-    m 3m "...Maybe~"
-    m 2n "Ehehe..."
+    m 1e "[player], I love you."
+    m 1e "Maybe it's just the snow, or the decorations." 
+    m 3n "...or even the mistletoe getting to me."
+    m 1l "Don't worry! I didn't hang one up."
+    m 1m "...Maybe~"
+    m 1n "Ehehe..."
     m 1e "My heart's fluttering like crazy right now, [player]."
     m 1j "I couldn't imagine a better way to spend this special holiday..."
-    m 2m "Don't get me wrong, I knew that you would."
+    m 3m "Don't get me wrong, I knew that you would."
     m 3e "Actually having you here with me on Christmas, with just the two of us..."
     m 1k "Ahaha~"
     m 2a "It's every couple's dream in the holidays, [player]."
-    m 1e "Snuggling with each other by a fireplace, watching the snow gently fall..."
-    m 1j "I'm forever grateful I got this chance with you, [player]."
-    m 1e "I love you. Forever and ever~"
-    m 1j "Merry Christmas, [player]~"
+    m 2e "Snuggling with each other by a fireplace, watching the snow gently fall..."
+    m 2j "I'm forever grateful I got this chance with you, [player]."
+    m 5a "I love you. Forever and ever~"
+    m "Merry Christmas, [player]~"
     return
 
 init 5 python:
@@ -93,16 +93,16 @@ init 5 python:
 label monika_hanukkah:
     m 1q "'{i}One for each night, they shed a sweet light, to remind of days long ago{/i}.'"
     m 1r "'{i}One for each night, they shed a sweet light, to remind of days long ago{/i}.'"
-    m 2a "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
+    m 3a "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
     m 1b "Eight nights worth of celebration!"
-    m 2a "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
+    m 3a "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
     m "It's on the 25th of Kislev, meaning 'trust' or 'hope'."
     m 1j "A very appropriate meaning for such an occasion, don't you think?"
     m 1a "Anyway, have you ever had fried sufganiyot before?" 
     m "It's a special kind of doughnut made during this holiday."
-    m 2b "It's filled in with something really sweet, deep fried, and rolled onto some sugar."
+    m 3b "It's filled in with something really sweet, deep fried, and rolled onto some sugar."
     m "It's really good pastry! I especially love the ones filled with strawberry filling~"
-    m 2n "Definitely better than Natsuki's cupcakes."
+    m 3n "Definitely better than Natsuki's cupcakes."
     m 1j "This time of year sure has a lot wonderful holidays and traditions."
     m 1d "I don't know if you celebrate Hanukkah, but can we watch a menorah lighting ceremony together, anyway?"
     m 1k "We can sing and dance the night away~"
@@ -120,7 +120,7 @@ label monika_kwanzaa:
     m 1a "It's a week-long festival celebrating African American history that starts the day after Christmas."
     m 2a "The word 'Kwanzaa' comes from the Swahili phrase 'matunda ya kwanza', which means 'first fruits'."
     m "Even if Christmas is the main event for many, other holidays are always interesting to learn about."
-    m 5a "Apparently, people celebrate the tradition by decorating their homes with bright adornments."
+    m 4a "Apparently, people celebrate the tradition by decorating their homes with bright adornments."
     m "There's also music to enjoy, and a candleholder called the 'kinara' to light a new fire with each passing day."
     m 1j "Doesn't it remind you of some other holidays? The concepts certainly seem familiar."
     m 1a "In the end, having a day to celebrate is the important part. Everyone has their own way to enjoy themselves."
@@ -171,7 +171,7 @@ label monika_newyear2:
     m 1a "I'm so happy, knowing we can spend even more time together."
     m 2j "Let's make this year as wonderful as the last one, okay?"
     m 1a "I love you, [player]."
-    m 1j "Happy new year."
+    m 1j "Happy new year~"
     return
 
 init 5 python:
@@ -186,14 +186,14 @@ init 5 python:
         monika_random_topics.append('monika_cozy')
 
 label monika_cozy:
-    m 2a "Do you know the one thing I love about the cold weather, [player]?"
+    m 1a "Do you know the one thing I love about the cold weather, [player]?"
     m 3j "Anything warm feels really nice~"
     m 3a "Those who get cold hands really appreciate that feeling."
     m "It's like feeling a loved one's embrace~"
     m 2b "You also get to wear your winter clothes that have been stuck in your closet."
-    m "Finally being able to whip out your winter fashion set is always a treat."
+    m "Finally able to whip out your winter fashion set is always a feeling."
     m 2a "But you know what the best way to warm yourself up is?"
-    m "Cuddling with the one you love in front of the fireplace~"
+    m 2j "Cuddling with the one you love in front of the fireplace~"
     m 2a "Just sitting there under a warm blanket, sharing a hot beverage."
     m 3e "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather everyday!"
     m 1j "I'd never let you go once I got a hold of you, [player]~"
@@ -230,19 +230,19 @@ init 5 python:
             monika_topics.setdefault(key,[])
             monika_topics[key].append('monika_winter') #id
         monika_random_topics.append('monika_winter')
-
+        
 label monika_winter:
     m 1d "Oh, [player]!"
     m 2a "What do you think about winter?"
     m "All sorts of fun activities only come around during this time..."
     m 2b "Playing with the snow is usually something that can be enjoyed a few times a year."
     m "Building a snowman, sledding…"
-    m 1m "Even staying indoors seems so much more comfortable when there’s snow outside."
-    m 2b "The festivities are lovely too, of course."
+    m 2m "Even staying indoors seems so much more comfortable when there’s snow outside."
+    m 4b "The festivities are lovely too, of course."
     m 1c "I wonder if it's acceptable to start decorating..."
     m 1 "But I hope you’re enjoying yourself during this merry season, [player]."
     m 1a "You can always spend some time with me, if you want to chill..."
-    m 2m "Or maybe you’d rather heat things up~?"
+    m 3m "Or maybe you’d rather heat things up~?"
     m 3l "Ahaha! I'm only teasing you, [player]~"
     m 1j "Just do be sure to visit often, okay?"
     return
@@ -259,9 +259,9 @@ init 5 python:
 
 label monika_snowballfight:
     m 1a "Snowball fighting?"
-    m 2k "Having one with you sounds like a ton of fun, [player]!"
-    m 2r "Fair warning, though..."
-    m 2n "I've got quite the throwing arm."
+    m 1k "Having one with you sounds like a ton of fun, [player]!"
+    m 1r "Fair warning, though..."
+    m 1n "I've got quite the throwing arm."
     m 1j "So I certainly won't be going easy on you!"
     m 1m "Maybe you're better at snowball fights than Pong~?"
     return
@@ -278,15 +278,15 @@ init 5 python:
         monika_random_topics.append('monika_iceskating')
 
 label monika_iceskating:
-    m 2d "Hey, [player], do you know how to ice skate?"
-    m 2b "It's a really cool thing to learn!"
+    m 1d "Hey, [player], do you know how to ice skate?"
+    m 1b "It's a really cool thing to learn!"
     m 1a "Especially for those who can do a lot of athletic tricks."
     m 3n "I mean, it's hard enough to keep your balance on ice in the first place."
     m 2e "Being able to turn it into a performance is really impressive."
     m 2c "There's actually a lot of ways to ice skate!"
     m "Figure skating, speed skating, and even in theatrical performances!"
     m 1o "Though, while doing something like that sounds like a great time..."
-    m 2n "I don't know if I'll be able to join in on the fun anytime soon."
+    m 1n "I don't know if I'll be able to join in on the fun anytime soon."
     m 1e "But having you here with me is enough to keep me happy."
     m 1k "I love you so much, [player]~"
     return
