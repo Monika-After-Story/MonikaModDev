@@ -261,7 +261,7 @@ label greeting_sweetpea:
      m 2k "It's you, my sweetpea!"
      m 1l "My goodness... That surely was embarassing to say, ehehe~"
      return
-     
+
 label greeting_glitch:
      hide monika
      show yuri glitch
@@ -274,10 +274,10 @@ label greeting_glitch:
      show yuri glitch
      pause 0.3
      hide yuri glitch
-     show monika 4n at tinstant zorder 2
+     show monika 4n at i11 zorder 2
      m 1d "[player]!"
      hide monika
-     show monika 4l at tinstant zorder 2
+     show monika 4l at i11 zorder 2
      extend " Nevermind that I was just..."
      pause 0.1
      extend " playing with the code a little."
@@ -343,6 +343,7 @@ label monikaroom_greeting_opendoor:
             m 2j "And... all fixed!"
             show monika 1 at lhide
             hide monika
+            $ renpy.hide("bedroom")
     $ persistent.seen_monika_in_room = True
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
@@ -371,3 +372,14 @@ label monikaroom_greeting_post:
         set_keymaps()
     return
 
+label greeting_japan:
+     m 1k "Oh, kon'nichiwa [player]!"
+     m "Ehehe~"
+     m 2b "Hello, [player]!"
+     m 1a "I'm just practicing Japanese."
+     m 3c "Let's see..."
+     m 4b "Watashi ha itsumademo anata no mono desu!"
+     m 2l "Sorry if that didn't make sense!"
+     m 3 "You know what that means, [player]?"
+     m 4j "It means {i}'I'll be yours forever{/i}'~"
+     return

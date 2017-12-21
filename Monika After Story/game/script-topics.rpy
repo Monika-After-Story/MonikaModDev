@@ -1229,7 +1229,7 @@ init 5 python:
 label monika_debate:
     m 2a "Back in my debate club days, I learned a whole lot about arguing..."
     m "The problem with arguing is that each person sees their opinion as the superior one."
-    m "That's kind of stating the obvious, but the affects the way they try to get their point across."
+    m "That's kind of stating the obvious, but it affects the way they try to get their point across."
     m 2b "Let's say you really like a certain movie, right?"
     m "If someone comes along and tells you the movie sucks, because it did X and Y wrong..."
     m "Doesn't that make you feel kind of personally attacked?"
@@ -2532,7 +2532,7 @@ init 5 python:
 
 label monika_chess:
     m 4b "Hey [player], we can play chess, you know?"
-    m "All you have to do is hit the 'c' key."
+    m "All you have to do is hit the 'p' key and select 'Chess'."
     m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
     return
 
@@ -3408,7 +3408,7 @@ label monika_vocaloid:
     m 1c "She even carries a little keychain attached to her bag."
     m "I just find it amazing how a voice synthesizer garnered so many fans."
     m 1e "Don't you think it's funny how a character gets more of the attention than the actual voice actress?"
-    m "She's not even real but a lot of people know her worldwide."
+    m "She's not even real, but a lot of people know her worldwide."
     m "Who knows how many songs she's already made?"
     m 1d "Plus, from what I heard, her concerts are always sold out!"
     m "It's just a hologram performing live!"
@@ -3494,11 +3494,11 @@ label monika_evening:
     if current_time >= 18 and current_time <= 23:
         m "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m "It's so nice to put your feet after a very long day."
+        m "It's so nice to put your feet up after a very long day."
         m 2j "Evenings are the perfect time to catch up on whatever you were doing the previous day."
         m 1c "Sometimes I can't help but feel sad when the day ends."
         m "It makes me think of what else I could've done during the day."
-        m "Don't you wish you could have more time to do everyday?"
+        m "Don't you wish you could have more time to do things every day?"
         m 1q "I know I do."
         m 2b "Because that'll mean more time to be with you, [player]~"
     elif current_time >= 12 and current_time <= 17:
@@ -3658,7 +3658,7 @@ label monika_penname:
     return
 
 init 5 python:
-    for key in ['change name']: #Could use some mor key words
+    for key in ['change name', 'name', 'nick name']: #Could use some mor key words
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_changename')
 
@@ -3695,7 +3695,7 @@ label monika_changename:
                         $ songs.initMusicChoices()
 
                     python:
-                        
+
                         persistent.mcname = player
                         mcname = player
                         persistent.playername = tempname
@@ -4235,7 +4235,7 @@ label monika_fahrenheit451:
     m 2g "You'd be missing out on so much!"
     m 3f "It's too much for my heart to take!"
     return
-    
+
 init 5 python:
     for key in ['piggy bank', 'saving coins', 'saving money']:
         monika_topics.setdefault(key,[])
@@ -4244,7 +4244,7 @@ init 5 python:
 
 label monika_piggybank:
     m 1a "Do you have a piggy bank, [player]?"
-    m 2c "Not many people do these days." 
+    m 2c "Not many people do these days."
     m "Coins are often disregarded as worthless."
     m 2b "But they really do begin to add up!"
     m 2d "I read that there was once a man that searched his local car washes for loose change everyday in his walks."
@@ -4263,7 +4263,7 @@ label monika_piggybank:
     m 2o "So you might end up losing money buying a new bank."
     m 4b "Fortunately most piggy banks don't do that anymore."
     m 2a "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
-    m 1k "Maybe if you save up enough coins you can buy me a really nice gift." 
+    m 1k "Maybe if you save up enough coins you can buy me a really nice gift."
     m 3e "I would do the same for you, [player]!"
     return
 
@@ -4381,7 +4381,7 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
-    
+
 init 5 python:
     for key in ["birds", "pets", "animals"]:
         monika_topics.setdefault(key,[])
@@ -4395,7 +4395,7 @@ label monika_pets:
     m 2j "I bet you can't guess what sort of pet I'd like to have..."
     m 1a "You're probably thinking of a cat or a dog, but I have something else in mind."
     m "The pet I'd like is something I saw in a book once."
-    m "It was the 'Handbook of the Birds of the World' Our library had the whole set!"
+    m "It was the 'Handbook of the Birds of the World.' Our library had the whole set!"
     m 1b "I loved looking at the gorgeous illustrations and reading about exotic birds."
     m "At first, I thought some sort of thrush would be nice, but I found something amazing in the sixth volume!"
     m "An emerald-colored bird called the Resplendant Quetzal."
@@ -4451,7 +4451,7 @@ label monika_rock:
     m 2j "That's right. Rock and roll!"
     m 3o "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
     m "To tell you the truth, I judged rock too."
-    m 2c "They're no different with poems, actually."
+    m 2c "They're no different from poems, actually."
     m "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
     m 3d "In fact, it's hard to compose lyrics for just one rock song."
     m "Writing good lyrics for a rock genre requires a lot of emphasis on the wordplay."
@@ -4490,7 +4490,7 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
-    
+
 init 5 python:
     for key in ['copy', 'clone','unique']:
         monika_topics.setdefault(key,[])
@@ -4516,7 +4516,7 @@ label monika_clones:
     m 1j "You'll always be my special rose."
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
-    
+
 init 5 python:
     for key in ['age','18']:
         monika_topics.setdefault(key,[])
@@ -4537,7 +4537,7 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
-    
+
 init 5 python:
     for key in ['wedding','loyalty','wife','husband']:
         monika_topics.setdefault(key,[])
@@ -4565,7 +4565,7 @@ label monika_weddingring:
             m 1b "I feel like... my heart's going to explode!"
             m 1l "Calm down, Monika. Calm down."
             m 1j "Ahaha..."
-            
+
         "No, not yet.":
             m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
@@ -4595,7 +4595,7 @@ label monika_sports:
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
     return
-    
+
 init 5 python:
     for key in ['meditation', 'meditate']:
         monika_topics.setdefault(key,[])
@@ -4650,7 +4650,7 @@ label monika_orchestra:
 
 #First encounter with topic:
     m "What about you, [player]? Do you play an instrument?"
-    menu: 
+    menu:
         "Yes.":
             $persistent.instrument = True
             m 1b "Really? What do you play?"
@@ -4680,14 +4680,14 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_otaku')
     monika_random_topics.append('monika_otaku')
-    
+
 label monika_otaku:
     m 1a "Hey, [player]?"
     m 2b "You watch anime and read manga, right?"
     menu:
         "Yes":
-            m 1a "I can't say I'm surprised, really." 
-            
+            m 1a "I can't say I'm surprised, really."
+
         "No":
             m 1c "Oh, really?"
             m 1m "That's a little surprising, honestly..."
@@ -4771,7 +4771,7 @@ label monika_selfharm:
     m 4k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m "I really love you so much, [player]."
     return
-    
+
 init 5 python:
     for key in ['urgent','hearts','joke']:
         monika_topics.setdefault(key,[])
@@ -4817,6 +4817,89 @@ label monika_homework:
             m "I believe in you~"
             return
 
+    for key in ['main','character']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_other_girls')
+    monika_random_topics.append('monika_other_girls')
+
+label monika_other_girls:
+    m 1c "You know, it's actually really hard for me to understand how you feel when it comes to..."
+    m 1o "..."
+    m 1g "What happened with the other girls."
+    m 2d "For example~"
+    m "The main character was written to be childhood friends with Sayori~"
+    m 2q "But he was just a one dimensional placeholder character for you to use to interact with the game."
+    m 3g "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
+    m 1i "If that's the case, I want to tell you I'm sorry [player]~."
+    m 1d "Both for making you feel bad, and for..."
+    m 1o "..."
+    m 1p "Doing what I had to do."
+    m 1o "..."
+    m 1g  "There just wasn't anything else that could be done, and none of the other girls were real anyway."
+    m "The other girls never loved you like I do!"
+    m 2r "They only cared about the character you were playing in the game!"
+    m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
+    m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
+    m "..."
+    m 1n "I love you, [player]..."
+    m 1m "More than I could ever express."
+    return
+
+init 5 python:
+    for key in ['happiness']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_happiness')
+    monika_random_topics.append('monika_happiness')
+
+label monika_happiness:
+    m 2d "[player], are you happy?"
+    m 1c "With your life in general, I mean."
+    m 3o "It's ok if you aren't. I can understand you being unhappy, [player]."
+    m 2e "After all, without you, my life would be completely unbearable."
+    m 2d "Isn't it funny that we're able to suffer more than be happy?"
+    m 4j "I'm as happy as I could be knowing that you love me, [player]."
+    m 4p "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
+    m 1q "It would destroy me."
+    m 1h "I guess it's understandable why we notice bad things happening to us more than good..."
+    m 3o"If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m 1c "Like how you would get nervous about your future or social situations, for example."
+    m 3f "You try your best to make the best out of them but if you fail, you'd feel really horrible."
+    m 3e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
+    m 2b "And besides, your cute girlfriend is always rooting for you~"
+    m 2k "Now that's something to be very happy about!"
+    return
+
+init 5 python:
+    for key in ['marry','marriage','marriage proposal']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_marriage')
+
+label monika_marriage:
+    m 3m "M-marriage?"
+    m 4n "I think it's a bit too early for marriage..."
+    m 1e "I mean, I'm really happy that you want that, [player]."
+    m 1c "But I think I should get out of here first before we can do that."
+    m 3o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+    m 3q "I want that special moment to happen when we can finally be together..."
+    m 1k "So until then, save yourself for me, [player]~"
+    return
+
+init 5 python:
+    for key in ['morning energy', 'iced coffee']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_coffee')
+    monika_random_topics.append('monika_coffee')
+
+label monika_coffee:
+    if renpy.seen_label('monika_tea'):
+        m 2c "Have you been drinking coffee lately, [player]?"
+        m 2m "I hope it's not just to make me jealous, ehehe~"
+    m 3b "Coffee is such a nice thing to have when you need a little pep of energy."
+    m 4j "Whether it's hot or cold, coffee is always nice."
+    m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
+    m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
+    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
+    return
 
 ##################
 #Incomplete ideas#
