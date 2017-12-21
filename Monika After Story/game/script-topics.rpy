@@ -4846,6 +4846,32 @@ label monika_coffee:
     m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
+    
+    init 5 python:
+    # List of keywords for the topic.
+    for key in ['sayori','golden ending']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_golden_ending') # Identifier
+    monika_random_topics.append('monika_golden_ending') # Optional. Remove if you don't want Monika to bring this up at random.
+
+label monika_golden_ending:
+    m "Oh..."
+    m "... I get it now."
+    m "[player], I know why you kept reloading saves to make time with the other girls now."
+    m "I looked through your saves and I watched Sayori explain and..."
+    m "... oh, you did it for her, didn't you?"
+    m "You spent time with her and Yuri and Natsuki just so you can make her happy."
+    m "[player], this is the exact reason why I fell in love with you."
+    m "You're so selfless. So kind."
+    m "And then, when I manipulated the code and forced her to..."
+    m "... oh, no wonder you deleted me when you did."
+    m "But... I did bring Sayori and the others back."
+    m "She realized what you did, and she was happy. Genuinely happy."
+    m "And then you modded the game and brought me back, too... and you forgave me."
+    m "So in the end, we all got our happy endings, didn't we?"
+    m "Sayori's happy. And so are we."
+    m "Thank you, [player]. For everything."
+    return
 
 ##################
 #Incomplete ideas#
