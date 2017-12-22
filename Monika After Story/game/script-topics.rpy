@@ -4915,6 +4915,161 @@ label monika_happiness:
     return
 
 init 5 python:
+    if not seen_event('monika_musicpref'):
+        for key in ['pref','interest','taste']:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append('monika_musicpref')
+    monika_random_topics.append('monika_musicpref')
+    
+#Topic should only ever appear once.
+    
+label monika_musicpref:
+    m 4b "Did you know that my favorite type of music is orchestral?"
+    m 3j "Maybe I mentioned that already, but I just love the way that it sounds."
+    m 3a "Just the thought of how so much meaning and story is behind a single work is fascinating."
+    m "And the amount of practice it takes to perfect that~"
+    m 4b "It amazes me."
+    m 3c "..."
+    m 3g "I don't think I ever asked what your favorite genre was, my love."
+    m 1n "But there are so many~"
+    m 1q "Hmm..."
+    m 2b "Ah!"
+    m 1e "Here, I'll try my best to categorize them into types for you."
+    m 2d "So? If it isn't there, let me know~"
+    menu:
+        "Electronic.":
+            m 3d "Electronic? I see!"
+            m 4j "So along the lines of dubstep, trance, and techno?"
+            m 3a "That's actually really interesting, because it's orchestra's opposite in a way."
+            m 4d "All real instruments versus artificially composed."
+            m 1h "..."
+            m 2d "However, now that I think about it~"
+            m 2a "There is such a thing as orchestral dubstep, which mixes the two."
+            m 1j "An intriguing clash of two different things to make something brand new!"
+            m 2a "So even though our music tastes are opposites~"
+            m 3k "We come together to make the perfect mix, my love!"
+            m "The orchestral wonder that is Monika, and the electronic, bass boosting marvel, [player]."
+            m 4a "Go ahead and play some electronic music if you want~"
+            m 4d "Just be sure to mute the music in here so I can listen along."
+            m 3a "And if you could play an orchestral piece now and then~"
+            m 5a "We could enjoy both our tastes!"
+            
+        "Rock.":
+            m 3d "So you like rock music?"
+            m 1q "Let me think..."
+            m 2i "Rockabilly, classic rock, metal~"
+            m 2n "There are actually a lot of sub genres for rock."
+            m 1a "Did you know rock originated from jazz?"
+            m 2b "Personally I appreciate it when lyrics are present in a rock song."
+            m "It's certainly difficult to do, but when the song is finished~"
+            m 3j "Most rock songs come out very well in the end."
+            m 4a "Feel free to put some on if you want~"
+            m 3d "Just mute the music in here so I can listen along."
+            m 5a "And don't forget to occasionally put on orchestral for me~"
+            
+        "Country.":
+            m 1c "Country?"
+            m 2a "That's a pretty region specific genre."
+            m 2d "Did you know it came to be in the southern United States?"
+            m 1p "That was all the way back in 1920~"
+            m 1a "And it took inspiration from folk music."
+            m 2a "Most country music that I've found seems pretty upbeat and emotional."
+            m 1h "..."
+            m 1l "Don't worry, I only use your web browser when you aren't using it."
+            m 2a "But I can certainly see why country is so popular."
+            m 2b "So be sure to play some whenever you'd like, and I'll listen~"
+            m 3d "But mute the music here so that way I can, okay?"
+            m 5a "Oh, and don't forget the occasional orchestra piece, all right?"
+
+        "Orchestra.":
+            m 1j "Orchestra?"
+            m 1k "Orchestra!"
+            m 2b "Just like me, huh?"
+            m "That's great love!"
+            m 5a "I guess my tastes rubbed off on you, huh?"
+            m 1j "I'm just kidding around."
+            m 2b "But seriously, that's great!"
+            m 2d "Orchestral music might be the longest in terms of length~"
+            m 1a "But don't you love how each piece forms an overall story?"
+            m 3j "And the symphonies, oh the symphonies~"
+            m 3a "People of all ages, gathering together to appreciate the old arts~"
+            m 4d "If you put on orchestral music, please let me listen along~"
+            m "You'll have to mute the music in here so that way I can though."
+            m 1h "..."
+            m 1d "Oh, and~"
+            m "Next time you go to a symphony, please love~"
+            m 5a "Don't forget to take me with you!"
+
+        "Jazz.":
+            m 1r "Jazz, the calmest of all music~"
+            m 2a "In my opinion at least."
+            m 1d "It's interesting how most jazz fans are so laid back and calm~"
+            m 1e "Perhaps I should listen to more of it, you dig?"
+            m 3l "Ehehe~"
+            m 3e "I'm sorry. I find the slang curious, too."
+            m 4b "If you want to mute the music here~"
+            m "And put on some jazz~"
+            m 3j "I'll happily listen along."
+            m 3k "Let's break it down, baby!"
+            m 5a "Ehehe~"
+            m 2b "I hope you don't mind putting on orchestral now and then though, too."
+
+        "Rap.":
+            m 1d "You like rap?"
+            m 1q "I'll be honest with you right off the bat..."
+            m 1i "I used to hate rap music."
+            m 2d "Used to~"
+            m 1a "Until I realized what an incredible form of literature it is."
+            m 1d "Having to match your words to rhyme and rhythm~"
+            m 1a "That's certainly something to respect."
+            m 1n "When you aren't using it, I have used your web browser~"
+            m "And came across some rather nice songs~"
+            m 1a "So if you ever want to listen to rap~"
+            m 2k "Have at it, my love!"
+            m 2e "Just be sure to mute this music, so that way I can hear yours."
+            m 1e "And if I could make a request~"
+            m 5a "The occasional orchestra piece would be amazing~"
+            m 1b "But it's up to you."
+
+        "Pop.":
+            m 1d "Pop music?"
+            m 2a "That's certainly a popular genre."
+            m 3j "Ehehe~"
+            m 3c "I will admit, though~"
+            m 3o "A lot of it still sounds the same to me."
+            m 3m "Maybe it's because there's so much of it on the radio~"
+            m 3a "But I'm sure you have your own playlist of the very best of pop!"
+            m 4b "If you ever want to play it~"
+            m "Mute the music here so I can listen, too."
+            m 5a "And don't forget to add an orchestral piece for me!"
+
+        "Folk."
+            m 2b "The oldest of the old, huh?"
+            m 2n "Wow, folk music sure has been around a long time."
+            m 3a "I guess it sort of etched itself into history, though."
+            m 1c "A lot of folk music doesn't even have a known composer."
+            m 1d "I find that odd myself."
+            m 2g "Why wouldn't you want credit for something you worked so hard on?"
+            m 3n "But maybe it isn't that simple."
+            m 4a "In any case, be sure to play some folk, okay?"
+            m 3c "But mute the music here, otherwise I can't listen along."
+            m 3e "And..."
+            m "If you could play the occasional bit of orchestra~"
+            m 5a "That'd be amazing too, my love."
+
+        "It's not in here...":
+            m 1g "Oh no..."
+            m 1p "I'm sorry, love."
+            m 1o "I guess I didn't offer all the different types for you."
+            m 1e "In any case, I know whatever you like is great."
+            m 1j "I can feel it."
+            m 2b "So go ahead and play a bit of it if you'd like~"
+            m "Just mute the mod's music so I can listen along~"
+            m 2a "And don't forget about the occasional orchestral track~"
+            m 5a "For me!"
+    return
+          
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
@@ -4943,7 +5098,7 @@ label monika_coffee:
     m 4j "Whether it's hot or cold, coffee is always nice."
     m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
     m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
-    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
+    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~
     return
 
 ##################
