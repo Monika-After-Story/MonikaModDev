@@ -142,8 +142,8 @@ init 5 python:
     #This is a list of keywords for this topic
     for key in ['depression','self esteem','self-esteem','self image','self-image']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_self-image')
-    monika_random_topics.append('monika_self-image')
+        monika_topics[key].append('monika_selfimage')
+    monika_random_topics.append('monika_selfimage')
 
 label monika_self-image
     m 1f "Hey [player], do you love yourself?"
