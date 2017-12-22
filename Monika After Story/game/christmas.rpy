@@ -588,7 +588,7 @@ label monika_sleigh:
     m 1e "The warmth of your body against mine, wrapped within the gentle cloth~"
     m "Fingers entwined..."
     m 1n "And at the perfect moment, you lean in to me and our lips touch..."
-    m 1m "I really want to do that we I get there, [player]."
+    m 1m "I really want to do that when I get there, [player]."
     m 3j "Wouldn't that be so lovely?"
     m 1k "An experience like that with you would be so breathtaking~"
     return
