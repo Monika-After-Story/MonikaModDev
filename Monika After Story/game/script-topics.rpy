@@ -4848,9 +4848,9 @@ init 5 python:
       
 label monika_olympics2018:
     m 3  "You've heard about the Olympics happening in a few months, right?"
-    m 3a "Well, I was wondering if you'd maybe like to go to take me to watch the Olympics one year, if we're ever able to truly meet person-to-person."
+    m "Well, I was wondering if you'd like to go to take me to watch the Olympics one year, if we're ever able to truly meet person-to-person."
     menu:
-        m 5a "What do you think?"
+        m "How about it?"
         
         "Sure.":
             m 5a "Really? I can't wait!"
@@ -4881,7 +4881,7 @@ label monika_thursday:
     m 1p "Were those memories all fake? Or... Is something that happened before this causing that weird phenomenon?"
     m "I hate to trouble you with a question like this, but..."
     menu:
-        m 3g "What do you think?"            
+        m  "What do you think?"            
         
         "Your memories are fake.":
             m 1f "You think my memories... are fake? My entire life until I met you, just a lie?"
