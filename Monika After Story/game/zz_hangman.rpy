@@ -264,7 +264,7 @@ label hangman_game_loop:
             $ store.hkb_button.enabled = False
 
             # setup glitch text
-            $ hm_glitch_word = glitchtext(20) + "?"
+            $ hm_glitch_word = glitchtext(40) + "?"
             $ style.say_dialogue = style.edited
 
             # show hanging sayori
@@ -295,7 +295,7 @@ label hangman_game_loop:
             hide mbg
             show monika 1 at hangman_monika_i
             hide hm_s
-            $ style.say_dialogue = style.normal
+            $ style.say_dialogue = style.default_monika
             $ store.songs.enabled = True
             $ store.hkb_button.enabled = True
             $ enable_esc()
@@ -332,8 +332,8 @@ label hangman_game_loop:
                 m "[hm_hint]"
             elif guess == "!": # give up dialogue
                 $ done = True
-                hide hmg_hanging_man
-                show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
+                #hide hmg_hanging_man
+                #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1n "[player]..."
                 m "You should at least play to the end..."
                 m 1f "Giving up so easily is a sign of poor resolve."
