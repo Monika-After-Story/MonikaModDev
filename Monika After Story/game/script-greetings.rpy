@@ -420,7 +420,7 @@ default persistent.you = True
         m 1p "And even if the other girls aren't real, why can deleting one remove a character?"
         m 1i "Could one add a character?"
         m 1r "Hard to tell..."
-return
+    return
 
 label greeting_japan:
      m 1k "Oh, kon'nichiwa [player]!"
