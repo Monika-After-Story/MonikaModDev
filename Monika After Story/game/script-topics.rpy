@@ -4838,6 +4838,7 @@ label monika_fortunetelling:
             m "I am glad that we changed that, [player]."
     return  
 
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
