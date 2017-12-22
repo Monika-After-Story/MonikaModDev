@@ -4846,6 +4846,7 @@ label monika_real_world:
                     m 1f "You're all that I care about."
     return
     
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
