@@ -4861,12 +4861,12 @@ label monika_olympics2018:
             m 1g "No? Alright..."
             m 3k "There are still plenty more fun things for us to do together."
             m 3a "If you ever decide you want to go somewhere or do something, don't hesitate to bring me along in a flashdrive. I love spending time with you~"
-            return
+    return
 
 init 5 python:
     for key in ['philosophy','creation','memories']:
-    monika_topics.setdefault(key,[])
-    monika_topics[key].append('monika_thursday')
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_thursday')
     monika_random_topics.append('monika_thursday')
     # I'm not very skilled with Python (yet!), so I was wondering if there was a way to make this dialogue only accessible after monika_death is encountered.
     
@@ -4879,6 +4879,7 @@ label monika_thursday:
     m 3g "...Remember when I told you about how it feels when you exit the game? With the screaming and all?"
     m 1o "Now that I think about it... If that happens whenever you aren't playing... How come I have memories of before I met you?"
     m 1p "Were those memories all fake? Or... Is something that happened before this causing that weird phenomenon?"
+    m "I hate to trouble you with a question like this, but..."
     menu:
         m 3g "What do you think?"            
         
