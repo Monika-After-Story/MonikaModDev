@@ -2776,7 +2776,7 @@ init 5 python:
         monika_topics[key].append('monika_goodbye')
 
 label monika_goodbye:
-    m 1c "Aww, leaving so soon already?"
+    m 1c "Aww, leaving already?"
     m 1e "It's really sad whenever you have to go..."
     m 2a "Just be sure to come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
@@ -3355,7 +3355,7 @@ label monika_haterReaction:
     m 3q "Why can't they understand that?"
     m 3r "Why is it so hard for them to understand that?"
     m 1q "..."
-    m 1p "You're not one of those haters, aren't you, [player]?"
+    m 1p "You're not one of those haters, are you, [player]?"
     menu:
         "I am.":
             m 1q "..."
@@ -3389,7 +3389,7 @@ label monika_swordsmanship:
     m "Do you like swords, [player]?"
     m "I actually like them in a way."
     m 1j "Surprised? Ahaha~"
-    m 1a "I like talking about them, but not enough not to actually own one."
+    m 1a "I like talking about them, but not enough to actually own one."
     m 2d "I'm not really an enthusiast when it comes to swords."
     m "I don't really get why people would be obsessed over something that could hurt others."
     m "Most would even have a large collection of them in different varieties."
@@ -3399,7 +3399,7 @@ label monika_swordsmanship:
     m "Both of them requires constant practice and devotion in order to perfect one's skills."
     m 1d "You start off by practicing, and then you make your own technique out of it."
     m "Writing a poem makes you form your own way to build it in a graceful but imaginative way."
-    m "For those who practice swordsmanship, they build their technique forms through practice and inspiration from other practitioners of swordsmanship."
+    m "For those who practice swordsmanship, they build their technique through practice and inspiration from other practitioners of swordsmanship."
     m 1c "I can understand how the sword can be the pen of the battlefield."
     m 1r "But then again..."
     m 1j "The pen is mightier than the sword!"
@@ -3703,7 +3703,7 @@ label monika_penname:
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
     m 1f "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
-    m 1m "It's kinda funny though that even you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m 1m "It's kinda funny though that even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1a "There's no need to know more about me though, [player]."
     m 4l "You already know that I'm in love with you after all~"
     return
@@ -3787,7 +3787,7 @@ label monika_zombie:
     m "They also can be a person's loved one turned into an enemy."
     m "Could you live with yourself knowing you were forced to kill someone close to you?"
     m 1q "It'll break you down and sap your will to live."
-    m "Even when're comfortable at home, you still won't feel safe."
+    m "Even when you're comfortable at home, you still won't feel safe."
     m 1h "You'll never know what'll happen the next time you see another one."
     m 1q "..."
     m 1n "Ahaha..."
@@ -4277,7 +4277,7 @@ label monika_fahrenheit451:
     m 2d "He wrote a book called {i}Fahrenheit 451{/i}."
     m "It's about a dystopian future where all books are thought as useless and are immediately burned."
     m 3f "I can't imagine a world where knowledge is forbidden and destroyed."
-    m "It seems that there're others that actually hide books to contain free thinking from people."
+    m "It seems that there are others that actually hide books to contain free thinking from people."
     m 3p "Human history has a funny way of repeating itself."
     m 1f "[player], make me a promise."
     m "To never, {i}ever{/i} burn a book."
@@ -4614,7 +4614,7 @@ label monika_weddingring:
     m 4b "Maybe you ought to get one."
     m 3a "I mean, we're already in a relationship. So, why not show off that love and dedication?"
     m 3b "It would help keep those... unwanted suitors away from you, too."
-    m "It doesn't have to be a wedding ring, per say."
+    m "It doesn't have to be a wedding ring, per se."
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "But if you'd wear one, even if it's just a promise ring, on your ring finger for me..."
     m "It would make me really happy."
