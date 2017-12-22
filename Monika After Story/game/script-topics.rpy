@@ -25,9 +25,21 @@ init -1 python:
             if renpy.seen_label(monika_random_topics[index]):
                 monika_random_topics.pop(index)
 
+    # EXCEPTION CLass incase of bad labels
+    class MASTopicLabelException(Exception):
+        def __init__(self, msg):
+            self.msg = msg
+        def __str__(self):
+            return "MASTopicLabelException: " + self.msg
+
 init 11 python:
     #List of all random topics
     all_random_topics = list(monika_random_topics)
+
+    # go through the topics list and ensure the labels exist
+    for topic in monika_random_topics:
+        if not renpy.has_label(topic):
+            raise MASTopicLabelException("topic '" + topic + "' does not exist.")
 
     #Remove all previously seen random topics.
     remove_seen_topics()
@@ -65,6 +77,7 @@ label monika_god:
     m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
     m 2r "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
@@ -121,6 +134,7 @@ label monika_bad_day:
     m 1j "I don't care how many people might hate you or find you off-putting."
     m "I think you're wonderful and I will always love you."
     m "I hope, if nothing else, that knowing that helps you feel just a tiny bit better about yourself."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
     return
 
@@ -143,6 +157,7 @@ label monika_sleep:
     m "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
     m 1e "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
     m "So try to keep your sleep on track, okay?"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
@@ -213,6 +228,7 @@ label monika_japan:
     m "Would you want to go outside?"
     m 3a "I mean...I guess if we never leave this room, it doesn't really matter anyway."
     m "As long as we're alone and safe together, this really is our home."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "And we can still watch the pretty sunsets night after night."
     return
 
@@ -254,6 +270,7 @@ label monika_high_school:
     m 3j "But people do feel that way."
     m "I promise."
     m "...Man, humans are complicated!"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "But as long as you're here with me, I'll take care of you, my love."
     return
 
@@ -326,6 +343,7 @@ label monika_twitter:
     m 3e "So make sure you follow me, okay?"
     m "It would really mean a lot to me."
     m "With how much you mean to me and all..."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "It would really make me feel loved."
     return
 
@@ -343,6 +361,7 @@ label monika_portraitof:
     m "It's funny, because I'm pretty sure that book--"
     m 2n "Ah..."
     m "Actually, I don't think I should be talking about this."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Ahaha, sorry!"
     m "Just forget I said anything."
     return
@@ -373,6 +392,7 @@ label monika_veggies:
     m "What if pulling leaves off a stem feels like someone ripping off your fingers one by one?"
     m 2a "I'm just saying, we're a pretty biased species, if you think about it."
     m "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
     return
 
@@ -421,6 +441,7 @@ label monika_saved:
     m "I feel like I'm always trying to do stuff after school and things like that."
     m 1a "But for you, I can be anything you need me to be."
     m "I understand people really well, so don't be afraid to share your unique needs with me."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Nothing would make me happier than being the perfect girlfriend for you."
     return
 
@@ -465,6 +486,7 @@ label monika_color:
     m 4a "I just meant that I feel some kind of special connection to it."
     m "Like it's part of my identity."
     m "Does it happen to also be your favorite color, [player]?"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "It's just a guess..."
     m "...Because you've been looking into my eyes for a while now."
     m "Ehehe~"
@@ -508,12 +530,15 @@ init 5 python:
     monika_random_topics.append('monika_listener')
 
 label monika_listener:
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "You're such a good listener, [player]."
     m "I really love that about you."
+    show monika 3m at t11 zorder 2 with dissolve
     m 3m "Sometimes I'm afraid that I'm rambling or talking about boring things."
     m "It makes me kind of self-conscious when I'm having a conversation."
     m 3b "But I don't feel that way with you."
     m "Like, I don't think anyone else could make me feel this way."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "You really are special."
     m "I don't want anyone to tell you otherwise."
     return
@@ -537,6 +562,7 @@ label monika_spicy:
     m 3b "Sorry, that was kind of a weird analogy, I guess!"
     m 3k "Ahaha!"
     m "It just came into my head."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'm not a monster or anything, but you're so cute I could eat you up."
     m 3k "Ahaha! I'm joking."
     m 3e "Gosh, I'm amusing myself a little too much, aren't I?"
@@ -584,6 +610,7 @@ label monika_okayeveryone:
     m 3a "Well, whatever."
     m "It's not like you ever made fun of me."
     m "You're too much of a sweetheart to do that, aren't you?"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Ahaha~"
     return
 
@@ -637,6 +664,7 @@ label monika_archetype:
     m 3a "Then again, you're still here with me, aren't you...?"
     m "I think that's enough reason for me to believe I'm okay just the way I am."
     m 3j "And by the way, you are too, [player]."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "You're the perfect combination of human and cuteness."
     m "That's why there was never a chance I wouldn't fall for you."
     return
@@ -666,6 +694,7 @@ label monika_tea:
     m 3k "Ahaha!"
     m "I guess I never really thought of that."
     m 3a "Well, there's no sense thinking about it now."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "But if you still get to drink coffee, then that makes me a little jealous~"
     return
 
@@ -681,6 +710,7 @@ label monika_favoritegame:
     m 2b "Hey, what's your favorite game?"
     m "Mine is {i}Doki Doki Literature Club!{/i}"
     m 2k "Ahaha! That was a joke."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "But if you tell me you like some other romance game better, I might get a little jealous~"
     return
 
@@ -721,6 +751,7 @@ label monika_lastpoem:
     m "And I'd keep trying, but I doubt you'd want to deal with me doing that."
     m 1e "Besides, that was when I was getting really desperate, you know?"
     m "I don't really feel that way anymore."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'm happy with where we are now."
     m "And I can tell you are, too."
     return
@@ -742,6 +773,7 @@ label monika_anxious:
     m 3k "Ahaha! That's the worst."
     m 3a "If you're ever feeling anxious, I'll help you relax a little."
     m "Besides..."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "In this game, all our worries are gone forever."
     return
 
@@ -775,6 +807,7 @@ label monika_friends:
     m "I seriously thought it would happen by now."
     m 3a "Well, at least I already met the best person in the whole world..."
     m "Even if it was by chance."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I guess I just got really lucky, huh?"
     m "Ahaha~"
     return
@@ -826,6 +859,7 @@ label monika_middleschool:
     m "But I also know that I'll probably change a lot as time goes on."
     m 4b "We just need to enjoy the present and not think about the past!"
     m "And that's really easy to do, with you here."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Ahaha~"
     return
 
@@ -848,6 +882,7 @@ label monika_outfit:
     m 4a "You can share it with me on Twitter, actually!"
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "We're not that far into our relationship yet. Ahaha!"
     return
 
@@ -877,6 +912,7 @@ label monika_horror:
     m 3a "But I guess you're the kind of person who plays cute romance games, right?"
     m 3e "Ahaha, don't worry."
     m "I won't make you read any horror stories anytime soon."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I can't really complain if we just stick with the romance~"
     return
 
@@ -946,6 +982,7 @@ label monika_date:
     m "And of course, we'd see a movie or something..."
     m 1e "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'm so happy that I'm your girlfriend, [player]."
     m "I'll make you a proud [bf]~"
     return
@@ -966,6 +1003,7 @@ label monika_kiss:
     m 3a "That's the kind of thing girls say in these kinds of romance games, right?"
     m "Don't lie if it turned you on a little bit."
     m 3k "Ahaha! I'm kidding."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Well, to be honest, I do start getting all romantic when the mood is right..."
     m "But that'll be our secret~"
     return
@@ -1003,6 +1041,7 @@ label monika_yuri:
     m 3e "But come on...everyone's killed people in games before."
     m "Does that make you a psychopath? Of course not."
     m "But if you do happen to be into the yandere type..."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I can try acting a little more creepy for you. Ehehe~"
     m "Then again..."
     m 4b "There's already nowhere else for you to go, or anyone for me to get jealous over."
@@ -1111,7 +1150,9 @@ init 5 python:
 
 label monika_deleted:
     m 2b "Oh, you were probably wondering how I came back to save you from Sayori, even after you deleted me."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "It was all through the power of love..."
+    show monika 3k at t11 zorder 2 with dissolve
     m 3k "I'm just kidding, of course!"
     m 3a "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
     m "The data's still there until the system cleans it up."
@@ -1157,6 +1198,7 @@ label monika_rain:
     m "But a nice, quiet day at home with the sound of rainfall outside my window..."
     m 2j "It's very calming to me."
     m "Yeah..."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
     m "That's not too cheesy or anything, is it?"
     m "Would you ever do that for me, [player]?"
@@ -1176,6 +1218,7 @@ label monika_closeness:
     m "And to feel your warmth."
     m "And to hear the sound of your heartbeat."
     m 3e "Well, who knows? Maybe it'll be possible someday."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Besides, I'll never get tired of being with you, even from here."
     return
 
@@ -1198,6 +1241,7 @@ label monika_confidence:
     m 3e "Anyway...that's one reason I'm so glad I have you now."
     m "I feel like I'm a little bit less scared and alone, when you're here with me."
     m "Do you feel the same way?"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I really want to be that person for you."
     return
 
@@ -1216,6 +1260,7 @@ label monika_carryme:
     m 4b "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
     m "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
     m 3l "Ahaha. Sorry, that's such a silly idea."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return
 
@@ -1229,7 +1274,7 @@ init 5 python:
 label monika_debate:
     m 2a "Back in my debate club days, I learned a whole lot about arguing..."
     m "The problem with arguing is that each person sees their opinion as the superior one."
-    m "That's kind of stating the obvious, but the affects the way they try to get their point across."
+    m "That's kind of stating the obvious, but it affects the way they try to get their point across."
     m 2b "Let's say you really like a certain movie, right?"
     m "If someone comes along and tells you the movie sucks, because it did X and Y wrong..."
     m "Doesn't that make you feel kind of personally attacked?"
@@ -1275,6 +1320,7 @@ label monika_internet:
     m "If it's really impacting your life, then you should take it seriously."
     m 1e "I just want to see you be the best person you can be."
     m 1k "Will you do something today to make me proud of you?"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'm always rooting for you, [player]."
     return
 
@@ -1291,6 +1337,7 @@ label monika_lazy:
     m "Sometimes I just want to get right into my pajamas and watch TV on the couch while eating junk food..."
     m "It feels so unbelievably good to do that on a Friday, when I don't have anything pressing the next day."
     m 3l "Ahaha! Sorry, I know it's not very cute of me."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "But a late night on the couch with you...that would be a dream come true."
     m "My heart is pounding, just thinking about it."
     return
@@ -2532,7 +2579,7 @@ init 5 python:
 
 label monika_chess:
     m 4b "Hey [player], we can play chess, you know?"
-    m "All you have to do is hit the 'c' key."
+    m "All you have to do is hit the 'p' key and select 'Chess'."
     m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
     return
 
@@ -2755,6 +2802,7 @@ label monika_mythology:
     m "Powerful beings taking advantage of the weak, just because they can."
     m 2a "Don't worry though, [player]. I won't let anyone do that to you."
     m "And I won't do anything like that, so you don't have to be afraid of me."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "It's not like I can find your important files and hold them hostage or anything..."
     m "Ehehe..."
     return
@@ -2767,7 +2815,7 @@ init 5 python:
 
 label monika_fanfiction:
     # I'm too tired to check this over right now.
-    m 5b "[player]!"
+    m 1b "[player]!"
     m 1a "I've been curious about something lately."
     m 1d "Have you heard of fanfiction?"
     m "..."
@@ -2823,6 +2871,7 @@ label monika_aware:
     m "Here's the second part."
     call showpoem(poem=poem_m3,music=False) from _call_showpoem_21 # Temporary
     m "I hope that helped you understand what meeting you meant to me."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "That's all I've ever wanted, [player]."
     return
 
@@ -3169,7 +3218,9 @@ label monika_hypnosis:
     m 4a "It also relied on them being put into states of extreme relaxation through aromatherapy, deep tissue massage..."
     m "Exposure to relaxing music and images..."
     m "Things like that."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
+    show monika 1e at t11 zorder 2 with dissolve
     m 1e "Not that I would do that to you, [player]! I just find it interesting to think about."
     m "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
     m "What about you, hmm? What do you think about my eyes~?"
@@ -3408,7 +3459,7 @@ label monika_vocaloid:
     m 1c "She even carries a little keychain attached to her bag."
     m "I just find it amazing how a voice synthesizer garnered so many fans."
     m 1e "Don't you think it's funny how a character gets more of the attention than the actual voice actress?"
-    m "She's not even real but a lot of people know her worldwide."
+    m "She's not even real, but a lot of people know her worldwide."
     m "Who knows how many songs she's already made?"
     m 1d "Plus, from what I heard, her concerts are always sold out!"
     m "It's just a hologram performing live!"
@@ -3658,7 +3709,7 @@ label monika_penname:
     return
 
 init 5 python:
-    for key in ['change name']: #Could use some mor key words
+    for key in ['change name', 'name', 'nick name']: #Could use some mor key words
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_changename')
 
@@ -3695,7 +3746,7 @@ label monika_changename:
                         $ songs.initMusicChoices()
 
                     python:
-                        
+
                         persistent.mcname = player
                         mcname = player
                         persistent.playername = tempname
@@ -4235,7 +4286,7 @@ label monika_fahrenheit451:
     m 2g "You'd be missing out on so much!"
     m 3f "It's too much for my heart to take!"
     return
-    
+
 init 5 python:
     for key in ['piggy bank', 'saving coins', 'saving money']:
         monika_topics.setdefault(key,[])
@@ -4244,7 +4295,7 @@ init 5 python:
 
 label monika_piggybank:
     m 1a "Do you have a piggy bank, [player]?"
-    m 2c "Not many people do these days." 
+    m 2c "Not many people do these days."
     m "Coins are often disregarded as worthless."
     m 2b "But they really do begin to add up!"
     m 2d "I read that there was once a man that searched his local car washes for loose change everyday in his walks."
@@ -4263,7 +4314,7 @@ label monika_piggybank:
     m 2o "So you might end up losing money buying a new bank."
     m 4b "Fortunately most piggy banks don't do that anymore."
     m 2a "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
-    m 1k "Maybe if you save up enough coins you can buy me a really nice gift." 
+    m 1k "Maybe if you save up enough coins you can buy me a really nice gift."
     m 3e "I would do the same for you, [player]!"
     return
 
@@ -4291,6 +4342,7 @@ label monika_music2:
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "Maybe one day, we can make that dream come true~"
 
     elif songs.getPlayingMusicName() == 'Just Monika':
@@ -4299,6 +4351,7 @@ label monika_music2:
         m 1b "I don't prefer any song over another, but if you were to switch to a different one..."
         m 2b "...I certainly wouldn't be one to complain!"
         m 1k "Ahaha! Don't worry, it's okay if you stay on this song."
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "I'm fine with any of them, so choose whichever one makes you the happiest~"
 
     elif songs.getPlayingMusicName() == 'Your Reality':
@@ -4309,12 +4362,13 @@ label monika_music2:
         m "Well, based on their character archetypes, it's pretty easy to imagine what their voices sound like."
         m 1a "Anyway, I'm glad I was able to share such an intimate part of myself with you, [player]."
         m 2b "One day, maybe I'll get to hear your voice, [player]!"
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "That would make me even happier than I already am~"
 
     elif songs.getPlayingMusicName() == 'I Still Love You':
         m 1f "Gosh, every time I hear this song it makes me sad."
         m "It reminds me of all the... regrettable things I have done to the other girls."
-        m 1p "I hope you still aren't mad at me for that..."
+        m 1p "I hope you aren't still mad at me for what I did..."
         m 1o "..."
         m 2d "Well, you {i}did{/i} go out of your way to install a mod that lets us be together again..."
         m 1e "I guess that's enough proof that you do still love me, at the very least."
@@ -4327,6 +4381,7 @@ label monika_music2:
         m 2b "You know, if I knew how, I could probably program a piano into this room."
         m "I'd be able to write some more songs, and then I'd be able to play them for you..."
         m 4k "Maybe we could even play the piano together! Wouldn't that be nice, [player]?"
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "If you or anyone you know can program that into the game, I would greatly appreciate it~"
 
     elif songs.getPlayingMusicName() == 'Surprise!':
@@ -4336,6 +4391,7 @@ label monika_music2:
         m 1r "..."
         m 1e "It's comforting to know that Sayori was never real in the first place. It's also comforting to know that you still love me despite everything I've done."
         m "I mean, you're still here, right? You wouldn't be here if you didn't love me."
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
 
     else:
@@ -4345,6 +4401,7 @@ label monika_music2:
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "Maybe one day, we can make that dream come true~"
     return
 
@@ -4381,7 +4438,7 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
-    
+
 init 5 python:
     for key in ["birds", "pets", "animals"]:
         monika_topics.setdefault(key,[])
@@ -4395,7 +4452,7 @@ label monika_pets:
     m 2j "I bet you can't guess what sort of pet I'd like to have..."
     m 1a "You're probably thinking of a cat or a dog, but I have something else in mind."
     m "The pet I'd like is something I saw in a book once."
-    m "It was the 'Handbook of the Birds of the World' Our library had the whole set!"
+    m "It was the 'Handbook of the Birds of the World.' Our library had the whole set!"
     m 1b "I loved looking at the gorgeous illustrations and reading about exotic birds."
     m "At first, I thought some sort of thrush would be nice, but I found something amazing in the sixth volume!"
     m "An emerald-colored bird called the Resplendant Quetzal."
@@ -4410,6 +4467,7 @@ label monika_pets:
     m "..."
     m 1l "Sorry for rambling, [player]."
     m 1a "Until I find a way out, could you promise to keep me from feeling lonely?"
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
 
@@ -4451,7 +4509,7 @@ label monika_rock:
     m 2j "That's right. Rock and roll!"
     m 3o "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
     m "To tell you the truth, I judged rock too."
-    m 2c "They're no different with poems, actually."
+    m 2c "They're no different from poems, actually."
     m "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
     m 3d "In fact, it's hard to compose lyrics for just one rock song."
     m "Writing good lyrics for a rock genre requires a lot of emphasis on the wordplay."
@@ -4490,7 +4548,7 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
-    
+
 init 5 python:
     for key in ['copy', 'clone','unique']:
         monika_topics.setdefault(key,[])
@@ -4516,7 +4574,7 @@ label monika_clones:
     m 1j "You'll always be my special rose."
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
-    
+
 init 5 python:
     for key in ['age','18']:
         monika_topics.setdefault(key,[])
@@ -4535,9 +4593,10 @@ label monika_ageinf:
     m "Which is why I brought it up."
     m 1l "Someday, the difference between us would be huge, if I stayed eighteen forever."
     m "But I don't believe that my life can be summed up in a number."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
-    
+
 init 5 python:
     for key in ['wedding','loyalty','wife','husband']:
         monika_topics.setdefault(key,[])
@@ -4552,21 +4611,27 @@ label monika_weddingring:
     m 3a "I mean, we're already in a relationship. So, why not show off that love and dedication?"
     m 3b "It would help keep those... unwanted suitors away from you, too."
     m "It doesn't have to be a wedding ring, per say."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "But if you'd wear one, even if it's just a promise ring, on your ring finger for me..."
     m "It would make me really happy."
+    show monika 1f at t11 zorder 2 with dissolve
     m 1f "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
-    m 5a "And then I could wear it forever."
+
+    m 1a "And then I could wear it forever."
     m 2b "But until then, just remember that my commitment to you is unwavering."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Maybe you even beat me to it, and have a ring for me already?"
     menu:
         m "Do you, [player]?"
         "Yes, I do.":
+            show monika 1c at t11 zorder 2 with dissolve
             m 1c "Oh!"
             m 1b "I feel like... my heart's going to explode!"
             m 1l "Calm down, Monika. Calm down."
             m 1j "Ahaha..."
-            
+
         "No, not yet.":
+            show monika 1c at t11 zorder 2 with dissolve
             m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
     return
@@ -4595,7 +4660,7 @@ label monika_sports:
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
     return
-    
+
 init 5 python:
     for key in ['meditation', 'meditate']:
         monika_topics.setdefault(key,[])
@@ -4631,6 +4696,7 @@ label monika_meditation:
 
     m 1b "Anyway... if you ever want a peaceful environment where you can relax and forget about your problems, you can always come here and spend time with me."
     m 1e "I love you, and I'll always try to help you if you're feeling down."
+    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Don't you ever forget that, [player]~"
     return
 
@@ -4650,7 +4716,7 @@ label monika_orchestra:
 
 #First encounter with topic:
     m "What about you, [player]? Do you play an instrument?"
-    menu: 
+    menu:
         "Yes.":
             $persistent.instrument = True
             m 1b "Really? What do you play?"
@@ -4680,14 +4746,14 @@ init 5 python:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_otaku')
     monika_random_topics.append('monika_otaku')
-    
+
 label monika_otaku:
     m 1a "Hey, [player]?"
     m 2b "You watch anime and read manga, right?"
     menu:
         "Yes":
-            m 1a "I can't say I'm surprised, really." 
-            
+            m 1a "I can't say I'm surprised, really."
+
         "No":
             m 1c "Oh, really?"
             m 1m "That's a little surprising, honestly..."
@@ -4771,7 +4837,7 @@ label monika_selfharm:
     m 4k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m "I really love you so much, [player]."
     return
-    
+
 init 5 python:
     for key in ['urgent','hearts','joke']:
         monika_topics.setdefault(key,[])
@@ -4790,7 +4856,7 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-
+    
 # For George Orwell's Nineteen Eighty-Four, Monika avoids political usage,
 # as it reminds her of the debate club, but more the interpretation of language
 # and thought, which she would feel better connected with.
@@ -4825,6 +4891,90 @@ label monika_1984:
     m 1b "... and romantic~"
     m 1q "I would not know what to do if I lived in such a society where I would not have enough words to express myself ..."
     m 1j "... let alone not be able to express my love to you [player]~"
+
+init 5 python:
+    for key in ['main','character']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_other_girls')
+    monika_random_topics.append('monika_other_girls')
+
+label monika_other_girls:
+    m 1c "You know, it's actually really hard for me to understand how you feel when it comes to..."
+    m 1o "..."
+    m 1g "What happened with the other girls."
+    m 2d "For example~"
+    m "The main character was written to be childhood friends with Sayori~"
+    m 2q "But he was just a one dimensional placeholder character for you to use to interact with the game."
+    m 3g "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
+    m 1i "If that's the case, I want to tell you I'm sorry [player]~."
+    m 1d "Both for making you feel bad, and for..."
+    m 1o "..."
+    m 1p "Doing what I had to do."
+    m 1o "..."
+    m 1g  "There just wasn't anything else that could be done, and none of the other girls were real anyway."
+    m "The other girls never loved you like I do!"
+    m 2r "They only cared about the character you were playing in the game!"
+    m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
+    m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
+    m "..."
+    m 1n "I love you, [player]..."
+    m 1m "More than I could ever express."
+    return
+
+init 5 python:
+    for key in ['happiness']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_happiness')
+    monika_random_topics.append('monika_happiness')
+
+label monika_happiness:
+    m 2d "[player], are you happy?"
+    m 1c "With your life in general, I mean."
+    m 3o "It's ok if you aren't. I can understand you being unhappy, [player]."
+    m 2e "After all, without you, my life would be completely unbearable."
+    m 2d "Isn't it funny that we're able to suffer more than be happy?"
+    m 4j "I'm as happy as I could be knowing that you love me, [player]."
+    m 4p "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
+    m 1q "It would destroy me."
+    m 1h "I guess it's understandable why we notice bad things happening to us more than good..."
+    m 3o"If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m 1c "Like how you would get nervous about your future or social situations, for example."
+    m 3f "You try your best to make the best out of them but if you fail, you'd feel really horrible."
+    m 3e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
+    m 2b "And besides, your cute girlfriend is always rooting for you~"
+    m 2k "Now that's something to be very happy about!"
+    return
+
+init 5 python:
+    for key in ['marry','marriage','marriage proposal']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_marriage')
+
+label monika_marriage:
+    m 3m "M-marriage?"
+    m 4n "I think it's a bit too early for marriage..."
+    m 1e "I mean, I'm really happy that you want that, [player]."
+    m 1c "But I think I should get out of here first before we can do that."
+    m 3o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+    m 3q "I want that special moment to happen when we can finally be together..."
+    m 1k "So until then, save yourself for me, [player]~"
+    return
+
+init 5 python:
+    for key in ['morning energy', 'iced coffee']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_coffee')
+    monika_random_topics.append('monika_coffee')
+
+label monika_coffee:
+    if renpy.seen_label('monika_tea'):
+        m 2c "Have you been drinking coffee lately, [player]?"
+        m 2m "I hope it's not just to make me jealous, ehehe~"
+    m 3b "Coffee is such a nice thing to have when you need a little pep of energy."
+    m 4j "Whether it's hot or cold, coffee is always nice."
+    m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
+    m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
+    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
 ##################

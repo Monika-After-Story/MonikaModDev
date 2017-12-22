@@ -20,8 +20,16 @@ init python:
         fo.close()
 
 label import_ddlc_persistent_in_settings:
-    call import_ddlc_persistent
+    $ prev_songs_enabled = store.songs.enabled
+    $ prev_dialogue = allow_dialogue
+    $ store.songs.enabled = False
+    $ allow_dialogue = False
+#    $ disable_esc() # tthis doesnt work somehow
+    call import_ddlc_persistent from _call_import_ddlc_persistent_1
     $ quick_menu = True
+    $ store.songs.enabled = prev_songs_enabled
+    $ allow_dialogue = prev_dialogue
+#    $ enable_esc()
     return
 
 label import_ddlc_persistent:

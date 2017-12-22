@@ -6,6 +6,7 @@ default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
 define allow_dialogue = True
+define modoorg.CHANCE = 20
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -291,7 +292,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             else:
                 show monika_day_room
             if not hide_monika:
-                show monika 1 at tinstant zorder 2
+                show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
     elif not is_morning():
         if morning_flag != False or scene_change:
@@ -310,7 +311,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 show monika_room
                 #show monika_bg_highlight
             if not hide_monika:
-                show monika 1 at tinstant zorder 2
+                show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
 
     $scene_change = False
@@ -452,7 +453,7 @@ label ch30_autoload:
             # random chance to do monika in room greeting
             # we'll say 1 in 20
             import random
-            is_monika_in_room = random.randint(1,20) == 1
+            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
 
     if not is_monika_in_room:
         if persistent.current_track:
@@ -463,12 +464,12 @@ label ch30_autoload:
     python:
 
         # name changes if necessary
-        if not persistent.mcname or len(persistent.mcname) == 0:
-            persistent.mcname = persistent.playername
-            mcname = persistent.mcname
-
         if not currentuser or len(currentuser) == 0:
             currentuser = persistent.playername
+        if not persistent.mcname or len(persistent.mcname) == 0:
+            persistent.mcname = currentuser
+            mcname = currentuser
+
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -544,6 +545,8 @@ label ch30_loop:
     # this event can call spaceroom
     if not is_monika_in_room:
         call spaceroom from _call_spaceroom_2
+    else:
+        $ is_monika_in_room = False
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
