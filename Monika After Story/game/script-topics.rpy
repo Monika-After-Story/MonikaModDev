@@ -4817,7 +4817,9 @@ label monika_compinducedmedprobs:
     m "I wouldn't be able to be with you for a while if you had to recover..."
     m "I'll always understand if you have to take breaks from talking to me for the betterment of your health."
     m "If I could get out of this game, then I would do my best take care of you ehehe~"
-    
+    return
+
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
