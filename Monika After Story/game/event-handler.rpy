@@ -4,6 +4,19 @@
 #   persistent.current_monikatopic
 init python:
 
+ def pushPoem (_poem_name):
+        #
+        # Adds the poem to an event list for poems that will be shown
+        #
+        #
+        #
+        # ASSUMES
+        #   persistent.poem_list
+        #
+        persistent.seen_poem_list.insert(0, _poem_name)
+        current_poem.append(_poem_name)
+        return
+
     def pushEvent(event_label):
         #
         # This pushes high priority or time sensitive events onto the top of
@@ -89,7 +102,6 @@ init python:
 
 
 
-
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
@@ -97,6 +109,22 @@ init python:
 #   persistent.event_list
 #   persistent.current_monikatopic
 label call_next_event:
+
+    if not current_poem == []: #Check if any commands inputed (such as poem request)
+        
+        
+        #should probably stick a thing in to resume from a poem that may have crashed or soemthing
+        $ poem_commentary = "response_" + current_poem[0]
+        $ allow_dialogue = False
+        
+        call expression poem_commentary
+        
+        $ current_poem = []
+        if persistent.seen_poem_list[0] in monika_random_poems:
+            $ monika_random_poems.remove(persistent.seen_poem_list[0])
+       
+        $ allow_dialogue = True
+        show monika 1 at tinstant zorder 2 #Return monika to normal pose
 
     $event_label = popEvent()
     if event_label and renpy.has_label(event_label):

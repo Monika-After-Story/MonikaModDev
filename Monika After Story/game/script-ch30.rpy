@@ -588,34 +588,95 @@ label ch30_monikatopics:
         allow_dialogue = False
 
         player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
-
+        
         if player_dialogue:
 
             raw_dialogue=player_dialogue
             player_dialogue = player_dialogue.lower()
             player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
             persistent.current_monikatopic = 0
+            
+            #check if any commands inputed
+            if player_dialogue is "show me a poem" or "show me poem":
+                
+                if len(monika_random_poems) == 0: #check if player is a lit nerd
 
-            player_dialogue = player_dialogue.split()
-            #Look at all possible ngrams in the dialogue
-            player_dialogue_ngrams=player_dialogue
-            player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
-            for bigram in player_dialogue_bigrams:
-                player_dialogue_ngrams.append(' '.join(bigram))
+                    #m 1l "Oh dear! It looks like you've seen all of the poems I know!"
+                    #m 1j "That makes me happy..."
+                    #m 1k "It means you love literature as much as me!"
+                    #m "Ehehe~"
+                    #m 1e "Perhaps you won't mind if we reread some of them?"
+                    #
+                    # I am unsure how to put in expression so just dialogue will have to do
+                    #
+                    #
+                    
+                    if (persistent.times_rereading == 1):
+                        m ("Oh dear! It looks like you've seen all of the poems I know!")
+                        m ("That makes me happy...")
+                        m ("It means you love literature as much as me!")
+                        m ("It's okay with you if we reread them right?")
+                        m ("Ehehe~")
+                    elif (persistent.times_rereading == 2):
+                        m ("Oh wow! This is your second time reading all of my poems?")
+                        m ("I suppose you must be tired of them by now...")
+                        m ("Hopefully, I can find more for you soon!")
+                    elif (persistent.times_rereading == 5):
+                        m ("Haha, you've read through my poems five times now!")
+                        m ("Either you really like them or...")
+                        m ("Or maybe you like making me repeat myself.")
+                        m ("Let's see how many times you can keep this up,")
+                    elif (persistent.times_rereading == 10):
+                        m ("Oh my, you really are dedicated...")
+                        m ("I suppose I must give you a gift of some sort")
+                        m ("Let me just see what I have here")
+                        m ("...")
+                        m ("Here we go!")
+                        #I don't know how to hide it... so it's kind of redundant... but if someone knows maybe they can stick in somewhere
+                        try: renpy.file(config.basedir + "/Congratulation for being a Literary Nerd.txt")
+                        except: open(config.basedir + "/Congratulation for being a Literary Nerd.txt", "wb").write(renpy.file("Congratulation for being a Literary Nerd.txt").read())
+                        m ("Enjoy!")
+                        
+                    else:
+                        m ("You've blitzed through them all again?")
+                        m ("Doesn't hurt to read them another time, does it?")
+                        m ("I hope you're enjoying my company though!")
+                    
+                    
+                    monika_random_poems = list(monika_all_poems)
+                    persistent.seen_poem_list = []
+                    persistent.times_rereading += 1
+                    pushPoem (renpy.random.choice(monika_random_poems))
 
-            possible_topics=[] #track all topics that correspond to the input
-            for key in player_dialogue_ngrams:
-                if key in monika_topics:
-                    for topic_id in monika_topics[key]:
-                        if topic_id not in possible_topics:
-                            possible_topics.append(topic_id)
-
-            if possible_topics == []: #Therapist answer if no keywords match
-                # give a therapist answer for all the depressed weebs
-                response = therapist.respond(raw_dialogue)
-                m("[response]")
+                else:
+                    #m 1k "Yay! I love poetry!"
+                    #m 1j "Let me show you this one."
+                    
+                    m ("Yay! I love poetry!")
+                    m ("Let me show you this one.")
+                    pushPoem (renpy.random.choice(monika_random_poems))
+                
             else:
-                pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
+                player_dialogue = player_dialogue.split()
+                #Look at all possible ngrams in the dialogue
+                player_dialogue_ngrams=player_dialogue
+                player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
+                for bigram in player_dialogue_bigrams:
+                    player_dialogue_ngrams.append(' '.join(bigram))
+
+                possible_topics=[] #track all topics that correspond to the input
+                for key in player_dialogue_ngrams:
+                    if key in monika_topics:
+                        for topic_id in monika_topics[key]:
+                            if topic_id not in possible_topics:
+                                possible_topics.append(topic_id)
+
+                if possible_topics == []: #Therapist answer if no keywords match
+                    # give a therapist answer for all the depressed weebs
+                    response = therapist.respond(raw_dialogue)
+                    m("[response]")
+                else:
+                    pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
 
         allow_dialogue = True
 
