@@ -4944,7 +4944,9 @@ label monika_musicpref:
             m "Just mute the mod's music so I can listen along~"
             m 2a "And don't forget about the occasional orchestral track~"
             m 5a "For me!"
-                
+    return
+          
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
