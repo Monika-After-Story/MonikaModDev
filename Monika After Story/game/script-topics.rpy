@@ -4827,7 +4827,9 @@ label monika_colorblindness:
             m "But if you aren't convinced yet, then try to look at an object with somebody else to find out if you see the same thing as different colors!"
             m "You really should try to figure this out though, it might be good for you to know this information for the rest of your life!"
             m "But rest assured, I'll love you no matter what issues you go through [player]!"
-
+    return
+    
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
