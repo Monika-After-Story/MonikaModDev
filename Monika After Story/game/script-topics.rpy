@@ -169,8 +169,8 @@ label monika_self-image
             m "You don't have to tell me; you just need to find some small things that you can take pride in."
             m 4b "It can be a something really silly , or it could be super serious!"
             m "It doesn't really matter much as long as its something you believe." 
-            m "You can build yourself up over time."
-            m 1d "I can't promise it will be easy, but I do promise it will be worth it."
+            m 4j "You can build yourself up over time."
+            m 2d "I can't promise it will be easy, but I do promise it will be worth it."
             m 2k "I'll always root for you [player]!"
     return
 
