@@ -153,25 +153,23 @@ label monika_self-image
         m "I mean, are you comfortable with who you are?"
 
         "Yes.":
-            m 1i "I'm glad you aren't miserable inside [player], your happiness
-            m means everything to me."
-            m 1o "Depression and the like are often rooted in a feeling that you 
-            m don't deserve the affection of the people who care about you.
-            m 1f "Since you don't value yourself, how can other people have a good 
-            m opinion of you?"
+            m 1i "I'm glad you aren't miserable inside [player], your happiness means everything to me."
+            m 1o "Depression and the like are often rooted in a feeling that you don't deserve the affection of the people who care about you.
+            m 1f "Since you don't value yourself, how can other people have a good opinion of you?"
             m "Or so such people feel inside anyway..."
-            m 2e "It's a horrible place to be. If you have any friends that you 
-            m think might be suffering inside, try to reach out and say something 
-            m kind, it could make a world of difference."
-            m 2i "If it lessens the pain a person is trapped at all you have done 
-            m a great thing. Even if it doesn't, at least you tried rather than stayed silent."
+            m 2e "It's a horrible place to be. 
+            m "If you have any friends that you think might be suffering inside, try to reach out and say something kind."
+            m 4i "It could make a world of difference!"
+            m 2i "If it lessens the pain a person is trapped at all you have done a great thing."
+            m 3e "Even if it doesn't, at least you tried rather than stayed silent."
         "No.":
-            m 1g "Thats sad to hear. I'll always love you [player], but I think it's
-            m important to learn to love yourself. You need to start with little things."
-            m 1p What do you like about yourself? You don't have to tell me, you
-            m just need to find some small things that you can take pride in. It can 
-            m be a really silly thing, or super serious, it doesn't matter much as long as 
-            m its something you believe. Over time you can build yourself up. 
+            m 1g "Thats sad to hear. I'll always love you [player], but I think it's important to learn to love yourself. 
+            m "You need to start with little things."
+            m 1p "What do you like about yourself? 
+            m "You don't have to tell me; you just need to find some small things that you can take pride in."
+            m 4b "It can be a something really silly , or it could be super serious!"
+            m "It doesn't really matter much as long as its something you believe." 
+            m "You can build yourself up over time."
             m 1d I can't promise it will be easy, but I do promise it will be worth it.
             m 2k "I'll always root for you [player]!"
     return
