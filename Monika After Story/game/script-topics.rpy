@@ -14,16 +14,18 @@ define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
-    def remove_seen_topics():
+    def remove_seen_labels(pool):
         #
-        # Removes seen topics from monika random topics
+        # Removes seen labels from the given pool
         #
-        # ASSUMES:
-        #   monika_random_topics
-        global monika_random_topics
-        for index in range(len(monika_random_topics)-1, -1, -1):
-            if renpy.seen_label(monika_random_topics[index]):
-                monika_random_topics.pop(index)
+        # IN:
+        #   pool - a list of labels to check for seen
+        #
+        # OUT:
+        #   pool - list of unseen labels (may be empty)
+        for index in range(len(pool)-1, -1, -1):
+            if renpy.seen_label(pool[index]):
+                pool.pop(index)
 
     # EXCEPTION CLass incase of bad labels
     class MASTopicLabelException(Exception):
@@ -42,7 +44,7 @@ init 11 python:
             raise MASTopicLabelException("topic '" + topic + "' does not exist.")
 
     #Remove all previously seen random topics.
-    remove_seen_topics()
+    remove_seen_labels(monika_random_topics)
 
     #If there are no unseen topics, you can repeat seen ones
     if len(monika_random_topics) == 0:
