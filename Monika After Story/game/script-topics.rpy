@@ -145,7 +145,7 @@ init 5 python:
         monika_topics[key].append('monika_selfimage')
     monika_random_topics.append('monika_selfimage')
 
-label monika_self-image
+label monika_selfimage
     m 1f "Hey [player], do you love yourself?"
     m 1g "I don't mean in a conceited way."
     m 1c   "..."
