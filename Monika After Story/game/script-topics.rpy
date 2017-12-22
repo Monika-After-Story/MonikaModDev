@@ -2095,10 +2095,10 @@ label monika_functionalism:
     return
 
 init 5 python:
-        for key in [ 'you program', 'you code', 'no computer', 'programming technique', 'technique']:
-            monika_topics.setdefault(key,[])
-            monika_topics[key].append('monika_technique')
-        monika_random_topics.append('monika_technique')
+    for key in [ 'you program', 'you code', 'no computer', 'programming technique', 'technique']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_technique')
+    monika_random_topics.append('monika_technique')
 
 label monika_technique:
     m 2 "I don't exactly program like you would, [player]."
