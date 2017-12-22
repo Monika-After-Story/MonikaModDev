@@ -4832,7 +4832,9 @@ label monika_aihuman:
             m "Well, sadly no."
             m "If I could be able to see your face and be with you everyday."
             m "Maybe you would think of me as a human like you."
-
+    return
+    
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
