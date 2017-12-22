@@ -4726,11 +4726,30 @@ label monika_orchestra:
             m 1b "Really? What do you play?"
             $ instrumentname = renpy.input('What instrument do you play?').strip(' \t\n\r')
             $ persistent.instrumentname = instrumentname
-            m 1a "Wow, I've always wanted to try the [instrumentname] out!"
-            m 2b "I would love to hear you play for me."
-            m "Maybe you could teach me how to play, too~"
-            m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
-            m 1j "Ehehe~"
+            if(instrumentname.lower() == "piano"):
+                #Monika realizes that you play piano as well
+                m 2k "Oh! Maybe one day we could play together!"
+                m 3n "I'm still a beginner, so I might not be able to keep up with you, [player]~!"
+                m 1a "Ah, are you an experienced pianist?"
+                menu:
+                    "Yes.":
+                        m 1k "Gosh, it looks like I have a bit of catching up to do."
+                        m 4a "Perhaps you could teach me a thing or two one day?"
+                        m 1j "It would make me so happy to learn from you."
+                        m 5a "Maybe one day we can make that happen~"
+                    "No.":
+                        m 1e "No worries! I'm only learning too remember?"
+                        m 1b "Perhaps we could practice together sometime!"
+                        m 1j "I know the perfect piece we could practice as well~"
+                        m 2b "Do you know what song I'm referring to?"
+                        m 3k "My song of course! I wonder how it would sound if we were to play together..."
+                        m 5a "I would love to play along with you! Ehehe~"
+            else:
+                m 1a "Wow, I've always wanted to try the [instrumentname] out!"
+                m 2b "I would love to hear you play for me."
+                m "Maybe you could teach me how to play, too~"
+                m 5a "Oh! Would a duet between the [instrumentname] and the piano would sound nice?"
+                m 1j "Ehehe~"
         "No.":
             $persistent.instrument = False
             m 1i "I see..."
