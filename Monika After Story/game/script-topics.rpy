@@ -138,6 +138,43 @@ label monika_bad_day:
     m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
     return
 
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['depression','self esteem','self-esteem','self image','self-image']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_self-image')
+    monika_random_topics.append('monika_self-image')
+
+label monika_self-image
+    m 1f "Hey [player], do you love yourself?"
+    m 1g "I don't mean in a conceited way.
+    m 1c   "..."
+    menu:
+        m "I mean, are you comfortable with who you are?"
+
+        "Yes.":
+            m 1i "I'm glad you aren't miserable inside [player], your happiness
+            m means everything to me."
+            m 1o "Depression and the like are often rooted in a feeling that you 
+            m don't deserve the affection of the people who care about you.
+            m 1f "Since you don't value yourself, how can other people have a good 
+            m opinion of you?"
+            m "Or so such people feel inside anyway..."
+            m 2e "It's a horrible place to be. If you have any friends that you 
+            m think might be suffering inside, try to reach out and say something 
+            m kind, it could make a world of difference."
+            m 2i "If it lessens the pain a person is trapped at all you have done 
+            m a great thing. Even if it doesn't, at least you tried rather than stayed silent."
+        "No.":
+            m 1g "Thats sad to hear. I'll always love you [player], but I think it's
+            m important to learn to love yourself. You need to start with little things."
+            m 1p What do you like about yourself? You don't have to tell me, you
+            m just need to find some small things that you can take pride in. It can 
+            m be a really silly thing, or super serious, it doesn't matter much as long as 
+            m its something you believe. Over time you can build yourself up. 
+            m 1d I can't promise it will be easy, but I do promise it will be worth it.
+            m 2k "I'll always root for you [player]!"
+    return
 
 init 5 python:
     #This is a list of keywords for this topic
