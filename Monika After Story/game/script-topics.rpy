@@ -4911,6 +4911,44 @@ label monika_happiness:
     return
 
 init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['color blindness', 'colour blindness']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_colorblindness') #id
+    monika_random_topics.append('monika_colorblindness')
+	
+label monika_colorblindness:
+    m "Hey [player], I've been reading up a bit on color blindness."
+    m "I just can't imagine how it must be like!"
+    m "To never be able to see the roaring sun by its true colors or its gentle sunset!"
+    m "I really feel bad for those poor people."
+    m "Most of them are male too, since it's quite rare for a woman to have a color blind deficit of some sort."
+    m "Gosh, genetics are super weird, aren't they?"
+    m "Why don't we do a little experiment?"
+    menu:
+        m "What are the color of my eyes?"
+        "Green":
+            m "Ahaha, you're right!"
+            m "Well, at least that means you're not color blind."
+            m "Unless you lied to me, but why would you?"
+            m "Ah, in that case you, maybe just didn't want to worry me."
+            m "I'm always willing to deal with any of your worries [player]!"
+        "Gray":
+            m "Gosh, we might have an issue here."
+            m "If you see everything on a scale of greys, that could mean you're completely color blind!"
+            m "Unless you just have a super weird black and white monitor."
+            m "But take care of yourself."
+        "Other":
+            m "Ah, I can't tell from here."
+            m "I assume you either have a faulty monitor or you're color blind."
+            m "Yet there're so many different types of color blindness that I can't guess by just asking you."
+            m "You should seek professional advice in that case."
+            m "But if you aren't convinced yet, then try to look at an object with somebody else to find out if you see the same thing as different colors!"
+            m "You really should try to figure this out though, it might be good for you to know this information for the rest of your life!"
+            m "But rest assured, I'll love you no matter what issues you go through [player]!"
+    return
+    
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
