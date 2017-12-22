@@ -4394,6 +4394,10 @@ label monika_music2:
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
 
+    elif songs.getPlayingMusicName() == "Doki Doki Theme (80s version)":
+        # TODO: add dialogue here
+        m "I NEED DIALOGUE NOW"
+
     else:
         m 1a "..."
         m 1a "...This silence..."

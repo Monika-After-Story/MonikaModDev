@@ -97,7 +97,18 @@ init -1 python in songs:
             music_choices.append(("Just Monika","bgm/m1.ogg"))
             music_choices.append(("Your Reality","bgm/credits.ogg"))
             music_choices.append(("I Still Love You","bgm/monika-end.ogg"))
-            music_choices.append(("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg"))
+            music_choices.append(
+                ("Okay, Everyone! (Monika)","<loop 4.444>bgm/5_monika.ogg")
+            )
+
+            # BIG SHOUTOUT to HalHarrison for this lovely track!
+            music_choices.append(
+                (
+                    "Doki Doki Theme (80s version)",
+                    "<loop 17.451 to 119.999>" + 
+                    "mod_assets/bgm/ddlc_maintheme_80s.ogg"
+                )
+            )
 
         # sayori only allows this
         music_choices.append(("Surprise!",sayori_track))
