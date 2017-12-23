@@ -350,132 +350,103 @@ init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_fencegraveyard",
         is_m2p=True,
-        prompt=“A curious child asks his dad ‘Why do they build a fence around a graveyard?’”
         is_dad=True
     ))
+
 label m_joke_fencegraveyard:
-m “The dad quickly replies with ‘Because people are dying to get in there!’”
-m “...”
-m “It’s surprising how a lot of jokes are based on unexpected answers.”
-m “Maybe that’s a bit ironic for me to be surprised ehehe~”
-m “Normally in jokes the characters won’t get a proper answer.”
-m “They will either get a quite literal answer or an unexpected twist of the question.”
-m “Maybe I should start giving you unexpected answers to any questions!”
-m “Just teasing you~”
+    m "A curious child asks his dad ‘Why do they build a fence around a graveyard?’"
+    m "The dad quickly replies with ‘Because people are dying to get in there!’"
+    m "..."
+    m "It’s surprising how a lot of jokes are based on unexpected answers."
+    m "Maybe that’s a bit ironic for me to be surprised ehehe~"
+    m "Normally in jokes the characters won’t get a proper answer."
+    m "They will either get a quite literal answer or an unexpected twist of the question."
+    m "Maybe I should start giving you unexpected answers to any questions!"
+    m "Just teasing you~"
 return
 
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_gotagig",
         is_m2p=True,
-        prompt=“Have you heard of the band ‘1023MB’?”
     ))
+
 label m_joke_gotagig:
-m “They haven’t got a gig yet.”
-m “...”
-m “Sorry if you didn’t get it~.”
-m “This joke probably flew right over your head if you aren’t too big into computers.”
-m “In a computer 1024 megabytes makes a gigabyte.”
-m “So the joke is centered around the fact that they are 1mb away from having a ‘gig’.”
-m “Anyways, you were technically advanced enough to install this mod.”
-m “So I am sure you understood it! Right [player]? ehehe~”
+    m "Have you heard of the band ‘1023MB’?"
+    m "They haven’t got a gig yet."
+    m "..."
+    m "Sorry if you didn’t get it~."
+    m "This joke probably flew right over your head if you aren’t too big into computers."
+    m "In a computer 1024 megabytes makes a gigabyte."
+    m "So the joke is centered around the fact that they are 1mb away from having a ‘gig’."
+    m "Anyways, you were technically advanced enough to install this mod."
+    m "So I am sure you understood it! Right [player]? ehehe~"
 return
 
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_sodapressingjob",
         is_m2p=True,
-        prompt=“Why did the can-crusher quit his job?”
     ))
 label m_joke_sodapressingjob:
-m “Because it was soda-pressing!”
-m “...”
-m “Gosh, I forgot how silly this joke sounded!”
-m “Well, it’s more of a play on words than anything else.”
-m “It’s really interesting how much one can play with the varying sounds words can make.”
-m “Word play is really interesting if you look it form a linguistic point of view.”
-m “It’s pretty much combining words to make it sound like a different word!”
-m “Ah, I hope you’re fond of these type of jokes, just as I am fond of you [player]!”
+    m "Why did the can-crusher quit his job?"
+    m "Because it was soda-pressing!"
+    m "..."
+    m "Gosh, I forgot how silly this joke sounded!"
+    m "Well, it’s more of a play on words than anything else."
+    m "It’s really interesting how much one can play with the varying sounds words can make."
+    m "Word play is really interesting if you look it form a linguistic point of view."
+    m "It’s pretty much combining words to make it sound like a different word!"
+    m "Ah, I hope you’re fond of these type of jokes, just as I am fond of you [player]!"
 return
 
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_nextquestion",
         is_m2p=True,
-        prompt=“It is close to the end of the school day, the teacher is finishing up their lesson.”
     ))
 label m_joke_nextquestion:
-m “The teacher announces that whoever answers her next question, can go home.”
-m “One boy throws his bag out the window.”
-m “The teacher then asked: Who just threw that?!”
-m “The same boy who threw the bag then yells: I did! I’m going home now.”
-m “...”
-m “This joke works quite well as it’s quite absurd, which actually adds to the humor of it.”
-m “Normally nobody would take questions that literally.”
-m “It surprises the reader just like it surprised me the first time I read it!”
+    m "It is close to the end of the school day, the teacher is finishing up their lesson."
+    m "The teacher announces that whoever answers her next question, can go home."
+    m "One boy throws his bag out the window."
+    m "The teacher then asked: Who just threw that?!"
+    m "The same boy who threw the bag then yells: I did! I’m going home now."
+    m "..."
+    m "This joke works quite well as it’s quite absurd, which actually adds to the humor of it."
+    m "Normally nobody would take questions that literally."
+    m "It surprises the reader just like it surprised me the first time I read it!"
 return
 
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_mine",
         is_m2p=True,
-        prompt=“A cop stops a miner for speeding on the highway.”
     ))
 label m_joke_mine:
-m “The cop asks the miner; Whose car is this? Where are you headed? What do you do?”
-m “The miner replies: mine.”
-m “...”
-m “Sorry, I know it’s not one of the best jokes out there, but it can bring a small giggle.”
-m “I found it pretty funny myself the first time I heard it.”
-m “I guess in the end it is more a bad joke than anything, right [player]? Ehehe~”
-m “I hope you still found it a bit funny in the end.”
+    m = "A cop stops a miner for speeding on the highway."
+    m "The cop asks the miner; Whose car is this? Where are you headed? What do you do?"
+    m "The miner replies: mine."
+    m "..."
+    m "Sorry, I know it’s not one of the best jokes out there, but it can bring a small giggle."
+    m "I found it pretty funny myself the first time I heard it."
+    m "I guess in the end it is more a bad joke than anything, right [player]? Ehehe~"
+    m "I hope you still found it a bit funny in the end."
 return
 
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_camouflagetraining",
         is_m2p=True,
-        prompt="At evening roll call, the sergeant-major headed right towards a young soldier."
     ))
     
 label m_joke_camouflagetraining:
-m “The sergeant-major growled at the young soldier, I didn’t see you at camouflage training this morning!"
-m “The soldier replied: Thank you very much, sir."
-m “...”
-m “This joke can be funny the first time you hear it!”
-m “It establishes a where and when before giving a situation where you would expect the soldier to reply with something to justify his absence.”
-m “You end up surprised as the soldier doesn’t justify it.”
-m “I wonder if you would be able to see me if I wore camouflage clothes here? ehehe~”
+    m "At evening roll call, the sergeant-major headed right towards a young soldier."
+    m "The sergeant-major growled at the young soldier, I didn’t see you at camouflage training this morning!"
+    m "The soldier replied: Thank you very much, sir."
+    m "..."
+    m "This joke can be funny the first time you hear it!"
+    m "It establishes a where and when before giving a situation where you would expect the soldier to reply with something to justify his absence."
+    m "You end up surprised as the soldier doesn’t justify it."
+    m "I wonder if you would be able to see me if I wore camouflage clothes here? ehehe~"
 return
 
-init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_test",
-        is_m2p=True
-    ))
-
-label m_joke_test:
-    m "did u know that this is a test"
-    return
-
-init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_dad_test",
-        is_m2p=True,
-        is_dad=True
-    ))
-
-label m_joke_dad_test:
-    m "this is a dad joke apparently"
-    return
-
-init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_dark_test",
-        is_m2p=True,
-        is_dark=True
-    ))
-
-label m_joke_dark_test:
-    m "this is dark joke okay"
-    return
