@@ -4862,6 +4862,31 @@ label monika_urgent:
     return
 
 init 5 python:
+    for key in ['homework','assignment']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_homework')
+    monika_random_topics.append('monika_homework')
+
+label monika_homework:
+      m 1a "Say, [player]..."
+      m 2d "Are you having trouble with your assignments?"
+      menu:
+        "Yes.":
+            m 1h "Hmm.."
+            m "You should try completing them one by one, it's much easier that way."
+            m 1b "Proper organization and following a schedule can also help a lot in easing the workload."
+            m "Aside from that, getting rid of distractions could help in finishing the task much quicker."
+            m "I also suggest finishing tasks as early as possible, as cramming them last minute can be quite problematic."
+            m 1a"I hope that could've been of some use to you."
+            m 2g "I don't want my sweetheart to be struggling in school or with work, okay?"
+            m 1b "I'm sure you'll be just fine, ahaha~"
+        "No.":
+            m 1a "I'm glad to hear that then."
+            m 1d "Some people have a hard time dealing with work and it starts to pile up gradually."
+            m 1a "So keep up the good work, [player]. Don't stress yourself out too much."
+            m "I believe in you~"
+            return
+
     for key in ['main','character']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_other_girls')
@@ -4945,6 +4970,34 @@ label monika_coffee:
     m 3e "It's funny how a drink for giving you energy became a treat for you to enjoy."
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
+
+ init 5 python:
+     for key in ['homework','assignment']:
+         monika_topics.setdefault(key,[])
+         monika_topics[key].append('monika_homework')
+     monika_random_topics.append('monika_homework')
+ 
+ label monika_homework:
+     m 1a "Say, [player]..."
+     m 2d "Are you having trouble with your assignments?"
+     menu:
+         "Yes.":
+            m 1h "Hmm.."
+            m "You should try completing them one by one, it's much easier that way."
+            m 1b "Proper organization and following a schedule can also help a lot in easing the workload."
+            m "Aside from that, getting rid of distractions could help in finishing the task much quicker."
+            m "I also suggest finishing tasks as early as possible, as cramming them last minute can be quite problematic."
+            m 1a"I hope that could've been of some use to you."
+            m 2g "I don't want my sweetheart to be struggling in school or with work, okay?"
+            m 1b "I'm sure you'll be just fine, ahaha~"
+         "No.":
+            m 1a "I'm glad to hear that then."
+            m 1d "Some people have a hard time dealing with work and it starts to pile up gradually."
+            m 1a "So keep up the good work, [player]. Don't stress yourself out too much."
+            m "I believe in you~"
+     return
+
+
 
 ##################
 #Incomplete ideas#
