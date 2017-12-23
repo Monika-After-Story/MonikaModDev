@@ -4901,7 +4901,7 @@ label monika_coffee:
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
-init 5 python:
+ init 5 python:
      for key in ['homework','assignment']:
          monika_topics.setdefault(key,[])
          monika_topics[key].append('monika_homework')
