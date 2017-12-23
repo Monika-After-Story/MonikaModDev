@@ -80,7 +80,8 @@ init python:
         #
         if persistent.current_monikatopic:
             #don't push greetings back on the stack
-            if not persistent.current_monikatopic.startswith('greeting_'):
+            if (not persistent.current_monikatopic.startswith('greeting_')
+                and not persistent.current_monikatopic.startswith('i_greeting')):
                 pushEvent(persistent.current_monikatopic)
                 pushEvent('continue_event')
             persistent.current_monikatopic = 0
@@ -101,6 +102,8 @@ label call_next_event:
     if event_label and renpy.has_label(event_label):
 
         $ allow_dialogue = False
+        if not seen_event(event_label): #Give 15 xp for seeing a new event
+            $grant_xp(xp.NEW_EVENT)
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 
@@ -108,7 +111,8 @@ label call_next_event:
             $monika_random_topics.remove(event_label)
 
         if _return == 'quit':
-            $ renpy.quit(0)
+            $persistent.closed_self = True #Monika happily closes herself
+            jump _quit
 
         $ allow_dialogue = True
         show monika 1 at tinstant zorder 2 #Return monika to normal pose
@@ -116,3 +120,9 @@ label call_next_event:
         return False
 
     return event_label
+
+# This either picks an event from the pool or events or, sometimes offers a set
+# of three topics to get an event from.
+label unlock_prompt:
+    pass #placeholder
+    return

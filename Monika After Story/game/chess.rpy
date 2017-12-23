@@ -36,9 +36,17 @@ init:
             vw = config.screen_width * 10000
             vh = config.screen_height * 10000
             pw, ph = renpy.get_physical_size()
+            dw, dh = pygame.display.get_surface().get_size()
             mx, my = pygame.mouse.get_pos()
 
+            # converts the mouse coordinates from pygame to physical size
+            # NEEDED FOR UI SCALING OTHER THAN 100%
+            mx = (mx * pw) / dw
+            my = (my * ph) / dh
+
             r = None
+            # this part calculates the "true" position
+            # it can handle weirdly sized screens
             if vw / (vh / 10000) > pw * 10000 / ph:
                 r = vw / pw
                 my -= (ph - vh / r) / 2
@@ -129,7 +137,22 @@ init:
                 thrd.daemon = True
                 thrd.start()
 
+                # NOTE: DEBUG
+                # Use this starting FEN line to do board testing
+#                DEBUG_STARTING_FEN = "qk6/p7/8/8/8/8/7P/QK6 w - - 0 1"
+
+                # handlign promo
+                self.promolist = ["q","r","n","b","r","k"]
+
+                # separate handling of music menu open because the songs store
+                # is for main renpy interaction
+                self.music_menu_open = False
+
                 # Board for integration with python-chess.
+                # NOTE: DEBUG
+                # Use this line (and comment the one following this one) to
+                # use DEBUG FEN
+#                self.board = chess.Board(fen=DEBUG_STARTING_FEN)
                 self.board = chess.Board()
 
                 self.player_color = player_color
@@ -232,13 +255,16 @@ init:
                 for ix in range(8):
                     for iy in range(8):
                         iy_orig = iy
+                        ix_orig = ix
                         if self.player_color == self.COLOR_WHITE:
                             iy = 7 - iy
+                        else: # black player should be reversed X
+                            ix = 7 - ix
                         x = int((width - (self.BOARD_WIDTH - self.BOARD_BORDER_WIDTH * 2)) / 2  + ix * self.PIECE_WIDTH)
                         y = int((height - (self.BOARD_HEIGHT - self.BOARD_BORDER_HEIGHT * 2)) / 2 + iy * self.PIECE_HEIGHT)
 
                         def render_move(move):
-                            if move is not None and ix == move[0] and iy_orig == move[1]:
+                            if move is not None and ix_orig == move[0] and iy_orig == move[1]:
                                 if self.player_color == self.current_turn:
                                     r.blit(highlight_magenta, (x, y))
                                 else:
@@ -249,20 +275,35 @@ init:
 
                         # Take care not to render the selected piece twice.
                         if (self.selected_piece is not None and
-                            ix == self.selected_piece[0] and
+                            ix_orig == self.selected_piece[0] and
                             iy_orig == self.selected_piece[1]):
                             r.blit(highlight_green, (x, y))
                             continue
 
-                        piece = self.board.piece_at(iy_orig * 8 + ix)
+                        piece = self.board.piece_at(iy_orig * 8 + ix_orig)
 
                         possible_move_str = None
+                        blit_rendered = False
                         if self.possible_moves:
                             possible_move_str = (ChessDisplayable.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) +
-                                                 ChessDisplayable.coords_to_uci(ix, iy_orig))
-                        if (self.possible_moves and
-                            chess.Move.from_uci(possible_move_str) in self.possible_moves):
-                            r.blit(highlight_yellow, (x, y))
+                                                 ChessDisplayable.coords_to_uci(ix_orig, iy_orig))
+                            if chess.Move.from_uci(possible_move_str) in self.possible_moves:
+                                r.blit(highlight_yellow, (x, y))
+                                blit_rendered = True
+
+                            # force checking for promotion
+                            if not blit_rendered and (iy == 0 or iy == 7):
+                                index = 0
+                                while (not blit_rendered
+                                        and index < len(self.promolist)):
+
+                                    if (chess.Move.from_uci(
+                                        possible_move_str + self.promolist[index])
+                                        in self.possible_moves):
+                                        r.blit(highlight_yellow, (x, y))
+                                        blit_rendered = True
+
+                                    index += 1
 
                         if piece is None:
                             continue
@@ -306,6 +347,7 @@ init:
                 # Ask that we be re-rendered ASAP, so we can show the next frame.
                 renpy.redraw(self, 0)
 
+
                 # Return the Render object.
                 return r
 
@@ -320,12 +362,22 @@ init:
                     py = my / self.PIECE_HEIGHT
                     if self.player_color == self.COLOR_WHITE:
                         py = 7 - py
+                    else: # black player should be reversed X
+                        px = 7 - px
                     if py >= 0 and py < 8 and px >= 0 and px < 8:
                         return (px, py)
                     return (None, None)
 
                 # Mousebutton down == possibly select the piece to move
                 if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
+
+                    # NOTE: DEBUG
+#                    mxx, myy = get_mouse_pos()
+#                    mxp, myp = pygame.mouse.get_pos()
+#                    with open("chess_debug", "a") as debug_file:
+#                        debug_file.write("["+str(mxx)+","+str(myy)+"] " +
+#                        "("+str(mxp)+","+str(myp)+") \n")
+
                     if self.winner and not self.winner_confirmed:
                         self.winner_confirmed = True
                     else:
@@ -343,12 +395,18 @@ init:
                                     self.surrendered = True
                                 self.last_clicked_king = st
 
-                            src = ChessDisplayable.coords_to_uci(px, py)
+                            # NOTE: The following is commented out because it
+                            # broke the ability to promote units. We keep it
+                            # here for reference, tho
+#                            src = ChessDisplayable.coords_to_uci(px, py)
 
-                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank))
-                                                                for file in range(8)
-                                                                for rank in range(8)]
-                            self.possible_moves = (set(self.board.legal_moves).intersection(all_moves))
+#                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank))
+#                                                                for file in range(8)
+#                                                                for rank in range(8)]
+#                            legal_moves = set(self.board.legal_moves).intersection(all_moves)
+#                            p_legal_moves = set(self.board.pseudo_legal_moves).intersection(all_moves)
+#                            self.possible_moves = legal_moves.union(p_legal_moves)
+                            self.possible_moves = self.board.legal_moves
                             self.selected_piece = (px, py)
 
                 # Mousebutton up == possibly release the selected piece
@@ -356,6 +414,16 @@ init:
                     px, py = get_piece_pos()
                     if px is not None and py is not None and self.selected_piece is not None:
                         move_str = self.coords_to_uci(self.selected_piece[0], self.selected_piece[1]) + self.coords_to_uci(px, py)
+
+                        piece = str(
+                            self.board.piece_at(
+                                self.selected_piece[1] * 8 +
+                                self.selected_piece[0]
+                            )
+                        )
+
+                        if piece.lower() == 'p' and (py == 0 or py == 7):
+                            move_str += "q"
                         if chess.Move.from_uci(move_str) in self.possible_moves:
                             self.last_move_src = self.selected_piece
                             self.last_move_dst = (px, py)
@@ -366,7 +434,43 @@ init:
                             self.current_turn = not self.current_turn
                             self.start_monika_analysis()
                     self.selected_piece = None
+                    # NOTE: DEBUG
+                    # Use these file write statements to display legal moves
+#                    with open("chess_debug", "a") as debug_file:
+#                        for item in set(self.board.legal_moves):
+#                            debug_file.write(item.uci() + "\n")
+#
+#                    with open("chess_debug_2", "a") as debug_file:
+#                        for item in set(self.board.pseudo_legal_moves):
+#                            debug_file.write(item.uci() + "\n")
                     self.possible_moves = set([])
+
+                # KEYMAP workarounds:
+                if ev.type == pygame.KEYUP:
+
+                    # music menu // muting
+                    if ev.key == pygame.K_m:
+
+                        # muting
+                        if ev.mod & pygame.KMOD_SHIFT:
+                            mute_music()
+                        elif not self.music_menu_open:
+                            self.music_menu_open = True
+                            select_music()
+                        else: # the menu is already open
+                            self.music_menu_open = False
+
+                    # volume increase
+                    if (ev.key == pygame.K_PLUS
+                            or ev.key == pygame.K_EQUALS
+                            or ev.key == pygame.K_KP_PLUS):
+                        inc_musicvol()
+
+                    # volume decrease
+                    if (ev.key == pygame.K_MINUS
+                            or ev.key == pygame.K_UNDERSCORE
+                            or ev.key == pygame.K_KP_MINUS):
+                        dec_musicvol()
 
                 # If we have a winner, return him or her. Otherwise, ignore the current event.
                 if self.winner and self.winner_confirmed:
@@ -404,7 +508,7 @@ label demo_minigame_chess:
 
     python:
         ui.add(ChessDisplayable(player_color))
-        winner, surrendered, num_turns = ui.interact(suppress_overlay=True, suppress_underlay=True)
+        winner, surrendered, num_turns = ui.interact(suppress_underlay=True)
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
@@ -423,6 +527,10 @@ label demo_minigame_chess:
             m 1l "I really was going easy on you!"
 
     elif winner == "player":
+        #Give player XP if this is their first win
+        if not persistent.ever_won['chess']:
+            $persistent.ever_won['chess'] = True
+            $grant_xp(xp.WIN_GAME)
 
         m 2a "You won! Congratulations."
         if persistent.chess_strength<20:

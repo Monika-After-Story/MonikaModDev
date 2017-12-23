@@ -1,7 +1,18 @@
 #This is the introduction event for starting up the game.
 label introduction:
-    $ import store.hkb_button as hkb_button
-    $ hkb_button.enabled = False
+    python:
+        import store.hkb_button as hkb_button
+        hkb_button.enabled = False
+
+        # name changes if necessary
+        if not persistent.mcname or len(persistent.mcname) == 0:
+            persistent.mcname = persistent.playername
+            mcname = persistent.mcname
+
+        if not currentuser or len(currentuser) == 0:
+            currentuser = persistent.playername
+
+
     if persistent.monika_kill == True:
         m 1f "..."
         m 1f "[player]..."
@@ -117,6 +128,10 @@ label chara_monika_scare:
     m 1h "How curious."
     m "You must have misunderstood."
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
+
+    # this is a 2 step process
+    $ config.overlay_screens.remove("hkb_overlay")
+    hide screen hkb_overlay
 
     window hide
     hide monika

@@ -1285,11 +1285,32 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
+default persistent.closed_self = False
+default persistent.seen_monika_in_room = False
+default persistent.ever_won = {'pong':False,'chess':False}
+default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':0,'total_sessions':0}
+default persistent.playerxp = 0
+default persistent.idlexp_total = 0
+define times.REST_TIME = 6*3600
+define times.FULL_XP_AWAY_TIME = 24*3600
+define times.HALF_XP_AWAY_TIME = 72*3600
+define xp.NEW_GAME = 30
+define xp.WIN_GAME = 30
+define xp.AWAY_PER_HOUR = 10
+define xp.IDLE_PER_MINUTE = 1
+define xp.IDLE_XP_MAX = 120
+define xp.NEW_EVENT = 15
 
-call set_gender from _call_set_gender
+default his = "his"
+default he = "he"
+default hes = "he's"
+default heis = "he is"
+default bf = "boyfriend"
+default man = "man"
+default boy = "boy"
+default guy = "guy"
 
 return
-
 
 #Gender specific word replacement
 #Those are to be used like this "It is [his] pen." Output:

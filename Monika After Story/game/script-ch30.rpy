@@ -111,6 +111,25 @@ init python:
         pass
 
     #Define new functions
+
+    def enable_esc():
+        #
+        # Enables the escape key so you can go to the game menu
+        #
+        # ASSUMES:
+        #   config.keymap
+        if "K_ESCAPE" not in config.keymap["game_menu"]:
+            config.keymap["game_menu"].append("K_ESCAPE")
+
+    def disable_esc():
+        #
+        # disables the escape key so you cant go to game menu
+        #
+        # ASSUMES:
+        #   config.keymap
+        if "K_ESCAPE" in config.keymap["game_menu"]:
+           config.keymap["game_menu"].remove("K_ESCAPE")
+
     def play_song(song):
         #
         # literally just plays a song onto the music channel
@@ -128,8 +147,11 @@ init python:
         #
         # ASSUMES:
         #   songs.music_volume
+        #   persistent.playername
+
         curr_volume = songs.getVolume("music")
-        if curr_volume > 0.0:
+        # sayori cannot mute
+        if curr_volume > 0.0 and persistent.playername.lower() != "sayori":
             songs.music_volume = curr_volume
             renpy.music.set_volume(0.0, channel="music")
         else:
@@ -147,7 +169,12 @@ init python:
         # decreases the volume of the music channel by the value defined in
         # songs.vol_bump
         #
-        songs.adjustVolume(up=False)
+        # ASSUMES:
+        #   persistent.playername
+
+        # sayori cannot make the volume quieter
+        if persistent.playername.lower() != "sayori":
+            songs.adjustVolume(up=False)
 
     def set_keymaps():
         #
@@ -182,7 +209,7 @@ init python:
 
     def pick_game():
         if allow_dialogue:
-            renpy.call_in_new_context('pick_a_game')
+            renpy.call('pick_a_game')
 
     def select_music():
         # check for open menu
@@ -236,40 +263,63 @@ init python:
         delta = now - persistent.firstdate
         return delta.days
 
-label spaceroom:
+# IN:
+#   start_bg - the background image we want to start with. Use this for
+#       special greetings. None uses the default spaceroom images.
+#       NOTE: This is called using renpy.show(), so pass the string name of
+#           the image you want (NOT FILENAME)
+#       NOTE: You're responsible for setting spaceroom back to normal though
+#       (Default: None)
+#   hide_mask - True will hide the mask, false will not
+#       (Default: False)
+#   hide_monika - True will hide monika, false will not
+#       (Default: False)
+label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
     if is_morning():
         if morning_flag != True or scene_change:
             $ morning_flag = True
-            show room_mask3 as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask4 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_day_room
-            show monika 1 at tinstant zorder 2
-            with Dissolve(dissolve_time)
+            if not hide_mask:
+                show room_mask3 as rm:
+                    size (320,180)
+                    pos (30,200)
+                show room_mask4 as rm2:
+                    size (320,180)
+                    pos (935,200)
+            if start_bg:
+                $ renpy.show(start_bg)
+            else:
+                show monika_day_room
+            if not hide_monika:
+                show monika 1 at tinstant zorder 2
+                with Dissolve(dissolve_time)
     elif not is_morning():
         if morning_flag != False or scene_change:
             $ morning_flag = False
             scene black
-            show room_mask as rm:
-                size (320,180)
-                pos (30,200)
-            show room_mask2 as rm2:
-                size (320,180)
-                pos (935,200)
-            show monika_room
-            show monika 1 at tinstant zorder 2
-            with Dissolve(dissolve_time)
-            #show monika_bg_highlight
+            if not hide_mask:
+                show room_mask as rm:
+                    size (320,180)
+                    pos (30,200)
+                show room_mask2 as rm2:
+                    size (320,180)
+                    pos (935,200)
+            if start_bg:
+                $ renpy.show(start_bg)
+            else:
+                show monika_room
+                #show monika_bg_highlight
+            if not hide_monika:
+                show monika 1 at tinstant zorder 2
+                with Dissolve(dissolve_time)
 
     $scene_change = False
 
     return
 
+
 label ch30_main:
+    $ is_monika_in_room = False
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ quick_menu = True
@@ -291,16 +341,22 @@ label continue_event:
 
 label pick_a_game:
     if allow_dialogue and not songs.menu_open:
-        $ songs.enabled = False
-        $ hkb_button.enabled = False
         $previous_dialogue = allow_dialogue
         $allow_dialogue = False
         menu:
             "What game would you like to play?"
             "Pong":
+                if not renpy.seen_label('game_pong'):
+                    $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
             "Chess" if is_platform_good_for_chess():
+                if not renpy.seen_label('game_chess'):
+                    $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
+            "Hangman":
+                if not renpy.seen_label("game_hangman"):
+                    $ grant_xp(xp.NEW_GAME)
+                call game_hangman from _call_game_hangman
             "Nevermind":
                 m "Alright. Maybe later?"
 
@@ -392,14 +448,64 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
-    python:
-        if persistent.current_track is not None:
-            play_song(persistent.current_track)
+
+    call set_gender from _call_set_gender
+
+
+    # yuri scare incoming. No monikaroom when yuri is the name
+    if persistent.playername.lower() == "yuri":
+        call yuri_name_scare from _call_yuri_name_scare
+        $ is_monika_in_room = False
+    else:
+        python:
+            # random chance to do monika in room greeting
+            # we'll say 1 in 20
+            import random
+            is_monika_in_room = random.randint(1,20) == 1
+
+    if not is_monika_in_room:
+        if persistent.current_track:
+            $ play_song(persistent.current_track)
         else:
-            play_song(songs.current_track) # default
+            $ play_song(songs.current_track) # default
+
+    python:
+
+        # name changes if necessary
+        if not persistent.mcname or len(persistent.mcname) == 0:
+            persistent.mcname = persistent.playername
+            mcname = persistent.mcname
+
+        if not currentuser or len(currentuser) == 0:
+            currentuser = persistent.playername
+
     window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
+
+    #Grant XP for time spent away from the game if Monika was put to sleep right
+    python:
+        if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
+            away_experience_time=time.time()-persistent.sessions['last_session_end'] #Time since end of previous session
+            away_xp=0
+
+            #Reset the idlexp total if monika has had at least 6 hours of rest
+            if away_experience_time >= times.REST_TIME:
+                persistent.idlexp_total=0
+            #Ignore anything beyond 3 days
+            if away_experience_time > times.HALF_XP_AWAY_TIME:
+                away_experience_time=times.HALF_XP_AWAY_TIME
+
+            #Give 5 xp per hour for everything beyond 1 day
+            if away_experience_time > times.FULL_XP_AWAY_TIME:
+                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time-times.FULL_XP_AWAY_TIME)/3600.0
+                away_experience_time = times.FULL_XP_AWAY_TIME
+
+            #Give 10 xp per hour for the first 24 hours
+            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time/3600.0
+
+            #Grant the away XP
+            grant_xp(away_xp)
 
     $ elapsed = days_passed()
     #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
@@ -413,59 +519,86 @@ label ch30_autoload:
     #Block for anniversary events
     if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
         $ persistent.monika_anniversary = 0
-        $pushEvent(anni_negative)
+        $pushEvent("anni_negative")
     elif elapsed >= 36500 and persistent.monika_anniversary < 100 and not renpy.seen_label('anni_100') and not 'anni_100' in persistent.event_list:
         $ persistent.monika_anniversary = 100
-        $pushEvent(anni_100)
+        $pushEvent("anni_100")
     elif elapsed >= 18250 and persistent.monika_anniversary < 50 and not renpy.seen_label('anni_50') and not 'anni_50' in persistent.event_list:
         $ persistent.monika_anniversary = 50
-        $pushEvent(anni_50)
+        $pushEvent("anni_50")
     elif elapsed >= 7300 and persistent.monika_anniversary < 20 and not renpy.seen_label('anni_20') and not 'anni_20' in persistent.event_list:
         $ persistent.monika_anniversary = 20
-        $pushEvent(anni_20)
+        $pushEvent("anni_20")
     elif elapsed >= 3650 and persistent.monika_anniversary < 10 and not renpy.seen_label('anni_10') and not 'anni_10' in persistent.event_list:
         $ persistent.monika_anniversary = 10
-        $pushEvent(anni_10)
+        $pushEvent("anni_10")
     elif elapsed >= 1825 and persistent.monika_anniversary < 5 and not renpy.seen_label('anni_5') and not 'anni_5' in persistent.event_list:
         $ persistent.monika_anniversary = 5
-        $pushEvent(anni_5)
+        $pushEvent("anni_5")
     elif elapsed >= 1460 and persistent.monika_anniversary < 4 and not renpy.seen_label('anni_4') and not 'anni_4' in persistent.event_list:
         $ persistent.monika_anniversary = 4
-        $pushEvent(anni_4)
+        $pushEvent("anni_4")
     elif elapsed >= 1095 and persistent.monika_anniversary < 3 and not renpy.seen_label('anni_3') and not 'anni_3' in persistent.event_list:
         $ persistent.monika_anniversary = 3
-        $pushEvent(anni_3)
+        $pushEvent("anni_3")
     elif elapsed >= 730 and persistent.monika_anniversary < 2 and not renpy.seen_label('anni_2') and not 'anni_2' in persistent.event_list:
         $ persistent.monika_anniversary = 2
-        $pushEvent(anni_2)
+        $pushEvent("anni_2")
     elif elapsed >= 365 and persistent.monika_anniversary < 1 and not renpy.seen_label('anni_1') and not 'anni_1' in persistent.event_list:
         $ persistent.monika_anniversary = 1
-        $pushEvent(anni_1)
+        $pushEvent("anni_1")
 
     #queue up the next reload event it exists and isn't already queue'd
     $next_reload_event = "ch30_reload_" + str(persistent.monika_reload)
-    if renpy.has_label(next_reload_event) and not next_reload_event in persistent.event_list:
+    if not seen_event(next_reload_event) and not persistent.closed_self:
         $queueEvent(next_reload_event)
 
+    $persistent.closed_self = False
+
     #pick a random greeting
-    $pushEvent(renpy.random.choice(greetings_list))
+    if is_monika_in_room:
+        if persistent.current_monikatopic != "i_greeting_monikaroom":
+            $ pushEvent("i_greeting_monikaroom")
+    else:
+        $pushEvent(renpy.random.choice(greetings_list))
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
 
-    $ set_keymaps()
+    if not is_monika_in_room:
+        $ set_keymaps()
     jump ch30_loop
 
 label ch30_loop:
     $ quick_menu = True
-    call spaceroom from _call_spaceroom_2
+
+    # this event can call spaceroom
+    if not is_monika_in_room:
+        call spaceroom from _call_spaceroom_2
+
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
+
+    #Check time based events and grant time xp
+    python:
+        try:
+            calendar_last_checked
+        except:
+            calendar_last_checked=persistent.sessions['current_session_start']
+        if time.time()-calendar_last_checked>60: #Check no more than once a minute
+            idle_xp=xp.IDLE_PER_MINUTE*(time.time()-calendar_last_checked)/60.0
+            persistent.idlexp_total =+ idle_xp
+            if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
+                idle_xp = idle_xp-(persistent.idlexp-xp.IDLE_XP_MAX) #Remove excess XP
+                persistent.idlexp=xp.IDLE_XP_MAX
+
+            grant_xp(idle_xp)
+            calendar_last_checked=time.time()
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
@@ -482,7 +615,10 @@ label ch30_loop:
         # Pick a random Monika topic
         label pick_random_topic:
         python:
-            if monika_random_topics:        # If we're out of random topics, just stay in the loop
+            if len(monika_random_topics) > 0:  # still have topics
+                pushEvent(renpy.random.choice(monika_random_topics))
+            else: # no topics left
+                monika_random_topics = list(all_random_topics)
                 pushEvent(renpy.random.choice(monika_random_topics))
 
     $_return = None

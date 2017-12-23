@@ -22,6 +22,8 @@ Adding new content to this game is easy, and doesn't require any specialized too
 
 To add new [random topics](https://github.com/Backdash/MonikaModDev/blob/content/Monika%20After%20Story/game/script-topics.rpy) and [greetings](https://github.com/Backdash/MonikaModDev/blob/content/Monika%20After%20Story/game/script-greetings.rpy), or to make changes and fix typos, you can simply navigate to the appropriate file on the `content` branch of our github site and click the pencil icon in the upper right corner to begin making changes. When you are finished, add a short message describing your changes, and click the green button labeled "Propose Changes." A collaborator will be notified, and will review your changes before merging them into the mod.
 
+Now that monika's dialogue includes expressions, please use [this cheatsheet](https://github.com/Backdash/MonikaModDev/blob/master/docs/MonikaCheatsheet.jpg) to pick appropriate expressions and poses for your topics. At the moment, all poses revert to Monika's standard sitting pose, but when more poses are added, any expressions using them will update automatically.
+
 For new game art or music, please open a ticket on [issues](https://github.com/Backdash/MonikaModDev/issues), and attach the files you'd like to submit. Again, a collaborator will look over your submission and figure out how best to use it in our game. To get an idea of what we might be needing, check for any open [art-related issues](https://github.com/Backdash/MonikaModDev/issues?q=is%3Aissue+is%3Aopen+label%3Aart).
 
  ### Bug fixes and New Software Features
@@ -98,6 +100,45 @@ At this point, you're ready to make your changes! Feel free to ask for help; eve
 
 >If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch so it's easier to merge.
 
+## Making dialogue
+
+![Guide 1](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide1.png?raw=True)
+
+Before you make dialogue ensure the branch is set to **content**, NOT **master**. However, if you're writing jokes set the branch to **jokes-concept**
+
+If you're planning to write multiple topics, please submit a pull request with all the topics inside it.
+
+Once the branch is set to **content**, click the pencil button to start editing.
+
+![Guide 2](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide2.png?raw=True)
+
+Keywords act as triggers to your topic. (Use synonyms if applicable to your topic: If your topic is about money, use words such as money, dollars, cash etc.)
+
+**IMPORTANT:** Do NOT use capital letters on keywords. The input lowercases all strings, hence making capitalized letters in keywords unreachable.
+
+Identifiers differentiate topics from one another, so use the title of your topic as the identifier.
+
+It's optional to have your topic brought up by Monika at random. If you don't want her to bring it up randomly, don't use the line.
+
+Use the title of your topic as a label. (**IMPORTANT:** Please make sure that the label you choose has not already been used.)
+
+When writing dialogue always start with m **#X** " and end with".
+
+For **#X** refer to the [cheat sheet](https://github.com/Backdash/MonikaModDev/blob/master/docs/MonikaCheatsheet.jpg) for the numbers and letters.
+
+Place return at the last line, after the last sentence of your dialogue.
+
+![Guide 3](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide3.png?raw=True)
+
+If you're writing dialogue with choices, simply write "menu":". All lines in a menu must be indented. 
+Dialogue in a particular choice must have an addtional indent. (**IMPORTANT**: Do NOT place an expression on the line that will serve as the question, it will make the game crash.)
+
+The line below the menu will act as the question. Choices are on the same line, but end with a colon (:).
+
+You don't necesasarily have to write as yes or no, it can be written in any way as long as it makes sense as a choice.
+
+After making your edits refer to the Pull Request Guide below so you can submit it.
+
 ## Submitting a Pull Request
 
 ![Guide 1](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide1.png?raw=True)
@@ -107,6 +148,8 @@ Click the pencil icon to start editing.
 ![Guide 2](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide2.png?raw=True)
 
 When you're done making changes, click propose file change.
+
+Note: If you're writing dialogue, do NOT use capital letters on keywords. The input lowercases all strings, hence making capitalized letters in keywords unreachable.
 
 ![Guide 3](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide3.png?raw=True)
 
@@ -118,4 +161,4 @@ Add an appropriate title and a description of the changes you made, before you c
 
 # Join us!
 
-You can chat with the core team on [our development Discord channel](https://discord.gg/MRKPk4). We're always friendly to new contributors, and it's not just a great place to get help but also just a fun place to hang out with like-minded DDLC fans.
+You can chat with the core team on [our development Discord channel](https://discord.gg/MRKPk4). We're always friendly to new contributors, and it's not just a great place to get help, but also just a fun place to hang out with like-minded DDLC fans.
