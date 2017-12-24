@@ -17,6 +17,14 @@ label zz_mas_poemgame_actone:
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ scene_change = True
+    call spaceroom from _call_spaceroom_mpgo
+    m "Hi [player]!"
+    m "These are your point totals:"
+    python:
+        for k,v in testvalues.iteritems():
+            m(k + " received "+ str(v) + " pt(s) from your choices.")
+
+    m "I hope that was fun!"
     return
 
 
@@ -35,6 +43,14 @@ label zz_mas_poemgame_acttwo:
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ scene_change = True
+    call spaceroom from _call_spaceroom_mpgt
+    m "Hi [player]!"
+    m "These are your point totals:"
+    python:
+        for k,v in testvalues.iteritems():
+            m(k + " received "+ str(v) + " pt(s) from your choices.")
+
+    m "I hope that was fun!"
     return
 
 init 5 python:
@@ -52,6 +68,7 @@ label zz_mas_poemgame_actthr:
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ scene_change = True
+
     return
 
 init 5 python:
@@ -69,6 +86,23 @@ label zz_mas_poemgame_actthrm:
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ scene_change = True
+    $ _sel_words = testvalues
+    call spaceroom from _call_spaceroom_mpgthrm
+    m "Hi [player]!"
+
+    m "you selected these words:"
+    python:
+        bigword = ""
+        for i in range(0,10):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+    python:
+        bigword = ""
+        for i in range(10,len(_sel_words)):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+
+    m "I hope that was fun!"
     return
 
 init 5 python:
@@ -86,6 +120,27 @@ label zz_mas_poemgame_actonept:
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ scene_change = True
+    $ _sel_words = testvalues.pop("words")
+    call spaceroom from _call_spaceroom_mpgop
+    m "Hi [player]!"
+    m "These are your point totals:"
+    python:
+        for k,v in testvalues.iteritems():
+            m(k + " received "+ str(v) + " pt(s) from your choices.")
+
+    m "And you selected these words:"
+    python:
+        bigword = ""
+        for i in range(0,10):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+    python:
+        bigword = ""
+        for i in range(10,20):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+
+    m "I hope that was fun!"
     return
 
 init 5 python:
@@ -121,6 +176,24 @@ label zz_mas_poemgame_dg:
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ scene_change = True
+    $ _sel_words = testvalues
+    call spaceroom from _call_spaceroom_mpgdg
+    m "Hi [player]!"
+
+    m "you selected these words:"
+    python:
+        bigword = ""
+        for i in range(0,10):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+    python:
+        bigword = ""
+        for i in range(10,len(_sel_words)):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+
+    m "I hope that was fun!"
+
     return
 
 init 5 python:
@@ -157,4 +230,24 @@ label zz_mas_poemgame_bgm:
     # $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
     $ scene_change = True
+    $ _winner = testvalues[0]
+    $ _pts = testvalues[1]
+    $ _words = testvalues[2]
+    call spaceroom from _call_spaceroom_mpgbgm
+    m "Hi [player]!"
+    m "[_winner] won with [_pts] pt(s)"
+    m "And you selected these words:"
+    python:
+        bigword = ""
+        for i in range(0,10):
+            bigword += _words[i].word + ","
+    m "[bigword]"
+    python:
+        bigword = ""
+        for i in range(10,len(_words)):
+            bigword += _words[i].word + ","
+    m "[bigword]"
+
+    m "I hope that was fun!"
+
     return
