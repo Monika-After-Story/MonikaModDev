@@ -9,7 +9,7 @@ init python:
         # Hides the hkb buttons
         #
         config.overlay_screens.remove("hkb_overlay")
-        renpy.hide("hkb_overlay")
+        renpy.hide_screen("hkb_overlay")
 
     # function to show buttons
     def HKBShowButtons():
