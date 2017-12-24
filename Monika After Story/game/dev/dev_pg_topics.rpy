@@ -251,3 +251,105 @@ label zz_mas_poemgame_bgm:
     m "I hope that was fun!"
 
     return
+
+init 5 python:
+    for key in ["zzpgoneg"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append("zz_mas_poemgame_oneg")
+
+## This label does act1 style with glitched words
+label zz_mas_poemgame_oneg:
+    $ HKBHideButtons()
+    $ store.songs.enabled = False
+    $ from store.mas_poemgame_consts import STOCK_MODE
+    # setup dict of kwargs
+    python:
+        pg_kwargs = {
+            "show_monika": True,
+            "show_natsuki": True,
+            "show_sayori": True,
+            "show_yuri": True,
+            "show_yuri_cut": True,
+            "total_words": 15,
+            "trans_fast": True,
+            "glitch_words": (True,None,None)
+        }
+
+        # now make the call
+        # NOTE: call is midly dangerous. be careful when using
+        renpy.call("mas_poem_minigame", STOCK_MODE, **pg_kwargs)
+
+    $ testvalues = _return
+    $ HKBShowButtons()
+    $ play_song(store.songs.current_track)
+    $ store.songs.enabled = True
+    $ scene_change = True
+    call spaceroom from _call_spaceroom_mponeg
+    m "Hi [player]!"
+    m "These are your point totals:"
+    python:
+        for k,v in testvalues.iteritems():
+            m(k + " received "+ str(v) + " pt(s) from your choices.")
+
+
+    m "I hope that was fun!"
+
+    return
+
+init 5 python:
+    for key in ["zzpgoc"]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append("zz_mas_poemgame_oc")
+
+## This label uses custom poemwords (Thanks Fave)
+label zz_mas_poemgame_oc:
+    $ HKBHideButtons()
+    $ store.songs.enabled = False
+    # setup MASPoemWordList
+    $ wordlist = MASPoemWordList(mas_poemwords)
+
+    $ from store.mas_poemgame_consts import STOCK_MODE
+    # setup dict of kwargs
+    python:
+        pg_kwargs = {
+            "show_monika": True,
+            "show_natsuki": True,
+            "show_sayori": True,
+            "show_yuri": True,
+            "trans_fast": True,
+            "poem_wordlist": wordlist,
+            "gather_words": True
+        }
+
+        # now make the call
+        # NOTE: call is midly dangerous. be careful when using
+        renpy.call("mas_poem_minigame", STOCK_MODE, **pg_kwargs)
+
+    $ testvalues = _return
+    $ HKBShowButtons()
+    $ play_song(store.songs.current_track)
+    $ store.songs.enabled = True
+    $ scene_change = True
+    $ _sel_words = testvalues.pop("words")
+    call spaceroom from _call_spaceroom_mpgoc
+    m "Hi [player]!"
+    m "These are your point totals:"
+    python:
+        for k,v in testvalues.iteritems():
+            m(k + " received "+ str(v) + " pt(s) from your choices.")
+    m "you selected these words:"
+    python:
+        bigword = ""
+        for i in range(0,10):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+    python:
+        bigword = ""
+        for i in range(10,len(_sel_words)):
+            bigword += _sel_words[i].word + ","
+    m "[bigword]"
+
+    m "I hope that was fun!"
+
+    return
+

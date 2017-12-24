@@ -7,6 +7,8 @@
 # DEPENDENDCIES:
 #   script-poemgame.rpy
 
+# special variation of poemwords that includes monika
+define mas_poemwords = "mod_assets/MASpoemwords.txt"
 
 # INIT block for poem stuff
 init -4 python:
