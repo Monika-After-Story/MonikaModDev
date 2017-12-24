@@ -3085,6 +3085,7 @@ label monika_lottery:
     m 1j"..."
     m 1k "You~!"
     m 1a "You're the only thing I need, [player]."
+    return
 
 init 5 python:
     for key in ['mental disorder', 'disorders', 'innovation', 'memes']:
@@ -3297,7 +3298,7 @@ label monika_cupcake:
     m "I’m sure your cupcakes would taste just as good."
     m "Maybe someday I’ll get to try them but for now…"
     m 1j "I’ll just settle for the sweetness of your love~"
-    #This is a list of keywords for this topic
+    return
 
 init 5 python:
     for key in ['haters','hater', 'bash', 'bashing']:
