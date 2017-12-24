@@ -1,8 +1,12 @@
 # Module that contains a modified version of the poem minigame so we can use
 # it seamlessly in topics
-# prefixed with zz becaues we dependent on script-poemgame.rpy
+#
+# AUTHOR: ThePotatoGuy
+# EMAIL: potato@desu.zone
+#
+# DEPENDENDCIES:
+#   script-poemgame.rpy
 
-# copied from script-poemgame
 
 # INIT block for poem stuff
 init -4 python:
@@ -89,69 +93,6 @@ init -4 python:
                         )
                     )           
 
-    # Sticker Time and position class
-    #
-    # the values here control the offsetting posititions and time for random
-    # hopping. 
-    # NOTE: all the attributes change overtime, so we're not going to use this
-    #   class anymore
-    #
-    # ATTR:
-    #   time - time the sitcker will wait and not do anything
-    #   pos - starting position of the sticker
-    #   offset - amount of offset to move the sticker
-    #   zoom - amount of zoom to give to the sticker
-    #
-#    class MASStickerTimePos:
-#        def __init__(self, time=None, pos=None, offset=None, zoom=None):
-#
-#            if time:
-#                self.time = time
-#            else:
-#                self.time = renpy.random.random() * 4 + 4
-#
-#            if pos:
-#                self.pos = pos
-#            else:
-#                self.pos = renpy.random.randint(-1,1)
-#
-#            if offset:
-#                self.offset = offset
-#            else:
-#                self.offset = 0
-#
-#            if zoom:
-#                self.zoom = zoom
-#            else:
-#                self.zoom = 1
-#
-    # creating the default stickers:
-#    class MASStickerSayori(MASStickerTimePos):
-#        def __init__(self):
-#            MASStickerTimePos.__init__(self)
-#
-#    class MASStickerNatsuki(MASStickerTimePos):
-#        def __init__(self):
-#            MASStickerTimePos.__init__(self)
-#
-#    class MASStickerYuri(MASStickerTimePos):
-#        def __init__(self):
-#            MASStickerTimePos.__init__(self)
-#
-#    class MASStickerMonika(MASStickerTimePos):
-#        def __init__(self):
-#            MASStickerTimePos.__init__(self)
-
-# EXCEPTIONS ------------------------------------------------------------------
-    
-    # Exception that occurs when Stock Mode is run and monika_
-    class OnlyMonikaStockFlowException(Exception):
-        def __init__(self):
-            self.msg = ("Cannot launch poem game in STOCK_MODE when " +
-                "only_monika is True or only_monika_glitch is True")
-        def __str__(self):
-            return self.msg
-
 # FUNCTIONS -------------------------------------------------------------------
 
     from store.mas_poemgame_consts import ODDS_SPACE
@@ -212,38 +153,13 @@ init -10 python in mas_poemgame_consts:
     ODDS_BAA = 10
 
     # glitch soudn odds
-    ODDS_GLTICH_SOUND = 3
+    ODDS_GLTICH_SOUND = 2
 
     # yuri odds
     ODDS_YURI_SCARY = 100
 
     # eyes odds
     ODDS_EYES = 5
-
-# store to handle sticker generation
- # init -2 python in mas_poemgamestickers:
-#    import store.mas_poemgame_consts as mas_pg_consts
-
-    # functions
-#    def generateStickers():
-        #
-        # NOTE: not needed for now
-        # Generates a dict of stickers you can use with the poem game.
-        # This is so we dont overwrite the defaults
-        #
-        # RETURNS:
-        #   A dict of the following format:
-        #       "sayori": MASStickerSayori object
-        #       "natsuki": MASStickerNatsuki object
-        #       "yuri": MASStickerYuri object
-        #       "monika": MASStickerMonika object
-#        sticker_pos_time = {
-#            mas_pg_consts.SAYORI: MASStickerSayori(),
-#            mas_pg_consts.NATSUKI: MASStickerNatsuki(),
-#            mas_pg_consts.YURI: MASStickerYuri(),
-#            mas_pg_consts.MONIKA: MASStickerMonika()
-#        }
-#        return sticker_pos_time
 
 # store to handle mas_poemgame functions
 init -2 python in mas_poemgame_fun:
@@ -331,6 +247,44 @@ init -2 python in mas_poemgame_fun:
             or flow == mas_pgc.MONIKA_MODE
         )
 
+### EXAMPLES OF USE ##################
+
+## This label calls actthree but with hopping monika and words gathered
+label zz_mas_poemgame_sampleone:
+    call mas_poem_minigame_actthree(trans_fast=True,hop_monika=True,gather_words=True) from _call_mpg_sampleone
+    $ testvalues = _return
+    return _return
+
+## This label calls act one but with words being gathered
+label zz_mas_poemgame_sampletwo:
+    call mas_poem_minigame_actone(trans_fast=True,gather_words=True) from _call_mpg_sampletwo
+    $ testvalues = _return
+    return _return
+
+## This label does a display mode run while gathering words
+## This also shows how to do the call via kwargs
+label zz_mas_poemgame_samplethree:
+    $ from store.mas_poemgame_consts import DISPLAY_MODE
+    # setup dict of kwargs
+    python:
+        pg_kwargs = {
+            "show_monika": True,
+            "show_natsuki": True,
+            "show_sayori": True,
+            "show_yuri": True,
+            "show_yuri_cut": True,
+            "total_words": 15,
+            "trans_fast": True,
+            "gather_words": True
+        }
+
+        # now make the call
+        # NOTE: call is midly dangerous. be careful when using
+        renpy.call("mas_poem_minigame", DISPLAY_MODE, **pg_kwargs)
+
+    $ testvalues = _return
+    return _return
+
 
 ### BEGIN POEMGAME CALLS ======================================================
 #
@@ -360,6 +314,8 @@ init -2 python in mas_poemgame_fun:
 # IN:
 # NOTE: SEE mas_poem_minigame documentation for full descriptions of the params
 #   gather_words - (Default: False)
+#   music_fadein - (Default: 2.0)
+#   music_fadeout - (Default: 2.0)
 #   music_filename - (Default: audio.t4 - the default poem game audio)
 #   only_winner - (Default: False)
 #   poem_wordlist - (Default: None)
@@ -370,23 +326,110 @@ init -2 python in mas_poemgame_fun:
 #   show_sayori - (Default: True)
 #   show_yuri - (Default: True)
 #   total_words - (Default: 20)
+#   trans_fast - (Default: False)
+#   trans_in - (Default: True)
+#   trans_out - (Default: True)
 #
 # OUT:
 #   See mas_poem_minigame -> STOCK_MODE documentation
 #
 label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
         only_winner=False,poem_wordlist=None,sel_sound=gui.activate_sound,
-        show_monika=False,show_natsuki=True,show_poemhelp=True,
-        show_sayori=True,show_yuri=True,total_words=20):
+        show_monika=False,show_natsuki=True,show_poemhelp=True,trans_in=True,
+        show_sayori=True,show_yuri=True,total_words=20,trans_out=True,
+        music_fadein=2.0,music_fadeout=2.0,trans_fast=False):
+
     $ from store.mas_poemgame_consts import STOCK_MODE
-    call mas_poem_minigame(STOCK_MODE,music_filename=music_filename,show_monika=show_monika,show_natsuki=show_natsuki,show_sayori=show_sayori,show_yuri=show_yuri,show_poemhelp=show_poemhelp,total_words=total_words,poem_wordlist=poem_wordlist,only_winner=only_winner,gather_words=gather_words,sel_sound=sel_sound) from _call_poem_minigame_actone
+    call mas_poem_minigame(STOCK_MODE,music_filename=music_filename,show_monika=show_monika,show_natsuki=show_natsuki,show_sayori=show_sayori,show_yuri=show_yuri,show_poemhelp=show_poemhelp,total_words=total_words,poem_wordlist=poem_wordlist,only_winner=only_winner,gather_words=gather_words,sel_sound=sel_sound,trans_in=trans_in,trans_out=trans_out,music_fadein=music_fadein,music_fadeout=music_fadeout,trans_fast=trans_fast) from _call_poem_minigame_actone
+
+    return _return
+
+# ACT 2 ------------------
+# slightly configurable poemgame call using mostly ACT 2 params.
+#
+# IN:
+# NOTE: SEE mas_poem_minigame documentation for full descriptions of the params
+#   gather_words - (Default: False)
+#   glitch_baa - (Default: (True, None, False))
+#   glitch_words - (Default: None)
+#   glitch_wordscare - (Default: (True, None))
+#   glitch_wordscare_sound - (Default: (True, None))
+#   music_fadein - (Default: 0.0)
+#   music_fadeout - (Default: 0.0)
+#   music_filename - (Default: audio.t4)
+#   one_counter - (Default: True)
+#   only_winner - (Default: False)
+#   poem_wordlist - (Defualt: None)
+#   sel_sound - (Default: gui.activate_sound)
+#   show_eyes - (Default: (True, None))
+#   show_monika - (Defualt: False)
+#   show_natsuki - (Default: True)
+#   show_poemhelp - (Default: True)
+#   show_sayori - (Default: True)
+#   show_yuri - (Default: True)
+#   show_yuri_cut - (Default: True)
+#   show_yuri_scary - (Default: (True, None, False))
+#   total_words - (Default: 20)
+#   trans_fast - (Default: False)
+#   trans_in - (Default: False)
+#   trans_out - (Default: True)
+#
+# OUT:
+#   see mas_poem_minigame -> STOCK_MODE documentation
+
+label mas_poem_minigame_acttwo(gather_words=False,glitch_baa=(True,None,False),
+        glitch_wordscare=(True,None),glitch_wordscare_sound=(True,None),
+        music_filename=audio.t4,one_counter=True,only_winner=False,
+        poem_wordlist=None,sel_sound=gui.activate_sound,show_eyes=(True,None),
+        show_monika=False,show_natsuki=True,show_poemhelp=True,trans_in=False,
+        show_sayori=True,show_yuri=True,show_yuri_cut=True,trans_out=True,
+        show_yuri_scary=(True,None,False),total_words=20,music_fadein=0.0,
+        music_fadeout=0.0,trans_fast=False,glitch_words=None):
+
+    $ from store.mas_poemgame_consts import STOCK_MODE
+    call mas_poem_minigame(STOCK_MODE,gather_words=gather_words,glitch_baa=glitch_baa,glitch_wordscare=glitch_wordscare,glitch_wordscare_sound=glitch_wordscare_sound,music_filename=music_filename,one_counter=one_counter,poem_wordlist=poem_wordlist,sel_sound=sel_sound,show_monika=show_monika,show_natsuki=show_natsuki,show_poemhelp=show_poemhelp,show_sayori=show_sayori,show_yuri=show_yuri,show_yuri_cut=show_yuri_cut,show_yuri_scary=show_yuri_scary,total_words=total_words,trans_in=trans_in,trans_out=trans_out,music_fadein=music_fadein,music_fadeout=music_fadeout,trans_fast=trans_fast,glitch_words=glitch_words) from _call_poem_minigame_acttwo
+
+    return _return
+
+# ACT 3 ------------------ (MONIKA MODE~~~~~~~~~~~~~~)
+# slightly configurable poemgame call using mostly ACT 3 params
+#
+# IN:
+# NOTE: SEE mas_poem_minigame_documentation for full descriptions of the params
+#   gather_words - (Default: False)
+#   glitch_nb - (Default: True)
+#   glitch_words - (Default: (True, None, None))
+#   hop_monika - (Default: False)
+#   music_fadein - (Default: 0.0)
+#   music_fadeout - (Default: 0.0)
+#   music_filename - (Default: audio.ghostmenu)
+#   total_words - (Default: 20)
+#   trans_fast - (Default: False)
+#   trans_in - (Default: False)
+#   trans_out - (Default: True)
+#
+# OUT:
+#   SEE mas_poem_minigame -> MONIKA_MODE documentation
+
+label mas_poem_minigame_actthree(gather_words=False,glitch_nb=True,
+        glitch_words=(True,None,None),hop_monika=False,music_fadein=0.0,
+        music_fadeout=0.0,music_filename=audio.ghostmenu,total_words=20,
+        trans_fast=False,trans_in=False,trans_out=True):
+
+    $ from store.mas_poemgame_consts import MONIKA_MODE
+    call mas_poem_minigame(MONIKA_MODE,gather_words=gather_words,glitch_nb=glitch_nb,glitch_words=glitch_words,hop_monika=hop_monika,music_fadein=music_fadein,music_fadeout=music_fadeout,music_filename=music_filename,total_words=total_words,trans_fast=trans_fast,trans_in=trans_in,trans_out=trans_out,sel_sound=None) from _call_poem_minigame_three
+
     return _return
 
 # THE BIG ONE ------------
 # completely configurable poemgame call.
-# NOTE: well, almost configurable
-# NOTE: disables skipping 
-# NOTE: spaceroom is replaced. You will need to call spaceroom after this
+# NOTE: well, almost completely configurable
+# NOTE: The CALLER is responsible:
+#   WHEN ENTERING THIS LABEL:
+#       - fading out/stopping music
+#   WHEN LEAVING THIS LABEL:
+#       - fading in/starting music
+#       - fading in/starting visuals/scenes
 #
 # IN:
 #   (REQUIRED)
@@ -443,7 +486,7 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #
 #   glitch_baa - Tuple of the following format:
 #           [0] -> True means do the baa glitch, false means no
-#               (If None, default True)
+#               (If None, default False)
 #           [1] -> odds that the baa glitch occurs (1 out of x)
 #               (If None, default 10)
 #           [2] -> True means play the baa glitch more than once, False means
@@ -489,7 +532,7 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #               (If None, default True)
 #           [1] -> odds that a glitch sound will play (1 out of x)
 #               NOTE: these odds are applied after glitch_baa, if that is True
-#               (If None, default 3)
+#               (If None, default 2)
 #       If the tuple is None (or is not of length 2), the deafult vlaues are
 #       used.
 #       NOTE: Only active if glitch_wordscare is used.
@@ -500,8 +543,16 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #       NOTE: Only applies to Monika mode hopping
 #       (Default: False)
 #
-#   music_filename - filename of the music to play. Set music to None to use
-#       this param. 
+#   music_fadein - Number of seconds to fade in music at start of poem(float)
+#       (Default: 2.0)
+#
+#   music_fadeout - Number of seconds to fade out music at end of poem(float) 
+#       (Default: 2.0)
+#
+#   music_filename - filename of the music to play. 
+#       NOTE: Set to the string "BACK" to use background/currently playing 
+#           music. 
+#       NOTE: Setting this to None will stop playing music entirely
 #       NOTE: NO checks are made for the existence of this file. Please no
 #       bully.
 #       (Default: audio.t4 - the defualt poem game audio)
@@ -519,8 +570,9 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #
 #   poem_wordlist - MASPoemWordList of the poemwords to use this game.
 #       If None, the default full_wordlist defined in script-poemgame is used.
-#       NOTE: If this is None, show_monika is IGNORED. This is to ensure
-#       compatibility with the stock PoemWord class
+#       NOTE: If this is None, monika will be visible but she will NOT receive
+#           points nor hop. This is to ensure compatibility with the stock 
+#           PoemWord class
 #
 #   sel_sound - Filename of the sound to play when a word is selected
 #       (Default: gui.activate_sound)
@@ -535,6 +587,8 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #
 #   show_monika - True will display monika and her related actions. False will
 #       not. 
+#       NOTE: If poem_wordlist is None, monika will be visible but she will
+#           NOT hop nor will she get points
 #       (Default: True)
 #
 #   show_natsuki - True will display natsuki and her related actions. False 
@@ -554,7 +608,6 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #   show_yuri_cut - True will display a cut yuri instead of regular yuri,
 #       False will not.
 #       NOTE: show_yuri must be true for this to work
-#       NOTE: show_yuri_scary takes precendence over this
 #       (Defualt: False)
 #
 #   show_yuri_scary - Tuple of the following format:
@@ -566,13 +619,24 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #               only once
 #               (If None, Default Flase)
 #       If the tuple is None (or not of length 3), the default values are used
-#       NOTE: If this set to show all the time, it takes precendence over 
-#           show_yuri_cut
 #       NOTE: Only active if show_yuri is True
 #       (Default: None)
 #
 #   total_words - Number of words that can be picked this game
 #       (Default: 20)
+#
+#   trans_fast - True will use a faster transition sequence. False will use
+#       stock transition.
+#       NOTE: This transition is about twice as fast as the stock one
+#       NOTE: This only applies if trans_in or trans_out is TRUE
+#       (Default: False)
+#
+#   trans_in - True will perform a fade-in transition at start. False will not
+#       (Default: True)
+#
+#   trans_out - True will perform a fade-out transition at start.
+#       False will not.
+#       (Default: True)
 #
 #   (DISPLAY_MODE OPTIONS)
 #   gather_words
@@ -581,6 +645,8 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #   glitch_words
 #   glitch_wordscare
 #   glitch_wordscare_sound
+#   music_fadein
+#   music_fadeout
 #   music_filename
 #   one_counter
 #   poem_wordlist
@@ -594,6 +660,9 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #   show_yuri_cut
 #   show_yuri_scary
 #   total_words
+#   trans_fast
+#   trans_in
+#   trans_out
 #
 #   (STOCK_MODE OPTIONS)
 #   gather_words
@@ -602,6 +671,8 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #   glitch_words
 #   glitch_wordscare
 #   glitch_wordscare_sound
+#   music_fadein
+#   music_fadeout
 #   music_filename
 #   one_counter
 #   only_winner
@@ -616,6 +687,9 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #   show_yuri_cut
 #   show_yuri_scary
 #   total_words
+#   trans_fast
+#   trans_in
+#   trans_out
 #
 #   (MONIKA_MODE OPTIONS)
 #   gather_words
@@ -625,12 +699,17 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #   glitch_wordscare
 #   glitch_wordscare_sound
 #   hop_monika
+#   music_fadein
+#   music_fadeout
 #   music_filename
 #   one_counter
 #   sel_sound
 #   show_eyes
 #   show_poemhelp
 #   total_words
+#   trans_fast
+#   trans_in
+#   trans_out
 #
 # OUT:
 #   DISPLAY_MODE:
@@ -664,11 +743,13 @@ label mas_poem_minigame_actone(gather_words=False,music_filename=audio.t4,
 #
 label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         show_natsuki=False,show_sayori=False,show_yuri=False,glitch_nb=False,
-        show_poemhelp=False,total_words=20,poem_wordlist=None,
-        one_counter=False,only_monika=False,glitch_words=None,
+        show_poemhelp=False,total_words=20,poem_wordlist=None,trans_in=True,
+        one_counter=False,only_monika=False,glitch_words=None,trans_out=True,
         glitch_wordscare=None,only_winner=False,glitch_baa=None,
         gather_words=False,sel_sound=gui.activate_sound,hop_monika=False,
-        show_yuri_cut=False,show_yuri_scary=None,show_eyes=None):
+        show_yuri_cut=False,show_yuri_scary=None,show_eyes=None,
+        glitch_wordscare_sound=None,music_fadein=2.0,music_fadeout=2.0,
+        trans_fast=False):
 
 #    $ import store.mas_poemgamestickers as mas_stickers
     $ import store.mas_poemgame_fun as mas_fun
@@ -695,14 +776,22 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             # SPACE odds
             glitch_words_alspace = False
             if not glitch_words[1]: # None
-                glitch_words[1] = mas_pgc.ODDS_SPACE
-            elif glitch_Words[1] == 1: # 1 out of 1 odds means always
+                glitch_words = (
+                    glitch_words[0], 
+                    mas_pgc.ODDS_SPACE,
+                    glitch_words[2]
+                )
+            elif glitch_words[1] == 1: # 1 out of 1 odds means always
                 glitch_words_alspace = True
 
             # other char odds
             glitch_words_alother = False
             if not glitch_words[2]: # None
-                glitch_words[2] = mas_pg_Consts.ODDS_OTHER
+                glitch_words = (
+                    glitch_words[0],
+                    glitch_words[1],
+                    mas_pgc.ODDS_OTHER
+                )
             elif glitch_words[2] == 1: # 1 out of 1 odds means always
                 glitch_words_alother = True
 
@@ -713,12 +802,12 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         # not None, is length 2, and first item is True
         if (glitch_wordscare is not None
             and len(glitch_wordscare) >= 2 
-            and gltich_wordscare[0]):
+            and glitch_wordscare[0]):
 
             # sound wordscare glitch odds
             glitch_wordscare_alscare = False
             if not glitch_wordscare[1]: # None
-                glitch_wordscare[1] = mas_pgc.ODDS_SCARE
+                glitch_wordscare = (glitch_wordscare[0], mas_pgc.ODDS_SCARE)
             elif glitch_wordscare[1] == 1: # 1 / 1 odds
                 glitch_wordscare_alscare = True
 
@@ -732,9 +821,17 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                 glitch_baa_albaa = False
                 if not glitch_baa[1]: # None
-                    glitch_baa[1] = mas_pgc.ODDS_BAA
+                    glitch_baa = (
+                        glitch_baa[0],
+                        mas_pgc.ODDS_BAA,
+                        glitch_baa[2]
+                    )
                 if glitch_baa[2] is None: # None
-                    glitch_baa[2] = False
+                    glitch_baa = (
+                        glitch_baa[0],
+                        glitch_baa[1],
+                        False
+                    )
 
                 # baa odds check
                 if glitch_baa[1] == 1:
@@ -750,7 +847,10 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                 glitch_wordscare_alsound = False
                 if not glitch_wordscare_sound[1]: # None
-                    glitch_wordscare_sound[1] = mas_pgc.ODDS_GLTICH_SOUND
+                    glitch_wordscare_sound = (
+                        glitch_wordscare_sound[0],
+                        mas_pgc.ODDS_GLTICH_SOUND
+                    )
 
                 # sound odds check
                 if glitch_wordscare_sound[1] == 1:
@@ -780,9 +880,17 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                 show_yuri_alscary = False 
                 if not show_yuri_scary[1]: # None
-                    show_yuri_scary[1] = mas_pgc.ODDS_YURI_SCARY
+                    show_yuri_scary = (
+                        show_yuri_scary[0],
+                        mas_pgc.ODDS_YURI_SCARY,
+                        show_yuri_scary[2]
+                    )
                 if show_yuri_scary[2] is None: # None
-                    show_yuri_scary[2] = False
+                    show_yuri_scary = (
+                        show_yuri_scary[0],
+                        show_yuri_scary[1],
+                        False
+                    )
 
                 # odds check
                 if show_yuri_scary[1] == 1:
@@ -802,7 +910,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 and show_eyes[0]):
 
             if not show_eyes[1]: # None
-                show_eyes[1] = mas_pgc.ODDS_EYES
+                show_eyes = (show_eyes[0], mas_pgc.ODDS_EYES)
 
         # no show eyes
         else:
@@ -813,9 +921,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         scene bg notebook-glitch
     else:
         scene bg notebook
-
-    #
-
+    
     # bottom quick menu. atm, we probably dont need this
     # show screen quick_menu
     
@@ -838,6 +944,13 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
         if show_monika:
             show m_sticker at sticker_right
 
+    # in trnsitio
+    if trans_in:
+        if trans_fast:
+            with mas_dissolve_scene_full_fast
+        else:
+            with dissolve_scene_full
+
 # in case we want to reference the older sticker positions:
 #    else:
 #        if persistent.playthrough == 0:
@@ -850,23 +963,21 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 #        if persistent.playthrough == 2 and chapter == 2:
 #            show m_sticker at sticker_m_glitch
 
-    # the scene transition
-    # TODO: do we need to parameterize this?
-#    if transition:
-#        with dissolve_scene_full
-
     # for reference:
     # play music ghostmenu
 
-    # TODO: do we need to paramterize this?
-    stop music fadeout 2.0
-
-    # music playing
-    if music_filename:
-        # calling a function from script-ch30
-        $ play_song(music_filename)
-
-    # else no music lol
+    if music_filename != "BACK":
+        # music playing
+        if music_filename:
+            python:
+                renpy.music.play(
+                    music_filename,
+                    channel="music",
+                    loop=True,
+                    fadein=music_fadein
+                )
+        else: # None
+            $ renpy.music.stop(channel="music", fadeout=music_fadeout)
 
     # lots of skip removal
 #    $ config.skipping = False
@@ -907,7 +1018,11 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             else:
                 #pw_list = MASPoemWordList(mas_pgc.POEM_FILE)
                 #wordlist = list(pw_list.wordlist)
-                show_monika = False
+
+                # NOTE: THIS IS VERY IMPORTANT
+                # THIS BLOCK MUST PROCEED THE STICKER SETTING.
+                show_monika = False 
+               
                 wordlist = deepcopy(full_wordlist)
 
         # the following handles the positioning and time between a sticker
@@ -1027,17 +1142,17 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 
                 # we've been glitched!
                 elif poemgame_glitch:
-                    if (not glitch_baa 
+                    if (glitch_baa 
                         and (glitch_baa[2] or not played_baa)
                         and (
-                            glitch_wordscare_albaa 
+                            glitch_baa_albaa 
                             or random.randint(1, glitch_baa[1]) == 1
                         )):
 
                         renpy.play("gui/sfx/baa.ogg")
                         played_baa = True
 
-                    elif (not glitch_wordscare_sound
+                    elif (glitch_wordscare_sound
                         and (
                             glitch_wordscare_alsound
                             or random.randint(
@@ -1046,9 +1161,8 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                         )):
 
                         renpy.play(gui.activate_sound_glitch)
-            
-            # do sticker hopping!
-            else:
+
+            if not poemgame_glitch: 
                 if sel_sound:
                     renpy.play(sel_sound)
 
@@ -1106,7 +1220,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
             # progress check
             progress += 1
             if progress > numWords:
-                done = False
+                done = True
 
         # if we only want the winner (and we in stock mode)
         results = None
@@ -1144,7 +1258,7 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
                 results = selected_words
 
     # show eyes?
-    if show_eyes and renpy.random.randint(0,show_eyes[1]) == 1:
+    if show_eyes and renpy.random.randint(1,show_eyes[1]) == 1:
         $ quick_menu = False
         play sound "sfx/eyes.ogg"
         stop music
@@ -1164,12 +1278,22 @@ label mas_poem_minigame (flow,music_filename=audio.t4,show_monika=True,
 #    $ allow_skipping = True
 
     # post cleanup
-    stop music fadeout 2.0
-    hide screen quick_menu
-    show black as fadeout:
-        alpha 0
-        linear 1.0 alpha 1.0
-    pause 1.0
+    if music_filename != "BACK":
+        $ renpy.music.stop(channel="music",fadeout=music_fadeout)
+    #hide screen quick_menu
+
+    # out transition
+    if trans_out:
+        if trans_fast:
+            show black as fadeout:
+                alpha 0
+                linear 0.5 alpha 1.0
+            pause 0.5
+        else:
+            show black as fadeout:
+                alpha 0
+                linear 1.0 alpha 1.0
+            pause 1.0
     return results
 
 ###############################################################################
@@ -1199,3 +1323,10 @@ image y_sticker_cut hopg:
     sticker_hop
     xoffset 0 xzoom 1
     "y_sticker_cut"
+
+# special version of dissolve_scene_full thats twice as fast
+define mas_dissolve_scene_full_fast = MultipleTransition([
+    False, Dissolve(0.5),
+    Solid("#000"), Pause(0.5),
+    Solid("#000"), Dissolve(0.5),
+    True])
