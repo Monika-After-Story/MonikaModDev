@@ -10,6 +10,31 @@ define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+init -1 python:
+    # we need an exception for this.
+    class MASTopicLabelException(Exception):
+        def __init__(self, msg):
+            self.msg = msg
+        def __str__(self):
+            return "MASTopicLabelException: " + self.msg
+
+# NOTE: only use this for testing
+ # init 2 python:
+#    persistent.event_database = dict()
+
+init 500 python:
+    # topic preprocessing check
+    for label,ev in persistent.event_database.iteritems(): # py2
+        if label != ev.eventlabel:
+            raise MASTopicLabelException(
+                "topic '" + label + "' does not match Event label '" +
+                ev.eventlabel + "'")
+        if not renpy.has_label(label):
+            raise MASTopicLabelException(
+                "topic '" + label + "' does NOT exist"
+            )
+
+
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
@@ -778,7 +803,7 @@ label monika_rap:
 
 
 init 5 python:
-    persistent.event_database.setdefault('monika_wine',Event(eventlabel="monika_horror",category=['drinks'],prompt="Yuri's wine",unlocked=True))
+    persistent.event_database.setdefault('monika_wine',Event(eventlabel="monika_wine",category=['drinks'],prompt="Yuri's wine",unlocked=True))
 
 label monika_wine:
     m 1a "Ehehe. Yuri did something really funny once."
@@ -1672,7 +1697,7 @@ label monika_dan:
 
 
 init 5 python:
-    persistent.event_database.setdefault('monika_',Event(eventlabel="monika_",category=['random'],prompt="4chan",unlocked=True))
+    persistent.event_database.setdefault('monika_4chan',Event(eventlabel="monika_4chan",category=['random'],prompt="4chan",unlocked=True))
 
 label monika_4chan:
     m 2 "You know, this mod got its start over there."
@@ -1789,7 +1814,7 @@ label monika_justification:
 
 
 init 5 python:
-    persistent.event_database.setdefault('monika_freewill',Event(eventlabel="monika_will",category=['random'],prompt="Free will",unlocked=True))
+    persistent.event_database.setdefault('monika_freewill',Event(eventlabel="monika_freewill",category=['random'],prompt="Free will",unlocked=True))
 
 label monika_freewill:
     m 1d "Hey, [player], do you believe in free will?"
@@ -3661,7 +3686,7 @@ label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
 
 
 init 5 python:
-    persistent.event_database.setdefault('monika_memories',Event(eventlabel="monika_memories",category=['random'],prompt="Making memories",unlocked=True))
+    persistent.event_database.setdefault('monika_home_memories',Event(eventlabel="monika_home_memories",category=['random'],prompt="Making memories",unlocked=True))
 
 label monika_home_memories:
     m 1b "[player], how is it like to live where you are?"
