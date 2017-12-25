@@ -2896,6 +2896,8 @@ label monika_name:
     m 1a "'[mcname]' is a lovely name, too."
     if not mcname.lower() == player.lower():
         m 1b "But I think I like '[player]' better!"
+    else:
+        m "Just as lovely as you are, [player]."
     m 1a "Ehehe~"
     return
 
