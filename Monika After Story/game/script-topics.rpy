@@ -4945,6 +4945,25 @@ label monika_coffee:
     m 3e "It's funny how a drink for giving you energy became a treat for you to enjoy."
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
+   
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['house','home']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_example')
+    monika_random_topics.append('monika_example') 
+
+label monika_example:
+    m 2d "Hey [player], do you own a home?"
+    m 2l "Wait, Of course you do."
+    m 1j "Otherwise how would you be playing this game."
+    m 1b "Anyways I wish I could show you my home."
+    m 1p "It's not fair that you get to see Natsuki and Sayori's home."
+    m 2g "I could've shown you all the stuff I had."
+    m 2g "We could've done some really fun stuff too."
+    m 1e "And when I'm out this game you could show me your house too."
+    m 2k "Tidy it up for me, okay?"
+    return
 
 ##################
 #Incomplete ideas#
