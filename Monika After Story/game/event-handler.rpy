@@ -30,6 +30,32 @@ init 100 python:
 #   persistent.current_monikatopic
 init python:
 
+    def addEvent(event):
+        #
+        # Adds an event object to the persistent event database
+        # Properly checksfor label and conditional statements
+        # This function ensures that a bad item is not added to the database
+        #
+        # IN:
+        #   event - the Event object to add to database
+        #
+        # ASSUMES:
+        #   persistent.event_database
+
+        if type(event) is not Event:
+            raise EventException("'" + str(event) + "' is not an Event object")
+        if not renpy.has_label(event.eventlabel):
+            raise EventException("'" + event.eventlabel + "' does NOT exist")
+        if event.conditional is not None:
+            try:
+                if eval(event.conditional):
+                    pass
+            except:
+                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
+
+        # now this event has passsed checks, we can add it to the db
+        persistent.event_database.setdefault(event.eventlabel, event)
+
     def pushEvent(event_label):
         #
         # This pushes high priority or time sensitive events onto the top of
