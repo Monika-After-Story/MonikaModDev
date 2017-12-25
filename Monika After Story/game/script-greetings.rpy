@@ -307,7 +307,7 @@ label i_greeting_monikaroom:
                 jump monikaroom_greeting_knock
     else:
         menu:
-            "Open door":
+            "... Gently open the door":
                 jump monikaroom_greeting_opendoor
             "Knock":
                 jump monikaroom_greeting_knock
