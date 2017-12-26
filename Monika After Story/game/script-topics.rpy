@@ -81,6 +81,20 @@ label monika_god:
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
+init 5 python:
+	    #This is a list of keywords for this topic
+	    for key in ['vr' , 'Virtual reality']:
+	        monika_topics.setdefault(key,[])
+	        monika_topics[key].append('monika_vr) #id
+	    monika_random_topics.append('monika_vr')
+        
+label monika_vr:
+    m a1 "VR? Like Virtual Reality?"
+         "Oh yes, I have heard about that, I believe there is something called a Vive, if I recall correctly its made by steam, the same thing you´re most likely playing this game on."
+         "VR is a really fascinating topic to talk about, the fact that we can just leave our world behind and go to another one, absolutely mind blowing."
+         "Hey maybe I should figure out how to get VR in here, then we could meet for real."
+         "Well that’s going to take a while but, it might just work, it would be a dream come true."
+    return
 
 init 5 python:
     #This is a list of keywords for this topic
