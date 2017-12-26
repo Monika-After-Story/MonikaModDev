@@ -241,105 +241,87 @@ init 10 python:
 
 init 5 python:
     p2m_jokes.append(MASJoke(
-        "joke_okidoki",
+        "joke_moonrestaurant",
         is_m2p=False,
-        prompt="Doki Doki is not Oki Doki"
+        prompt="Did you hear about the restaurant on the moon?"
     ))
-
-label joke_okidoki:
-    m "Ahaha, what makes you say that?"
-    m "Sure, maybe the events that lead up to this point weren't exactly 'oki doki'..."
-    m "But it's not like it wasn't worth it in the end, right?"    
-    m "I mean, take a glance at the bright side of our situation, [player]."
-    m "For instance, since you're here, and I'm here, that means we're both together!"
-    m "Since we love each other so much, I hope you can understand the lengths I had to go to even reach this point..."
-    return
-
-
-init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_cantopener",
-        is_m2p=False,
-        prompt="What do you call a broken can opener?"
-    ))
-
-label joke_cantopener:
-    m "Well, I'm not sure!"
-    m "Maybe something like a bro{i}kan{/i} opener? Ehehe~" # Amber proud lol
-    m "..."
-    m "Ahaha, there's no way you'd come up with something that corny..."
+    
+label joke_moonrestaurant:
     menu:
-        m "Gosh, just lay it on me already! The anticipation is killing me, [player]!"
-        "A can't opener!":
-            m "I... I didn't think it was possible to think up such a terrible joke."
-            m "[player], you do understand how the concept of humor works, right?"
-            m "You can't just rely on such simple-minded methods of comedy and expect a positive response."  
-            m "There needs to be a proper punchline to your joke, and a little less reliant on wordplay."
-            m "Having the build up to the actual punchline is really important, too."
-            m "If you tell it too early, it might lack the comedic impact..."
-            m "However, if you tell it too late, interest might deteriorate and when the joke does come, it might be totally lost on the listener."
-            m "And ultimately, if your joke is too simple and predictable, it will simply lack the impact that a good and memorable joke has to offer."
-            m "Ah, I'm sorry if that came off as a little harsh, [player]."
-            m "I only want to help you improve, after all."
-            m "I'm sure your next joke will be great! Ehehe~"
+        "It has great service but there's no atmosphere.":
+            m 3l "Ahaha, maybe a better atmosphere would make this restaurant {i}out of this world{/i}!"
+            m 2a"Some candles, plants and oxygen would make the place great."
+            m "Hope you didn't {i}planet{/i}!"
+            m 1j "Gosh, I should stop for now!"
+            m "I'll tell you any bad jokes you want other time ehehe~"
     return
 
 init 5 python:
     p2m_jokes.append(MASJoke(
-        "joke_threewishes",
+        "joke_scarecrowaward",
         is_m2p=False,
-        prompt=("Three guys, who are stranded on an "+
-        "island, find a magic lantern which contains a genie, who will grant "+
-        "three wishes.")
+        prompt="Why did the scarecrow win an award?"
+        is_dad=True
     ))
 
-label joke_threewishes:
-    m "Oh, what things will they wish for I wonder?"
-    m "I bet the first thing will be to get off of the island."
-    m "I wish I knew a genie who could get me out of here..."
+label joke_scarecrowaward
     menu:
-        m "Now, what do they wish for?"
-        "The first guy wishes for a way off the island, the second guy wishes for the same as the first guy...":
-            m "Ah, I was right!"
-            m "That was a bit predictable [player], you know?"
-            m "I really hope the punchline is good."
-            m "I'm expecting great things..."
+        "He was outstanding in his field.":
+            m 4f "Ah, you can't be serious."
+            m 2b "You've to consider that farming jokes are quite corny ehehe~”
+    return
+
+init 5 python:
+    p2m_jokes.append(MASJoke(
+        "joke_fencegraveyard",
+        is_m2p=False,
+        prompt="A curious child asks his dad 'Why do they build a fence around a graveyard?'"
+        is_dad=True
+    ))
+label joke_fencegraveyard:
+    menu:
+        “The dad quickly replies with ‘Because people are dying to get in there!’”:
+            m 3b "Some people do get in like the writer who was sentenced to death!"
+            m "Yet just skeletons can't get in since they have nobody to enter with."
+            m 2f "It's a bit discriminative if you ask me."
+            m 2j "We could call it a grave mistake."
+            m 2k "Ahaha, I'm sorry [player], I didn't mean to bore you to death with those puns."
+    return
+    
+init 5 python:
+    p2m_jokes.append(MASJoke(
+        "joke_knocknobel",
+        is_m2p=False,
+        prompt="Did you hear about the guy who invented knock knock jokes?"
+    ))
+
+label joke_knocknobel:
+menu:
+    "Turns out he won the nobel prize.":
+        m 3e "Well, I hope he could handle the pressure."
+        m 2b "It's after all an unbellievable situation."
+        m "I am glad he wasn't doormant in the middle of the awards."
+        m 1l "Hope you do love my bad puns [player]! Ehehe~"
+    return
+
+init 5 python:
+    p2m_jokes.append(MASJoke(
+        "joke_mushroomfungai",
+        is_m2p=False,
+        prompt=“A mushroom walks into a bar.”
+    ))
+    
+label joke_mushroomfungai:
+    menu:
+        "The bartender says, 'Hey, get out of here! We don’t serve mushrooms here'”:
             menu:
-                m "Now, how does it end?"
-                "Finally, the third guy says: 'I'm lonely. I wish my friends were back here.'":
-                    m "Ahaha, that was actually pretty funny, [player]."
-                    m "I'm even impressed as to how well you set that joke up."
-                    m "A comedian too? Now I have even more reasons to love you!"
-                    m "..."
-                    m "Have I mentioned how happy I am to be here with you?"
+                "The mushroom says, 'Why not? I’m a fungi!'":
+                    m 2b "Poor mushroom, maybe he wasn't allowed in cause there wasn't {i}mushroom{/i}!"
+                    m 3p "I don't know that many mushroom jokes."
+                    m 3n "Maybe I should just try to make other puns just for you ehehe~”
     return
 
-init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_sayorihobby",
-        is_m2p=False,
-        prompt="What would have been Sayori's favorite hobby?",
-        is_dark=True
-    ))
 
-label joke_sayorihobby:
-    m "I think she's quite good at art, and probably enjoyed it a lot!"
-    m "You might have your doubts, though, due to that... depiction of her dangling from that rope..."
-    m "But, since her and I worked together on the festival banners, I was able to see how enthusiastic and how skillful she was."
-    m "I'm sure, aside from her little arts and crafts, she spent most of her time reading and writing."
-    m "I mean, besides her whole state of constantly being depressed, and stuff..."
-    menu:
-        m "Now [player], what {i}was{/i} Sayori's favorite hobby?"
-        "Bungee jumping!":
-            m "...Wow"
-            m "[player], I didn't think you enjoyed those kinds of jokes."
-            m "I know she wasn't exactly real like you and I, but she was still my friend."
-            m "That joke just feels a bit too far, you know?"
-            m "Gruesomely reminding me of all that happened with Sayori..."
-            m "Gosh, I can't believe you would do something like that [player]!"
-            m "Unless that wasn't your intention..."
-            m "I'll give you benefit of the doubt, because I love you so much, but please try to cut down on these kinds of jokes from now on."
-    return
 
 
 #=============================================================================#
@@ -348,105 +330,60 @@ label joke_sayorihobby:
 
 init 5 python:
     m2p_jokes.append(MASJoke(
-        "m_joke_fencegraveyard",
+        "m_joke_bakercollege,
         is_m2p=True,
-        is_dad=True
+        prompt=“What did the baker say when he had to go through college?”
     ))
 
-label m_joke_fencegraveyard:
-    m "A curious child asks his dad ‘Why do they build a fence around a graveyard?’"
-    m "The dad quickly replies with ‘Because people are dying to get in there!’"
-    m "..."
-    m "It’s surprising how a lot of jokes are based on unexpected answers."
-    m "Maybe that’s a bit ironic for me to be surprised ehehe~"
-    m "Normally in jokes the characters won’t get a proper answer."
-    m "They will either get a quite literal answer or an unexpected twist of the question."
-    m "Maybe I should start giving you unexpected answers to any questions!"
-    m "Just teasing you~"
-return
-
+label m_joke_bakercollege:
+    m 2b "Piece of cake!"
+    m 3o "I wonder if Natsuki would have said the same thing."
+    m 2l "Maybe she would loaf it! Ehehe~”
+    return
+    
 init 5 python:
     m2p_jokes.append(MASJoke(
-        "m_joke_gotagig",
+        "m_joke_gluehistory",
         is_m2p=True,
+        prompt="I’ve been reading a book on the history of glue."
     ))
 
-label m_joke_gotagig:
-    m "Have you heard of the band ‘1023MB’?"
-    m "They haven’t got a gig yet."
-    m "..."
-    m "Sorry if you didn’t get it~."
-    m "This joke probably flew right over your head if you aren’t too big into computers."
-    m "In a computer 1024 megabytes makes a gigabyte."
-    m "So the joke is centered around the fact that they are 1mb away from having a ‘gig’."
-    m "Anyways, you were technically advanced enough to install this mod."
-    m "So I am sure you understood it! Right [player]? ehehe~"
-return
-
+label m_joke_gluehistory:
+    m 2b "I just can’t seem to put it down."
+    return
+    
 init 5 python:
     m2p_jokes.append(MASJoke(
-        "m_joke_sodapressingjob",
+        "m_joke_knifetoknowyou",
         is_m2p=True,
-    ))
-label m_joke_sodapressingjob:
-    m "Why did the can-crusher quit his job?"
-    m "Because it was soda-pressing!"
-    m "..."
-    m "Gosh, I forgot how silly this joke sounded!"
-    m "Well, it’s more of a play on words than anything else."
-    m "It’s really interesting how much one can play with the varying sounds words can make."
-    m "Word play is really interesting if you look it form a linguistic point of view."
-    m "It’s pretty much combining words to make it sound like a different word!"
-    m "Ah, I hope you’re fond of these type of jokes, just as I am fond of you [player]!"
-return
-
-init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_nextquestion",
-        is_m2p=True,
-    ))
-label m_joke_nextquestion:
-    m "It is close to the end of the school day, the teacher is finishing up their lesson."
-    m "The teacher announces that whoever answers her next question, can go home."
-    m "One boy throws his bag out the window."
-    m "The teacher then asked: Who just threw that?!"
-    m "The same boy who threw the bag then yells: I did! I’m going home now."
-    m "..."
-    m "This joke works quite well as it’s quite absurd, which actually adds to the humor of it."
-    m "Normally nobody would take questions that literally."
-    m "It surprises the reader just like it surprised me the first time I read it!"
-return
-
-init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_mine",
-        is_m2p=True,
-    ))
-label m_joke_mine:
-    m = "A cop stops a miner for speeding on the highway."
-    m "The cop asks the miner; Whose car is this? Where are you headed? What do you do?"
-    m "The miner replies: mine."
-    m "..."
-    m "Sorry, I know it’s not one of the best jokes out there, but it can bring a small giggle."
-    m "I found it pretty funny myself the first time I heard it."
-    m "I guess in the end it is more a bad joke than anything, right [player]? Ehehe~"
-    m "I hope you still found it a bit funny in the end."
-return
-
-init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_camouflagetraining",
-        is_m2p=True,
+        prompt="What did the serial murderer tell their victim?"
     ))
     
-label m_joke_camouflagetraining:
-    m "At evening roll call, the sergeant-major headed right towards a young soldier."
-    m "The sergeant-major growled at the young soldier, I didn’t see you at camouflage training this morning!"
-    m "The soldier replied: Thank you very much, sir."
-    m "..."
-    m "This joke can be funny the first time you hear it!"
-    m "It establishes a where and when before giving a situation where you would expect the soldier to reply with something to justify his absence."
-    m "You end up surprised as the soldier doesn’t justify it."
-    m "I wonder if you would be able to see me if I wore camouflage clothes here? ehehe~"
-return
+label m_joke_knifetoknowyou:
+    m 2b "It was knife knowing you."
+    m 1p "Now that I think about it, this joke reminds me of Yuri."
+    m 4b "I believe she would have laughed at that joke for a knifeti- I mean, a lifetime!"
+    return
+    
+init 5 python:
+    m2p_jokes.append(MASJoke(
+        "m_joke_natsukishelf",
+        is_m2p=True,
+        prompt="I would have felt horrible if Natsuki had been hurt by those falling books."
+    ))
+
+label m_joke_natsukishelf:
+    m 2l "I'd only have my shelf to blame."
+    return
+    
+init 5 python:
+    m2p_jokes.append(MASJoke(
+        "m_joke_undercoverbook",
+        is_m2p=True,
+        prompt="Why did the book join the police?"
+    ))
+
+label m_joke_undercoverbook:
+    m 2j "He wanted to go undercover."
+    return
 
