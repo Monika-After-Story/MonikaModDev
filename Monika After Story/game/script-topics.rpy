@@ -4526,7 +4526,7 @@ label monika_rock:
     m 2c "I've been thinking though..."
     m 2a "I kind of want to try writing a rock song for a change."
     m 4k "Ahaha! Writing a rock and roll song probably isn't something you'd expect coming from someone like me."
-    m 2a "It's kinda funny how rock and roll started out as a evolution of blues and jazz music."
+    m 2a "It's kinda funny how rock and roll started out as an evolution of blues and jazz music."
     m "Rock suddenly became a prominent genre, and it gave birth to other sub-genres as well."
     m 3b "Metal, hard rock, classical rock, and more!"
     m 3n "Ah, I've been rambling for a while now. Sorry, sorry."
