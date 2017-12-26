@@ -305,6 +305,7 @@ label i_greeting_monikaroom:
 
 # special local var to handle custom monikaroom options
 define gmr.eardoor = list()
+define gmr.eardoor_all = list()
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
@@ -385,7 +386,7 @@ label monikaroom_greeting_ear_rmrf:
     else:
         $ bad_cmd = "rm -rf /"
     m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
-    if renpy.seen_label("monikaroom_greeting_ear_rmrf"):
+    if renpy.seen_label("monikaroom_greeting_ear_rmrf_end"):
         m "Yeah,{w} nice try."
     else:
         m "Alright, let me try that."
@@ -397,8 +398,22 @@ label monikaroom_greeting_ear_rmrf:
         m "{cps=*2}Ah! No! That's not what I wanted!{/cps}"
         m "..."
     m "I shouldn't trust the Internet so blindly..."
+label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
+
+## ear door processing
+init 10 python:
+
+    # make copy
+    gmr.eardoor_all = list(gmr.eardoor)
+
+    # remove
+    remove_seen_labels(gmr.eardoor)
+
+    # reset if necessary
+    if len(gmr.eardoor) == 0:
+        gmr.eardoor = list(gmr.eardoor_all)
 
 ### END EAR DOOR --------------------------------------------------------------
 
