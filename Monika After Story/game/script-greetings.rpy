@@ -301,18 +301,106 @@ label i_greeting_monikaroom:
     # atm, making this a persistent makes it easier to test as well as allows
     # users who didnt see the entire event a chance to see it again.
 #    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
-    if persistent.seen_monika_in_room:
-        menu:
-            "Knock":
-                jump monikaroom_greeting_knock
-    else:
-        menu:
-            "... Gently open the door":
-                jump monikaroom_greeting_opendoor
-            "Knock":
-                jump monikaroom_greeting_knock
-    # NOTE: return is expected in monikaroom_greeting_post
+    $ has_listened = False
 
+# special local var to handle custom monikaroom options
+define gmr.eardoor = list()
+
+    # FALL THROUGH
+label monikaroom_greeting_choice:
+    menu:
+        "... Gently open the door" if not persistent.seen_monika_in_room:
+            jump monikaroom_greeting_opendoor
+        "Knock":
+            jump monikaroom_greeting_knock
+        "Listen" if not has_listened:
+            $ has_listened = True # we cant do this twice per run
+            $ mroom_greet = renpy.random.choice(gmr.eardoor)
+#            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
+            jump expression mroom_greet
+
+    # NOTE: return is expected in monikaroom_greeting_cleanup
+
+### BEGIN EAR DOOR ------------------------------------------------------------
+
+# monika narrates 
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_narration")
+
+label monikaroom_greeting_ear_narration:
+    m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
+    m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+    call spaceroom from _call_spaceroom_enar
+    m 1k "It's me!"
+    m "Welcome back, [player]!"
+    jump monikaroom_greeting_cleanup
+
+
+# monika does the cliche flower thing
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_loveme")
+
+label monikaroom_greeting_ear_loveme:
+    $ cap_he = he.capitalize()
+    m "[cap_he] loves me.{w} [cap_he] loves me not."
+    m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+    m "[cap_he] loves me."
+    m "...{w} [cap_he] loves me!"
+    jump monikaroom_greeting_choice
+
+
+# monika encoutners error when programming
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_progbrokepy")
+
+label monikaroom_greeting_ear_progbrokepy:
+    m "What the-!{w} NoneType has no attribute length?"
+    if renpy.seen_label("monikaroom_greeting_ear_progreadpy"):
+        m "Oh, I see what went wrong!{w} That should fix it!"
+    else:
+        m "I don't understand what I'm doing wrong!"
+        m "This shouldn't be None here...{w} I'm sure of it..."
+    m "Coding really is difficult..."
+    jump monikaroom_greeting_choice
+
+# monika reads about errors when programming
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_progreadpy")
+
+label monikaroom_greeting_ear_progreadpy:
+    m "...{w} Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError'."
+    m "I see. {w}I should make sure to check if a variable is None before accessing its attributes."
+    if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
+        m "That would explain the error I had earlier."
+    m "Coding really is difficult..."
+    jump monikaroom_greeting_choice
+
+# monika attempts rm -rf
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_rmrf")
+
+label monikaroom_greeting_ear_rmrf:
+    if renpy.windows:
+        $ bad_cmd = "del C:\Windows\System32"
+    else:
+        $ bad_cmd = "rm -rf /"
+    m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
+    if renpy.seen_label("monikaroom_greeting_ear_rmrf"):
+        m "Yeah,{w} nice try."
+    else:
+        m "Alright, let me try that."
+        show noise
+        play sound "sfx/s_kill_glitch1.ogg"
+        pause 0.2
+        stop sound
+        hide noise
+        m "{cps=*2}Ah! No! That's not what I wanted!{/cps}"
+        m "..."
+    m "I shouldn't trust the Internet so blindly..."
+    jump monikaroom_greeting_choice
+
+
+### END EAR DOOR --------------------------------------------------------------
 
 label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
@@ -366,6 +454,10 @@ label monikaroom_greeting_post:
     $ is_sitting = True
     show monika 1 at ls32
     m 1a "What shall we do today, [player]?"
+    jump monikaroom_greeting_cleanup
+
+# cleanup label
+label monikaroom_greeting_cleanup:
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
