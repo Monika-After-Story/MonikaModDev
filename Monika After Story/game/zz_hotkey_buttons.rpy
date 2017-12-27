@@ -100,6 +100,17 @@ screen hkb_overlay():
                 action NullAction()
                 style "hkbd_button"
 
+        # FIXME This is just a test way to initialize movies
+        # interaction, the DEV team must consider if this option
+        # must be enabled through a button
+        if allow_dialogue and store.hkb_button.enabled:
+            textbutton _("Movies") action Jump("ch30_monikamovie")
+        else:
+            textbutton _("Movies"):
+                action NullAction()
+                style "hkbd_button"
+
+
         if store.hkb_button.enabled:
             textbutton _("Music") action Function(select_music)
         else:

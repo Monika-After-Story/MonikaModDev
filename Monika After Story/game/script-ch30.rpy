@@ -556,11 +556,12 @@ label ch30_autoload:
     $persistent.closed_self = False
 
     #pick a random greeting
-    if is_monika_in_room:
-        if persistent.current_monikatopic != "i_greeting_monikaroom":
-            $ pushEvent("i_greeting_monikaroom")
-    else:
-        $pushEvent(renpy.random.choice(greetings_list))
+    #FIXME skip greeting for development purpose
+    #if is_monika_in_room:
+    #    if persistent.current_monikatopic != "i_greeting_monikaroom":
+    #        $ pushEvent("i_greeting_monikaroom")
+    #else:
+    #    $pushEvent(renpy.random.choice(greetings_list))
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -666,3 +667,245 @@ label ch30_monikatopics:
         allow_dialogue = True
 
     jump ch30_loop
+
+label ch30_monikamovie:
+        #Temporary logger setup
+        init -100 python:
+            import os
+            import sys
+            import logging
+
+            # absolute path to the game directory, which is formatted according
+            # to the conventions of the local OS
+            gamedir = os.path.normpath(config.gamedir)
+
+            # required to make the above work with with RenPy:
+            config.reject_backslash = False
+
+            # setting the window on center
+            # useful if game is launched in the window mode
+            os.environ['SDL_VIDEO_CENTERED'] = '1'
+
+            sys.setdefaultencoding('utf-8')
+
+            # Game may bug out on saving, in such case, comment should be removed
+            # config.use_cpickle = False
+
+
+            # enable logging via the 'logging' module
+            logging.basicConfig(level=logging.DEBUG, format='%(levelname)-8s %(name)-15s %(message)s')
+            devlog = logging.getLogger(" ".join([config.name, config.version]))
+            devlogfile = logging.FileHandler(os.path.join(gamedir, "devlog.txt"))
+            devlogfile.setLevel(logging.DEBUG)
+            devlog.addHandler(devlogfile)
+            devlog.critical("\n--- launch game ---")
+            fm = logging.Formatter('%(levelname)-8s %(name)-15s %(message)s')
+            devlogfile.setFormatter(fm)
+            del fm
+            devlog.info("Game directory: %s" % gamedir)
+        init python:
+            watchingMovie = False
+            lastCountdownTime = 0 #Used as global variable, use with caution
+            firstComment = False
+
+            #This class holds all the information relative to
+            # Monika's dialogue and reactios of the film
+            class ParsedMovie:
+                def __init__(self, movieName):
+                    self.descriptionList = []
+                    self.reactionList = []
+                    self.currentReactionIndex = 0 #So monika can react again if user goes backwards
+                    self.retrieveMovie(movieName)
+
+                def reactionsAreFinished(self):
+                    return self.currentReactionIndex >= len(self.reactionList)
+
+                def stringReactionToTuple(self, string):
+                    emotion = None
+                    when = ""
+                    what = ""
+                    listOfInfo = []
+                    if not string[0] == "[": #with emotion
+                        listOfInfo = string.split(" ", 2)
+                        emotion = listOfInfo [0]
+                        when = listOfInfo [1]
+                        what = listOfInfo [2]
+                    else:
+                        listOfInfo = string.split(" ", 1)
+                        when = listOfInfo [0]
+                        what = listOfInfo [1]
+                    return emotion,when,what
+
+                def formattedTimeToSeconds(self, string):
+                    string = string.replace('[','')
+                    string = string.replace(']','')
+                    infoList = string.split(":")
+                    hours = int(infoList[0])
+                    minutes = int(infoList[1])
+                    seconds = int(infoList[2])
+                    return 3600*hours + 60*minutes + seconds
+
+                def obtainCurrentReactionTuple(self):
+                    string = self.reactionList[self.currentReactionIndex]
+                    emotion, when, what = self.stringReactionToTuple(string)
+                    return emotion,when,what
+
+                def popReaction(self):
+                    emotion, when, what = self.obtainCurrentReactionTuple()
+                    self.currentReactionIndex += 1
+                    return emotion,when,what
+
+
+                def canReact(self, time):
+                    emotion, when, what = self.obtainCurrentReactionTuple()
+
+                    expectedToReact = self.formattedTimeToSeconds(when)
+                    return time > expectedToReact
+
+
+                def popDescription(self):
+                    return self.descriptionList.pop(0)
+
+                def hasDescription(self):
+                    return len(self.descriptionList) > 0
+
+                def formatData(self, data):
+                    return data.replace('"','')
+
+                def retrieveMovie(self, movieName):
+                    with open(os.path.join(gamedir, "movies-info.txt"),"r") as f:
+                        lines = f.readlines()
+                    listOfStrings = [x.strip() for x in lines]
+
+                    #Now we parse the info
+                    filmFound = False
+                    for line in listOfStrings:
+                        if "#" in line:
+                            continue
+                        partialSplittedSentence = line.split(" ", 1)
+                        firstWord = ""
+                        if len(partialSplittedSentence) >= 2:
+                            firstWord = partialSplittedSentence[0]
+                            data = partialSplittedSentence[1]
+                            data = self.formatData(data)
+                        if "movie" in firstWord:
+                            filmFound = movieName in line
+                        if filmFound:
+                            if "description" == firstWord:
+                                self.descriptionList.append(data)
+                            if "m" == firstWord:
+                                self.reactionList.append(data)
+
+
+
+                    #renpy.log(allScripts)
+                    devlog.info(self.descriptionList)
+                    devlog.info(self.reactionList)
+                    devlog.info(os.getcwd())
+
+
+
+
+            class MovieTimer:
+                def __init__(self):
+                    self.seconds = 0
+                def seconds(self):
+                    return self.seconds
+                def addSeconds(self, secondsAdded):
+                    self.seconds += secondsAdded
+            timer = MovieTimer()
+
+            def iterate_timer(st, at, timer):
+                #Time calculations
+                deltaTime = st - globals()['lastCountdownTime']
+                globals()['lastCountdownTime'] = st
+                if watchingMovie:
+                    timer.addSeconds(deltaTime)
+
+                #Render
+                d = Text("{:.1f}".format(timer.seconds))
+                return d, 0.1
+            def fastforward(timer,secondsAdded):
+                timer.addSeconds(secondsAdded)
+
+        screen movie_overlay():
+
+            zorder 50
+
+            style_prefix "hkb"
+
+            vbox:
+                xalign 0.95
+                yalign 0.95
+
+                textbutton _("BBWD10") action NullAction()
+
+                if watchingMovie:
+                    textbutton _("Pause") action NullAction()
+                else:
+                    textbutton _("Resume") action NullAction()
+
+                if store.hkb_button.enabled:
+                    textbutton _("FFWD10") action Function(fastforward,timer,10)#fastforward(timer,10)
+                else:
+                    textbutton _("FFWD10"):
+                        action NullAction()
+                        style "hkbd_button"
+
+        $ config.overlay_screens.append("movie_overlay")
+        #FIXME decide which movie
+        image countdown = DynamicDisplayable(iterate_timer, timer)
+        show countdown at topleft
+
+        $ movieInformation = ParsedMovie("her")
+
+        m 1k "There is a movie I've been wanting to see with you"
+        #Starts description Block
+        python:
+            while(movieInformation.hasDescription()):
+                renpy.say(eval("m"), movieInformation.popDescription())
+
+        #FIXME add flag, first interaction of movie
+        m 1g "I would love to watch it by your side, but we can't"
+        m 1f "..."
+        m 1b "I have an idea, since I can watch the movie inside this game"
+        m 1b "Lets synchronize the start of the film"
+        m 1k "Get ready to start the film, I will do the countdown"
+        menu:
+            "Ready?"
+            "Yes":
+                $ allow_dialogue = False
+                m 1k "Three...{w=1}{nw}" #FIXME development wait times
+                m 1k "Two...{w=1}{nw}"
+                m 1k "One...{w=1}{nw}"
+                $ watchingMovie = True
+                #Movie loop
+                label movie_loop:
+                    pause 1.0
+                    python:
+                        if movieInformation.canReact(timer.seconds):
+                            emotion, when, what = movieInformation.popReaction()
+                            devlog.info("Reaction at %d, %s %s %s" % (timer.seconds, emotion, when, what))
+                            if emotion is not None:
+                                devlog.info("Activated at %d" % (timer.seconds))
+                                monika_reaction = "monika %s" % (emotion)
+                                renpy.show(monika_reaction)
+                            what += "{w=10}{nw}"
+                            renpy.say(eval("m"), what)
+
+                    if movieInformation.reactionsAreFinished():
+                        jump conclussion
+
+                    jump movie_loop
+
+            "No":
+                m 1b "Alright! I will just wait for you honey~"
+
+        label conclussion:
+            m 1b "We finished!"
+
+
+
+
+
+        jump ch30_loop
