@@ -3698,7 +3698,7 @@ label monika_penname:
     m 3c "They keep it hidden from everyone just so it won't affect their personal lives."
     m 3b "Pen names also help writers create something totally different from their usual style of writing."
     m 3d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
-    if [mcname] != [player]:
+    if mcname.lower() != player.lower():
         m 2c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 2d "'[mcname] and [player].'"

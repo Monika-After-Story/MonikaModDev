@@ -90,7 +90,7 @@ init python:
     import store.hkb_button as hkb_button
     therapist = eliza.eliza()
     process_list = []
-    currentuser = persistent.playername #default to the player name
+    currentuser = None # start if with no currentuser
     if renpy.windows:
         try:
             process_list = subprocess.check_output("wmic process get Description", shell=True).lower().replace("\r", "").replace(" ", "").split("\n")
@@ -110,6 +110,14 @@ init python:
     except:
         #Monika will mention that you don't have a char file in ch30_main instead
         pass
+
+
+    # name changes if necessary
+    if not currentuser or len(currentuser) == 0:
+        currentuser = persistent.playername
+    if not persistent.mcname or len(persistent.mcname) == 0:
+        persistent.mcname = currentuser
+        mcname = currentuser
 
     #Define new functions
 
@@ -460,16 +468,6 @@ label ch30_autoload:
             $ play_song(persistent.current_track)
         else:
             $ play_song(songs.current_track) # default
-
-    python:
-
-        # name changes if necessary
-        if not currentuser or len(currentuser) == 0:
-            currentuser = persistent.playername
-        if not persistent.mcname or len(persistent.mcname) == 0:
-            persistent.mcname = currentuser
-            mcname = currentuser
-
 
     window auto
     #If you were interrupted, push that event back on the stack
