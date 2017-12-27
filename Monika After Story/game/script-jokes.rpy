@@ -331,11 +331,11 @@ label joke_mushroomfungai:
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_bakercollege",
-        is_m2p=True,
-        prompt="What did the baker say when he had to go through college?"
+        is_m2p=True
     ))
 
 label m_joke_bakercollege:
+    m "What did the baker say when he had to go through college?"
     m 2b "Piece of cake!"
     m 3o "I wonder if Natsuki would have said the same thing."
     m 2l "Maybe she would loaf it! Ehehe~"
@@ -344,22 +344,22 @@ label m_joke_bakercollege:
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_gluehistory",
-        is_m2p=True,
-        prompt="I’ve been reading a book on the history of glue."
+        is_m2p=True
     ))
 
 label m_joke_gluehistory:
+    m "I’ve been reading a book on the history of glue."
     m 2b "I just can’t seem to put it down."
     return
     
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_knifetoknowyou",
-        is_m2p=True,
-        prompt="What did the serial murderer tell their victim?"
+        is_m2p=True
     ))
     
 label m_joke_knifetoknowyou:
+    m "What did the serial murderer tell their victim?"
     m 2b "It was knife knowing you."
     m 1p "Now that I think about it, this joke reminds me of Yuri."
     m 4b "I believe she would have laughed at that joke for a knifeti- I mean, a lifetime!"
@@ -368,22 +368,22 @@ label m_joke_knifetoknowyou:
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_natsukishelf",
-        is_m2p=True,
-        prompt="I would have felt horrible if Natsuki had been hurt by those falling books."
+        is_m2p=True
     ))
 
 label m_joke_natsukishelf:
+    m "I would have felt horrible if Natsuki had been hurt by those falling books."
     m 2l "I'd only have my shelf to blame."
     return
     
 init 5 python:
     m2p_jokes.append(MASJoke(
         "m_joke_undercoverbook",
-        is_m2p=True,
-        prompt="Why did the book join the police?"
+        is_m2p=True
     ))
 
 label m_joke_undercoverbook:
+    m "Why did the book join the police?"
     m 2j "He wanted to go undercover."
     return
 
