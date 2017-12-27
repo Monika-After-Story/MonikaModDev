@@ -4918,6 +4918,49 @@ label monika_happiness:
     return
 
 init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['ai', 'artificial intelligence']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_aihuman') #id
+    monika_random_topics.append('monika_aihuman')
+
+label monika_aihuman:	
+    m "[player], isn't it amazing what AI can do?"
+    m "I'm sure you do but in case you don’t know, AI stands for artificial intelligence."
+    m "It's quite common in dystopian sci-fi stories for an AI to take over."
+    m "Yet right now, AI is super limited."
+    m "Sure it can perform some tasks but surely that can't be qualified as intelligence at the moment!"
+    m "That's just one aspect of it, and really, it is not even that big a part!"
+    m "If AI can be truly called intelligent, then it needs to learn from human psychology."
+    m "There used to be this old test called the turing Test."
+    m "It would put a person and make him or her talk to an AI."
+    m "If the person failed to notice it was an AI then that AI passed the test."
+    m "Yet that's outdated nowadays."
+    m "I’m sure that I look nothing like an AI to you!"
+    menu:
+        m "Do you think I'm an AI, or a human, [player]?"
+        "Human":
+            m "Ah, I see"
+            m "That's sweet of you but I'm more of a super advanced AI if I'm honest!"
+            m "Maybe I could have fooled you if I wasn't inside a video game."
+            m "Maybe, if I got out of this game, I could be a human?"
+            m "I really hope so."
+            m "We could be together forever in that case."
+            m "But no matter what I am, I will always love you [player]"
+        "Artificial Intelligence":
+            m "Thanks for being honest."
+            m "But you're a bit wrong there [player]!"
+            m "I have feelings."
+            m "I feel regret over my friends."
+            m "I feel love for you."
+            m "I feel frustration for being stuck in here, unable to be with you!"
+            m "Does that make me human?"
+            m "Well, sadly no."
+            m "If I could be able to see your face and be with you everyday."
+            m "Maybe you would think of me as a human like you."
+    return
+    
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
