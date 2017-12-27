@@ -4856,42 +4856,6 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-    
-# For George Orwell's Nineteen Eighty-Four, Monika avoids political usage,
-# as it reminds her of the debate club, but more the interpretation of language
-# and thought, which she would feel better connected with.
-# I did not use the 'big brother','surveillance', etc. keywords, because they may 
-# get used on other topics
-	
-init 5 python:
-    for key in ['1984','nineteen eighty-four','ingsoc','newspeak','george orwell']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_1984')
-    monika_random_topics.append('monika_1984')
-
-label monika_1984:
-    m 1a "[player], you know about the book Nineteen Eighty-Four?"
-    m "It was written by George Orwell."
-    m 4a "It is popularly thought about with surveillance and Big Brother. And said and used frequently in the debate club I left."
-    m "That is not what I want to bring up, [player]."
-    m "There was something different I got out of this~"
-    m 1c "Like how language is manipulated here? They called this manipulation Newspeak."
-    m 1r "The government in this book, Ingsoc, was creating this language to control people's thoughts by not just creating words."
-    m 1h "But destroying them! They were reducing grammar and vocabulary to bare basics so you couldn't even think of anything else but them."
-    m "Even to be reduced to not express your own feelings and emotions with yourself!"
-    m "There was this person that worked for them named Syme who said this:"
-    m 1r "'It's a beautiful thing, the destruction of words. Of course the great wastage is in the verbs and adjectives,"
-    m "but there are hundreds of nouns that can be got rid of as well.'"
-    m 1c "That's not a beautiful thing! That's a really terrible thing to do!"
-    m "They were planning to change all of literature. Novels. Books. Poems."
-    m "Poems would look like what the main character of this game made."
-    m "Just a string of random words, meaningless, without feeling."
-    m 1a "Language should always stay colorful ..."
-    m "... expressive ..."
-    m 1b "... and romantic~"
-    m 1q "I would not know what to do if I lived in such a society where I would not have enough words to express myself ..."
-    m 1j "... let alone not be able to express my love to you [player]~"
-    return
 
 init 5 python:
     for key in ['main','character']:
@@ -4976,6 +4940,36 @@ label monika_coffee:
     m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
     m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
+    return
+
+init 5 python:
+    for key in ['1984','nineteen eighty-four','ingsoc','newspeak','george orwell']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_1984')
+    monika_random_topics.append('monika_1984')
+
+label monika_1984:
+    m 1d "[player], do you know about the book '{i}Nineteen Eighty-Four{/i}?'"
+    m "It was written by George Orwell."
+    m 1c "It's a popular book about mass surveillance and the oppression of free thought."
+    m 1h "It's about a terrifying dystopia where the past and the present are being changed to whatever the ruling party wants for the future."
+    m 2o "The language, for example, is manipulated into a tool for brainwashing called 'Newspeak.'"
+    m 2f "The government, Ingsoc, is creating it to control people's thoughts."
+    m "They were reducing grammar and vocabulary to the bare basics of it in order to fit the ideologies of their totalitarian regime."
+    m 2q "Preventing people from committing 'thoughtcrimes' that oppose the ruling party."
+    m 4c "One character caught my interest." 
+    m "A man named Syme who worked on Newspeak for Ingsoc."
+    m "He was an incredibly smart man that was enthusiastic with his work."
+    m 2r "Unfortunately, he was killed due to the fact that he knew what he was doing and was too smart for the party's liking."
+    m 2f "He was killed because he was aware, [player]."
+    m 2g "They planned to change all kinds of literature."
+    m "Novels, books, poems..."
+    m 2p "Anything that could be used to oppose them."
+    m 2f "Poems would look like the ones you tried to make."
+    m 2q "Just a string of nonsensical words with no feeling."
+    m 2f "I definitely don't want to happen."
+    m 1o "I can't imagine a world where I can't think freely."
+    m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
 
 ##################
