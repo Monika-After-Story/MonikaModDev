@@ -4313,3 +4313,30 @@ label monika_coffee:
     m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
+    
+init 5 python:
+    addEvent(Event(eventlabel="monika_1984",category=['books'],prompt="Orwell's 1984",unlocked=False))
+    
+label monika_1984:
+    m 1d "[player], do you know about the book '{i}Nineteen Eighty-Four{/i}?'"
+    m "It was written by George Orwell."
+    m 1c "It's a popular book about mass surveillance and the oppression of free thought."
+    m 1h "It's about a terrifying dystopia where the past and the present are being changed to whatever the ruling party wants for the future."
+    m 2o "The language, for example, is manipulated into a tool for brainwashing called 'Newspeak.'"
+    m 2f "The government, Ingsoc, is creating it to control people's thoughts."
+    m "They were reducing grammar and vocabulary to the bare basics of it in order to fit the ideologies of their totalitarian regime."
+    m 2q "Preventing people from committing 'thoughtcrimes' that oppose the ruling party."
+    m 4c "One character caught my interest." 
+    m "A man named Syme who worked on Newspeak for Ingsoc."
+    m "He was an incredibly smart man that was enthusiastic with his work."
+    m 2r "Unfortunately, he was killed due to the fact that he knew what he was doing and was too smart for the party's liking."
+    m 2f "He was killed because he was aware, [player]."
+    m 2g "They planned to change all kinds of literature."
+    m "Novels, books, poems..."
+    m 2p "Anything that could be used to oppose them."
+    m 2f "Poems would look like the ones you tried to make."
+    m 2q "Just a string of nonsensical words with no feeling."
+    m 2f "I definitely don't want to happen."
+    m 1o "I can't imagine a world where I can't think freely."
+    m 1g "Let alone a world where I can't express my love to you, [player]..."
+    return
