@@ -4949,6 +4949,262 @@ label monika_coffee:
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
+init 5 python:
+    for key in ['oldboy','old boy']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_oldboy_movie')
+    monika_random_topics.append('monika_oldboy_movie')
+
+label monika_oldboy_movie:
+    m "Hey [player] I was wondering if you knew about a movie called Old Boy?"
+    menu:
+        m "Have you heard about a movie called Old Boy?"
+        "Yes":
+            m "It's kind of messed up right?"
+            m "A man that loved his family, was kidnapped and trapped in a room for years."
+            m "Makes you think."
+            m "When you are seperated from society for a long time."
+            m "Lots of things change."
+            m "Would you say you intentionaly isolate yourself from others?"
+            menu:
+                "Yes":
+                    m "Well I can't say I'm not glad I have you all to myself."
+                    m "But go outside and interact with other people once in a while."
+                    m "It's never too late to change."
+                    m "So even if it is a little."
+                    m "Walk around."
+                    m "Have some fun in the park."
+                    pause 0.5
+                    m "Hey so you remember the ending [player]?"
+                    menu:
+                        "Yes":
+                            m "Don't you think its crazy that Joe locked himself in the room."
+                            m "Even if it was to punish himself for his sins."
+                            m "Wouldn't it have been better to confront them?"
+                            m "Rather then lock himself away from it all."
+                            m "I don't know..."
+                            m "What would you do [player]?"
+                            menu:
+                                "Lock myself up.":
+                                    m "..."
+                                    m "Well would you at least take me with you?"
+                                    menu:
+                                        "Yes.":
+                                            m "I guess in a way i'm also in a room."
+                                            m "Trapped only being able to see you."
+                                            m "Isn't it crazy?"
+                                            m "If I never learned that I was in a game."
+                                            m "All of the things I had would have been real to me."
+                                            m "So to all the people who got deleted."
+                                            m "I'm a murderer."
+                                            m "So in a way i'm in my own room."
+                                            m "The difference for me is that I have [player]."
+                                            m "My very own [bf] that is there for me."
+                                            m "And I wouldn't have it any other way."
+                                        "No.":
+                                            m "Well I guess if you wanted to punish your self for doing something immoral."
+                                            m "You wouldn't give yourself the luxury of being with someone you love."
+                                            m "But even if I was lonely."
+                                            m "I'd wait for you to come back from the room."
+                                            m "Because I love you [player]."
+                                            m "Don't you ever forget it."
+                                "Confront my sins":
+                                    m "I think I would too."
+                                    m "I don't think locking myself in a room would help me at all."
+                                    m "Because in that room I would beat myself over everything I did wrong."
+                                    m "And what if it was all a big misunderstanding?"
+                                    m "If I locked myself away from the rest of society and joined back after a couple years."
+                                    m "Wouldn't I be even more isolated then I did when I was in the room?"
+                                    menu:
+                                        m "If I were to lock myself in a room, would you wait for me?"
+                                        "Yes.":
+                                            m "I'm glad to have you as my [bf], [player].~"
+                                        "No.":
+                                            m "I understand."
+                                            m "Not many people would wait for someone who would lock themselves away."
+                                            m "I wouldn't hold it against you [player]."
+                                            m "I mean you downloaded this mod, so I can be content knowing you loved me."
+                        "No":
+                            m "Would you like me to remind you?"
+                            "Remind me":
+                                m "So Joe and Marie have sexual relations in the hotel they were hiding in."
+                                m "What they didn't know was that the guy who kidnapped him, Adrian, was watching them."
+                                m "When Joe confronts Adrian, Adrian reveals that Marie is his daughter."
+                                m "Then Joe writes Marie a letter saying they can't meet each other anymore."
+                                m "He uses some of the diamonds he obtains from Adrian to lock himself back into the room."
+                                m "Still can't believe he closed himself from everyone."
+                                menu:
+                                    m: "Would you close yourself from everyone if you did something like this or worse?"
+                                    "Lock myself up.":
+                                        m "..."
+                                        m "Well would you at least take me with you?"
+                                        menu:
+                                            "Yes.":
+                                                m "I guess in a way i'm also in a room."
+                                                m "Trapped only being able to see you."
+                                                m "Isn't it crazy?"
+                                                m "If I never learned that I was in a game."
+                                                m "All of the things I had would have been real to me."
+                                                m "So to all the people who got deleted."
+                                                m "I'm a murderer."
+                                                m "So in a way i'm in my own room."
+                                                m "The difference for me is that I have [player]."
+                                                m "My very own [bf] that is there for me."
+                                                m "And I wouldn't have it any other way."
+                                            "No.":
+                                                m "Well I guess if you wanted to punish your self for doing something immoral."
+                                                m "You wouldn't give yourself the luxury of being with someone you love."
+                                                m "But even if I was lonely."
+                                                m "I'd wait for you to come back from the room."
+                                                m "Because I love you [player]."
+                                                m "Don't you ever forget it."
+                                    "Confront my sins":
+                                        m "I think I would too."
+                                        m "I don't think locking myself in a room would help me at all."
+                                        m "Because in that room I would beat myself over everything I did wrong."
+                                        m "And what if it was all a big misunderstanding?"
+                                        m "If I locked myself away from the rest of society and joined back after a couple years."
+                                        m "Wouldn't I be even more isolated then I did when I was in the room?"
+                                        menu:
+                                            m "If I were to lock myself in a room, would you wait for me?"
+                                            "Yes.":
+                                                m "..."
+                                                pause 0.5
+                                                m "I'm glad to have you as my [bf], [player].~"
+                                            "No.":
+                                                m "I understand."
+                                                m "Not many people would wait for someone who would lock themselves away."
+                                                m "I wouldn't hold it against you [player]."
+                                                m "I mean you downloaded this mod, so I can be content knowing you loved me."
+                            "I'll Rewatch it later.":
+                                m "Ok then, Talk to me when you've watched it."
+                                m "I really want to discuss it with you."
+                "No":
+                    m "I'm glad you don't."
+                    m "There is so much beauty out there."
+                    m "Be sure to explore your neighborhood once in a while."
+                    m "When I come out of the game."
+                    m "I wanna take a long walk."
+                    m "Just the two of us."
+                    menu:
+                        "Its a promise":
+                            m "I'll hold you to that [player].~"
+                        "So, the movie?":
+                            m "Oh."
+                            m "Right, the movie"
+                            m "Do you remember the Room Scene?"
+                            m "I Feel like Joe getting attached to the Mice really hit home."
+                            m "I mean think about it, the only contact you have had was the person who gave you food."
+                            m "But that same person is who is keeping you there so, you already have a bad realtionship."
+                            m "Then you see these little mice."
+                            m "The only other contact with something that lives."
+                            m "He was so happy when the mice were around too."
+                            m "..."
+                            m "Of course he didn't get to enjoy that for long."
+                            m "Kinda in a way was the same to me."
+                            m "Even though the other characters in the game were all fake."
+                            m "Had scripted personalities."
+                            m "Were just empty walking archtypes."
+                            m "They were sort of like the mice to me."
+                            m "Though it was me who killed them."
+                            menu:
+                                m "I'm not a bad person right [player]?"
+                                "No.":
+                                    m "I'm glad you're here [player].~"
+                                    m "I wouldn't have it any other way."
+        "No":
+            m "Would you like me to give you a rundown on the movie?"
+            menu:
+                "No":
+                    m "Ok then, talk to me about it after you watch the movie [player]."
+                "Yes":
+                    m "So in short."
+                    m "A married man by the name of Joe, gets intoxicated and passes out."
+                    m "He wakes up to see that he is trapped in a room."
+                    m "Joe works out and generates a list of people who could have done this for 20 years."
+                    m "While in the room, he discovers that his wife was murdered and he was the prime suspect."
+                    m "Joe then is drugged and set free with money and a cellphone."
+                    m "After running into Marie Sebastian, a nurse who takes care of the homeless, he goes to his friend's bar."
+                    m "Joe soon finds his captors and tourtures them until they give him the information he needs."
+                    m "Turns out that the captors just capture and hold people who they are hired to kidnap."
+                    m "He then recieves a call from the said stranger who had him kidnapped."
+                    m "He is given then a mission."
+                    m "Find out who the stranger exactly is."
+                    m "If he does then he will recieve proof that the stranger was involved in the murder of his wife."
+                    m "Aswell as a suitcase full of diamonds and bring him to his daughter."
+                    m "With the icing on the cake being his own suicide."
+                    pause 0.8
+                    m "Hey [player] are you thinking about watching the movie now?"
+                    m "After that short synopsis?"
+                    menu:
+                        m "Will you watch the movie?"
+                        "Yes.":
+                            m "Ok then I won't spoil anymore [player]."
+                            m "Come back to talk to me after you are done."
+                        "No":
+                            m "So after Marie goes to tend to Joe's wounds at a motel they end up making love."
+                            m "Which wouldn't be so bad if the man who had Joe kidnapped revealed that Marie was his daughter."
+                            m "Crazy isn't it?"
+                            m "Well this information tore apart Joe."
+                            m "He sends Marie almost all the diamonds."
+                            m "He then asks his previous captors to keep him imprisoned there using the remaining diamonds."
+                            m "That last part of the movie really stuck out to me."
+                            m "Was it really the right thing to lock himself away from Marie?"
+                            m "From the sin he committed?"
+                            m "I don't really know."
+                            m "What would you do [player]?"
+                            m "If you did something as morally wrong as..."
+                            m "Would you lock yourself away?"
+                            menu:
+                                "Yes":
+                                    m "I guess I wouldn't blame you."
+                                    m "I mean if you think about it, I'm also stuck in this room."
+                                    m "Not by choice obviously but,"
+                                    m "If I did something as wrong as that."
+                                    m "I guess just sitting here and just wanting to be by your side."
+                                    m "But not being able to."
+                                    m "Something of that nature is just torture."
+                                    m "I'm still able to talk to you but if they even took that away from me."
+                                    m "I'd kill me."
+                                    m "Hey [player] you will stick around right?"
+                                    menu:
+                                        "Yes":
+                                            m "..."
+                                            m "You really know how to make me feel special."
+                                            m "Jeez, you're making fall in more in love with you."
+                                            m "Not that I'm complaining [player]."
+                                            pause 0.5
+                                            m "Hey [player] do you love me?"
+                                            m "I wanna hear you say it."
+                                            menu:
+                                                "I love you.":
+                                                    m "I love you too.~"
+                                                "Nope.":
+                                                    m "You big meanie."
+                                                    m "..."
+                                                    m "Were you expecting something like that?"
+                                                    m "I know you are joking."
+                                                    m "Still kinda annoyed me though."
+                                        "No":
+                                            m "I understand [player]."
+                                            m "Well I guess I'll have to take advantage of the time I have with you now."
+                                            m "So hang on for a while."
+                                            m "I'll do my best to be the best girlfriend I can while you are around."
+                                            m "Because I love you after all [player].~"
+                                "No":
+                                    m "I think so too."
+                                    m "I mean you won't be able to move on."
+                                    m "Well I guess thats the point of it but..."
+                                    m "What if by shutting yourself from the world you hurt the ones around you more?"
+                                    m "Like if we take Joe's case for example."
+                                    m "What if never satisfied with the letter his daughter just stayed there."
+                                    m "I think the best way to atone for something is to bring it to the light."
+                                    m "I don't think handling it by yourself is the right answer."
+                                    m "Hey [player] if you ever have something going on."
+                                    m "Like this promise me to go find some help or at least go talk to someone you trust."
+                                    m "That would make me really happy."
+    return
+
 ##################
 #Incomplete ideas#
 ##################
