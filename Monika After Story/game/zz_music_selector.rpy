@@ -7,6 +7,7 @@ init -1 python in songs:
 
     # MUSICAL CONSTANTS
     # SONG NAMES
+    PIANO_COVER = "Your Reality (Piano Cover)"
     JUST_MONIKA = "Just Monika"
     YOURE_REAL = "Your Reality"
     STILL_LOVE = "I Still Love You"
@@ -16,6 +17,7 @@ init -1 python in songs:
     NO_SONG = "None"
 
     # SONG FILEPATHS
+    FP_PIANO_COVER = "mod_assets/bgm/runereality.ogg"
     FP_JUST_MONIKA = "bgm/m1.ogg"
     FP_YOURE_REAL = "bgm/credits.ogg"
     FP_STILL_LOVE = "bgm/monika-end.ogg"
@@ -120,6 +122,9 @@ init -1 python in songs:
             music_choices.append((YOURE_REAL, FP_YOURE_REAL))
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
             music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
+
+            # Shoutout to Rune0n for this wonderful piano cover!
+            music_choices.append((PIANO_COVER, FP_PIANO_COVER))
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
