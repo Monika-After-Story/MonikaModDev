@@ -30,18 +30,19 @@ init 100 python:
 #   persistent.current_monikatopic
 init python:
 
-    def addEvent(event):
+    def addEvent(event, eventdb=persistent.event_database):
         #
-        # Adds an event object to the persistent event database
+        # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
         # This function ensures that a bad item is not added to the database
         #
         # IN:
         #   event - the Event object to add to database
-        #
-        # ASSUMES:
-        #   persistent.event_database
+        #   eventdb - The Event databse (dict) we want to add to
+        #       (Default: persistent.event_database)
 
+        if type(eventdb) is not dict:
+            raise EventException("Given db is not of type dict")
         if type(event) is not Event:
             raise EventException("'" + str(event) + "' is not an Event object")
         if not renpy.has_label(event.eventlabel):
@@ -54,7 +55,7 @@ init python:
                 raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
 
         # now this event has passsed checks, we can add it to the db
-        persistent.event_database.setdefault(event.eventlabel, event)
+        eventdb.setdefault(event.eventlabel, event)
 
     def pushEvent(event_label):
         #
