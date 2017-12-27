@@ -19,6 +19,7 @@
 default persistent.allow_dark_jokes = False
 default persistent.allow_dad_jokes = False
 default persistent.jokes_available = 0
+default persistent.dark_jokes_told = 0
 
 # pre stuff
 init -1 python:
@@ -260,27 +261,27 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_scarecrowaward",
         is_m2p=False,
-        prompt="Why did the scarecrow win an award?"
+        prompt="Why did the scarecrow win an award?",
         is_dad=True
     ))
 
-label joke_scarecrowaward
+label joke_scarecrowaward:
     menu:
         "He was outstanding in his field.":
             m 4f "Ah, you can't be serious."
-            m 2b "You've to consider that farming jokes are quite corny ehehe~”
+            m 2b "You've to consider that farming jokes are quite corny ehehe~"
     return
 
 init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_fencegraveyard",
         is_m2p=False,
-        prompt="A curious child asks his dad 'Why do they build a fence around a graveyard?'"
+        prompt="A curious child asks his dad 'Why do they build a fence around a graveyard?'",
         is_dad=True
     ))
 label joke_fencegraveyard:
     menu:
-        “The dad quickly replies with ‘Because people are dying to get in there!’”:
+        "The dad quickly replies with 'Because people are dying to get in there!'":
             m 3b "Some people do get in like the writer who was sentenced to death!"
             m "Yet just skeletons can't get in since they have nobody to enter with."
             m 2f "It's a bit discriminative if you ask me."
@@ -296,31 +297,30 @@ init 5 python:
     ))
 
 label joke_knocknobel:
-menu:
-    "Turns out he won the nobel prize.":
-        m 3e "Well, I hope he could handle the pressure."
-        m 2b "It's after all an unbellievable situation."
-        m "I am glad he wasn't doormant in the middle of the awards."
-        m 1l "Hope you do love my bad puns [player]! Ehehe~"
+    menu:
+        "Turns out he won the nobel prize.":
+            m 3e "Well, I hope he could handle the pressure."
+            m 2b "It's after all an unbellievable situation."
+            m "I am glad he wasn't doormant in the middle of the awards."
+            m 1l "Hope you do love my bad puns [player]! Ehehe~"
     return
 
 init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_mushroomfungai",
         is_m2p=False,
-        prompt=“A mushroom walks into a bar.”
+        prompt="A mushroom walks into a bar."
     ))
     
 label joke_mushroomfungai:
     menu:
-        "The bartender says, 'Hey, get out of here! We don’t serve mushrooms here'”:
+        "The bartender says, 'Hey, get out of here! We don’t serve mushrooms here'":
             menu:
                 "The mushroom says, 'Why not? I’m a fungi!'":
                     m 2b "Poor mushroom, maybe he wasn't allowed in cause there wasn't {i}mushroom{/i}!"
                     m 3p "I don't know that many mushroom jokes."
-                    m 3n "Maybe I should just try to make other puns just for you ehehe~”
+                    m 3n "Maybe I should just try to make other puns just for you ehehe~"
     return
-
 
 
 
@@ -330,15 +330,15 @@ label joke_mushroomfungai:
 
 init 5 python:
     m2p_jokes.append(MASJoke(
-        "m_joke_bakercollege,
+        "m_joke_bakercollege",
         is_m2p=True,
-        prompt=“What did the baker say when he had to go through college?”
+        prompt="What did the baker say when he had to go through college?"
     ))
 
 label m_joke_bakercollege:
     m 2b "Piece of cake!"
     m 3o "I wonder if Natsuki would have said the same thing."
-    m 2l "Maybe she would loaf it! Ehehe~”
+    m 2l "Maybe she would loaf it! Ehehe~"
     return
     
 init 5 python:
