@@ -26,7 +26,7 @@ init -1 python:
 
     class MASJokeException(Exception):
         def __init__(self, msg):
-            str.msg = msg
+            self.msg = msg
         def __str__(self):
             return "MASJokeError: " + self.msg
 
@@ -326,7 +326,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_hitired",
         is_m2p=False,
-        prompt="How many apples grow on a tree?"
+        prompt="How many apples grow on a tree?",
         is_dad=True
     ))
 label joke_hitired:
@@ -388,7 +388,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_muffledexhausted",
         is_m2p=False,
-        prompt=“Last night I had a dream I was a muffler.”
+        prompt="Last night I had a dream I was a muffler."
     ))
     
 label joke_muffledexhausted:
@@ -425,7 +425,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_sodapressing",
         is_m2p=False,
-        prompt=“Why did the can-crusher quit his job?”
+        prompt="Why did the can-crusher quit his job?"
     ))
     
 label joke_sodapressing:
@@ -441,12 +441,12 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_haircut",
         is_m2p=False,
-        prompt=“Did you ever get a haircut?”
+        prompt="Did you ever get a haircut?"
     ))
     
 label joke_haircut:
     m 3e "Ah, you're wrong there!"
-    m 4j "I didn't get a haircut, I got several cut!  Ehehe~”
+    m 4j "I didn't get a haircut, I got several cut!  Ehehe~"
     m "Sorry, I simply saw the chance to answer back."
     return
     
@@ -454,7 +454,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_pooldeepends",
         is_m2p=False,
-        prompt=“Are pools safe for diving?”
+        prompt="Are pools safe for diving?"
     ))
     
 label joke_pooldeepends:
@@ -468,7 +468,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_atomtrustissues",
         is_m2p=False,
-        prompt=“You shouldn't trust atoms!”
+        prompt="You shouldn't trust atoms!"
     ))
     
 label joke_atomtrustissues:
@@ -484,7 +484,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_hamdiscrimination",
         is_m2p=False,
-        prompt=“A ham sandwich walks into a bar."
+        prompt="A ham sandwich walks into a bar."
     ))
     
 label joke_hamdiscrimination:
@@ -500,7 +500,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_mineistheanswer",
         is_m2p=False,
-        prompt=“A cop stops a miner for speeding on the highway."
+        prompt="A cop stops a miner for speeding on the highway."
     ))
     
 label joke_mineistheanswer:
@@ -517,9 +517,9 @@ label joke_mineistheanswer:
                 
 init 5 python:
     p2m_jokes.append(MASJoke(
-        "joke_beaverdam",
+        "joke_beaverdamn",
         is_m2p=False,
-        prompt=“I just watched a show about beavers."
+        prompt="I just watched a show about beavers."
     ))
     
 label joke_beaverdamn:
@@ -533,7 +533,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_themuggedcoffee",
         is_m2p=False,
-        prompt=“Why did the coffee file a police report?"
+        prompt="Why did the coffee file a police report?"
     ))
 
 label joke_themuggedcoffee:
@@ -548,7 +548,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_tearablepaper",
         is_m2p=False,
-        prompt=“Wanna hear a joke about paper?"
+        prompt="Wanna hear a joke about paper?"
     ))
 
 label joke_tearablepaper:
@@ -563,7 +563,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_groundbreakingshovel",
         is_m2p=False,
-        prompt=“I think quite highly of the shovel."
+        prompt="I think quite highly of the shovel."
     ))
     
 label joke_groundbreakingshovel:
@@ -577,7 +577,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_igloosit",
         is_m2p=False,
-        prompt=“How does a penguin build it's house?"
+        prompt="How does a penguin build it's house?"
     ))
             
 label joke_igloosit:
@@ -592,7 +592,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_irrelephant",
         is_m2p=False,
-        prompt=“What do you call an elephant that doesn't matter?"
+        prompt="What do you call an elephant that doesn't matter?"
     ))
     
 label joke_irrelephant:
@@ -606,7 +606,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_nutsdiet",
         is_m2p=False,
-        prompt=“I thought about going on an all-almond diet."
+        prompt="I thought about going on an all-almond diet."
     ))
     
 label joke_nutsdiet:
@@ -622,7 +622,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_kidnappingatschool",
         is_m2p=False,
-        prompt=“Did you hear about the kidnapping at one school?"
+        prompt="Did you hear about the kidnapping at one school?"
     ))
     
 label joke_kidnappingatschool:
@@ -637,7 +637,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_resistingarest",
         is_m2p=False,
-        prompt=“If a child refuses to sleep during night time."
+        prompt="If a child refuses to sleep during night time."
     ))
     
 label joke_resistingarest:
@@ -651,7 +651,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_stepahead",
         is_m2p=False,
-        prompt=“I leave my right shoe inside my car."
+        prompt="I leave my right shoe inside my car."
     ))
     
 label joke_stepahead:
@@ -666,7 +666,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_leastspokenlanguage",
         is_m2p=False,
-        prompt=“What's the least spoken language in the world?"
+        prompt="What's the least spoken language in the world?"
     ))
     
 label joke_leastspokenlanguage:
@@ -680,7 +680,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_octover",
         is_m2p=False,
-        prompt=“What do you say when november starts?"
+        prompt="What do you say when november starts?"
     ))
     
 label joke_octover:
@@ -694,7 +694,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_leekinginformation",
         is_m2p=False,
-        prompt=“Why did the vegetable go to jail?"
+        prompt="Why did the vegetable go to jail?"
     ))
         
 label joke_leekinginformation:
@@ -708,7 +708,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_timidpebble",
         is_m2p=False,
-        prompt=“What did the timid pebble wish for?"
+        prompt="What did the timid pebble wish for?"
     ))
     
 label joke_timidpebble:
@@ -722,7 +722,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_chickenslide",
         is_m2p=False,
-        prompt=“Why did the chicken cross the playground?"
+        prompt="Why did the chicken cross the playground?"
     ))
     
 label joke_chickenslide:
@@ -750,7 +750,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_caketiers",
         is_m2p=False,
-        prompt=“It was an emotional wedding."
+        prompt="It was an emotional wedding."
     ))
     
 label joke_caketiers:
@@ -764,7 +764,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_housewearadress",
         is_m2p=False,
-        prompt=“What does a house wear?"
+        prompt="What does a house wear?"
     ))
     
 label joke_housewearadress:
@@ -778,7 +778,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_aimisgettingbetter",
         is_m2p=False,
-        prompt=“My ex-wife still misses me."
+        prompt="My ex-wife still misses me."
     ))
     
 label joke_aimisgettingbetter:
@@ -792,7 +792,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_daywellspent",
         is_m2p=False,
-        prompt=“If you spent your day in a well."
+        prompt="If you spent your day in a well."
     ))
     
 label joke_daywellspent:
@@ -806,7 +806,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_massconfusion",
         is_m2p=False,
-        prompt=“If America changed from pounds to kilograms."
+        prompt="If America changed from pounds to kilograms."
     ))
     
 label joke_massconfusion:
@@ -821,7 +821,7 @@ init 5 python:
     p2m_jokes.append(MASJoke(
         "joke_justchilling",
         is_m2p=False,
-        prompt=“What do snowmen do in their free time?"
+        prompt="What do snowmen do in their free time?"
     ))
     
 label joke_justchilling:
@@ -1008,7 +1008,7 @@ init 5 python:
         is_m2p=True
     ))
     
-label m_joke_smartbookworm
+label m_joke_smartbookworm:
     m 1a "Why couldn't they trick the bookworm?"
     m 2b "Because he could read between the lines."
     return
@@ -1076,7 +1076,7 @@ init 5 python:
     
 label m_joke_olympicprocrastination:
     m 1a "If procrastination was an Olympic sport."
-    m 3l "I would compete on it later! Ehehe~”
+    m 3l "I would compete on it later! Ehehe~"
     return
     
 init 5 python:
@@ -1267,7 +1267,7 @@ init 5 python:
 label m_joke_programmerwithoutarrays:
     m 2a "Why did the programmer quit his job?"
     m 3b "He couldn't get arrays!"
-    return	
+    return
     
 init 5 python:
     m2p_jokes.append(MASJoke(
