@@ -7,8 +7,12 @@
 ## [DESCRIPTION]
 ## if "description" is the first word, the line will be used for Monika's description
 ## of the film
+## The line MUST contain an image for her to display
+
 ## example:
-## description "This film talks about AI"
+## description 1o "This film talks about AI"
+## description 1o "It could be fun"
+
 
 ## [MOVIE REACTIONS]
 ## if "m" is the first word, the line will be used for Monika's reactions.
@@ -16,24 +20,29 @@
 ## The line must contain the exact second where that reaction will be reproduced
 ## with the format [HH:MM:SS]
 ## The line must contain a message even if it's nothing, example: ""
+## There must be a gap between lines of 10 seconds. The line will be automatically
+## hide waiting for the next reaction
+
 ## example:
 ## m 1k [00:32:52] "I hate this jumpscares!"
 ## m [00:33:05] "But they're also fun"
 ## m 4f [01:12:05] ""
 
-movie her
-description "It's about AI"
-description "I think you could like it"
-m 1g [00:00:23] "That is a hard question"
+
+movie Her Trailer
+description 1a "It's about AI"
+description 1b "I think you could like it"
+m 1o [00:00:05] ""
+m 1g [00:00:23] ""
 m 1j [00:00:45] "I wish I could wake you up like that"
 m 1o [00:01:05] ""
 m 1j [00:01:18] ""
 m 1k [00:01:18] "Eheheh~"
 
+movie Doki Doki Trailer
+description 1b "You want to watch the trailer of the game?"
+description 1b "I'm a bit curious, let's see it"
+m 1g [00:00:04] "They putted that warning because of me?"
+m 1b [00:00:20] "Oh, so that's how you were forced to make the poems"
+m 1r [00:00:35] "And now they're all dead..."
 
-
-
-movie matrix
-description "It's about neo and morfeo"
-description "The one thing"
-m [00:00:01] "Finally it started!"
