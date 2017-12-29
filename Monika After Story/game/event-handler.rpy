@@ -206,6 +206,7 @@ label prompt_menu:
             if not seen_event(event):
                 unseen_events.append(event)
 
+        repeatable_events = Event.filterEvents(persistent.event_database,unlocked=True,pool=False)
     #Top level menu
     menu:
         m "Pick something to talk about?"
@@ -216,7 +217,7 @@ label prompt_menu:
         "Ask a question.":
             call prompts_categories(True)
 
-        "Repeat conversation.":
+        "Repeat conversation." if len(repeatable_events)>0:
             call prompts_categories(False)
 
         "Nevermind":
