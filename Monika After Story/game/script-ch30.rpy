@@ -556,12 +556,11 @@ label ch30_autoload:
     $persistent.closed_self = False
 
     #pick a random greeting
-    #FIXME skip greeting for development purpose
-    #if is_monika_in_room:
-    #    if persistent.current_monikatopic != "i_greeting_monikaroom":
-    #        $ pushEvent("i_greeting_monikaroom")
-    #else:
-    #    $pushEvent(renpy.random.choice(greetings_list))
+    if is_monika_in_room:
+        if persistent.current_monikatopic != "i_greeting_monikaroom":
+            $ pushEvent("i_greeting_monikaroom")
+    else:
+        $pushEvent(renpy.random.choice(greetings_list))
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -610,7 +609,7 @@ label ch30_loop:
     if not _return:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
-        $ waittime = renpy.random.randint(200, 450) #FIXME dev puropse 20.45
+        $ waittime = renpy.random.randint(20, 45)
         $ renpy.pause(waittime, hard=True)
         window auto
         # Pick a random Monika topic

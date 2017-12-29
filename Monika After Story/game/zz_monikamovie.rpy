@@ -1,39 +1,6 @@
 label ch30_monikamovie:
-    #Temporary logger setup
-    init -100 python:
-        import os
-        import sys
-        import logging
-
-        # absolute path to the game directory, which is formatted according
-        # to the conventions of the local OS
-        gamedir = os.path.normpath(config.gamedir)
-
-        # required to make the above work with with RenPy:
-        config.reject_backslash = False
-
-        # setting the window on center
-        # useful if game is launched in the window mode
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
-
-        sys.setdefaultencoding('utf-8')
-
-        # Game may bug out on saving, in such case, comment should be removed
-        # config.use_cpickle = False
-
-
-        # enable logging via the 'logging' module
-        logging.basicConfig(level=logging.DEBUG, format='%(levelname)-8s %(name)-15s %(message)s')
-        devlog = logging.getLogger(" ".join([config.name, config.version]))
-        devlogfile = logging.FileHandler(os.path.join(gamedir, "devlog.txt"))
-        devlogfile.setLevel(logging.DEBUG)
-        devlog.addHandler(devlogfile)
-        devlog.critical("\n--- launch game ---")
-        fm = logging.Formatter('%(levelname)-8s %(name)-15s %(message)s')
-        devlogfile.setFormatter(fm)
-        del fm
-        devlog.info("Game directory: %s" % gamedir)
     init python:
+        gamedir = os.path.normpath(config.gamedir)
 
         ## CLASS DEFINITIONS ##
         #This class holds all the information relative to
@@ -63,7 +30,7 @@ label ch30_monikamovie:
             def searchMovies(self, movieName):
                 foundMovies = []
                 for xName in self.listOfMovies:
-                    if movieName in xName:
+                    if movieName.lower() in xName.lower():
                         foundMovies.append(xName)
                 return foundMovies
 
@@ -71,6 +38,7 @@ label ch30_monikamovie:
             def __init__(self, movieName):
                 self.descriptionList = []
                 self.reactionList = []
+                self.closureList = []
                 self.currentReactionIndex = 0 #So monika can react again if user goes backwards
                 self.retrieveMovie(movieName)
 
@@ -133,6 +101,17 @@ label ch30_monikamovie:
             def hasDescription(self):
                 return len(self.descriptionList) > 0
 
+            def popClosure(self):
+                string = self.closureList.pop(0)
+                stringArray = string.split(" ", 1)
+                emotion = stringArray[0]
+                line = stringArray[1]
+
+                return emotion, line
+
+            def hasClosure(self):
+                return len(self.closureList) > 0
+
             def formatData(self, data):
                 return data.replace('"','')
 
@@ -153,13 +132,14 @@ label ch30_monikamovie:
                         data = partialSplittedSentence[1]
                         data = self.formatData(data)
                     if "movie" in firstWord:
-                        devlog.info("-"+movieName +" == "+ line+"-")
                         filmFound = movieName == partialSplittedSentence[1]
                     if filmFound:
                         if "description" == firstWord:
                             self.descriptionList.append(data)
                         if "m" == firstWord:
                             self.reactionList.append(data)
+                        if "closure" == firstWord:
+                            self.closureList.append(data)
 
             def resynchronizeIndex(self, timer):
                 self.currentReactionIndex = 0
@@ -215,29 +195,7 @@ label ch30_monikamovie:
 
 
 
-    screen movie_overlay():
 
-        zorder 50
-
-        style_prefix "hkb"
-
-        vbox:
-            xalign 0.95
-            yalign 0.95
-
-            if watchingMovie:
-                textbutton _("Pause") action Jump("pauseFilm")
-            else:
-                textbutton _("Pause") action NullAction() 
-
-            if watchingMovie:
-                textbutton _("Set Time") action Jump("setTime")
-            else:
-                textbutton _("Set Time"):
-                    action NullAction()
-                    style "hkbd_button"
-
-    $ config.overlay_screens.append("movie_overlay")
     $ listMovies = AvaiableMovies()
 
     m 1b "You want to see a movie?"
@@ -246,7 +204,7 @@ label ch30_monikamovie:
             "Can you tell me the name?"
             "Yes":
                 python:
-                    player_dialogue = renpy.input('Tell me the name ',default='',pixel_width=720,length=50)
+                    player_dialogue = renpy.input('What is it? ',default='',pixel_width=720,length=50)
                     allFilms = listMovies.searchMovies(player_dialogue)
                     foundAnyFilm = len(allFilms) > 0
                 if foundAnyFilm:
@@ -293,7 +251,7 @@ label ch30_monikamovie:
 
             "Nevermind":
                 m 1a "Allright! maybe later"
-                jump ch30_loop
+                jump returnToLoop
 
 
 
@@ -302,6 +260,7 @@ label ch30_monikamovie:
 
 
     label foundMovie:
+        $ MovieOverlayShowButtons()
         image countdown = DynamicDisplayable(iterate_timer, timer)
         show countdown at topleft
         #Starts description Block
@@ -312,45 +271,54 @@ label ch30_monikamovie:
                 renpy.say(eval("m"), what)
         m 1b "Lets synchronize the start of the film"
         m 1k "Get ready to start the film, I will do the countdown"
+
         menu:
             "Ready?"
             "Yes":
                 label movie_resume:
                     $ allow_dialogue = False
-                    m 1a "Three...{w=1}{nw}" #FIXME development wait times
+                    m 1a "Three...{w=1}{nw}" 
                     m  "Two...{w=1}{nw}"
                     m  "One...{w=1}{nw}"
                     #Movie loop
                     $ watchingMovie = True
                     label movie_loop:
                         pause 1.0
-                        $ devlog.info(timer.seconds)
                         python:
                             if movieInformation.canReact(timer.seconds):
                                 emotion, when, what = movieInformation.popReaction()
                                 updateEmotionMonika(emotion)
                                 
                                 if not (what == "" or what is None):
-                                    devlog.info(what)
                                     what += "{w=10}{nw}"
                                     renpy.say(eval("m"), what)
 
                         if movieInformation.reactionsAreFinished():
-                            jump conclussion
+                            jump closure
 
                         jump movie_loop
 
             "No":
                 m 1b "Alright! I will just wait for you honey~"
 
-        label conclussion:
-            m 1b "We finished!"
+        label closure:
+            #Starts closure Block
+            python:
+                while(movieInformation.hasClosure()):
+                    emotion, what =  movieInformation.popClosure()
+                    updateEmotionMonika(emotion)
+                    renpy.say(eval("m"), what)
 
 
 
-
-
-    jump ch30_loop
+    label returnToLoop:
+        $ allow_dialogue = True
+        $ watchingMovie = False
+        $ timer.seconds = 0
+        $ MovieOverlayHideButtons()
+        show monika 1a
+        hide countdown
+        jump ch30_loop
 
     label pauseFilm:
         $ watchingMovie = False
@@ -360,9 +328,8 @@ label ch30_monikamovie:
             "Yes":
                 jump movie_resume
             "No":
-                m 1b "It's ok"
-                $ allow_dialogue = True
-                jump ch30_loop
+                m 1a "It's ok"
+                jump returnToLoop
 
     label setTime:
         $ watchingMovie = False

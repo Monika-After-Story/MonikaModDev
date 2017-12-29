@@ -18,11 +18,29 @@ init python:
         #
         config.overlay_screens.append("hkb_overlay")
 
+        # function to hide buttons
+    def MovieOverlayHideButtons():
+        #
+        # Hides the movie buttons
+        #
+        config.overlay_screens.remove("movie_overlay")
+        renpy.hide("movie_overlay")
+        globals()['movie_buttons_enabled'] = False #Can't make it disappear without this global variable (bug?)
+
+    # function to show buttons
+    def MovieOverlayShowButtons():
+        #
+        # Shows the movie buttons
+        #
+        config.overlay_screens.append("movie_overlay")
+        globals()['movie_buttons_enabled'] = True
+
 init -1 python in hkb_button:
 
     # new property to disable buttons
     # set to False to disable buttons
     enabled = True
+    movie_buttons_enabled = False
 
 
 # HOTKEY BUTTON SCREEN ========================================================
@@ -100,9 +118,6 @@ screen hkb_overlay():
                 action NullAction()
                 style "hkbd_button"
 
-        # FIXME This is just a test way to initialize movies
-        # interaction, the DEV team must consider if this option
-        # must be enabled through a button
         if allow_dialogue and store.hkb_button.enabled:
             textbutton _("Movies") action Jump("ch30_monikamovie")
         else:
@@ -125,6 +140,28 @@ screen hkb_overlay():
                 action NullAction()
                 style "hkbd_button"
 
+screen movie_overlay():
+
+        zorder 50
+
+        style_prefix "hkb"
+
+        vbox:
+            xalign 0.95
+            yalign 0.95
+
+            if globals()['movie_buttons_enabled']:
+                if watchingMovie:
+                    textbutton _("Pause") action Jump("pauseFilm")
+                else:
+                    textbutton _("Pause") action NullAction() style "hkbd_button"
+
+                if watchingMovie:
+                    textbutton _("Time") action Jump("setTime")
+                else:
+                    textbutton _("Time"):
+                        action NullAction()
+                        style "hkbd_button"
 
 init python:
     HKBShowButtons()
