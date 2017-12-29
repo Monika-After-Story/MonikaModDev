@@ -4835,8 +4835,11 @@ label monika_jokes_topic:
 
                 # and the resulting label
                 call expression sel_joke.jokelabel from _p2m_joke_subexp
-                $ daily_p2m_jokes.remove(sel_joke)
-                $ persistent.jokes_available -= 1
+                python:
+                    daily_p2m_jokes.remove(sel_joke)
+                    persistent.jokes_available -= 1
+                    if sel_jokes.is_dark:
+                        persistent.dark_jokes_told += 1
             "No":
                 m "Alright, I'll tell you a joke"
                 python:
