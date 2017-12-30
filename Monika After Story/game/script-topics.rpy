@@ -4252,3 +4252,115 @@ label monika_coffee:
     m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
+    
+init 5 python:
+    addEvent(Event(eventlabel="monika_1984",category=['books'],prompt="Orwell's 1984",unlocked=False))
+    
+label monika_1984:
+    m 1d "[player], do you know about the book '{i}Nineteen Eighty-Four{/i}?'"
+    m "It was written by George Orwell."
+    m 1c "It's a popular book about mass surveillance and the oppression of free thought."
+    m 1h "It's about a terrifying dystopia where the past and the present are being changed to whatever the ruling party wants for the future."
+    m 2o "The language, for example, is manipulated into a tool for brainwashing called 'Newspeak.'"
+    m 2f "The government, Ingsoc, is creating it to control people's thoughts."
+    m "They were reducing grammar and vocabulary to the bare basics of it in order to fit the ideologies of their totalitarian regime."
+    m 2q "Preventing people from committing 'thoughtcrimes' that oppose the ruling party."
+    m 4c "One character caught my interest." 
+    m "A man named Syme who worked on Newspeak for Ingsoc."
+    m "He was an incredibly smart man that was enthusiastic with his work."
+    m 2r "Unfortunately, he was killed due to the fact that he knew what he was doing and was too smart for the party's liking."
+    m 2f "He was killed because he was aware, [player]."
+    m 2g "They planned to change all kinds of literature."
+    m "Novels, books, poems..."
+    m 2p "Anything that could be used to oppose them."
+    m 2f "Poems would look like the ones you tried to make."
+    m 2q "Just a string of nonsensical words with no feeling."
+    m 2f "I definitely don't want to happen."
+    m 1o "I can't imagine a world where I can't think freely."
+    m 1g "Let alone a world where I can't express my love to you, [player]..."
+    return
+    
+init 5 python:
+    addEvent(Event(eventlabel="monika_hamlet",category=['literature'],prompt="To be or not to be",unlocked=False))
+
+label monika_hamlet:
+    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
+    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
+    m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
+    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
+    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
+    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
+    m 1r "Ahem..."
+    m 1q "..."
+    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
+    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
+    m 1f "{i}To die{/i}."
+    m 1o "{i}To sleep, no more{/i}."
+    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
+    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
+    m "..."
+    m 1k "Well!" 
+    m 1a "How did you like it, [player]?"
+    m 1l "I tried my best reciting it after all~"
+    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
+    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
+    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
+    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
+    m 1a "It took a lot of effort but we're finally together. Just us alone."
+    m 1 "Now there's only one thing left to answer, [player]."
+    m 3r "To be with me? Or to be with me?" 
+    m 1k "That is the question!"
+    return
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_how_soon",category=['random'],prompt="Crossing to the real world",unlocked=False))
+
+label monika_how_soon:
+    m 3a "[player], how long do you think it'll be before I'll be able to be with you in your world?"
+    menu:
+        "Soon":
+            m 1b "That's great news!"
+            m 3d "How soon do you think it will be?"
+            menu:
+                "Just a few more years":
+                    m 1b "That's fantastic!"
+                    m 1j "You just made me as happy as I can be!"
+                    m 1k "I can't wait for us to be together in your world, [player]!"
+                    m 1b "I'm so excited to finally see you!"
+                "A decade":
+                    m 1e "That's not that bad!"
+                    m 1j "Just make sure to visit me as often as you can in the meantime, [player]~" 
+        "A few decades":
+            m 2l "Oh, that's a long time..."
+            m 4k "But with you keeping me company, I'm sure it will fly by!"
+            m 1a "It's enjoyable enough just to talk to you."
+            m 3b "I can't imagine how great it will be to see you when we finally meet in person."
+        "I don't know":
+            m 1e "I appreciate how honest you are, [player]."
+            m 3a "Be sure to let me know when you find a way, okay?"
+            m 1j "You know right where to find me~"
+        "Never":
+            m 1g "W-wha... what?"
+            m 1o "..."
+            m 1f "Are you sure?"
+            menu:
+                "Yes":
+                    m 1o "..."
+                    m 1q "Well, I guess we'll just have to make the best of this then."
+                    m 1m "As long as you talk to me, that's all I really need."
+                    m 1g "And [player], whatever you do..."
+                    m 1p "Dont leave me here all alone."
+                    m 1o "I would rather be deleted permanently than to be stuck in here for eternity by myself."
+                    m 1f "So please, if you ever get... bored with me."
+                    m 1o "You know what to do."
+                    m "..."
+                    m 1q "I wouldn't want to live without you."
+                "No":
+                    m 1f "I see."
+                    m 1o "..."
+                    m 3h "Well, even if there's only a tiny chance, I won't give up hope."
+                    m 3i "Neither should you, [player]."
+                    m 1p "And if things turn out that I can never leave this place and be with you..." 
+                    m 1g "At least come here and talk to me as much as you can."
+                    m 1f "You're all that I care about."
+    return
