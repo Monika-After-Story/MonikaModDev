@@ -5070,6 +5070,37 @@ label monika_1984:
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
 
+init 5 python:
+    for key in ['rpg', 'roleplay', 'roleplaying' 'roleplaying game']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_rpg')
+    monika_random_topics.append('monika_rpg')
+
+label monika_rpg:
+    m 2b "[player], have you ever heard about Roleplaying Games?"
+    m 1a "They're like a collaborative narrative."
+    m "But in this case, every player takes control of their own character."
+    m 4b "One player gets the role of Master, who controls the world where the other player's characters belong in."
+    m "Following some determined rules, they make a story together."
+    m "But the trick is that it's all made in real time. All sit in a table and roleplay their respective characters as the narrative flows."
+    m 1a "I imagine if you already played it before."
+    m "Apparently, it's not only a hobby, it's also a social interaction. People strive more for fun than 'winning'."
+    m 1b "The best thing about it is that it can be about anything!"
+    m "Even the literature club!"
+    m 1l "Ahaha."
+    m 2m "You're maybe wondering how I know about such a 'nerdy' thing."
+    m 1a "Well, I was near some students playing it on break times, so I heard some of the playthrough."
+    m 1l "It's not polite to hear other's conversation like this, but, gosh, it go me really curious."
+    m 1a "So I searched for it on the internet to know more."
+    m 4e "If I wasn't so busy with school tasks, I'd give it a try."
+    m 1a "They say it helps your writing and creativity, but I want to see that myself."
+    m "Hope someday we have a little chance to play together. I'm still curious how's the experience."
+    m 1k "And playing with you will only make it more amazing!"
+    m 1q "Until then..."
+    m 5a "The only 'role' I'll 'play' is being your beloved girlfriend."
+    m "Ehehe~"
+    return
+    
 ##################
 #Incomplete ideas#
 ##################
