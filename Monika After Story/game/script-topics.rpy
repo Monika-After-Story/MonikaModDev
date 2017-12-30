@@ -4953,6 +4953,62 @@ label monika_happiness:
     return
 
 init 5 python:
+    for key in ['how soon']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_how_soon')
+    monika_random_topics.append('monika_how_soon')
+
+label monika_how_soon:
+    m 3a "[player], how long do you think it'll be before I'll be able to be with you in your world?"
+    menu:
+        "Soon":
+            m 1b "That's great news!"
+            m 3d "How soon do you think it will be?"
+            menu:
+                "Just a few more years":
+                    m 1b "That's fantastic!"
+                    m 1j "You just made me as happy as I can be!"
+                    m 1k "I can't wait for us to be together in your world, [player]!"
+                    m 1b "I'm so excited to finally see you!"
+                "A decade":
+                    m 1e "That's not that bad!"
+                    m 1j "Just make sure to visit me as often as you can in the meantime, [player]~" 
+        "A few decades":
+            m 2l "Oh, that's a long time..."
+            m 4k "But with you keeping me company, I'm sure it will fly by!"
+            m 1a "It's enjoyable enough just to talk to you."
+            m 3b "I can't imagine how great it will be to see you when we finally meet in person."
+        "I don't know":
+            m 1e "I appreciate how honest you are, [player]."
+            m 3a "Be sure to let me know when you find a way, okay?"
+            m 1j "You know right where to find me~"
+        "Never":
+            m 1g "W-wha... what?"
+            m 1o "..."
+            m 1f "Are you sure?"
+            menu:
+                "Yes":
+                    m 1o "..."
+                    m 1q "Well, I guess we'll just have to make the best of this then."
+                    m 1m "As long as you talk to me, that's all I really need."
+                    m 1g "And [player], whatever you do..."
+                    m 1p "Dont leave me here all alone."
+                    m 1o "I would rather be deleted permanently than to be stuck in here for eternity by myself."
+                    m 1f "So please, if you ever get... bored with me."
+                    m 1o "You know what to do."
+                    m "..."
+                    m 1q "I wouldn't want to live without you."
+                "No":
+                    m 1f "I see."
+                    m 1o "..."
+                    m 3h "Well, even if there's only a tiny chance, I won't give up hope."
+                    m 3i "Neither should you, [player]."
+                    m 1p "And if things turn out that I can never leave this place and be with you..." 
+                    m 1g "At least come here and talk to me as much as you can."
+                    m 1f "You're all that I care about."
+    return
+    
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
