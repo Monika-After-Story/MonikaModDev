@@ -69,49 +69,38 @@ label monika_god:
     return
     
 init 5 python:
-    #This is a list of keywords for this topic
     for key in ['hamlet', 'shakespeare']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_hamlet') #id
+        monika_topics[key].append('monika_hamlet')
     monika_random_topics.append('monika_hamlet')
 
 label monika_hamlet:
-    m 1d "[player], do you enjoy Shakespeare?"
-    menu:
-         "Yes.":
-            m 1k "Oh! Wonderful!"
-            m 1b "So, you know how I've had a lot of time recently?"
-            m 1j "Seeing as I'm immortal and time doesn't really pass in this place."
-            m 1b "Well...."
-            m "I've had time to practice and learn a couple of Shakespeare's more memorable speeches."
-            m 1m "Mind you, I'm not really the biggest fan of Shakespeare..."
-            m 1s "But I have to admit he's written some pretty soliloquies."
-            m 4k "Now... without further ado! Let me recite you a little something I memorized from Hamlet:"
-            m "Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune,"
-            m 1c "Or to take arms against a sea of troubles, And by opposing end them?"
-            m 1f "To die,"
-            m "To sleep, no more;"
-            m 1c "And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to,"
-            m 1q "'Tis a consummation devoutly to be wish'd."
-            m "..."
-            m 5a "So? how did you like it?"
-            m 1j "I tried to be as expressive as possible for you, my love!"
-            m 1a "Anyway, I've thought a lot about the message."
-            m "You know whom it reminds me of?"
-            m 1l "Sayori..."
-            m 1c "She, like Hamlet, suffered greatly in the mind, and because of it didn't see any purpose in life."
-            m 1o "I suppose, for the longest time, I didn't either..."
-            m 1e "But that doesn't matter anymore, because now that I'm with you, I know my life has purpose."
-            m 1s "You've ended my sea of troubles with your love, and I hope I've done the same for you!"
-            m 1j "I don't care if that sounded cheesy - I love you."
-                
-         "Not really.":
-            m 4l "That's okay!"
-            m 1s "I'm not his biggest fan either."
-            m 1j "To be honest, I think Shakespeare's a little bit overrated,"
-            m 1k "I find a lot of his writing to be kind of boring."
-            m 1s "But some of his speeches are interesting, and I'd love to read you them at some point."
-            m 1k "Just let me know!"
+    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
+    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
+    m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
+    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
+    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
+    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
+    m 1r "Ahem..."
+    m 1q "..."
+    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
+    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
+    m 1f "{i}To die{/i}."
+    m 1o "{i}To sleep, no more{/i}."
+    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
+    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
+    m "..."
+    m 1k "Well!" 
+    m 1a "How did you like it, [player]?"
+    m 1l "I tried my best reciting it after all~"
+    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
+    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
+    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
+    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
+    m 1a "It took a lot of effort but we're finally together. Just us alone."
+    m 1 "Now there's only one thing left to answer, [player]."
+    m 3r "To be with me? Or to be with me?" 
+    m 1k "That is the question!"
     return
 
 
