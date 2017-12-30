@@ -82,6 +82,41 @@ label monika_god:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
+    
+init 5 python:
+    for key in ['hamlet', 'shakespeare']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_hamlet')
+    monika_random_topics.append('monika_hamlet')
+
+label monika_hamlet:
+    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
+    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
+    m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
+    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
+    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
+    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
+    m 1r "Ahem..."
+    m 1q "..."
+    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
+    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
+    m 1f "{i}To die{/i}."
+    m 1o "{i}To sleep, no more{/i}."
+    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
+    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
+    m "..."
+    m 1k "Well!" 
+    m 1a "How did you like it, [player]?"
+    m 1l "I tried my best reciting it after all~"
+    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
+    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
+    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
+    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
+    m 1a "It took a lot of effort but we're finally together. Just us alone."
+    m 1 "Now there's only one thing left to answer, [player]."
+    m 3r "To be with me? Or to be with me?" 
+    m 1k "That is the question!"
+    return
 
 
 init 5 python:
