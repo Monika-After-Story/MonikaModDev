@@ -4805,6 +4805,24 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    for key in ['exercise','gym','running']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_exercise')
+    monika_random_topics.append('monika_exercise')
+
+label monika_exercise:
+    m 2k"Oh [player]! Are you going out for a bit of exercise?"
+    m 3c "While I think it's important to go out there and workout, I hope you're not doing it just
+       to talk with other girls." 
+    m "Since that would make me really jealous..."
+    m 4k "Just kidding!"
+    m  "I really love how finishing a workout makes you feel afterwards so go out there
+       and do your best!"
+    m 1b "I'll be right here waiting for you when you come back~" 
+    m "...and please remember to take a shower!"
+return
 
 ##################
 #Incomplete ideas#
