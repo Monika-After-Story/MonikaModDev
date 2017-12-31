@@ -139,16 +139,23 @@ init python:
         if "K_ESCAPE" in config.keymap["game_menu"]:
            config.keymap["game_menu"].remove("K_ESCAPE")
 
-    def play_song(song):
+    def play_song(song, fadein=0.0):
         #
         # literally just plays a song onto the music channel
         #
         # IN:
         #   song - song to play. If None, the channel is stopped
+        #   fadein - number of seconds to fade in the song
         if song is None:
             renpy.music.stop(channel="music")
         else:
-            renpy.music.play(song,channel="music",loop=True,synchro_start=True)
+            renpy.music.play(
+                song,
+                channel="music",
+                loop=True,
+                synchro_start=True,
+                fadein=fadein
+            )
 
     def mute_music():
         #
