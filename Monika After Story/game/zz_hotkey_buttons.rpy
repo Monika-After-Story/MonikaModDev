@@ -24,8 +24,7 @@ init python:
         # Hides the movie buttons
         #
         config.overlay_screens.remove("movie_overlay")
-        renpy.hide("movie_overlay")
-        globals()['movie_buttons_enabled'] = False #Can't make it disappear without this global variable (bug?)
+        renpy.hide_screen("movie_overlay")
 
     # function to show buttons
     def MovieOverlayShowButtons():
@@ -33,7 +32,6 @@ init python:
         # Shows the movie buttons
         #
         config.overlay_screens.append("movie_overlay")
-        globals()['movie_buttons_enabled'] = True
 
 init -1 python in hkb_button:
 
@@ -142,26 +140,25 @@ screen hkb_overlay():
 
 screen movie_overlay():
 
-        zorder 50
+    zorder 50
 
-        style_prefix "hkb"
+    style_prefix "hkb"
 
-        vbox:
-            xalign 0.95
-            yalign 0.95
+    vbox:
+        xalign 0.95
+        yalign 0.95
 
-            if globals()['movie_buttons_enabled']:
-                if watchingMovie:
-                    textbutton _("Pause") action Jump("pauseFilm")
-                else:
-                    textbutton _("Pause") action NullAction() style "hkbd_button"
+        if watchingMovie:
+            textbutton _("Pause") action Jump("mm_movie_pausefilm")
+        else:
+            textbutton _("Pause") action NullAction() style "hkbd_button"
 
-                if watchingMovie:
-                    textbutton _("Time") action Jump("setTime")
-                else:
-                    textbutton _("Time"):
-                        action NullAction()
-                        style "hkbd_button"
+        if watchingMovie:
+            textbutton _("Time") action Jump("mm_movie_settime")
+        else:
+            textbutton _("Time"):
+                action NullAction()
+                style "hkbd_button"
 
 init python:
     HKBShowButtons()
