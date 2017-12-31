@@ -370,16 +370,66 @@ init python:
         TEXT_TAG = "piano_text"
 
         # STATEMACHINE STUFF
-        STATE_LISTEN = 0 # default state
-        STATE_JMATCH = 1 # we matched a note
-        STATE_MATCH = 2 # currently matching a phrase
-        STATE_MISS = 3 # you missed a note
-        STATE_FAIL = 4 # you failed a phrase
-        STATE_JPOST = 5 # we just entered post match
-        STATE_POST = 6 # post match state, where we match post notes 
-        STATE_VPOST = 7 # only visual post match, until next key is hit or time
-        STATE_CPOST = 8 # special cleanup state, for post, only does visual
-        STATE_WPOST = 9 # waitin post-state
+
+        # Default state. In this state, we run the detection algorithm.
+        # No rendering adjustment is done in this state
+        STATE_LISTEN = 0
+
+        # Just MATCH state. Here, we just matched a phrase/note and want to 
+        # render the appropriate expression and text.
+        STATE_JMATCH = 1
+
+        # currently MATCHing state. Here, we are matching a phrase, and only
+        # care if we miss something. No rendering adjustment is done in this
+        # state
+        STATE_MATCH = 2
+
+        # MISS state. Here, the user misses a note once. That is okay, but
+        # we need to change monika's expression accoridngly.
+        STATE_MISS = 3
+
+        # FAIL state. Here, the user fails a phrase. In this case, we need
+        # to abort matching and head to the CLEAN state, which will fix up
+        # Monika's expressions. We also render an expression for Monika
+        # NOTE: failure means 2 misses in a row
+        STATE_FAIL = 4
+
+        # Just POST state. Here, the user just finished a phrase and is now
+        # playing the post section of that phrase. POST sections are optional
+        # for passing the phrase, but playing them allows smooth transition to
+        # the next note phrase.
+        # Rendering of the post expression is done here
+        STATE_JPOST = 5
+
+        # POST state. Here, the user is currently playing the POST note phrase
+        # We are matching the POST phrase.
+        # No rendering is done here
+        STATE_POST = 6 
+
+        # Visual POST state. This is similiar to the JPOST state, except we
+        # only care about visual adjustments. The main difference between this
+        # and JPOST is that VPOST leads into the WPOST state, while JPOST leads
+        # into the POST state.
+        # Post expression rendering is done here
+        STATE_VPOST = 7 
+
+        # Clean POST state. This is a special cleanup state that only does 
+        # visual cleanup instead of total cleanup. Meant to be used with a
+        # WPOST that has a visual timeout.
+        # Rendering cleanup is done here
+        STATE_CPOST = 8
+
+        # Wait POST state. This state is a transitional state between note
+        # phrases. Here, we wait for user input, and if its appropriate, 
+        # move to a JMATCH state. This state also calls a redraw using visual
+        # redraw_time if available.
+        # No Rendering is done here
+        STATE_WPOST = 9
+
+        # CLEAN state. This state resets the display back to Default state as
+        # well as resetting the timeouts. This leads into the LISTEN state, 
+        # so we should only do this if we want to reset.
+        # Rendering cleanup is done here
         STATE_CLEAN = 10 # reset things
 
         # key limit for matching
@@ -1371,6 +1421,8 @@ init python:
                 lyric_bar = renpy.render(self.lyrical_bar, 1280, 720, st, at)
                 lyric = renpy.render(self.lyric, 1280, 720, st, at)
                 pw, ph = lyric.get_size()
+
+                # the lyric bar should be slightly below y-center
                 r.blit(
                     lyric_bar,
                     (
