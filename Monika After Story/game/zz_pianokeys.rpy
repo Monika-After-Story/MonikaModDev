@@ -1187,9 +1187,11 @@ init python:
             elif self.versedex == self.VER_THR:
                 verses = range(self.VER_THR, self.VER_END)
 
+            # go through this range of verses
             for index in verses:
                 pnm = self.pnm_yourreality[index]
 
+                # we use string finding to accomplish matches
                 findex = pnm.notestr.find(notestr)
                 if findex >= 0:
                     pnm.matchdex = findex + len(notestr)
