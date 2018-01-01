@@ -315,10 +315,11 @@ label monikaroom_greeting_choice:
     menu:
         "... Gently open the door" if not persistent.seen_monika_in_room:
             jump monikaroom_greeting_opendoor
-        "Open the door" if persistent.seen_monika_in_room and persistent.opendoor_opencount == 0:
-            jump monikaroom_greeting_opendoor_seen
-        "Open the door" if persistent.opendoor_opencount > 0:
-            jump monikaroom_greeting_opendoor_locked
+        "Open the door" if persistent.seen_monika_in_room:
+            if persistent.opendoor_opencount > 0:
+                jump monikaroom_greeting_opendoor_locked
+            else:
+                jump monikaroom_greeting_opendoor_seen
 #        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
 #            jump opendoor_game
         "Knock":
