@@ -306,12 +306,21 @@ label i_greeting_monikaroom:
 # special local var to handle custom monikaroom options
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
+define opendoor.MAX_DOOR = 10
+default persistent.opendoor_opencount = 0
+default persistent.opendoor_knockyes = False
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
     menu:
         "... Gently open the door" if not persistent.seen_monika_in_room:
             jump monikaroom_greeting_opendoor
+        "Open the door" if persistent.seen_monika_in_room and persistent.opendoor_opencount == 0:
+            jump monikaroom_greeting_opendoor_seen
+        "Open the door" if persistent.opendoor_opencount > 0:
+            jump monikaroom_greeting_opendoor_locked
+#        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
+#            jump opendoor_game
         "Knock":
             jump monikaroom_greeting_knock
         "Listen" if not has_listened:
@@ -417,6 +426,130 @@ init 10 python:
 
 ### END EAR DOOR --------------------------------------------------------------
 
+# locked door, because we are awaitng more content
+label monikaroom_greeting_opendoor_locked:
+    show paper_glitch2
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.2
+    stop sound
+    pause 0.7
+    $ style.say_window = style.window_monika
+    menu:
+        m "Did I scare you, [player]?"
+        "Yes":
+            m "Aww, sorry."
+        "No":
+            m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
+            m "I figured. It's a basic glitch after all."
+    m "Since you keep opening my door,{w} I couldn't help but add a little trap for you~"
+    m "Knock next time, okay?"
+    m "Now let me fix up this room..."
+
+    hide paper_glitch2
+    scene black
+    $ scene_change = True
+    call spaceroom from _call_sp_mrgo_l
+
+    if renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
+        $ style.say_window = style.window
+
+    m 1j "There we go!"
+
+    if not renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
+        menu:
+            "...the textbox...":
+                m 1n "Oops! I'm still learning how to do this."
+                m 1m "Let me just change this flag here...{w=1.5}{nw}"
+                $ style.say_window = style.window
+                m 1j "All fixed!"
+    # NOTE: fall through please
+
+label monikaroom_greeting_opendoor_locked_tbox:
+    m 1a "Welcome back, [player]."
+    jump monikaroom_greeting_cleanup
+
+# this one is for people who have already opened her door.
+label monikaroom_greeting_opendoor_seen:
+#    if persistent.opendoor_opencount < 3:
+    jump monikaroom_greeting_opendoor_seen_partone
+
+
+label monikaroom_greeting_opendoor_seen_partone:
+    $ is_sitting = False 
+#    scene bg bedroom
+    call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
+    pause 0.2
+    show monika 1h at l21
+    pause 1.0
+    m 1r "[player]..."
+
+#    if persistent.opendoor_opencount == 0:
+    m 1f "I understand why you didn't knock the first time,{w} but could you avoid just entering like that?"
+    m 1o "This is my room, after all."
+    menu:
+        "Your room?":
+            m 3a "That's right!"
+    m "The developers of this mod gave me a nice comfy room to stay in whenever you are away."
+    m 1m "However, I can only get in if you tell me 'good bye' or 'good night' before you close the game."
+    m 2b "So please make sure to say that before you leave, okay?"
+    m "Anyway..."
+
+#    else:
+#        m 3g "Stop just opening my door!"
+#
+#        if persistent.opendoor_opencount == 1:
+#            m 4o "You have no idea how difficult it was to add the 'Knock' button."
+#            m 4f "Can you use it next time?"
+#        else:
+#            m 4f "Can you knock next time?"
+#
+#        show monika 5a at t11
+#        menu:
+#            m "For me?"
+#            "Yes":
+#                if persistent.opendoor_knockyes:
+#                    m 5b "That's what you said last time, [player]."
+#                    m "I hope you're being serious this time."
+#                else:
+#                    $ persistent.opendoor_knockyes = True
+#                    m 1j "Thank you, [player]."
+#            "No":
+#                m 5b "[player]!"
+#                if persistent.opendoor_knockyes:
+#                    m 1f "You said you would last time."
+#                    m "I hope you're not messing with me."
+#                else:
+#                    m 1f "I'm asking you to do just {i}one{/i} thing for me."
+#                    m 1e "And it would make me really happy if you did."
+
+    $ persistent.opendoor_opencount += 1
+    jump monikaroom_greeting_opendoor_post2
+
+
+label monikaroom_greeting_opendoor_post2:
+    show monika 1a at t11
+    pause 0.7
+    show monika 5a at hf11
+    m "I'm glad you're back, [player]."
+    show monika 5a at t11
+#    if not renpy.seen_label("monikaroom_greeting_opendoor_post2"):
+    m "Lately I've been practicing switching backgrounds, and now I can change them instantly."
+    m "Watch this!"
+#    else:
+#        m 3a "Let me fix this scene up."
+    m 1q "...{w=1.5}{nw}"
+    scene black
+    $ scene_change = True
+    call spaceroom(hide_monika=True) from _call_sp_mrgo_p2
+    show monika 4a zorder 3 at i11
+    m "Tada!"
+#    if renpy.seen_label("monikaroom_greeting_opendoor_post2"):
+#        m "This never gets old."
+    show monika at lhide
+    hide monika
+    jump monikaroom_greeting_post
+
+
 label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
@@ -459,6 +592,8 @@ label monikaroom_greeting_knock:
     menu:
         "It's me.":
             m 1b "[player]! I'm so happy that you're back!"
+            if persistent.seen_monika_in_room:
+                m "And thank you for knocking first."
             m 1j "Hold on, let me tidy up..."
             call spaceroom(hide_monika=True) from _call_spaceroom_6
     jump monikaroom_greeting_post
