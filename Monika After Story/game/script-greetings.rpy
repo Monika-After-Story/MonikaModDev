@@ -442,7 +442,7 @@ label monikaroom_greeting_opendoor_locked:
         "No":
             m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
             m "I figured. It's a basic glitch after all."
-    m "Since you keep opening my door,{w} I couldn't help but add a little trap for you~"
+    m "Since you keep opening my door,{w} I couldn't help but add a little surprise for you~"
     m "Knock next time, okay?"
     m "Now let me fix up this room..."
 
