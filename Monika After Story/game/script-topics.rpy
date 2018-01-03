@@ -4748,8 +4748,8 @@ init 5 python:
 label monika_orchestra:
     m 3d "Hey, [player], do you listen to orchestral music?"
     m 1a "I love the way that so many different instruments can get together and create such wonderful music."
-    m "It must take a lot of dedication to practice countless hours for a few songs..."
-    m "Playing piano is the closest I can get to experiencing that firsthand."
+    m "Playing the piano is the closest I can get to experiencing that firsthand, alone."
+    m "In a way, playing the piano you play a duet all by yourself!"
     m 1j "That reminds me, if you ever want me to play for you..."
     m 1a "You can always select my song in the music menu."
 
@@ -4759,13 +4759,19 @@ label monika_orchestra:
         "Yes.":
             $persistent.instrument = True
             m 1b "Really? What do you play?"
-            $ instrumentname = renpy.input('What instrument do you play?').strip(' \t\n\r')
+            $ instrumentname = renpy.input('What instrument do you play?').strip(' \t\n\r').lower()
             $ persistent.instrumentname = instrumentname
-            m 1a "Wow, I've always wanted to try the [instrumentname] out!"
-            m 3b "I would love to hear you play for me."
-            m "Maybe you could teach me how to play, too~"
-            m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
-            m 1j "Ehehe~"
+            if instrumentname == "piano":
+                 m 1b "Oh, that's really cool!"
+                 m 1j "Not many people I knew played the piano, so it's really nice to know you do, as well."
+                 m 5a "Maybe we could do a duet someday!"
+                 m 1j "Ehehe~"
+             else:
+                 m 1a "Wow, I've always wanted to try the [instrumentname] out!"
+                 m 3b "I would love to hear you play for me."
+                 m "Maybe you could teach me how to play, too~"
+                 m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
+                 m 1j "Ehehe~"
         "No.":
             $persistent.instrument = False
             m 1i "I see..."
@@ -4779,6 +4785,38 @@ label monika_orchestra:
             m 1a "Anyhow, you should really see if anything catches your fancy."
             m "I would be very happy to hear you play."
     return
+
+init 5 python:
+    for key in ['jazz', 'jazz music', 'blues']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_jazz')
+    monika_random_topics.append('monika_jazz')
+    
+label monika_jazz:
+    m 1d "Say, [player], do you like jazz music?"
+    menu:
+        "Yes.":
+            m 1b "Oh, okay!"
+            if persistent.instrument == True: 
+            # would have liked to do this specifically if the instrument is jazz-related, but there are too many jazz instruments
+                m 1d "Do you play jazz music, as well?"
+                    menu:
+                        "Yes.":
+                            m 1j "That's really cool!"
+                        "No.":
+                            m 1a "I see."
+            m 1a "I haven't listened to much of it, but I personally find it pretty interesting." 
+        "No.":
+            m 1a "I see."
+            m "I haven't listened to much of it, but I see why people would like it."
+    m 1d "It's not exactly modern, but it's not quite classical, either..."
+    m 3e "It has elements of classical, but it's different. it goes away from structure and into a more unpredictable side of music."
+    if renpy.seen_label('monika_rock'):
+        m 3d "It's also interesting how jazz evolved."
+        m "You remember, right? How it became rock later down the road and all."
+    m 4a "I think a lot of jazz was about expression, when people first came up with it - about experimenting, about going beyond what already existed. To make something more wild and colourful."
+    m 4b "Like poetry! It used to be structured and rhyming, but it's changed - it gives greater freedom now."
+    m 1j "Maybe that's what I like about jazz, if anything."
 
 init 5 python:
     for key in ['otaku', 'neet']:
