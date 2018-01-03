@@ -3755,26 +3755,34 @@ label monika_changename:
     m 1b "You want to change your name?"
     menu:
         "Yes":
-            m 1a "Just type 'Nevermind' if you change your mind."
+            m 1a "Just type 'nevermind' if you change your mind."
             $ done = False
             while not done:
-                $ tempname = renpy.input("What do you want me to call you?").strip(' \t\n\r')
-                if tempname == "Nevermind" or tempname == "nevermind":
+                $ tempname = renpy.input("What do you want me to call you?",length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
                     m 1f "[player]!"
                     m 2g "Please stop teasing me~"
                     m "I really do want to know what you want me to call you!"
                     m 3l "I won't judge no matter how ridiculous it might be."
                     m 2e "So don't be shy and just tell me, [player]~"
                     $ done = True
-                elif tempname == "":
+                elif lowername == "":
                     m 2h "..."
                     m 4l "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1b "Try again!"
-                elif tempname == player:
+                elif lowername == player:
                     m 2h "..."
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
+                elif len(lowername) >= 10:
+                    m 2q "[player]..."
+                    m 2l "That name's a bit too long."
+                    if len(lowername) > 20:
+                        m "And I'm sure you're just being silly since names aren't that long, you know."
+                    m 1 "Try again."
+
                 else:
 
                     # sayori name check
@@ -3789,8 +3797,16 @@ label monika_changename:
                         mcname = player
                         persistent.playername = tempname
                         player = tempname
-                    m 1b "Ok then!"
-                    m 3b "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+                    
+                    if lowername == "monika":
+                        m 1d "Really?"
+                        m 3k "That's the same as mine!"
+                        m 1m "Well..."
+                        m 1n "Either it really is your name or you're playing a joke on me."
+                        m 1j "But it's fine by me if that's what you want me to call you~"
+                    else:
+                        m 1b "Ok then!"
+                        m 3b "From now on, I'll call you {i}'[player],'{/i} ehehe~"
                     $ done = True
         "No":
             m 1f "Oh, I see..."
