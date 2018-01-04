@@ -286,6 +286,8 @@ label ch30_monikamovie:
                                     renpy.say(eval("m"), what)
 
                         if movieInformation.reactionsAreFinished():
+                            hide countdown
+                            m 1a "Just ended for me! Did you like it?"
                             jump mm_movie_closure
 
                         jump movie_loop
@@ -310,7 +312,6 @@ label ch30_monikamovie:
         $ MovieOverlayHideButtons()
         $ play_song(store.songs.selected_track)
         show monika 1a
-        hide countdown
         jump ch30_loop
 
     label mm_movie_pausefilm:
