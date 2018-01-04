@@ -113,7 +113,7 @@ label call_next_event:
             $ renpy.quit(0)
 
         $ allow_dialogue = True
-        show monika 1 at tinstant zorder 2 #Return monika to normal pose
+        show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
     else:
         return False
 
