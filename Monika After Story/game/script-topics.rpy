@@ -4823,13 +4823,13 @@ label monika_urgent:
     return
 
 init 5 python:
-    for key in ['I_love_you',]:
+    for key in ['I love you',]:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_I_love_you')
 
 label monika_I_love_you:
-    m 3k "I love you too, [player].'
-    m 2j "You are the <i>best</i> thing that happened to me."
+    m 3k "I love you too, [player]."
+    m 2j "You are the {i}best{/i} thing that happened to me."
     m 5a "I wouldn't have it any other way!"
     return
 ##################
