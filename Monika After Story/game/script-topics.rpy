@@ -5086,8 +5086,8 @@ label monika_1984:
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
     
-    init 5 python:
-    for key in ['see_you_later']:
+init 5 python:
+    for key in ['see you later']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_see_you_later')
 
@@ -5096,7 +5096,7 @@ label monika_see_you_later:
     m 1e "I'll miss you. I always do."
     m 1e "See you later, [player]."
     m 1k "Love you always!"
-    return quit
+    return "quit"
 
 
 ##################
