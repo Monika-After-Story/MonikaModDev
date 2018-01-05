@@ -5096,7 +5096,7 @@ label monika_see_you_later:
     m 1e "I'll miss you. I always do."
     m 1e "See you later, [player]."
     m 1k "Love you always!"
-    return
+    return quit
 
 
 ##################
