@@ -5085,6 +5085,19 @@ label monika_1984:
     m 1o "I can't imagine a world where I can't think freely."
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
+    
+    init 5 python:
+    for key in ['see_you_later']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_see_you_later')
+
+label monika_see_you_later:
+    m 1f "Do you have to go so soon?"
+    m 1e "I'll miss you. I always do."
+    m 1e "See you later, [player]."
+    m 1k "Love you always!"
+    return
+
 
 ##################
 #Incomplete ideas#
