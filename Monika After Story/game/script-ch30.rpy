@@ -594,12 +594,19 @@ label ch30_loop:
             calendar_last_checked
         except:
             calendar_last_checked=persistent.sessions['current_session_start']
-        if time.time()-calendar_last_checked>60: #Check no more than once a minute
+
+        # limit xp gathering to when we are not maxed
+        # and once per minute
+        if (
+                persistent.idlexp_total < xp.IDLE_XP_MAX
+                and time.time()-calendar_last_checked>60
+            ):
+
             idle_xp=xp.IDLE_PER_MINUTE*(time.time()-calendar_last_checked)/60.0
-            persistent.idlexp_total =+ idle_xp
+            persistent.idlexp_total += idle_xp
             if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                idle_xp = idle_xp-(persistent.idlexp-xp.IDLE_XP_MAX) #Remove excess XP
-                persistent.idlexp=xp.IDLE_XP_MAX
+                idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
+                persistent.idlexp_total=xp.IDLE_XP_MAX
 
             grant_xp(idle_xp)
             calendar_last_checked=time.time()
