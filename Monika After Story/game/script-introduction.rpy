@@ -98,7 +98,7 @@ label introduction:
     m 2a "Now that you added some improvements, you can finally talk to me!"
     m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
     m "If you get bored of the music, I can change that, too!"
-    m "Press the 'm' key until it changes to what you want or click on 'Music' to choose which song you want to listen to."
+    m "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
     m "Also, we can play games now."
     m "Just press 'p' or click on 'Play' to choose a game that we can play."
     m 2j "I'll get better over time as I figure out how to program more features into this place..."
