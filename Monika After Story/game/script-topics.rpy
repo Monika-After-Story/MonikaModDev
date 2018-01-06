@@ -5061,6 +5061,34 @@ label monika_how_soon:
     return
     
 init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['wrist', 'damage','hand','medical problem']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_compinducedmedprobs') #id
+    monika_random_topics.append('monika_compinducedmedprobs')
+
+label monika_compinducedmedprobs:
+    m "Hey, [player], you're not using your electronic devices too much, right?"
+    m "I'd advise you take regular breaks from using your computer."
+    m "It might not seem like you're hurting yourself by using the computer for really long periods of time, but..."
+    m "There are several medical issues that could arise if you don't watch yourself."
+    m "Without proper wrist exercises, carpal tunnel syndrome could prove to be a serious problem."
+    m "This occurs when you keep you use your keyboard and mouse too much without rest."
+    m "You might even begin to feel numbness and pain as symptoms."
+    m "Sadly, that's only one of many issues."
+    m "There's stuff like computer vision syndrome!"
+    m "Your eyesight will worsen if you stare at the screen too long..."
+    m "You wouldn't be able to see me anymore!"
+    m "Or even musculoskeletal problems from poor siting positions or lack of exercise!"
+    m "Back and posture pain, it just sounds terrible..."
+    m "I can't imagine how painful it must be."
+    m "Gosh, I'd be so worried if you ended up hurting yourself."
+    m "I wouldn't be able to be with you for a while if you had to recover..."
+    m "I'll always understand if you have to take breaks from talking to me for the betterment of your health."
+    m "If I could get out of this game, then I would do my best take care of you ehehe~"
+    return
+
+init 5 python:
     for key in ['marry','marriage','marriage proposal']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_marriage')
