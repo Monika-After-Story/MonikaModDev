@@ -3429,15 +3429,14 @@ label monika_swordsmanship:
     m 1j "Surprised? Ahaha~"
     m 1a "I like talking about them, but not enough to actually own one."
     m 3d "I'm not really an enthusiast when it comes to swords."
-    m "I don't really get why people would be obsessed over something that could hurt others."
-    m "Most would even have a large collection of them in different varieties."
-    m 1c "But there are those who like them for the swordsmanship."
+    m "I don't really get why people would be obsessed over something that could hurt others..."
+    m 1c "I guess there are those who like them for the swordsmanship."
     m "It's fascinating that it's actually a form of art."
     m "Similar to writing."
-    m "Both of them requires constant practice and devotion in order to perfect one's skills."
+    m "Both of them require constant practice and devotion in order to perfect one's skills."
     m 1d "You start off by practicing, and then you make your own technique out of it."
     m "Writing a poem makes you form your own way to build it in a graceful but imaginative way."
-    m "For those who practice swordsmanship, they build their technique through practice and inspiration from other practitioners of swordsmanship."
+    m "For those who practice swordsmanship, they build their technique forms through practice and inspiration from other practitioners."
     m 1c "I can understand how the sword can be the pen of the battlefield."
     m 1r "But then again..."
     m 1j "The pen is mightier than the sword!"
@@ -3830,23 +3829,21 @@ label monika_zombie:
     m 1h "Sure, society faces a lot of threats in a daily basis."
     m 1o "But zombies can do it in a heartbeat."
     m "A lot of monsters are created to be scary and terrifying."
-    m 1f "Zombies, however, are more realistic and actually poses a danger."
+    m 1f "Zombies, however, are more realistic and actually pose a danger."
     m "You might be able to kill one or a few of them by yourself."
-    m "But when there is a horde of them coming after you, you'll get overwhelmed easily."
+    m "But when there's a horde of them coming after you, you'll get overwhelmed easily."
     m 1p "You don't get that same feeling with other monsters."
-    m "Zombies have an insatiable appetite for flesh."
-    m "All of their intelligence is gone; they're berserk and don't feel pain."
+    m "And all of their intelligence is gone; they're berserk, don't feel pain, can't be afraid."
     m 1c "When you exploit a weakness of a monster, they become scared of you and run away."
-    m 1g "However, zombies are relentless and they'll tear through {i}anything{/i} just to get you."
-    m "They also can be a person's loved one turned into an enemy."
-    m "Could you live with yourself knowing you were forced to kill someone close to you?"
+    m 1g "But zombies? They'll tear through {i}anything{/i} just to get you."
+    m "Imagine if it was someone you loved that was coming after you..."
+    m "Could you live with yourself, knowing you were forced to kill someone close who was to you?"
     m 1q "It'll break you down and sap your will to live."
     m "Even when you're comfortable at home, you still won't feel safe."
     m 1h "You'll never know what'll happen the next time you see another one."
     m 1q "..."
     m 1n "Ahaha..."
-    m 1e "You know, despite liking the concept."
-    m "I wouldn't want to live in a scenario like that."
+    m 1e "You know, despite liking the concept, I wouldn't want to live in a scenario like that."
     m 3f "[player], what if you got infected somehow?"
     m 3o "I don't even want to think about that..."
     m "There's no way I could kill you for my own safety..."
@@ -3972,9 +3969,9 @@ label monika_completionist:
     m 2h  "People who hack through the game, spoiling themselves of the enjoyment of hardship."
     m 3o "Though I can understand why they cheat."
     m 2c "It allows them to freely explore a game that they wouldn't have a chance of enjoying if it's too difficult for them."
-    m 2l "Which could inspire them to actually work hard for it."
-    m 1a "Anyway, there is a huge sense of gratification in completing tasks in general."
-    m 3j "Working hard for something amplifies its reward after you failed so many times to get it."
+    m 2l "Which might actually convince them to work hard for it."
+    m 1a "Anyway, I feel that there's a huge sense of gratification in completing tasks in general."
+    m 3j "Working hard for something amplifies its reward after failing so many times to get it."
     m 3a "You can try keeping me in the background for as long as possible, [player]."
     m 2k "That's one step to completing me after all, ahaha!"
     return
@@ -4767,10 +4764,11 @@ init 5 python:
 label monika_orchestra:
     m 3d "Hey, [player], do you listen to orchestral music?"
     m 1a "I love the way that so many different instruments can get together and create such wonderful music."
-    m "It must take a lot of dedication to practice countless hours for a few songs..."
-    m "Playing piano is the closest I can get to experiencing that firsthand."
-    m 1j "That reminds me, if you ever want me to play for you..."
-    m 1a "You can always select my song in the music menu."
+    m "I'm amazed with how much they've practiced to achieve that kind of synchronization."
+    m "With how many there are in a group, it probably takes them a lot of dedication to do that."
+    m 1j "Which reminds me, [player]."
+    m 1a "If you ever want me to play for you..."
+    m 3b "You can always select my song in the music menu~"
 
 #First encounter with topic:
     m "What about you, [player]? Do you play an instrument?"
@@ -4778,13 +4776,21 @@ label monika_orchestra:
         "Yes.":
             $persistent.instrument = True
             m 1b "Really? What do you play?"
-            $ instrumentname = renpy.input('What instrument do you play?').strip(' \t\n\r')
-            $ persistent.instrumentname = instrumentname
-            m 1a "Wow, I've always wanted to try the [instrumentname] out!"
-            m 3b "I would love to hear you play for me."
-            m "Maybe you could teach me how to play, too~"
-            m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
-            m 1j "Ehehe~"
+            $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+            $ tempinstrument = instrumentname.lower()
+            if tempinstrument == "piano":
+                 m 1b "Oh, that's really cool!"
+                 m 1j "Not many people I knew played the piano, so it's really nice to know you do too."
+                 m 5a "Maybe we could do a duet someday!"
+                 m 1j "Ehehe~"
+                 $ persistent.instrument = True
+             else:
+                 m 1a "Wow, I've always wanted to try the [tempinstrument] out!"
+                 m 3b "I would love to hear you play for me."
+                 m "Maybe you could teach me how to play, too~"
+                 m 5a "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
+                 m 1j "Ehehe~"
+                 $ persistent.instrument = True
         "No.":
             $persistent.instrument = False
             m 1i "I see..."
@@ -4799,6 +4805,36 @@ label monika_orchestra:
             m "I would be very happy to hear you play."
     return
 
+init 5 python:
+    for key in ['jazz', 'jazz music', 'blues']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_jazz')
+    monika_random_topics.append('monika_jazz')
+    
+label monika_jazz:
+    m 1c "Say, [player], do you like jazz music?"
+    menu:
+        "Yes":
+            m 1b "Oh, okay!"
+            if persistent.instrument == True: 
+                m "Do you play jazz music, as well?"
+                menu:
+                    "Yes.":
+                        m 1j "That's really cool!"
+                    "No.":
+                        m 1a "I see."
+                        m 1a "I haven't listened to much of it, but I personally find it pretty interesting." 
+        "No":
+            m 1l "Oh, I see."
+            m "I haven't listened to much of it, but I see why people would like it."
+    m 1c "It's not exactly modern, but it's not quite classical, either."
+    m 3a "It has elements of classical, but it's different. It goes away from structure and into a more unpredictable side of music."
+    m 1 "I think most of jazz was about expression, when people first came up with it." 
+    m 1a "It was about experimenting, about going beyond what already existed. To make something more wild and colorful."
+    m 3a "Like poetry! It used to be structured and rhyming, but it's changed. It gives greater freedom now."
+    m 1j "Maybe that's what I like about jazz, if anything."
+    return
+    
 init 5 python:
     for key in ['otaku', 'neet']:
         monika_topics.setdefault(key,[])
