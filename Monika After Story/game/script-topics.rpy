@@ -3987,7 +3987,7 @@ init 5 python:
     monika_random_topics.append('monika_icecream')
 
 label monika_icecream:
-    m 3a "Hey [player], what's your favourite kind of ice cream?"
+    m 3a "Hey [player], what's your favorite kind of ice cream?"
     m 4l "And no, I'm not a type of ice cream ehehe~."
     m 2a "Personally, I just can't get enough of mint flavoured ice cream!"
     menu:
@@ -4333,7 +4333,7 @@ label monika_fahrenheit451:
     m 2f "I can't imagine a world where knowledge is forbidden and destroyed."
     m "It seems that there are others that actually hide books to contain free thinking from people."
     m 2p "Human history has a funny way of repeating itself."
-    m 1f "[player], make me a promise."
+    m 1f "So [player], make me a promise."
     m "To never, {i}ever{/i} burn a book."
     m "I'll forgive you if have done it before."
     m 1o "But the thought of not allowing yourself to learn from them makes me a bit sad."
