@@ -5058,7 +5058,7 @@ label monika_how_soon:
                     m 1p "And if things turn out that I can never leave this place and be with you..." 
                     m 1g "At least come here and talk to me as much as you can."
                     m 1f "You're all that I care about."
-     return
+    return
     
 init 5 python:
     for key in ['marry','marriage','marriage proposal']:
@@ -5354,7 +5354,7 @@ label monika_asks_family:
                 "It's not interesting":
                     m 1r "It's interesting to me, but I'll drop it."
                     m 3i "Let's talk about something else."                              
-     return
+    return
     
 
 ##################
