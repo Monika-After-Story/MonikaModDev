@@ -4784,7 +4784,7 @@ label monika_orchestra:
                  m 5a "Maybe we could do a duet someday!"
                  m 1j "Ehehe~"
                  $ persistent.instrument = True
-             else:
+            else:
                  m 1a "Wow, I've always wanted to try the [tempinstrument] out!"
                  m 3b "I would love to hear you play for me."
                  m "Maybe you could teach me how to play, too~"
