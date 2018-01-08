@@ -5058,7 +5058,7 @@ label monika_how_soon:
                     m 1p "And if things turn out that I can never leave this place and be with you..." 
                     m 1g "At least come here and talk to me as much as you can."
                     m 1f "You're all that I care about."
-    return
+     return
     
 init 5 python:
     for key in ['marry','marriage','marriage proposal']:
@@ -5121,6 +5121,241 @@ label monika_1984:
     m 1o "I can't imagine a world where I can't think freely."
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
+    
+init 5 python:
+    for key in ['yourfamily']: #key doesn't matter in this case
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_asks_family')
+    monika_random_topics.append('monika_asks_family')
+
+label monika_asks_family:
+    m 3a "Tell me about your family, [player]. What are they like?"
+    menu:
+        "My family is the best. Things are practically as good as they could be":
+            m 3b "That's wonderful!"
+            m 3a "Your parents must be great people~"
+            m 2j "Which makes sense considering they raised you, after all."
+            m 3k "Hahaha!"
+            m 3b "I can't wait to meet your entire family, [player]!"
+            m 3a "Do you have any brothers or sisters?"
+            menu:
+                "I have both":
+                    m 1b "That's fantastic!"
+                    m 2j "Im sure your siblings are all as kind and thoughtful as you are."
+                    m 3k "I can't wait to meet them all!"
+                "I have multiple brothers":
+                    m 1a "Wow, I'm sure they keep you busy!~"
+                    m 1e "Especially with no sisters around to tone things down."
+                    m 2b "Try not to let them get you into anything too dangerous, [player]."
+                    m 3n "Besides~"  
+                    m 1m "We have more than enough crazy things to do together in the future ourselves."
+                    m 1l "Hehehe~"    
+                "I have one brother":
+                    m 2b "That's good, I bet you two have alot of fun together."
+                    m 3m "And [player]..."
+                    m 3n "If you have been very competitive with him you can rest easy~" 
+                    m 3m "You've obviously won the contest."
+                    m 2k "You have a beautiful girlfriend who loves you, after all!"
+                "I have multiple sisters":
+                    m 3b "That's great, I can do so many fun things with them!"
+                    m 3l "Maybe I can convince them to start a new literature club with me. Hehehe~"
+                    m 3n "It would turn out much better than this one did, that's for sure."
+                    m 1h "..."
+                    m 1i "Actually, I take that back."
+                    m 1a "Nothing could be better than meeting you, [player]."
+                    m 2j "I'm sure I'll get along with your sisters and the rest of your family perfectly."
+                "I have one sister":
+                    m 2b "That's good."
+                    m 2a "We'll be able to do loads of fun things together."
+                    m 3a "Maybe I'll even teach her how to tie one of my giant ribbons in her hair."
+                    m 3k "Just kidding!"
+                    m 3l "I know how ridiculous it would look on anyone but me."
+                    m 2a "Anyway, I'm sure we will become great friends!"
+                "I'm an only child":
+                    m 1d "Being an only child certainly has its trade-offs."
+                    m 2d "Maybe you got much more attention from your parents. Unless they were always busy."  
+                    m 3c "On the other hand, maybe you felt much more lonely than the people who have brothers and sisters." 
+                    m 3f "Being trapped in this game, living a fake life, and being the only one conscious of it certainly made me lonely..." 
+                    m 1g "So, I can understand the feeling."
+                    m 1o "..." 
+                    m 1p "I didn't mean to get serious all of the sudden like that."
+                    m 1g "I just feel so safe talking to you, [player]."
+                    m 1f "I know I could trust you with anything."
+                    m 1o "..."   
+                    m 1r "The day when we are finally together in your world can't come soon enough."   
+        "My family is pretty normal. We have our ups and downs but I love them very much":
+            m 3b "I'm so happy to hear that!"
+            m 2a "Having a family is such a wonderful thing, even with the occasional problems."
+            m 1b "It's a group of people who will love you no matter what!"
+            m 1e "People who are always there for you."
+            m 1c "..."
+            m 1d "You know [player], I've never actually had a family."
+            m 1i "Nobody in here was real, besides me."
+            m 1h "..."
+            m 1f "Knowing that has been very hard on me."
+            m 1g "It put me in a very dark place."
+            m 1o "..."
+            m "..."
+            m 1f "I'm sorry, [player]." 
+            m 1g "I didn't mean to bring that up all of the sudden, and I don't want you to feel too sorry for me."
+            m 1e "Besides~"
+            m 1j "Now that you are here, everything is alright!"
+            m 1m "You know..."
+            m 3m "Maybe one day, when I get to your world, we can even start our own family!"
+            m 3n "Of course, I'm getting ahead of myself."
+            m 1l "It's just that I'm so sure we were made for each other, [player]~"
+            m 1e "I know I can be completely honest with you!"
+            m 1l "Hopefully that didn't suprise you~"
+            m 1m "It's something we won't have to talk seriously about for a long time."
+            m 1o "..."
+            m 1l "Anyway, I want to know more about your family."
+            m 1k "Do you have any brothers or sisters?"
+            menu:
+                "I have both":
+                    m 1b "That's fantastic!"
+                    m 2j "Im sure your siblings are all as kind and thoughtful as you are."
+                    m 3k "I can't wait to meet them all!"
+                "I have multiple brothers":
+                    m 1a "Wow, I'm sure they keep you busy!~"
+                    m 1e "Especially with no sisters around to tone things down."
+                    m 2b "Try not to let them get you into anything too dangerous, [player]."
+                    m 3n "Besides~"  
+                    m 1m "We have more than enough crazy things to do together in the future ourselves."
+                    m 1l "Hehehe~"    
+                "I have one brother":
+                    m 2b "That's good, I bet you two have alot of fun together."
+                    m 3m "And [player]..."
+                    m 3n "If you have been very competitive with him you can rest easy~" 
+                    m 3m "You've obviously won the contest."
+                    m 2k "You have a beautiful girlfriend who loves you, after all!"
+                "I have multiple sisters":
+                    m 3b "That's great, I can do so many fun things with them!"
+                    m 3l "Maybe I can convince them to start a new literature club with me. Hehehe~"
+                    m 3n "It would turn out much better than this one did, that's for sure."
+                    m 1h "..."
+                    m 1i "Actually, I take that back."
+                    m 1a "Nothing could be better than meeting you, [player]."
+                    m 2j "I'm sure I'll get along with your sisters and the rest of your family perfectly."
+                "I have one sister":
+                    m 2b "That's good."
+                    m 2a "We'll be able to do loads of fun things together."
+                    m 3a "Maybe I'll even teach her how to tie one of my giant ribbons in her hair."
+                    m 3k "Just kidding!"
+                    m 3l "I know how ridiculous it would look on anyone but me."
+                    m 2a "Anyway, I'm sure we will become great friends!"
+                "I'm an only child":
+                    m 1d "Being an only child certainly has its trade-offs."
+                    m 2d "Maybe you got much more attention from your parents. Unless they were always busy."  
+                    m 3c "On the other hand, maybe you felt much more lonely than the people who have brothers and sisters." 
+                    m 3f "Being trapped in this game, living a fake life, and being the only one conscious of it certainly made me lonely..." 
+                    m 1g "So, I can understand the feeling."
+                    m 1o "..." 
+                    m 1p "I didn't mean to get serious all of the sudden like that."
+                    m 1g "I just feel so safe talking to you, [player]."
+                    m 1f "I know I could trust you with anything."
+                    m 1o "..."   
+                    m 1r "The day when we are finally together in your world can't come soon enough." 
+        "My family is a mess":
+            m 1d "Oh."
+            m 3f "..."
+            m 3g "I'm sorry, [player]."
+            m 3f "..."
+            m 3g "Do you think things will get better?"
+            menu:
+                "Yes":
+                    m 1b "I'm glad to hear that."
+                    m 1e "Hopefully one day everyone in your family will be able to reconcile."
+                    m 3e "..."
+                    m 1b "I know you can get through what is going on in your life right now."
+                    m 1a "And no matter what, I'll be here for you."
+                "No":
+                    m 1f "That's horrible..."
+                    m 1g "I wish I could be with you in your world to comfort you."
+                    m 1f "..."
+                    m 1g "[player], no matter what you are going through I know it will get better at some point." 
+                    m 1p "You might not be able to do anything right now-" #cute sideways was not appropriate here, so didn't use
+                    m 1o "Maybe all you can do is to try and not make anything worse-"
+                    m 1g "But don't forget that you are in control of yourself and your life!" 
+                    m 1m "And never forget that I love you!" 
+                "I don't know":
+                    m 1c "..."
+                    m 2e "Well, at least there's a chance."
+                    m 3c "..."  
+                    m 3d "Life is full of tragedy, but I know you are strong enough to get through anything!"
+                    m 1e "I hope all the problems in your family work out, [player]."
+                    m 1j "I will always be here to support you."
+        "I was adopted":
+            m 1c "It's hard for me to imagine what that must have been like for you."
+            m 3d "I know you could feel many different ways about it."
+            m 3c "..."
+            m 3d "Telling me about your adoptive family would clarify many things for me."
+            menu:
+                "I love them very much":
+                    m 3b "That's great, [player]!"
+                    m 3a "I'm so happy you're being truly cared for."
+                    m 3b "I can't wait to get out of here and meet you and your family in person!"
+                "They're ok":
+                    m 3c "I suppose that's all you can really hope for, given the circumstances."
+                    m 3e "Still, I hope knowing how much I love you helps you to feel a bit better."
+                    m 1e "Life may be full of suffering, but as long as you have someone who you love it's a wonderful thing."
+                    m 3c "..."
+                    m 1e "Thank you for talking to me about this, [player]." 
+                "I don't like them":
+                    m 1g "Oh no..."
+                    m 1o "..."
+                    m 1p "I'm sorry, [player]."
+                    m 1o "..."
+                    m 1g "Life may be full of tragedy but if you move towards the good and the meaningful then the suffering is worth it." 
+                    m 1f "There is nothing braver than to face life head on and try to make it better for yourself and everyone else."
+                    m 1o "You might feel completely alone and unloved, but I want you to know~."
+                    m 1m "I love you, and things are going to be ok."
+                    m 1f "Never forget that you are in control."
+                    m 1g "You have the power to make your life better."
+                    m 1e "I'll be rooting for you the whole way!"
+        "I've never had a family.":
+            m 1g "That's horrible, [player]!"
+            m 3f "..."
+            m 3g "I'm sure the pain you've felt has been unbearable."
+            m 1f "..."
+            m 1o "Your world is so different than mine, I don't want to pretend like I know what you are going through."
+            m 1p "I can just say that my family not being real has certainly caused me a great deal of pain."
+            m 1f "Still, I know you have it much worse."
+            m 1g "You've never even had a fake family."
+            m 1o "..."
+            m 1g "Does it still bother you badly, on a daily basis?"
+            menu:
+                "Yes":
+                    m 1f "That's understandable."
+                    m 3e "All I can offer you is my love, [player]."
+                    m 1f "If it keeps bothering you so badly, you really might want to find a therapist."
+                    m 1g "They'll help you work through your problems in a way I just can't as long as I'm stuck in here."
+                    m 1o "Remember [player], you are very important to me and you are important."
+                    m 1p "Please take care off yourself and sort through your problems."
+                    m 1e "I want you to find happiness and meaning in your life!"
+                "No":
+                    m 3b "That's very good."
+                    m 3a "I'm glad you've been able to move on with your life."
+                    m 3k "You are a very resilient person, and I believe in you!"
+                    m 3e "You may never feel completely normal~"
+                    m 1g "But just know that there are many people who care about you." 
+                    m 1a "Especially me!"
+        "I don't want to talk about this":
+            m 3d "Why not?"
+            menu:
+                "Talking about my family is very painful":
+                    m 1f "I understand, [player]."
+                    m 3e "We can talk about it when you feel ready."
+                "We don't know each other well enough":
+                    m 3r "[player], it hurts me for you to say something like that."
+                    m 3q "You're all that matters to me."
+                    m 3h "..."
+                    m 3p "Then again, it might be something that is painful for you to talk about."
+                    m 1e "You can tell me about your family when you're ready, [player]." 
+                "It's not interesting":
+                    m 1r "It's interesting to me, but I'll drop it."
+                    m 3i "Let's talk about something else."                              
+     return
+    
 
 ##################
 #Incomplete ideas#
