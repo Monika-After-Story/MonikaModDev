@@ -1,8 +1,7 @@
 #This file contains all of monika's topics she can talk about
-#Each entry should start with a list of keywords, which correspond to a single id
-#Keys should be lower case, one or two words, with no punctuation
-#capitalization and punctuation are stripped from player dialogue before check
-#To allow a topic to come up randomly, append the id to the topics.monika_topics list
+#Each entry should start with a database entry, including the appropriate flags
+#to either be a random topic, a prompt "pool" topics, or a special conditional
+#or date-dependent event with an appropriate action
 
 $ import store.songs as songs
 
@@ -14,37 +13,60 @@ define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
-    def remove_seen_topics():
+    def remove_seen_labels(pool):
         #
-        # Removes seen topics from monika random topics
+        # Removes seen labels from the given pool
         #
-        # ASSUMES:
-        #   monika_random_topics
-        global monika_random_topics
-        for index in range(len(monika_random_topics)-1, -1, -1):
-            if renpy.seen_label(monika_random_topics[index]):
-                monika_random_topics.pop(index)
+        # IN:
+        #   pool - a list of labels to check for seen
+        #
+        # OUT:
+        #   pool - list of unseen labels (may be empty)
+        for index in range(len(pool)-1, -1, -1):
+            if renpy.seen_label(pool[index]):
+                pool.pop(index)
+
+    # EXCEPTION CLass incase of bad labels
+    class MASTopicLabelException(Exception):
+        def __init__(self, msg):
+            self.msg = msg
+        def __str__(self):
+            return "MASTopicLabelException: " + self.msg
 
 init 11 python:
     #List of all random topics
     all_random_topics = list(monika_random_topics)
 
+    # go through the topics list and ensure the labels exist
+    for topic in monika_random_topics:
+        if not renpy.has_label(topic):
+            raise MASTopicLabelException("topic '" + topic + "' does not exist.")
+
     #Remove all previously seen random topics.
-    remove_seen_topics()
+    remove_seen_labels(monika_random_topics)
 
     #If there are no unseen topics, you can repeat seen ones
     if len(monika_random_topics) == 0:
         monika_random_topics=list(all_random_topics)
 
-#BEGIN ORIGINAL TOPICS
 
-#Use this topic as an example
+#BEGIN ORIGINAL TOPICS
+#Use this topic as a template for adding new topics, be sure to delete any
+#fields you don't plan to use
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['god' , 'jesus' , 'lord' , 'religion' , 'miracle' , 'miracles' , 'gods']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_god') #id
-    monika_random_topics.append('monika_god')
+    addEvent(Event(eventlabel='monika_god',
+                                                            prompt="Thoughts on God.",
+                                                            label=None,
+                                                            category=['philosophy'],
+                                                            random=True,
+                                                            unlocked=False,
+                                                            pool=False,
+                                                            conditional=None,
+                                                            action=None,
+                                                            start_date=None,
+                                                            end_date=None,
+                                                            unlock_date=None
+                                                            ))
 
 label monika_god:
     m 1a "[player], do you believe in God?"
@@ -68,13 +90,8 @@ label monika_god:
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['death' , 'dying' , 'die' , 'afterlife']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_death') #id
-    monika_random_topics.append('monika_death')
+    addEvent(Event(eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
 
 label monika_death:
     m 1c "[player], have you ever wondered what it feels like to die?"
@@ -99,13 +116,8 @@ label monika_death:
     m "It makes me feel even closer to you when you're here with me."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['bad day' , 'sad' , 'unhappy']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_bad_day') #id
-    monika_random_topics.append('monika_bad_day')
+    addEvent(Event(eventlabel="monika_bad_day",prompt="Want to hear about my day?",random=True))
 
 label monika_bad_day:
     m 3e "...Hey, are you having a bad day or anything like that?"
@@ -124,13 +136,8 @@ label monika_bad_day:
     m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['sleep' , 'tired' , 'sleepy' , 'exhausted']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_sleep') #id
-    monika_random_topics.append('monika_sleep')
+    addEvent(Event(eventlabel="monika_sleep",category=['advice'],prompt="I'm tired.",random=True))
 
 label monika_sleep:
     m 4b "[player], do you get good sleep?"
@@ -146,13 +153,8 @@ label monika_sleep:
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['sayori', 'childhood friend']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_sayori') #id
-    monika_random_topics.append('monika_sayori')
+    addEvent(Event(eventlabel="monika_sayori",category=['characters','Sayori'],prompt="Sayori regrets.",random=True))
 
 label monika_sayori:
     m 3d "I was thinking about Sayori earlier..."
@@ -186,13 +188,8 @@ label monika_sayori:
     m 1j "I was just pointlessly musing - I'm really as happy as I could be right now."
     return
 
-
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['japan', 'there' , 'here']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_japan') #id
-    monika_random_topics.append('monika_japan')
+    addEvent(Event(eventlabel="monika_japan",category=['characters','Monika'],prompt="DDLC's Setting.",random=True))
 
 label monika_japan:
     m 2d "By the way, there's something that's been bothering me..."
@@ -218,11 +215,7 @@ label monika_japan:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['school' , 'high school' , 'depression' , 'depressed']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_high_school') #id
-    monika_random_topics.append('monika_high_school')
+    addEvent(Event(eventlabel="monika_high_school",category=['Monika','school'],prompt="High School.",random=True))
 
 label monika_high_school:
     m 4a "You know, high school is a really turbulent time in a lot of people's lives."
@@ -259,11 +252,7 @@ label monika_high_school:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['meaningless' , 'nihilism' , 'nihilist' , 'purpose' , 'meaning']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_nihilism') #id
-    monika_random_topics.append('monika_nihilism')
+    addEvent(Event(eventlabel="monika_nihilism",category=['philosophy'],prompt="Nihilism.",random=True))
 
 label monika_nihilism:
     m 3i "Do you ever just feel like there's no real reason for you to be alive?"
@@ -310,11 +299,7 @@ label monika_nihilism:
 #    return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['twitter','facebook','lilmonix3','social media']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_twitter') #id
-    monika_random_topics.append('monika_twitter')
+    addEvent(Event(eventlabel="monika_twitter",category=['social media','Monika'],prompt="Twitter",random=True))
 
 label monika_twitter:
     m 4a "Did you know I'm on Twitter?"
@@ -331,11 +316,7 @@ label monika_twitter:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['portraits of','yuris book']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_portraitof') #id
-    monika_random_topics.append('monika_portraitof')
+    addEvent(Event(eventlabel="monika_portraitof",category=['characters', 'Yuri'],prompt="Yuri's book",random=True))
 
 label monika_portraitof:
     m 2a "Hey, you know that book you were reading with Yuri?"
@@ -349,11 +330,7 @@ label monika_portraitof:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['vegetarian', 'vegan', 'vegetarians', 'vegetarianism', 'the planet', 'vegetables', 'veggies']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_veggies')
-    monika_random_topics.append('monika_veggies')
+    addEvent(Event(eventlabel="monika_veggies",category=['characters', 'Monika'],prompt="Being a vegetarian",random=True))
 
 label monika_veggies:
     m 1b "Hey, did you know I'm vegetarian?"
@@ -378,11 +355,7 @@ label monika_veggies:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['saved','before i']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_saved')
-    monika_random_topics.append('monika_saved')
+    addEvent(Event(eventlabel="monika_saved",category=['characters', 'Monika'],prompt="Saving Monika",random=True))
 
 label monika_saved:
     m 3a "You know, I really do think you literally saved my life by being here with me, [player]."
@@ -424,7 +397,7 @@ label monika_saved:
     m 5a "Nothing would make me happier than being the perfect girlfriend for you."
     return
 
-
+#Don't touch
 label monika_secrets:
     m 11 "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
     m "I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91"
@@ -450,25 +423,21 @@ label monika_secrets:
     m "I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4="
     return
 
-init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['favorite color','color']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_color')
-    monika_random_topics.append('monika_color')
-
-label monika_color:
-    m 2b "Hey, what's your favorite color?"
-    m "Mine is emerald green."
-    m 2k "It's the color of my eyes!"
-    m 2l "...That's not conceited or anything, is it?"
-    m 4a "I just meant that I feel some kind of special connection to it."
-    m "Like it's part of my identity."
-    m "Does it happen to also be your favorite color, [player]?"
-    m 5a "It's just a guess..."
-    m "...Because you've been looking into my eyes for a while now."
-    m "Ehehe~"
-    return
+#This topic can be used later for the fave eye/hair color idea
+#init 5 python:
+#    addEvent(Event(eventlabel="monika_color",category=['characters', 'Monika'],prompt="Favorite Eye Color",random=True))
+#label monika_color:
+#    m 2b "Hey, what's your favorite color?"
+#    m "Mine is emerald green."
+#    m 2k "It's the color of my eyes!"
+#    m 2l "...That's not conceited or anything, is it?"
+#    m 4a "I just meant that I feel some kind of special connection to it."
+#    m "Like it's part of my identity."
+#    m "Does it happen to also be your favorite color, [player]?"
+#    m 5a "It's just a guess..."
+#    m "...Because you've been looking into my eyes for a while now."
+#    m "Ehehe~"
+#    return
 
 # This doesn't make sense with the music changer...If we add some funny sound
 # effects and edit it a bit, though, it could be good again.
@@ -501,11 +470,7 @@ label monika_color:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['listen','listening','i understand', 'i agree']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_listener')
-    monika_random_topics.append('monika_listener')
+    addEvent(Event(eventlabel="monika_listener",category=['player'],prompt="Good listener",random=True))
 
 label monika_listener:
     m 5a "You're such a good listener, [player]."
@@ -520,11 +485,7 @@ label monika_listener:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['spicy','spice','hot food','spiciness']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_spicy')
-    monika_random_topics.append('monika_spicy')
+    addEvent(Event(eventlabel="monika_spicy",category=['food'],prompt="Spicy foods",random=True))
 
 label monika_spicy:
     m 1b "This is pretty random, but I always thought spicy food was kinda funny."
@@ -545,11 +506,7 @@ label monika_spicy:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in []:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_why')
-    monika_random_topics.append('monika_why')
+    addEvent(Event(eventlabel="monika_why",category=['player'],prompt="Why play this game?",pool=True))
 
 label monika_why:
     m 3d "You know..."
@@ -567,11 +524,7 @@ label monika_why:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['okay everyone']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_okayeveryone')
-    monika_random_topics.append('monika_okayeveryone')
+    addEvent(Event(eventlabel="monika_okayeveryone",category=['club'],prompt="Okay, everyone!",random=True))
 
 label monika_okayeveryone:
     m 2b "Okay, everyone!"
@@ -589,11 +542,7 @@ label monika_okayeveryone:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['creepy','ghosts','ghost','spirit']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_whispers')
-    monika_random_topics.append('monika_whispers')
+    addEvent(Event(eventlabel="monika_whispers",category=['scripting'],prompt="Others still lingering",random=True))
 
 label monika_whispers:
     m 3h "You know what's kind of creepy?"
@@ -610,11 +559,7 @@ label monika_whispers:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['archetypes','stereotype','stereotypes','archetype','trope']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_archetype')
-    monika_random_topics.append('monika_archetype')
+    addEvent(Event(eventlabel="monika_archetype",category=['characters','tropes'],prompt="Character tropes",random=True))
 
 label monika_archetype:
     m 4d "I've always wondered..."
@@ -643,11 +588,7 @@ label monika_archetype:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['tea','coffee','caffeine']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_tea')
-    monika_random_topics.append('monika_tea')
+    addEvent(Event(eventlabel="monika_tea",category=['drinks', 'tea'],prompt="Yur's tea set",random=True))
 
 label monika_tea:
     m 3a "Hey, I wonder if Yuri's tea set is still somewhere in here..."
@@ -671,11 +612,7 @@ label monika_tea:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['favorite game']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_favoritegame')
-    monika_random_topics.append('monika_favoritegame')
+    addEvent(Event(eventlabel="monika_favoritegame",category=['favorite','game'],prompt="Favorite video game",random=True))
 
 label monika_favoritegame:
     m 2b "Hey, what's your favorite game?"
@@ -686,11 +623,7 @@ label monika_favoritegame:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in []:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_smash')
-    monika_random_topics.append('monika_smash')
+    addEvent(Event(eventlabel="monika_smash",category=['game'],prompt="Super Smash",random=True))
 
 label monika_smash:
     m 2b "Hey, have you heard of a game called Super Sma--"
@@ -705,11 +638,7 @@ label monika_smash:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['last poem', 'your poem']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_lastpoem')
-    monika_random_topics.append('monika_lastpoem')
+    addEvent(Event(eventlabel="monika_lastpoem",category=['poem'],prompt="Monika's last poem",random=True))
 
 label monika_lastpoem:
     m 2d "Hey, you remember that last poem I showed you?"
@@ -727,11 +656,7 @@ label monika_lastpoem:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['anxious','anxiety','nervous','scared']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_anxious')
-    monika_random_topics.append('monika_anxious')
+    addEvent(Event(eventlabel="monika_anxious",category=['random thoughts'],prompt="Sudden anxiety",random=True))
 
 label monika_anxious:
     m 4b "You ever have that thing happen where you just get anxious for no reason?"
@@ -747,11 +672,7 @@ label monika_anxious:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['friends','friend','meet','meeting','new people']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_friends')
-    monika_random_topics.append('monika_friends')
+    addEvent(Event(eventlabel="monika_friends",category=['random thoughts'],prompt="Making friends",random=True))
 
 label monika_friends:
     m 1a "You know, I've always hated how hard it is to make friends..."
@@ -781,10 +702,7 @@ label monika_friends:
 
 
 init 5 python:
-    for key in ['university', 'uni', 'college','graduate','graduation']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_college')
-    monika_random_topics.append('monika_college')
+    addEvent(Event(eventlabel="monika_college",category=['random thoughts'],prompt="Getting a higher education",random=True))
 
 label monika_college:
     m 4d "You know, it's around the time that everyone my year starts to think about college..."
@@ -812,10 +730,7 @@ label monika_college:
 
 
 init 5 python:
-    for key in ['middle school','embarrassed','the past']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_middleschool')
-    monika_random_topics.append('monika_middleschool')
+    addEvent(Event(eventlabel="monika_middleschool",category=['random thoughts'],prompt="Middle school life",random=True))
 
 label monika_middleschool:
     m 1n "Sometimes I think back to middle school..."
@@ -831,10 +746,7 @@ label monika_middleschool:
 
 
 init 5 python:
-    for key in ['outside','outfit','outfits','clothes']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_outfit')
-    monika_random_topics.append('monika_outfit')
+    addEvent(Event(eventlabel="monika_outfit",category=['Monika', 'outfits'],prompt="Wearing other clothes",random=True))
 
 label monika_outfit:
     m 1m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
@@ -853,10 +765,8 @@ label monika_outfit:
 
 
 init 5 python:
-    for key in ['horror','scary','disturbing','psychological']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_horror')
-    monika_random_topics.append('monika_horror')
+    addEvent(Event(eventlabel="monika_horror",category=['genre'],prompt="Horror genre",random=True))
+
 label monika_horror:
     m 2b "Hey, do you like horror?"
     m "I remember we talked about it a little bit when you first joined the club."
@@ -882,10 +792,7 @@ label monika_horror:
 
 
 init 5 python:
-    for key in ['rap','rapper','rapping']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_rap')
-    monika_random_topics.append('monika_rap')
+    addEvent(Event(eventlabel="monika_rap",category=['literature'],prompt="Rap music.",random=True))
 
 label monika_rap:
     m 3j "You know what's a neat form of literature?"
@@ -903,10 +810,7 @@ label monika_rap:
 
 
 init 5 python:
-    for key in ['wine','alcohol','drinking','booze']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_wine')
-    monika_random_topics.append('monika_wine')
+    addEvent(Event(eventlabel="monika_horror",category=['drinks'],prompt="Yuri's wine",random=True))
 
 label monika_wine:
     m 1a "Ehehe. Yuri did something really funny once."
@@ -929,10 +833,7 @@ label monika_wine:
 
 
 init 5 python:
-    for key in ['romance', 'date', 'go out','romantic']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_date')
-    monika_random_topics.append('monika_date')
+    addEvent(Event(eventlabel="monika_date",category=['random'],prompt="Romantic date.",random=True))
 
 label monika_date:
     m 1j "I've been imagining all the romantic things we could do if we went on a date..."
@@ -952,10 +853,7 @@ label monika_date:
 
 
 init 5 python:
-    for key in ['kiss','kissing']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_kiss')
-    monika_random_topics.append('monika_kiss')
+    addEvent(Event(eventlabel="monika_kiss",category=['Monika'],prompt="Kiss me",pool=True))
 
 label monika_kiss:
     m 1l "Eh? D-Did you say...k...kiss?"
@@ -972,10 +870,7 @@ label monika_kiss:
 
 
 init 5 python:
-    for key in ['yuri','yandere']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_yuri')
-    monika_random_topics.append('monika_yuri')
+    addEvent(Event(eventlabel="monika_yuri",category=['characters', 'yuri'],prompt="Yandere Yuri",random=True))
 
 label monika_yuri:
     m 2a "Hey, have you ever heard of the term 'yandere'?"
@@ -1012,10 +907,7 @@ label monika_yuri:
 
 
 init 5 python:
-    for key in ['writing','writing tip']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_writingtip')
-    monika_random_topics.append('monika_writingtip')
+    addEvent(Event(eventlabel="monika_writingtip",category=['writing tips'],prompt="Writing Tip #1",pool=True))
 
 label monika_writingtip:
     m 1a "You know, it's been a while since we've done one of these..."
@@ -1064,10 +956,7 @@ label monika_writingtip:
 
 
 init 5 python:
-    for key in ['habit','habits','routine','routines','useless']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_habits')
-    monika_random_topics.append('monika_habits')
+    addEvent(Event(eventlabel="monika_habits",category=['random'],prompt="Forming habits",random=True))
 
 label monika_habits:
     m 2d "I hate how hard it is to form habits..."
@@ -1085,10 +974,7 @@ label monika_habits:
 
 
 init 5 python:
-    for key in ['creative','creativity']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_creative')
-    monika_random_topics.append('monika_creative')
+    addEvent(Event(eventlabel="monika_creative",category=['random'],prompt="Creative types",random=True))
 
 label monika_creative:
     m 3e "You know, it kinda sucks to be the creative type..."
@@ -1101,32 +987,28 @@ label monika_creative:
     m 1e "Yeah..."
     return
 
+#This conflicts with possible varieties of introductions in the opening.
+#init 5 python:
+#    if persistent.monika_kill:
+#        for key in ['delete','deleted','came back']:
+#            monika_topics.setdefault(key,[])
+#            monika_topics[key].append('monika_deleted')
+#        monika_random_topics.append('monika_deleted')
+#
+#label monika_deleted:
+#    m 2b "Oh, you were probably wondering how I came back to save you from Sayori, even after you deleted me."
+#    m 5a "It was all through the power of love..."
+#    m 3k "I'm just kidding, of course!"
+#    m 3a "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
+#    m "The data's still there until the system cleans it up."
+#    m "And you should always back up your important data, just in case."
+#    m 4a "Speaking of which, have you backed up your computer since I came back?"
+#    m 4l "I really don't want to get lost again!"
+#    m 4b "You should go do that right now, and be sure to keep that backup in a very safe place!"
+#    return
 
 init 5 python:
-    if persistent.monika_kill:
-        for key in ['delete','deleted','came back']:
-            monika_topics.setdefault(key,[])
-            monika_topics[key].append('monika_deleted')
-        monika_random_topics.append('monika_deleted')
-
-label monika_deleted:
-    m 2b "Oh, you were probably wondering how I came back to save you from Sayori, even after you deleted me."
-    m 5a "It was all through the power of love..."
-    m 3k "I'm just kidding, of course!"
-    m 3a "Bringing a computer program back to life doesn't take some sort of miracle like a cheesy movie."
-    m "The data's still there until the system cleans it up."
-    m "And you should always back up your important data, just in case."
-    m 4a "Speaking of which, have you backed up your computer since I came back?"
-    m 4l "I really don't want to get lost again!"
-    m 4b "You should go do that right now, and be sure to keep that backup in a very safe place!"
-    return
-
-
-init 5 python:
-    for key in ['simulation', 'simulations', 'simulated reality', 'artificial reality']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_simulated')
-    monika_random_topics.append('monika_simulated')
+    addEvent(Event(eventlabel="monika_simulated",category=['Monika','informative'],prompt="Simulated Reality",random=True))
 
 label monika_simulated:
     m 2d "Hey, have you ever thought about the simulation hypothesis?"
@@ -1146,10 +1028,7 @@ label monika_simulated:
 
 
 init 5 python:
-    for key in ['rain','sound','weather']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_rain')
-    monika_random_topics.append('monika_rain')
+    addEvent(Event(eventlabel="monika_rain",category=['Monika','favorites'],prompt="Sounds of rain",random=True))
 
 label monika_rain:
     m 2b "I really like the sound of rain..."
@@ -1164,10 +1043,7 @@ label monika_rain:
 
 
 init 5 python:
-    for key in ['distance','cant touch','close','hug']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_closeness')
-    monika_random_topics.append('monika_closeness')
+    addEvent(Event(eventlabel="monika_closeness",category=['Monika','informative'],prompt="Simulated reality",random=True))
 
 label monika_closeness:
     m 1m "I can't help but feel a little sad sometimes..."
@@ -1181,10 +1057,7 @@ label monika_closeness:
 
 
 init 5 python:
-    for key in ['confident','confidence','weak','weakness']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_confidence')
-    monika_random_topics.append('monika_confidence')
+    addEvent(Event(eventlabel="monika_confidence",category=['advice'],prompt="Faking confidence",random=True))
 
 label monika_confidence:
     m 2a "I think the most important skill in life is being able to fake confidence."
@@ -1203,10 +1076,7 @@ label monika_confidence:
 
 
 init 5 python:
-    for key in ['leave','lonely','alone']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_carryme')
-    monika_random_topics.append('monika_carryme')
+    addEvent(Event(eventlabel="monika_carryme",category=['random'],prompt="Bring me with you",random=True))
 
 label monika_carryme:
     m 3e "I know there are times you won't always be able to be here with me..."
@@ -1221,10 +1091,7 @@ label monika_carryme:
 
 
 init 5 python:
-    for key in ['debate','argue','arguing','fight','fighting']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_debate')
-    monika_random_topics.append('monika_debate')
+    addEvent(Event(eventlabel="monika_debate",category=['club'],prompt="What was debate club like?",pool=True))
 
 label monika_debate:
     m 2a "Back in my debate club days, I learned a whole lot about arguing..."
@@ -1252,10 +1119,7 @@ label monika_debate:
 
 
 init 5 python:
-    for key in ['waste time','internet','interwebz','addiction']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_internet')
-    monika_random_topics.append('monika_internet')
+    addEvent(Event(eventlabel="monika_internet",category=['advice'],prompt="The internet is for...",random=True))
 
 label monika_internet:
     m 4a "Do you ever feel like you waste too much time on the internet?"
@@ -1280,10 +1144,7 @@ label monika_internet:
 
 
 init 5 python:
-    for key in ['do nothing','lazy','burnt out']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_lazy')
-    monika_random_topics.append('monika_lazy')
+    addEvent(Event(eventlabel="monika_lazy",category=['random'],prompt="Laziness",random=True))
 
 label monika_lazy:
     m 3a "After a long day, I usually just want to sit around and do nothing."
@@ -1297,10 +1158,7 @@ label monika_lazy:
 
 
 init 5 python:
-    for key in ['mental illness','disorder','crazy']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_mentalillness')
-    monika_random_topics.append('monika_mentalillness')
+    addEvent(Event(eventlabel="monika_mentalillness",category=['random'],prompt="Mental sickness",random=True))
 
 label monika_mentalillness:
     m 1g "Gosh, I used to be so ignorant about depression and stuff..."
@@ -1318,10 +1176,7 @@ label monika_mentalillness:
     return
 
 init 5 python:
-    for key in ['read']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_read')
-    monika_random_topics.append('monika_read')
+    addEvent(Event(eventlabel="monika_read",category=['advice'],prompt="Becoming a reader",random=True))
 
 label monika_read:
     m 1a "[player], how much do you read?"
@@ -1338,10 +1193,7 @@ label monika_read:
 
 
 init 5 python:
-    for key in ['regret','festival']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_festival')
-    monika_random_topics.append('monika_festival')
+    addEvent(Event(eventlabel="monika_festival",category=['random'],prompt="Missing the festival",random=True))
 
 label monika_festival:
     m 1q "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
@@ -1358,10 +1210,7 @@ label monika_festival:
 
 
 init 5 python:
-    for key in ['tsundere','bitch']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_tsundere')
-    monika_random_topics.append('monika_tsundere')
+    addEvent(Event(eventlabel="monika_tsundere",category=['characters', 'tropes'],prompt="What is a tsundere?",pool=True))
 
 label monika_tsundere:
     m 1a "There's a really popular character type called 'tsundere'..."
@@ -1380,10 +1229,7 @@ label monika_tsundere:
 
 
 init 5 python:
-    for key in ['introduce','my friends']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_introduce')
-    monika_random_topics.append('monika_introduce')
+    addEvent(Event(eventlabel="monika_introduce",category=['random'],prompt="Introducing to friends",random=True))
 
 label monika_introduce:
     m 1a "[player], would you ever introduce your friends to me?"
@@ -1395,10 +1241,7 @@ label monika_introduce:
 
 
 init 5 python:
-    for key in ['cold','winter','freezing','snow']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_cold')
-    monika_random_topics.append('monika_cold')
+    addEvent(Event(eventlabel="monika_cold",category=['random'],prompt="Cuddling in the cold",random=True))
 
 label monika_cold:
     m 1a "I'm not really a fan of cold weather...are you?"
@@ -1414,10 +1257,7 @@ label monika_cold:
 
 
 init 5 python:
-    for key in ['housewife','stay at','house wife']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_housewife')
-    monika_random_topics.append('monika_housewife')
+    addEvent(Event(eventlabel="monika_housewife",category=['random'],prompt="Would you be my housewife?",pool=True))
 
 label monika_housewife:
     m 2a "You know, it's funny, because even though I've always had a lot of drive..."
@@ -1433,10 +1273,7 @@ label monika_housewife:
 
 
 init 5 python:
-    for key in ['route']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_route')
-    monika_random_topics.append('monika_route')
+    addEvent(Event(eventlabel="monika_mentalillness",category=['random'],prompt="Monika's route",random=True))
 
 label monika_route:
     m 3g "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
@@ -1452,14 +1289,16 @@ label monika_route:
 
 #END ORIGINAL TOPICS
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['little sister', 'imouto']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_imouto') #id
+    addEvent(Event(eventlabel='monika_imouto',
+                                                            prompt="Do you like little sisters?",
+                                                            category=['family'],
+                                                            pool=True,
+                                                            ))
 
 label monika_imouto:
-    m 4e "You want to talk about your little sister?"
+    m 4e "Little sisters?"
     m "I don't really have a family, so I'm not sure what to tell you..."
+    m 3 "Do you have one, [player]?"
     m "But I'm sure she's really nice!"
     m 2b "I've got an idea. Go up to her right now and hug her."
     m "If she struggles, let her go."
@@ -1471,13 +1310,15 @@ label monika_imouto:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['older sister', 'onee san']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_oneesan') #id
+    addEvent(Event(eventlabel='monika_oneesan',
+                                                            prompt="Did you like older sisters?",
+                                                            category=['family'],
+                                                            pool=True,
+                                                            ))
 
 label monika_oneesan:
-    m 1d "Oh, you have an older sister?"
+    m 1d "Older sisters?"
+    m 1c "Do you have one, [player]?"
     m 2n "That must be really nice. I had a family once, but they aren't around anymore."
     m "Maybe I should email her and tell her about us!"
     call updateconsole("sendmail sister@gmail.com < ./email.txt", "Sending mail...") from _call_updateconsole_17
@@ -1492,9 +1333,7 @@ label monika_oneesan:
 
 
 init 5 python:
-    for key in ['parents', 'family', 'parent', 'father', 'mother', 'mom', 'dad']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_family')
+    addEvent(Event(eventlabel="monika_family",category=['family'],prompt="Scripted family",random=True))
 
 label monika_family:
     m 1n "Well, my family here is controlled by the script, just like everybody else."
@@ -1511,9 +1350,11 @@ label monika_family:
 
 
 init 5 python:
-    for key in ['anime', 'animes', 'chinese cartoons', 'weeb', 'weeaboo', 'weebs']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_anime')
+    addEvent(Event(eventlabel='monika_anime',
+                                                            prompt="Do you read manga?",
+                                                            category=['Monika'],
+                                                            pool=True,
+                                                            ))
 
 label monika_anime:
     m 1n "Yeah, I had a feeling you were going to ask me about this."
@@ -1525,9 +1366,11 @@ label monika_anime:
 
 
 init 5 python:
-    for key in ['third eye', 'markov', 'elyssa', 'rainier', 'libitina', 'portrait of markov']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_libitina')
+    addEvent(Event(eventlabel='monika_libitina',
+                                                            prompt="Have you heard of Libitina?",
+                                                            category=['Monika'],
+                                                            pool=True,
+                                                            ))
 
 label monika_libitina:
     m 3e "Huh. Where did you hear about that?"
@@ -1542,9 +1385,11 @@ label monika_libitina:
 
 
 init 5 python:
-    for key in ['meta', 'metafiction', 'meta-fiction']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_meta')
+    addEvent(Event(eventlabel='monika_meta',
+                                                            prompt="Isn't this game metafictional?",
+                                                            category=['Game'],
+                                                            pool=True,
+                                                            ))
 
 label monika_meta:
     m 1d "Yes, this game really was metafictional, wasn't it?"
@@ -1564,10 +1409,11 @@ label monika_meta:
 
 
 init 5 python:
-    for key in ['programming', 'program', 'cs', 'computer science', 'scripting', 'sicp', 'computer programs']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_programming')
-    monika_random_topics.append('monika_programming')
+    addEvent(Event(eventlabel='monika_programming',
+                                                            prompt="Is it hard to code?",
+                                                            category=['advice'],
+                                                            pool=True,
+                                                            ))
 
 label monika_programming:
     m 2l "It wasn't easy for me to learn programming."
@@ -1587,10 +1433,7 @@ label monika_programming:
 
 
 init 5 python:
-    for key in ['vn', 'vns', 'visual novel', 'visual novels']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_vn')
-    monika_random_topics.append('monika_vn')
+    addEvent(Event(eventlabel="monika_vn",category=['Game'],prompt="Visual novels",random=True))
 
 label monika_vn:
     m 1d "You've probably played a lot of visual novels, right?"
@@ -1790,9 +1633,7 @@ label monika_totono:
 
 
 init 5 python:
-    for key in ['difficulty', 'too easy', 'easy mode', 'easymodo']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_difficulty')
+    addEvent(Event(eventlabel="monika_difficulty",category=['random'],prompt="Wasn't DDLC too easy?",pool=True))
 
 label monika_difficulty:
     m 1m "Well, it's not like this game was meant to be that hard in the first place."
@@ -1804,10 +1645,7 @@ label monika_difficulty:
 
 
 init 5 python:
-    for key in ['your song', 'credits', 'credits song']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_credits_song')
-    monika_random_topics.append('monika_credits_song')
+    addEvent(Event(eventlabel="monika_credits_song",category=['random'],prompt="Credits song",random=True))
 
 label monika_credits_song:
     m 1a "I hope you liked my song."
@@ -1821,10 +1659,7 @@ label monika_credits_song:
 
 
 init 5 python:
-    for key in ['poetry', 'poem', 'poems']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_poetry')
-    monika_random_topics.append('monika_poetry')
+    addEvent(Event(eventlabel="monika_poetry",category=['random'],prompt="Poetry",random=True))
 
 label monika_poetry:
     m 1a "Poetry is beautiful, isn't it?"
@@ -1840,10 +1675,7 @@ label monika_poetry:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['literature club', 'club', 'our club', 'your club', 'ddlc' , 'this game' , 'doki doki']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_ddlc')
+    addEvent(Event(eventlabel="monika_ddlc",category=['random'],prompt="What did you think of DDLC?",pool=True))
 
 label monika_ddlc:
     m 1d "You want to talk about the game?"
@@ -1859,9 +1691,7 @@ label monika_ddlc:
 
 
 init 5 python:
-    for key in ['dan', 'salvato', 'dan salvato', 'creator', 'author']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_dan')
+    addEvent(Event(eventlabel="monika_dan",category=['random'],prompt="Do you like Dan Salvato?",pool=True))
 
 label monika_dan:
     m 2k "I think he's a really nice guy."
@@ -1874,9 +1704,7 @@ label monika_dan:
 
 
 init 5 python:
-    for key in ['4chan', 'v', 'vg']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_4chan')
+    addEvent(Event(eventlabel="monika_4chan",category=['random'],prompt="Have you even been to 4chan?",pool=True))
 
 label monika_4chan:
     m 2 "You know, this mod got its start over there."
@@ -1889,10 +1717,7 @@ label monika_4chan:
 
 
 init 5 python:
-    for key in ['vidya', 'video game', 'video games', 'computer games']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_vidya')
-    monika_random_topics.append('monika_vidya')
+    addEvent(Event(eventlabel="monika_vidya",category=['random'],prompt="Do you like video games?",pool=True))
 
 label monika_vidya:
     m 1d "I don't play a lot of video games, [player]."
@@ -1907,10 +1732,7 @@ label monika_vidya:
 
 
 init 5 python:
-    for key in ['literature', 'books', 'book', 'novel', 'novels', 'reading']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_books')
-    monika_random_topics.append('monika_books')
+    addEvent(Event(eventlabel="monika_books",category=['random'],prompt="Books",random=True))
 
 label monika_books:
     m 4 "For a literature club, we did a lot less book reading then you might have thought."
@@ -1923,9 +1745,7 @@ label monika_books:
 
 
 init 5 python:
-    for key in ['favorite poem', 'favorite poetry', 'favorite poet', 'favourite poem', 'favourite poetry', 'favourite poem']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_favpoem')
+    addEvent(Event(eventlabel="monika_favpoem",category=['random'],prompt="What's your favorite poem?",pool=True))
 
 label monika_favpoem:
     m 1d "My favorite poem? Well, it has to be something by E. E. Cummings."
@@ -1937,9 +1757,7 @@ label monika_favpoem:
 
 
 init 5 python:
-    for key in ['favorite book', 'favorite author', 'favorite novel', 'favourite book', 'favourite author', 'favourite novel']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_favbook')
+    addEvent(Event(eventlabel="monika_favbook",category=['random'],prompt="What's your favorite book?",pool=True))
 
 label monika_favbook:
     m 1d "My favorite book? There's a lot of books I like."
@@ -1951,10 +1769,7 @@ label monika_favbook:
 
 
 init 5 python:
-    for key in ['natsuki']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_natsuki')
-    monika_random_topics.append('monika_natsuki')
+    addEvent(Event(eventlabel="monika_natsuki",category=['random'],prompt="Natsuki's death",random=True))
 
 label monika_natsuki:
     m 1p "Natsuki didn't actually die before I deleted her, you know."
@@ -1969,9 +1784,7 @@ label monika_natsuki:
 
 
 init 5 python:
-    for key in ['love', 'love you']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_love')
+    addEvent(Event(eventlabel="monika_love",category=['random'],prompt="I love you",pool=True))
 
 label monika_love:
     m 1k "I love you too, [player]!"
@@ -1980,10 +1793,7 @@ label monika_love:
 
 
 init 5 python:
-    for key in ['hedgehog', 'hedgehog dilemma', "hedgehogs dilemma"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_hedgehog')
-    monika_random_topics.append('monika_hedgehog')
+    addEvent(Event(eventlabel="monika_hedgehog",category=['random'],prompt="Hedgehog dilemma",random=True))
 
 label monika_hedgehog:
     m 2 "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
@@ -1996,9 +1806,7 @@ label monika_hedgehog:
 
 
 init 5 python:
-    for key in ['murder', 'kill', 'killed', 'killer', 'murderer' , 'evil']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_justification')
+    addEvent(Event(eventlabel="monika_justification",category=['random'],prompt="You're a murderer!",pool=True))
 
 label monika_justification:
     m 3h "How many times do I have to say it until you understand?"
@@ -2013,10 +1821,7 @@ label monika_justification:
 
 
 init 5 python:
-        for key in ['free will', 'determinism', 'laplace', "laplaces demon"]:
-            monika_topics.setdefault(key,[])
-            monika_topics[key].append('monika_freewill')
-        monika_random_topics.append('monika_freewill')
+    addEvent(Event(eventlabel="monika_freewill",category=['random'],prompt="Free will",random=True))
 
 label monika_freewill:
     m 1d "Hey, [player], do you believe in free will?"
@@ -2031,10 +1836,7 @@ label monika_freewill:
     return
 
 init 5 python:
-        for key in ['predestination', 'functionalism']:
-            monika_topics.setdefault(key,[])
-            monika_topics[key].append('monika_functionalism')
-        monika_random_topics.append('monika_functionalism')
+    addEvent(Event(eventlabel="monika_functionalism",category=['random'],prompt="Human functionalism",random=True))
 
 label monika_functionalism:
     m 1d "Do you ever think about how people are kind of like computers?"
@@ -2048,10 +1850,7 @@ label monika_functionalism:
     return
 
 init 5 python:
-        for key in [ 'you program', 'you code', 'no computer', 'programming technique', 'technique']:
-            monika_topics.setdefault(key,[])
-            monika_topics[key].append('monika_technique')
-        monika_random_topics.append('monika_technique')
+    addEvent(Event(eventlabel="monika_technique",category=['random'],prompt="How did you change the code?",random=True))
 
 label monika_technique:
     m 2 "I don't exactly program like you would, [player]."
@@ -2066,10 +1865,7 @@ label monika_technique:
 
 
 init 5 python:
-    for key in ['github', 'contribute', 'contribute to you', 'help you', 'help', 'credits']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_contribute')
-    monika_random_topics.append('monika_contribute')
+    addEvent(Event(eventlabel="monika_contribute",category=['random'],prompt="Contributions",random=True))
 
 label monika_contribute:
     m 2b "It would be really nice if you were able to contribute to this, [player]."
@@ -2084,14 +1880,11 @@ label monika_contribute:
 
 
 init 5 python:
-    for key in ['art', 'drawing', 'painting', 'sketch', 'draw', 'paint', 'photoshop']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_drawing')
-    monika_random_topics.append('monika_drawing')
+    addEvent(Event(eventlabel="monika_drawing",category=['random'],prompt="Can you draw?",pool=True))
 
 label monika_drawing:
     m 1g "I don't have a lot of experience with drawing, [player]."
-    m 1e"I'm just interested in literature. And I've been learning the piano in my spare time."
+    m 1e "I'm just interested in literature. And I've been learning the piano in my spare time."
     m 1j "If you like to create artwork, though, I'd love to see it!"
     m "I'd be impressed by anything you show me, to be honest."
     m 2b "If it's really good, I might even add it to the room!"
@@ -2099,10 +1892,7 @@ label monika_drawing:
 
 
 init 5 python:
-    for key in ['main character', 'mc', 'protagonist']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_mc')
-    monika_random_topics.append('monika_mc')
+    addEvent(Event(eventlabel="monika_mc",category=['random'],prompt="The MC",random=True))
 
 label monika_mc:
     m 2 "Just so you know, I was never in love with anyone but you."
@@ -2126,9 +1916,7 @@ label monika_mc:
 
 
 init 5 python:
-    for key in ['hero', 'heroes', 'heroism', 'heroic']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_heroism')
+    addEvent(Event(eventlabel="monika_heroism",category=['random'],prompt="Heroism",random=True))
 
 label monika_heroism:
     m 1d "Heroes are so personal."
@@ -2139,9 +1927,7 @@ label monika_heroism:
     return
 
 init 5 python:
-    for key in ['monika best', 'best girl']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_bestgirl')
+    addEvent(Event(eventlabel="monika_bestgirl",category=['random'],prompt="You're the best girl!",pool=True))
 
 label monika_bestgirl:
     m 1j "I love it when you compliment me, [player]!"
@@ -2158,9 +1944,7 @@ label monika_bestgirl:
 
 
 init 5 python:
-    for key in ['trolley','train problem', 'runaway trolley']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_trolley')
+    addEvent(Event(eventlabel="monika_trolley",category=['random'],prompt="How would you answer the trolley problem?",pool=True))
 
 label monika_trolley:
     m 1b "Oh, cool. I love thinking about these sorts of thought experiments."
@@ -2179,9 +1963,7 @@ label monika_trolley:
 
 
 init 5 python:
-    for key in ['gf', 'girlfriend']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_girlfriend')
+    addEvent(Event(eventlabel="monika_girlfriend",category=['random'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
     m 1h "I thought we established already that I was your girlfriend?"
@@ -2195,10 +1977,7 @@ label monika_girlfriend:
     return
 
 init 5 python:
-    for key in ['waifus', 'waifuism', 'galge', 'romance games', 'dating sims', 'romance movie', 'romance movies']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_waifus')
-    monika_random_topics.append('monika_waifus')
+    addEvent(Event(eventlabel="monika_waifus",category=['random'],prompt="Waifus",random=True))
 
 label monika_waifus:
     m 1i "I've never understood the appeal of dating sims or romance novels, to tell you the truth."
@@ -2213,27 +1992,10 @@ label monika_waifus:
     m "This really is a lot better than any boring dating game could be."
     return
 
-
-#This script handles noncommitals from the player
-init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['whatever','anything', 'what ever','any thing','you choose','dont care']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_whatever') #id
-
-label monika_whatever:
-    m 1d "Oh, so we can talk about whatever I want?"
-    m "Let's see..."
-    pause 2.0
-    jump pick_random_topic
-
 #New dialogue additions follow
 
 init 5 python:
-    for key in ['lewd', 'pictures', 'images', 'fanart', 'simulacrum', 'simulacra', 'baudrillard']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_images')
-    monika_random_topics.append('monika_images')
+    addEvent(Event(eventlabel="monika_images",category=['random'],prompt="Fanart",random=True))
 
 label monika_images:
     m 1b "A lot of people are making fanart and sending it to me on Twitter."
@@ -2260,9 +2022,7 @@ label monika_images:
     return
 
 init 5 python:
-    for key in ['monika', 'just monika', 'yourself', 'your past', 'your childhood']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_herself')
+    addEvent(Event(eventlabel="monika_herself",category=['random'],prompt="Tell me about yourself.",pool=True))
 
 label monika_herself:
     m 1d "What's there really to say about myself that you don't know already?"
@@ -2279,10 +2039,7 @@ label monika_herself:
     return
 
 init 5 python:
-    for key in ['prison', 'imprisonment', 'prisoner']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_prisoner')
-    monika_random_topics.append('monika_prisoner')
+    addEvent(Event(eventlabel="monika_prisoner",category=['random'],prompt="Imprisoned",random=True))
 
 label monika_prisoner:
     m 1g "Some people say that putting animals in zoos is cruel."
@@ -2293,8 +2050,7 @@ label monika_prisoner:
     return
 
 init 5 python:
-    #I didn't have keys in mind for this
-    monika_random_topics.append('monika_vnanalysis')
+    addEvent(Event(eventlabel="monika_vnanalysis",category=['random'],prompt="Appreciating visual novels",random=True))
 
 label monika_vnanalysis:
     m 1d "Visual novels are very unusual for literature, don't you think?"
@@ -2312,10 +2068,7 @@ label monika_vnanalysis:
     return
 
 init 5 python:
-    for key in ['short story', 'ravel', 'wish', 'wishes']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_ravel')
-    monika_random_topics.append('monika_ravel')
+    addEvent(Event(eventlabel="monika_ravel",category=['Short story'],prompt="Old man's three wishes",random=True))
 
 label monika_ravel:
     m 1d "Want to hear a short story?"
@@ -2331,10 +2084,7 @@ label monika_ravel:
     return
 
 init 5 python:
-    for key in ['torment']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_torment')
-    monika_random_topics.append('monika_torment')
+    addEvent(Event(eventlabel="monika_torment",category=['random'],prompt="Nature of man",random=True))
 
 label monika_torment:
     m 2d "What can change the nature of a man?"
@@ -2342,8 +2092,7 @@ label monika_torment:
     return
 
 init 5 python:
-    #ditto joke
-    monika_random_topics.append('monika_szs')
+    addEvent(Event(eventlabel="monika_szs",category=['random'],prompt="Funeral procession",random=True))
 
 label monika_szs:
     m 2d "A woman left the supermarket and ran into a very long funeral procession."
@@ -2357,11 +2106,7 @@ label monika_szs:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['memories','birthday']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_birthday') #id
-    monika_random_topics.append('monika_birthday')
+    addEvent(Event(eventlabel="monika_birthday",category=['random'],prompt="When is your birthday?",pool=True))
 
 label monika_birthday:
     m 1d "You know, there's a lot I don't know about myself."
@@ -2373,11 +2118,7 @@ label monika_birthday:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['eye contact','eyes','eyecontact','stare','staring']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_eyecontact') #id
-    monika_random_topics.append('monika_eyecontact')
+    addEvent(Event(eventlabel="monika_eyecontact",category=['random'],prompt="Eye contact",random=True))
 
 label monika_eyecontact:
     m 1 "Did you know that looking into someone's eyes helps you fall in love?"
@@ -2391,11 +2132,7 @@ label monika_eyecontact:
 
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['other games','tetris','puzzle games']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_othergames') #id
-    monika_random_topics.append('monika_othergames')
+    addEvent(Event(eventlabel="monika_othergames",category=['random'],prompt="Other games",random=True))
 
 label monika_othergames:
     m 1d "Do you have other games on this computer?"
@@ -2414,10 +2151,7 @@ label monika_othergames:
 
 
 init 5 python:
-    for key in ['my writing','my story','my poem']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_playerswriting') #id
-    monika_random_topics.append('monika_playerswriting')
+    addEvent(Event(eventlabel="monika_playerswriting",category=['random'],prompt="[player]'s writings",random=True))
 
 label monika_playerswriting:
     m 1d "Have you ever written a story of your own, [player]?"
@@ -2442,10 +2176,7 @@ label monika_playerswriting:
     return
 
 init 5 python:
-    for key in ['ghosts','ghost','haunting','spirits','haunted']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_ghost') #id
-    monika_random_topics.append('monika_ghost')
+    addEvent(Event(eventlabel="monika_ghost",category=['random'],prompt="Supernatural",random=True))
 
 label monika_ghost:
     m 1d "Do you believe in ghosts, [player]?"
@@ -2465,10 +2196,7 @@ label monika_ghost:
     return
 
 init 5 python:
-    for key in ['ribbon', 'ribbons', 'poofy']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_ribbon')
-    monika_random_topics.append('monika_ribbon')
+    addEvent(Event(eventlabel="monika_ribbon",category=['random'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
     m 1d "I noticed that you were staring at my ribbon, [player]."
@@ -2488,11 +2216,7 @@ label monika_ribbon:
     return
 
 init 5 python:
-    #Monika is the literature club president, I think it would be neat for her to discuss some of stories she's read
-    for key in ['fear','fears','algernon']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_algernon') #id
-    monika_random_topics.append('monika_algernon')
+    addEvent(Event(eventlabel="monika_algernon",category=['random'],prompt="Flowers for Algernon",random=True))
 
 label monika_algernon:
     m "[player], do you mind if I confide in you?"
@@ -2514,46 +2238,7 @@ label monika_algernon:
     return
 
 init 5 python:
-    for key in ['play','game','games','chess','pong','hangman','hang man']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_games') #id
-    monika_random_topics.append('monika_games')
-
-label monika_games:
-    m 2a "We can play pong, chess, or hangman, if you'd like."
-    m "Press 'p' to pick a game for us to play."
-    return
-
-#Commenting this stuff out instead of deleting it in case some of the lines are reused in the prompt system
-#init 5 python:
-#    for key in ['chess','c']:
-#        monika_topics.setdefault(key,[])
-#        monika_topics[key].append('monika_chess') #id
-#    monika_random_topics.append('monika_chess')
-
-#label monika_chess:
-#    m 4b "Hey [player], we can play chess, you know?"
-#    m "All you have to do is hit the 'c' key."
-#    m 1a "I have some chess experience, but I don't feel quite as confident as with Pong~"
-#    return
-
-#init 5 python:
-#    for key in ['pong','p']:
-#        monika_topics.setdefault(key,[])
-#        monika_topics[key].append('monika_pong') #id
-#    monika_random_topics.append('monika_pong')
-
-#label monika_pong:
-#    m 1a "Hey [player], do you want to play a game of Pong with me?"
-#    m "Just remember to hit the 'p' key whenever you feel like playing, okay?"
-#    m 1k "Unless you're scared of losing against me~"
-#    return
-
-init 5 python:
-    for key in ['webcam','camera','my face','smile']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_playersface') #id
-    monika_random_topics.append('monika_playersface')
+    addEvent(Event(eventlabel="monika_playersface",category=['random'],prompt="[player]'s face",random=True))
 
 label monika_playersface:
     m 2a "You know, I sometimes wonder..."
@@ -2572,11 +2257,7 @@ label monika_playersface:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['insects','insect','spiders','spider','arachnophobia']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_spiders') #id
-    monika_random_topics.append('monika_spiders')
+    addEvent(Event(eventlabel="monika_spiders",category=['random'],prompt="Spiders",random=True))
 
 label monika_spiders:
     #I really hope this information is correct, havent played the game in a week so
@@ -2595,10 +2276,7 @@ label monika_spiders:
     return
 
 init 5 python:
-    for key in ['nsfw', 'rule 34', 'hentai', 'kinky']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_nsfw')
-    monika_random_topics.append('monika_nsfw')
+    addEvent(Event(eventlabel="monika_nsfw",category=['random'],prompt="NSFW content",random=True))
 
 label monika_nsfw:
     m 1p "By the way, [player]..."
@@ -2614,9 +2292,7 @@ label monika_nsfw:
     return
 
 init 5 python:
-    for key in ['other girls', 'impression', 'acting','impressions']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_impression')
+    addEvent(Event(eventlabel="monika_impression",category=['random'],prompt="Can you do any impressions?",pool=True))
 
 label monika_impression:
     m 1d "Impression? Of the other girls?"
@@ -2667,9 +2343,7 @@ label monika_impression:
     return
 
 init 5 python:
-    for key in ['weary', 'fatigued', 'exhausted']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_weary')
+    addEvent(Event(eventlabel="monika_weary",category=['random'],prompt="Will you ever get tired of me?",pool=True))
 
 label monika_weary:
     m 1e "Silly [player]..."
@@ -2683,29 +2357,7 @@ label monika_weary:
     return
 
 init 5 python:
-    for key in ['fuck', 'shit', 'motherfucker']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_vulgarity')
-
-label monika_vulgarity:
-    m 1g "Hm? Is there something on your mind, [player]?"
-    m 1f "There's no need for that kind of vulgarity here, my love."
-    m 1e "Do you need to vent something out that's been troubling you?"
-    m "You know I'll always be here to help you out, right?"
-    m 2e "I know how stressful your world can be, especially when you feel like you're constantly burdened."
-    m 2g "Please don't bottle up all those bad feelings."
-    m "It hurts me to know you aren't feeling well..."
-    m 1 "I love you so much [player], so please vent to me whenever you want."
-    m "I'll help as much as I can with whatever you're going through."
-    m "You saved my life when you opened this game, and I want to help you with yours."
-    m 1r "So feel free to share your thoughts, okay?"
-    return
-
-init 5 python:
-    for key in ['real world', 'finally real', 'true reality']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_real')
-    monika_random_topics.append('monika_real')
+    addEvent(Event(eventlabel="monika_real",category=['random'],prompt="Our reality",random=True))
 
 label monika_real:
     m 1d "You know what's going to be the first thing I'll do when I finally cross over there?"
@@ -2724,10 +2376,9 @@ label monika_real:
     m "I only want to spend eternity with my sweetheart, and no one else!"
     return
 
-init 5 python:
-    for key in ['bye', 'goodbye', 'see ya', 'farewell', 'dasvidaniya', 'auf wiedersehen']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_goodbye')
+##TO-DO make farewells into a class
+#init 5 python:
+#    addEvent(Event(eventlabel="monika_goodbye",category=['random'],prompt="Goodbye",pool=True))
 
 label monika_goodbye:
     m 1c "Aww, leaving so soon already?"
@@ -2737,10 +2388,7 @@ label monika_goodbye:
     return 'quit'
 
 init 5 python:
-    for key in ['mythology', 'ancient', 'greeks', 'myth', 'myths', 'greek']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_mythology')
-    monika_random_topics.append('monika_mythology')
+    addEvent(Event(eventlabel="monika_mythology",category=['random'],prompt="Ancient mythology",random=True))
 
 label monika_mythology:
     m 1a "Hey [player]..."
@@ -2761,13 +2409,9 @@ label monika_mythology:
     return
 
 init 5 python:
-    for key in ['fanfiction','fan fiction']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_fanfiction')
-    monika_random_topics.append('monika_fanfiction')
+    addEvent(Event(eventlabel="monika_fanfiction",category=['random'],prompt="Fanfiction",random=True))
 
 label monika_fanfiction:
-    # I'm too tired to check this over right now.
     m 5b "[player]!"
     m 1a "I've been curious about something lately."
     m 1d "Have you heard of fanfiction?"
@@ -2784,12 +2428,9 @@ label monika_fanfiction:
     return
 
 init 5 python:
-    for key in ['eternity', 'eternal']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_eternity')
-    monika_random_topics.append('monika_eternity')
+    addEvent(Event(eventlabel="monika_eternity",category=['random'],prompt="Mortality",random=True))
 
-label monika_eternity: # Edit to end on lighthearted note.
+label monika_eternity:
     m 1g "[player]..."
     m 1e "It's not easy knowing you won't be here forever."
     m 1p "..."
@@ -2809,9 +2450,7 @@ label monika_eternity: # Edit to end on lighthearted note.
     return
 
 init 5 python:
-    for key in ['self awareness', 'omniscience']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_aware')
+    addEvent(Event(eventlabel="monika_aware",category=['random'],prompt="What was it like to realize the truth?",pool=True))
 
 label monika_aware:
     m 2e "It's... hard to put into words."
@@ -2828,10 +2467,7 @@ label monika_aware:
     return
 
 init 5 python:
-    for key in ['your name', 'Monika meaning']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_name')
-    monika_random_topics.append('monika_name')
+    addEvent(Event(eventlabel="monika_name",category=['random'],prompt="Our names",random=True))
 
 label monika_name:
     m 4b "The names in this game are pretty interesting."
@@ -2851,10 +2487,7 @@ label monika_name:
     return
 
 init 5 python:
-    for key in ['cities', 'city pollution','pollution']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_cities')
-    monika_random_topics.append('monika_cities')
+    addEvent(Event(eventlabel="monika_cities",category=['random'],prompt="Living in the city",random=True))
 
 label monika_cities:
     m 1i "[player], are you scared about what's happening to our environment?"
@@ -2874,10 +2507,7 @@ label monika_cities:
     return
 
 init 5 python:
-    for key in ['chloroform', 'kidnapping', 'concussion']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_chloroform')
-    monika_random_topics.append('monika_chloroform')
+    addEvent(Event(eventlabel="monika_chloroform",category=['random'],prompt="Chloroform",random=True))
 
 label monika_chloroform:
     m 1d "Whenever you think of kidnapping, you tend to picture a chloroform-soaked rag, right?"
@@ -2908,10 +2538,7 @@ label monika_chloroform:
     return
 
 init 5 python:
-    for key in ['parents', 'unrealistic setting', 'drama hook']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_metaparents') #I wasn't sure if we're ever going to need the monika_parents label for something
-    monika_random_topics.append('monika_metaparents')
+    addEvent(Event(eventlabel="monika_metaparents",category=['random'],prompt="Parents",random=True))
 
 label monika_metaparents:
     m 2c "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
@@ -2936,10 +2563,7 @@ label monika_metaparents:
     return
 
 init 5 python:
-    for key in ['vikings', 'personal hygiene', 'bath', 'shower', 'baths', 'showers']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_hygiene') #I wasn't sure if we're ever going to need the monika_parents label for something
-    monika_random_topics.append('monika_hygiene')
+    addEvent(Event(eventlabel="monika_hygiene",category=['random'],prompt="Personal hygiene",random=True))
 
 label monika_hygiene:
     m 1d "Our standards for personal hygiene have evolved a lot over the years."
@@ -2981,10 +2605,7 @@ label monika_hygiene:
     return
 
 init 5 python:
-    for key in ['valuable resource']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_resource')
-    monika_random_topics.append('monika_resource')
+    addEvent(Event(eventlabel="monika_resource",category=['random'],prompt="Valuable resources",random=True))
 
 label monika_resource:
     m 2b "What do you think the most valuable resource is?"
@@ -3047,10 +2668,7 @@ label monika_resource:
 #    return
 
 init 5 python:
-    for key in ['lottery', 'greed']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_lottery')
-    monika_random_topics.append('monika_lottery')
+    addEvent(Event(eventlabel="monika_lottery",category=['random'],prompt="Lottery winnings",random=True))
 
 label monika_lottery:
     m 2b "A lot of people dream about winning the lottery, you know!"
@@ -3072,12 +2690,10 @@ label monika_lottery:
     m 1j"..."
     m 1k "You~!"
     m 1a "You're the only thing I need, [player]."
+    return
 
 init 5 python:
-    for key in ['mental disorder', 'disorders', 'innovation', 'memes']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_innovation')
-    monika_random_topics.append('monika_innovation')
+    addEvent(Event(eventlabel="monika_innovation",category=['random'],prompt="Innovation",random=True))
 
 label monika_innovation:
     m 2d "Do you ever wonder why depression, anxiety, and other mental disorders are so common these days?"
@@ -3104,10 +2720,7 @@ label monika_innovation:
     return
 
 init 5 python:
-    for key in ['dunbar\'s number', 'dunbar']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_dunbar')
-    monika_random_topics.append('monika_dunbar')
+    addEvent(Event(eventlabel="monika_dunbar",category=['random'],prompt="Dunbar's number",random=True))
 
 label monika_dunbar:
     m 1d "Do you know about Dunbar's number?"
@@ -3134,9 +2747,7 @@ label monika_dunbar:
     return
 
 init 5 python:
-    for key in ['do you regret anything', 'any regrets']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_regrets')
+    addEvent(Event(eventlabel="monika_regrets",category=['random'],prompt="Do you have any regrets?",pool=True))
 
 label monika_regrets:
     m 1c "Do I regret anything?"
@@ -3156,10 +2767,7 @@ label monika_regrets:
     return
 
 init 5 python:
-    for key in ['hypnosis']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_hypnosis')
-    monika_random_topics.append('monika_hypnosis')
+    addEvent(Event(eventlabel="monika_hypnosis",category=['random'],prompt="Being hypnotized",random=True))
 
 label monika_hypnosis:
     m 2a "...Say, [player]?"
@@ -3178,10 +2786,7 @@ label monika_hypnosis:
     return
 
 init 5 python:
-    for key in ['motivation', 'fresh start', 'depression advice']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_motivation')
-    monika_random_topics.append('monika_motivation')
+    addEvent(Event(eventlabel="monika_motivation",category=['random'],prompt="Lack of motivation",random=True))
 
 label monika_motivation:
     m 1h "Do you ever have those days where it just feels like you can't get anything done?"
@@ -3215,10 +2820,7 @@ label monika_motivation:
     return
 
 init 5 python:
-    for key in ['harem', 'multiple lovers', 'polygamy']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_harem')
-    monika_random_topics.append('monika_harem')
+    addEvent(Event(eventlabel="monika_harem",category=['random'],prompt="Harem fantasies",random=True))
 
 label monika_harem:
     m 1d "I don’t understand people who are into harems."
@@ -3238,11 +2840,7 @@ label monika_harem:
     return
 
 init 5 python:
-    for key in ['hack', 'privacy', 'hacker']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_hack')
-    monika_random_topics.append('monika_hack')
-
+    addEvent(Event(eventlabel="monika_hack",category=['random'],prompt="Why did you hack my computer?",pool=True))
 label monika_hack:
     m 1c "If you’re worried about your privacy…"
     m 2a "I’m not a hacker, [player]."
@@ -3262,10 +2860,7 @@ label monika_hack:
     return
 
 init 5 python:
-    for key in ['cupcake', 'sweet tooth', 'sweet', 'dessert']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_cupcake')
-    monika_random_topics.append('monika_cupcake')
+    addEvent(Event(eventlabel="monika_cupcake",category=['random'],prompt="Baking cupcakes",random=True))
 
 label monika_cupcake:
     m 2b "You know what I could really go for right now?"
@@ -3284,12 +2879,10 @@ label monika_cupcake:
     m "I’m sure your cupcakes would taste just as good."
     m "Maybe someday I’ll get to try them but for now…"
     m 1j "I’ll just settle for the sweetness of your love~"
-    #This is a list of keywords for this topic
+    return
 
 init 5 python:
-    for key in ['haters','hater', 'bash', 'bashing']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_haterReaction')
+    addEvent(Event(eventlabel="monika_haterReaction",category=['random'],prompt="Dealing with haters",random=True))
 
 label monika_haterReaction:
     m 1h "I was just thinking..."
@@ -3329,11 +2922,7 @@ label monika_haterReaction:
     return
 
 init 5 python:
-    # List of keywords for the topic.
-    for key in ['sword','swords','swordsman','swordsmen','swordsmanship']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_swordsmanship') # Identifier
-    monika_random_topics.append('monika_swordsmanship') # Optional. Remove if you don't want Monika to bring this up at random.
+    addEvent(Event(eventlabel="monika_swordsmanship",category=['random'],prompt="Swordsmanship",random=True))
 
 label monika_swordsmanship:
     m "Do you like swords, [player]?"
@@ -3359,10 +2948,7 @@ label monika_swordsmanship:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['fap','fapping','self-pleasure', 'masturbate', 'masturbation']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_pleasure') #id
+    addEvent(Event(eventlabel="monika_pleasure",category=['random'],prompt="Pleasuring yourself",random=True))
 
 label monika_pleasure:
     m 1o "Hey, [player]..."
@@ -3393,11 +2979,7 @@ label monika_pleasure:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['miku', 'hatsune miku', 'vocaloid', 'hibikase', 'mmd', 'mikumikudance']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_vocaloid')
-    monika_random_topics.append('monika_vocaloid')
+    addEvent(Event(eventlabel="monika_vocaloid",category=['random'],prompt="Vocaloids",random=True))
 
 label monika_vocaloid:
     m 1c "Hey, [player]?"
@@ -3440,9 +3022,7 @@ label monika_vocaloid:
 
 
 init 5 python:
-    for key in ['good morning', 'ohayou gozaimasu', 'guten morgen']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_morning')
+    addEvent(Event(eventlabel="monika_morning",category=['random'],prompt="Good morning",pool=True))
 
 label monika_morning:
     $ current_time = datetime.datetime.now().time().hour
@@ -3486,20 +3066,18 @@ label monika_morning:
 #Add one for the afternoon?
 
 init 5 python:
-    for key in ['good evening', 'konbanwa']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_evening')
+    addEvent(Event(eventlabel="monika_evening",category=['random'],prompt="Good evening",pool=True))
 
 label monika_evening:
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 18 and current_time <= 23:
         m "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m "It's so nice to put your feet after a very long day."
+        m "It's so nice to put your feet up after a very long day."
         m 2j "Evenings are the perfect time to catch up on whatever you were doing the previous day."
         m 1c "Sometimes I can't help but feel sad when the day ends."
         m "It makes me think of what else I could've done during the day."
-        m "Don't you wish you could have more time to do everyday?"
+        m "Don't you wish you could have more time to do things every day?"
         m 1q "I know I do."
         m 2b "Because that'll mean more time to be with you, [player]~"
     elif current_time >= 12 and current_time <= 17:
@@ -3524,10 +3102,9 @@ label monika_evening:
         m 1e "I'm not going anywhere after all~"
     return
 
+#TO-DO Make farewells a class
 init 5 python:
-    for key in ['good night', 'oyasumi', 'guten nacht']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_night')
+    addEvent(Event(eventlabel="monika_night",category=['random'],prompt="Goodnight",pool=True))
 
 label monika_night:
     m 1d "Getting some sleep, [player]?"
@@ -3538,10 +3115,7 @@ label monika_night:
     return 'quit'
 
 init 5 python:
-    for key in ['closet', 'scary yuri']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_closet')
-    monika_random_topics.append('monika_closet')
+    addEvent(Event(eventlabel="monika_closet",category=['random'],prompt="Classroom closet",random=True))
 
 label monika_closet:
     m 3q "By the way..."
@@ -3558,10 +3132,7 @@ label monika_closet:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['good mood']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_playerhappy') #id
+    addEvent(Event(eventlabel="monika_playerhappy",category=['random'],prompt="I'm happy",pool=True))
 
 label monika_playerhappy:
     m 2b "That's wonderful! I'm happy when you're happy."
@@ -3570,10 +3141,7 @@ label monika_playerhappy:
     return
 
 init 5 python:
-    for key in ['sharing work']: #Deleted 1st 2 keywords since they conflict with another one
-        monika_topics.setdefault(key, [])
-        monika_topics[key].append('monika_writingtip1')
-    monika_random_topics.append('monika_writingtip1')
+    addEvent(Event(eventlabel="monika_writingtip1",category=['random'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
 
 label monika_writingtip1:
     m 2a "You know..."
@@ -3602,10 +3170,7 @@ label monika_writingtip1:
     return
 
 init 5 python:
-   for key in ['japanese']:
-      monika_topics.setdefault(key,[])
-      monika_topics[key].append('monika_japanese')#id
-   monika_random_topics.append('monika_japanese')
+    addEvent(Event(eventlabel="monika_japanese",category=['random'],prompt="Speaking Japanese",random=True))
 
 label monika_japanese:
     m 1c "I don't mean to sound like Natsuki but..."
@@ -3634,10 +3199,7 @@ label monika_japanese:
     return
 
 init 5 python:
-    for key in ['lewis carroll', 'pseudonym', 'pseudonyms', 'pen name', 'pen names', 'charles dodgson']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_penname')#id
-    monika_random_topics.append('monika_penname')
+    addEvent(Event(eventlabel="monika_penname",category=['random'],prompt="Pen names",random=True))
 
 label monika_penname:
     m "You know what's really cool? Pen names."
@@ -3645,7 +3207,7 @@ label monika_penname:
     m 2c "They keep it hidden from everyone just so it won't affect their personal lives."
     m 2b "Pen names also help writers create something totally different from their usual style of writing."
     m 2d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
-    if [mcname] != [player]:
+    if mcname.lower() != player.lower():
         m 3c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 3d "'[mcname] and [player].'"
@@ -3659,34 +3221,40 @@ label monika_penname:
     return
 
 init 5 python:
-    for key in ['change name']: #Could use some mor key words
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_changename')
+    addEvent(Event(eventlabel="monika_changename",category=['random'],prompt="Can you change my name?",unlocked=False)) #This needs to be unlocked by the random name change event
 
 label monika_changename:
     m 1b "You want to change your name?"
     menu:
         "Yes":
-            m 1a "Just type 'Nevermind' if you change your mind."
+            m 1a "Just type 'nevermind' if you change your mind."
             $ done = False
             while not done:
-                $ tempname = renpy.input("What do you want me to call you?").strip(' \t\n\r')
-                if tempname == "Nevermind" or tempname == "nevermind":
+                $ tempname = renpy.input("What do you want me to call you?",length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
                     m 1f "[player]!"
-                    m 3g "Please stop teasing me~"
+                    m 2g "Please stop teasing me~"
                     m "I really do want to know what you want me to call you!"
-                    m 2l "I won't judge no matter how ridiculous it might be."
-                    m 3e "So don't be shy and just tell me, [player]~"
+                    m 3l "I won't judge no matter how ridiculous it might be."
+                    m 2e "So don't be shy and just tell me, [player]~"
                     $ done = True
-                elif tempname == "":
-                    m 3h "..."
+                elif lowername == "":
+                    m 2h "..."
                     m 4l "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1b "Try again!"
-                elif tempname == player:
-                    m 3h "..."
+                elif lowername == player:
+                    m 2h "..."
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
+                elif len(lowername) >= 10:
+                    m 2q "[player]..."
+                    m 2l "That name's a bit too long."
+                    if len(lowername) > 20:
+                        m "And I'm sure you're just being silly since names aren't that long, you know."
+                    m 1 "Try again."
+
                 else:
 
                     # sayori name check
@@ -3696,13 +3264,21 @@ label monika_changename:
                         $ songs.initMusicChoices()
 
                     python:
-                        
+
                         persistent.mcname = player
                         mcname = player
                         persistent.playername = tempname
                         player = tempname
-                    m 1b "Ok then!"
-                    m 2b "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+
+                    if lowername == "monika":
+                        m 1d "Really?"
+                        m 3k "That's the same as mine!"
+                        m 1m "Well..."
+                        m 1n "Either it really is your name or you're playing a joke on me."
+                        m 1j "But it's fine by me if that's what you want me to call you~"
+                    else:
+                        m 1b "Ok then!"
+                        m 3b "From now on, I'll call you {i}'[player],'{/i} ehehe~"
                     $ done = True
         "No":
             m 1f "Oh, I see..."
@@ -3711,10 +3287,7 @@ label monika_changename:
     return
 
 init 5 python:
-    for key in ['zombie', 'zombies', 'zeds', 'undead', 'meat bag', 'George Romero']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_zombie')
-    monika_random_topics.append('monika_zombie')
+    addEvent(Event(eventlabel="monika_zombie",category=['random'],prompt="Zombies",random=True))
 
 label monika_zombie:
     m 2h "Hey, this might sound a bit weird..."
@@ -3754,10 +3327,7 @@ label monika_zombie:
 
 
 init 5 python:
-    for key in ['nuke', 'nukes', 'apocalypse', 'war']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_nuclear_war')#id
-    monika_random_topics.append('monika_nuclear_war')
+    addEvent(Event(eventlabel="monika_nuclear_war",category=['random'],prompt="Nuclear warfare",random=True))
 
 label monika_nuclear_war:
     m 1 "Do you ever think about how close the world is to ending at any time?"
@@ -3777,10 +3347,7 @@ label monika_nuclear_war:
     return
 
 init 5 python:
-    for key in ['ignorance']:
-       monika_topics.setdefault(key,[])
-       monika_topics[key].append('monika_pluralistic_ignorance')#id
-    monika_random_topics.append('monika_pluralistic_ignorance')
+    addEvent(Event(eventlabel="monika_pluralistic_ignorance",category=['random'],prompt="Trying to fit in",random=True))
 
 label monika_pluralistic_ignorance:
     m "Do you ever pretend to like something, just because you think you should?"
@@ -3804,10 +3371,7 @@ label monika_pluralistic_ignorance:
     return
 
 init 5 python:
-    for key in ['science']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_science')#id
-    monika_random_topics.append('monika_science')
+    addEvent(Event(eventlabel="monika_science",category=['random'],prompt="Science advancements",random=True))
 
 label monika_science:
     m 1d "Have you ever wondered if science never got accepted?"
@@ -3822,10 +3386,7 @@ label monika_science:
     return
 
 init 5 python:
-    for key in ['surprise']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_surprise')
-    monika_random_topics.append('monika_surprise')
+    addEvent(Event(eventlabel="monika_surprise",category=['random'],prompt="Surprises",random=True))
 
 label monika_surprise:
     m 3m "You know..."
@@ -3846,10 +3407,7 @@ label monika_surprise:
     return
 
 init 5 python:
-    for key in ['completionist', 'game completion']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_completionist')
-    monika_random_topics.append('monika_completionist')
+    addEvent(Event(eventlabel="monika_completionist",category=['random'],prompt="Completionism",random=True))
 
 label monika_completionist:
     m 2c "Hey [player], this is a random question, but..."
@@ -3876,11 +3434,7 @@ label monika_completionist:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['mint' , 'ice cream']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_icecream') #id
-    monika_random_topics.append('monika_icecream')
+    addEvent(Event(eventlabel="monika_icecream",category=['random'],prompt="Favorite ice cream",random=True))
 
 label monika_icecream:
     m 2a "Hey [player], what's your favourite kind of ice cream?"
@@ -3911,9 +3465,7 @@ label monika_icecream:
     return
 
 init 5 python:
-    for key in ["say happy birthday", "say hbd", "hbd"]:
-        monika_topics.setdefault(key, [])
-        monika_topics[key].append("monika_sayhappybirthday")
+    addEvent(Event(eventlabel="monika_sayhappybirthday",category=['random'],prompt="Can you tell someone Happy Birthday for me?",pool=True))
 
 label monika_sayhappybirthday:
     # special variable setup
@@ -4105,11 +3657,7 @@ label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
 
 
 init 5 python:
-    # List of keywords for the topic.
-    for key in ['home memories', 'childhood']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_home_memories')#id
-    monika_random_topics.append('monika_home_memories')
+    addEvent(Event(eventlabel="monika_home_memories",category=['random'],prompt="Making memories",random=True))
 
 label monika_home_memories:
     m 1b "[player], how is it like to live where you are?"
@@ -4134,10 +3682,7 @@ label monika_home_memories:
     return
 
 init 5 python:
-    for key in ['adventure', 'graphic adventure', 'point and click']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_adventure')
-    monika_random_topics.append('monika_adventure')
+    addEvent(Event(eventlabel="monika_adventure",category=['random'],prompt="Adventuring",random=True))
 
 label monika_adventure:
     m 1a "[player], I've thought about what kind of game we can be in."
@@ -4163,10 +3708,7 @@ label monika_adventure:
     return
 
 init 5 python:
-    for key in ['panties', 'underwear', 'pantsu', 'lingerie', 'undergarment', 'knickers', 'paraphilia', 'stockings', 'pantyhose', 'garter belt', 'panty']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_panties')
-    monika_random_topics.append('monika_panties')
+    addEvent(Event(eventlabel="monika_panties",category=['random'],prompt="Undergarments",random=True))
 
 label monika_panties:
     m 3o "Hey, [player]..."
@@ -4216,11 +3758,7 @@ label monika_panties:
     return
 
 init 5 python:
-    #If monika were to talk about books she's read, Fahrenheit 451 would be a fitting choice for her to read
-    for key in ['fahrenheit 451', 'ray bradbury']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_fahrenheit451')
-    monika_random_topics.append('monika_fahrenheit451')
+    addEvent(Event(eventlabel="monika_fahrenheit451",category=['random'],prompt="Book recommendations",random=True))
 
 label monika_fahrenheit451:
     m 2c "[player], have you ever heard of Ray Bradbury?"
@@ -4236,16 +3774,13 @@ label monika_fahrenheit451:
     m 2g "You'd be missing out on so much!"
     m 3f "It's too much for my heart to take!"
     return
-    
+
 init 5 python:
-    for key in ['piggy bank', 'saving coins', 'saving money']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_piggybank') #id
-    monika_random_topics.append('monika_piggybank')
+    addEvent(Event(eventlabel="monika_piggybank",category=['random'],prompt="Saving money",random=True))
 
 label monika_piggybank:
     m 1a "Do you have a piggy bank, [player]?"
-    m 2c "Not many people do these days." 
+    m 2c "Not many people do these days."
     m "Coins are often disregarded as worthless."
     m 2b "But they really do begin to add up!"
     m 2d "I read that there was once a man that searched his local car washes for loose change everyday in his walks."
@@ -4264,12 +3799,12 @@ label monika_piggybank:
     m 2o "So you might end up losing money buying a new bank."
     m 4b "Fortunately most piggy banks don't do that anymore."
     m 2a "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
-    m 1k "Maybe if you save up enough coins you can buy me a really nice gift." 
+    m 1k "Maybe if you save up enough coins you can buy me a really nice gift."
     m 3e "I would do the same for you, [player]!"
     return
 
 init 5 python:
-    monika_random_topics.append('monika_daydream')
+    addEvent(Event(eventlabel="monika_daydream",category=['random'],prompt="Day dreaming",random=True))
 
 label monika_daydream:
     m 1j "..."
@@ -4350,10 +3885,7 @@ label monika_music2:
     return
 
 init 5 python:
-    for key in ["confidence", "initiative", "success", "vulnerability"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_confidence_2')
-    monika_random_topics.append('monika_confidence_2')
+    addEvent(Event(eventlabel="monika_confidence_2",category=['random'],prompt="Lack of confidence",random=True))
 
 label monika_confidence_2:
     m 1g "[player], do you ever feel like you lack the initiative to do something?"
@@ -4382,12 +3914,9 @@ label monika_confidence_2:
     m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
-    
+
 init 5 python:
-    for key in ["birds", "pets", "animals"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_pets') #id
-    monika_random_topics.append('monika_pets')
+    addEvent(Event(eventlabel="monika_pets",category=['random'],prompt="Owning pets",random=True))
 
 label monika_pets:
     m 1a "Hey, [player], have you ever had a pet?"
@@ -4415,10 +3944,7 @@ label monika_pets:
     return
 
 init 5 python:
-    for key in ['fruit', 'fruits', 'cherry', 'cherries', 'bell peppers', 'tomato', 'tomatoes', 'bell pepper']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_fruits')
-    monika_random_topics.append('monika_fruits')
+    addEvent(Event(eventlabel="monika_fruits",category=['random'],prompt="Eating fruits",random=True))
 
 label monika_fruits:
     m 2a "[player], did you know I enjoy a tasty, juicy fruit once in a while?"
@@ -4440,11 +3966,7 @@ label monika_fruits:
     return
 
 init 5 python:
-    # List of keywords for the topic.
-    for key in ['rock music','classic rock','heavy metal']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_rock') # Identifier
-    monika_random_topics.append('monika_rock') # Optional. Remove if you don't want Monika to bring this up at random.
+    addEvent(Event(eventlabel="monika_rock",category=['random'],prompt="Rock and roll",random=True))
 
 label monika_rock:
     m 2a "You wanna know a cool form of literature?"
@@ -4471,10 +3993,7 @@ label monika_rock:
     return
 
 init 5 python:
-    for key in ['soda', 'coca-cola', 'coca cola', 'coke', 'pepsi', 'dr. pepper', 'carbonated']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_soda')#id
-    monika_random_topics.append('monika_soda')
+    addEvent(Event(eventlabel="monika_soda",category=['random'],prompt="Drinking soda",random=True))
 
 label monika_soda:
     m 3d "Do you drink soda, [player]?"
@@ -4491,12 +4010,9 @@ label monika_soda:
     m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m 3j "So cut down on the soda, alright [player]?"
     return
-    
+
 init 5 python:
-    for key in ['copy', 'clone','unique']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_clones')
-    monika_random_topics.append('monika_clones')
+    addEvent(Event(eventlabel="monika_clones",category=['random'],prompt="Being cloned",random=True))
 
 label monika_clones:
     m 1d "Um... hey, [player]?"
@@ -4517,14 +4033,11 @@ label monika_clones:
     m 1j "You'll always be my special rose."
     m 1 "I love you, [player]. Please don't ever replace me, okay?"
     return
-    
-init 5 python:
-    for key in ['age','18']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_ageinf')
-    monika_random_topics.append('monika_ageinf')
 
-label monika_ageinf:
+init 5 python:
+    addEvent(Event(eventlabel="monika_immortal",category=['random'],prompt="Immortality",random=True))
+
+label monika_immortal:
     m 4d "[player]! I've been thinking about something..."
     m "Did you know that this game has a wiki page for me?"
     m "Well..."
@@ -4538,12 +4051,9 @@ label monika_ageinf:
     m "But I don't believe that my life can be summed up in a number."
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
-    
+
 init 5 python:
-    for key in ['wedding','loyalty','wife','husband']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_weddingring')
-    monika_random_topics.append('monika_weddingring')
+    addEvent(Event(eventlabel="monika_weddingring",category=['random'],prompt="Engagement ring",random=True))
 
 label monika_weddingring:
     m 4k "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
@@ -4566,17 +4076,14 @@ label monika_weddingring:
             m 1b "I feel like... my heart's going to explode!"
             m 1l "Calm down, Monika. Calm down."
             m 1j "Ahaha..."
-            
+
         "No, not yet.":
             m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
     return
 
 init 5 python:
-    for key in ['sport','sports']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_sports')
-    monika_random_topics.append('monika_sports')
+    addEvent(Event(eventlabel="monika_sports",category=['random'],prompt="Being athletic",random=True))
 
 label monika_sports:
     m 1a "I've been thinking about stuff we can do together."
@@ -4596,12 +4103,9 @@ label monika_sports:
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
     return
-    
+
 init 5 python:
-    for key in ['meditation', 'meditate']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_meditation')
-    monika_random_topics.append('monika_meditation')
+    addEvent(Event(eventlabel="monika_meditation",category=['random'],prompt="Meditating",random=True))
 
 label monika_meditation:
     m 1a "You might be wondering how I was able to do so many activities without running out of time for myself."
@@ -4636,10 +4140,7 @@ label monika_meditation:
     return
 
 init 5 python:
-    for key in ["orchestra", "instruments", "band"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_orchestra')
-    monika_random_topics.append('monika_orchestra')
+    addEvent(Event(eventlabel="monika_orchestra",category=['random'],prompt="Classical music",random=True))
 
 label monika_orchestra:
     m 2d "Hey, [player], do you listen to orchestral music?"
@@ -4651,7 +4152,7 @@ label monika_orchestra:
 
 #First encounter with topic:
     m "What about you, [player]? Do you play an instrument?"
-    menu: 
+    menu:
         "Yes.":
             $persistent.instrument = True
             m 1b "Really? What do you play?"
@@ -4660,7 +4161,7 @@ label monika_orchestra:
             m 1a "Wow, I've always wanted to try the [instrumentname] out!"
             m 2b "I would love to hear you play for me."
             m "Maybe you could teach me how to play, too~"
-            m 5a "Oh! Would a duet between the [instrumentname] and the piano would sound nice?"
+            m 5a "Oh! Would a duet between the [instrumentname] and the piano sound nice?"
             m 1j "Ehehe~"
         "No.":
             $persistent.instrument = False
@@ -4677,18 +4178,15 @@ label monika_orchestra:
     return
 
 init 5 python:
-    for key in ['otaku', 'neet']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_otaku')
-    monika_random_topics.append('monika_otaku')
-    
+    addEvent(Event(eventlabel="monika_otaku",category=['random'],prompt="Being an otaku",random=True))
+
 label monika_otaku:
     m 1a "Hey, [player]?"
     m 2b "You watch anime and read manga, right?"
     menu:
         "Yes":
-            m 1a "I can't say I'm surprised, really." 
-            
+            m 1a "I can't say I'm surprised, really."
+
         "No":
             m 1c "Oh, really?"
             m 1m "That's a little surprising, honestly..."
@@ -4718,10 +4216,7 @@ label monika_otaku:
     return
 
 init 5 python:
-    for key in ['write','tips']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_write')
-    monika_random_topics.append('monika_write')
+    addEvent(Event(eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
 
 label monika_write:
     m 1a "I'm having fun doing these, so..."
@@ -4746,10 +4241,7 @@ label monika_write:
     return
 
 init 5 python:
-    for key in ['self harm' , 'cutting' , 'self-harm']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_selfharm')
-    monika_random_topics.append('monika_selfharm')
+    addEvent(Event(eventlabel="monika_selfharm",category=['random'],prompt="Self harm",random=True))
 
 label monika_selfharm:
     m 1f "Hey [player]..."
@@ -4772,12 +4264,9 @@ label monika_selfharm:
     m 4k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m "I really love you so much, [player]."
     return
-    
+
 init 5 python:
-    for key in ['urgent','hearts','joke']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_urgent')
-    monika_random_topics.append('monika_urgent')
+    addEvent(Event(eventlabel="monika_urgent",category=['random'],prompt="Urgent message",random=True))
 
 label monika_urgent:
     m 2d "[player], do you have a second?"
@@ -4792,64 +4281,26 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
 
-##################
-#Incomplete ideas#
-##################
-#Favorite food
+init 5 python:
+    addEvent(Event(eventlabel="monika_marriage",category=['random'],prompt="Will you marry me?",pool=True))
 
-#How did she become self aware (Could possibly expand on the lore of her club president role giving her self-awareness and omniscience. ~ John)
+label monika_marriage:
+    m 3m "M-marriage?"
+    m 4n "I think it's a bit too early for marriage..."
+    m 1e "I mean, I'm really happy that you want that, [player]."
+    m 1c "But I think I should get out of here first before we can do that."
+    m 3o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+    m 3q "I want that special moment to happen when we can finally be together..."
+    m 1k "So until then, save yourself for me, [player]~"
+    return
 
-#More writing tips
+init 5 python:
+    addEvent(Event(eventlabel="monika_coffee",category=['random'],prompt="Coffee intake",random=True))
 
-#The player is wasting their time (I don't think Monika would say this, considering her personality revolves around loving the player. ~ John)
-
-#Look for your computer for porn, comment on what she finds (Would this even be possible? ~ John)
-
-#What kind of girls do you like? Do you wish monika was more like that? (This seems to relate to the "archetypes" label. - Rune)
-
-#Play a poem game with monika, she calls you out for just stringing together random words
-
-#Comment when it's getting late. Say that the player should go to bed, say goodnight then close the game.
-
-###Some ideas to consider:
-#What she used to do in free time
-
-#Thoughts on few of countries in real world (I mean; she has some knowledge of real world that most people don't even think about)
-
-#What does she think would happen if the player did not start the game; she mentioned that the player "saved" her by being with
-#her in topic 13
-
-#Has she written any other poems? If anyone's good at her type of poetry, another poem from her could be a great idea, right?
-
-#What would she do or what would be the first thing she would do if she managed to get out of the game into the real world?
-#Think of possible limitations, like having no body? (Something like this has been written)
-###
-
-#---
-#some other ideas i had in mind, but not sure if want to / dont know how to implement
-#so i figure i'll stick them right next to the others, if you dont mind
-#---
-
-#favorite animal, not sure what to write however
-
-#holidays, probably should be special greetings for another file though
-
-#remind the player to use the 't' key to talk, maybe if player doesnt talk in a very long time
-
-#her phone number, it wouldnt matter in her reality, maybe?
-
-#disrespectful comments towards monika
-
-#worst topic suggestion: 'memes'.
-
-#if the player is on a laptop or battery, monika will remind to make sure to charge it, if possible?
-
-#originally i wrote a topic "i hate you" or something similar, but i didnt like how it turned out when i finished it, so maybe another time
-
-#i also originally wrote a topic about money, but didnt like how it came out, so probably rewrite later, me having horrible money management skills doesnt help
-
-#monika talking about her room and about her house?
-
-#wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
-
-#encourage player to take a rest after long periods of programs such as MS word/Xcode open (is it even possible? -Yuki)
+label monika_coffee:
+    m 3b "Coffee is such a nice thing to have when you need a little pep of energy."
+    m 4j "Whether it's hot or cold, coffee is always nice."
+    m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
+    m 2e "It's funny how a drink for giving you energy became a treat for you to enjoy."
+    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
+    return

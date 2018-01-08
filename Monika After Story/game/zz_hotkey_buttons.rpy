@@ -9,7 +9,7 @@ init python:
         # Hides the hkb buttons
         #
         config.overlay_screens.remove("hkb_overlay")
-        renpy.hide("hkb_overlay")
+        renpy.hide_screen("hkb_overlay")
 
     # function to show buttons
     def HKBShowButtons():
@@ -94,7 +94,7 @@ screen hkb_overlay():
         yalign 0.95
 
         if allow_dialogue and store.hkb_button.enabled:
-            textbutton _("Talk") action Jump("ch30_monikatopics")
+            textbutton _("Talk") action Jump("prompt_menu")
         else:
             textbutton _("Talk"):
                 action NullAction()

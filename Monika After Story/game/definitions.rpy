@@ -6,6 +6,450 @@ python early:
     import singleton
     me = singleton.SingleInstance()
 
+# uncomment this if you want syntax highlighting support on vim
+#init -1 python:
+
+    # special constants for event
+    EV_ACT_PUSH = "push"
+    EV_ACT_QUEUE = "queue"
+    EV_ACT_UNLOCK = "unlock"
+    EV_ACT_RANDOM = "random"
+    EV_ACT_POOL = "pool"
+
+    # list of those special constants
+    EV_ACTIONS = [
+        EV_ACT_PUSH,
+        EV_ACT_QUEUE,
+        EV_ACT_UNLOCK,
+        EV_ACT_RANDOM,
+        EV_ACT_POOL
+    ]
+
+    # custom event exceptions
+    class EventException(Exception):
+        def __init__(self, _msg):
+            self.msg = _msg
+        def __str__(self):
+            return "EventError: " + self.msg
+
+    # event class for chatbot replacement
+    # NOTE: DOES NOT SUPPORT INHERITIANCE. DO NOT EXTEND THIS CLASS
+    #
+    # PROPERTIES:
+    #   eventlabel - the identifier for this event. basically the label that
+    #       this event is tied to. MUST BE UNIQUE
+    #       NOTE: REQUIRED
+    #   prompt - String label shown on the button for this topic in the prompt
+    #       menu
+    #       (Default: eventlabel)
+    #   label - Optional plain text name of the event, good for calendars
+    #       (Default: prompt)
+    #   category - Tuple of string that define the categories for the event
+    #       (Default: None)
+    #   unlocked - True if the event appears in the prompt menu, False if not
+    #       (Default: False)
+    #   random - True if the event can appear in random chatter, False if not
+    #       (Default: False)
+    #   pool - True if the event is in the pool of prompts that get drawn from
+    #       when new prompts become randomly available, False if not
+    #       (Default: False)
+    #   conditional - string that is a conditional expression that can be
+    #       executed via eval. This is checked at various points to determine
+    #       if this event gets pushed to the stack or not
+    #       (Default: None)
+    #   action - an EV_ACTION constant that tells us what to do if the
+    #       conditional is True (See EV_ACTIONS and EV_ACT_...)
+    #       (Default: None)
+    #   start_date - Timestamp for when this event is available
+    #       (Default: None)
+    #   end_date - Timestamp for when this event is no longer available
+    #       (Default: None)
+    #   unlock_date - Timestamp for when this event is unlocked
+    #       (Default: None)
+    class Event():
+
+        # NOTE: _eventlabel is required, its the key to this event
+        # its also how we handle equality. also it cannot be None
+        def __init__(self,
+                eventlabel,
+                prompt=None,
+                label=None,
+                category=None,
+                unlocked=False,
+                random=False,
+                pool=False,
+                conditional=None,
+                action=None,
+                start_date=None,
+                end_date=None,
+                unlock_date=None):
+
+            # setting up defaults
+            if not eventlabel:
+                raise EventException("'_eventlabel' cannot be None")
+
+            self.eventlabel = eventlabel
+
+            # default prompt is the eventlabel
+            if prompt:
+                self.prompt = prompt
+            else:
+                self.prompt = self.eventlabel
+
+            # default label is a prompt
+            if label:
+                self.label = label
+            else:
+                self.label = self.prompt
+
+            self.category = category
+            self.unlocked = unlocked
+            self.random = random
+            self.pool = pool
+            self.conditional = conditional
+            self.setAction(action)
+            self.start_date = start_date
+            self.end_date = end_date
+            self.unlock_date = unlock_date
+
+        # equality override
+        def __eq__(self, other):
+            if isinstance(self, other.__class__):
+                return self.eventlabel == other.eventlabel
+            return False
+
+        # equality override
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        # copy override
+        def __copy__(self):
+            cls = self.__class__
+            newEvent = cls.__new__(cls)
+            newEvent.__dict__.update(self.__dict__)
+            return newEvent
+
+        # deepcopy override
+        def __deepcopy__(self, memo):
+            from copy import deepcopy
+            cls = self.__class__
+            newEvent = cls.__new__(cls)
+            memo[id(self)] = newEvent
+            # python 2 is iteritems
+            for k,v in self.__dict__.iteritems():
+                setattr(newEvent, k, deepcopy(v, memo))
+            return newEvent
+
+        def getAction(self):
+            #
+            # Gets the action of this Event
+            #
+            # RETURNS:
+            #   the action of this event (EV_ACT_...). May be None
+
+            return self._action
+
+        def setAction(self, action):
+            #
+            # Sets the action of this Event, only if its in the appropriate
+            # EVENT LIST. If an inappropriate action is given, None will be
+            # set
+            #
+            # IN:
+            #   action - an EV_ACT to set to
+
+            if action in EV_ACTIONS:
+                self._action = action
+            else:
+                self._action = None
+
+        @staticmethod
+        def _filterEvent(
+                event,
+                category=None,
+                unlocked=None,
+                random=None,
+                pool=None,
+                action=None):
+            #
+            # Filters the given event object accoridng to the given filters
+            # NOTE: NO SANITY CHECKS
+            #
+            # For variable explanations, please see the static method
+            #   filterEvents
+            #
+            # RETURNS:
+            #   True if this event passes the filter, False if not
+
+            # collections allow us to match all
+            from collections import Counter
+
+            # now lets filter
+            if unlocked is not None and event.unlocked != unlocked:
+                return False
+
+            if random is not None and event.random != random:
+                return False
+
+            if pool is not None and event.pool != pool:
+                return False
+
+            if category is not None:
+                # USE OR LOGIC
+                if category[0]:
+                    if len(set(category[1]).intersection(set(event.category))) == 0:
+                        return False
+
+                # USE AND logic
+                elif len(set(category[1]).intersection(set(event.category))) != len(category[1]):
+                    return False
+
+            if action is not None and event.getAction() not in action:
+                return False
+
+            # we've passed all the filtering rules somehow
+            return True
+
+        @staticmethod
+        def filterEvents(
+                events,
+                full_copy=False,
+                category=None,
+                unlocked=None,
+                random=None,
+                pool=None,
+                action=None):
+            #
+            # Filters the given events dict according to the given filters.
+            # HOW TO USE: Use ** to pass in a dict of filters. they must match
+            # the names we use here.
+            #
+            # IN:
+            #   events - the dict of events we want to filter
+            #   full_copy - True means we create a new dict with deepcopies of
+            #       the events. False will only copy references
+            #       (Default: False)
+            #
+            #   FILTERING RULES: (recommend to use **kwargs)
+            #   NOTE: None means we ignore that filtering rule
+            #   category - Tuple of the following format:
+            #       [0]: True means we use OR logic. False means AND logic.
+            #       [1]: Tuple/list of strings that to match category.
+            #       (Default: None)
+            #       NOTE: If either element is None, we ignore this filteirng
+            #           rule.
+            #   unlocked - boolean value to match unlocked attribute.
+            #       (Default: None)
+            #   random - boolean value to match random attribute
+            #       (Default: None)
+            #   pool - boolean value to match pool attribute
+            #       (Default: None)
+            #   action - Tuple/list of strings/EV_ACTIONS to match action
+            #       NOTE: OR logic is applied
+            #       (Default: None)
+            #
+            # RETURNS:
+            #   if full_copy is True, we return a completely separate copy of
+            #   Events (in a new dict) with the given filters applied
+            #   If full_copy is False, we return a copy of references of the
+            #   Events (in a new dict) with the given filters applied
+            #   if the given events is None, empty, or no filters are given,
+            #   events is returned
+
+            # sanity check
+            if (not events or len(events) == 0 or (
+                    category is None
+                    and unlocked is None
+                    and random is None
+                    and pool is None
+                    and action is None)):
+                return events
+
+            # copy check
+            if full_copy:
+                from copy import deepcopy
+
+            # setting up rules
+            if (category and (
+                    len(category) < 2
+                    or category[0] is None
+                    or category[1] is None
+                    or len(category[1]) == 0)):
+                category = None
+            if action and len(action) == 0:
+                action = None
+
+            filt_ev_dict = dict()
+
+            # python 2
+            for k,v in events.iteritems():
+                # time to apply filtering rules
+                if Event._filterEvent(v,category=category, unlocked=unlocked,
+                        random=random, pool=pool, action=action):
+
+                    # copy check
+                    if full_copy:
+                        filt_ev_dict[k] = deepcopy(v)
+                    else:
+                        filt_ev_dict[k] = v
+
+            return filt_ev_dict
+
+        @staticmethod
+        def getSortedKeys(events, include_none=False):
+            #
+            # Returns a list of eventlables (keys) of the given dict of events
+            # sorted by the field unlock_date. The list is sorted in
+            # chronological order (newest first). Events with an unlock_date
+            # of None are not included unless include_none is True, in which
+            # case, Nones are put after everything else
+            #
+            # IN:
+            #   events - dict of events of the following format:
+            #       eventlabel: event object
+            #   include_none - True means we include events that have None for
+            #       unlock_date int he sorted key list, False means we dont
+            #       (Default: False)
+            #
+            # RETURNS:
+            #   list of eventlabels (keys), sorted in chronological order.
+            #   OR: None if the given events is empty or all unlock_date fields
+            #   were None and include_none is False
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.values() # python 2
+
+            # none check
+            if include_none:
+                none_labels = list()
+
+            # insertion sort
+            eventlabels = list()
+            for ev in ev_list:
+
+                if ev.unlock_date is not None:
+                    index = 0
+
+                    while (index < len(eventlabels)
+                            and ev.unlock_date < events[
+                                eventlabels[index]
+                            ].unlock_date):
+                        index += 1
+                    eventlabels.insert(index, ev.eventlabel)
+
+                elif include_none: # eventlabel was none
+                    none_labels.append(ev.eventlabel)
+
+            if include_none:
+                eventlabels.extend(none_labels)
+
+            # final sanity check
+            if len(eventlabels) == 0:
+                return None
+
+            return eventlabels
+
+        @staticmethod
+        def checkConditionals(events):
+            #
+            # This checks the conditionals for all of the events in the event list
+            # if any evaluate to true, run the desired action then clear the
+            # conditional.
+            import time
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.keys() # python 2
+
+            # insertion sort
+            for ev in ev_list:
+                #Calendar events use a different function
+                date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
+                if not date_based and events[ev].conditional is not None:
+                    if eval(events[ev].conditional) and events[ev].getAction is not None:
+                        #Perform the event's action
+                        if events[ev].getAction() == EV_ACT_PUSH:
+                            pushEvent(ev)
+                        elif events[ev].getAction() == EV_ACT_QUEUE:
+                            queueEvent(ev)
+                        elif events[ev].getAction() == EV_ACT_UNLOCK:
+                            events[ev].unlocked = True
+                            events[ev].unlock_date = time.time()
+                        elif events[ev].getAction() == EV_ACT_RANDOM:
+                            events[ev].random = True
+                        elif events[ev].getAction() == EV_ACT_POOL:
+                            events[ev].pool = True
+
+                        #Clear the conditional
+                        events[ev].conditional = None
+
+            return events
+
+        @staticmethod
+        def checkCalendar(events):
+            #
+            # This checks the date for all events to see if they are active.
+            # If they are active, then it checks for a conditional, and evaluates
+            # if an action should be run.
+            import time
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.keys() # python 2
+
+            current_time = time.time()
+            # insertion sort
+            for ev in ev_list:
+                event_time = True
+
+                #If the event has no time-dependence, don't check it
+                if (events[ev].start_date is None) and (events[ev].end_date is None):
+                    event_time = False
+
+                #Calendar must be based on a date
+                if events[ev].start_date is not None:
+                    if events[ev].start_date > current_time:
+                        event_time = False
+
+                if events[ev].end_date is not None:
+                    if events[ev].end_date <= current_time:
+                        event_time = False
+
+                if events[ev].conditional is not None:
+                    if not eval(events[ev].conditional):
+                        event_time = False
+
+
+                if event_time and events[ev].getAction() is not None:
+                    #Perform the event's action
+                    if events[ev].getAction() == EV_ACT_PUSH:
+                        pushEvent(ev)
+                    elif events[ev].getAction() == EV_ACT_QUEUE:
+                        queueEvent(ev)
+                    elif events[ev].getAction() == EV_ACT_UNLOCK:
+                        events[ev].unlocked = True
+                        events[ev].unlock_date = time.time()
+                    elif events[ev].getAction() == EV_ACT_RANDOM:
+                        events[ev].random = True
+                    elif events[ev].getAction() == EV_ACT_POOL:
+                        events[ev].pool = True
+
+                    #Clear the conditional
+                    events[ev].conditional = "False"
+
+            return events
+
+
 init -1 python:
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
@@ -1193,10 +1637,7 @@ define _dismiss_pause = config.developer
 default persistent.playername = ""
 default player = persistent.playername
 
-## Name change variables
-#Name for Protag-kun
-default persistent.mcname = persistent.playername
-default mcname = persistent.mcname
+## NOTE: name changing moved to script-ch30 because of currentuser
 
 default persistent.playthrough = 0
 default persistent.yuri_kill = 0
@@ -1283,6 +1724,7 @@ default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
 default persistent.event_list = []
+default persistent.event_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
@@ -1300,6 +1742,7 @@ define xp.AWAY_PER_HOUR = 10
 define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
+define is_monika_in_room = False # since everyone gets this error apparently
 
 default his = "his"
 default he = "he"

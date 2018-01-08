@@ -161,4 +161,4 @@ Add an appropriate title and a description of the changes you made, before you c
 
 # Join us!
 
-You can chat with the core team on [our development Discord channel](https://discord.gg/MRKPk4). We're always friendly to new contributors, and it's not just a great place to get help, but also just a fun place to hang out with like-minded DDLC fans.
+You can chat with the core team on [our development Discord channel](https://discord.gg/K2KuJeX). We're always friendly to new contributors, and it's not just a great place to get help, but also just a fun place to hang out with like-minded DDLC fans.

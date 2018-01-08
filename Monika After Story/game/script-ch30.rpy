@@ -6,6 +6,7 @@ default initial_monika_file_check = None
 default persistent.monika_anniversary = 0
 default persistent.firstdate = datetime.datetime.now()
 define allow_dialogue = True
+define modoorg.CHANCE = 20
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -89,7 +90,7 @@ init python:
     import store.hkb_button as hkb_button
     therapist = eliza.eliza()
     process_list = []
-    currentuser = persistent.playername #default to the player name
+    currentuser = None # start if with no currentuser
     if renpy.windows:
         try:
             process_list = subprocess.check_output("wmic process get Description", shell=True).lower().replace("\r", "").replace(" ", "").split("\n")
@@ -109,6 +110,14 @@ init python:
     except:
         #Monika will mention that you don't have a char file in ch30_main instead
         pass
+
+
+    # name changes if necessary
+    if not currentuser or len(currentuser) == 0:
+        currentuser = persistent.playername
+    if not persistent.mcname or len(persistent.mcname) == 0:
+        persistent.mcname = currentuser
+        mcname = currentuser
 
     #Define new functions
 
@@ -130,16 +139,23 @@ init python:
         if "K_ESCAPE" in config.keymap["game_menu"]:
            config.keymap["game_menu"].remove("K_ESCAPE")
 
-    def play_song(song):
+    def play_song(song, fadein=0.0):
         #
         # literally just plays a song onto the music channel
         #
         # IN:
         #   song - song to play. If None, the channel is stopped
+        #   fadein - number of seconds to fade in the song
         if song is None:
             renpy.music.stop(channel="music")
         else:
-            renpy.music.play(song,channel="music",loop=True,synchro_start=True)
+            renpy.music.play(
+                song,
+                channel="music",
+                loop=True,
+                synchro_start=True,
+                fadein=fadein
+            )
 
     def mute_music():
         #
@@ -205,7 +221,7 @@ init python:
 
     def show_dialogue_box():
         if allow_dialogue:
-            renpy.jump('ch30_monikatopics')
+            renpy.jump('prompt_menu')
 
     def pick_game():
         if allow_dialogue:
@@ -452,10 +468,6 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
-
-    call set_gender from _call_set_gender
-
-
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -465,23 +477,13 @@ label ch30_autoload:
             # random chance to do monika in room greeting
             # we'll say 1 in 20
             import random
-            is_monika_in_room = random.randint(1,20) == 1
+            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
 
     if not is_monika_in_room:
         if persistent.current_track:
             $ play_song(persistent.current_track)
         else:
             $ play_song(songs.current_track) # default
-
-    python:
-
-        # name changes if necessary
-        if not persistent.mcname or len(persistent.mcname) == 0:
-            persistent.mcname = persistent.playername
-            mcname = persistent.mcname
-
-        if not currentuser or len(currentuser) == 0:
-            currentuser = persistent.playername
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -512,50 +514,12 @@ label ch30_autoload:
             grant_xp(away_xp)
 
     $ elapsed = days_passed()
-    #If one day is past & event 'gender' has not been viewed, then add 'gender' to the queue.
-    if elapsed > 1 and not renpy.seen_label('gender') and not 'gender' in persistent.event_list:
-        $queueEvent('gender')
 
-    #Asks player if they want to be called by a different name
-    if not seen_event('preferredname'):
-        $pushEvent('preferredname')
+    #Run actions for any events that need to be changed based on a condition
+    $ persistent.event_database=Event.checkConditionals(persistent.event_database)
 
-    #Block for anniversary events
-    if elapsed < persistent.monika_anniversary * 365 and not 'anni_negative' in persistent.event_list:
-        $ persistent.monika_anniversary = 0
-        $pushEvent("anni_negative")
-    elif elapsed >= 36500 and persistent.monika_anniversary < 100 and not renpy.seen_label('anni_100') and not 'anni_100' in persistent.event_list:
-        $ persistent.monika_anniversary = 100
-        $pushEvent("anni_100")
-    elif elapsed >= 18250 and persistent.monika_anniversary < 50 and not renpy.seen_label('anni_50') and not 'anni_50' in persistent.event_list:
-        $ persistent.monika_anniversary = 50
-        $pushEvent("anni_50")
-    elif elapsed >= 7300 and persistent.monika_anniversary < 20 and not renpy.seen_label('anni_20') and not 'anni_20' in persistent.event_list:
-        $ persistent.monika_anniversary = 20
-        $pushEvent("anni_20")
-    elif elapsed >= 3650 and persistent.monika_anniversary < 10 and not renpy.seen_label('anni_10') and not 'anni_10' in persistent.event_list:
-        $ persistent.monika_anniversary = 10
-        $pushEvent("anni_10")
-    elif elapsed >= 1825 and persistent.monika_anniversary < 5 and not renpy.seen_label('anni_5') and not 'anni_5' in persistent.event_list:
-        $ persistent.monika_anniversary = 5
-        $pushEvent("anni_5")
-    elif elapsed >= 1460 and persistent.monika_anniversary < 4 and not renpy.seen_label('anni_4') and not 'anni_4' in persistent.event_list:
-        $ persistent.monika_anniversary = 4
-        $pushEvent("anni_4")
-    elif elapsed >= 1095 and persistent.monika_anniversary < 3 and not renpy.seen_label('anni_3') and not 'anni_3' in persistent.event_list:
-        $ persistent.monika_anniversary = 3
-        $pushEvent("anni_3")
-    elif elapsed >= 730 and persistent.monika_anniversary < 2 and not renpy.seen_label('anni_2') and not 'anni_2' in persistent.event_list:
-        $ persistent.monika_anniversary = 2
-        $pushEvent("anni_2")
-    elif elapsed >= 365 and persistent.monika_anniversary < 1 and not renpy.seen_label('anni_1') and not 'anni_1' in persistent.event_list:
-        $ persistent.monika_anniversary = 1
-        $pushEvent("anni_1")
-
-    #queue up the next reload event it exists and isn't already queue'd
-    $next_reload_event = "ch30_reload_" + str(persistent.monika_reload)
-    if not seen_event(next_reload_event) and not persistent.closed_self:
-        $queueEvent(next_reload_event)
+    #Run actions for any events that are based on the clock
+    $ persistent.event_database=Event.checkCalendar(persistent.event_database)
 
     $persistent.closed_self = False
 
@@ -581,6 +545,8 @@ label ch30_loop:
     # this event can call spaceroom
     if not is_monika_in_room:
         call spaceroom from _call_spaceroom_2
+    else:
+        $ is_monika_in_room = False
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
@@ -590,6 +556,7 @@ label ch30_loop:
 
     #Check time based events and grant time xp
     python:
+        import time
         try:
             calendar_last_checked
         except:
@@ -626,6 +593,11 @@ label ch30_loop:
         # Pick a random Monika topic
         label pick_random_topic:
         python:
+            all_random_topics = Event.filterEvents(persistent.event_database,random=True).keys()
+            monika_random_topics = all_random_topics
+            for topic in all_random_topics:
+                if seen_event(topic):
+                    monika_random_topics.remove(topic)
             if len(monika_random_topics) > 0:  # still have topics
                 pushEvent(renpy.random.choice(monika_random_topics))
             else: # no topics left
@@ -633,47 +605,5 @@ label ch30_loop:
                 pushEvent(renpy.random.choice(monika_random_topics))
 
     $_return = None
-
-    jump ch30_loop
-
-
-label ch30_monikatopics:
-    python:
-
-        # this workaround is so the hotkey button overlay properly disables
-        # certain buttons
-        allow_dialogue = False
-
-        player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
-
-        if player_dialogue:
-
-            raw_dialogue=player_dialogue
-            player_dialogue = player_dialogue.lower()
-            player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
-            persistent.current_monikatopic = 0
-
-            player_dialogue = player_dialogue.split()
-            #Look at all possible ngrams in the dialogue
-            player_dialogue_ngrams=player_dialogue
-            player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
-            for bigram in player_dialogue_bigrams:
-                player_dialogue_ngrams.append(' '.join(bigram))
-
-            possible_topics=[] #track all topics that correspond to the input
-            for key in player_dialogue_ngrams:
-                if key in monika_topics:
-                    for topic_id in monika_topics[key]:
-                        if topic_id not in possible_topics:
-                            possible_topics.append(topic_id)
-
-            if possible_topics == []: #Therapist answer if no keywords match
-                # give a therapist answer for all the depressed weebs
-                response = therapist.respond(raw_dialogue)
-                m("[response]")
-            else:
-                pushEvent(renpy.random.choice(possible_topics)) #Pick a random topic
-
-        allow_dialogue = True
 
     jump ch30_loop
