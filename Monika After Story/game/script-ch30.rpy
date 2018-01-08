@@ -90,7 +90,7 @@ init python:
     import store.hkb_button as hkb_button
     therapist = eliza.eliza()
     process_list = []
-    currentuser = persistent.playername #default to the player name
+    currentuser = None # start if with no currentuser
     if renpy.windows:
         try:
             process_list = subprocess.check_output("wmic process get Description", shell=True).lower().replace("\r", "").replace(" ", "").split("\n")
@@ -110,6 +110,14 @@ init python:
     except:
         #Monika will mention that you don't have a char file in ch30_main instead
         pass
+
+
+    # name changes if necessary
+    if not currentuser or len(currentuser) == 0:
+        currentuser = persistent.playername
+    if not persistent.mcname or len(persistent.mcname) == 0:
+        persistent.mcname = currentuser
+        mcname = currentuser
 
     #Define new functions
 
@@ -131,16 +139,23 @@ init python:
         if "K_ESCAPE" in config.keymap["game_menu"]:
            config.keymap["game_menu"].remove("K_ESCAPE")
 
-    def play_song(song):
+    def play_song(song, fadein=0.0):
         #
         # literally just plays a song onto the music channel
         #
         # IN:
         #   song - song to play. If None, the channel is stopped
+        #   fadein - number of seconds to fade in the song
         if song is None:
             renpy.music.stop(channel="music")
         else:
-            renpy.music.play(song,channel="music",loop=True,synchro_start=True)
+            renpy.music.play(
+                song,
+                channel="music",
+                loop=True,
+                synchro_start=True,
+                fadein=fadein
+            )
 
     def mute_music():
         #
@@ -461,16 +476,6 @@ label ch30_autoload:
             $ play_song(persistent.current_track)
         else:
             $ play_song(songs.current_track) # default
-
-    python:
-
-        # name changes if necessary
-        if not persistent.mcname or len(persistent.mcname) == 0:
-            persistent.mcname = persistent.playername
-            mcname = persistent.mcname
-
-        if not currentuser or len(currentuser) == 0:
-            currentuser = persistent.playername
 
     window auto
     #If you were interrupted, push that event back on the stack

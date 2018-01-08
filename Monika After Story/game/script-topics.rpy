@@ -10,9 +10,44 @@ define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-# NOTE: only use this for testing
-#init 2 python:
-#    persistent.event_database = dict()
+# we are going to define removing seen topics as a function,
+# as we need to call it dynamically upon import
+init -1 python:
+    def remove_seen_labels(pool):
+        #
+        # Removes seen labels from the given pool
+        #
+        # IN:
+        #   pool - a list of labels to check for seen
+        #
+        # OUT:
+        #   pool - list of unseen labels (may be empty)
+        for index in range(len(pool)-1, -1, -1):
+            if renpy.seen_label(pool[index]):
+                pool.pop(index)
+
+    # EXCEPTION CLass incase of bad labels
+    class MASTopicLabelException(Exception):
+        def __init__(self, msg):
+            self.msg = msg
+        def __str__(self):
+            return "MASTopicLabelException: " + self.msg
+
+init 11 python:
+    #List of all random topics
+    all_random_topics = list(monika_random_topics)
+
+    # go through the topics list and ensure the labels exist
+    for topic in monika_random_topics:
+        if not renpy.has_label(topic):
+            raise MASTopicLabelException("topic '" + topic + "' does not exist.")
+
+    #Remove all previously seen random topics.
+    remove_seen_labels(monika_random_topics)
+
+    #If there are no unseen topics, you can repeat seen ones
+    if len(monika_random_topics) == 0:
+        monika_random_topics=list(all_random_topics)
 
 
 #BEGIN ORIGINAL TOPICS
@@ -2655,6 +2690,7 @@ label monika_lottery:
     m 1j"..."
     m 1k "You~!"
     m 1a "You're the only thing I need, [player]."
+    return
 
 init 5 python:
     addEvent(Event(eventlabel="monika_innovation",category=['random'],prompt="Innovation",random=True))
@@ -2843,7 +2879,7 @@ label monika_cupcake:
     m "I’m sure your cupcakes would taste just as good."
     m "Maybe someday I’ll get to try them but for now…"
     m 1j "I’ll just settle for the sweetness of your love~"
-    #This is a list of keywords for this topic
+    return
 
 init 5 python:
     addEvent(Event(eventlabel="monika_haterReaction",category=['random'],prompt="Dealing with haters",random=True))
@@ -3171,7 +3207,7 @@ label monika_penname:
     m 2c "They keep it hidden from everyone just so it won't affect their personal lives."
     m 2b "Pen names also help writers create something totally different from their usual style of writing."
     m 2d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
-    if [mcname] != [player]:
+    if mcname.lower() != player.lower():
         m 3c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 3d "'[mcname] and [player].'"
@@ -3191,26 +3227,34 @@ label monika_changename:
     m 1b "You want to change your name?"
     menu:
         "Yes":
-            m 1a "Just type 'Nevermind' if you change your mind."
+            m 1a "Just type 'nevermind' if you change your mind."
             $ done = False
             while not done:
-                $ tempname = renpy.input("What do you want me to call you?").strip(' \t\n\r')
-                if tempname == "Nevermind" or tempname == "nevermind":
+                $ tempname = renpy.input("What do you want me to call you?",length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
                     m 1f "[player]!"
-                    m 3g "Please stop teasing me~"
+                    m 2g "Please stop teasing me~"
                     m "I really do want to know what you want me to call you!"
-                    m 2l "I won't judge no matter how ridiculous it might be."
-                    m 3e "So don't be shy and just tell me, [player]~"
+                    m 3l "I won't judge no matter how ridiculous it might be."
+                    m 2e "So don't be shy and just tell me, [player]~"
                     $ done = True
-                elif tempname == "":
-                    m 3h "..."
+                elif lowername == "":
+                    m 2h "..."
                     m 4l "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1b "Try again!"
-                elif tempname == player:
-                    m 3h "..."
+                elif lowername == player:
+                    m 2h "..."
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
+                elif len(lowername) >= 10:
+                    m 2q "[player]..."
+                    m 2l "That name's a bit too long."
+                    if len(lowername) > 20:
+                        m "And I'm sure you're just being silly since names aren't that long, you know."
+                    m 1 "Try again."
+
                 else:
 
                     # sayori name check
@@ -3225,8 +3269,16 @@ label monika_changename:
                         mcname = player
                         persistent.playername = tempname
                         player = tempname
-                    m 1b "Ok then!"
-                    m 2b "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+
+                    if lowername == "monika":
+                        m 1d "Really?"
+                        m 3k "That's the same as mine!"
+                        m 1m "Well..."
+                        m 1n "Either it really is your name or you're playing a joke on me."
+                        m 1j "But it's fine by me if that's what you want me to call you~"
+                    else:
+                        m 1b "Ok then!"
+                        m 3b "From now on, I'll call you {i}'[player],'{/i} ehehe~"
                     $ done = True
         "No":
             m 1f "Oh, I see..."

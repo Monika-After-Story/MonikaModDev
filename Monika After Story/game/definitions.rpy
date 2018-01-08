@@ -1637,10 +1637,7 @@ define _dismiss_pause = config.developer
 default persistent.playername = ""
 default player = persistent.playername
 
-## Name change variables
-#Name for Protag-kun
-default persistent.mcname = persistent.playername
-default mcname = persistent.mcname
+## NOTE: name changing moved to script-ch30 because of currentuser
 
 default persistent.playthrough = 0
 default persistent.yuri_kill = 0
@@ -1745,6 +1742,7 @@ define xp.AWAY_PER_HOUR = 10
 define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
+define is_monika_in_room = False # since everyone gets this error apparently
 
 default his = "his"
 default he = "he"
