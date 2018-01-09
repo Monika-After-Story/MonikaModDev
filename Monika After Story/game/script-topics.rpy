@@ -5183,3 +5183,5 @@ label monika_1984:
 #wanted to write about natsukis cupcakes, but didnt know how to write the end the conversation
 
 #encourage player to take a rest after long periods of programs such as MS word/Xcode open (is it even possible? -Yuki)
+
+#have this thought that this is the closest both of them can get at meeting each other at the moment according to the information she gathered while browsing the internet and if there is a program out there better at doing so, she have faith to the player that she won't replace her.
