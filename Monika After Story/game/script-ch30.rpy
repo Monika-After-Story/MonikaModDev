@@ -3,8 +3,6 @@ default persistent.tried_skip = None
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
-default persistent.monika_anniversary = 0
-default persistent.firstdate = datetime.datetime.now()
 define allow_dialogue = True
 define modoorg.CHANCE = 20
 
@@ -274,10 +272,6 @@ init python:
     morning_flag = None
     def is_morning():
         return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-    def days_passed():
-        now = datetime.datetime.now()
-        delta = now - persistent.firstdate
-        return delta.days
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -307,7 +301,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             else:
                 show monika_day_room
             if not hide_monika:
-                show monika 1 at tinstant zorder 2
+                show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
     elif not is_morning():
         if morning_flag != False or scene_change:
@@ -326,7 +320,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 show monika_room
                 #show monika_bg_highlight
             if not hide_monika:
-                show monika 1 at tinstant zorder 2
+                show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
 
     $scene_change = False
@@ -468,6 +462,7 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
+    $ startup_check = True #Flag for checking events at game startup
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -492,28 +487,26 @@ label ch30_autoload:
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
-            away_experience_time=time.time()-persistent.sessions['last_session_end'] #Time since end of previous session
+            away_experience_time=datetime.datetime.now()-persistent.sessions['last_session_end'] #Time since end of previous session
             away_xp=0
 
             #Reset the idlexp total if monika has had at least 6 hours of rest
-            if away_experience_time >= times.REST_TIME:
+            if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
             #Ignore anything beyond 3 days
-            if away_experience_time > times.HALF_XP_AWAY_TIME:
-                away_experience_time=times.HALF_XP_AWAY_TIME
+            if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
+                away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
 
             #Give 5 xp per hour for everything beyond 1 day
-            if away_experience_time > times.FULL_XP_AWAY_TIME:
-                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time-times.FULL_XP_AWAY_TIME)/3600.0
-                away_experience_time = times.FULL_XP_AWAY_TIME
+            if away_experience_time.total_seconds() > times.FULL_XP_AWAY_TIME:
+                away_xp =+ (xp.AWAY_PER_HOUR/2.0)*(away_experience_time.total_seconds()-times.FULL_XP_AWAY_TIME)/3600.0
+                away_experience_time = datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
 
             #Give 10 xp per hour for the first 24 hours
-            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time/3600.0
+            away_xp =+ xp.AWAY_PER_HOUR*away_experience_time.total_seconds()/3600.0
 
             #Grant the away XP
             grant_xp(away_xp)
-
-    $ elapsed = days_passed()
 
     #Run actions for any events that need to be changed based on a condition
     $ persistent.event_database=Event.checkConditionals(persistent.event_database)
@@ -537,6 +530,7 @@ label ch30_autoload:
 
     if not is_monika_in_room:
         $ set_keymaps()
+    $startup_check = False
     jump ch30_loop
 
 label ch30_loop:
@@ -556,27 +550,27 @@ label ch30_loop:
 
     #Check time based events and grant time xp
     python:
-        import time
         try:
             calendar_last_checked
         except:
             calendar_last_checked=persistent.sessions['current_session_start']
+        time_since_check=datetime.datetime.now()-calendar_last_checked
 
         # limit xp gathering to when we are not maxed
         # and once per minute
         if (
                 persistent.idlexp_total < xp.IDLE_XP_MAX
-                and time.time()-calendar_last_checked>60
+                and time_since_check.total_seconds()>60
             ):
 
-            idle_xp=xp.IDLE_PER_MINUTE*(time.time()-calendar_last_checked)/60.0
+            idle_xp=xp.IDLE_PER_MINUTE*(time_since_check.total_seconds())/60.0
             persistent.idlexp_total += idle_xp
             if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
                 idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
                 persistent.idlexp_total=xp.IDLE_XP_MAX
 
             grant_xp(idle_xp)
-            calendar_last_checked=time.time()
+            calendar_last_checked=datetime.datetime.now()
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1

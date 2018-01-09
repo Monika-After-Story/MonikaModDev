@@ -30,18 +30,19 @@ init 100 python:
 #   persistent.current_monikatopic
 init python:
 
-    def addEvent(event):
+    def addEvent(event, eventdb=persistent.event_database):
         #
-        # Adds an event object to the persistent event database
+        # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
         # This function ensures that a bad item is not added to the database
         #
         # IN:
         #   event - the Event object to add to database
-        #
-        # ASSUMES:
-        #   persistent.event_database
+        #   eventdb - The Event databse (dict) we want to add to
+        #       (Default: persistent.event_database)
 
+        if type(eventdb) is not dict:
+            raise EventException("Given db is not of type dict")
         if type(event) is not Event:
             raise EventException("'" + str(event) + "' is not an Event object")
         if not renpy.has_label(event.eventlabel):
@@ -54,7 +55,7 @@ init python:
                 raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
 
         # now this event has passsed checks, we can add it to the db
-        persistent.event_database.setdefault(event.eventlabel, event)
+        eventdb.setdefault(event.eventlabel, event)
 
     def pushEvent(event_label):
         #
@@ -163,14 +164,14 @@ label call_next_event:
             if not persistent.event_database[event_label].unlocked:
                 python:
                     persistent.event_database[event_label].unlocked=True
-                    persistent.event_database[event_label].unlock_date=time.time()
+                    persistent.event_database[event_label].unlock_date=datetime.datetime.now()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
             jump _quit
 
         $ allow_dialogue = True
-        show monika 1 at tinstant zorder 2 #Return monika to normal pose
+        show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
     else:
         return False
 
@@ -180,13 +181,12 @@ label call_next_event:
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        import time
         pool_event_keys = Event.filterEvents(persistent.event_database,unlocked=False,pool=True).keys()
 
         if len(pool_event_keys)>0:
             unlock_event = renpy.random.choice(pool_event_keys)
             persistent.event_database[unlock_event].unlocked = True
-            persistent.event_database[unlock_event].unlock_date = time.time()
+            persistent.event_database[unlock_event].unlock_date = datetime.datetime.now()
 
     return
 

@@ -359,7 +359,7 @@ python early:
             # This checks the conditionals for all of the events in the event list
             # if any evaluate to true, run the desired action then clear the
             # conditional.
-            import time
+            import datetime
 
             # sanity check
             if not events or len(events) == 0:
@@ -381,7 +381,7 @@ python early:
                             queueEvent(ev)
                         elif events[ev].getAction() == EV_ACT_UNLOCK:
                             events[ev].unlocked = True
-                            events[ev].unlock_date = time.time()
+                            events[ev].unlock_date = datetime.datetime.now()
                         elif events[ev].getAction() == EV_ACT_RANDOM:
                             events[ev].random = True
                         elif events[ev].getAction() == EV_ACT_POOL:
@@ -398,7 +398,7 @@ python early:
             # This checks the date for all events to see if they are active.
             # If they are active, then it checks for a conditional, and evaluates
             # if an action should be run.
-            import time
+            import datetime
 
             # sanity check
             if not events or len(events) == 0:
@@ -407,7 +407,7 @@ python early:
             # dict check
             ev_list = events.keys() # python 2
 
-            current_time = time.time()
+            current_time = datetime.datetime.now()
             # insertion sort
             for ev in ev_list:
                 event_time = True
@@ -438,7 +438,7 @@ python early:
                         queueEvent(ev)
                     elif events[ev].getAction() == EV_ACT_UNLOCK:
                         events[ev].unlocked = True
-                        events[ev].unlock_date = time.time()
+                        events[ev].unlock_date = current_time
                     elif events[ev].getAction() == EV_ACT_RANDOM:
                         events[ev].random = True
                     elif events[ev].getAction() == EV_ACT_POOL:
@@ -1730,7 +1730,7 @@ default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False}
-default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':0,'total_sessions':0}
+default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 define times.REST_TIME = 6*3600
@@ -1743,6 +1743,8 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
+init python:
+    startup_check = False
 
 default his = "his"
 default he = "he"
