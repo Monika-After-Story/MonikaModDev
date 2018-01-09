@@ -3986,7 +3986,7 @@ init 5 python:
 label monika_icecream:
     m 3a "Hey [player], what's your favorite kind of ice cream?"
     m 4l "And no, I'm not a type of ice cream ehehe~."
-    m 2a "Personally, I just can't get enough of mint flavoured ice cream!"
+    m 2a "Personally, I just can't get enough of mint flavored ice cream!"
     menu:
         m "What about you [player], do you like mint ice cream?"
         "Yes.":
