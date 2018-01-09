@@ -5131,11 +5131,9 @@ init 5 python:
 label monika_asks_family:
     m 3a "Tell me about your family, [player]. What are they like?"
     menu:
-        "My family is the best. Things are practically as good as they could be":
+        "My family is the best.":
             m 3b "That's wonderful!"
             m 3a "Your parents must be great people~"
-            m 2j "Which makes sense considering they raised you, after all."
-            m 3k "Hahaha!"
             m 3b "I can't wait to meet your entire family, [player]!"
             m 3a "Do you have any brothers or sisters?"
             menu:
