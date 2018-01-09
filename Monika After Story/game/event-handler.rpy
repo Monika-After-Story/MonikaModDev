@@ -163,7 +163,7 @@ label call_next_event:
             if not persistent.event_database[event_label].unlocked:
                 python:
                     persistent.event_database[event_label].unlocked=True
-                    persistent.event_database[event_label].unlock_date=time.time()
+                    persistent.event_database[event_label].unlock_date=datetime.datetime.now()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
@@ -180,13 +180,12 @@ label call_next_event:
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        import time
         pool_event_keys = Event.filterEvents(persistent.event_database,unlocked=False,pool=True).keys()
 
         if len(pool_event_keys)>0:
             unlock_event = renpy.random.choice(pool_event_keys)
             persistent.event_database[unlock_event].unlocked = True
-            persistent.event_database[unlock_event].unlock_date = time.time()
+            persistent.event_database[unlock_event].unlock_date = datetime.datetime.now()
 
     return
 
