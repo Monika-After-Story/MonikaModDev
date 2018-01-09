@@ -1730,7 +1730,7 @@ default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False}
-default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0}
+default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 define times.REST_TIME = 6*3600

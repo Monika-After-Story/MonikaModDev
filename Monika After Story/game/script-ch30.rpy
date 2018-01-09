@@ -3,8 +3,6 @@ default persistent.tried_skip = None
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
-default persistent.monika_anniversary = 0
-default persistent.firstdate = datetime.datetime.now()
 define allow_dialogue = True
 define modoorg.CHANCE = 20
 
@@ -274,10 +272,6 @@ init python:
     morning_flag = None
     def is_morning():
         return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-    def days_passed():
-        now = datetime.datetime.now()
-        delta = now - persistent.firstdate
-        return delta.days
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -512,8 +506,6 @@ label ch30_autoload:
 
             #Grant the away XP
             grant_xp(away_xp)
-
-    $ elapsed = days_passed()
 
     #Run actions for any events that need to be changed based on a condition
     $ persistent.event_database=Event.checkConditionals(persistent.event_database)
