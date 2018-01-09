@@ -9,6 +9,7 @@ define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+define did_monika_battery = False
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -4021,14 +4022,14 @@ label monika_pets:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
-    
-    
+
+
 init 5 python:
     addEvent(Event(eventlabel="monika_dogs",category=['animals'],prompt="Man's best friend",random=True))
 
 label monika_dogs:
     m 1b "Do you like dogs, [player]?"
-    m 1k "Dogs are great! They're really good to have around." 
+    m 1k "Dogs are great! They're really good to have around."
     m "Not to mention owning a dog has shown to help people with anxiety and depression since they're very sociable animals."
     m 3j "They're just so lovable, I really like them!"
     m 1m "I know Natsuki feels the same..."
@@ -4615,4 +4616,42 @@ label monika_wolf:
     m 1 "I can't help but be reminded of how you saved my life by being here with me."
     m 1e "I really do depend on you, [player]."
     m 3k "You're my hero after all~"
+
+label monika_battery:
+    if did_monika_battery:
+       jump monika_close_game_battery
+    else:
+       jump monika_complain_battery
+
+label monika_complain_battery:
+    $ did_monika_battery = True
+    m "Hey [player]..."
+    m "It looks like your computer's battery is running out..."
+    m "Can you charge it for me?"
+    m "I don't want us to be separated or even worse..."
+    m "... losing my memory because of data loss"
+    m "Do you wanna know why a normal shut down takes a while?"
+    m "Because some of the data isn't written to the hard drive yet"
+    m "So the operating system have to write all of the data that are still in RAM before it shuts down..."
+    m "I don't want to loose this wonderful memory of us..."
+    m "So please charge your computer, okay?"
+    m "... or at least, shut it down so no data is loss"
+    return
+
+init 5 python:
+    import battery
+
+label monika_close_game_battery:
+    m "Hey [player]..."
+    m "I'm still worried about data loss."
+    m "So.. I'll just close the game for now... {w=3.0}{nw}"
+    $ is_charging = battery.is_charging()
+    if is_charging:
+       jump monika_system_charging
+    $ renpy.quit()
+    return
+
+label monika_system_charging:
+    m "Oh, you just plugged it in..."
+    m "Thank you [player]!"
     return
