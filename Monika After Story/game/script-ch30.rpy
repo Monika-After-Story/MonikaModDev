@@ -462,6 +462,7 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
+    $ startup_check = True #Flag for checking events at game startup
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -529,6 +530,7 @@ label ch30_autoload:
 
     if not is_monika_in_room:
         $ set_keymaps()
+    $startup_check = False
     jump ch30_loop
 
 label ch30_loop:
