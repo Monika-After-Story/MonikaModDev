@@ -1,4 +1,5 @@
-
+init 100 python:
+    layout.QUIT = "Are you really leaving me, [player]?"
 ## Initialization
 ################################################################################
 
@@ -1446,8 +1447,8 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action yes_action
-                textbutton _("No") action no_action
+                textbutton _("Yes") action Show(screen="dialog", message="I see...\nPlease come back soon, [player]!", ok_action=yes_action)
+                textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
