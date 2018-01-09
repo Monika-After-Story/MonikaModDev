@@ -182,13 +182,30 @@ label v0_3_3(version=version): # 0.3.3
 label v0_3_2(version=version): # 0.3.2
 label v0_3_1(version=version): # 0.3.1
     python:
-        # update!
+        # update !
         persistent = updateTopicIDs(version)
 
     return
 
+# non generic updates go here
+
+# 0.7.0
+label v0_7_0(version="v0_7_0"):
+    python:
+        # check for christmas existence and delete!
+        import os
+        try: os.remove(config.basedir + "/game/christmas.rpyc")
+        except: pass
+
+        # update !
+        persistent = updateTopicIDs(version)
+        
+        # now properly set all seen events as unlocked
+        # TODO
+    return
+
 # 0.4.0
-label v0_4_0(version):
+label v0_4_0(version="v0_4_0"):
     python:
         # persistent topics are dunzo
         persistent.monika_random_topics = None
@@ -199,12 +216,12 @@ label v0_4_0(version):
     return
 
 # 0.3.0
-label v0_3_0:
+label v0_3_0(version="v0_3_0"):
     python:
         # the following labels are special cases because of conflicts
         removeTopicID("monika_piano")
         removeTopicID("monika_college")
 
         # update!
-        persistent = updateTopicIDs("v0_3_0")
+        persistent = updateTopicIDs(version)
     return
