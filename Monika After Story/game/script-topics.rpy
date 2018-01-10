@@ -3509,7 +3509,7 @@ label monika_evening:
     if current_time >= 18 and current_time <= 23:
         m "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m "It's so nice to put your feet after a very long day."
+        m "It's so nice to put your feet up after a very long day."
         m 2j "Evenings are the perfect time to catch up on whatever you were doing the previous day."
         m 1c "Sometimes I can't help but feel sad when the day ends."
         m "It makes me think of what else I could've done during the day."
