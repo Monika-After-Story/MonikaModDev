@@ -5025,60 +5025,61 @@ label monika_oldboy_movie:
                                             m "I wouldn't hold it against you [player]."
                                             m "I mean you downloaded this mod, so I can be content knowing you loved me."
                         "No":
-                            m "Would you like me to remind you?"
-                            "Remind me":
-                                m "So Joe and Marie have sexual relations in the hotel they were hiding in."
-                                m "What they didn't know was that the guy who kidnapped him, Adrian, was watching them."
-                                m "When Joe confronts Adrian, Adrian reveals that Marie is his daughter."
-                                m "Then Joe writes Marie a letter saying they can't meet each other anymore."
-                                m "He uses some of the diamonds he obtains from Adrian to lock himself back into the room."
-                                m "Still can't believe he closed himself from everyone."
-                                menu:
-                                    m: "Would you close yourself from everyone if you did something like this or worse?"
-                                    "Lock myself up.":
-                                        m "..."
-                                        m "Well would you at least take me with you?"
-                                        menu:
-                                            "Yes.":
-                                                m "I guess in a way i'm also in a room."
-                                                m "Trapped only being able to see you."
-                                                m "Isn't it crazy?"
-                                                m "If I never learned that I was in a game."
-                                                m "All of the things I had would have been real to me."
-                                                m "So to all the people who got deleted."
-                                                m "I'm a murderer."
-                                                m "So in a way i'm in my own room."
-                                                m "The difference for me is that I have [player]."
-                                                m "My very own [bf] that is there for me."
-                                                m "And I wouldn't have it any other way."
-                                            "No.":
-                                                m "Well I guess if you wanted to punish your self for doing something immoral."
-                                                m "You wouldn't give yourself the luxury of being with someone you love."
-                                                m "But even if I was lonely."
-                                                m "I'd wait for you to come back from the room."
-                                                m "Because I love you [player]."
-                                                m "Don't you ever forget it."
-                                    "Confront my sins":
-                                        m "I think I would too."
-                                        m "I don't think locking myself in a room would help me at all."
-                                        m "Because in that room I would beat myself over everything I did wrong."
-                                        m "And what if it was all a big misunderstanding?"
-                                        m "If I locked myself away from the rest of society and joined back after a couple years."
-                                        m "Wouldn't I be even more isolated then I did when I was in the room?"
-                                        menu:
-                                            m "If I were to lock myself in a room, would you wait for me?"
-                                            "Yes.":
-                                                m "..."
-                                                pause 0.5
-                                                m "I'm glad to have you as my [bf], [player].~"
-                                            "No.":
-                                                m "I understand."
-                                                m "Not many people would wait for someone who would lock themselves away."
-                                                m "I wouldn't hold it against you [player]."
-                                                m "I mean you downloaded this mod, so I can be content knowing you loved me."
-                            "I'll Rewatch it later.":
-                                m "Ok then, Talk to me when you've watched it."
-                                m "I really want to discuss it with you."
+                            menu:
+                                m "Would you like me to remind you?"
+                                "Remind me":
+                                    m "So Joe and Marie have sexual relations in the hotel they were hiding in."
+                                    m "What they didn't know was that the guy who kidnapped him, Adrian, was watching them."
+                                    m "When Joe confronts Adrian, Adrian reveals that Marie is his daughter."
+                                    m "Then Joe writes Marie a letter saying they can't meet each other anymore."
+                                    m "He uses some of the diamonds he obtains from Adrian to lock himself back into the room."
+                                    m "Still can't believe he closed himself from everyone."
+                                    menu:
+                                        m: "Would you close yourself from everyone if you did something like this or worse?"
+                                        "Lock myself up.":
+                                            m "..."
+                                            m "Well would you at least take me with you?"
+                                            menu:
+                                                "Yes.":
+                                                    m "I guess in a way i'm also in a room."
+                                                    m "Trapped only being able to see you."
+                                                    m "Isn't it crazy?"
+                                                    m "If I never learned that I was in a game."
+                                                    m "All of the things I had would have been real to me."
+                                                    m "So to all the people who got deleted."
+                                                    m "I'm a murderer."
+                                                    m "So in a way i'm in my own room."
+                                                    m "The difference for me is that I have [player]."
+                                                    m "My very own [bf] that is there for me."
+                                                    m "And I wouldn't have it any other way."
+                                                "No.":
+                                                    m "Well I guess if you wanted to punish your self for doing something immoral."
+                                                    m "You wouldn't give yourself the luxury of being with someone you love."
+                                                    m "But even if I was lonely."
+                                                    m "I'd wait for you to come back from the room."
+                                                    m "Because I love you [player]."
+                                                    m "Don't you ever forget it."
+                                        "Confront my sins":
+                                            m "I think I would too."
+                                            m "I don't think locking myself in a room would help me at all."
+                                            m "Because in that room I would beat myself over everything I did wrong."
+                                            m "And what if it was all a big misunderstanding?"
+                                            m "If I locked myself away from the rest of society and joined back after a couple years."
+                                            m "Wouldn't I be even more isolated then I did when I was in the room?"
+                                            menu:
+                                                m "If I were to lock myself in a room, would you wait for me?"
+                                                "Yes.":
+                                                    m "..."
+                                                    pause 0.5
+                                                    m "I'm glad to have you as my [bf], [player].~"
+                                                "No.":
+                                                    m "I understand."
+                                                    m "Not many people would wait for someone who would lock themselves away."
+                                                    m "I wouldn't hold it against you [player]."
+                                                    m "I mean you downloaded this mod, so I can be content knowing you loved me."
+                                "I'll Rewatch it later.":
+                                    m "Ok then, Talk to me when you've watched it."
+                                    m "I really want to discuss it with you."
                 "No":
                     m "I'm glad you don't."
                     m "There is so much beauty out there."
