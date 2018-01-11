@@ -15,7 +15,11 @@ label update_now:
                 except: pass
 
     default check_wait = 21600
-    if time.time()-last_updated > check_wait and updater.can_update():
+    
+    # Do not update if there is a donotupdate file
+    is_dont_update = Path(config.basedir + "/mas_donotupdate.txt").exists();
+    
+    if time.time()-last_updated > check_wait and updater.can_update() and !is_dont_update:
         $timeout = False
         $latest_version = updater.UpdateVersion('http://updates.monikaafterstory.com/updates.json',check_interval=0)
         call screen update_check(Return(True),Return(False))
