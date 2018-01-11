@@ -220,6 +220,10 @@ init python:
     ## This is the archive of data for your mod
     #build.archive(build.name, "all")
 
+    #Add the pictures necessary for the scrollable menu
+    build.classify("game/gui/button/scrollable_menu_hover_background.png",build.name)
+    build.classify("game/gui/button/scrollable_menu_idle_background.png",build.name)
+
     ## These files get put into your data file
     build.classify("game/mod_assets/**",build.name)
     #build.classify("game/**.rpy",build.name) #Optional line to include plaintext scripts
