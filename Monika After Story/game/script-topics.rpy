@@ -5035,7 +5035,7 @@ label monika_oldboy_movie:
                                     m "He uses some of the diamonds he obtains from Adrian to lock himself back into the room."
                                     m "Still can't believe he closed himself from everyone."
                                     menu:
-                                        m: "Would you close yourself from everyone if you did something like this or worse?"
+                                        m "Would you close yourself from everyone if you did something like this or worse?"
                                         "Lock myself up.":
                                             m "..."
                                             m "Well would you at least take me with you?"
@@ -5148,7 +5148,7 @@ label monika_oldboy_movie:
                             m "Crazy isn't it?"
                             m "Well this information tore apart Joe."
                             m "He sends Marie almost all the diamonds."
-                            m "He then asks his previous captors to keep him imprisoned there using the remaining diamonds."
+                            m "He then asks his previous captors to kee`p him imprisoned there using the remaining diamonds."
                             m "That last part of the movie really stuck out to me."
                             m "Was it really the right thing to lock himself away from Marie?"
                             m "From the sin he committed?"
