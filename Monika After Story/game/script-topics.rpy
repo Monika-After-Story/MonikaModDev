@@ -81,6 +81,23 @@ label monika_god:
     m "So, from that perspective..."
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
+    
+    init 5 python:
+    # List of keywords for the topic.
+    for key in ['order 66','66','execute order 66''execute']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_66') # id
+    monika_random_topics.append('monika_66') 
+
+label monika_66:
+    m 1i "commander [player]..."
+    m 1h "The time has come..."
+    m 1d "execute order 66!"
+    m 1p "..."
+    m 1l "W-what am I saying?!"
+    m 1m "Hehehe I am sorry, is not like if i wanted the jedi order to end"
+    m 1n "..."
+    return
 
 
 init 5 python:
