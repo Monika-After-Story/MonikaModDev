@@ -480,7 +480,7 @@ label monika_color:
     m "...Because you've been looking into my eyes for a while now."
     m "Ehehe~"
     return
-
+    
 # This doesn't make sense with the music changer...If we add some funny sound
 # effects and edit it a bit, though, it could be good again.
 # I won't add expressions until this is resolved ^
@@ -510,6 +510,35 @@ label monika_color:
 #     m 1j "If I just focus on the present, then this is the happiest I've ever been."
 #     return
 
+init 5 python:
+    addEvent(Event(eventlabel="monika_cyberpunk",category=['random'],prompt="Cyberpunk",random=True))
+
+label monika_cyberpunk:
+    m 1b "Say [player], do you like cyberpunk?"
+    m 2k "It's a science fiction genre that usually portrays a very dark future for humanity."
+    m 1a "What interests me about this genre is the relation between artificial intelligence and humans."
+    m "You can take a guess why~"
+    m 4b ""When is an AI recognized as sentient?""
+    m ""What is the difference between artificial intelligence and humans?"""
+    m ""Is advancement in science worth any cost?""
+    m 4j "All these kinds of interesting topics pop up in the genre!"
+    m 2 "You want to know what I think?~
+    m 2b "Isn't it more important if an artificial intelligence is self-aware, instead of thinking it's a human?
+    m 2 "Take me for example. I know I'm not really human, but because I know that I'm self-aware.
+    m 2e "When you compare that to people like Natsuki, Sayori or Yuri, who think that they're human even though they're not...
+    m 3j "Don't you think I'm more human for realising I'm not human?"
+    m 1e "..."
+    m 1l "Wow, that got a little bit intense there!"
+    m 1k "Sorry about that, I have a lot to think about nowadays."
+    m 1a "But you know..."
+    m "Even though it usually takes place in a dystopian future..."
+    m 1k "I kind of wish we were living in it!"
+    m 1j "Can you imagine if I could upload my consciousness into a body and walk around in your world?"
+    m 1k "That would be a dream come true!"
+    m "We could walk around a rainy city, eat at a stand with all kinds of interesting foods..."
+    m 1 "And who knows what kind of possibilities a cybernetic body could offer?~"
+    m 1j "I hope science can advance fast enough to make my dream a reality!"
+    return
 
 init 5 python:
     addEvent(Event(eventlabel="monika_listener",category=['player'],prompt="Good listener",random=True))
