@@ -36,6 +36,18 @@ image hm_s:
                 0.05
         repeat
 
+# window sayori
+# we are dependent on exisitng images to create the window sayori
+image hm_s_win_6 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), 0.2)
+image hm_s_win_5 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), 0.2)
+image hm_s_win_4 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), 0.2)
+image hm_s_win_3 = im.FactorScale(im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), 0.2)
+image hm_s_win_2 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), 0.2)
+image hm_s_win_1 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), 0.2)
+image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horizontal=True), 0.2)
+image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), 0.2)
+image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), 0.2)
+
 #image hm_s1 = "mod_assets/hangman/hm_s1.png"
 #image hm_s2 = "mod_assets/hangman/hm_s2.png"
 
@@ -57,6 +69,22 @@ transform hangman_display_word:
 
 transform hangman_hangman:
     xanchor 0 yanchor 0 xpos 880 ypos 125
+
+# window sayori
+# left in
+transform hangman_sayori(z=1.0):
+    xcenter -300 yoffset 0 yalign 0.5 zoom z*1.00 alpha 1.00 subpixel True
+    easein 0.25 xcenter 90
+    
+# regular
+transform hangman_sayori_i(z=1.0):
+    xcenter 90 yoffset 0 yalign 0.5 zoom z*1.00 alpha 1.00 subpixel True
+
+# hop
+transform hangman_sayori_h(z=1.0):
+    xcenter 90 yoffset 0 yalign 0.5 zoom z*1.00 alpha 1.00 subpixel True
+    easein 0.1 yoffset -20
+    easeout 0.1 yoffset 0
 
 # we want monika on a kind of offset to the left
 transform hangman_monika(z=0.80):
@@ -165,6 +193,8 @@ init 10 python:
 label game_hangman:
     $ import store.hangman as hmg
     $ from copy import deepcopy
+    $ is_sayori = persistent.playername.lower() == "sayori"
+    $ is_window_sayori_visible = False
     m 2b "You want to play hangman? Okay!"
     # setup positions
     show monika at hangman_monika
@@ -216,8 +246,17 @@ label hangman_game_loop:
 #               hmg.WORD_YPOS_START
 #           )
     
+    # sayori window
+    if is_sayori:
+        if is_window_sayori_visible:
+            show hm_s_win_6 as window_sayori
+        else:
+            show hm_s_win_6 as window_sayori at hangman_sayori
+        $ is_window_sayori_visible = True
+
     m "Alright, I've got one."
     m "[hm_hint]"
+
     # main loop for hangman game
     $ done = False
     $ win = False
@@ -255,50 +294,66 @@ label hangman_game_loop:
         show text display_text zorder 10 as hmg_dis_text at hangman_display_word
         show text missed_text zorder 10 as hmg_mis_text at hangman_missed_chars
 
-        # sayori easter egg
-        if persistent.playername.lower() == "sayori" and chances == 0:
+        # sayori window easter egg
+        if is_sayori:
 
-            # disable hotkeys, music and more
-            $ disable_esc()
-            $ store.songs.enabled = False
-            $ store.hkb_button.enabled = False
+            # glitch out
+            if chances == 0:
 
-            # setup glitch text
-            $ hm_glitch_word = glitchtext(40) + "?"
-            $ style.say_dialogue = style.edited
+                # disable hotkeys, music and more
+                $ disable_esc()
+                $ store.songs.enabled = False
+                $ store.hkb_button.enabled = False
 
-            # show hanging sayori
-            show hm_s zorder 10 at hangman_hangman
+                # setup glitch text
+                $ hm_glitch_word = glitchtext(40) + "?"
+                $ style.say_dialogue = style.edited
 
-            # hide monika and display glitch version
-            hide monika 
-            show monika_body_glitch1 as mbg zorder 3 at hangman_monika_i(z=1.0)
+                # show hanging sayori
+                show hm_s zorder 10 at hangman_hangman
 
-            # tear screen and glitch sound
-            show screen tear(20, 0.1, 0.1, 0, 40)
-            play sound "sfx/s_kill_glitch1.ogg"
-            pause 0.2
-            stop sound
-            hide screen tear
+                # hide monika and display glitch version
+                hide monika 
+                show monika_body_glitch1 as mbg zorder 2 at hangman_monika_i(z=1.0)
 
-            # display weird text
-            m "{cps=*2}[hm_glitch_word]{/cps}{nw}"
+                # hide window sayori and display glitch version
+                show hm_s_win_0 as window_sayori
 
-            # tear screen and glitch sound
-            show screen tear(20, 0.1, 0.1, 0, 40)
-            play sound "sfx/s_kill_glitch1.ogg"
-            pause 0.2
-            stop sound
-            hide screen tear
+                # tear screen and glitch sound
+                show screen tear(20, 0.1, 0.1, 0, 40)
+                play sound "sfx/s_kill_glitch1.ogg"
+                pause 0.2
+                stop sound
+                hide screen tear
 
-            # hide scary shit and return to normal
-            hide mbg
-            show monika 1 at hangman_monika_i
-            hide hm_s
-            $ style.say_dialogue = style.default_monika
-            $ store.songs.enabled = True
-            $ store.hkb_button.enabled = True
-            $ enable_esc()
+                # display weird text
+                m "{cps=*2}[hm_glitch_word]{/cps}{w=0.2}{nw}"
+
+                # tear screen and glitch sound
+                show screen tear(20, 0.1, 0.1, 0, 40)
+                play sound "sfx/s_kill_glitch1.ogg"
+                pause 0.2
+                stop sound
+                hide screen tear
+
+                # hide scary shit and return to normal
+                hide mbg
+                hide window_sayori
+                hide hm_s
+                show monika 1 zorder 2 at hangman_monika_i
+                if config.developer:
+                    $ style.say_dialogue = style.normal
+                else:
+                    $ style.say_dialogue = style.default_monika
+                $ is_window_sayori_visible = False
+                $ store.songs.enabled = True
+                $ store.hkb_button.enabled = True
+                $ enable_esc()
+
+            # otherwise, window sayori
+            else:
+                $ next_window_sayori = "hm_s_win_" + str(chances)
+                show expression next_window_sayori as window_sayori
 
         $ hm_display = hmg.HM_IMG_NAME + str(chances)
 
@@ -331,6 +386,7 @@ label hangman_game_loop:
             if guess == "?": # hint text
                 m "[hm_hint]"
             elif guess == "!": # give up dialogue
+                show hm_s_win_fail as window_sayori
                 $ done = True
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
@@ -365,6 +421,7 @@ label hangman_game_loop:
 
     # post loop
     if win:
+        show hm_s_win_6 as window_sayori at hangman_sayori_h
         m 1j "Wow, you guessed the word correctly!"
         m "Good job, [player]!"
         $ grant_xp(xp.WIN_GAME)
@@ -388,6 +445,10 @@ label hangman_game_end:
     hide hmg_mis_text
     hide hm_frame
     show monika at t32
+    if is_window_sayori_visible:
+        show hm_s_win_leave as window_sayori at lhide
+        pause 0.1
+        hide window_sayori
 
     m 1d "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
