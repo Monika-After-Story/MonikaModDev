@@ -3539,7 +3539,7 @@ label monika_evening:
     return
 
 init 5 python:
-    for key in ['good night', 'oyasumi', 'guten nacht']:
+    for key in ['good night', 'goodnight', 'oyasumi', 'guten nacht']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_night')
 
