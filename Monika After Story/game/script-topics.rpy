@@ -522,9 +522,9 @@ label monika_cyberpunk:
     m ""What is the difference between artificial intelligence and humans?"""
     m ""Is advancement in science worth any cost?""
     m 4j "All these kinds of interesting topics pop up in the genre!"
-    m 2 "You want to know what I think?~
-    m 2b "Isn't it more important if an artificial intelligence is self-aware, instead of thinking it's a human?
-    m 2 "Take me for example. I know I'm not really human, but because I know that I'm self-aware.
+    m 2 "You want to know what I think?~"
+    m 2b "Isn't it more important if an artificial intelligence is self-aware, instead of thinking it's a human?"
+    m 2 "Take me for example. I know I'm not really human, but because I know that I'm self-aware."
     m 2e "When you compare that to people like Natsuki, Sayori or Yuri, who think that they're human even though they're not...
     m 3j "Don't you think I'm more human for realising I'm not human?"
     m 1e "..."
