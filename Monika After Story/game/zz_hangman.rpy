@@ -38,15 +38,16 @@ image hm_s:
 
 # window sayori
 # we are dependent on exisitng images to create the window sayori
-image hm_s_win_6 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), 0.2)
-image hm_s_win_5 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), 0.2)
-image hm_s_win_4 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), 0.2)
-image hm_s_win_3 = im.FactorScale(im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), 0.2)
-image hm_s_win_2 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), 0.2)
-image hm_s_win_1 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), 0.2)
-image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horizontal=True), 0.2)
-image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), 0.2)
-image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), 0.2)
+define hm.SAYORI_SCALE = 0.25
+image hm_s_win_6 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_5 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_4 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_3 = im.FactorScale(im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_2 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_1 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYORI_SCALE)
 
 #image hm_s1 = "mod_assets/hangman/hm_s1.png"
 #image hm_s2 = "mod_assets/hangman/hm_s2.png"
@@ -73,18 +74,28 @@ transform hangman_hangman:
 # window sayori
 # left in
 transform hangman_sayori(z=1.0):
-    xcenter -300 yoffset 0 yalign 0.5 zoom z*1.00 alpha 1.00 subpixel True
+    xcenter -300 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
     easein 0.25 xcenter 90
     
 # regular
 transform hangman_sayori_i(z=1.0):
-    xcenter 90 yoffset 0 yalign 0.5 zoom z*1.00 alpha 1.00 subpixel True
+    xcenter 90 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
+
+# 3c offset
+transform hangman_sayori_i3(z=1.0):
+    xcenter 82 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
 
 # hop
 transform hangman_sayori_h(z=1.0):
-    xcenter 90 yoffset 0 yalign 0.5 zoom z*1.00 alpha 1.00 subpixel True
+    xcenter 90 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
     easein 0.1 yoffset -20
     easeout 0.1 yoffset 0
+
+# left out, slower
+transform hangman_sayori_lh(z=1.0):
+    subpixel True
+    on hide:
+        easeout 0.5 xcenter -300
 
 # we want monika on a kind of offset to the left
 transform hangman_monika(z=0.80):
@@ -249,7 +260,7 @@ label hangman_game_loop:
     # sayori window
     if is_sayori:
         if is_window_sayori_visible:
-            show hm_s_win_6 as window_sayori
+            show hm_s_win_6 as window_sayori at hangman_sayori_i
         else:
             show hm_s_win_6 as window_sayori at hangman_sayori
         $ is_window_sayori_visible = True
@@ -386,7 +397,7 @@ label hangman_game_loop:
             if guess == "?": # hint text
                 m "[hm_hint]"
             elif guess == "!": # give up dialogue
-                show hm_s_win_fail as window_sayori
+                show hm_s_win_fail as window_sayori at hangman_sayori_i3
                 $ done = True
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
@@ -446,7 +457,7 @@ label hangman_game_end:
     hide hm_frame
     show monika at t32
     if is_window_sayori_visible:
-        show hm_s_win_leave as window_sayori at lhide
+        show hm_s_win_leave as window_sayori at hangman_sayori_lh
         pause 0.1
         hide window_sayori
 
