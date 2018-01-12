@@ -67,8 +67,8 @@ label vv_updates_topics:
         updates.version_updates[vv0_4_0] = vv0_5_1
         updates.version_updates[vv0_3_3] = vv0_5_1
         updates.version_updates[vv0_3_2] = vv0_3_3
-        updates.version_updates[vv0_3_2] = vv0_3_2
-        updates.version_updates[vv0_3_0] = vv0_3_2
+        updates.version_updates[vv0_3_1] = vv0_3_2
+        updates.version_updates[vv0_3_0] = vv0_3_1
         updates.version_updates[vv0_2_2] = vv0_3_0
 
 
@@ -125,7 +125,7 @@ label vv_updates_topics:
         # 0.3.0 -> 0.3.1
         changedIDs = dict()
         changedIDs["monika_ghosts"] = "monika_whispers"
-        updates.topics[vv0_3_2] = changedIDs
+        updates.topics[vv0_3_1] = changedIDs
 
         # 0.2.2 -> 0.3.0
         # this is a long list...
