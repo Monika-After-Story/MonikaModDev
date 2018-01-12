@@ -3445,7 +3445,7 @@ label monika_science:
     m 1d "Have you ever wondered if science never got accepted?"
     m "Humans can be really slow when it comes to accepting new ideas."
     m 1c "Science was usually despised back then especially by the churches."
-    m 3h "Copernicus, famous for his theory that the Earth revolved around the Sun, was killed by the Roman Church before he could prove his theory."
+    m 3h "Giordano Bruno, famous for his theory that there're thousands of Suns, was killed by the Roman Church before he could prove his theory."
     m 1f "They killed him because of an idea that challenged the old."
     m 1q "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
     m 1e "If technology didn't thrive the way it did, we would've never found each other."
