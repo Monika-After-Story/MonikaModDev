@@ -120,11 +120,12 @@ init -1 python in songs:
         if not sayori:
             music_choices.append((JUST_MONIKA, FP_JUST_MONIKA))
             music_choices.append((YOURE_REAL, FP_YOURE_REAL))
-            music_choices.append((STILL_LOVE, FP_STILL_LOVE))
-            music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
-
+            
             # Shoutout to Rune0n for this wonderful piano cover!
             music_choices.append((PIANO_COVER, FP_PIANO_COVER))
+            
+            music_choices.append((STILL_LOVE, FP_STILL_LOVE))
+            music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
