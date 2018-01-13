@@ -226,10 +226,10 @@ label show_prompt_list(sorted_event_keys):
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
     hide monika
-    show monika_waiting_img at i32
+    show monika_waiting_img zorder 2 at i32
     call screen scrollable_menu(prompt_menu_items)
     hide monika_waiting_img
-    show monika 1a at i32
+    show monika 1a zorder 2 at i32
 
     $pushEvent(_return)
 

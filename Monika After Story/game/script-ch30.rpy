@@ -297,9 +297,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                     size (320,180)
                     pos (935,200)
             if start_bg:
-                $ renpy.show(start_bg)
+                $ renpy.show(start_bg, zorder=1)
             else:
-                show monika_day_room
+                show monika_day_room zorder 1
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
@@ -315,9 +315,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                     size (320,180)
                     pos (935,200)
             if start_bg:
-                $ renpy.show(start_bg)
+                $ renpy.show(start_bg, zorder=1)
             else:
-                show monika_room
+                show monika_room zorder 1
                 #show monika_bg_highlight
             if not hide_monika:
                 show monika 1 at t11 zorder 2
