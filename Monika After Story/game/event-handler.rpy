@@ -13,15 +13,6 @@ image monika_waiting_img:
     1.0
     repeat
 
-##Check all conditionals are valid
-init 100 python:
-    for event in persistent.event_database:
-        if persistent.event_database[event].conditional is not None:
-            try:
-                if eval(persistent.event_database[event].conditional):
-                    pass
-            except:
-                raise EventException("Syntax error in conditional statement for event '" + event + "'.")
 
 
 # Module that defines functions for story event handling
