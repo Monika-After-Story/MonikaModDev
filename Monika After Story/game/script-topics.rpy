@@ -4021,6 +4021,42 @@ label monika_pets:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
+    
+    
+init 5 python:
+    addEvent(Event(eventlabel="monika_dogs",category=['animals'],prompt="Man's best friend",random=True))
+
+label monika_dogs:
+    m 1b "Do you like dogs, [player]?"
+    m 1k "Dogs are great! They're really good to have around." 
+    m "Not to mention owning a dog has shown to help people with anxiety and depression since they're very sociable animals."
+    m 3j "They're just so lovable, I really like them!"
+    m 1m "I know Natsuki feels the same..."
+    m "She was always so embarassed to like cute things. I wish she was more accepting of her own interests."
+    m 2q "But..."
+    m 2h "I suppose her environment had a hand in that."
+    m 2f "If any of your friends have interests they care a lot about, make sure to always be supportive, okay?"
+    m 4f "You never know how much a casual dismissal might hurt someone."
+    m 2e "But knowing you, [player], you won't do something like that, right?"
+    return
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_cats",category=['animals'],prompt="Feline companions",random=True))
+
+label monika_cats:
+    m 1j "Cats are pretty cute, aren't they?"
+    m 3b "Despite looking so elegant, they always seem to end up in funny situations."
+    m 1a "It's no wonder they're so popular on the internet."
+    m 3d "Did you know the ancient Egyptians considered cats sacred?"
+    m 1a "There was a Cat Goddess named Bastet that they worshipped. She was a protector of sorts."
+    m "Domesticated cats were held on a high pedestal since they were incredible hunters for small critters and vermin."
+    m 3j "Back then, you'd see them mostly associated with rich nobles and other higher classes in their society."
+    m 1b "It's amazing how far people would take their love with their pets."
+    m 1l "They {i}really{/i} loved cats, [player]."
+    m 3b "And people still do today!"
+    m 1 "Felines are still one of the most common animals to have as pet."
+    m 1j "Maybe we should get one when we're living together, [player]."
+    return
 
 init 5 python:
     addEvent(Event(eventlabel="monika_fruits",category=['random'],prompt="Eating fruits",random=True))
