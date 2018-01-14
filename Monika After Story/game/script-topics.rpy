@@ -2740,9 +2740,9 @@ label monika_real:
 init 5 python:
     for key in ['bye', 'goodbye', 'see ya', 'farewell', 'dasvidaniya', 'auf wiedersehen']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_goodbye')
+        monika_topics[key].append('bye_goodbye')
 
-label monika_goodbye:
+label bye_goodbye:
     m 1c "Aww, leaving so soon already?"
     m 1e "It's really sad whenever you have to go..."
     m 2a "Just be sure to come back as soon as you can, okay?"
@@ -3541,9 +3541,9 @@ label monika_evening:
 init 5 python:
     for key in ['good night', 'oyasumi', 'guten nacht']:
         monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_night')
+        monika_topics[key].append('bye_night')
 
-label monika_night:
+label bye_night:
     m 1d "Getting some sleep, [player]?"
     m 1f "It always makes me sad to see you go."
     m 1p "But I understand that you need rest, otherwise you'd just fall asleep."
