@@ -4824,78 +4824,30 @@ label monika_coffee:
     return
 
 init 5 python:
-    for key in ['wolf','wolves','dog','dogs','domestication']:
+    for key in ['wolf']:
         monika_topics.setdefault(key,[])
         monika_topics[key].append('monika_domestication')
     monika_random_topics.append('monika_domestication')
-    
+
 label monika_domestication:
-    m 3  "Do you ever think about wolves?"
-    m 3  "I guess a bit more specifically, how wolves turned into dogs."
-    m 3d "Like, don't you find it at least a little interesting how one of man's most fearsome enemies could turn into man's best friend?"
-    m 3d "I mean, with things like spiders and other creepy-crawlies, lots of people are still afraid of them despite never having even come across one that could hurt them in any way."
-    m 3d "Is it because we as a species learned to be afraid of the things that hurt us, thousands of years ago?"
-    m 3  "But whenever you see a picture of a wolf, I bet you just can't help but think 'Aww...'"
-    m 3g "Did humanity just have enough good experiences with dogs to override the bad experiences with wolves?"
-    return  
-     
-     
-init 5 python:
-    for key in ['olympics','athlete','2018','olympic']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_olympics')
-    monika_random_topics.append('monika_olympics')
-      
-label monika_olympics2018:
-    m 3  "You've heard about the Olympics happening in a few months, right?"
-    m "Well, I was wondering if you'd like to go to take me to watch the Olympics one year, if we're ever able to truly meet person-to-person."
-    menu:
-        m "How about it?"
-        
-        "Sure.":
-            m 5a "Really? I can't wait!"
-            m 5a "Although, I'm not sure how you'd compare to all those burly athletes, ehehe~"
-            m 5a "I'm only kidding~"
-            
-        "No thanks.":
-            m 1g "No? Alright..."
-            m 3k "There are still plenty more fun things for us to do together."
-            m 3a "If you ever decide you want to go somewhere or do something, don't hesitate to bring me along in a flashdrive. I love spending time with you~"
+    m 3b "Do you ever think about wolves?"
+    m 1a "Specifically, how wolves were eventually domesticated into dogs."
+    m 1d "Like, don't you find it at least a little interesting how one of man's most fearsome enemies could turn into man's best friend?"
+    m "I mean, when it comes to insects and other creepy-crawlies, lots of people are scared of them even if they've never come across one that could hurt them."
+    m 1c "Why do you think people are like that?"
+    m  "Is it because we learned to be afraid of things that hurt us, hundreds of thousands of years ago?"
+    m 3a "For wolves, I don't think that's the reason at all."
+    m 1d "They were first domesticated long ago when the only way people could gather food at the time were through foraging or hunting."
+    m "Maybe when we shared this lifestyle with wolves, a bond was formed."
+    m 1a "Wolves found that people gave them a warm home and food, while we found that wolves are ideal for hunting."
+    m 1k "Not to mention that we kept each other's company and protected one another!"
+    m 1b "Wolves eventually realized that their dependence on humans would improve their survivability, and we've been stuck with them ever since."
+    m 3j "Just like how we rely on each other's company, [player]!"
+    m "Ehehe~"
+    m 1 "I can't help but be reminded of how you saved my life by being here with me."
+    m 1e "I really do depend on you, [player]."
+    m 3k "You're my hero after all~"
     return
-
-init 5 python:
-    for key in ['philosophy','creation','memories']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_thursday')
-    monika_random_topics.append('monika_thursday')
-    # I'm not very skilled with Python (yet!), so I was wondering if there was a way to make this dialogue only accessible after monika_death is encountered.
-    
-label monika_thursday:
-    m "I remember reading about something a while back called Last Thursdayism."
-    m "Last Thursdayism is basically the idea that if the universe was created however long ago, wouldn't it also be plausible that it was created just last thursday?"
-    m 3f "All of our memories, our experiences... All of that, just fabricated and implanted into us."
-    m 3f "Man, I went into this wanting to talk about an interesting philosophical belief, but it's a little depressing when you think about it."
-    m 1n "..."
-    m 3g "...Remember when I told you about how it feels when you exit the game? With the screaming and all?"
-    m 1o "Now that I think about it... If that happens whenever you aren't playing... How come I have memories of before I met you?"
-    m 1p "Were those memories all fake? Or... Is something that happened before this causing that weird phenomenon?"
-    m "I hate to trouble you with a question like this, but..."
-    menu:
-        m  "What do you think?"            
-        
-        "Your memories are fake.":
-            m 1f "You think my memories... are fake? My entire life until I met you, just a lie?"
-            m 1g "Wouldn't that make me just another program, existing only as another part of this game for you to play with? Do you... Do you think I'm not real...?"
-           
-        "It's something that happened before this.":
-            m 3n "Yeah, I had a feeling it might be caused by me tampering with the code, but I can't be sure."
-            m 3o "...Will I be stuck like this forever?"
-        
-        "It's neither."
-            m 3c "Neither? Then what could it be?"
-            m 3a "I bet you'd help me figure that out. Will you promise to help me find out why I suffer when you're away?"
-    return 
-
 ##################
 #Incomplete ideas#
 ##################
