@@ -20,8 +20,16 @@ init python:
         fo.close()
 
 label import_ddlc_persistent_in_settings:
-    call import_ddlc_persistent
+    $ prev_songs_enabled = store.songs.enabled
+    $ prev_dialogue = allow_dialogue
+    $ store.songs.enabled = False
+    $ allow_dialogue = False
+#    $ disable_esc() # tthis doesnt work somehow
+    call import_ddlc_persistent from _call_import_ddlc_persistent_1
     $ quick_menu = True
+    $ store.songs.enabled = prev_songs_enabled
+    $ allow_dialogue = prev_dialogue
+#    $ enable_esc()
     return
 
 label import_ddlc_persistent:
@@ -191,9 +199,6 @@ label import_ddlc_persistent:
             persistent._seen_ever.update(old_persistent._seen_ever)
         elif old_persistent._seen_ever is not None:
             persistent._seen_ever=old_persistent._seen_ever
-
-        # after importing/merging _seen_ever, need to redo removeing seen
-        remove_seen_topics()
 
         #Renpy defined list of all seen images
         #Format: dict with (keys) file path (value) Boolean for if seen

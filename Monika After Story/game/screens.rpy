@@ -1,4 +1,5 @@
-
+init 100 python:
+    layout.QUIT = "Are you really leaving me, [player]?"
 ## Initialization
 ################################################################################
 
@@ -944,7 +945,7 @@ screen preferences():
                 vbox:
                     style_prefix "check"
                     label _("Room Animation")
-                    textbutton _("Disable") action Preference("video sprites", "toggle")
+                    textbutton _("Disable") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
@@ -1446,8 +1447,8 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action yes_action
-                textbutton _("No") action no_action
+                textbutton _("Yes") action Show(screen="dialog", message="I see...\nPlease come back soon, [player]!", ok_action=yes_action)
+                textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -1499,6 +1500,7 @@ screen update_check(ok_action,cancel_action):
             yalign .5
             spacing 30
 
+            $latest_version = updater.UpdateVersion('http://updates.monikaafterstory.com/updates.json',check_interval=0)
             if latest_version != None:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
@@ -1538,6 +1540,7 @@ style update_check_button_text is confirm_button_text
 ##
 screen updater:
 
+    modal True
 
     style_prefix "updater"
 
@@ -1569,7 +1572,7 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    text _("The updates have been installed. Monika After Story will now restart.")
+                    text _("The updates have been installed. Please reopen Monika After Story.")
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
                 elif u.state == u.CANCELLED:
@@ -1591,9 +1594,10 @@ screen updater:
                 textbutton _("Proceed") action u.proceed
 
             if u.can_cancel:
-                textbutton _("Cancel") action u.cancel
+                textbutton _("Cancel") action Return()
 
 style updater_button_text is navigation_button_text
+style updater_button is confirm_button
 style updater_label is gui_label
 style updater_label_text is game_menu_label_text
 style updater_text is gui_text
@@ -1693,3 +1697,104 @@ style notify_frame:
 
 style notify_text:
     size gui.notify_text_size
+
+## This part of the code is used to create the tutorial selection screen.
+
+#Each tutorial is defined by its name (caption) and its label,
+#items is the list of caption and label of each tutorial
+#init python is necessary because items is a List, a python object
+
+init python:
+
+    items = [(_("Introduction"),"example_chapter")
+        ,(_("Route Part 1, How To Make A Mod"),"tutorial_route_p1")
+        ,(_("Route Part 2, Music"),"tutorial_route_p2")
+        ,(_("Route Part 3, Scene"),"tutorial_route_p3")
+        ,(_("Route Part 4, Dialogue"),"tutorial_route_p4")
+        ,(_("Route Part 5, Menu"),"tutorial_route_p5")
+        ,(_("Route Part 6, Logic Statement"),"tutorial_route_p6")
+        ,(_("Route Part 7, Sprite"),"tutorial_route_p7")
+        ,(_("Route Part 8, Position"),"tutorial_route_p8")
+        ,(_("Route Part 9, Ending"),"tutorial_route_p9")]
+
+
+## Scrollable Menu ###############################################################
+##
+## This screen creates a vertically scrollable menu of prompts attached to labels
+
+#Define the properties of the object textbutton. textbutton is made by two parts:
+#button and button_text. To customize textbutton, both botton and button_text need to be modified
+#This part is usually found in gui.rpy
+
+define adj = ui.adjustment()
+define gui.scrollable_menu_button_width = 640
+define gui.scrollable_menu_button_height = None
+define gui.scrollable_menu_button_tile = False
+define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
+
+define gui.scrollable_menu_button_text_font = gui.default_font
+define gui.scrollable_menu_button_text_size = gui.text_size
+define gui.scrollable_menu_button_text_xalign = 0.0
+define gui.scrollable_menu_button_text_idle_color = "#000"
+define gui.scrollable_menu_button_text_hover_color = "#fa9"
+
+#Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
+# The line properties gui.button_properties("scrollable_menu_button") assigns all
+# attributes of gui.scrollable_menu_button to the style scrollable_menu_button
+# and the style scrollable_menu_button_text
+
+style scrollable_menu_vbox:
+    xalign 0.5
+    ypos 270
+    yanchor 0.5
+
+    spacing 5
+
+style scrollable_menu_button is choice_button:
+    properties gui.button_properties("scrollable_menu_button")
+
+style scrollable_menu_button_text is choice_button_text:
+    properties gui.button_text_properties("scrollable_menu_button")
+
+style scrollable_menu_new_button is scrollable_menu_button
+
+style scrollable_menu_new_button_text is scrollable_menu_button_text:
+    italic True
+
+style scrollable_menu_special_button is scrollable_menu_button
+
+style scrollable_menu_special_button_text is scrollable_menu_button_text:
+    bold True
+
+#scrollable_menu selection screen
+#This screen is based on work from the tutorial menu selection by haloff1
+
+screen scrollable_menu(items):
+        style_prefix "scrollable_menu"
+
+        fixed:
+
+            area (320, 40, 640, 450)
+
+            bar adjustment adj style "vscrollbar" xalign -0.05
+
+            viewport:
+                yadjustment adj
+                mousewheel True
+
+                vbox:
+
+                    for i_caption,i_label in items:
+                        textbutton i_caption:
+                            if renpy.has_label(i_label) and not seen_event(i_label):
+                                style "scrollable_menu_new_button"
+                            if not renpy.has_label(i_label):
+                                style "scrollable_menu_special_button"
+
+                            action Return(i_label)
+
+
+
+                    null height 20
+
+                    textbutton _("That's enough for now.") action Return(False)
