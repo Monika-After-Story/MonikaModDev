@@ -4557,3 +4557,26 @@ label monika_1984:
     m 1o "I can't imagine a world where I can't think freely."
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_wolf",category=['animals'],prompt="From wolves to dogs",random=True))
+
+label monika_wolf:
+    m 3b "Do you ever think about wolves?"
+    m 1a "Specifically, how wolves were eventually domesticated into dogs."
+    m 1d "Like, don't you find it interesting how one of man's most fearsome enemies could turn into man's best friend?"
+    m "I mean, when it comes to insects and other creepy-crawlies, lots of people are scared of them even if they've never come across one that could hurt them."
+    m 1c "Why do you think people are like that?"
+    m "Is it because we learned to be afraid of things that hurt us, hundreds of thousands of years ago?"
+    m 3a "For wolves, I don't think that's the reason at all."
+    m 1d "They were first domesticated long ago when the only way people could gather food at the time were through foraging or hunting."
+    m "Maybe when we shared our lifestyle with the wolves, a bond was formed."
+    m 1a "They found that people gave them a warm home and food, while we found that they're are ideal for hunting."
+    m 1k "Not to mention that we kept each other's company and protected one another!"
+    m 1b "Wolves eventually realized that their dependence on humans would improve their survivability, and we've been stuck with them ever since."
+    m 3j "Just like how we rely on each other's company, [player]!"
+    m "Ehehe~"
+    m 1 "I can't help but be reminded of how you saved my life by being here with me."
+    m 1e "I really do depend on you, [player]."
+    m 3k "You're my hero after all~"
+    return
