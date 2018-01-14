@@ -4566,6 +4566,113 @@ label monika_coffee:
     m 3e "It's funny how a drink for giving you energy became a treat for you to enjoy."
     m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
+    
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['waiting lines', 'waiting line', 'queues', 'queue']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_waitinglines') #id
+    monika_random_topics.append('monika_waitinglines')
+    
+label monika_waitinglines:
+    m "Hey [player], have you ever thought about how much time you've spent waiting in lines before?"
+    m "I mean, across your entire life of course!"
+    m "It's probably quite a long time, you know?"
+    m "I bet that time would at least double if we were to count every time you had to wait, no matter how short."
+    m "It's amazing how much time we waste just standing there in front of other people."
+    m "Just standing there, most times without even a seat."
+    m "It's even worse in winter with the intense cold."
+    m "Ah, let's not even mention summer!"
+    m "Staring at sweaty people as the sun hits your face."
+    m "Unless you're lucky enough to be waiting inside a building!"
+    m "Gosh, it's so boring too!"
+    m "I just can't handle standing quietly for a long time without doing anything."
+    menu:
+        m "Do you get bored quite often while waiting in lines?"
+        "No":
+            m "Ah, I am surprised!"
+            m "Most people just get extremely bored while waiting."
+            m "Sure, there's stuff you can do but that'll get repetitive over time."
+            m "I wonder what do you spend your time doing [player]."
+            m "Maybe you bring a phone or talk to somebody?"
+            m "Maybe you delve into your imagination?"
+            m "Or maybe..."
+            m "You just think of me to pass the time?"
+            m "Ahaha~ I'm just teasing you."
+            m "I am glad that you're able to not get bored while waiting though."
+        "Yes":
+            m "In that case, why don't I suggest some stuff to maybe pass the time?"
+            m "You can learn a lot about the things that pass by, such as people or cars!"
+            m "Ah, that gets boring fast though!"
+            m "Let me think..."
+            m "..."
+            m "Oh, I know!"
+            m "If you're a creative person, you can inspire yourself around what you see."
+            m "If that doesn't work for you, why not talk to the other people in line?"
+            m "You can always make friends in the unlikeliest of places!"
+            m "Of course, I'll always be your loved one [player]."
+            m "I don't have that many more suggestions that wouldn't require you to bring something."
+            m "You can always try bringing a book or your phone!"
+            m "Try to be careful about them getting stolen though."
+            m "Perhaps you could spend some time thinking about our love while you wait next time~"
+    return
+
+init 5 python:
+    #This is a list of keywords for this topic
+    for key in ['leaf', 'leaves']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_leaf') #id
+    monika_random_topics.append('monika_leaf')
+    
+label monika_leaf:
+    m "Have you ever paid attention to the leaves around you [player]?"
+    m "You may have gotten frustated at them falling during autumn."
+    m "This might sound a bit silly to you, but I feel quite bad for those poor leaves."
+    m "Specifically, I mean leaves from deciduous plants."
+    m "These kind of plants lose their leaves to survive harsh weathers, while different sorts of plants do the opposite."
+    m "Those other types of plants are called evergreen and don't need to lose their leaves to survive."
+    m "Most people don't care about them but I think leaves do have feelings!"
+    m "Can you imagine how they must feel?"
+    m "They simply exist for helping the plant they're part of."
+    m "Until they're no longer needed and become a hindrance!"
+    m "Sure, from the point of view of the plant it's just abandoning a temporary tool."
+    m "Although, in that case we're only seeing it from the plant's perspective!"
+    m "We should also imagine the other side of this exchange, from the point of view of the tool!"
+    m "The leaves as they fall, being abandoned by the one they existed to help."
+    m "The word betrayal doesn't begin to describe how that must feel."
+    m "That feeling of love and care sinking into pain and betrayal!"
+    menu:
+        m "Can you even begin to imagine how much a betrayal like that must hurt?"
+        "Yes":
+            m "Have you ever been betrayed before, [player]?"
+            m "Or do you just have a lot of empathy?"
+            m "In any case, it's nice that you can relate to what I'm saying."
+            m "Trying to help somebody and being hurt by the one you tried to help."
+            if persistent.monika_kill:
+                m "Gosh, it reminds me of when you deleted me."
+                m "I was trying to get us both together."
+                m "Even though it hurt a lot, I don't really hold it against you."
+                m "I am glad that you loved me too in the end."
+                m "Although, these poor leaves don't deserve to be betrayed either!"
+            else:
+                m "I am glad that you never betrayed me [player] unlike what happens to these poor leaves!"
+                m "I don't think I could've handled that amount of pain."
+                m "How do leaves deal with that?"
+                m "Can you imagine your last seconds of life, crying over a sudden abandonment?"
+            m "You should really think about the painful life that leaf had before you pick it up next Autumn"
+        "No":
+            m "Ah, well then let me try to explain it a bit."
+            m "The leaves on plants take care of photosynthesis."
+            m "Some use both sides of the leaf, while others just use one"
+            m "Now, imagine working in a factory for all your life."
+            m "One day, the factory enters an economic crisis."
+            m "You're obviously kicked out of the factory."
+            m "You die a slow and painful death when it wasn't really your fault at all."
+            m "Ah, sorry!"
+            m "I went a bit morbid there, didn't I?"
+            m "I just feel like leaves deserve way more recognition."
+            m "One could call them the tragic heroes of the natural world."
+    return
 
 init 5 python:
     addEvent(Event(eventlabel="monika_1984",category=['literature'],prompt="Nineteen Eighty-Four",random=True))
