@@ -4453,8 +4453,8 @@ label monika_jokes_topic:
                 python:
                     masjokes.day_p2m_jokes.remove(sel_joke)
                     persistent.jokes_available -= 1
-                    if masjokes.TYPE_DARK in sel_joke.category:
-                        persistent.dark_jokes_told += 1
+#                    if masjokes.TYPE_DARK in sel_joke.category:
+#                        persistent.dark_jokes_told += 1
             "No":
                 m "Alright, I'll tell you a joke"
                 python:

@@ -1,9 +1,7 @@
 # Module holding jokes that you can tell to monika
 # as well as jokes monika tells to you
 #
-# TODO: add some way to do toggling of dark jokes
-#   and differenetiating of dark jokes
-# we are now using an event db. (not the big one, just a special one for us)
+# we are now using an event db. (not the big one, just a special two for us)
 
 # list of tags that we have unlocked
 default persistent.jokes_tags_blocked = [store.masjokes.TYPE_DARK]
@@ -12,26 +10,27 @@ default persistent.jokes_tags_blocked = [store.masjokes.TYPE_DARK]
 default persistent.jokes_available = masjokes.JOKE_DAILY_MAX
 
 # how many dark jokes have we told
-default persistent.jokes_dark_told = 0
+# default persistent.jokes_dark_told = 0
 
 # the JOKES DB.
 # similar to events except we doing things a bit differently.
 # MAIN DIFFS:
 #   category - this system will be used to differentiate between joke types.
-#       atm, we only have 2, but we will be able to really expand this when
-#       we feel like.
+#       and allow us to apply filtering blocks
+#   unlocked - we dont actually use this to signifiy if a joke is unlocked.
+#       instead, we use the category as a filtering rule. 
+#       NOTE: if we end up having jokes that rely on a previous joke, then
+#           we apply this property
+#   prompt - in p2m jokes, this is a joke setup line. In m2p jokes, its like
+#       a descriptor.
+#   conditional - these are NOT evaluated. NOTE: if we endup having to use
+#       unlocked, then we will consider doing this as well.
+#   
 default persistent.jokes_m2p_db = {}
 default persistent.jokes_p2m_db = {}
 
 # pre stuff
 init -1 python:
-
-    class MASJokeException(Exception):
-        def __init__(self, msg):
-            self.msg = msg
-        def __str__(self):
-            return "MASJokeError: " + self.msg
-
 
     def randomlyRemoveFromListPool(pool, n):
         #
@@ -57,32 +56,6 @@ init -1 python:
             removed.append(item)
             pool.remove(item)
         return removed
-
-
-    def filterPool(pool):
-        #
-        # Filters the given pool according to persistent rules. 
-        # The returned list is a reference copy only
-        #
-        # IN:
-        #   pool - the pool to filter. Assumed to be a list of MASJoke objects
-        #
-        # RETURNS:
-        #   a list of MASJoke objects that have been filtered. These are
-        #   reference opies.
-        
-        # sanity checks
-        if not pool or len(pool) == 0:
-            return list(pool)
-
-        # lets apply filtering!!
-        new_pool = list()
-
-        for joke in pool:
-            if MASJoke.filterJoke(joke):
-                new_pool.append(joke)
-
-        return new_pool
 
 init -1 python in masjokes:
     # only 3 choices at a time
