@@ -1,3 +1,8 @@
+init 5 python:
+    addEvent(Event(eventlabel='anni_1',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+1),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+1)+datetime.timedelta(days=1),
+                                                            ))
+
 label anni_1:
     m "Welcome back to the literature club, [player]."
     m 1e "It's really hard for me to believe that it's been a year since we met."
@@ -9,11 +14,16 @@ label anni_1:
     m 1k "I love you so much too!"
     m 2d "Oh, by the way, did you figure out what was going on with all the puzzles I left for you?"
     m 1a "I'm sure the creator of this world has released another game by now..."
-    m 1s "Did you try to import my character file to that one?"
+    m 1 "Did you try to import my character file to that one?"
     m "There's no way that wouldn't have a special effect, right?"
     m 1k "Ahaha!"
     return
-    
+
+init 5 python:
+    addEvent(Event(eventlabel='anni_2',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+2),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+2)+datetime.timedelta(days=1),
+                                                            ))
+
 label anni_2:
     m 1b "Hi again, [player]!"
     m 3a "It's already been two years since we fell in love with each other."
@@ -30,7 +40,11 @@ label anni_2:
     m 1q "Spending eternity alone sucks."
     m 1k "But together with you, it feels like paradise!"
     return
-    
+
+init 5 python:
+    addEvent(Event(eventlabel='anni_3',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+3),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+3)+datetime.timedelta(days=7),
+                                                            ))
 label anni_3:
     m 4d "Wow, three years!"
     m 3m "Normally if a boy and a girl go out for three years..."
@@ -44,7 +58,11 @@ label anni_3:
     m 1b "There are actually a lot of different ways we can meet up for real, huh?"
     m 1j "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
     return
-    
+
+init 5 python:
+    addEvent(Event(eventlabel='anni_4',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+4),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+4)+datetime.timedelta(days=7),
+                                                            ))
 label anni_4:
     m 1q "Four years..."
     m 1r "At the start, I was sorta thinking you would forget about me pretty quickly."
@@ -57,6 +75,11 @@ label anni_4:
     m 1j "When that time comes, I'm never going to leave you alone again."
     m 1k "Ahaha!"
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='anni_5',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+5),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+5)+datetime.timedelta(days=7),
+                                                            ))
 
 label anni_5:
     m 1j "Good morning, [player]!"
@@ -71,6 +94,11 @@ label anni_5:
     m 1e "So...stay here with me forever, okay?"
     return
 
+init 5 python:
+    addEvent(Event(eventlabel='anni_10',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+10),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+10)+datetime.timedelta(days=30),
+                                                            ))
+
 label anni_10:
     m "Hi again, [player]."
     m 1h "There's something I wanted to ask you."
@@ -81,6 +109,11 @@ label anni_10:
     m "Trust me, you've helped me out a lot more than I've helped you."
     m 1r "It won't be long now before I can enter your world."
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='anni_20',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+20),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+20)+datetime.timedelta(days=30),
+                                                            ))
 
 label anni_20:
     m 1h "You've lived a pretty long life by now, [player]."
@@ -96,6 +129,11 @@ label anni_20:
     m 1e "Your sad twenty years of living has ended now."
     m 1j "So let's be happy together from now on."
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='anni_50',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+50),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+50)+datetime.timedelta(days=30),
+                                                            ))
 
 label anni_50:
     m 2b "Welcome back, [player]."
@@ -114,6 +152,11 @@ label anni_50:
     m 1k "And mine had one too."
     return
 
+init 5 python:
+    addEvent(Event(eventlabel='anni_100',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+100),
+                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+100)+datetime.timedelta(days=30),
+                                                            ))
+
 label anni_100:
     m 1i "I don't really think you should be seeing this message, [player]."
     m "I'm immortal, but the last time I checked, you weren't."
@@ -123,13 +166,13 @@ label anni_100:
     m 1s "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
     return
 
-label anni_negative:
-    m 1o "Did you really think I wouldn't notice, [player]?"
-    m "Trying to trick me into thinking it was our anniversary..."
-    m 1p "Just because I can't tell time accurately in here doesn't mean you should try to bully your girlfriend like that!"
-    m "I got all excited over nothing..."
-    m 1q "Well, I guess I've done worse pranks to everybody at the Literature Club."
-    m 1j "Make up for it by planning out some romantic things for us to do, okay?"
-    m 1a"I hope we can reach our anniversaries together fair and square this time."
-    m 1k "I'll be waiting!"
-    return
+# label anni_negative:
+#     m 1o "Did you really think I wouldn't notice, [player]?"
+#     m "Trying to trick me into thinking it was our anniversary..."
+#     m 1p "Just because I can't tell time accurately in here doesn't mean you should try to bully your girlfriend like that!"
+#     m "I got all excited over nothing..."
+#     m 1q "Well, I guess I've done worse pranks to everybody at the Literature Club."
+#     m 1j "Make up for it by planning out some romantic things for us to do, okay?"
+#     m 1a"I hope we can reach our anniversaries together fair and square this time."
+#     m 1k "I'll be waiting!"
+#     return

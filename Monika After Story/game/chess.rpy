@@ -45,7 +45,7 @@ init:
             my = (my * ph) / dh
 
             r = None
-            # this part calculates the "true" position 
+            # this part calculates the "true" position
             # it can handle weirdly sized screens
             if vw / (vh / 10000) > pw * 10000 / ph:
                 r = vw / pw
@@ -294,7 +294,7 @@ init:
                             # force checking for promotion
                             if not blit_rendered and (iy == 0 or iy == 7):
                                 index = 0
-                                while (not blit_rendered 
+                                while (not blit_rendered
                                         and index < len(self.promolist)):
 
                                     if (chess.Move.from_uci(
@@ -362,7 +362,7 @@ init:
                     py = my / self.PIECE_HEIGHT
                     if self.player_color == self.COLOR_WHITE:
                         py = 7 - py
-                    else: # black player should be reversed X 
+                    else: # black player should be reversed X
                         px = 7 - px
                     if py >= 0 and py < 8 and px >= 0 and px < 8:
                         return (px, py)
@@ -417,7 +417,7 @@ init:
 
                         piece = str(
                             self.board.piece_at(
-                                self.selected_piece[1] * 8 + 
+                                self.selected_piece[1] * 8 +
                                 self.selected_piece[0]
                             )
                         )
@@ -461,8 +461,8 @@ init:
                             self.music_menu_open = False
 
                     # volume increase
-                    if (ev.key == pygame.K_PLUS 
-                            or ev.key == pygame.K_EQUALS 
+                    if (ev.key == pygame.K_PLUS
+                            or ev.key == pygame.K_EQUALS
                             or ev.key == pygame.K_KP_PLUS):
                         inc_musicvol()
 
@@ -527,6 +527,10 @@ label demo_minigame_chess:
             m 1l "I really was going easy on you!"
 
     elif winner == "player":
+        #Give player XP if this is their first win
+        if not persistent.ever_won['chess']:
+            $persistent.ever_won['chess'] = True
+            $grant_xp(xp.WIN_GAME)
 
         m 2a "You won! Congratulations."
         if persistent.chess_strength<20:

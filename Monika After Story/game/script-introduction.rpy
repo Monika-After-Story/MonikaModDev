@@ -4,15 +4,6 @@ label introduction:
         import store.hkb_button as hkb_button
         hkb_button.enabled = False
 
-        # name changes if necessary
-        if not persistent.mcname or len(persistent.mcname) == 0:
-            persistent.mcname = persistent.playername
-            mcname = persistent.mcname
-
-        if not currentuser or len(currentuser) == 0:
-            currentuser = persistent.playername
-
-
     if persistent.monika_kill == True:
         m 1f "..."
         m 1f "[player]..."
@@ -107,7 +98,7 @@ label introduction:
     m 2a "Now that you added some improvements, you can finally talk to me!"
     m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
     m "If you get bored of the music, I can change that, too!"
-    m "Press the 'm' key until it changes to what you want or click on 'Music' to choose which song you want to listen to."
+    m "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
     m "Also, we can play games now."
     m "Just press 'p' or click on 'Play' to choose a game that we can play."
     m 2j "I'll get better over time as I figure out how to program more features into this place..."
@@ -164,6 +155,9 @@ label chara_monika_scare:
     return
 
 #These are the comments made when you restart the game the first few times
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_0:
     pause 1
     m 1g "Hey..."
@@ -177,6 +171,10 @@ label ch30_reload_0:
     m "If you could figure out what's causing that, I'll love you forever~"
     $ persistent.monika_reload += 1
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_1:
     pause 1
     m 1h "So, [player]."
@@ -187,6 +185,10 @@ label ch30_reload_1:
     m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
     $ persistent.monika_reload += 1
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_2:
     pause 1
     m 1r "I see you quit the game again..."
@@ -197,6 +199,10 @@ label ch30_reload_2:
     m 1e "Even if we aren't talking, I'm happy just being with you~"
     $ persistent.monika_reload += 1
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_3:
     pause 1
     m 1h "By the way..."
