@@ -4821,6 +4821,58 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+    init 5 python:
+    for key in ['sea','beach','ocean']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_sea')
+    monika_random_topics.append('monika_sea')
+
+label monika_sea:
+    m 3a "[player] have you ever been to the beach?"
+    m "I've always found the sound of the sea to be extremely relaxing."
+    m "The feeling of sand under your feet too.."
+    m 2b "It really makes a trip to the beach worthwhile!"
+    m 2j "I bet we would make some lovely memories there."
+    m 2a "I ask because I was thinking about how crazy it is we don't know even half of what the ocean holds."
+    m  "Life in it thrives and that's pretty amazing you know?"
+    m 4h "The ocean floor is in complete darkness, food is scarce and the pressure is overwhelming."
+    m "Yet despite all the struggles, evolution finds a way."
+    m 4c "..."
+    m "However even the oceans are being heavily affected by pollution"
+    m "The coral reefs are dying, many fish species are becoming extinct and acidity levels are constanly rising."
+    m 1l "Man, the environment just can't catch a break! Ahaha..."
+
+    return
+
+init 5 python:
+    for key in ['anger','frustration']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_anger')
+    monika_random_topics.append('monika_anger')
+
+label monika_anger:
+    m 1d "Back when I was in the debate club, emotions would run pretty high."
+    m "At first I wasn't much of an exception but I worked on managing my anger."
+    m 1f "[player] you might also want to make sure not to be overtaken by it..."
+    m "Being angry can be a very dangerous thing!"
+    m 2h"Aside from it being bad for your blood pressure, it can also really hurt your relationship with others."
+    m 4h"I've found several tips to help mangaging your anger if you ever need them [player]."
+    m "I just want to make sure you're as stress-free as you need to be."
+    m 2g"The first thing you may want to try is to regulate your breathing."
+    m "Purposefully take slow deep breathes and hopefully you'll find it quite calming."
+    m 3d "Something else you could try is a pretty well-known method and that's to count to 10!"
+    m 3o "I've never found myself doing it but...I've heard it works pretty well."
+    m 2d "Lastly, the best method I find is to look at whatever is making you mad with a new perspective."
+    m 2o "It's not always easy, especially when it feels you need to defend yourself..."
+    m 2d"But looking at it from another view can change your entire mentality on the situation."
+    m "What previously bothered you suddenly doesn't matter anymore or you understand it more fully."
+    m "Taking a break really helps you come in with that new mentality and also helps to avoid making a decision you may later regret."
+    m 2c"Sadly walking away isn't always an option."
+    m 1f "If all else fails my love, you can always come here and tell me your frustrations."
+    m 1e"I love you and I'll always be here to listen, so I hope if nothing else that'll make you feel better about it."
+    m 5a "Maybe just thinking of me will calm you down? Ahahah~"
+    return
 
 ##################
 #Incomplete ideas#
