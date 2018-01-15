@@ -493,6 +493,8 @@ label ch30_autoload:
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
+                # also reset available jokes
+                persistent.jokes_available = store.masjokes.JOKES_DAILY_MAX
             #Ignore anything beyond 3 days
             if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
                 away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
