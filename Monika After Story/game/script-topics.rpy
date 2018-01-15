@@ -4416,6 +4416,8 @@ init 5 python:
 
 label monika_jokes_topic:
     if persistent.jokes_available > 0:
+        $ import store.masjokes as masjokes
+        $ import copy
         m "Hey [player], I think telling each other some good jokes could bring us closer together, you know?"
         m "I know quite a few jokes, but I was wondering if maybe you knew any."
         menu:
@@ -4424,63 +4426,57 @@ label monika_jokes_topic:
                 m "Ah, do you mind letting me hear some?"
                 python:
                     # check to ensure we arent dry
-                    if len(daily_p2m_jokes) == 0:
+                    if len(masjokes.day_p2m_jokes) == 0:
 
-                        # check to ensure the dynamic dict isnt dry
-                        if len(p2m_jokes) == 0:
-                            # yikes, we dry, better fill this up
-                            from copy import deepcopy
-                            p2m_jokes = filterPool(deepcopy(all_p2m_jokes))
+                        # check if unseen isnt dry
+                        if len(masjokes.use_p2m_jokes) == 0:
+                            masjokes.use_p2m_jokes = copy.copy(
+                                masjokes.all_p2m_jokes
+                            )
 
-                        # lenggth checkas always
-                        if len(p2m_jokes) < p2m_jokes_avail:
-                            p2m_jokes_avail = len(p2m_jokes)
-
-                        # alright, lets get stuff from the pool
-                        daily_p2m_jokes.extend(
-                            randomlyRemoveFromListPool(p2m_jokes, p2m_jokes_avail)
+                        # pull randomly
+                        masjokes.day_p2m_jokes = randomlyRemoveFromListPool(
+                            masjokes.use_p2m_jokes,
+                            masjokes.OPTION_MAX
                         )
 
                     # using display menu requires a processing
                     p2m_jokeslist = list()
-                    for joke in daily_p2m_jokes:
+                    for joke in masjokes.day_p2m_jokes:
                         p2m_jokeslist.append((joke.prompt,joke))
 
                     # now call the menu
                     sel_joke = renpy.display_menu(p2m_jokeslist)
 
                 # and the resulting label
-                call expression sel_joke.jokelabel from _p2m_joke_subexp
+                call expression sel_joke.eventlabel from _p2m_joke_subexp
                 python:
-                    daily_p2m_jokes.remove(sel_joke)
+                    masjokes.day_p2m_jokes.remove(sel_joke)
                     persistent.jokes_available -= 1
-                    if sel_jokes.is_dark:
+                    if masjokes.TYPE_DARK in sel_joke.category:
                         persistent.dark_jokes_told += 1
             "No":
                 m "Alright, I'll tell you a joke"
                 python:
                     # check to ensure we arent dry
-                    if len(daily_m2p_jokes) == 0:
+                    if len(masjokes.day_m2p_jokes) == 0:
 
-                        # check to ensure the dynamic dict isnt dry
-                        if len(m2p_jokes) == 0:
-                            # yikes, we dry, better be moist
-                            from copy import deepcopy
-                            m2p_jokes = filterPool(deepcopy(all_m2p_jokes))
+                        # check if unseen isnt dry
+                        if len(masjokes.use_m2p_jokes) == 0:
+                            masjokes.use_m2p_jokes = copy.copy(
+                                masjokes.all_m2p_jokes
+                            )
 
-                        # lench tcheck
-                        if len(m2p_jokes) < m2p_jokes_avail:
-                            m2p_jokes_avail = len(m2p_jokes)
-
-                        # alright, grab from pool
-                        daily_m2p_jokes.extend(
-                            randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
+                        # pull randomly
+                        masjokes.day_m2p_jokes = randomlyRemoveFromListPool(
+                            masjokes.use_m2p_jokes,
+                            masjokes.OPTION_MAX
                         )
 
                     # now pick one monika
-                    sel_joke = renpy.random.choice(daily_m2p_jokes)
-                call expression sel_joke.jokelabel from _m2p_joke_subexp
-                $ daily_m2p_jokes.remove(sel_joke)
+                    sel_joke = renpy.random.choice(masjokes.day_m2p_jokes)
+                call expression sel_joke.eventlabel from _m2p_joke_subexp
+                $ masjokes.day_m2p_jokes.remove(sel_joke)
                 $ persistent.jokes_available -= 1
     else:
         # TODO: better dialogue for no more available jokes

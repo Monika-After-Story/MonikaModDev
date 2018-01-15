@@ -6,10 +6,10 @@
 # we are now using an event db. (not the big one, just a special one for us)
 
 # list of tags that we have unlocked
-default persistent.jokes_tags_unlocked = []
+default persistent.jokes_tags_blocked = [store.masjokes.TYPE_DARK]
 
 # how many jokes available today
-default persistent.jokes_available = 0
+default persistent.jokes_available = masjokes.JOKE_DAILY_MAX
 
 # how many dark jokes have we told
 default persistent.jokes_dark_told = 0
@@ -23,7 +23,6 @@ default persistent.jokes_dark_told = 0
 default persistent.jokes_m2p_db = {}
 default persistent.jokes_p2m_db = {}
 
-
 # pre stuff
 init -1 python:
 
@@ -33,58 +32,6 @@ init -1 python:
         def __str__(self):
             return "MASJokeError: " + self.msg
 
-
-        @staticmethod
-        def filterJoke(joke):
-            #
-            # Filters the given joke accoridng to persistent rule
-            #
-            # IN:
-            #   joke - MASJoke object to filter
-            #
-            # RETURNS:
-            #   True if the joke passes the filter, false otherwise
-            #
-            # ASSUMES:
-            #   persistent.allow_dark_jokes
-            #   persistent.allow_dad_jokes
-
-            # sanity check
-            if not joke:
-                return False
-
-            # let the filtering begin
-            if not persistent.allow_dark_jokes and joke.is_dark:
-                return False
-
-            if not persistent.allow_dad_jokes and joke.is_dad:
-                return False
-
-            # pass filtering rules
-            return True
-
-    # list of jokes we tell monika
-    # each elem is a MASJoke
-    p2m_jokes = list()
-
-    # list of jokes monika tells us
-    # each elem is a MASJoke
-    m2p_jokes = list()
-
-    def removeSeenJokes(pool):
-        #
-        # Removes both jokes that we have already told monika and jokes that
-        # monika has already told us from their appropriate structures
-        #
-        # IN:
-        #   pool - list of MASJokes to remove jokes from
-        #
-        # OUT:
-        #   pool - list of MASJokes with seen jokes removed
-
-        for index in range(len(pool)-1, -1, -1):
-            if renpy.seen_label(pool[index].jokelabel):
-                pool.pop(index)
 
     def randomlyRemoveFromListPool(pool, n):
         #
@@ -151,58 +98,107 @@ init -1 python in masjokes:
     TYPE_PUN = "pun"
     TYPE_CS = "cs" # programmer related humor
 
+    # list storage of everything
+    all_m2p_jokes = list()
+    all_p2m_jokes = list()
+    use_m2p_jokes = list()
+    use_p2m_jokes = list()
+    day_m2p_jokes = list()
+    day_p2m_jokes = list()
+
+
+init 5 python in masjokes:
+
+    def filterJoke(joke):
+        #
+        # Filters the given joke accoridng to persistent rule
+        #
+        # IN:
+        #   joke - Event object joke to filter
+        #
+        # RETURNS:
+        #   True if the joke passes the filter, false otherwise
+        #
+        # ASSUMES:
+        #   persistent.jokes_tags_blocked
+
+        # sanity check
+        if not joke:
+            return False
+
+        # no category is okay
+        if not joke.category:
+            return True
+
+        # let the filtering begin
+        for tag in renpy.store.persistent.jokes_tags_blocked:
+            if tag in joke.category:
+                return False
+
+        # pass filtering rules
+        return True
+
+    def buildFilteredJokesList(jokedb):
+        #
+        # builds a list of filtered jokes given the jokedb
+        #
+        # IN:
+        #   jokedb - the dict of Event jokes to filter
+        #
+        # RETURNS:
+        #   list of filtered jokes
+        return [ev for k,ev in jokedb.iteritems() if filterJoke(ev)]
+
+    def buildUnseenJokesList(joke_list):
+        #
+        # Builds list of unseen jokes given the joke list
+        # 
+        # IN:
+        #   joke_list - list of Event jokes to filter
+        #
+        # RETURNS:
+        #   list of unseen jokes
+        return [ev for ev in joke_list if not renpy.seen_label(ev.eventlabel)]
+
+
 # post stuff
 init 10 python:
-    from copy import deepcopy
+    import copy
+    import store.masjokes as masjokes
 
-    # copy of the total player 2 monika jokes dict
-    all_p2m_jokes = deepcopy(p2m_jokes)
+    # all lists are all jokes minus filters
+    masjokes.all_m2p_jokes = masjokes.buildFilteredJokesList(
+        persistent.jokes_m2p_db
+    )
+    masjokes.all_p2m_jokes = masjokes.buildFilteredJokesList(
+        persistent.jokes_p2m_db
+    )
 
-    # copy of the total monika 2 player jokes list
-    all_m2p_jokes = deepcopy(m2p_jokes)
-
-    # remove seen shit
-    removeSeenJokes(p2m_jokes)
-    removeSeenJokes(m2p_jokes)
+    # use lists are jokes that we havent seen.
+    masjokes.use_m2p_jokes = masjokes.buildUnseenJokesList(
+        masjokes.all_m2p_jokes
+    )
+    masjokes.use_p2m_jokes = masjokes.buildUnseenJokesList(
+        masjokes.all_p2m_jokes
+    )
 
     # empty lists mean we need to reset
-    if len(p2m_jokes) == 0:
-        p2m_jokes = deepcopy(all_p2m_jokes)
-
-    if len(m2p_jokes) == 0:
-        m2p_jokes = deepcopy(all_m2p_jokes)
-
-    # FILTER jokes
-    p2m_jokes = filterPool(p2m_jokes)
-    m2p_jokes = filterPool(m2p_jokes)
+    if len(masjokes.use_m2p_jokes) == 0:
+        masjokes.use_m2p_jokes = copy.copy(masjokes.all_m2p_jokes)
+    if len(masjokes.use_p2m_jokes) == 0:
+        masjokes.use_p2m_jokes = copy.copy(masjokes.all_p2m_jokes)
 
     # fill up the daily jokes list
-    # NOTE: since we are waiting on daily limiting, this is currently set
-    # to only showcasing 3 jokes per launch.
-    import store.mas_jokes_consts as mjc
-    p2m_jokes_avail = mjc.OPTION_MAX  # number of player 2 monika jokes avail
-    m2p_jokes_avail = mjc.OPTION_MAX  # number of monika 2 player jokes avail
+    masjokes.day_m2p_jokes = randomlyRemoveFromListPool(
+        masjokes.use_m2p_jokes,
+        masjokes.OPTION_MAX
+    )
+    masjokes.day_p2m_jokes = randomlyRemoveFromListPool(
+        masjokes.use_p2m_jokes,
+        masjokes.OPTION_MAX
+    )
 
-    # TODO: integrate the daily portion of prompt-system with this to ensure
-    # daily limit of jokes
-    # number of jokes m and p exchange
-    persistent.jokes_available = mjc.JOKE_DAILY_MAX 
-
-    # length checks to ensure we dont go pull too many
-    if len(p2m_jokes) < p2m_jokes_avail:
-        p2m_jokes_avail = len(p2m_jokes)
-    if len(m2p_jokes) < m2p_jokes_avail:
-        m2p_jokes_avail = len(m2p_jokes)
-
-    # now remove from the pool
-    # the daily player 2 monika jokes dict
-#    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, p2m_jokes_avail)
-#    daily_p2m_jokes = randomlyRemoveFromDictPool(p2m_jokes, jokes_available)
-    daily_p2m_jokes = randomlyRemoveFromListPool(p2m_jokes, p2m_jokes_avail)
-
-    # the daily monika 2 player jokes list
-    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, m2p_jokes_avail)
-#    daily_m2p_jokes = randomlyRemoveFromListPool(m2p_jokes, jokes_available)
+    # resets should happen in the jokes topic
 
 #=============================================================================#
 # PLAYER 2 MONIKA JOKES
@@ -314,7 +310,7 @@ init 5 python:
             prompt="How many apples grow on a tree?",
             category=[store.masjokes.TYPE_DAD]
         ),
-        eventdb=persistent.jokes.p2m_db
+        eventdb=persistent.jokes_p2m_db
     )
 
 label joke_hitired:
@@ -569,7 +565,7 @@ init 5 python:
     addEvent(
         Event(
             "joke_tearablepaper",
-            prompt="Wanna hear a joke about paper?"
+            prompt="Wanna hear a joke about paper?",
             category=[store.masjokes.TYPE_PUN]
         ),
         eventdb=persistent.jokes_p2m_db
@@ -1271,7 +1267,7 @@ init 5 python:
         Event(
             "m_joke_marathonforeducation",
             prompt="Education",
-            category=store.masjokes.TYPE_PUN]
+            category=[store.masjokes.TYPE_PUN]
         ),
         eventdb=persistent.jokes_m2p_db
     )
