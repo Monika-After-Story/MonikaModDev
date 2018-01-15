@@ -3,23 +3,26 @@
 #
 # TODO: add some way to do toggling of dark jokes
 #   and differenetiating of dark jokes
-#   
-# NOTE: consider doing a tag system
+# we are now using an event db. (not the big one, just a special one for us)
 
-# we need some persists
-# dict of following format:
-# "p2m": p2m_jokes dict
-# "m2p": m2p_jokes list
-# default persistent.monika_jokes = {}
-# NOTE: If we are trying to make a label work for both monika and player, 
-#   it requires some complexity added to the label, particularly two 
-#   different paths. The label must have support for this.
+# list of tags that we have unlocked
+default persistent.jokes_tags_unlocked = []
 
-# okay we actually need some persits
-default persistent.allow_dark_jokes = False
-default persistent.allow_dad_jokes = False
+# how many jokes available today
 default persistent.jokes_available = 0
-default persistent.dark_jokes_told = 0
+
+# how many dark jokes have we told
+default persistent.jokes_dark_told = 0
+
+# the JOKES DB.
+# similar to events except we doing things a bit differently.
+# MAIN DIFFS:
+#   category - this system will be used to differentiate between joke types.
+#       atm, we only have 2, but we will be able to really expand this when
+#       we feel like.
+default persistent.jokes_m2p_db = {}
+default persistent.jokes_p2m_db = {}
+
 
 # pre stuff
 init -1 python:
@@ -30,47 +33,6 @@ init -1 python:
         def __str__(self):
             return "MASJokeError: " + self.msg
 
-    # alright, im making this a class instead. its just easier to handle
-    #
-    # This class handles represntations of MASJokes and attributes
-    #
-    # PROPERTIES:
-    #   jokelabel - the label this joke resides at (existence is checked,
-    #       please only create this class post init level 5)
-    #       NOTE: will raise a MASJokeException if the jokelabel doesnt exist
-    #       (REQUIRED)
-    #   is_m2p - True if this joke is one that monika can tell the player
-    #       False means this joke is one the player tells monika
-    #       NOTE: If false, Prompt is REQUIRED
-    #       (Default: True)
-    #   prompt - the prompt to show on the button for this joke
-    #       NOTE: Only required if is_p2m is True.
-    #       NOTE: Will raise a MASJokeException if None while is_m2p is False
-    #   is_dark - True if this joke is a dark joke, False if not
-    #       (Default: False)
-    #   is_dad - True if this joke is a dad joke, False if not
-    #       (Default: False)
-    class MASJoke():
-        def __init__(self, 
-                jokelabel,
-                is_m2p=True,
-                prompt=None,
-                is_dark=False,
-                is_dad=False):
-
-            # sanity checks
-            if not jokelabel:
-                raise MASJokeException("jokelabel cannot be None")
-            if not renpy.has_label(jokelabel):
-                raise MASJokeException("'"+jokelabel+"' does not exist")
-            if not is_m2p and not prompt:
-                raise MASJokeException("prompt cannot be None")
-
-            self.jokelabel = jokelabel
-            self.is_m2p = is_m2p
-            self.prompt = prompt
-            self.is_dark = is_dark
-            self.is_dad = is_dad
 
         @staticmethod
         def filterJoke(joke):
@@ -175,13 +137,19 @@ init -1 python:
 
         return new_pool
 
-init -1 python in mas_jokes_consts:
+init -1 python in masjokes:
     # only 3 choices at a time
     OPTION_MAX = 3
 
     # how many jokes can we say? 
     # per day?
     JOKE_DAILY_MAX = 3
+
+    # JOKE types
+    TYPE_DARK = "dark"
+    TYPE_DAD = "dad"
+    TYPE_PUN = "pun"
+    TYPE_CS = "cs" # programmer related humor
 
 # post stuff
 init 10 python:
@@ -241,11 +209,15 @@ init 10 python:
 #=============================================================================#
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_moonrestaurant",
-        is_m2p=False,
-        prompt="Did you hear about the restaurant on the moon?"
-    ))
+    addEvent(
+        Event(
+            "joke_moonrestaurant",
+            prompt="Did you hear about the restaurant on the moon?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
+
     
 label joke_moonrestaurant:
     menu:
@@ -258,12 +230,14 @@ label joke_moonrestaurant:
     return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_scarecrowaward",
-        is_m2p=False,
-        prompt="Why did the scarecrow win an award?",
-        is_dad=True
-    ))
+    addEvent(
+        Event(
+            "joke_scarecrowaward",
+            prompt="Why did the scarecrow win an award?",
+            category=[store.masjokes.TYPE_DAD, store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
 
 label joke_scarecrowaward:
     menu:
@@ -273,12 +247,17 @@ label joke_scarecrowaward:
     return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_fencegraveyard",
-        is_m2p=False,
-        prompt="A curious child asks his dad 'Why do they build a fence around a graveyard?'",
-        is_dad=True
-    ))
+    addEvent(
+        Event(
+            "joke_fencegraveyard",
+            prompt=("A curious child asks his dad 'Why do they build a fence" +
+                " around a graveyard?'"
+            ),
+            category=[store.masjokes.TYPE_DAD, store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
+
 label joke_fencegraveyard:
     menu:
         "The dad quickly replies with 'Because people are dying to get in there!'":
@@ -290,11 +269,14 @@ label joke_fencegraveyard:
     return
     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_knocknobel",
-        is_m2p=False,
-        prompt="Did you hear about the guy who invented knock knock jokes?"
-    ))
+    addEvent(
+        Event(
+            "joke_knocknobel",
+            prompt="Did you hear about the guy who invented knock knock jokes?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
 
 label joke_knocknobel:
     menu:
@@ -306,11 +288,14 @@ label joke_knocknobel:
     return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_mushroomfungai",
-        is_m2p=False,
-        prompt="A mushroom walks into a bar."
-    ))
+    addEvent(
+        Event(
+            "joke_mushroomfungai",
+            prompt="A mushroom walks into a bar.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_mushroomfungai:
     menu:
@@ -323,12 +308,15 @@ label joke_mushroomfungai:
     return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_hitired",
-        is_m2p=False,
-        prompt="How many apples grow on a tree?",
-        is_dad=True
-    ))
+    addEvent(
+        Event(
+            "joke_hitired",
+            prompt="How many apples grow on a tree?",
+            category=[store.masjokes.TYPE_DAD]
+        ),
+        eventdb=persistent.jokes.p2m_db
+    )
+
 label joke_hitired:
     m 1q "Ah, [player] please give me a second"
     m "I don't know why but I haven't been feeling that good today."
@@ -349,11 +337,14 @@ label joke_hitired:
     return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_cantopener",
-        is_m2p=False,
-        prompt="What do you call a broken can opener?"
-    ))
+    addEvent(
+        Event(
+            "joke_cantopener",
+            prompt="What do you call a broken can opener?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
 
 label joke_cantopener:
     menu:
@@ -366,11 +357,15 @@ label joke_cantopener:
     return
     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_camouflagetraining",
-        is_m2p=False,
-        prompt="At evening roll call, the sergeant-major headed right towards a young soldier."
-    ))
+    addEvent(
+        Event(
+            "joke_camouflagetraining",
+            prompt=("At evening roll call, the sergeant-major headed right " +
+                "towards a young soldier."
+            )
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_camouflagetraining:
     menu:
@@ -385,11 +380,14 @@ label joke_camouflagetraining:
     return
     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_muffledexhausted",
-        is_m2p=False,
-        prompt="Last night I had a dream I was a muffler."
-    ))
+    addEvent(
+        Event(
+            "joke_muffledexhausted",
+            prompt="Last night I had a dream I was a muffler.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_muffledexhausted:
     menu:
@@ -400,13 +398,16 @@ label joke_muffledexhausted:
     return
     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_threewishes",
-        is_m2p=False,
-        prompt=("Three guys, who are stranded on an "+
-        "island, find a magic lantern which contains a genie, who will grant "+
-        "three wishes.")
-    ))
+    addEvent(
+        Event(
+            "joke_threewishes",
+            prompt=("Three guys, who are stranded on an island, find a magic" +
+                " lantern which contains a genie, who will grant three " +
+                "wishes."
+            ),
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
 
 label joke_threewishes:
     menu:
@@ -422,11 +423,14 @@ label joke_threewishes:
 
     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_sodapressing",
-        is_m2p=False,
-        prompt="Why did the can-crusher quit his job?"
-    ))
+    addEvent(
+        Event(
+            "joke_sodapressing",
+            prompt="Why did the can-crusher quit his job?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_sodapressing:
     menu:
@@ -438,11 +442,13 @@ label joke_sodapressing:
             
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_haircut",
-        is_m2p=False,
-        prompt="Did you ever get a haircut?"
-    ))
+    addEvent(
+        Event(
+            "joke_haircut",
+            prompt="Did you ever get a haircut?",
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_haircut:
     m 3e "Ah, you're wrong there!"
@@ -451,11 +457,14 @@ label joke_haircut:
     return
     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_pooldeepends",
-        is_m2p=False,
-        prompt="Are pools safe for diving?"
-    ))
+    addEvent(
+        Event(
+            "joke_pooldeepends",
+            prompt="Are pools safe for diving?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_pooldeepends:
     menu:
@@ -465,11 +474,13 @@ label joke_pooldeepends:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_atomtrustissues",
-        is_m2p=False,
-        prompt="You shouldn't trust atoms!"
-    ))
+    addEvent(
+        Event(
+            "joke_atomtrustissues",
+            prompt="You shouldn't trust atoms!"
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_atomtrustissues:
     menu:
@@ -481,11 +492,13 @@ label joke_atomtrustissues:
             return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_hamdiscrimination",
-        is_m2p=False,
-        prompt="A ham sandwich walks into a bar."
-    ))
+    addEvent(
+        Event(
+            "joke_hamdiscrimination",
+            prompt="A ham sandwich walks into a bar."
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_hamdiscrimination:
     menu:
@@ -497,11 +510,13 @@ label joke_hamdiscrimination:
             
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_mineistheanswer",
-        is_m2p=False,
-        prompt="A cop stops a miner for speeding on the highway."
-    ))
+    addEvent(
+        Event(
+            "joke_mineistheanswer",
+            prompt="A cop stops a miner for speeding on the highway."
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_mineistheanswer:
     menu:
@@ -516,11 +531,14 @@ label joke_mineistheanswer:
                     return
                 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_beaverdamn",
-        is_m2p=False,
-        prompt="I just watched a show about beavers."
-    ))
+    addEvent(
+        Event(
+            "joke_beaverdamn",
+            prompt="I just watched a show about beavers.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_beaverdamn:
     menu:
@@ -530,11 +548,14 @@ label joke_beaverdamn:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_themuggedcoffee",
-        is_m2p=False,
-        prompt="Why did the coffee file a police report?"
-    ))
+    addEvent(
+        Event(
+            "joke_themuggedcoffee",
+            prompt="Why did the coffee file a police report?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
 
 label joke_themuggedcoffee:
     menu:
@@ -545,11 +566,14 @@ label joke_themuggedcoffee:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_tearablepaper",
-        is_m2p=False,
-        prompt="Wanna hear a joke about paper?"
-    ))
+    addEvent(
+        Event(
+            "joke_tearablepaper",
+            prompt="Wanna hear a joke about paper?"
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
 
 label joke_tearablepaper:
     menu:
@@ -560,11 +584,14 @@ label joke_tearablepaper:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_groundbreakingshovel",
-        is_m2p=False,
-        prompt="I think quite highly of the shovel."
-    ))
+    addEvent(
+        Event(
+            "joke_groundbreakingshovel",
+            prompt="I think quite highly of the shovel.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_groundbreakingshovel:
     menu:
@@ -574,11 +601,14 @@ label joke_groundbreakingshovel:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_igloosit",
-        is_m2p=False,
-        prompt="How does a penguin build it's house?"
-    ))
+    addEvent(
+        Event(
+            "joke_igloosit",
+            prompt="How does a penguin build it's house?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
             
 label joke_igloosit:
     menu:
@@ -589,11 +619,14 @@ label joke_igloosit:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_irrelephant",
-        is_m2p=False,
-        prompt="What do you call an elephant that doesn't matter?"
-    ))
+    addEvent(
+        Event(
+            "joke_irrelephant",
+            prompt="What do you call an elephant that doesn't matter?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_irrelephant:
     menu:
@@ -603,11 +636,14 @@ label joke_irrelephant:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_nutsdiet",
-        is_m2p=False,
-        prompt="I thought about going on an all-almond diet."
-    ))
+    addEvent(
+        Event(
+            "joke_nutsdiet",
+            prompt="I thought about going on an all-almond diet.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_nutsdiet:
     menu:
@@ -619,11 +655,14 @@ label joke_nutsdiet:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_kidnappingatschool",
-        is_m2p=False,
-        prompt="Did you hear about the kidnapping at one school?"
-    ))
+    addEvent(
+        Event(
+            "joke_kidnappingatschool",
+            prompt="Did you hear about the kidnapping at one school?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_kidnappingatschool:
     menu:
@@ -634,11 +673,14 @@ label joke_kidnappingatschool:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_resistingarest",
-        is_m2p=False,
-        prompt="If a child refuses to sleep during night time."
-    ))
+    addEvent(
+        Event(
+            "joke_resistingarest",
+            prompt="If a child refuses to sleep during night time.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_resistingarest:
     menu:
@@ -648,11 +690,14 @@ label joke_resistingarest:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_stepahead",
-        is_m2p=False,
-        prompt="I leave my right shoe inside my car."
-    ))
+    addEvent(
+        Event(
+            "joke_stepahead",
+            prompt="I leave my right shoe inside my car.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_stepahead:
     menu:
@@ -663,11 +708,13 @@ label joke_stepahead:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_leastspokenlanguage",
-        is_m2p=False,
-        prompt="What's the least spoken language in the world?"
-    ))
+    addEvent(
+        Event(
+            "joke_leastspokenlanguage",
+            prompt="What's the least spoken language in the world?"
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_leastspokenlanguage:
     menu:
@@ -677,11 +724,14 @@ label joke_leastspokenlanguage:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_octover",
-        is_m2p=False,
-        prompt="What do you say when november starts?"
-    ))
+    addEvent(
+        Event(
+            "joke_octover",
+            prompt="What do you say when november starts?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_octover:
     menu:
@@ -691,11 +741,14 @@ label joke_octover:
             return
                     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_leekinginformation",
-        is_m2p=False,
-        prompt="Why did the vegetable go to jail?"
-    ))
+    addEvent(
+        Event(
+            "joke_leekinginformation",
+            prompt="Why did the vegetable go to jail?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
         
 label joke_leekinginformation:
     menu:
@@ -705,11 +758,13 @@ label joke_leekinginformation:
             return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_timidpebble",
-        is_m2p=False,
-        prompt="What did the timid pebble wish for?"
-    ))
+    addEvent(
+        Event(
+            "joke_timidpebble",
+            prompt="What did the timid pebble wish for?"
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_timidpebble:
     menu:
@@ -719,11 +774,13 @@ label joke_timidpebble:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_chickenslide",
-        is_m2p=False,
-        prompt="Why did the chicken cross the playground?"
-    ))
+    addEvent(
+        Event(
+            "joke_chickenslide",
+            prompt="Why did the chicken cross the playground?"
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_chickenslide:
     menu:
@@ -733,11 +790,14 @@ label joke_chickenslide:
             return
 
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_nicejester",
-        is_m2p=False,
-        prompt="Yesterday a clown held the door open for me."
-    ))
+    addEvent(
+        Event(
+            "joke_nicejester",
+            prompt="Yesterday a clown held the door open for me.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_nicejester:
     menu:
@@ -747,11 +807,14 @@ label joke_nicejester:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_caketiers",
-        is_m2p=False,
-        prompt="It was an emotional wedding."
-    ))
+    addEvent(
+        Event(
+            "joke_caketiers",
+            prompt="It was an emotional wedding.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_caketiers:
     menu:
@@ -761,11 +824,14 @@ label joke_caketiers:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_housewearadress",
-        is_m2p=False,
-        prompt="What does a house wear?"
-    ))
+    addEvent(
+        Event(
+            "joke_housewearadress",
+            prompt="What does a house wear?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_housewearadress:
     menu:
@@ -775,11 +841,14 @@ label joke_housewearadress:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_aimisgettingbetter",
-        is_m2p=False,
-        prompt="My ex-wife still misses me."
-    ))
+    addEvent(
+        Event(
+            "joke_aimisgettingbetter",
+            prompt="My ex-wife still misses me.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_aimisgettingbetter:
     menu:
@@ -789,11 +858,14 @@ label joke_aimisgettingbetter:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_daywellspent",
-        is_m2p=False,
-        prompt="If you spent your day in a well."
-    ))
+    addEvent(
+        Event(
+            "joke_daywellspent",
+            prompt="If you spent your day in a well.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_daywellspent:
     menu:
@@ -803,11 +875,14 @@ label joke_daywellspent:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_massconfusion",
-        is_m2p=False,
-        prompt="If America changed from pounds to kilograms."
-    ))
+    addEvent(
+        Event(
+            "joke_massconfusion",
+            prompt="If America changed from pounds to kilograms.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_massconfusion:
     menu:
@@ -818,11 +893,14 @@ label joke_massconfusion:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_justchilling",
-        is_m2p=False,
-        prompt="What do snowmen do in their free time?"
-    ))
+    addEvent(
+        Event(
+            "joke_justchilling",
+            prompt="What do snowmen do in their free time?",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_justchilling:
     menu:
@@ -833,11 +911,14 @@ label joke_justchilling:
             return
             
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_trainderailer",
-        is_m2p=False,
-        prompt="A boss yelled at a driver the other day."
-    ))
+    addEvent(
+        Event(
+            "joke_trainderailer",
+            prompt="A boss yelled at a driver the other day.",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
     
 label joke_trainderailer:
     menu:
@@ -850,11 +931,14 @@ label joke_trainderailer:
                     return
                     
 init 5 python:
-    p2m_jokes.append(MASJoke(
-        "joke_wealldig",
-        is_m2p=False,
-        prompt="I dig, you dig, she dig, he dig, we dig..."
-    ))
+    addEvent(
+        Event(
+            "joke_wealldig",
+            prompt="I dig, you dig, she dig, he dig, we dig...",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_p2m_db
+    )
             
 label joke_wealldig:
     menu:
@@ -867,10 +951,14 @@ label joke_wealldig:
 #=============================================================================#
 
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_bakercollege",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_bakercollege",
+            prompt="Baker College",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
 
 label m_joke_bakercollege:
     m 1a "What did the baker say when he had to go through college?"
@@ -880,10 +968,14 @@ label m_joke_bakercollege:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_gluehistory",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_gluehistory",
+            prompt="Glue History",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
 
 label m_joke_gluehistory:
     m 2a"I’ve been reading a book on the history of glue."
@@ -891,10 +983,14 @@ label m_joke_gluehistory:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_knifetoknowyou",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_knifetoknowyou",
+            prompt="Nice to know you",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_knifetoknowyou:
     m 2a "What did the serial murderer tell their victim?"
@@ -904,10 +1000,14 @@ label m_joke_knifetoknowyou:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_natsukishelf",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_natsukishelf",
+            prompt="My shelf",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
 
 label m_joke_natsukishelf:
     m 3a "I would have felt horrible if Natsuki had been hurt by those falling books."
@@ -915,10 +1015,14 @@ label m_joke_natsukishelf:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_undercoverbook",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_undercoverbook",
+            prompt="Undercover",
+            category=[store.masjokes.TYPE_PUN],
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
 
 label m_joke_undercoverbook:
     m 1a "Why did the book join the police?"
@@ -926,10 +1030,14 @@ label m_joke_undercoverbook:
     return
 
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_authlete",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_authlete",
+            prompt="Authors",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_authlete:
     m 1a "What do you call a writer who completes a whole book in one day?"
@@ -937,10 +1045,14 @@ label m_joke_authlete:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_stockholmbook",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_stockholmbook",
+            prompt="Stockholm Syndrome",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_stockholmbook:
     m 1a "I just read a textbook about Stockholm Syndrome."
@@ -948,10 +1060,14 @@ label m_joke_stockholmbook:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_sinkholebook",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_sinkholebook",
+            prompt="Sinkholes",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_sinkholebook:
     m 1a "I had plans to begin reading a book about sinkholes."
@@ -959,10 +1075,14 @@ label m_joke_sinkholebook:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_penciltobeornot",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_penciltobeornot",
+            prompt="Pencils",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
 
 label m_joke_penciltobeornot:
     m 1b "Why did Shakespeare always write in pen?"
@@ -970,10 +1090,14 @@ label m_joke_penciltobeornot:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_booknovelideas",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_booknovelideas",
+            prompt="Novel",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_booknovelideas:
     m 2a "What do you say to a book that has good plans?"
@@ -981,10 +1105,14 @@ label m_joke_booknovelideas:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_confidentbook",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_confidentbook",
+            prompt="Confident",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_confidentbook:
     m 1a "What made the book so confident?"
@@ -992,10 +1120,14 @@ label m_joke_confidentbook:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_booklove",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_booklove",
+            prompt="Book Love",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_booklove:
     m 1a "How do you know when two books are in love?"
@@ -1003,10 +1135,13 @@ label m_joke_booklove:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_smartbookworm",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_smartbookworm",
+            prompt="Bookworm"
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_smartbookworm:
     m 1a "Why couldn't they trick the bookworm?"
@@ -1014,10 +1149,14 @@ label m_joke_smartbookworm:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_booknovelideas",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_booknovelideas",
+            prompt="Busy Novelist",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_bookednovelist:
     m 2a "Why was the novelist so busy?"
@@ -1025,10 +1164,14 @@ label m_joke_bookednovelist:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_soccernogoal",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_soccernogoal",
+            prompt="Soccer",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_soccernogoal:
     m 1a "I've talked to people that quit soccer."
@@ -1036,10 +1179,14 @@ label m_joke_soccernogoal:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_stepupyourgamecompetition",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_stepupyourgamecompetition",
+            prompt="Stair Climbing",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_stepupyourgamecompetition:
     m 1a "I was competing for a stair cimbling competition."
@@ -1047,10 +1194,14 @@ label m_joke_stepupyourgamecompetition:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_skiingdownhill",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_skiingdownhill",
+            prompt="Skiing",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_skiingdownhill:
     m 1a "It's been a long time since I last went skiing."
@@ -1058,10 +1209,13 @@ label m_joke_skiingdownhill:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_unbeatablewall",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_unbeatablewall",
+            prompt="Tennis"
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_unbeatablewall:
     m 1a "The depressing thing about tennis is that no matter how good you get."
@@ -1069,21 +1223,27 @@ label m_joke_unbeatablewall:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_olympicprocrastination",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_olympicprocrastination",
+            prompt="Olympics"
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_olympicprocrastination:
     m 1a "If procrastination was an Olympic sport."
-    m 3l "I would compete on it later! Ehehe~"
+    m 3l "I would compete in it later! Ehehe~"
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_pooldonation",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_pooldonation",
+            prompt="Donations"
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_pooldonation:
     m 2a "One day a man knocked on my door."
@@ -1092,10 +1252,14 @@ label m_joke_pooldonation:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_flippingoutgymnast",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_flippingoutgymnast",
+            prompt="Gymnast",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_flippingoutgymnast:
     m 2a "What does a gymnast do when they're angry?"
@@ -1103,10 +1267,14 @@ label m_joke_flippingoutgymnast:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_marathonforeducation",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_marathonforeducation",
+            prompt="Education",
+            category=store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_marathonforeducation:
     m 3a"Why does someone who runs marathons make a good student?"
@@ -1114,10 +1282,14 @@ label m_joke_marathonforeducation:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_wetdribbled",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_wetdribbled",
+            prompt="Basketball",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_wetdribbled:
     m 3a "How did the basketball court get wet?"
@@ -1125,10 +1297,14 @@ label m_joke_wetdribbled:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_jographysubject",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_jographysubject",
+            prompt="Geography",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_jographysubject:
     m 4a "What's a runner's favorite subject in school?"
@@ -1136,10 +1312,13 @@ label m_joke_jographysubject:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_changingrooms",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_changingrooms",
+            prompt="Football Grounds"
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_changingrooms:
     m 2a "What part of a football ground's never the same?"
@@ -1147,10 +1326,14 @@ label m_joke_changingrooms:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_volleyballserving",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_volleyballserving",
+            prompt="Volleyball",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_volleyballserving:
     m 2a "What can you serve but never eat?"
@@ -1158,10 +1341,14 @@ label m_joke_volleyballserving:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_samepagebooks",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_samepagebooks",
+            prompt="Books",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_samepagebooks:
     m 3a "What did one book say to the other one?"
@@ -1169,10 +1356,14 @@ label m_joke_samepagebooks:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_nowordsindictionary",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_nowordsindictionary",
+            prompt="Dictionary",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_nowordsindictionary:
     m 4a "A father gives his son a really cheap dictionary for his birthday."
@@ -1180,10 +1371,13 @@ label m_joke_nowordsindictionary:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_favoriteauthornowriter",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_favoriteauthornowriter",
+            prompt="Favorite Author"
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_favoriteauthornowriter:
     m 2a "A teacher asks her student 'Who's your favorite author?'"
@@ -1193,10 +1387,14 @@ label m_joke_favoriteauthornowriter:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_abigarithmeticproblem",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_abigarithmeticproblem",
+            prompt="Arithmetic",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
 
 label m_joke_abigarithmeticproblem:
     m 4a "What did one arithmetic book say to the other?"
@@ -1204,10 +1402,14 @@ label m_joke_abigarithmeticproblem:
     return
 
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_ghosthomework",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_ghosthomework",
+            prompt="Ghost Homework",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_ghosthomework:
     m 3e "Where do young ghosts write their homework?"
@@ -1215,10 +1417,14 @@ label m_joke_ghosthomework:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_biggestliar",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_biggestliar",
+            prompt="Liar",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_biggestliar:
     m 1a "Who's the biggest liar in a city?"
@@ -1226,10 +1432,14 @@ label m_joke_biggestliar:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_binarytypes",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_binarytypes",
+            prompt="Binary",
+            category=[store.masjokes.TYPE_CS]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_binarytypes:
     m 4a "There're 10 types of people on the world."
@@ -1237,10 +1447,14 @@ label m_joke_binarytypes:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_mymosthatedsnake",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_mymosthatedsnake",
+            prompt="Snake",
+            category=[store.masjokes.TYPE_CS, store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_mymosthatedsnake:
     m 1a "What's the snake I hate the most?"
@@ -1248,10 +1462,14 @@ label m_joke_mymosthatedsnake:
     return
 
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_natski",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_natski",
+            prompt="Ski Trip",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_natski:
     m 2a "Why did Natsuki skip the ski trip?"
@@ -1259,10 +1477,14 @@ label m_joke_natski:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_programmerwithoutarrays",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_programmerwithoutarrays",
+            prompt="Arrays",
+            category=[store.masjokes.TYPE_CS, store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_programmerwithoutarrays:
     m 2a "Why did the programmer quit his job?"
@@ -1270,10 +1492,14 @@ label m_joke_programmerwithoutarrays:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_renpie",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_renpie",
+            prompt="Pie",
+            category=[store.masjokes.TYPE_CS, store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_renpie:
     m 4a "What's my favorite pie flavor?"
@@ -1281,10 +1507,14 @@ label m_joke_renpie:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_moosician",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_moosician",
+            prompt="Musician",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
 
 label m_joke_moosician:
     m 1a "What do you call a cow that plays the piano?"
@@ -1292,10 +1522,14 @@ label m_joke_moosician:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_lockedpiano",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_lockedpiano",
+            prompt="Piano Keys",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_lockedpiano:
     m 3a "Why're pianos so hard to open?"
@@ -1303,10 +1537,14 @@ label m_joke_lockedpiano:
     return
     
 init 5 python:
-    m2p_jokes.append(MASJoke(
-        "m_joke_debait",
-        is_m2p=True
-    ))
+    addEvent(
+        Event(
+            "m_joke_debait",
+            prompt="Fishing",
+            category=[store.masjokes.TYPE_PUN]
+        ),
+        eventdb=persistent.jokes_m2p_db
+    )
     
 label m_joke_debait:
     m 1b "How do you catch a fish?"
