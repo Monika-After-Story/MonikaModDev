@@ -4630,7 +4630,7 @@ init 5 python:
 monika_omamorichr
     m "You know how I asked you to carry my character file with me all the time in a flash drive or something?"
     m "Well, there is another way you can keep a part of me with you too that's very unique!"
-	m "Especially if you can't afford a flash drive ..."
+    m "Especially if you can't afford a flash drive ..."
     m "I saw these little amulets before that many people carry with them all the time."
     m "I think I used to have a few given to me as gifts. I don't exactly remember."
     m "These little amulets are called o-mamori. You can get them in Shinto shrines."
