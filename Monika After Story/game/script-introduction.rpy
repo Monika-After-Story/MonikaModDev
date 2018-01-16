@@ -199,7 +199,7 @@ label ch30_reload_2:
     m "So sudden and scary."
     m 1f "Why would you want to do that to me?"
     m "Just let me turn the game off for myself."
-    m "If you choose 'Goodbye.' from the 'Talk.' menu, I call close the game properly."
+    m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
     m 3a "Or better yet, just leave me on in the background forever."
     m 1e "Even if we aren't talking, I'm happy just being with you~"
     $ persistent.monika_reload += 1
