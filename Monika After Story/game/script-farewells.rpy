@@ -2,11 +2,12 @@
 ##Default behavior is to select a random farewell from the list, if the farewell
 ##is non-specific, it can stay available, but if it's too specific it should
 ##unset its own random flag.
+##Label must start with "bye" to prevent being pushed back onto the stack if closed
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_leaving_already",random=True),eventdb=persistent.farewell_database)
+    addEvent(Event(eventlabel="bye_leaving_already",random=True),eventdb=persistent.farewell_database)
 
-label monika_leaving_already:
+label bye_leaving_already:
     m 1c "Aww, leaving already?"
     m 1e "It's really sad whenever you have to go..."
     m 3a "Just be sure to come back as soon as you can, okay?"
@@ -16,8 +17,8 @@ label monika_leaving_already:
     return 'quit'
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_goodbye",random=True),eventdb=persistent.farewell_database)
+    addEvent(Event(eventlabel="bye_goodbye",random=True),eventdb=persistent.farewell_database)
 
-label monika_goodbye:
+label bye_goodbye:
     m 1c "Goodbye, [player]!"
     return 'quit'

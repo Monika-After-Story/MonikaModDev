@@ -110,6 +110,8 @@ Dmarab2 - Pong
 
 Ohxeighty - Steam library detection
 
+haloff1 - Scrollable menu and mod template
+
 
 ### Bugfixes
 
