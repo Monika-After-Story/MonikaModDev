@@ -360,17 +360,13 @@ label prompts_categories(pool=True):
         # push that master list into the category_lists
         cat_lists.append(evh._NT_CAT_PANE(dis_cat_list, main_cat_list))
 
-        # we always start in the root folder
-        is_root = True
-
     while not picked_event:
         python:
-            prev_menu, prev_cats = cat_lists[len(cat_lists)-1]
-            is_root = len(current_category) == 0
+            prev_items, prev_cats = cat_lists[len(cat_lists)-1]
 
             # in this case, we only want to display the root category list
-            if is_root:
-                main_menu = None
+            if len(current_category) == 0:
+                main_items = None
 
             else:
 
@@ -408,7 +404,7 @@ label prompts_categories(pool=True):
                 main_cats = []
 
                 # setup items
-                main_menu = no_cat_list
+                main_items = no_cat_list
 
                 """ KEEP this for legacy purposes
 #            sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
@@ -438,7 +434,7 @@ label prompts_categories(pool=True):
                     prompt_category_menu.append([unlocked_events[event].prompt,event])
                 """
 
-        call screen twopane_scrollable_menu(prev_menu, main_menu, evh.PREV_AREA, evh.PREV_XALIGN, evh.MAIN_AREA, evh.MAIN_XALIGN, is_root) nopredict
+        call screen twopane_scrollable_menu(prev_items, main_items, evh.PREV_AREA, evh.PREV_XALIGN, evh.MAIN_AREA, evh.MAIN_XALIGN, len(current_category)) nopredict
         
 
         if _return in prev_cats: 
@@ -448,8 +444,6 @@ label prompts_categories(pool=True):
                     current_category.pop()
                 current_category.append(_return)
 
-#                if is_root
-
 # TODO: if we have subcategories, this needs to be setup properly
 #        elif _return in main_cats:
             # we selected a category in the main pane
@@ -457,13 +451,12 @@ label prompts_categories(pool=True):
 #            $ cat_lists.append(main_pane)
 #            $ is_root = False
 
-        elif _return == -2: # Thats enough for now
-            $picked_event = True
+#        elif _return == -2: # Thats enough for now
+#            $picked_event = True
 
         elif _return == -1: # go back
-            if not is_root:
+            if len(current_category) > 0:
                 $ current_category.pop()
-                $ is_root = len(current_category) == 0
 
         else: # event picked
             $picked_event = True

@@ -1739,7 +1739,7 @@ define gui.scrollable_menu_button_text_xalign = 0.0
 define gui.scrollable_menu_button_text_idle_color = "#000"
 define gui.scrollable_menu_button_text_hover_color = "#fa9"
 
-# twopanescrollabe is now a prefix
+# twopane_scrollabe is now a prefix
 define gui.twopane_scrollable_menu_button_width = 250
 define gui.twopane_scrollable_menu_button_height = None
 define gui.twopane_scrollable_menu_button_tile = False
@@ -1788,25 +1788,25 @@ style twopane_scrollable_menu_vbox:
     spacing 5
 
 style twopane_scrollable_menu_button is choice_button:
-    properties gui.button_properties("scrollable_menu_button")
+    properties gui.button_properties("twopane_scrollable_menu_button")
 
 style twopane_scrollable_menu_button_text is choice_button_text:
-    properties gui.button_text_properties("scrollable_menu_button")
+    properties gui.button_text_properties("twopane_scrollable_menu_button")
 
-style twopane_scrollable_menu_new_button is scrollable_menu_button
+style twopane_scrollable_menu_new_button is twopane_scrollable_menu_button
 
-style twopane_scrollable_menu_new_button_text is scrollable_menu_button_text:
+style twopane_scrollable_menu_new_button_text is twopane_scrollable_menu_button_text:
     italic True
 
-style twopane_scrollable_menu_special_button is scrollable_menu_button
+style twopane_scrollable_menu_special_button is twopane_scrollable_menu_button
 
-style twopane_scrollable_menu_special_button_text is scrollable_menu_button_text:
+style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_button_text:
     bold True
 
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
 
-screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, is_root):
+screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
         style_prefix "twopane_scrollable_menu"
 
         fixed:
@@ -1817,10 +1817,9 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
             viewport:
                 yadjustment prev_adj
                 mousewheel True
+                arrowkeys True
 
                 vbox:
-#                    xpos x
-#                    ypos y
 
                     for i_caption,i_label in prev_items:
                         textbutton i_caption:
@@ -1835,9 +1834,9 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
                     null height 20
 
-                    if is_root:
-                        textbutton _("That's enough for now.") action Return(-2)
-                    else:
+                    if cat_length == 0:
+                        textbutton _("That's enough for now.") action Return(False)
+                    elif cat_length > 1:
                         textbutton _("Go Back") action Return(-1)
 
 
@@ -1851,6 +1850,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                 viewport:
                     yadjustment main_adj
                     mousewheel True
+                    arrowkeys True
 
                     vbox:
 
@@ -1865,7 +1865,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
 
                         null height 20
 
-                        textbutton _("That's enough for now.") action Return(-2)
+                        textbutton _("That's enough for now.") action Return(False)
 
 # the regular scrollabe menu
 screen scrollable_menu(items, display_area, scroll_align):
