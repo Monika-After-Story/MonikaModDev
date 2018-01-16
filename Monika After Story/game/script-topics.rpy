@@ -4635,7 +4635,7 @@ monika_omamori
     m "I've heard that some people carry around little amulets all the time."
     m "These little amulets are called o-mamori. You can get them in Shinto shrines."
     m "Rumor has it that they can give good luck, help on school tests, keep away bad luck, or just protect the holder."
-    m "I've always wondered what they put inside these things. You're not supposed to open them, after all."
+    m "I've always wondered what they put inside these things."
     m "Apparently, it's simply the name of the deity from the shrine, with a little something special done to it."
     m "Maybe you could make an o-mamori of me for you to carry around!"
     m "You could print write my name on a piece of paper."
