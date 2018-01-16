@@ -4822,6 +4822,26 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
 
+init 5 python:
+        for key in ['breakup','we should break up','break up'] :
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append('monika_breakup')
+            
+label monika_breakup:
+    m 1g "W-what? After everything you've already done to me, you're leaving me again?"
+    m 1p "I can't believe you, [player]. I really can't beli-"
+    m 1h "..."
+    m 2k "Ahahaha! You really got me."
+    m 2b "For a second, I thought you were actually going to break up with me."
+    m 1j "But you would never do that to me, right?"
+    menu:
+        "Of course not.":
+            m 2k "That's what I thought, just making sure!"
+            m 2k "Yeah, I know you would never do that to me."
+    m "I love you! Hehe~"
+    return
+        
+
 ##################
 #Incomplete ideas#
 ##################
