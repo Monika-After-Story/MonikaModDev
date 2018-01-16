@@ -337,6 +337,21 @@ screen rigged_choice(items):
 
     timer 1.0/30.0 repeat True action Function(RigMouse)
 
+style talk_choice_vbox is choice_vbox:
+    xcenter 960
+
+style talk_choice_button is choice_button
+style talk_choice_button_text is choice_button_text
+
+
+## This screen is used for the talk menu
+screen talk_choice(items):
+    style_prefix "talk_choice"
+
+    vbox:
+        for i in items:
+            textbutton i.caption action i.action
+
 
 ## When this is true, menu captions will be spoken by the narrator. When false,
 ## menu captions will be displayed as empty buttons.
@@ -1774,7 +1789,7 @@ screen scrollable_menu(items):
 
         fixed:
 
-            area (320, 40, 640, 450)
+            area (680, 40, 560, 640)
 
             bar adjustment adj style "vscrollbar" xalign -0.05
 

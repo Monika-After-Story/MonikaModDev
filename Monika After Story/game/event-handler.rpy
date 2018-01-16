@@ -199,21 +199,33 @@ label prompt_menu:
 
         repeatable_events = Event.filterEvents(persistent.event_database,unlocked=True,pool=False)
     #Top level menu
-    menu:
-        m "Pick something to talk about?"
+    show monika at t21
+    #To make the menu line up right we have to build it up manually
+    python:
+        talk_menu = []
+        if len(unseen_events)>0:
+            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+        talk_menu.append(("Ask a question.", "prompt"))
+        if len(repeatable_events)>0:
+            talk_menu.append(("Repeat conversation.", "repeat"))
+        talk_menu.append(("Nevermind.","nevermind"))
 
-        "{b}Unseen.{/b}" if len(unseen_events)>0:
-            call show_prompt_list(unseen_events)
+        renpy.say(m, "Pick something to talk about?", interact=False)
+        madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
-        "Ask a question.":
-            call prompts_categories(True)
+    if madechoice == "unseen":
+        call show_prompt_list(unseen_events)
 
-        "Repeat conversation." if len(repeatable_events)>0:
-            call prompts_categories(False)
+    if madechoice == "prompt":
+        call prompts_categories(True)
 
-        "Nevermind":
-            $_return = None
+    if madechoice == "repeat":
+        call prompts_categories(False)
 
+    if madechoice == "nevermind":
+        $_return = None
+
+    show monika at t11
     $allow_dialogue = True
     jump ch30_loop
 
@@ -225,11 +237,7 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    hide monika
-    show monika_waiting_img zorder 2 at i32
     call screen scrollable_menu(prompt_menu_items)
-    hide monika_waiting_img
-    show monika 1a zorder 2 at i32
 
     $pushEvent(_return)
 
