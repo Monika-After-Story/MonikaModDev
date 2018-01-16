@@ -1726,8 +1726,9 @@ init python:
 #button and button_text. To customize textbutton, both botton and button_text need to be modified
 #This part is usually found in gui.rpy
 
-define adj = ui.adjustment()
-define gui.scrollable_menu_button_width = 640
+define prev_adj = ui.adjustment()
+define main_adj = ui.adjustment()
+define gui.scrollable_menu_button_width = 560
 define gui.scrollable_menu_button_height = None
 define gui.scrollable_menu_button_tile = False
 define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
@@ -1737,6 +1738,18 @@ define gui.scrollable_menu_button_text_size = gui.text_size
 define gui.scrollable_menu_button_text_xalign = 0.0
 define gui.scrollable_menu_button_text_idle_color = "#000"
 define gui.scrollable_menu_button_text_hover_color = "#fa9"
+
+# twopanescrollabe is now a prefix
+define gui.twopane_scrollable_menu_button_width = 250
+define gui.twopane_scrollable_menu_button_height = None
+define gui.twopane_scrollable_menu_button_tile = False
+define gui.twopane_scrollable_menu_button_borders = Borders(25, 5, 25, 5)
+
+define gui.twopane_scrollable_menu_button_text_font = gui.default_font
+define gui.twopane_scrollable_menu_button_text_size = gui.text_size
+define gui.twopane_scrollable_menu_button_text_xalign = 0.0
+define gui.twopane_scrollable_menu_button_text_idle_color = "#000"
+define gui.twopane_scrollable_menu_button_text_hover_color = "#fa9"
 
 #Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
 # The line properties gui.button_properties("scrollable_menu_button") assigns all
@@ -1766,23 +1779,110 @@ style scrollable_menu_special_button is scrollable_menu_button
 style scrollable_menu_special_button_text is scrollable_menu_button_text:
     bold True
 
+# two pane stuff
+style twopane_scrollable_menu_vbox:
+    xalign 0.5
+    ypos 270
+    yanchor 0.5
+
+    spacing 5
+
+style twopane_scrollable_menu_button is choice_button:
+    properties gui.button_properties("scrollable_menu_button")
+
+style twopane_scrollable_menu_button_text is choice_button_text:
+    properties gui.button_text_properties("scrollable_menu_button")
+
+style twopane_scrollable_menu_new_button is scrollable_menu_button
+
+style twopane_scrollable_menu_new_button_text is scrollable_menu_button_text:
+    italic True
+
+style twopane_scrollable_menu_special_button is scrollable_menu_button
+
+style twopane_scrollable_menu_special_button_text is scrollable_menu_button_text:
+    bold True
+
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
 
-screen scrollable_menu(items):
-        style_prefix "scrollable_menu"
+screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, is_root):
+        style_prefix "twopane_scrollable_menu"
 
         fixed:
+            area left_area
 
-            area (320, 40, 640, 450)
-
-            bar adjustment adj style "vscrollbar" xalign -0.05
+            bar adjustment prev_adj style "vscrollbar" xalign left_align
 
             viewport:
-                yadjustment adj
+                yadjustment prev_adj
                 mousewheel True
 
                 vbox:
+#                    xpos x
+#                    ypos y
+
+                    for i_caption,i_label in prev_items:
+                        textbutton i_caption:
+                            if renpy.has_label(i_label) and not seen_event(i_label):
+                                style "twopane_scrollable_menu_new_button"
+                            if not renpy.has_label(i_label):
+                                style "twopane_scrollable_menu_special_button"
+
+                            action Return(i_label)
+
+
+
+                    null height 20
+
+                    if is_root:
+                        textbutton _("That's enough for now.") action Return(-2)
+                    else:
+                        textbutton _("Go Back") action Return(-1)
+
+
+        if main_items:
+
+            fixed:
+                area right_area
+
+                bar adjustment main_adj style "vscrollbar" xalign right_align
+
+                viewport:
+                    yadjustment main_adj
+                    mousewheel True
+
+                    vbox:
+
+                        for i_caption,i_label in main_items:
+                            textbutton i_caption:
+                                if renpy.has_label(i_label) and not seen_event(i_label):
+                                    style "twopane_scrollable_menu_new_button"
+                                if not renpy.has_label(i_label):
+                                    style "twopane_scrollable_menu_special_button"
+
+                                action Return(i_label)
+
+                        null height 20
+
+                        textbutton _("That's enough for now.") action Return(-2)
+
+# the regular scrollabe menu
+screen scrollable_menu(items, display_area, scroll_align):
+        style_prefix "scrollable_menu"
+
+        fixed:
+            area display_area
+
+            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+
+            viewport:
+                yadjustment prev_adj
+                mousewheel True
+
+                vbox:
+#                    xpos x
+#                    ypos y
 
                     for i_caption,i_label in items:
                         textbutton i_caption:
@@ -1790,7 +1890,6 @@ screen scrollable_menu(items):
                                 style "scrollable_menu_new_button"
                             if not renpy.has_label(i_label):
                                 style "scrollable_menu_special_button"
-
                             action Return(i_label)
 
 

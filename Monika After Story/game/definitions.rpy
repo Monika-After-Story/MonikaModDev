@@ -164,6 +164,13 @@ python early:
                 self._action = None
 
         @staticmethod
+        def getSortPrompt(ev):
+            #
+            # Special function we use to get a lowercased version of the prompt
+            # for sorting purposes
+            return ev.prompt.lower()
+
+        @staticmethod
         def _filterEvent(
                 event,
                 category=None,
