@@ -866,7 +866,7 @@ label monika_rap:
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_horror",category=['drinks', 'club'],prompt="Yuri's wine",random=True))
+    addEvent(Event(eventlabel="monika_wine",category=['drinks', 'club'],prompt="Yuri's wine",random=True))
 
 label monika_wine:
     m 1a "Ehehe. Yuri did something really funny once."
