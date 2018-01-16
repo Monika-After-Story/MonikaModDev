@@ -3810,7 +3810,7 @@ label monika_panties:
     m 1o "Not to mention it's unsanitary."
     m 2m "It does remind me of someone, though."
     m 3n "Someone who maybe stole your pen?"
-    m 1q "But, to each to their own I guess, I won't judge too much."
+    m 1q "But, to each their own I guess, I won't judge too much."
     m 2l "You aren't obsessed with that kind of thing, are you [player]?"
     m 3n "You're not going out with me only because I'm wearing some really sensual stockings, right?"
     m 4e "Perhaps, you want to take a little peek~?"
