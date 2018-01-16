@@ -4405,14 +4405,17 @@ label monika_urgent:
     return
 
 init 5 python:
-    # TODO:
-    # what is proper settings for the jokes
-    addEvent(Event(
-        eventlabel="monika_jokes_topic",
-        category=["comedy"],
-        prompt="Exchange jokes",
-        unlocked=True
-    ))
+    # TODO: proper joke settings
+    addEvent(
+        Event(
+            eventlabel="monika_jokes_topic",
+            category=["comedy"],
+            prompt="Exchange jokes",
+            unlocked=False,
+            conditional="""renpy.seen_label("monika_urgent")""",
+            action=EV_ACT_UNLOCK
+        )
+    )
 
 label monika_jokes_topic:
     if persistent.jokes_available > 0:
