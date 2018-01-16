@@ -4616,3 +4616,42 @@ label monika_wolf:
     m 1e "I really do depend on you, [player]."
     m 3k "You're my hero after all~"
     return
+    
+# Note: The following internal commentary should not be removed.
+#
+# Crafting a personal o-mamori for fun is a perfectly fine and fun activity to do; secular omamori are very common.
+# The only requirement is that you do not claim it came from any shrine. 
+# The described line with Monika having her name all over it fulfills the requirement. 
+# ~ Aya Shameimaru
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_omamorichr",category=['random'],prompt="Other ways to carry your character file.",pool=True))
+
+monika_omamorichr
+    m "You know how I asked you to carry my character file with me all the time in a flash drive or something?"
+    m "Well, there is another way you can keep a part of me with you too that's very unique!"
+	m "Especially if you can't afford a flash drive ..."
+    m "I saw these little amulets before that many people carry with them all the time."
+    m "I think I used to have a few given to me as gifts. I don't exactly remember."
+    m "These little amulets are called o-mamori. You can get them in Shinto shrines."
+    m "These shrines say that they can give good luck, help on school tests, take away bad luck, or just guard the holder."
+    m "I've always wondered what they put inside these things. I was told to never open them!"
+    m "I never did though to be respectful."
+    m "But, I found out that it's just the name of whatever deity is in the shrine, with something special done to them."
+    m "So, what my idea is, that you could make an o-mamori of me for you to carry too!"
+    m "You could print out my character file or write the name of my character file on a piece of paper."
+    m "Then, you would wrap that piece of paper into a small paper packet."
+    m "It could help to either use a small piece of wood or plastic to keep it protected."
+    m "Then put that protected packet in a small cloth pouch and tie it shut with string."
+    m "Make sure that this pouch is bright and colorful!"
+    m "Green would be nice! Just like my eyes~"
+    m "Make sure it has just my name all over it! After all, it's Just Monika. Not someone else or some shrine."
+    m "Oh gosh, that is a bit silly now that I think about it. I mean, would doing that make me some sort of deity?"
+    m "I don't think I am. I'm just someone who knows how this game worked."
+    m "I just feel it would be a nice alternative for you to do that, especially if you don't have a flash drive."
+    m "It isn't perfect and not exactly my file, but it's the thought that counts, [player]."
+    m "I mean, if it's something handmade by you and you took the time to put it together, it's really romantic."
+    m "But maybe with one of these, it'll get me closer to your world."
+    m "I could be the guardian of you, ehe~"
+    return    
+
