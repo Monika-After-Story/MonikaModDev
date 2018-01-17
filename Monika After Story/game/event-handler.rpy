@@ -33,29 +33,29 @@ init -1 python in evhand:
     # cats -> categories this menu has
     _NT_CAT_PANE = namedtuple("_NT_CAT_PANE", "menu cats")
 
-    # EViuos pane constant
+    # RIGHT PANE
 #    PREV_X = 30
-    PREV_X = 1020
+    RIGHT_X = 1020
 #    PREV_Y = 10
-    PREV_Y = 40
+    RIGHT_Y = 40
 #    PREV_W = 300
-    PREV_W = 250
-    PREV_H = 640
+    RIGHT_W = 250
+    RIGHT_H = 640
 #    PREV_XALIGN = -0.08
-    PREV_XALIGN = -0.10
-    PREV_AREA = (PREV_X, PREV_Y, PREV_W, PREV_H)
+    RIGHT_XALIGN = -0.10
+    RIGHT_AREA = (RIGHT_X, RIGHT_Y, RIGHT_W, RIGHT_H)
 
-    # main coordinates and align vlaues
+    # LEFT PANE
 #    MAIN_X = 360
-    MAIN_X = 735
+    LEFT_X = 735
 #    MAIN_Y = 10
-    MAIN_Y = 40
+    LEFT_Y = RIGHT_Y
 #    MAIN_W = 300
-    MAIN_W = 250
-    MAIN_H = 640
+    LEFT_W = RIGHT_W
+    LEFT_H = RIGHT_H
 #    MAIN_XALIGN = -0.08
-    MAIN_XALIGN = -0.10
-    MAIN_AREA = (MAIN_X, MAIN_Y, MAIN_W, MAIN_H)
+    LEFT_XALIGN = -0.10
+    LEFT_AREA = (LEFT_X, LEFT_Y, LEFT_W, LEFT_H)
 
     UNSE_X = 680
     UNSE_Y = 40
@@ -444,7 +444,7 @@ label prompts_categories(pool=True):
                     prompt_category_menu.append([unlocked_events[event].prompt,event])
                 """
 
-        call screen twopane_scrollable_menu(prev_items, main_items, evh.PREV_AREA, evh.PREV_XALIGN, evh.MAIN_AREA, evh.MAIN_XALIGN, len(current_category)) nopredict
+        call screen twopane_scrollable_menu(prev_items, main_items, evh.LEFT_AREA, evh.LEFT_XALIGN, evh.RIGHT_AREA, evh.RIGHT_XALIGN, len(current_category)) nopredict
         
 
         if _return in prev_cats: 
