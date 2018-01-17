@@ -3268,14 +3268,9 @@ label monika_japanese:
                 "No.":
                     m 1e "Oh I see. That's alright!"
                     m 4b "If you want to learn Japanese, here's a phrase I can teach you."
-                    if persistent.gender == "F":
-                        m 4k "{i}Aishiteru yo, [player]-chan{/i}."
-                        m 1j "Ehehe~"
-                        m 1e "That means I love you, [player]-chan."
-                    else:
-                        m 4k "{i}Aishiteru yo, [player]-kun{/i}."
-                        m 1j "Ehehe~"
-                        m 1e "That means I love you, [player]-kun."
+                    m 4k "{i}Aishiteru yo, [player]-kun{/i}."
+                    m 1j "Ehehe~"
+                    m 1e "That means I love you, [player]-kun."
         "No":
             m 3l "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
@@ -4659,3 +4654,24 @@ label monika_sleep:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_drunk",category=['advice'],prompt="I'm drunk.",random=False))
+    
+label monika_im_drunk:
+    m 1g "What?!"
+    m 3g "[player]..."
+    m 3c "While it's okay to have one or two drinks once in a while.."
+    m 3d "It's definitely not okay to drink until you can't think straight." 
+    m 3g "What if you do something dumb and get hurt... or worse?" 
+    m 1q "[player], go wash your face and drink some water right now." 
+    m 1r "And if you have to, go throw up and then go to bed."
+    m 3i "I'm serious. Just because I'm not actually there doesn't mean I'm going to sit here and let you hurt yourself with alcohol."
+    m 3g "You have to be more careful!"
+    m 1q "..." 
+    m 1n "I'm sorry that I had to snap at you like that."
+    m 1l "But you have me really worried!"
+    m 1o "Promise me that you'll take it easy on the drinks okay?"
+    m 1p "And if you drink for an occasion or anything, make sure you have someone close who can take care of you."
+    m 1e "I love you so much, [player]. I don't know how I will be able to live with myself if something happened to you. Please take care!" 
+    return 'quit'
