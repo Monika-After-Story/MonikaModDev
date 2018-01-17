@@ -1,6 +1,11 @@
 # Module that lets you play the piano
 #
 
+# we need one persistent for data saving
+# each list item is a tuple of the following format:
+#   See PianoNoteMatchList._loadTuple
+default persistent.pnml_data = []
+
 # TRANSFORMS
 transform piano_quit_label:
     xanchor 0.5 xpos 275 yanchor 0 ypos 332
@@ -387,6 +392,70 @@ init -3 python in zzpianokeys:
                 return 1
 
             return -1
+
+
+    class PianoNoteMatchList():
+        """
+        This a wrapper for a list of note matches. WE do this so we can
+        easily group note matches with other information. 
+
+        PROPERTIES:
+            pnm_list - list of piano note matches
+            verse_list - list of verse indexes (must be in order)
+            name - song name (displayed to user in song selection mode)
+            full_combos - number of times the song has been played with no
+                no mistakes
+            wins - number of times the song has been completed
+            losses - number of the times the song has been attempted but not
+                completed
+        """
+        
+        def __init__(self, pnm_list=list(), verse_list=list(), name=""):
+            """
+            Creates a PianoNoteMatchList
+
+            IN:
+                pnm_list - list of piano note matches
+                    (Default: empty list)
+                verse_list - list of verse indexes (must be in order)
+                    (Defualt: empty list)
+                name - song name (displayed to user in song selection mode)
+                    (Default: empty string)
+            """
+            self.pnm_list = pnm_list
+            self.verse_list = verse_list
+            self.name = name
+            self.full_combos = 0
+            self.wins = 0
+            self.losses = 0
+
+        def _loadTuple(self, data_tup):
+            """
+            Fills in the data of this PianoNoteMatchList using the given data
+            tup. (which was probably pickeled)
+
+            IN:
+                data_tup - tuple of the following format:
+                    [0] -> name
+                    [1] -> full_combos
+                    [2] -> wins
+                    [3] -> losses
+            """
+            if len(data_tup) == 4:
+                # we only accept this data tup if it has the appropriate length
+                self.name, self.full_combos, self.wins, self.losses = data_tup
+
+        def _saveTuple(self):
+            """
+            Generates a tuple of key data in this PianoNoteMatchList for
+            pickling
+
+            RETURNS:
+                a tuple of the following format:
+                    See _loadTuple
+            """
+            return (self.name, self.full_combos, self.wins, self.losses)
+
 
 
 # this containst the actual songs
@@ -832,41 +901,80 @@ init 1000 python in zzpianokeys:
         redraw_time=5.0
     )
 
-    # your reality, note matching
-    # NOTE: This works by peforming `in` matches of strings
-    pnml_yourreality = [
-        pnm_yr_v1l1,
-        pnm_yr_v1l2,
-        pnm_yr_v1l3,
-        pnm_yr_v1l4,
-        pnm_yr_v1l5,
-        pnm_yr_v1l6,
-        pnm_yr_v1l7,
-        pnm_yr_v1l8,
-        pnm_yr_v2l1,
-        pnm_yr_v2l2,
-        pnm_yr_v2l3,
-        pnm_yr_v2l4,
-        pnm_yr_v2l5,
-        pnm_yr_v2l6,
-        pnm_yr_v2l7,
-        pnm_yr_v3l1,
-        pnm_yr_v3l2,
-        pnm_yr_v3l3,
-        pnm_yr_v3l4,
-        pnm_yr_v3l5,
-        pnm_yr_v3l6,
-        pnm_yr_v3l7,
-        pnm_yr_v3l8
-    ]
+    # your reality, pnml
+    pnml_yourreality = PianoNoteMatchList(
+        [
+            pnm_yr_v1l1,
+            pnm_yr_v1l2,
+            pnm_yr_v1l3,
+            pnm_yr_v1l4,
+            pnm_yr_v1l5,
+            pnm_yr_v1l6,
+            pnm_yr_v1l7,
+            pnm_yr_v1l8,
+            pnm_yr_v2l1,
+            pnm_yr_v2l2,
+            pnm_yr_v2l3,
+            pnm_yr_v2l4,
+            pnm_yr_v2l5,
+            pnm_yr_v2l6,
+            pnm_yr_v2l7,
+            pnm_yr_v3l1,
+            pnm_yr_v3l2,
+            pnm_yr_v3l3,
+            pnm_yr_v3l4,
+            pnm_yr_v3l5,
+            pnm_yr_v3l6,
+            pnm_yr_v3l7,
+            pnm_yr_v3l8
+        ],
+        [0, 8, 15, 23],
+        "Your Reality"
+    )
+
 
 ### END =======================================================================
+
+## setup dict of pnmls: #------------------------------------------------------
+
+    pnml_db = dict()
+    pnml_db[pnml_yourreality.name] = pnml_yourreality
 
 
 # make this later than zzpianokeys
 init 1001 python:
     import pygame # because we need them keyups 
     import store.zzpianokeys as zzpianokeys
+
+    # setup named tuple dicts
+    def pnmlLoadTuples():
+        """
+        Loads piano note match lists from the saved data, wich is assumed to
+        be in the proper format. No checking is done.
+
+        ASSUMES:
+            persistent.pnml_data
+            zzpianokeys.pnml_db
+        """
+        for data_row in persistent.pnml_data:
+            db_data = zzpianokeys.pnml_db.get(data_row[0], None)
+            if db_data:
+                db_data._loadTuple(data_row)
+
+    def pnmlSaveTuples():
+        """
+        Saves piano not match list into a pickleable format.
+
+        ASSUMES:
+            persistent.pnml_data
+            zzpianokeys.pnml_db
+        """
+        persistent.pnml_data = [
+            zzpianokeys.pnml_db[k]._saveTuple() for k in zzpianokeys.pnml_db
+        ]
+
+    # okay now pre displayble work
+    pnmlLoadTuples()
 
     # the displayable
     class PianoDisplayable(renpy.Displayable):
@@ -880,6 +988,8 @@ init 1001 python:
 #        MISS_TIMEOUT = 4.0 # number of seconds to display awkard face on miss
 #        MATCH_TIMEOUT = 4.0 # number of seconds to wait for match notes
         VIS_TIMEOUT = 2.5 # number of seconds to wait before changing face
+
+        # DETECTION_LIST
 
         # verses
         VER_ONE = 0
