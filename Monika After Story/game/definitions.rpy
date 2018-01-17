@@ -228,59 +228,6 @@ python early:
                 return super(Event, self).__getattribute__(name)
 
 
-        def _loadTuple(self, data_tup):
-            #
-            # Loads the given data tuple into this event object
-            #
-            # IN:
-            #   data_tup - tuple of the following format:
-            #       [0] -> eventlabel
-            #       [1] -> prompt
-            #       [2] -> label
-            #       [3] -> category
-            #       [4] -> unlocked
-            #       [5] -> random
-            #       [6] -> pool
-            #       [7] -> conditional
-            #       [8] -> action
-            #       [9] -> start_date
-            #       [10] -> end_date
-            #       [11] -> unlock_date
-            if len(data_tup) >= 12:
-                self.prompt = data_tup[1]
-                self.label = data_tup[2]
-                self.category = data_tup[3]
-                self.unlocked = data_tup[4]
-                self.random = data_tup[5]
-                self.pool = data_tup[6]
-                self.conditional = data_tup[7]
-                self._action = data_tup[8]
-                self.start_date = data_tup[9]
-                self.end_date = data_tup[10]
-                self.unlock_date = data_tup[11]
-           
-        def _saveTuple(self):
-            #
-            # Saves this Event's data as a tuple
-            #
-            # RETURNS:
-            #   tuple of the following format:
-            #       See _loadTuple
-            return (
-                self.eventlabel,
-                self.prompt,
-                self.label,
-                self.category,
-                self.unlocked,
-                self.random,
-                self.pool,
-                self.conditional,
-                self._action,
-                self.start_date,
-                self.end_date,
-                self.unlock_date
-            )
-
         @staticmethod
         def getSortPrompt(ev):
             #
