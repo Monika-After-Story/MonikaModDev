@@ -202,8 +202,14 @@ label v0_7_0(version="v0_7_0"):
         
         # now properly set all seen events as unlocked
         for k,event in persistent.event_database.iteritems():
-            if renpy.seen_label(event.eventlabel):
+            if (renpy.seen_label(event.eventlabel)
+                and (event.pool 
+                    or event.random
+                    or event.getAction() == EV_ACT_POOL
+                    or event.getAction() == EV_ACT_RANDOM
+                )):
                 event.unlocked = True
+                event.conditional = None
     return
 
 # 0.4.0
