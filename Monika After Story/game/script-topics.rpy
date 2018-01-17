@@ -171,21 +171,30 @@ label monika_bad_day:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_sleep",category=['advice'],prompt="I'm tired.",random=True))
+    addEvent(Event(eventlabel="monika_selfesteem",category=['Advice'],prompt="Self-esteem",random=True))
 
-label monika_sleep:
-    m 4b "[player], do you get good sleep?"
-    m "It can be really hard to get enough sleep nowadays."
-    m 4e "Especially in high school, when you're forced to wake up so early every day..."
-    m "I'm sure college is a little bit better, since you probably have a more flexible schedule."
-    m 4d "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
-    m "Is that true?"
-    m 3c "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
-    m "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
-    m 1e "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
-    m "So try to keep your sleep on track, okay?"
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
+label monika_selfesteem:
+    m 3c "Do you love yourself, [player]?"
+    m 1n "I don't mean in a conceited way."
+    m 1c "Like, are you comfortable with who you are?"
+    menu:
+        "Yes.":
+            m 1l "I'm glad you aren't miserable inside, [player]."
+            m 1e "Your happiness means everything to me, after all."
+            m 2f "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
+            m 2o "It's a horrible cocktail of feelings to have bottled in you."
+            m 4e "If you have any friends that you think might be suffering from those, try to reach out and say something nice."
+            m "A small compliment could make a world of difference for them!"
+            m 1a "If it gives them a bit of relief, you'd have done a great thing."
+            m 1j "And even if it doesn't, at least you tried rather than staying silent."
+        "No.":
+            m 1q "That's... really sad to hear, [player]..."
+            m 1f "I'll always love you, [player], but I think it's important to love yourself."
+            m "You need to start with the little things that you like about yourself."
+            m 3d "It can be something silly, or a skill that you take pride in!"
+            m 3a "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
+            m 1e "I can't promise it will be easy, but it'll be worth it."
+            m 3k "I'll always root for you, [player]!"
     return
 
 init 5 python:
@@ -4615,4 +4624,22 @@ label monika_wolf:
     m 1 "I can't help but be reminded of how you saved my life by being here with me."
     m 1e "I really do depend on you, [player]."
     m 3k "You're my hero after all~"
+    return
+    
+init 5 python:
+    addEvent(Event(eventlabel="monika_sleep",category=['advice'],prompt="I'm tired.",random=True))
+
+label monika_sleep:
+    m 4b "[player], do you get good sleep?"
+    m "It can be really hard to get enough sleep nowadays."
+    m 4e "Especially in high school, when you're forced to wake up so early every day..."
+    m "I'm sure college is a little bit better, since you probably have a more flexible schedule."
+    m 4d "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
+    m "Is that true?"
+    m 3c "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
+    m "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
+    m 1e "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
+    m "So try to keep your sleep on track, okay?"
+    show monika 5a at t11 zorder 2 with dissolve
+    m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
