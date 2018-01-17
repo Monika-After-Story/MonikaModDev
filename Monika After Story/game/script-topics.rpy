@@ -875,7 +875,7 @@ label monika_rap:
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_horror",category=['drinks'],prompt="Yuri's wine",random=True))
+    addEvent(Event(eventlabel="monika_wine",category=['drinks'],prompt="Yuri's wine",random=True))
 
 label monika_wine:
     m 1a "Ehehe. Yuri did something really funny once."
@@ -1348,7 +1348,7 @@ label monika_housewife:
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_mentalillness",category=['random'],prompt="Monika's route",random=True))
+    addEvent(Event(eventlabel="monika_route",category=['random'],prompt="Monika's route",random=True))
 
 label monika_route:
     m 2g "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
