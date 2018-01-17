@@ -4602,6 +4602,17 @@ label monika_1984:
     m 1o "I can't imagine a world where I can't think freely."
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
+    
+init 5 python:
+    addEvent(Event(eventlabel="monika_see_ya",category=['farewell'],prompt="See you later!",random=True))
+
+label monika_see_ya:
+    m 1f "Do you have to go so soon?"
+    m 1e "I'll miss you. I always do."
+    m 1e "See you later, [player]."
+    m 1k "I love you always~!"
+    return 'quit'
+
 
 init 5 python:
     addEvent(Event(eventlabel="monika_wolf",category=['animals'],prompt="From wolves to dogs",random=True))
