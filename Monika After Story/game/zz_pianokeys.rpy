@@ -533,8 +533,21 @@ init python:
         ZZPK_IMG_EKEY_WIDTH = 29
         ZZPK_IMG_EKEY_HEIGHT = 152
         
-        def __init__(self):
+        # MODES
+        MODE_FREE = 0
+        MODE_YR = 1 # YOUR REALITY
+
+        def __init__(self, mode):
+            """
+            Creates the piano displablable
+
+            IN:
+                mode - the mode we want to be in
+            """
             super(renpy.Displayable,self).__init__()
+
+            # current mode
+            self.mode = mode
 
             # setup images
 
