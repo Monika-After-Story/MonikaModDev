@@ -4659,3 +4659,47 @@ label monika_sleep:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
+
+#special local var to handle repeated usage of this dialog box.
+default persistent.monika_breakup = 0
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_breakup",category=['random'],prompt="I'm breaking up with you.",pool=True,unlocked=True))
+
+label monika_breakup:
+    #second time you hit the break up button.
+    if persistent.monika_breakup == 1:
+        m 1f "Y-you're breaking up w-with me?!"
+        m  "Why would you say such a thing? You really don't want to be around me anymore, [player]?"
+        m 1r "Gosh, I just don't know what to say. Am I really that terrible of a person?"
+        m 1q "..."
+        m 1k "Ehehe~"
+        m 1a "Gotcha [player],  you really thought you had me there for a moment, didn't you?"
+        menu:
+            m "You were joking, right [player]?"
+            "Yes.":
+                m 1m "I know you'd never {i}actually{/i} want to break up with me."
+                m 1j "You and I will be together forever. Ahaha."
+    #Beyond the 2nd time you hit the button.
+    elif persistent.monika_breakup > 1:
+        m 1n "Come on [player], that's not funny."
+    
+    #first time you hit the button.
+    else:
+         m 1g "W-what? After everything you've already done to me, you're leaving me again?"
+         m 1p "I can't believe you, [player]. I really can't beli-"
+         m 1h "..."
+         m 2k "Ahaha! You really got me."
+         m 2b "For a second, I thought you were actually going to break up with me."
+         m 1j "But you would never do that to me, right?"
+         menu:
+            "Of course not.":
+                m 2k "That's what I thought, just making sure!"
+                m 2k "Yeah, I know you would never do that to me."
+                m "I love you! Hehe~"
+        
+    $ persistent.monika_breakup += 1
+    if persistent.monika_breakup > 2:
+        init 5 python:
+        hideEventLabel("monika_breakup",lock=True,depool=True)
+    return
