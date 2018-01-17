@@ -45,7 +45,7 @@ label gender:
 label preferredname:
     m 1h "I've been wondering about your name."
     m 1d "Is '[player]' really your name?"
-    if currentuser == player:
+    if renpy.windows and currentuser.lower() == player.lower():
         m 1h "I mean, it's the same as your computer's name..."
         m "You're using '[currentuser]' and '[player]'."
         m "Either that or you must really like that pseudonym."
@@ -56,20 +56,27 @@ label preferredname:
             m 1a "Ok, just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 #Could add an elif that takes off special characters
-                $ tempname = renpy.input("Tell me what is it.").strip(' \t\n\r')
-                if tempname == "Nevermind" or tempname == "nevermind":
+                $ tempname = renpy.input("Tell me, what is it.",length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
                     m 1f "Oh I see."
                     m "Well, just tell me whenever you want to be called something else, [player]."
                     $ done = True
-                elif tempname == "":
+                elif lowername == "":
                     m 1q "..."
                     m 1g "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1e "Try again!"
-                elif tempname == player:
+                elif lowername == player:
                     m 1q "..."
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
+                elif len(lowername) >= 10:
+                    m 2q "[player]..."
+                    m 2l "That name's a bit too long."
+                    if len(lowername) > 20:
+                        m "And I'm sure you're just being silly since names aren't that long, you know."
+                    m 1 "Try again."
                 else:
                     # sayori name check
                     if tempname.lower() == "sayori":
@@ -84,8 +91,15 @@ label preferredname:
                         persistent.playername = tempname
                         player = tempname
 
-                    m 1b "'[player]', huh?"
-                    m 2k "I'll be calling you {i}'[player]'{/i} from now on, ehehe~"
+                    if lowername == "monika":
+                        m 1d "Really?"
+                        m 3k "That's the same as mine!"
+                        m 1m "Well..."
+                        m 1n "Either it really is your name or you're playing a joke on me."
+                        m 1j "But it's fine by me if that's what you want me to call you~"
+                    else:
+                        m 1b "Ok then!"
+                        m 3b "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
                     $ done = True
         "No":
             m 1f "Oh... ok then, if you say so."

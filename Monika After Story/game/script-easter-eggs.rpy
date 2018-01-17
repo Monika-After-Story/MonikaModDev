@@ -3,11 +3,12 @@
 # sayori music chnage/scare
 label sayori_name_scare:
     python:
-        store.songs.initMusicChoices(sayori=True)
-        play_song(songs.sayori_track)
-        persistent.current_track = songs.sayori_track
-        store.songs.selected_track = songs.sayori_track
-        store.songs.current_track = songs.sayori_track
+        from store.songs import FP_SAYO_NARA, initMusicChoices
+        initMusicChoices(sayori=True)
+        play_song(FP_SAYO_NARA)
+        persistent.current_track = FP_SAYO_NARA
+        store.songs.selected_track = FP_SAYO_NARA
+        store.songs.current_track = FP_SAYO_NARA
     return
 
 # yuri scare

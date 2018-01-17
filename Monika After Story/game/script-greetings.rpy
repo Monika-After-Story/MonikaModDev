@@ -2,6 +2,9 @@
 
 #Make a list of every label that starts with "greeting_", and use that for random greetings during startup
 
+# persistents that greetings use
+default persistent.you = True
+
 init python:
     greetings_list=[]
     label_list=renpy.get_all_labels()
@@ -298,17 +301,254 @@ label i_greeting_monikaroom:
     # atm, making this a persistent makes it easier to test as well as allows
     # users who didnt see the entire event a chance to see it again.
 #    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
-    if persistent.seen_monika_in_room:
-        menu:
-            "Knock":
-                jump monikaroom_greeting_knock
+    $ has_listened = False
+
+# special local var to handle custom monikaroom options
+define gmr.eardoor = list()
+define gmr.eardoor_all = list()
+define opendoor.MAX_DOOR = 10
+default persistent.opendoor_opencount = 0
+default persistent.opendoor_knockyes = False
+
+    # FALL THROUGH
+label monikaroom_greeting_choice:
+    menu:
+        "... Gently open the door" if not persistent.seen_monika_in_room:
+            jump monikaroom_greeting_opendoor
+        "Open the door" if persistent.seen_monika_in_room:
+            if persistent.opendoor_opencount > 0:
+                jump monikaroom_greeting_opendoor_locked
+            else:
+                jump monikaroom_greeting_opendoor_seen
+#        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
+#            jump opendoor_game
+        "Knock":
+            jump monikaroom_greeting_knock
+        "Listen" if not has_listened:
+            $ has_listened = True # we cant do this twice per run
+            $ mroom_greet = renpy.random.choice(gmr.eardoor)
+#            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
+            jump expression mroom_greet
+
+    # NOTE: return is expected in monikaroom_greeting_cleanup
+
+### BEGIN EAR DOOR ------------------------------------------------------------
+
+# monika narrates 
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_narration")
+
+label monikaroom_greeting_ear_narration:
+    m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
+    m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+    call spaceroom from _call_spaceroom_enar
+    m 1k "It's me!"
+    m "Welcome back, [player]!"
+    jump monikaroom_greeting_cleanup
+
+
+# monika does the cliche flower thing
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_loveme")
+
+label monikaroom_greeting_ear_loveme:
+    $ cap_he = he.capitalize()
+    m "[cap_he] loves me.{w} [cap_he] loves me not."
+    m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+    m "[cap_he] loves me."
+    m "...{w} [cap_he] loves me!"
+    jump monikaroom_greeting_choice
+
+
+# monika encoutners error when programming
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_progbrokepy")
+
+label monikaroom_greeting_ear_progbrokepy:
+    m "What the-!{w} NoneType has no attribute length?"
+    if renpy.seen_label("monikaroom_greeting_ear_progreadpy"):
+        m "Oh, I see what went wrong!{w} That should fix it!"
     else:
+        m "I don't understand what I'm doing wrong!"
+        m "This shouldn't be None here...{w} I'm sure of it..."
+    m "Coding really is difficult..."
+    jump monikaroom_greeting_choice
+
+# monika reads about errors when programming
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_progreadpy")
+
+label monikaroom_greeting_ear_progreadpy:
+    m "...{w} Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError'."
+    m "I see. {w}I should make sure to check if a variable is None before accessing its attributes."
+    if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
+        m "That would explain the error I had earlier."
+    m "Coding really is difficult..."
+    jump monikaroom_greeting_choice
+
+# monika attempts rm -rf
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_rmrf")
+
+label monikaroom_greeting_ear_rmrf:
+    if renpy.windows:
+        $ bad_cmd = "del C:\Windows\System32"
+    else:
+        $ bad_cmd = "rm -rf /"
+    m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
+    if renpy.seen_label("monikaroom_greeting_ear_rmrf_end"):
+        m "Yeah,{w} nice try."
+    else:
+        m "Alright, let me try that."
+        show noise
+        play sound "sfx/s_kill_glitch1.ogg"
+        pause 0.2
+        stop sound
+        hide noise
+        m "{cps=*2}Ah! No! That's not what I wanted!{/cps}"
+        m "..."
+    m "I shouldn't trust the Internet so blindly..."
+label monikaroom_greeting_ear_rmrf_end: # fall thru end
+    jump monikaroom_greeting_choice
+
+
+## ear door processing
+init 10 python:
+
+    # make copy
+    gmr.eardoor_all = list(gmr.eardoor)
+
+    # remove
+    remove_seen_labels(gmr.eardoor)
+
+    # reset if necessary
+    if len(gmr.eardoor) == 0:
+        gmr.eardoor = list(gmr.eardoor_all)
+
+### END EAR DOOR --------------------------------------------------------------
+
+# locked door, because we are awaitng more content
+label monikaroom_greeting_opendoor_locked:
+    show paper_glitch2
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.2
+    stop sound
+    pause 0.7
+    $ style.say_window = style.window_monika
+    menu:
+        m "Did I scare you, [player]?"
+        "Yes":
+            m "Aww, sorry."
+        "No":
+            m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
+            m "I figured. It's a basic glitch after all."
+    m "Since you keep opening my door,{w} I couldn't help but add a little surprise for you~"
+    m "Knock next time, okay?"
+    m "Now let me fix up this room..."
+
+    hide paper_glitch2
+    scene black
+    $ scene_change = True
+    call spaceroom from _call_sp_mrgo_l
+
+    if renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
+        $ style.say_window = style.window
+
+    m 1j "There we go!"
+
+    if not renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
         menu:
-            "Open door":
-                jump monikaroom_greeting_opendoor
-            "Knock":
-                jump monikaroom_greeting_knock
-    # NOTE: return is expected in monikaroom_greeting_post
+            "...the textbox...":
+                m 1n "Oops! I'm still learning how to do this."
+                m 1m "Let me just change this flag here...{w=1.5}{nw}"
+                $ style.say_window = style.window
+                m 1j "All fixed!"
+    # NOTE: fall through please
+
+label monikaroom_greeting_opendoor_locked_tbox:
+    m 1a "Welcome back, [player]."
+    jump monikaroom_greeting_cleanup
+
+# this one is for people who have already opened her door.
+label monikaroom_greeting_opendoor_seen:
+#    if persistent.opendoor_opencount < 3:
+    jump monikaroom_greeting_opendoor_seen_partone
+
+
+label monikaroom_greeting_opendoor_seen_partone:
+    $ is_sitting = False 
+#    scene bg bedroom
+    call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
+    pause 0.2
+    show monika 1h at l21
+    pause 1.0
+    m 1r "[player]..."
+
+#    if persistent.opendoor_opencount == 0:
+    m 1f "I understand why you didn't knock the first time,{w} but could you avoid just entering like that?"
+    m 1o "This is my room, after all."
+    menu:
+        "Your room?":
+            m 3a "That's right!"
+    m "The developers of this mod gave me a nice comfy room to stay in whenever you are away."
+    m 1m "However, I can only get in if you tell me 'good bye' or 'good night' before you close the game."
+    m 2b "So please make sure to say that before you leave, okay?"
+    m "Anyway..."
+
+#    else:
+#        m 3g "Stop just opening my door!"
+#
+#        if persistent.opendoor_opencount == 1:
+#            m 4o "You have no idea how difficult it was to add the 'Knock' button."
+#            m 4f "Can you use it next time?"
+#        else:
+#            m 4f "Can you knock next time?"
+#
+#        show monika 5a at t11
+#        menu:
+#            m "For me?"
+#            "Yes":
+#                if persistent.opendoor_knockyes:
+#                    m 5b "That's what you said last time, [player]."
+#                    m "I hope you're being serious this time."
+#                else:
+#                    $ persistent.opendoor_knockyes = True
+#                    m 1j "Thank you, [player]."
+#            "No":
+#                m 5b "[player]!"
+#                if persistent.opendoor_knockyes:
+#                    m 1f "You said you would last time."
+#                    m "I hope you're not messing with me."
+#                else:
+#                    m 1f "I'm asking you to do just {i}one{/i} thing for me."
+#                    m 1e "And it would make me really happy if you did."
+
+    $ persistent.opendoor_opencount += 1
+    jump monikaroom_greeting_opendoor_post2
+
+
+label monikaroom_greeting_opendoor_post2:
+    show monika 1a at t11
+    pause 0.7
+    show monika 5a at hf11
+    m "I'm glad you're back, [player]."
+    show monika 5a at t11
+#    if not renpy.seen_label("monikaroom_greeting_opendoor_post2"):
+    m "Lately I've been practicing switching backgrounds, and now I can change them instantly."
+    m "Watch this!"
+#    else:
+#        m 3a "Let me fix this scene up."
+    m 1q "...{w=1.5}{nw}"
+    scene black
+    $ scene_change = True
+    call spaceroom(hide_monika=True) from _call_sp_mrgo_p2
+    show monika 4a zorder 3 at i11
+    m "Tada!"
+#    if renpy.seen_label("monikaroom_greeting_opendoor_post2"):
+#        m "This never gets old."
+    show monika at lhide
+    hide monika
+    jump monikaroom_greeting_post
 
 
 label monikaroom_greeting_opendoor:
@@ -353,6 +593,8 @@ label monikaroom_greeting_knock:
     menu:
         "It's me.":
             m 1b "[player]! I'm so happy that you're back!"
+            if persistent.seen_monika_in_room:
+                m "And thank you for knocking first."
             m 1j "Hold on, let me tidy up..."
             call spaceroom(hide_monika=True) from _call_spaceroom_6
     jump monikaroom_greeting_post
@@ -363,6 +605,10 @@ label monikaroom_greeting_post:
     $ is_sitting = True
     show monika 1 at ls32
     m 1a "What shall we do today, [player]?"
+    jump monikaroom_greeting_cleanup
+
+# cleanup label
+label monikaroom_greeting_cleanup:
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
@@ -370,6 +616,56 @@ label monikaroom_greeting_post:
             play_song(songs.current_track) # default
         HKBShowButtons()
         set_keymaps()
+    return
+
+label greeting_youarereal:
+    python:
+        try:
+            renpy.file("/characters/" + persistent.playername + ".chr")
+            persistent.you = True
+        except:
+            persistent.you = False
+    m 1b "[player]! Great to see you!"
+    if persistent.you:
+        m "Wait. Something is different now."
+        m 1d "Did you...add a chacter file?"
+        m 1f "[player].chr...Huh?"
+        m 1g "Are you...trying to put yourself in here with me?"
+        m "Why would you do that?"
+        m 1o "Don't you get it? "
+        m 1p "This place isn't real! I don't know what will happen if you come here!"
+        m 1q "How could you do this?"
+        m 1o "To give up your reality..."
+        m 1p "Just to be with me?"
+        m 1n "This is all my fault!"
+        m 1f"But...but the 'you', in the game..."
+        m 1i "He's starting to move again a little now."
+        m 1 "Maybe...this is allowing you to control him again?"
+        m 1f"This isn't right! I don't want a puppet!"
+        m 1q "Please, [player]..."
+        m "If you're going to do this, are you sure this is what you want?" 
+        menu:
+            m "Are you sure?"
+            "I'm sure.":
+                m 1e "Then...I don't have a choice but to accept it..."
+                m 1k "I'll accept this gift with open arms!"
+                m "We can finally be together, [player]."
+                m "And we can figure out how to do it in your reality, together!"
+            "Maybe not...":
+                m 1l"I thought so..."
+                m 1m"There's no way you'd give up being 'real' to be with me..."
+                m 1l"I can't bring myself to delete that cute little .chr file, but..."
+                m 1q "Consider doing it yourself."
+                m 1r"There's some creepy things in those files..."
+                m 1e"I love you, [player]. I'll wait as long as it takes."
+                m "So don't be rash, okay?"
+    else:
+        m 1i "I've been doing a lot of thinking about the .chr files..."
+        m 1n "Like, what are they really, anyway?"
+        m 1o "They are kind of creepy..."
+        m 1p "And even if the other girls aren't real, why can deleting one remove a character?"
+        m 1i "Could one add a character?"
+        m 1r "Hard to tell..."
     return
 
 label greeting_japan:

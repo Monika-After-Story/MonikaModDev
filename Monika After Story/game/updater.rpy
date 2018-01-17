@@ -1,6 +1,6 @@
 #This file goes through the actions for updating Monika After story
 label update_now:
-    $import time
+    $import time #this instance of time can stay
     python:
         last_updated=0
         for url in persistent._update_last_checked:
