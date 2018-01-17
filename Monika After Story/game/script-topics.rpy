@@ -3281,7 +3281,7 @@ label monika_japanese:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_penname",category=['name'],prompt="Pen names",random=True))
+    addEvent(Event(eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
 label monika_penname:
     m "You know what's really cool? Pen names."
@@ -3303,7 +3303,7 @@ label monika_penname:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_changename",category=['name'],prompt="Can you change my name?",unlocked=False)) #This needs to be unlocked by the random name change event
+    addEvent(Event(eventlabel="monika_changename",category=['you','misc'],prompt="Can you change my name?",unlocked=False)) #This needs to be unlocked by the random name change event
 
 label monika_changename:
     m 1b "You want to change your name?"
@@ -3369,7 +3369,7 @@ label monika_changename:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_zombie",category=['apocalypse'],prompt="Zombies",random=True))
+    addEvent(Event(eventlabel="monika_zombie",category=['society'],prompt="Zombies",random=True))
 
 label monika_zombie:
     m 3h "Hey, this might sound a bit weird..."
@@ -3407,7 +3407,7 @@ label monika_zombie:
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_nuclear_war",category=['apocalypse'],prompt="Nuclear warfare",random=True))
+    addEvent(Event(eventlabel="monika_nuclear_war",category=['society','philosophy'],prompt="Nuclear warfare",random=True))
 
 label monika_nuclear_war:
     m 1 "Do you ever think about how close the world is to ending at any time?"
@@ -3427,7 +3427,7 @@ label monika_nuclear_war:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_pluralistic_ignorance",category=['literature', 'social'],prompt="Trying to fit in",random=True))
+    addEvent(Event(eventlabel="monika_pluralistic_ignorance",category=['literature', 'society'],prompt="Trying to fit in",random=True))
 
 label monika_pluralistic_ignorance:
     m "Do you ever pretend to like something, just because you think you should?"
@@ -3451,7 +3451,7 @@ label monika_pluralistic_ignorance:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_science",category=['random'],prompt="Science advancements",random=True))
+    addEvent(Event(eventlabel="monika_science",category=['technology'],prompt="Science advancements",random=True))
 
 label monika_science:
     m 1d "Have you ever wondered if science never got accepted?"
@@ -3466,7 +3466,7 @@ label monika_science:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_surprise",category=['romantic'],prompt="Surprises",random=True))
+    addEvent(Event(eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
 
 label monika_surprise:
     m 2m "You know..."
@@ -3487,7 +3487,7 @@ label monika_surprise:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_completionist",category=['game', 'challenge'],prompt="Completionism",random=True))
+    addEvent(Event(eventlabel="monika_completionist",category=['games'],prompt="Completionism",random=True))
 
 label monika_completionist:
     m 3c "Hey [player], this is a random question, but..."
@@ -3514,7 +3514,7 @@ label monika_completionist:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_icecream",category=['favorites', 'food'],prompt="Favorite ice cream",random=True))
+    addEvent(Event(eventlabel="monika_icecream",category=['you'],prompt="Favorite ice cream",random=True))
 
 label monika_icecream:
     m 3a "Hey [player], what's your favorite kind of ice cream?"
@@ -3545,7 +3545,7 @@ label monika_icecream:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_sayhappybirthday",category=['random'],prompt="Can you tell someone Happy Birthday for me?",pool=True))
+    addEvent(Event(eventlabel="monika_sayhappybirthday",category=['misc'],prompt="Can you tell someone Happy Birthday for me?",pool=True))
 
 label monika_sayhappybirthday:
     # special variable setup
@@ -3737,7 +3737,7 @@ label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_home_memories",category=['past', 'romantic'],prompt="Making memories",random=True))
+    addEvent(Event(eventlabel="monika_home_memories",category=['romance','monika','life'],prompt="Making memories",random=True))
 
 label monika_home_memories:
     m 1b "[player], how is it like to live where you are?"
@@ -3762,7 +3762,7 @@ label monika_home_memories:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_adventure",category=['game', 'relationship'],prompt="Adventuring",random=True))
+    addEvent(Event(eventlabel="monika_adventure",category=['games', 'romance'],prompt="Adventuring",random=True))
 
 label monika_adventure:
     m 1a "[player], I've thought about what kind of game we can be in."
@@ -3788,7 +3788,7 @@ label monika_adventure:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_panties",category=['lewd'],prompt="Undergarments",random=True))
+    addEvent(Event(eventlabel="monika_panties",category=['misc'],prompt="Undergarments",random=True))
 
 label monika_panties:
     m 2o "Hey, [player]..."
@@ -3856,7 +3856,7 @@ label monika_fahrenheit451:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_piggybank",category=['advice'],prompt="Saving money",random=True))
+    addEvent(Event(eventlabel="monika_piggybank",category=['misc'],prompt="Saving money",random=True))
 
 label monika_piggybank:
     m 1a "Do you have a piggy bank, [player]?"
@@ -3884,7 +3884,7 @@ label monika_piggybank:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_daydream",category=['romantic'],prompt="Day dreaming",random=True))
+    addEvent(Event(eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True))
 
 label monika_daydream:
     m 1j "..."
@@ -3975,7 +3975,7 @@ label monika_music2:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_confidence_2",category=['advice'],prompt="Lack of confidence",random=True))
+    addEvent(Event(eventlabel="monika_confidence_2",category=['life'],prompt="Lack of confidence",random=True))
 
 label monika_confidence_2:
     m 1g "[player], do you ever feel like you lack the initiative to do something?"
@@ -4006,7 +4006,7 @@ label monika_confidence_2:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_pets",category=['Monika'],prompt="Owning pets",random=True))
+    addEvent(Event(eventlabel="monika_pets",category=['monika'],prompt="Owning pets",random=True))
 
 label monika_pets:
     m 1a "Hey, [player], have you ever had a pet?"
@@ -4033,14 +4033,14 @@ label monika_pets:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
-    
-    
+
+
 init 5 python:
-    addEvent(Event(eventlabel="monika_dogs",category=['animals'],prompt="Man's best friend",random=True))
+    addEvent(Event(eventlabel="monika_dogs",category=['misc','club members'],prompt="Man's best friend",random=True))
 
 label monika_dogs:
     m 1b "Do you like dogs, [player]?"
-    m 1k "Dogs are great! They're really good to have around." 
+    m 1k "Dogs are great! They're really good to have around."
     m "Not to mention owning a dog has shown to help people with anxiety and depression since they're very sociable animals."
     m 3j "They're just so lovable, I really like them!"
     m 1m "I know Natsuki feels the same..."
@@ -4053,7 +4053,7 @@ label monika_dogs:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_cats",category=['animals'],prompt="Feline companions",random=True))
+    addEvent(Event(eventlabel="monika_cats",category=['misc'],prompt="Feline companions",random=True))
 
 label monika_cats:
     m 1j "Cats are pretty cute, aren't they?"
@@ -4071,7 +4071,7 @@ label monika_cats:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_fruits",category=['Monika', 'favorites', 'informative'],prompt="Eating fruits",random=True))
+    addEvent(Event(eventlabel="monika_fruits",category=['monika','trivia'],prompt="Eating fruits",random=True))
 
 label monika_fruits:
     m 3a "[player], did you know I enjoy a tasty, juicy fruit once in a while?"
@@ -4093,7 +4093,7 @@ label monika_fruits:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_rock",category=['music'],prompt="Rock and roll",random=True))
+    addEvent(Event(eventlabel="monika_rock",category=['media','literature'],prompt="Rock and roll",random=True))
 
 label monika_rock:
     m 3a "You wanna know a cool form of literature?"
@@ -4120,7 +4120,7 @@ label monika_rock:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_soda",category=['food', 'drinks', 'concern'],prompt="Drinking soda",random=True))
+    addEvent(Event(eventlabel="monika_soda",category=['life','misc'],prompt="Drinking soda",random=True))
 
 label monika_soda:
     m 2d "Do you drink soda, [player]?"
@@ -4139,7 +4139,7 @@ label monika_soda:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_clones",category=['concern'],prompt="Being cloned",random=True))
+    addEvent(Event(eventlabel="monika_clones",category=['monika','mod','philosophy'],prompt="Being cloned",random=True))
 
 label monika_clones:
     m 1d "Um... hey, [player]?"
@@ -4162,7 +4162,7 @@ label monika_clones:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_immortal",category=['random'],prompt="Immortality",random=True))
+    addEvent(Event(eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Immortality",random=True))
 
 label monika_immortal:
     m 4d "[player]! I've been thinking about something..."
@@ -4181,7 +4181,7 @@ label monika_immortal:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_weddingring",category=['romantic', 'relationship'],prompt="Engagement ring",random=True))
+    addEvent(Event(eventlabel="monika_weddingring",category=['romance'],prompt="Engagement ring",random=True))
 
 label monika_weddingring:
     m 4k "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
@@ -4217,7 +4217,7 @@ label monika_weddingring:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_sports",category=['random'],prompt="Being athletic",random=True))
+    addEvent(Event(eventlabel="monika_sports",category=['misc'],prompt="Being athletic",random=True))
 
 label monika_sports:
     m 1a "I've been thinking about stuff we can do together."
@@ -4239,7 +4239,7 @@ label monika_sports:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_meditation",category=['advice'],prompt="Meditating",random=True))
+    addEvent(Event(eventlabel="monika_meditation",category=['psychology','monika',],prompt="Meditating",random=True))
 
 label monika_meditation:
     m 1a "You might be wondering how I was able to do so many activities without running out of time for myself."
@@ -4275,7 +4275,7 @@ label monika_meditation:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_orchestra",category=['music'],prompt="Classical music",random=True))
+    addEvent(Event(eventlabel="monika_orchestra",category=['media','you'],prompt="Classical music",random=True))
 
 label monika_orchestra:
     m 3d "Hey, [player], do you listen to orchestral music?"
@@ -4323,7 +4323,7 @@ label monika_orchestra:
 
 init 5 python:
 
-    addEvent(Event(eventlabel="monika_jazz",category=['Music'],prompt="Jazz",random=True))
+    addEvent(Event(eventlabel="monika_jazz",category=['media'],prompt="Jazz",random=True))
 
 label monika_jazz:
     m 1c "Say, [player], do you like jazz music?"
@@ -4350,7 +4350,7 @@ label monika_jazz:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_otaku",category=['random'],prompt="Being an otaku",random=True))
+    addEvent(Event(eventlabel="monika_otaku",category=['media','society','you'],prompt="Being an otaku",random=True))
 
 label monika_otaku:
     m 1a "Hey, [player]?"
@@ -4388,7 +4388,7 @@ label monika_otaku:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
+    addEvent(Event(eventlabel="monika_write",category=['literature'],prompt="Writing tip #3",pool=True))
 
 label monika_write:
     m 1a "I'm having fun doing these, so..."
@@ -4413,7 +4413,7 @@ label monika_write:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_selfharm",category=['random'],prompt="Self harm",random=True))
+    addEvent(Event(eventlabel="monika_selfharm",category=['psychology'],prompt="Self harm",random=True))
 
 label monika_selfharm:
     m 1f "Hey [player]..."
@@ -4438,7 +4438,7 @@ label monika_selfharm:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_urgent",category=['random'],prompt="Urgent message",random=True))
+    addEvent(Event(eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True))
 
 label monika_urgent:
     m 3d "[player], do you have a second?"
@@ -4455,7 +4455,7 @@ label monika_urgent:
 
 init 5 python:
 
-    addEvent(Event(eventlabel="monika_other_girls",prompt="Do you ever think of the other girls?",pool=True))
+    addEvent(Event(eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
 
 label monika_other_girls:
     m 1c "You know, it's actually really hard for me to understand how you feel when it comes to..."
@@ -4481,7 +4481,7 @@ label monika_other_girls:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_happiness",category=['random'],prompt="Happiness",random=True))
+    addEvent(Event(eventlabel="monika_happiness",category=['life','psychology'],prompt="Happiness",random=True))
 
 label monika_happiness:
     m 3d "[player], are you happy?"
@@ -4502,7 +4502,7 @@ label monika_happiness:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_how_soon",category=['random'],prompt="Waiting to be together",random=True))
+    addEvent(Event(eventlabel="monika_how_soon",category=['you','romance'],prompt="Waiting to be together",random=True))
 
 label monika_how_soon:
     m 3a "[player], how long do you think it'll be before I'll be able to be with you in your world?"
@@ -4555,7 +4555,7 @@ label monika_how_soon:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_marriage",category=['random'],prompt="Will you marry me?",pool=True))
+    addEvent(Event(eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
 
 label monika_marriage:
     m 2m "M-marriage?"
@@ -4568,7 +4568,7 @@ label monika_marriage:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_coffee",category=['drinks', 'favorites'],prompt="Coffee intake",random=True))
+    addEvent(Event(eventlabel="monika_coffee",category=['misc'],prompt="Coffee intake",random=True))
 
 label monika_coffee:
     if renpy.seen_label('monika_tea'):
@@ -4582,7 +4582,7 @@ label monika_coffee:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_1984",category=['literature'],prompt="Nineteen Eighty-Four",random=True))
+    addEvent(Event(eventlabel="monika_1984",category=['literature','society'],prompt="Nineteen Eighty-Four",random=True))
 
 label monika_1984:
     m 1d "[player], do you know about the book '{i}Nineteen Eighty-Four{/i}?'"
@@ -4609,7 +4609,7 @@ label monika_1984:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_wolf",category=['animals'],prompt="From wolves to dogs",random=True))
+    addEvent(Event(eventlabel="monika_wolf",category=['misc','trivia'],prompt="From wolves to dogs",random=True))
 
 label monika_wolf:
     m 3b "Do you ever think about wolves?"
@@ -4630,9 +4630,9 @@ label monika_wolf:
     m 1e "I really do depend on you, [player]."
     m 3k "You're my hero after all~"
     return
-    
+
 init 5 python:
-    addEvent(Event(eventlabel="monika_sleep",category=['advice'],prompt="I'm tired.",random=True))
+    addEvent(Event(eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired.",random=True))
 
 label monika_sleep:
     m 4b "[player], do you get good sleep?"
