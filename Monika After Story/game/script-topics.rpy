@@ -5087,16 +5087,14 @@ label monika_1984:
     return
     
 init 5 python:
-    for key in ['see you later']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_see_you_later')
+    addEvent(Event(eventlabel="monika_see_ya",category=['farewell'],prompt="See you later!",random=True, unlocked=True))
 
-label monika_see_you_later:
+label monika_see_ya:
     m 1f "Do you have to go so soon?"
     m 1e "I'll miss you. I always do."
     m 1e "See you later, [player]."
-    m 1k "Love you always!"
-    return "quit"
+    m 1k "I love you always~!"
+    return 'quit'
 
 
 ##################
