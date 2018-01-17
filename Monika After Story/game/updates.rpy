@@ -201,12 +201,14 @@ label v0_7_0(version="v0_7_0"):
         persistent = updateTopicIDs(version)
         
         # now properly set all seen events as unlocked
-        for k,event in persistent.event_database.iteritems():
+        import store.evhand as evhand
+        for k in evhand.event_database:
+            event = evhand.event_database[k]
             if (renpy.seen_label(event.eventlabel)
                 and (event.pool 
                     or event.random
-                    or event.getAction() == EV_ACT_POOL
-                    or event.getAction() == EV_ACT_RANDOM
+                    or event.action == EV_ACT_POOL
+                    or event.action == EV_ACT_RANDOM
                 )):
                 event.unlocked = True
                 event.conditional = None

@@ -33,9 +33,14 @@ python early:
             return "EventError: " + self.msg
 
     # event class for chatbot replacement
-    # NOTE: DOES NOT SUPPORT INHERITIANCE. DO NOT EXTEND THIS CLASS
+    # NOTE: effectively a wrapper for dict of tuples
+    # NOTE: Events are TIED to the database they are found in. Moving databases
+    #   is not supported ATM
     #
     # PROPERTIES:
+    #   per_eventdb - persistent database (dict of tupes) this event is 
+    #       connectet to
+    #       NOTE: REQUIRED
     #   eventlabel - the identifier for this event. basically the label that
     #       this event is tied to. MUST BE UNIQUE
     #       NOTE: REQUIRED
@@ -66,11 +71,31 @@ python early:
     #       (Default: None)
     #   unlock_date - Timestamp for when this event is unlocked
     #       (Default: None)
-    class Event():
+    class Event(object):
+
+        # tuple constants
+        T_EVENT_NAMES = {
+            "eventlabel":0,
+            "prompt":1,
+            "label":2,
+            "category":3,
+            "unlocked":4,
+            "random":5,
+            "pool":6,
+            "conditional":7,
+            "action":8,
+            "start_date":9,
+            "end_date":10,
+            "unlock_date":11
+        }
+
+        # name constants
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel")
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
         def __init__(self,
+                per_eventdb,
                 eventlabel,
                 prompt=None,
                 label=None,
@@ -87,30 +112,55 @@ python early:
             # setting up defaults
             if not eventlabel:
                 raise EventException("'_eventlabel' cannot be None")
+            if per_eventdb is None:
+                raise EventException("'per_eventdb' cannot be None")
+            if action is not None and action not in EV_ACTIONS:
+                raise EventException("'" + action + "' is not a valid action")
 
             self.eventlabel = eventlabel
+            self.per_eventdb = per_eventdb
 
             # default prompt is the eventlabel
-            if prompt:
-                self.prompt = prompt
-            else:
-                self.prompt = self.eventlabel
+            if not prompt:
+                prompt = self.eventlabel
 
             # default label is a prompt
-            if label:
-                self.label = label
-            else:
-                self.label = self.prompt
+            if not label:
+                label = prompt
 
-            self.category = category
-            self.unlocked = unlocked
-            self.random = random
-            self.pool = pool
-            self.conditional = conditional
-            self.setAction(action)
-            self.start_date = start_date
-            self.end_date = end_date
-            self.unlock_date = unlock_date
+
+            # this is the data tuple. we assemble it here because we need 
+            # it in two different flows
+            data_row = (
+                self.eventlabel,
+                prompt,
+                label,
+                category,
+                unlocked,
+                random,
+                pool,
+                conditional,
+                action,
+                start_date,
+                end_date,
+                unlock_date
+            )
+
+            # if the item exists, reform data if the length has increased
+            # if the length shrinks, use updates scripts
+            if self.eventlabel in self.per_eventdb:
+                stored_data_row = self.per_eventdb[self.eventlabel]
+
+                if len(stored_data_row) < len(data_row):
+                    # splice and dice
+                    data_row = list(data_row)
+                    data_row[0:len(stored_data_row)] = list(sored_data_row)
+                    self.per_eventdb[self.eventlabel] = data_row
+
+            # new items are added appropriately
+            else: 
+                # add this data to the DB
+                self.per_eventdb[self.eventlabel] = data_row
 
         # equality override
         def __eq__(self, other):
@@ -122,46 +172,114 @@ python early:
         def __ne__(self, other):
             return not self.__eq__(other)
 
-        # copy override
-        def __copy__(self):
-            cls = self.__class__
-            newEvent = cls.__new__(cls)
-            newEvent.__dict__.update(self.__dict__)
-            return newEvent
-
-        # deepcopy override
-        def __deepcopy__(self, memo):
-            from copy import deepcopy
-            cls = self.__class__
-            newEvent = cls.__new__(cls)
-            memo[id(self)] = newEvent
-            # python 2 is iteritems
-            for k,v in self.__dict__.iteritems():
-                setattr(newEvent, k, deepcopy(v, memo))
-            return newEvent
-
-        def getAction(self):
+        # set attr overrride
+        def __setattr__(self, name, value):
             #
-            # Gets the action of this Event
+            # Override of setattr so we can do cool things
             #
-            # RETURNS:
-            #   the action of this event (EV_ACT_...). May be None
+            if name in self.N_EVENT_NAMES:
+                super(Event, self).__setattr__(name, value)
+#                self.__dict__[name] = value
 
-            return self._action
+            # otherwise, figure out the location of an attribute, then repack
+            # a tup
+            else:
+                attr_loc = self.T_EVENT_NAMES.get(name, None)
 
-        def setAction(self, action):
+                if attr_loc:
+                    # found the location
+                    data_row = self.per_eventdb.get(self.eventlabel, None)
+
+                    if not data_row:
+                        # couldnt find this event, raise excp
+                        raise EventException(
+                            self.eventlabel + " not found in eventdb"
+                        )
+
+                    # otherwise, repack the tuples
+                    data_row = list(data_row)
+                    data_row[attr_loc:attr_loc+1] = [value]
+                    data_row = tuple(data_row)
+
+                    # now put it back in the dict
+                    self.per_eventdb[self.eventlabel] = data_row
+                
+                else:
+                    super(Event, self).__setattr(name, value)
+
+        # get attribute ovverride
+        def __getattr__(self, name):
+            attr_loc = self.T_EVENT_NAMES.get(name, None)
+
+            if attr_loc:
+                # found the location
+                data_row = self.per_eventdb.get(self.eventlabel, None)
+
+                if not data_row:
+                    # couldnt find this event, raise exp
+                    raise EventException(
+                        self.eventlabel + " not found in db"
+                    )
+
+                # otherwise return the attribute
+                return data_row[attr_loc]
+
+            else:
+                return super(Event, self).__getattribute__(name)
+
+
+        def _loadTuple(self, data_tup):
             #
-            # Sets the action of this Event, only if its in the appropriate
-            # EVENT LIST. If an inappropriate action is given, None will be
-            # set
+            # Loads the given data tuple into this event object
             #
             # IN:
-            #   action - an EV_ACT to set to
-
-            if action in EV_ACTIONS:
-                self._action = action
-            else:
-                self._action = None
+            #   data_tup - tuple of the following format:
+            #       [0] -> eventlabel
+            #       [1] -> prompt
+            #       [2] -> label
+            #       [3] -> category
+            #       [4] -> unlocked
+            #       [5] -> random
+            #       [6] -> pool
+            #       [7] -> conditional
+            #       [8] -> action
+            #       [9] -> start_date
+            #       [10] -> end_date
+            #       [11] -> unlock_date
+            if len(data_tup) >= 12:
+                self.prompt = data_tup[1]
+                self.label = data_tup[2]
+                self.category = data_tup[3]
+                self.unlocked = data_tup[4]
+                self.random = data_tup[5]
+                self.pool = data_tup[6]
+                self.conditional = data_tup[7]
+                self._action = data_tup[8]
+                self.start_date = data_tup[9]
+                self.end_date = data_tup[10]
+                self.unlock_date = data_tup[11]
+           
+        def _saveTuple(self):
+            #
+            # Saves this Event's data as a tuple
+            #
+            # RETURNS:
+            #   tuple of the following format:
+            #       See _loadTuple
+            return (
+                self.eventlabel,
+                self.prompt,
+                self.label,
+                self.category,
+                self.unlocked,
+                self.random,
+                self.pool,
+                self.conditional,
+                self._action,
+                self.start_date,
+                self.end_date,
+                self.unlock_date
+            )
 
         @staticmethod
         def getSortPrompt(ev):
@@ -211,7 +329,7 @@ python early:
                 elif len(set(category[1]).intersection(set(event.category))) != len(category[1]):
                     return False
 
-            if action is not None and event.getAction() not in action:
+            if action is not None and event.action not in action:
                 return False
 
             # we've passed all the filtering rules somehow
@@ -220,7 +338,7 @@ python early:
         @staticmethod
         def filterEvents(
                 events,
-                full_copy=False,
+#                full_copy=False,
                 category=None,
                 unlocked=None,
                 random=None,
@@ -273,8 +391,8 @@ python early:
                 return events
 
             # copy check
-            if full_copy:
-                from copy import deepcopy
+#            if full_copy:
+#                from copy import deepcopy
 
             # setting up rules
             if (category and (
@@ -294,11 +412,7 @@ python early:
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action):
 
-                    # copy check
-                    if full_copy:
-                        filt_ev_dict[k] = deepcopy(v)
-                    else:
-                        filt_ev_dict[k] = v
+                    filt_ev_dict[k] = v
 
             return filt_ev_dict
 
@@ -320,12 +434,12 @@ python early:
             #
             # RETURNS:
             #   list of eventlabels (keys), sorted in chronological order.
-            #   OR: None if the given events is empty or all unlock_date fields
+            #   OR: [] if the given events is empty or all unlock_date fields
             #   were None and include_none is False
 
             # sanity check
             if not events or len(events) == 0:
-                return None
+                return []
 
             # dict check
             ev_list = events.values() # python 2
@@ -356,7 +470,7 @@ python early:
 
             # final sanity check
             if len(eventlabels) == 0:
-                return None
+                return []
 
             return eventlabels
 
@@ -380,18 +494,18 @@ python early:
                 #Calendar events use a different function
                 date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
                 if not date_based and events[ev].conditional is not None:
-                    if eval(events[ev].conditional) and events[ev].getAction is not None:
+                    if eval(events[ev].conditional) and events[ev].action is not None:
                         #Perform the event's action
-                        if events[ev].getAction() == EV_ACT_PUSH:
+                        if events[ev].action == EV_ACT_PUSH:
                             pushEvent(ev)
-                        elif events[ev].getAction() == EV_ACT_QUEUE:
+                        elif events[ev].action == EV_ACT_QUEUE:
                             queueEvent(ev)
-                        elif events[ev].getAction() == EV_ACT_UNLOCK:
+                        elif events[ev].action == EV_ACT_UNLOCK:
                             events[ev].unlocked = True
                             events[ev].unlock_date = datetime.datetime.now()
-                        elif events[ev].getAction() == EV_ACT_RANDOM:
+                        elif events[ev].action == EV_ACT_RANDOM:
                             events[ev].random = True
-                        elif events[ev].getAction() == EV_ACT_POOL:
+                        elif events[ev].action == EV_ACT_POOL:
                             events[ev].pool = True
 
                         #Clear the conditional
@@ -437,18 +551,18 @@ python early:
                         event_time = False
 
 
-                if event_time and events[ev].getAction() is not None:
+                if event_time and events[ev].action is not None:
                     #Perform the event's action
-                    if events[ev].getAction() == EV_ACT_PUSH:
+                    if events[ev].action == EV_ACT_PUSH:
                         pushEvent(ev)
-                    elif events[ev].getAction() == EV_ACT_QUEUE:
+                    elif events[ev].action == EV_ACT_QUEUE:
                         queueEvent(ev)
-                    elif events[ev].getAction() == EV_ACT_UNLOCK:
+                    elif events[ev].action == EV_ACT_UNLOCK:
                         events[ev].unlocked = True
                         events[ev].unlock_date = current_time
-                    elif events[ev].getAction() == EV_ACT_RANDOM:
+                    elif events[ev].action == EV_ACT_RANDOM:
                         events[ev].random = True
-                    elif events[ev].getAction() == EV_ACT_POOL:
+                    elif events[ev].action == EV_ACT_POOL:
                         events[ev].pool = True
 
                     #Clear the conditional

@@ -458,6 +458,7 @@ label ch30_autoload:
     # event list
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
+    $ import store.evhand as evhand
     if not config.developer:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
@@ -509,10 +510,10 @@ label ch30_autoload:
             grant_xp(away_xp)
 
     #Run actions for any events that need to be changed based on a condition
-    $ persistent.event_database=Event.checkConditionals(persistent.event_database)
+    $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
     #Run actions for any events that are based on the clock
-    $ persistent.event_database=Event.checkCalendar(persistent.event_database)
+    $ evhand.event_database=Event.checkCalendar(evhand.event_database)
 
     $persistent.closed_self = False
 
@@ -587,7 +588,7 @@ label ch30_loop:
         # Pick a random Monika topic
         label pick_random_topic:
         python:
-            all_random_topics = Event.filterEvents(persistent.event_database,random=True).keys()
+            all_random_topics = Event.filterEvents(evhand.event_database,random=True).keys()
             monika_random_topics = all_random_topics
             for topic in all_random_topics:
                 if seen_event(topic):
