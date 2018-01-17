@@ -139,39 +139,30 @@ label monika_bad_day:
     return
 
 init 5 python:
-    #This is a list of keywords for this topic
-    for key in ['depression','self esteem','self-esteem','self image','self-image']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_selfimage')
-    monika_random_topics.append('monika_selfimage')
+    addEvent(Event(eventlabel="monika_selfesteem",category=['Advice'],prompt="Self-esteem",random=True))
 
-label monika_selfimage
-    m 1f "Hey [player], do you love yourself?"
-    m 1g "I don't mean in a conceited way."
-    m 1c   "..."
+label monika_selfesteem:
+    m 3c "Do you love yourself, [player]?"
+    m 1n "I don't mean in a conceited way."
+    m 1c "Like, are you comfortable with who you are?"
     menu:
-        m "I mean, are you comfortable with who you are?"
-
         "Yes.":
-            m 1i "I'm glad you aren't miserable inside [player], your happiness means everything to me."
-            m 1o "Depression and the like are often rooted in a feeling that you don't deserve the affection of the people who care about you."
-            m 1f "Since you don't value yourself, how can other people have a good opinion of you?"
-            m "Or so such people feel inside anyway..."
-            m 2e "It's a horrible place to be."
-            m "If you have any friends that you think might be suffering inside, try to reach out and say something kind."
-            m 4i "It could make a world of difference!"
-            m 2i "If it lessens the pain a person is trapped at all you have done a great thing."
-            m 3e "Even if it doesn't, at least you tried rather than stayed silent."
+            m 1l "I'm glad you aren't miserable inside, [player]."
+            m 1e "Your happiness means everything to me, after all."
+            m 2f "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
+            m 2o "It's a horrible cocktail of feelings to have bottled in you."
+            m 4e "If you have any friends that you think might be suffering from those, try to reach out and say something nice."
+            m "A small compliment could make a world of difference for them!"
+            m 1a "If it gives them a bit of relief, you'd have done a great thing."
+            m 1j "And even if it doesn't, at least you tried rather than staying silent."
         "No.":
-            m 1g "Thats sad to hear. I'll always love you [player], but I think it's important to learn to love yourself."
-            m "You need to start with little things."
-            m 1p "What do you like about yourself?"
-            m "You don't have to tell me; you just need to find some small things that you can take pride in."
-            m 4b "It can be a something really silly , or it could be super serious!"
-            m "It doesn't really matter much as long as its something you believe." 
-            m 4j "You can build yourself up over time."
-            m 2d "I can't promise it will be easy, but I do promise it will be worth it."
-            m 2k "I'll always root for you [player]!"
+            m 1q "That's... really sad to hear, [player]..."
+            m 1f "I'll always love you, [player], but I think it's important to love yourself."
+            m "You need to start with the little things that you like about yourself."
+            m 3d "It can be something silly, or a skill that you take pride in!"
+            m 3a "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
+            m 1e "I can't promise it will be easy, but it'll be worth it."
+            m 3k "I'll always root for you, [player]!"
     return
 
 init 5 python:
