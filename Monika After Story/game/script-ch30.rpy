@@ -3,8 +3,6 @@ default persistent.tried_skip = None
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
-default persistent.monika_anniversary = 0
-default persistent.firstdate = datetime.datetime.now()
 define allow_dialogue = True
 define modoorg.CHANCE = 20
 
@@ -274,10 +272,6 @@ init python:
     morning_flag = None
     def is_morning():
         return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-    def days_passed():
-        now = datetime.datetime.now()
-        delta = now - persistent.firstdate
-        return delta.days
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -303,9 +297,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                     size (320,180)
                     pos (935,200)
             if start_bg:
-                $ renpy.show(start_bg)
+                $ renpy.show(start_bg, zorder=1)
             else:
-                show monika_day_room
+                show monika_day_room zorder 1
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
@@ -321,9 +315,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                     size (320,180)
                     pos (935,200)
             if start_bg:
-                $ renpy.show(start_bg)
+                $ renpy.show(start_bg, zorder=1)
             else:
-                show monika_room
+                show monika_room zorder 1
                 #show monika_bg_highlight
             if not hide_monika:
                 show monika 1 at t11 zorder 2
@@ -468,6 +462,7 @@ label ch30_autoload:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
+    $ startup_check = True #Flag for checking events at game startup
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -513,8 +508,6 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
-    $ elapsed = days_passed()
-
     #Run actions for any events that need to be changed based on a condition
     $ persistent.event_database=Event.checkConditionals(persistent.event_database)
 
@@ -537,6 +530,7 @@ label ch30_autoload:
 
     if not is_monika_in_room:
         $ set_keymaps()
+    $startup_check = False
     jump ch30_loop
 
 label ch30_loop:

@@ -164,6 +164,13 @@ python early:
                 self._action = None
 
         @staticmethod
+        def getSortPrompt(ev):
+            #
+            # Special function we use to get a lowercased version of the prompt
+            # for sorting purposes
+            return ev.prompt.lower()
+
+        @staticmethod
         def _filterEvent(
                 event,
                 category=None,
@@ -1730,7 +1737,7 @@ default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False}
-default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0}
+default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 define times.REST_TIME = 6*3600
@@ -1743,6 +1750,8 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
+init python:
+    startup_check = False
 
 default his = "his"
 default he = "he"

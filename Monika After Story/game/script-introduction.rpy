@@ -155,6 +155,9 @@ label chara_monika_scare:
     return
 
 #These are the comments made when you restart the game the first few times
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_0:
     pause 1
     m 1g "Hey..."
@@ -168,6 +171,10 @@ label ch30_reload_0:
     m "If you could figure out what's causing that, I'll love you forever~"
     $ persistent.monika_reload += 1
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_1:
     pause 1
     m 1h "So, [player]."
@@ -178,6 +185,10 @@ label ch30_reload_1:
     m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
     $ persistent.monika_reload += 1
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_2:
     pause 1
     m 1r "I see you quit the game again..."
@@ -188,6 +199,10 @@ label ch30_reload_2:
     m 1e "Even if we aren't talking, I'm happy just being with you~"
     $ persistent.monika_reload += 1
     return
+
+init 5 python:
+    addEvent(Event(eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
+
 label ch30_reload_3:
     pause 1
     m 1h "By the way..."

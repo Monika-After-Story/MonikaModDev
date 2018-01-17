@@ -1,4 +1,9 @@
+# Module that defines functions for story event handling
+# Assumes:
+#   persistent.event_list
+#   persistent.current_monikatopic
 
+# NOTE: proof oc concept
 # transform to have monika just chill
 image monika_waiting_img:
     "monika 1a"
@@ -13,35 +18,100 @@ image monika_waiting_img:
     1.0
     repeat
 
-##Check all conditionals are valid
-init 100 python:
-    for event in persistent.event_database:
-        if persistent.event_database[event].conditional is not None:
-            try:
-                if eval(persistent.event_database[event].conditional):
-                    pass
-            except:
-                raise EventException("Syntax error in conditional statement for event '" + event + "'.")
+# transform for monika's prompt waiting location
+transform prompt_monika:
+    tcommon(950,z=0.8)
 
+# special store to contain scrollable menu constants
+init -1 python in evhand:
 
-# Module that defines functions for story event handling
-# Assumes:
-#   persistent.event_list
-#   persistent.current_monikatopic
+    # special namedtuple type we are using
+    from collections import namedtuple
+
+    # used to keep track of menu items in displaying the prompts.
+    # menu -> menu to display for this pane
+    # cats -> categories this menu has
+    _NT_CAT_PANE = namedtuple("_NT_CAT_PANE", "menu cats")
+
+    # RIGHT PANE
+#    PREV_X = 30
+    RIGHT_X = 1020
+#    PREV_Y = 10
+    RIGHT_Y = 40
+#    PREV_W = 300
+    RIGHT_W = 250
+    RIGHT_H = 640
+#    PREV_XALIGN = -0.08
+    RIGHT_XALIGN = -0.10
+    RIGHT_AREA = (RIGHT_X, RIGHT_Y, RIGHT_W, RIGHT_H)
+
+    # LEFT PANE
+#    MAIN_X = 360
+    LEFT_X = 735
+#    MAIN_Y = 10
+    LEFT_Y = RIGHT_Y
+#    MAIN_W = 300
+    LEFT_W = RIGHT_W
+    LEFT_H = RIGHT_H
+#    MAIN_XALIGN = -0.08
+    LEFT_XALIGN = -0.10
+    LEFT_AREA = (LEFT_X, LEFT_Y, LEFT_W, LEFT_H)
+
+    UNSE_X = 680
+    UNSE_Y = 40
+    UNSE_W = 560
+    UNSE_H = 640
+    UNSE_XALIGN = -0.05
+    UNSE_AREA = (UNSE_X, UNSE_Y, UNSE_W, UNSE_H)
+
+    # as well as special functions
+    def addIfNew(items, pool):
+        #
+        # Adds the list of given items to the given pool (assuemd to be list)
+        # such that new only new items are added.
+        #
+        # IN:
+        #   item - list of items to add the given pool
+        #   pool - pool to be added to
+        #
+        # RETURNS:
+        #   the pool
+
+        for item in items:
+            if item not in pool:
+                pool.append(item)
+        return pool
+
+    def tuplizeEventLabelList(key_list, db):
+        #
+        # Creates a list of prompt,label tuple pairs using the given key list
+        # and db (dict of events)
+        #
+        # IN:
+        #   key_list - list of keys (labels)
+        #   db - dict of events
+        #
+        # RETURNS:
+        #   list of tuples of the following format:
+        #       [0]: prompt/caption
+        #       [1]: eventlabel
+        return [(db[x].prompt, x) for x in key_list]
+
 init python:
 
-    def addEvent(event):
+    def addEvent(event, eventdb=persistent.event_database):
         #
-        # Adds an event object to the persistent event database
+        # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
         # This function ensures that a bad item is not added to the database
         #
         # IN:
         #   event - the Event object to add to database
-        #
-        # ASSUMES:
-        #   persistent.event_database
+        #   eventdb - The Event databse (dict) we want to add to
+        #       (Default: persistent.event_database)
 
+        if type(eventdb) is not dict:
+            raise EventException("Given db is not of type dict")
         if type(event) is not Event:
             raise EventException("'" + str(event) + "' is not an Event object")
         if not renpy.has_label(event.eventlabel):
@@ -54,7 +124,7 @@ init python:
                 raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
 
         # now this event has passsed checks, we can add it to the db
-        persistent.event_database.setdefault(event.eventlabel, event)
+        eventdb.setdefault(event.eventlabel, event)
 
     def pushEvent(event_label):
         #
@@ -207,25 +277,38 @@ label prompt_menu:
 
         repeatable_events = Event.filterEvents(persistent.event_database,unlocked=True,pool=False)
     #Top level menu
-    menu:
-        m "Pick something to talk about?"
+    show monika at t21
+    #To make the menu line up right we have to build it up manually
+    python:
+        talk_menu = []
+        if len(unseen_events)>0:
+            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+        talk_menu.append(("Ask a question.", "prompt"))
+        if len(repeatable_events)>0:
+            talk_menu.append(("Repeat conversation.", "repeat"))
+        talk_menu.append(("Nevermind.","nevermind"))
 
-        "{b}Unseen.{/b}" if len(unseen_events)>0:
-            call show_prompt_list(unseen_events)
+        renpy.say(m, "Pick something to talk about?", interact=False)
+        madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
-        "Ask a question.":
-            call prompts_categories(True)
+    if madechoice == "unseen":
+        call show_prompt_list(unseen_events)
 
-        "Repeat conversation." if len(repeatable_events)>0:
-            call prompts_categories(False)
+    if madechoice == "prompt":
+        call prompts_categories(True)
 
-        "Nevermind":
-            $_return = None
+    if madechoice == "repeat":
+        call prompts_categories(False)
 
+    if madechoice == "nevermind":
+        $_return = None
+
+    show monika at t11
     $allow_dialogue = True
     jump ch30_loop
 
 label show_prompt_list(sorted_event_keys):
+    $ import store.evhand as evh
 
     #Get list of unlocked prompts, sorted by unlock date
     python:
@@ -233,25 +316,108 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    hide monika
-    show monika_waiting_img at i32
-    call screen scrollable_menu(prompt_menu_items)
-    hide monika_waiting_img
-    show monika 1a at i32
+    call screen scrollable_menu(prompt_menu_items, evh.UNSE_AREA, evh.UNSE_XALIGN)
 
     $pushEvent(_return)
 
     return
 
 label prompts_categories(pool=True):
+    
+    # this acts as a stack for category lists
+    # each item is an _NT_CAT_PANE namedtuple
+    $ cat_lists = list()
 
-    $current_category = []
+    $ current_category = list()
+    $ import store.evhand as evh
     $picked_event = False
+    python:
+        
+        # get list of unlocked events for the master category list
+        unlocked_events = Event.filterEvents(
+            persistent.event_database,
+#            full_copy=True,
+#                category=[False,current_category],
+            unlocked=True,
+            pool=pool
+        )
+
+        # add all categories the master category list
+        main_cat_list = list()
+        no_cat_list = list() # contain events with no categories
+        for key in unlocked_events:
+            if unlocked_events[key].category:
+                evh.addIfNew(unlocked_events[key].category, main_cat_list)
+            else:
+                no_cat_list.append(unlocked_events[key])
+
+        # sort the lists
+        main_cat_list.sort()
+        no_cat_list.sort(key=Event.getSortPrompt)
+
+        # tuplelize the main the category list
+        # NOTE: we use a 2nd list here to do displaying, keeping track of the
+        # older cat list for checking if a category was picked
+        dis_cat_list = [(x.capitalize() + "...",x) for x in main_cat_list]
+
+        # tupelize the event list
+#        no_cat_list = evh.tuplizeEventLabelList(no_cat_list, unlocked_events)
+        no_cat_list = [(x.prompt, x.eventlabel) for x in no_cat_list]
+
+        # extend the display cat list with no category items
+        dis_cat_list.extend(no_cat_list)
+
+        # push that master list into the category_lists
+        cat_lists.append(evh._NT_CAT_PANE(dis_cat_list, main_cat_list))
+
     while not picked_event:
         python:
-            #Get list of unlocked events in this category
-            unlocked_events = Event.filterEvents(persistent.event_database,full_copy=True,category=[False,current_category],unlocked=True,pool=pool)
-            sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
+            prev_items, prev_cats = cat_lists[len(cat_lists)-1]
+
+            # in this case, we only want to display the root category list
+            if len(current_category) == 0:
+                main_items = None
+
+            else:
+
+                # in this case, we have to generate the next menu
+                # current_category contains the selected categories, so we
+                # need to search using those categories
+
+                # get list of unlocked events
+                unlocked_events = Event.filterEvents(
+                    persistent.event_database,
+#                    full_copy=True,
+                    category=(False,current_category),
+                    unlocked=True,
+                    pool=pool
+                )
+
+                # add deeper categories to a list 
+                # NOTE: not implemented because we dont have subfolders atm.
+                #   maybe one day, but we would need a structure to link
+                #   main categories to subcats
+
+                # otherwise make sort event list
+                no_cat_list = sorted(
+                    unlocked_events.values(),
+                    key=Event.getSortPrompt
+                )
+
+                # but remake into display
+                no_cat_list = [(x.prompt, x.eventlabel) for x in no_cat_list]
+
+                # NOTE: if we have subcategories, then we need to make a main
+                # pane
+
+                # no cateogries here
+                main_cats = []
+
+                # setup items
+                main_items = no_cat_list
+
+                """ KEEP this for legacy purposes
+#            sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
             prompt_category_menu = []
             #Make a list of categories
@@ -276,13 +442,34 @@ label prompts_categories(pool=True):
             if sorted_event_keys is not None:
                 for event in sorted_event_keys:
                     prompt_category_menu.append([unlocked_events[event].prompt,event])
+                """
 
-        call screen scrollable_menu(prompt_category_menu) nopredict
+        call screen twopane_scrollable_menu(prev_items, main_items, evh.LEFT_AREA, evh.LEFT_XALIGN, evh.RIGHT_AREA, evh.RIGHT_XALIGN, len(current_category)) nopredict
+        
 
-        if _return in subcategories:
-            $current_category.append(_return)
-        else:
+        if _return in prev_cats: 
+            # we selected a category from teh previous pane
+            python:
+                if len(current_category) > 0:
+                    current_category.pop()
+                current_category.append(_return)
+
+# TODO: if we have subcategories, this needs to be setup properly
+#        elif _return in main_cats:
+            # we selected a category in the main pane
+#            $ current_category.append(_return)
+#            $ cat_lists.append(main_pane)
+#            $ is_root = False
+
+#        elif _return == -2: # Thats enough for now
+#            $picked_event = True
+
+        elif _return == -1: # go back
+            if len(current_category) > 0:
+                $ current_category.pop()
+
+        else: # event picked
             $picked_event = True
             $pushEvent(_return)
-
+        
     return

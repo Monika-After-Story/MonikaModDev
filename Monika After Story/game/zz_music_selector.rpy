@@ -12,7 +12,7 @@ init -1 python in songs:
     YOURE_REAL = "Your Reality"
     STILL_LOVE = "I Still Love You"
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
-    DDLC_MT_80 = "Doki Doki Theme (80s version)"
+    DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
     NO_SONG = "None"
 
@@ -49,7 +49,7 @@ init -1 python in songs:
             new_vol = 0.0
         elif new_vol > 1.0:
             new_vol = 1.0
-        
+
         renpy.music.set_volume(new_vol, channel=channel)
 
     def getVolume(channel):
@@ -68,7 +68,7 @@ init -1 python in songs:
         # Gets the name of the currently playing song.
         #
         # IN:
-        #   channel - the audio channel to get the playing file 
+        #   channel - the audio channel to get the playing file
         #
         # RETURNS:
         #   The name of the currently playing song, as defined here in
@@ -120,11 +120,12 @@ init -1 python in songs:
         if not sayori:
             music_choices.append((JUST_MONIKA, FP_JUST_MONIKA))
             music_choices.append((YOURE_REAL, FP_YOURE_REAL))
-            music_choices.append((STILL_LOVE, FP_STILL_LOVE))
-            music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
 
             # Shoutout to Rune0n for this wonderful piano cover!
             music_choices.append((PIANO_COVER, FP_PIANO_COVER))
+
+            music_choices.append((STILL_LOVE, FP_STILL_LOVE))
+            music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
