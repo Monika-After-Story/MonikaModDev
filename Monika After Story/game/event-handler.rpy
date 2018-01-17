@@ -126,6 +126,80 @@ init python:
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
+    def hideEventLabel(
+            eventlabel,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=persistent.event_database
+        ):
+        #
+        # hide an event in the given eventdb by Falsing its unlocked, 
+        # random, and pool properties.
+        #
+        # IN:
+        #   eventlabel - label of the event to hide
+        #   lock - True if we want to lock this event, False otherwise
+        #       (Default: False)
+        #   derandom - True if we want to unrandom this event, False otherwise
+        #       (Default: False)
+        #   depool - True if we want to unpool this event, False otherwise
+        #       (Default: False)
+        #   decond - True if we want to remove the conditional, False otherwise
+        #       (Default: False)
+        #   eventdb - the event database (dict) we want to reference
+        #       (DEfault: persistent.event_database)
+        ev = eventdb.get(eventlabel, None)
+
+        if ev:
+
+            if lock:
+                ev.unlocked = False
+
+            if derandom:
+                ev.random = False
+
+            if depool:
+                ev.pool = False
+
+            if decond:
+                ev.conditional = None
+
+    def hideEvent(
+            event,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=persistent.event_database
+        ):
+        #
+        # hide an event in the given eventdb by Falsing its unlocked, 
+        # random, and pool properties.
+        #
+        # IN:
+        #   event - event object we want to hide 
+        #   lock - True if we want to lock this event, False otherwise
+        #       (Default: False)
+        #   derandom - True if we want to unrandom this event, False otherwise
+        #       (Default: False)
+        #   depool - True if we want to unpool this event, False otherwise
+        #       (Default: False)
+        #   decond - True if we want to remove the conditional, False
+        #       otherwise
+        #       (Default: False)
+        #   eventdb - the event database (dict) we want to reference
+        #       (DEfault: persistent.event_database)
+        hideEventLabel(
+            event.eventlabel, 
+            lock=lock, 
+            derandom=derandom, 
+            depool=depool,
+            decond=decond,
+            eventdb=eventdb
+        )
+
     def pushEvent(event_label):
         #
         # This pushes high priority or time sensitive events onto the top of
