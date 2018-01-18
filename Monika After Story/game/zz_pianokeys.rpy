@@ -994,12 +994,6 @@ init 1001 python:
 
         # DETECTION_LIST
 
-        # verses
-        VER_ONE = 0
-        VER_TWO = 8
-        VER_THR = 15
-        VER_END = 23
-
         # AT_LIST 
         AT_LIST = [i22]
         TEXT_AT_LIST = [piano_lyric_label]
@@ -1132,14 +1126,16 @@ init 1001 python:
         
         # MODES
         MODE_FREE = 0
-        MODE_YR = 1 # YOUR REALITY
+        MODE_SONG = 1 # song mode means we are trying to play a song
 
-        def __init__(self, mode):
+        def __init__(self, mode, pnml=None):
             """
             Creates the piano displablable
 
             IN:
                 mode - the mode we want to be in
+                pnml - the piano note match list we want to use
+                    (Default: None)
             """
             super(renpy.Displayable,self).__init__()
 
@@ -1307,7 +1303,9 @@ init 1001 python:
 
             # current verse
             self.versedex = 0
-            self.nextversedex = 8
+
+            # current note match list
+            self.pnml = pnml
 
             # DEBUG: NOTE:
 #            self.testing = open("piano", "w+")
@@ -1316,6 +1314,10 @@ init 1001 python:
             #
             # Finds a PianoNoteMatch object that matches the given set of
             # notes.
+            # Also sets the pnml to the piano note match list that is
+            # appropriate
+            # NOTE: only the first notematch phrase is checked per note match
+            #   list.
             #
             # IN:
             #   notes - list of notes to match
@@ -1326,25 +1328,17 @@ init 1001 python:
             # convert to string for ease of us
             notestr = "".join([chr(x) for x in notes])
 
-            # setup the proper range to check verses
-            if self.versedex == self.VER_ONE:
-                verses = range(self.VER_ONE, self.VER_TWO)
-            elif self.versedex == self.VER_TWO:
-                verses = range(self.VER_TWO, self.VER_THR)
-            elif self.versedex == self.VER_THR:
-                verses = range(self.VER_THR, self.VER_END)
+            # go through the pnm_list
+            for pnml in pnm_list:
+                pnm = pnml[0]
 
-            # go through this range of verses
-            for index in verses:
-                pnm = self.pnm_yourreality[index]
-
-                # we use string finding to accomplish matches
+                # use string finding to match stuff
                 findex = pnm.notestr.find(notestr)
                 if findex >= 0:
                     pnm.matchdex = findex + len(notestr)
                     pnm.matched = True
-                    self.pnm_index = index
-                    self.versedex = pnm.verse
+                    self.pnm_index = 0
+                    self.pnml = pnml # curreent song
                     return pnm
 
             return None
@@ -1627,6 +1621,10 @@ init 1001 python:
                     self.played = list()
 
                     if self.state != self.STATE_LISTEN:
+                        if self.pnml:
+                            self.pnm_index = self.pnml.verse_list[
+                                self.versedex
+                            ]
                         self.state = self.STATE_CLEAN
                         renpy.redraw(self, 0)
 
@@ -1690,15 +1688,28 @@ init 1001 python:
                         self.pressed[ev.key] = True
 
                         # check if we have enough played notes
-                        if (
-                                self.state == self.STATE_LISTEN
-                                and len(self.played) >= zzpianokeys.NOTE_SIZE
-                            ):
-                            self.match = self.findnotematch(self.played)
+                        if self.state == self.STATE_LISTEN:
 
-                            # check if match
-                            if self.match:
-                                self.state = self.STATE_JMATCH
+                            # check if we are in song mode
+                            if self.mode == self.MODE_SONG:
+
+                                # find a match
+                                findex = self.match.isNoteMatch(ev.key, 0)
+
+                                if findex >= 0:
+                                    self.state = self.STATE_JMATCH
+
+                            # not in song mode, check for correct number of
+                            # notes
+                            elif len(self.played) >= zzpianokeys.NOTE_SIZE:
+
+                                # find a match
+                                self.match = self.findnotematch(self.played)
+
+                                # check if match
+                                if self.match:
+                                    self.state = self.STATE_JMATCH
+
 
                         # post match checking
                         elif self.state == self.STATE_POST:
