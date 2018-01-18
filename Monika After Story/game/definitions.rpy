@@ -155,7 +155,7 @@ python early:
                     # splice and dice
                     data_row = list(data_row)
                     data_row[0:len(stored_data_row)] = list(stored_data_row)
-                    self.per_eventdb[self.eventlabel] = data_row
+                    self.per_eventdb[self.eventlabel] = tuple(data_row)
 
             # new items are added appropriately
             else: 
@@ -198,7 +198,7 @@ python early:
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
-                    data_row[attr_loc:attr_loc+1] = [value]
+                    data_row[attr_loc] = value
                     data_row = tuple(data_row)
 
                     # now put it back in the dict
