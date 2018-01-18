@@ -90,6 +90,7 @@ def someKindOfFunction(var1, var2, var3=None):
         persistent.var4 
     """
 ```
+For function names, either camelCase or lowercase_underscores are fine.
 
 ### Persistent
 
@@ -98,11 +99,13 @@ Because its already loaded with data from the stock game, **avoid using this
 if you can**. (I.e: instead of using a persistent to check if an event has been
 seen, use `renpy.seen_label` or `seen_event`. If you do need to use this, prefix
 your variable names so we avoid collisions. Also make the persistent names pretty
-descriptive.
+descriptive, and use lowercase_underscores for naming.
 
 ### Constants
 
 Define constants instead of literals when you're using them multiple times. 
+Use UPPERCASE_UNDERSCORES for naming.
+
 **An exception to this is literals used in screens**. If a screen is **not**
 called with `nopredict`, then use literals when you can, as renpy optimizes 
 screens with literals.
@@ -111,7 +114,7 @@ screens with literals.
 
 Make these descriptive please. It doesn't need to be Java-like, just enough so
 its somewhat easy to figure out what it is. Using abbreviations or acronyms is
-fine.
+fine. Use lowercase_underscores for naming.
 
 ### Comments
 
