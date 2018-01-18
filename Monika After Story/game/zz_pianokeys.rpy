@@ -1360,15 +1360,14 @@ init 1001 python:
                 self.pnm_index += 1
                 index = self.pnm_index
 
-            if index >= len(self.pnm_yourreality):
-                self.versedex = 0
+            if index >= len(self.pnml.pnm_list):
                 return None
 
-            new_pnm = self.pnm_yourreality[index]
+            new_pnm = self.pnml.pnm_list[index]
 
             # settting up the proper next verse
-            if self.versedex != new_pnm.verse:
-                self.versedex = new_pnm.verse
+#            if self.versedex != new_pnm.verse:
+#                self.versedex = new_pnm.verse
 
             return new_pnm
 
@@ -1739,6 +1738,7 @@ init 1001 python:
 
                                 # abourt please
                                 else:
+                                    
                                     self.state = self.STATE_CLEAN
 
                         # waiting post
