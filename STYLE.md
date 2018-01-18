@@ -13,7 +13,7 @@ your subprogram. Certain prefixes are reserved:
 - `i_greeting` - used for special interactive greetings
 - `ch30` - used for key chapter 30 labels
 - `monika` - used for nearly every monika topic
-- `joke" - used for the jokes system
+- `joke` - used for the jokes system
 - `m_joke` - also used for the jokes sytem
 - `mas_poem` - used for poemgame system
 - `game` - used for most of the minigames
