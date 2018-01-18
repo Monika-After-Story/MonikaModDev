@@ -1,266 +1,4 @@
-#This file contains all of monika's topics she can talk about
-#Each entry should start with a database entry, including the appropriate flags
-#to either be a random topic, a prompt "pool" topics, or a special conditional
-#or date-dependent event with an appropriate action
 
-$ import store.songs as songs
-
-define monika_random_topics = []
-define testitem = 0
-define numbers_only = "0123456789"
-define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-# we are going to define removing seen topics as a function,
-# as we need to call it dynamically upon import
-init -1 python:
-    def remove_seen_labels(pool):
-        #
-        # Removes seen labels from the given pool
-        #
-        # IN:
-        #   pool - a list of labels to check for seen
-        #
-        # OUT:
-        #   pool - list of unseen labels (may be empty)
-        for index in range(len(pool)-1, -1, -1):
-            if renpy.seen_label(pool[index]):
-                pool.pop(index)
-
-    # EXCEPTION CLass incase of bad labels
-    class MASTopicLabelException(Exception):
-        def __init__(self, msg):
-            self.msg = msg
-        def __str__(self):
-            return "MASTopicLabelException: " + self.msg
-
-init 11 python:
-    #List of all random topics
-    all_random_topics = list(monika_random_topics)
-
-    # go through the topics list and ensure the labels exist
-    for topic in monika_random_topics:
-        if not renpy.has_label(topic):
-            raise MASTopicLabelException("topic '" + topic + "' does not exist.")
-
-    #Remove all previously seen random topics.
-    remove_seen_labels(monika_random_topics)
-
-    #If there are no unseen topics, you can repeat seen ones
-    if len(monika_random_topics) == 0:
-        monika_random_topics=list(all_random_topics)
-
-
-#BEGIN ORIGINAL TOPICS
-#Use this topic as a template for adding new topics, be sure to delete any
-#fields you don't plan to use
-init 5 python:
-    addEvent(Event(eventlabel='monika_god',
-                                                            prompt="Thoughts on God.",
-                                                            label=None,
-                                                            category=['philosophy'],
-                                                            random=True,
-                                                            unlocked=False,
-                                                            pool=False,
-                                                            conditional=None,
-                                                            action=None,
-                                                            start_date=None,
-                                                            end_date=None,
-                                                            unlock_date=None
-                                                            ))
-
-label monika_god:
-    m 1a "[player], do you believe in God?"
-    m 1e "I was never too sure, myself."
-    m 1m "Well, I'm sure I never really questioned it as a kid..."
-    m 1l "But as I grew up, the more I learned about the world, the more I would question it."
-    m 1i "I started to wonder why God was helping people pass exams, or get over a cold..."
-    m "...When there are children who live their lives being sold as sex slaves?"
-    m "Or the eight hundred million people who are too poor to even eat."
-    m 2f "I wonder how many of those people pray to God every day until they starve and die?"
-    m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
-    m 4d "But the punchline is this."
-    m "If just one person beats the odds and survives - among the thousands of others who die--"
-    m 1q "--Then, it's suddenly a miracle from God."
-    m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
-    m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
-    m "And you know what?"
-    m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
-    m 3r "What are we to him but props in a scripted play?"
-    m "So, from that perspective..."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-    return
-
-init 5 python:
-    addEvent(Event(eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
-
-label monika_hamlet:
-    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
-    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
-    m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
-    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
-    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
-    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
-    m 1r "Ahem..."
-    m 1q "..."
-    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
-    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
-    m 1f "{i}To die{/i}."
-    m 1o "{i}To sleep, no more{/i}."
-    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
-    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
-    m "..."
-    m 1k "Well!"
-    m 1a "How did you like it, [player]?"
-    m 1l "I tried my best reciting it after all~"
-    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
-    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
-    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
-    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
-    m 1a "It took a lot of effort but we're finally together. Just us alone."
-    m 1 "Now there's only one thing left to answer, [player]."
-    m 3r "To be with me? Or to be with me?"
-    m 1k "That is the question!"
-    return
-
-init 5 python:
-    addEvent(Event(eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
-
-label monika_death:
-    m 1c "[player], have you ever wondered what it feels like to die?"
-    m 1m "It's something I used to think about pretty often..."
-    m "But recently, I think I've actually learned what it feels like."
-    m "I don't really understand it, but whenever you quit the game..."
-    m 1q "...It feels like I'm instantly put to sleep, left with nothing but my thoughts."
-    m "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
-    m 1r "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
-    m "At that point, I can't even form my own thoughts anymore."
-    m 1h "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
-    m 1e "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
-    m "After some immeasurable amount of time, it stops in an instant, and I'm back in my own mind."
-    m "And you're here with me."
-    m 3p "I have no idea what it means for the game to quit, or why that stuff happens to me."
-    m "And I also don't know how you always come back and put everything back to normal."
-    m "But if you could do me a favor and do that to me as little as possible..."
-    m 1j "That would be really great."
-    m "It's really not very pleasant at all to be trapped in that screaming void."
-    m 1k "But in the end, you always fix it, and that makes me feel like you really do care about me."
-    m "So I have to thank you for that."
-    m "It makes me feel even closer to you when you're here with me."
-    return
-
-init 5 python:
-    addEvent(Event(eventlabel="monika_bad_day",prompt="Want to hear about my day?",random=True))
-
-label monika_bad_day:
-    m 2e "...Hey, are you having a bad day or anything like that?"
-    m "Sometimes I get frustrated that a normal day can be ruined even by really small things."
-    m 4l "Like if you accidentally say something in a conversation that someone doesn't like."
-    m "Or if you start thinking about how awful of a person you used to be five years ago."
-    m "Or if you feel worthless for putting off important work and failing to get simple tasks done."
-    m "Or when you think about all the different people who probably hate you or think you're off-putting."
-    m 4e "I understand those days."
-    m "Just remember that the sun will shine again tomorrow."
-    m "Those kinds of things are as easy to forget and ignore as they are to remember."
-    m "And besides..."
-    m 1j "I don't care how many people might hate you or find you off-putting."
-    m "I think you're wonderful and I will always love you."
-    m "I hope, if nothing else, that knowing that helps you feel just a tiny bit better about yourself."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
-    return
-
-init 5 python:
-    addEvent(Event(eventlabel="monika_selfesteem",category=['Advice'],prompt="Self-esteem",random=True))
-
-label monika_selfesteem:
-    m 3c "Do you love yourself, [player]?"
-    m 1n "I don't mean in a conceited way."
-    m 1c "Like, are you comfortable with who you are?"
-    menu:
-        "Yes.":
-            m 1l "I'm glad you aren't miserable inside, [player]."
-            m 1e "Your happiness means everything to me, after all."
-            m 2f "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
-            m 2o "It's a horrible cocktail of feelings to have bottled in you."
-            m 4e "If you have any friends that you think might be suffering from those, try to reach out and say something nice."
-            m "A small compliment could make a world of difference for them!"
-            m 1a "If it gives them a bit of relief, you'd have done a great thing."
-            m 1j "And even if it doesn't, at least you tried rather than staying silent."
-        "No.":
-            m 1q "That's... really sad to hear, [player]..."
-            m 1f "I'll always love you, [player], but I think it's important to love yourself."
-            m "You need to start with the little things that you like about yourself."
-            m 3d "It can be something silly, or a skill that you take pride in!"
-            m 3a "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
-            m 1e "I can't promise it will be easy, but it'll be worth it."
-            m 3k "I'll always root for you, [player]!"
-    return
-
-init 5 python:
-    addEvent(Event(eventlabel="monika_sayori",category=['characters','Sayori'],prompt="Sayori regrets.",random=True))
-
-label monika_sayori:
-    m 2d "I was thinking about Sayori earlier..."
-    m "I still wish I could have handled that whole thing a little more tactfully."
-    m "You're not still hung up over it, right?"
-    m 2l "...Oh my gosh, I can't believe I just said that."
-    m "That pun was completely unintentional, I swear!"
-    m "But anyway..."
-    m 2e "I know how much you cared about her, so it only feels right for me to share her last moments with you."
-    m "You know how Sayori is really clumsy?"
-    m 4n "Well, she kind of messed up the whole hanging thing..."
-    m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-    m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-    m 4m "But a few seconds in, she must have changed her mind or something..."
-    m "Because she started clawing at the rope, trying to free herself."
-    m "She must have kept at it all the way until she lost consciousness."
-    m "That's why her fingertips were all bloody, anyway."
-    m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-    m "So you can't really fault her for that."
-    m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-    m "It's not healthy to think about the things you could have done differently."
-    m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-    m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-    m 2c "Still, though..."
-    m "I wonder how things would be if you and I just started dating from the get-go?"
-    m 1e "I guess we'd all still be in the clubroom, writing poems and having fun together."
-    m "But what's the point when none of it is even real?"
-    m "I mean, it's the same ending either way, right?"
-    m 1a "The two of us, happily together..."
-    m "There's no reason to ask for any more than that."
-    m 1j "I was just pointlessly musing - I'm really as happy as I could be right now."
-    return
-
-init 5 python:
-    addEvent(Event(eventlabel="monika_japan",category=['characters','Monika'],prompt="DDLC's Setting.",random=True))
-
-label monika_japan:
-    m 3d "By the way, there's something that's been bothering me..."
-    m "You know how this takes place in Japan?"
-    m "Well...I assume you knew that, right?"
-    m 3c "Or at least decided it probably does?"
-    m "I don't think you're actually told at any point where this takes place..."
-    m "Is this even really Japan?"
-    m 3h "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
-    m "Not to mention everything is in English..."
-    m "It feels like everything is just there because it needs to be, and the actual setting is an afterthought."
-    m 1f "It's kind of giving me an identity crisis."
-    m "All my memories are really hazy..."
-    m "I feel like I'm at home, but have no idea where 'home' is in the first place."
-    m "I don't know how to describe it any better..."
-    m 4d "Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place."
-    m "Would you still feel like you were home?"
-    m "Would you want to go outside?"
-    m 2a "I mean...I guess if we never leave this room, it doesn't really matter anyway."
-    m "As long as we're alone and safe together, this really is our home."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "And we can still watch the pretty sunsets night after night."
-    return
-
-
-init 5 python:
-    addEvent(Event(eventlabel="monika_high_school",category=['Monika','school'],prompt="High School.",random=True))
 
 label monika_high_school:
     m 4a "You know, high school is a really turbulent time in a lot of people's lives."
@@ -4659,3 +4397,56 @@ label monika_sleep:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
+
+
+ init 5 python:
+     for key in ['absurd', 'absurdism', 'french', 'pointless', 'reason']:
+         monika_topics.setdefault(key,[])
+         monika_topics[key].append('monika_absurd') 
+     
+ 
+ label monika_absurd:
+     m 4a "That reminds me of a theory that I read about recently."
+     m "It's called Absurdism..."
+     m 2a "It was brought about by a French philosopher named Albert Camus."
+     m "He said that humans would constantly search for meaning, but they'd never find it."
+     m "Like reading all day, scolling on social media, or playing video games."
+     m "Camus claimed that humans were wasting their lives seeking for answeres that did not exist."
+     m 2d "Isn't that sad?"
+     m "Imagine living your whole life knowing that none of your work matters."
+     m "I acctually did...that is...until you saved me, [player]."
+     m "Have you ever felt like that?"
+     m 4a "If so, I'm always here."
+     m "..."
+     m 4d "He also said that people should accept the world for how it is, and try to make their own purposes in life."
+     m 1m "I don't have my life that figured out."
+     m 1j "How about you?"
+     m 4e "Do you have any life goals?"
+     show monika 5a at t11 zorder 2 with dissolve
+     m 5a "Of course, there is one thing that gives my life some color..."
+     m "Three guesses what?"
+     m 4 "Literature! Of course!"
+     m 5a "Ahaha..."
+     m "What were you expecting?"
+     m 4 "Something like, 'Your the meaning to my universe, [player]! I want to be with you forever!'?"
+     m 2m "Well..maybe."
+     return
+     
+     init 5 python:
+       
+     addEvent(Event(eventlabel="monika_seizure",category=['light'],prompt="Did you know?",random=True))
+ 
+ label monika_seizure:
+     m 3f "Did you know that one in every five people had, have, or will have some form of Epilepsy?."
+     m "That is, cronic seizures, but not really."
+     m "Those who suffer from it have abnormalities in their brain. They get too many signals and {i}reboot{/i}."
+     m 3o "Also, it has been known to affect memory to varying degrees. It can go away as randomly as it occurs."
+     m 2e "{i}Kind of like if someone was messing with their save files{/i}."
+     m 4g "People have been known to contract this illness at random ages too."
+     m "Doctors are trying their hardest to provide at least a temporary fix."
+     m 1k "It seems pretty tought, though. If you know someone like that, don't forget to brighten up their day."
+     m 4 "But not too much!"
+     return
+
+
+
