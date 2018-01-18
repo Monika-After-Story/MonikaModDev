@@ -4696,10 +4696,10 @@ label monika_breakup:
             "Of course not.":
                 m 2k "That's what I thought, just making sure!"
                 m 2k "Yeah, I know you would never do that to me."
-                m "I love you! Hehe~"
+                m "I love you! Ehehe~"
         
     $ persistent.monika_breakup += 1
     if persistent.monika_breakup > 2:
         init 5 python:
-        hideEventLabel("monika_breakup",lock=True,depool=True)
+            hideEventLabel("monika_breakup",lock=True,depool=True)
     return
