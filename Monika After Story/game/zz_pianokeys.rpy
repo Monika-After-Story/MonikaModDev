@@ -32,6 +32,9 @@ label zz_play_piano:
     stop music
     show text quit_label zorder 10 at piano_quit_label
 
+    # load saved data
+    $ pnmlLoadtuples()
+
     # call the display
     $ ui.add(PianoDisplayable())
     $ passes,fails,misses,verse,full_combo = ui.interact()
@@ -72,6 +75,9 @@ label zz_play_piano:
         # you played two verse
 #    elif verse == 3:
         # you played all 3 verses
+
+    # save data calls
+    $ pnmlSaveTuples()
 
     return
 
@@ -972,9 +978,6 @@ init 1001 python:
         persistent.pnml_data = [
             zzpianokeys.pnml_db[k]._saveTuple() for k in zzpianokeys.pnml_db
         ]
-
-    # okay now pre displayble work
-    pnmlLoadTuples()
 
     # the displayable
     class PianoDisplayable(renpy.Displayable):

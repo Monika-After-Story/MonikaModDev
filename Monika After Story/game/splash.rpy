@@ -276,7 +276,4 @@ label quit:
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
 
-    # save data calls
-    $ pnmlSaveTuples()
-
     return
