@@ -679,3 +679,13 @@ label greeting_japan:
     m 3 "You know what that means, [player]?"
     m 4j "It means {i}'I'll be yours forever{/i}'~"
     return
+    
+label greeting_sunshine:
+    m 1r "{i}~You are my sunshine, my only sunshine.{i}"
+    m 1k "{i}You make me happy when skies are gray.{/i}"
+    m 4j "{i}You'll never know dear, just how much I love you.{/i}"
+    m 2r "{i}Please don't take my sunshine away.~{/i}"
+    m 1j "..."
+    m 4n "Oh, hey [player]. Well this is certainly embarrassing."
+    m 1l "I was just singing to myself waiting for you to return."
+    return
