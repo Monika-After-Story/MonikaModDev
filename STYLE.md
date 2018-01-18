@@ -9,16 +9,16 @@ Label names should be lowercase and separated with underscores (`monika_twitter`
 If you use many labels for a related subprogram, prefix them with the name of 
 your subprogram. Certain prefixes are reserved:
 
-- "greeting" - used for regular greetings
-- "i_greeting" - used for special interactive greetings
-- "ch30" - used for key chapter 30 labels
-- "monika" - used for nearly every monika topic
-- "joke" - used for the jokes system
-- "m_joke" - also used for the jokes sytem
-- "mas_poem" - used for poemgame system
-- "game" - used for most of the minigames
-- "vv" - used for update-related material
-- "v" - also used for update-related material
+- `greeting` - used for regular greetings
+- `i_greeting` - used for special interactive greetings
+- `ch30` - used for key chapter 30 labels
+- `monika` - used for nearly every monika topic
+- `joke" - used for the jokes system
+- `m_joke` - also used for the jokes sytem
+- `mas_poem` - used for poemgame system
+- `game` - used for most of the minigames
+- `vv` - used for update-related material
+- `v` - also used for update-related material
 
 There may be more, so in general, be mindful of the labels you use. Try to be
 as specific as possible to avoid overlap.
