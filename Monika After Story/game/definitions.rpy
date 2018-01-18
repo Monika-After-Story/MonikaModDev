@@ -154,7 +154,7 @@ python early:
                 if len(stored_data_row) < len(data_row):
                     # splice and dice
                     data_row = list(data_row)
-                    data_row[0:len(stored_data_row)] = list(sored_data_row)
+                    data_row[0:len(stored_data_row)] = list(stored_data_row)
                     self.per_eventdb[self.eventlabel] = data_row
 
             # new items are added appropriately
