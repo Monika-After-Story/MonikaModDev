@@ -156,7 +156,7 @@ label chara_monika_scare:
 
 #These are the comments made when you restart the game the first few times
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_0:
     pause 1
@@ -173,7 +173,7 @@ label ch30_reload_0:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_1:
     pause 1
@@ -187,7 +187,7 @@ label ch30_reload_1:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_2:
     pause 1
@@ -201,7 +201,7 @@ label ch30_reload_2:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_3:
     pause 1

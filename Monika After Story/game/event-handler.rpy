@@ -25,6 +25,9 @@ transform prompt_monika:
 # special store to contain scrollable menu constants
 init -1 python in evhand:
 
+    # this is the event database
+    event_database = dict()
+
     # special namedtuple type we are using
     from collections import namedtuple
 
@@ -98,8 +101,9 @@ init -1 python in evhand:
         return [(db[x].prompt, x) for x in key_list]
 
 init python:
+    import store.evhand as evhand
 
-    def addEvent(event, eventdb=persistent.event_database):
+    def addEvent(event, eventdb=evhand.event_database):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
@@ -108,7 +112,7 @@ init python:
         # IN:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
-        #       (Default: persistent.event_database)
+        #       (Default: evhand.event_database)
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
@@ -230,10 +234,10 @@ label call_next_event:
 
         #if this is a random topic, make sure it's unlocked for prompts
         if event_label in monika_random_topics:
-            if not persistent.event_database[event_label].unlocked:
+            if not evhand.event_database[event_label].unlocked:
                 python:
-                    persistent.event_database[event_label].unlocked=True
-                    persistent.event_database[event_label].unlock_date=datetime.datetime.now()
+                    evhand.event_database[event_label].unlocked=True
+                    evhand.event_database[event_label].unlock_date=datetime.datetime.now()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
@@ -250,12 +254,12 @@ label call_next_event:
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        pool_event_keys = Event.filterEvents(persistent.event_database,unlocked=False,pool=True).keys()
+        pool_event_keys = Event.filterEvents(evhand.event_database,unlocked=False,pool=True).keys()
 
         if len(pool_event_keys)>0:
             unlock_event = renpy.random.choice(pool_event_keys)
-            persistent.event_database[unlock_event].unlocked = True
-            persistent.event_database[unlock_event].unlock_date = datetime.datetime.now()
+            evhand.event_database[unlock_event].unlocked = True
+            evhand.event_database[unlock_event].unlock_date = datetime.datetime.now()
 
     return
 
@@ -267,7 +271,7 @@ label prompt_menu:
     $allow_dialogue = False
 
     python:
-        unlocked_events = Event.filterEvents(persistent.event_database,unlocked=True)
+        unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
         sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
         unseen_events = []
@@ -275,7 +279,7 @@ label prompt_menu:
             if not seen_event(event):
                 unseen_events.append(event)
 
-        repeatable_events = Event.filterEvents(persistent.event_database,unlocked=True,pool=False)
+        repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
     #Top level menu
     show monika at t21
     #To make the menu line up right we have to build it up manually
@@ -308,7 +312,7 @@ label prompt_menu:
     jump ch30_loop
 
 label show_prompt_list(sorted_event_keys):
-    $ import store.evhand as evh
+    $ import store.evhand as evhand
 
     #Get list of unlocked prompts, sorted by unlock date
     python:
@@ -316,7 +320,7 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    call screen scrollable_menu(prompt_menu_items, evh.UNSE_AREA, evh.UNSE_XALIGN)
+    call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN)
 
     $pushEvent(_return)
 
@@ -329,13 +333,13 @@ label prompts_categories(pool=True):
     $ cat_lists = list()
 
     $ current_category = list()
-    $ import store.evhand as evh
+    $ import store.evhand as evhand
     $picked_event = False
     python:
         
         # get list of unlocked events for the master category list
         unlocked_events = Event.filterEvents(
-            persistent.event_database,
+            evhand.event_database,
 #            full_copy=True,
 #                category=[False,current_category],
             unlocked=True,
@@ -347,7 +351,7 @@ label prompts_categories(pool=True):
         no_cat_list = list() # contain events with no categories
         for key in unlocked_events:
             if unlocked_events[key].category:
-                evh.addIfNew(unlocked_events[key].category, main_cat_list)
+                evhand.addIfNew(unlocked_events[key].category, main_cat_list)
             else:
                 no_cat_list.append(unlocked_events[key])
 
@@ -361,14 +365,14 @@ label prompts_categories(pool=True):
         dis_cat_list = [(x.capitalize() + "...",x) for x in main_cat_list]
 
         # tupelize the event list
-#        no_cat_list = evh.tuplizeEventLabelList(no_cat_list, unlocked_events)
+#        no_cat_list = evhand.tuplizeEventLabelList(no_cat_list, unlocked_events)
         no_cat_list = [(x.prompt, x.eventlabel) for x in no_cat_list]
 
         # extend the display cat list with no category items
         dis_cat_list.extend(no_cat_list)
 
         # push that master list into the category_lists
-        cat_lists.append(evh._NT_CAT_PANE(dis_cat_list, main_cat_list))
+        cat_lists.append(evhand._NT_CAT_PANE(dis_cat_list, main_cat_list))
 
     while not picked_event:
         python:
@@ -386,7 +390,7 @@ label prompts_categories(pool=True):
 
                 # get list of unlocked events
                 unlocked_events = Event.filterEvents(
-                    persistent.event_database,
+                    evhand.event_database,
 #                    full_copy=True,
                     category=(False,current_category),
                     unlocked=True,
@@ -432,7 +436,7 @@ label prompts_categories(pool=True):
             subcategories = list(subcategories)
             for category in sorted(subcategories, key=lambda s: s.lower()):
                 #Don't list additional subcategories if adding them wouldn't change the same you are looking at
-                test_unlock = Event.filterEvents(persistent.event_database,full_copy=True,category=[False,current_category+[category]],unlocked=True)
+                test_unlock = Event.filterEvents(evhand.event_database,full_copy=True,category=[False,current_category+[category]],unlocked=True)
 
                 if len(test_unlock) != len(sorted_event_keys):
                     prompt_category_menu.append([category.capitalize() + "...",category])
@@ -444,7 +448,7 @@ label prompts_categories(pool=True):
                     prompt_category_menu.append([unlocked_events[event].prompt,event])
                 """
 
-        call screen twopane_scrollable_menu(prev_items, main_items, evh.LEFT_AREA, evh.LEFT_XALIGN, evh.RIGHT_AREA, evh.RIGHT_XALIGN, len(current_category)) nopredict
+        call screen twopane_scrollable_menu(prev_items, main_items, evhand.LEFT_AREA, evhand.LEFT_XALIGN, evhand.RIGHT_AREA, evhand.RIGHT_XALIGN, len(current_category)) nopredict
         
 
         if _return in prev_cats: 

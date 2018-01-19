@@ -93,7 +93,7 @@ label vv_updates_topics:
             "monika_pong": None,
             "monika_vulgarity": None
         }
-        # updates.topics[vv0_7_0] = changedIDs # TODO: uncomment when bready
+#        updates.topics[vv0_7_0] = changedIDs # TODO: uncomment when bready
 
         # (0.5.1 - 0.6.0) -> 0.6.1
         changedIDs = {
