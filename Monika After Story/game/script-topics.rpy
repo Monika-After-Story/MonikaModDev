@@ -4821,6 +4821,21 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+      init 5 python:                                                  #Added one new topic
+        # List of keywords for this topic.
+        for key in ['smoke', 'cigarettes', 'cigarette', 'smoking']:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append('monika_smoking')
+        monika_random_topics.append('monika_smoking') 
+    
+    label monika_smoking:
+        m 2b "You know, I learned that around five hundred thousand people die a year from smoking related illnesses."
+        m 1i "You don't smoke, do you [player]?"
+        m 1r "I'd hate to see you destroy yourself with such a filthy habit."
+        m 1k "Please promise that you'll quit for me if you do, okay?"
+        return
+
 
 ##################
 #Incomplete ideas#
