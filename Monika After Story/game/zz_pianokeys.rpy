@@ -14,30 +14,75 @@ transform piano_lyric_label:
     xalign 0.5 yalign 0.5
 
 # super xp for playing well
-define xp.ZZPK_FULLCOMBO = 75
-define xp.ZZPK_PRACTICE = 35
+define xp.ZZPK_FULLCOMBO = 40
+#define xp.ZZPK_WIN = 30
+define xp.ZZPK_PRACTICE = 15
 
 # label that calls this creen
 label zz_play_piano:
+
+    # initial setup
+    $ import store.zzpianokeys as zzpianokeys
+    $ quit_label = Text("Press 'Z' to quit", size=36) 
+    $ pnmlLoadTuples()
+
+label zz_play_piano_loopstart:
+    
+    # get song list
+    $ song_list = zzpianokeys.getSongChoices()
+    $ pnml = None
+    $ play_mode = PianoDisplayable.MODE_FREE
+
     m 1j "You want to play the piano?"
+
+    if len(song_list) > 1:
+        show monika 1a
+
+label zz_play_piano_songchoice:
+        menu:
+            m "Would you like to play a song or freestyle?"
+            "Play Song":
+                m "Which song would you like to play?"
+                $ pnml = renpy.display_menu(song_list)
+
+                # song selected
+                if pnml:
+
+                    # launch label ?
+                    if pnml.launch_label:
+                        call expression pnml.launch_label from _zzpk_ssll
+
+                    # regardless, set mode
+                    $ play_mode = PianoDisplayable.MODE_SONG
+
+                # nvermind selected
+                else:
+                    jump zz_play_piano_songchoice
+
+            "Freestyle":
+                jump zz_play_piano_mode_freestyle
+
+            "Nevermind":
+                jump zz_play_piano_loopend
+
+    # otherwise, we default to freestyle mode
+    else:
+label zz_play_piano_mode_freestyle:
     m 1a "Then play for me, [player]..."
+
     show monika 1a at t22
 
     # pre call setup
     python:
-        quit_label = Text("Press 'Z' to quit", size=36) 
         disable_esc()
         store.songs.enabled = False
         store.hkb_button.enabled = False
     stop music
     show text quit_label zorder 10 at piano_quit_label
 
-    # load saved data
-    $ pnmlLoadtuples()
-
     # call the display
-    $ ui.add(PianoDisplayable())
-    $ passes,fails,misses,verse,full_combo = ui.interact()
+    $ ui.add(PianoDisplayable(play_mode, pnml=pnml))
+    $ full_combo,is_win,is_practice,post_piano = ui.interact()
 
     # post call cleanup
     hide text quit_label
@@ -51,34 +96,63 @@ label zz_play_piano:
     # you are good player
     if full_combo:
         $ grant_xp(xp.ZZPK_FULLCOMBO)
-        m 1j "That was wonderful, [player]!"
-        m 1a "I didn't know you can play the piano so well."
-        m "Maybe we should play together sometime."
+
+    elif is_win:
+        $ grant_xp(xp.WIN_GAME)
 
     # passed at least once, but had some misses
     elif passes >= 0 and misses >= 0:
         $ grant_xp(xp.ZZPK_PRACTICE)
-        m 1a "That was nice, [player]!"
-        m 1j "But you could use a little practice."
 
-    # otherwise, we don't really know what you were playing, so we assume
-    # it was good
-    else:
-        m 1a "That was nice, [player]!"
+    # call the post label
+    call expression post_piano from _zzpk_ppel
 
-    # do we want to say anthing about the verses?
-#    if verse == 0:
-        # didnt even play a verse
-#    elif verse == 1:
-        # you played one verse
-#    elif verse == 2:
-        # you played two verse
-#    elif verse == 3:
-        # you played all 3 verses
+    if post_piano != "zz_piano_none":
+        show monika 1a
+        menu:
+            m "Would you like to play again?"
+            "Yes":
+                jump zz_play_piano_loopstart
+            "No":
+                pass
+
+label zz_play_piano_loopend:
 
     # save data calls
     $ pnmlSaveTuples()
 
+    return
+
+### labels for piano states ===================================================
+
+### default, post game
+label zz_piano_default:
+    m 1a "That was nice, [player]!"
+    return
+
+label zz_piano_none:
+    m 1l "[player],{w} I thought you wanted to play the piano."
+    m 1e "I'd really enjoy hearing you play."
+    m "Can you play for me next time?"
+    return
+
+### YOUR REALITY
+
+label zz_piano_yr_win:
+    m 1a "That was nice, [player]!"
+    m 1j "But you could use a little practice."
+    return
+
+label zz_piano_yr_fc:
+    m 1j "That was wonderful, [player]!"
+    m 1a "I didn't know you can play the piano so well."
+    m "Maybe we should play together sometime."
+    return
+
+label zz_piano_yr_fail:
+    m 1m "..."
+    m 1e "That's okay, [player]."
+    m "At least you tried your best."
     return
 
 #### HOW TO FULL COMBO:
@@ -222,7 +296,6 @@ init -3 python in zzpianokeys:
     ]
 
 
-
     # Exception class for piano failures
     class PianoException(Exception):
         def __init__(self, msg):
@@ -267,7 +340,7 @@ init -3 python in zzpianokeys:
     #   redraw_time - number of seconds we should plan redraw. This should
     #       be lower than the next pnm's vis_timeout
     #
-    class PianoNoteMatch():
+    class PianoNoteMatch(object):
         def __init__(self, 
                 say, 
                 notes=None, 
@@ -400,7 +473,7 @@ init -3 python in zzpianokeys:
             return -1
 
 
-    class PianoNoteMatchList():
+    class PianoNoteMatchList(object):
         """
         This a wrapper for a list of note matches. WE do this so we can
         easily group note matches with other information. 
@@ -414,23 +487,57 @@ init -3 python in zzpianokeys:
             wins - number of times the song has been completed
             losses - number of the times the song has been attempted but not
                 completed
+            win_label - labelt o call to if we played the song well
+            fc_label - label to call to if we full comboed
+            fail_label - label to call to if we failed the song
+            launch_label - label to call to prepare song launch
         """
         
-        def __init__(self, pnm_list=list(), verse_list=list(), name=""):
+        def __init__(self, 
+                pnm_list, 
+                verse_list, 
+                name,
+                win_label,
+                fc_label,
+                fail_label
+                ):
             """
             Creates a PianoNoteMatchList
 
             IN:
                 pnm_list - list of piano note matches
-                    (Default: empty list)
                 verse_list - list of verse indexes (must be in order)
-                    (Defualt: empty list)
                 name - song name (displayed to user in song selection mode)
-                    (Default: empty string)
+                win_label - label to call to if we played the song well
+                fc_label - label to call to if we full comboed the song
+                fail_label - label to call to if we failed the song
+                launch_label - label to call to prepare this song for play
+                    (Default: None)
             """
+            if not renpy.has_label(win_label):
+                raise PianoException(
+                    "label '" + win_label + "' does not exist"
+                )
+            if not renpy.has_label(fc_label):
+                raise PianoException(
+                    "label '" + fc_label + "' does not exist"
+                )
+            if not renpy.has_label(fail_label):
+                raise PianoException(
+                    "label '" + fail_label + "' does not exist"
+                )
+            if launch_label and not renpy.has_label(launch_label):
+                raise PianoException(
+                    "label '" + launch_label + "' does not exist"
+                )
+
             self.pnm_list = pnm_list
             self.verse_list = verse_list
             self.name = name
+            self.win_label = win_label
+            self.fc_label = fc_label
+            self.fail_label = fail_label
+            self.launch_label = launch_label
             self.full_combos = 0
             self.wins = 0
             self.losses = 0
@@ -461,8 +568,6 @@ init -3 python in zzpianokeys:
                     See _loadTuple
             """
             return (self.name, self.full_combos, self.wins, self.losses)
-
-
 
 # this containst the actual songs
 # we need it to be high init level so we have images
@@ -935,7 +1040,11 @@ init 1000 python in zzpianokeys:
             pnm_yr_v3l8
         ],
         [0, 8, 15, 23],
-        "Your Reality"
+        "Your Reality",
+        "zz_piano_yr_win",
+        "zz_piano_yr_fc",
+        "zz_piano_yr_fail",
+        "zz_piano_yr_launch"
     )
 
 
@@ -946,6 +1055,27 @@ init 1000 python in zzpianokeys:
     pnml_db = dict()
     pnml_db[pnml_yourreality.name] = pnml_yourreality
 
+    def getSongChoices():
+        """
+        Creates a list of tuples appropriate to display as a piano song
+        selection menu.
+
+        RETURNS:
+            list of tuples for song selection. The returned list will for sure
+            have at least one item (the nevermind)
+
+        ASSUMES:
+            pnml_db
+        """
+        song_list = list()
+
+        for k in pnml_db:
+            pnml = pnml_db.get(k)
+            if pnml.wins > 0:
+                song_list.append((pnml.name, pnml))
+
+        song_list.append(("Nevermind", None))
+        return song_list
 
 # make this later than zzpianokeys
 init 1001 python:
@@ -1069,6 +1199,10 @@ init 1001 python:
         # so we should only do this if we want to reset.
         # Rendering cleanup is done here
         STATE_CLEAN = 10 # reset things
+
+        # DONE state. This state is entered when we are done with the song
+        # and we should quit.
+        STATE_DONE = 11 
 
         # key limit for matching
         KEY_LIMIT = 100
@@ -1307,6 +1441,9 @@ init 1001 python:
             # current note match list
             self.pnml = pnml
 
+            # did player hit a note
+            self.note_hit = False
+
             # DEBUG: NOTE:
 #            self.testing = open("piano", "w+")
 
@@ -1370,6 +1507,77 @@ init 1001 python:
 #                self.versedex = new_pnm.verse
 
             return new_pnm
+
+        def quitflow(self):
+            """
+            Quits the game and does the appropriate processing.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: true if full_combo, False if not
+                    [1]: true if won, false if not
+                    [2]: true if both passes and misses are greater than 0
+                        (which is like practicing)
+                    [3]: label to call next (like post game dialogue)
+            """
+            # final moments
+            self.state = self.STATE_CLEAN
+            renpy.redraw(self, 0)
+
+            # process this game
+            passes = 0
+            fails = 0
+            misses = 0
+            full_combo = False
+            is_win = False
+            end_label = None
+            completed_pnms = 0
+
+            if not self.note_hit:
+                end_label = "zz_piano_none"
+
+            elif self.pnml:
+                full_combo = True
+
+                # grab all this data
+                for pnm  in self.pnml.pnml_list:
+                    passes += pnm.passes
+                    fails += pnm.fails
+                    misses += pnm.misses
+                    
+                    if pnm.passes > 0:
+                        completed_pnms += 1
+
+                    if pnm.misses > 0 or pnm.fails > 0 or pnm.passes == 0:
+                        full_combo = False
+
+                if full_combo
+                    end_label = self.pnml.fc_label
+                    self.pnml.full_combos += 1
+                    self.pnml.wins += 1
+                    is_win = True
+
+                elif (completed_pnms != len(self.pnml.pnml_list) 
+                        and fails > passes
+                    ):
+                    end_label = self.pnml.fail_label
+                    self.pnml.losses += 1
+                    
+                else:
+                    end_label = self.pnml.win_label
+                    self.pnml.wins += 1
+                    is_win = True
+
+            else:
+                end_label = "zz_piano_default"
+
+            # finally return the tuple
+            return (
+                full_combo,
+                is_win,
+                passes >= 0 && misses >= 0,
+                end_label
+            )
 
         def setsongmode(self, songmode=True, ev_tout=None, vis_tout=None):
             #
@@ -1471,6 +1679,7 @@ init 1001 python:
                 self.lyric = None
 
                 restart_int = True
+
                 self.state = self.STATE_LISTEN
                 self.setsongmode(False)
 
@@ -1621,10 +1830,12 @@ init 1001 python:
 
                     if self.state != self.STATE_LISTEN:
                         if self.pnml:
+                            self.match.fails += 1
                             self.pnm_index = self.pnml.verse_list[
                                 self.versedex
                             ]
                         self.state = self.STATE_CLEAN
+
                         renpy.redraw(self, 0)
 
 #   DEBUG: NOTE:
@@ -1640,45 +1851,14 @@ init 1001 python:
 
                 # but first, check for quit ("Z")
                 if ev.key == self.ZZPK_QUIT:
-            
-                    # process this game
-                    passes = 0
-                    fails = 0
-                    misses = 0
-                    latest_dex = 0
-                    full_combo = True
-
-                    # grab all this data
-                    for index in range(0, len(self.pnm_yourreality)):
-                        pnm = self.pnm_yourreality[index]
-                        passes += pnm.passes
-                        fails += pnm.fails
-                        misses += pnm.misses
-                        
-                        if pnm.passes > 0:
-                            latest_dex = index
-                            
-                        elif (
-                                pnm.misses > 0
-                                or pnm.fails > 0
-                                or pnm.passes == 0
-                            ):
-                            full_combo = False
-
-                    if latest_dex < self.VER_TWO:
-                        verse = 1
-                    elif latest_dex < self.VER_THR:
-                        verse = 2
-                    elif latest_dex < self.VER_END:
-                        verse = 3
-                    else:
-                        verse = 0
-                    
-                    return (passes,fails,misses,verse,full_combo)
+                    return self.quitflow()
                 else:
 
                     # only play a sound if we've lifted the finger
                     if not self.pressed.get(ev.key, True):
+
+                        # note has been hit
+                        self.note_hit = True
 
                         # add to played
                         self.played.append(ev.key)
@@ -1709,37 +1889,67 @@ init 1001 python:
                                 if self.match:
                                     self.state = self.STATE_JMATCH
 
-
                         # post match checking
                         elif self.state == self.STATE_POST:
                             # post match means we abort on the first miss
                             findex = self.match.isPostMatch(ev.key)
 
-                            # abort post
-                            if findex == -1:
-                                self.state = self.STATE_CLEAN
-                                self.played = [ev.key]
+                            # finish post, but check for a next match
+                            if findex == -1
+                                 
+                                next_pnm = self.getnotematch()
 
-                            # successful post
-                            elif self.match.matchdex == len(self.match.postnotes):
-                                
+                                # check next set of notes
+                                if next_pnm:
+                                        
+                                    self.played = [ev.key]
+
+                                    if next_pnm.isNoteMatch(ev.key, 0) >= 0:
+                                        # match found
+                                        self.match = next_pnm
+                                        self.state = self.STATE_WPOST
+                                        self.setsongmode(
+                                            ev_tout=next_pnm.ev_timeout,
+                                            vis_tout=next_pnm.vis_timeout
+                                        )
+                                    
+                                    else:
+                                        # not a match
+                                        self.state = self.STATE_CLEAN
+                                        self.pnm_index = self.match.verse
+                                        self.match = self.pnml.pnml_list[
+                                            self.match.verse
+                                        ]
+                                        self.match.matchdex = 0
+
+                                # completed this song
+                                else:
+                                    return self.quitflow()
+
+                            # finished post complete
+                            elif (
+                                    self.match.matchdex == len(
+                                        self.match.postnotes
+                                    )
+                                ):
+
                                 next_pnm = self.getnotematch()
 
                                 # check next set of notes
                                 if next_pnm:
 
+                                    self.played = list()
                                     self.match = next_pnm
                                     self.state = self.STATE_WPOST
-                                    self.played = list()
                                     self.setsongmode(
                                         ev_tout=next_pnm.ev_timeout,
                                         vis_tout=next_pnm.vis_timeout
                                     )
 
-                                # abourt please
+                                # no next set of notes, you've played this
+                                # song completel
                                 else:
-                                    
-                                    self.state = self.STATE_CLEAN
+                                    return self.quitflow()
 
                         # waiting post
                         elif (
@@ -1822,8 +2032,9 @@ init 1001 python:
                                             self.match.matchdex = 0
                                             self.played = list()
 
+                                        # no more matches, we are done
                                         else:
-                                            self.state = self.STATE_CLEAN
+                                            return self.quitflow()
 
                                 else:
                                     self.state = self.STATE_MATCH
