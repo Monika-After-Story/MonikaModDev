@@ -4696,10 +4696,13 @@ label monika_breakup:
             "Of course not.":
                 m 2k "That's what I thought, just making sure!"
                 m 2k "Yeah, I know you would never do that to me."
-                m "I love you! Ehehe~"
-        
+                m "I love you! Hehe~"
+    
+    #Increments the persistent every time you click the button in the menu.
     $ persistent.monika_breakup += 1
+    
+    #If the label was clicked 3 times, remove it.
     if persistent.monika_breakup > 2:
-        init 5 python:
-            hideEventLabel("monika_breakup",lock=True,depool=True)
+        $ hideEventLabel("monika_breakup",lock=True,depool=True)
     return
+
