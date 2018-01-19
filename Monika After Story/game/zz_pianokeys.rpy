@@ -35,18 +35,20 @@ label zz_play_piano_loopstart:
 
     m 1j "You want to play the piano?"
 
+label zz_play_piano_songchoice:
+
     if len(song_list) > 1:
         show monika 1a
 
-label zz_play_piano_songchoice:
         menu:
             m "Would you like to play a song or freestyle?"
             "Play Song":
                 m "Which song would you like to play?"
                 $ pnml = renpy.display_menu(song_list)
+                m 1j "I'm excited to hear you play, [player]!"
 
                 # song selected
-                if pnml:
+                if pnml != "None":
 
                     # launch label ?
                     if pnml.launch_label:
@@ -55,20 +57,22 @@ label zz_play_piano_songchoice:
                     # regardless, set mode
                     $ play_mode = PianoDisplayable.MODE_SONG
 
+                    jump zz_play_piano_setupstart
+
                 # nvermind selected
                 else:
                     jump zz_play_piano_songchoice
 
             "Freestyle":
-                jump zz_play_piano_mode_freestyle
+                pass
 
             "Nevermind":
                 jump zz_play_piano_loopend
 
     # otherwise, we default to freestyle mode
-    else:
-label zz_play_piano_mode_freestyle:
     m 1a "Then play for me, [player]..."
+
+label zz_play_piano_setupstart:
 
     show monika 1a at t22
 
@@ -90,6 +94,7 @@ label zz_play_piano_mode_freestyle:
     $ store.hkb_button.enabled = True
     $ enable_esc()
     $ play_song(store.songs.selected_track)
+    $ pnmlSaveTuples()
 
     show monika 1j at t11
 
@@ -101,7 +106,7 @@ label zz_play_piano_mode_freestyle:
         $ grant_xp(xp.WIN_GAME)
 
     # passed at least once, but had some misses
-    elif passes >= 0 and misses >= 0:
+    elif is_practice:
         $ grant_xp(xp.ZZPK_PRACTICE)
 
     # call the post label
@@ -117,10 +122,6 @@ label zz_play_piano_mode_freestyle:
                 pass
 
 label zz_play_piano_loopend:
-
-    # save data calls
-    $ pnmlSaveTuples()
-
     return
 
 ### labels for piano states ===================================================
@@ -154,6 +155,9 @@ label zz_piano_yr_fail:
     m 1e "That's okay, [player]."
     m "At least you tried your best."
     return
+
+#abel zz_piano_yr_launch:
+#   m
 
 #### HOW TO FULL COMBO:
 # (Everday, I can imagine a future...)
@@ -304,6 +308,8 @@ init -3 python in zzpianokeys:
             return "PianoException: " + self.msg
 
 
+    # TODO add reset function here and make sure it is called in the constructor
+    # for PianoDisplayable
     # this class matches particular sets of notes to some dialogue that 
     # Monika can say.
     # NOTE: only one line of dialogue per set of notes, because brevity is
@@ -388,7 +394,7 @@ init -3 python in zzpianokeys:
                 raise PianoException("Verse must be positive number")
             if copynotes is not None and copynotes < 0:
                 raise PianoException("copyntoes must be positive number")
-            if type(say) is not Text:
+            if type(say) is not renpy.text.text.Text:
                 raise PianoException("say must be of type Text")
             if not renpy.image_exists("monika " + express):
                 raise PianoException("Given expression does not exist")
@@ -499,7 +505,8 @@ init -3 python in zzpianokeys:
                 name,
                 win_label,
                 fc_label,
-                fail_label
+                fail_label,
+                launch_label=None
                 ):
             """
             Creates a PianoNoteMatchList
@@ -581,7 +588,7 @@ init 1000 python in zzpianokeys:
 
     # your reality, piano note setup
     pnm_yr_v1l1 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "Everyday, I imagine a future where I can be with you",
             style="monika_credits_text"
         ),
@@ -624,7 +631,7 @@ init 1000 python in zzpianokeys:
         verse=0
     )
     pnm_yr_v1l2 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             ("In my hands, is a pen that will write a poem of me" +
             " and you"),
             style="monika_credits_text"
@@ -653,7 +660,7 @@ init 1000 python in zzpianokeys:
         verse=0,
     )
     pnm_yr_v1l3 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "The ink flows down into a dark puddle",
             style="monika_credits_text"
         ),
@@ -674,7 +681,7 @@ init 1000 python in zzpianokeys:
         verse=0
     )
     pnm_yr_v1l4 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "Just move your hand, write the way into his heart",
             style="monika_credits_text"
         ),
@@ -696,7 +703,7 @@ init 1000 python in zzpianokeys:
         verse=0
     )
     pnm_yr_v1l5 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "But in this world of infinite choices",
             style="monika_credits_text"
         ),
@@ -706,7 +713,7 @@ init 1000 python in zzpianokeys:
         verse=0
     )
     pnm_yr_v1l6 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "What will it take just to find that special day?",
             style="monika_credits_text"
         ),
@@ -716,7 +723,7 @@ init 1000 python in zzpianokeys:
         verse=0
     )
     pnm_yr_v1l7 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "What will it take just to find",
             style="monika_credits_text"
         ),
@@ -736,7 +743,7 @@ init 1000 python in zzpianokeys:
         redraw_time=3.0
     )
     pnm_yr_v1l8 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "that special day",
             style="monika_credits_text"
         ),
@@ -757,7 +764,7 @@ init 1000 python in zzpianokeys:
 
     # verse 2
     pnm_yr_v2l1 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "Have I found everybody a fun assignment to do today?",
             style="monika_credits_text"
         ),
@@ -771,7 +778,7 @@ init 1000 python in zzpianokeys:
         vis_timeout=15.0
     )
     pnm_yr_v2l2 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             ("When you're here, everything that we do is fun for them"+
             " anyway"),
             style="monika_credits_text"
@@ -784,7 +791,7 @@ init 1000 python in zzpianokeys:
         copynotes=1
     )
     pnm_yr_v2l3 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "When I can't even read my own feelings",
             style="monika_credits_text"
         ),
@@ -795,7 +802,7 @@ init 1000 python in zzpianokeys:
         copynotes=2
     )
     pnm_yr_v2l4 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "What good are words",
             style="monika_credits_text"
         ),
@@ -812,7 +819,7 @@ init 1000 python in zzpianokeys:
         redraw_time=2.0
     )
     pnm_yr_v2l5 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "when a smile says it all?",
             style="monika_credits_text"
         ),
@@ -832,7 +839,7 @@ init 1000 python in zzpianokeys:
         redraw_time=3.0
     )
     pnm_yr_v2l6 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "And if this world won't write me an ending",
             style="monika_credits_text"
         ),
@@ -843,7 +850,7 @@ init 1000 python in zzpianokeys:
         copynotes=4
     )
     pnm_yr_v2l7 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "What will it take just for me to have it all?",
             style="monika_credits_text"
         ),
@@ -857,7 +864,7 @@ init 1000 python in zzpianokeys:
 
     # verse 3
     pnm_yr_v3l1 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             ("Does my pen only write bitter words for those who are "+
             "dear to me?"),
             style="monika_credits_text"
@@ -888,7 +895,7 @@ init 1000 python in zzpianokeys:
         vis_timeout=25.0
     )
     pnm_yr_v3l2 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             ("Is it love if I take you, or is it love if I set you " +
             "free?"),
             style="monika_credits_text"
@@ -912,7 +919,7 @@ init 1000 python in zzpianokeys:
         vis_timeout=10.0
     )
     pnm_yr_v3l4 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "How can I write love into reality?",
             style="monika_credits_text"
         ),
@@ -923,7 +930,7 @@ init 1000 python in zzpianokeys:
         copynotes=3
     )
     pnm_yr_v3l5 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "If I can't hear the sound of your heartbeat",
             style="monika_credits_text"
         ),
@@ -934,7 +941,7 @@ init 1000 python in zzpianokeys:
         copynotes=4
     )
     pnm_yr_v3l6 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "What do you call love in your reality?",
             style="monika_credits_text"
         ),
@@ -945,7 +952,7 @@ init 1000 python in zzpianokeys:
         copynotes=5
     )
     pnm_yr_v3l7 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "And in your reality, if I don't know how to love you",
             style="monika_credits_text"
         ),
@@ -979,7 +986,7 @@ init 1000 python in zzpianokeys:
         verse=15
     )
     pnm_yr_v3l8 = PianoNoteMatch(
-        Text(
+        renpy.text.text.Text(
             "I'll leave you be",
             style="monika_credits_text"
         ),
@@ -1043,8 +1050,8 @@ init 1000 python in zzpianokeys:
         "Your Reality",
         "zz_piano_yr_win",
         "zz_piano_yr_fc",
-        "zz_piano_yr_fail",
-        "zz_piano_yr_launch"
+        "zz_piano_yr_fail"
+#        "zz_piano_yr_launch"
     )
 
 
@@ -1074,7 +1081,7 @@ init 1000 python in zzpianokeys:
             if pnml.wins > 0:
                 song_list.append((pnml.name, pnml))
 
-        song_list.append(("Nevermind", None))
+        song_list.append(("Nevermind", "None"))
         return song_list
 
 # make this later than zzpianokeys
@@ -1397,9 +1404,12 @@ init 1001 python:
 
             # list containing lists of matches. 
             # NOTE: highly recommend not adding too many detections
-            self.pnm_list = [
-                zzpianokeys.pnml_yourreality
-            ]
+            self.pnml_list = []
+            if self.mode == self.MODE_FREE:
+                self.pnml_list = [
+                    zzpianokeys.pnml_db[k] for k in zzpianokeys.pnml_db
+                    if zzpianokeys.pnml_db[k].wins == 0
+                ]
 
             # list of notes we have played
             self.played = list()
@@ -1441,6 +1451,10 @@ init 1001 python:
             # current note match list
             self.pnml = pnml
 
+            if self.mode == self.MODE_SONG:
+                self.match = self.pnml.pnm_list[0]
+                self.setsongmode(True)
+
             # did player hit a note
             self.note_hit = False
 
@@ -1466,8 +1480,8 @@ init 1001 python:
             notestr = "".join([chr(x) for x in notes])
 
             # go through the pnm_list
-            for pnml in pnm_list:
-                pnm = pnml[0]
+            for pnml in self.pnml_list:
+                pnm = pnml.pnm_list[0]
 
                 # use string finding to match stuff
                 findex = pnm.notestr.find(notestr)
@@ -1540,7 +1554,7 @@ init 1001 python:
                 full_combo = True
 
                 # grab all this data
-                for pnm  in self.pnml.pnml_list:
+                for pnm  in self.pnml.pnm_list:
                     passes += pnm.passes
                     fails += pnm.fails
                     misses += pnm.misses
@@ -1551,13 +1565,13 @@ init 1001 python:
                     if pnm.misses > 0 or pnm.fails > 0 or pnm.passes == 0:
                         full_combo = False
 
-                if full_combo
+                if full_combo:
                     end_label = self.pnml.fc_label
                     self.pnml.full_combos += 1
                     self.pnml.wins += 1
                     is_win = True
 
-                elif (completed_pnms != len(self.pnml.pnml_list) 
+                elif (completed_pnms != len(self.pnml.pnm_list) 
                         and fails > passes
                     ):
                     end_label = self.pnml.fail_label
@@ -1575,7 +1589,7 @@ init 1001 python:
             return (
                 full_combo,
                 is_win,
-                passes >= 0 && misses >= 0,
+                passes >= 0 and misses >= 0,
                 end_label
             )
 
@@ -1828,6 +1842,9 @@ init 1001 python:
 #                    self.testing.write("".join([chr(x) for x in self.played])+ "\n")
                     self.played = list()
 
+                    # TODO: we need to check if we are in song mode, then
+                    # appropriately quit the game if no more song matches
+
                     if self.state != self.STATE_LISTEN:
                         if self.pnml:
                             self.match.fails += 1
@@ -1850,7 +1867,7 @@ init 1001 python:
                 self.prev_time = st
 
                 # but first, check for quit ("Z")
-                if ev.key == self.ZZPK_QUIT:
+                if ev.key == zzpianokeys.QUIT:
                     return self.quitflow()
                 else:
 
@@ -1895,7 +1912,7 @@ init 1001 python:
                             findex = self.match.isPostMatch(ev.key)
 
                             # finish post, but check for a next match
-                            if findex == -1
+                            if findex == -1:
                                  
                                 next_pnm = self.getnotematch()
 
@@ -1917,13 +1934,17 @@ init 1001 python:
                                         # not a match
                                         self.state = self.STATE_CLEAN
                                         self.pnm_index = self.match.verse
-                                        self.match = self.pnml.pnml_list[
+                                        self.match = self.pnml.pnm_list[
                                             self.match.verse
                                         ]
                                         self.match.matchdex = 0
 
                                 # completed this song
                                 else:
+                                    renpy.play(
+                                        self.pkeys[ev.key], 
+                                        channel="audio"
+                                    )
                                     return self.quitflow()
 
                             # finished post complete
@@ -1949,6 +1970,10 @@ init 1001 python:
                                 # no next set of notes, you've played this
                                 # song completel
                                 else:
+                                    renpy.play(
+                                        self.pkeys[ev.key], 
+                                        channel="audio"
+                                    )
                                     return self.quitflow()
 
                         # waiting post
@@ -2034,6 +2059,11 @@ init 1001 python:
 
                                         # no more matches, we are done
                                         else:
+
+                                            renpy.play(
+                                                self.pkeys[ev.key], 
+                                                channel="audio"
+                                            )
                                             return self.quitflow()
 
                                 else:
