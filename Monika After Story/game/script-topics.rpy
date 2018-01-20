@@ -3266,11 +3266,16 @@ label monika_japanese:
                     m 3b "That's wonderful!"
                     m 1a "Maybe you can teach me how to speak at least a sentence or two, [player]~"
                 "No.":
-                    m 1e "Oh I see. That's alright!"
-                    m 4b "If you want to learn Japanese, here's a phrase I can teach you."
-                    m 4k "{i}Aishiteru yo, [player]-kun{/i}."
-                    m 1j "Ehehe~"
-                    m 1e "That means I love you, [player]-kun."
+                     m 1e "Oh I see. That's alright!"
+                     m 4b "If you want to learn Japanese, here's a phrase I can teach you."
+                     if persistent.gender == "F":
+                         m 4k "{i}Aishiteru yo, [player]-chan{/i}."
+                         m 1j "Ehehe~"
+                         m 1e "That means I love you, [player]-chan."
+                     else:
+                         m 4k "{i}Aishiteru yo, [player]-kun{/i}."
+                         m 1j "Ehehe~"
+                         m 1e "That means I love you, [player]-kun."
         "No":
             m 3l "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
