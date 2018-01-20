@@ -1049,21 +1049,21 @@ init 1000 python in zzpianokeys:
     # your reality, pnml
     pnml_yourreality = PianoNoteMatchList(
         [
-#            pnm_yr_v1l1,
-#            pnm_yr_v1l2,
-#            pnm_yr_v1l3,
-#            pnm_yr_v1l4,
-#            pnm_yr_v1l5,
-#            pnm_yr_v1l6,
-#            pnm_yr_v1l7,
-#            pnm_yr_v1l8,
-#            pnm_yr_v2l1,
-#            pnm_yr_v2l2,
-#            pnm_yr_v2l3,
-#            pnm_yr_v2l4,
-#            pnm_yr_v2l5,
-#            pnm_yr_v2l6,
-#            pnm_yr_v2l7,
+            pnm_yr_v1l1,
+            pnm_yr_v1l2,
+            pnm_yr_v1l3,
+            pnm_yr_v1l4,
+            pnm_yr_v1l5,
+            pnm_yr_v1l6,
+            pnm_yr_v1l7,
+            pnm_yr_v1l8,
+            pnm_yr_v2l1,
+            pnm_yr_v2l2,
+            pnm_yr_v2l3,
+            pnm_yr_v2l4,
+            pnm_yr_v2l5,
+            pnm_yr_v2l6,
+            pnm_yr_v2l7,
             pnm_yr_v3l1,
             pnm_yr_v3l2,
             pnm_yr_v3l3,
@@ -1078,7 +1078,7 @@ init 1000 python in zzpianokeys:
         "zz_piano_yr_win",
         "zz_piano_yr_fc",
         "zz_piano_yr_fail",
-        2.0,
+        5.0,
 #        "zz_piano_yr_launch"
     )
 
@@ -1180,21 +1180,25 @@ init 1001 python:
 
         # Just MATCH state. Here, we just matched a phrase/note and want to 
         # render the appropriate expression and text.
+        # NOTE: CALLS REDRAW
         STATE_JMATCH = 1
 
         # currently MATCHing state. Here, we are matching a phrase, and only
         # care if we miss something. No rendering adjustment is done in this
         # state
+        # NOTE: CALLS REDRAW
         STATE_MATCH = 2
 
         # MISS state. Here, the user misses a note once. That is okay, but
         # we need to change monika's expression accoridngly.
+        # NOTE: CALLS REDRAW
         STATE_MISS = 3
 
         # FAIL state. Here, the user fails a phrase. In this case, we need
         # to abort matching and head to the CLEAN state, which will fix up
         # Monika's expressions. We also render an expression for Monika
         # NOTE: failure means 2 misses in a row
+        # NOTE: CALLS REDRAW
         STATE_FAIL = 4
 
         # Just POST state. Here, the user just finished a phrase and is now
@@ -1202,11 +1206,13 @@ init 1001 python:
         # for passing the phrase, but playing them allows smooth transition to
         # the next note phrase.
         # Rendering of the post expression is done here
+        # NOTE: CALLS REDRAW
         STATE_JPOST = 5
 
         # POST state. Here, the user is currently playing the POST note phrase
         # We are matching the POST phrase.
         # No rendering is done here
+        # NOTE: CALLS REDRAW
         STATE_POST = 6 
 
         # Visual POST state. This is similiar to the JPOST state, except we
@@ -1214,12 +1220,14 @@ init 1001 python:
         # and JPOST is that VPOST leads into the WPOST state, while JPOST leads
         # into the POST state.
         # Post expression rendering is done here
+        # NOTE: CALLS REDRAW
         STATE_VPOST = 7 
 
         # Clean POST state. This is a special cleanup state that only does 
         # visual cleanup instead of total cleanup. Meant to be used with a
         # WPOST that has a visual timeout.
         # Rendering cleanup is done here
+        # NOTE: CALLS REDRAW
         STATE_CPOST = 8
 
         # Wait POST state. This state is a transitional state between note
@@ -1227,6 +1235,7 @@ init 1001 python:
         # move to a JMATCH state. This state also calls a redraw using visual
         # redraw_time if available.
         # No Rendering is done here
+        # NOTE: CALLS REDRAW
         STATE_WPOST = 9
 
         # CLEAN state. This state resets the display back to Default state as
@@ -1237,6 +1246,7 @@ init 1001 python:
 
         # DONE state. This state is entered when we are done with the song
         # and we should wait for some time then quit.
+        # NOTE: CALLS REDRAW
         STATE_DONE = 11 
 
         # key limit for matching
@@ -1488,8 +1498,46 @@ init 1001 python:
             # did player hit a note
             self.note_hit = False
 
+            # integer to handle redraw calls.
+            # NOTE: when we want to redraw, we add to this value. Render 
+            # decrements the value by 1 whenever it runs.
+            # NOTE: Render cannot call redraws unless this value is 0.
+            # NOTE: similar to semaphores, but not entirely the same. 
+            # Semaphores are about locking the access of something to a certain
+            # number of threads (usually 1) by subracting/adding a value.
+            # here we use that concept to limit the amount of rescursive redraw
+            # calls
+            # NOTE: we actually dont need this becaues of how renpy handles
+            # its own custom events
+#            self.redraw_count = 0
+
             # DEBUG: NOTE:
 #            self.testing = open("piano", "w+")
+
+
+#        def customRedraw(self, timeout, from_render=False):
+#            """
+#            Custom redraw function that wraps around the actual redraw call.
+#            This version increments the redraw_count value appropraitelyl
+#            as well as call redraw itself.
+#            In addition, if we are calling fromt he render function, we check
+#            if redraw_count is 0 before calling redraw
+#
+#            IN:
+#                timeout - the amount of time to pass into the redraw call.
+#                from_render - True if this is called from the render function,
+#                    False otherwise
+#                    (Default: False)
+#            """
+#            self.testing.write(str(self.redraw_count) + "\n")
+#            if from_render:
+#                if self.redraw_count == 0:
+#                    self.redraw_count += 1
+#                    renpy.redraw(self, timeout)               
+#            else:
+#                self.redraw_count += 1
+#                renpy.redraw(self, timeout)
+
 
         def findnotematch(self, notes):
             #
@@ -1620,6 +1668,7 @@ init 1001 python:
                 end_label
             )
 
+
         def setsongmode(self, songmode=True, ev_tout=None, vis_tout=None):
             #
             # sets our timeout vars into song mode
@@ -1702,6 +1751,10 @@ init 1001 python:
             # True if we already called a redraw
             redrawn = False
 
+            # subtract a redraw count for every render
+#            if self.redraw_count > 0:
+#                self.redraw_count -= 1
+
             # check if we are currently matching something
             # NOTE: the following utilizies renpy.show, which means we need
             #   to use renpy.restart_interaction(). This also means that the
@@ -1755,6 +1808,10 @@ init 1001 python:
 
                     # setup visual timeout
                     if self.lastmatch.redraw_time:
+#                        self.customRedraw(
+#                            self.lastmatch.redraw_time, 
+#                            from_render=True
+#                        )
                         renpy.redraw(self, self.lastmatch.redraw_time)
                         self.drawn_time = st
                         self.state = self.STATE_CPOST
@@ -1779,6 +1836,7 @@ init 1001 python:
 
                     # force a redraw in a second
                     else:
+#                        self.customRedraw(1.0, from_render=True)
                         renpy.redraw(self, 1.0)
                         redrawn = True
 
@@ -1807,7 +1865,8 @@ init 1001 python:
 
                 # redraw timeout
                 if not redrawn:
-                    renpy.redraw(self, self.VIS_TIMEOUT)
+                    renpy.redraw(self, self.vis_timeout)
+#                    self.customRedraw(self.vis_timeout, from_render=True)
 
             if self.lyric:
                 lyric_bar = renpy.render(self.lyrical_bar, 1280, 720, st, at)
@@ -1873,19 +1932,21 @@ init 1001 python:
 #                    self.testing.write("".join([chr(x) for x in self.played])+ "\n")
                     self.played = list()
 
-                    # TODO: we need to check if we are in song mode, then
-                    # appropriately quit the game if no more song matches
-                    # TODO THIS IS THE KILLER
-
+                    # TODO: check the note you hit and appropriately
+                    # do matching
+                    # TODO: cehck if this even makes sens
                     if self.state != self.STATE_LISTEN:
                         if self.pnml:
                             self.match.fails += 1
                             self.pnm_index = self.pnml.verse_list[
                                 self.versedex
                             ]
+                            self.match = self.pnml.pnm_list[self.pnm_index]
+                            self.match.matchdex = 0
                         self.state = self.STATE_CLEAN
 
                         renpy.redraw(self, 0)
+#                        self.customRedraw(0)
 
 #   DEBUG: NOTE:
 #                if self.match:
@@ -1974,6 +2035,7 @@ init 1001 python:
                                 # completed this song
                                 else:
                                     self.state = self.STATE_DONE
+                                    renpy.timeout(self.pnml.end_wait)
 
                             # finished post complete
                             elif (
@@ -1999,6 +2061,7 @@ init 1001 python:
                                 # song completel
                                 else:
                                     self.state = self.STATE_DONE
+                                    renpy.timeout(self.pnml.end_wait)
 
                         # waiting post
                         elif (
@@ -2091,6 +2154,7 @@ init 1001 python:
                                         # no more matches, we are done
                                         else:
                                             self.state = self.STATE_DONE
+                                            renpy.timeout(self.pnml.end_wait)
 
                                 else:
                                     self.state = self.STATE_MATCH
@@ -2099,6 +2163,7 @@ init 1001 python:
                         renpy.play(self.pkeys[ev.key], channel="audio")
 
                         # now rerender
+#                        self.customRedraw(0)
                         renpy.redraw(self, 0)
 
             # keyup, means we should stop render
@@ -2111,7 +2176,13 @@ init 1001 python:
                     self.pressed[ev.key] = False
 
                     # now rerender
-                    renpy.redraw(self,0)
+#                    self.customRedraw(0)
+                    renpy.redraw(self, 0)
+
+            # time event, rerender
+            elif ev.type == renpy.display.core.TIMEEVENT:
+#                self.customRedraw(0)
+                renpy.redraw(self, 0)
 
             # the default so we can keep going
             raise renpy.IgnoreEvent()
