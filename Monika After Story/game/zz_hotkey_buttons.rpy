@@ -23,8 +23,9 @@ init python:
         #
         # Hides the movie buttons
         #
-        config.overlay_screens.remove("movie_overlay")
-        renpy.hide_screen("movie_overlay")
+        if "movie_overlay" in config.overlay_screens:
+            config.overlay_screens.remove("movie_overlay")
+            renpy.hide_screen("movie_overlay")
 
     # function to show buttons
     def MovieOverlayShowButtons():
