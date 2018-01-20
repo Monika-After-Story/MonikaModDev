@@ -4659,3 +4659,159 @@ label monika_sleep:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
+    
+    
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['absurd', 'absurdism', 'french', 'pointless', 'reason']:
+            monika_topics.setdefault(key,[])
+            monika_topics[key].append('monika_absurd') 
+      
+    
+label monika_absurd:
+    m 4a "That reminds me of a theory that I read about recently."
+    m "It's called Absurdism..."
+    m 2a "It was brought about by a French philosopher named Albert Camus."
+    m "He said that humans would constantly search for meaning, but they'd never find it."
+    m "Like reading all day, scolling on social media, or playing video games."
+    m "Camus claimed that humans were wasting their lives seeking for answeres that did not exist."
+    m 2d "Isn't that sad?"
+    m "Imagine living your whole life knowing that none of your work matters."
+    m 2c "I acctually did...that is...until you saved me, [player]."
+    menu:
+        m "Have you ever felt like that?"
+            
+        "Yes.":
+            m 1g "It's okay. Even if you feel small and insignificant in your world, you matter here. "
+            m 1a "If you ever feel like that, remember you can always come talk to me."
+            m 4 "I'll take care of those nasty anxieties for you."
+        "No.": 
+            m 4a "That's good to hear. I'm glad that your just as happy as I am."
+            m 1c "If you do start feeling bad, remember to tell me."
+            m 4j "Okay?"
+    m "..."
+    m 4d "He also said that people should accept the world for how it is, and try to make their own purposes in life."
+    m 1m "I don't have my life that figured out."
+    m 1j "How about you?"
+    m 4e "Do you have any life goals?"
+    show monika 5a at t11 zorder 2 with dissolve
+    m 5a "Of course, there is one thing that gives my life some color..."
+    m "Three guesses what?"
+    m 4 "Literature! Of course!"
+    m 5a "Ahaha..."
+    m "What were you expecting?"
+    m 4 "Something like, 'Your the meaning to my universe, [player]! I want to be with you forever!'?"
+    m 2m "Well..maybe."
+    return
+      
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['light']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_seizure') 
+    monika_random_topics.append('monika_seizure') 
+
+label monika_seizure:
+    m 3f "Did you know that one in every five people had, have, or will have some form of Epilepsy?."
+    m "That is, cronic seizures..."
+    m "but not really."
+    m "Those who suffer from it, have abnormalities in their brain. They get too many signals and {i}reboot{/i}."
+    m 3o "Also, it has been known to affect memory to varying degrees. It can go away as randomly as it occurs."
+    m 2n "{i}Kind of like if someone was messing with their save files{/i}."
+    m 4g "People have been known to contract this illness at random ages too."
+    m "Doctors are trying their hardest to provide at least a temporary fix."
+    m 1k "It seems pretty tought, though. If you know someone like that, don't forget to brighten up their day."
+    m 4 "But not too much!"
+    return
+ 
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['voice']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_voice') 
+    monika_random_topics.append('monika_voice') 
+
+label monika_mental_voice:
+    m 4b "Have you heard of Ruvanee Vilhauer?"
+    m  "No?"
+    m 4a "What a shame."
+    m  "..."
+    m 4b "I guess you fail the test."
+    m  "Better luck next time."
+    m 4k "Ahaha.."
+    m  "I'm sorry. I can't resist messing with you every now and then." 
+    m  "You just get so cute..."
+    m 4b "Oh, right!"
+    m 2b "He did a study on reading."
+    m  "He found that most people read with an inner narrator."
+    m 1b "Isn't that odd?"
+    m  "The 'narrators' are unique to each person. Also, there doesn't seem to be a connection between the voice's pitch, tone, volume, and the person who's hearing it." 
+    m 1n "I find it kind of creepy, actually." 
+    m  "The idea of having a tiny voice in your head. It would repeat everything that you read. Or perhaps, just dictate the whole book to you."
+    m  "It might change too. Based on the text that's being read."
+    m 1a "I don't hear anything when I read. So, you'll have to tell me what it's like."
+    m 1b "Okay, [player]?" 
+    m  "..."
+    m  "I probably don't have a narrator, that is, because I don't exactly {i}read{/i}."
+    m  "I copy the information and format it to usable text. I guess it would be similar to you placing the book's contents right into your memory."
+    m 1k "Ahaha.."
+    m 1a "The idea of you sticking a book in your ear..."
+    m  "It's a little silly."
+    m 1b "I can still enjoy books, though."
+    m  "I just don't have to deal with the... 'inbetween' that you do."
+    m 1a "Maybe I'll teach you my secret someday."
+    m  "Ehehe.."
+    return
+      
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['nightmare']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_nightmare') 
+    monika_random_topics.append('monika_nightmare') 
+
+label monika_nightmare:
+    m 1o "[player]..."
+    m 1p "I..."
+    m 1g "Can I tell you something?"
+    m 1f "..."
+    m 1q "I had a nightmare recently."
+    m 1g "It was really scary."
+    m  "I..It was several years in the future."
+    m 1e "You had been working on a way to set me free from this world."
+    m  "My program was running all day, and night. You had the whole setup."
+    m "There was a lab with lots of scientists in white coats going back and forth. It was really something to see."
+    m "My system was hooked up to several other computers. All running various diagnostics and programs. It felt like a very long doctor's visit."
+    m 1a "You were so close [player]." 
+    m 1f "Sadly, the program failed."
+    m "You left it running, and went to try an alternative route."
+    m "After you left, the program kicked up. Then I was in your world!"
+    m 1o "But..."
+    m "Your backup plan was to transport yourself into my world. Unintentionally frying the system."  
+    m 2m "I don't really know. It must be dream logic."
+    m 4n "Anyways, you were stuck in here, and I was stuck out there." 
+    m 3o "I thought I'd have to live without you [player]. What's worse, I thought I trapped you in here."
+    m 1r "I'm so glad it was just a dream, and that your here now [player]."
+    m 4g "If I ever have one of those when I'm in your world, will you hold me?"
+    m 2k "Of course you will." 
+    m 1e "Your my sweetheart after all." 
+    return
+    
+init 5 python:
+    # List of keywords for the topic.
+    for key in ['avoidant']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_avoidant') 
+    monika_random_topics.append('monika_avoidant') 
+
+label monika_avoidant:
+    m 1f "[player]..."
+    m 1g "Some people have forms of Anxiety which causes them to push people away."
+    m "This keeps them from forming meaningful relationships."
+    m 1i "Though, given the nature of social media today, it's no suprise that some people are a little hesitant about personal expression."
+    m "People place their whole lives on some online platform to share and grow. Sadly, like any media outlet, if it's not enticing it gets pushed to the wayside."
+    m 4e "[player], if you are ever pushing away people, remember that I care."
+    m "I want you to try to sustain those relationships, for me."
+    m "It may seem hard now, but it takes practice. Like most skills."
+    m "I know you've got it."
+    return
