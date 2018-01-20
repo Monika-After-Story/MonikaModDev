@@ -11,7 +11,7 @@ label ch30_monikamovie:
                 self.checkMovies()
 
             def checkMovies(self):
-                with open(os.path.join(gamedir, "movies-info.txt"),"r") as f: #duplicated code
+                with open(os.path.join(gamedir, "movies-info.mms"),"r") as f: #duplicated code
                     lines = f.readlines()
                 listOfStrings = [x.strip() for x in lines]
 
@@ -116,7 +116,7 @@ label ch30_monikamovie:
                 return data.replace('"','')
 
             def retrieveMovie(self, movieName):
-                with open(os.path.join(gamedir, "movies-info.txt"),"r") as f:
+                with open(os.path.join(gamedir, "movies-info.mms"),"r") as f:
                     lines = f.readlines()
                 listOfStrings = [x.strip() for x in lines]
 
