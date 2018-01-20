@@ -220,6 +220,7 @@ label ch30_monikamovie:
                                 $ allFilms.pop(0)
                                 m 1a "Let me search again."
                     m 1l "Sorry, [player], I can't find any movies with that name."
+                    show monika 1a
                 else:
                     m 1f "I didn't find any movie with that name, [player]. Sorry."
                 m "Maybe we should try with another one"
@@ -287,6 +288,7 @@ label ch30_monikamovie:
 
                         if movieInformation.reactionsAreFinished():
                             hide countdown
+                            $ MovieOverlayHideButtons()
                             m 1a "Just ended for me! Did you like it?"
                             jump mm_movie_closure
 
