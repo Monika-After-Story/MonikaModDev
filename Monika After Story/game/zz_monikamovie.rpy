@@ -295,7 +295,10 @@ label ch30_monikamovie:
                         jump movie_loop
 
             "No":
+                hide countdown # Dupicated code, call function?
+                $ MovieOverlayHideButtons()
                 m 1a "Oh, okay! I will just wait for you then~"
+                jump mm_movie_loop_end
 
         label mm_movie_closure:
             #Starts closure Block
@@ -308,6 +311,7 @@ label ch30_monikamovie:
 
 
     label mm_movie_loop_end:
+        hide countdown
         $ allow_dialogue = True
         $ watchingMovie = False
         $ timer.seconds = 0
