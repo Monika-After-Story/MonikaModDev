@@ -4627,7 +4627,7 @@ label monika_wolf:
 init 5 python:
     addEvent(Event(eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry your character file.",pool=True))
 
-monika_omamori
+label monika_omamori:
     m "Do you remember when I mentioned how you could carry around my character file?"
     m "You know, with a flash drive."
     m 1a "Well, I found another way to do that! It's quite charming, actually."
