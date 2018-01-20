@@ -49,7 +49,21 @@ init 11 python:
     #If there are no unseen topics, you can repeat seen ones
     if len(monika_random_topics) == 0:
         monika_random_topics=list(all_random_topics)
+        
+#Timed menu code
+transform alpha_dissolve:
+    alpha 0.0
+    linear 0.5 alpha 1.0
+    on hide:
+        linear 0.5 alpha 0
 
+screen countdown:
+    timer 1 repeat True action If(time > 0, true=SetVariable('time', time - 1), false=[Hide('countdown'), Jump(timer_jump)])
+    if time <= 2:
+        text str(time) xpos .1 ypos .1 color "#FF0000" at alpha_dissolve
+    else:
+        text str(time) xpos .1 ypos .1 at alpha_dissolve
+        
 #BEGIN ORIGINAL TOPICS
 
 #Use this topic as an example
@@ -4821,6 +4835,32 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+###Variables to know when using the timed menu feature
+
+# time = the time the timer takes to count down to 0.
+# timer_jump = the label to jump to when time runs out
+
+###Example on how to use the timed menu feature
+
+#label menu1:
+#    $ time = 5
+#    $ timer_jump = 'menu1_slow'
+#    show screen countdown
+#    menu:
+#        m "quick [player] say yes or no."
+#        "Yes":
+#            hide screen countdown
+#            m "you picked yes really fast, good job [player]."
+#            jump menu1_end
+#        "No":
+#            hide screen countdown
+#            m "you picked no really fast, good job [player]."
+#            jump menu1_end   
+#label menu1_slow:
+#    m "You need to work on your reflexes [player]."    
+#label menu1_end:
+#    m "Anyway, let's do something else."
+#    return
 
 ##################
 #Incomplete ideas#
