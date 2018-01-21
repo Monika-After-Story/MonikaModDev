@@ -4357,16 +4357,7 @@ label monika_otaku:
     return
 
 init 5 python:
-    for key in ['anger','frustration']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_anger')
-    monika_random_topics.append('monika_anger')
-
-init 5 python:
-    for key in ['anger','frustration']:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_anger')
-    monika_random_topics.append('monika_anger')
+    addEvent(Event(eventlabel="monika_anger",category=['Advice'],prompt="Anger management",random=True))
 
 label monika_anger:
     m 1b "[player], I told you I was in the debate club right?"
