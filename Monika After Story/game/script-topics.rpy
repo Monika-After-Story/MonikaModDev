@@ -4936,10 +4936,7 @@ label monika_asks_family:
 #    return
 
 init 5 python:
-    for key in ['sea','beach','ocean','whale' ]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append('monika_sea')
-    monika_random_topics.append('monika_sea')
+    addEvent(Event(eventlabel="monika_sea",category=['random'],prompt="The sea.",random=True))
 
 label monika_sea:
     m 3a "[player] have you ever been to the beach?"
