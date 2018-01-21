@@ -4952,7 +4952,7 @@ label monika_sea:
     m 2a "I ask because I've always wanted to see the sea."
     m "It holds so much and when the light shines right it can be really beautiful."
     m  "Life in it thrives and that's pretty amazing you know?"
-    m 4h "The ocean floor is in complete darkness, food is scarce. 
+    m 4h "The ocean floor is in complete darkness, food is scarce. "
     m "And the pressure it can have is overwhelming."
     m "Yet despite all the struggles, it's populace persist and adapt."
     m 4c "..."
