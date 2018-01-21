@@ -4697,4 +4697,23 @@ label monika_omamori:
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
     return    
+    
+    init 5 python:                                                  #Added one new topic
+          # List of keywords for this topic.
+ -        for key in ['smoke', 'cigarettes', 'cigarette', 'smoking']:
+ +        for key in ['smoke', 'cigarettes', 'cigarette', 'smoking', 'tobacco']:
+              monika_topics.setdefault(key,[])
+              monika_topics[key].append('monika_smoking')
+          monika_random_topics.append('monika_smoking') 
+      
+      label monika_smoking:
+          m 2b "You know, I heard that a lot of people died last year from smoking cigarettes."
+          m 1o "..."
+          m 1i "You don't smoke, do you [player]?"
+          m 1r "I'd hate to see you destroy yourself with such a bad habit."
+          m 1k "Please promise that you'll quit for me if you do, okay?"
+          m 1b "I just want you to be healthy."
+          m 1j "Stay well for me [player]."
+          m 1b "I love you so much."
+          return
 
