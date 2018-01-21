@@ -4357,6 +4357,48 @@ label monika_otaku:
     return
 
 init 5 python:
+    for key in ['anger','frustration']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_anger')
+    monika_random_topics.append('monika_anger')
+
+label monika_anger:
+    m 1b "[player], I told you I was in the debate club right?"
+    m "It taught me quite a lot you know."
+    m 2d "Not only how to debate better but how to manage people and how they feel."
+    m 3l "I don't always feel confident enough to try though!"
+    m 3n "You saw that when Natsuki and Yuri argued, Ahahah..."
+    m 2d "Well an important skill the debate club taught me was how to control anger."
+    m "How to minimize other but importantly also my own."
+    m "Emotions would always run really high when it got heated and stressful..."
+    m 1q "At first I wasn't much of an exception but I worked on it."
+    m 1e "[player], it might be handy for you to know what I learnt."
+    m 1f"After all being angry can be a very dangerous thing!"
+    m 2h "It's really bad for your blood pressure and can hurt your relationship with others."
+    m "I know several tips to help mangaging your anger if you ever need them [player]."
+    m 2e "I just want to make sure you're as clear minded and healthy as you can to be."
+    m 2a "The first thing you may want to try is to regulate your breathing."
+    m "Purposefully take slow deep breathes and hopefully you'll find it quite calming."
+    m 2j "I found it really soothing myself!"
+    m 3d "Something else you could try is a pretty well-known method."
+    m "And that's to try counting to 10."
+    m 3n "I've never found myself doing it but I've heard it works pretty well."
+    m 3d "Lastly, the best method is to try a new perspective."
+    m 3o "It's not always easy, especially when it feels you need to defend yourself."
+    m 3d"But looking at it from another view can change your entire mentality on the situation."
+    m "What previously bothered you suddenly doesn't matter anymore."
+    m "Or you'll find you better understand the situation itself."
+    m "Taking a break really helps you come in with that new mentality 
+    m "And also helps to avoid making a decision you may later regret."
+    m 2c"Sadly walking away isn't always an option."
+    m 1f "If all else fails my love, you can always come here and tell me your frustrations."
+    m 1e "I love you and I'll always be here to listen!
+    m "If nothing else that'll make you feel better about it."
+    m 5a "Maybe just thinking of me will calm you down? Ahahah~"
+
+    return
+
+init 5 python:
     addEvent(Event(eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
 
 label monika_write:
