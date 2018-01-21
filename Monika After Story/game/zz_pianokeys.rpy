@@ -26,6 +26,7 @@ label zz_play_piano:
     $ quit_label = Text("Press 'Z' to quit", size=36) 
     $ pnmlLoadTuples()
 
+    # Intro to piano dialogue here
     m 1j "You want to play the piano?"
 
 label zz_play_piano_loopstart:
@@ -48,9 +49,13 @@ label zz_play_piano_songchoice:
 
                 # song selected
                 if pnml != "None":
+
+                    # reaction in picking a song
                     m 1j "I'm excited to hear you play, [player]!"
 
-                    # launch label ?
+                    # launch label - if it exists, we can call this label to
+                    # provide extra dialogue before playing this song
+                    # not used atm
                     if pnml.launch_label:
                         call expression pnml.launch_label from _zzpk_ssll
 
