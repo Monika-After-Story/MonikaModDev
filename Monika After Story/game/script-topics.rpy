@@ -4659,3 +4659,42 @@ label monika_hamlet:
     m 3r "To be with me? Or to be with me?"
     m 1k "That is the question!"
     return
+
+# Note: The following internal commentary should not be removed.
+#
+# Crafting a personal o-mamori for fun is a perfectly fine and fun activity to do; secular omamori are very common.
+# The only requirement is that you do not claim it came from any shrine. 
+# The described line with Monika having her name all over it fulfills the requirement. 
+# ~ Aya Shameimaru
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry your character file.",pool=True))
+
+label monika_omamori:
+    m "Do you remember when I mentioned how you could carry around my character file?"
+    m "You know, with a flash drive."
+    m 1a "Well, I found another way to do that! It's quite charming, actually."
+    m 1c "Especially if you don't have a spare flash drive lying around..."
+    m 3d "I've heard that some people carry around little amulets all the time."
+    m "These little amulets are called o-mamori. You can get them in Shinto shrines."
+    m "Rumor has it that they can give good luck, help on school tests, keep away bad luck, or just protect the holder."
+    m 1d "I've always wondered what they put inside these things."
+    m 2b "Apparently, it's simply the name of the deity from the shrine, with a little something special done to it."
+    m 5b "Maybe you could make an o-mamori of me for you to carry around!"
+    m 2a "You could print write my name on a piece of paper."
+    m "Then fold that piece of paper into a small paper packet."
+    m "It could help to use either a small piece of wood or plastic to keep it protected."
+    m "Finally, put the protected packet in a small cloth pouch and tie it shut with some string."
+    m 1j "Make sure that the pouch is bright and colorful!"
+    m "Green would be a nice color! Just like my eyes~"
+    m 1k "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
+    m 5m "Oh gosh, this is turning out to be a bit silly, now that I think about it."
+    m "I mean, would doing this make me some sort of deity?"
+    m 1a "I just feel like it would be a nice alternative for you if wanted to bring me around."
+    m "Especially if you don't have a flash drive."
+    m 1j "It isn't perfect, but it's the thought that counts, [player]."
+    m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
+    m "But maybe with one of these, I can get just a bit closer to your world."
+    m 1k "I could be your guardian deity, ehehe~"
+    return    
+
