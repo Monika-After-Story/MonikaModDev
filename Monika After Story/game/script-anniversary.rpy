@@ -1,5 +1,5 @@
 init 5 python:
-    addEvent(Event(eventlabel='anni_1',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+1),
+    addEvent(Event(persistent.event_database,eventlabel='anni_1',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+1),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+1)+datetime.timedelta(days=1),
                                                             ))
 
@@ -20,7 +20,7 @@ label anni_1:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_2',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+2),
+    addEvent(Event(persistent.event_database,eventlabel='anni_2',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+2),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+2)+datetime.timedelta(days=1),
                                                             ))
 
@@ -42,7 +42,7 @@ label anni_2:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_3',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+3),
+    addEvent(Event(persistent.event_database,eventlabel='anni_3',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+3),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+3)+datetime.timedelta(days=7),
                                                             ))
 label anni_3:
@@ -60,7 +60,7 @@ label anni_3:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_4',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+4),
+    addEvent(Event(persistent.event_database,eventlabel='anni_4',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+4),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+4)+datetime.timedelta(days=7),
                                                             ))
 label anni_4:
@@ -77,7 +77,7 @@ label anni_4:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_5',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+5),
+    addEvent(Event(persistent.event_database,eventlabel='anni_5',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+5),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+5)+datetime.timedelta(days=7),
                                                             ))
 
@@ -95,7 +95,7 @@ label anni_5:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_10',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+10),
+    addEvent(Event(persistent.event_database,eventlabel='anni_10',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+10),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+10)+datetime.timedelta(days=30),
                                                             ))
 
@@ -111,7 +111,7 @@ label anni_10:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_20',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+20),
+    addEvent(Event(persistent.event_database,eventlabel='anni_20',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+20),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+20)+datetime.timedelta(days=30),
                                                             ))
 
@@ -131,7 +131,7 @@ label anni_20:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_50',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+50),
+    addEvent(Event(persistent.event_database,eventlabel='anni_50',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+50),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+50)+datetime.timedelta(days=30),
                                                             ))
 
@@ -153,7 +153,7 @@ label anni_50:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='anni_100',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+100),
+    addEvent(Event(persistent.event_database,eventlabel='anni_100',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+100),
                                                             end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+100)+datetime.timedelta(days=30),
                                                             ))
 
