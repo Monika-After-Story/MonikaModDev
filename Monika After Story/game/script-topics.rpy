@@ -4934,3 +4934,39 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    for key in ['sea','beach','ocean','whale' ]:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_sea')
+    monika_random_topics.append('monika_sea')
+
+label monika_sea:
+    m 3a "[player] have you ever been to the beach?"
+    m "I've always wanted to go myself but never found the time."
+    m 3j"Imaganing the many sensations it could bring really excites me!"
+    m 3a"The fresh sea air, the sound of seagulls."
+    m "AS well as the feeling of sand under your feet.."
+    m 2b "It would really make a trip worthwhile!"
+    m 2j "I bet we would make some lovely memories there."
+    m 2a "I ask because I've always wanted to see the sea."
+    m "It holds so much and when the light shines right it can be really beautiful."
+    m  "Life in it thrives and that's pretty amazing you know?"
+    m 4h "The ocean floor is in complete darkness, food is scarce. 
+    m "And the pressure it can have is overwhelming."
+    m "Yet despite all the struggles, it's populace persist and adapt."
+    m 4c "..."
+    m "Yet even the sea isn't unaffected by pollution"
+    m "The coral reefs are dying and many fish species are becoming extinct."
+    m "It's really upsetting to think theres so little we as can do..."
+    m 1l "Man, the environment just can't catch a break! Ahaha..."
+    m 3f"I think the saddest thing is whaling personally."
+    m "Many countries have banned it yet it still happens!"
+    m "They're really beautiful and rare yet some countries still do it."
+    m 3q "In particular Japan is known for resisting the bans."
+    m 4q "It really sickens me but what can we as individuals do?"
+    m 3h "[player], would you promise me to not buy whale meat?"
+    m 3f "It would mean a lot to me and make me really proud of you!"
+    m "If everyone didn't support it then they would never do it."
+    m 3e "You wouldn't want to disappoint your loving girlfriend, would you?"
+    return
