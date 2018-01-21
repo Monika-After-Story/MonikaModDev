@@ -26,14 +26,14 @@ label zz_play_piano:
     $ quit_label = Text("Press 'Z' to quit", size=36) 
     $ pnmlLoadTuples()
 
+    m 1j "You want to play the piano?"
+
 label zz_play_piano_loopstart:
     
     # get song list
     $ song_list = zzpianokeys.getSongChoices()
     $ pnml = None
     $ play_mode = PianoDisplayable.MODE_FREE
-
-    m 1j "You want to play the piano?"
 
 label zz_play_piano_songchoice:
 
@@ -45,10 +45,10 @@ label zz_play_piano_songchoice:
             "Play Song":
                 m "Which song would you like to play?"
                 $ pnml = renpy.display_menu(song_list)
-                m 1j "I'm excited to hear you play, [player]!"
 
                 # song selected
                 if pnml != "None":
+                    m 1j "I'm excited to hear you play, [player]!"
 
                     # launch label ?
                     if pnml.launch_label:
@@ -98,20 +98,23 @@ label zz_play_piano_setupstart:
 
     show monika 1j at t11
 
+    # granting XP:
     # you are good player
     if full_combo:
         $ grant_xp(xp.ZZPK_FULLCOMBO)
 
+    # you can win somehow
     elif is_win:
         $ grant_xp(xp.WIN_GAME)
 
-    # passed at least once, but had some misses
+    # good practice
     elif is_practice:
         $ grant_xp(xp.ZZPK_PRACTICE)
 
     # call the post label
     call expression post_piano from _zzpk_ppel
 
+    # No-hits dont get to try again
     if post_piano != "zz_piano_none":
         show monika 1a
         menu:
@@ -126,11 +129,12 @@ label zz_play_piano_loopend:
 
 ### labels for piano states ===================================================
 
-### default, post game
+# default. post game, freestyle mode
 label zz_piano_default:
     m 1a "That was nice, [player]!"
     return
 
+# Shown if player does not hit any notes
 label zz_piano_none:
     m 1l "[player],{w} I thought you wanted to play the piano."
     m 1e "I'd really enjoy hearing you play."
@@ -139,21 +143,31 @@ label zz_piano_none:
 
 ### YOUR REALITY
 
+# shown if player completes the song but does not FC
 label zz_piano_yr_win:
-    m 1a "That was nice, [player]!"
+    m 1a "That was great, [player]!"
     m 1j "But you could use a little practice."
     return
 
+# shown if player FCs
 label zz_piano_yr_fc:
     m 1j "That was wonderful, [player]!"
     m 1a "I didn't know you can play the piano so well."
     m "Maybe we should play together sometime."
     return
 
+# shown if player did not complete song and had more fails than passes
 label zz_piano_yr_fail:
     m 1m "..."
     m 1e "That's okay, [player]."
     m "At least you tried your best."
+    return
+
+# shown if player did not complete song but had more passes than fails
+label zz_piano_yr_prac:
+    m 1a "That was nice, [player]."
+    m "With some practice, you'll be able to completely play my song in no time."
+    m 1j "Make sure to practice with me everyday!~"
     return
 
 #abel zz_piano_yr_launch:
@@ -323,10 +337,9 @@ init -3 python in zzpianokeys:
     #   matched - True if we were matched this session, False otherwise
     #   matchdex - Basically an index that says where the last matched note is
     #       in notestr (and notes, by extension)
-    #   ev_timeout - event timeout that should be used when this match is
-    #       running
+    #   ev_timeout - time we wait for input to start this note match
     #   vis_timeout - visual timeout that should be used when this match is
-    #       running
+    #       running. This value should be less than ev_timeout
     #   fails - number of failed attempts to play this
     #   passes - number of succesful attempts to play this
     #   postnotes - list of notes (keys) that are considered post match.
@@ -341,8 +354,6 @@ init -3 python in zzpianokeys:
     #   misses - number of misses we got
     #   posttext - True if we should keep the text up for post expression,
     #       False if not
-    #   redraw_time - number of seconds we should plan redraw. This should
-    #       be lower than the next pnm's vis_timeout
     #
     class PianoNoteMatch(object):
         def __init__(self, 
@@ -355,8 +366,7 @@ init -3 python in zzpianokeys:
                 vis_timeout=None,
                 verse=0,
                 copynotes=None,
-                posttext=False,
-                redraw_time=None
+                posttext=False
             ):
             #
             # IN:
@@ -370,8 +380,12 @@ init -3 python in zzpianokeys:
             #   postexpress - the monika expression to show during post
             #       (Default: 1a)
             #   ev_timeout - number of seconds we wait for input
+            #       NOTE: THIS means how long we wait BEFORE this note match
+            #           before assuming event timeout
             #       (Default: None)
             #   vis_timeout - number of second we wait for visual change
+            #       NOTE: THIS means how long we wait AFTER this note match
+            #           before cleaning visual
             #       (Default: None)
             #   verse - the verse dex the phrase belongs to
             #       (Default: 0)
@@ -380,10 +394,6 @@ init -3 python in zzpianokeys:
             #   posttext - True if we keep the text up during post, False
             #       otherwise
             #       (Default: False)
-            #   redraw_time - number of seconds until we redraw ourselves
-            #       NOTE: This should be less than the next PianoNoteMatch
-            #       vis_timeout
-            #       (Defualt: None)
 
             # sanity checks
             if notes is None or len(notes) == 0:
@@ -398,6 +408,14 @@ init -3 python in zzpianokeys:
                 raise PianoException("Given expression does not exist")
             if not renpy.image_exists("monika " + postexpress):
                 raise PianoException("Given post expression does not exist")
+#            if (
+#                    ev_timeout is not None 
+#                    and vis_timeout is not None 
+#                    and vis_timeout > ev_timeout
+#                ):
+#                raise PianoException(
+#                    "Visual timeout cannot be greater than event timeout"
+#                )
 
             self.say = say
             self.notes = notes
@@ -410,7 +428,6 @@ init -3 python in zzpianokeys:
             self.verse = verse
             self.copynotes = copynotes
             self.posttext = posttext
-            self.redraw_time = redraw_time
 
             # set resettables
             self.reset()
@@ -510,6 +527,7 @@ init -3 python in zzpianokeys:
             win_label - labelt o call to if we played the song well
             fc_label - label to call to if we full comboed
             fail_label - label to call to if we failed the song
+            prac_label - label to call if we are practicing
             end_wait - seconds to wait before continuing to quit phase 
             launch_label - label to call to prepare song launch
         """
@@ -521,6 +539,7 @@ init -3 python in zzpianokeys:
                 win_label,
                 fc_label,
                 fail_label,
+                prac_label,
                 end_wait=0,
                 launch_label=None
                 ):
@@ -534,6 +553,7 @@ init -3 python in zzpianokeys:
                 win_label - label to call to if we played the song well
                 fc_label - label to call to if we full comboed the song
                 fail_label - label to call to if we failed the song
+                prac_label - label to call if we are practicing
                 end_wait - number of seoncds to wait before actually quitting
                     (Integers pleaes)
                     (Default: 0)
@@ -552,6 +572,10 @@ init -3 python in zzpianokeys:
                 raise PianoException(
                     "label '" + fail_label + "' does not exist"
                 )
+            if not renpy.has_label(prac_label):
+                raise PianoException(
+                    "label '" + prac_label + "' does not exist"
+                )
             if launch_label and not renpy.has_label(launch_label):
                 raise PianoException(
                     "label '" + launch_label + "' does not exist"
@@ -563,6 +587,7 @@ init -3 python in zzpianokeys:
             self.win_label = win_label
             self.fc_label = fc_label
             self.fail_label = fail_label
+            self.prac_label = prac_label
             self.launch_label = launch_label
             self.end_wait = end_wait
             self.full_combos = 0
@@ -605,6 +630,10 @@ init -3 python in zzpianokeys:
 
 # this containst the actual songs
 # we need it to be high init level so we have images
+# TODO: considre making this readable from TEXt files. 
+# NOTE: if we do the above, we need to reconsider how we handle post game
+# labels. Storing them in text files would be better organized but bad
+# for finding errors
 init 1000 python in zzpianokeys:
 
     # all piano note matches should follow this layout:
@@ -766,8 +795,7 @@ init 1000 python in zzpianokeys:
         express="1b",
         postexpress="1a",
         verse=0,
-        posttext=True,
-        redraw_time=3.0
+        posttext=True
     )
     pnm_yr_v1l8 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -783,10 +811,9 @@ init 1000 python in zzpianokeys:
         express="1k",
         postexpress="1j",
         verse=0,
-        ev_timeout=3.0,
+        ev_timeout=5.0,
         vis_timeout=3.0,
-        posttext=True,
-        redraw_time=3.0
+        posttext=True
     )
 
     # verse 2
@@ -801,8 +828,7 @@ init 1000 python in zzpianokeys:
         postexpress="1a",
         verse=8,
         copynotes=0,
-        ev_timeout=15.0,
-        vis_timeout=15.0
+        ev_timeout=15.0
     )
     pnm_yr_v2l2 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -841,9 +867,9 @@ init 1000 python in zzpianokeys:
         ],
         express="1g",
         postexpress="1f",
+        vis_timeout=2.0,
         verse=8,
-        posttext=True,
-        redraw_time=2.0
+        posttext=True
     )
     pnm_yr_v2l5 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -861,9 +887,9 @@ init 1000 python in zzpianokeys:
         ],
         express="1k",
         postexpress="1j",
+        vis_timeout=3.0,
         verse=8,
-        posttext=True,
-        redraw_time=3.0
+        posttext=True
     )
     pnm_yr_v2l6 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -884,9 +910,10 @@ init 1000 python in zzpianokeys:
         pnm_yr_v1l6.notes,
         express="1g",
         postexpress="1e",
+        vis_timeout=3.0,
         verse=8,
         copynotes=5,
-        redraw_time=5.0
+        posttext=True
     )
 
     # verse 3
@@ -919,7 +946,7 @@ init 1000 python in zzpianokeys:
         verse=15,
         copynotes=0,
         ev_timeout=25.0,
-        vis_timeout=25.0
+        vis_timeout=2.0
     )
     pnm_yr_v3l2 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -933,7 +960,7 @@ init 1000 python in zzpianokeys:
         verse=15,
         copynotes=1,
         ev_timeout=7.0,
-        vis_timeout=7.0
+        vis_timeout=2.0
     )
     pnm_yr_v3l3 = PianoNoteMatch(
         pnm_yr_v1l3.say,
@@ -942,8 +969,7 @@ init 1000 python in zzpianokeys:
         postexpress="1a",
         verse=15,
         copynotes=2,
-        ev_timeout=10.0,
-        vis_timeout=10.0
+        ev_timeout=10.0
     )
     pnm_yr_v3l4 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -1042,8 +1068,7 @@ init 1000 python in zzpianokeys:
         postexpress="1a",
         ev_timeout=5.0,
         vis_timeout=5.0,
-        posttext=True,
-        redraw_time=5.0
+        posttext=True
     )
 
     # your reality, pnml
@@ -1078,7 +1103,8 @@ init 1000 python in zzpianokeys:
         "zz_piano_yr_win",
         "zz_piano_yr_fc",
         "zz_piano_yr_fail",
-        5.0,
+        "zz_piano_yr_prac",
+        5.0
 #        "zz_piano_yr_launch"
     )
 
@@ -1218,7 +1244,7 @@ init 1001 python:
         # Visual POST state. This is similiar to the JPOST state, except we
         # only care about visual adjustments. The main difference between this
         # and JPOST is that VPOST leads into the WPOST state, while JPOST leads
-        # into the POST state.
+        # into the POST state. VPOST also does not handle postnotes.
         # Post expression rendering is done here
         # NOTE: CALLS REDRAW
         STATE_VPOST = 7 
@@ -1248,6 +1274,79 @@ init 1001 python:
         # and we should wait for some time then quit.
         # NOTE: CALLS REDRAW
         STATE_DONE = 11 
+
+        # Just Done POST state. This is simliar to the JPOST state except
+        # we can timeout visually and quit the game.
+        # NOTE: CALLS REDRAW
+        STATE_DJPOST = 12
+
+        # Done POST state. This is similiar to the POST state except we can
+        # timeout visually and quit hte game.
+        # NOTE: CALLS REDRAW
+        STATE_DPOST = 13
+
+        # Wait DONE state. This is for allowing a wait period after the song
+        # is completed. Leads into DONE state.
+        # NOTE: CALLS REDRAW
+        STATE_WDONE = 14
+
+        # TUPLE state groups. This for easier checking of states
+        # States related to Done flow
+        DONE_STATES = (
+            STATE_DPOST,
+            STATE_WDONE,
+            STATE_DJPOST,
+            STATE_DONE
+        )
+
+        # States related to post flow
+        POST_STATES = (
+            STATE_POST,
+            STATE_JPOST,
+            STATE_DPOST,
+            STATE_DJPOST
+        )
+
+        # states related to transitional post flow
+        TRANS_POST_STATES = (
+            STATE_WPOST,
+            STATE_CPOST,
+            STATE_VPOST
+        )
+
+        # states related to matches
+        MATCH_STATES = (
+            STATE_MATCH,
+            STATE_MISS,
+            STATE_JMATCH
+        )
+
+        # timeout states for matches
+        TOUT_MATCH_STATES = (
+            STATE_MATCH,
+            STATE_MISS,
+            STATE_JMATCH,
+            STATE_FAIL
+        )
+
+        # timeout states for posts
+        TOUT_POST_STATES = (
+            STATE_POST,
+            STATE_JPOST
+        )
+
+        # render states for done
+        REND_DONE_STATES = (
+            STATE_WDONE,
+            STATE_DPOST,
+            STATE_DONE
+        )
+
+        # done states that mean we should quit
+        FINAL_DONE_STATES = (
+            STATE_DONE,
+            STATE_WDONE
+        )
 
         # key limit for matching
         KEY_LIMIT = 100
@@ -1619,6 +1718,7 @@ init 1001 python:
             misses = 0
             full_combo = False
             is_win = False
+            is_prac = False
             end_label = None
             completed_pnms = 0
 
@@ -1646,16 +1746,23 @@ init 1001 python:
                     self.pnml.wins += 1
                     is_win = True
 
+                # fail case
                 elif (completed_pnms != len(self.pnml.pnm_list) 
                         and fails > passes
                     ):
                     end_label = self.pnml.fail_label
                     self.pnml.losses += 1
-                    
-                else:
+                   
+                # compelted everything, nut a ful combo though
+                elif completed_pnms == len(self.pnml.pnm_list):
                     end_label = self.pnml.win_label
                     self.pnml.wins += 1
                     is_win = True
+
+                # otherwise, assume practice mode
+                else:
+                    end_label = self.pnml.prac_label
+                    is_prac = True
 
             else:
                 end_label = "zz_piano_default"
@@ -1664,9 +1771,17 @@ init 1001 python:
             return (
                 full_combo,
                 is_win,
-                passes >= 0 and misses >= 0,
+                is_prac,
                 end_label
             )
+
+
+        def resetVerse(self):
+            """
+            Resets the current match back to its verse start.
+            """
+            self.pnm_index = self.match.verse
+            self.match = self.getnotematch(self.pnm_index)
 
 
         def setsongmode(self, songmode=True, ev_tout=None, vis_tout=None):
@@ -1695,6 +1810,219 @@ init 1001 python:
             else:
                 self.ev_timeout = self.TIMEOUT
                 self.vis_timeout = self.VIS_TIMEOUT
+
+
+        def stateListen(self, ev):
+            """
+            Flow that occurs when we in listen state
+
+            IN:
+                ev - pygame event that occured
+
+            STATES:
+                STATE_LISTEN
+            """
+            # check if we are in song mode
+            if self.mode == self.MODE_SONG:
+
+                # find a match
+                findex = self.match.isNoteMatch(ev.key, 0)
+
+                if findex >= 0:
+                    self.state = self.STATE_JMATCH
+
+            # not in song mode, check for correct number of
+            # notes
+            elif len(self.played) >= zzpianokeys.NOTE_SIZE:
+
+                # find a match
+                self.match = self.findnotematch(self.played)
+
+                # check if match
+                if self.match:
+                    self.state = self.STATE_JMATCH
+
+
+        def stateMatch(self, ev):
+            """
+            Flow that occurs when we are matching notes
+
+            IN:
+                ev - pygame event that occured
+
+            STATES:
+                STATE_MATCH
+                STATE_MISS
+                STATE_JMATCH
+            """
+            # we have a match, check to ensure that this key
+            # follows the pattern
+            findex = self.match.isNoteMatch(ev.key)
+
+            # failed match
+            if findex < 0:
+
+                # -1 is a non match
+                if findex == -1:
+
+                    # check for a double failure, which means
+                    # we failed entirely on playing this piece
+                    if self.state == self.STATE_MISS:
+                        self.match.fails += 1
+                        self.state = self.STATE_FAIL
+
+                        # incase of a double failure, we zero
+                        # the list and the prev time
+                        # self.played = [ev.key]
+                        self.played = list()
+
+                        # clear the match
+#                                       self.lastmatch = None
+#                                       self.match = None
+
+                    # this is our first failure, just take note
+                    else:
+                        self.match.misses += 1
+                        self.state = self.STATE_MISS
+
+            # otherwise, we matched, but need to clear fails
+            else:
+
+                # check for finished notes
+                if self.match.matchdex == len(self.match.notes):
+
+                    # you passed
+                    self.match.passes += 1
+
+                    # post notes flow
+                    if self.match.postnotes:
+
+                        # check if we have anymore notes
+                        if self.getnotematch(self.pnm_index+1):
+                            self.state = self.STATE_JPOST
+                        else:
+                            self.state = self.STATE_DJPOST
+
+                        self.match.matchdex = 0
+                        self.played = list()
+
+                    # next pnm match
+                    else:
+                        next_pnm = self.getnotematch()
+
+                        if next_pnm:
+
+                            self.lastmatch = self.match
+                            self.match = next_pnm
+                            self.state = self.STATE_VPOST
+                            self.setsongmode(
+                                ev_tout=next_pnm.ev_timeout,
+                                vis_tout=self.lastmatch.vis_timeout
+                            )
+                            self.match.matchdex = 0
+                            self.played = list()
+
+                        # no more matches, we are done
+                        else:
+                            self.state = self.STATE_WDONE
+
+                else:
+                    self.state = self.STATE_MATCH
+
+
+        def statePost(self, ev):
+            """
+            Flow that occurs when we are post matching notes
+
+            IN:
+                ev - pygame event that occured
+
+            STATES:
+                STATE_POST
+                STATE_JPOST
+                STATE_DPOST
+                STATE_DJPOST
+            """
+            # post match means we abort on the first miss
+            findex = self.match.isPostMatch(ev.key)
+
+            # check for a match
+            if findex == -1:
+                 
+                next_pnm = self.getnotematch()
+
+                # check next set of notes
+                if next_pnm:
+                        
+                    if next_pnm.isNoteMatch(ev.key, 0) >= 0:
+                        # match found
+                        self.state = self.STATE_JMATCH
+                    
+                    else:
+                        # not a match, but move to next
+                        # pnm anyway
+                        self.state = self.STATE_WPOST
+                        next_pnm.matchdex = 0
+                        self.setsongmode(
+                            ev_tout=next_pnm.ev_timeout,
+                            vis_tout=self.match.vis_timeout
+                        )
+
+                    self.match = next_pnm 
+                    self.played = [ev.key]
+
+                # completed this song
+                else:
+                    self.state = self.STATE_WDONE
+
+            # finished post complete
+            elif self.match.matchdex == len(self.match.postnotes):
+
+                next_pnm = self.getnotematch()
+
+                # check next set of notes
+                if next_pnm:
+
+                    self.played = list()
+                    next_pnm.matchdex = 0
+                    self.setsongmode(
+                        ev_tout=next_pnm.ev_timeout,
+                        vis_tout=self.match.vis_timeout
+                    )
+                    self.match = next_pnm
+                    self.state = self.STATE_WPOST
+
+                # no next set of notes, you've played this
+                # song completel
+                else:
+                    self.state = self.STATE_WDONE
+
+
+        def stateWaitPost(self, ev):
+            """
+            Flow that occurs when we are in a transitional phase from a note
+            match to another
+
+            IN:
+                ev - pygame event that occured
+
+            STATES:
+                STATE_WPOST
+                STATE_CPOST
+                STATE_VPOST
+            """
+            # here we check the just hit note for matching
+            findex = self.match.isNoteMatch(ev.key, index=0)
+
+            if findex > 0:
+                self.state = self.STATE_JMATCH
+
+            else:
+                # missed the note, so take us back to verse
+                # start
+                self.state = self.STATE_CLEAN
+                self.played = [ev.key]
+
 
         def render(self, width, height, st, at):
             # renpy render function
@@ -1760,9 +2088,41 @@ init 1001 python:
             #   to use renpy.restart_interaction(). This also means that the
             #   changes that occur here shouldnt be rendered
             # STATE MACHINE
-            if (
+            if self.state in self.DONE_STATES:
+
+                if self.state == self.STATE_DJPOST:
+                    # display monikas post expression
+                    renpy.show(self.match.postexpress)
+
+                    # hide text
+                    if not self.match.posttext:
+                        self.lyric = None
+
+                    restart_int = True
+
+                    # we go to DPOST instead of POST
+                    self.state = self.STATE_DPOST
+
+                    # force a redraw
+                    renpy.redraw(self, self.vis_timeout)
+
+                # check for visual timeout
+                elif st-self.prev_time >= self.vis_timeout:
+
+                    # force event call
+                    self.state = self.STATE_DONE
+                    renpy.timeout(1.0)
+#                    renpy.redraw(self, 1.0)
+#                    redrawn = True
+                
+                # do a redraw for the next timeout
+                else:
+                    renpy.redraw(self, self.vis_timeout)
+#                    redrawn = True
+
+            elif (
                     self.state == self.STATE_CLEAN 
-                    or st-self.prev_time >= self.vis_timeout
+                    or st-self.prev_time >= self.ev_timeout
                 ):
 
                 # default monika
@@ -1773,8 +2133,9 @@ init 1001 python:
 
                 restart_int = True
 
-                if self.state != self.STATE_DONE:
+                if self.state not in self.DONE_STATES:
                     self.state = self.STATE_LISTEN
+                    self.resetVerse()
                 self.setsongmode(False)
 
             elif self.state != self.STATE_LISTEN:
@@ -1786,6 +2147,9 @@ init 1001 python:
                     
                     # display text
                     self.lyric = self.match.say
+
+                    # set song mode
+                    self.setsongmode(vis_tout=self.match.vis_timeout)
 
                     restart_int = True
                     self.state = self.STATE_MATCH
@@ -1807,12 +2171,12 @@ init 1001 python:
                         self.lyric = None
 
                     # setup visual timeout
-                    if self.lastmatch.redraw_time:
+                    if self.lastmatch.vis_timeout:
 #                        self.customRedraw(
 #                            self.lastmatch.redraw_time, 
 #                            from_render=True
 #                        )
-                        renpy.redraw(self, self.lastmatch.redraw_time)
+                        renpy.redraw(self, self.lastmatch.vis_timeout)
                         self.drawn_time = st
                         self.state = self.STATE_CPOST
                         redrawn = True
@@ -1823,7 +2187,7 @@ init 1001 python:
                 elif self.state == self.STATE_CPOST:
 
                     # check if timeout
-                    if st-self.drawn_time >= self.lastmatch.redraw_time:
+                    if st-self.drawn_time >= self.lastmatch.vis_timeout:
 
                         # display default monika
                         renpy.show(self.DEFAULT)
@@ -1851,7 +2215,7 @@ init 1001 python:
 
                     restart_int = True
                     self.state = self.STATE_POST
-
+                
                 elif self.state == self.STATE_FAIL:
 
                     # display failed monika
@@ -1917,7 +2281,7 @@ init 1001 python:
             # NOTE: Renpy is EVENT-DRIVEN
 
             # DONE state means you immediate quit
-            if self.state == self.STATE_DONE:
+            if self.state in self.FINAL_DONE_STATES:
                 return self.quitflow()
 
             # when you press down a key, we launch a sound
@@ -1932,21 +2296,46 @@ init 1001 python:
 #                    self.testing.write("".join([chr(x) for x in self.played])+ "\n")
                     self.played = list()
 
-                    # TODO: check the note you hit and appropriately
-                    # do matching
-                    # TODO: cehck if this even makes sens
-                    if self.state != self.STATE_LISTEN:
-                        if self.pnml:
-                            self.match.fails += 1
-                            self.pnm_index = self.pnml.verse_list[
-                                self.versedex
-                            ]
-                            self.match = self.pnml.pnm_list[self.pnm_index]
-                            self.match.matchdex = 0
-                        self.state = self.STATE_CLEAN
+                    # NOTE: in the listen state,  timeout means restart
+                    # the played list (which is what handles the note
+                    # matchin). Keep state.
 
-                        renpy.redraw(self, 0)
-#                        self.customRedraw(0)
+                    # NOTE: in transitional post states, timeout means 
+                    # continue waiting.
+                    # Keep state.
+
+                    # NOTE: in done related states, timeout means quit 
+                    # the game.
+                    if self.state in self.DONE_STATES:
+                        return self.quitflow()
+
+                    # NOTE: in the match-related states, timeout means
+                    # they failed the expression.
+                    elif self.state in self.TOUT_MATCH_STATES:
+                        self.resetVerse()
+                        self.state = self.STATE_LISTEN
+
+                    # NOTE: in post-match related states, timeout means
+                    # move onto the next expression. 
+                    elif self.state in self.TOUT_POST_STATES:
+                        next_pnm = self.getnotematch()
+
+                        if next_pnm:
+                            self.setsongmode(
+                                ev_tout=next_pnm.ev_timeout,
+                                vis_tout=self.match.vis_timeout
+                            )
+                            self.state = self.STATE_WPOST
+                            self.match = next_pnm
+                            self.match.matchdex = 0
+
+                        # no more matches, we are done
+                        else:
+                            self.state = self.STATE_WDONE
+
+                    # NOTE: in clean state, chnage state to listen.
+                    elif self.state == self.STATE_CLEAN:
+                        self.state = self.STATE_LISTEN
 
 #   DEBUG: NOTE:
 #                if self.match:
@@ -1978,186 +2367,19 @@ init 1001 python:
 
                         # check if we have enough played notes
                         if self.state == self.STATE_LISTEN:
-
-                            # check if we are in song mode
-                            if self.mode == self.MODE_SONG:
-
-                                # find a match
-                                findex = self.match.isNoteMatch(ev.key, 0)
-
-                                if findex >= 0:
-                                    self.state = self.STATE_JMATCH
-
-                            # not in song mode, check for correct number of
-                            # notes
-                            elif len(self.played) >= zzpianokeys.NOTE_SIZE:
-
-                                # find a match
-                                self.match = self.findnotematch(self.played)
-
-                                # check if match
-                                if self.match:
-                                    self.state = self.STATE_JMATCH
+                            self.stateListen(ev)
 
                         # post match checking
-                        elif (
-                                self.state == self.STATE_POST
-                                or self.state == self.STATE_JPOST
-                            ):
-                            # post match means we abort on the first miss
-                            findex = self.match.isPostMatch(ev.key)
-
-                            # finish post, but check for a next match
-                            if findex == -1:
-                                 
-                                next_pnm = self.getnotematch()
-
-                                # check next set of notes
-                                if next_pnm:
-                                        
-                                    self.played = [ev.key]
-                                    self.match = next_pnm 
-
-                                    if next_pnm.isNoteMatch(ev.key, 0) >= 0:
-                                        # match found
-                                        self.state = self.STATE_JMATCH
-                                        self.setsongmode(
-                                            ev_tout=next_pnm.ev_timeout,
-                                            vis_tout=next_pnm.vis_timeout
-                                        )
-                                    
-                                    else:
-                                        # not a match, but move to next
-                                        # pnm anyway
-                                        self.state = self.STATE_WPOST
-                                        self.match.matchdex = 0
-
-                                # completed this song
-                                else:
-                                    self.state = self.STATE_DONE
-                                    renpy.timeout(self.pnml.end_wait)
-
-                            # finished post complete
-                            elif (
-                                    self.match.matchdex == len(
-                                        self.match.postnotes
-                                    )
-                                ):
-
-                                next_pnm = self.getnotematch()
-
-                                # check next set of notes
-                                if next_pnm:
-
-                                    self.played = list()
-                                    self.match = next_pnm
-                                    self.state = self.STATE_WPOST
-                                    self.setsongmode(
-                                        ev_tout=next_pnm.ev_timeout,
-                                        vis_tout=next_pnm.vis_timeout
-                                    )
-
-                                # no next set of notes, you've played this
-                                # song completel
-                                else:
-                                    self.state = self.STATE_DONE
-                                    renpy.timeout(self.pnml.end_wait)
+                        elif self.state in self.POST_STATES:
+                            self.statePost(ev)
 
                         # waiting post
-                        elif (
-                                self.state == self.STATE_WPOST
-                                or self.state == self.STATE_CPOST
-                                or self.state == self.STATE_VPOST
-                            ):
-                            # here we check the just hit note for matching
-                            findex = self.match.isNoteMatch(ev.key, index=0)
+                        elif self.state in self.TRANS_POST_STATES:
+                            self.stateWaitPost(ev)
 
-                            if findex > 0:
-                                self.state = self.STATE_JMATCH
-
-                            else:
-                                # missed the note, so take us back to verse
-                                # start
-                                self.pnm_index = self.match.verse
-                                self.match = self.pnml.pnm_list[
-                                    self.match.verse
-                                ]
-                                self.state = self.STATE_CLEAN
-                                self.played = [ev.key]
-
-                        # preprocess match
-                        elif (
-                                self.state == self.STATE_MATCH
-                                or self.state == self.STATE_MISS
-                                or self.state == self.STATE_JMATCH
-                            ):
-                            # we have a match, check to ensure that this key
-                            # follows the pattern
-                            findex = self.match.isNoteMatch(ev.key)
-
-                            # failed match
-                            if findex < 0:
-
-                                # -1 is a non match
-                                if findex == -1:
-
-                                    # check for a double failure, which means
-                                    # we failed entirely on playing this piece
-                                    if self.state == self.STATE_MISS:
-                                        self.match.fails += 1
-                                        self.state = self.STATE_FAIL
-
-                                        # incase of a double failure, we zero
-                                        # the list and the prev time
-                                        self.played = [ev.key]
-
-                                        # clear the match
- #                                       self.lastmatch = None
- #                                       self.match = None
-
-                                    # this is our first failure, just take note
-                                    else:
-                                        self.match.misses += 1
-                                        self.state = self.STATE_MISS
-
-                            # otherwise, we matched, but need to clear fails
-                            else:
-
-                                # check for finished notes
-                                if self.match.matchdex == len(self.match.notes):
-
-                                    # you passed
-                                    self.match.passes += 1
-
-                                    # post notes flow
-                                    if self.match.postnotes:
-
-                                        self.state = self.STATE_JPOST
-                                        self.match.matchdex = 0
-
-                                    # next pnm match
-                                    else:
-                                        next_pnm = self.getnotematch()
-
-                                        if next_pnm:
-
-                                            self.lastmatch = self.match
-                                            self.match = next_pnm
-                                            self.state = self.STATE_VPOST
-                                            self.setsongmode(
-                                                ev_tout=next_pnm.ev_timeout,
-                                                vis_tout=next_pnm.vis_timeout
-                                            )
-                                            self.match.matchdex = 0
-                                            self.played = list()
-
-                                        # no more matches, we are done
-                                        else:
-                                            self.state = self.STATE_DONE
-                                            renpy.timeout(self.pnml.end_wait)
-
-                                else:
-                                    self.state = self.STATE_MATCH
+                        # match
+                        elif self.state in self.MATCH_STATES:
+                            self.stateMatch(ev)
 
                         # get a sound to play
                         renpy.play(self.pkeys[ev.key], channel="audio")
