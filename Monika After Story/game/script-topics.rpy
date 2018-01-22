@@ -4713,5 +4713,5 @@ label monika_fastfood:
     m 1m "Even though I can't cook very well yet."
     m 1e"[player], try eating healthily, please? For me?"
     m  "It would make me feel better to know you're looking after yourself."
-    m "Maybe once I come over we can learn to cook together"
+    m "Maybe once I come over we can learn to cook together!"
     m 1j "Doesn't that sound fun, my love?"
