@@ -4696,7 +4696,7 @@ label monika_breakup:
             "Of course not.":
                 m 2k "That's what I thought, just making sure!"
                 m 2k "Yeah, I know you would never do that to me."
-                m "I love you! Hehe~"
+                m "I love you! Ehehe~"
     
     #Increments the persistent every time you click the button in the menu.
     $ persistent.monika_breakup += 1
