@@ -27,6 +27,7 @@ init -1 python in evhand:
 
     # this is the event database
     event_database = dict()
+    farewell_database = dict()
 
     # special namedtuple type we are using
     from collections import namedtuple
@@ -292,6 +293,7 @@ label prompt_menu:
         talk_menu.append(("Ask a question.", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
+        talk_menu.append(("Goodbye.", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
         renpy.say(m, "Pick something to talk about?", interact=False)
@@ -305,6 +307,9 @@ label prompt_menu:
 
     if madechoice == "repeat":
         call prompts_categories(False)
+
+    if madechoice == "goodbye":
+        call random_farewell
 
     if madechoice == "nevermind":
         $_return = None
@@ -329,7 +334,7 @@ label show_prompt_list(sorted_event_keys):
     return
 
 label prompts_categories(pool=True):
-    
+
     # this acts as a stack for category lists
     # each item is an _NT_CAT_PANE namedtuple
     $ cat_lists = list()
@@ -338,7 +343,7 @@ label prompts_categories(pool=True):
     $ import store.evhand as evhand
     $picked_event = False
     python:
-        
+
         # get list of unlocked events for the master category list
         unlocked_events = Event.filterEvents(
             evhand.event_database,
@@ -399,7 +404,7 @@ label prompts_categories(pool=True):
                     pool=pool
                 )
 
-                # add deeper categories to a list 
+                # add deeper categories to a list
                 # NOTE: not implemented because we dont have subfolders atm.
                 #   maybe one day, but we would need a structure to link
                 #   main categories to subcats
@@ -451,9 +456,10 @@ label prompts_categories(pool=True):
                 """
 
         call screen twopane_scrollable_menu(prev_items, main_items, evhand.LEFT_AREA, evhand.LEFT_XALIGN, evhand.RIGHT_AREA, evhand.RIGHT_XALIGN, len(current_category)) nopredict
-        
 
-        if _return in prev_cats: 
+
+
+        if _return in prev_cats:
             # we selected a category from teh previous pane
             python:
                 if len(current_category) > 0:
@@ -477,5 +483,12 @@ label prompts_categories(pool=True):
         else: # event picked
             $picked_event = True
             $pushEvent(_return)
-        
+
+    return
+
+label random_farewell:
+    python:
+        random_farewells = Event.filterEvents(evhand.farewell_database,random=True).keys()
+        pushEvent(renpy.random.choice(random_farewells))
+
     return

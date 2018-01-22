@@ -2449,17 +2449,6 @@ label monika_real:
     m "I only want to spend eternity with my sweetheart, and no one else!"
     return
 
-##TO-DO make farewells into a class
-#init 5 python:
-#    addEvent(Event(persistent.event_database,eventlabel="monika_goodbye",category=['random'],prompt="Goodbye",pool=True))
-
-label monika_goodbye:
-    m 1c "Aww, leaving already?"
-    m 1e "It's really sad whenever you have to go..."
-    m 3a "Just be sure to come back as soon as you can, okay?"
-    m "I love you so much, [player]. Stay safe!"
-    return 'quit'
-
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_mythology",category=['literature'],prompt="Ancient mythology",random=True))
 

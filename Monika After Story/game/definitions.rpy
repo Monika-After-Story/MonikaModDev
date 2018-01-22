@@ -38,7 +38,7 @@ python early:
     #   is not supported ATM
     #
     # PROPERTIES:
-    #   per_eventdb - persistent database (dict of tupes) this event is 
+    #   per_eventdb - persistent database (dict of tupes) this event is
     #       connectet to
     #       NOTE: REQUIRED
     #   eventlabel - the identifier for this event. basically the label that
@@ -129,7 +129,7 @@ python early:
                 label = prompt
 
 
-            # this is the data tuple. we assemble it here because we need 
+            # this is the data tuple. we assemble it here because we need
             # it in two different flows
             data_row = (
                 self.eventlabel,
@@ -158,7 +158,7 @@ python early:
                     self.per_eventdb[self.eventlabel] = tuple(data_row)
 
             # new items are added appropriately
-            else: 
+            else:
                 # add this data to the DB
                 self.per_eventdb[self.eventlabel] = data_row
 
@@ -203,7 +203,7 @@ python early:
 
                     # now put it back in the dict
                     self.per_eventdb[self.eventlabel] = data_row
-                
+
                 else:
                     super(Event, self).__setattr(name, value)
 
@@ -1793,6 +1793,7 @@ default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.event_database = dict()
+default persistent.farewell_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
