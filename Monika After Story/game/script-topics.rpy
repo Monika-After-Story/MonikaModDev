@@ -4698,3 +4698,20 @@ label monika_omamori:
     m 1k "I could be your guardian deity, ehehe~"
     return    
 
+init 5 python:
+    addEvent(Event(eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
+
+label monika_fastfood:
+    m 1a "Hm? Do I like fast food?"
+    m 1n "Honestly, the thought of it slightly disgusts me."
+    m 1m "Most places that serve it put a really unhealthy amount of things in it."
+    m "Even the vegetarian options can be awful."
+    m 1h "[player], do you have fast food often?"
+    m 1i "It's ok to have it every now and then..."
+    m "But please don't make it part of your daily lifestyle."
+    m 1e "If I were there I would make you something healthy instead..."
+    m 1m "Even though I can't cook very well yet."
+    m 1e"[player], try eating healthily, please? For me?"
+    m  "It would make me feel better to know you're looking after yourself."
+    m "Maybe once I come over we can learn to cook together"
+    m 1j "Doesn't that sound fun, my love?"
