@@ -5,7 +5,7 @@
 ##Label must start with "bye" to prevent being pushed back onto the stack if closed
 
 init 5 python:
-    addEvent(Event(eventlabel="bye_leaving_already",random=True),eventdb=persistent.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_leaving_already",random=True),eventdb=evhand.farewell_database)
 
 label bye_leaving_already:
     m 1c "Aww, leaving already?"
@@ -13,11 +13,11 @@ label bye_leaving_already:
     m 3a "Just be sure to come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
     #Don't show this farewell again
-    $persistent.farewell_database["monika_leaving_already"].random=False
+    $evhand.farewell_database["bye_leaving_already"].random=False
     return 'quit'
 
 init 5 python:
-    addEvent(Event(eventlabel="bye_goodbye",random=True),eventdb=persistent.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_goodbye",random=True),eventdb=evhand.farewell_database)
 
 label bye_goodbye:
     m 1c "Goodbye, [player]!"
