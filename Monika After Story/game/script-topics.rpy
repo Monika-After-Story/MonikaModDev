@@ -4577,7 +4577,7 @@ label monika_1984:
     return
     
 init 5 python:
-    addEvent(Event(eventlabel="monika_see_ya",category=['farewell'],prompt="See you later!",random=True))
+    addEvent(Event(eventlabel="monika_see_ya",category=['farewell'],prompt="See you later!",random=False))
 
 label monika_see_ya:
     m 1f "Do you have to go so soon?"
