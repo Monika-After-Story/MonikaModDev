@@ -3,8 +3,8 @@
 #
 # we are now using an event db. (not the big one, just a special two for us)
 
-# list of tags that we have unlocked
-default persistent.jokes_tags_blocked = [store.masjokes.TYPE_DARK]
+# list of tags that we have blocked
+default persistent.jokes_tags_blocked = []
 
 # how many jokes available today
 default persistent.jokes_available = masjokes.JOKE_DAILY_MAX
@@ -15,6 +15,7 @@ default persistent.jokes_available = masjokes.JOKE_DAILY_MAX
 # the JOKES DB.
 # similar to events except we doing things a bit differently.
 # MAIN DIFFS:
+#   eventlabel - still 
 #   category - this system will be used to differentiate between joke types.
 #       and allow us to apply filtering blocks
 #   unlocked - we dont actually use this to signifiy if a joke is unlocked.
@@ -26,8 +27,9 @@ default persistent.jokes_available = masjokes.JOKE_DAILY_MAX
 #   conditional - these are NOT evaluated. NOTE: if we endup having to use
 #       unlocked, then we will consider doing this as well.
 #   
-default persistent.jokes_m2p_db = {}
-default persistent.jokes_p2m_db = {}
+# NOTE: we are using the new Event system where data is stored in persistent
+# but Events are stored in a separate dict that points to said persistent
+default persistent.jokes_database = {}
 
 # pre stuff
 init -1 python:
@@ -71,6 +73,10 @@ init -1 python in masjokes:
     TYPE_PUN = "pun"
     TYPE_CS = "cs" # programmer related humor
 
+    # dict storage of Events
+    jokes_m2p_db = dict()
+    jokes_p2m_db = dict()
+
     # list storage of everything
     all_m2p_jokes = list()
     all_p2m_jokes = list()
@@ -79,15 +85,19 @@ init -1 python in masjokes:
     day_m2p_jokes = list()
     day_p2m_jokes = list()
 
+    # are jokes unlocked
+    jokes_unlocked = False
+
 
 init 5 python in masjokes:
 
-    def filterJoke(joke):
+    def filterJoke(joke, seen=False):
         #
         # Filters the given joke accoridng to persistent rule
         #
         # IN:
         #   joke - Event object joke to filter
+        #   seen - True if we want to include seen jokes, false otherwise
         #
         # RETURNS:
         #   True if the joke passes the filter, false otherwise
@@ -97,6 +107,10 @@ init 5 python in masjokes:
 
         # sanity check
         if not joke:
+            return False
+
+        # no seens allowed (if seen is False)
+        if not seen and renpy.seen_label(joke.eventlabel):
             return False
 
         # no category is okay
@@ -111,16 +125,17 @@ init 5 python in masjokes:
         # pass filtering rules
         return True
 
-    def buildFilteredJokesList(jokedb):
+    def buildFilteredJokesList(jokedb, seen=False):
         #
         # builds a list of filtered jokes given the jokedb
         #
         # IN:
         #   jokedb - the dict of Event jokes to filter
+        #   seen - True if we want to include seen jokes, false otherwise
         #
         # RETURNS:
         #   list of filtered jokes
-        return [ev for k,ev in jokedb.iteritems() if filterJoke(ev)]
+        return [ev for k,ev in jokedb.iteritems() if filterJoke(ev, seen)]
 
     def buildUnseenJokesList(joke_list):
         #
@@ -139,12 +154,17 @@ init 10 python:
     import copy
     import store.masjokes as masjokes
 
+    # jokes are unlocked after seeing this label
+    masjokes.jokes_unlocked = renpy.seen_label("monika_urgent")
+
     # all lists are all jokes minus filters
     masjokes.all_m2p_jokes = masjokes.buildFilteredJokesList(
-        persistent.jokes_m2p_db
+        store.masjokes.jokes_m2p_db,
+        seen=True
     )
     masjokes.all_p2m_jokes = masjokes.buildFilteredJokesList(
-        persistent.jokes_p2m_db
+        store.masjokes.jokes_p2m_db,
+        seen=True
     )
 
     # use lists are jokes that we havent seen.
@@ -155,23 +175,130 @@ init 10 python:
         masjokes.all_p2m_jokes
     )
 
+    # NOTE: many of these things are going to be moved into the jokes
+    # label instead. 
     # empty lists mean we need to reset
-    if len(masjokes.use_m2p_jokes) == 0:
-        masjokes.use_m2p_jokes = copy.copy(masjokes.all_m2p_jokes)
-    if len(masjokes.use_p2m_jokes) == 0:
-        masjokes.use_p2m_jokes = copy.copy(masjokes.all_p2m_jokes)
+#    if len(masjokes.use_m2p_jokes) == 0:
+#        masjokes.use_m2p_jokes = copy.copy(masjokes.all_m2p_jokes)
+#    if len(masjokes.use_p2m_jokes) == 0:
+#        masjokes.use_p2m_jokes = copy.copy(masjokes.all_p2m_jokes)
 
     # fill up the daily jokes list
-    masjokes.day_m2p_jokes = randomlyRemoveFromListPool(
-        masjokes.use_m2p_jokes,
-        masjokes.OPTION_MAX
-    )
-    masjokes.day_p2m_jokes = randomlyRemoveFromListPool(
-        masjokes.use_p2m_jokes,
-        masjokes.OPTION_MAX
-    )
+#    masjokes.day_m2p_jokes = randomlyRemoveFromListPool(
+#        masjokes.use_m2p_jokes,
+#        masjokes.OPTION_MAX
+#    )
+#    masjokes.day_p2m_jokes = randomlyRemoveFromListPool(
+#        masjokes.use_p2m_jokes,
+#        masjokes.OPTION_MAX
+#    )
 
     # resets should happen in the jokes topic
+
+#################### JOKE LAUNCHER ############################################
+
+# START LABEL
+label joke_tell_joke:
+    
+    # you can only exchange a certain number of jokes per day
+    if persistent.jokes_available > 0:
+        $ import store.masjokes as masjokes
+        $ import copy
+        m "Hey [player], I think telling each other some good jokes could bring us closer together, you know?"
+        m "I know quite a few jokes, but I was wondering if maybe you knew any."
+        menu:
+            m "Do you know any good jokes?"
+            "{b}Yes{/b}" if len(masjokes.use_p2m_jokes) > 0:
+                # we have new jokes to tell
+                call joke_tell_monika
+
+            "Yes" if len(masjokes.use_p2m_jokes) == 0:
+                # we only have old jokes to share
+                call joke_tell_monika
+                m "TODO: dialogue about repeating jokes?"
+
+            "{b}No{/b}" if len(masjokes.use_m2p_jokes) > 0:
+                # monika has new jokes to tell
+                m "Alright, I'll tell you a joke"
+                jump joke_tell_player
+
+            "No" if len(masjokes.use_m2p_jokes) == 0:
+                # no new monika jokes
+                # TODO: dialogue for no new jokes
+                m "TODO: dialogue about not having any new jokes"
+                menu:
+                    m "Exchange old jokes?"
+                    "Yes":
+                        jump joke_tell_player_old
+                    "No":
+                        m "TODO: okay player I write more jokes soon"
+    else:
+        # TODO: better dialogue for no more available jokes
+        m "No more jokes today I hate you"
+
+label joke_tell_jokeend:
+    # NOTE: this is called when we are done exchanging a joke.
+    return
+
+label joke_tell_monika:
+    python:
+        # check to ensure we arent dry
+        if len(masjokes.day_p2m_jokes) == 0:
+
+            # check if unseen isnt dry
+            if len(masjokes.use_p2m_jokes) == 0:
+                masjokes.use_p2m_jokes = copy.copy(masjokes.all_p2m_jokes)
+
+            # pull randomly
+            masjokes.day_p2m_jokes = randomlyRemoveFromListPool(
+                masjokes.use_p2m_jokes,
+                masjokes.OPTION_MAX
+            )
+
+    m "Ah, do you mind letting me hear some?"
+
+    python:
+        # using display menu requires a processing
+        p2m_jokeslist = list()
+        for joke in masjokes.day_p2m_jokes:
+            p2m_jokeslist.append((joke.prompt,joke))
+
+        # now call the menu
+        sel_joke = renpy.display_menu(p2m_jokeslist)
+
+    # and the resulting label
+    call expression sel_joke.eventlabel from _p2m_joke_subexp
+    $ masjokes.day_p2m_jokes.remove(sel_joke)
+    $ persistent.jokes_available -= 1
+
+    # dark joke code
+    if masjokes.TYPE_DARK in sel_joke.category:
+        $ persistent.dark_jokes_told += 1
+    return
+
+label joke_tell_player_old:
+    python:
+        # check to ensure we arent dry
+#        if len(masjokes.day_m2p_jokes) == 0:
+
+        # check if unseen isnt dry
+#        if len(masjokes.use_m2p_jokes) == 0:
+        masjokes.use_m2p_jokes = copy.copy(masjokes.all_m2p_jokes)
+
+        # pull randomly
+#        masjokes.day_m2p_jokes = randomlyRemoveFromListPool(
+#            masjokes.use_m2p_jokes,
+#            masjokes.OPTION_MAX
+#        )
+
+label joke_tell_player:
+    # now pick one monika
+    $ sel_joke = renpy.random.choice(masjokes.use_m2p_jokes)
+    call expression sel_joke.eventlabel from _m2p_joke_subexp
+    $ masjokes.use_m2p_jokes.remove(sel_joke)
+    $ persistent.jokes_available -= 1
+    
+    jump joke_tell_jokeend
 
 #=============================================================================#
 # PLAYER 2 MONIKA JOKES
@@ -180,11 +307,12 @@ init 10 python:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_moonrestaurant",
             prompt="Did you hear about the restaurant on the moon?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
     
@@ -201,11 +329,12 @@ label joke_moonrestaurant:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_scarecrowaward",
             prompt="Why did the scarecrow win an award?",
             category=[store.masjokes.TYPE_DAD, store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_scarecrowaward:
@@ -218,13 +347,14 @@ label joke_scarecrowaward:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_fencegraveyard",
             prompt=("A curious child asks his dad 'Why do they build a fence" +
                 " around a graveyard?'"
             ),
             category=[store.masjokes.TYPE_DAD, store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_fencegraveyard:
@@ -240,11 +370,12 @@ label joke_fencegraveyard:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_knocknobel",
             prompt="Did you hear about the guy who invented knock knock jokes?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_knocknobel:
@@ -259,11 +390,12 @@ label joke_knocknobel:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_mushroomfungai",
             prompt="A mushroom walks into a bar.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_mushroomfungai:
@@ -279,11 +411,12 @@ label joke_mushroomfungai:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_hitired",
             prompt="How many apples grow on a tree?",
             category=[store.masjokes.TYPE_DAD]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_hitired:
@@ -308,11 +441,12 @@ label joke_hitired:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_cantopener",
             prompt="What do you call a broken can opener?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_cantopener:
@@ -328,12 +462,13 @@ label joke_cantopener:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_camouflagetraining",
             prompt=("At evening roll call, the sergeant-major headed right " +
                 "towards a young soldier."
             )
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_camouflagetraining:
@@ -351,11 +486,12 @@ label joke_camouflagetraining:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_muffledexhausted",
             prompt="Last night I had a dream I was a muffler.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_muffledexhausted:
@@ -369,13 +505,14 @@ label joke_muffledexhausted:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_threewishes",
             prompt=("Three guys, who are stranded on an island, find a magic" +
                 " lantern which contains a genie, who will grant three " +
                 "wishes."
             ),
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_threewishes:
@@ -394,11 +531,12 @@ label joke_threewishes:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_sodapressing",
             prompt="Why did the can-crusher quit his job?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_sodapressing:
@@ -413,10 +551,11 @@ label joke_sodapressing:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_haircut",
             prompt="Did you ever get a haircut?",
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_haircut:
@@ -428,11 +567,12 @@ label joke_haircut:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_pooldeepends",
             prompt="Are pools safe for diving?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_pooldeepends:
@@ -445,10 +585,11 @@ label joke_pooldeepends:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_atomtrustissues",
             prompt="You shouldn't trust atoms!"
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_atomtrustissues:
@@ -463,10 +604,11 @@ label joke_atomtrustissues:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_hamdiscrimination",
             prompt="A ham sandwich walks into a bar."
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_hamdiscrimination:
@@ -481,10 +623,11 @@ label joke_hamdiscrimination:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_mineistheanswer",
             prompt="A cop stops a miner for speeding on the highway."
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_mineistheanswer:
@@ -502,11 +645,12 @@ label joke_mineistheanswer:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_beaverdamn",
             prompt="I just watched a show about beavers.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_beaverdamn:
@@ -519,11 +663,12 @@ label joke_beaverdamn:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_themuggedcoffee",
             prompt="Why did the coffee file a police report?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_themuggedcoffee:
@@ -537,11 +682,12 @@ label joke_themuggedcoffee:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_tearablepaper",
             prompt="Wanna hear a joke about paper?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
 
 label joke_tearablepaper:
@@ -555,11 +701,12 @@ label joke_tearablepaper:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_groundbreakingshovel",
             prompt="I think quite highly of the shovel.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_groundbreakingshovel:
@@ -572,11 +719,12 @@ label joke_groundbreakingshovel:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_igloosit",
             prompt="How does a penguin build it's house?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
             
 label joke_igloosit:
@@ -590,11 +738,12 @@ label joke_igloosit:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_irrelephant",
             prompt="What do you call an elephant that doesn't matter?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_irrelephant:
@@ -607,11 +756,12 @@ label joke_irrelephant:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_nutsdiet",
             prompt="I thought about going on an all-almond diet.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_nutsdiet:
@@ -626,11 +776,12 @@ label joke_nutsdiet:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_kidnappingatschool",
             prompt="Did you hear about the kidnapping at one school?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_kidnappingatschool:
@@ -644,11 +795,12 @@ label joke_kidnappingatschool:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_resistingarest",
             prompt="If a child refuses to sleep during night time.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_resistingarest:
@@ -661,11 +813,12 @@ label joke_resistingarest:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_stepahead",
             prompt="I leave my right shoe inside my car.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_stepahead:
@@ -679,10 +832,11 @@ label joke_stepahead:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_leastspokenlanguage",
             prompt="What's the least spoken language in the world?"
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_leastspokenlanguage:
@@ -695,11 +849,12 @@ label joke_leastspokenlanguage:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_octover",
             prompt="What do you say when november starts?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_octover:
@@ -712,11 +867,12 @@ label joke_octover:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_leekinginformation",
             prompt="Why did the vegetable go to jail?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
         
 label joke_leekinginformation:
@@ -729,10 +885,11 @@ label joke_leekinginformation:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_timidpebble",
             prompt="What did the timid pebble wish for?"
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_timidpebble:
@@ -745,10 +902,11 @@ label joke_timidpebble:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_chickenslide",
             prompt="Why did the chicken cross the playground?"
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_chickenslide:
@@ -761,11 +919,12 @@ label joke_chickenslide:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_nicejester",
             prompt="Yesterday a clown held the door open for me.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_nicejester:
@@ -778,11 +937,12 @@ label joke_nicejester:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_caketiers",
             prompt="It was an emotional wedding.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_caketiers:
@@ -795,11 +955,12 @@ label joke_caketiers:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_housewearadress",
             prompt="What does a house wear?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_housewearadress:
@@ -812,11 +973,12 @@ label joke_housewearadress:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_aimisgettingbetter",
             prompt="My ex-wife still misses me.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_aimisgettingbetter:
@@ -829,11 +991,12 @@ label joke_aimisgettingbetter:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_daywellspent",
             prompt="If you spent your day in a well.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_daywellspent:
@@ -846,11 +1009,12 @@ label joke_daywellspent:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_massconfusion",
             prompt="If America changed from pounds to kilograms.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_massconfusion:
@@ -864,11 +1028,12 @@ label joke_massconfusion:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_justchilling",
             prompt="What do snowmen do in their free time?",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_justchilling:
@@ -882,11 +1047,12 @@ label joke_justchilling:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_trainderailer",
             prompt="A boss yelled at a driver the other day.",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
     
 label joke_trainderailer:
@@ -902,11 +1068,12 @@ label joke_trainderailer:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "joke_wealldig",
             prompt="I dig, you dig, she dig, he dig, we dig...",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_p2m_db
+        eventdb=store.masjokes.jokes_p2m_db
     )
             
 label joke_wealldig:
@@ -922,11 +1089,12 @@ label joke_wealldig:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_bakercollege",
             prompt="Baker College",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
 
 label m_joke_bakercollege:
@@ -939,11 +1107,12 @@ label m_joke_bakercollege:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_gluehistory",
             prompt="Glue History",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
 
 label m_joke_gluehistory:
@@ -954,11 +1123,12 @@ label m_joke_gluehistory:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_knifetoknowyou",
             prompt="Nice to know you",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_knifetoknowyou:
@@ -971,11 +1141,12 @@ label m_joke_knifetoknowyou:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_natsukishelf",
             prompt="My shelf",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
 
 label m_joke_natsukishelf:
@@ -986,11 +1157,12 @@ label m_joke_natsukishelf:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_undercoverbook",
             prompt="Undercover",
             category=[store.masjokes.TYPE_PUN],
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
 
 label m_joke_undercoverbook:
@@ -1001,11 +1173,12 @@ label m_joke_undercoverbook:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_authlete",
             prompt="Authors",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_authlete:
@@ -1016,11 +1189,12 @@ label m_joke_authlete:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_stockholmbook",
             prompt="Stockholm Syndrome",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_stockholmbook:
@@ -1031,11 +1205,12 @@ label m_joke_stockholmbook:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_sinkholebook",
             prompt="Sinkholes",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_sinkholebook:
@@ -1046,11 +1221,12 @@ label m_joke_sinkholebook:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_penciltobeornot",
             prompt="Pencils",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
 
 label m_joke_penciltobeornot:
@@ -1061,11 +1237,12 @@ label m_joke_penciltobeornot:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_booknovelideas",
             prompt="Novel",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_booknovelideas:
@@ -1076,11 +1253,12 @@ label m_joke_booknovelideas:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_confidentbook",
             prompt="Confident",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_confidentbook:
@@ -1091,11 +1269,12 @@ label m_joke_confidentbook:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_booklove",
             prompt="Book Love",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_booklove:
@@ -1106,10 +1285,11 @@ label m_joke_booklove:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_smartbookworm",
             prompt="Bookworm"
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_smartbookworm:
@@ -1120,11 +1300,12 @@ label m_joke_smartbookworm:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_booknovelideas",
             prompt="Busy Novelist",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_bookednovelist:
@@ -1135,11 +1316,12 @@ label m_joke_bookednovelist:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_soccernogoal",
             prompt="Soccer",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_soccernogoal:
@@ -1150,11 +1332,12 @@ label m_joke_soccernogoal:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_stepupyourgamecompetition",
             prompt="Stair Climbing",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_stepupyourgamecompetition:
@@ -1165,11 +1348,12 @@ label m_joke_stepupyourgamecompetition:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_skiingdownhill",
             prompt="Skiing",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_skiingdownhill:
@@ -1180,10 +1364,11 @@ label m_joke_skiingdownhill:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_unbeatablewall",
             prompt="Tennis"
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_unbeatablewall:
@@ -1194,10 +1379,11 @@ label m_joke_unbeatablewall:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_olympicprocrastination",
             prompt="Olympics"
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_olympicprocrastination:
@@ -1208,10 +1394,11 @@ label m_joke_olympicprocrastination:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_pooldonation",
             prompt="Donations"
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_pooldonation:
@@ -1223,11 +1410,12 @@ label m_joke_pooldonation:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_flippingoutgymnast",
             prompt="Gymnast",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_flippingoutgymnast:
@@ -1238,11 +1426,12 @@ label m_joke_flippingoutgymnast:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_marathonforeducation",
             prompt="Education",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_marathonforeducation:
@@ -1253,11 +1442,12 @@ label m_joke_marathonforeducation:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_wetdribbled",
             prompt="Basketball",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_wetdribbled:
@@ -1268,11 +1458,12 @@ label m_joke_wetdribbled:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_jographysubject",
             prompt="Geography",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_jographysubject:
@@ -1283,10 +1474,11 @@ label m_joke_jographysubject:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_changingrooms",
             prompt="Football Grounds"
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_changingrooms:
@@ -1297,11 +1489,12 @@ label m_joke_changingrooms:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_volleyballserving",
             prompt="Volleyball",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_volleyballserving:
@@ -1312,11 +1505,12 @@ label m_joke_volleyballserving:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_samepagebooks",
             prompt="Books",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_samepagebooks:
@@ -1327,11 +1521,12 @@ label m_joke_samepagebooks:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_nowordsindictionary",
             prompt="Dictionary",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_nowordsindictionary:
@@ -1342,10 +1537,11 @@ label m_joke_nowordsindictionary:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_favoriteauthornowriter",
             prompt="Favorite Author"
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_favoriteauthornowriter:
@@ -1358,11 +1554,12 @@ label m_joke_favoriteauthornowriter:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_abigarithmeticproblem",
             prompt="Arithmetic",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
 
 label m_joke_abigarithmeticproblem:
@@ -1373,11 +1570,12 @@ label m_joke_abigarithmeticproblem:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_ghosthomework",
             prompt="Ghost Homework",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_ghosthomework:
@@ -1388,11 +1586,12 @@ label m_joke_ghosthomework:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_biggestliar",
             prompt="Liar",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_biggestliar:
@@ -1403,11 +1602,12 @@ label m_joke_biggestliar:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_binarytypes",
             prompt="Binary",
             category=[store.masjokes.TYPE_CS]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_binarytypes:
@@ -1418,11 +1618,12 @@ label m_joke_binarytypes:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_mymosthatedsnake",
             prompt="Snake",
             category=[store.masjokes.TYPE_CS, store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_mymosthatedsnake:
@@ -1433,11 +1634,12 @@ label m_joke_mymosthatedsnake:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_natski",
             prompt="Ski Trip",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_natski:
@@ -1448,11 +1650,12 @@ label m_joke_natski:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_programmerwithoutarrays",
             prompt="Arrays",
             category=[store.masjokes.TYPE_CS, store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_programmerwithoutarrays:
@@ -1463,11 +1666,12 @@ label m_joke_programmerwithoutarrays:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_renpie",
             prompt="Pie",
             category=[store.masjokes.TYPE_CS, store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_renpie:
@@ -1478,11 +1682,12 @@ label m_joke_renpie:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_moosician",
             prompt="Musician",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
 
 label m_joke_moosician:
@@ -1493,11 +1698,12 @@ label m_joke_moosician:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_lockedpiano",
             prompt="Piano Keys",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_lockedpiano:
@@ -1508,11 +1714,12 @@ label m_joke_lockedpiano:
 init 5 python:
     addEvent(
         Event(
+            persistent.jokes_database,
             "m_joke_debait",
             prompt="Fishing",
             category=[store.masjokes.TYPE_PUN]
         ),
-        eventdb=persistent.jokes_m2p_db
+        eventdb=store.masjokes.jokes_m2p_db
     )
     
 label m_joke_debait:

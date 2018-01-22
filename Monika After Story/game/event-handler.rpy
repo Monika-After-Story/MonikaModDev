@@ -280,6 +280,12 @@ label prompt_menu:
                 unseen_events.append(event)
 
         repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
+       
+        have_new_jokes = (
+            len(store.masjokes.use_m2p_jokes) > 0 
+            or len(store.masjokes.use_p2m_jokes) > 0
+        )
+
     #Top level menu
     show monika at t21
     #To make the menu line up right we have to build it up manually
@@ -290,6 +296,14 @@ label prompt_menu:
         talk_menu.append(("Ask a question.", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
+
+        if store.masjokes.jokes_unlocked:
+            if have_new_jokes and persistent.jokes_available > 0:
+                joke_option = ("{b}Exchange jokes.{/b}", "joke")
+            else:
+                joke_option = ("Exchange jokes.", "joke")
+            talk_menu.append(joke_option)
+
         talk_menu.append(("Nevermind.","nevermind"))
 
         renpy.say(m, "Pick something to talk about?", interact=False)
@@ -303,6 +317,9 @@ label prompt_menu:
 
     if madechoice == "repeat":
         call prompts_categories(False)
+
+    if madechoice == "joke":
+        call joke_tell_joke()
 
     if madechoice == "nevermind":
         $_return = None
