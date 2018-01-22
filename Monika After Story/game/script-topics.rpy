@@ -4936,34 +4936,47 @@ label monika_asks_family:
 #    return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_sea",category=['random'],prompt="The sea.",random=True))
+     addEvent(Event(eventlabel="monika_beach",category=['random'],prompt="The beach.",random=True))
 
-label monika_sea:
+label monika_beach:
     m 3a "[player] have you ever been to the beach?"
-    m "I've always wanted to go myself but never found the time."
-    m 3j"Imaganing the many sensations it could bring really excites me!"
-    m 3a"The fresh sea air, the sound of seagulls."
-    m "AS well as the feeling of sand under your feet.."
-    m 2b "It would really make a trip worthwhile!"
-    m 2j "I bet we would make some lovely memories there."
-    m 2a "I ask because I've always wanted to see the sea."
-    m "It holds so much and when the light shines right it can be really beautiful."
-    m  "Life in it thrives and that's pretty amazing you know?"
-    m 4h "The ocean floor is in complete darkness, food is scarce. "
-    m "And the pressure it can have is overwhelming."
-    m "Yet despite all the struggles, it's populace persist and adapt."
-    m 4c "..."
-    m "Yet even the sea isn't unaffected by pollution"
-    m "The coral reefs are dying and many fish species are becoming extinct."
-    m "It's really upsetting to think theres so little we as can do..."
-    m 1l "Man, the environment just can't catch a break! Ahaha..."
-    m 3f"I think the saddest thing is whaling personally."
-    m "Many countries have banned it yet it still happens!"
-    m "They're really beautiful and rare yet some countries still do it."
-    m 3q "In particular Japan is known for resisting the bans."
-    m 4q "It really sickens me but what can we as individuals do?"
-    m 3h "[player], would you promise me to not buy whale meat?"
-    m 3f "It would mean a lot to me and make me really proud of you!"
-    m "If everyone didn't support it then they would never do it."
-    m 3e "You wouldn't want to disappoint your loving girlfriend, would you?"
+    m 3b"I've always wanted to go myself but never found the time."
+    m 3a"I'would always be busy studying or at my clubs."
+    m "It wasn't easy trying to stay on top of everything..."
+    m 3m"And whenever I had a break I would usually spend my time at home relaxing."
+    m "I rarely had a chance to do so after all."
+    m 3h"Sometimes I feel like I might have missed out making some important memories though."
+    m 3q"Though I guess the game never had a beach so I couldn't go if I wanted to anyway."
+    menu:
+        m "Do you live near a beach, [player]?"
+
+        "Yes":
+            m 1k "That's great!"
+            m "It must be really nice to have it so close to you."
+            m 1j "I can't wait, we can have a romantic walk by it be our first date~"
+
+        "No":
+            m 1a "That's alright, the chances weren't very high. Most people don't."
+            m 1b "That just means we can going to one be an all-day trip!"
+    m 3j"There's so many things we'll be able to do one day."
+    m " Just imaganing the many sensations really excites me!"
+    m "The fresh sea air, the sound of seagulls."
+    m "As well as the feeling of sand under your feet.."
+    m 2k "It would really make a trip worthwhile!"
+    m 2e "Being with you there would make it even better though..."
+    m  "We have so many things we could do together."
+    m 2b "We could play volleyball, try some ice cream or go into the sea itself."
+    m  "It'll be cold but I'm sure we could each other warm..."
+    m  "We could try surfing or searching for some pretty seashells."
+    m 3e "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
+    m 3k"But don't go falling asleep otherwise I may bury you in the sand!"
+    m 3l"I'm just kidding, [player]."
+    m 1m "I'll have to get a new swimsuit though..."
+    m  "I only have these clothes in the game after all."
+    m 1a "Would you prefer a one piece or a bikini?"
+    m 1j "Actually, I think I'll make it a surprise."
+    m 5a "Don't get too excited though when you see it, Eheheh~"
+
+
     return
+
