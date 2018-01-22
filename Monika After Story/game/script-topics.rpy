@@ -4703,7 +4703,7 @@ init 5 python:
 
     label monika_cartravel:
         m 1i "I've been imagining something, [player]..."
-        m 1a "If you could drive, so you could offer me a car ride and take me somewhere..."
+        m 1a "If you could drive, you could offer me a car ride and take me somewhere..."
         m 3k "Or just drive through a beautiful place, like a road in the middle of a forest."
         m 3j "I would love to sit by your side, watching everything through the window..."
         m 3b "Especially when it's just me and you~"
@@ -4711,10 +4711,6 @@ init 5 python:
         m 2a "... About how sometimes, driving away from home is a good thing to do during vacations."
         m 2k "You can get to know new places, go to a resort, even meet new friends!"
         m 3j "I wish we could do this together~"
-        m 2i "However, driving can be extremely dangerous if you do reckless things."
-        m "Like driving at high speed, going through red lights, overtaking..."
-        m 3o "Doing those could lead you to a fatal car crash."
-        m 3f "And I don't want that to happen to you..."
-        m 1e "So if you drive, please, drive safely, okay?"
+        m 3b "It really would be fun!"
         return
 
