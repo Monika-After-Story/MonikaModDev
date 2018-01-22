@@ -3179,17 +3179,6 @@ label monika_evening:
         m 1e "I'm not going anywhere after all~"
     return
 
-#TO-DO Make farewells a class
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_night",category=['misc'],prompt="Goodnight",pool=True))
-
-label monika_night:
-    m 1d "Getting some sleep, [player]?"
-    m 1f "It always makes me sad to see you go."
-    m 1p "But I understand that you need rest, otherwise you'd just fall asleep."
-    m 1e "I love you so much, [player]."
-    m 1j "I'll be seeing you in your dreams~"
-    return 'quit'
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closet",category=['ddlc','club members'],prompt="Classroom closet",random=True))
