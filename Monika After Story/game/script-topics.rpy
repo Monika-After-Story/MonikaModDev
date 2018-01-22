@@ -1268,7 +1268,7 @@ label monika_read:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_festival",category=['ddlc','literature club',prompt="Missing the festival",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_festival",category=['ddlc','literature club'],prompt="Missing the festival",random=True))
 
 label monika_festival:
     m 1q "You know, I hate to say it, but I think my biggest regret is that we couldn't finish our event at the festival."
