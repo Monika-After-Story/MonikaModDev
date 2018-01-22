@@ -2,7 +2,7 @@
 #
 
 # hangman stuff only
-define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!"
+define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 
 # IMAGES-----------
 # hangman
