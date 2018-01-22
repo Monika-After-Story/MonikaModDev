@@ -161,6 +161,7 @@ init 10 python:
     if persistent.playername.lower() == "sayori":
         store.songs.current_track = store.songs.FP_SAYO_NARA
         store.songs.selected_track = store.songs.FP_SAYO_NARA
+        persistent.current_track = store.songs.FP_SAYO_NARA
     else:
         store.songs.current_track = persistent.current_track
         store.songs.selected_track = store.songs.current_track
