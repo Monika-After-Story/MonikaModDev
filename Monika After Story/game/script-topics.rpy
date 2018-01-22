@@ -4373,7 +4373,6 @@ label monika_anger:
     m 1e "[player], it might be handy for you to know what I learnt."
     m 1f "After all being angry can be a very dangerous thing!"
     m 2h "It's really bad for your health and can hurt your relationship with others."
-    m  "I know several tips to help mangaging your anger if you ever need them, [player]."
     m 2e "I just want to make sure you're as clear minded and healthy as you can to be."
     m 2a "The first thing you may want to try is to regulate your breathing."
     m "Purposefully take slow deep breathes and hopefully you'll find it quite calming."
@@ -4403,7 +4402,6 @@ label monika_anger:
     m 2g "When that happens please think about what I said."
     m 1f "If all else fails my love, you can always come here and tell me your frustrations."
     m 1e "I love you and I'll always be here to listen!"
-    m "If nothing else I hope that'll make you feel better about it."
     m 5a "Maybe just thinking of me will calm you down? Eheheh~"
 
     return
