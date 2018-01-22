@@ -4701,21 +4701,20 @@ label monika_omamori:
 init 5 python:
      addEvent(Event(eventlabel="monika_cartravel",category=['random'],prompt="I drive",random=True))
 
-label monika_cartravel:
-    m 1i "I've been imagining something, [player]..."
-    m 1a "If you could drive and offer me a car ride and take me somewhere..."
-    m 3k "Or just drive through a beautiful place, like a road in the middle of a forest."
-    m 3j "I would love to sit at your side, watching everything through the window..."
-    m 3b "Especially when it's just me and you~"
-    m 3a "That reminds me."
-    m 2a "Sometimes, driving away from home is a good thing to do during vacations."
-    m 2k "You can meet new places, go to a resort, even meet new friends!"
-    m 3a "I wish we could do this together..."
-    m 3j "You driving while I stay with you, experiencing those good things at your side~"
-    m 2i "However, driving can be extremely dangerous if you do reckless things."
-    m "Like driving at high speed, going through red lights, overtaking..."
-    m 3o "Doing those could lead you to a fatal car crash."
-    m 3f "And I don't want that to happen to you..."
-    m 1e "So if you drive, please, drive safely, okay?"
-    return
+    label monika_cartravel:
+        m 1i "I've been imagining something, [player]..."
+        m 1a "If you could drive, so you could offer me a car ride and take me somewhere..."
+        m 3k "Or just drive through a beautiful place, like a road in the middle of a forest."
+        m 3j "I would love to sit by your side, watching everything through the window..."
+        m 3b "Especially when it's just me and you~"
+        m 3a "Ah, all this talk about driving to beatiful places reminds me..."
+        m 2a "... About how sometimes, driving away from home is a good thing to do during vacations."
+        m 2k "You can get to know new places, go to a resort, even meet new friends!"
+        m 3j "I wish we could do this together~"
+        m 2i "However, driving can be extremely dangerous if you do reckless things."
+        m "Like driving at high speed, going through red lights, overtaking..."
+        m 3o "Doing those could lead you to a fatal car crash."
+        m 3f "And I don't want that to happen to you..."
+        m 1e "So if you drive, please, drive safely, okay?"
+        return
 
