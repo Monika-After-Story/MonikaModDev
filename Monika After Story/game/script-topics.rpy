@@ -4698,3 +4698,20 @@ label monika_omamori:
     m 1k "I could be your guardian deity, ehehe~"
     return    
 
+init 5 python:
+    addEvent(Event(eventlabel="monika_obon",category=['random'],prompt="What is Obon?",pool=True,unlocked=True))
+    
+label monika_obon:
+    m  "Oh, you want to know about the Obon festival, [player]?"
+    m  "It’s a festival that is held every year in Japan that takes place over the course of 3 days."
+    m "It’s believed that the spirits of your deceased ancestors return home during this time."
+    m "On the evening of the first night, fires or candles are lit to help the spirits return home."
+    m "Altars are decorated with offerings and prayers are said for the deceased."
+    m "On the evening of the third night, the spirits are sent back to the other side."
+    m "Paper lanterns are lit and set afloat in a body of water to send the spirits on their way."
+    m "Everyone celebrates the Obon festival to some extent, even those that aren’t religious."
+    m 3b "I suppose in some ways it’s similar to how Christmas is celebrated by many, even those that aren’t religious."
+    m 2m "It may seem a bit morbid [player], but it’s actually pretty entertaining."
+    m 3b "There is plenty of music and dancing during the festival as well."
+    m 1j "Perhaps one day we’ll be able to celebrate Obon together, wouldn’t that be nice [player]?"
+    return
