@@ -3240,6 +3240,10 @@ label monika_japanese:
                         m 4k "{i}Aishiteru yo, [player]-chan{/i}."
                         m 1j "Ehehe~"
                         m 1e "That means I love you, [player]-chan."
+                    elif persistent.gender == "X":
+                        m 4k "{i}Aishiteru yo, [player]-san{/i}."
+                        m 1j "Ehehe~"
+                        m 1e "That means I love you, [player]-san."
                     else:
                         m 4k "{i}Aishiteru yo, [player]-kun{/i}."
                         m 1j "Ehehe~"
