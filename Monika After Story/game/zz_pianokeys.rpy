@@ -51,7 +51,7 @@ label zz_play_piano_songchoice:
                 if pnml != "None":
 
                     # reaction in picking a song
-                    m 1j "I'm excited to hear you play, [player]!"
+                    m 1j "I'm so excited to hear you play, [player]!"
 
                     # launch label - if it exists, we can call this label to
                     # provide extra dialogue before playing this song
