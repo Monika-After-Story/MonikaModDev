@@ -75,7 +75,7 @@ label zz_play_piano_songchoice:
                 jump zz_play_piano_loopend
 
     # otherwise, we default to freestyle mode
-    m 1a "Then play for me, [player]..."
+    m 1a "Then play for me, [player]~"
 
 label zz_play_piano_setupstart:
 
