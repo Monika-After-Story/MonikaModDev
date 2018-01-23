@@ -4709,7 +4709,7 @@ label monika_smoking:
         
             "Yes, I do.":
                 m 1i "Thank you for being honest with me,"
-                m 1r "However, I'm really sad to here that."
+                m 1r "However, I'm really sad to hear that."
                 m 1i "Please promise that you'll quit for me, okay?"
                 m 1i "I don't want to see you destroy yourself that way."
                 m 1b "I just want you to be healthy."
