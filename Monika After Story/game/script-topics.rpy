@@ -4704,11 +4704,32 @@ init 5 python:
 label monika_smoking:
     m 2b "You know, I heard that a lot of people died last year from smoking cigarettes."
     m 1o "..."
-    m 1i "You don't smoke, do you [player]?"
-    m 1r "I'd hate to see you destroy yourself with such a bad habit."
-    m 1k "Please promise that you'll quit for me if you do, okay?"
-    m 1b "I just want you to be healthy."
-    m 1j "Stay well for me [player]."
-    m 1b "I love you so much."
+        menu:
+        m 1i "You don't smoke, do you [player]?"
+        
+            "Yes, I do.":
+                m 1i "Thank you for being honest with me,"
+                m 1r "However I'm really sad to here that."
+                m 1i "Please promise that you'll quit for me, okay?"
+                m 1i "I don't want to see you destroy yourself that way."
+                m 1b "I just want you to be healthy."
+                m 1j "Stay well for me [player]."
+                m 1k "I love you so much."
+        
+            "No, I don't.":
+                m 1k "I'm really glad you don't [player]."
+                m 2d "You shouldn't start either."
+                m 2d "It's an awful habit, and will only make your health worse."
+           
+            "I'm trying to quit.":
+                m 2b "That's a really good decision."
+                m 1d "I know it can be hard at times."
+                m 1d "If you ever feel like you need a cigarette, just do something else instead."
+                m 1b "I heard it's easier if you keep your mind busy."
+                m 1k "If you can't find anything that helps, just think about me. Okay?"
+                m 1b "I believe in you [player], I know you can do it."
+            
+    
+        
     return
 
