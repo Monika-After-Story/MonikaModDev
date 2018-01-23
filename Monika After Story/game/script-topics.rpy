@@ -4707,7 +4707,8 @@ label monika_fastfood:
     m  "Most places that serve it put a really unhealthy amount of things in it."
     m 1n "Even the vegetarian options can be awful."
     menu:
-    m 1c "[player], do you have fast food often?"
+        m "[player], do you have fast food often?"
+
         "Yes, I do.":
             m 3d "[player], it's ok to have it every once in a while."
             m 3f "Yet I can't help but worry if you're eating such awful things."
