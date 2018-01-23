@@ -42,9 +42,9 @@ label zz_play_piano_songchoice:
         show monika 1a
 
         menu:
-            m "Would you like to play a song or freestyle?"
-            "Play Song":
-                m "Which song would you like to play?"
+            m "Did you want to play a song or play on your own, [player]?"
+            "Play a song":
+                m "Which song?"
                 $ pnml = renpy.display_menu(song_list)
 
                 # song selected
@@ -68,7 +68,7 @@ label zz_play_piano_songchoice:
                 else:
                     jump zz_play_piano_songchoice
 
-            "Freestyle":
+            "On my own":
                 pass
 
             "Nevermind":
@@ -136,43 +136,46 @@ label zz_play_piano_loopend:
 
 # default. post game, freestyle mode
 label zz_piano_default:
-    m 1a "That was nice, [player]!"
+    m 1a "All done, [player]?"
     return
 
 # Shown if player does not hit any notes
 label zz_piano_none:
-    m 1l "[player],{w} I thought you wanted to play the piano."
-    m 1e "I'd really enjoy hearing you play."
-    m "Can you play for me next time?"
+    m 1m "Uhhh [player]..."
+    m 1l "I thought you wanted to play the piano?"
+    m 1e "I really enjoy hearing you play."
+    m 1j "Promise to play for me next time?"
     return
 
 ### YOUR REALITY
 
 # shown if player completes the song but does not FC
 label zz_piano_yr_win:
-    m 1a "That was great, [player]!"
-    m 1j "But you could use a little practice."
+    m 1m "That was nice, [player]."
+    m "But..." 
+    m 1n "You could do better with some more practice..."
+    m 1l "Ehehe~"
     return
 
 # shown if player FCs
 label zz_piano_yr_fc:
-    m 1j "That was wonderful, [player]!"
-    m 1a "I didn't know you can play the piano so well."
-    m "Maybe we should play together sometime."
+    m 1b "That was wonderful, [player]!"
+    m 1j "I didn't know you can play the piano so well."
+    m 1a "Maybe we should play together sometime!"
     return
 
 # shown if player did not complete song and had more fails than passes
 label zz_piano_yr_fail:
-    m 1m "..."
+    m 1o "..."
     m 1e "That's okay, [player]."
-    m "At least you tried your best."
+    m 1j "At least you tried your best."
     return
 
 # shown if player did not complete song but had more passes than fails
 label zz_piano_yr_prac:
-    m 1a "That was nice, [player]."
-    m "With some practice, you'll be able to completely play my song in no time."
-    m 1j "Make sure to practice with me everyday!~"
+    m 1a "That was really cool, [player]!"
+    m 3b "With some more practice, you'll be able to play my song perfectly."
+    m 1j "Make sure to practice everyday for me, okay~?"
     return
 
 #abel zz_piano_yr_launch:
