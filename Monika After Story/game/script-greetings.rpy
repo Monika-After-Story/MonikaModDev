@@ -688,4 +688,5 @@ label greeting_sunshine:
     m 1j "..."
     m 4n "Oh, hey [player]. Well this is certainly embarrassing."
     m 1l "I was just singing to myself waiting for you to return."
+    m 1b "Now that you're here we can have a fun day together~"
     return
