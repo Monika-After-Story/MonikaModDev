@@ -1788,8 +1788,10 @@ init 1001 python:
             """
             Resets the current match back to its verse start.
             """
-            self.pnm_index = self.match.verse
-            self.match = self.getnotematch(self.pnm_index)
+            # we can only reset if we have a match
+            if self.match:
+                self.pnm_index = self.match.verse
+                self.match = self.getnotematch(self.pnm_index)
 
 
         def setsongmode(self, songmode=True, ev_tout=None, vis_tout=None):
