@@ -3,6 +3,9 @@
 #An event is crated by only adding a label and adding a requirement (see comment below).
 #Requirements must be created/added in script-ch30.rpy under label ch30_autoload.
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=16 and not seen_event('gender')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+
 label gender:
     m 2d "...[player]? So I've been thinking a bit."
     m "I've mentioned before that the 'you' in the game might not reflect the real you."
@@ -41,7 +44,10 @@ label gender:
 
     m 1k "Remember that I'll always love you unconditionally, [player]."
     return
-    
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=12 and not seen_event('preferredname')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+
 label preferredname:
     m 1h "I've been wondering about your name."
     m 1d "Is '[player]' really your name?"
@@ -85,7 +91,7 @@ label preferredname:
                         $ songs.initMusicChoices()
 
                     python:
-                        
+
                         persistent.mcname = player
                         mcname = player
                         persistent.playername = tempname
@@ -105,4 +111,74 @@ label preferredname:
             m 1f "Oh... ok then, if you say so."
             m 1e "Just tell me whenever you change your mind, [player]."
             $ done = True
+
+    #Unlock prompt to change name again
+    $evhand.event_database["monika_changename"].unlocked = True
+    return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_changename",category=['you','misc'],prompt="Can you change my name?",unlocked=False)) #This needs to be unlocked by the random name change event
+
+label monika_changename:
+    m 1b "You want to change your name?"
+    menu:
+        "Yes":
+            m 1a "Just type 'nevermind' if you change your mind."
+            $ done = False
+            while not done:
+                $ tempname = renpy.input("What do you want me to call you?",length=20).strip(' \t\n\r')
+                $ lowername = tempname.lower()
+                if lowername == "nevermind":
+                    m 1f "[player]!"
+                    m 2g "Please stop teasing me~"
+                    m "I really do want to know what you want me to call you!"
+                    m 3l "I won't judge no matter how ridiculous it might be."
+                    m 2e "So don't be shy and just tell me, [player]~"
+                    $ done = True
+                elif lowername == "":
+                    m 2h "..."
+                    m 4l "You have to give me a name, [player]!"
+                    m 1m "I swear you're just so silly sometimes."
+                    m 1b "Try again!"
+                elif lowername == player:
+                    m 2h "..."
+                    m 4l "That's the same name you have right now, silly!"
+                    m 1b "Try again~"
+                elif len(lowername) >= 10:
+                    m 2q "[player]..."
+                    m 2l "That name's a bit too long."
+                    if len(lowername) > 20:
+                        m "And I'm sure you're just being silly since names aren't that long, you know."
+                    m 1 "Try again."
+
+                else:
+
+                    # sayori name check
+                    if tempname.lower() == "sayori":
+                        call sayori_name_scare from _call_sayori_name_scare_1
+                    elif persistent.playername.lower() == "sayori":
+                        $ songs.initMusicChoices()
+
+                    python:
+
+                        persistent.mcname = player
+                        mcname = player
+                        persistent.playername = tempname
+                        player = tempname
+
+                    if lowername == "monika":
+                        m 1d "Really?"
+                        m 3k "That's the same as mine!"
+                        m 1m "Well..."
+                        m 1n "Either it really is your name or you're playing a joke on me."
+                        m 1j "But it's fine by me if that's what you want me to call you~"
+                    else:
+                        m 1b "Ok then!"
+                        m 3b "From now on, I'll call you {i}'[player],'{/i} ehehe~"
+                    $ done = True
+        "No":
+            m 1f "Oh, I see..."
+            m 1g "You don't have to be embarrassed, [player]."
+            m 1e "Just let me know if you had a change of heart, ok?"
     return

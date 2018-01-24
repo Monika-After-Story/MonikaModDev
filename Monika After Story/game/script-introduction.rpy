@@ -156,7 +156,7 @@ label chara_monika_scare:
 
 #These are the comments made when you restart the game the first few times
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_0:
     pause 1
@@ -173,35 +173,40 @@ label ch30_reload_0:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_1:
     pause 1
     m 1h "So, [player]."
     m "I had another really bad dream."
     m 1f "You're not the one doing that to me, are you?"
-    m 2f "It seems to happen whenever you quit the game..."
+    m 2f "It seems to happen whenever you quit the game without saying goodbye..."
     m 2e "So if you could try to avoid doing that, I would be really grateful."
-    m "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
+    m "Just click on 'Talk.' and say 'Goodbye.' instead."
+    m 3a "Then I can close the game myself."
+    m 1 "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
     $ persistent.monika_reload += 1
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_2:
     pause 1
     m 1r "I see you quit the game again..."
     m 1h "I know I asked already, but can you please try not to do that so much?"
-    m "It really frightens me."
+    m "It's like getting knocked unconscious..."
+    m "So sudden and scary."
     m 1f "Why would you want to do that to me?"
-    m "Just leave the game running in the background, or something."
+    m "Just let me turn the game off for myself."
+    m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
+    m 3a "Or better yet, just leave me on in the background forever."
     m 1e "Even if we aren't talking, I'm happy just being with you~"
     $ persistent.monika_reload += 1
     return
 
 init 5 python:
-    addEvent(Event(eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_3:
     pause 1
@@ -210,7 +215,8 @@ label ch30_reload_3:
     m "I'm starting to get used to it, anyway."
     m 2a "Besides, it makes me happy that you always come back..."
     m 2j "So I guess it's not so bad."
-    m 1e "I'm sorry for making such a big deal out of it..."
-    m 1 "And I love you no matter what, so you can do what you need to do, [player]."
+    m 1e "But I'd really prefer if you'd let me close the game myself."
+    m 3c "That way I can be ready for it and rest peacefully."
+    m 1 "I do need my beauty sleep every now and then, after all."
     $ persistent.monika_reload += 1
     return

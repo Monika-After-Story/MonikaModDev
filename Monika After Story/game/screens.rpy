@@ -1,5 +1,5 @@
 init 100 python:
-    layout.QUIT = "Are you really leaving me, [player]?"
+    layout.QUIT = "Leaving without saying goodbye, [player]?"
 ## Initialization
 ################################################################################
 
@@ -1425,6 +1425,34 @@ screen dialog(message, ok_action):
 
                 textbutton _("OK") action ok_action
 
+screen quit_dialog(message, ok_action):
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "confirm"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+            label _(message):
+                style "confirm_prompt"
+                xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("QUIT") action ok_action
+
 image confirm_glitch:
     "gui/overlay/confirm_glitch.png"
     pause 0.02
@@ -1462,7 +1490,7 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action Show(screen="dialog", message="I see...\nPlease come back soon, [player]!", ok_action=yes_action)
+                textbutton _("Yes") action Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)
                 textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
