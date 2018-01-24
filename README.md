@@ -9,11 +9,11 @@ If you would like to make your own mod like this one, check out our sister proje
 
 ### Installation
 
+Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
+
 * Download the latest [Release](https://github.com/Backdash/MonikaModDev/releases) zip file.
 
-* Extract the contents the zip file into the `/game` folder of your DDLC installation. Like this:
-
-![Folder Structure](https://github.com/Backdash/MonikaModDev/blob/master/docs/Screen%20Shot%202017-12-04%20at%2010.06.05%20AM.png?raw=true)
+* Extract the contents the zip file into the `/game` folder of your DDLC installation.
 
 * Running DDLC will now load the Monika After Story Mod.
 
@@ -81,7 +81,7 @@ For things more complicated than simple dialogue, consult the Ren'Py documentati
 [More info is available in our Contributing Guide](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md)
 
  ### Join the conversation
- If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/Vz9kwsf). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Backdash/MonikaModDev/blob/master/CODE_OF_CONDUCT.md), which is essentially to be courteous and respectful.
+ If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/K2KuJeX). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Backdash/MonikaModDev/blob/master/CODE_OF_CONDUCT.md), which is essentially to be courteous and respectful.
 
 ## Frequently Asked Questions
 

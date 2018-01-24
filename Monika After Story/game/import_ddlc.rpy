@@ -200,9 +200,6 @@ label import_ddlc_persistent:
         elif old_persistent._seen_ever is not None:
             persistent._seen_ever=old_persistent._seen_ever
 
-        # after importing/merging _seen_ever, need to redo removeing seen
-        remove_seen_topics()
-
         #Renpy defined list of all seen images
         #Format: dict with (keys) file path (value) Boolean for if seen
         #Example: (u'yuri', u'2m'): True

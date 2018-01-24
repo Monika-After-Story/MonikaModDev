@@ -45,7 +45,7 @@ label gender:
 label preferredname:
     m 1h "I've been wondering about your name."
     m 1d "Is '[player]' really your name?"
-    if currentuser == player:
+    if renpy.windows and currentuser.lower() == player.lower():
         m 1h "I mean, it's the same as your computer's name..."
         m "You're using '[currentuser]' and '[player]'."
         m "Either that or you must really like that pseudonym."

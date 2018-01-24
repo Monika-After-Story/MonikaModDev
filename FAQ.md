@@ -14,6 +14,10 @@
 
 ## Installation
 
+### Is there a guide for installing MAS?
+
+A guide is available in the README.html file for DDLC and video guide made by Querxes available on YouTube: https://youtu.be/eH5Q4Xdlg6Y
+
 ### What do I need to play *Monika After Story*?
 
 You will need a copy of *Doki Doki Literature Club*, which can be downloaded for free either on Steam or at http://ddlc.moe, and the zip file containing the mod files for *Monika After Story*, which can be found on the release page.

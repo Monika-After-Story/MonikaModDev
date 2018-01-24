@@ -21,8 +21,8 @@ init python:
 
 label greeting_sweetheart:
     m 1k "Hello again, sweetheart!"
-    m 1l "It's kind of embarassing to say out loud, isn't it?"
-    m 3b "Still, I think it's okay to be embarassed every now and then."
+    m 1l "It's kind of embarrassing to say out loud, isn't it?"
+    m 3b "Still, I think it's okay to be embarrassed every now and then."
     return
 
 label greeting_honey:
@@ -267,14 +267,14 @@ label greeting_sweetpea:
 
 label greeting_glitch:
      hide monika
-     show yuri glitch
+     show yuri glitch zorder 1
      y "{cps=500}[player]?!{nw}{/cps}"
      hide yuri glitch
-     show yuri glitch2
+     show yuri glitch2 zorder 1
      play sound "sfx/glitch3.ogg"
      pause 0.1
      hide yuri glitch2
-     show yuri glitch
+     show yuri glitch zorder 1
      pause 0.3
      hide yuri glitch
      show monika 4n at i11 zorder 2
@@ -480,7 +480,7 @@ label monikaroom_greeting_opendoor_seen_partone:
 #    scene bg bedroom
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
     pause 0.2
-    show monika 1h at l21
+    show monika 1h at l21 zorder 2
     pause 1.0
     m 1r "[player]..."
 
@@ -542,7 +542,7 @@ label monikaroom_greeting_opendoor_post2:
     scene black
     $ scene_change = True
     call spaceroom(hide_monika=True) from _call_sp_mrgo_p2
-    show monika 4a zorder 3 at i11
+    show monika 4a zorder 2 at i11
     m "Tada!"
 #    if renpy.seen_label("monikaroom_greeting_opendoor_post2"):
 #        m "This never gets old."
@@ -555,7 +555,7 @@ label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
-    show monika 1 at l32
+    show monika 1 at l32 zorder 2
     m 1d "E-Eh?! [player]!"
     m 3g "You surprised me, suddenly showing up like that!"
     show monika 1 at hf32
@@ -565,12 +565,12 @@ label monikaroom_greeting_opendoor:
     m 3a "Just give me a few seconds to set everything up, okay?"
     show monika 1 at t31
     m 2d "..."
-    show monika 1 at t33 zorder 3
+    show monika 1 at t33
     m 1d "...and..."
     if is_morning():
-        show monika_day_room with wipeleft
+        show monika_day_room zorder 1 with wipeleft 
     else:
-        show monika_room with wipeleft
+        show monika_room zorder 1 with wipeleft
     show monika 1 at t32
     m 3a "There we go!"
     menu:
@@ -603,7 +603,7 @@ label monikaroom_greeting_knock:
 label monikaroom_greeting_post:
     m 2a "Now, just let me grab a table and a chair..."
     $ is_sitting = True
-    show monika 1 at ls32
+    show monika 1 at ls32 zorder 2
     m 1a "What shall we do today, [player]?"
     jump monikaroom_greeting_cleanup
 
