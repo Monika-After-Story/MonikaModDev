@@ -92,38 +92,6 @@ label monika_god:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
-
-label monika_hamlet:
-    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
-    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
-    m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
-    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
-    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
-    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
-    m 1r "Ahem..."
-    m 1q "..."
-    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
-    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
-    m 1f "{i}To die{/i}."
-    m 1o "{i}To sleep, no more{/i}."
-    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
-    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
-    m "..."
-    m 1k "Well!"
-    m 1a "How did you like it, [player]?"
-    m 1l "I tried my best reciting it after all~"
-    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
-    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
-    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
-    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
-    m 1a "It took a lot of effort but we're finally together. Just us alone."
-    m 1 "Now there's only one thing left to answer, [player]."
-    m 3r "To be with me? Or to be with me?"
-    m 1k "That is the question!"
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
 
 label monika_death:
@@ -875,11 +843,7 @@ label monika_rap:
 
 
 init 5 python:
-<<<<<<< HEAD
-    addEvent(Event(eventlabel="monika_wine",category=['drinks'],prompt="Yuri's wine",random=True))
-=======
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
->>>>>>> next-release
 
 label monika_wine:
     m 1a "Ehehe. Yuri did something really funny once."
@@ -1352,11 +1316,8 @@ label monika_housewife:
 
 
 init 5 python:
-<<<<<<< HEAD
-    addEvent(Event(eventlabel="monika_route",category=['random'],prompt="Monika's route",random=True))
-=======
     addEvent(Event(persistent.event_database,eventlabel="monika_route",category=['ddlc'],prompt="Monika's route",random=True))
->>>>>>> next-release
+
 
 label monika_route:
     m 2g "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
@@ -4531,16 +4492,6 @@ label monika_1984:
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
 
-init 5 python:
-    addEvent(Event(eventlabel="monika_see_ya",category=['farewell'],prompt="See you later!",random=False))
-
-label monika_see_ya:
-    m 1f "Do you have to go so soon?"
-    m 1e "I'll miss you. I always do."
-    m 1e "See you later, [player]."
-    m 1k "I love you always~!"
-    return 'quit'
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wolf",category=['misc','trivia'],prompt="From wolves to dogs",random=True))
@@ -4587,7 +4538,7 @@ label monika_sleep:
 default persistent.monika_breakup = 0
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_breakup",category=['random'],prompt="I'm breaking up with you",pool=True,unlocked=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True))
 
 label monika_breakup:
     #second time you hit the break up button.
@@ -4638,7 +4589,7 @@ label monika_breakup:
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
 
 label monika_hamlet:
     m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
@@ -4677,7 +4628,7 @@ label monika_hamlet:
 # ~ Aya Shameimaru
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry you",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry you",pool=True))
 
 label monika_omamori:
     m "Do you remember when I mentioned how you could carry around my character file?"
