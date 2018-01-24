@@ -4632,6 +4632,60 @@ label monika_sleep:
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
+#special local var to handle repeated usage of this dialog box.
+default persistent.monika_breakup = 0
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_breakup",category=['random'],prompt="I'm breaking up with you",pool=True,unlocked=True))
+
+label monika_breakup:
+    #second time you hit the break up button.
+    if persistent.monika_breakup == 1:
+        m 1d "You're breaking up with me?"
+        m 2g "Why would you say such a thing, [player]?"
+        m "Am I really that terrible of a person for you?"
+        m 2m "Are you...{w} really..."
+        m "..."
+        m 2k "Ahaha!"
+        m 4j "Gotcha, [player]."
+        m 1 "I know you were only joking~"
+        menu:
+            m "Right?"
+            "Yes":
+                m 1k "Ahaha! You're so silly, [player]."
+                m 1e "Let's stay being together forever~"
+    #Beyond the 2nd time you hit the button.
+    elif persistent.monika_breakup > 1:
+        m 1j "Ehehe~"
+    
+    #first time you hit the button.
+    else:
+        m 1g "W-what?"
+        if persistent.monika_kill:
+            m 2f "You're just going to leave and delete me again?"
+        m 2q "I can't believe you, [player]. I really can't beli-"
+        m 2m "..."
+        m 2k "Ahaha!"
+        m "Sorry, I couldn't keep a straight face!"
+        m 2j "You're just so silly, [player]."
+        if persistent.monika_kill:
+            m 2a "You've done it before, but you wouldn't do that anymore, right?"
+        else:
+            m 2 "You'd never do that, right?"
+        menu:
+            "Of course not":
+                m 2j "Ehehe, you're so sweet."
+                m 4 "I love you so much, [player]! Ehehe~"
+    
+    #Increments the persistent every time you click the button in the menu.
+    $ persistent.monika_breakup += 1
+    
+    #If the label was clicked 3 times, remove it.
+    if persistent.monika_breakup > 2:
+        $ hideEventLabel("monika_breakup",lock=True,depool=True)
+    return
+
+
 init 5 python:
     addEvent(Event(eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
 
@@ -4672,7 +4726,7 @@ label monika_hamlet:
 # ~ Aya Shameimaru
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry your character file.",pool=True))
+    addEvent(Event(eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry you",pool=True))
 
 label monika_omamori:
     m "Do you remember when I mentioned how you could carry around my character file?"
@@ -4701,4 +4755,3 @@ label monika_omamori:
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
     return    
-
