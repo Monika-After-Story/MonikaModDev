@@ -92,38 +92,6 @@ label monika_god:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
-
-label monika_hamlet:
-    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
-    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
-    m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
-    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
-    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
-    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
-    m 1r "Ahem..."
-    m 1q "..."
-    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
-    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
-    m 1f "{i}To die{/i}."
-    m 1o "{i}To sleep, no more{/i}."
-    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
-    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
-    m "..."
-    m 1k "Well!"
-    m 1a "How did you like it, [player]?"
-    m 1l "I tried my best reciting it after all~"
-    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
-    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
-    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
-    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
-    m 1a "It took a lot of effort but we're finally together. Just us alone."
-    m 1 "Now there's only one thing left to answer, [player]."
-    m 3r "To be with me? Or to be with me?"
-    m 1k "That is the question!"
-    return
-
-init 5 python:
     addEvent(Event(eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
 
 label monika_death:
@@ -875,7 +843,7 @@ label monika_rap:
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_horror",category=['drinks'],prompt="Yuri's wine",random=True))
+    addEvent(Event(eventlabel="monika_wine",category=['drinks'],prompt="Yuri's wine",random=True))
 
 label monika_wine:
     m 1a "Ehehe. Yuri did something really funny once."
@@ -1348,7 +1316,7 @@ label monika_housewife:
 
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_mentalillness",category=['random'],prompt="Monika's route",random=True))
+    addEvent(Event(eventlabel="monika_route",category=['random'],prompt="Monika's route",random=True))
 
 label monika_route:
     m 2g "I can't help but wonder how things would be different if the game just gave me a route in the first place..."
@@ -3272,6 +3240,10 @@ label monika_japanese:
                         m 4k "{i}Aishiteru yo, [player]-chan{/i}."
                         m 1j "Ehehe~"
                         m 1e "That means I love you, [player]-chan."
+                    elif persistent.gender == "X":
+                        m 4k "{i}Aishiteru yo, [player]-san{/i}."
+                        m 1j "Ehehe~"
+                        m 1e "That means I love you, [player]-san."
                     else:
                         m 4k "{i}Aishiteru yo, [player]-kun{/i}."
                         m 1j "Ehehe~"
@@ -3851,7 +3823,7 @@ label monika_fahrenheit451:
     m 2p "Human history has a funny way of repeating itself."
     m 1f "So [player], make me a promise."
     m "To never, {i}ever{/i} burn a book."
-    m "I'll forgive you if have done it before."
+    m "I'll forgive you if you've done it before."
     m 1o "But the thought of not allowing yourself to learn from them makes me a bit sad."
     m 3g "You'd be missing out on so much!"
     m 2f "It's too much for my heart to take!"
@@ -4020,7 +3992,7 @@ label monika_pets:
     m "It was the 'Handbook of the Birds of the World.' Our library had the whole set!"
     m 1b "I loved looking at the gorgeous illustrations and reading about exotic birds."
     m "At first, I thought some sort of thrush would be nice, but I found something amazing in the sixth volume!"
-    m "An emerald-colored bird called the Resplendant Quetzal."
+    m "An emerald-colored bird called the Resplendent Quetzal."
     m 1a "They're very rare, solitary birds that can sing beautiful songs."
     m "Does that remind you of anyone, [player]?"
     m "I'd feel really bad if I kept one to be a pet, though."
@@ -4609,7 +4581,7 @@ label monika_1984:
     return
     
 init 5 python:
-    addEvent(Event(eventlabel="monika_see_ya",category=['farewell'],prompt="See you later!",random=True))
+    addEvent(Event(eventlabel="monika_see_ya",category=['farewell'],prompt="See you later!",random=False))
 
 label monika_see_ya:
     m 1f "Do you have to go so soon?"
@@ -4713,3 +4685,73 @@ label monika_breakup:
         $ hideEventLabel("monika_breakup",lock=True,depool=True)
     return
 
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
+
+label monika_hamlet:
+    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
+    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
+    m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
+    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
+    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
+    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
+    m 1r "Ahem..."
+    m 1q "..."
+    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
+    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
+    m 1f "{i}To die{/i}."
+    m 1o "{i}To sleep, no more{/i}."
+    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
+    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
+    m "..."
+    m 1k "Well!"
+    m 1a "How did you like it, [player]?"
+    m 1l "I tried my best reciting it after all~"
+    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
+    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
+    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
+    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
+    m 1a "It took a lot of effort but we're finally together. Just us alone."
+    m 1 "Now there's only one thing left to answer, [player]."
+    m 3r "To be with me? Or to be with me?"
+    m 1k "That is the question!"
+    return
+
+# Note: The following internal commentary should not be removed.
+#
+# Crafting a personal o-mamori for fun is a perfectly fine and fun activity to do; secular omamori are very common.
+# The only requirement is that you do not claim it came from any shrine. 
+# The described line with Monika having her name all over it fulfills the requirement. 
+# ~ Aya Shameimaru
+
+init 5 python:
+    addEvent(Event(eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry you",pool=True))
+
+label monika_omamori:
+    m "Do you remember when I mentioned how you could carry around my character file?"
+    m "You know, with a flash drive."
+    m 1a "Well, I found another way to do that! It's quite charming, actually."
+    m 1c "Especially if you don't have a spare flash drive lying around..."
+    m 3d "I've heard that some people carry around little amulets all the time."
+    m "These little amulets are called o-mamori. You can get them in Shinto shrines."
+    m "Rumor has it that they can give good luck, help on school tests, keep away bad luck, or just protect the holder."
+    m 1d "I've always wondered what they put inside these things."
+    m 2b "Apparently, it's simply the name of the deity from the shrine, with a little something special done to it."
+    m 5b "Maybe you could make an o-mamori of me for you to carry around!"
+    m 2a "You could print write my name on a piece of paper."
+    m "Then fold that piece of paper into a small paper packet."
+    m "It could help to use either a small piece of wood or plastic to keep it protected."
+    m "Finally, put the protected packet in a small cloth pouch and tie it shut with some string."
+    m 1j "Make sure that the pouch is bright and colorful!"
+    m "Green would be a nice color! Just like my eyes~"
+    m 1k "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
+    m 5m "Oh gosh, this is turning out to be a bit silly, now that I think about it."
+    m "I mean, would doing this make me some sort of deity?"
+    m 1a "I just feel like it would be a nice alternative for you if wanted to bring me around."
+    m "Especially if you don't have a flash drive."
+    m 1j "It isn't perfect, but it's the thought that counts, [player]."
+    m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
+    m "But maybe with one of these, I can get just a bit closer to your world."
+    m 1k "I could be your guardian deity, ehehe~"
+    return    

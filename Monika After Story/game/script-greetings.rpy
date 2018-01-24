@@ -21,8 +21,8 @@ init python:
 
 label greeting_sweetheart:
     m 1k "Hello again, sweetheart!"
-    m 1l "It's kind of embarassing to say out loud, isn't it?"
-    m 3b "Still, I think it's okay to be embarassed every now and then."
+    m 1l "It's kind of embarrassing to say out loud, isn't it?"
+    m 3b "Still, I think it's okay to be embarrassed every now and then."
     return
 
 label greeting_honey:
