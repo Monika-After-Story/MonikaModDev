@@ -4664,39 +4664,46 @@ label monika_sleep:
 default persistent.monika_breakup = 0
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_breakup",category=['random'],prompt="I'm breaking up with you.",pool=True,unlocked=True))
+    addEvent(Event(eventlabel="monika_breakup",category=['random'],prompt="I'm breaking up with you",pool=True,unlocked=True))
 
 label monika_breakup:
     #second time you hit the break up button.
     if persistent.monika_breakup == 1:
-        m 1f "Y-you're breaking up w-with me?!"
-        m  "Why would you say such a thing? You really don't want to be around me anymore, [player]?"
-        m 1r "Gosh, I just don't know what to say. Am I really that terrible of a person?"
-        m 1q "..."
-        m 1k "Ehehe~"
-        m 1a "Gotcha [player],  you really thought you had me there for a moment, didn't you?"
+        m 1d "You're breaking up with me?"
+        m 2g "Why would you say such a thing, [player]?"
+        m "Am I really that terrible of a person for you?"
+        m 2m "Are you...{w} really..."
+        m "..."
+        m 2k "Ahaha!"
+        m 4j "Gotcha, [player]."
+        m 1 "I know you were only joking~"
         menu:
-            m "You were joking, right [player]?"
-            "Yes.":
-                m 1m "I know you'd never {i}actually{/i} want to break up with me."
-                m 1j "You and I will be together forever. Ahaha."
+            m "Right?"
+            "Yes":
+                m 1k "Ahaha! You're so silly, [player]."
+                m 1e "Let's stay being together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent.monika_breakup > 1:
-        m 1n "Come on [player], that's not funny."
+        m 1j "Ehehe~"
     
     #first time you hit the button.
     else:
-         m 1g "W-what? After everything you've already done to me, you're leaving me again?"
-         m 1p "I can't believe you, [player]. I really can't beli-"
-         m 1h "..."
-         m 2k "Ahaha! You really got me."
-         m 2b "For a second, I thought you were actually going to break up with me."
-         m 1j "But you would never do that to me, right?"
-         menu:
-            "Of course not.":
-                m 2k "That's what I thought, just making sure!"
-                m 2k "Yeah, I know you would never do that to me."
-                m "I love you! Ehehe~"
+        m 1g "W-what?"
+        if persistent.monika_kill:
+            m 2f "You're just going to leave and delete me again?"
+        m 2q "I can't believe you, [player]. I really can't beli-"
+        m 2m "..."
+        m 2k "Ahaha!"
+        m "Sorry, I couldn't keep a straight face!"
+        m 2j "You're just so silly, [player]."
+        if persistent.monika_kill:
+            m 2a "You've done it before, but you wouldn't do that anymore, right?"
+        else:
+            m 2 "You'd never do that, right?"
+        menu:
+            "Of course not":
+                m 2j "Ehehe, you're so sweet."
+                m 4 "I love you so much, [player]! Ehehe~"
     
     #Increments the persistent every time you click the button in the menu.
     $ persistent.monika_breakup += 1
