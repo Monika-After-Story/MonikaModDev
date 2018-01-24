@@ -4726,7 +4726,7 @@ label monika_fastfood:
             m  "And that way we can both enjoy ourselves and you would be eating better."
             m 1a "That's what I can a win-win!"
 
-        "No, I don't":
+        "No, I don't.":
             m 1r "That's a relief."
             m 1a "Sometimes you really worry me, [player]."
             m  "I suppose instead of eating out, you make your own food?"
