@@ -4,7 +4,7 @@
 #Requirements must be created/added in script-ch30.rpy under label ch30_autoload.
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=16 and not seen_event('gender')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+    addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label gender:
     m 2d "...[player]? So I've been thinking a bit."
@@ -46,7 +46,7 @@ label gender:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=12 and not seen_event('preferredname')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+    addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label preferredname:
     m 1h "I've been wondering about your name."
@@ -181,4 +181,33 @@ label monika_changename:
             m 1f "Oh, I see..."
             m 1g "You don't have to be embarrassed, [player]."
             m 1e "Just let me know if you had a change of heart, ok?"
+    return
+
+## Game unlock events
+## These events handle unlocking new games
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="unlock_chess",conditional="get_level()>=12 and not seen_event('unlock_chess')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+
+label unlock_chess:
+    # INSERT UNLOCK DIALOGUE
+    m "Wanna play chess?"
+    $persistent.game_unlocks['chess']=True
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="unlock_hangman",conditional="get_level()>=20 and not seen_event('unlock_hangman')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+
+label unlock_hangman:
+    # INSERT UNLOCK DIALOGUE
+    m "Wanna play hangman?"
+    $persistent.game_unlocks['hangman']=True
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="unlock_piano",conditional="get_level()>=24 and not seen_event('unlock_piano')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+
+label unlock_piano:
+    # INSERT UNLOCK DIALOGUE    
+    m "Wanna play piano?"
+    $persistent.game_unlocks['piano']=True
     return

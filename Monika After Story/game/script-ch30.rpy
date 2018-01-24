@@ -355,19 +355,19 @@ label pick_a_game:
         $allow_dialogue = False
         menu:
             "What game would you like to play?"
-            "Pong":
+            "Pong" if persistent.game_unlocks['pong']:
                 if not renpy.seen_label('game_pong'):
                     $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
-            "Chess" if is_platform_good_for_chess():
-                if not renpy.seen_label('game_chess'):
+            "Chess" if is_platform_good_for_chess() and persistent.game_unlocks['chess']:
+                if not renpy.seen_label'game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
-            "Hangman":
+            "Hangman" if persistent.game_unlocks['hangman']:
                 if not renpy.seen_label("game_hangman"):
                     $ grant_xp(xp.NEW_GAME)
                 call game_hangman from _call_game_hangman
-            "Piano":
+            "Piano" if persistent.game_unlocks['piano']:
                 if not renpy.seen_label("zz_play_piano"):
                     $ grant_xp(xp.NEW_GAME)
                 call zz_play_piano from _call_play_piano
