@@ -4957,9 +4957,9 @@ label monika_beach:
 
         "No":
             m 1a "That's alright, the chances weren't very high. Most people don't."
-            m 1b "That just means we can going to one be an all-day trip!"
+            m 1b "That just means we#ll make visiting one be an all-day trip!"
     m 3j"There's so many things we'll be able to do one day."
-    m " Just imaganing the many sensations really excites me!"
+    m " Just imagining the many sensations really excites me!"
     m "The fresh sea air, the sound of seagulls."
     m "As well as the feeling of sand under your feet.."
     m 2k "It would really make a trip worthwhile!"
