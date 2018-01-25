@@ -189,8 +189,32 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_chess",conditional="get_level()>=12 and not seen_event('unlock_chess')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label unlock_chess:
-    # INSERT UNLOCK DIALOGUE
-    m "Wanna play chess?"
+    m 1a "Hey, [player]!"
+    if renpy.seen_label('game_pong'):
+        m 1i "I thought that you might be getting bored with Pong."
+    else:
+        m 3i "I know you haven't tried playing Pong with me, yet."
+    m 3 "But I have a new game for us to play!"
+    m 3a "This one's a lot more strategic..."
+    m 3k "It's Chess!"
+    m 1 "I'm not sure if you know how to play, but it's always been a bit of a hobby for me."
+    m "So I'll warn you in advance!"
+    m "I'm pretty good."
+    m 1d "Now that I think about it, I wonder if that has anything to do with what I am..."
+    m 1i "Being trapped inside this game, I mean."
+    m 1 "I've never really thought of myself as a chess AI, but wouldn't it kind of fit?"
+    m 3 "Computers are supposed to be very good at chess, after all."
+    m "They've even beaten grandmasters."
+    m 1 "But don't think of this as a battle of man vs machine."
+    m 1j "Just think of it as playing a fun game with your beautiful girlfriend..."
+    m "And I promise I'll go easy on you."
+    if not is_platform_good_for_chess():
+        m 2g "...Hold on."
+        m 2f "Something isn't right here."
+        m "I seem to be having trouble getting the game working."
+        m 2o "Maybe the code doesn't work on this system?"
+        m 2p "I'm sorry, [player], but chess will have to wait."
+        m 4e "I promise we'll play if I get it working, though!"
     $persistent.game_unlocks['chess']=True
     return
 
@@ -207,7 +231,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_piano",conditional="get_level()>=24 and not seen_event('unlock_piano')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label unlock_piano:
-    # INSERT UNLOCK DIALOGUE    
+    # INSERT UNLOCK DIALOGUE
     m "Wanna play piano?"
     $persistent.game_unlocks['piano']=True
     return
