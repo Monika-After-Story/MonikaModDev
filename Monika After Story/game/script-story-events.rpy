@@ -233,12 +233,14 @@ init 5 python:
 label unlock_piano:
     m 2a "Hey! I'm excited to tell you something today!"
     m 2b "I've finally added a piano to the room for us to use, [player]"
-    m 3b "I really want to hear you play!"
-    m "It might seem overwhelming at first, but at least give it a try."
-    m 3j "After all, we all start somewhere."
-    m 1b "Unless, you've played piano before."
-    m 4b "In which case, I expect something nice from you! Ehehe~"
-    m 4j "Wouldn't it be nice to play something together?"
+    if not persistent.instrument:
+        m 3b "I really want to hear you play!"
+        m "It might seem overwhelming at first, but at least give it a try."
+        m 3j "After all, we all start somewhere."
+    else:
+        m 1b "Of course, playing music is nothing new to you."
+        m 4b "So I'm expecting something nice! Ehehe~"
+    m 4j "Wouldn't it be fun to play something together?"
     m "Maybe we could even do a duet!
     m "We would both improve and have fun at the same time."
     m 1l “Maybe I’m getting a bit carried away. Sorry!”
