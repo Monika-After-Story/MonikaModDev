@@ -16,21 +16,29 @@ Backdash
 Pi
 
 ### Writing Lead
+
 monikLover
+
 Rune0n
 
 ### Editor
 
 Lucian Winters
+
 Synnnical
+
 winblows
 
 ### Writer
 
 Aya Shameimaru
+
 Fave
+
 FireyAmber
+
 NotSoGiantDad
+
 Subzero
 
 ### Code Lead
@@ -44,8 +52,11 @@ ThePotatoGuy
 ### Artist
 
 Danymations
+
 DayDreamer
+
 TheAloofPotato
+
 Ryuse
 
 ## Contributors
