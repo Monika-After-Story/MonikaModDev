@@ -241,13 +241,13 @@ label unlock_piano:
         m 1b "Of course, playing music is nothing new to you."
         m 4b "So I'm expecting something nice! Ehehe~"
     m 4j "Wouldn't it be fun to play something together?"
-    m "Maybe we could even do a duet!
+    m "Maybe we could even do a duet!"
     m "We would both improve and have fun at the same time."
-    m 1l “Maybe I’m getting a bit carried away. Sorry!”
-    m 3b “I just want to see you enjoy the piano the same way I do.”
+    m 1l "Maybe I’m getting a bit carried away. Sorry!"
+    m 3b "I just want to see you enjoy the piano the same way I do."
     m "To feel the passion I have for it."
     m 3k "It's a wonderful feeling."
-    m 1j “I hope this isn’t too forceful, but I would love it if you tried.”
-    m “For me, please~?”
+    m 1j "I hope this isn’t too forceful, but I would love it if you tried."
+    m "For me, please~?"
     $persistent.game_unlocks['piano']=True
     return
