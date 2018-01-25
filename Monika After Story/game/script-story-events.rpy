@@ -222,8 +222,31 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_hangman",conditional="get_level()>=20 and not seen_event('unlock_hangman')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label unlock_hangman:
-    # INSERT UNLOCK DIALOGUE
-    m "Wanna play hangman?"
+    m 1a "Guess what, [player]."
+    m 3b "I got a new game for you to try!"
+    if renpy.seen_label('game_pong') and renpy.seen_label('game_chess'):
+        m 1n "You're probably bored with Chess and Pong already."
+    elif renpy.seen_label('game_pong') and not renpy.seen_label('game_chess'):
+        m 3l "I thought you'd like to play Chess, but you've been so busy with Pong instead!"
+    elif renpy.seen_label('game_chess') and not renpy.seen_label('game_pong'):
+        m 1o "You really loved playing Chess with me, but you haven't touched Pong yet."
+    else:
+        m 1f "I was actually worried that you didn't like the other games I made for us to play..."
+    m 1b "Soooo~"
+    m 1k "I made Hangman!"
+    m 1n "Hopefully it's not in poor taste..."
+    m 1a "It was always my favorite game to play with the club."
+    m 1f "But, come to think of it..."
+    m 1o "The game is actually quite morbid."
+    m "You guess letters for a word to save someone's life."
+    m 1c "Get them all correct and the person doesn't hang."
+    m 1o "But guess them all wrong..."
+    m 1h "They die because you didn't guess the right letters."
+    m 1m "Pretty dark, isn't it?"
+    m 1l "But don't worry, [player], it's just a game after all!"
+    m 1a "I assure you that no one will be hurt with this game."
+    if playername.lower() == "sayori":
+        m 3k "...Maybe~"
     $persistent.game_unlocks['hangman']=True
     return
 
