@@ -5,6 +5,8 @@ We need to give credit where it’s due, please help by adding user names with n
 
 *Monika After Story* is a collaborative project, made possible by the contributions of so many great people.
 
+## Dev Team
+
 ### Creator
 
 Backdash
@@ -13,18 +15,42 @@ Backdash
 
 Pi
 
-### Resident Overlord
-
-Pi
-
-## Story
-
-### Ultra King Master
-
-
+### Writing Lead
 monikLover
+Rune0n
 
-### Topic Writing
+### Editor
+
+Lucian Winters
+Synnnical
+winblows
+
+### Writer
+
+Aya Shameimaru
+Fave
+FireyAmber
+NotSoGiantDad
+Subzero
+
+### Code Lead
+
+ThePotatoGuy
+
+### QA Testing
+
+0xFF
+
+### Artist
+
+Danymations
+DayDreamer
+TheAloofPotato
+Ryuse
+
+## Contributors
+
+### Writing
 
 Yukipedia
 
@@ -94,23 +120,13 @@ monikLover
 
 HalHarrison
 
-### Editing
-
-Lucian Winters
-
-Rune0n
-
-monikLover
-
-Winblows
-
 [R]
 
-Mxrio (added expressions)
+Mxrio
 
-## Code
+Pi
 
-### Feature Contributions
+### Code
 
 Therationalpi
 
@@ -124,9 +140,6 @@ Ohxeighty - Steam library detection
 
 haloff1 - Scrollable menu and mod template
 
-
-### Bugfixes
-
 avocadianmage
 
 ### Testing
@@ -139,9 +152,7 @@ TacticalGrill
 
 winblows
 
-## Art
-
-### Original Art
+### Art
 
 Ryuse
 
@@ -153,13 +164,9 @@ Daydreamer
 
 Danymations
 
-### Original Backgrounds
-
 Yuro Foxclaw
 
-### Image Editing
-
-Therationalpi
+Pi
 
 ## Version and Feature MVP’s
 These members are recognized for making a significant contribution that make a new version of the game or a new feature possible.
