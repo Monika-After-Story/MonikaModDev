@@ -5,6 +5,14 @@ We need to give credit where it’s due, please help by adding user names with n
 
 *Monika After Story* is a collaborative project, made possible by the contributions of so many great people.
 
+### Creator
+
+Backdash
+
+### Lead designer
+
+Pi
+
 ## Story
 
 ### Scenario and Story Writing
