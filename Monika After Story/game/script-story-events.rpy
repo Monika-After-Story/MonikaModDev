@@ -231,7 +231,23 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_piano",conditional="get_level()>=24 and not seen_event('unlock_piano')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label unlock_piano:
-    # INSERT UNLOCK DIALOGUE
-    m "Wanna play piano?"
+    m 2a "Hey! I'm excited to tell you something today!"
+    m 2b "I've finally added a piano to the room for us to use, [player]"
+    if not persistent.instrument:
+        m 3b "I really want to hear you play!"
+        m "It might seem overwhelming at first, but at least give it a try."
+        m 3j "After all, we all start somewhere."
+    else:
+        m 1b "Of course, playing music is nothing new to you."
+        m 4b "So I'm expecting something nice! Ehehe~"
+    m 4j "Wouldn't it be fun to play something together?"
+    m "Maybe we could even do a duet!
+    m "We would both improve and have fun at the same time."
+    m 1l “Maybe I’m getting a bit carried away. Sorry!”
+    m 3b “I just want to see you enjoy the piano the same way I do.”
+    m "To feel the passion I have for it."
+    m 3k "It's a wonderful feeling."
+    m 1j “I hope this isn’t too forceful, but I would love it if you tried.”
+    m “For me, please~?”
     $persistent.game_unlocks['piano']=True
     return
