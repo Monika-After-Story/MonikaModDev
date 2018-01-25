@@ -57,10 +57,9 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
-# TODO: uncomment when bready
-#        updates.version_updates[vv0_6_3] = vv0_7_0
-#        updates.version_updates[vv0_6_2] = vv0_7_0
-#        updates.version_updates[vv0_6_1] = vv0_7_0
+        updates.version_updates[vv0_6_3] = vv0_7_0
+        updates.version_updates[vv0_6_2] = vv0_7_0
+        updates.version_updates[vv0_6_1] = vv0_7_0
         updates.version_updates[vv0_6_0] = vv0_6_1
         updates.version_updates[vv0_5_1] = vv0_6_1
         updates.version_updates[vv0_5_0] = vv0_5_1
@@ -91,9 +90,11 @@ label vv_updates_topics:
             "monika_games": None,
             "monika_chess": None,
             "monika_pong": None,
-            "monika_vulgarity": None
+            "monika_vulgarity": None,
+            "monika_goodbye": None,
+            "monika_night": None
         }
-#        updates.topics[vv0_7_0] = changedIDs # TODO: uncomment when bready
+        updates.topics[vv0_7_0] = changedIDs 
 
         # (0.5.1 - 0.6.0) -> 0.6.1
         changedIDs = {
