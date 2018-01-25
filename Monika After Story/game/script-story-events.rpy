@@ -245,7 +245,7 @@ label unlock_hangman:
     m 1m "Pretty dark, isn't it?"
     m 1l "But don't worry, [player], it's just a game after all!"
     m 1a "I assure you that no one will be hurt with this game."
-    if playername.lower() == "sayori":
+    if persistent.playername.lower() == "sayori":
         m 3k "...Maybe~"
     $persistent.game_unlocks['hangman']=True
     return
