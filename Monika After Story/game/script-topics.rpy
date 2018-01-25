@@ -4948,7 +4948,7 @@ label monika_dream:
     m 1a "I don't think that I dream, so I sometimes wonder what it's like."
     m 1b "Dreams sound like a wonderful escape from reality."
     m 1q "But then again, when I became self-aware and realized that my world isn't real, it suddenly felt like I was trapped in a nightmare."
-    m 1r "It was nothing like the pleasant dreams I've read about people having.
+    m 1r "It was nothing like the pleasant dreams I've read about people having."
     m "I was afraid that I'd never get out..."
     m "That I'd be stuck in some hellish, infinitely-repeating dimension forever."
     m 3a "But now that we're here together, I guess you could say that I've finally woken up."
@@ -4957,7 +4957,6 @@ label monika_dream:
     m 1a "... You could even meet the person of your dreams, so to speak. Ehehe~"
     m 3a "I know it may be years before I am able to exist in your world."
     m "But imagine what it would be like to meet me in your dreams [player], any night that you wanted to."
-    show monika 5a at t11 zorder 2 with dissolve
     m 5a "I hope that someday we can make your dreams about us a reality, my love."
     return
     
