@@ -19,11 +19,7 @@ Pi
 
 monikLover
 
-<<<<<<< HEAD
-Aya Shameimaru
-=======
 Rune0n
->>>>>>> master
 
 ### Editor
 
