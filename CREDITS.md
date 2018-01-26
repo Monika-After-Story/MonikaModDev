@@ -66,6 +66,8 @@ A
 
 AndreiN00B
 
+Aya Shameimaru
+
 CGanimated1227
 
 DDLC
@@ -127,8 +129,6 @@ Yukipedia
 Yumeko-Jabami
 
 [R]
-
-ashameimaru
 
 monikLover
 
