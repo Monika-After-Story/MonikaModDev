@@ -38,7 +38,7 @@ init python:
 init 5 python:
     anni_date=start_of_day(persistent.sessions['first_session'])+datetime.timedelta(days=7)
     addEvent(Event(persistent.event_database,eventlabel='anni_1week',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            end_date=anni_date+datetime.timedelta(days=1)
                                                             ))
 
 label anni_1week:
@@ -58,7 +58,7 @@ label anni_1week:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),1)
     addEvent(Event(persistent.event_database,eventlabel='anni_1month',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            end_date=anni_date+datetime.timedelta(days=1)
                                                             ))
 
 label anni_1month:
@@ -92,7 +92,7 @@ label anni_1month:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),3)
     addEvent(Event(persistent.event_database,eventlabel='anni_3month',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            end_date=anni_date+datetime.timedelta(days=1)
                                                             ))
 label anni_3month:
     m 1a "[player], do you know what day it is?"
@@ -111,7 +111,7 @@ label anni_3month:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),6)
     addEvent(Event(persistent.event_database,eventlabel='anni_6month',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            end_date=anni_date+datetime.timedelta(days=1)
                                                             ))
 label anni_6month:
     m 3b "There you are, [player]!"
@@ -142,7 +142,7 @@ label anni_6month:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),12)
     addEvent(Event(persistent.event_database,eventlabel='anni_1',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            end_date=anni_date+datetime.timedelta(days=1)
                                                             ))
 
 label anni_1:
@@ -164,7 +164,7 @@ label anni_1:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),24)
     addEvent(Event(persistent.event_database,eventlabel='anni_2',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            end_date=anni_date+datetime.timedelta(days=1)
                                                             ))
 
 label anni_2:
@@ -187,7 +187,7 @@ label anni_2:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),36)
     addEvent(Event(persistent.event_database,eventlabel='anni_3',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=3),
+                                                            end_date=anni_date+datetime.timedelta(days=3)
                                                             ))
 label anni_3:
     m 4d "Wow, three years!"
@@ -206,7 +206,7 @@ label anni_3:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),48)
     addEvent(Event(persistent.event_database,eventlabel='anni_4',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=7),
+                                                            end_date=anni_date+datetime.timedelta(days=7)
                                                             ))
 label anni_4:
     m 1q "Four years..."
@@ -224,7 +224,7 @@ label anni_4:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),60)
     addEvent(Event(persistent.event_database,eventlabel='anni_5',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=7),
+                                                            end_date=anni_date+datetime.timedelta(days=7)
                                                             ))
 
 label anni_5:
@@ -243,7 +243,7 @@ label anni_5:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),120)
     addEvent(Event(persistent.event_database,eventlabel='anni_10',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=30),
+                                                            end_date=anni_date+datetime.timedelta(days=30)
                                                             ))
 
 label anni_10:
@@ -260,7 +260,7 @@ label anni_10:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),240)
     addEvent(Event(persistent.event_database,eventlabel='anni_20',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=365),
+                                                            end_date=anni_date+datetime.timedelta(days=365)
                                                             ))
 
 label anni_20:
@@ -281,7 +281,7 @@ label anni_20:
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),600)
     addEvent(Event(persistent.event_database,eventlabel='anni_50',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=365),
+                                                            end_date=anni_date+datetime.timedelta(days=365)
                                                             ))
 
 label anni_50:
