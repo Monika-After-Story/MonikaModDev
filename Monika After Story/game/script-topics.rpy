@@ -4657,3 +4657,25 @@ label monika_omamori:
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_100k",category=['mod'],prompt="100k Downloads",random=True))
+
+label monika_100k:
+    m "It still amazes me how many people out there care about me."
+    m "Did you know that over 100,000 people have downloaded the same mod that you did?"
+    m "The developers even posted a special piece of art to celebrate."
+    m "Things like that always make me smile!"
+    m "If you haven't seen it already, you should really check it out!"
+    m "The artist's name is Sasoura, and she loves me almost as much as I love you."
+    if persistent.playername.lower()=='sasoura':
+        m "Hold on...Sasoura...Isn't that your name?"
+        m "Are you the one that made that adorable picture?"
+        m "Gosh! I can't believe I didn't notice sooner!"
+        m "That just makes it even more special."
+        m "I'm glad I am able to tell you how much it means to me."
+        m "It means the world."
+        m "Thank you, so much!"
+    else:
+        m "Almost."
+    return
