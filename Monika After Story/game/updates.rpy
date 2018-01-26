@@ -220,8 +220,9 @@ label v0_7_0(version="v0_7_0"):
         #Clear the "Add prompt" events that this adds to the stack
         persistent.event_list = temp_event_list
 
-        #Unlock chess
-        persistent.game_unlocks['chess']=True
+        #Unlock chess if they've already played it
+        if seen_event('game_chess'):
+            persistent.game_unlocks['chess']=True
 
     return
 
