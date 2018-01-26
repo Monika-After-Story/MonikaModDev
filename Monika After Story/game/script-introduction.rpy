@@ -241,7 +241,10 @@ label ch30_reload_continuous:
             "I'm running out of patience for this.",
             "I wish you understood what it felt like when you close the game.",
             "Well, that was pretty abrupt wasn't it?",
-            "You could have just asked me to close the game silly."
+            "You could have just asked me to close the game silly.",
+            "I'm just going to assume the power went out or someone pulled the plug.",
+            "I can't understand why you won't ask me to close the game...",
+            "This is really painful for me, you know?"
         ]
         reload_quip=renpy.random.choice(reload_quips)
     m 2o "[reload_quip]"
