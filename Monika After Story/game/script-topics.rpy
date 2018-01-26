@@ -4628,7 +4628,7 @@ label monika_hamlet:
 # ~ Aya Shameimaru
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_omamori",category=['random'],prompt="Other ways to carry you",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_omamori",category=['misc'],prompt="Omamori",random=True))
 
 label monika_omamori:
     m "Do you remember when I mentioned how you could carry around my character file?"
@@ -4640,7 +4640,7 @@ label monika_omamori:
     m "Rumor has it that they can give good luck, help on school tests, keep away bad luck, or just protect the holder."
     m 1d "I've always wondered what they put inside these things."
     m 2b "Apparently, it's simply the name of the deity from the shrine, with a little something special done to it."
-    m 5b "Maybe you could make an o-mamori of me for you to carry around!"
+    m "Maybe you could make an o-mamori of me for you to carry around!"
     m 2a "You could print write my name on a piece of paper."
     m "Then fold that piece of paper into a small paper packet."
     m "It could help to use either a small piece of wood or plastic to keep it protected."
@@ -4648,7 +4648,7 @@ label monika_omamori:
     m 1j "Make sure that the pouch is bright and colorful!"
     m "Green would be a nice color! Just like my eyes~"
     m 1k "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
-    m 5m "Oh gosh, this is turning out to be a bit silly, now that I think about it."
+    m 1m "Oh gosh, this is turning out to be a bit silly, now that I think about it."
     m "I mean, would doing this make me some sort of deity?"
     m 1a "I just feel like it would be a nice alternative for you if wanted to bring me around."
     m "Especially if you don't have a flash drive."
