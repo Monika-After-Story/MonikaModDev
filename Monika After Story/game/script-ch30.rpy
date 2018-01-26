@@ -528,13 +528,13 @@ label ch30_autoload:
         else:
             $pushEvent(renpy.random.choice(greetings_list))
 
-        if not persistent.tried_skip:
-            $ config.allow_skipping = True
-        else:
-            $ config.allow_skipping = False
+    if not persistent.tried_skip:
+        $ config.allow_skipping = True
+    else:
+        $ config.allow_skipping = False
 
-        if not is_monika_in_room:
-            $ set_keymaps()
+    if not is_monika_in_room:
+        $ set_keymaps()
 
     $persistent.closed_self = False
     $startup_check = False
