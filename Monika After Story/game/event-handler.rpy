@@ -374,16 +374,16 @@ label prompt_menu:
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
-        call show_prompt_list(unseen_events)
+        call show_prompt_list(unseen_events) from _call_show_prompt_list
 
     if madechoice == "prompt":
-        call prompts_categories(True)
+        call prompts_categories(True) from _call_prompts_categories
 
     if madechoice == "repeat":
-        call prompts_categories(False)
+        call prompts_categories(False) from _call_prompts_categories_1
 
     if madechoice == "goodbye":
-        call random_farewell
+        call random_farewell from _call_random_farewell
 
     if madechoice == "nevermind":
         $_return = None
