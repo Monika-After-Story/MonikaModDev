@@ -189,7 +189,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_chess",conditional="get_level()>=12 and not seen_event('unlock_chess') and not persistent.game_unlocks['chess']",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label unlock_chess:
-    m 1a "Hey, [player]!"
+    m 1a "So, [player]..."
     if renpy.seen_label('game_pong'):
         m 1i "I thought that you might be getting bored with Pong."
     else:
@@ -254,7 +254,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_piano",conditional="get_level()>=24 and not seen_event('unlock_piano')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label unlock_piano:
-    m 2a "Hey! I'm excited to tell you something today!"
+    m 2a "Hey! I've got something exciting to tell you!"
     m 2b "I've finally added a piano to the room for us to use, [player]"
     if not persistent.instrument:
         m 3b "I really want to hear you play!"

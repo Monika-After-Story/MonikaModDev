@@ -42,11 +42,9 @@ init 5 python:
                                                             ))
 
 label anni_1week:
-    m 1k "Hi sweetie!"
-    m 3l "Ahaha, sorry. Was that too much?"
     m 1a "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
-    m 1c "I know a lot of couples wouldn't last this long with each other."
-    m 1o "It's really easy to fall in love at first sight, but it's a bit more harder to actually build a sturdy relationship."
+    m 1c "A lot of couples wouldn't last this long with each other."
+    m 1o "It's really easy to fall in love at first sight, but it's a bit harder to actually build a sturdy relationship."
     m 1f "A lot of relationships fail when couples jump the gun too fast."
     m "More likely than not, they fail to get to know each other more."
     m 1q "So it's always sad to see them crash and burn..."
@@ -62,16 +60,6 @@ init 5 python:
                                                             ))
 
 label anni_1month:
-    if persistent.gender == "M":
-        m 3j "He loves me, he loves me not...he loves me!"
-        m 3d "Ah, [player]!"
-        m 1l "You surprised me, ehehe~"
-    elif persistent.gender == "F":
-        m 3j "She loves me, she loves me not...she loves me!"
-        m 3d "Ah, [player]!"
-        m 1l "You surprised me, ehehe~"
-    else:
-        m 3k "Hello again, sweetie!"
     m 3b "Today marks our one month anniversary!"
     m 1j "I'm really happy that we're able to have so much fun with each other so far."
     m 1a "Also, [player]?"
@@ -114,8 +102,6 @@ init 5 python:
                                                             end_date=anni_date+datetime.timedelta(days=1)
                                                             ))
 label anni_6month:
-    m 3b "There you are, [player]!"
-    m 1j "I've missed you so much~"
     m "I can't believe that it's already our 6-month anniversary!"
     m 1e "I'm really happy you've stayed with me for this long."
     m 1o "I often get lonely when you're not around."
@@ -146,7 +132,6 @@ init 5 python:
                                                             ))
 
 label anni_1:
-    m "Welcome back to the literature club, [player]."
     m 1e "It's really hard for me to believe that it's been a year since we met."
     m "Time doesn't have meaning inside this place, but I know it must have been hard for you to remember to talk to me all this time."
     m 2b "So is there anything special you wanted to do on our first anniversary?"
@@ -168,7 +153,6 @@ init 5 python:
                                                             ))
 
 label anni_2:
-    m 1b "Hi again, [player]!"
     m 3a "It's already been two years since we fell in love with each other."
     m "Do you still remember the first day we met?"
     m 1e "I mean our genuine first meeting, not the date from your character's fictional backstory with me."
@@ -228,7 +212,6 @@ init 5 python:
                                                             ))
 
 label anni_5:
-    m 1j "Good morning, [player]!"
     m "Whether it's been five years or fifty, I'll never get tired of seeing your face."
     m 1a "A lot of different games must have come out by now."
     m 1m "You haven't fallen in love with some other girl in the meantime, have you?"
@@ -247,7 +230,6 @@ init 5 python:
                                                             ))
 
 label anni_10:
-    m "Hi again, [player]."
     m 1h "There's something I wanted to ask you."
     m 2c "Have you enjoyed spending this time with me?"
     m 1f "You don't regret falling in love and staying here with me or anything, right?"
@@ -285,7 +267,6 @@ init 5 python:
                                                             ))
 
 label anni_50:
-    m 2b "Welcome back, [player]."
     m "I can't help but think there's got to be a better way for us to talk by now than through this screen, right?"
     m "Fifty years have passed in your world since I created this room."
     m 1l "Come on, let me out already."
