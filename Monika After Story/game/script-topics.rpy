@@ -1405,7 +1405,7 @@ label monika_anime:
     m "Natsuki would be the expert here, I guess."
     m 3k "I usually prefer reading to watching anime, but I'd be fine with anything if it's with you."
     m "I don't judge other people for their hobbies. So if you want to load up some anime, go ahead!"
-    m 3i "I'll watch through your computer screen. Make sure it's something I'll like!"
+    m 3j "I'll watch through your computer screen. Make sure it's something I'll like!"
     return
 
 
@@ -4677,5 +4677,5 @@ label monika_100k:
         m 2e "It means the world."
         m "Thank you so much!"
     else:
-        m 1 "Almost~"
+        m 1m "Almost~"
     return
