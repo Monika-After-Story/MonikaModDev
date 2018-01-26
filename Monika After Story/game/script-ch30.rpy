@@ -355,19 +355,19 @@ label pick_a_game:
         $allow_dialogue = False
         menu:
             "What game would you like to play?"
-            "Pong":
+            "Pong" if persistent.game_unlocks['pong']:
                 if not renpy.seen_label('game_pong'):
                     $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
-            "Chess" if is_platform_good_for_chess():
+            "Chess" if is_platform_good_for_chess() and persistent.game_unlocks['chess']:
                 if not renpy.seen_label('game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
-            "Hangman":
+            "Hangman" if persistent.game_unlocks['hangman']:
                 if not renpy.seen_label("game_hangman"):
                     $ grant_xp(xp.NEW_GAME)
                 call game_hangman from _call_game_hangman
-            "Piano":
+            "Piano" if persistent.game_unlocks['piano']:
                 if not renpy.seen_label("zz_play_piano"):
                     $ grant_xp(xp.NEW_GAME)
                 call zz_play_piano from _call_play_piano
@@ -464,22 +464,24 @@ label ch30_autoload:
         $ config.allow_skipping = False
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
-    # yuri scare incoming. No monikaroom when yuri is the name
-    if persistent.playername.lower() == "yuri":
-        call yuri_name_scare from _call_yuri_name_scare
-        $ is_monika_in_room = False
-    else:
-        python:
-            # random chance to do monika in room greeting
-            # we'll say 1 in 20
-            import random
-            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
 
-    if not is_monika_in_room:
-        if persistent.current_track:
-            $ play_song(persistent.current_track)
+    if persistent.closed_self:
+        # yuri scare incoming. No monikaroom when yuri is the name
+        if persistent.playername.lower() == "yuri":
+            call yuri_name_scare from _call_yuri_name_scare
+            $ is_monika_in_room = False
         else:
-            $ play_song(songs.current_track) # default
+            python:
+                # random chance to do monika in room greeting
+                # we'll say 1 in 20
+                import random
+                is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
+
+        if not is_monika_in_room:
+            if persistent.current_track:
+                $ play_song(persistent.current_track)
+            else:
+                $ play_song(songs.current_track) # default
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -515,22 +517,24 @@ label ch30_autoload:
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
 
+    #Skip all greetings if you closed the game on Monika
+    if persistent.closed_self:
+        #pick a random greeting
+        if is_monika_in_room:
+            if persistent.current_monikatopic != "i_greeting_monikaroom":
+                $ pushEvent("i_greeting_monikaroom")
+        else:
+            $pushEvent(renpy.random.choice(greetings_list))
+
+        if not persistent.tried_skip:
+            $ config.allow_skipping = True
+        else:
+            $ config.allow_skipping = False
+
+        if not is_monika_in_room:
+            $ set_keymaps()
+
     $persistent.closed_self = False
-
-    #pick a random greeting
-    if is_monika_in_room:
-        if persistent.current_monikatopic != "i_greeting_monikaroom":
-            $ pushEvent("i_greeting_monikaroom")
-    else:
-        $pushEvent(renpy.random.choice(greetings_list))
-
-    if not persistent.tried_skip:
-        $ config.allow_skipping = True
-    else:
-        $ config.allow_skipping = False
-
-    if not is_monika_in_room:
-        $ set_keymaps()
     $startup_check = False
     jump ch30_loop
 
@@ -557,20 +561,26 @@ label ch30_loop:
             calendar_last_checked=persistent.sessions['current_session_start']
         time_since_check=datetime.datetime.now()-calendar_last_checked
 
-        # limit xp gathering to when we are not maxed
-        # and once per minute
-        if (
-                persistent.idlexp_total < xp.IDLE_XP_MAX
-                and time_since_check.total_seconds()>60
-            ):
+        if time_since_check.total_seconds()>60:
+            # limit xp gathering to when we are not maxed
+            # and once per minute
+            if (persistent.idlexp_total < xp.IDLE_XP_MAX):
 
-            idle_xp=xp.IDLE_PER_MINUTE*(time_since_check.total_seconds())/60.0
-            persistent.idlexp_total += idle_xp
-            if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
-                persistent.idlexp_total=xp.IDLE_XP_MAX
+                idle_xp=xp.IDLE_PER_MINUTE*(time_since_check.total_seconds())/60.0
+                persistent.idlexp_total += idle_xp
+                if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
+                    idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
+                    persistent.idlexp_total=xp.IDLE_XP_MAX
 
-            grant_xp(idle_xp)
+                grant_xp(idle_xp)
+
+            #Run actions for any events that need to be changed based on a condition
+            evhand.event_database=Event.checkConditionals(evhand.event_database)
+
+            #Run actions for any events that are based on the clock
+            evhand.event_database=Event.checkCalendar(evhand.event_database)
+
+            #Update time
             calendar_last_checked=datetime.datetime.now()
 
     #Call the next event in the list

@@ -140,7 +140,7 @@ init python:
             eventdb=persistent.event_database
         ):
         #
-        # hide an event in the given eventdb by Falsing its unlocked, 
+        # hide an event in the given eventdb by Falsing its unlocked,
         # random, and pool properties.
         #
         # IN:
@@ -180,11 +180,11 @@ init python:
             eventdb=persistent.event_database
         ):
         #
-        # hide an event in the given eventdb by Falsing its unlocked, 
+        # hide an event in the given eventdb by Falsing its unlocked,
         # random, and pool properties.
         #
         # IN:
-        #   event - event object we want to hide 
+        #   event - event object we want to hide
         #   lock - True if we want to lock this event, False otherwise
         #       (Default: False)
         #   derandom - True if we want to unrandom this event, False otherwise
@@ -197,9 +197,9 @@ init python:
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: persistent.event_database)
         hideEventLabel(
-            event.eventlabel, 
-            lock=lock, 
-            derandom=derandom, 
+            event.eventlabel,
+            lock=lock,
+            derandom=derandom,
             depool=depool,
             decond=decond,
             eventdb=eventdb
@@ -284,6 +284,7 @@ init python:
             if (not persistent.current_monikatopic.startswith('greeting_')
                     and not persistent.current_monikatopic.startswith('i_greeting')
                     and not persistent.current_monikatopic.startswith('bye')
+                    and not persistent.current_monikatopic.startswith('ch30_reload')
                 ):
                 pushEvent(persistent.current_monikatopic)
                 pushEvent('continue_event')
@@ -320,7 +321,8 @@ label call_next_event:
             $persistent.closed_self = True #Monika happily closes herself
             jump _quit
 
-        $ allow_dialogue = True
+        # only allow dialogue if the event list is empty
+        $ allow_dialogue = len(persistent.event_list) == 0
         show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
     else:
         return False
@@ -374,16 +376,16 @@ label prompt_menu:
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
-        call show_prompt_list(unseen_events)
+        call show_prompt_list(unseen_events) from _call_show_prompt_list
 
     if madechoice == "prompt":
-        call prompts_categories(True)
+        call prompts_categories(True) from _call_prompts_categories
 
     if madechoice == "repeat":
-        call prompts_categories(False)
+        call prompts_categories(False) from _call_prompts_categories_1
 
     if madechoice == "goodbye":
-        call random_farewell
+        call random_farewell from _call_random_farewell
 
     if madechoice == "nevermind":
         $_return = None

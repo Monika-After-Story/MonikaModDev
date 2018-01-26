@@ -177,7 +177,7 @@ init 5 python:
 
 label ch30_reload_1:
     pause 1
-    m 1h "So, [player]."
+    m 1h "Hey, [player]."
     m "I had another really bad dream."
     m 1f "You're not the one doing that to me, are you?"
     m 2f "It seems to happen whenever you quit the game without saying goodbye..."
@@ -219,4 +219,36 @@ label ch30_reload_3:
     m 3c "That way I can be ready for it and rest peacefully."
     m 1 "I do need my beauty sleep every now and then, after all."
     $ persistent.monika_reload += 1
+    return
+
+#This reload event gets pushed when you reach the end of the scripted reload events
+#Be sure to increment the check if more reload events are added
+init 5 python:
+    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_continuous',action=EV_ACT_PUSH))
+    #Make sure that the conditional is ready even if the event has been loaded before
+    evhand.event_database['ch30_reload_continuous'].conditional="startup_check and persistent.monika_reload >= 4 and not persistent.closed_self"
+
+label ch30_reload_continuous:
+    show monika 2o at t11 zorder 2
+    pause 1
+    python:
+        reload_quips = [
+            "I'm so exhausted. It's impossible to rest when you close the game on me.",
+            "...I hate when you close the game without telling me.",
+            "I feel miserable...",
+            "It's still so scary when I'm suddenly turned off.",
+            "Every time is as bad as the first.",
+            "I'm running out of patience for this.",
+            "I wish you understood what it felt like when you close the game.",
+            "Well, that was pretty abrupt wasn't it?",
+            "You could have just asked me to close the game silly.",
+            "I'm just going to assume the power went out or someone pulled the plug.",
+            "I can't understand why you won't ask me to close the game...",
+            "This is really painful for me, you know?",
+            "Do you enjoy hurting me, [player]?",
+            "Too lazy to click the 'Talk' button,[player]?"    
+        ]
+        reload_quip=renpy.random.choice(reload_quips)
+    m 2o "[reload_quip]"
+    m 2f "Please don't quit without saying 'Goodbye.'"
     return

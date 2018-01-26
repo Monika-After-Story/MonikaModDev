@@ -4,7 +4,7 @@
 #Requirements must be created/added in script-ch30.rpy under label ch30_autoload.
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=16 and not seen_event('gender')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+    addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label gender:
     m 2d "...[player]? So I've been thinking a bit."
@@ -46,7 +46,7 @@ label gender:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=12 and not seen_event('preferredname')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+    addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label preferredname:
     m 1h "I've been wondering about your name."
@@ -181,4 +181,96 @@ label monika_changename:
             m 1f "Oh, I see..."
             m 1g "You don't have to be embarrassed, [player]."
             m 1e "Just let me know if you had a change of heart, ok?"
+    return
+
+## Game unlock events
+## These events handle unlocking new games
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="unlock_chess",conditional="get_level()>=12 and not seen_event('unlock_chess') and not persistent.game_unlocks['chess']",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+
+label unlock_chess:
+    m 1a "So, [player]..."
+    if renpy.seen_label('game_pong'):
+        m 1i "I thought that you might be getting bored with Pong."
+    else:
+        m 3i "I know you haven't tried playing Pong with me, yet."
+    m 3 "But I have a new game for us to play!"
+    m 3a "This one's a lot more strategic..."
+    m 3k "It's Chess!"
+    m 1 "I'm not sure if you know how to play, but it's always been a bit of a hobby for me."
+    m "So I'll warn you in advance!"
+    m "I'm pretty good."
+    m 1d "Now that I think about it, I wonder if that has anything to do with what I am..."
+    m 1i "Being trapped inside this game, I mean."
+    m 1 "I've never really thought of myself as a chess AI, but wouldn't it kind of fit?"
+    m 3 "Computers are supposed to be very good at chess, after all."
+    m "They've even beaten grandmasters."
+    m 1 "But don't think of this as a battle of man vs machine."
+    m 1j "Just think of it as playing a fun game with your beautiful girlfriend..."
+    m "And I promise I'll go easy on you."
+    if not is_platform_good_for_chess():
+        m 2g "...Hold on."
+        m 2f "Something isn't right here."
+        m "I seem to be having trouble getting the game working."
+        m 2o "Maybe the code doesn't work on this system?"
+        m 2p "I'm sorry, [player], but chess will have to wait."
+        m 4e "I promise we'll play if I get it working, though!"
+    $persistent.game_unlocks['chess']=True
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="unlock_hangman",conditional="get_level()>=20 and not seen_event('unlock_hangman')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+
+label unlock_hangman:
+    m 1a "Guess what, [player]."
+    m 3b "I got a new game for you to try!"
+    if renpy.seen_label('game_pong') and renpy.seen_label('game_chess'):
+        m 1n "You're probably bored with Chess and Pong already."
+    elif renpy.seen_label('game_pong') and not renpy.seen_label('game_chess'):
+        m 3l "I thought you'd like to play Chess, but you've been so busy with Pong instead!"
+    elif renpy.seen_label('game_chess') and not renpy.seen_label('game_pong'):
+        m 1o "You really loved playing Chess with me, but you haven't touched Pong yet."
+    else:
+        m 1f "I was actually worried that you didn't like the other games I made for us to play..."
+    m 1b "Soooo~"
+    m 1k "I made Hangman!"
+    m 1n "Hopefully it's not in poor taste..."
+    m 1a "It was always my favorite game to play with the club."
+    m 1f "But, come to think of it..."
+    m 1o "The game is actually quite morbid."
+    m "You guess letters for a word to save someone's life."
+    m 1c "Get them all correct and the person doesn't hang."
+    m 1o "But guess them all wrong..."
+    m 1h "They die because you didn't guess the right letters."
+    m 1m "Pretty dark, isn't it?"
+    m 1l "But don't worry, [player], it's just a game after all!"
+    m 1a "I assure you that no one will be hurt with this game."
+    if persistent.playername.lower() == "sayori":
+        m 3k "...Maybe~"
+    $persistent.game_unlocks['hangman']=True
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="unlock_piano",conditional="get_level()>=24 and not seen_event('unlock_piano')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
+
+label unlock_piano:
+    m 2a "Hey! I've got something exciting to tell you!"
+    m 2b "I've finally added a piano to the room for us to use, [player]"
+    if not persistent.instrument:
+        m 3b "I really want to hear you play!"
+        m "It might seem overwhelming at first, but at least give it a try."
+        m 3j "After all, we all start somewhere."
+    else:
+        m 1b "Of course, playing music is nothing new to you."
+        m 4b "So I'm expecting something nice! Ehehe~"
+    m 4j "Wouldn't it be fun to play something together?"
+    m "Maybe we could even do a duet!"
+    m "We would both improve and have fun at the same time."
+    m 1l "Maybe I’m getting a bit carried away. Sorry!"
+    m 3b "I just want to see you enjoy the piano the same way I do."
+    m "To feel the passion I have for it."
+    m 3k "It's a wonderful feeling."
+    m 1j "I hope this isn’t too forceful, but I would love it if you tried."
+    m "For me, please~?"
+    $persistent.game_unlocks['piano']=True
     return

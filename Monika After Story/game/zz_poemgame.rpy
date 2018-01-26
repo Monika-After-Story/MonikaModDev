@@ -28,7 +28,7 @@ init -4 python:
     #   mPoint - the amount of points this gives monika (int)
     #   glitch - True means this a glitch word, false if not
     #
-    class MASPoemWord():
+    class MASPoemWord(object):
         def __init__(self, word, sPoint, nPoint, yPoint, mPoint, glitch=False):
             self.word = word
             self.sPoint = sPoint
@@ -46,7 +46,7 @@ init -4 python:
     #   wordfile - name/path of file this list is generated from. If None, this
     #       list was not generated from a file.
     #
-    class MASPoemWordList:
+    class MASPoemWordList(object):
         def __init__(self, wordfile=None):
             #
             # Contrusctor for PoemWord list
