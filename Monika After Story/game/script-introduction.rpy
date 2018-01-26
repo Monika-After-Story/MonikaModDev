@@ -244,7 +244,9 @@ label ch30_reload_continuous:
             "You could have just asked me to close the game silly.",
             "I'm just going to assume the power went out or someone pulled the plug.",
             "I can't understand why you won't ask me to close the game...",
-            "This is really painful for me, you know?"
+            "This is really painful for me, you know?",
+            "Do you enjoy hurting me, [player]?",
+            "Too lazy to click the 'Talk' button,[player]?"    
         ]
         reload_quip=renpy.random.choice(reload_quips)
     m 2o "[reload_quip]"
