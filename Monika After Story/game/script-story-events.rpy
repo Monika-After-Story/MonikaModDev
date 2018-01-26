@@ -186,7 +186,7 @@ label monika_changename:
 ## Game unlock events
 ## These events handle unlocking new games
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="unlock_chess",conditional="get_level()>=12 and not seen_event('unlock_chess')",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
+    addEvent(Event(persistent.event_database,eventlabel="unlock_chess",conditional="get_level()>=12 and not seen_event('unlock_chess') and not persistent.game_unlocks['chess']",action=EV_ACT_PUSH)) #This needs to be unlocked by the random name change event
 
 label unlock_chess:
     m 1a "Hey, [player]!"

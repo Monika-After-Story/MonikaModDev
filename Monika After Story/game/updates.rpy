@@ -5,7 +5,7 @@
 #   persistent._seen_ever
 #   persistent.version_number
 
-# preeverything stuff 
+# preeverything stuff
 init -10 python:
     found_monika_ani = persistent.monika_anniversary is not None
     no_topics_list = persistent.monika_random_topics is None
@@ -30,7 +30,7 @@ init python:
     def removeTopicID(topicID):
         #
         # Removes one topic from the _seen_ever variable
-        # topics list (if it exists in either var) (persistent is also 
+        # topics list (if it exists in either var) (persistent is also
         # checked for existence)
         #
         # IN:
@@ -63,9 +63,9 @@ init python:
         for oldTopic in changedIDs:
             if updating_persistent._seen_ever.pop(oldTopic,False):
                 updating_persistent._seen_ever[changedIDs[oldTopic]] = True
-                
+
         return updating_persistent
-                    
+
 
 
     def updateTopicIDs(version_number,updating_persistent=persistent):
@@ -84,13 +84,13 @@ init python:
         #   updates.topics
         if version_number in updates.topics:
             changedIDs = updates.topics[version_number]
-        
-        
+
+
             if changedIDs is not None:
                 updating_persistent = adjustTopicIDs(
                     changedIDs, updating_persistent
                 )
-        
+
         return updating_persistent
 
 
@@ -104,7 +104,7 @@ init python:
         #
         # ASSUMES:
         #   updates.version_updates
-        
+
         while startVers in updates.version_updates:
 
             updateTo = updates.version_updates[startVers]
@@ -126,13 +126,13 @@ init 10 python:
         if no_topics_list:
             # we are in version 0.2.2 (the horror!)
             updateGameFrom("v0_2_2")
-            
+
         elif (renpy.seen_label("monika_ribbon") or
                 "monika_ribbon" in persistent.monika_random_topics):
             # we are in version 0.3.3
             updateGameFrom("v0_3_3")
 
-        elif found_monika_ani: 
+        elif found_monika_ani:
             # we are in version 0.3.2
             updateGameFrom("v0_3_2")
 
@@ -199,19 +199,30 @@ label v0_7_0(version="v0_7_0"):
 
         # update !
         persistent = updateTopicIDs(version)
-        
+
+        temp_event_list = persistent.event_list
         # now properly set all seen events as unlocked
         import store.evhand as evhand
         for k in evhand.event_database:
             event = evhand.event_database[k]
             if (renpy.seen_label(event.eventlabel)
-                and (event.pool 
+                and (event.pool
                     or event.random
                     or event.action == EV_ACT_POOL
                     or event.action == EV_ACT_RANDOM
                 )):
                 event.unlocked = True
                 event.conditional = None
+
+                #Grant some XP so existing players don't start at square 1
+                grant_xp(xp.NEW_EVENT)
+
+        #Clear the "Add prompt" events that this adds to the stack
+        persistent.event_list = temp_event_list
+
+        #Unlock chess
+        persistent.game_unlocks['chess']=True
+
     return
 
 # 0.4.0
