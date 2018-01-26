@@ -27,7 +27,7 @@ image hm_s:
 
         # this block makes the image flicker
         # the numbers are times to display
-        block: 
+        block:
             choice:
                 0.075
             choice:
@@ -76,7 +76,7 @@ transform hangman_hangman:
 transform hangman_sayori(z=1.0):
     xcenter -300 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
     easein 0.25 xcenter 90
-    
+
 # regular
 transform hangman_sayori_i(z=1.0):
     xcenter 90 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
@@ -159,7 +159,7 @@ init -1 python in hangman:
 
 # post processing
 init 10 python:
-    
+
     # setting up wordlist
     from store.hangman import hm_words, all_hm_words
     from copy import deepcopy
@@ -167,7 +167,7 @@ init 10 python:
     # for now, lets use full_wordlist defined in poemgame
     # this is a list of PoemWord objects
     for word in full_wordlist:
-        
+
         winner = ""
 
         # figure out who likes this word the most
@@ -193,7 +193,7 @@ init 10 python:
 #            if len(line) != 0 and line[0] != "#":
 #
 #                # word, sPt, nPt, yPt
-#                hm_words.append(line.split(",")[0]) 
+#                hm_words.append(line.split(",")[0])
 #    all_hm_words = list(hm_words)
 
     # setting up image names
@@ -214,23 +214,23 @@ label game_hangman:
     python:
         # setup constant displayabels
         missed_label = Text(
-            "Missed:", 
+            "Missed:",
             font=hmg.WORD_FONT,
             color=hmg.WORD_COLOR,
             size=hmg.WORD_SIZE,
             outlines=hmg.WORD_OUTLINE
         )
 
-    # show missed label 
+    # show missed label
     show text missed_label zorder 10 as hmg_mis_label at hangman_missed_label
-    
+
     # FALL THROUGH TO NEXT LABEL
 
 # looping location for the hangman game
 label hangman_game_loop:
     m 1a "I'll think of a word..."
     pause 0.7
-   
+
     python:
         # refill the list if empty
         if len(hmg.hm_words) == 0:
@@ -246,7 +246,7 @@ label hangman_game_loop:
 
         # we dont need PoemWord anymore
         word = word[0]
-      
+
         # turn the word into hangman letters
         # NOTE: might not need this (or might). keep for reference
 #       hm_letters = list()
@@ -256,7 +256,7 @@ label hangman_game_loop:
 #               hmg.WORD_XPOS_START + (hmg,LETTER_SPACE * dex),
 #               hmg.WORD_YPOS_START
 #           )
-    
+
     # sayori window
     if is_sayori:
         if is_window_sayori_visible:
@@ -284,7 +284,7 @@ label hangman_game_loop:
                 dt_color = hmg.WORD_COLOR_GET
 
             display_text = Text(
-                "".join(display_word), 
+                "".join(display_word),
                 font=hmg.WORD_FONT,
                 color=dt_color,
                 size=hmg.WORD_SIZE,
@@ -324,7 +324,7 @@ label hangman_game_loop:
                 show hm_s zorder 10 at hangman_hangman
 
                 # hide monika and display glitch version
-                hide monika 
+                hide monika
                 show monika_body_glitch1 as mbg zorder 2 at hangman_monika_i(z=1.0)
 
                 # hide window sayori and display glitch version
@@ -392,7 +392,7 @@ label hangman_game_loop:
 
                     if len(guess) != 0:
                         bad_input = False
-                
+
             # parse input
             if guess == "?": # hint text
                 m "[hm_hint]"
@@ -432,7 +432,8 @@ label hangman_game_loop:
 
     # post loop
     if win:
-        show hm_s_win_6 as window_sayori at hangman_sayori_h
+        if is_window_sayori_visible:
+            show hm_s_win_6 as window_sayori at hangman_sayori_h
         m 1j "Wow, you guessed the word correctly!"
         m "Good job, [player]!"
         $ grant_xp(xp.WIN_GAME)
@@ -445,7 +446,7 @@ label hangman_game_loop:
         "No":
             jump hangman_game_end
 
-    # RETURN AT END 
+    # RETURN AT END
 
 # end of game flow
 label hangman_game_end:
