@@ -360,7 +360,7 @@ label pick_a_game:
                     $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
             "Chess" if is_platform_good_for_chess() and persistent.game_unlocks['chess']:
-                if not renpy.seen_label'game_chess'):
+                if not renpy.seen_label('game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
             "Hangman" if persistent.game_unlocks['hangman']:
