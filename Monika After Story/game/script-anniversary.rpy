@@ -8,8 +8,8 @@ init python:
         old_year=starting_date.year
         old_day=starting_date.day
 
-        new_year=old_year+(old_month+months)//12
-        new_month=(old_month+months)%12
+        new_year=(old_year+(old_month+months-1)//12)+1
+        new_month=((old_month+months-1))%12+1
 
         #Try adding a month, if that doesn't work (there aren't enough days in the month)
         #keep subtracting days till it works.
