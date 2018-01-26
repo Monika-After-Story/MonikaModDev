@@ -320,7 +320,8 @@ label call_next_event:
             $persistent.closed_self = True #Monika happily closes herself
             jump _quit
 
-        $ allow_dialogue = True
+        # only allow dialogue if the event list is empty
+        $ allow_dialogue = len(persistent.event_list) == 0
         show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
     else:
         return False
