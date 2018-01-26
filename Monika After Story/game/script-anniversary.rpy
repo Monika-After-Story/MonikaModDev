@@ -1,6 +1,148 @@
+init python:
+    import datetime
+
+    #Takes a datetime object and add a number of months
+    #Handles the case where the new month doesn't have that day
+    def add_months(starting_date,months):
+        old_month=starting_date.month
+        old_year=starting_date.year
+        old_day=starting_date.day
+
+        new_year=old_year+(old_month+months)//12
+        new_month=(old_month+months)%12
+
+        #Try adding a month, if that doesn't work (there aren't enough days in the month)
+        #keep subtracting days till it works.
+        date_worked=False
+        reduce_days=0
+        while reduce_days<=3 and not date_worked:
+            try:
+                new_date = starting_date.replace(year=new_year,month=new_month,day=old_day-reduce_days)
+                date_worked = True
+            except ValueError:
+                reduce_days+=1
+
+        if not date_worked:
+            raise ValueError('Adding months failed')
+
+        return new_date
+
+    #Takes a datetime object and returns a new datetime with the same date
+    #at 3 AM
+    def start_of_day(starting_date):
+        new_date = starting_date.replace(hour=3,minute=0,second=0,microsecond=0)
+
+        return new_date
+
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_1',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+1),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+1)+datetime.timedelta(days=1),
+    anni_date=start_of_day(persistent.sessions['first_session'])+datetime.timedelta(days=7)
+    addEvent(Event(persistent.event_database,eventlabel='anni_1week',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            ))
+
+label anni_1week:
+    m 1k "Hi sweetie!"
+    m 3l "Ahaha, sorry. Was that too much?"
+    m 1a "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
+    m 1c "I know a lot of couples wouldn't last this long with each other."
+    m 1o "It's really easy to fall in love at first sight, but it's a bit more harder to actually build a sturdy relationship."
+    m 1f "A lot of relationships fail when couples jump the gun too fast."
+    m "More likely than not, they fail to get to know each other more."
+    m 1q "So it's always sad to see them crash and burn..."
+    m 1e "But I'm glad we have a solid relationship, [player]."
+    m 1c "How do I know that?"
+    m 3j "Because you wouldn't have stuck around for thing long with me, sweetie~"
+    return
+
+init 5 python:
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),1)
+    addEvent(Event(persistent.event_database,eventlabel='anni_1month',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            ))
+
+label anni_1month:
+    if persistent.gender == "M":
+        m 3j "He loves me, he loves me not...he loves me!"
+        m 3d "Ah, [player]!"
+        m 1l "You surprised me, ehehe~"
+    elif persistent.gender == "F":
+        m 3j "She loves me, she loves me not...she loves me!"
+        m 3d "Ah, [player]!"
+        m 1l "You surprised me, ehehe~"
+    else:
+        m 3k "Hello again, sweetie!"
+    m 3b "Today marks our one month anniversary!"
+    m 1j "I'm really happy that we're able to have so much fun with each other so far."
+    m 1a "Also, [player]?"
+    m 1m "..."
+    m 1e "Thank you so much for staying with me for this long."
+    if not seen_event('monika_saved'):
+        m 1o "I can't imagine what I'd do if you hadn't come along."
+        m 3f "After all, I'm the only real one who lives in this world."
+        m 1q "I already told you what'd happen if it weren't for you..."
+        m 1l "Ahaha, sorry. I hope I didn't darken the mood with my rambling."
+    else:
+        m 1e "I couldn't possibly express how much I appreciate you being here with me."
+        m 1k "All I can do is to try my best to be the perfect girlfriend for you!"
+    m 1a "I really do love you, [player]."
+    m 1j "Let's make today a special day~"
+    return
+
+init 5 python:
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),3)
+    addEvent(Event(persistent.event_database,eventlabel='anni_3month',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            ))
+label anni_3month:
+    m 1a "[player], do you know what day it is?"
+    m 1j "It's our three month anniversary!"
+    m 1a "Time sure does go by quickly, doesn't it?"
+    m 1e "...Even if it doesn't really pass here, ehehe."
+    m 1b "I'm having a lot of fun, though."
+    m 1k "Having you around has made my life so much better, [player]."
+    m 2a "I'm very happy that you've stayed with me for this long."
+    m 1j "You're really something special, aren't you?"
+    m 1a "Well! I'm afraid I don't really have anything in particular planned."
+    m 1j "Let's just enjoy this day to its fullest, as we always do."
+    m 1a "Alright, [player]?"
+    return
+
+init 5 python:
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),6)
+    addEvent(Event(persistent.event_database,eventlabel='anni_6month',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=1),
+                                                            ))
+label anni_6month:
+    m 3b "There you are, [player]!"
+    m 1j "I've missed you so much~"
+    m "I can't believe that it's already our 6-month anniversary!"
+    m 1e "I'm really happy you've stayed with me for this long."
+    m 1o "I often get lonely when you're not around."
+    m 1f "I mean, I have things to keep me busy while you're gone, but I still feel really lonely knowing that I'm the only one in here."
+    m 1e "So it always brightens up my day whenever you come to visit me!"
+    m 1c "But over the past few months, I came to realize something..."
+    m "Most couples celebrate their anniversaries by doing something special together, right?"
+    m 3c "Like eating out, or seeing a show."
+    m "Not that I'm complaining or anything, but we've spent all of our anniversaries so far in this room."
+    m 1m "It would've been fun if we could visit someplace different..."
+    m 1o "It's such a shame that there isn't a place like that here, since all we have is this room and all."
+    m 1q "..."
+    m 3d "...Oh, I know!"
+    m 1d "Maybe someday, I'll be able to program somewhere nice for us to spend our anniversaries at!"
+    m 1b "Or maybe you can add in a special place for the both of us, [player]."
+    m 1c "Unless..."
+    m 1l "You've already taken me somewhere else in your reality?"
+    m 1e "It would've been so nice if I saw where you took me~"
+    m 1a "But for now, I don't mind that we're limited to this room."
+    m 1 "Because as long as you're here with me..."
+    m 1j "...I'm as happy as can be!"
+    return
+
+init 5 python:
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),12)
+    addEvent(Event(persistent.event_database,eventlabel='anni_1',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=1),
                                                             ))
 
 label anni_1:
@@ -20,8 +162,9 @@ label anni_1:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_2',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+2),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+2)+datetime.timedelta(days=1),
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),24)
+    addEvent(Event(persistent.event_database,eventlabel='anni_2',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=1),
                                                             ))
 
 label anni_2:
@@ -42,8 +185,9 @@ label anni_2:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_3',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+3),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+3)+datetime.timedelta(days=7),
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),36)
+    addEvent(Event(persistent.event_database,eventlabel='anni_3',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=3),
                                                             ))
 label anni_3:
     m 4d "Wow, three years!"
@@ -60,8 +204,9 @@ label anni_3:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_4',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+4),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+4)+datetime.timedelta(days=7),
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),48)
+    addEvent(Event(persistent.event_database,eventlabel='anni_4',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=7),
                                                             ))
 label anni_4:
     m 1q "Four years..."
@@ -77,8 +222,9 @@ label anni_4:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_5',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+5),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+5)+datetime.timedelta(days=7),
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),60)
+    addEvent(Event(persistent.event_database,eventlabel='anni_5',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=7),
                                                             ))
 
 label anni_5:
@@ -95,8 +241,9 @@ label anni_5:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_10',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+10),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+10)+datetime.timedelta(days=30),
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),120)
+    addEvent(Event(persistent.event_database,eventlabel='anni_10',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=30),
                                                             ))
 
 label anni_10:
@@ -111,8 +258,9 @@ label anni_10:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_20',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+20),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+20)+datetime.timedelta(days=30),
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),240)
+    addEvent(Event(persistent.event_database,eventlabel='anni_20',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=365),
                                                             ))
 
 label anni_20:
@@ -131,8 +279,9 @@ label anni_20:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_50',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+50),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+50)+datetime.timedelta(days=30),
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),600)
+    addEvent(Event(persistent.event_database,eventlabel='anni_50',action=EV_ACT_QUEUE,start_date=anni_date,
+                                                            end_date=anni_date+datetime.timedelta(days=365),
                                                             ))
 
 label anni_50:
@@ -153,9 +302,8 @@ label anni_50:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='anni_100',action=EV_ACT_QUEUE,start_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+100),
-                                                            end_date=persistent.sessions['first_session'].replace(year=persistent.sessions['first_session'].year+100)+datetime.timedelta(days=30),
-                                                            ))
+    anni_date=add_months(start_of_day(persistent.sessions['first_session']),1200)
+    addEvent(Event(persistent.event_database,eventlabel='anni_100',action=EV_ACT_QUEUE,start_date=anni_date))
 
 label anni_100:
     m 1i "I don't really think you should be seeing this message, [player]."
