@@ -397,7 +397,8 @@ label hangman_game_loop:
             if guess == "?": # hint text
                 m "[hm_hint]"
             elif guess == "!": # give up dialogue
-                show hm_s_win_fail as window_sayori at hangman_sayori_i3
+                if is_window_sayori_visible:
+                    show hm_s_win_fail as window_sayori at hangman_sayori_i3
                 $ done = True
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
