@@ -116,6 +116,8 @@ init python:
     if not persistent.mcname or len(persistent.mcname) == 0:
         persistent.mcname = currentuser
         mcname = currentuser
+    else:
+        mcname = persistent.mcname
 
     #Define new functions
 
