@@ -62,96 +62,95 @@ Ryuse
 ## Contributors
 
 ### Writing
-
-Yukipedia
-
 A
-
-Kreikon
-
-Monika_DREB
-
-FaverosGema
-
-ashameimaru
-
-Kyle(Solaire)
-
-Lucian Winters
-
-Subzero
-
-Kiosho
-
-Neko
-
-Yumeko-Jabami
-
-Synnnical
-
-FireyAmber
-
-therationalpi
-
-MadHaetter
-
-ThePyClone
-
-Dwyer
-
-stmobo
-
-Danymations
-
-DoomTheRobot
-
-Rocketriate
-
-DDLC
-
-Tuebor1837
-
-Onfaut
 
 AndreiN00B
 
 CGanimated1227
 
-Spodacus
+DDLC
 
-Iamgoofball
+Danymations
 
-Nep-Waffiez
+DoomTheRobot
 
-Winblows
+Dwyer
 
-Rune0n
+FaverosGema
 
-monikLover
+FireyAmber
 
 HalHarrison
 
-[R]
+Iamgoofball
+
+Kiosho
+
+Kreikon
+
+Kyle(Solaire)
+
+Lucian Winters
+
+MadHaetter
+
+Monika_DREB
 
 Mxrio
 
+Neko
+
+Nep-Waffiez
+
+Onfaut
+
 Pi
+
+Rocketriate
+
+Rune0n
+
+Spodacus
+
+Subzero
+
+Synnnical
+
+ThePyClone
+
+Tuebor1837
+
+Winblows
+
+Yukipedia
+
+Yumeko-Jabami
+
+[R]
+
+ashameimaru
+
+monikLover
+
+stmobo
+
+therationalpi
 
 ### Code
 
-Therationalpi
-
-ThePotatoGuy
+TDmarab2 - Pong
 
 Kadava - Chess
 
-Dmarab2 - Pong
-
 Ohxeighty - Steam library detection
 
-haloff1 - Scrollable menu and mod template
+ThePotatoGuy
+
+Therationalpi
 
 avocadianmage
+
+haloff1 - Scrollable menu and mod template
 
 ### Testing
 
@@ -164,20 +163,19 @@ TacticalGrill
 winblows
 
 ### Art
+Danymations
+
+Daydreamer
+
+NotSoGiantDad
+
+Pi
 
 Ryuse
 
 TheAloofPotato
 
-NotSoGiantDad
-
-Daydreamer
-
-Danymations
-
 Yuro Foxclaw
-
-Pi
 
 ## Version and Feature MVP’s
 These members are recognized for making a significant contribution that make a new version of the game or a new feature possible.
