@@ -140,7 +140,7 @@ init python:
             eventdb=persistent.event_database
         ):
         #
-        # hide an event in the given eventdb by Falsing its unlocked, 
+        # hide an event in the given eventdb by Falsing its unlocked,
         # random, and pool properties.
         #
         # IN:
@@ -180,11 +180,11 @@ init python:
             eventdb=persistent.event_database
         ):
         #
-        # hide an event in the given eventdb by Falsing its unlocked, 
+        # hide an event in the given eventdb by Falsing its unlocked,
         # random, and pool properties.
         #
         # IN:
-        #   event - event object we want to hide 
+        #   event - event object we want to hide
         #   lock - True if we want to lock this event, False otherwise
         #       (Default: False)
         #   derandom - True if we want to unrandom this event, False otherwise
@@ -197,9 +197,9 @@ init python:
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: persistent.event_database)
         hideEventLabel(
-            event.eventlabel, 
-            lock=lock, 
-            derandom=derandom, 
+            event.eventlabel,
+            lock=lock,
+            derandom=derandom,
             depool=depool,
             decond=decond,
             eventdb=eventdb
@@ -284,6 +284,7 @@ init python:
             if (not persistent.current_monikatopic.startswith('greeting_')
                     and not persistent.current_monikatopic.startswith('i_greeting')
                     and not persistent.current_monikatopic.startswith('bye')
+                    and not persistent.current_monikatopic.startswith('ch30_reload')
                 ):
                 pushEvent(persistent.current_monikatopic)
                 pushEvent('continue_event')
