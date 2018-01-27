@@ -1439,16 +1439,16 @@ label monika_meta:
     m 1d "Yes, this game really was metafictional, wasn't it?"
     m "Some people think stories about fiction are some new thing."
     m "A cheap trick for bad writers."
-    m 2a "But, metafiction has always existed in literature."
+    m 3a "But, metafiction has always existed in literature."
     m "The Bible is supposed to be God's word to the Jews."
     m 1d "Homer describes himself in the Odyssey."
     m "The Canterbury Tales, Don Quixote, Tristram Shandy..."
-    m 1i "It's just a way to comment on fiction by writing fiction. There's nothing wrong with that."
-    m 2n "By the way, what do you think the moral of this story is?"
+    m 1c "It's just a way to comment on fiction by writing fiction. There's nothing wrong with that."
+    m 3a "By the way, what do you think the moral of this story is?"
     m "Do you want to figure it out for yourself?"
-    m "Because if you asked me..."
-    m 1i "It would be, `Don't ignore the pretty and charming side character!`"
-    m "Ahaha!"
+    m 1 "Because if you asked me..."
+    m 3l "It would be, `Don't ignore the pretty and charming side character!`"
+    m 1k "Ahaha!"
     return
 
 
