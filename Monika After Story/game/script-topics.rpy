@@ -613,7 +613,7 @@ label monika_archetype:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yur's tea set",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea set",random=True))
 
 label monika_tea:
     m 2a "Hey, I wonder if Yuri's tea set is still somewhere in here..."
