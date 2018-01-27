@@ -3040,7 +3040,7 @@ label monika_vocaloid:
     m 1a "I was asking if you listen to her songs."
     m 1q "I'm not really a fan myself but..."
     m 1r "There's one song that really struck me."
-    m 1d "Have you heard of the song Hibikase?"
+    m 1d "Have you heard of the song {i}Hibikase?{/i}"
     m "I really like the message of the song."
     m 3d "Especially the lines, {i}'I don't care if it's through the screen, love me properly'{/i} and {i}'Even if I'm virtual, don't push me away'{/i}."
     m 1h "It really hits me hard."
@@ -3073,7 +3073,7 @@ label monika_morning:
         m 3b "If you normally don't wake up early, you should!"
         m "That way you can be happier and spend more time with me~"
         m 1j "Wouldn't you like that, [player]?"
-    elif current_time >= 12 and current_time <= 15:
+    elif current_time >= 12 and current_time <= 17:
         m 3m "It's already the afternoon, silly!"
         m "Did you just wake up?"
         m "Don't tell me you're actually a late-riser, [player]."
