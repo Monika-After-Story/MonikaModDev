@@ -224,6 +224,10 @@ label v0_7_0(version="v0_7_0"):
         if seen_event('game_chess'):
             persistent.game_unlocks['chess']=True
 
+        #Unlock the name change topic if the name change topic has been seen
+        if seen_event('preferredname'):
+            evhand.event_database["monika_changename"].unlocked = True
+
     return
 
 # 0.4.0
