@@ -4273,7 +4273,7 @@ label monika_otaku:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['literature'],prompt="Writing tip #3",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
 
 label monika_write:
     m 1a "I'm having fun doing these, so..."
