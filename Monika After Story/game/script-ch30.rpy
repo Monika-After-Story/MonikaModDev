@@ -498,6 +498,7 @@ label ch30_autoload:
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
+                persistent.random_seen = 0
             #Ignore anything beyond 3 days
             if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
                 away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
@@ -598,18 +599,22 @@ label ch30_loop:
         $ renpy.pause(waittime, hard=True)
         window auto
         # Pick a random Monika topic
-        label pick_random_topic:
-        python:
-            all_random_topics = Event.filterEvents(evhand.event_database,random=True).keys()
-            monika_random_topics = all_random_topics
-            for topic in all_random_topics:
-                if seen_event(topic):
-                    monika_random_topics.remove(topic)
-            if len(monika_random_topics) > 0:  # still have topics
-                pushEvent(renpy.random.choice(monika_random_topics))
-            else: # no topics left
-                monika_random_topics = list(all_random_topics)
-                pushEvent(renpy.random.choice(monika_random_topics))
+        if persistent.random_seen < random_seen_limit:
+            label pick_random_topic:
+            python:
+                all_random_topics = Event.filterEvents(evhand.event_database,random=True).keys()
+                monika_random_topics = all_random_topics
+                for topic in all_random_topics:
+                    if seen_event(topic):
+                        monika_random_topics.remove(topic)
+                if len(monika_random_topics) > 0:  # still have topics
+                    pushEvent(renpy.random.choice(monika_random_topics))
+                    persistent.random_seen += 1
+                else: # no topics left
+                    monika_random_topics = list(all_random_topics)
+                    pushEvent(renpy.random.choice(monika_random_topics))
+        elif not seen_random_limit:
+            $pushEvent('random_limit_reached')
 
     $_return = None
 

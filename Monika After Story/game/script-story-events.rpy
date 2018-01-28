@@ -274,3 +274,23 @@ label unlock_piano:
     m "For me, please~?"
     $persistent.game_unlocks['piano']=True
     return
+
+label random_limit_reached:
+    $seen_random_limit=True
+    python:
+        limit_quips = [
+            "It seems I'm at a loss on what to say.",
+            "I'm not sure what else to say, but can you just be with me a little longer?",
+            "No point in trying to say everything right away...",
+            "I hope you've enjoyed listening to everything I was thinking about today...",
+            "Do you still enjoy spending this time with me?",
+            "I hope I didn't bore you to much."
+        ]
+        limit_quip=renpy.random.choice(limit_quips)
+        random_topics = Event.filterEvents(evhand.event_database,random=True,unlocked=False).keys()
+    m 1m "[limit_quip]"
+    if len(random_topics)>0:
+        m 1f "I'm sure I'll have something to talk about after a little rest."
+    else:
+        m 1f "Hopefully I'll think of something fun to talk about soon."
+    return

@@ -1804,6 +1804,7 @@ default persistent.sessions={'last_session_end':None,'current_session_start':Non
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
+default seen_random_limit = False
 define random_seen_limit = 10
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
