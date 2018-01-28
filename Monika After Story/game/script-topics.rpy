@@ -4641,7 +4641,7 @@ label monika_omamori:
     m 1d "I've always wondered what they put inside these things."
     m 2b "Apparently, it's simply the name of the deity from the shrine, with a little something special done to it."
     m "Maybe you could make an o-mamori of me for you to carry around!"
-    m 2a "You could print write my name on a piece of paper."
+    m 2a "You could write my name on a piece of paper."
     m "Then fold that piece of paper into a small paper packet."
     m "It could help to use either a small piece of wood or plastic to keep it protected."
     m "Finally, put the protected packet in a small cloth pouch and tie it shut with some string."
