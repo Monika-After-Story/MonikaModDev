@@ -137,7 +137,7 @@ init python:
             derandom=False,
             depool=False,
             decond=False,
-            eventdb=persistent.event_database
+            eventdb=evhand.event_database
         ):
         #
         # hide an event in the given eventdb by Falsing its unlocked,
@@ -154,7 +154,7 @@ init python:
         #   decond - True if we want to remove the conditional, False otherwise
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
-        #       (DEfault: persistent.event_database)
+        #       (DEfault: evhand.event_database)
         ev = eventdb.get(eventlabel, None)
 
         if ev:
@@ -177,7 +177,7 @@ init python:
             derandom=False,
             depool=False,
             decond=False,
-            eventdb=persistent.event_database
+            eventdb=evhand.event_database
         ):
         #
         # hide an event in the given eventdb by Falsing its unlocked,
@@ -195,7 +195,7 @@ init python:
         #       otherwise
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
-        #       (DEfault: persistent.event_database)
+        #       (DEfault: evhand.event_database)
         hideEventLabel(
             event.eventlabel,
             lock=lock,
