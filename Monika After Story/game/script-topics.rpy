@@ -1186,7 +1186,7 @@ label monika_internet:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_lazy",category=['ife','romance'],prompt="Laziness",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_lazy",category=['life','romance'],prompt="Laziness",random=True))
 
 label monika_lazy:
     m 2a "After a long day, I usually just want to sit around and do nothing."
