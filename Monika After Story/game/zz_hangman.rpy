@@ -437,7 +437,9 @@ label hangman_game_loop:
             show hm_s_win_6 as window_sayori at hangman_sayori_h
         m 1j "Wow, you guessed the word correctly!"
         m "Good job, [player]!"
-        $ grant_xp(xp.WIN_GAME)
+        if not persistent.ever_won['hangman']:
+            $ persistent.ever_won['hangman']=True
+            $ grant_xp(xp.WIN_GAME)
 
     # try again?
     menu:

@@ -1798,11 +1798,13 @@ default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
 default persistent.seen_monika_in_room = False
-default persistent.ever_won = {'pong':False,'chess':False}
+default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
 default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
+default persistent.random_seen = 0
+define random_seen_limit = 10
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
 define times.HALF_XP_AWAY_TIME = 72*3600
@@ -1815,6 +1817,14 @@ define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
 init python:
     startup_check = False
+    try:
+        persistent.ever_won['hangman']
+    except:
+        persistent.ever_won['hangman']=False
+    try:
+        persistent.ever_won['piano']
+    except:
+        persistent.ever_won['piano']=False
 
 default his = "his"
 default he = "he"

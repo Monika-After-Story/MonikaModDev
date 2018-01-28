@@ -23,14 +23,14 @@ label zz_play_piano:
 
     # initial setup
     $ import store.zzpianokeys as zzpianokeys
-    $ quit_label = Text("Press 'Z' to quit", size=36) 
+    $ quit_label = Text("Press 'Z' to quit", size=36)
     $ pnmlLoadTuples()
 
     # Intro to piano dialogue here
     m 1j "You want to play the piano?"
 
 label zz_play_piano_loopstart:
-    
+
     # get song list
     $ song_list = zzpianokeys.getSongChoices()
     $ pnml = None
@@ -105,16 +105,9 @@ label zz_play_piano_setupstart:
 
     # granting XP:
     # you are good player
-    if full_combo:
-        $ grant_xp(xp.ZZPK_FULLCOMBO)
-
-    # you can win somehow
-    elif is_win:
+    if full_combo and not persistent.ever_won['piano']:
+        $persistent.ever_won['piano']=True
         $ grant_xp(xp.WIN_GAME)
-
-    # good practice
-    elif is_practice:
-        $ grant_xp(xp.ZZPK_PRACTICE)
 
     # call the post label
     call expression post_piano from _zzpk_ppel
@@ -152,7 +145,7 @@ label zz_piano_none:
 # shown if player completes the song but does not FC
 label zz_piano_yr_win:
     m 1m "That was nice, [player]."
-    m "But..." 
+    m "But..."
     m 1n "You could do better with some more practice..."
     m 1l "Ehehe~"
     return
@@ -272,7 +265,7 @@ init -3 python in zzpianokeys:
 
     # this is our threshold for determining how many notes the player needs to
     # play before we check for dialogue
-    NOTE_SIZE = 6 
+    NOTE_SIZE = 6
 
     # keys
     QUIT = pygame.K_z
@@ -330,7 +323,7 @@ init -3 python in zzpianokeys:
             return "PianoException: " + self.msg
 
 
-    # this class matches particular sets of notes to some dialogue that 
+    # this class matches particular sets of notes to some dialogue that
     # Monika can say.
     # NOTE: only one line of dialogue per set of notes, because brevity is
     #   important
@@ -364,11 +357,11 @@ init -3 python in zzpianokeys:
     #       False if not
     #
     class PianoNoteMatch(object):
-        def __init__(self, 
-                say, 
-                notes=None, 
-                postnotes=None, 
-                express="1b", 
+        def __init__(self,
+                say,
+                notes=None,
+                postnotes=None,
+                express="1b",
                 postexpress="1a",
                 ev_timeout=None,
                 vis_timeout=None,
@@ -379,7 +372,7 @@ init -3 python in zzpianokeys:
             #
             # IN:
             #   say - line of dialogue to say (as a Text object)
-            #   notes - list of notes (keys) to match 
+            #   notes - list of notes (keys) to match
             #   postnotes - list of notes (keys) that are considered post
             #       match
             #       (Default: None)
@@ -417,8 +410,8 @@ init -3 python in zzpianokeys:
             if not renpy.image_exists("monika " + postexpress):
                 raise PianoException("Given post expression does not exist")
 #            if (
-#                    ev_timeout is not None 
-#                    and vis_timeout is not None 
+#                    ev_timeout is not None
+#                    and vis_timeout is not None
 #                    and vis_timeout > ev_timeout
 #                ):
 #                raise PianoException(
@@ -453,7 +446,7 @@ init -3 python in zzpianokeys:
             #   returns 1 or larger if we have a match
             #       -1 if no match
             #       -2 if index out of range
-            
+
             return self._is_match(new_key, self.notes, index=index)
 
         def isPostMatch(self, new_key, index=None):
@@ -486,7 +479,7 @@ init -3 python in zzpianokeys:
             #   returns 1 or larger if we have a match
             #       -1 if no match
             #       -2 if index out of range
-        
+
             if index is None:
                 index = self.matchdex
 
@@ -499,7 +492,7 @@ init -3 python in zzpianokeys:
 
             return -1
 
-        
+
         def reset(self):
             """
             Resets this piano note match to its default values.
@@ -521,7 +514,7 @@ init -3 python in zzpianokeys:
     class PianoNoteMatchList(object):
         """
         This a wrapper for a list of note matches. WE do this so we can
-        easily group note matches with other information. 
+        easily group note matches with other information.
 
         PROPERTIES:
             pnm_list - list of piano note matches
@@ -536,13 +529,13 @@ init -3 python in zzpianokeys:
             fc_label - label to call to if we full comboed
             fail_label - label to call to if we failed the song
             prac_label - label to call if we are practicing
-            end_wait - seconds to wait before continuing to quit phase 
+            end_wait - seconds to wait before continuing to quit phase
             launch_label - label to call to prepare song launch
         """
-        
-        def __init__(self, 
-                pnm_list, 
-                verse_list, 
+
+        def __init__(self,
+                pnm_list,
+                verse_list,
                 name,
                 win_label,
                 fc_label,
@@ -638,7 +631,7 @@ init -3 python in zzpianokeys:
 
 # this containst the actual songs
 # we need it to be high init level so we have images
-# TODO: considre making this readable from TEXt files. 
+# TODO: considre making this readable from TEXt files.
 # NOTE: if we do the above, we need to reconsider how we handle post game
 # labels. Storing them in text files would be better organized but bad
 # for finding errors
@@ -1148,7 +1141,7 @@ init 1000 python in zzpianokeys:
 
 # make this later than zzpianokeys
 init 1001 python:
-    import pygame # because we need them keyups 
+    import pygame # because we need them keyups
     import store.zzpianokeys as zzpianokeys
 
     # setup named tuple dicts
@@ -1193,7 +1186,7 @@ init 1001 python:
 
         # DETECTION_LIST
 
-        # AT_LIST 
+        # AT_LIST
         AT_LIST = [i22]
         TEXT_AT_LIST = [piano_lyric_label]
 
@@ -1212,7 +1205,7 @@ init 1001 python:
         # No rendering adjustment is done in this state
         STATE_LISTEN = 0
 
-        # Just MATCH state. Here, we just matched a phrase/note and want to 
+        # Just MATCH state. Here, we just matched a phrase/note and want to
         # render the appropriate expression and text.
         # NOTE: CALLS REDRAW
         STATE_JMATCH = 1
@@ -1247,7 +1240,7 @@ init 1001 python:
         # We are matching the POST phrase.
         # No rendering is done here
         # NOTE: CALLS REDRAW
-        STATE_POST = 6 
+        STATE_POST = 6
 
         # Visual POST state. This is similiar to the JPOST state, except we
         # only care about visual adjustments. The main difference between this
@@ -1255,9 +1248,9 @@ init 1001 python:
         # into the POST state. VPOST also does not handle postnotes.
         # Post expression rendering is done here
         # NOTE: CALLS REDRAW
-        STATE_VPOST = 7 
+        STATE_VPOST = 7
 
-        # Clean POST state. This is a special cleanup state that only does 
+        # Clean POST state. This is a special cleanup state that only does
         # visual cleanup instead of total cleanup. Meant to be used with a
         # WPOST that has a visual timeout.
         # Rendering cleanup is done here
@@ -1265,7 +1258,7 @@ init 1001 python:
         STATE_CPOST = 8
 
         # Wait POST state. This state is a transitional state between note
-        # phrases. Here, we wait for user input, and if its appropriate, 
+        # phrases. Here, we wait for user input, and if its appropriate,
         # move to a JMATCH state. This state also calls a redraw using visual
         # redraw_time if available.
         # No Rendering is done here
@@ -1273,7 +1266,7 @@ init 1001 python:
         STATE_WPOST = 9
 
         # CLEAN state. This state resets the display back to Default state as
-        # well as resetting the timeouts. This leads into the LISTEN state, 
+        # well as resetting the timeouts. This leads into the LISTEN state,
         # so we should only do this if we want to reset.
         # Rendering cleanup is done here
         STATE_CLEAN = 10 # reset things
@@ -1281,7 +1274,7 @@ init 1001 python:
         # DONE state. This state is entered when we are done with the song
         # and we should wait for some time then quit.
         # NOTE: CALLS REDRAW
-        STATE_DONE = 11 
+        STATE_DONE = 11
 
         # Just Done POST state. This is simliar to the JPOST state except
         # we can timeout visually and quit the game.
@@ -1393,7 +1386,7 @@ init 1001 python:
         ZZPK_W_OVL_RIGHT = "mod_assets/piano/ovl/ivory_right.png"
         ZZPK_W_OVL_CENTER = "mod_assets/piano/ovl/ivory_center.png"
         ZZPK_W_OVL_PLAIN = "mod_assets/piano/ovl/ivory_plain.png"
-        
+
         # overlay black
         ZZPK_B_OVL_PLAIN = "mod_assets/piano/ovl/ebony.png"
 
@@ -1403,13 +1396,13 @@ init 1001 python:
         ZZPK_IMG_KEYS_X = 51
         ZZPK_IMG_KEYS_Y = 50
         ZZPK_LYR_BAR_YOFF = -50
-        
+
         # other sizes
         ZZPK_IMG_IKEY_WIDTH = 36
         ZZPK_IMG_IKEY_HEIGHT = 214
         ZZPK_IMG_EKEY_WIDTH = 29
         ZZPK_IMG_EKEY_HEIGHT = 152
-        
+
         # MODES
         MODE_FREE = 0
         MODE_SONG = 1 # song mode means we are trying to play a song
@@ -1492,7 +1485,7 @@ init 1001 python:
             left = Image(self.ZZPK_W_OVL_LEFT)
             right = Image(self.ZZPK_W_OVL_RIGHT)
             center = Image(self.ZZPK_W_OVL_CENTER)
-            w_plain = Image(self.ZZPK_W_OVL_PLAIN) 
+            w_plain = Image(self.ZZPK_W_OVL_PLAIN)
             whites = [
                 (zzpianokeys.F4, left),
                 (zzpianokeys.G4, center),
@@ -1547,7 +1540,7 @@ init 1001 python:
                 )
 
 
-            # list containing lists of matches. 
+            # list containing lists of matches.
             # NOTE: highly recommend not adding too many detections
             self.pnml_list = []
             if self.mode == self.MODE_FREE:
@@ -1560,12 +1553,12 @@ init 1001 python:
             self.played = list()
             self.prev_time = 0
             self.drawn_time = 0
-            
+
             # currently matched dialogue
             self.match = None
 
             # True if we literally just matched, False if not
-            self.justmatched = False 
+            self.justmatched = False
 
             # true only if we had a missed match, after a match
             self.missed_one = False
@@ -1606,10 +1599,10 @@ init 1001 python:
             self.note_hit = False
 
             # integer to handle redraw calls.
-            # NOTE: when we want to redraw, we add to this value. Render 
+            # NOTE: when we want to redraw, we add to this value. Render
             # decrements the value by 1 whenever it runs.
             # NOTE: Render cannot call redraws unless this value is 0.
-            # NOTE: similar to semaphores, but not entirely the same. 
+            # NOTE: similar to semaphores, but not entirely the same.
             # Semaphores are about locking the access of something to a certain
             # number of threads (usually 1) by subracting/adding a value.
             # here we use that concept to limit the amount of rescursive redraw
@@ -1640,7 +1633,7 @@ init 1001 python:
 #            if from_render:
 #                if self.redraw_count == 0:
 #                    self.redraw_count += 1
-#                    renpy.redraw(self, timeout)               
+#                    renpy.redraw(self, timeout)
 #            else:
 #                self.redraw_count += 1
 #                renpy.redraw(self, timeout)
@@ -1683,7 +1676,7 @@ init 1001 python:
         def getnotematch(self, index=None):
             #
             # returns the notematch object at the given index
-            # 
+            #
             # IN:
             #   index - the index to retrieve notematch.
             #       If None, the self.pnm_index is incremeneted and used as
@@ -1741,7 +1734,7 @@ init 1001 python:
                     passes += pnm.passes
                     fails += pnm.fails
                     misses += pnm.misses
-                    
+
                     if pnm.passes > 0:
                         completed_pnms += 1
 
@@ -1755,12 +1748,12 @@ init 1001 python:
                     is_win = True
 
                 # fail case
-                elif (completed_pnms != len(self.pnml.pnm_list) 
+                elif (completed_pnms != len(self.pnml.pnm_list)
                         and fails > passes
                     ):
                     end_label = self.pnml.fail_label
                     self.pnml.losses += 1
-                   
+
                 # compelted everything, nut a ful combo though
                 elif completed_pnms == len(self.pnml.pnm_list):
                     end_label = self.pnml.win_label
@@ -1958,16 +1951,16 @@ init 1001 python:
 
             # check for a match
             if findex == -1:
-                 
+
                 next_pnm = self.getnotematch()
 
                 # check next set of notes
                 if next_pnm:
-                        
+
                     if next_pnm.isNoteMatch(ev.key, 0) >= 0:
                         # match found
                         self.state = self.STATE_JMATCH
-                    
+
                     else:
                         # not a match, but move to next
                         # pnm anyway
@@ -1978,7 +1971,7 @@ init 1001 python:
                             vis_tout=self.match.vis_timeout
                         )
 
-                    self.match = next_pnm 
+                    self.match = next_pnm
                     self.played = [ev.key]
 
                 # completed this song
@@ -2043,7 +2036,7 @@ init 1001 python:
             # prepare piano back as render
             back = renpy.render(self.piano_back, 1280, 720, st, at)
             piano = renpy.render(self.piano_keys, 1280, 720, st, at)
-            
+
 
             # now prepare overlays to render
             overlays = list()
@@ -2066,9 +2059,9 @@ init 1001 python:
                 )
             )
             r.blit(
-                piano, 
+                piano,
                 (
-                    self.ZZPK_IMG_KEYS_X + self.ZZPK_IMG_BACK_X, 
+                    self.ZZPK_IMG_KEYS_X + self.ZZPK_IMG_BACK_X,
                     self.ZZPK_IMG_KEYS_Y + self.ZZPK_IMG_BACK_Y
                 )
             )
@@ -2076,7 +2069,7 @@ init 1001 python:
             # and now the overlays
             for ovl in overlays:
                 r.blit(
-                    ovl[0], 
+                    ovl[0],
                     (
                         self.ZZPK_IMG_BACK_X + ovl[1],
                         self.ZZPK_IMG_BACK_Y + ovl[2]
@@ -2124,14 +2117,14 @@ init 1001 python:
                     renpy.timeout(1.0)
 #                    renpy.redraw(self, 1.0)
 #                    redrawn = True
-                
+
                 # do a redraw for the next timeout
                 else:
                     renpy.redraw(self, self.vis_timeout)
 #                    redrawn = True
 
             elif (
-                    self.state == self.STATE_CLEAN 
+                    self.state == self.STATE_CLEAN
                     or st-self.prev_time >= self.ev_timeout
                 ):
 
@@ -2154,7 +2147,7 @@ init 1001 python:
 
                     # display monika's expression
                     renpy.show(self.match.express)
-                    
+
                     # display text
                     self.lyric = self.match.say
 
@@ -2171,7 +2164,7 @@ init 1001 python:
                     restart_int = True
 
                 elif self.state == self.STATE_VPOST:
-                    
+
                     # display the post expression
                     renpy.show(self.lastmatch.postexpress)
                     restart_int = True
@@ -2183,7 +2176,7 @@ init 1001 python:
                     # setup visual timeout
                     if self.lastmatch.vis_timeout:
 #                        self.customRedraw(
-#                            self.lastmatch.redraw_time, 
+#                            self.lastmatch.redraw_time,
 #                            from_render=True
 #                        )
                         renpy.redraw(self, self.lastmatch.vis_timeout)
@@ -2215,7 +2208,7 @@ init 1001 python:
                         redrawn = True
 
                 elif self.state == self.STATE_JPOST:
-                    
+
                     # display monikas post expression
                     renpy.show(self.match.postexpress)
 
@@ -2225,7 +2218,7 @@ init 1001 python:
 
                     restart_int = True
                     self.state = self.STATE_POST
-                
+
                 elif self.state == self.STATE_FAIL:
 
                     # display failed monika
@@ -2310,11 +2303,11 @@ init 1001 python:
                     # the played list (which is what handles the note
                     # matchin). Keep state.
 
-                    # NOTE: in transitional post states, timeout means 
+                    # NOTE: in transitional post states, timeout means
                     # continue waiting.
                     # Keep state.
 
-                    # NOTE: in done related states, timeout means quit 
+                    # NOTE: in done related states, timeout means quit
                     # the game.
                     if self.state in self.DONE_STATES:
                         return self.quitflow()
@@ -2326,7 +2319,7 @@ init 1001 python:
                         self.state = self.STATE_LISTEN
 
                     # NOTE: in post-match related states, timeout means
-                    # move onto the next expression. 
+                    # move onto the next expression.
                     elif self.state in self.TOUT_POST_STATES:
                         next_pnm = self.getnotematch()
 
@@ -2418,4 +2411,3 @@ init 1001 python:
 
             # the default so we can keep going
             raise renpy.IgnoreEvent()
-
