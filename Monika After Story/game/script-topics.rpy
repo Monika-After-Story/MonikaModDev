@@ -1355,7 +1355,7 @@ label monika_imouto:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_oneesan',
-                                                            prompt="Did you like older sisters?",
+                                                            prompt="Do you like older sisters?",
                                                             category=['you'],
                                                             pool=True,
                                                             ))
