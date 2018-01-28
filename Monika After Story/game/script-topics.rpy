@@ -4389,7 +4389,7 @@ label monika_anger:
     m 3m "Different techniques for different people, I guess."
     m 3d "Lastly, the best method is to try a new perspective."
     m 3o "It's not always easy, especially when it feels like you need to defend yourself."
-    m 3d"But looking at it from another view can change your entire view on the situation."
+    m 3d"But looking at it from another view can change your entire feelings on the situation."
     m 3a "What previously bothered you suddenly doesn't matter anymore."
     m "I know there were times when I got angry and took a break to clear my head and it helped."
     m 3m "Once I even got angry at a book!"
