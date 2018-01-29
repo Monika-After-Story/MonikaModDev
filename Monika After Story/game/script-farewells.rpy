@@ -22,3 +22,24 @@ init 5 python:
 label bye_goodbye:
     m 1c "Goodbye, [player]!"
     return 'quit'
+
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_sayanora",random=True),eventdb=evhand.farewell_database)
+    
+label bye_sayanora:
+    m 1c "Sayonara, [player]."
+    return 'quit'
+
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_farewellfornow",random=True),eventdb=evhand.farewell_database)
+    
+label bye_farewellfornow:
+    m 1e "Farewell for now my love."
+    return 'quit'
+
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_untilwemeetagain",random=True),eventdb=evhand.farewell_database)
+
+label bye_untilwemeetagain:
+    m 2e "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I’ll miss you, Until we meet again.{/i}'"
+    return 'quit'
