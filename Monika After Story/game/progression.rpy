@@ -27,6 +27,8 @@ init python:
     def get_level():
         import math
 
+        if persistent.playerxp<0:
+            persistent.playerxp=0
         xp = persistent.playerxp
 
         if xp <= 390:
