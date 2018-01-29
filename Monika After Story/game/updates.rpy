@@ -200,7 +200,7 @@ label v0_7_0(version="v0_7_0"):
         # update !
         persistent = updateTopicIDs(version)
 
-        temp_event_list = persistent.event_list
+        temp_event_list = list(persistent.event_list)
         # now properly set all seen events as unlocked
         import store.evhand as evhand
         for k in evhand.event_database:

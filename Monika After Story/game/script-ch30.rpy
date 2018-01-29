@@ -602,17 +602,13 @@ label ch30_loop:
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
             python:
-                all_random_topics = Event.filterEvents(evhand.event_database,random=True).keys()
-                monika_random_topics = all_random_topics
-                for topic in all_random_topics:
-                    if seen_event(topic):
-                        monika_random_topics.remove(topic)
                 if len(monika_random_topics) > 0:  # still have topics
                     pushEvent(renpy.random.choice(monika_random_topics))
                     persistent.random_seen += 1
-                else: # no topics left
-                    monika_random_topics = list(all_random_topics)
-                    pushEvent(renpy.random.choice(monika_random_topics))
+                elif not seen_random_limit: # no topics left
+#                    monika_random_topics = list(all_random_topics)
+#                    pushEvent(renpy.random.choice(monika_random_topics))
+                    pushEvent("random_limit_reached")
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
 
