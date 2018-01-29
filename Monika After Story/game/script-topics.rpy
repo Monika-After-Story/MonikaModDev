@@ -4508,7 +4508,7 @@ label monika_wolf:
     m 3a "For wolves, I don't think that's the reason at all."
     m 1d "They were first domesticated long ago when the only way people could gather food at the time were through foraging or hunting."
     m "Maybe when we shared our lifestyle with the wolves, a bond was formed."
-    m 1a "They found that people gave them a warm home and food, while we found that they're are ideal for hunting."
+    m 1a "They found that people gave them a warm home and food, while we found that they're ideal for hunting."
     m 1k "Not to mention that we kept each other's company and protected one another!"
     m 1b "Wolves eventually realized that their dependence on humans would improve their survivability, and we've been stuck with them ever since."
     m 3j "Just like how we rely on each other's company, [player]!"
