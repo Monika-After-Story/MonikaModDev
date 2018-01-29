@@ -369,6 +369,7 @@ label prompt_menu:
         talk_menu.append(("Ask a question.", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
+        talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye.", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
@@ -383,6 +384,9 @@ label prompt_menu:
 
     elif madechoice == "repeat":
         call prompts_categories(False) from _call_prompts_categories_1
+
+    elif madechoice == "moods":
+        call mas_mood_start from _call_mas_mood_start
 
     elif madechoice == "goodbye":
         call random_farewell from _call_random_farewell
