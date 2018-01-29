@@ -378,16 +378,16 @@ label prompt_menu:
     if madechoice == "unseen":
         call show_prompt_list(unseen_events) from _call_show_prompt_list
 
-    if madechoice == "prompt":
+    elif madechoice == "prompt":
         call prompts_categories(True) from _call_prompts_categories
 
-    if madechoice == "repeat":
+    elif madechoice == "repeat":
         call prompts_categories(False) from _call_prompts_categories_1
 
-    if madechoice == "goodbye":
+    elif madechoice == "goodbye":
         call random_farewell from _call_random_farewell
 
-    if madechoice == "nevermind":
+    else: #nevermind
         $_return = None
 
     show monika at t11
