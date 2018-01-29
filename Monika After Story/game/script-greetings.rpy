@@ -341,6 +341,7 @@ init 5 python:
 label monikaroom_greeting_ear_narration:
     m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
     m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+    $ scene_change = True
     call spaceroom from _call_spaceroom_enar
     m 1k "It's me!"
     m "Welcome back, [player]!"
@@ -478,6 +479,7 @@ label monikaroom_greeting_opendoor_seen:
 label monikaroom_greeting_opendoor_seen_partone:
     $ is_sitting = False 
 #    scene bg bedroom
+    $ scene_change = True
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
     pause 0.2
     show monika 1h at l21 zorder 2
@@ -553,8 +555,10 @@ label monikaroom_greeting_opendoor_post2:
 
 label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
+    $ scene_change = True
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
-    m 2i "~Is it love if I take you, or is it love if I set you free?~"
+    hide monika
+    m "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32 zorder 2
     m 1d "E-Eh?! [player]!"
     m 3g "You surprised me, suddenly showing up like that!"
@@ -567,23 +571,15 @@ label monikaroom_greeting_opendoor:
     m 2d "..."
     show monika 1 at t33
     m 1d "...and..."
+    hide bedroom
     if is_morning():
         show monika_day_room zorder 1 with wipeleft 
     else:
         show monika_room zorder 1 with wipeleft
     show monika 1 at t32
     m 3a "There we go!"
-    menu:
-        "...the window...":
-            show monika 1 at h32
-            m 1l "Oops! I forgot about that~"
-            show monika 1 at t21
-            m "Hold on..."
-            hide bedroom
-            m 2j "And... all fixed!"
-            show monika 1 at lhide
-            hide monika
-            $ renpy.hide("bedroom")
+    show monika 1 at lhide
+    hide monika
     $ persistent.seen_monika_in_room = True
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
@@ -596,6 +592,7 @@ label monikaroom_greeting_knock:
             if persistent.seen_monika_in_room:
                 m "And thank you for knocking first."
             m 1j "Hold on, let me tidy up..."
+            $ scene_change = True
             call spaceroom(hide_monika=True) from _call_spaceroom_6
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
