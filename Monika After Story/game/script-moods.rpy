@@ -37,7 +37,7 @@ default persistent.mood_database
 #
 
 # store containing mood-related data
-init -1 python in mas_moods:
+init -1 python in masmoods:
     
     # mood event database
     mood_db = dict()
@@ -48,3 +48,27 @@ init -1 python in mas_moods:
     TYPE_GOOD = 2
 
     
+# entry point for mood flow
+label mas_mood_start:
+    m "i demand to have proper dialogue"
+    m "as well as actual logic ya know"
+    return
+
+###############################################################################
+#### Mood events go here:
+###############################################################################
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.mood_database,
+            "mood_hungry",
+            prompt="Hungry",
+            category=[store.masmoods.TYPE_NEUTRAL],
+            unlocked=True
+        )
+    )
+
+label mood_hungry:
+    m "Why dont you eat player, oh my gah"
+    return
