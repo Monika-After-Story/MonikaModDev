@@ -22,3 +22,10 @@ init 5 python:
 label bye_goodbye:
     m 1c "Goodbye, [player]!"
     return 'quit'
+
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_farewellfornow",random=True),eventdb=evhand.farewell_database)
+    
+label bye_farewellfornow:
+    m 1e "Farewell for now my love."
+    return 'quit'
