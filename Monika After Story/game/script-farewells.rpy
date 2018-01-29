@@ -22,3 +22,10 @@ init 5 python:
 label bye_goodbye:
     m 1c "Goodbye, [player]!"
     return 'quit'
+
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_sayanora",random=True),eventdb=evhand.farewell_database)
+    
+label bye_sayanora:
+    m 1c "Sayonara, [player]."
+    return 'quit'
