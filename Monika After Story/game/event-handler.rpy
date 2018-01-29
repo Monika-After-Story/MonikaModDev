@@ -372,7 +372,7 @@ label prompt_menu:
         talk_menu.append(("Goodbye.", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
-        renpy.say(m, "Pick something to talk about?", interact=False)
+        renpy.say(m, "What would you like to talk about?", interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
