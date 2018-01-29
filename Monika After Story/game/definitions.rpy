@@ -242,7 +242,8 @@ python early:
                 unlocked=None,
                 random=None,
                 pool=None,
-                action=None):
+                action=None,
+                seen=None):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -264,6 +265,9 @@ python early:
                 return False
 
             if pool is not None and event.pool != pool:
+                return False
+
+            if seen is not None and renpy.seen_label(event.eventlabel) != seen:
                 return False
 
             if category is not None:
@@ -290,7 +294,8 @@ python early:
                 unlocked=None,
                 random=None,
                 pool=None,
-                action=None):
+                action=None,
+                seen=None):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -319,6 +324,9 @@ python early:
             #   action - Tuple/list of strings/EV_ACTIONS to match action
             #       NOTE: OR logic is applied
             #       (Default: None)
+            #   seen - boolean value to match renpy.seen_label
+            #       (True means include seen, False means dont include seen)
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -334,7 +342,8 @@ python early:
                     and unlocked is None
                     and random is None
                     and pool is None
-                    and action is None)):
+                    and action is None
+                    and seen is None)):
                 return events
 
             # copy check
@@ -357,7 +366,7 @@ python early:
             for k,v in events.iteritems():
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
-                        random=random, pool=pool, action=action):
+                        random=random, pool=pool, action=action, seen=seen):
 
                     filt_ev_dict[k] = v
 

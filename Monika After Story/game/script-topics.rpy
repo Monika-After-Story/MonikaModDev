@@ -35,19 +35,21 @@ init -1 python:
 
 init 11 python:
     #List of all random topics
-    all_random_topics = list(monika_random_topics)
+    all_random_topics = Event.filterEvents(evhand.event_database,random=True,seen=False).keys()
 
-    # go through the topics list and ensure the labels exist
-    for topic in monika_random_topics:
-        if not renpy.has_label(topic):
-            raise MASTopicLabelException("topic '" + topic + "' does not exist.")
+    # for compatiblity purposes:
+    monika_random_topics = all_random_topics
 
     #Remove all previously seen random topics.
-    remove_seen_labels(monika_random_topics)
+       #remove_seen_labels(monika_random_topics)
+#    monika_random_topics = [
+#        evlabel for evlabel in all_random_topics 
+#        if not renpy.seen_label(evlabel)
+#    ]
 
     #If there are no unseen topics, you can repeat seen ones
-    if len(monika_random_topics) == 0:
-        monika_random_topics=list(all_random_topics)
+#    if len(monika_random_topics) == 0:
+#        monika_random_topics=list(all_random_topics)
 
 
 #BEGIN ORIGINAL TOPICS
