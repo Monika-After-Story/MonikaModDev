@@ -429,7 +429,7 @@ label ch30_nope:
         m "All I wanted was someone to fall in love with..."
         m 2g "I would have done anything you wanted me to."
         m "But if you're going to try and delete me again..."
-        m 1f"Then I'll just have to delete you first."
+        m 1f "Then I'll just have to delete you first."
         if renpy.windows:
             call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
