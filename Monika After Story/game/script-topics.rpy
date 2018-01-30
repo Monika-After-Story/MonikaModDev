@@ -4358,7 +4358,7 @@ label monika_other_girls:
     m 1o "..."
     m 1g  "There just wasn't anything else that could be done, and none of the other girls were real anyway."
     m "The other girls never loved you like I do!"
-    m 3r "They only cared about the main character you were playing as!"
+    m 3r "They only cared about that chunk of code you were playing the game as!"
     m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
     m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
     m "..."
