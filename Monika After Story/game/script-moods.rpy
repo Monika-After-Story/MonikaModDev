@@ -153,3 +153,11 @@ label mood_theroom:
     m "I did nawwwwght"
     return
 
+init 5 python:
+    addEvent(Event(persistent.mood_database,"mood_happy",prompt="happy",category=[store.masmoods.TYPE_GOOD],unlocked=True),eventdb=store.masmoods.mood_db)
+
+label mood_happy:
+    m 3b "That's wonderful! I'm happy when you're happy."
+    m 1j "Know that you can always come up to me and I'll cheer up, [player]."
+    m 3a "I love you and I'll always be here for you so don't you ever forget that~"
+    return
