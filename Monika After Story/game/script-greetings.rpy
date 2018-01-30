@@ -679,3 +679,42 @@ label greeting_japan:
     m 3 "You know what that means, [player]?"
     m 4j "It means {i}'I'll be yours forever{/i}'~"
     return
+
+label greeting_sick:
+    m 1b "Welcome back, [player]!"
+    m 1a "Are you feeling better?"
+    menu:
+        "Yes":
+            m 1k "Great! Now we can spend some more time together. Ehehe~"
+            $ persistent.sick = False
+        "No":
+            jump greeting_stillsick
+    return
+    
+label greeting_stillsick:
+    m 2f "[player], you really should go get some rest."
+    m 3g "Getting plenty of rest is the best remedy for getting over a sickness quickly."
+    m 2q "I wouldn't forgive myself if your sickness got any worse because of me."
+    m 1p "Now please, [player], put my mind at ease and go get some rest."
+    m 1e "Will you do that for me?"
+    menu:
+        "Yes":
+            jump greeting_stillsickrest
+        "No":
+            jump greeting_stillsicknorest
+    
+label greeting_stillsickrest:
+    m 1e "Thank you [player]."
+    m 2g "I think if I leave you alone for a while you'll rest better."
+    m 1h "So I'm going to close the game for you."
+    m 1k "Get well soon, [player]."
+    return 'quit'
+    
+label greeting_stillsicknorest:
+    m 2q "I see. Well if you insist [player]."
+    m 1i "I suppose you know your own limitations better than I do."
+    m 1h "If you start to feel a little weak or tired though, [player], please let me know."
+    m 1e "That way you can go get some rest."
+    m "Don't worry, I'll still be here when you wake up."
+    m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
+    return
