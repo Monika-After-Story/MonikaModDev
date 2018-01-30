@@ -255,7 +255,7 @@ init 5 python:
 
 label unlock_piano:
     m 2a "Hey! I've got something exciting to tell you!"
-    m 2b "I've finally added a piano to the room for us to use, [player]"
+    m 2b "I've finally added a piano to the room for us to use, [player]."
     if not persistent.instrument:
         m 3b "I really want to hear you play!"
         m "It might seem overwhelming at first, but at least give it a try."
