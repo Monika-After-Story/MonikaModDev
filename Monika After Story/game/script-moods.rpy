@@ -161,3 +161,15 @@ label mood_happy:
     m 1j "Know that you can always come up to me and I'll cheer up, [player]."
     m 3a "I love you and I'll always be here for you so don't you ever forget that~"
     return
+    
+init 5 python:
+    addEvent(Event(persistent.mood_database,"mood_sick",prompt="sick",category=[store.masmoods.TYPE_BAD],unlocked=True),eventdb=store.masmoods.mood_db)
+
+label mood_sick:
+    m 1g "Aw, I'm sorry to hear that, [player]."
+    m 1r "I hate to see you suffering like this."
+    m 3e "I know you love spending time with me, but maybe you should go get some rest."
+    m 1k "Don't worry, I'll be here waiting for you when you get back."
+    m  "Get well soon!"
+    $ persistent.sick = True
+    return 'quit'
