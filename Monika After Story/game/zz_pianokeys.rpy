@@ -6,6 +6,9 @@
 #   See PianoNoteMatchList._loadTuple
 default persistent.pnml_data = []
 
+# persistent for keymaps
+default persistent.piano_keymaps = {}
+
 # TRANSFORMS
 transform piano_quit_label:
     xanchor 0.5 xpos 275 yanchor 0 ypos 332
@@ -1404,6 +1407,7 @@ init 1001 python:
         ZZPK_IMG_EKEY_HEIGHT = 152
 
         # MODES
+        MODE_SETUP = -1 # setup mode, only used by derivative class
         MODE_FREE = 0
         MODE_SONG = 1 # song mode means we are trying to play a song
 
@@ -1426,8 +1430,8 @@ init 1001 python:
             # background piano
             self.piano_back = Image(self.ZZPK_IMG_BACK)
             self.piano_keys = Image(self.ZZPK_IMG_KEYS)
-            self.PIANO_BACK_WIDTH = 437
-            self.PIANO_BACK_HEIGHT = 214
+            self.PIANO_BACK_WIDTH = 545
+            self.PIANO_BACK_HEIGHT = 322
 
             # lyric bar
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
@@ -1815,12 +1819,13 @@ init 1001 python:
                 self.vis_timeout = self.VIS_TIMEOUT
 
 
-        def stateListen(self, ev):
+        def stateListen(self, ev, key):
             """
             Flow that occurs when we in listen state
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_LISTEN
@@ -1829,7 +1834,7 @@ init 1001 python:
             if self.mode == self.MODE_SONG:
 
                 # find a match
-                findex = self.match.isNoteMatch(ev.key, 0)
+                findex = self.match.isNoteMatch(key, 0)
 
                 if findex >= 0:
                     self.state = self.STATE_JMATCH
@@ -1846,12 +1851,13 @@ init 1001 python:
                     self.state = self.STATE_JMATCH
 
 
-        def stateMatch(self, ev):
+        def stateMatch(self, ev, key):
             """
             Flow that occurs when we are matching notes
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_MATCH
@@ -1860,7 +1866,7 @@ init 1001 python:
             """
             # we have a match, check to ensure that this key
             # follows the pattern
-            findex = self.match.isNoteMatch(ev.key)
+            findex = self.match.isNoteMatch(key)
 
             # failed match
             if findex < 0:
@@ -1933,12 +1939,13 @@ init 1001 python:
                     self.state = self.STATE_MATCH
 
 
-        def statePost(self, ev):
+        def statePost(self, ev, key):
             """
             Flow that occurs when we are post matching notes
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_POST
@@ -1947,7 +1954,7 @@ init 1001 python:
                 STATE_DJPOST
             """
             # post match means we abort on the first miss
-            findex = self.match.isPostMatch(ev.key)
+            findex = self.match.isPostMatch(key)
 
             # check for a match
             if findex == -1:
@@ -1957,7 +1964,7 @@ init 1001 python:
                 # check next set of notes
                 if next_pnm:
 
-                    if next_pnm.isNoteMatch(ev.key, 0) >= 0:
+                    if next_pnm.isNoteMatch(key, 0) >= 0:
                         # match found
                         self.state = self.STATE_JMATCH
 
@@ -1972,7 +1979,7 @@ init 1001 python:
                         )
 
                     self.match = next_pnm
-                    self.played = [ev.key]
+                    self.played = [key]
 
                 # completed this song
                 else:
@@ -2001,13 +2008,14 @@ init 1001 python:
                     self.state = self.STATE_WDONE
 
 
-        def stateWaitPost(self, ev):
+        def stateWaitPost(self, ev, key):
             """
             Flow that occurs when we are in a transitional phase from a note
             match to another
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_WPOST
@@ -2015,7 +2023,7 @@ init 1001 python:
                 STATE_VPOST
             """
             # here we check the just hit note for matching
-            findex = self.match.isNoteMatch(ev.key, index=0)
+            findex = self.match.isNoteMatch(key, index=0)
 
             if findex > 0:
                 self.state = self.STATE_JMATCH
@@ -2024,7 +2032,7 @@ init 1001 python:
                 # missed the note, so take us back to verse
                 # start
                 self.state = self.STATE_CLEAN
-                self.played = [ev.key]
+                self.played = [key]
 
 
         def render(self, width, height, st, at):
@@ -2290,6 +2298,9 @@ init 1001 python:
             # when you press down a key, we launch a sound
             if ev.type == pygame.KEYDOWN:
 
+                # check for mapping
+                key = persistent.piano_keymaps.get(ev.key, ev.key)
+
                 if len(self.played) > self.KEY_LIMIT:
                     self.played = list()
 
@@ -2352,40 +2363,40 @@ init 1001 python:
                 self.prev_time = st
 
                 # but first, check for quit ("Z")
-                if ev.key == zzpianokeys.QUIT:
+                if key == zzpianokeys.QUIT:
                     return self.quitflow()
                 else:
 
                     # only play a sound if we've lifted the finger
-                    if not self.pressed.get(ev.key, True):
+                    if not self.pressed.get(key, True):
 
                         # note has been hit
                         self.note_hit = True
 
                         # add to played
-                        self.played.append(ev.key)
+                        self.played.append(key)
 
                         # set appropriate value
-                        self.pressed[ev.key] = True
+                        self.pressed[key] = True
 
                         # check if we have enough played notes
                         if self.state == self.STATE_LISTEN:
-                            self.stateListen(ev)
+                            self.stateListen(ev, key)
 
                         # post match checking
                         elif self.state in self.POST_STATES:
-                            self.statePost(ev)
+                            self.statePost(ev, key)
 
                         # waiting post
                         elif self.state in self.TRANS_POST_STATES:
-                            self.stateWaitPost(ev)
+                            self.stateWaitPost(ev, key)
 
                         # match
                         elif self.state in self.MATCH_STATES:
-                            self.stateMatch(ev)
+                            self.stateMatch(ev, key)
 
                         # get a sound to play
-                        renpy.play(self.pkeys[ev.key], channel="audio")
+                        renpy.play(self.pkeys[key], channel="audio")
 
                         # now rerender
 #                        self.customRedraw(0)
@@ -2394,11 +2405,14 @@ init 1001 python:
             # keyup, means we should stop render
             elif ev.type == pygame.KEYUP:
 
+                # check for mapping
+                key = persistent.piano_keymaps.get(ev.key, ev.key)
+
                 # only do this if we keyup a key we care about
-                if self.pressed.get(ev.key, False):
+                if self.pressed.get(key, False):
 
                     # set appropriate value
-                    self.pressed[ev.key] = False
+                    self.pressed[key] = False
 
                     # now rerender
 #                    self.customRedraw(0)
@@ -2410,4 +2424,150 @@ init 1001 python:
                 renpy.redraw(self, 0)
 
             # the default so we can keep going
+            raise renpy.IgnoreEvent()
+
+# custom piano displayable class for setting up key configurations
+    class PianoSetupDisplayable(PianoDisplayable):
+        """
+        Effectively has the same constants as PianoDisplayable, but we are
+        overwriting event and render to handle custom configs
+        """
+
+        # MORE STATES (cant get enough of them)
+        # WAIT state. Here we are waiting for user interaction. We just render
+        # the piano + buttons setup and wait for the next event
+        # Clickable buttons: DONE, RESET ALL if a keymap has been changed
+        STATE_WAIT = 0 
+
+        # CHANGE state. Here the user has clicked a key, so we assume that the
+        # the next entered key should be mapped to that key. The clicked key
+        # will remain visibly pressed until the user either hits a keyboard
+        # key or clicks cancel or reset
+        # Clickable buttons: CANCEL / RESET
+        STATE_CHANGE = 1
+
+
+        def __init__(self):
+            """
+            Constructor for the piano displayable setup class
+            """
+
+            # we want to be in setup mode
+            super(PianoDisplayable, self).__init__(self.MODE_SETUP)
+
+            # buttons
+            self.button_w = 120
+            self.button_h = 35
+            self.button_idle = Image("mod_assets/hkb_idle_background")
+            self.button_hover = Image("mod_assets/hkb_hover_background")
+            self.button_disabled = Image("mod_assets/hkb_disabled_background")
+
+        def _setKeymap(self, keydex, new, old=None):
+            """
+            Sets a keymap. If old is None, it is assumed that we are adding
+            a new keymap and not replacing an existing one.
+
+            IN:
+                keydex - the index of the key value
+                new - the new key item to map to
+                old - old key item (the one to map)
+                    (Default: None)
+
+            ASSUMES:
+                persistent.piano_keys
+                zzpianokeys.KEYORDER
+            """
+            if old and old in persistent.piano_keys:
+                key_value = persistent.piano_keys.pop(old)
+            else:
+                key_value = zzpianokeys.KEYORDER[keydex]
+
+            # only add a keymap if its different
+            if key_value != new:
+                persistent.piano_keys[new] = key_value
+
+
+        def render(self, width, height, st, at):
+            """
+            Render function
+            """
+
+            r = renpy.Render(width, height)
+
+            # prepare piano for render
+            back = renpy.render(self.piano_back, 1280, 720, st, at)
+            piano = renpy.render(self.piano_keys, 1280, 720, st, at)
+
+            # now prepare overlays to render
+            overlays = list()
+            for k in self.pressed:
+                if self.pressed[k]:
+                    overlays.append(
+                        (
+                            renpy.render(self.overlays[k][0], 1280, 720, st, at),
+                            self.overlays[k][1],
+                            self.overlays[k][2]
+                        )
+                    )
+
+            # TODO: prepare button/image maps
+            # 4 buttons:
+            # DONE - quits the piano setup mode
+            #   always on
+            # CANCEL - undos a change
+            #   only clickable if a key has been pressed and is ready for
+            #   change
+            # SAVE - saves a key press NOTE: dont need this probably
+            #   only clickable if a key has been pressed and is ready for
+            #   change
+            # RESET / RESET ALL - resets the key
+            #   RESET - resets one key
+            #       only clickable if a key has been pressed and is ready
+            #       for change
+            #   RESET ALL - resets all keys
+            #       only clickable if no key has been pressed
+            # render buttons
+
+            # Draw the piano
+            r.blit(
+                back,
+                (
+                    self.ZZPK_IMG_BACK_X,
+                    self.ZZPK_IMG_BACK_Y
+                )
+            )
+            r.blit(
+                piano,
+                (
+                    self.ZZPK_IMG_KEYS_X + self.ZZPK_IMG_BACK_X,
+                    self.ZZPK_IMG_KEYS_Y + self.ZZPK_IMG_BACK_Y
+                )
+            )
+
+            # and now the overlays
+            # TODO: render the letter mapping (if possible)
+            for ovl in overlays:
+                r.blit(
+                    ovl[0],
+                    (
+                        self.ZZPK_IMG_BACK_X + ovl[1],
+                        self.ZZPK_IMG_BACK_Y + ovl[2]
+                    )
+                )
+
+            # return the render object
+            return r
+
+
+
+        def event(self, ev, x, y, st):
+            """
+            Event handler for the PianoSetupDisplayable
+            """
+
+            if ev.type == pygame.KEYDOWN:
+                if ev.key == zzpianokeys.QUIT: # z for now
+                    return 100
+
+            # continous event
             raise renpy.IgnoreEvent()
