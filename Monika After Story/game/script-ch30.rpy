@@ -467,23 +467,23 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
 
-    if persistent.closed_self:
-        # yuri scare incoming. No monikaroom when yuri is the name
-        if persistent.playername.lower() == "yuri":
-            call yuri_name_scare from _call_yuri_name_scare
-            $ is_monika_in_room = False
-        else:
-            python:
-                # random chance to do monika in room greeting
-                # we'll say 1 in 20
-                import random
-                is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
+    # yuri scare incoming. No monikaroom when yuri is the name
+    if persistent.playername.lower() == "yuri":
+        call yuri_name_scare from _call_yuri_name_scare
+        $ is_monika_in_room = False
+    elif persistent.closed_self:
+        python:
+        # random chance to do monika in room greeting
+        # we'll say 1 in 20
+            import random
+            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
 
-        if not is_monika_in_room:
-            if persistent.current_track:
-                $ play_song(persistent.current_track)
-            else:
-                $ play_song(songs.current_track) # default
+    if not is_monika_in_room:
+        if persistent.current_track:
+            $ play_song(persistent.current_track)
+        else:
+            $ play_song(songs.current_track) # default
+    
 
     window auto
     #If you were interrupted, push that event back on the stack
