@@ -3002,7 +3002,7 @@ label monika_pleasure:
     m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
     m 1o "Not to mention..."
     m 1r "Being addicted to the feeling causes you to view the world from a perverted point of view."
-    m "From what I hear, people addicted to self-pleasure often objectify other people of the opposite gender."
+    m "From what I hear, people addicted to self-pleasure often objectify people of the opposite gender."
     m 1q "That alone can cause problems in more ways than one."
     m 1h "That's why I have to keep an eye on you, [player]."
     m 1i "I'll be monitoring your browser history from now on, whether you like it or not."
