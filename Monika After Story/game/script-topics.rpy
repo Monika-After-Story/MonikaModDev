@@ -4823,13 +4823,13 @@ label monika_urgent:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="Want to hear about my day?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",random=True))
 
 
-label monika_I_love_you:
-    m 3k "I love you too, [player]."
-    m 2j "You mean so much to me."
-    m 5a "I wouldn’t trade you for anything in the world!”
+label monika_love2:
+    m 1k "I love you too so much, [player]~"
+    m 1e "You mean so much to me!"
+    m 1k "I wouldn’t trade you for anything in the world!”
     return
 
 
