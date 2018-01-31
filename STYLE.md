@@ -69,7 +69,7 @@ More on this later...
 If a function is very specific to a subprogram or flow, consider making it in 
 a store and importing it when necessary. If a function can be generalized for
 many use cases, then make it in a regular `init python` block (which makes it
-global).
+global). **Prefix global functions with mas**
 
 For documentation, either block comments (#) or doc strings (""") are fine. We
 don't enforce a particular way of documenting functions, but noting what the
@@ -77,7 +77,7 @@ function does, its input and output vars, what it returns, and variables it
 assumes would be a good start:
 
 ```python
-def someKindOfFunction(var1, var2, var3=None):
+def mas_someKindOfFunction(var1, var2, var3=None):
     """
     This function does some kind of thing. Use with caution.
 
