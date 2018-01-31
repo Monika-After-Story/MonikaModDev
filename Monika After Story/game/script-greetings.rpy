@@ -621,7 +621,7 @@ label monikaroom_greeting_cleanup:
 label greeting_youarereal:
     python:
         try:
-            renpy.file("/characters/" + persistent.playername + ".chr")
+            renpy.file("../characters/" + persistent.playername + ".chr")
             persistent.you = True
         except:
             persistent.you = False
