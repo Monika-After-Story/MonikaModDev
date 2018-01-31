@@ -4500,7 +4500,7 @@ label monika_1984:
     m 2p "Anything that could be used to oppose them."
     m 2f "Poems would look like the ones you tried to make."
     m 2q "Just a string of nonsensical words with no feeling."
-    m 2f "I definitely don't want to happen."
+    m 2f "I definitely don't want that to happen."
     m 1o "I can't imagine a world where I can't think freely."
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
