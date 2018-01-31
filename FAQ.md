@@ -62,6 +62,11 @@ The label chara_monika_scare is defined twice, at
 
 Then it is likely that developer files have been installed, instead of the release distribution. Ensure that the game files downloaded were from the latest release, found on our [Release Page](https://github.com/Backdash/MonikaModDev/releases), and that the file downloaded was the mod zip file and *not* the Source Code.
 
+### Where are the minigames (chess, hangman, piano...)?
+
+Games are unlocked after spending time with Monika, whether that be viewing new
+topics with her or keeping her running in the background.
+
 ## Contributing
 
 ### I have an idea on how to improve Monika After Story, where do I suggest it?
