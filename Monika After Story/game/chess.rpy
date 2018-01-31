@@ -156,6 +156,8 @@ init:
                 # are we over a button?
                 self.is_hover_button_giveup = False
                 self.is_hover_button_save = False
+                self.is_disable_button_giveup = False
+                self.is_disable_button_save = False
 
                 # The sizes of some of the images.
                 self.VECTOR_PIECE_POS = {
@@ -468,8 +470,7 @@ init:
                 self.drawn_button_y_bot = (
                     height - (self.BUTTON_HEIGHT + drawn_board_y)
                 )
-
-                # prepare the buttons (depends on mouse)
+                
                 # if the mouse is over a button, render that button
                 # differently
                 # winner?
@@ -734,7 +735,7 @@ init:
 
             # Handles events.
             def event(self, ev, x, y, st):
-
+ 
                 # check muouse position
                 if ev.type in self.MOUSE_EVENTS:
                     # are we in mouse button things
@@ -748,6 +749,14 @@ init:
                                 self.drawn_button_y_top
                             )
                         ):
+                        
+                        if (
+                                not self.is_hover_button_save
+                                and self.current_turn == self.player_color
+                            ):
+                            # TODO: play gui sound
+                            pass
+
                         self.is_hover_button_save = True
                         self.is_hover_button_giveup = False
 
@@ -760,6 +769,16 @@ init:
                                 self.drawn_button_y_bot
                             )
                         ):
+                        if (
+                                not self.is_hover_button_giveup
+                                and (
+                                    self.current_turn == self.player_color 
+                                    or self.winner
+                                )
+                            ):
+                            # TODO: play gui sound
+                            pass
+
                         self.is_hover_button_save = False
                         self.is_hover_button_giveup = True
 
@@ -796,6 +815,7 @@ init:
                     if self.winner:
                         
                         if self.is_hover_button_giveup:
+                            # TODO: play activate sound
                             # user clicks Done
                             return self._quitPGN(False)
 
@@ -803,10 +823,12 @@ init:
                     elif self.current_turn == self.player_color:
                         
                         if self.is_hover_button_save:
+                            # TODO: play activate sound
                             # user wants to save this game
                             return self._quitPGN(False)
 
                         elif self.is_hover_button_giveup:
+                            # TODO: play activate sound
                             # user wishes to surrender (noob)
                             return self._quitPGN(True)
 
