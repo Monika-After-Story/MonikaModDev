@@ -36,24 +36,24 @@ messing with the global namespace.
 
 To create a store:
 ```python
-init python in store_name:
+init python in mas_store_name:
     var1 = 1
     var2 = 2
     ...
 
 # or
-define store_name.var1 = 1
-define store_name.var2 = 2
+define mas_store_name.var1 = 1
+define mas_store_name.var2 = 2
 ```
 
 To access a store:
 ```python
-store.store_name.var1 = 1
+store.mas_store_name.var1 = 1
 
 # or
 python:
-    import store.store_name as store_name
-    store_name.var1 = 1
+    import store.mas_store_name as mas_store_name
+    mas_store_name.var1 = 1
 ```
 
 We use several different stores to group different data. When deciding to make
