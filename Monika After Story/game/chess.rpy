@@ -1,6 +1,13 @@
+
+# we now will keep track of player wins / losses/ draws/ whatever
+default persistent.chess_stats = {"wins": 0, "losses": 0, "draws": 0}
+define minigamedata.CHESS_SAVE_PATH = "chess_games/"
+define minigamedata.CHESS_SAVE_EXT = ".pgn"
+
 init:
     python:
         import chess
+        import chess.pgn
         import subprocess
         import platform
         import random
@@ -66,7 +73,17 @@ init:
             MONIKA_OPTIMISM = 33
             MONIKA_THREADS = 1
 
-            def __init__(self, player_color):
+            MOUSE_EVENTS = (
+                pygame.MOUSEMOTION,
+                pygame.MOUSEBUTTONUP,
+                pygame.MOUSEBUTTONDOWN
+            )
+
+            def __init__(self, player_color, pgn_game=None):
+                """
+                player_color - player color obvi
+                pgn_game - previous game to load (chess.pgn.Game)
+                """
                 import sys
 
                 renpy.Displayable.__init__(self)
@@ -83,6 +100,62 @@ init:
                 self.player_move_prompt = Text(_("It's your turn, [player]!"), size=36)
                 self.num_turns = 0
                 self.surrendered = False
+
+                # hotkey button displayables
+                self.button_idle = Image("mod_assets/hkb_idle_background.png")
+                self.button_hover = Image("mod_assets/hkb_hover_background.png")
+                self.button_no = Image("mod_assets/hkb_disabled_background.png")
+
+                # hotkey button text
+                # idle style/ disabled style:
+                self.button_text_save_idle = Text(
+                    "Save",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#000",
+                    outlines=[]
+                )
+                self.button_text_giveup_idle = Text(
+                    "Give Up",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#000",
+                    outlines=[]
+                )
+                self.button_text_done_idle = Text(
+                    "Done",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#000",
+                    outlines=[]
+                )
+
+                # hover style
+                self.button_text_save_hover = Text(
+                    "Save",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#fa9",
+                    outlines=[]
+                )
+                self.button_text_giveup_hover = Text(
+                    "Give Up",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#fa9",
+                    outlines=[]
+                )
+                self.button_text_done_idle = Text(
+                    "Done",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#fa9",
+                    outlines=[]
+                )
+
+                # are we over a button?
+                self.is_hover_button_giveup = False
+                self.is_hover_button_save = False
 
                 # The sizes of some of the images.
                 self.VECTOR_PIECE_POS = {
@@ -101,6 +174,10 @@ init:
                 self.BOARD_HEIGHT = self.BOARD_BORDER_HEIGHT * 2 + self.PIECE_HEIGHT * 8
                 self.INDICATOR_WIDTH = 60
                 self.INDICATOR_HEIGHT = 96
+                self.BUTTON_WIDTH = 120
+                self.BUTTON_HEIGHT = 35
+                self.BUTTON_X_SPACING = 10
+                self.BUTTON_Y_SPACING = 10
 
                 # Stockfish engine provides AI for the game.
                 # Launch the appropriate version based on the architecture and OS.
@@ -153,20 +230,73 @@ init:
                 # Use this line (and comment the one following this one) to
                 # use DEBUG FEN
 #                self.board = chess.Board(fen=DEBUG_STARTING_FEN)
-                self.board = chess.Board()
+                #
+                self.board = None
+                # NOTE: we now check for a previous unfinished game before
+                # setting up board
+                if pgn_game:
+                    # load this game into the board, push turns
+                    self.board = pgn_game.board()
+                    for move in pgn_game.main_line():
+                        self.board.push(move)
 
-                self.player_color = player_color
+                    # whose turn?
+                    if self.board.turn == chess.WHITE:
+                        self.current_turn = self.COLOR_WHITE
+                    else:
+                        self.current_turn = self.COLOR_BLACK
+
+                    # colors?
+                    if pgn_game.headers["White"] == monika_twitter_handle:
+                        self.player_color = self.COLOR_BLACK
+                    else:
+                        self.player_color = self.COLOR_WHITE
+
+                    # last move
+                    last_move = self.board.move_stack.peek()
+                    self.last_move_src = (
+                        ord(last_move[0]) - ord('a'), 
+                        ord(last_move[1]) - ord('1')
+                    )
+                    self.last_move_dst = (
+                        ord(last_move[2]) - ord('a'),
+                        ord(last_move[3]) - ord('1')
+                    )
+
+                else:
+                    # start off with traditional board
+                    self.board = chess.Board()
+
+                    # stuff we need to save to the board 
+                    self.today_date = datetime.date.today().strftime("%Y.%m.%d")
+                    self.start_fen = self.board.fen()
+                    
+                    # other game setup
+                    self.current_turn = self.COLOR_WHITE
+
+                    # setup player color
+                    self.player_color = player_color
+
+                    # setup last move
+                    self.last_move_src = None
+                    self.last_move_dst = None
+
                 self.selected_piece = None
-                self.last_move_src = None
-                self.last_move_dst = None
                 self.possible_moves = set([])
                 self.winner = None
-                self.winner_confirmed = False
-                self.current_turn = self.COLOR_WHITE
                 self.last_clicked_king = 0.0
 
+                # special button coordinates
+                self.drawn_button_x = 0
+                self.drawn_button_y_top = 0
+                self.drawn_button_y_bot = 0
+
+                # setup a pgn (could be None, in which case we are playing a
+                # fresh game)
+                self.pgn_game = pgn_game
+
                 # If it's Monika's turn, send her the board positions so that she can start analyzing.
-                if player_color != self.COLOR_WHITE:
+                if player_color != self.current_turn:
                     self.start_monika_analysis()
 
             def start_monika_analysis(self):
@@ -201,11 +331,99 @@ init:
                     else:
                         self.winner = current_move
 
+            def _quitPGN(self, giveup):
+                """
+                Generates a pgn of the board, and depending on if we are
+                doing previous game or not, does appropriate header
+                setting
+
+                IN:
+                    giveup - True if the player surrendered, False otherwise
+
+                RETURNS: tuple of the following format:
+                    [0]: chess.pgn.Game object of this game
+                    [1]: True if monika won, False if not
+                    [2]: True if player gaveup, False otherwise
+                    [3]: number of turns of this game
+                """
+                new_pgn = chess.pgn.Game.from_board(self.board)
+
+                if giveup:
+                    if self.playercolor == self.COLOR_WHITE:
+                        new_pgn.headers["Result"] = "0-1"
+                    else:
+                        new_pgn.headers["Result"] = "1-0"
+
+                if self.pgn_game:
+                    # exisitng game, transfer data over
+                    new_pgn.headers["Site"] = self.pgn_game.headers["Site"]
+                    new_pgn.headers["Date"] = self.pgn_game.headers["Date"]
+                    new_pgn.headers["White"] = self.pgn_game.headers["White"]
+                    new_pgn.headers["Black"] = self.pgn_game.headers["Black"]
+                    
+                    old_fen = self.pgn_game.headers.get("FEN", None)
+                    if old_fen:
+                        new_pgn.headers["FEN"] = old_fen
+                        new_pgn.headers["SetUp"] = "1"
+
+                else:
+                    # new game stuff only:
+                    # monika's ingame name will be her twitter handle
+                    if player_color == self.COLOR_WHITE:
+                        new_pgn.headers["White"] = persistent.playername
+                        new_pgn.headers["Black"] = monika_twitter_handle
+                    else:
+                        new_pgn.headers["White"] = monika_twitter_handle
+                        new_pgn.headers["Black"] = persistent.playername
+
+                    # date, site, and fen
+                    # MAS is malaysia but who cares
+                    new_pgn.headers["Site"] = "MAS" 
+                    new_pgn.headers["Date"] = self.today_date
+                    new_pgn.headers["FEN"] = self.start_fen
+                    new_pgn.headers["SetUp"] = "1"
+
+                return (
+                    new_pgn,
+                    (
+                        (
+                            new_pgn.headers["Result"] == "1-0"
+                            and new_pgn.headers["White"] == monika_twitter_handle
+                        ) or (
+                            new_pgn.headers["Result"] == "0-1"
+                            and new_pgn.headers["Black"] == monika_twitter_handle
+                        )
+                    ),
+                    giveup,
+                    self.board.fullmove_number
+                )
+
+
+            def _inButton(self, x, y, button_x, button_y):
+                """
+                Checks if the given mouse coordinates is in the given button's
+                area.
+
+                IN:
+                    x - x coordinate
+                    y - y coordinate
+                    button_x - x coordinate of the button
+                    button_y - y coordinate of the button
+
+                RETURNS:
+                    True if the mouse coords are in the button,
+                    False otherwise
+                """
+                return (
+                    button_x <= x <= button_x + self.BUTTON_WIDTH
+                    and button_y <= y <= button_y + self.BUTTON_HEIGHT
+                )
+
             # Renders the board, pieces, etc.
             def render(self, width, height, st, at):
 
                 # Poll Monika for moves if it's her turn
-                if self.current_turn != self.player_color:
+                if self.current_turn != self.player_color and not self.winner:
                     monika_move = self.poll_monika_move()
                     if monika_move is not None:
                         self.last_move_src = (ord(monika_move[0]) - ord('a'), ord(monika_move[1]) - ord('1'))
@@ -214,7 +432,7 @@ init:
                         if self.current_turn == self.COLOR_BLACK:
                             self.num_turns += 1
                         self.current_turn = self.player_color
-                        self.check_winner('monika')
+                        self.winner = self.board.is_game_over()
 
                 # The Render object we'll be drawing into.
                 r = renpy.Render(width, height)
@@ -231,9 +449,139 @@ init:
                 highlight_yellow = renpy.render(self.piece_highlight_yellow_image, 1280, 720, st, at)
                 highlight_magenta = renpy.render(self.piece_highlight_magenta_image, 1280, 720, st, at)
 
-                # Draw the board.
-                r.blit(board, (int((width - self.BOARD_WIDTH) / 2), int((height - self.BOARD_HEIGHT) / 2)))
+                # get the mouse pos 
+                mx, my = get_mouse_pos()
 
+                # calculate positions
+                drawn_board_x = int((width - self.BOARD_WIDTH) / 2)
+                drawn_board_y=  int((height - self.BOARD_HEIGHT) / 2)
+                self.drawn_button_x = (
+                    width - drawn_board_x + self.BUTTON_X_SPACING
+                )
+                self.drawn_button_y_top = (
+                    height - (
+                        (self.BUTTON_HEIGHT * 2) + 
+                        self.BUTTON_Y_SPACING +
+                        drawn_board_y
+                    )
+                )
+                self.drawn_button_y_bot = (
+                    height - (self.BUTTON_HEIGHT + drawn_board_y)
+                )
+
+                # prepare the buttons (depends on mouse)
+                # if the mouse is over a button, render that button
+                # differently
+                # winner?
+                if self.winner:
+
+                    # save disabled
+                    save_button = renpy.render(
+                        self.button_no, 1280, 720, st, at
+                    )
+                    save_button_text = renpy.render(
+                        self.button_text_save_idle, 1280, 720, st, at
+                    )               
+
+                    # giveup now says DONE
+                    # hover
+                    if self.is_hover_button_giveup:
+                        giveup_button = renpy.render(
+                            self.button_hover, 1280, 720, st, at
+                        )
+                        giveup_button_text = renpy.render(
+                            self.button_text_done_hover, 1280, 720, st, at
+                        )
+
+                    # idle
+                    else:
+                        giveup_button = renpy.render(
+                            self.button_idle, 1280, 720, st, at
+                        )
+                        giveup_button_text = renpy.render(
+                            self.button_text_done_idle, 1280, 720, st, at
+                        )                    
+
+                # buttons can only be pressed on our turn
+                elif self.current_turn != self.player_color:
+                    disabled_button = renpy.render(
+                        self.button_no, 1280, 720, st, at
+                    )
+
+                    # minor optimization
+                    save_button = disabled_button
+                    giveup_button = disabled_button
+
+                    # button text
+                    save_button_text = renpy.render(
+                        self.button_text_save_idle, 1280, 720, st, at
+                    )
+                    giveup_button_text = renpy.render(
+                        self.button_text_giveup_idle, 1280, 720, st, at
+                    )
+
+                # otherwise check for hovering
+                elif self.is_hover_button_save:
+
+                    # svae hover
+                    save_button = renpy.render(
+                        self.button_hover, 1280, 720, st, at
+                    )
+                    save_button_text = renpy.render(
+                        self.button_text_save_hover, 1280, 720, st, at
+                    )
+
+                    # giveup idle
+                    giveup_button = renpy.render(
+                        self.button_idle, 1280, 720, st, at
+                    )
+                    giveup_button_text = renpy.render(
+                        self.button_text_giveup_idle, 1280, 720, st, at
+                    )
+
+                # check for giveup
+                elif self.is_hover_button_giveup:
+
+                    # save idle
+                    save_button = renpy.render(
+                        self.button_idle, 1280, 720, st, at
+                    )
+                    save_button_text = renpy.render(
+                        self.button_text_save_idle, 1280, 720, st, at
+                    )
+
+                    # giveup hover
+                    giveup_button = renpy.render(
+                        self.button_hover, 1280, 720, st, at
+                    )
+                    giveup_button_text = renpy.render(
+                        self.button_text_giveup_hover, 1280, 720, st, at
+                    )
+
+                # both buttons are idle
+                else:
+                    idle_button = renpy.render(
+                        self.button_idle, 1280, 720, st, at
+                    )
+
+                    # minor optimization
+                    save_button = idle_button
+                    giveup_button = idle_button
+
+                    # button text
+                    save_button_text = renpy.render(
+                        self.button_text_save_idle, 1280, 720, st, at
+                    )
+                    giveup_button_text = renpy.render(
+                        self.button_text_giveup_idle, 1280, 720, st, at
+                    )
+
+                # button sizes
+                gubt_w, gubt_h = giveup_button_text.get_size()
+                sbt_w, sbt_h = save_button_text.get_size()
+
+                # Draw the board.
+                r.blit(board, (drawn_board_x, drawn_board_y))
                 indicator_position = (int((width - self.INDICATOR_WIDTH) / 2 + self.BOARD_WIDTH / 2 + 50),
                                       int((height - self.INDICATOR_HEIGHT) / 2))
 
@@ -243,13 +591,44 @@ init:
                 else:
                     r.blit(renpy.render(self.move_indicator_monika, 1280, 720, st, at), indicator_position)
 
+                # draw the buttons
+                r.blit(save_button, (self.drawn_button_x, self.drawn_button_y_top))
+                r.blit(giveup_button, (self.drawn_button_x, self.drawn_button_y_bot))
+                
+                # button texts
+                r.blit(
+                    save_button_text,
+                    (
+                        (
+                            ((self.BUTTON_WIDTH - sbt_w) / 2) + 
+                            self.drawn_button_x
+                        ),
+                        (
+                            ((self.BUTTON_HEIGHT - sbt_h) / 2) + 
+                            self.drawn_button_y_top
+                        )
+                    )
+                )
+                r.blit(
+                    giveup_button_text,
+                    (
+                        (
+                            ((self.BUTTON_WIDTH - gubt_w) / 2) + 
+                            self.drawn_button_x
+                        ),
+                        (
+                            ((self.BUTTON_HEIGHT - gubt_h) / 2) + 
+                            self.drawn_button_y_bot
+                        )
+                    )
+                )       
+
+
                 def get_piece_render_for_letter(letter):
                     jy = 0 if letter.islower() else 1
                     jx = self.VECTOR_PIECE_POS[letter.upper()]
                     return pieces.subsurface((jx * self.PIECE_WIDTH, jy * self.PIECE_HEIGHT,
                                               self.PIECE_WIDTH, self.PIECE_HEIGHT))
-
-                mx, my = get_mouse_pos()
 
                 # Draw the pieces on the Board renderer.
                 for ix in range(8):
@@ -316,19 +695,21 @@ init:
                             not self.winner):
                             r.blit(highlight_green, (x, y))
 
-                        if str(piece).lower() == 'k' and self.winner:
-                            winner_color = None
-                            if self.winner == 'player':
-                                winner_color = self.player_color
-                            elif self.winner == 'monika':
-                                winner_color = not self.player_color
-                            if bool(str(piece).islower()) == winner_color:
+                        if self.winner:
+                            result = self.board.result()
+
+                            # black won
+                            if str(piece) == "k" and result == "0-1":
                                 r.blit(highlight_red, (x, y))
 
+                            # white won
+                            elif str(piece) == "K" and result == "1-0":
+                                r.blit(highlight_red, (x, y))
+                               
                         r.blit(get_piece_render_for_letter(str(piece)), (x, y))
 
 
-                if self.current_turn == self.player_color and self.winner is None:
+                if self.current_turn == self.player_color and not self.winner:
                     # Display the indication that it's the player's turn
                     prompt = renpy.render(self.player_move_prompt, 1280, 720, st, at)
                     pw, ph = prompt.get_size()
@@ -354,6 +735,39 @@ init:
             # Handles events.
             def event(self, ev, x, y, st):
 
+                # check muouse position
+                if ev.type in self.MOUSE_EVENTS:
+                    # are we in mouse button things
+
+                    # checking save button first
+                    if (
+                            self._inButton(
+                                x, 
+                                y, 
+                                self.drawn_button_x, 
+                                self.drawn_button_y_top
+                            )
+                        ):
+                        self.is_hover_button_save = True
+                        self.is_hover_button_giveup = False
+
+                    # checking the give up button
+                    elif (
+                            self._inButton(
+                                x,
+                                y,
+                                self.drawn_button_x,
+                                self.drawn_button_y_bot
+                            )
+                        ):
+                        self.is_hover_button_save = False
+                        self.is_hover_button_giveup = True
+
+                    # otherwise no buttons
+                    else:
+                        self.is_hover_button_save = False
+                        self.is_hover_button_giveup = False
+
                 def get_piece_pos():
                     mx, my = get_mouse_pos()
                     mx -= (1280 - (self.BOARD_WIDTH - self.BOARD_BORDER_WIDTH * 2)) / 2
@@ -378,26 +792,49 @@ init:
 #                        debug_file.write("["+str(mxx)+","+str(myy)+"] " +
 #                        "("+str(mxp)+","+str(myp)+") \n")
 
-                    if self.winner and not self.winner_confirmed:
-                        self.winner_confirmed = True
-                    else:
-                        px, py = get_piece_pos()
-                        if (px is not None and py is not None and
-                            self.board.piece_at(py * 8 + px) is not None and
-                            bool(str(self.board.piece_at(py * 8 + px)).isupper()) == (self.player_color == self.COLOR_WHITE) and
-                            self.current_turn == self.player_color):
+                    # inital check for winner
+                    if self.winner:
+                        
+                        if self.is_hover_button_giveup:
+                            # user clicks Done
+                            return self._quitPGN(False)
 
-                            piece = str(self.board.piece_at(py * 8 + px))
-                            if piece.lower() == 'k' and piece.islower() == (self.player_color == self.COLOR_BLACK):
-                                if st - self.last_clicked_king < 0.2:
-                                    self.winner = 'monika'
-                                    self.winner_confirmed = True
-                                    self.surrendered = True
-                                self.last_clicked_king = st
+                    # inital check for buttons
+                    elif self.current_turn == self.player_color:
+                        
+                        if self.is_hover_button_save:
+                            # user wants to save this game
+                            return self._quitPGN(False)
 
-                            # NOTE: The following is commented out because it
-                            # broke the ability to promote units. We keep it
-                            # here for reference, tho
+                        elif self.is_hover_button_giveup:
+                            # user wishes to surrender (noob)
+                            return self._quitPGN(True)
+
+                    # continue
+                    px, py = get_piece_pos()
+                    if (
+                            px is not None 
+                            and py is not None 
+                            and self.board.piece_at(py * 8 + px) is not None 
+                            and bool(str(self.board.piece_at(py * 8 + px)).isupper()) 
+                                == (self.player_color == self.COLOR_WHITE) 
+                            and self.current_turn == self.player_color
+                        ):
+
+                        piece = str(self.board.piece_at(py * 8 + px))
+
+                        # NOTE: following commeneted out because we added
+                        # a surrender button
+#                            if piece.lower() == 'k' and piece.islower() == (self.player_color == self.COLOR_BLACK):
+#                                if st - self.last_clicked_king < 0.2:
+#                                    self.winner = 'monika'
+#                                    self.winner_confirmed = True
+#                                    self.surrendered = True
+#                                self.last_clicked_king = st
+
+                        # NOTE: The following is commented out because it
+                        # broke the ability to promote units. We keep it
+                        # here for reference, tho
 #                            src = ChessDisplayable.coords_to_uci(px, py)
 
 #                            all_moves = [chess.Move.from_uci(src + ChessDisplayable.coords_to_uci(file, rank))
@@ -406,8 +843,8 @@ init:
 #                            legal_moves = set(self.board.legal_moves).intersection(all_moves)
 #                            p_legal_moves = set(self.board.pseudo_legal_moves).intersection(all_moves)
 #                            self.possible_moves = legal_moves.union(p_legal_moves)
-                            self.possible_moves = self.board.legal_moves
-                            self.selected_piece = (px, py)
+                        self.possible_moves = self.board.legal_moves
+                        self.selected_piece = (px, py)
 
                 # Mousebutton up == possibly release the selected piece
                 if ev.type == pygame.MOUSEBUTTONUP and ev.button == 1:
@@ -428,11 +865,13 @@ init:
                             self.last_move_src = self.selected_piece
                             self.last_move_dst = (px, py)
                             self.board.push_uci(move_str)
-                            self.check_winner('player')
+#                            self.check_winner('player')
+                            self.winner = self.board.is_game_over()
                             if self.current_turn == self.COLOR_BLACK:
                                 self.num_turns += 1
                             self.current_turn = not self.current_turn
-                            self.start_monika_analysis()
+                            if not self.winner:
+                                self.start_monika_analysis()
                     self.selected_piece = None
                     # NOTE: DEBUG
                     # Use these file write statements to display legal moves
@@ -472,22 +911,34 @@ init:
                             or ev.key == pygame.K_KP_MINUS):
                         dec_musicvol()
 
-                # If we have a winner, return him or her. Otherwise, ignore the current event.
-                if self.winner and self.winner_confirmed:
-                    return (self.winner, self.surrendered, self.num_turns)
-                else:
-                    raise renpy.IgnoreEvent()
+                raise renpy.IgnoreEvent()
 
 
 label game_chess:
     hide screen keylistener
     m 1b "You want to play chess? Alright~"
-    m 2a "Double click your king if you decide to surrender."
+#   m 2a "Double click your king if you decide to surrender."
     m 1a "Get ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
     return
 
 label demo_minigame_chess:
+    $ import chess.pgn # imperative for chess saving/loading
+    
+    # TODO: check for games in progress, ask user if they would like to
+    # continue old games, or start new ones.
+    # TODO: detecing old games means we use the path and find all pgn files
+    # located in that path. Then we attempt to read them in and take all
+    # games with * results as ongoing (only if monika's twitter handle is
+    # one of the players). The button will only display the first 15 chars
+    # of the Event tag, the date this game was started, and the current turn
+    # of the game. (Games sorted by Date). Also use scrollable pane, but
+    # we will need to use a modified version of it that is generalized to
+    # anything
+    # TODO: do this after getting some pgn games saved
+    # NOTE: games CANNOT be deleted from here. maybe mention that if you
+    # want to delete games, you have to delete them from the folder?
+
     menu:
         m "What color would suit you?"
 
@@ -508,14 +959,31 @@ label demo_minigame_chess:
 
     python:
         ui.add(ChessDisplayable(player_color))
-        winner, surrendered, num_turns = ui.interact(suppress_underlay=True)
+        results = ui.interact(suppress_underlay=True)
+
+        # unpack results
+        new_pgn_game, is_monika_winner, is_surrender, num_turns = results
+
+        # game result header
+        game_result = new_pgn_game.headers["Result"]
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
     call spaceroom from _call_spaceroom
 
-    if winner == "monika":
-        if surrendered and num_turns <= 4:
+    # check results
+    if game_result == "*":
+        # TODO dialogue about ongoing game
+        # this should jump directly to (the twilight zone) the save game
+        # name input flow.
+        m "dont forget to SAVE YOUR GAME"
+
+    elif game_result == "1/2-1/2":
+        # draw
+        m 3h "A draw? How boring..."
+
+    elif is_monika_winner:
+        if is_surrender and num_turns <= 4:
             m 1e "Come on, don't give up so easily."
         else:
             m 1b "I win!"
@@ -526,7 +994,7 @@ label demo_minigame_chess:
         else:
             m 1l "I really was going easy on you!"
 
-    elif winner == "player":
+    else:
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
@@ -539,9 +1007,13 @@ label demo_minigame_chess:
         else:
             m 2b "You really are an amazing player!"
             m 3l "Are you sure you're not cheating?"
-    else:
 
-        m 3h "A draw? How boring..."
+    # would you like to save this game
+    # TODO: ask if player would like to the save the game if they didnt
+    # surrender within 4 turns.
+    # TODO: if player wants to save game, ask for name of file. Accept
+    # uppercase/lowercase/numerics/dash,underscore for file names. Let user
+    # know that the games are saved in <filepath>. 
 
     menu:
         m "Do you want to play again?"
