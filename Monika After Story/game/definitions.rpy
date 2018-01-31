@@ -157,10 +157,9 @@ python early:
                     data_row[0:len(stored_data_row)] = list(stored_data_row)
                     self.per_eventdb[self.eventlabel] = tuple(data_row)
 
-                else:
-                    # otherwise, always set propmt and category
-                    self.prompt = prompt
-                    self.category = category
+                # actaully this should be always
+                self.prompt = prompt
+                self.category = category
 
             # new items are added appropriately
             else:
