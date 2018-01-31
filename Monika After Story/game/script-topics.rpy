@@ -4300,6 +4300,28 @@ label monika_write:
     return
 
 init 5 python:
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",pool=True))
+  
+label monika_writingtip4:
+     m 3b "Here's Monika's Writing Tip of the Day!"
+     m "You know about writer's block, right?"
+     m 1e "I had it a lot, when I started writing."
+     m "Sometimes it was halfway through a draft, but more often before I even started."
+     m 2f "Every time I tried to write a word, I thought, 'this isn't going to sound good', or 'this isn't how I want it to look'. So I'd stop, backtrack, and try again."
+     m 2d "But I realised it ultimately didn't matter if things didn't work out first time!"
+     m 1a "I feel the heart of writing is not about getting it right first time, but about perfecting it afterwards."
+     m "The end product is what matters, not the prototype."
+     m 1b "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
+     m 3a "I think it's like that with all things - not just writing."
+     m "Anything that needs you to try and try again - art, music, learning, relationships, even..."
+     m 3h "It's hard to completely convince yourself that that's the case, sometimes."
+     m 1g "But you have to."
+     m 1h "You have to, if you want to get anywhere."
+     m 1a "...That's my advice for today!"
+     m 2j "Thanks for listening~"
+     return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self harm",random=True))
 
 label monika_selfharm:
