@@ -104,33 +104,41 @@ label mood_hungry:
     m "Why dont you eat player, oh my gah"
     return
 
+
 init 5 python:
-    addEvent(
-        Event(
-            persistent.mood_database,
-            "mood_sad",
-            prompt="Sad",
-            category=[store.masmoods.TYPE_BAD],
-            unlocked=True
-        ),
-        eventdb=store.masmoods.mood_db
-    )
+    addEvent(Event(persistent.mood_database,"mood_sad",prompt="sad",category=[store.masmoods.TYPE_BAD],unlocked=True),eventdb=store.masmoods.mood_db)
 
 label mood_sad:
-    m "why are you feeling bad [player].{w} get glad"
+    m 3f "Gosh, I'm really sorry to hear that you are feeling down today."
+    m 3g "Is it because you're having a bad day or anything like that [player]?"
+    menu:
+        "Yes":
+            m 1e "I'll do my best to cheer you up then."
+            m 4e "Whenever I'm having a bad day, I always remember that the sun will shine again tomorrow."
+            m 2j "I suppose that may sound kinda cheesy, but I always like to look on the bright side of things."
+            m 2a "After all, sometimes things like that are easy to forget, so just keep it in mind [player]."
+            m 1h "I don't care how many many other people dislike you or find you off-putting."
+            m 1j "I think you're wonderful and I will always love you."
+            m 1a "I hope, if nothing else, that makes your day just a tiny bit brighter."
+            m 1e "And remember, if you're having a bad day, you can always come to me and I'll talk to you for as long as you need."
+        "No":
+            m 1e "I have an idea, why don't you tell me what's bothering you and maybe it'll make you feel better."
+            m "I don't want to interrupt you while you're talking, so let me know when you are done."
+            menu: 
+                "I'm done.":
+                    m "Do you feel a little better now [player]?"
+                    menu:
+                        "Yeah I do.":
+                            m 1j "That's great [player]. I'm glad that talking about it with me made you feel better."
+                            m 1e "Sometimes telling someone that you trust what's bothering you is all you need."
+                            m "If you're ever having a bad day, you can always come to me and I'll listen to you." 
+                            m 2b "Never forget that I think that you're wonderful and I will always love you."
+                        "Not really.":
+                            m 1f "Well it was worth a shot."
+                            m 1e "Sometimes telling someone that you trust what's bothering you is all you need."
+                            m "Maybe you'll feel better after we spend some more time together."
+                            m "I love you [player] and I always will."
     return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.mood_database,
-            "mood_mitochondria",
-            prompt="A mitochondria",
-            category=[store.masmoods.TYPE_GOOD],
-            unlocked=True
-        ),
-        eventdb=store.masmoods.mood_db
-    )
 
 label mood_mitochondria:
     m "You're the powerhouse of {i}my{/i} cell..."
