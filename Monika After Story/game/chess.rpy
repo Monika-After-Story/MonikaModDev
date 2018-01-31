@@ -351,7 +351,7 @@ init:
                 new_pgn = chess.pgn.Game.from_board(self.board)
 
                 if giveup:
-                    if self.playercolor == self.COLOR_WHITE:
+                    if self.player_color == self.COLOR_WHITE:
                         new_pgn.headers["Result"] = "0-1"
                     else:
                         new_pgn.headers["Result"] = "1-0"
@@ -754,8 +754,7 @@ init:
                                 not self.is_hover_button_save
                                 and self.current_turn == self.player_color
                             ):
-                            # TODO: play gui sound
-                            pass
+                            renpy.play(gui.hover_sound, channel="sound")
 
                         self.is_hover_button_save = True
                         self.is_hover_button_giveup = False
@@ -776,8 +775,7 @@ init:
                                     or self.winner
                                 )
                             ):
-                            # TODO: play gui sound
-                            pass
+                            renpy.play(gui.hover_sound, channel="sound")
 
                         self.is_hover_button_save = False
                         self.is_hover_button_giveup = True
@@ -815,7 +813,7 @@ init:
                     if self.winner:
                         
                         if self.is_hover_button_giveup:
-                            # TODO: play activate sound
+                            renpy.play(gui.activate_sound, channel="sound")
                             # user clicks Done
                             return self._quitPGN(False)
 
@@ -823,12 +821,12 @@ init:
                     elif self.current_turn == self.player_color:
                         
                         if self.is_hover_button_save:
-                            # TODO: play activate sound
+                            renpy.play(gui.activate_sound, channel="sound")
                             # user wants to save this game
                             return self._quitPGN(False)
 
                         elif self.is_hover_button_giveup:
-                            # TODO: play activate sound
+                            renpy.play(gui.activate_sound, channel="sound")
                             # user wishes to surrender (noob)
                             return self._quitPGN(True)
 
@@ -1036,6 +1034,10 @@ label demo_minigame_chess:
     # TODO: if player wants to save game, ask for name of file. Accept
     # uppercase/lowercase/numerics/dash,underscore for file names. Let user
     # know that the games are saved in <filepath>. 
+#    menu:
+#        m "Would you like to save this game?"
+#        "Yes":
+#        "No":
 
     menu:
         m "Do you want to play again?"
