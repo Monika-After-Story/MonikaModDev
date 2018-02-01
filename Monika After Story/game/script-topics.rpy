@@ -4935,7 +4935,7 @@ label monika_asks_family:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",unlocked=True,pool=True,random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
