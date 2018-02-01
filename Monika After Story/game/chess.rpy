@@ -1,8 +1,102 @@
 
 # we now will keep track of player wins / losses/ draws/ whatever
-default persistent.chess_stats = {"wins": 0, "losses": 0, "draws": 0}
-define minigamedata.CHESS_SAVE_PATH = "chess_games/"
-define minigamedata.CHESS_SAVE_EXT = ".pgn"
+default persistent._mas_chess_stats = {"wins": 0, "losses": 0, "draws": 0}
+define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
+define mas_chess.CHESS_SAVE_EXT = ".pgn"
+define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
+define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
+
+# mass chess store
+init 1 python in mas_chess:
+    import os
+    import chess.pgn
+
+    # if this is true, we quit game (workaround for confirm screen)
+    quit_game = False
+
+    # relative chess directory
+    REL_DIR = "chess_games/"
+
+    # other mas constants (menu related)
+    CHESS_MENU_X = 680
+    CHESS_MENU_Y = 40
+    CHESS_MENU_W = 560
+    CHESS_MENU_H = 640
+    CHESS_MENU_XALIGN = -0.05
+    CHESS_MENU_AREA = (CHESS_MENU_X, CHESS_MENU_Y, CHESS_MENU_W, CHESS_MENU_H)
+
+    CHESS_MENU_NEW_GAME_VALUE = "NEWGAME"
+    CHESS_MENU_NEW_GAME_ITEM = (
+        "Play New Game",
+        CHESS_MENU_NEW_GAME_VALUE,
+        True,
+        False
+    )
+
+    CHESS_MENU_FINAL_VALUE = "NONE"
+    CHESS_MENU_FINAL_ITEM = (
+        "Nevermind",
+        CHESS_MENU_FINAL_VALUE,
+        False,
+        False,
+        20
+    )
+
+    def isInProgressGame(filename, mth):
+        """
+        Checks if the pgn game with the given filename is valid and
+        in progress.
+
+        IN:
+            filename - filename of the pgn game
+            mth - monika twitter handle. pass it in since I'm too lazy to
+                find context from a store
+
+        RETURNS:
+            tuple of the following format:
+                [0]: Text to display on button
+                [1]: chess.pgn.Game of the game
+            OR NONE if this is not a valid pgn game
+        """
+        if filename[-4:] != CHESS_SAVE_EXT:
+            return None
+
+        pgn_game = None
+        with open(
+            os.path.normcase(CHESS_SAVE_PATH + filename),
+            "r"
+        ) as loaded_game:
+            pgn_game = chess.pgn.read_game(loaded_game)
+
+        if pgn_game is None:
+            return None
+        
+        if pgn_game.headers["Result"] != "*":
+            return None
+
+        # otherwise, we can now add this as an in progress game
+        # first, though we need number of turns
+        # this will store the number of turns in board.fullmove_number
+        board = pgn_game.board()
+        for move in pgn_game.main_line():
+            board.push(move)
+
+        # now which one is the player?
+        if pgn_game.headers["White"] == mth:
+            the_player = "Black"
+        else:
+            the_player = "White"
+
+        return (
+            CHESS_PROMPT_FORMAT.format(
+                pgn_game.headers["Date"].replace(".","-"),
+                pgn_game.headers["Event"],
+                board.fullmove_number,
+                the_player
+            ),
+            pgn_game
+        )
+
 
 init:
     python:
@@ -65,6 +159,30 @@ init:
             newy = (my * r) / 10000
 
             return (newx, newy)
+
+        # chess exception
+        class ChessException(Exception):
+            def __init__(self, msg):
+                self.msg = msg
+            def __str__(self):
+                return self.msg
+
+        # only add chess folder if we can even do chess
+        if is_platform_good_for_chess():
+            # first create the folder for this
+            try: 
+                file_path = os.path.normcase(
+                    config.basedir + mas_chess.CHESS_SAVE_PATH
+                )
+                if not os.access(file_path, os.F_OK):
+                    os.mkdir(file_path)
+                mas_chess.CHESS_SAVE_PATH = file_path
+            except: 
+                raise ChessException(
+                    "Chess game folder could not be created '{0}'".format(
+                        file_path
+                    )
+                )
 
         class ChessDisplayable(renpy.Displayable):
             COLOR_WHITE = True
@@ -249,13 +367,13 @@ init:
                         self.current_turn = self.COLOR_BLACK
 
                     # colors?
-                    if pgn_game.headers["White"] == monika_twitter_handle:
+                    if pgn_game.headers["White"] == mas_monika_twitter_handle:
                         self.player_color = self.COLOR_BLACK
                     else:
                         self.player_color = self.COLOR_WHITE
 
                     # last move
-                    last_move = self.board.move_stack.peek()
+                    last_move = self.board.peek().uci()
                     self.last_move_src = (
                         ord(last_move[0]) - ord('a'), 
                         ord(last_move[1]) - ord('1')
@@ -373,9 +491,9 @@ init:
                     # monika's ingame name will be her twitter handle
                     if player_color == self.COLOR_WHITE:
                         new_pgn.headers["White"] = persistent.playername
-                        new_pgn.headers["Black"] = monika_twitter_handle
+                        new_pgn.headers["Black"] = mas_monika_twitter_handle
                     else:
-                        new_pgn.headers["White"] = monika_twitter_handle
+                        new_pgn.headers["White"] = mas_monika_twitter_handle
                         new_pgn.headers["Black"] = persistent.playername
 
                     # date, site, and fen
@@ -390,10 +508,10 @@ init:
                     (
                         (
                             new_pgn.headers["Result"] == "1-0"
-                            and new_pgn.headers["White"] == monika_twitter_handle
+                            and new_pgn.headers["White"] == mas_monika_twitter_handle
                         ) or (
                             new_pgn.headers["Result"] == "0-1"
-                            and new_pgn.headers["Black"] == monika_twitter_handle
+                            and new_pgn.headers["Black"] == mas_monika_twitter_handle
                         )
                     ),
                     giveup,
@@ -827,8 +945,10 @@ init:
 
                         elif self.is_hover_button_giveup:
                             renpy.play(gui.activate_sound, channel="sound")
-                            # user wishes to surrender (noob)
-                            return self._quitPGN(True)
+                            renpy.call_in_new_context("mas_chess_confirm_context")
+                            if mas_chess.quit_game:
+                                # user wishes to surrender (noob)
+                                return self._quitPGN(True)
 
                     # continue
                     px, py = get_piece_pos()
@@ -944,21 +1064,69 @@ label game_chess:
 
 label demo_minigame_chess:
     $ import chess.pgn # imperative for chess saving/loading
-    
-    # TODO: check for games in progress, ask user if they would like to
-    # continue old games, or start new ones.
-    # TODO: detecing old games means we use the path and find all pgn files
-    # located in that path. Then we attempt to read them in and take all
-    # games with * results as ongoing (only if monika's twitter handle is
-    # one of the players). The button will only display the first 15 chars
-    # of the Event tag, the date this game was started, and the current turn
-    # of the game. (Games sorted by Date). Also use scrollable pane, but
-    # we will need to use a modified version of it that is generalized to
-    # anything
-    # TODO: do this after getting some pgn games saved
+    $ import os # we need it for filework
+
     # NOTE: games CANNOT be deleted from here. maybe mention that if you
     # want to delete games, you have to delete them from the folder?
 
+    # first, check for existing games
+    $ pgn_files = os.listdir(mas_chess.CHESS_SAVE_PATH)
+    $ loaded_game = None
+    if pgn_files:
+        python:
+            # only allow valid pgn files
+            pgn_games = list()
+            for filename in pgn_files:
+                in_prog_game = mas_chess.isInProgressGame(
+                    filename,
+                    mas_monika_twitter_handle
+                )
+
+                if in_prog_game:
+                    pgn_games.append((
+                        in_prog_game[0],
+                        in_prog_game[1],
+                        False,
+                        False
+                    ))
+
+        # now check if we have any games to show
+        if len(pgn_games) > 0:
+            if len(pgn_games) == 1:
+                $ game_s_dialog = "a game"
+            else:
+                $ game_s_dialog = "some games"
+
+            # need to add the play new game option
+            $ pgn_games.append(mas_chess.CHESS_MENU_NEW_GAME_ITEM)
+
+            
+            m 1a "We still have [game_s_dialog] in progress."
+            show monika at t21
+            $ renpy.say(m, "Pick a game you'd like to play.", interact=False)
+
+            call screen mas_gen_scrollable_menu(pgn_games, mas_chess.CHESS_MENU_AREA, mas_chess.CHESS_MENU_XALIGN, mas_chess.CHESS_MENU_FINAL_ITEM)
+
+            show monika at t11
+            $ loaded_game = _return
+
+            # check if user backs out
+            if loaded_game == mas_chess.CHESS_MENU_FINAL_VALUE:
+                m "Alright, maybe later?"
+                return
+            
+            # check if user picked a game
+            if loaded_game != mas_chess.CHESS_MENU_NEW_GAME_VALUE:
+
+                # now figure out the player color
+                if loaded_game.headers["White"] == mas_monika_twitter_handle:
+                    $ player_color = ChessDisplayable.COLOR_BLACK
+                else:
+                    $ player_color = ChessDisplayable.COLOR_WHITE
+                jump mas_chess_game_start
+
+    # otherwise, new games only
+    $ loaded_game = None
     menu:
         m "What color would suit you?"
 
@@ -975,10 +1143,11 @@ label demo_minigame_chess:
                 $ player_color = ChessDisplayable.COLOR_BLACK
                 m 2a "Oh look, I drew white! Let's begin!"
 
+label mas_chess_game_start:
     window hide None
 
     python:
-        ui.add(ChessDisplayable(player_color))
+        ui.add(ChessDisplayable(player_color, pgn_game=loaded_game))
         results = ui.interact(suppress_underlay=True)
 
         # unpack results
@@ -993,10 +1162,9 @@ label demo_minigame_chess:
 
     # check results
     if game_result == "*":
-        # TODO dialogue about ongoing game
         # this should jump directly to (the twilight zone) the save game
         # name input flow.
-        m "dont forget to SAVE YOUR GAME"
+        jump mas_chess_savegame
 
     elif game_result == "1/2-1/2":
         # draw
@@ -1028,31 +1196,123 @@ label demo_minigame_chess:
             m 2b "You really are an amazing player!"
             m 3l "Are you sure you're not cheating?"
 
-    # would you like to save this game
-    # TODO: ask if player would like to the save the game if they didnt
-    # surrender within 4 turns.
-    # TODO: if player wants to save game, ask for name of file. Accept
-    # uppercase/lowercase/numerics/dash,underscore for file names. Let user
-    # know that the games are saved in <filepath>. 
-#    menu:
-#        m "Would you like to save this game?"
-#        "Yes":
-#        "No":
+    # we only save a game if they put in some effort
+    if num_turns > 4:
+        menu:
+            m "Would you like to save this game?"
+            "Yes":
+                label mas_chess_savegame:
+                    python:
+                        if loaded_game: # previous game exists
+                            new_pgn_game.headers["Event"] = (
+                                loaded_game.headers["Event"]
+                            )
+                        
+                        # otherwise ask for name
+                        else:
+                            # get file name
+                            save_name = ""
+                            while len(save_name) == 0:
+                                save_name = renpy.input(
+                                    "Enter a name for this game:",
+                                    allow=mas_chess.CHESS_SAVE_NAME,
+                                    length=15
+                                )
+                            new_pgn_game.headers["Event"] = save_name
 
+                        # filename 
+                        save_filename = (
+                            new_pgn_game.headers["Event"] + 
+                            mas_chess.CHESS_SAVE_EXT
+                        )
+
+                        # now setup the file path
+                        file_path = mas_chess.CHESS_SAVE_PATH + save_filename
+                        
+                        with open(file_path, "w") as pgn_file:
+                            pgn_file.write(str(new_pgn_game))
+
+                        # the file path to show is different
+                        display_file_path = mas_chess.REL_DIR + save_filename
+
+                    m 1q ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                    m 1j "I've saved our game in '[display_file_path]'!"
+
+                    if not renpy.seen_label("mas_chess_pgn_explain"):
+
+                        label mas_chess_pgn_explain:
+                            m 1a "It's in a format called Portable Game Notation."
+                            m "You can open this file in PGN viewers."
+
+                            if game_result == "*": # ongoing game
+                                m 1n "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
+                                m 1e "Right, [player]?"
+                                menu:
+                                    "Of course not":
+                                        m 1j "Yay~"
+
+                    if game_result == "*":
+                        jump mas_chess_end
+            "No":
+                # TODO: should there be dialogue here?
+                pass
+
+label mas_chess_playagain:
     menu:
         m "Do you want to play again?"
 
-        "Yes.":
+        "Yes":
             jump demo_minigame_chess
-        "No.":
+        "No":
+            pass
 
-            if winner == "monika":
-                m 2d "Despite its simple rules, chess is a really intricate game."
-                m 1a "It's okay if you find yourself struggling at times."
-                m 1j "Remember, the important thing is to be able to learn from your mistakes."
-            else:
-                m 2b "It's amazing how much more I have to learn even now."
-                m 2a "I really don't mind losing as long as I can learn something."
-                m 1j "After all, the company is good."
+label mas_chess_end:
+    if is_monika_winner:
+        m 2d "Despite its simple rules, chess is a really intricate game."
+        m 1a "It's okay if you find yourself struggling at times."
+        m 1j "Remember, the important thing is to be able to learn from your mistakes."
+    elif game_result == "*":
+        m 1a "TODO: okay lets play again soon"
+    else:
+        m 2b "It's amazing how much more I have to learn even now."
+        m 2a "I really don't mind losing as long as I can learn something."
+        m 1j "After all, the company is good."
 
     return
+
+
+# label for new context for confirm screen
+label mas_chess_confirm_context:
+    call screen mas_chess_confirm 
+    $ store.mas_chess.quit_game = _return
+    return
+
+# confirmation screen for chess
+screen mas_chess_confirm():
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "confirm"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+            label _("Are you sure you want to give up?"):
+                style "confirm_prompt"
+                xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("Yes") action Return(True)
+                textbutton _("No") action Return(False)
