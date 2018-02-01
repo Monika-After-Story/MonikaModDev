@@ -74,18 +74,20 @@ init 1 python in mas_chess:
         if pgn_game.headers["Result"] != "*":
             return None
 
+        # now which one is the player?
+        if pgn_game.headers["White"] == mth:
+            the_player = "Black"
+        elif pgn_game.headers["Black"] == mth:
+            the_player = "White"
+        else: # monika must be a player
+            return None
+
         # otherwise, we can now add this as an in progress game
         # first, though we need number of turns
         # this will store the number of turns in board.fullmove_number
         board = pgn_game.board()
         for move in pgn_game.main_line():
             board.push(move)
-
-        # now which one is the player?
-        if pgn_game.headers["White"] == mth:
-            the_player = "Black"
-        else:
-            the_player = "White"
 
         return (
             CHESS_PROMPT_FORMAT.format(
