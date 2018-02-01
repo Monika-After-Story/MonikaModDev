@@ -1171,8 +1171,10 @@ label mas_chess_game_start:
     elif game_result == "1/2-1/2":
         # draw
         m 3h "A draw? How boring..."
+        persistent._mas_chess_stats["draws"] += 1
 
     elif is_monika_winner:
+        persistent._mas_chess_stats["losses"] += 1
         if is_surrender and num_turns <= 4:
             m 1e "Come on, don't give up so easily."
         else:
@@ -1185,6 +1187,7 @@ label mas_chess_game_start:
             m 1l "I really was going easy on you!"
 
     else:
+        persistent._mas_chess_stats["wins"] += 1
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
