@@ -4936,7 +4936,7 @@ label monika_asks_family:
 #    return
 
 init 5 python:
-     addEvent(Event(eventlabel="monika_beach",category=['random'],prompt="The beach.",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['random'],prompt="The beach.",random=True))
 
 label monika_beach:
     m 3a "[player] have you ever been to the beach?"
