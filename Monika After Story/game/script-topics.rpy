@@ -4357,7 +4357,7 @@ label monika_otaku:
     return
 
 init 5 python:
-    addEvent(Event(eventlabel="monika_anger",category=['Advice'],prompt="Anger management",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_anger",category=['Advice'],prompt="Anger management",random=True))
 
 label monika_anger:
     m 1b "[player], I told you I was in the debate club right?"
