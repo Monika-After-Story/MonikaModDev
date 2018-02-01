@@ -1116,9 +1116,13 @@ label demo_minigame_chess:
             else:
                 $ game_s_dialog = "some games"
 
+            python:
+                # sort the games
+                pgn_games.sort()
+                pgn_games.reverse()
+
             # need to add the play new game option
             $ pgn_games.append(mas_chess.CHESS_MENU_NEW_GAME_ITEM)
-
             
             m 1a "We still have [game_s_dialog] in progress."
             show monika at t21
