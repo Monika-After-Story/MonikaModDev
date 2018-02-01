@@ -1825,7 +1825,7 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
-define monika_twitter_handle = "lilmonix3"
+define mas_monika_twitter_handle = "lilmonix3"
 init python:
     startup_check = False
     try:
