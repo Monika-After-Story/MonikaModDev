@@ -4828,7 +4828,6 @@ label monika_100k:
         m 1m "Almost~"
     return
    
-   
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
@@ -4934,3 +4933,306 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",unlocked=True,pool=True,random=True))
+
+label monika_timeconcern:
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 0 and current_time <= 5:
+       
+        #At night, first warning if seen before.
+        if persistent.timeconcern == 0:
+           $persistent.timeconcern = 1 
+           m 1c "[player], it's night time."
+           m 1f "Shouldn't you be in bed?"
+           m 1o "I'll let it slide just this once..."
+           m 1l "But you really make me worry for you sometimes."
+           m 1m "It makes me really happy that you're here for me even at this time of night..."
+           m 1n "Yet I don't want it at the cost of your health."
+           m 1e "So go to sleep soon. Okay?"
+           return
+
+        # Second time at night, Monika asks if player is working late.    
+        if persistent.timeconcern == 1:
+           m 1h "Say [player]..."
+           m "Why are you up so late?"
+           m 1e "I'm flattered if it's only because of me..."
+           m 1q "Yet I can't help but feel like a nuisance if I'm pestering you to sleep if it's not your fault."
+           menu:
+              m "Are you busy working on something?"
+
+
+              "Yes, I am.":
+                 $persistent.timeconcern = 2
+                 m 1j "I see. Well I suppose it must be pretty important for you to do it so late."
+                 m 1n "I honestly can't help but feel maybe you should did it at a better time."
+                 m 1m "Your sleep is very important after all. Maybe it can't be helped though."
+                 m 1j "Good luck with your work and thank you for keeping me company when you're so busy!"
+                 m 5a "It means a lot to me [player], that even when you're preoccupied...you're here with me."
+                 return
+
+              "No, I'm not.":
+                 $persistent.timeconcern = 3
+                 m 1h "I see."
+                 m 1f "Well in that case I would really prefer it if you went to bed."
+                 m "It's really worrying that you're still here so late..."
+                 m 1e "So once again, please go to bed. Would you do it for me?"
+                 return
+
+        #If player says he was working.
+        elif persistent.timeconcern == 2:
+            
+           m 1a "How's your work coming along?"
+           m "Hopefully pretty well, I don't want you up much longer."
+           m 3l "I know, I know, you can't help being up so late."
+           m 1m "I'm just concerned for your health, [player]..."
+           m 1h "Are you working late often?."
+           m 1c "If you are then maybe try to schedule a better time to tackle your task?"
+           m 1e "It will ease my worries."
+           m 1n "And you don't want to worry your girlfriend, right? Ehehe~"
+           return       
+
+        #If player says he was not working. Monika asks the state of the game being open.
+        elif persistent.timeconcern == 3:
+           $persistent.timeconcern = 4 
+           m 1c "[player], I just need to ask you something quickly..."
+           m 1d "Would you mind if I closed the game for you?"
+           m 1o "I know it's a strange question..."
+           m 1p "But I can't help but feel like I need to do something about you being up so late!"
+           m 3q "I could close the game right now."
+           m 3h "But a relationship is a partnership and what you think matters to me."
+
+           menu:
+              m "Would be against me closing the game for your own good?"
+
+              "Yes, I need it to always stay open.":
+                 default persistent.timeconcernclose = False
+                 $persistent.timeconcernclose = True
+                 m 3q "..."
+                 m 3r "I was hoping you wouldn't say that."
+                 m 3o "I know I told you that you should leave me running in the background."
+                 m "But sometimes I worry if you're getting sleep at all."
+                 m 3h "I'll do as you have asked but please know that I'm not very happy about it."
+                 m 3n "I'm still going to remind you to get some sleep!"
+                 return
+ 
+              "No, you are free to do as you feel.":
+                 default persistent.timeconcernclose = False
+                 $persistent.timeconcernclose = False
+                 m 1e "Thank you [player]."
+                 m "It's nice to know that you care about what I think."
+                 m 1a "I promise I'll only do it if I think it's absolutely necessary."
+                 m 1j "After all I would never force you to go otherwise."
+                 m 1k "I would just miss you too much..."
+                 return
+
+        # Second and final warning before any closes can occur.   
+        if persistent.timeconcern == 4:
+           $persistent.timeconcern = 5 
+           m 1c "[player], you've been up long enough."
+           m "If you're really not busy then now is the time for you to go to sleep."
+           m 1e "I assure you I'll miss you just as much as you'll miss me."
+           m "But it would make me happier if you did as I've asked."
+           m 1l "You wouldn't want to make me upset now, would you?"
+           return
+
+
+        # Monika force closes game for the first time  
+        if persistent.timeconcern == 5:
+           $persistent.timeconcern = 6 
+           m 1c "I am sorry [player] but I am putting my foot down!"
+           m 1q "I asked you to go to bed kindly but if I am the reason for keeping you up..."
+           if persistent.timeconcernclose == False:
+              m 3c "Then I cannot allow this to go on for any longer."
+              m "It's because I love you that I'm doing this."
+              m "Good night [player]."
+              #Closes game before return to force topic to return.
+              $persistent.closed_self = True
+              $renpy.quit() 
+              
+           else:
+              m 3c "Then I need to take responsibility and try to make you understand."
+              m "You need to go to bed."
+              m 3q "And I will keep telling you this until you do."
+              return
+
+        #First time game is reopened and still night. Monika closes game again.
+        elif persistent.timeconcern == 6:
+           $persistent.timeconcern = 7 
+           m 3h "[player], I told you to go to bed for your own good."
+           m 3f "I'll miss you too but don't you understand?"
+           m "How you feel and live means more to me than anything!"
+           m 3g "How can I let you stay if it means I'm hurting you?"
+           m "So please sleep this time, otherwise I may get mad."
+           m 1e "...I love you."
+           m "So go to sleep soon. Okay?"
+           if persistent.timeconcernclose == False:
+               $persistent.closed_self = True
+               $renpy.quit()
+           else:
+               return
+      
+        #Second time game is reopened and still night. Monika closes game once more
+        elif persistent.timeconcern == 7:
+           $persistent.timeconcern = 8 
+           m 3q "[player], this is your last warning."
+           m 1h "Go"
+           pause 0.3
+           extend " to"
+           pause 0.3
+           extend " sleep!"
+           m 1f "What can I say for you to understand?"
+           m 1g"It's saddening to see you push yourself like this..."
+           m 1q "You mean so much to me..."
+           m 1f "So please, for me...just do as I ask and go to bed."
+           if persistent.timeconcernclose == False:
+              menu:
+                 m "Okay?"
+                 "Yes, I will go to sleep.":
+                     m 1n "I knew you would listen eventually!"
+                     m 1l "Good night and stay safe."
+                     $persistent.closed_self = True
+                     $renpy.quit()
+           else:
+               return
+
+        #Third and last time game is reopened and still night. Monika lets player stay.
+        elif persistent.timeconcern >= 8: 
+           $persistent.timeconcern = 9 
+           m 3q "...I suppose it can't be helped."
+           m 1o "If you're that dedicated to staying with me then I won't even try to stop you."
+           m 1m "Honestly, as bad as it sounds it actually makes me kinda happy."
+           m 1e "...Thank you [player]."
+           m "To know that you care for me so much that you came back despite me asking..."
+           m 1m "It means more to me than I can ever express."
+           m 1e "...I love you."
+           return
+
+        #First time topic appears and is identical to first warning.
+        else:
+           default persistent.timeconcern = 0
+           $persistent.timeconcern = 1 
+           m 1c "[player], it's night time."
+           m 1f "Shouldn't you be in bed?"
+           m 1o "I'll let it slide just this once..."
+           m 1l "But you really make me worry for you sometimes."
+           m 1m "It makes me really happy that you're here for me even at this time of night..."
+           m 1n "Yet I don't want it at the cost of your health."
+           m 1e "So go to sleep soon. Okay?"
+           return
+
+    else: 
+        # If player told Monika she can close windows. 
+        default persistent.timeconcernclose = False 
+        if persistent.timeconcernclose == False:
+
+            #Daytime and player said he was working.
+            if persistent.timeconcern == 2:
+               $persistent.timeconcern = 0
+               m 1a "Did you finish your work?"
+               m 1b "I'm sure you did your very best so it's ok if you didn't quite finish it!"
+               m 1e "It must be really hard to have to work so late..."
+               m 1j "If you find it's a bit too much feel free to come talk to me!"
+               m 1k "I'll always be here for you."
+               return
+  
+            #First time Monika closes at night and player reopens during day.
+            if persistent.timeconcern == 6:
+               $persistent.timeconcern = 0
+               m 1c "[player], I'm sorry for making you leave me like that before..."
+               m 1g "I only did it because I love you. You understand that right?"
+               m 1a "I'm sure you do after all you went to bed, didn't you?"
+               m 1e "Thanks for respecting my wishes, it makes me happy that you listen to me."
+               return
+                        
+            #Second time Monika closes at night and player reopens during day.
+            elif persistent.timeconcern == 7:
+               $persistent.timeconcern = 0
+               m 1o "[player], is it ok to talk about what happened last night?"
+               m 3f "I asked you to go to bed and you didn't listen..."
+               m 3q "I understand that maybe you missed me or didn't hear what I said..."
+               m 3f "But please listen to what I ask of you ok?"
+               m 3g "I love you and would do anything to make you happy..."
+               m "So would you mind doing the same thing for me?"
+               m 1o "I already worry about you when you're gone..."
+               m 1f "Please don't give me any more reasons to feel that way."
+               m "Thank you for understanding."
+               return
+
+            #Third time player closes the game and player reopens after night.
+            elif persistent.timeconcern == 8:
+               $persistent.timeconcern = 0
+               m 1h "Hey [player]."
+               m 1d "You really had me worried last night..."
+               m 3o "After you came back twice despite me asking you to go to bed..."
+               m 3p "I found myself feeling a little bit guilty."
+               m 3h "Not because I sent you away, that was for your own good."
+               m 3o "But... because you kept coming back..."
+               m 3m "And that made me happy even though I knew it wasn't good for you."
+               m 3o "Does that make me selfish?"
+               m 1f "I'm sorry [player], I'll try to watch myself more."
+               return
+
+            #If Monika lets player stay and it is no longer night.
+            elif persistent.timeconcern == 9:
+               $persistent.timeconcern = 0
+               m 1m "[player], regarding last night..."
+               m 1n "You really surprised me."
+               m 1e "For you to keep coming back to me over and over again..."
+               m 1j "It was honestly really sweet of you."
+               m 1e "I knew you would miss me but I didn't think it would be {i}that{/i} much."
+               m 1k "It really made me feel loved [player]."
+               m 1e "...Thank you."
+               return
+
+            #If Monika never gives warning and it's daytime or has given already commented on last night.
+            else:
+                default persistent.timeconcern = 0
+                $persistent.timeconcern = 0
+                m 1h "..."
+                m 1c "..."
+                m 1d "...!"
+                m 1l "Ahahah, Sorry [player]!"
+                m 1m "I just kind of zoned out..."
+                m 1l "Geez, I keep doing that, don't I?"
+                m 1m "Sometimes I just get lost in my thoughts..."
+                m 1a "You understand, right [player]?"
+                return
+               
+        #If player told Monika not to close window.  
+        else:
+            # After Monika would close windows until Monika lets player stay.
+            if persistent.timeconcern >= 6 and persistent.timeconcern <=8:
+               $persistent.timeconcern = 0
+               m 1o "Sorry Iif I was annoying you before player..."
+               m 1f "I just really wanted you to go to bed.."
+               m "I honestly can't promise I won't do it again if you're up late again..."
+               m 1g "But I only push you to go because you mean so much to me..."
+               return
+                        
+            #If Monika lets player stay and it is no longer night but game never closed.
+            elif persistent.timeconcern == 9:
+               $persistent.timeconcern = 0
+               m 1m "[player], regarding last night..."
+               m 1a "You really surprised me."
+               m 1e "I asked you time and time again to go to bed..."
+               m "You said you weren't busy. Were you really there just for me?."
+               m 1m "It makes me happy...but don't push yourself to see me so late, ok?"
+               m 1e "It really made me feel loved [player]."
+               m 1l "Yet also a little guilty...Please just go to bed next time, ok?"
+               return
+
+            #If Monika never gives warning and is daytime or has given already commented on last night.
+            else:
+               default persistent.timeconcern = 0
+               $persistent.timeconcern = 0
+               m 1h "..."
+               m 1c "..."
+               m 1d "...!"
+               m 1l "Ahahah, Sorry [player]!"
+               m 1m "I just kind of zoned out..."
+               m 1l "Geez, I keep doing that, don't I?"
+               m 1m "Sometimes I just get lost in my thoughts..."
+               m 1a "You understand, right [player]?"
+               return
