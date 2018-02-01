@@ -681,12 +681,13 @@ label greeting_japan:
     return
     
 label greeting_sunshine:
-    m 1r "{i}~You are my sunshine, my only sunshine.{i}"
+    m 1r "{i}You are my sunshine, my only sunshine.{i}"
     m 1k "{i}You make me happy when skies are gray.{/i}"
     m 4j "{i}You'll never know dear, just how much I love you.{/i}"
-    m 2r "{i}Please don't take my sunshine away.~{/i}"
+    m 2r "{i}Please don't take my sunshine away~{/i}"
     m 1j "..."
-    m 4n "Oh, hey [player]. Well this is certainly embarrassing."
-    m 1l "I was just singing to myself waiting for you to return."
-    m 1b "Now that you're here we can have a fun day together~"
+    m 1d "H-Huh?! [player]!"
+    m 4n "Oh my gosh, this is so embarassing!" 
+    m 1l "I was just singing to myself to pass time."
+    m 1b "But now that you're here, we can spend some time together."
     return
