@@ -467,6 +467,14 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
 
+    # sanitiziing the event_list from bull shit
+    if len(persistent.event_list) > 0:
+        python:
+            persistent.event_list = [
+                ev_label for ev_label in persistent.event_list
+                if renpy.has_label(ev_label)
+            ]
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
