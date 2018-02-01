@@ -642,7 +642,11 @@ init:
                     )
 
                 # otherwise check for hovering
-                elif self.is_hover_button_save:
+                # save is disabled until past move 4
+                elif (
+                        self.is_hover_button_save
+                        and self.board.fullmove_number > 4
+                    ):
 
                     # svae hover
                     save_button = renpy.render(
@@ -664,9 +668,14 @@ init:
                 elif self.is_hover_button_giveup:
 
                     # save idle
-                    save_button = renpy.render(
-                        self.button_idle, 1280, 720, st, at
-                    )
+                    if self.board.fullmove_number > 4:
+                        save_button = renpy.render(
+                            self.button_idle, 1280, 720, st, at
+                        )
+                    else:
+                        save_button = renpy.render(
+                            self.button_no, 1280, 720, st, at
+                        )
                     save_button_text = renpy.render(
                         self.button_text_save_idle, 1280, 720, st, at
                     )
@@ -686,8 +695,15 @@ init:
                     )
 
                     # minor optimization
-                    save_button = idle_button
                     giveup_button = idle_button
+
+                    # render disabled if not 4 turns
+                    if self.board.fullmove_number <= 4:
+                        save_button = renpy.render(
+                            self.button_no, 1280, 720, st, at
+                        )
+                    else:
+                        save_button = idle_button
 
                     # button text
                     save_button_text = renpy.render(
@@ -873,10 +889,11 @@ init:
                         if (
                                 not self.is_hover_button_save
                                 and self.current_turn == self.player_color
+                                and self.board.fullmove_number > 4
                             ):
                             renpy.play(gui.hover_sound, channel="sound")
+                            self.is_hover_button_save = True
 
-                        self.is_hover_button_save = True
                         self.is_hover_button_giveup = False
 
                     # checking the give up button
@@ -896,9 +913,9 @@ init:
                                 )
                             ):
                             renpy.play(gui.hover_sound, channel="sound")
+                            self.is_hover_button_giveup = True
 
                         self.is_hover_button_save = False
-                        self.is_hover_button_giveup = True
 
                     # otherwise no buttons
                     else:
@@ -1159,8 +1176,8 @@ label mas_chess_game_start:
         game_result = new_pgn_game.headers["Result"]
 
     #Regenerate the spaceroom scene
-    $scene_change=True #Force scene generation
-    call spaceroom from _call_spaceroom
+    #$scene_change=True #Force scene generation
+    #call spaceroom from _call_spaceroom
 
     # check results
     if game_result == "*":
@@ -1171,10 +1188,10 @@ label mas_chess_game_start:
     elif game_result == "1/2-1/2":
         # draw
         m 3h "A draw? How boring..."
-        persistent._mas_chess_stats["draws"] += 1
+        $ persistent._mas_chess_stats["draws"] += 1
 
     elif is_monika_winner:
-        persistent._mas_chess_stats["losses"] += 1
+        $ persistent._mas_chess_stats["losses"] += 1
         if is_surrender and num_turns <= 4:
             m 1e "Come on, don't give up so easily."
         else:
@@ -1187,7 +1204,7 @@ label mas_chess_game_start:
             m 1l "I really was going easy on you!"
 
     else:
-        persistent._mas_chess_stats["wins"] += 1
+        $ persistent._mas_chess_stats["wins"] += 1
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
@@ -1234,6 +1251,23 @@ label mas_chess_game_start:
                         # now setup the file path
                         file_path = mas_chess.CHESS_SAVE_PATH + save_filename
                         
+                        # file existence check
+                        is_file_exist = os.access(
+                            os.path.normcase(file_path),
+                            os.F_OK
+                        )
+
+                    # check if this file exists already
+                    if is_file_exist:
+                        m 1e "We already have a game named '[save_name]'."
+                        menu:
+                            m "Should I overwrite it?"
+                            "Yes":
+                                pass
+                            "No":
+                                jump mas_chess_savegame
+                        
+                    python:
                         with open(file_path, "w") as pgn_file:
                             pgn_file.write(str(new_pgn_game))
 
