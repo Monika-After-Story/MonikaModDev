@@ -26,6 +26,8 @@ You do not need to download the source code from either the release page or from
 
 ### Where do I put the files for *Monika After Story*?
 
+**Use a fresh copy / unaltered version of DDLC. If you've had a different mod installed prior to this one, you will probably encounter issues.** (This only applies to the DDLC game, and not the `persistent` files.)
+
 The files for *Monika After Story* must be placed directly in the `game` folder of *Doki Doki Literature Club* in order for the game to find and properly load them. To find the folder containing *DDLC*, do one of the following:
 
 If the game was installed using Steam, right click on *Doki Doki Literature Club* and click on `Properties`. In the window that pops up navigate to the `Local Files` tab and click the button for `Browse local files...`.
