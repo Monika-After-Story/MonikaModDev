@@ -211,3 +211,12 @@ label mood_tired:
     m 1j "I just thought it'd be cute to watch you sleep is all."
     m 1l "Ahaha"
     return
+
+init 5 python:
+    addEvent(Event(persistent.mood_database,"mood_lonely",prompt="lonely",category=[store.masmoods.TYPE_NEUTRAL],unlocked=True),eventdb=store.masmoods.mood_db)
+    
+label mood_lonely:
+    m 1j "I'm here with you, [player], so there's no need for you to feel lonely."
+    m 1c "I know it's not exactly the same as if I were in the same room with you."
+    m 1a "But I'm sure you still enjoy my company, right [player]?"
+    return
