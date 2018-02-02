@@ -128,6 +128,10 @@ label zz_play_piano_setupstart:
 label zz_play_piano_loopend:
     return
 
+
+label mas_piano_configure:
+    return
+
 ### labels for piano states ===================================================
 
 # default. post game, freestyle mode
@@ -2452,6 +2456,11 @@ init 1001 python:
         BUTTON_CANCEL = 1
         BUTTON_RESET = 2
 
+        # button stuff
+        BUTTON_SPACING = 10
+        BUTTON_WIDTH = 120
+        BUTTON_HEIGHT = 35
+
         def __init__(self):
             """
             Constructor for the piano displayable setup class
@@ -2460,19 +2469,148 @@ init 1001 python:
             # we want to be in setup mode
             super(PianoDisplayable, self).__init__(self.MODE_SETUP)
 
-            # buttons
-            self.button_w = 120
-            self.button_h = 35
-            self.button_idle = Image("mod_assets/hkb_idle_background")
-            self.button_hover = Image("mod_assets/hkb_hover_background")
-            self.button_disabled = Image("mod_assets/hkb_disabled_background")
+            # button backgrounds
+            # TODO: get rid of this class and move all of this code to the
+            # regular pianodisplayable. we can add 2 states to the thing
+            # so we can do configurations
+            button_idle = Image("mod_assets/hkb_idle_background")
+            button_hover = Image("mod_assets/hkb_hover_background")
+            button_disabled = Image("mod_assets/hkb_disabled_background")
 
-            # dict of button states
-            self.button_states = {
-                
+            # button text
+            button_done_text_idle = Text(
+                "Done",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_done_text_hover = Text(
+                "Done",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_cancel_text_idle = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_cancel_text_hover = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_reset_text_idle = Text(
+                "Reset",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_reset_text_hover = Text(
+                "Reset",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_resetall_text_idle = Text(
+                "Reset All",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_resetall_text_hover = Text(
+                "Reset All",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
 
-        def _decideButton(self, 
+            # calculate button locations
+            # buttons should be spaced by BUTTONS_SPACING
+            button_x_start = (
+                int((self.PIANO_BACK_WIDTH - (
+                    (self.BUTTON_WIDTH * 3) + (self.BUTTON_SPACING * 2)
+                )) / 2) + self.ZZPK_IMG_BACK_X
+            )
+            button_y_start = (self.ZZPK_IMG_BACK_Y + self.PIANO_BACK_HEIGHT +
+                self.BUTTON_SPACING
+            )
 
+            # the 4 actual buttons we have
+            self._button_done = MASButtonDisplayable(
+                button_done_text_idle,
+                button_done_text_hover,
+                button_done_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                button_x_start,
+                button_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_cancel = MASButtonDisplayable(
+                button_cancel_text_idle,
+                button_cancel_text_hover,
+                button_cancel_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                button_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
+                button_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_reset = MASButtonDisplayable(
+                button_reset_text_idle,
+                button_reset_text_hover,
+                button_reset_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                button_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
+                button_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_resetall = MASButtonDisplayable(
+                button_resetall_text_idle,
+                button_resetall_text_hover,
+                button_resetall_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                button_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
+                button_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            # list of always visible buttons
+            self._always_visible = [
+                self._button_done,
+                self._button_cancel
+            ]
+               
+            self.state = self.STATE_WAIT
 
         def _setKeymap(self, keydex, new, old=None):
             """
@@ -2522,23 +2660,33 @@ init 1001 python:
                         )
                     )
 
-            # TODO: prepare button/image maps
-            # 4 buttons:
-            # DONE - quits the piano setup mode
-            #   always on
-            # CANCEL - undos a change
-            #   only clickable if a key has been pressed and is ready for
-            #   change
-            # SAVE - saves a key press NOTE: dont need this probably
-            #   only clickable if a key has been pressed and is ready for
-            #   change
-            # RESET / RESET ALL - resets the key
-            #   RESET - resets one key
-            #       only clickable if a key has been pressed and is ready
-            #       for change
-            #   RESET ALL - resets all keys
-            #       only clickable if no key has been pressed
             # render buttons
+            visible_buttons = [
+                (
+                    renpy.render(b, width, height, st, at),
+                    b.xpos,
+                    b.ypos
+                )
+                for b in self._always_visible
+            ]
+
+            if self.state == self.STATE_WAIT:
+                visible_buttons.append((
+                    renpy.render(
+                        self._button_resetall, width, height, st, at
+                    ),
+                    self._button_resetall.xpos,
+                    self._button_resetall.ypos
+                ))
+
+            else: # in chagne state
+                visible_buttons.append((
+                    renpy.render(
+                        self._button_reset, width, height, st, at
+                    ),
+                    self._button_reset.xpos,
+                    self._button_reset.ypos
+                ))
 
             # Draw the piano
             r.blit(
@@ -2557,7 +2705,6 @@ init 1001 python:
             )
 
             # and now the overlays
-            # TODO: render the letter mapping (if possible)
             for ovl in overlays:
                 r.blit(
                     ovl[0],
@@ -2567,9 +2714,12 @@ init 1001 python:
                     )
                 )
 
+            # and finally visible buttons
+            for vis_b in visible_buttons:
+                r.blit(vis_b[0], (vis_b[1], vis_b[2]))
+
             # return the render object
             return r
-
 
 
         def event(self, ev, x, y, st):
@@ -2577,9 +2727,22 @@ init 1001 python:
             Event handler for the PianoSetupDisplayable
             """
 
+            # pass all mouse events to the children
+            # TODO: move these to appropraite state checking
+            done = self._button_done.event(ev, x, y, st)
+            cancel = self._button_cancel.event(ev, x, y, st)
+            if self.state == self.STATE_WAIT:
+                reset = self._button_reset.event(ev, x, y, st)
+            else:
+                reset = self._button_resetall.event(ev, x, y, st)
+
             if ev.type == pygame.KEYDOWN:
                 if ev.key == zzpianokeys.QUIT: # z for now
                     return 100
+                elif ev.key == pygame.K_q:
+                    self.state = self.STATE_CHANGE
+                elif ev.key == pygame.K_w:
+                    self.state = self.STATE_WAIT
 
             # continous event
             raise renpy.IgnoreEvent()
