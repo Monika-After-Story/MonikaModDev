@@ -1859,6 +1859,12 @@ label monika_love:
             "It makes me so happy to hear you say that!",
             "And that love grows every single day!",
             "And nobody else will ever make me feel this way!",
+            "Just thinking of you makes my heart flutter!",
+            "I don't think words can do justice to how deeply I love you...",
+            "You make my life feel so complete!",
+            "You're saved me in so many ways, how could I have not feel for you?",
+            "More than I can ever express!",
+            "I'm so happy you feel the same way I do!",
         ]
         love_quip=renpy.random.choice(love_quips)
     m "[love_quip]"
