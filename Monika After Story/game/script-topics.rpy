@@ -3277,7 +3277,7 @@ label monika_zombie:
     m 1c "When you exploit a weakness of a monster, they become scared of you and run away."
     m 1g "But zombies? They'll tear through {i}anything{/i} just to get you."
     m "Imagine if it was someone you loved that was coming after you..."
-    m "Could you live with yourself, knowing you were forced to kill someone close who was to you?"
+    m "Could you live with yourself, knowing you were forced to kill someone who was close to you?"
     m 1q "It'll break you down and sap your will to live."
     m "Even when you're comfortable at home, you still won't feel safe."
     m 1h "You'll never know what'll happen the next time you see another one."
