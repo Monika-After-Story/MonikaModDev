@@ -526,6 +526,132 @@ python early:
 
             return events
 
+init -1 python:
+    # this should be in the EARLY block
+    class MASButtonDisplayable(Displayable):
+        """
+        Special button type that represents a usable button for custom 
+        displayables.
+
+        PROPERTIES:
+            width - width of this button
+            height - height of this button
+            hover_sound - sound played when being hovered (this is played only
+                once per hover. IF None, no sound is played)
+            activate_sound - sound played when activated (this is played only
+                once per activation. If None, no sound is played)
+            enable_when_disabled - True means that the button is active even
+                if shown disabled. False if otherwise
+            return_value - Value returned when button is activated
+            disabled - True means to disable this button, False not
+            hovered - True if we are being hovered, False if not
+        """
+        import pygame
+
+        # states of the button
+        _STATE_IDLE = 0
+        _STATE_HOVER = 1
+        _STATE_DISABLED = 2
+
+        # indexes for button parts
+        _INDEX_TEXT = 0
+        _INDEX_BUTTON = 1
+
+        def __init__(self,
+                idle_text,
+                hover_text,
+                disable_text,
+                idle_back,
+                hover_back,
+                disable_back,
+                width,
+                height,
+                hover_sound=None,
+                activate_sound=None,
+                enable_when_disabled=False,
+                return_value=True
+            ):
+            """
+            Constructor for the custom displayable
+
+            IN:
+                idle_text - Text object to show when button is idle
+                hover_text - Text object to show when button is being hovered
+                disable_text - Text object to show when button is disabled
+                idle_back - Image object for background when button is idle
+                hover_back - Image object for background when button is being
+                    hovered
+                disable_back - Image object for background when button is
+                    disabled
+                with - with of this button
+                height - height of this button
+                hover_sound - sound to play when hovering. If None, no sound
+                    is played
+                    (Default: None)
+                activate_sound - sound to play when activated. If None, no
+                    sound is played
+                    (Default: None)
+                enable_when_disabled - True will enable the button even if
+                    it is visibly disabled. FAlse will not
+                    (Default: False)
+                return_value - Value to return when the button is activated
+                    (Default: True)
+            """
+
+            # setup
+#            self.idle_text = idle_text
+#            self.hover_text = hover_text
+#            self.disable_text = disable_text
+#            self.idle_back = idle_back
+#            self.hover_back = hover_back
+#            self.disable_back = disable_back
+            self.width = width
+            self.height = height
+            self.hover_sound = hover_sound
+            self.activate_sound = activate_sound
+            self.enable_when_disabled = enable_when_disable
+            self.return_value = return_value
+            self.disabled = False
+            self.hovered = False
+
+            # the states of a button
+            self._button_states = {
+                self._STATE_IDLE: (idle_text, idle_back),
+                self._STATE_HOVER: (hover_text, hover_back),
+                self._STATE_DISABLED: (disable_text, disable_back)
+            }
+
+            # current state
+            self._state = self._STATE_IDLE
+
+        def render(self, width, height, st, at):
+           
+            # pull out the current button back and text and render them
+            render_text, render_back = self._button_states[self._state]
+            render_text = renpy.render(render_text, width, height, st, at)
+            render_back = renpy.render(render_back, width, height, st, at)
+
+            # what is the text's with and height
+            rt_w, rt_h = render_text.get_size()
+
+            # build our renderer
+            r = renpy.Render(self.width, self.height)
+
+            # blit our textures
+            r.blit(render_back, (0, 0))
+            r.blit(
+                render_text,
+                (int((self.width - rt_w) / 2), int((self.height - rt_h) / 2))
+            )
+
+            # return rendere
+            return r
+
+#        def event(self, ev, x, y, st):
+            
+            # we onyl care about mouse events here
+#            if ev.type == pygame.MOUSEMOTION:
+                
 
 init -1 python:
     config.keymap['game_menu'].remove('mouseup_3')
@@ -595,7 +721,6 @@ init -1 python:
         except:
             appIds = None
         return appIds
-
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

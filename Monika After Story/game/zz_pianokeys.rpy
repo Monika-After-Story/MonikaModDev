@@ -2426,6 +2426,7 @@ init 1001 python:
             # the default so we can keep going
             raise renpy.IgnoreEvent()
 
+
 # custom piano displayable class for setting up key configurations
     class PianoSetupDisplayable(PianoDisplayable):
         """
@@ -2446,6 +2447,10 @@ init 1001 python:
         # Clickable buttons: CANCEL / RESET
         STATE_CHANGE = 1
 
+        # button names
+        BUTTON_DONE = 0
+        BUTTON_CANCEL = 1
+        BUTTON_RESET = 2
 
         def __init__(self):
             """
@@ -2461,6 +2466,13 @@ init 1001 python:
             self.button_idle = Image("mod_assets/hkb_idle_background")
             self.button_hover = Image("mod_assets/hkb_hover_background")
             self.button_disabled = Image("mod_assets/hkb_disabled_background")
+
+            # dict of button states
+            self.button_states = {
+                
+
+        def _decideButton(self, 
+
 
         def _setKeymap(self, keydex, new, old=None):
             """
