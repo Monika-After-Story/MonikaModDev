@@ -50,7 +50,7 @@ label anni_1week:
     m 1q "So it's always sad to see them crash and burn..."
     m 1e "But I'm glad we have a solid relationship, [player]."
     m 1c "How do I know that?"
-    m 3j "Because you wouldn't have stuck around for thing long with me, sweetie~"
+    m 3j "Because you wouldn't have stuck around for this long with me, sweetie~"
     return
 
 init 5 python:
