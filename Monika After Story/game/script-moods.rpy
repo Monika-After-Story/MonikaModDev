@@ -140,6 +140,18 @@ label mood_sad:
                             m "I love you [player] and I always will."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.mood_database,
+            "mood_mitochondria",
+            prompt="A mitochondria",
+            category=[store.masmoods.TYPE_GOOD],
+            unlocked=True
+        ),
+        eventdb=store.masmoods.mood_db
+    )
+
 label mood_mitochondria:
     m "You're the powerhouse of {i}my{/i} cell..."
     return
@@ -181,3 +193,21 @@ label mood_sick:
     m  "Get well soon!"
     $ persistent.sick = True
     return 'quit'
+    
+#I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.
+#We could adjust the dialog appropriately depending on whether it's night time or whether it's during the day in the future.
+init 5 python:
+    addEvent(Event(persistent.mood_database,"mood_tired",prompt="tired",category=[store.masmoods.TYPE_BAD],unlocked=True),eventdb=store.masmoods.mood_db)
+
+label mood_tired:
+    m 1e "If you're tired, maybe you should go lie down for a while?"
+    m 1a "Getting enough sleep on a daily basis is very important to your over health."
+    m 2d "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
+    m 3c "It can, for example, dramatically impact your mental functions and even shorten your lifespan."
+    m 2g "I really don't want anything bad like that to happen to you because you don't get enough sleep."
+    m 1e "So do me a favor, [player], and get some rest. It will put my mind at ease."
+    m 1a "You can even leave the game open if you like, and I'll watch over you while you sleep."
+    m 2n "My goodness, I hope that didn't sound weird or anything."
+    m 1j "I just thought it'd be cute to watch you sleep is all."
+    m 1l "Ahaha"
+    return
