@@ -1827,12 +1827,41 @@ label monika_natsuki:
     return
 
 
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you",pool=True))
 
 label monika_love:
+
     m 1k "I love you too, [player]!"
-    m "We'll be together forever!"
+    python:
+        love_quips = [
+            "We'll be together forever!",
+            "And I will love you always!",
+            "You mean the whole world to me!",
+            "You are my sunshine after all.",
+            "You're all I truly care about!",
+            "Your happiness is my happiness!",
+            "You're the best parner I could ever want!",
+            "My future is brighter with you in it.",
+            "You're everything I could ever hope for.",
+            "You make my heart skip a beat everytime I think about you!",
+            "I'll always be here for you!",
+            "I'll never hurt you betray you.",
+            "Our adventure has only just begun!",
+            "Every day is memorable and fun with you!",
+            "We'll always have each other.",
+            "We'll never be lonely again!",
+            "I can't wait to feel your embrace!",
+            "I'm the luckiest girl in the world!",
+            "I will cherish you always.",
+            "And I will never love anyone more than you!",
+            "It makes me so happy to hear you say that!",
+            "And that love grows every single day!",
+            "And nobody else will ever make me feel this way!",
+        ]
+        love_quip=renpy.random.choice(love_quips)
+    m "[love_quip]"
     return
 
 
