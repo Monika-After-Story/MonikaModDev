@@ -4347,7 +4347,7 @@ init 5 python:
 label monika_love2:
     m 1k "I love you too so much, [player]~"
     m 1e "You mean so much to me!"
-    m 1k "I wouldn’t trade you for anything in the world!”
+    m 1k "I wouldn’t trade you for anything in the world!"
     return
 
 
