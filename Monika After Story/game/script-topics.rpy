@@ -2648,10 +2648,13 @@ label monika_resource:
     m "Money? Gold? Oil?"
     m 3a "Personally, I'd say that the most valuable resource is time."
     m "Go count out a second really quickly."
+    python:
+        start_time = datetime.datetime.now()
     m "Now go do that sixty times."
     m 1j "That's an entire minute out of your day gone. You'll never get that back."
-    m 1l "Oh, did you actually count out that entire minute?"
-    m 1e "Oh gosh, I'm sorry!"
+    if (datetime.datetime.now() > (start_time + datetime.timedelta(seconds=60))):
+        m 1l "Oh, did you actually count out that entire minute?"
+        m 1e "Oh gosh, I'm sorry!"
     m 1a "Well..."
     m "Not like it matters, anyway. Time doesn't really pass here anymore..."
     m 3f "Time can be really cruel, too."
