@@ -1298,6 +1298,18 @@ init 1001 python:
         # NOTE: CALLS REDRAW
         STATE_WDONE = 14
 
+        # CONFIGuration WAIT state. This is for configuration mode, waiting
+        # for the user to click something. The user can hit the keys and play
+        # sounds, but thats about it. If the user clicks a key with mouse,
+        # the key is pressed and we enter CHANGE.
+        # when user clicks Done, we go back to LISTEN state.
+        STATE_CONFIG_WAIT = 15
+
+        # CONFIGuration CHANGE state. This is for configuration mode. User
+        # has selected a key, and now we want to set it to the next key the
+        # user presses.
+        STATE_CONFIG_CHANGE = 16
+
         # TUPLE state groups. This for easier checking of states
         # States related to Done flow
         DONE_STATES = (
@@ -1354,6 +1366,12 @@ init 1001 python:
         FINAL_DONE_STATES = (
             STATE_DONE,
             STATE_WDONE
+        )
+
+        # configuration states
+        CONFIG_STATES = (
+            STATE_CONFIG_WAIT,
+            STATE_CONFIG_CHANGE
         )
 
         # key limit for matching
@@ -1415,6 +1433,11 @@ init 1001 python:
         MODE_FREE = 0
         MODE_SONG = 1 # song mode means we are trying to play a song
 
+        # button stuff
+        BUTTON_SPACING = 10
+        BUTTON_WIDTH = 120
+        BUTTON_HEIGHT = 35
+
         def __init__(self, mode, pnml=None):
             """
             Creates the piano displablable
@@ -1439,6 +1462,214 @@ init 1001 python:
 
             # lyric bar
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
+
+            # button shit
+            button_idle = Image("mod_assets/hkb_idle_background.png")
+            button_hover = Image("mod_assets/hkb_hover_background.png")
+            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+
+            # button text
+            button_done_text_idle = Text(
+                "Done",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_done_text_hover = Text(
+                "Done",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_cancel_text_idle = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_cancel_text_hover = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_reset_text_idle = Text(
+                "Reset",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_reset_text_hover = Text(
+                "Reset",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_resetall_text_idle = Text(
+                "Reset All",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_resetall_text_hover = Text(
+                "Reset All",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_config_text_idle = Text(
+                "Config",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_config_text_hover = Text(
+                "Config",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_quit_text_idle = Text(
+                "Quit",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_quit_text_hover = Text(
+                "Quit",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+
+            # calculate button locations
+            # buttons should be spaced by BUTTONS_SPACING
+            cbutton_x_start = (
+                int((self.PIANO_BACK_WIDTH - (
+                    (self.BUTTON_WIDTH * 3) + (self.BUTTON_SPACING * 2)
+                )) / 2) + self.ZZPK_IMG_BACK_X
+            )
+            cbutton_y_start = (
+                self.ZZPK_IMG_BACK_Y + 
+                self.PIANO_BACK_HEIGHT +
+                self.BUTTON_SPACING
+            )
+            pbutton_x_start = (
+                int((self.PIANO_BACK_WIDTH - (
+                    (self.BUTTON_WIDTH * 2) + self.BUTTON_SPACING
+                )) / 2) + self.ZZPK_IMG_BACK_X
+            )
+            pbutton_y_start = cbutton_y_start
+
+            # the 4 config buttons we have
+            self._button_done = MASButtonDisplayable(
+                button_done_text_idle,
+                button_done_text_hover,
+                button_done_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                cbutton_x_start,
+                cbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_cancel = MASButtonDisplayable(
+                button_cancel_text_idle,
+                button_cancel_text_hover,
+                button_cancel_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                cbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
+                cbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_reset = MASButtonDisplayable(
+                button_reset_text_idle,
+                button_reset_text_hover,
+                button_reset_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                cbutton_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
+                cbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_resetall = MASButtonDisplayable(
+                button_resetall_text_idle,
+                button_resetall_text_hover,
+                button_resetall_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                button_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
+                button_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            # the config button
+            self._button_config = MASButtonDisplayable(
+                button_config_text_idle,
+                button_config_text_hover,
+                button_config_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                pbutton_x_start,
+                pbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_quit = MASButtonDisplayable(
+                button_quit_text_idle,
+                button_quit_text_hover,
+                button_quit_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                pbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
+                pbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            # list of always visible buttons
+            self._always_visible_config = [
+                self._button_done,
+                self._button_cancel
+            ]
+            self._always_visible_play = [
+                self._button_config,
+                self._button_quit
+            ]
 
             # setup sounds
             # sound dict:
@@ -1645,6 +1876,31 @@ init 1001 python:
 #            else:
 #                self.redraw_count += 1
 #                renpy.redraw(self, timeout)
+
+
+        def _setKeymap(self, keydex, new, old=None):
+            """
+            Sets a keymap. If old is None, it is assumed that we are adding
+            a new keymap and not replacing an existing one.
+
+            IN:
+                keydex - the index of the key value
+                new - the new key item to map to
+                old - old key item (the one to map)
+                    (Default: None)
+
+            ASSUMES:
+                persistent.piano_keys
+                zzpianokeys.KEYORDER
+            """
+            if old and old in persistent.piano_keys:
+                key_value = persistent.piano_keys.pop(old)
+            else:
+                key_value = zzpianokeys.KEYORDER[keydex]
+
+            # only add a keymap if its different
+            if key_value != new:
+                persistent.piano_keys[new] = key_value
 
 
         def findnotematch(self, notes):
@@ -2049,605 +2305,6 @@ init 1001 python:
             back = renpy.render(self.piano_back, 1280, 720, st, at)
             piano = renpy.render(self.piano_keys, 1280, 720, st, at)
 
-
-            # now prepare overlays to render
-            overlays = list()
-            for k in self.pressed:
-                if self.pressed[k]:
-                    overlays.append(
-                        (
-                            renpy.render(self.overlays[k][0], 1280, 720, st, at),
-                            self.overlays[k][1],
-                            self.overlays[k][2]
-                        )
-                    )
-
-            # Draw the piano
-            r.blit(
-                back,
-                (
-                    self.ZZPK_IMG_BACK_X,
-                    self.ZZPK_IMG_BACK_Y
-                )
-            )
-            r.blit(
-                piano,
-                (
-                    self.ZZPK_IMG_KEYS_X + self.ZZPK_IMG_BACK_X,
-                    self.ZZPK_IMG_KEYS_Y + self.ZZPK_IMG_BACK_Y
-                )
-            )
-
-            # and now the overlays
-            for ovl in overlays:
-                r.blit(
-                    ovl[0],
-                    (
-                        self.ZZPK_IMG_BACK_X + ovl[1],
-                        self.ZZPK_IMG_BACK_Y + ovl[2]
-                    )
-                )
-
-            # True if we need to do an interaction restart
-            restart_int = False
-
-            # True if we already called a redraw
-            redrawn = False
-
-            # subtract a redraw count for every render
-#            if self.redraw_count > 0:
-#                self.redraw_count -= 1
-
-            # check if we are currently matching something
-            # NOTE: the following utilizies renpy.show, which means we need
-            #   to use renpy.restart_interaction(). This also means that the
-            #   changes that occur here shouldnt be rendered
-            # STATE MACHINE
-            if self.state in self.DONE_STATES:
-
-                if self.state == self.STATE_DJPOST:
-                    # display monikas post expression
-                    renpy.show(self.match.postexpress)
-
-                    # hide text
-                    if not self.match.posttext:
-                        self.lyric = None
-
-                    restart_int = True
-
-                    # we go to DPOST instead of POST
-                    self.state = self.STATE_DPOST
-
-                    # force a redraw
-                    renpy.redraw(self, self.vis_timeout)
-
-                # check for visual timeout
-                elif st-self.prev_time >= self.vis_timeout:
-
-                    # force event call
-                    self.state = self.STATE_DONE
-                    renpy.timeout(1.0)
-#                    renpy.redraw(self, 1.0)
-#                    redrawn = True
-
-                # do a redraw for the next timeout
-                else:
-                    renpy.redraw(self, self.vis_timeout)
-#                    redrawn = True
-
-            elif (
-                    self.state == self.STATE_CLEAN
-                    or st-self.prev_time >= self.ev_timeout
-                ):
-
-                # default monika
-                renpy.show(self.DEFAULT)
-
-                # hide text
-                self.lyric = None
-
-                restart_int = True
-
-                if self.state not in self.DONE_STATES:
-                    self.state = self.STATE_LISTEN
-                    self.resetVerse()
-                self.setsongmode(False)
-
-            elif self.state != self.STATE_LISTEN:
-
-                if self.state == self.STATE_JMATCH:
-
-                    # display monika's expression
-                    renpy.show(self.match.express)
-
-                    # display text
-                    self.lyric = self.match.say
-
-                    # set song mode
-                    self.setsongmode(vis_tout=self.match.vis_timeout)
-
-                    restart_int = True
-                    self.state = self.STATE_MATCH
-
-                elif self.state == self.STATE_MISS:
-
-                    # display an awkward expresseion monika
-                    renpy.show(self.AWKWARD)
-                    restart_int = True
-
-                elif self.state == self.STATE_VPOST:
-
-                    # display the post expression
-                    renpy.show(self.lastmatch.postexpress)
-                    restart_int = True
-
-                    # hide text
-                    if not self.lastmatch.posttext:
-                        self.lyric = None
-
-                    # setup visual timeout
-                    if self.lastmatch.vis_timeout:
-#                        self.customRedraw(
-#                            self.lastmatch.redraw_time,
-#                            from_render=True
-#                        )
-                        renpy.redraw(self, self.lastmatch.vis_timeout)
-                        self.drawn_time = st
-                        self.state = self.STATE_CPOST
-                        redrawn = True
-
-                    else:
-                        self.state = self.STATE_WPOST
-
-                elif self.state == self.STATE_CPOST:
-
-                    # check if timeout
-                    if st-self.drawn_time >= self.lastmatch.vis_timeout:
-
-                        # display default monika
-                        renpy.show(self.DEFAULT)
-
-                        # hide text
-                        self.lyric = None
-
-                        restart_int = True
-                        self.state = self.STATE_WPOST
-
-                    # force a redraw in a second
-                    else:
-#                        self.customRedraw(1.0, from_render=True)
-                        renpy.redraw(self, 1.0)
-                        redrawn = True
-
-                elif self.state == self.STATE_JPOST:
-
-                    # display monikas post expression
-                    renpy.show(self.match.postexpress)
-
-                    # hide text
-                    if not self.match.posttext:
-                        self.lyric = None
-
-                    restart_int = True
-                    self.state = self.STATE_POST
-
-                elif self.state == self.STATE_FAIL:
-
-                    # display failed monika
-                    renpy.show(self.FAILED)
-
-                    # hide text
-                    self.lyric = None
-
-                    restart_int = True
-                    self.state = self.STATE_CLEAN
-
-                # redraw timeout
-                if not redrawn:
-                    renpy.redraw(self, self.vis_timeout)
-#                    self.customRedraw(self.vis_timeout, from_render=True)
-
-            if self.lyric:
-                lyric_bar = renpy.render(self.lyrical_bar, 1280, 720, st, at)
-                lyric = renpy.render(self.lyric, 1280, 720, st, at)
-                pw, ph = lyric.get_size()
-
-                # the lyric bar should be slightly below y-center
-                r.blit(
-                    lyric_bar,
-                    (
-                        0,
-                        int((height - 50) /2) - self.ZZPK_LYR_BAR_YOFF
-                    )
-                )
-                r.blit(
-                    lyric,
-                    (
-                        int((width - pw) / 2),
-                        int((height - ph) / 2) - self.ZZPK_LYR_BAR_YOFF
-                    )
-                )
-
-#                    renpy.show(
-#                        "monika " + match.express,
-#                        at_list=self.AT_LIST,
-#                        zorder=10,
-#                        layer="transient"
-#                    )
-#                    renpy.force_full_redraw()
-#                    r.blit(
-#                        renpy.render(match.img, 1280, 720, st, at),
-#                        (0, 0)
-#                    )
-#                    renpy.say(m, match.say, interact=False)
-#                    renpy.force_full_redraw()
-
-            if restart_int:
-                renpy.restart_interaction()
-
-            # rerender redrawing thing
-            # renpy.redraw(self, 0)
-
-            # and apparenly we return the render object
-            return r
-
-        def event(self, ev, x, y, st):
-            # renpy event handler
-            # NOTE: Renpy is EVENT-DRIVEN
-
-            # DONE state means you immediate quit
-            if self.state in self.FINAL_DONE_STATES:
-                return self.quitflow()
-
-            # when you press down a key, we launch a sound
-            if ev.type == pygame.KEYDOWN:
-
-                # check for mapping
-                key = persistent.piano_keymaps.get(ev.key, ev.key)
-
-                if len(self.played) > self.KEY_LIMIT:
-                    self.played = list()
-
-                # we only care about keydown events regarding timeout
-                elif st-self.prev_time >= self.ev_timeout:
-
-#                    self.testing.write("".join([chr(x) for x in self.played])+ "\n")
-                    self.played = list()
-
-                    # NOTE: in the listen state,  timeout means restart
-                    # the played list (which is what handles the note
-                    # matchin). Keep state.
-
-                    # NOTE: in transitional post states, timeout means
-                    # continue waiting.
-                    # Keep state.
-
-                    # NOTE: in done related states, timeout means quit
-                    # the game.
-                    if self.state in self.DONE_STATES:
-                        return self.quitflow()
-
-                    # NOTE: in the match-related states, timeout means
-                    # they failed the expression.
-                    elif self.state in self.TOUT_MATCH_STATES:
-                        self.resetVerse()
-                        self.state = self.STATE_LISTEN
-
-                    # NOTE: in post-match related states, timeout means
-                    # move onto the next expression.
-                    elif self.state in self.TOUT_POST_STATES:
-                        next_pnm = self.getnotematch()
-
-                        if next_pnm:
-                            self.setsongmode(
-                                ev_tout=next_pnm.ev_timeout,
-                                vis_tout=self.match.vis_timeout
-                            )
-                            self.state = self.STATE_WPOST
-                            self.match = next_pnm
-                            self.match.matchdex = 0
-
-                        # no more matches, we are done
-                        else:
-                            self.state = self.STATE_WDONE
-
-                    # NOTE: in clean state, chnage state to listen.
-                    elif self.state == self.STATE_CLEAN:
-                        self.state = self.STATE_LISTEN
-
-#   DEBUG: NOTE:
-#                if self.match:
-#                    self.testing.write(
-#                        chr(ev.key) + " : " + str(self.state) + " : " +
-#                        str(self.match.matchdex) + "\n")
-#                else:
-#                    self.testing.write(chr(ev.key) + " : " + str(self.state) + "\n")
-
-                # setup previous time thing
-                self.prev_time = st
-
-                # but first, check for quit ("Z")
-                if key == zzpianokeys.QUIT:
-                    return self.quitflow()
-                else:
-
-                    # only play a sound if we've lifted the finger
-                    if not self.pressed.get(key, True):
-
-                        # note has been hit
-                        self.note_hit = True
-
-                        # add to played
-                        self.played.append(key)
-
-                        # set appropriate value
-                        self.pressed[key] = True
-
-                        # check if we have enough played notes
-                        if self.state == self.STATE_LISTEN:
-                            self.stateListen(ev, key)
-
-                        # post match checking
-                        elif self.state in self.POST_STATES:
-                            self.statePost(ev, key)
-
-                        # waiting post
-                        elif self.state in self.TRANS_POST_STATES:
-                            self.stateWaitPost(ev, key)
-
-                        # match
-                        elif self.state in self.MATCH_STATES:
-                            self.stateMatch(ev, key)
-
-                        # get a sound to play
-                        renpy.play(self.pkeys[key], channel="audio")
-
-                        # now rerender
-#                        self.customRedraw(0)
-                        renpy.redraw(self, 0)
-
-            # keyup, means we should stop render
-            elif ev.type == pygame.KEYUP:
-
-                # check for mapping
-                key = persistent.piano_keymaps.get(ev.key, ev.key)
-
-                # only do this if we keyup a key we care about
-                if self.pressed.get(key, False):
-
-                    # set appropriate value
-                    self.pressed[key] = False
-
-                    # now rerender
-#                    self.customRedraw(0)
-                    renpy.redraw(self, 0)
-
-            # time event, rerender
-            elif ev.type == renpy.display.core.TIMEEVENT:
-#                self.customRedraw(0)
-                renpy.redraw(self, 0)
-
-            # the default so we can keep going
-            raise renpy.IgnoreEvent()
-
-
-# custom piano displayable class for setting up key configurations
-    class PianoSetupDisplayable(PianoDisplayable):
-        """
-        Effectively has the same constants as PianoDisplayable, but we are
-        overwriting event and render to handle custom configs
-        """
-
-        # MORE STATES (cant get enough of them)
-        # WAIT state. Here we are waiting for user interaction. We just render
-        # the piano + buttons setup and wait for the next event
-        # Clickable buttons: DONE, RESET ALL if a keymap has been changed
-        STATE_WAIT = 0 
-
-        # CHANGE state. Here the user has clicked a key, so we assume that the
-        # the next entered key should be mapped to that key. The clicked key
-        # will remain visibly pressed until the user either hits a keyboard
-        # key or clicks cancel or reset
-        # Clickable buttons: CANCEL / RESET
-        STATE_CHANGE = 1
-
-        # button names
-        BUTTON_DONE = 0
-        BUTTON_CANCEL = 1
-        BUTTON_RESET = 2
-
-        # button stuff
-        BUTTON_SPACING = 10
-        BUTTON_WIDTH = 120
-        BUTTON_HEIGHT = 35
-
-        def __init__(self):
-            """
-            Constructor for the piano displayable setup class
-            """
-
-            # we want to be in setup mode
-            super(PianoDisplayable, self).__init__(self.MODE_SETUP)
-
-            # button backgrounds
-            # TODO: get rid of this class and move all of this code to the
-            # regular pianodisplayable. we can add 2 states to the thing
-            # so we can do configurations
-            button_idle = Image("mod_assets/hkb_idle_background")
-            button_hover = Image("mod_assets/hkb_hover_background")
-            button_disabled = Image("mod_assets/hkb_disabled_background")
-
-            # button text
-            button_done_text_idle = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#000",
-                outlines=[]
-            )
-            button_done_text_hover = Text(
-                "Done",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#fa9",
-                outlines=[]
-            )
-            button_cancel_text_idle = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#000",
-                outlines=[]
-            )
-            button_cancel_text_hover = Text(
-                "Cancel",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#fa9",
-                outlines=[]
-            )
-            button_reset_text_idle = Text(
-                "Reset",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#000",
-                outlines=[]
-            )
-            button_reset_text_hover = Text(
-                "Reset",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#fa9",
-                outlines=[]
-            )
-            button_resetall_text_idle = Text(
-                "Reset All",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#000",
-                outlines=[]
-            )
-            button_resetall_text_hover = Text(
-                "Reset All",
-                font=gui.default_font,
-                size=gui.text_size,
-                color="#fa9",
-                outlines=[]
-            )
-
-            # calculate button locations
-            # buttons should be spaced by BUTTONS_SPACING
-            button_x_start = (
-                int((self.PIANO_BACK_WIDTH - (
-                    (self.BUTTON_WIDTH * 3) + (self.BUTTON_SPACING * 2)
-                )) / 2) + self.ZZPK_IMG_BACK_X
-            )
-            button_y_start = (self.ZZPK_IMG_BACK_Y + self.PIANO_BACK_HEIGHT +
-                self.BUTTON_SPACING
-            )
-
-            # the 4 actual buttons we have
-            self._button_done = MASButtonDisplayable(
-                button_done_text_idle,
-                button_done_text_hover,
-                button_done_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
-                button_x_start,
-                button_y_start,
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound
-            )
-            self._button_cancel = MASButtonDisplayable(
-                button_cancel_text_idle,
-                button_cancel_text_hover,
-                button_cancel_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
-                button_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
-                button_y_start,
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound
-            )
-            self._button_reset = MASButtonDisplayable(
-                button_reset_text_idle,
-                button_reset_text_hover,
-                button_reset_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
-                button_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
-                button_y_start,
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound
-            )
-            self._button_resetall = MASButtonDisplayable(
-                button_resetall_text_idle,
-                button_resetall_text_hover,
-                button_resetall_text_idle,
-                button_idle,
-                button_hover,
-                button_disabled,
-                button_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
-                button_y_start,
-                self.BUTTON_WIDTH,
-                self.BUTTON_HEIGHT,
-                hover_sound=gui.hover_sound,
-                activate_sound=gui.activate_sound
-            )
-
-            # list of always visible buttons
-            self._always_visible = [
-                self._button_done,
-                self._button_cancel
-            ]
-               
-            self.state = self.STATE_WAIT
-
-        def _setKeymap(self, keydex, new, old=None):
-            """
-            Sets a keymap. If old is None, it is assumed that we are adding
-            a new keymap and not replacing an existing one.
-
-            IN:
-                keydex - the index of the key value
-                new - the new key item to map to
-                old - old key item (the one to map)
-                    (Default: None)
-
-            ASSUMES:
-                persistent.piano_keys
-                zzpianokeys.KEYORDER
-            """
-            if old and old in persistent.piano_keys:
-                key_value = persistent.piano_keys.pop(old)
-            else:
-                key_value = zzpianokeys.KEYORDER[keydex]
-
-            # only add a keymap if its different
-            if key_value != new:
-                persistent.piano_keys[new] = key_value
-
-
-        def render(self, width, height, st, at):
-            """
-            Render function
-            """
-
-            r = renpy.Render(width, height)
-
-            # prepare piano for render
-            back = renpy.render(self.piano_back, 1280, 720, st, at)
-            piano = renpy.render(self.piano_keys, 1280, 720, st, at)
-
             # now prepare overlays to render
             overlays = list()
             for k in self.pressed:
@@ -2661,32 +2318,43 @@ init 1001 python:
                     )
 
             # render buttons
-            visible_buttons = [
-                (
-                    renpy.render(b, width, height, st, at),
-                    b.xpos,
-                    b.ypos
-                )
-                for b in self._always_visible
-            ]
+            if self.state in self.CONFIG_STATES:
+                visible_buttons = [
+                    (
+                        b.render(width, height, st, at),
+    #                    renpy.render(b, width, height, st, at),
+                        b.xpos,
+                        b.ypos
+                    )
+                    for b in self._always_visible_config
+                ]
 
-            if self.state == self.STATE_WAIT:
-                visible_buttons.append((
-                    renpy.render(
-                        self._button_resetall, width, height, st, at
-                    ),
-                    self._button_resetall.xpos,
-                    self._button_resetall.ypos
-                ))
+                if self.state == self.STATE_CONFIG_WAIT:
+                    visible_buttons.append((
+                        renpy.render(
+                            self._button_resetall, width, height, st, at
+                        ),
+                        self._button_resetall.xpos,
+                        self._button_resetall.ypos
+                    ))
 
-            else: # in chagne state
-                visible_buttons.append((
-                    renpy.render(
-                        self._button_reset, width, height, st, at
+                elif self.state == self.STATE_CONFIG_CHANGE:
+                    visible_buttons.append((
+                        renpy.render(
+                            self._button_reset, width, height, st, at
+                        ),
+                        self._button_reset.xpos,
+                        self._button_reset.ypos
+                    ))
+            else:
+                visible_buttons = [
+                    (
+                        b.render(width, height, st, at),
+                        b.xpos,
+                        b.ypos
                     ),
-                    self._button_reset.xpos,
-                    self._button_reset.ypos
-                ))
+                    for b in self._always_visible_play
+                ]
 
             # Draw the piano
             r.blit(
@@ -2718,31 +2386,373 @@ init 1001 python:
             for vis_b in visible_buttons:
                 r.blit(vis_b[0], (vis_b[1], vis_b[2]))
 
-            # return the render object
+            # True if we need to do an interaction restart
+            restart_int = False
+
+            if self.state in self.CONFIG_STATES: 
+                # todo something
+                pass
+
+            else:
+
+                # True if we already called a redraw
+                redrawn = False
+
+                # subtract a redraw count for every render
+    #            if self.redraw_count > 0:
+    #                self.redraw_count -= 1
+
+                # check if we are currently matching something
+                # NOTE: the following utilizies renpy.show, which means we need
+                #   to use renpy.restart_interaction(). This also means that the
+                #   changes that occur here shouldnt be rendered
+                # STATE MACHINE
+                if self.state in self.DONE_STATES:
+
+                    if self.state == self.STATE_DJPOST:
+                        # display monikas post expression
+                        renpy.show(self.match.postexpress)
+
+                        # hide text
+                        if not self.match.posttext:
+                            self.lyric = None
+
+                        restart_int = True
+
+                        # we go to DPOST instead of POST
+                        self.state = self.STATE_DPOST
+
+                        # force a redraw
+                        renpy.redraw(self, self.vis_timeout)
+
+                    # check for visual timeout
+                    elif st-self.prev_time >= self.vis_timeout:
+
+                        # force event call
+                        self.state = self.STATE_DONE
+                        renpy.timeout(1.0)
+    #                    renpy.redraw(self, 1.0)
+    #                    redrawn = True
+
+                    # do a redraw for the next timeout
+                    else:
+                        renpy.redraw(self, self.vis_timeout)
+    #                    redrawn = True
+
+                elif (
+                        self.state == self.STATE_CLEAN
+                        or st-self.prev_time >= self.ev_timeout
+                    ):
+
+                    # default monika
+                    renpy.show(self.DEFAULT)
+
+                    # hide text
+                    self.lyric = None
+
+                    restart_int = True
+
+                    if self.state not in self.DONE_STATES:
+                        self.state = self.STATE_LISTEN
+                        self.resetVerse()
+                    self.setsongmode(False)
+
+                elif self.state != self.STATE_LISTEN:
+
+                    if self.state == self.STATE_JMATCH:
+
+                        # display monika's expression
+                        renpy.show(self.match.express)
+
+                        # display text
+                        self.lyric = self.match.say
+
+                        # set song mode
+                        self.setsongmode(vis_tout=self.match.vis_timeout)
+
+                        restart_int = True
+                        self.state = self.STATE_MATCH
+
+                    elif self.state == self.STATE_MISS:
+
+                        # display an awkward expresseion monika
+                        renpy.show(self.AWKWARD)
+                        restart_int = True
+
+                    elif self.state == self.STATE_VPOST:
+
+                        # display the post expression
+                        renpy.show(self.lastmatch.postexpress)
+                        restart_int = True
+
+                        # hide text
+                        if not self.lastmatch.posttext:
+                            self.lyric = None
+
+                        # setup visual timeout
+                        if self.lastmatch.vis_timeout:
+    #                        self.customRedraw(
+    #                            self.lastmatch.redraw_time,
+    #                            from_render=True
+    #                        )
+                            renpy.redraw(self, self.lastmatch.vis_timeout)
+                            self.drawn_time = st
+                            self.state = self.STATE_CPOST
+                            redrawn = True
+
+                        else:
+                            self.state = self.STATE_WPOST
+
+                    elif self.state == self.STATE_CPOST:
+
+                        # check if timeout
+                        if st-self.drawn_time >= self.lastmatch.vis_timeout:
+
+                            # display default monika
+                            renpy.show(self.DEFAULT)
+
+                            # hide text
+                            self.lyric = None
+
+                            restart_int = True
+                            self.state = self.STATE_WPOST
+
+                        # force a redraw in a second
+                        else:
+    #                        self.customRedraw(1.0, from_render=True)
+                            renpy.redraw(self, 1.0)
+                            redrawn = True
+
+                    elif self.state == self.STATE_JPOST:
+
+                        # display monikas post expression
+                        renpy.show(self.match.postexpress)
+
+                        # hide text
+                        if not self.match.posttext:
+                            self.lyric = None
+
+                        restart_int = True
+                        self.state = self.STATE_POST
+
+                    elif self.state == self.STATE_FAIL:
+
+                        # display failed monika
+                        renpy.show(self.FAILED)
+
+                        # hide text
+                        self.lyric = None
+
+                        restart_int = True
+                        self.state = self.STATE_CLEAN
+
+                    # redraw timeout
+                    if not redrawn:
+                        renpy.redraw(self, self.vis_timeout)
+    #                    self.customRedraw(self.vis_timeout, from_render=True)
+
+                if self.lyric:
+                    lyric_bar = renpy.render(self.lyrical_bar, 1280, 720, st, at)
+                    lyric = renpy.render(self.lyric, 1280, 720, st, at)
+                    pw, ph = lyric.get_size()
+
+                    # the lyric bar should be slightly below y-center
+                    r.blit(
+                        lyric_bar,
+                        (
+                            0,
+                            int((height - 50) /2) - self.ZZPK_LYR_BAR_YOFF
+                        )
+                    )
+                    r.blit(
+                        lyric,
+                        (
+                            int((width - pw) / 2),
+                            int((height - ph) / 2) - self.ZZPK_LYR_BAR_YOFF
+                        )
+                    )
+
+#                    renpy.show(
+#                        "monika " + match.express,
+#                        at_list=self.AT_LIST,
+#                        zorder=10,
+#                        layer="transient"
+#                    )
+#                    renpy.force_full_redraw()
+#                    r.blit(
+#                        renpy.render(match.img, 1280, 720, st, at),
+#                        (0, 0)
+#                    )
+#                    renpy.say(m, match.say, interact=False)
+#                    renpy.force_full_redraw()
+
+            if restart_int:
+                renpy.restart_interaction()
+
+            # rerender redrawing thing
+            # renpy.redraw(self, 0)
+
+            # and apparenly we return the render object
             return r
 
-
         def event(self, ev, x, y, st):
-            """
-            Event handler for the PianoSetupDisplayable
-            """
+            # renpy event handler
+            # NOTE: Renpy is EVENT-DRIVEN
 
-            # pass all mouse events to the children
-            # TODO: move these to appropraite state checking
             done = self._button_done.event(ev, x, y, st)
             cancel = self._button_cancel.event(ev, x, y, st)
-            if self.state == self.STATE_WAIT:
-                reset = self._button_reset.event(ev, x, y, st)
+
+            if self.state in self.CONFIG_STATES:
+                
+                # configuratrion mode lets go
+                if self.state == self.STATE_CONFIG_WAIT:
+                    # wait stae
+
+                else:
+                    # must be change state
+
             else:
-                reset = self._button_resetall.event(ev, x, y, st)
+                # DONE state means you immediate quit
+                if self.state in self.FINAL_DONE_STATES:
+                    return self.quitflow()
 
-            if ev.type == pygame.KEYDOWN:
-                if ev.key == zzpianokeys.QUIT: # z for now
-                    return 100
-                elif ev.key == pygame.K_q:
-                    self.state = self.STATE_CHANGE
-                elif ev.key == pygame.K_w:
-                    self.state = self.STATE_WAIT
+                # check for config / quit button
+                clicked_config = self._button_config.event(ev, x, y, st)
+                clicked_quit = self._button_config.event(ev, x, y, st)
 
-            # continous event
+                # check for config/quit
+                if clicked_quit is not None:
+                    return self.quitflow()
+
+                elif clicked_config is not None:
+                    self.state = self.STATE_CONFIG_WAIT
+                    # TODO: this state needs to reset you back to default
+                    # expressions, also getting rid of the played list
+
+                else:
+                    # when you press down a key, we launch a sound
+                    if ev.type == pygame.KEYDOWN:
+
+                        # check for mapping
+                        key = persistent.piano_keymaps.get(ev.key, ev.key)
+
+                        if len(self.played) > self.KEY_LIMIT:
+                            self.played = list()
+
+                        # we only care about keydown events regarding timeout
+                        elif st-self.prev_time >= self.ev_timeout:
+
+        #                    self.testing.write("".join([chr(x) for x in self.played])+ "\n")
+                            self.played = list()
+
+                            # NOTE: in the listen state,  timeout means restart
+                            # the played list (which is what handles the note
+                            # matchin). Keep state.
+
+                            # NOTE: in transitional post states, timeout means
+                            # continue waiting.
+                            # Keep state.
+
+                            # NOTE: in done related states, timeout means quit
+                            # the game.
+                            if self.state in self.DONE_STATES:
+                                return self.quitflow()
+
+                            # NOTE: in the match-related states, timeout means
+                            # they failed the expression.
+                            elif self.state in self.TOUT_MATCH_STATES:
+                                self.resetVerse()
+                                self.state = self.STATE_LISTEN
+
+                            # NOTE: in post-match related states, timeout means
+                            # move onto the next expression.
+                            elif self.state in self.TOUT_POST_STATES:
+                                next_pnm = self.getnotematch()
+
+                                if next_pnm:
+                                    self.setsongmode(
+                                        ev_tout=next_pnm.ev_timeout,
+                                        vis_tout=self.match.vis_timeout
+                                    )
+                                    self.state = self.STATE_WPOST
+                                    self.match = next_pnm
+                                    self.match.matchdex = 0
+
+                                # no more matches, we are done
+                                else:
+                                    self.state = self.STATE_WDONE
+
+                            # NOTE: in clean state, chnage state to listen.
+                            elif self.state == self.STATE_CLEAN:
+                                self.state = self.STATE_LISTEN
+
+        #   DEBUG: NOTE:
+        #                if self.match:
+        #                    self.testing.write(
+        #                        chr(ev.key) + " : " + str(self.state) + " : " +
+        #                        str(self.match.matchdex) + "\n")
+        #                else:
+        #                    self.testing.write(chr(ev.key) + " : " + str(self.state) + "\n")
+
+                        # setup previous time thing
+                        self.prev_time = st
+
+                        # only play a sound if we've lifted the finger
+                        if not self.pressed.get(key, True):
+
+                            # note has been hit
+                            self.note_hit = True
+
+                            # add to played
+                            self.played.append(key)
+
+                            # set appropriate value
+                            self.pressed[key] = True
+
+                            # check if we have enough played notes
+                            if self.state == self.STATE_LISTEN:
+                                self.stateListen(ev, key)
+
+                            # post match checking
+                            elif self.state in self.POST_STATES:
+                                self.statePost(ev, key)
+
+                            # waiting post
+                            elif self.state in self.TRANS_POST_STATES:
+                                self.stateWaitPost(ev, key)
+
+                            # match
+                            elif self.state in self.MATCH_STATES:
+                                self.stateMatch(ev, key)
+
+                            # get a sound to play
+                            renpy.play(self.pkeys[key], channel="audio")
+
+                            # now rerender
+    #                        self.customRedraw(0)
+                            renpy.redraw(self, 0)
+
+                    # keyup, means we should stop render
+                    elif ev.type == pygame.KEYUP:
+
+                        # check for mapping
+                        key = persistent.piano_keymaps.get(ev.key, ev.key)
+
+                        # only do this if we keyup a key we care about
+                        if self.pressed.get(key, False):
+
+                            # set appropriate value
+                            self.pressed[key] = False
+
+                            # now rerender
+        #                    self.customRedraw(0)
+                            renpy.redraw(self, 0)
+
+                    # time event, rerender
+                    elif ev.type == renpy.display.core.TIMEEVENT:
+        #                self.customRedraw(0)
+                        renpy.redraw(self, 0)
+
+            # the default so we can keep going
             raise renpy.IgnoreEvent()
+
