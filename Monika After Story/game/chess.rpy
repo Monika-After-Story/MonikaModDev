@@ -287,7 +287,7 @@ init:
                     color="#fa9",
                     outlines=[]
                 )
-                button_text_done_idle = Text(
+                button_text_done_hover = Text(
                     "Done",
                     font=gui.default_font,
                     size=gui.text_size,
@@ -485,6 +485,10 @@ init:
                 # If it's Monika's turn, send her the board positions so that she can start analyzing.
                 if player_color != self.current_turn:
                     self.start_monika_analysis()
+                    self._button_save.disabled = True
+                    self._button_giveup.disabled = True
+                elif self.board.fullmove_number <= 4:
+                    self._button_save.disabled = True
 
             def start_monika_analysis(self):
                 self.stockfish.stdin.write("position fen %s" % (self.board.fen()) + '\n')
@@ -621,6 +625,15 @@ init:
                         self.current_turn = self.player_color
                         self.winner = self.board.is_game_over()
 
+                        # we assume buttons were disabled prior to here
+                        # (not Done though)
+                        if not self.winner:
+                            self._button_giveup.disabled = False
+
+                            # enable button only after 4th move
+                            if self.num_turns > 4:
+                                self._button_save.disabled = False
+
                 # The Render object we'll be drawing into.
                 r = renpy.Render(width, height)
 
@@ -646,108 +659,19 @@ init:
                 visible_buttons = list()
                 if self.winner:
 
-                    # disable save
-                    self._button_save.disabled = True
-                   
                     # point to the correct visible button list
-                    visible_buttons = self._visible_buttons_winner
+                    visible_buttons = [
+                        (b.render(width, height, st, at), b.xpos, b.ypos)
+                        for b in self._visible_buttons_winner
+                    ]
 
-                # buttons can only be pressed on our turn
-                elif self.current_turn != self.player_color:
-
-                    self._
-
-                    disabled_button = renpy.render(
-                        self.button_no, 1280, 720, st, at
-                    )
-
-                    # minor optimization
-                    save_button = disabled_button
-                    giveup_button = disabled_button
-
-                    # button text
-                    save_button_text = renpy.render(
-                        self.button_text_save_idle, 1280, 720, st, at
-                    )
-                    giveup_button_text = renpy.render(
-                        self.button_text_giveup_idle, 1280, 720, st, at
-                    )
-
-                # otherwise check for hovering
-                # save is disabled until past move 4
-                elif (
-                        self.is_hover_button_save
-                        and self.board.fullmove_number > 4
-                    ):
-
-                    # svae hover
-                    save_button = renpy.render(
-                        self.button_hover, 1280, 720, st, at
-                    )
-                    save_button_text = renpy.render(
-                        self.button_text_save_hover, 1280, 720, st, at
-                    )
-
-                    # giveup idle
-                    giveup_button = renpy.render(
-                        self.button_idle, 1280, 720, st, at
-                    )
-                    giveup_button_text = renpy.render(
-                        self.button_text_giveup_idle, 1280, 720, st, at
-                    )
-
-                # check for giveup
-                elif self.is_hover_button_giveup:
-
-                    # save idle
-                    if self.board.fullmove_number > 4:
-                        save_button = renpy.render(
-                            self.button_idle, 1280, 720, st, at
-                        )
-                    else:
-                        save_button = renpy.render(
-                            self.button_no, 1280, 720, st, at
-                        )
-                    save_button_text = renpy.render(
-                        self.button_text_save_idle, 1280, 720, st, at
-                    )
-
-                    # giveup hover
-                    giveup_button = renpy.render(
-                        self.button_hover, 1280, 720, st, at
-                    )
-                    giveup_button_text = renpy.render(
-                        self.button_text_giveup_hover, 1280, 720, st, at
-                    )
-
-                # both buttons are idle
                 else:
-                    idle_button = renpy.render(
-                        self.button_idle, 1280, 720, st, at
-                    )
 
-                    # minor optimization
-                    giveup_button = idle_button
-
-                    # render disabled if not 4 turns
-                    if self.board.fullmove_number <= 4:
-                        save_button = renpy.render(
-                            self.button_no, 1280, 720, st, at
-                        )
-                    else:
-                        save_button = idle_button
-
-                    # button text
-                    save_button_text = renpy.render(
-                        self.button_text_save_idle, 1280, 720, st, at
-                    )
-                    giveup_button_text = renpy.render(
-                        self.button_text_giveup_idle, 1280, 720, st, at
-                    )
-
-                # button sizes
-                gubt_w, gubt_h = giveup_button_text.get_size()
-                sbt_w, sbt_h = save_button_text.get_size()
+                    # otherwise use the regular buttons list
+                    visible_buttons = [
+                        (b.render(width, height, st, at), b.xpos, b.ypos)
+                        for b in self._visible_buttons
+                    ]
 
                 # Draw the board.
                 r.blit(board, (self.drawn_board_x, self.drawn_board_y))
@@ -761,37 +685,8 @@ init:
                     r.blit(renpy.render(self.move_indicator_monika, 1280, 720, st, at), indicator_position)
 
                 # draw the buttons
-                r.blit(save_button, (self.drawn_button_x, self.drawn_button_y_top))
-                r.blit(giveup_button, (self.drawn_button_x, self.drawn_button_y_bot))
-                
-                # button texts
-                r.blit(
-                    save_button_text,
-                    (
-                        (
-                            ((self.BUTTON_WIDTH - sbt_w) / 2) + 
-                            self.drawn_button_x
-                        ),
-                        (
-                            ((self.BUTTON_HEIGHT - sbt_h) / 2) + 
-                            self.drawn_button_y_top
-                        )
-                    )
-                )
-                r.blit(
-                    giveup_button_text,
-                    (
-                        (
-                            ((self.BUTTON_WIDTH - gubt_w) / 2) + 
-                            self.drawn_button_x
-                        ),
-                        (
-                            ((self.BUTTON_HEIGHT - gubt_h) / 2) + 
-                            self.drawn_button_y_bot
-                        )
-                    )
-                )       
-
+                for b in visible_buttons:
+                    r.blit(b[0], (b[1], b[2]))
 
                 def get_piece_render_for_letter(letter):
                     jy = 0 if letter.islower() else 1
@@ -908,9 +803,26 @@ init:
                 if ev.type in self.MOUSE_EVENTS:
                     # are we in mouse button things
 
-                    
+                     # inital check for winner
+                    if self.winner:
+                        
+                        if self._button_done.event(ev, x, y, st):
+                            # user clicks Done
+                            return self._quitPGN(False)
 
+                    # inital check for buttons
+                    elif self.current_turn == self.player_color:
+                        
+                        if self._button_save.event(ev, x, y, st):
+                            # user wants to save this game
+                            return self._quitPGN(False)
 
+                        elif self._button_giveup.event(ev, x, y, st):
+                            renpy.call_in_new_context("mas_chess_confirm_context")
+                            if mas_chess.quit_game:
+                                # user wishes to surrender (noob)
+                                return self._quitPGN(True)
+                   
                 def get_piece_pos():
                     mx, my = get_mouse_pos()
                     mx -= (1280 - (self.BOARD_WIDTH - self.BOARD_BORDER_WIDTH * 2)) / 2
@@ -934,29 +846,6 @@ init:
 #                    with open("chess_debug", "a") as debug_file:
 #                        debug_file.write("["+str(mxx)+","+str(myy)+"] " +
 #                        "("+str(mxp)+","+str(myp)+") \n")
-
-                    # inital check for winner
-                    if self.winner:
-                        
-                        if self.is_hover_button_giveup:
-                            renpy.play(gui.activate_sound, channel="sound")
-                            # user clicks Done
-                            return self._quitPGN(False)
-
-                    # inital check for buttons
-                    elif self.current_turn == self.player_color:
-                        
-                        if self.is_hover_button_save:
-                            renpy.play(gui.activate_sound, channel="sound")
-                            # user wants to save this game
-                            return self._quitPGN(False)
-
-                        elif self.is_hover_button_giveup:
-                            renpy.play(gui.activate_sound, channel="sound")
-                            renpy.call_in_new_context("mas_chess_confirm_context")
-                            if mas_chess.quit_game:
-                                # user wishes to surrender (noob)
-                                return self._quitPGN(True)
 
                     # continue
                     px, py = get_piece_pos()
@@ -1020,6 +909,11 @@ init:
                             self.current_turn = not self.current_turn
                             if not self.winner:
                                 self.start_monika_analysis()
+
+                            # disable the buttons when your turn is done
+                            self._button_save.disabled = True
+                            self._button_giveup.disabled = True
+
                     self.selected_piece = None
                     # NOTE: DEBUG
                     # Use these file write statements to display legal moves
