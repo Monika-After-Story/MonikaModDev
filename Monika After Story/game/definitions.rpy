@@ -719,9 +719,12 @@ python early:
                 # we onyl care about mouse events here
                 if ev.type == pygame.MOUSEMOTION:
                     is_over_me = self._isOverMe(x, y)
-                    if self.hovered and not is_over_me:
-                        self.hovered = False
-                        self._state = self._STATE_IDLE
+                    if self.hovered:
+                        if not is_over_me:
+                            self.hovered = False
+                            self._state = self._STATE_IDLE
+
+                        # else remain in hover mode
 
                     elif is_over_me:
                         self.hovered = True
@@ -732,6 +735,8 @@ python early:
 
                 elif ev.type == pygame.MOUSEBUTTONDOWN:
                     if self.hovered:
+                        if self.activate_sound:
+                            self._playActivateSound()
                         return self.return_value
 
             else: # since we are disabled
