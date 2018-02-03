@@ -219,65 +219,7 @@ init:
                 self.move_indicator_monika = Image("mod_assets/move_indicator_monika.png")
                 self.player_move_prompt = Text(_("It's your turn, [player]!"), size=36)
                 self.num_turns = 0
-                self.surrendered = False
-
-                # hotkey button displayables
-                self.button_idle = Image("mod_assets/hkb_idle_background.png")
-                self.button_hover = Image("mod_assets/hkb_hover_background.png")
-                self.button_no = Image("mod_assets/hkb_disabled_background.png")
-
-                # hotkey button text
-                # idle style/ disabled style:
-                self.button_text_save_idle = Text(
-                    "Save",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color="#000",
-                    outlines=[]
-                )
-                self.button_text_giveup_idle = Text(
-                    "Give Up",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color="#000",
-                    outlines=[]
-                )
-                self.button_text_done_idle = Text(
-                    "Done",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color="#000",
-                    outlines=[]
-                )
-
-                # hover style
-                self.button_text_save_hover = Text(
-                    "Save",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color="#fa9",
-                    outlines=[]
-                )
-                self.button_text_giveup_hover = Text(
-                    "Give Up",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color="#fa9",
-                    outlines=[]
-                )
-                self.button_text_done_idle = Text(
-                    "Done",
-                    font=gui.default_font,
-                    size=gui.text_size,
-                    color="#fa9",
-                    outlines=[]
-                )
-
-                # are we over a button?
-                self.is_hover_button_giveup = False
-                self.is_hover_button_save = False
-                self.is_disable_button_giveup = False
-                self.is_disable_button_save = False
+                self.surrendered = False           
 
                 # The sizes of some of the images.
                 self.VECTOR_PIECE_POS = {
@@ -300,6 +242,129 @@ init:
                 self.BUTTON_HEIGHT = 35
                 self.BUTTON_X_SPACING = 10
                 self.BUTTON_Y_SPACING = 10
+
+                # hotkey button displayables
+                button_idle = Image("mod_assets/hkb_idle_background.png")
+                button_hover = Image("mod_assets/hkb_hover_background.png")
+                button_no = Image("mod_assets/hkb_disabled_background.png")
+
+                # hotkey button text
+                # idle style/ disabled style:
+                button_text_save_idle = Text(
+                    "Save",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#000",
+                    outlines=[]
+                )
+                button_text_giveup_idle = Text(
+                    "Give Up",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#000",
+                    outlines=[]
+                )
+                button_text_done_idle = Text(
+                    "Done",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#000",
+                    outlines=[]
+                )
+
+                # hover style
+                button_text_save_hover = Text(
+                    "Save",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#fa9",
+                    outlines=[]
+                )
+                button_text_giveup_hover = Text(
+                    "Give Up",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#fa9",
+                    outlines=[]
+                )
+                button_text_done_idle = Text(
+                    "Done",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#fa9",
+                    outlines=[]
+                )
+
+                # calculate positions
+                self.drawn_board_x = int((1280 - self.BOARD_WIDTH) / 2)
+                self.drawn_board_y=  int((720 - self.BOARD_HEIGHT) / 2)
+                drawn_button_x = (
+                    1280 - self.drawn_board_x + self.BUTTON_X_SPACING
+                )
+                drawn_button_y_top = (
+                    720 - (
+                        (self.BUTTON_HEIGHT * 2) + 
+                        self.BUTTON_Y_SPACING +
+                        self.drawn_board_y
+                    )
+                )
+                drawn_button_y_bot = (
+                    720 - (self.BUTTON_HEIGHT + self.drawn_board_y)
+                )
+
+                # now the actual 3 buttons
+                self._button_save = MASButtonDisplayable(
+                    button_text_save_idle,
+                    button_text_save_hover,
+                    button_text_save_idle,
+                    button_idle,
+                    button_hover,
+                    button_no,
+                    drawn_button_x,
+                    drawn_button_y_top,
+                    self.BUTTON_WIDTH,
+                    self.BUTTON_HEIGHT,
+                    hover_sound=gui.hover_sound,
+                    activate_sound=gui.activate_sound
+                )
+                self._button_giveup = MASButtonDisplayable(
+                    button_text_giveup_idle,
+                    button_text_giveup_hover,
+                    button_text_giveup_idle,
+                    button_idle,
+                    button_hover,
+                    button_no,
+                    drawn_button_x,
+                    drawn_button_y_bot,
+                    self.BUTTON_WIDTH,
+                    self.BUTTON_HEIGHT,
+                    hover_sound=gui.hover_sound,
+                    activate_sound=gui.activate_sound
+                )
+                self._button_done = MASButtonDisplayable(
+                    button_text_done_idle,
+                    button_text_done_hover,
+                    button_text_done_idle,
+                    button_idle,
+                    button_hover,
+                    button_no,
+                    drawn_button_x,
+                    drawn_button_y_bot,
+                    self.BUTTON_WIDTH,
+                    self.BUTTON_HEIGHT,
+                    hover_sound=gui.activate_sound,
+                    activate_sound=gui.activate_sound
+                )
+
+                # the visible buttons list
+                self._visible_buttons = [
+                    self._button_save,
+                    self._button_giveup
+                ]
+                self._visible_buttons_winner = [
+                    self._button_save,
+                    self._button_done
+                ]
 
                 # Stockfish engine provides AI for the game.
                 # Launch the appropriate version based on the architecture and OS.
@@ -574,57 +639,24 @@ init:
                 # get the mouse pos 
                 mx, my = get_mouse_pos()
 
-                # calculate positions
-                drawn_board_x = int((width - self.BOARD_WIDTH) / 2)
-                drawn_board_y=  int((height - self.BOARD_HEIGHT) / 2)
-                self.drawn_button_x = (
-                    width - drawn_board_x + self.BUTTON_X_SPACING
-                )
-                self.drawn_button_y_top = (
-                    height - (
-                        (self.BUTTON_HEIGHT * 2) + 
-                        self.BUTTON_Y_SPACING +
-                        drawn_board_y
-                    )
-                )
-                self.drawn_button_y_bot = (
-                    height - (self.BUTTON_HEIGHT + drawn_board_y)
-                )
                 
                 # if the mouse is over a button, render that button
                 # differently
                 # winner?
+                visible_buttons = list()
                 if self.winner:
 
-                    # save disabled
-                    save_button = renpy.render(
-                        self.button_no, 1280, 720, st, at
-                    )
-                    save_button_text = renpy.render(
-                        self.button_text_save_idle, 1280, 720, st, at
-                    )               
-
-                    # giveup now says DONE
-                    # hover
-                    if self.is_hover_button_giveup:
-                        giveup_button = renpy.render(
-                            self.button_hover, 1280, 720, st, at
-                        )
-                        giveup_button_text = renpy.render(
-                            self.button_text_done_hover, 1280, 720, st, at
-                        )
-
-                    # idle
-                    else:
-                        giveup_button = renpy.render(
-                            self.button_idle, 1280, 720, st, at
-                        )
-                        giveup_button_text = renpy.render(
-                            self.button_text_done_idle, 1280, 720, st, at
-                        )                    
+                    # disable save
+                    self._button_save.disabled = True
+                   
+                    # point to the correct visible button list
+                    visible_buttons = self._visible_buttons_winner
 
                 # buttons can only be pressed on our turn
                 elif self.current_turn != self.player_color:
+
+                    self._
+
                     disabled_button = renpy.render(
                         self.button_no, 1280, 720, st, at
                     )
@@ -718,7 +750,7 @@ init:
                 sbt_w, sbt_h = save_button_text.get_size()
 
                 # Draw the board.
-                r.blit(board, (drawn_board_x, drawn_board_y))
+                r.blit(board, (self.drawn_board_x, self.drawn_board_y))
                 indicator_position = (int((width - self.INDICATOR_WIDTH) / 2 + self.BOARD_WIDTH / 2 + 50),
                                       int((height - self.INDICATOR_HEIGHT) / 2))
 
@@ -876,51 +908,8 @@ init:
                 if ev.type in self.MOUSE_EVENTS:
                     # are we in mouse button things
 
-                    # checking save button first
-                    if (
-                            self._inButton(
-                                x, 
-                                y, 
-                                self.drawn_button_x, 
-                                self.drawn_button_y_top
-                            )
-                        ):
-                        
-                        if (
-                                not self.is_hover_button_save
-                                and self.current_turn == self.player_color
-                                and self.board.fullmove_number > 4
-                            ):
-                            renpy.play(gui.hover_sound, channel="sound")
-                            self.is_hover_button_save = True
+                    
 
-                        self.is_hover_button_giveup = False
-
-                    # checking the give up button
-                    elif (
-                            self._inButton(
-                                x,
-                                y,
-                                self.drawn_button_x,
-                                self.drawn_button_y_bot
-                            )
-                        ):
-                        if (
-                                not self.is_hover_button_giveup
-                                and (
-                                    self.current_turn == self.player_color 
-                                    or self.winner
-                                )
-                            ):
-                            renpy.play(gui.hover_sound, channel="sound")
-                            self.is_hover_button_giveup = True
-
-                        self.is_hover_button_save = False
-
-                    # otherwise no buttons
-                    else:
-                        self.is_hover_button_save = False
-                        self.is_hover_button_giveup = False
 
                 def get_piece_pos():
                     mx, my = get_mouse_pos()
