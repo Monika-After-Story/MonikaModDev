@@ -485,10 +485,10 @@ init:
                 # If it's Monika's turn, send her the board positions so that she can start analyzing.
                 if player_color != self.current_turn:
                     self.start_monika_analysis()
-                    self._button_save.disabled = True
-                    self._button_giveup.disabled = True
+                    self._button_save.disable()
+                    self._button_giveup.disable()
                 elif self.board.fullmove_number <= 4:
-                    self._button_save.disabled = True
+                    self._button_save.disable()
 
             def start_monika_analysis(self):
                 self.stockfish.stdin.write("position fen %s" % (self.board.fen()) + '\n')
@@ -628,11 +628,11 @@ init:
                         # we assume buttons were disabled prior to here
                         # (not Done though)
                         if not self.winner:
-                            self._button_giveup.disabled = False
+                            self._button_giveup.enable()
 
                             # enable button only after 4th move
                             if self.num_turns > 4:
-                                self._button_save.disabled = False
+                                self._button_save.enable()
 
                 # The Render object we'll be drawing into.
                 r = renpy.Render(width, height)
@@ -911,8 +911,8 @@ init:
                                 self.start_monika_analysis()
 
                             # disable the buttons when your turn is done
-                            self._button_save.disabled = True
-                            self._button_giveup.disabled = True
+                            self._button_save.disable()
+                            self._button_giveup.disable()
 
                     self.selected_piece = None
                     # NOTE: DEBUG
