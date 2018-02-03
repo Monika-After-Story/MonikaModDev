@@ -550,6 +550,15 @@ python early:
             return_value - Value returned when button is activated
             disabled - True means to disable this button, False not
             hovered - True if we are being hovered, False if not
+            _button_click - integer value to match a mouse click:
+                1 - left (Default)
+                2 - middle
+                3 - right
+                4 - scroll up
+                5 - scroll down
+            _button_down - pygame mouse button event type to activate button
+                MOUSEBUTTONDOWN (Default)
+                MOUSEBUTTONUP
         """
         import pygame
 
@@ -630,6 +639,8 @@ python early:
             self.return_value = return_value
             self.disabled = False
             self.hovered = False
+            self._button_click = 1
+            self._button_down = pygame.MOUSEBUTTONDOWN
 
             # the states of a button
             self._button_states = {
@@ -733,7 +744,10 @@ python early:
                         if self.hover_sound:
                             self._playHoverSound()
 
-                elif ev.type == pygame.MOUSEBUTTONDOWN:
+                elif (
+                        ev.type == self._button_down 
+                        and ev.button == self._button_click
+                    ):
                     if self.hovered:
                         if self.activate_sound:
                             self._playActivateSound()
