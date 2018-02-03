@@ -1841,7 +1841,7 @@ label monika_love:
    elif persistent.monika_breakup == 10:
       $ persistent.monika_lovecounter += 1
       m 1j "Ehehe~"
-      m 1k "I love you too."
+      m 1k "I love you too!"
 
    elif persistent.monika_breakup == 15:
       $ persistent.monika_lovecounter += 1
@@ -1851,7 +1851,7 @@ label monika_love:
    elif persistent.monika_breakup == 20:
       $ persistent.monika_lovecounter += 1
       m 1j "Gosh you've said it so many times!"
-      m 1e "You really do mean it don't you?"
+      m 1e "You really do mean it, don't you?"
       m 1k "Well I love you back just as much!"
 
    elif persistent.monika_breakup == 25:
@@ -1868,9 +1868,9 @@ label monika_love:
 
    elif persistent.monika_breakup == 35:
       $ persistent.monika_lovecounter += 1
-      m 1j "You never tire of saying it do you?"
+      m 1j "You never tire of saying it, do you?"
       m 1k "Well I never tire of hearing it!"
-      m "or saying it back...I love you [player]!"
+      m "Or saying it back...I love you [player]!"
 
    elif persistent.monika_breakup == 40:
       $ persistent.monika_lovecounter += 1
@@ -1881,7 +1881,7 @@ label monika_love:
    elif persistent.monika_breakup == 45:
       $ persistent.monika_lovecounter += 1
       m 1j "You saying that always makes my day!"
-      m 1k "I love you so much [player]!"
+      m 1k "I love you so much, [player]!"
 
    elif persistent.monika_breakup == 50:
       $ persistent.monika_lovecounter == 0
