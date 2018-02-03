@@ -4955,7 +4955,7 @@ label monika_beach:
             m "It must be really nice to have it so close to you."
             m 1j "I can't wait, we can have a romantic walk by it be our first date~"
 
-        "No.
+        "No.":
             m 1a "That's alright, the chances weren't very high. Most people don't."
             m 1b "That just means we#ll make visiting one be an all-day trip!"
     m 3j "There's so many things we'll be able to do one day."
