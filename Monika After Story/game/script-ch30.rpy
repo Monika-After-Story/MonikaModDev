@@ -467,6 +467,9 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
 
+    # set the gender
+    call set_gender from _autoload_gender
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
