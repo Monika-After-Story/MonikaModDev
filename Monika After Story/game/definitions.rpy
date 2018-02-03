@@ -681,6 +681,26 @@ python early:
                 renpy.play(self.hover_sound, channel="sound")
 
 
+        def enable(self):
+            """
+            Enables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property 
+            directly
+            """
+            self.disabled = False
+            self._state = self._STATE_IDLE
+
+
+        def disable(self):
+            """
+            Disables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property
+            directly
+            """
+            self.disabled = True
+            self._state = self._STATE_DISABLED
+
+
         def getSize(self):
             """
             Returns the size of this button
@@ -695,10 +715,6 @@ python early:
 
         def render(self, width, height, st, at):
 
-            # disable if we need to
-            if self.disabled:
-                self._state = self._STATE_DISABLED
-           
             # pull out the current button back and text and render them
             render_text, render_back = self._button_states[self._state]
             render_text = renpy.render(render_text, width, height, st, at)
@@ -725,7 +741,7 @@ python early:
           
             # only check if we arent disabled (or are allowed to work while
             #   disabled)
-            if not self.disabled or self.enable_when_disabled:
+            if self._state != self._STATE_DISABLED or self.enable_when_disabled:
 
                 # we onyl care about mouse events here
                 if ev.type == pygame.MOUSEMOTION:
@@ -752,9 +768,6 @@ python early:
                         if self.activate_sound:
                             self._playActivateSound()
                         return self.return_value
-
-            else: # since we are disabled
-                self._state = self._STATE_DISABLED
 
             # otherwise continue on
             return None
