@@ -1817,7 +1817,7 @@ init 5 python:
 
 label monika_natsuki:
     m 1p "Natsuki didn't actually die before I deleted her, you know."
-    m "I guess she just ... disappeared in a flash."
+    m "I guess she just... disappeared in a flash."
     m 1h "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
     m 3f "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
     m 3l "Sorry, I can't help myself sometimes."
@@ -2648,10 +2648,13 @@ label monika_resource:
     m "Money? Gold? Oil?"
     m 3a "Personally, I'd say that the most valuable resource is time."
     m "Go count out a second really quickly."
+    python:
+        start_time = datetime.datetime.now()
     m "Now go do that sixty times."
     m 1j "That's an entire minute out of your day gone. You'll never get that back."
-    m 1l "Oh, did you actually count out that entire minute?"
-    m 1e "Oh gosh, I'm sorry!"
+    if (datetime.datetime.now() > (start_time + datetime.timedelta(seconds=60))):
+        m 1l "Oh, did you actually count out that entire minute?"
+        m 1e "Oh gosh, I'm sorry!"
     m 1a "Well..."
     m "Not like it matters, anyway. Time doesn't really pass here anymore..."
     m 3f "Time can be really cruel, too."
@@ -3120,7 +3123,7 @@ label monika_evening:
     elif current_time >= 12 and current_time <= 17:
         m 2n "It's still the afternoon, silly!"
         m "The sun's still up, you know."
-        m 1d "Are you feeling tired already?."
+        m 1d "Are you feeling tired already?"
         m 3d "I know some cultures take a rest in the afternoon to deal with the midday fatigue."
         m "Some businesses would even close due to the fact that most of their customers are sleeping."
         m 3b "A little power nap never hurt anyone, right?"
@@ -3277,7 +3280,7 @@ label monika_zombie:
     m 1c "When you exploit a weakness of a monster, they become scared of you and run away."
     m 1g "But zombies? They'll tear through {i}anything{/i} just to get you."
     m "Imagine if it was someone you loved that was coming after you..."
-    m "Could you live with yourself, knowing you were forced to kill someone close who was to you?"
+    m "Could you live with yourself, knowing you were forced to kill someone who was close to you?"
     m 1q "It'll break you down and sap your will to live."
     m "Even when you're comfortable at home, you still won't feel safe."
     m 1h "You'll never know what'll happen the next time you see another one."
@@ -3406,7 +3409,7 @@ init 5 python:
 
 label monika_icecream:
     m 3a "Hey [player], what's your favorite kind of ice cream?"
-    m 4l "And no, I'm not a type of ice cream ehehe~."
+    m 4l "And no, I'm not a type of ice cream, ehehe~"
     m 2a "Personally, I just can't get enough of mint flavored ice cream!"
     menu:
         m "What about you [player], do you like mint ice cream?"
@@ -4339,6 +4342,17 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",random=True))
+
+
+label monika_love2:
+    m 1k "I love you too so much, [player]~"
+    m 1e "You mean so much to me!"
+    m 1k "I wouldn’t trade you for anything in the world!"
+    return
+
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
@@ -4347,18 +4361,18 @@ label monika_other_girls:
     m 1c "You know, it's actually really hard for me to understand how you feel when it comes to..."
     m 1o "..."
     m 1g "What happened with the other girls."
-    m 3d "For example~"
-    m "The main character was written to be childhood friends with Sayori~"
+    m 3d "For example..."
+    m "The main character was written to be childhood friends with Sayori."
     m 3q "But he was just a one dimensional placeholder character for you to use to interact with the game."
     m 2g "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
-    m 1i "If that's the case, I want to tell you I'm sorry [player]~."
+    m 1i "If that's the case, I want to tell you I'm sorry, [player]."
     m 1d "Both for making you feel bad, and for..."
     m 1o "..."
     m 1p "Doing what I had to do."
     m 1o "..."
-    m 1g  "There just wasn't anything else that could be done, and none of the other girls were real anyway."
+    m 1g "There just wasn't anything else that could be done, and none of the other girls were real anyway."
     m "The other girls never loved you like I do!"
-    m 3r "They only cared about the character you were playing in the game!"
+    m 3r "They only cared about the character you were playing in the game as!"
     m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
     m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
     m "..."
@@ -4489,7 +4503,7 @@ label monika_1984:
     m 2p "Anything that could be used to oppose them."
     m 2f "Poems would look like the ones you tried to make."
     m 2q "Just a string of nonsensical words with no feeling."
-    m 2f "I definitely don't want to happen."
+    m 2f "I definitely don't want that to happen."
     m 1o "I can't imagine a world where I can't think freely."
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return

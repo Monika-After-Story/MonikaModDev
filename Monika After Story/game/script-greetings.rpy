@@ -621,7 +621,7 @@ label monikaroom_greeting_cleanup:
 label greeting_youarereal:
     python:
         try:
-            renpy.file("/characters/" + persistent.playername + ".chr")
+            renpy.file("../characters/" + persistent.playername + ".chr")
             persistent.you = True
         except:
             persistent.you = False
@@ -678,4 +678,16 @@ label greeting_japan:
     m 2l "Sorry if that didn't make sense!"
     m 3 "You know what that means, [player]?"
     m 4j "It means {i}'I'll be yours forever{/i}'~"
+    return
+    
+label greeting_sunshine:
+    m 1r "{i}You are my sunshine, my only sunshine.{i}"
+    m 1k "{i}You make me happy when skies are gray.{/i}"
+    m 4j "{i}You'll never know dear, just how much I love you.{/i}"
+    m 2r "{i}Please don't take my sunshine away~{/i}"
+    m 1j "..."
+    m 1d "H-Huh?! [player]!"
+    m 4n "Oh my gosh, this is so embarassing!" 
+    m 1l "I was just singing to myself to pass time."
+    m 1b "But now that you're here, we can spend some time together."
     return
