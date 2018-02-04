@@ -6,8 +6,12 @@ we like to follow:
 ### Labels
 
 Label names should be lowercase and separated with underscores (`monika_twitter`). 
-If you use many labels for a related subprogram, prefix them with the name of 
-your subprogram. Certain prefixes are reserved:
+If you use many labels for a related subprogram, prefix them with `mas` and the
+name of your subprogram (i.e: `mas_coolfungame_flowstart`). **Exceptions to
+this rule:** Monika topics/greetings/farewells, although this may changed in
+the future.
+
+Certain prefixes are reserved:
 
 - `greeting` - used for regular greetings
 - `i_greeting` - used for special interactive greetings
@@ -19,9 +23,10 @@ your subprogram. Certain prefixes are reserved:
 - `game` - used for most of the minigames
 - `vv` - used for update-related material
 - `v` - also used for update-related material
+- `bye` - used for farewells
 
-There may be more, so in general, be mindful of the labels you use. Try to be
-as specific as possible to avoid overlap.
+There may be more, so in general, be mindful of the labels you use.
+
 
 ### Store
 
@@ -31,28 +36,29 @@ messing with the global namespace.
 
 To create a store:
 ```python
-init python in store_name:
+init python in mas_store_name:
     var1 = 1
     var2 = 2
     ...
 
 # or
-define store_name.var1 = 1
-define store_name.var2 = 2
+define mas_store_name.var1 = 1
+define mas_store_name.var2 = 2
 ```
 
 To access a store:
 ```python
-store.store_name.var1 = 1
+store.mas_store_name.var1 = 1
 
 # or
 python:
-    import store.store_name as store_name
-    store_name.var1 = 1
+    import store.mas_store_name as mas_store_name
+    mas_store_name.var1 = 1
 ```
 
-We use several different stores to group different data. when deciding to make
-a new store, ensure that it is not already in use.
+We use several different stores to group different data. When deciding to make
+a new store, ensure that it is not already in use. Prefix your store names
+with `mas_`.
 
 `persistent` is like a store, but its a special one that gets saved to disk.
 **Only use this if you need to save data from multiple sessions** 
@@ -63,7 +69,7 @@ More on this later...
 If a function is very specific to a subprogram or flow, consider making it in 
 a store and importing it when necessary. If a function can be generalized for
 many use cases, then make it in a regular `init python` block (which makes it
-global).
+global). **Prefix global functions with mas**
 
 For documentation, either block comments (#) or doc strings (""") are fine. We
 don't enforce a particular way of documenting functions, but noting what the
@@ -71,7 +77,7 @@ function does, its input and output vars, what it returns, and variables it
 assumes would be a good start:
 
 ```python
-def someKindOfFunction(var1, var2, var3=None):
+def mas_someKindOfFunction(var1, var2, var3=None):
     """
     This function does some kind of thing. Use with caution.
 
@@ -97,9 +103,11 @@ For function names, either camelCase or lowercase_underscores are fine.
 This store-like thing saves data to disk and is how renpy keeps track of data.
 Because its already loaded with data from the stock game, **avoid using this
 if you can**. (I.e: instead of using a persistent to check if an event has been
-seen, use `renpy.seen_label` or `seen_event`. If you do need to use this, prefix
-your variable names so we avoid collisions. Also make the persistent names pretty
-descriptive, and use lowercase_underscores for naming.
+seen, use `renpy.seen_label` or `seen_event`.
+
+**Prefix all persistent variable names with `_mas_`.** (We are currently in 
+progress of converting all currently created `persistent` values to be prefixed
+correctly)
 
 ### Constants
 

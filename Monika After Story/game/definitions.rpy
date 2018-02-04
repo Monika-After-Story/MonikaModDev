@@ -157,6 +157,10 @@ python early:
                     data_row[0:len(stored_data_row)] = list(stored_data_row)
                     self.per_eventdb[self.eventlabel] = tuple(data_row)
 
+                # actaully this should be always
+                self.prompt = prompt
+                self.category = category
+
             # new items are added appropriately
             else:
                 # add this data to the DB
@@ -2070,6 +2074,7 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
+define scene_change = True # we start off with a scene change
 init python:
     startup_check = False
     try:
