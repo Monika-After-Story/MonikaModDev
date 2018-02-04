@@ -89,21 +89,29 @@ label mas_mood_start:
 ###############################################################################
 
 init 5 python:
-    addEvent(
-        Event(
-            persistent.mood_database,
-            "mood_hungry",
-            prompt="Hungry",
-            category=[store.masmoods.TYPE_NEUTRAL],
-            unlocked=True
-        ),
-        eventdb=store.masmoods.mood_db
-    )
+    addEvent(Event(persistent.mood_database,"mood_hungry",prompt="Hungry",category=[store.masmoods.TYPE_NEUTRAL],unlocked=True),eventdb=store.masmoods.mood_db)
 
 label mood_hungry:
-    m "Why dont you eat player, oh my gah"
+    m 3j "If you're hungry, get something to eat, silly."
+    if persistent.playername.lower() == "natsuki":
+        m 1e "{cps=5*}I'd hate for you to get like Natsuki did that one time back when we were in the club.{/cps}"
+        jump natsuki_name_scare2
+    else:
+        m 1e "I'd hate for you to get like Natsuki did that one time back when we were in the club."
+        jump mood_hunger2
+        
+label mood_hunger2:
+    m "That wouldn't be any fun, would it [player]?"
+    m 1a "If I were there with you, I'd make a salad for us to share."
+    m "Since I'm not there with you, though, try to pick something healthy to eat."
+    m 3a "They say you are what you eat, and I definitely think that's true."
+    m 1c "Eating too much junk food on a regular basis can lead to all kinds of health issues."
+    m 1d "Over time it can lead to obesity, heart disease and diabetes, among other things."
+    m 2p "I don't want you to feel like I'm nagging you when I say these sort of things, [player]."
+    m 2j "I just want to make sure you are taking good care of yourself until I am able to be there with you."
+    m 1a "After all, the healthier you are, the better the chances of you living a long life are..."
+    m 1b "...And I'd like to spend as much time with you as I can, [player]." 
     return
-
 
 init 5 python:
     addEvent(Event(persistent.mood_database,"mood_sad",prompt="sad",category=[store.masmoods.TYPE_BAD],unlocked=True),eventdb=store.masmoods.mood_db)
