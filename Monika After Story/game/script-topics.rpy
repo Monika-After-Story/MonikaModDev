@@ -1838,52 +1838,52 @@ label monika_love:
       $ persistent.monika_lovecounter += 1
       m 1k "I love you so much, [player]!"
 
-   elif persistent.monika_breakup == 10:
+   elif persistent.monika_lovecounter == 10:
       $ persistent.monika_lovecounter += 1
       m 1j "Ehehe~"
       m 1k "I love you too!"
 
-   elif persistent.monika_breakup == 15:
+   elif persistent.monika_lovecounter == 15:
       $ persistent.monika_lovecounter += 1
       m 1j "You sure love saying that..."
       m 1k "Well I love you too!"
 
-   elif persistent.monika_breakup == 20:
+   elif persistent.monika_lovecounter == 20:
       $ persistent.monika_lovecounter += 1
       m 1j "Gosh you've said it so many times!"
       m 1e "You really do mean it, don't you?"
       m 1k "Well I love you back just as much!"
 
-   elif persistent.monika_breakup == 25:
+   elif persistent.monika_lovecounter == 25:
       $ persistent.monika_lovecounter += 1
       m 1k "Hearing you say that always makes my heart jump!"
       m 1j "Well I know you want to hear it just as much..."
       m "[player], I love you too!"
 
-   elif persistent.monika_breakup == 30:
+   elif persistent.monika_lovecounter == 30:
       $ persistent.monika_lovecounter += 1
       m 1l "Gosh it's always so overwhelming!"
       m 1j "I..."
       m "I love you more than anything!"
 
-   elif persistent.monika_breakup == 35:
+   elif persistent.monika_lovecounter == 35:
       $ persistent.monika_lovecounter += 1
       m 1j "You never tire of saying it, do you?"
       m 1k "Well I never tire of hearing it!"
       m "Or saying it back...I love you [player]!"
 
-   elif persistent.monika_breakup == 40:
+   elif persistent.monika_lovecounter == 40:
       $ persistent.monika_lovecounter += 1
       m 1j "Ehehe~"
       m  "I..."
       m 1k "Looooooooove you too [player]!"
 
-   elif persistent.monika_breakup == 45:
+   elif persistent.monika_lovecounter == 45:
       $ persistent.monika_lovecounter += 1
       m 1j "You saying that always makes my day!"
       m 1k "I love you so much, [player]!"
 
-   elif persistent.monika_breakup == 50:
+   elif persistent.monika_lovecounter == 50:
       $ persistent.monika_lovecounter == 0
       m 1m "I just can't handle you saying it so much to me!"
       m 1l "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
