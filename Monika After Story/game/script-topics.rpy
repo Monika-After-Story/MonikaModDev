@@ -4958,7 +4958,7 @@ label monika_timeconcern:
                m 3h "Being up late often can be both physically and emotionally damaging."
                m 3c "It's also extremely isolating when it comes to others."
                m 3i "It's almost cruel since most opportunities are only available in the day."
-               m 3h "Most social activities, shops and restaurants aren't even open during the night."
+               m 3h "Many social activities aren't available and shops and restaurants aren't even open during the night."
                m 1o "It makes being up late at night often be a really lonely situation."
                m 1j "Don't worry though [player]. Your loving girlfriend Monika will always be here for you."
                m 1e "Whenever the stress of being up late often becomes too much for you come to me."
