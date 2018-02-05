@@ -313,16 +313,16 @@ label bye_prompt_sleep:
     return 'quit'
     
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="i'll_see_you",random=True),eventdb=evhand.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
     
-label i'll_see_you:
+label bye_illseeyou:
     m 1b "I'll see you tomorrow [player]."
     m 1k "Don't forget about me, okay?"
     return 'quit'
     
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
-    addEvent(Event(persistent.farewell_database,eventlabel="have_a_good_day",random=True),eventdb=evhand.farewell_database)
-label have_a_good_day
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_haveagoodday",random=True),eventdb=evhand.farewell_database)
+label bye_haveagoodday
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 6 and current_time <= 11:
         m 1b "Have a good day today [player]."
@@ -335,8 +335,8 @@ label have_a_good_day
         return 'quit'
         
 init 5 python: 
-    addEvent(Event(persistent.farewell_database,eventlabel="enjoy_your_afternoon",random=True),eventdb=evhand.farewell_database)
-label enjoy_your_afternoon
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_enjoyyourafternoon",random=True),eventdb=evhand.farewell_database)
+label bye_enjoyyourafternoon
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 12 and current_time <= 16:
         m 1i "I hate to see you go so early [player]."
@@ -347,8 +347,8 @@ label enjoy_your_afternoon
         return 'quit'
         
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="good_evening",random=True),eventdb=evhand.farewell_database)
-label good_evening
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_goodevening",random=True),eventdb=evhand.farewell_database)
+label bye_goodevening
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 17 and current_time <= 19:
         m 1k "I had fun today."
@@ -358,8 +358,8 @@ label good_evening
         return 'quit'
         
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="good_night",random=True),eventdb=evhand.farewell_database)
-label good_night
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_goodnight",random=True),eventdb=evhand.farewell_database)
+label bye_goodnight
     $ current_time = datetime.datetime.now().time().hour
     if current time >= 18 and current_time <= 24:
         m 1k "Goodnight [player]."
