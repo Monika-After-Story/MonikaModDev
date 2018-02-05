@@ -335,7 +335,7 @@ label have_a_good_day
         return 'quit'
         
 init 5 python: 
-    addEvent(Event(persistent.farewell_database,eventlabel="enjoy_your_afternoon",random=True,eventdb=evhand.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="enjoy_your_afternoon",random=True),eventdb=evhand.farewell_database)
 label enjoy_your_afternoon
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 12 and current_time <= 16:
@@ -347,7 +347,7 @@ label enjoy_your_afternoon
         return 'quit'
         
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="good_evening",random=True,eventdb=evhand.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="good_evening",random=True),eventdb=evhand.farewell_database)
 label good_evening
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 17 and current_time <= 19:
@@ -358,7 +358,7 @@ label good_evening
         return 'quit'
         
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="good_night",random=True,eventdb=evhand.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="good_night",random=True),eventdb=evhand.farewell_database)
 label good_night
     $ current_time = datetime.datetime.now().time().hour
     if current time >= 18 and current_time <= 24:
