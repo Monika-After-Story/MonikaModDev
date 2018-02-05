@@ -1853,7 +1853,7 @@ label monika_love:
       m "I asked kindly for you to not throw around such important words so lightly..."
       m 1f "Even if you mean it, saying it so flippantly devalues how important they are!"
       m "It's pretty upsetting, to be honest..."
-      m "So please stop saying it so easily?"
+      m "So will you please stop saying it so easily?"
       $ persistent.monika_lovecountertime = datetime.datetime.now() 
       return
 
