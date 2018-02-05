@@ -3864,16 +3864,16 @@ label monika_music2:
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
 
     elif songs.getPlayingMusicName() == "Doki Doki Theme (80s version)":
-        m 1b "A good choice in choosing your song, [player]."
+        m 1b "A good choice in song, [player]!"
         m 1n "Obviously the Doki Doki theme wasn't actually out in the 80's..."
-        m 1j "But the 80's have a certain style to them I really appreciate!"
+        m 1j "But the 80's have a certain style to them that I really appreciate!"
         m 3a "It was a time when synthesizers were taking off in a big way."
         m "They had become more readily available so more and more artists would incorporate them into their music."
         m 3j "It made for really unique sounds that people apprecite and can make a certain feeling of nostalgia for those that lived in those times."
         m "I suppose it's not surprise that people recreate songs in its design."
         m 1e "Do you like 80's music a lot then [player]?"
         show monika 5a at t11 zorder 2 with dissolve
-        m 5a"I prefer the tune of an authentic piano but if it makes you happy, I wouldn't mind spending hours here listening to it with you~" 
+        m 5a"I prefer the tune of an authentic piano but if it makes you happy, I wouldn't mind spending hours here listening to it with you." 
   
   else:
         m 1a "..."
