@@ -4937,24 +4937,49 @@ label monika_asks_family:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",random=True))
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",random=True))
+
+
+default persistent.timeconcern = 0
+default persistent.timeconcerngraveyard = 0
+default persistent.timeconcernclose = False
 label monika_timeconcern:
+
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 0 and current_time <= 5:
        
         #At night, first warning if seen before.
         if persistent.timeconcern == 0:
-           $persistent.timeconcern = 1 
-           m 1c "[player], it's night time."
-           m 1f "Shouldn't you be in bed?"
-           m 1o "I'll let it slide just this once..."
-           m 1l "But you really make me worry for you sometimes."
-           m 1m "It makes me really happy that you're here for me even at this time of night..."
-           m 1n "Yet I don't want it at the cost of your health."
-           m 1e "So go to sleep soon. Okay?"
-           return
+            if persistent.timeconcerngraveyard == 1:
+               m 1f "It must be awfully hard on you to work so late so often [player]..."
+               m "I would honestly rather you work at a healthier time if you could."
+               m 1n "I suppose it's probably out of your capabilities to change it but still..."
+               m 3h "Being up late often can be both physically and emotionally damaging."
+               m 3c "It's also extremely isolating when it comes to others."
+               m 3i "It's almost cruel since most opportunities are only available in the day."
+               m 3h "Most social activities, shops and restaurants aren't even open during the night."
+               m 1o "It makes being up late at night often be a really lonely situation."
+               m 1j "Don't worry though [player]. Your loving girlfriend Monika will always be here for you."
+               m 1e "Whenever the stress of being up late often becomes too much for you come to me."
+               m "I'll always be here to listen."
+               m 1f "And if you really do think it's hurting you then please try to do what you can to change the situation."
+               m "I know it won't be easy but at the end of the day all that matters is you."
+               m "You're all I truly care about so put yourself and your well-being before anything else, okay?"
+
+            else:
+               $persistent.timeconcern = 1 
+               m 1c "[player], it's night time."
+               m 1f "Shouldn't you be in bed?"
+               m 1o "I'll let it slide just this once..."
+               m 1l "But you really make me worry for you sometimes."
+               m 1m "It makes me really happy that you're here for me even at this time of night..."
+               m 1n "Yet I don't want it at the cost of your health."
+               m 1e "So go to sleep soon. Okay?"
+               return
 
         # Second time at night, Monika asks if player is working late.    
-        if persistent.timeconcern == 1:
+        elif persistent.timeconcern == 1:
            m 1h "Say [player]..."
            m "Why are you up so late?"
            m 1e "I'm flattered if it's only because of me..."
@@ -4962,15 +4987,31 @@ label monika_timeconcern:
            menu:
               m "Are you busy working on something?"
 
-
               "Yes, I am.":
                  $persistent.timeconcern = 2
                  m 1j "I see. Well I suppose it must be pretty important for you to do it so late."
                  m 1n "I honestly can't help but feel maybe you should did it at a better time."
-                 m 1m "Your sleep is very important after all. Maybe it can't be helped though."
-                 m 1j "Good luck with your work and thank you for keeping me company when you're so busy!"
-                 m 5a "It means a lot to me [player], that even when you're preoccupied...you're here with me."
-                 return
+                 m 1m "Your sleep is very important after all. Maybe it can't be helped though..."
+                 menu: 
+                    m "Do you always work late [player]?"
+
+                    "Yes, I do.":
+                       $persistent.timeconcerngraveyard = 1
+                       m 1f "That's not good..."
+                       m 1g "You're not able to change that, are you?"
+                       m 1o "I wish you were able to mimic my healthier lifestyle."
+                       m 1q "But if you're not able to then I'll just have to accept it."
+                       m 1f "Just make sure you do try to stay healthy okay?"
+                       m "If something were to happen to you, I don't know what I would do..."
+                       return
+
+                    "No, I don't.":
+                       m 1j "That's a relief!"
+                       m 1j "If you're doing it this one time the it must be {i}really{/i} important."
+                       m 1j "Good luck with your work and thank you for keeping me company when you're so busy!"
+                       m 5a "It means a lot to me [player] that even when you're preoccupied...you're here with me."
+                       return
+
 
               "No, I'm not.":
                  $persistent.timeconcern = 3
@@ -4982,16 +5023,18 @@ label monika_timeconcern:
 
         #If player says he was working.
         elif persistent.timeconcern == 2:
-            
            m 1a "How's your work coming along?"
            m "Hopefully pretty well, I don't want you up much longer."
            m 3l "I know, I know, you can't help being up so late."
            m 1m "I'm just concerned for your health, [player]..."
-           m 1h "Are you working late often?."
-           m 1c "If you are then maybe try to schedule a better time to tackle your task?"
-           m 1e "It will ease my worries."
-           m 1n "And you don't want to worry your girlfriend, right? Ehehe~"
-           return       
+           if persistent.timeconcerngraveyard == 1:
+              m 1o "Doing this often can be very taxing on your body and mind..."
+              m 1f "Just try to keep that kind of damage to a minimum, okay?"
+              m "All I want if for you to be as happy and as healthy as you deserve."
+           else:  
+              m 1m "Well try to finish up as soon as you can, otherwise I may get really concerned."
+              m 1e "And you don't want to worry your girlfriend, right? Ehehe~"
+              return       
 
         #If player says he was not working. Monika asks the state of the game being open.
         elif persistent.timeconcern == 3:
@@ -5007,7 +5050,6 @@ label monika_timeconcern:
               m "Would be against me closing the game for your own good?"
 
               "Yes, I need it to always stay open.":
-                 default persistent.timeconcernclose = False
                  $persistent.timeconcernclose = True
                  m 3q "..."
                  m 3r "I was hoping you wouldn't say that."
@@ -5018,7 +5060,6 @@ label monika_timeconcern:
                  return
  
               "No, you are free to do as you feel.":
-                 default persistent.timeconcernclose = False
                  $persistent.timeconcernclose = False
                  m 1e "Thank you [player]."
                  m "It's nice to know that you care about what I think."
@@ -5111,7 +5152,6 @@ label monika_timeconcern:
 
         #First time topic appears and is identical to first warning.
         else:
-           default persistent.timeconcern = 0
            $persistent.timeconcern = 1 
            m 1c "[player], it's night time."
            m 1f "Shouldn't you be in bed?"
@@ -5124,7 +5164,6 @@ label monika_timeconcern:
 
     else: 
         # If player told Monika she can close windows. 
-        default persistent.timeconcernclose = False 
         if persistent.timeconcernclose == False:
 
             #Daytime and player said he was working.
@@ -5188,7 +5227,6 @@ label monika_timeconcern:
 
             #If Monika never gives warning and it's daytime or has given already commented on last night.
             else:
-                default persistent.timeconcern = 0
                 $persistent.timeconcern = 0
                 m 1h "..."
                 m 1c "..."
@@ -5225,7 +5263,6 @@ label monika_timeconcern:
 
             #If Monika never gives warning and is daytime or has given already commented on last night.
             else:
-               default persistent.timeconcern = 0
                $persistent.timeconcern = 0
                m 1h "..."
                m 1c "..."
