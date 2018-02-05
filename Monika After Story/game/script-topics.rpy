@@ -1933,7 +1933,6 @@ label monika_love:
       return
 
    else:
-      $ persistent.monika_lovecounter += 1
       m 1k "I love you too, [player]!"
 
    python:
