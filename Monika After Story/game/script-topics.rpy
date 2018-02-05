@@ -1841,9 +1841,9 @@ label monika_love:
    if persistent.monika_lovecounterupset== 0:
       $ persistent.monika_lovecounterupset += 1
       m 1c "[player]...you're not just saying that to see everything I have to say are you?"
-      m "It's sweet that you want to know what more about me..."
+      m "It's sweet that you want to know more about me..."
       m 1f "But you shouldn't say such words if you don't mean it!"
-      m "Will you promise me to only say it if that's how you really feel...okay?"
+      m "Promise me to only say it if that's how you really feel, okay?"
       $ persistent.monika_lovecountertime = datetime.datetime.now() 
       return
              
