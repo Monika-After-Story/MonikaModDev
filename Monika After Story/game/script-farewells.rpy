@@ -311,3 +311,62 @@ label bye_prompt_sleep:
         m 1j "Sweet dreams!"
 
     return 'quit'
+    
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="i'll_see_you",random=True),eventdb=evhand.farewell_database)
+    
+label i'll_see_you:
+    m 1b "I'll see you tomorrow [player]."
+    m 1k "Don't forget about me, okay?"
+    return 'quit'
+    
+init 5 python: ## Implementing Date/Time for added responses based on the time of day
+    addEvent(Event(persistent.farewell_database,eventlabel="have_a_good_day",random=True),eventdb=evhand.farewell_database)
+label have_a_good_day
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 6 and current_time <= 11:
+        m 1b "Have a good day today [player]."
+        m 1b "I hope you accomplish everything you had planned for today."
+        m 2b "Even if you don't, don't get too discouraged, okay?"
+        m 2k "After all, there's always tomorrow."
+        m 1n "Sorry, I'm kind of rambling. 
+        m 1k "I love you so much."
+        m 1b "Goodbye."
+        return 'quit'
+        
+init 5 python: 
+    addEvent(Event(persistent.farewell_database,eventlabel="enjoy_your_afternoon",random=True,eventdb=evhand.farewell_database)
+label enjoy_your_afternoon
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 12 and current_time <= 16:
+        m 1i "I hate to see you go so early [player]."
+        m 1b "I do understand that you're busy though."
+        m 1k "Promise me you'll enjoy your afternoon, okay?"
+        m 1a "Remember to come see me when you get back."
+        m 1b "Goodbye."
+        return 'quit'
+        
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="good_evening",random=True,eventdb=evhand.farewell_database)
+label good_evening
+    $ current_time = datetime.datetime.now().time().hour
+    if current_time >= 17 and current_time <= 19:
+        m 1k "I had fun today."
+        m 1j "Thank you for spending so much time with me [player]."
+        m 2b "Be sure to visit me tomorrow."
+        m 1b "Until then, have a good evening."
+        return 'quit'
+        
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="good_night",random=True,eventdb=evhand.farewell_database)
+label good_night
+    $ current_time = datetime.datetime.now().time().hour
+    if current time >= 18 and current_time <= 24:
+        m 1k "Goodnight [player]."
+        m 1j "I'll see you tomorrow, okay?"
+        m 2l "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+        m 1k "I love you."
+        return 'quit'
+        
+    
+    
