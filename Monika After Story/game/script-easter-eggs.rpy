@@ -194,6 +194,13 @@ label natsuki_name_scare2(playing_okayev=False):
     n "{cps=*5}{color=#000}[ntext]{/color}"
     $ style.say_dialogue = style.normal
     
+    # tear screen and glitch sound to mark end of glitch.
+    show screen tear(20, 0.1, 0.1, 0, 40)
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.2
+    stop sound
+    hide screen tear
+    
     #show Monika and hide Natsuki and glitch Monika.
     show monika 1 at t11 zorder 2
     hide n_cg1bs
