@@ -1883,7 +1883,7 @@ label monika_love:
       $ persistent.monika_lovecountertime = datetime.datetime.now() 
       return
          
-   if persistent.monika_lovecounter== 5:
+   elif persistent.monika_lovecounter== 5:
       m 1k "I love you so much, [player]!"
            
    elif persistent.monika_lovecounter == 10:
