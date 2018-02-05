@@ -94,7 +94,7 @@ init 5 python:
 label mood_hungry:
     m 3j "If you're hungry, get something to eat, silly."
     if persistent.playername.lower() == "natsuki":
-        m 1e "{cps=5*}I'd hate for you to get like Natsuki did that one time back when we were in the club.{/cps}"
+        m 1e "{cps=*5}I'd hate for you to get like Natsuki did that one time back when we were in the club.{/cps}"
         jump natsuki_name_scare2
     else:
         m 1e "I'd hate for you to get like Natsuki did that one time back when we were in the club."
