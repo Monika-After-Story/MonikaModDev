@@ -1828,13 +1828,13 @@ label monika_natsuki:
 
 
 
-default persistent.monika_lovecounter = 0
-default persistent.monika_lovecounterupset = 0
-default persistent.monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you",pool=True))
 
+default persistent.monika_lovecounter = 0
+default persistent.monika_lovecounterupset = 0
+default persistent.monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
 
  if (datetime.datetime.now() < (persistent.monika_lovecountertime + datetime.timedelta(minutes = 3))):
