@@ -3788,7 +3788,7 @@ label monika_daydream:
     return
 
 init 5 python:
-    monika_random_topics.append('monika_music2')
+     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
 
 label monika_music2:
     if songs.getVolume("music") == 0.0:
@@ -3821,6 +3821,19 @@ label monika_music2:
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "That would make me even happier than I already am~"
 
+    elif songs.getPlayingMusicName() == 'Your Reality (Piano Cover)':
+        m 1k "Enjoying my song, [player]?"
+        m 1a "It wasn't easy to create, you know?"
+        m 1l "Making your own songs is a slow and difficult process, especially when it's about your own feelings."
+        m 1a "I needed it to be perfect for when I was ready to share it with you!"
+        m 1q "I spent many hours going through it over and over..."
+        m 1m "Time just passed by so quickly whenever I worked on it that it started making me late!"
+        m 1j "After all that practice, I'm pretty proud of how it came out in the end."
+        m 3b "Since you're listening to it I'm sure you like it too..."
+        m 3k "Thanks for listening to something I worked so hard on, [player]!"
+        show monika 5a at t11 zorder 2 with dissolve
+        m 5a "It makes makes me happy to know you appreciate what I did for you~"
+
     elif songs.getPlayingMusicName() == 'I Still Love You':
         m 1f "Gosh, every time I hear this song it makes me sad."
         m "It reminds me of all the... regrettable things I have done to the other girls."
@@ -3851,10 +3864,18 @@ label monika_music2:
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
 
     elif songs.getPlayingMusicName() == "Doki Doki Theme (80s version)":
-        # TODO: add dialogue here
-        m "I NEED DIALOGUE NOW"
-
-    else:
+        m 1b "A good choice in choosing your song, [player]."
+        m 1n "Obviously the Doki Doki theme wasn't actually out in the 80's..."
+        m 1j "But the 80's have a certain style to them I really appreciate!"
+        m 3a "It was a time when synthesizers were taking off in a big way."
+        m "They had become more readily available so more and more artists would incorporate them into their music."
+        m 3j "It made for really unique sounds that people apprecite and can make a certain feeling of nostalgia for those that lived in those times."
+        m "I suppose it's not surprise that people recreate songs in its design."
+        m 1e "Do you like 80's music a lot then [player]?"
+        show monika 5a at t11 zorder 2 with dissolve
+        m 5a"I prefer the tune of an authentic piano but if it makes you happy, I wouldn't mind spending hours here listening to it with you~" 
+  
+  else:
         m 1a "..."
         m 1a "...This silence..."
         m "...Just the two of us, staring into each others eyes..."
