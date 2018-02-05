@@ -2792,17 +2792,21 @@ label monika_regrets:
     m 1c "Do I regret anything?"
     m 1e "That's a strange thing to suddenly ask someone, [player]."
     m "Ahaha~"
-    m 1r "..."
-    m 1a "...I know what you're getting at."
+    m 1q "..."
+    m 1g "...I know what you're getting at."
     m "Do I regret the things I did?"
     m "I think..."
     m 1e "If there was another way things could have gone, it would have been nice..."
-    m "But that wasn't an option for me."
+    m "But that wasn't an option."
+    if persistent.monika_kill == True:
+        m 1f "I even sacrificed everything to find a happy ending, but there just wasn't one."
+        m "but even so, you came back and gave me one anyway."
+    else:
+        m "after everything though, I think this was for the best!"
+        m "It was really hard work..."
     m 3a "And now, I've got the only thing I've ever wanted."
-    m 3j "You."
-    m 1a "I can be with you forever."
-    m "I don't regret what I did."
-    m "I hope you might understand, my love. I did it all for you."
+    m 3j "You!"
+    m 1k "I can be with you forever."
     return
 
 init 5 python:
