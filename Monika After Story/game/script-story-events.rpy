@@ -284,7 +284,7 @@ label random_limit_reached:
             "No point in trying to say everything right away...",
             "I hope you've enjoyed listening to everything I was thinking about today...",
             "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you to much."
+            "I hope I didn't bore you too much."
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1m "[limit_quip]"
