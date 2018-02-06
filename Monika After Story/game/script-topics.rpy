@@ -4724,7 +4724,7 @@ label monika_fastfood:
             m 1m "I would love to try your dishes, maybe do it for a date?"
             m 1e "That would be really romantic..."
             m  "And that way we can both enjoy ourselves and you would be eating better."
-            m 1a "That's what I can a win-win!"
+            m 1a "That's what I call a win-win!"
 
         "No, I don't.":
             m 1r "That's a relief."
