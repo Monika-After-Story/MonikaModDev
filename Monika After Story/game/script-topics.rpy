@@ -1859,12 +1859,12 @@ label monika_love:
 
         elif persistent._mas_monika_lovecounterupset== 2:
             $ persistent._mas_monika_lovecounterupset += 1
-              m 1f "I don't know if you want to hurt me..."
-              m "But when I say I love you  I really do mean it!"
-              m "When you said it I thought you meant it too..."
-              m "You do mean it....right?"
-              $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
-              return
+            m 1f "I don't know if you want to hurt me..."
+            m "But when I say I love you  I really do mean it!"
+            m "When you said it I thought you meant it too..."
+            m "You do mean it....right?"
+            $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+            return
 
         else:
             m 1f "..."
