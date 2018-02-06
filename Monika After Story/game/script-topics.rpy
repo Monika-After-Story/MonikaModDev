@@ -4995,5 +4995,5 @@ label monika_familygathering:
             m 1n "If I found out one of my reletives was dating a girl trapped inside of a computer I'd think it was a little weird too."
             m 1b "If you want to keep me a secret that's fine."
             m 1k "After all, it just means more alone time with you."
-            return
+    return
                 
