@@ -686,7 +686,7 @@ label greeting_sick:
     menu:
         "Yes":
             m 1k "Great! Now we can spend some more time together. Ehehe~"
-            $ persistent.sick = False
+            $ persistent._mas_mood_sick = False
         "No":
             jump greeting_stillsick
     return

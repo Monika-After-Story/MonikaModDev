@@ -527,7 +527,7 @@ label ch30_autoload:
             if persistent.current_monikatopic != "i_greeting_monikaroom":
                 $ pushEvent("i_greeting_monikaroom")
             #if the player told Monika that they are sick, jump to this greeting.
-            elif persistent.sick:
+            elif persistent._mas_mood_sick:
                 $ pushEvent("greeting_sick")
             else:
                 $pushEvent(renpy.random.choice(greetings_list))

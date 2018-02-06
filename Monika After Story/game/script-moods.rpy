@@ -2,11 +2,11 @@
 #
 
 # dict of tuples containing mood event data
-default persistent.mood_database = {}
+default persistent._mas_mood_database = {}
 
 # current mood, in a lowercase format
-default persistent.mood_current = ""
-default persistent.mood_current_type = None # this one should be a constant
+default persistent._mas_mood_current = ""
+default persistent._mas_mood_current_type = None # this one should be a constant
 
 # NOTE: plan of attack
 # moods system will be attached to the talk button
@@ -38,7 +38,7 @@ default persistent.mood_current_type = None # this one should be a constant
 #
 
 # store containing mood-related data
-init -1 python in masmoods:
+init -1 python in mas_moods:
     
     # mood event database
     mood_db = dict()
@@ -61,26 +61,26 @@ init -1 python in masmoods:
 # entry point for mood flow
 label mas_mood_start:
     python:
-        import store.masmoods as masmoods
+        import store.mas_moods as mas_moods
 
         # build menu list
         mood_menu_items = [
-            (masmoods.mood_db[k].prompt, k) for k in masmoods.mood_db
+            (mas_moods.mood_db[k].prompt, k) for k in mas_moods.mood_db
         ]
 
         # also sort this list
         mood_menu_items.sort()
 
     # call scrollable pane
-    call screen scrollable_menu(mood_menu_items, masmoods.MOOD_AREA, masmoods.MOOD_XALIGN, masmoods.MOOD_RETURN)
+    call screen scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, masmoods.MOOD_RETURN)
 
     # return value? then push 
     if _return:
         $ pushEvent(_return)
 
         # and set the moods
-        $ persistent.mood_current = masmoods.mood_db[_return]
-        $ persistent.mood_current_type = masmoods.mood_db[_return].category[0]
+        $ persistent._mas_mood_current = mas_moods.mood_db[_return]
+        $ persistent._mas_mood_current_type = mas_moods.mood_db[_return].category[0]
 
     return
 
@@ -89,9 +89,9 @@ label mas_mood_start:
 ###############################################################################
 
 init 5 python:
-    addEvent(Event(persistent.mood_database,"mood_hungry",prompt="Hungry",category=[store.masmoods.TYPE_NEUTRAL],unlocked=True),eventdb=store.masmoods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="Hungry",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mood_hungry:
+label mas_mood_hungry:
     m 3j "If you're hungry, get something to eat, silly."
     if persistent.playername.lower() == "natsuki":
         m 1e "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
@@ -113,9 +113,9 @@ label mood_hungry:
     return
 
 init 5 python:
-    addEvent(Event(persistent.mood_database,"mood_sad",prompt="sad",category=[store.masmoods.TYPE_BAD],unlocked=True),eventdb=store.masmoods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="sad",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mood_sad:
+label mas_mood_sad:
     m 3f "Gosh, I'm really sorry to hear that you are feeling down today."
     m 3g "Is it because you're having a bad day or anything like that [player]?"
     menu:
@@ -150,63 +150,63 @@ label mood_sad:
 init 5 python:
     addEvent(
         Event(
-            persistent.mood_database,
-            "mood_mitochondria",
+            persistent._mas_mood_database,
+            "mas_mood_mitochondria",
             prompt="A mitochondria",
-            category=[store.masmoods.TYPE_GOOD],
+            category=[store.mas_moods.TYPE_GOOD],
             unlocked=True
         ),
-        eventdb=store.masmoods.mood_db
+        eventdb=store.mas_moods.mood_db
     )
 
-label mood_mitochondria:
+label mas_mood_mitochondria:
     m "You're the powerhouse of {i}my{/i} cell..."
     return
 
 init 5 python:
     addEvent(
         Event(
-            persistent.mood_database,
-            "mood_theroom",
+            persistent._mas_mood_database,
+            "mas_mood_theroom",
             prompt="The Room",
-            category=[store.masmoods.TYPE_NEUTRAL],
+            category=[store.mas_moods.TYPE_NEUTRAL],
             unlocked=True
         ),
-        eventdb=store.masmoods.mood_db
+        eventdb=store.mas_moods.mood_db
     )
 
-label mood_theroom:
+label mas_mood_theroom:
     m "It's bullshit.{w} I did not hit her."
     m "I did nawwwwght"
     return
 
 init 5 python:
-    addEvent(Event(persistent.mood_database,"mood_happy",prompt="happy",category=[store.masmoods.TYPE_GOOD],unlocked=True),eventdb=store.masmoods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="happy",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mood_happy:
+label mas_mood_happy:
     m 3b "That's wonderful! I'm happy when you're happy."
     m 1j "Know that you can always come up to me and I'll cheer up, [player]."
     m 3a "I love you and I'll always be here for you so don't you ever forget that~"
     return
     
 init 5 python:
-    addEvent(Event(persistent.mood_database,"mood_sick",prompt="sick",category=[store.masmoods.TYPE_BAD],unlocked=True),eventdb=store.masmoods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="sick",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mood_sick:
+label mas_mood_sick:
     m 1g "Aw, I'm sorry to hear that, [player]."
     m 1r "I hate to see you suffering like this."
     m 3e "I know you love spending time with me, but maybe you should go get some rest."
     m 1k "Don't worry, I'll be here waiting for you when you get back."
     m  "Get well soon!"
-    $ persistent.sick = True
+    $ persistent._mas_mood_sick = True
     return 'quit'
     
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.
 #We could adjust the dialog appropriately depending on whether it's night time or whether it's during the day in the future.
 init 5 python:
-    addEvent(Event(persistent.mood_database,"mood_tired",prompt="tired",category=[store.masmoods.TYPE_BAD],unlocked=True),eventdb=store.masmoods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="tired",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mood_tired:
+label mas_mood_tired:
     m 1e "If you're tired, maybe you should go lie down for a while?"
     m 1a "Getting enough sleep on a daily basis is very important to your over health."
     m 2d "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
@@ -220,9 +220,9 @@ label mood_tired:
     return
 
 init 5 python:
-    addEvent(Event(persistent.mood_database,"mood_lonely",prompt="lonely",category=[store.masmoods.TYPE_NEUTRAL],unlocked=True),eventdb=store.masmoods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="lonely",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
     
-label mood_lonely:
+label mas_mood_lonely:
     m 1j "I'm here with you, [player], so there's no need for you to feel lonely."
     m 1c "I know it's not exactly the same as if I were in the same room with you."
     m 1a "But I'm sure you still enjoy my company, right [player]?"
