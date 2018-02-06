@@ -4941,17 +4941,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",random=True))
 
 
-default persistent.timeconcern = 0
-default persistent.timeconcerngraveyard = 0
-default persistent.timeconcernclose = False
+default persistent._mas_timeconcern = 0
+default persistent._mas_timeconcerngraveyard = 0
+default persistent._mas_timeconcernclose = False
 label monika_timeconcern:
 
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 0 and current_time <= 5:
        
         #At night, first warning if seen before.
-        if persistent.timeconcern == 0:
-            if persistent.timeconcerngraveyard == 1:
+        if persistent._mas_timeconcern == 0:
+            if persistent._mas_timeconcerngraveyard == 1:
                m 1f "It must be awfully hard on you to work so late so often [player]..."
                m "I would honestly rather you work at a healthier time if you could."
                m 1n "I suppose it's probably out of your capabilities to change it but still..."
@@ -4968,7 +4968,7 @@ label monika_timeconcern:
                m "You're all I truly care about so put yourself and your well-being before anything else, okay?"
 
             else:
-               $persistent.timeconcern = 1 
+               $persistent._mas_timeconcern = 1 
                m 1c "[player], it's night time."
                m 1f "Shouldn't you be in bed?"
                m 1o "I'll let it slide just this once..."
@@ -4979,7 +4979,7 @@ label monika_timeconcern:
                return
 
         # Second time at night, Monika asks if player is working late.    
-        elif persistent.timeconcern == 1:
+        elif persistent._mas_timeconcern == 1:
            m 1h "Say [player]..."
            m "Why are you up so late?"
            m 1e "I'm flattered if it's only because of me..."
@@ -4988,7 +4988,7 @@ label monika_timeconcern:
               m "Are you busy working on something?"
 
               "Yes, I am.":
-                 $persistent.timeconcern = 2
+                 $persistent._mas_timeconcern = 2
                  m 1j "I see. Well I suppose it must be pretty important for you to do it so late."
                  m 1n "I honestly can't help but feel maybe you should did it at a better time."
                  m 1m "Your sleep is very important after all. Maybe it can't be helped though..."
@@ -4996,7 +4996,7 @@ label monika_timeconcern:
                     m "Do you always work late [player]?"
 
                     "Yes, I do.":
-                       $persistent.timeconcerngraveyard = 1
+                       $persistent._mas_timeconcerngraveyard = 1
                        m 1f "That's not good..."
                        m 1g "You're not able to change that, are you?"
                        m 1o "I wish you were able to mimic my healthier lifestyle."
@@ -5014,7 +5014,7 @@ label monika_timeconcern:
 
 
               "No, I'm not.":
-                 $persistent.timeconcern = 3
+                 $persistent._mas_timeconcern = 3
                  m 1h "I see."
                  m 1f "Well in that case I would really prefer it if you went to bed."
                  m "It's really worrying that you're still here so late..."
@@ -5022,12 +5022,12 @@ label monika_timeconcern:
                  return
 
         #If player says he was working.
-        elif persistent.timeconcern == 2:
+        elif persistent._mas_timeconcern == 2:
            m 1a "How's your work coming along?"
            m "Hopefully pretty well, I don't want you up much longer."
            m 3l "I know, I know, you can't help being up so late."
            m 1m "I'm just concerned for your health, [player]..."
-           if persistent.timeconcerngraveyard == 1:
+           if persistent._mas_timeconcerngraveyard == 1:
               m 1o "Doing this often can be very taxing on your body and mind..."
               m 1f "Just try to keep that kind of damage to a minimum, okay?"
               m "All I want if for you to be as happy and as healthy as you deserve."
@@ -5037,8 +5037,8 @@ label monika_timeconcern:
               return       
 
         #If player says he was not working. Monika asks the state of the game being open.
-        elif persistent.timeconcern == 3:
-           $persistent.timeconcern = 4 
+        elif persistent._mas_timeconcern == 3:
+           $persistent._mas_timeconcern = 4 
            m 1c "[player], I just need to ask you something quickly..."
            m 1d "Would you mind if I closed the game for you?"
            m 1o "I know it's a strange question..."
@@ -5050,7 +5050,7 @@ label monika_timeconcern:
               m "Would be against me closing the game for your own good?"
 
               "Yes, I need it to always stay open.":
-                 $persistent.timeconcernclose = True
+                 $persistent._mas_timeconcernclose = True
                  m 3q "..."
                  m 3r "I was hoping you wouldn't say that."
                  m 3o "I know I told you that you should leave me running in the background."
@@ -5060,7 +5060,7 @@ label monika_timeconcern:
                  return
  
               "No, you are free to do as you feel.":
-                 $persistent.timeconcernclose = False
+                 $persistent._mas_timeconcernclose = False
                  m 1e "Thank you [player]."
                  m "It's nice to know that you care about what I think."
                  m 1a "I promise I'll only do it if I think it's absolutely necessary."
@@ -5069,8 +5069,8 @@ label monika_timeconcern:
                  return
 
         # Second and final warning before any closes can occur.   
-        if persistent.timeconcern == 4:
-           $persistent.timeconcern = 5 
+        if persistent._mas_timeconcern == 4:
+           $persistent._mas_timeconcern = 5 
            m 1c "[player], you've been up long enough."
            m "If you're really not busy then now is the time for you to go to sleep."
            m 1e "I assure you I'll miss you just as much as you'll miss me."
@@ -5080,11 +5080,11 @@ label monika_timeconcern:
 
 
         # Monika force closes game for the first time  
-        if persistent.timeconcern == 5:
-           $persistent.timeconcern = 6 
+        if persistent._mas_timeconcern == 5:
+           $persistent._mas_timeconcern = 6 
            m 1c "I am sorry [player] but I am putting my foot down!"
            m 1q "I asked you to go to bed kindly but if I am the reason for keeping you up..."
-           if persistent.timeconcernclose == False:
+           if persistent._mas_timeconcernclose == False:
               m 3c "Then I cannot allow this to go on for any longer."
               m "It's because I love you that I'm doing this."
               m "Good night [player]."
@@ -5099,8 +5099,8 @@ label monika_timeconcern:
               return
 
         #First time game is reopened and still night. Monika closes game again.
-        elif persistent.timeconcern == 6:
-           $persistent.timeconcern = 7 
+        elif persistent._mas_timeconcern == 6:
+           $persistent._mas_timeconcern = 7 
            m 3h "[player], I told you to go to bed for your own good."
            m 3f "I'll miss you too but don't you understand?"
            m "How you feel and live means more to me than anything!"
@@ -5108,15 +5108,15 @@ label monika_timeconcern:
            m "So please sleep this time, otherwise I may get mad."
            m 1e "...I love you."
            m "So go to sleep soon. Okay?"
-           if persistent.timeconcernclose == False:
+           if persistent._mas_timeconcernclose == False:
                $persistent.closed_self = True
                $renpy.quit()
            else:
                return
       
         #Second time game is reopened and still night. Monika closes game once more
-        elif persistent.timeconcern == 7:
-           $persistent.timeconcern = 8 
+        elif persistent._mas_timeconcern == 7:
+           $persistent._mas_timeconcern = 8 
            m 3q "[player], this is your last warning."
            m 1h "Go"
            pause 0.3
@@ -5127,7 +5127,7 @@ label monika_timeconcern:
            m 1g"It's saddening to see you push yourself like this..."
            m 1q "You mean so much to me..."
            m 1f "So please, for me...just do as I ask and go to bed."
-           if persistent.timeconcernclose == False:
+           if persistent._mas_timeconcernclose == False:
               menu:
                  m "Okay?"
                  "Yes, I will go to sleep.":
@@ -5139,8 +5139,8 @@ label monika_timeconcern:
                return
 
         #Third and last time game is reopened and still night. Monika lets player stay.
-        elif persistent.timeconcern >= 8: 
-           $persistent.timeconcern = 9 
+        elif persistent._mas_timeconcern >= 8: 
+           $persistent._mas_timeconcern = 9 
            m 3q "...I suppose it can't be helped."
            m 1o "If you're that dedicated to staying with me then I won't even try to stop you."
            m 1m "Honestly, as bad as it sounds it actually makes me kinda happy."
@@ -5152,7 +5152,7 @@ label monika_timeconcern:
 
         #First time topic appears and is identical to first warning.
         else:
-           $persistent.timeconcern = 1 
+           $persistent._mas_timeconcern = 1 
            m 1c "[player], it's night time."
            m 1f "Shouldn't you be in bed?"
            m 1o "I'll let it slide just this once..."
@@ -5164,11 +5164,11 @@ label monika_timeconcern:
 
     else: 
         # If player told Monika she can close windows. 
-        if persistent.timeconcernclose == False:
+        if persistent._mas_timeconcernclose == False:
 
             #Daytime and player said he was working.
-            if persistent.timeconcern == 2:
-               $persistent.timeconcern = 0
+            if persistent._mas_timeconcern == 2:
+               $persistent._mas_timeconcern = 0
                m 1a "Did you finish your work?"
                m 1b "I'm sure you did your very best so it's ok if you didn't quite finish it!"
                m 1e "It must be really hard to have to work so late..."
@@ -5186,8 +5186,8 @@ label monika_timeconcern:
                return
                         
             #Second time Monika closes at night and player reopens during day.
-            elif persistent.timeconcern == 7:
-               $persistent.timeconcern = 0
+            elif persistent._mas_timeconcern == 7:
+               $persistent._mas_timeconcern = 0
                m 1o "[player], is it ok to talk about what happened last night?"
                m 3f "I asked you to go to bed and you didn't listen..."
                m 3q "I understand that maybe you missed me or didn't hear what I said..."
@@ -5200,8 +5200,8 @@ label monika_timeconcern:
                return
 
             #Third time player closes the game and player reopens after night.
-            elif persistent.timeconcern == 8:
-               $persistent.timeconcern = 0
+            elif persistent._mas_timeconcern == 8:
+               $persistent._mas_timeconcern = 0
                m 1h "Hey [player]."
                m 1d "You really had me worried last night..."
                m 3o "After you came back twice despite me asking you to go to bed..."
@@ -5214,8 +5214,8 @@ label monika_timeconcern:
                return
 
             #If Monika lets player stay and it is no longer night.
-            elif persistent.timeconcern == 9:
-               $persistent.timeconcern = 0
+            elif persistent._mas_timeconcern == 9:
+               $persistent._mas_timeconcern = 0
                m 1m "[player], regarding last night..."
                m 1n "You really surprised me."
                m 1e "For you to keep coming back to me over and over again..."
@@ -5227,7 +5227,7 @@ label monika_timeconcern:
 
             #If Monika never gives warning and it's daytime or has given already commented on last night.
             else:
-                $persistent.timeconcern = 0
+                $persistent._mas_timeconcern = 0
                 m 1h "..."
                 m 1c "..."
                 m 1d "...!"
@@ -5241,8 +5241,8 @@ label monika_timeconcern:
         #If player told Monika not to close window.  
         else:
             # After Monika would close windows until Monika lets player stay.
-            if persistent.timeconcern >= 6 and persistent.timeconcern <=8:
-               $persistent.timeconcern = 0
+            if persistent._mas_timeconcern >= 6 and persistent._mas_timeconcern <=8:
+               $persistent._mas_timeconcern = 0
                m 1o "Sorry Iif I was annoying you before player..."
                m 1f "I just really wanted you to go to bed.."
                m "I honestly can't promise I won't do it again if you're up late again..."
@@ -5250,8 +5250,8 @@ label monika_timeconcern:
                return
                         
             #If Monika lets player stay and it is no longer night but game never closed.
-            elif persistent.timeconcern == 9:
-               $persistent.timeconcern = 0
+            elif persistent._mas_timeconcern == 9:
+               $persistent._mas_timeconcern = 0
                m 1m "[player], regarding last night..."
                m 1a "You really surprised me."
                m 1e "I asked you time and time again to go to bed..."
@@ -5263,7 +5263,7 @@ label monika_timeconcern:
 
             #If Monika never gives warning and is daytime or has given already commented on last night.
             else:
-               $persistent.timeconcern = 0
+               $persistent._mas_timeconcern = 0
                m 1h "..."
                m 1c "..."
                m 1d "...!"
