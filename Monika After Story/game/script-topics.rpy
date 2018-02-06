@@ -4738,4 +4738,4 @@ label monika_fastfood:
             m 1e "Are you any good at cooking [player]?"
             m 1h "It doesn't matter if you're not, I would have anything you prepared for me!"
             m 5a "Well, as long as it's vegetarian. Ehehe~"
-            return
+    return
