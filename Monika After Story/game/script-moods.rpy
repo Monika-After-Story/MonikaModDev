@@ -94,13 +94,12 @@ init 5 python:
 label mood_hungry:
     m 3j "If you're hungry, get something to eat, silly."
     if persistent.playername.lower() == "natsuki":
-        m 1e "{cps=*5}I'd hate for you to get like Natsuki did that one time back when we were in the club.{/cps}"
-        jump natsuki_name_scare2
+        m 1e "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
+        # natsuki hungers easter egg
+        call natsuki_name_scare_hungry from _mas_nnsh
     else:
         m 1e "I'd hate for you to get like Natsuki did that one time back when we were in the club."
-        jump mood_hunger2
         
-label mood_hunger2:
     m "That wouldn't be any fun, would it [player]?"
     m 1a "If I were there with you, I'd make a salad for us to share."
     m "Since I'm not there with you, though, try to pick something healthy to eat."

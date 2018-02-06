@@ -159,16 +159,17 @@ image n_rects3:
     size (3, 3)
 
 #natsuki scare 2:
-label natsuki_name_scare2(playing_okayev=False):
+label natsuki_name_scare_hungry:
 #label natsuki_name_scare2:
     # disable stuff
     $ HKBHideButtons()
     $ disable_esc()
     $ store.songs.enabled = False
     $ quick_menu = False
-    #$ scary_t5c = "bgm/5_ghost.ogg"
-    $ curr_vol = store.songs.getVolume("music")
-    $ renpy.music.set_volume(1.0, channel="music")
+    $ curr_music_vol = store.songs.getVolume("music")
+    $ curr_sound_vol = store.songs.getVolume("sound")
+    $ renpy.music.set_volume(0.0, channel="music") # kill music 
+    $ renpy.sound.set_volume(1.0) # max sound
     
      # tear screen and glitch sound
     show screen tear(20, 0.1, 0.1, 0, 40)
@@ -184,15 +185,13 @@ label natsuki_name_scare2(playing_okayev=False):
     hide monika
     
     #play special music and display glitch text.
-    $ currentpos = get_pos()
-    $ audio.t6g = "<from " + str(currentpos) + " loop 10.893>bgm/6g.ogg"
-    play music t6g
+    $ adjusted_6g = "<from <time_value> >bgm/6g.ogg"
+#    $ renpy.play(adjusted_6g, channel="sound")
     $ ntext = glitchtext(96)
     $ style.say_dialogue = style.edited
-    n "{cps=*5}{color=#000}[ntext]{/color}"
+    n "{cps=*2}{color=#000}[ntext]{/color}{nw}"
     $ ntext = glitchtext(96)
-    n "{cps=*5}{color=#000}[ntext]{/color}"
-    $ style.say_dialogue = style.normal
+    n "{cps=*2}{color=#000}[ntext]{/color}{nw}"
     
     # tear screen and glitch sound to mark end of glitch.
     show screen tear(20, 0.1, 0.1, 0, 40)
@@ -205,6 +204,11 @@ label natsuki_name_scare2(playing_okayev=False):
     show monika 1 at t11 zorder 2
     hide n_cg1bs
     hide monika_body_glitch1
+
+    if config.developer:
+        $ style.say_dialogue = style.normal
+    else:
+        $ style.say_dialogue = style.default_monika
     
     # cleanup
     python:
@@ -212,17 +216,9 @@ label natsuki_name_scare2(playing_okayev=False):
         enable_esc()
         store.songs.enabled = True
         quick_menu = True
-        renpy.music.set_volume(curr_vol, channel="music")
-
-    # we want to be back in the loop
-    if playing_okayev:
-        $ currentpos = get_pos(channel="music")
-        $ adjusted_okayev = "<from " + str(currentpos) + " loop 4.444>bgm/5_monika.ogg"
-        stop music fadeout 2.0
-        $ renpy.music.play(adjusted_okayev, fadein=2.0, tight=True)
-    else:
-        stop music
-        $ play_song(store.songs.current_track)
+        renpy.sound.stop()
+        renpy.sound.set_volume(curr_sound_vol)
+        renpy.music.set_volume(curr_music_vol, channel="music")
         
     #go back to dialog
-    jump mood_hunger2
+    return
