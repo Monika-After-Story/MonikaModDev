@@ -3,6 +3,10 @@
 We don't have a strict style guideline, but here's a couple of conventions
 we like to follow:
 
+### Indentation
+
+**Four-space indents.**
+
 ### Labels
 
 Label names should be lowercase and separated with underscores (`monika_twitter`). 
