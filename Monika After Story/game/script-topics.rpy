@@ -4932,6 +4932,7 @@ label monika_asks_family:
 #    return
 Init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_beauty",category=['misc'],prompt="Beauty Standards",random=True))
+
 label monika_beauty:
     m 4d "Is it just me, or have the standards of beauty changed over the years?"
     m 2c"Back then, it didn't take much for someone to see you as beautiful."
@@ -4943,8 +4944,9 @@ label monika_beauty:
     m 1k "I'll always love you no matter what."
     return
 
-Init 5 python:
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
+
 label monika_challenge:
     m 2c "I've noticed something kind of sad recently."
     m 1c "When certain people attempt to learn a skill, or pick up a new hobby they usually quit within a week or two."
@@ -4962,8 +4964,9 @@ label monika_challenge:
     m 1j "I'd love to help you reach your goals."
     return
 
-Init 5 python:
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['you'],prompt="Family Gatherings",random=True))
+
 label monika_familygathering:
     m 1b "Hey [player], do you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
