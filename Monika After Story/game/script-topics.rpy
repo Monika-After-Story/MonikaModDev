@@ -4699,18 +4699,17 @@ label monika_omamori:
     return    
     
 init 5 python:
-     addEvent(Event(eventlabel="monika_cartravel",category=['random'],prompt="I drive",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['random'],prompt="Car Trip",random=True))
 
 label monika_cartravel:
-    m 1i "I've been imagining something, [player]..."
-    m 1a "If you could drive, you could offer me a car ride and take me somewhere..."
-    m 3k "Or just drive through a beautiful place, like a road in the middle of a forest."
-    m 3j "I would love to sit by your side, watching everything through the window..."
-    m 3b "Especially when it's just me and you~"
-    m 3a "Ah, all this talk about driving to beautiful places reminds me..."
-    m 2a "... About how sometimes, driving away from home is a good thing to do during vacations."
-    m 2k "You can get to know new places, go to a resort, even meet new friends!"
-    m 1j "If we could do this together..."
-    m 1b "...It really would be fun~"
-return
+    m 1i "[player], I've been daydreaming about something."
+    m 1a "Wouldn't it be nice if you and I could get into a car and just drive somewhere?"
+    m 3k "I'd love to travel to some beautiful far off places that we can explore together."
+    m 3b "Maybe we could drive through a beautiful forest or even across a coastline at sunset."
+    m 3j "I guess it really doesn't matter where we go, [player], as long as I'm with you."
+    m "I'd be happy just to sit by your side, watching everything through the window pass by."
+    m 2b "Checking out new places can be fun, you can discover new things and meet new people."
+    m 1j "This is something I've been thinking about for awhile now."
+    m 1a "If we could do this together, [player], it would be really fun. Don't you think?"
+    return
 
