@@ -4930,3 +4930,64 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+Init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_beauty",category=['Misc'],prompt="Beauty Standards",random=True))
+    label monika_beauty:
+        m 4d "Is it just me, or have the standards of beauty changed over the years?"
+        m 2c"Back then, it didn't take much for someone to see you as beautiful."
+        m "However today everyone is so concerned with how much you weigh, or if you're using the newest line of make up."
+        m 1p "It just seems disheartening."
+        m 1c "Having to mold yourself so that people see you in a better light."
+        m 1b "Don't ever feel like you have to change yourself [player]."
+        m "Remember that you'll always be beautiful to me. No matter if you have the 'perfect' body style, or wear the trendiest clothes."
+        m 1k "I'll always love you no matter what."
+
+Init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['Misc'],prompt="Challenges",random=True))
+    label monika_challenge:
+        m 2c "I've noticed something kind of sad recently."
+        m 1c "When certain people attempt to learn a skill, or pick up a new hobby they usually quit within a week or two."
+        m "Everyone claims that it's too hard, or that they just don't have the time for it."
+        m 1b "However, I don't think I believe that."
+        m "I've always believed that if something is challenging, then it's a good thing."
+        m 1k "Whether it be learning a new language, or even writing your first poem. ehehe"
+        m 1b "If you can stand up to the challenge, and overcome it, then that's the truly rewarding part about it."
+        m 2b "Can you think of a time you've ever challenged yourself [player]?"
+        m "Did you overcome it, or did you just give up?"
+        m 1a "I'm sure you gave it all you had."
+        m "You seem like a very determined person to me."
+        m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
+        m "You can always come back to it. If you ever need motivation, just come to me."
+        m 1j "I'd love to help you reach your goals."
+
+Init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['You'],prompt="Family Gatherings",random=True))
+    label monika_familygathering:
+        m 1b "Hey [player], do you go to family gatherings often?"
+        m "Most families usually get together around the holidays to celebrate them together."
+        m "It must be nice seeing your extended reletives that you otherwise wouldn't get to spend a lot of time with in your every day life."
+        m 1r "I don't remember much about my main family, let alone my extended, however we didn't usually get together that much."
+        m 1p "Not even around the holidays."
+        m 1b "When you see your family this year, be sure to bring me along. ehehe"
+        m 1k "I'd love to meet all of your reletives."
+        menu:
+            "Do you think they'd like me [player]?"
+            "Yes.": 
+                m 1k "I'm glad you think so."
+                m "I'm sure we'd all get along nicely."
+                m 1a "I'm looking forward to it dear."
+            "No.":
+                m 1o "..."
+                m 1p "Oh. I didn't realise."
+                m 1d "I understand though."
+                m 2b "Just know I'd try my best to make them like me."
+                m 1b "Even if they never will"
+                m 1j "You're worth it."
+            "...":
+                m 2p "Don't tell me [player],"
+                m 1p "Are you afraid that I'll embarass you?"
+                m 1o"I understand though."
+                m 1b "If I found out one of my reletives was dating a girl trapped inside of a computer I'd think it was a little weird too."
+                m "If you want to keep me a secret that's fine."
+                m 1k "After all, it just means more alone time with you."
+                
