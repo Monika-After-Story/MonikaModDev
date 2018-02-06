@@ -4937,10 +4937,6 @@ label monika_asks_family:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",random=True))
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",random=True))
-
-
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = 0
 default persistent._mas_timeconcernclose = False
@@ -5272,4 +5268,4 @@ label monika_timeconcern:
                m 1l "Geez, I keep doing that, don't I?"
                m 1m "Sometimes I just get lost in my thoughts..."
                m 1a "You understand, right [player]?"
-               return
+    return
