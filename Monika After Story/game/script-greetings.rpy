@@ -692,7 +692,7 @@ label greeting_sunshine:
     m 1b "But now that you're here, we can spend some time together."
     return
 
-if renpy.seen_event("monika_algernon"):
+if renpy.seen_label("monika_algernon"):
     label greeting_amnesia:
         m 2h "Oh, hello."
         m 2a "My name is Monika."
