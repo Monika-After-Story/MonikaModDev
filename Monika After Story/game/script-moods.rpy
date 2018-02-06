@@ -72,7 +72,7 @@ label mas_mood_start:
         mood_menu_items.sort()
 
     # call scrollable pane
-    call screen scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, masmoods.MOOD_RETURN)
+    call screen scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, mas_moods.MOOD_RETURN)
 
     # return value? then push 
     if _return:
