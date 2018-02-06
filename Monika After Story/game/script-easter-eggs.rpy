@@ -185,8 +185,8 @@ label natsuki_name_scare_hungry:
     hide monika
     
     #play special music and display glitch text.
-    $ adjusted_6g = "<from <time_value> >bgm/6g.ogg"
-#    $ renpy.play(adjusted_6g, channel="sound")
+    $ adjusted_6g = "<from 6.0>bgm/6g.ogg"
+    $ renpy.play(adjusted_6g, channel="sound")
     $ ntext = glitchtext(96)
     $ style.say_dialogue = style.edited
     n "{cps=*2}{color=#000}[ntext]{/color}{nw}"
