@@ -27,7 +27,7 @@ init -1 python in songs:
         "<loop 17.451 to 119.999>mod_assets/bgm/ddlc_maintheme_80s.ogg"
     )
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
-    FP_PLAYWITHME_VAR6 = "<loop 27. to 362>bgm/6s.ogg"
+    FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
     FP_NO_SONG = None
 
 
