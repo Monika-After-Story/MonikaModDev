@@ -478,7 +478,7 @@ label monika_color:
 #     m "Let's see."
 #     m "Maybe if I..."
 #     m 1e "Oh, jeez..."
-#     m "That wasn't it at all."
+#     m "That wasn't it at all!"
 #     m 1l "Sorry, I don't really know what I'm doing!"
 #     m "I guess I shouldn't be messing with things like that."
 #     m "I already broke so much stuff..."
@@ -4659,6 +4659,39 @@ label monika_omamori:
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_memes",category=['misc'],prompt="Memes",random=True))
+    m "Hey, [player], do you like memes?"
+    m "Personally, I'm not that big of a fan."
+    m "It's hard to keep up with all the new memes being made around the internet, and ones dying out so fast."
+    m "What about you, [player]? Do you like memes?"
+    menu:
+        "Yes.":
+            m "That's so cool!"
+            m "Though, I don't understand how one would keep up with all the new memes being made."
+            m "There are so many out there already that can be repurposed that some people still find funny!"
+            m "The popularity around most memes nowadays seems to die out in mere weeks, which isn't nearly as long as they lasted years ago."
+            m "Well, at least there'll be more~"
+            return
+        "No.":
+            m "Ah, that's okay!"
+            m "To be honest, I can't really blame you."
+            m "Adapting to new internet trends in a short timespan is actually pretty difficult."
+            m "...Or maybe you just don't find amusement in them?"
+            m "Is that it?"
+            menu:
+                "Yes.":
+                    m "Oh, I see!"
+                    m "Thanks for clearing that up, [player]!"
+                    m "Tell me if there's anything else you like!"
+                    return
+                "No.":
+                    m "Eh? Then why don't you like them?"
+                    m "Is it something deeper than that?"
+                    m "Maybe you've had an experience with memes you're not particularly fond of?"
+                    m "Well, to each their own, I guess."
+                    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_100k",category=['mod'],prompt="100k Downloads",random=True))
