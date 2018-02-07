@@ -1734,6 +1734,8 @@ init 1001 python:
             }
 
             # overlay setup
+            blank_text = Text("")
+            blank_img = Solid("#fff0")
             left = Image(self.ZZPK_W_OVL_LEFT)
             right = Image(self.ZZPK_W_OVL_RIGHT)
             center = Image(self.ZZPK_W_OVL_CENTER)
@@ -1790,7 +1792,6 @@ init 1001 python:
                     x,
                     self.ZZPK_IMG_KEYS_Y
                 )
-
 
             # list containing lists of matches.
             # NOTE: highly recommend not adding too many detections
