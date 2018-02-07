@@ -603,7 +603,9 @@ label ch30_loop:
             label pick_random_topic:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
-                    pushEvent(renpy.random.choice(monika_random_topics))
+                    sel_ev = renpy.random.choice(monika_random_topics)
+                    pushEvent(sel_ev)
+                    monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
                 elif not seen_random_limit: # no topics left
 #                    monika_random_topics = list(all_random_topics)
