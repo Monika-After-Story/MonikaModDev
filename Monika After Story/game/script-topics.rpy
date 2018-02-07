@@ -1923,7 +1923,7 @@ label monika_love:
             m 1k "I love you so much, [player]!"
 
         elif persistent._mas_monika_lovecounter == 50:
-            $ persistent._mas_monika_lovecounter == 1
+            $ persistent._mas_monika_lovecounter = 1
             m 1m "I just can't handle you saying it so much to me!"
             m 1l "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
             m 1e "No words can truly do justice to how deeply I feel for you..."
