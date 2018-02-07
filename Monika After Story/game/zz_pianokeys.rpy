@@ -1428,6 +1428,9 @@ init 1001 python:
         ZZPK_IMG_KEYS_Y = 50
         ZZPK_LYR_BAR_YOFF = -50
 
+        # offset for hit location
+        ZZPK_IMG_IKEY_YOFF = 152
+
         # other sizes
         ZZPK_IMG_IKEY_WIDTH = 36
         ZZPK_IMG_IKEY_HEIGHT = 214
@@ -2694,10 +2697,15 @@ init 1001 python:
                         self._button_resetall.disable()
 
                     # TODO: check for click on a piano key
-                    # TODO: change the piano keys to use MASButtonDisplayable
-                    # so this part can be way simpler
+                    # TODO: add MASButtonDisplayables for click overlays.
+                    # these should just be solid colors, when the mouse is over
+                    # them they should turn pink. Clicking on the overlay
+                    # will visibly depress the key and switch to CHANGE state
                     # TODO: on a piano key click, the done button should be
                     # disabled and the current key should be saved
+                    # NOTE: colors:
+                    # black overlay #0005
+                    # hover overlay #ffe6f4AA
 
                 # config change
                 elif self.state == self.STATE_CONFIG_CHANGE:
