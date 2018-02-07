@@ -1916,7 +1916,7 @@ label monika_love:
         elif persistent._mas_monika_lovecounter == 40:
             m 1j "Ehehe~"
             m  "I..."
-            m 1k "Looooooooove you too [player]!"
+            m 1k "Looooooooove you too, [player]!"
 
         elif persistent._mas_monika_lovecounter == 45:
             m 1j "You saying that always makes my day!"
