@@ -255,7 +255,7 @@ init 5 python:
 
 label unlock_piano:
     m 2a "Hey! I've got something exciting to tell you!"
-    m 2b "I've finally added a piano to the room for us to use, [player]"
+    m 2b "I've finally added a piano to the room for us to use, [player]."
     if not persistent.instrument:
         m 3b "I really want to hear you play!"
         m "It might seem overwhelming at first, but at least give it a try."
@@ -284,7 +284,7 @@ label random_limit_reached:
             "No point in trying to say everything right away...",
             "I hope you've enjoyed listening to everything I was thinking about today...",
             "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you to much."
+            "I hope I didn't bore you too much."
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1m "[limit_quip]"
