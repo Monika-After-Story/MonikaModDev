@@ -3165,7 +3165,7 @@ init 5 python:
 
 label monika_playerhappy:
     m 3b "That's wonderful! I'm happy when you're happy."
-    m 1j "Know that you can always come up to me and I'll cheer up, [player]."
+    m 1j "Know that you can always come up to me and I'll cheer you up, [player]."
     m 3a "I love you and I'll always be here for you so don't you ever forget that~"
     return
 
