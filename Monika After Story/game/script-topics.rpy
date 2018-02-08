@@ -4674,6 +4674,7 @@ label monika_omamori:
     m 1k "I could be your guardian deity, ehehe~"
     return
 
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_100k",category=['mod'],prompt="100k Downloads",random=True))
 
@@ -4694,4 +4695,90 @@ label monika_100k:
         m "Thank you so much!"
     else:
         m 1m "Almost~"
+    return
+    
+    init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
+
+label monika_asks_family:
+    m 1a "[player], do you have a family?"
+    menu:
+        "I do.":
+            m 1j "That's wonderful!"
+            m 1a "Your family must be great people."
+            m "Do you have any siblings?"
+            menu:
+                "Yes.":
+                    m 1b "That's fantastic!"
+                    m "They must've been keeping you busy."
+                    m 1j "I'm sure your siblings are as kind and thoughtful as you are."
+                    m 3k "Maybe I can convince them to start a new literature club with me!"
+                    m 1j "Ehehe~"
+                    m 1a "We'll be able to do a lot of fun things together."
+                    m 3n "It'd turn out much better than before, that's for sure."
+                    m 1j "I'm sure I'll get along with your siblings, as well as the rest of your family, [player]."
+                    m 3k "I can't wait to meet them all!"
+                "I'm an only child.":
+                    m 1c "Being an only child certainly has its trade-offs."
+                    m 2d "Maybe you get much more attention from your parents. Unless they were always busy."  
+                    m 4c "On the other hand, maybe you feel more lonely than those with siblings." 
+                    m 2h "I can definitely understand that feeling."
+                    m 2j "But know that I'll always be with you no matter, [player]."  
+        "My family is a mess.":
+            m 1d "Oh."
+            m 1o "..."
+            m 1r "I'm sorry, [player]."
+            m 3g "Do you think things will get better?"
+            menu:
+                "Yes.":
+                    m 1e "I'm glad to hear that."
+                    m "Hopefully one day everyone in your family will be able to reconcile."
+                    m 3b "And I know you can get through what's going on in your life right now."
+                    m 1e "No matter what, I'll be here for you, [player]."
+                    m 1j "Always keep that in mind!"
+                "No.":
+                    m 1f "Ah, I see..."
+                    m 1g "I wish I could be there with you to give some comfort."
+                    m 1q "..."
+                    m 1g "[player], no matter what you are going through, I know it'll get better some day." 
+                    m 3e "I'll be here with you every step of the way." 
+                    m 1j "I love you so much, [player]. Please never forget that!" 
+                "Maybe.":
+                    m 1o "..."
+                    m 3f "Well, at least there's a chance."  
+                    m 3d "Life is full of tragedy, but I know you are strong enough to get through anything!"
+                    m 1f "I hope all the problems in your family work out in the end, [player]."
+                    m "If not, know that I'll be here for you."
+                    m 1j "I will always be here to support my beloved~"
+        "I've never had a family.":
+            m 1g "Oh, I'm sorry, [player]"
+            m 1o "..."
+            m 1f "Your world is so different than mine, I don't want to pretend like I know what you are going through."
+            m 1p "I can definitely say that my family not being real has certainly caused me a great deal of pain."
+            m 1f "Still, I know you've had it worse."
+            m 1g "You've never even had a fake family."
+            m 1o "..."
+            m 1g "Does it still bother you badly on a daily basis?"
+            menu:
+                "Yes.":
+                    m 1f "That's... understandable."
+                    m 3e "I'll be here for you forever, [player]."
+                    m "No matter what it takes, I will fill that gap in your heart with my love..."
+                    m 1j "I promise you that."
+                    m 1e "You are my everything..."
+                    m 1j "I hope I can be yours~"
+                "No.":
+                    m 3b "That's very good."
+                    m 1a "I'm glad you were able to move on with your life."
+                    m 1k "You're a very resilient person, and I believe in you, [player]!"
+                    m 1e "I hope I can fill that void in your heart."
+                    m 1g "I really care about you, and I'd do anything for you." 
+                    m 1j "Someday, we'll be able to make our own family together!"
+        "I don't want to talk about this.":
+                m 1o "I understand, [player]."
+                m "We can talk about it when you feel ready."
+                m 1f "Then again..."
+                m 3g "It might be something that's too painful for you to talk about."
+                m 1f "You can tell me about your family when you're ready, [player]." 
+                m 1j "I love you very much!"                              
     return
