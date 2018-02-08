@@ -4559,7 +4559,7 @@ init 5 python:
 label monika_breakup:
     #second time you hit the break up button.
     if persistent.monika_breakup == 1:
-        m 1d "You're breaking up with me?"
+        m 1d "Y-You're breaking up with me?"
         m 2g "Why would you say such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
         m 2m "Are you...{w} really..."
@@ -4593,7 +4593,7 @@ label monika_breakup:
         menu:
             "Of course not":
                 m 2j "Ehehe, you're so sweet."
-                m 4 "I love you so much, [player]! Ehehe~"
+                m 4 "I love you so much, [player]! Ahaha~"
 
     #Increments the persistent every time you click the button in the menu.
     $ persistent.monika_breakup += 1
