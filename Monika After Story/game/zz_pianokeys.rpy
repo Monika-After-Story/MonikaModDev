@@ -10,10 +10,10 @@ default persistent._mas_pnml_data = []
 default persistent._mas_piano_keymaps = {}
 
 # TRANSFORMS
-transform piano_quit_label:
-    xanchor 0.5 xpos 275 yanchor 0 ypos 332
+#transform piano_quit_label:
+#    xanchor 0.5 xpos 275 yanchor 0 ypos 332
 
-transform piano_lyric_label:
+transform mas_piano_lyric_label:
     xalign 0.5 yalign 0.5
 
 # super xp for playing well
@@ -25,7 +25,7 @@ define xp.ZZPK_PRACTICE = 15
 label zz_play_piano:
 
     # initial setup
-    $ import store.zzpianokeys as zzpianokeys
+    $ import store.mas_piano_keys as mas_piano_keys
 #    $ quit_label = Text("Press 'Z' to quit", size=36)
     $ pnmlLoadTuples()
 
@@ -35,7 +35,7 @@ label zz_play_piano:
 label zz_play_piano_loopstart:
 
     # get song list
-    $ song_list = zzpianokeys.getSongChoices()
+    $ song_list = mas_piano_keys.getSongChoices()
     $ pnml = None
     $ play_mode = PianoDisplayable.MODE_FREE
 
@@ -267,7 +267,7 @@ label zz_piano_yr_prac:
 # DISPLAYABLE:
 
 # special store to contain a rdiciulous amount of constants
-init -3 python in zzpianokeys:
+init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
 
     # this is our threshold for determining how many notes the player needs to
@@ -296,6 +296,7 @@ init -3 python in zzpianokeys:
     A5SH = pygame.K_MINUS
     B5 = pygame.K_LEFTBRACKET
     C6 = pygame.K_RIGHTBRACKET
+    ESC = pygame.K_ESCAPE
 
     # keyorder, for reference
     KEYORDER = [
@@ -321,6 +322,135 @@ init -3 python in zzpianokeys:
         C6
     ]
 
+    # 1:1 keymap setup. this is the defaults
+    KEYMAP = {
+        F4: F4,
+        F4SH: F4SH,
+        G4: G4,
+        G4SH: G4SH,
+        A4: A4,
+        A4SH: A4SH,
+        B4: B4,
+        C5: C5,
+        C5SH: C5SH,
+        D5: D5,
+        D5SH: D5SH,
+        E5: E5,
+        F5: F5,
+        F5SH: F5SH,
+        G5: G5,
+        G5SH: G5SH,
+        A5: A5,
+        A5SH: A5SH,
+        B5: B5,
+        C6: C6
+    }
+
+
+    # 1:1 keymap setup. This is the actual keymap that gets used. The
+    # persistent is just the adjustments
+    live_keymap = {
+        F4: F4,
+        F4SH: F4SH,
+        G4: G4,
+        G4SH: G4SH,
+        A4: A4,
+        A4SH: A4SH,
+        B4: B4,
+        C5: C5,
+        C5SH: C5SH,
+        D5: D5,
+        D5SH: D5SH,
+        E5: E5,
+        F5: F5,
+        F5SH: F5SH,
+        G5: G5,
+        G5SH: G5SH,
+        A5: A5,
+        A5SH: A5SH,
+        B5: B5,
+        C6: C6
+    }
+        
+    # blacklisted keys
+    BLACKLIST = (
+        ESC
+#        pygame.K_DELETE
+    )
+
+# FUNCTIONS ===================================================================
+
+
+    def _findKeymap(value):
+        """
+        Finds the key that points to value in the keymap. Effectively a dict
+        value search
+
+        IN:
+            value - value to find
+
+        RETURNS:
+            key in persistent._mas_piano_keymaps that returns value, or None
+            if value not found
+
+        ASSUMES:
+            persistent._mas_piano_keymaps
+        """
+        for k in renpy.game.persistent._mas_piano_keymaps:
+            if k[v] == value:
+                return k
+
+        return None
+
+
+    def _initKeymap(adjustments):
+        """
+        Edits the keymap stored here with the given dict of keymap adjustments.
+        NOTE: will reset the internal keymap before applying adjustments, so
+        make sure to apply _all_ the adjustments you want at once
+
+        IN:
+            adjustments - dict of keymap adjustments:
+                key : keymap value (which is reflected as a KEYMAP value)
+
+        ASSUMES:
+            KEYMAP - the defaults keymap
+            live_keymap - the keymap we change
+        """
+        # reset the keymaps
+        live_keymap = dict(KEYMAP)
+
+        # now apply adjustments
+        for k in adjustments:
+            if adjustments[k] in live_keymap:
+                live_keymap.pop(adjustments[k])
+            live_keymap[k] = adjustments[k]
+
+
+    def _setKeymap(key, new):
+        """
+        Sets a keymap. Checks for existing keymap and will remove it.
+        Will NOT set the keymap if key == new
+
+        IN:
+            key - the key we are mapping
+            new - the new key item to map to
+
+        ASSUMES:
+            persistent._mas_piano_keymaps
+        """
+        old_key = _findKeymap(key)
+
+        if old_key:
+            # we have an old keymap, remove it
+            renpy.game.persistent._mas_piano_keymaps.pop(old_key)
+           
+        # only add a keymap if its different
+        if key != new:
+            renpy.game.persistent._mas_piano_keymaps[new] = key
+
+
+# CLASSES =====================================================================
 
     # Exception class for piano failures
     class PianoException(Exception):
@@ -642,16 +772,16 @@ init -3 python in zzpianokeys:
 # NOTE: if we do the above, we need to reconsider how we handle post game
 # labels. Storing them in text files would be better organized but bad
 # for finding errors
-init 1000 python in zzpianokeys:
+init 1000 python in mas_piano_keys:
 
     # all piano note matches should follow this layout:
-    # pnm_<song name inital>_v#l#
+    # _pnm_<song name inital>_v#l#
     # v#l# -> verse #, line #
 
 ### YOUR REALITY ##############################################################
 
     # your reality, piano note setup
-    pnm_yr_v1l1 = PianoNoteMatch(
+    _pnm_yr_v1l1 = PianoNoteMatch(
         renpy.text.text.Text(
             "Everyday, I imagine a future where I can be with you",
             style="monika_credits_text"
@@ -694,7 +824,7 @@ init 1000 python in zzpianokeys:
         postexpress="1j",
         verse=0
     )
-    pnm_yr_v1l2 = PianoNoteMatch(
+    _pnm_yr_v1l2 = PianoNoteMatch(
         renpy.text.text.Text(
             ("In my hands, is a pen that will write a poem of me" +
             " and you"),
@@ -718,12 +848,12 @@ init 1000 python in zzpianokeys:
             E5,
             C5
         ],
-        postnotes=pnm_yr_v1l1.postnotes,
+        postnotes=_pnm_yr_v1l1.postnotes,
         express="1b",
         postexpress="1a",
         verse=0,
     )
-    pnm_yr_v1l3 = PianoNoteMatch(
+    _pnm_yr_v1l3 = PianoNoteMatch(
         renpy.text.text.Text(
             "The ink flows down into a dark puddle",
             style="monika_credits_text"
@@ -744,7 +874,7 @@ init 1000 python in zzpianokeys:
         postexpress="1a",
         verse=0
     )
-    pnm_yr_v1l4 = PianoNoteMatch(
+    _pnm_yr_v1l4 = PianoNoteMatch(
         renpy.text.text.Text(
             "Just move your hand, write the way into his heart",
             style="monika_credits_text"
@@ -766,27 +896,27 @@ init 1000 python in zzpianokeys:
         postexpress="1j",
         verse=0
     )
-    pnm_yr_v1l5 = PianoNoteMatch(
+    _pnm_yr_v1l5 = PianoNoteMatch(
         renpy.text.text.Text(
             "But in this world of infinite choices",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l3.notes,
+        _pnm_yr_v1l3.notes,
         express="1b",
         postexpress="1a",
         verse=0
     )
-    pnm_yr_v1l6 = PianoNoteMatch(
+    _pnm_yr_v1l6 = PianoNoteMatch(
         renpy.text.text.Text(
             "What will it take just to find that special day?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l4.notes,
+        _pnm_yr_v1l4.notes,
         express="1b",
         postexpress="1a",
         verse=0
     )
-    pnm_yr_v1l7 = PianoNoteMatch(
+    _pnm_yr_v1l7 = PianoNoteMatch(
         renpy.text.text.Text(
             "What will it take just to find",
             style="monika_credits_text"
@@ -805,7 +935,7 @@ init 1000 python in zzpianokeys:
         verse=0,
         posttext=True
     )
-    pnm_yr_v1l8 = PianoNoteMatch(
+    _pnm_yr_v1l8 = PianoNoteMatch(
         renpy.text.text.Text(
             "that special day",
             style="monika_credits_text"
@@ -825,44 +955,44 @@ init 1000 python in zzpianokeys:
     )
 
     # verse 2
-    pnm_yr_v2l1 = PianoNoteMatch(
+    _pnm_yr_v2l1 = PianoNoteMatch(
         renpy.text.text.Text(
             "Have I found everybody a fun assignment to do today?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l1.notes,
-        postnotes=pnm_yr_v1l1.postnotes,
+        _pnm_yr_v1l1.notes,
+        postnotes=_pnm_yr_v1l1.postnotes,
         express="1b",
         postexpress="1a",
         verse=8,
         copynotes=0,
         ev_timeout=15.0
     )
-    pnm_yr_v2l2 = PianoNoteMatch(
+    _pnm_yr_v2l2 = PianoNoteMatch(
         renpy.text.text.Text(
             ("When you're here, everything that we do is fun for them"+
             " anyway"),
             style="monika_credits_text"
         ),
-        pnm_yr_v1l2.notes,
-        postnotes=pnm_yr_v1l2.postnotes,
+        _pnm_yr_v1l2.notes,
+        postnotes=_pnm_yr_v1l2.postnotes,
         express="1k",
         postexpress="1j",
         verse=8,
         copynotes=1
     )
-    pnm_yr_v2l3 = PianoNoteMatch(
+    _pnm_yr_v2l3 = PianoNoteMatch(
         renpy.text.text.Text(
             "When I can't even read my own feelings",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l3.notes,
+        _pnm_yr_v1l3.notes,
         express="1g",
         postexpress="1f",
         verse=8,
         copynotes=2
     )
-    pnm_yr_v2l4 = PianoNoteMatch(
+    _pnm_yr_v2l4 = PianoNoteMatch(
         renpy.text.text.Text(
             "What good are words",
             style="monika_credits_text"
@@ -879,7 +1009,7 @@ init 1000 python in zzpianokeys:
         verse=8,
         posttext=True
     )
-    pnm_yr_v2l5 = PianoNoteMatch(
+    _pnm_yr_v2l5 = PianoNoteMatch(
         renpy.text.text.Text(
             "when a smile says it all?",
             style="monika_credits_text"
@@ -899,23 +1029,23 @@ init 1000 python in zzpianokeys:
         verse=8,
         posttext=True
     )
-    pnm_yr_v2l6 = PianoNoteMatch(
+    _pnm_yr_v2l6 = PianoNoteMatch(
         renpy.text.text.Text(
             "And if this world won't write me an ending",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l5.notes,
+        _pnm_yr_v1l5.notes,
         express="1g",
         postexpress="1f",
         verse=8,
         copynotes=4
     )
-    pnm_yr_v2l7 = PianoNoteMatch(
+    _pnm_yr_v2l7 = PianoNoteMatch(
         renpy.text.text.Text(
             "What will it take just for me to have it all?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l6.notes,
+        _pnm_yr_v1l6.notes,
         express="1g",
         postexpress="1e",
         vis_timeout=3.0,
@@ -925,13 +1055,13 @@ init 1000 python in zzpianokeys:
     )
 
     # verse 3
-    pnm_yr_v3l1 = PianoNoteMatch(
+    _pnm_yr_v3l1 = PianoNoteMatch(
         renpy.text.text.Text(
             ("Does my pen only write bitter words for those who are "+
             "dear to me?"),
             style="monika_credits_text"
         ),
-        pnm_yr_v1l1.notes,
+        _pnm_yr_v1l1.notes,
 #                [
 #                    G5,
 #                    G5,
@@ -956,13 +1086,13 @@ init 1000 python in zzpianokeys:
         ev_timeout=25.0,
         vis_timeout=2.0
     )
-    pnm_yr_v3l2 = PianoNoteMatch(
+    _pnm_yr_v3l2 = PianoNoteMatch(
         renpy.text.text.Text(
             ("Is it love if I take you, or is it love if I set you " +
             "free?"),
             style="monika_credits_text"
         ),
-        pnm_yr_v1l2.notes,
+        _pnm_yr_v1l2.notes,
         express="1g",
         postexpress="1e",
         verse=15,
@@ -970,49 +1100,49 @@ init 1000 python in zzpianokeys:
         ev_timeout=7.0,
         vis_timeout=2.0
     )
-    pnm_yr_v3l3 = PianoNoteMatch(
-        pnm_yr_v1l3.say,
-        pnm_yr_v1l3.notes,
+    _pnm_yr_v3l3 = PianoNoteMatch(
+        _pnm_yr_v1l3.say,
+        _pnm_yr_v1l3.notes,
         express="1b",
         postexpress="1a",
         verse=15,
         copynotes=2,
         ev_timeout=10.0
     )
-    pnm_yr_v3l4 = PianoNoteMatch(
+    _pnm_yr_v3l4 = PianoNoteMatch(
         renpy.text.text.Text(
             "How can I write love into reality?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l4.notes,
+        _pnm_yr_v1l4.notes,
         express="1g",
         postexpress="1e",
         verse=15,
         copynotes=3
     )
-    pnm_yr_v3l5 = PianoNoteMatch(
+    _pnm_yr_v3l5 = PianoNoteMatch(
         renpy.text.text.Text(
             "If I can't hear the sound of your heartbeat",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l5.notes,
+        _pnm_yr_v1l5.notes,
         express="1p",
         postexpress="1o",
         verse=15,
         copynotes=4
     )
-    pnm_yr_v3l6 = PianoNoteMatch(
+    _pnm_yr_v3l6 = PianoNoteMatch(
         renpy.text.text.Text(
             "What do you call love in your reality?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l6.notes,
+        _pnm_yr_v1l6.notes,
         express="1g",
         postexpress="1e",
         verse=15,
         copynotes=5
     )
-    pnm_yr_v3l7 = PianoNoteMatch(
+    _pnm_yr_v3l7 = PianoNoteMatch(
         renpy.text.text.Text(
             "And in your reality, if I don't know how to love you",
             style="monika_credits_text"
@@ -1046,7 +1176,7 @@ init 1000 python in zzpianokeys:
         postexpress="1m",
         verse=15
     )
-    pnm_yr_v3l8 = PianoNoteMatch(
+    _pnm_yr_v3l8 = PianoNoteMatch(
         renpy.text.text.Text(
             "I'll leave you be",
             style="monika_credits_text"
@@ -1082,29 +1212,29 @@ init 1000 python in zzpianokeys:
     # your reality, pnml
     pnml_yourreality = PianoNoteMatchList(
         [
-            pnm_yr_v1l1,
-            pnm_yr_v1l2,
-            pnm_yr_v1l3,
-            pnm_yr_v1l4,
-            pnm_yr_v1l5,
-            pnm_yr_v1l6,
-            pnm_yr_v1l7,
-            pnm_yr_v1l8,
-            pnm_yr_v2l1,
-            pnm_yr_v2l2,
-            pnm_yr_v2l3,
-            pnm_yr_v2l4,
-            pnm_yr_v2l5,
-            pnm_yr_v2l6,
-            pnm_yr_v2l7,
-            pnm_yr_v3l1,
-            pnm_yr_v3l2,
-            pnm_yr_v3l3,
-            pnm_yr_v3l4,
-            pnm_yr_v3l5,
-            pnm_yr_v3l6,
-            pnm_yr_v3l7,
-            pnm_yr_v3l8
+            _pnm_yr_v1l1,
+            _pnm_yr_v1l2,
+            _pnm_yr_v1l3,
+            _pnm_yr_v1l4,
+            _pnm_yr_v1l5,
+            _pnm_yr_v1l6,
+            _pnm_yr_v1l7,
+            _pnm_yr_v1l8,
+            _pnm_yr_v2l1,
+            _pnm_yr_v2l2,
+            _pnm_yr_v2l3,
+            _pnm_yr_v2l4,
+            _pnm_yr_v2l5,
+            _pnm_yr_v2l6,
+            _pnm_yr_v2l7,
+            _pnm_yr_v3l1,
+            _pnm_yr_v3l2,
+            _pnm_yr_v3l3,
+            _pnm_yr_v3l4,
+            _pnm_yr_v3l5,
+            _pnm_yr_v3l6,
+            _pnm_yr_v3l7,
+            _pnm_yr_v3l8
         ],
         [0, 8, 15, 23],
         "Your Reality",
@@ -1146,9 +1276,9 @@ init 1000 python in zzpianokeys:
         song_list.append(("Nevermind", "None"))
         return song_list
 
-# make this later than zzpianokeys
+# make this later than mas_piano_keys
 init 1001 python:
-    import store.zzpianokeys as zzpianokeys
+    import store.mas_piano_keys as mas_piano_keys
 
     # setup named tuple dicts
     def pnmlLoadTuples():
@@ -1158,10 +1288,10 @@ init 1001 python:
 
         ASSUMES:
             persistent._mas_pnml_data
-            zzpianokeys.pnml_db
+            mas_piano_keys.pnml_db
         """
         for data_row in persistent._mas_pnml_data:
-            db_data = zzpianokeys.pnml_db.get(data_row[0], None)
+            db_data = mas_piano_keys.pnml_db.get(data_row[0], None)
             if db_data:
                 db_data._loadTuple(data_row)
 
@@ -1171,10 +1301,10 @@ init 1001 python:
 
         ASSUMES:
             persistent._mas_pnml_data
-            zzpianokeys.pnml_db
+            mas_piano_keys.pnml_db
         """
         persistent._mas_pnml_data = [
-            zzpianokeys.pnml_db[k]._saveTuple() for k in zzpianokeys.pnml_db
+            mas_piano_keys.pnml_db[k]._saveTuple() for k in mas_piano_keys.pnml_db
         ]
 
     # the displayable
@@ -1195,7 +1325,7 @@ init 1001 python:
 
         # AT_LIST
         AT_LIST = [i22]
-        TEXT_AT_LIST = [piano_lyric_label]
+        TEXT_AT_LIST = [mas_piano_lyric_label]
 
         # expressions
         DEFAULT = "monika 1a"
@@ -1708,50 +1838,50 @@ init 1001 python:
             # setup sounds
             # sound dict:
             self.pkeys = {
-                zzpianokeys.F4: self.ZZFP_F4,
-                zzpianokeys.F4SH: self.ZZFP_F4SH,
-                zzpianokeys.G4: self.ZZFP_G4,
-                zzpianokeys.G4SH: self.ZZFP_G4SH,
-                zzpianokeys.A4: self.ZZFP_A4,
-                zzpianokeys.A4SH: self.ZZFP_A4SH,
-                zzpianokeys.B4: self.ZZFP_B4,
-                zzpianokeys.C5: self.ZZFP_C5,
-                zzpianokeys.C5SH: self.ZZFP_C5SH,
-                zzpianokeys.D5: self.ZZFP_D5,
-                zzpianokeys.D5SH: self.ZZFP_D5SH,
-                zzpianokeys.E5: self.ZZFP_E5,
-                zzpianokeys.F5: self.ZZFP_F5,
-                zzpianokeys.F5SH: self.ZZFP_F5SH,
-                zzpianokeys.G5: self.ZZFP_G5,
-                zzpianokeys.G5SH: self.ZZFP_G5SH,
-                zzpianokeys.A5: self.ZZFP_A5,
-                zzpianokeys.A5SH: self.ZZFP_A5SH,
-                zzpianokeys.B5: self.ZZFP_B5,
-                zzpianokeys.C6: self.ZZFP_C6
+                mas_piano_keys.F4: self.ZZFP_F4,
+                mas_piano_keys.F4SH: self.ZZFP_F4SH,
+                mas_piano_keys.G4: self.ZZFP_G4,
+                mas_piano_keys.G4SH: self.ZZFP_G4SH,
+                mas_piano_keys.A4: self.ZZFP_A4,
+                mas_piano_keys.A4SH: self.ZZFP_A4SH,
+                mas_piano_keys.B4: self.ZZFP_B4,
+                mas_piano_keys.C5: self.ZZFP_C5,
+                mas_piano_keys.C5SH: self.ZZFP_C5SH,
+                mas_piano_keys.D5: self.ZZFP_D5,
+                mas_piano_keys.D5SH: self.ZZFP_D5SH,
+                mas_piano_keys.E5: self.ZZFP_E5,
+                mas_piano_keys.F5: self.ZZFP_F5,
+                mas_piano_keys.F5SH: self.ZZFP_F5SH,
+                mas_piano_keys.G5: self.ZZFP_G5,
+                mas_piano_keys.G5SH: self.ZZFP_G5SH,
+                mas_piano_keys.A5: self.ZZFP_A5,
+                mas_piano_keys.A5SH: self.ZZFP_A5SH,
+                mas_piano_keys.B5: self.ZZFP_B5,
+                mas_piano_keys.C6: self.ZZFP_C6
             }
 
             # pressed dict
             self.pressed = {
-                zzpianokeys.F4: False,
-                zzpianokeys.F4SH: False,
-                zzpianokeys.G4: False,
-                zzpianokeys.G4SH: False,
-                zzpianokeys.A4: False,
-                zzpianokeys.A4SH: False,
-                zzpianokeys.B4: False,
-                zzpianokeys.C5: False,
-                zzpianokeys.C5SH: False,
-                zzpianokeys.D5: False,
-                zzpianokeys.D5SH: False,
-                zzpianokeys.E5: False,
-                zzpianokeys.F5: False,
-                zzpianokeys.F5SH: False,
-                zzpianokeys.G5: False,
-                zzpianokeys.G5SH: False,
-                zzpianokeys.A5: False,
-                zzpianokeys.A5SH: False,
-                zzpianokeys.B5: False,
-                zzpianokeys.C6: False
+                mas_piano_keys.F4: False,
+                mas_piano_keys.F4SH: False,
+                mas_piano_keys.G4: False,
+                mas_piano_keys.G4SH: False,
+                mas_piano_keys.A4: False,
+                mas_piano_keys.A4SH: False,
+                mas_piano_keys.B4: False,
+                mas_piano_keys.C5: False,
+                mas_piano_keys.C5SH: False,
+                mas_piano_keys.D5: False,
+                mas_piano_keys.D5SH: False,
+                mas_piano_keys.E5: False,
+                mas_piano_keys.F5: False,
+                mas_piano_keys.F5SH: False,
+                mas_piano_keys.G5: False,
+                mas_piano_keys.G5SH: False,
+                mas_piano_keys.A5: False,
+                mas_piano_keys.A5SH: False,
+                mas_piano_keys.B5: False,
+                mas_piano_keys.C6: False
             }
 
             # blank text overlay
@@ -1775,18 +1905,18 @@ init 1001 python:
             center = Image(self.ZZPK_W_OVL_CENTER)
             w_plain = Image(self.ZZPK_W_OVL_PLAIN)
             whites = [
-                (zzpianokeys.F4, left),
-                (zzpianokeys.G4, center),
-                (zzpianokeys.A4, center),
-                (zzpianokeys.B4, right),
-                (zzpianokeys.C5, left),
-                (zzpianokeys.D5, center),
-                (zzpianokeys.E5, right),
-                (zzpianokeys.F5, left),
-                (zzpianokeys.G5, center),
-                (zzpianokeys.A5, center),
-                (zzpianokeys.B5, right),
-                (zzpianokeys.C6, w_plain),
+                (mas_piano_keys.F4, left),
+                (mas_piano_keys.G4, center),
+                (mas_piano_keys.A4, center),
+                (mas_piano_keys.B4, right),
+                (mas_piano_keys.C5, left),
+                (mas_piano_keys.D5, center),
+                (mas_piano_keys.E5, right),
+                (mas_piano_keys.F5, left),
+                (mas_piano_keys.G5, center),
+                (mas_piano_keys.A5, center),
+                (mas_piano_keys.B5, right),
+                (mas_piano_keys.C6, w_plain),
             ]
 
             # key, x coord
@@ -1804,14 +1934,14 @@ init 1001 python:
             )
             b_plain = Image(self.ZZPK_B_OVL_PLAIN)
             blacks = [
-                (zzpianokeys.F4SH, 73),
-                (zzpianokeys.G4SH, 110),
-                (zzpianokeys.A4SH, 147),
-                (zzpianokeys.C5SH, 221),
-                (zzpianokeys.D5SH, 258),
-                (zzpianokeys.F5SH, 332),
-                (zzpianokeys.G5SH, 369),
-                (zzpianokeys.A5SH, 406)
+                (mas_piano_keys.F4SH, 73),
+                (mas_piano_keys.G4SH, 110),
+                (mas_piano_keys.A4SH, 147),
+                (mas_piano_keys.C5SH, 221),
+                (mas_piano_keys.D5SH, 258),
+                (mas_piano_keys.F5SH, 332),
+                (mas_piano_keys.G5SH, 369),
+                (mas_piano_keys.A5SH, 406)
             ]
 
             # overlay dict
@@ -1891,8 +2021,8 @@ init 1001 python:
             self.pnml_list = []
             if self.mode == self.MODE_FREE:
                 self.pnml_list = [
-                    zzpianokeys.pnml_db[k] for k in zzpianokeys.pnml_db
-                    if zzpianokeys.pnml_db[k].wins == 0
+                    mas_piano_keys.pnml_db[k] for k in mas_piano_keys.pnml_db
+                    if mas_piano_keys.pnml_db[k].wins == 0
                 ]
 
             # list of notes we have played
@@ -1950,6 +2080,8 @@ init 1001 python:
             # setting up premature button stuff
             if len(persistent._mas_piano_keymaps) == 0:
                 self._button_resetall.disable()
+            else:
+                mas_piano_keys._initKeymap(persistent._mas_piano_keymaps)
 
             # this should be disabled at start
             self._button_cancel.disable()
@@ -2018,31 +2150,6 @@ init 1001 python:
                     return ovl
 
             return None
-
-
-        def _setKeymap(self, keydex, new, old=None):
-            """
-            Sets a keymap. If old is None, it is assumed that we are adding
-            a new keymap and not replacing an existing one.
-
-            IN:
-                keydex - the index of the key value
-                new - the new key item to map to
-                old - old key item (the one to map)
-                    (Default: None)
-
-            ASSUMES:
-                persistent._mas_piano_keymaps
-                zzpianokeys.KEYORDER
-            """
-            if old and old in persistent._mas_piano_keymaps:
-                key_value = persistent._mas_piano_keymaps.pop(old)
-            else:
-                key_value = zzpianokeys.KEYORDER[keydex]
-
-            # only add a keymap if its different
-            if key_value != new:
-                persistent._mas_piano_keymaps[new] = key_value
 
 
         def _timeoutFlow(self):
@@ -2292,7 +2399,7 @@ init 1001 python:
 
             # not in song mode, check for correct number of
             # notes
-            elif len(self.played) >= zzpianokeys.NOTE_SIZE:
+            elif len(self.played) >= mas_piano_keys.NOTE_SIZE:
 
                 # find a match
                 self.match = self.findnotematch(self.played)
@@ -2849,9 +2956,11 @@ init 1001 python:
                     if clicked_done is not None:
                         # done was clicked, return to regular gameplay
                         self.state = self.STATE_CLEAN
+                        mas_piano_keys._initKeymap(persistent._mas_piano_keymaps)
 
                     elif clicked_resetall is not None:
                         # reset all keymaps
+                        # TODO: ask are you sure
                         persistent._mas_piano_keymaps = dict()
                         self._button_resetall.disable()
 
@@ -2865,8 +2974,9 @@ init 1001 python:
                         self._button_done.disable()
                         self._button_cancel.enable()
 
-                        # TODO: if this selected key has a keymap already,
-                        # enable the reset button
+                        # an existing keymap means we enable reset
+                        if mas_piano_keys._findKeymap(clicked_ovl.return_value):
+                            self._button_reset.enable()
 
                 # config change
                 elif self.state == self.STATE_CONFIG_CHANGE:
@@ -2883,10 +2993,23 @@ init 1001 python:
                         self._button_reset.disable()
                         self.pressed[self._sel_ovl.return_value] = False
 
+                        if len(persistent._mas_piano_keymaps) > 0:
+                            self._button_resetall.enable()
+
                     elif clicked_reset is not None:
                         # reset, that means clear the selcted keymap
-                        # TODO: clear the selected keymap
-                        pass
+                        old_key = mas_piano_keys._findKeymap(
+                            self._sel_ovl.return_value
+                        )
+                        
+                        if old_key:
+                            persistent._mas_piano_keymaps.pop(old_key)
+
+                        self.state = self.STATE_CONFIG_WAIT
+                        self._button_done.enable()
+                        self._button_cancel.disable()
+                        self._button_reset.disable()
+                        self.pressed[self._sel_ovl.return_value] = False
 
                 # regular states
                 else:
@@ -2912,15 +3035,35 @@ init 1001 python:
             elif ev.type == pygame.KEYDOWN:
 
                 if self.state == self.STATE_CONFIG_CHANGE:
-                    # TODO, here we need to do a setkeymap,
-                    # redraw,
-                    # and then immediately raise the ignoreevent.
-                    # we don't want any sound to play here
-                    renpy.redraw(self, 0)
+                    # blacklisted keys cannot be used
+                    if ev.key not in mas_piano_keys.BLACKLIST:
+
+                        # set keymap
+                        mas_piano_keys._setKeymap(
+                            self._sel_ovl.return_value,
+                            ev.key
+                        )
+
+                        # get back to wait state
+                        self.state = self.STATE_CONFIG_WAIT
+                        self._button_done.enable()
+                        self._button_cancel.disable()
+                        self._button_reset.disable()
+                        self.pressed[self._sel_ovl.return_value] = False
+
+                        if len(persistent._mas_piano_keymaps) > 0:
+                            self._button_resetall.enable()
+                        else:
+                            self._button_resetall.disable()
+
+                        renpy.redraw(self, 0)
 
                 else:
                     # check for mapping
-                    key = persistent._mas_piano_keymaps.get(ev.key, ev.key)
+                    if self.state == self.STATE_CONFIG_WAIT:
+                        key = persistent._mas_piano_keymaps(ev.key, ev.key)
+                    else:
+                        key = mas_piano_keys.live_keymap.get(ev.key, ev.key)
 
                     if self.state not in self.CONFIG_STATES:
                         # regular game mode only
@@ -2977,7 +3120,7 @@ init 1001 python:
             elif ev.type == pygame.KEYUP:
 
                 # check for mapping
-                key = persistent._mas_piano_keymaps.get(ev.key, ev.key)
+                key = mas_piano_keys.live_keymap.get(ev.key, ev.key)
 
                 # only do this if we keyup a key we care about
                 if self.pressed.get(key, False):
