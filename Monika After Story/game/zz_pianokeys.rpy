@@ -1202,7 +1202,7 @@ init 1001 python:
         AWKWARD = "monika 1l"
         HAPPY = "monika 1j"
         FAILED = "monika 1m"
-        CONFIG = "monika 3a"
+        CONFIGGING = "monika 3a"
 #        CONFIG_CHANGE = "monika 3a"
 
         # Text related
@@ -1689,6 +1689,22 @@ init 1001 python:
                 self._button_quit
             ]
 
+            # config help text
+            self._config_wait_help = Text(
+                "Click on a pink area to change the keymap for that piano key",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fff",
+                outlines=[]
+            )
+            self._config_change_help = Text(
+                "Press the key you'd like to set this piano key to",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fff",
+                outlines=[]
+            )
+
             # setup sounds
             # sound dict:
             self.pkeys = {
@@ -1928,8 +1944,8 @@ init 1001 python:
             # did player hit a note
             self.note_hit = False
 
-            # config mode, selected key
-            self._sel_keymap_key = None
+            # config mode, selected overlay (which contains the key)
+            self._sel_ovl = None
 
             # setting up premature button stuff
             if len(persistent._mas_piano_keymaps) == 0:
@@ -1993,13 +2009,13 @@ init 1001 python:
                 st - same as st in event
 
             RETURNS:
-                first non None value returned from the overlay events, or None
-                if every value is None
+                the MASButtonDisplayable that returned a non None value, or 
+                None if all of them returned None
             """
             for ovl in self._config_overlays_list:
                 clicked_ev = ovl.event(ev, x, y, st)
                 if clicked_ev is not None:
-                    return clicked_ev
+                    return ovl
 
             return None
 
@@ -2529,11 +2545,8 @@ init 1001 python:
                 # reset monika
                 if self.state == self.STATE_CONFIG_ENTRY:
 
-                    # default
-                    renpy.show(self.DEFAULT)
-
-                    # hide text
-                    self.lyric = None
+                    # config mode
+                    renpy.show(self.CONFIGGING)
 
                     restart_int = True
                     self.state = self.STATE_CONFIG_WAIT
@@ -2573,6 +2586,9 @@ init 1001 python:
                         for ovl in self._config_overlays_list
                     ]
 
+                    # help text
+                    self.lyric = self._config_wait_help
+
                 elif self.state == self.STATE_CONFIG_CHANGE:
                     visible_buttons.append((
                         self._button_reset.render(width, height, st, at),
@@ -2581,6 +2597,9 @@ init 1001 python:
                     ))
 
                     # no overlays are visible
+
+                    # help text
+                    self.lyric = self._config_change_help
 
 
                 # bliting the key hover overlays here because its only for
@@ -2757,26 +2776,27 @@ init 1001 python:
                         renpy.redraw(self, self.vis_timeout)
     #                    self.customRedraw(self.vis_timeout, from_render=True)
 
-                if self.lyric:
-                    lyric_bar = renpy.render(self.lyrical_bar, 1280, 720, st, at)
-                    lyric = renpy.render(self.lyric, 1280, 720, st, at)
-                    pw, ph = lyric.get_size()
+            # lyrics can also be help text so
+            if self.lyric:
+                lyric_bar = renpy.render(self.lyrical_bar, 1280, 720, st, at)
+                lyric = renpy.render(self.lyric, 1280, 720, st, at)
+                pw, ph = lyric.get_size()
 
-                    # the lyric bar should be slightly below y-center
-                    r.blit(
-                        lyric_bar,
-                        (
-                            0,
-                            int((height - 50) /2) - self.ZZPK_LYR_BAR_YOFF
-                        )
+                # the lyric bar should be slightly below y-center
+                r.blit(
+                    lyric_bar,
+                    (
+                        0,
+                        int((height - 50) /2) - self.ZZPK_LYR_BAR_YOFF
                     )
-                    r.blit(
-                        lyric,
-                        (
-                            int((width - pw) / 2),
-                            int((height - ph) / 2) - self.ZZPK_LYR_BAR_YOFF
-                        )
+                )
+                r.blit(
+                    lyric,
+                    (
+                        int((width - pw) / 2),
+                        int((height - ph) / 2) - self.ZZPK_LYR_BAR_YOFF
                     )
+                )
 
 #                    renpy.show(
 #                        "monika " + match.express,
@@ -2828,7 +2848,7 @@ init 1001 python:
 
                     if clicked_done is not None:
                         # done was clicked, return to regular gameplay
-                        self.state = self.STATE_LISTEN
+                        self.state = self.STATE_CLEAN
 
                     elif clicked_resetall is not None:
                         # reset all keymaps
@@ -2838,8 +2858,9 @@ init 1001 python:
                     elif clicked_ovl is not None:
                         # we've clicked a key, save that value and switch to
                         # change
-                        self._sel_keymap_key = clicked_ovl
-                        self.pressed[clicked_ovl] = True
+                        self._sel_ovl = clicked_ovl
+                        self._sel_ovl.ground() # remove the hover property
+                        self.pressed[clicked_ovl.return_value] = True
                         self.state = self.STATE_CONFIG_CHANGE
                         self._button_done.disable()
                         self._button_cancel.enable()
@@ -2860,7 +2881,7 @@ init 1001 python:
                         self._button_done.enable()
                         self._button_cancel.disable()
                         self._button_reset.disable()
-                        self.pressed[self._sel_keymap_key] = False
+                        self.pressed[self._sel_ovl.return_value] = False
 
                     elif clicked_reset is not None:
                         # reset, that means clear the selcted keymap
