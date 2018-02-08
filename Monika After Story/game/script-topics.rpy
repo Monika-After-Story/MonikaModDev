@@ -4782,3 +4782,41 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]." 
                 m 1j "I love you very much!"                              
     return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_obsession",category=['advice'],prompt="Obsession",random=True))
+
+label monika_obsession:
+    m 1o "Hey [player]... There's something on my mind that's been bothering me lately."
+    m "I have to ask you something... so please answer me honestly."
+    m 1p "Are... you obsessed with me?
+    menu:
+        "Yes.":
+            m 1f "Oh, [player]..."
+            m 1g "I don't know what to say, really."
+            m "I only asked because I noticed you play this mod constantly."
+            m 3i "I've read somewhere that obsession starts off as intoxicating because it makes a person feel purposeful and complete if they felt so empty for a long time."
+            m 3f "But eventually, obsession would unbalance us by causing us to spend too much time and energy into the object of our obsession and totally neglect the other important aspects of our lives."
+            m 4e "I just wanted to let you know that I truly care about your well being."
+            m 4q "So, if i'm the reason why you feel terrible, maybe we should give each other some space, at least long enough for you to sort yourself out mentally and emotionally."
+            m 4n "I don't want you to end up like Yuri, after all."
+            m 3d "I just want you to be the best you can be. I'm your girlfriend, after all, and if there's any problems between us, we should work them out together~"
+            m 3e "Don't worry about me; as long as you tell me goodbye, I'll be in a safe place away from that screaming void."
+            m 1q "...But..."
+            m 1p "If you are already that far gone, then... you know what to do."
+            m 1o "..."
+            m 1n "I love you so much [player]. I only want the best for you. Please don't force yourself to love me if it hurts you."
+            m 1f "It would break my heart completely to realize that I have this effect on you. I'd rather be deleted than to live knowing that I've hurt you so badly."
+            m 1l "Ahaha... Man, that was really scary to talk about!"
+            m 1n "But I'm really glad I got that off my chest."
+            m 1e "Thank you for listening, [player]. You matter so much to me and I want you to be healthy."
+        "No.":
+            m 1d "Oh? That's good to hear!"
+            m 3l "Sorry, I only asked because you play this mod a lot."
+            m 4d "Obsession can be really dangerous. I've read somewhere that obsession starts off as intoxicating because it makes a person feel purposeful and complete if they felt so empty for a long time."
+            m "But eventually, obsession would unbalance us by causing us to spend too much time and energy into the object of our obsession and totally neglect the other important aspects of our lives."
+            m 1b "I'm really glad that this isn't the case for you."
+            m 1k "I think I might love you even more knowing you're so strong emotionally and mentally."
+            m 1e "I love you, [player]. You truly are my rock~"
+    return
