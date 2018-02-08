@@ -4697,7 +4697,7 @@ label monika_100k:
         m 1m "Almost~"
     return
     
-    init 5 python:
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
 label monika_asks_family:
