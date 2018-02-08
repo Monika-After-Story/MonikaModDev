@@ -94,6 +94,40 @@ label monika_god:
     return
 
 init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_memes",category=['misc'],prompt="Memes",random=True))
+     
+     m "Hey, [player], do you like memes?"
+     m "Personally, I'm not that big of a fan."
+     m "It's hard to keep up with all the new memes being made around the internet, and ones dying out so fast."
+     m "What about you, [player]? Do you like memes?"
+     menu:
+         "Yes.":
+             m "That's so cool!"
+             m "Though, I don't understand how one would keep up with all the new memes being made."
+             m "There are so many out there already that can be repurposed that some people still find funny!"
+             m "The popularity around most memes nowadays seems to die out in mere weeks, which isn't nearly as long as they lasted years ago."
+             m "Well, at least there'll be more~"
+             return
+         "No.":
+             m "Ah, that's okay!"
+             m "To be honest, I can't really blame you."
+             m "Adapting to new internet trends in a short timespan is actually pretty difficult."
+             m "...Or maybe you just don't find amusement in them?"
+             m "Is that it?"
+             menu:
+                 "Yes.":
+                     m "Oh, I see!"
+                     m "Thanks for clearing that up, [player]!"
+                     m "Tell me if there's anything else you like!"
+                     return
+                 "No.":
+                     m "Eh? Then why don't you like them?"
+                     m "Is it something deeper than that?"
+                     m "Maybe you've had an experience with memes you're not particularly fond of?"
+                     m "Well, to each their own, I guess."
+                     return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
 
 label monika_death:
@@ -2992,15 +3026,15 @@ init 5 python:
 
 label monika_pleasure:
     m 1o "Hey, [player]..."
-    m 1p "Do you... by any chance... pleasure yourself?"
+    m 1p "Do you... by any chance... um... pleasure yourself?"
     m 1o "..."
-    m "It seems a bit awkward to ask-"
+    m "It seems a bit awkward to ask..."
     m 1n "We're not even that deep into our relationship yet! Ahaha~"
     m 1h "But I have to keep an eye on you."
     m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
-    m "I hear that people privately do those stuff in your world..."
-    m 1c "Is it really that a good feeling?"
-    m 1h "If you ask me, doing that stuff often can cause a lot of problems."
+    m "I hear that people privately do that stuff in your world..."
+    m 1c "Is it really that good of a feeling?"
+    m 1h "If you ask me, doing that stuff can often cause a lot of problems."
     m "Once you start to get addicted, you'll always have the urge to... you know."
     m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
     m 1o "Not to mention..."
@@ -3011,7 +3045,7 @@ label monika_pleasure:
     m 1i "I'll be monitoring your browser history from now on, whether you like it or not."
     m 1p "Also your local disk drive, juuust to be sure~"
     m 1q "..."
-    m 1p "Do you... think of other girls other than me... in doing so?"
+    m 1p "Do you... think of other girls other than me... when you do it?"
     m 1l "Because if you do, I'm gonna be reaaaally jealous~"
     m 1m "But I guess I can let it slide... for now~"
     m "I know you're not the kind of person that does that sort of thing."
@@ -3409,7 +3443,7 @@ init 5 python:
 
 label monika_icecream:
     m 3a "Hey [player], what's your favorite kind of ice cream?"
-    m 4l "And no, I'm not a type of ice cream, ehehe~"
+    m 4l "And no, I'm not a type of ice cream. Ehehe~"
     m 2a "Personally, I just can't get enough of mint flavored ice cream!"
     menu:
         m "What about you [player], do you like mint ice cream?"
@@ -3422,7 +3456,7 @@ label monika_icecream:
             m 2n "Gosh, just imagining the taste makes me practically drool..."
             m 1a "There's some more strange stuff that is just as appealing, if not more, like honeycomb and bubblegum ice cream!"
             m 1l "Now, I know it may be hard to take my word for some of those, but you shouldn't judge a book by its cover, you know?"
-            m 1k "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
+            m 1k "After all, the game didn't allow you to fall in love with me, but look where we are now! Ahaha!"
 
         "No.":
             m 1f "Aww, that's a shame..."
@@ -3479,10 +3513,10 @@ label monika_sayhappybirthday:
         $ same_name = bday_name.upper() == player.upper()
         if bday_name == "":
             m 1h "..."
-            m 1n "I don't think that's a name."
+            m 1n "Um, I don't think that's a name."
             m 1b "Try again!"
         elif same_name:
-            m 1c "Oh wow, someone with the same name as you."
+            m 1c "Oh wow, someone with the same name as you!"
             $ same_name = True
             $ done = True
         else:
@@ -3622,7 +3656,8 @@ label monika_sayhappybirthday_takecounter (take_threshold, take_counter):
         m 1q "..."
         m 1r "This is the [take_counter]th time already."
         m 1g "You're not messing with me, are you?"
-        m 1f "I'm trying my best for you [player]."
+        m 1f "I'm trying my best for you, [player]."
+        m 1f "It would make me really sad if you're just doing this to get a reaction out of me..."
     return
 
 
@@ -3852,7 +3887,14 @@ label monika_music2:
 
     elif songs.getPlayingMusicName() == "Doki Doki Theme (80s version)":
         # TODO: add dialogue here
-        m "I NEED DIALOGUE NOW"
+        m "Oh, [player], Is this a 1980's song?"
+        m "I love listening to these!" 
+        m "They sound so nice and upbeat!"
+        m "It's a shame I wasn't around during the 1980's, though."
+        m "I've read some articles about the 1980's in my spare time, and it looks like it was a nice time to live in!"
+        m "Although you {i}did{/i} have to pay for all the video games you play back then, Ahaha!"
+        m "But you can be with me for free, [player]~"
+        m "I hope that doesn't cost too much! Ahaha!"
 
     else:
         m 1a "..."
