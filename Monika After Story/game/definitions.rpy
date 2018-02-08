@@ -532,6 +532,7 @@ python early:
 
 
 init -1 python:
+    import datetime # for mac issues i guess. 
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
