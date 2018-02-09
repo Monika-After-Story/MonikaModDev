@@ -4930,3 +4930,35 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_natsuki_letter",category=['club members'],prompt="Natsuki's Letter",random=True))
+    
+label monika_natsuki_letter:
+    m 1d "You know, I was honestly impressed when Natsuki handed you that letter."
+    m 2n "Sure I....politely asked you to ignore it afterwords, but..."
+    m 2b "It struck me as responsible of her to suggest that you should get Yuri to seek professional help."
+    m 1i "She was the only one in this game to mention that, if I recall correctly."
+    m 1m "I know people are afraid to sound callous, or like they think the other person is 'crazy'..."
+    m 1l "But sometimes, suggesting a therapist can be the most validating thing to hear!" 
+    m 1n "Not only that, but if you aren't mentally prepared to help someone in crsis..."
+    m 1g It's a bad thing to put the burden on yourself, you know?" 
+    m 1i "So as much as I know you want to help people and be a hero [player]{w}, if you see someone in trouble..."
+    m 2k "Don't be afraid to suggest a doctor!"
+    m 2a "And as much as I want to help you, I won't get jealous if you see a therapist either." 
+    m 1e "I'm sure I've told you that before, but I need to make sure you know that."
+    m 1d "Maybe you already do?"
+    menu:
+        m "Do you see a therapist?"
+        
+        "Yes.":
+            m 1f "Really? Well I hate that you don't feel well, but I'm proud of you for working to get better!"
+            m 1j "Maybe you can tell them about me!"
+            m 1n "...On second thought, you probably shouldn't. Not yet!"
+            
+        "No.":
+            m 1p "Well, I hope it's because you don't have to."
+            m 1b "If that ever changes, don't be shy!"
+            m 1k "But maybe I really am all the support you need! Haha!"
+            m "That would be a nice feeling." 
+    return
