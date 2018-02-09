@@ -697,11 +697,10 @@ if renpy.seen_label("monika_algernon"):
         m 2h "Oh, hello."
         m 2a "My name is Monika."
         $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
-        $ tempname = fakename
-        m 1j "Well it's nice to meet you, [tempname]."
-        m 1f "Say, [tempname], do you happen to know where everyone else is?"
+        m 1j "Well it's nice to meet you, [fakename]."
+        m 1f "Say, [fakename], do you happen to know where everyone else is?"
         m 2g "You're the first person I've seen and I can't seem to leave this class room."
-        m 2e "Can you help me figure out what's going on, [tempname]?"
+        m 2e "Can you help me figure out what's going on, [fakename]?"
         m 2f "Please? I miss my friends."
         m 2q "..."
         m 1l "Ahaha"
@@ -713,3 +712,4 @@ if renpy.seen_label("monika_algernon"):
         m 2a "But let's not think about things like that again, okay?"
         m 1a "After all, I know we'll always be together and that you'll never forget about me."
         return
+
