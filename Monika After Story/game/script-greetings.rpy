@@ -3,7 +3,7 @@
 #Make a list of every label that starts with "greeting_", and use that for random greetings during startup
 
 # persistents that greetings use
-default persistent.you = True
+default persistent._mas_you_chr = False
 
 init python:
     greetings_list=[]
@@ -621,12 +621,15 @@ label monikaroom_greeting_cleanup:
 label greeting_youarereal:
     python:
         try:
-            renpy.file("/characters/" + persistent.playername + ".chr")
-            persistent.you = True
+            renpy.file(
+                config.basedir.replace("\\","/") + 
+                "/characters/" + persistent.playername.lower() + ".chr"
+            )
+            persistent._mas_you_chr = True
         except:
-            persistent.you = False
+            persistent._mas_you_chr = False
     m 1b "[player]! Great to see you!"
-    if persistent.you:
+    if persistent._mas_you_chr:
         m "Wait. Something is different now."
         m 1d "Did you...add a chacter file?"
         m 1f "[player].chr...Huh?"
