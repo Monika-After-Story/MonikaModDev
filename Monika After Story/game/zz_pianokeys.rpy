@@ -22,7 +22,7 @@ define xp.ZZPK_FULLCOMBO = 40
 define xp.ZZPK_PRACTICE = 15
 
 # label that calls this creen
-label zz_play_piano:
+label mas_piano_start:
 
     # initial setup
     $ import store.mas_piano_keys as mas_piano_keys
@@ -32,14 +32,14 @@ label zz_play_piano:
     # Intro to piano dialogue here
     m 1j "You want to play the piano?"
 
-label zz_play_piano_loopstart:
+label mas_piano_loopstart:
 
     # get song list
     $ song_list = mas_piano_keys.getSongChoices()
     $ pnml = None
     $ play_mode = PianoDisplayable.MODE_FREE
 
-label zz_play_piano_songchoice:
+label mas_piano_songchoice:
 
     if len(song_list) > 1:
         show monika 1a
@@ -65,22 +65,22 @@ label zz_play_piano_songchoice:
                     # regardless, set mode
                     $ play_mode = PianoDisplayable.MODE_SONG
 
-                    jump zz_play_piano_setupstart
+                    jump mas_piano_setupstart
 
                 # nvermind selected
                 else:
-                    jump zz_play_piano_songchoice
+                    jump mas_piano_songchoice
 
             "On my own":
                 pass
 
             "Nevermind":
-                jump zz_play_piano_loopend
+                jump mas_piano_loopend
 
     # otherwise, we default to freestyle mode
     m 1a "Then play for me, [player]~"
 
-label zz_play_piano_setupstart:
+label mas_piano_setupstart:
 
     show monika 1a at t22
 
@@ -116,31 +116,27 @@ label zz_play_piano_setupstart:
     call expression post_piano from _zzpk_ppel
 
     # No-hits dont get to try again
-    if post_piano != "zz_piano_none":
+    if post_piano != "mas_piano_result_none":
         show monika 1a
         menu:
             m "Would you like to play again?"
             "Yes":
-                jump zz_play_piano_loopstart
+                jump mas_piano_loopstart
             "No":
                 pass
 
-label zz_play_piano_loopend:
-    return
-
-
-label mas_piano_configure:
+label mas_piano_loopend:
     return
 
 ### labels for piano states ===================================================
 
 # default. post game, freestyle mode
-label zz_piano_default:
+label mas_piano_result_default:
     m 1a "All done, [player]?"
     return
 
 # Shown if player does not hit any notes
-label zz_piano_none:
+label mas_piano_result_none:
     m 1m "Uhhh [player]..."
     m 1l "I thought you wanted to play the piano?"
     m 1e "I really enjoy hearing you play."
@@ -150,7 +146,7 @@ label zz_piano_none:
 ### YOUR REALITY
 
 # shown if player completes the song but does not FC
-label zz_piano_yr_win:
+label mas_piano_yr_win:
     m 1m "That was nice, [player]."
     m "But..."
     m 1n "You could do better with some more practice..."
@@ -158,21 +154,21 @@ label zz_piano_yr_win:
     return
 
 # shown if player FCs
-label zz_piano_yr_fc:
+label mas_piano_yr_fc:
     m 1b "That was wonderful, [player]!"
     m 1j "I didn't know you can play the piano so well."
     m 1a "Maybe we should play together sometime!"
     return
 
 # shown if player did not complete song and had more fails than passes
-label zz_piano_yr_fail:
+label mas_piano_yr_fail:
     m 1o "..."
     m 1e "That's okay, [player]."
     m 1j "At least you tried your best."
     return
 
 # shown if player did not complete song but had more passes than fails
-label zz_piano_yr_prac:
+label mas_piano_yr_prac:
     m 1a "That was really cool, [player]!"
     m 3b "With some more practice, you'll be able to play my song perfectly."
     m 1j "Make sure to practice everyday for me, okay~?"
@@ -345,38 +341,85 @@ init -3 python in mas_piano_keys:
         B5: B5,
         C6: C6
     }
-
-
-    # 1:1 keymap setup. This is the actual keymap that gets used. The
-    # persistent is just the adjustments
-    live_keymap = {
-        F4: F4,
-        F4SH: F4SH,
-        G4: G4,
-        G4SH: G4SH,
-        A4: A4,
-        A4SH: A4SH,
-        B4: B4,
-        C5: C5,
-        C5SH: C5SH,
-        D5: D5,
-        D5SH: D5SH,
-        E5: E5,
-        F5: F5,
-        F5SH: F5SH,
-        G5: G5,
-        G5SH: G5SH,
-        A5: A5,
-        A5SH: A5SH,
-        B5: B5,
-        C6: C6
-    }
         
     # blacklisted keys
     BLACKLIST = (
-        ESC
+        ESC,
+        pygame.K_MODE,
+        pygame.K_HELP,
+        pygame.K_PRINT,
+        pygame.K_SYSREQ,
+        pygame.K_BREAK,
+        pygame.K_MENU,
+        pygame.K_POWER,
+        pygame.K_EURO
 #        pygame.K_DELETE
     )
+
+    # noncharable keymaps and display text dict
+    NONCHAR_TEXT = {
+        pygame.K_BACKSPACE: "\\b",
+        pygame.K_TAB: "\\t",
+        pygame.K_CLEAR: "Cr",
+        pygame.K_RETURN: "\\r",
+        pygame.K_PAUSE: "Pa",
+        pygame.K_DELETE: "Dl",
+        pygame.K_KP0: "K0",
+        pygame.K_KP1: "K1",
+        pygame.K_KP2: "K2",
+        pygame.K_KP3: "K3",
+        pygame.K_KP4: "K4",
+        pygame.K_KP5: "K5",
+        pygame.K_KP6: "K6",
+        pygame.K_KP7: "K7",
+        pygame.K_KP8: "K8",
+        pygame.K_KP9: "K9",
+        pygame.K_KP_PERIOD: "K.",
+        pygame.K_KP_DIVIDE: "K/",
+        pygame.K_KP_MULTIPLY: "K*",
+        pygame.K_KP_MINUS: "K-",
+        pygame.K_KP_PLUS: "K+",
+        pygame.K_KP_ENTER: "Kr",
+        pygame.K_KP_EQUALS: "K=",
+        pygame.K_UP: "Up",
+        pygame.K_DOWN: "Dn",
+        pygame.K_RIGHT: "Rg",
+        pygame.K_LEFT: "Lf",
+        pygame.K_INSERT: "In",
+        pygame.K_HOME: "Hm",
+        pygame.K_END: "En",
+        pygame.K_PAGEUP: "PU",
+        pygame.K_PAGEDOWN: "PD",
+        pygame.K_F1: "F1",
+        pygame.K_F2: "F2",
+        pygame.K_F3: "F3",
+        pygame.K_F4: "F4",
+        pygame.K_F5: "F5",
+        pygame.K_F6: "F6",
+        pygame.K_F7: "F7",
+        pygame.K_F8: "F8",
+        pygame.K_F9: "F9",
+        pygame.K_F10: "10",
+        pygame.K_F11: "11",
+        pygame.K_F12: "12",
+        pygame.K_F13: "13",
+        pygame.K_F14: "14",
+        pygame.K_F15: "15",
+        pygame.K_NUMLOCK: "NL",
+        pygame.K_CAPSLOCK: "CL",
+        pygame.K_SCROLLOCK: "SL",
+        pygame.K_RSHIFT: "RS",
+        pygame.K_LSHIFT: "LS",
+        pygame.K_RCTRL: "RC",
+        pygame.K_LCTRL: "LC",
+        pygame.K_RALT: "RA",
+        pygame.K_LALT: "LA",
+        pygame.K_RMETA: "RM",
+        pygame.K_LMETA: "LM",
+        pygame.K_RSUPER: "RW",
+        pygame.K_LSUPER: "LW"
+    }
+
 
 # FUNCTIONS ===================================================================
 
@@ -397,34 +440,10 @@ init -3 python in mas_piano_keys:
             persistent._mas_piano_keymaps
         """
         for k in renpy.game.persistent._mas_piano_keymaps:
-            if k[v] == value:
+            if renpy.game.persistent._mas_piano_keymaps[k] == value:
                 return k
 
         return None
-
-
-    def _initKeymap(adjustments):
-        """
-        Edits the keymap stored here with the given dict of keymap adjustments.
-        NOTE: will reset the internal keymap before applying adjustments, so
-        make sure to apply _all_ the adjustments you want at once
-
-        IN:
-            adjustments - dict of keymap adjustments:
-                key : keymap value (which is reflected as a KEYMAP value)
-
-        ASSUMES:
-            KEYMAP - the defaults keymap
-            live_keymap - the keymap we change
-        """
-        # reset the keymaps
-        live_keymap = dict(KEYMAP)
-
-        # now apply adjustments
-        for k in adjustments:
-            if adjustments[k] in live_keymap:
-                live_keymap.pop(adjustments[k])
-            live_keymap[k] = adjustments[k]
 
 
     def _setKeymap(key, new):
@@ -435,6 +454,10 @@ init -3 python in mas_piano_keys:
         IN:
             key - the key we are mapping
             new - the new key item to map to
+
+        RETURNS: tuple of the following format:
+            [0] - new key that was set (could be None)
+            [1] - old key that was originally set (could be None)
 
         ASSUMES:
             persistent._mas_piano_keymaps
@@ -448,6 +471,9 @@ init -3 python in mas_piano_keys:
         # only add a keymap if its different
         if key != new:
             renpy.game.persistent._mas_piano_keymaps[new] = key
+            return (new, old_key)
+
+        return (None, old_key)
 
 
 # CLASSES =====================================================================
@@ -1238,10 +1264,10 @@ init 1000 python in mas_piano_keys:
         ],
         [0, 8, 15, 23],
         "Your Reality",
-        "zz_piano_yr_win",
-        "zz_piano_yr_fc",
-        "zz_piano_yr_fail",
-        "zz_piano_yr_prac",
+        "mas_piano_yr_win",
+        "mas_piano_yr_fc",
+        "mas_piano_yr_fail",
+        "mas_piano_yr_prac",
         5.0
 #        "zz_piano_yr_launch"
     )
@@ -1585,6 +1611,27 @@ init 1001 python:
             pygame.MOUSEBUTTONDOWN,
             pygame.MOUSEBUTTONUP
         )
+
+        # keymap text overlays
+        # these are supposed to be off so you can tell which keys are custom
+        # and which are default
+        # x coords are same as black keys (which vary)
+        # black ones
+        KMP_TXT_OVL_B_Y = ZZPK_IMG_BACK_Y 
+        KMP_TXT_OVL_B_W = ZZPK_IMG_EKEY_WIDTH
+        KMP_TXT_OVL_B_H = 47
+        KMP_TXT_OVL_B_BGCLR = "#4D4154"
+        KMP_TXT_OVL_B_FGCLR = "#14001E"
+
+        # white ones
+        KMP_TXT_OVL_W_X = ZZPK_IMG_KEYS_X
+        KMP_TXT_OVL_W_Y = ZZPK_IMG_BACK_Y + 281
+        KMP_TXT_OVL_W_W = ZZPK_IMG_IKEY_WIDTH
+        KMP_TXT_OVL_W_H = 41
+        KMP_TXT_OVL_W_BGCLR = "#14001E"
+        KMP_TXT_OVL_W_FGCLR = "#4D4154"
+
+        KMP_TXT_OVL_FONT = "gui/font/Halogen.ttf"
 
         def __init__(self, mode, pnml=None):
             """
@@ -1944,6 +1991,22 @@ init 1001 python:
                 (mas_piano_keys.A5SH, 406)
             ]
 
+            # keymap text overlays
+            self._kmp_txt_ovl_b_bg = Solid(
+                self.KMP_TXT_OVL_B_BGCLR,
+                xsize=self.KMP_TXT_OVL_B_W,
+                ysize=self.KMP_TXT_OVL_B_H
+            )
+            self._kmp_txt_ovl_w_bg = Solid(
+                self.KMP_TXT_OVL_W_BGCLR,
+                xsize=self.KMP_TXT_OVL_W_W,
+                ysize=self.KMP_TXT_OVL_W_H
+            )
+
+            # keymap text overlays dict
+            # key : MASButtonDisplayable
+            self._keymap_overlays = dict()
+
             # overlay dict
             # NOTE: x and y are assumed to be relative to the top let of
             #   the piano_back image
@@ -2077,11 +2140,17 @@ init 1001 python:
             # config mode, selected overlay (which contains the key)
             self._sel_ovl = None
 
+            # live keymaps (the one we actually use
+            self.live_keymap = None
+
             # setting up premature button stuff
             if len(persistent._mas_piano_keymaps) == 0:
                 self._button_resetall.disable()
+                self.live_keymap = dict(mas_piano_keys.KEYMAP)
             else:
-                mas_piano_keys._initKeymap(persistent._mas_piano_keymaps)
+                self._initKeymap()
+                for key in persistent._mas_piano_keymaps:
+                    self._keymap_overlays[key] = self._buildKeyTextOverlay(key)
 
             # this should be disabled at start
             self._button_cancel.disable()
@@ -2126,6 +2195,92 @@ init 1001 python:
 #            else:
 #                self.redraw_count += 1
 #                renpy.redraw(self, timeout)
+
+
+        def _buildKeyTextOverlay(self, key):
+            """
+            Builds a keytext overlay for a key. This will check the keymaps
+            for the associated actual key and set everything up approptiately.
+            Assumes the given key has a keymap
+
+            IN:
+                key - the key to build a keytextoverlay for (the key user will
+                    press)
+
+            RETURNS:
+                MASButtonDisplayable of the text overlay. All states of this
+                button will be the same.
+            """
+            # get the actual button to determine if white or black key
+            real_key = self.live_keymap[key]
+            config_ovl_button = self._config_overlays[real_key]
+            if key in mas_piano_keys.NONCHAR_TEXT:
+                text_key = mas_piano_keys.NONCHAR_TEXT[key]
+            else:
+                text_key = chr(key).upper()
+
+            if config_ovl_button.height == self.ZZPK_IMG_EKEY_HEIGHT:
+                # this is a black key
+                ovl_text = Text(
+                    text_key,
+                    font=self.KMP_TXT_OVL_FONT,
+                    size=gui.text_size,
+                    color=self.KMP_TXT_OVL_B_FGCLR,
+                    outlines=[]
+                )
+                return MASButtonDisplayable(
+                    ovl_text,
+                    ovl_text,
+                    ovl_text,
+                    self._kmp_txt_ovl_b_bg,
+                    self._kmp_txt_ovl_b_bg,
+                    self._kmp_txt_ovl_b_bg,
+                    config_ovl_button.xpos,
+                    self.KMP_TXT_OVL_B_Y,
+                    self.KMP_TXT_OVL_B_W,
+                    self.KMP_TXT_OVL_B_H
+                )
+
+            else:
+                # this is a white key
+                ovl_text = Text(
+                    text_key,
+                    font=self.KMP_TXT_OVL_FONT,
+                    size=gui.text_size,
+                    color=self.KMP_TXT_OVL_W_FGCLR,
+                    outlines=[]
+                )
+                return MASButtonDisplayable(
+                    ovl_text,
+                    ovl_text,
+                    ovl_text,
+                    self._kmp_txt_ovl_w_bg,
+                    self._kmp_txt_ovl_w_bg,
+                    self._kmp_txt_ovl_w_bg,
+                    config_ovl_button.xpos,
+                    self.KMP_TXT_OVL_W_Y,
+                    self.KMP_TXT_OVL_W_W,
+                    self.KMP_TXT_OVL_W_H
+                )
+
+
+        def _initKeymap(self):
+            """
+            Initalizes the keymap, applying persistent adjustments.
+
+            ASSUMES:
+                persistent._mas_piano_keymaps
+                mas_piano_keys.KEYMAP - the defaults keymap
+                self.live_keymap - the keymap we use
+            """
+            # reset the keymaps
+            self.live_keymap = dict(mas_piano_keys.KEYMAP)
+
+            # now apply adjustments
+            for key,real_key in persistent._mas_piano_keymaps.iteritems():
+                if real_key in self.live_keymap:
+                    self.live_keymap.pop(real_key)
+                self.live_keymap[key] = real_key
 
     
         def _sendEventsToOverlays(self, ev, x, y, st):
@@ -2286,7 +2441,7 @@ init 1001 python:
             completed_pnms = 0
 
             if not self.note_hit:
-                end_label = "zz_piano_none"
+                end_label = "mas_piano_result_none"
 
             elif self.pnml:
                 full_combo = True
@@ -2328,7 +2483,7 @@ init 1001 python:
                     is_prac = True
 
             else:
-                end_label = "zz_piano_default"
+                end_label = "mas_piano_result_default"
 
             # finally return the tuple
             return (
@@ -2618,6 +2773,18 @@ init 1001 python:
                         )
                     )
 
+            # prepare keytext overlays
+            keytext_overlays = [
+                (
+                    self._keymap_overlays[key].render(
+                        width, height, st, at
+                    ),
+                    self._keymap_overlays[key].xpos,
+                    self._keymap_overlays[key].ypos
+                )
+                for key in self._keymap_overlays
+            ]
+
             # Draw the piano
             r.blit(
                 back,
@@ -2643,6 +2810,10 @@ init 1001 python:
                         self.ZZPK_IMG_BACK_Y + ovl[2]
                     )
                 )
+
+            # keytext overlays
+            for ovl,x,y in keytext_overlays:
+                r.blit(ovl, (x, y))
 
             # True if we need to do an interaction restart
             restart_int = False
@@ -2956,13 +3127,14 @@ init 1001 python:
                     if clicked_done is not None:
                         # done was clicked, return to regular gameplay
                         self.state = self.STATE_CLEAN
-                        mas_piano_keys._initKeymap(persistent._mas_piano_keymaps)
 
                     elif clicked_resetall is not None:
                         # reset all keymaps
                         # TODO: ask are you sure
                         persistent._mas_piano_keymaps = dict()
+                        self._initKeymap()
                         self._button_resetall.disable()
+                        self._keymap_overlays = dict()
 
                     elif clicked_ovl is not None:
                         # we've clicked a key, save that value and switch to
@@ -3004,12 +3176,14 @@ init 1001 python:
                         
                         if old_key:
                             persistent._mas_piano_keymaps.pop(old_key)
+                            self._keymap_overlays.pop(old_key)
 
                         self.state = self.STATE_CONFIG_WAIT
                         self._button_done.enable()
                         self._button_cancel.disable()
                         self._button_reset.disable()
                         self.pressed[self._sel_ovl.return_value] = False
+                        self._initKeymap()
 
                 # regular states
                 else:
@@ -3036,10 +3210,15 @@ init 1001 python:
 
                 if self.state == self.STATE_CONFIG_CHANGE:
                     # blacklisted keys cannot be used
-                    if ev.key not in mas_piano_keys.BLACKLIST:
+                    if (
+                            ev.key not in mas_piano_keys.BLACKLIST
+                            and (ev.key in mas_piano_keys.NONCHAR_TEXT
+                                or 0 <= ev.key <= 255
+                            )
+                        ):
 
                         # set keymap
-                        mas_piano_keys._setKeymap(
+                        new_key, old_key = mas_piano_keys._setKeymap(
                             self._sel_ovl.return_value,
                             ev.key
                         )
@@ -3050,20 +3229,32 @@ init 1001 python:
                         self._button_cancel.disable()
                         self._button_reset.disable()
                         self.pressed[self._sel_ovl.return_value] = False
+                        self._initKeymap()
 
+                        # resetall enabled if we have keymaps
                         if len(persistent._mas_piano_keymaps) > 0:
                             self._button_resetall.enable()
                         else:
                             self._button_resetall.disable()
 
+                        # update keymap overlays
+                        if old_key in self._keymap_overlays:
+                            self._keymap_overlays.pop(old_key)
+                        if new_key:
+                            self._keymap_overlays[new_key] = (
+                                self._buildKeyTextOverlay(new_key)
+                            )
+
+                        renpy.play(
+                            self.pkeys[self._sel_ovl.return_value], 
+                            channel="audio"
+                        )
+
                         renpy.redraw(self, 0)
 
                 else:
                     # check for mapping
-                    if self.state == self.STATE_CONFIG_WAIT:
-                        key = persistent._mas_piano_keymaps(ev.key, ev.key)
-                    else:
-                        key = mas_piano_keys.live_keymap.get(ev.key, ev.key)
+                    key = self.live_keymap.get(ev.key, None)
 
                     if self.state not in self.CONFIG_STATES:
                         # regular game mode only
@@ -3120,7 +3311,7 @@ init 1001 python:
             elif ev.type == pygame.KEYUP:
 
                 # check for mapping
-                key = mas_piano_keys.live_keymap.get(ev.key, ev.key)
+                key = self.live_keymap.get(ev.key, None)
 
                 # only do this if we keyup a key we care about
                 if self.pressed.get(key, False):
