@@ -2278,7 +2278,10 @@ init 1001 python:
 
             # now apply adjustments
             for key,real_key in persistent._mas_piano_keymaps.iteritems():
-                if real_key in self.live_keymap:
+                if (
+                        real_key in self.live_keymap 
+                        and real_key == self.live_keymap[real_key]
+                    ):
                     self.live_keymap.pop(real_key)
                 self.live_keymap[key] = real_key
 
