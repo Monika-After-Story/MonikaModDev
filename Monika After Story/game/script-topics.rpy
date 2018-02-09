@@ -4120,7 +4120,7 @@ label monika_sports:
     menu:
         "Yes.":
             m 1k "Maybe we could play together sometime in the future. It would be wonderful."
-            m 1b "But don't expect me to go easy on you. ahaha!"
+            m 1b "But don't expect me to go easy on you. Ahaha!"
         "No.":
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
@@ -4305,11 +4305,11 @@ init 5 python:
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
      m "You know about writer's block, right?"
-     m 1e "I had it a lot, when I started writing."
-     m "Sometimes it was halfway through a draft, but more often before I even started."
+     m 1e "I had it a lot, when I first started writing."
+     m 1l "Sometimes it was halfway through a draft, but more often before I even started."
      m 2f "Every time I tried to write a word, I thought, 'this isn't going to sound good', or 'this isn't how I want it to look'. So I'd stop, backtrack, and try again."
      m 2d "But I realised it ultimately didn't matter if things didn't work out first time!"
-     m 1a "I feel the heart of writing is not about getting it right first time, but about perfecting it afterwards."
+     m 2a "I feel the heart of writing is not about getting it right first time, but about perfecting it afterwards."
      m "The end product is what matters, not the prototype."
      m 1b "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
      m 3a "I think it's like that with all things - not just writing."
@@ -4318,6 +4318,23 @@ label monika_writingtip4:
      m 1g "But you have to."
      m 1h "You have to, if you want to get anywhere."
      m 1a "...That's my advice for today!"
+     m 2j "Thanks for listening~"
+     return
+
+init 5 python:
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
+  
+label monika_writingtip5:
+     m 3b "Here's Monika's Writing Tip of the Day!"
+     m 1d "If you want to improve at writing, I'd say that the most important thing - apart from actually doing it - is trying new things."
+     m 1b "Like writing prose if you're a poet, or free verse if you normally write rhyme."
+     m 1a "It may end up badly, but if you don't try, you won't know how it'll end up."
+     m 1j "And if things go well, you might end up finding something you like!"
+     m 1i "It's what keeps things moving: change, experimentation."
+     m 3i "I'd say it helps particularly if you're stuck on something, in a situation you want to solve, but don't know how."
+     m "Writer's block, but also math problems, general boredom, anything..."
+     m 1 "Trying new things might give you the momentum to break out."
+     m 1a "That's my advice for today!"
      m 2j "Thanks for listening~"
      return
 
