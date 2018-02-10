@@ -944,52 +944,107 @@ label monika_yuri:
     return
 
 
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip",category=['writing tips'],prompt="Writing Tip #1",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip",category=['literature'],prompt="Writing Tip",pool=True))
 
 label monika_writingtip:
-    m 1a "You know, it's been a while since we've done one of these..."
-    m 1j "...so let's go for it!"
+    python:
+        writingtips_start = [
+            "It's been a while since we've done one of these...",
+            "We really don't do enough of these so here's another one!",
+            "I'm having fun doing these, so...",            
+        ]
+        writingtips_start=renpy.random.choice(writingtips_start)
+        writingtipnumber = random.randint(1,3)
+
+    m 1a "You know..."
+    m "[writingtips_start]"
     m 3b "Here's Monika's Writing Tip of the Day!"
-    m "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'."
-    m 3e "It's really depressing, you know?"
-    m "As someone who loves more than anything else to share the joy of exploring your passions..."
-    m "...it pains me when people think that being good just comes naturally."
-    m 3a "That's how it is with everything, not just writing."
-    m "When you try something for the first time, you're probably going to suck at it."
-    m "Sometimes, when you finish, you feel really proud of it and even want to share it with everyone."
-    m 3e "But maybe after a few weeks you come back to it, and you realize it was never really any good."
-    m "That happens to me all the time."
-    m "It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks."
-    m 4a "But that tends to happen when you're always comparing yourself to the top professionals."
-    m "When you reach right for the stars, they're always gonna be out of your reach, you know?"
-    m 4b "The truth is, you have to climb up there, step by step."
-    m "And whenever you reach a milestone, first you look back and see how far you've gotten..."
-    m "And then you look ahead and realize how much more there is to go."
-    m 4a "So, sometimes it can help to set the bar a little lower..."
-    m "Try to find something you think is {i}pretty{/i} good, but not world-class."
-    m "And you can make that your own personal goal."
-    m "It's also really important to understand the scope of what you're trying to do."
-    m 4e "If you jump right into a huge project and you're still amateur, you'll never get it done."
-    m "So if we're talking about writing, a novel might be too much at first."
-    m 4b "Why not try some short stories?"
-    m "The great thing about short stories is that you can focus on just one thing that you want to do right."
-    m "That goes for small projects in general - you can really focus on the one or two things."
-    m "It's such a good learning experience and stepping stone."
-    m 2a "Oh, one more thing..."
-    m "Writing isn't something where you just reach into your heart and something beautiful comes out."
-    m "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
-    m 2b "That means there are methods and guides and basics to it!"
-    m "Reading up on that stuff can be super eye-opening."
-    m "That sort of planning and organization will really help prevent you from getting overwhelmed and giving up."
-    m "And before you know it..."
-    m 2e "You start sucking less and less."
-    m "Nothing comes naturally."
-    m "Our society, our art, everything - it's built on thousands of years of human innovation."
-    m 2b "So as long as you start on that foundation, and take it step by step..."
-    m "You, too, can do amazing things."
-    m "...That's my advice for today!"
-    m 2j "Thanks for listening~"
+
+    if writingtipnumber == 1:
+        m "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'."
+        m 3e "It's really depressing, you know?"
+        m "As someone who loves more than anything else to share the joy of exploring your passions..."
+        m "...it pains me when people think that being good just comes naturally."
+        m 3a "That's how it is with everything, not just writing."
+        m "When you try something for the first time, you're probably going to suck at it."
+        m "Sometimes, when you finish, you feel really proud of it and even want to share it with everyone."
+        m 3e "But maybe after a few weeks you come back to it, and you realize it was never really any good."
+        m "That happens to me all the time."
+        m "It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks."
+        m 4a "But that tends to happen when you're always comparing yourself to the top professionals."
+        m "When you reach right for the stars, they're always gonna be out of your reach, you know?"
+        m 4b "The truth is, you have to climb up there, step by step."
+        m "And whenever you reach a milestone, first you look back and see how far you've gotten..."
+        m "And then you look ahead and realize how much more there is to go."
+        m 4a "So, sometimes it can help to set the bar a little lower..."
+        m "Try to find something you think is {i}pretty{/i} good, but not world-class."
+        m "And you can make that your own personal goal."
+        m "It's also really important to understand the scope of what you're trying to do."
+        m 4e "If you jump right into a huge project and you're still amateur, you'll never get it done."
+        m "So if we're talking about writing, a novel might be too much at first."
+        m 4b "Why not try some short stories?"
+        m "The great thing about short stories is that you can focus on just one thing that you want to do right."
+        m "That goes for small projects in general - you can really focus on the one or two things."
+        m "It's such a good learning experience and stepping stone."
+        m 2a "Oh, one more thing..."
+        m "Writing isn't something where you just reach into your heart and something beautiful comes out."
+        m "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
+        m 2b "That means there are methods and guides and basics to it!"
+        m "Reading up on that stuff can be super eye-opening."
+        m "That sort of planning and organization will really help prevent you from getting overwhelmed and giving up."
+        m "And before you know it..."
+        m 2e "You start sucking less and less."
+        m "Nothing comes naturally."
+        m "Our society, our art, everything - it's built on thousands of years of human innovation."
+        m 2b "So as long as you start on that foundation, and take it step by step..."
+        m "You, too, can do amazing things."
+
+    elif writingtipnumber == 2:
+        m 2a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+        m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
+        m 4d "You have to remember that we all start out from somewhere, and--"
+        m 2c "Actually, this doesn't just apply to writing, but to anything really."
+        m 2r "What I'm trying to say is don't be discouraged."
+        m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
+        m "Because that just means that you can improve and be better than you were before."
+        m 1e "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+        m 3b "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
+        m 3j "I love you, and I will always support you in whatever you do."
+        m 1n "Provided it's legal of course."
+        m "That doesn't mean I'm completely against it. I can keep a secret after all~"
+        m 1d "Here's a saying I've learned."
+        m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
+        m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
+        m 3o "I don't remember the person who said that but the words are there."
+        m 2r "The effort one puts forth into something can transcend even one's self."
+        m 3e "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
+
+    elif writingtipnumber == 3:
+        m 1a "Make sure you always write down any ideas you think of."
+        m "Why?"
+        m "Some of the best ideas might come when you least expect them to."
+        m "Even if it takes a bit of effort, write it down."
+        m 1a "Maybe you can inspire someone else."
+        m 3b "Maybe you may look back on it after some time and act on it."
+        m "You never know!"
+        m "It's always good to keep a journal."
+        m "You can use it to record ideas, feelings, anything that comes to mind."
+        m 1c "Just make sure the journal has a lock, though."
+        m "Maybe you can keep digital notes instead of physical ones, too."
+        m "After all, privacy is important."
+        m 1l "... I can't promise that I won't peek, though. It's way too tempting!"
+        m 1j "After all, we don't keep secrets from each other, right~?"
+        m 1a "Just remember, [player], I'll always support you giving life to your ideas."
+
+    else:
+        m 1c "Actually I can't think of any right now..."
+        m "That's strange. Something must have gone wrong somewhere."
+        m "Umm...Try your very best!"
+
+    m 4k "... That's my advice for today!"
+    m 1a "Thanks for listening~"
     return
 
 
@@ -3169,34 +3224,34 @@ label monika_playerhappy:
     m 3a "I love you and I'll always be here for you so don't you ever forget that~"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
+#init 5 python:
+    #addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
 
-label monika_writingtip1:
-    m 3a "You know..."
-    m "We really don't do enough of these so here's another one!"
-    m "Here's Monika's Writing Tip for the Day!"
-    m 2a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
-    m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
-    m 4d "You have to remember that we all start out from somewhere, and--"
-    m 2c "Actually, this doesn't just apply to writing, but to anything really."
-    m 2r "What I'm trying to say is don't be discouraged."
-    m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
-    m "Because that just means that you can improve and be better than you were before."
-    m 1e "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
-    m 3b "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
-    m 3j "I love you, and I will always support you in whatever you do."
-    m 1n "Provided it's legal of course."
-    m "That doesn't mean I'm completely against it. I can keep a secret after all~"
-    m 1d "Here's a saying I've learned."
-    m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
-    m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
-    m 3o "I don't remember the person who said that but the words are there."
-    m 2r "The effort one puts forth into something can transcend even one's self."
-    m 3e "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
-    m 4k "... That's my advice for today!"
-    m 1a "Thanks for listening~"
-    return
+#label monika_writingtip1:
+    #m 3a "You know..."
+    #m "We really don't do enough of these so here's another one!"
+    #m "Here's Monika's Writing Tip for the Day!"
+    #m 2a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    #m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
+    #m 4d "You have to remember that we all start out from somewhere, and--"
+    #m 2c "Actually, this doesn't just apply to writing, but to anything really."
+    #m 2r "What I'm trying to say is don't be discouraged."
+    #m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
+    #m "Because that just means that you can improve and be better than you were before."
+    #m 1e "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    #m 3b "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
+    #m 3j "I love you, and I will always support you in whatever you do."
+    #m 1n "Provided it's legal of course."
+    #m "That doesn't mean I'm completely against it. I can keep a secret after all~"
+    #m 1d "Here's a saying I've learned."
+    #m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
+    #m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
+    #m 3o "I don't remember the person who said that but the words are there."
+    #m 2r "The effort one puts forth into something can transcend even one's self."
+    #m 3e "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
+    #m 4k "... That's my advice for today!"
+    #m 1a "Thanks for listening~"
+    #return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanese",category=['misc','you'],prompt="Speaking Japanese",random=True))
@@ -4277,30 +4332,30 @@ label monika_otaku:
     m 1k "I can be your real-life fantasy instead~"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
+#init 5 python:
+    #addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
 
-label monika_write:
-    m 1a "I'm having fun doing these, so..."
-    m 3b "Here's Monika's Writing Tip of the Day!"
-    m 1a "Make sure you always write down any ideas you think of."
-    m "Why?"
-    m "Some of the best ideas might come when you least expect them to."
-    m "Even if it takes a bit of effort, write it down."
-    m 1a "Maybe you can inspire someone else."
-    m 3b "Maybe you may look back on it after some time and act on it."
-    m "You never know!"
-    m "It's always good to keep a journal."
-    m "You can use it to record ideas, feelings, anything that comes to mind."
-    m 1c "Just make sure the journal has a lock, though."
-    m "Maybe you can keep digital notes instead of physical ones, too."
-    m "After all, privacy is important."
-    m 1l "... I can't promise that I won't peek, though. It's way too tempting!"
-    m 1j "After all, we don't keep secrets from each other, right~?"
-    m 1a "Just remember, [player], I'll always support you giving life to your ideas."
-    m "...That's my advice for today!"
-    m "Thanks for listening~"
-    return
+#label monika_write:
+    #m 1a "I'm having fun doing these, so..."
+    #m 3b "Here's Monika's Writing Tip of the Day!"
+    #m 1a "Make sure you always write down any ideas you think of."
+    #m "Why?"
+    #m "Some of the best ideas might come when you least expect them to."
+    #m "Even if it takes a bit of effort, write it down."
+    #m 1a "Maybe you can inspire someone else."
+    #m 3b "Maybe you may look back on it after some time and act on it."
+    #m "You never know!"
+    #m "It's always good to keep a journal."
+    #m "You can use it to record ideas, feelings, anything that comes to mind."
+    #m 1c "Just make sure the journal has a lock, though."
+    #m "Maybe you can keep digital notes instead of physical ones, too."
+    #m "After all, privacy is important."
+    #m 1l "... I can't promise that I won't peek, though. It's way too tempting!"
+    #m 1j "After all, we don't keep secrets from each other, right~?"
+    #m 1a "Just remember, [player], I'll always support you giving life to your ideas."
+    #m "...That's my advice for today!"
+    #m "Thanks for listening~"
+    #return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self harm",random=True))
