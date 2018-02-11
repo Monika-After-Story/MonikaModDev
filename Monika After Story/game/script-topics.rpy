@@ -4003,7 +4003,7 @@ label monika_rock:
     m "Rock suddenly became a prominent genre, and it gave birth to other sub-genres as well."
     m 3b "Metal, hard rock, classical rock, and more!"
     m 3n "Ah, I've been rambling for a while now. Sorry, sorry."
-    m 1a "If you wanna blast on some good 'ol rock 'n roll, go ahead, [player]."
+    m 1a "If you wanna blast on some good ol' rock 'n roll, go ahead, [player]."
     m 1j "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
     return
 
@@ -4304,8 +4304,8 @@ init 5 python:
   
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
-     m "You know about writer's block, right?"
-     m 1e "I had it a lot, when I first started writing."
+     m 1e "You know about writer's block, right?"
+     m "I had it a lot, when I first started writing."
      m 1l "Sometimes it was halfway through a draft, but more often before I even started."
      m 2f "Every time I tried to write a word, I thought, 'this isn't going to sound good', or 'this isn't how I want it to look'. So I'd stop, backtrack, and try again."
      m 2d "But I realised it ultimately didn't matter if things didn't work out first time!"
@@ -4315,8 +4315,8 @@ label monika_writingtip4:
      m 3a "I think it's like that with all things - not just writing."
      m "Anything that needs you to try and try again - art, music, learning, relationships, even..."
      m 3h "It's hard to completely convince yourself that that's the case, sometimes."
-     m 1g "But you have to."
-     m 1h "You have to, if you want to get anywhere."
+     m 3g "But you have to."
+     m 1g "You have to, if you want to get anywhere."
      m 1a "...That's my advice for today!"
      m 2j "Thanks for listening~"
      return
@@ -4539,7 +4539,7 @@ label monika_1984:
     m 2p "Anything that could be used to oppose them."
     m 2f "Poems would look like the ones you tried to make."
     m 2q "Just a string of nonsensical words with no feeling."
-    m 2f "I definitely don't want to happen."
+    m 2f "I definitely don't want that to happen."
     m 1o "I can't imagine a world where I can't think freely."
     m 1g "Let alone a world where I can't express my love to you, [player]..."
     return
