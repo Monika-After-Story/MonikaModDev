@@ -4,9 +4,8 @@
 # dict of tuples containing mood event data
 default persistent._mas_mood_database = {}
 
-# current mood, in a lowercase format
-default persistent._mas_mood_current = ""
-default persistent._mas_mood_current_type = None # this one should be a constant
+# label of the current mood
+default persistent._mas_mood_current = None
 
 # NOTE: plan of attack
 # moods system will be attached to the talk button
@@ -34,6 +33,7 @@ default persistent._mas_mood_current_type = None # this one should be a constant
 # Event Class:
 #   prompt - button prompt
 #   category - acting as a type system, similar to jokes
+#       NOTE: only one type allowed for moods ([0] will be retrievd)
 #   unlocked - True, since moods are unlocked by default
 #
 
@@ -57,7 +57,27 @@ init -1 python in mas_moods:
     MOOD_XALIGN = -0.05
     MOOD_AREA = (MOOD_X, MOOD_Y, MOOD_W, MOOD_H)
     MOOD_RETURN = "TODO: cancel"
-    
+
+## FUNCTIONS ==================================================================
+
+    def getMoodType(mood_label):
+        """
+        Gets the mood type for the given mood label
+
+        IN:
+            mood_label - label of a mood
+
+        RETURNS:
+            type of the mood, or None if no type found
+        """
+        mood = mood_db.get(mood_label, None)
+
+        if mood:
+            return mood.category[0]
+
+        return None
+   
+
 # entry point for mood flow
 label mas_mood_start:
     python:
@@ -79,8 +99,7 @@ label mas_mood_start:
         $ pushEvent(_return)
 
         # and set the moods
-        $ persistent._mas_mood_current = mas_moods.mood_db[_return]
-        $ persistent._mas_mood_current_type = mas_moods.mood_db[_return].category[0]
+        $ persistent._mas_mood_current = _return
 
     return
 
