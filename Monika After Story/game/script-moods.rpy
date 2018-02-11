@@ -56,7 +56,7 @@ init -1 python in mas_moods:
     MOOD_H = 640
     MOOD_XALIGN = -0.05
     MOOD_AREA = (MOOD_X, MOOD_Y, MOOD_W, MOOD_H)
-    MOOD_RETURN = "TODO: cancel"
+    MOOD_RETURN = "like talking about something else"
 
 ## FUNCTIONS ==================================================================
 
@@ -102,7 +102,7 @@ label mas_mood_start:
         # and set the moods
         $ persistent._mas_mood_current = _return
 
-    return
+    return _return
 
 # dev easter eggs go in the dev file
 

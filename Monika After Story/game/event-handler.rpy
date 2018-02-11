@@ -387,6 +387,8 @@ label prompt_menu:
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
+        if not _return:
+            jump prompt_menu
 
     elif madechoice == "goodbye":
         call random_farewell from _call_random_farewell
