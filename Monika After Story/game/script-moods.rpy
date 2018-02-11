@@ -111,7 +111,7 @@ label mas_mood_start:
 ###############################################################################
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="Hungry",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="hungry",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_hungry:
     m 3j "If you're hungry, get something to eat, silly."
