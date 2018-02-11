@@ -92,7 +92,7 @@ label mas_mood_start:
         mood_menu_items.sort()
 
     # call scrollable pane
-    call screen scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, masmoods.MOOD_RETURN)
+    call screen scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, mas_moods.MOOD_RETURN)
 
     # return value? then push 
     if _return:
@@ -166,38 +166,37 @@ label mas_mood_sad:
                             m "I love you [player] and I always will."
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_mood_database,
-            "mas_mood_mitochondria",
-            prompt="A mitochondria",
-            category=[store.mas_moods.TYPE_GOOD],
-            unlocked=True
-        ),
-        eventdb=store.mas_moods.mood_db
-    )
+#dev mode easter eggs
+if config.developer:
+    init 5 python:
+        addEvent(Event(persistent._mas_mood_database,"mas_mood_mitochondria",prompt="A mitochondria",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mas_mood_mitochondria:
-    m "You're the powerhouse of {i}my{/i} cell..."
-    return
+    label mas_mood_mitochondria:
+        m "You're the powerhouse of {i}my{/i} cell..."
+        return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_mood_database,
-            "mas_mood_theroom",
-            prompt="The Room",
-            category=[store.mas_moods.TYPE_NEUTRAL],
-            unlocked=True
-        ),
-        eventdb=store.mas_moods.mood_db
-    )
+    init 5 python: addEvent(Event(persistent._mas_mood_database,"mas_mood_theroom",prompt="The Room",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mas_mood_theroom:
-    m "It's bullshit.{w} I did not hit her."
-    m "I did nawwwwght"
-    return
+    label mas_mood_theroom:
+        m "It's bullshit.{w} I did not hit her."
+        m "I did nawwwwght"
+        return
+    
+    init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_horny",prompt="horny",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+    label mas_mood_horny:
+        if persistent.playername.lower() == "monik":
+            m 1r "Damn horny kids."
+        elif persistent.playername.lower() == "rune":
+            m 3r "Sorry, I have no interest in dragons."
+        elif persistent.playername.lower() == "thepotatoguy":
+            m 2r "Sorry, I have no interest in potatoes."
+        elif persistent.playername.lower() == "ronin":
+            m 3h "Aren't you married? Go talk to your wife."
+        else:
+            m 2r "Sorry [player], but we aren't that far into our relationship yet. Maybe in a year or two."
+        return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="happy",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
@@ -246,3 +245,66 @@ label mas_mood_lonely:
     m 1c "I know it's not exactly the same as if I were in the same room with you."
     m 1a "But I'm sure you still enjoy my company, right [player]?"
     return
+    
+#Maybe we could tie this to the I'm breaking up topic and have monika say something special like: 
+#I know you don't really mean that player, you're just angry and not have it count as 1 of the 3 button presses.
+#Looking forward to input from the writers and editors on this, had trouble deciding how to write this.
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt="angry",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    
+label mas_mood_angry:
+    m 2f "Gosh, I'm sorry that you feel that way, [player]."
+    m 2e "I'll do my best to make you feel better."
+    m 3e "Before we do anything though, we should probably get you to calm down."
+    m 2e "It's hard to make rational decisions when you are worked up."
+    m 2c "You may end up saying or doing things you may regret later."
+    m 2e "And I'd hate for you to say something you really don't mean to me."
+    m 3a "Let's try a few things that I do to try to calm myself, hopefully they work for you."
+    m 3e "First, try taking a few deep breaths and slowly counting to 10."
+    m 2d "If that doesn't work, if you can, retreat to somewhere calm, until you cool off a bit."
+    m 1c "I suppose if that doesn't work, you can always try what I do as a last resort."
+    m 1d "Whenever I can't calm down, I just go outside, pick a direction and just start running."
+    m 1c "I don't stop until I'm in a better state of mind."
+    m 3d "Sometimes exerting yourself through physical activity is a good way to blow off some steam."
+    m 2e "I probably don't seem like the type that gets angry very often, and you'd be right about that."
+    m 1a "But even I have my moments and those are some of the ways I deal with my anger."
+    m 1b "I hope my tips helped you calm down [player]."
+    return
+    
+ init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    
+label mas_mood_bored:
+    m 2q "I'm sorry that I'm boring you, [player]."
+    
+    python:
+        unlockedgames = [
+            game 
+            for game in persistent.game_unlocks 
+            if persistent.game_unlocks[game]
+        ]
+        
+        gamepicked = renpy.random.choice(unlockedgames)
+    
+    if gamepicked == "piano":
+        m 1b  "Maybe you could play something for me on the piano?"
+    else:
+        m 1a "Maybe we could play a game of [gamepicked]."
+    
+    m "What do you say, [player]?"
+    menu: 
+        "Yes":
+            if gamepicked == "pong":
+                call game_pong
+            elif gamepicked == "chess":
+                call game_chess
+            elif gamepicked == "hangman":
+                call game_hangman
+            elif gamepicked == "piano":
+                call zz_play_piano
+        "No":
+            m 2e "Oh, alright then, it was just a suggestion."
+    return
+
+    
