@@ -157,10 +157,9 @@ python early:
                     data_row[0:len(stored_data_row)] = list(stored_data_row)
                     self.per_eventdb[self.eventlabel] = tuple(data_row)
 
-                else:
-                    # otherwise, always set propmt and category
-                    self.prompt = prompt
-                    self.category = category
+                # actaully this should be always
+                self.prompt = prompt
+                self.category = category
 
             # new items are added appropriately
             else:
@@ -535,7 +534,7 @@ python early:
     # this should be in the EARLY block
     class MASButtonDisplayable(renpy.Displayable):
         """
-        Special button type that represents a usable button for custom 
+        Special button type that represents a usable button for custom
         displayables.
 
         PROPERTIES:
@@ -657,7 +656,7 @@ python early:
             # current state
             self._state = self._STATE_IDLE
 
-        
+
         def _isOverMe(self, x, y):
             """
             Checks if the given x and y coodrinates are over this button.
@@ -699,7 +698,7 @@ python early:
         def enable(self):
             """
             Enables this button. This changes the internal state, so its
-            preferable to use this over setting the disabled property 
+            preferable to use this over setting the disabled property
             directly
             """
             self.disabled = False
@@ -717,7 +716,7 @@ python early:
             """
             return (self.width, self.height)
 
-        
+
         def ground(self):
             """
             Grounds (unhovers) this button. This changes the internal state,
@@ -774,7 +773,7 @@ python early:
 
 
         def event(self, ev, x, y, st):
-          
+
             # only check if we arent disabled (or are allowed to work while
             #   disabled)
             if self._state != self._STATE_DISABLED or self.enable_when_disabled:
@@ -792,12 +791,12 @@ python early:
                     elif is_over_me:
                         self.hovered = True
                         self._state = self._STATE_HOVER
-                        
+
                         if self.hover_sound:
                             self._playHoverSound()
 
                 elif (
-                        ev.type == self._button_down 
+                        ev.type == self._button_down
                         and ev.button == self._button_click
                     ):
                     if self.hovered:
@@ -807,9 +806,10 @@ python early:
 
             # otherwise continue on
             return None
-                
+
 
 init -1 python:
+    import datetime # for mac issues i guess.
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
@@ -2106,6 +2106,7 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
+define scene_change = True # we start off with a scene change
 init python:
     startup_check = False
     try:
