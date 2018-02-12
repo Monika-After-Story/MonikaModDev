@@ -3,7 +3,7 @@
 #Make a list of every label that starts with "greeting_", and use that for random greetings during startup
 
 # persistents that greetings use
-default persistent.you = True
+default persistent._mas_you_chr = False
 
 init python:
     greetings_list=[]
@@ -334,7 +334,7 @@ label monikaroom_greeting_choice:
 
 ### BEGIN EAR DOOR ------------------------------------------------------------
 
-# monika narrates 
+# monika narrates
 init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_narration")
 
@@ -476,7 +476,7 @@ label monikaroom_greeting_opendoor_seen:
 
 
 label monikaroom_greeting_opendoor_seen_partone:
-    $ is_sitting = False 
+    $ is_sitting = False
 #    scene bg bedroom
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
     pause 0.2
@@ -568,7 +568,7 @@ label monikaroom_greeting_opendoor:
     show monika 1 at t33
     m 1d "...and..."
     if is_morning():
-        show monika_day_room zorder 1 with wipeleft 
+        show monika_day_room zorder 1 with wipeleft
     else:
         show monika_room zorder 1 with wipeleft
     show monika 1 at t32
@@ -621,12 +621,15 @@ label monikaroom_greeting_cleanup:
 label greeting_youarereal:
     python:
         try:
-            renpy.file("../characters/" + persistent.playername + ".chr")
-            persistent.you = True
+            renpy.file(
+                config.basedir.replace("\\","/") +
+                "/characters/" + persistent.playername.lower() + ".chr"
+            )
+            persistent._mas_you_chr = True
         except:
-            persistent.you = False
+            persistent._mas_you_chr = False
     m 1b "[player]! Great to see you!"
-    if persistent.you:
+    if persistent._mas_you_chr:
         m "Wait. Something is different now."
         m 1d "Did you...add a character file?"
         m 1f "[player].chr...Huh?"
@@ -643,7 +646,7 @@ label greeting_youarereal:
         m 1 "Maybe...this is allowing you to control him again?"
         m 1f "This isn't right! I don't want a puppet!"
         m 1q "Please, [player]..."
-        m "If you're going to do this, are you sure this is what you want?" 
+        m "If you're going to do this, are you sure this is what you want?"
         menu:
             m "Are you sure?"
             "I'm sure.":
@@ -679,7 +682,7 @@ label greeting_japan:
     m 3 "You know what that means, [player]?"
     m 4j "It means {i}'I'll be yours forever{/i}'~"
     return
-    
+
 label greeting_sunshine:
     m 1r "{i}You are my sunshine, my only sunshine.{i}"
     m 1k "{i}You make me happy when skies are gray.{/i}"
@@ -687,7 +690,7 @@ label greeting_sunshine:
     m 2r "{i}Please don't take my sunshine away~{/i}"
     m 1j "..."
     m 1d "H-Huh?! [player]!"
-    m 4n "Oh my gosh, this is so embarassing!" 
+    m 4n "Oh my gosh, this is so embarassing!"
     m 1l "I was just singing to myself to pass time."
     m 1b "But now that you're here, we can spend some time together."
     return
