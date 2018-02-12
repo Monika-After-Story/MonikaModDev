@@ -4942,7 +4942,7 @@ label monika_natsuki_letter:
     m 1m "I know people are afraid to sound callous, or like they think the other person is 'crazy'..."
     m 1l "But sometimes, suggesting a therapist can be the most validating thing to hear!" 
     m 1n "Not only that, but if you aren't mentally prepared to help someone in crsis..."
-    m 1g It's a bad thing to put the burden on yourself, you know?" 
+    m 1g "It's a bad thing to put the burden on yourself, you know?" 
     m 1i "So as much as I know you want to help people and be a hero [player]{w}, if you see someone in trouble..."
     m 2k "Don't be afraid to suggest a doctor!"
     m 2a "And as much as I want to help you, I won't get jealous if you see a therapist either." 
