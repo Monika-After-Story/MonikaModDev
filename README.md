@@ -62,16 +62,11 @@ If you wish to add more dialogue to the space room, navigate to script-topics.rp
 Example new dialogue code block:
 ```renpy
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            "monika_example", # event label
-            prompt="Example Topic", # button text
-            category=["example", "topic"], # list of categories this topic belongs in
-            random=True, # True if this topic should appear randomly
-            pool=True # True if this topic should appear in "Ask a Question"
-        )
-    )
+    # List of keywords for the topic.
+    for key in ['my','key','words']:
+        monika_topics.setdefault(key,[])
+        monika_topics[key].append('monika_example') # Identifier
+    monika_random_topics.append('monika_example') # Optional. Remove if you don't want Monika to bring this up at random.
 
 label monika_example:
     m "This is an example topic."
@@ -80,7 +75,6 @@ label monika_example:
     m "They really shouldn't be allowed to contribute to this repository anymore."
     return
 ```
-**For full explanations and details on all the possible keywords for Event, check the documentation for Event located in `definitions.rpy`**
 
 For things more complicated than simple dialogue, consult the Ren'Py documentation available online.
 

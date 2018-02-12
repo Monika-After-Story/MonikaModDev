@@ -192,14 +192,6 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.7.1
-label v0_7_1(version="v0_7_1"):
-    # TODO:
-    # piano adjustments:
-    # main label name change, update persistent._seen_ever
-    # persistent.pnml_data -> persistent._mas_pnml_data
-    return
-
 # 0.7.0
 label v0_7_0(version="v0_7_0"):
     python:
