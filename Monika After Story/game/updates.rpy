@@ -174,6 +174,9 @@ init 10 python:
 #
 # NOTE: the labels here mean we are updating TO this version
 
+# TODO: piano label changed from 0.7.0 to 0.7.1:
+#   zz_play_piano -> mas_piano_start
+
 # all generic (only updateTopicID calls) go here
 label vgenericupdate(version="v0_2_2"):
 label v0_6_1(version=version): # 0.6.1
