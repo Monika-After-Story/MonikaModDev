@@ -4,13 +4,16 @@
 # we need one persistent for data saving
 # each list item is a tuple of the following format:
 #   See PianoNoteMatchList._loadTuple
-default persistent.pnml_data = []
+default persistent._mas_pnml_data = []
+
+# persistent for keymaps
+default persistent._mas_piano_keymaps = {}
 
 # TRANSFORMS
-transform piano_quit_label:
-    xanchor 0.5 xpos 275 yanchor 0 ypos 332
+#transform piano_quit_label:
+#    xanchor 0.5 xpos 275 yanchor 0 ypos 332
 
-transform piano_lyric_label:
+transform mas_piano_lyric_label:
     xalign 0.5 yalign 0.5
 
 # super xp for playing well
@@ -19,24 +22,24 @@ define xp.ZZPK_FULLCOMBO = 40
 define xp.ZZPK_PRACTICE = 15
 
 # label that calls this creen
-label zz_play_piano:
+label mas_piano_start:
 
     # initial setup
-    $ import store.zzpianokeys as zzpianokeys
-    $ quit_label = Text("Press 'Z' to quit", size=36)
+    $ import store.mas_piano_keys as mas_piano_keys
+#    $ quit_label = Text("Press 'Z' to quit", size=36)
     $ pnmlLoadTuples()
 
     # Intro to piano dialogue here
     m 1j "You want to play the piano?"
 
-label zz_play_piano_loopstart:
+label mas_piano_loopstart:
 
     # get song list
-    $ song_list = zzpianokeys.getSongChoices()
+    $ song_list = mas_piano_keys.getSongChoices()
     $ pnml = None
     $ play_mode = PianoDisplayable.MODE_FREE
 
-label zz_play_piano_songchoice:
+label mas_piano_songchoice:
 
     if len(song_list) > 1:
         show monika 1a
@@ -62,22 +65,22 @@ label zz_play_piano_songchoice:
                     # regardless, set mode
                     $ play_mode = PianoDisplayable.MODE_SONG
 
-                    jump zz_play_piano_setupstart
+                    jump mas_piano_setupstart
 
                 # nvermind selected
                 else:
-                    jump zz_play_piano_songchoice
+                    jump mas_piano_songchoice
 
             "On my own":
                 pass
 
             "Nevermind":
-                jump zz_play_piano_loopend
+                jump mas_piano_loopend
 
     # otherwise, we default to freestyle mode
     m 1a "Then play for me, [player]~"
 
-label zz_play_piano_setupstart:
+label mas_piano_setupstart:
 
     show monika 1a at t22
 
@@ -87,14 +90,14 @@ label zz_play_piano_setupstart:
         store.songs.enabled = False
         store.hkb_button.enabled = False
     stop music
-    show text quit_label zorder 10 at piano_quit_label
+#    show text quit_label zorder 10 at piano_quit_label
 
     # call the display
     $ ui.add(PianoDisplayable(play_mode, pnml=pnml))
     $ full_combo,is_win,is_practice,post_piano = ui.interact()
 
     # post call cleanup
-    hide text quit_label
+#    hide text quit_label
     $ store.songs.enabled = True
     $ store.hkb_button.enabled = True
     $ enable_esc()
@@ -113,27 +116,27 @@ label zz_play_piano_setupstart:
     call expression post_piano from _zzpk_ppel
 
     # No-hits dont get to try again
-    if post_piano != "zz_piano_none":
+    if post_piano != "mas_piano_result_none":
         show monika 1a
         menu:
             m "Would you like to play again?"
             "Yes":
-                jump zz_play_piano_loopstart
+                jump mas_piano_loopstart
             "No":
                 pass
 
-label zz_play_piano_loopend:
+label mas_piano_loopend:
     return
 
 ### labels for piano states ===================================================
 
 # default. post game, freestyle mode
-label zz_piano_default:
+label mas_piano_result_default:
     m 1a "All done, [player]?"
     return
 
 # Shown if player does not hit any notes
-label zz_piano_none:
+label mas_piano_result_none:
     m 1m "Uhhh [player]..."
     m 1l "I thought you wanted to play the piano?"
     m 1e "I really enjoy hearing you play."
@@ -143,7 +146,7 @@ label zz_piano_none:
 ### YOUR REALITY
 
 # shown if player completes the song but does not FC
-label zz_piano_yr_win:
+label mas_piano_yr_win:
     m 1m "That was nice, [player]."
     m "But..."
     m 1n "You could do better with some more practice..."
@@ -151,21 +154,21 @@ label zz_piano_yr_win:
     return
 
 # shown if player FCs
-label zz_piano_yr_fc:
+label mas_piano_yr_fc:
     m 1b "That was wonderful, [player]!"
     m 1j "I didn't know you can play the piano so well."
     m 1a "Maybe we should play together sometime!"
     return
 
 # shown if player did not complete song and had more fails than passes
-label zz_piano_yr_fail:
+label mas_piano_yr_fail:
     m 1o "..."
     m 1e "That's okay, [player]."
     m 1j "At least you tried your best."
     return
 
 # shown if player did not complete song but had more passes than fails
-label zz_piano_yr_prac:
+label mas_piano_yr_prac:
     m 1a "That was really cool, [player]!"
     m 3b "With some more practice, you'll be able to play my song perfectly."
     m 1j "Make sure to practice everyday for me, okay~?"
@@ -260,7 +263,7 @@ label zz_piano_yr_prac:
 # DISPLAYABLE:
 
 # special store to contain a rdiciulous amount of constants
-init -3 python in zzpianokeys:
+init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
 
     # this is our threshold for determining how many notes the player needs to
@@ -289,6 +292,7 @@ init -3 python in zzpianokeys:
     A5SH = pygame.K_MINUS
     B5 = pygame.K_LEFTBRACKET
     C6 = pygame.K_RIGHTBRACKET
+    ESC = pygame.K_ESCAPE
 
     # keyorder, for reference
     KEYORDER = [
@@ -314,6 +318,165 @@ init -3 python in zzpianokeys:
         C6
     ]
 
+    # 1:1 keymap setup. this is the defaults
+    KEYMAP = {
+        F4: F4,
+        F4SH: F4SH,
+        G4: G4,
+        G4SH: G4SH,
+        A4: A4,
+        A4SH: A4SH,
+        B4: B4,
+        C5: C5,
+        C5SH: C5SH,
+        D5: D5,
+        D5SH: D5SH,
+        E5: E5,
+        F5: F5,
+        F5SH: F5SH,
+        G5: G5,
+        G5SH: G5SH,
+        A5: A5,
+        A5SH: A5SH,
+        B5: B5,
+        C6: C6
+    }
+        
+    # blacklisted keys
+    BLACKLIST = (
+        ESC,
+        pygame.K_MODE,
+        pygame.K_HELP,
+        pygame.K_PRINT,
+        pygame.K_SYSREQ,
+        pygame.K_BREAK,
+        pygame.K_MENU,
+        pygame.K_POWER,
+        pygame.K_EURO
+#        pygame.K_DELETE
+    )
+
+    # noncharable keymaps and display text dict
+    NONCHAR_TEXT = {
+        pygame.K_BACKSPACE: "\\b",
+        pygame.K_TAB: "\\t",
+        pygame.K_CLEAR: "Cr",
+        pygame.K_RETURN: "\\r",
+        pygame.K_PAUSE: "Pa",
+        pygame.K_DELETE: "Dl",
+        pygame.K_KP0: "K0",
+        pygame.K_KP1: "K1",
+        pygame.K_KP2: "K2",
+        pygame.K_KP3: "K3",
+        pygame.K_KP4: "K4",
+        pygame.K_KP5: "K5",
+        pygame.K_KP6: "K6",
+        pygame.K_KP7: "K7",
+        pygame.K_KP8: "K8",
+        pygame.K_KP9: "K9",
+        pygame.K_KP_PERIOD: "K.",
+        pygame.K_KP_DIVIDE: "K/",
+        pygame.K_KP_MULTIPLY: "K*",
+        pygame.K_KP_MINUS: "K-",
+        pygame.K_KP_PLUS: "K+",
+        pygame.K_KP_ENTER: "Kr",
+        pygame.K_KP_EQUALS: "K=",
+        pygame.K_UP: "Up",
+        pygame.K_DOWN: "Dn",
+        pygame.K_RIGHT: "Rg",
+        pygame.K_LEFT: "Lf",
+        pygame.K_INSERT: "In",
+        pygame.K_HOME: "Hm",
+        pygame.K_END: "En",
+        pygame.K_PAGEUP: "PU",
+        pygame.K_PAGEDOWN: "PD",
+        pygame.K_F1: "F1",
+        pygame.K_F2: "F2",
+        pygame.K_F3: "F3",
+        pygame.K_F4: "F4",
+        pygame.K_F5: "F5",
+        pygame.K_F6: "F6",
+        pygame.K_F7: "F7",
+        pygame.K_F8: "F8",
+        pygame.K_F9: "F9",
+        pygame.K_F10: "10",
+        pygame.K_F11: "11",
+        pygame.K_F12: "12",
+        pygame.K_F13: "13",
+        pygame.K_F14: "14",
+        pygame.K_F15: "15",
+        pygame.K_NUMLOCK: "NL",
+        pygame.K_CAPSLOCK: "CL",
+        pygame.K_SCROLLOCK: "SL",
+        pygame.K_RSHIFT: "RS",
+        pygame.K_LSHIFT: "LS",
+        pygame.K_RCTRL: "RC",
+        pygame.K_LCTRL: "LC",
+        pygame.K_RALT: "RA",
+        pygame.K_LALT: "LA",
+        pygame.K_RMETA: "RM",
+        pygame.K_LMETA: "LM",
+        pygame.K_RSUPER: "RW",
+        pygame.K_LSUPER: "LW"
+    }
+
+
+# FUNCTIONS ===================================================================
+
+
+    def _findKeymap(value):
+        """
+        Finds the key that points to value in the keymap. Effectively a dict
+        value search
+
+        IN:
+            value - value to find
+
+        RETURNS:
+            key in persistent._mas_piano_keymaps that returns value, or None
+            if value not found
+
+        ASSUMES:
+            persistent._mas_piano_keymaps
+        """
+        for k in renpy.game.persistent._mas_piano_keymaps:
+            if renpy.game.persistent._mas_piano_keymaps[k] == value:
+                return k
+
+        return None
+
+
+    def _setKeymap(key, new):
+        """
+        Sets a keymap. Checks for existing keymap and will remove it.
+        Will NOT set the keymap if key == new
+
+        IN:
+            key - the key we are mapping
+            new - the new key item to map to
+
+        RETURNS: tuple of the following format:
+            [0] - new key that was set (could be None)
+            [1] - old key that was originally set (could be None)
+
+        ASSUMES:
+            persistent._mas_piano_keymaps
+        """
+        old_key = _findKeymap(key)
+
+        if old_key:
+            # we have an old keymap, remove it
+            renpy.game.persistent._mas_piano_keymaps.pop(old_key)
+           
+        # only add a keymap if its different
+        if key != new:
+            renpy.game.persistent._mas_piano_keymaps[new] = key
+            return (new, old_key)
+
+        return (None, old_key)
+
+
+# CLASSES =====================================================================
 
     # Exception class for piano failures
     class PianoException(Exception):
@@ -635,16 +798,16 @@ init -3 python in zzpianokeys:
 # NOTE: if we do the above, we need to reconsider how we handle post game
 # labels. Storing them in text files would be better organized but bad
 # for finding errors
-init 1000 python in zzpianokeys:
+init 1000 python in mas_piano_keys:
 
     # all piano note matches should follow this layout:
-    # pnm_<song name inital>_v#l#
+    # _pnm_<song name inital>_v#l#
     # v#l# -> verse #, line #
 
 ### YOUR REALITY ##############################################################
 
     # your reality, piano note setup
-    pnm_yr_v1l1 = PianoNoteMatch(
+    _pnm_yr_v1l1 = PianoNoteMatch(
         renpy.text.text.Text(
             "Everyday, I imagine a future where I can be with you",
             style="monika_credits_text"
@@ -687,7 +850,7 @@ init 1000 python in zzpianokeys:
         postexpress="1j",
         verse=0
     )
-    pnm_yr_v1l2 = PianoNoteMatch(
+    _pnm_yr_v1l2 = PianoNoteMatch(
         renpy.text.text.Text(
             ("In my hands, is a pen that will write a poem of me" +
             " and you"),
@@ -711,12 +874,12 @@ init 1000 python in zzpianokeys:
             E5,
             C5
         ],
-        postnotes=pnm_yr_v1l1.postnotes,
+        postnotes=_pnm_yr_v1l1.postnotes,
         express="1b",
         postexpress="1a",
         verse=0,
     )
-    pnm_yr_v1l3 = PianoNoteMatch(
+    _pnm_yr_v1l3 = PianoNoteMatch(
         renpy.text.text.Text(
             "The ink flows down into a dark puddle",
             style="monika_credits_text"
@@ -737,7 +900,7 @@ init 1000 python in zzpianokeys:
         postexpress="1a",
         verse=0
     )
-    pnm_yr_v1l4 = PianoNoteMatch(
+    _pnm_yr_v1l4 = PianoNoteMatch(
         renpy.text.text.Text(
             "Just move your hand, write the way into his heart",
             style="monika_credits_text"
@@ -759,27 +922,27 @@ init 1000 python in zzpianokeys:
         postexpress="1j",
         verse=0
     )
-    pnm_yr_v1l5 = PianoNoteMatch(
+    _pnm_yr_v1l5 = PianoNoteMatch(
         renpy.text.text.Text(
             "But in this world of infinite choices",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l3.notes,
+        _pnm_yr_v1l3.notes,
         express="1b",
         postexpress="1a",
         verse=0
     )
-    pnm_yr_v1l6 = PianoNoteMatch(
+    _pnm_yr_v1l6 = PianoNoteMatch(
         renpy.text.text.Text(
             "What will it take just to find that special day?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l4.notes,
+        _pnm_yr_v1l4.notes,
         express="1b",
         postexpress="1a",
         verse=0
     )
-    pnm_yr_v1l7 = PianoNoteMatch(
+    _pnm_yr_v1l7 = PianoNoteMatch(
         renpy.text.text.Text(
             "What will it take just to find",
             style="monika_credits_text"
@@ -798,7 +961,7 @@ init 1000 python in zzpianokeys:
         verse=0,
         posttext=True
     )
-    pnm_yr_v1l8 = PianoNoteMatch(
+    _pnm_yr_v1l8 = PianoNoteMatch(
         renpy.text.text.Text(
             "that special day",
             style="monika_credits_text"
@@ -818,44 +981,44 @@ init 1000 python in zzpianokeys:
     )
 
     # verse 2
-    pnm_yr_v2l1 = PianoNoteMatch(
+    _pnm_yr_v2l1 = PianoNoteMatch(
         renpy.text.text.Text(
             "Have I found everybody a fun assignment to do today?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l1.notes,
-        postnotes=pnm_yr_v1l1.postnotes,
+        _pnm_yr_v1l1.notes,
+        postnotes=_pnm_yr_v1l1.postnotes,
         express="1b",
         postexpress="1a",
         verse=8,
         copynotes=0,
         ev_timeout=15.0
     )
-    pnm_yr_v2l2 = PianoNoteMatch(
+    _pnm_yr_v2l2 = PianoNoteMatch(
         renpy.text.text.Text(
             ("When you're here, everything that we do is fun for them"+
             " anyway"),
             style="monika_credits_text"
         ),
-        pnm_yr_v1l2.notes,
-        postnotes=pnm_yr_v1l2.postnotes,
+        _pnm_yr_v1l2.notes,
+        postnotes=_pnm_yr_v1l2.postnotes,
         express="1k",
         postexpress="1j",
         verse=8,
         copynotes=1
     )
-    pnm_yr_v2l3 = PianoNoteMatch(
+    _pnm_yr_v2l3 = PianoNoteMatch(
         renpy.text.text.Text(
             "When I can't even read my own feelings",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l3.notes,
+        _pnm_yr_v1l3.notes,
         express="1g",
         postexpress="1f",
         verse=8,
         copynotes=2
     )
-    pnm_yr_v2l4 = PianoNoteMatch(
+    _pnm_yr_v2l4 = PianoNoteMatch(
         renpy.text.text.Text(
             "What good are words",
             style="monika_credits_text"
@@ -872,7 +1035,7 @@ init 1000 python in zzpianokeys:
         verse=8,
         posttext=True
     )
-    pnm_yr_v2l5 = PianoNoteMatch(
+    _pnm_yr_v2l5 = PianoNoteMatch(
         renpy.text.text.Text(
             "when a smile says it all?",
             style="monika_credits_text"
@@ -892,23 +1055,23 @@ init 1000 python in zzpianokeys:
         verse=8,
         posttext=True
     )
-    pnm_yr_v2l6 = PianoNoteMatch(
+    _pnm_yr_v2l6 = PianoNoteMatch(
         renpy.text.text.Text(
             "And if this world won't write me an ending",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l5.notes,
+        _pnm_yr_v1l5.notes,
         express="1g",
         postexpress="1f",
         verse=8,
         copynotes=4
     )
-    pnm_yr_v2l7 = PianoNoteMatch(
+    _pnm_yr_v2l7 = PianoNoteMatch(
         renpy.text.text.Text(
             "What will it take just for me to have it all?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l6.notes,
+        _pnm_yr_v1l6.notes,
         express="1g",
         postexpress="1e",
         vis_timeout=3.0,
@@ -918,13 +1081,13 @@ init 1000 python in zzpianokeys:
     )
 
     # verse 3
-    pnm_yr_v3l1 = PianoNoteMatch(
+    _pnm_yr_v3l1 = PianoNoteMatch(
         renpy.text.text.Text(
             ("Does my pen only write bitter words for those who are "+
             "dear to me?"),
             style="monika_credits_text"
         ),
-        pnm_yr_v1l1.notes,
+        _pnm_yr_v1l1.notes,
 #                [
 #                    G5,
 #                    G5,
@@ -949,13 +1112,13 @@ init 1000 python in zzpianokeys:
         ev_timeout=25.0,
         vis_timeout=2.0
     )
-    pnm_yr_v3l2 = PianoNoteMatch(
+    _pnm_yr_v3l2 = PianoNoteMatch(
         renpy.text.text.Text(
             ("Is it love if I take you, or is it love if I set you " +
             "free?"),
             style="monika_credits_text"
         ),
-        pnm_yr_v1l2.notes,
+        _pnm_yr_v1l2.notes,
         express="1g",
         postexpress="1e",
         verse=15,
@@ -963,49 +1126,49 @@ init 1000 python in zzpianokeys:
         ev_timeout=7.0,
         vis_timeout=2.0
     )
-    pnm_yr_v3l3 = PianoNoteMatch(
-        pnm_yr_v1l3.say,
-        pnm_yr_v1l3.notes,
+    _pnm_yr_v3l3 = PianoNoteMatch(
+        _pnm_yr_v1l3.say,
+        _pnm_yr_v1l3.notes,
         express="1b",
         postexpress="1a",
         verse=15,
         copynotes=2,
         ev_timeout=10.0
     )
-    pnm_yr_v3l4 = PianoNoteMatch(
+    _pnm_yr_v3l4 = PianoNoteMatch(
         renpy.text.text.Text(
             "How can I write love into reality?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l4.notes,
+        _pnm_yr_v1l4.notes,
         express="1g",
         postexpress="1e",
         verse=15,
         copynotes=3
     )
-    pnm_yr_v3l5 = PianoNoteMatch(
+    _pnm_yr_v3l5 = PianoNoteMatch(
         renpy.text.text.Text(
             "If I can't hear the sound of your heartbeat",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l5.notes,
+        _pnm_yr_v1l5.notes,
         express="1p",
         postexpress="1o",
         verse=15,
         copynotes=4
     )
-    pnm_yr_v3l6 = PianoNoteMatch(
+    _pnm_yr_v3l6 = PianoNoteMatch(
         renpy.text.text.Text(
             "What do you call love in your reality?",
             style="monika_credits_text"
         ),
-        pnm_yr_v1l6.notes,
+        _pnm_yr_v1l6.notes,
         express="1g",
         postexpress="1e",
         verse=15,
         copynotes=5
     )
-    pnm_yr_v3l7 = PianoNoteMatch(
+    _pnm_yr_v3l7 = PianoNoteMatch(
         renpy.text.text.Text(
             "And in your reality, if I don't know how to love you",
             style="monika_credits_text"
@@ -1039,7 +1202,7 @@ init 1000 python in zzpianokeys:
         postexpress="1m",
         verse=15
     )
-    pnm_yr_v3l8 = PianoNoteMatch(
+    _pnm_yr_v3l8 = PianoNoteMatch(
         renpy.text.text.Text(
             "I'll leave you be",
             style="monika_credits_text"
@@ -1075,36 +1238,36 @@ init 1000 python in zzpianokeys:
     # your reality, pnml
     pnml_yourreality = PianoNoteMatchList(
         [
-            pnm_yr_v1l1,
-            pnm_yr_v1l2,
-            pnm_yr_v1l3,
-            pnm_yr_v1l4,
-            pnm_yr_v1l5,
-            pnm_yr_v1l6,
-            pnm_yr_v1l7,
-            pnm_yr_v1l8,
-            pnm_yr_v2l1,
-            pnm_yr_v2l2,
-            pnm_yr_v2l3,
-            pnm_yr_v2l4,
-            pnm_yr_v2l5,
-            pnm_yr_v2l6,
-            pnm_yr_v2l7,
-            pnm_yr_v3l1,
-            pnm_yr_v3l2,
-            pnm_yr_v3l3,
-            pnm_yr_v3l4,
-            pnm_yr_v3l5,
-            pnm_yr_v3l6,
-            pnm_yr_v3l7,
-            pnm_yr_v3l8
+            _pnm_yr_v1l1,
+            _pnm_yr_v1l2,
+            _pnm_yr_v1l3,
+            _pnm_yr_v1l4,
+            _pnm_yr_v1l5,
+            _pnm_yr_v1l6,
+            _pnm_yr_v1l7,
+            _pnm_yr_v1l8,
+            _pnm_yr_v2l1,
+            _pnm_yr_v2l2,
+            _pnm_yr_v2l3,
+            _pnm_yr_v2l4,
+            _pnm_yr_v2l5,
+            _pnm_yr_v2l6,
+            _pnm_yr_v2l7,
+            _pnm_yr_v3l1,
+            _pnm_yr_v3l2,
+            _pnm_yr_v3l3,
+            _pnm_yr_v3l4,
+            _pnm_yr_v3l5,
+            _pnm_yr_v3l6,
+            _pnm_yr_v3l7,
+            _pnm_yr_v3l8
         ],
         [0, 8, 15, 23],
         "Your Reality",
-        "zz_piano_yr_win",
-        "zz_piano_yr_fc",
-        "zz_piano_yr_fail",
-        "zz_piano_yr_prac",
+        "mas_piano_yr_win",
+        "mas_piano_yr_fc",
+        "mas_piano_yr_fail",
+        "mas_piano_yr_prac",
         5.0
 #        "zz_piano_yr_launch"
     )
@@ -1139,10 +1302,9 @@ init 1000 python in zzpianokeys:
         song_list.append(("Nevermind", "None"))
         return song_list
 
-# make this later than zzpianokeys
+# make this later than mas_piano_keys
 init 1001 python:
-    import pygame # because we need them keyups
-    import store.zzpianokeys as zzpianokeys
+    import store.mas_piano_keys as mas_piano_keys
 
     # setup named tuple dicts
     def pnmlLoadTuples():
@@ -1151,11 +1313,11 @@ init 1001 python:
         be in the proper format. No checking is done.
 
         ASSUMES:
-            persistent.pnml_data
-            zzpianokeys.pnml_db
+            persistent._mas_pnml_data
+            mas_piano_keys.pnml_db
         """
-        for data_row in persistent.pnml_data:
-            db_data = zzpianokeys.pnml_db.get(data_row[0], None)
+        for data_row in persistent._mas_pnml_data:
+            db_data = mas_piano_keys.pnml_db.get(data_row[0], None)
             if db_data:
                 db_data._loadTuple(data_row)
 
@@ -1164,15 +1326,16 @@ init 1001 python:
         Saves piano not match list into a pickleable format.
 
         ASSUMES:
-            persistent.pnml_data
-            zzpianokeys.pnml_db
+            persistent._mas_pnml_data
+            mas_piano_keys.pnml_db
         """
-        persistent.pnml_data = [
-            zzpianokeys.pnml_db[k]._saveTuple() for k in zzpianokeys.pnml_db
+        persistent._mas_pnml_data = [
+            mas_piano_keys.pnml_db[k]._saveTuple() for k in mas_piano_keys.pnml_db
         ]
 
     # the displayable
     class PianoDisplayable(renpy.Displayable):
+        import pygame # because we need them keyups
 
         # CONSTANTS
         # timeout
@@ -1188,13 +1351,15 @@ init 1001 python:
 
         # AT_LIST
         AT_LIST = [i22]
-        TEXT_AT_LIST = [piano_lyric_label]
+        TEXT_AT_LIST = [mas_piano_lyric_label]
 
         # expressions
         DEFAULT = "monika 1a"
         AWKWARD = "monika 1l"
         HAPPY = "monika 1j"
         FAILED = "monika 1m"
+        CONFIGGING = "monika 3a"
+#        CONFIG_CHANGE = "monika 3a"
 
         # Text related
         TEXT_TAG = "piano_text"
@@ -1291,6 +1456,23 @@ init 1001 python:
         # NOTE: CALLS REDRAW
         STATE_WDONE = 14
 
+        # CONFIGuration WAIT state. This is for configuration mode, waiting
+        # for the user to click something. The user can hit the keys and play
+        # sounds, but thats about it. If the user clicks a key with mouse,
+        # the key is pressed and we enter CHANGE.
+        # when user clicks Done, we go back to LISTEN state.
+        STATE_CONFIG_WAIT = 15
+
+        # CONFIGuration CHANGE state. This is for configuration mode. User
+        # has selected a key, and now we want to set it to the next key the
+        # user presses.
+        STATE_CONFIG_CHANGE = 16
+
+        # CONFIGuration ENTRY state. This is for just entering the config mode.
+        # we reset monika's expression to the default one and clear the lyric
+        # bar. Then we enter CONFIG_WAIT state
+        STATE_CONFIG_ENTRY = 17
+
         # TUPLE state groups. This for easier checking of states
         # States related to Done flow
         DONE_STATES = (
@@ -1349,6 +1531,13 @@ init 1001 python:
             STATE_WDONE
         )
 
+        # configuration states
+        CONFIG_STATES = (
+            STATE_CONFIG_WAIT,
+            STATE_CONFIG_CHANGE,
+            STATE_CONFIG_ENTRY
+        )
+
         # key limit for matching
         KEY_LIMIT = 100
 
@@ -1397,6 +1586,9 @@ init 1001 python:
         ZZPK_IMG_KEYS_Y = 50
         ZZPK_LYR_BAR_YOFF = -50
 
+        # offset for hit location
+        ZZPK_IMG_IKEY_YOFF = 152
+
         # other sizes
         ZZPK_IMG_IKEY_WIDTH = 36
         ZZPK_IMG_IKEY_HEIGHT = 214
@@ -1404,8 +1596,42 @@ init 1001 python:
         ZZPK_IMG_EKEY_HEIGHT = 152
 
         # MODES
+        MODE_SETUP = -1 # setup mode, only used by derivative class
         MODE_FREE = 0
         MODE_SONG = 1 # song mode means we are trying to play a song
+
+        # button stuff
+        BUTTON_SPACING = 10
+        BUTTON_WIDTH = 120
+        BUTTON_HEIGHT = 35
+
+        # mouse related events
+        MOUSE_EVENTS = (
+            pygame.MOUSEMOTION,
+            pygame.MOUSEBUTTONDOWN,
+            pygame.MOUSEBUTTONUP
+        )
+
+        # keymap text overlays
+        # these are supposed to be off so you can tell which keys are custom
+        # and which are default
+        # x coords are same as black keys (which vary)
+        # black ones
+        KMP_TXT_OVL_B_Y = ZZPK_IMG_BACK_Y 
+        KMP_TXT_OVL_B_W = ZZPK_IMG_EKEY_WIDTH
+        KMP_TXT_OVL_B_H = 47
+        KMP_TXT_OVL_B_BGCLR = "#4D4154"
+        KMP_TXT_OVL_B_FGCLR = "#14001E"
+
+        # white ones
+        KMP_TXT_OVL_W_X = ZZPK_IMG_KEYS_X
+        KMP_TXT_OVL_W_Y = ZZPK_IMG_BACK_Y + 281
+        KMP_TXT_OVL_W_W = ZZPK_IMG_IKEY_WIDTH
+        KMP_TXT_OVL_W_H = 41
+        KMP_TXT_OVL_W_BGCLR = "#14001E"
+        KMP_TXT_OVL_W_FGCLR = "#4D4154"
+
+        KMP_TXT_OVL_FONT = "gui/font/Halogen.ttf"
 
         def __init__(self, mode, pnml=None):
             """
@@ -1426,95 +1652,360 @@ init 1001 python:
             # background piano
             self.piano_back = Image(self.ZZPK_IMG_BACK)
             self.piano_keys = Image(self.ZZPK_IMG_KEYS)
-            self.PIANO_BACK_WIDTH = 437
-            self.PIANO_BACK_HEIGHT = 214
+            self.PIANO_BACK_WIDTH = 545
+            self.PIANO_BACK_HEIGHT = 322
 
             # lyric bar
             self.lyrical_bar = Image(self.ZZPK_LYR_BAR)
 
+            # button shit
+            button_idle = Image("mod_assets/hkb_idle_background.png")
+            button_hover = Image("mod_assets/hkb_hover_background.png")
+            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+
+            # button text
+            button_done_text_idle = Text(
+                "Done",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_done_text_hover = Text(
+                "Done",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_cancel_text_idle = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_cancel_text_hover = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_reset_text_idle = Text(
+                "Reset",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_reset_text_hover = Text(
+                "Reset",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_resetall_text_idle = Text(
+                "Reset All",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_resetall_text_hover = Text(
+                "Reset All",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_config_text_idle = Text(
+                "Config",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_config_text_hover = Text(
+                "Config",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+            button_quit_text_idle = Text(
+                "Quit",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_quit_text_hover = Text(
+                "Quit",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+
+            # calculate button locations
+            # buttons should be spaced by BUTTONS_SPACING
+            cbutton_x_start = (
+                int((self.PIANO_BACK_WIDTH - (
+                    (self.BUTTON_WIDTH * 3) + (self.BUTTON_SPACING * 2)
+                )) / 2) + self.ZZPK_IMG_BACK_X
+            )
+            cbutton_y_start = (
+                self.ZZPK_IMG_BACK_Y + 
+                self.PIANO_BACK_HEIGHT +
+                self.BUTTON_SPACING
+            )
+            pbutton_x_start = (
+                int((self.PIANO_BACK_WIDTH - (
+                    (self.BUTTON_WIDTH * 2) + self.BUTTON_SPACING
+                )) / 2) + self.ZZPK_IMG_BACK_X
+            )
+            pbutton_y_start = cbutton_y_start
+
+            # the 4 config buttons we have
+            self._button_done = MASButtonDisplayable(
+                button_done_text_idle,
+                button_done_text_hover,
+                button_done_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                cbutton_x_start,
+                cbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_cancel = MASButtonDisplayable(
+                button_cancel_text_idle,
+                button_cancel_text_hover,
+                button_cancel_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                cbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
+                cbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_reset = MASButtonDisplayable(
+                button_reset_text_idle,
+                button_reset_text_hover,
+                button_reset_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                cbutton_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
+                cbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_resetall = MASButtonDisplayable(
+                button_resetall_text_idle,
+                button_resetall_text_hover,
+                button_resetall_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                cbutton_x_start + ((self.BUTTON_WIDTH + self.BUTTON_SPACING) * 2),
+                cbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            # the config button
+            self._button_config = MASButtonDisplayable(
+                button_config_text_idle,
+                button_config_text_hover,
+                button_config_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                pbutton_x_start,
+                pbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+            self._button_quit = MASButtonDisplayable(
+                button_quit_text_idle,
+                button_quit_text_hover,
+                button_quit_text_idle,
+                button_idle,
+                button_hover,
+                button_disabled,
+                pbutton_x_start + self.BUTTON_WIDTH + self.BUTTON_SPACING,
+                pbutton_y_start,
+                self.BUTTON_WIDTH,
+                self.BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound
+            )
+
+            # list of always visible buttons
+            self._always_visible_config = [
+                self._button_done,
+                self._button_cancel
+            ]
+            self._always_visible_play = [
+                self._button_config,
+                self._button_quit
+            ]
+
+            # config help text
+            self._config_wait_help = Text(
+                "Click on a pink area to change the keymap for that piano key",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fff",
+                outlines=[]
+            )
+            self._config_change_help = Text(
+                "Press the key you'd like to set this piano key to",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fff",
+                outlines=[]
+            )
+
             # setup sounds
             # sound dict:
             self.pkeys = {
-                zzpianokeys.F4: self.ZZFP_F4,
-                zzpianokeys.F4SH: self.ZZFP_F4SH,
-                zzpianokeys.G4: self.ZZFP_G4,
-                zzpianokeys.G4SH: self.ZZFP_G4SH,
-                zzpianokeys.A4: self.ZZFP_A4,
-                zzpianokeys.A4SH: self.ZZFP_A4SH,
-                zzpianokeys.B4: self.ZZFP_B4,
-                zzpianokeys.C5: self.ZZFP_C5,
-                zzpianokeys.C5SH: self.ZZFP_C5SH,
-                zzpianokeys.D5: self.ZZFP_D5,
-                zzpianokeys.D5SH: self.ZZFP_D5SH,
-                zzpianokeys.E5: self.ZZFP_E5,
-                zzpianokeys.F5: self.ZZFP_F5,
-                zzpianokeys.F5SH: self.ZZFP_F5SH,
-                zzpianokeys.G5: self.ZZFP_G5,
-                zzpianokeys.G5SH: self.ZZFP_G5SH,
-                zzpianokeys.A5: self.ZZFP_A5,
-                zzpianokeys.A5SH: self.ZZFP_A5SH,
-                zzpianokeys.B5: self.ZZFP_B5,
-                zzpianokeys.C6: self.ZZFP_C6
+                mas_piano_keys.F4: self.ZZFP_F4,
+                mas_piano_keys.F4SH: self.ZZFP_F4SH,
+                mas_piano_keys.G4: self.ZZFP_G4,
+                mas_piano_keys.G4SH: self.ZZFP_G4SH,
+                mas_piano_keys.A4: self.ZZFP_A4,
+                mas_piano_keys.A4SH: self.ZZFP_A4SH,
+                mas_piano_keys.B4: self.ZZFP_B4,
+                mas_piano_keys.C5: self.ZZFP_C5,
+                mas_piano_keys.C5SH: self.ZZFP_C5SH,
+                mas_piano_keys.D5: self.ZZFP_D5,
+                mas_piano_keys.D5SH: self.ZZFP_D5SH,
+                mas_piano_keys.E5: self.ZZFP_E5,
+                mas_piano_keys.F5: self.ZZFP_F5,
+                mas_piano_keys.F5SH: self.ZZFP_F5SH,
+                mas_piano_keys.G5: self.ZZFP_G5,
+                mas_piano_keys.G5SH: self.ZZFP_G5SH,
+                mas_piano_keys.A5: self.ZZFP_A5,
+                mas_piano_keys.A5SH: self.ZZFP_A5SH,
+                mas_piano_keys.B5: self.ZZFP_B5,
+                mas_piano_keys.C6: self.ZZFP_C6
             }
 
             # pressed dict
             self.pressed = {
-                zzpianokeys.F4: False,
-                zzpianokeys.F4SH: False,
-                zzpianokeys.G4: False,
-                zzpianokeys.G4SH: False,
-                zzpianokeys.A4: False,
-                zzpianokeys.A4SH: False,
-                zzpianokeys.B4: False,
-                zzpianokeys.C5: False,
-                zzpianokeys.C5SH: False,
-                zzpianokeys.D5: False,
-                zzpianokeys.D5SH: False,
-                zzpianokeys.E5: False,
-                zzpianokeys.F5: False,
-                zzpianokeys.F5SH: False,
-                zzpianokeys.G5: False,
-                zzpianokeys.G5SH: False,
-                zzpianokeys.A5: False,
-                zzpianokeys.A5SH: False,
-                zzpianokeys.B5: False,
-                zzpianokeys.C6: False
+                mas_piano_keys.F4: False,
+                mas_piano_keys.F4SH: False,
+                mas_piano_keys.G4: False,
+                mas_piano_keys.G4SH: False,
+                mas_piano_keys.A4: False,
+                mas_piano_keys.A4SH: False,
+                mas_piano_keys.B4: False,
+                mas_piano_keys.C5: False,
+                mas_piano_keys.C5SH: False,
+                mas_piano_keys.D5: False,
+                mas_piano_keys.D5SH: False,
+                mas_piano_keys.E5: False,
+                mas_piano_keys.F5: False,
+                mas_piano_keys.F5SH: False,
+                mas_piano_keys.G5: False,
+                mas_piano_keys.G5SH: False,
+                mas_piano_keys.A5: False,
+                mas_piano_keys.A5SH: False,
+                mas_piano_keys.B5: False,
+                mas_piano_keys.C6: False
             }
 
+            # blank text overlay
+            blank_text = Text("")
+
             # overlay setup
+            mouse_w_ovl_idle = Solid(
+#                "#0005", 
+                "#ffe6f4bb",
+                xsize=self.ZZPK_IMG_IKEY_WIDTH,
+                ysize=self.ZZPK_IMG_IKEY_HEIGHT - self.ZZPK_IMG_IKEY_YOFF
+            )
+            mouse_w_ovl_hover = Solid(
+#                "#ffe6f4aa",
+                "#ffaa99aa",
+                xsize=self.ZZPK_IMG_IKEY_WIDTH,
+                ysize=self.ZZPK_IMG_IKEY_HEIGHT - self.ZZPK_IMG_IKEY_YOFF
+            )
             left = Image(self.ZZPK_W_OVL_LEFT)
             right = Image(self.ZZPK_W_OVL_RIGHT)
             center = Image(self.ZZPK_W_OVL_CENTER)
             w_plain = Image(self.ZZPK_W_OVL_PLAIN)
             whites = [
-                (zzpianokeys.F4, left),
-                (zzpianokeys.G4, center),
-                (zzpianokeys.A4, center),
-                (zzpianokeys.B4, right),
-                (zzpianokeys.C5, left),
-                (zzpianokeys.D5, center),
-                (zzpianokeys.E5, right),
-                (zzpianokeys.F5, left),
-                (zzpianokeys.G5, center),
-                (zzpianokeys.A5, center),
-                (zzpianokeys.B5, right),
-                (zzpianokeys.C6, w_plain),
+                (mas_piano_keys.F4, left),
+                (mas_piano_keys.G4, center),
+                (mas_piano_keys.A4, center),
+                (mas_piano_keys.B4, right),
+                (mas_piano_keys.C5, left),
+                (mas_piano_keys.D5, center),
+                (mas_piano_keys.E5, right),
+                (mas_piano_keys.F5, left),
+                (mas_piano_keys.G5, center),
+                (mas_piano_keys.A5, center),
+                (mas_piano_keys.B5, right),
+                (mas_piano_keys.C6, w_plain),
             ]
 
             # key, x coord
             # NOTE: this is differente because black keys are not separated
             # equally
+            mouse_b_ovl_idle = Solid(
+                "#ffe6f4bb",
+                xsize=self.ZZPK_IMG_EKEY_WIDTH,
+                ysize=self.ZZPK_IMG_EKEY_HEIGHT
+            )
+            mouse_b_ovl_hover = Solid(
+                "#ffaa99aa",
+                xsize=self.ZZPK_IMG_EKEY_WIDTH,
+                ysize=self.ZZPK_IMG_EKEY_HEIGHT            
+            )
             b_plain = Image(self.ZZPK_B_OVL_PLAIN)
             blacks = [
-                (zzpianokeys.F4SH, 73),
-                (zzpianokeys.G4SH, 110),
-                (zzpianokeys.A4SH, 147),
-                (zzpianokeys.C5SH, 221),
-                (zzpianokeys.D5SH, 258),
-                (zzpianokeys.F5SH, 332),
-                (zzpianokeys.G5SH, 369),
-                (zzpianokeys.A5SH, 406)
+                (mas_piano_keys.F4SH, 73),
+                (mas_piano_keys.G4SH, 110),
+                (mas_piano_keys.A4SH, 147),
+                (mas_piano_keys.C5SH, 221),
+                (mas_piano_keys.D5SH, 258),
+                (mas_piano_keys.F5SH, 332),
+                (mas_piano_keys.G5SH, 369),
+                (mas_piano_keys.A5SH, 406)
             ]
+
+            # keymap text overlays
+            self._kmp_txt_ovl_b_bg = Solid(
+                self.KMP_TXT_OVL_B_BGCLR,
+                xsize=self.KMP_TXT_OVL_B_W,
+                ysize=self.KMP_TXT_OVL_B_H
+            )
+            self._kmp_txt_ovl_w_bg = Solid(
+                self.KMP_TXT_OVL_W_BGCLR,
+                xsize=self.KMP_TXT_OVL_W_W,
+                ysize=self.KMP_TXT_OVL_W_H
+            )
+
+            # keymap text overlays dict
+            # key : MASButtonDisplayable
+            self._keymap_overlays = dict()
 
             # overlay dict
             # NOTE: x and y are assumed to be relative to the top let of
@@ -1522,14 +2013,44 @@ init 1001 python:
             # (overlay image, x coord, y coord)
             self.overlays = dict()
 
+            # masbuttondisplayable overlays for config mode
+            self._config_overlays = dict()
+
+            # we store a list of the overlays for easy rendering
+            self._config_overlays_list = list()
+
             # white overlay processing
             for i in range(0,len(whites)):
                 k,img = whites[i]
+                top_left_x = (
+                    self.ZZPK_IMG_KEYS_X + (i * (self.ZZPK_IMG_IKEY_WIDTH + 1))
+                )
                 self.overlays[k] = (
                     img,
-                    self.ZZPK_IMG_KEYS_X + (i * (self.ZZPK_IMG_IKEY_WIDTH + 1)),
+                    top_left_x,
                     self.ZZPK_IMG_KEYS_Y
                 )
+                new_button = MASButtonDisplayable(
+                    blank_text,
+                    blank_text,
+                    blank_text,
+                    mouse_w_ovl_idle,
+                    mouse_w_ovl_hover,
+                    mouse_w_ovl_idle,
+                    top_left_x + self.ZZPK_IMG_BACK_X,
+                    (
+                        self.ZZPK_IMG_KEYS_Y + 
+                        self.ZZPK_IMG_IKEY_YOFF +
+                        self.ZZPK_IMG_BACK_Y
+                    ),
+                    self.ZZPK_IMG_IKEY_WIDTH,
+                    self.ZZPK_IMG_IKEY_HEIGHT - self.ZZPK_IMG_IKEY_YOFF,
+                    hover_sound=gui.hover_sound,
+                    activate_sound=self.pkeys[k],
+                    return_value=k
+                )
+                self._config_overlays[k] = new_button
+                self._config_overlays_list.append(new_button)
 
             # blacks overlay processing
             for k,x in blacks:
@@ -1538,15 +2059,33 @@ init 1001 python:
                     x,
                     self.ZZPK_IMG_KEYS_Y
                 )
+                new_button = MASButtonDisplayable(
+                    blank_text,
+                    blank_text,
+                    blank_text,
+                    mouse_b_ovl_idle,
+                    mouse_b_ovl_hover,
+                    mouse_b_ovl_idle,
+                    x + self.ZZPK_IMG_BACK_X,
+                    self.ZZPK_IMG_KEYS_Y + self.ZZPK_IMG_BACK_Y,
+                    self.ZZPK_IMG_EKEY_WIDTH,
+                    self.ZZPK_IMG_EKEY_HEIGHT,
+                    hover_sound=gui.hover_sound,
+                    activate_sound=self.pkeys[k],
+                    return_value=k
+                )
+                self._config_overlays[k] = new_button
+                self._config_overlays_list.append(new_button)
 
+            # TODO: overlays for keymap replacements
 
             # list containing lists of matches.
             # NOTE: highly recommend not adding too many detections
             self.pnml_list = []
             if self.mode == self.MODE_FREE:
                 self.pnml_list = [
-                    zzpianokeys.pnml_db[k] for k in zzpianokeys.pnml_db
-                    if zzpianokeys.pnml_db[k].wins == 0
+                    mas_piano_keys.pnml_db[k] for k in mas_piano_keys.pnml_db
+                    if mas_piano_keys.pnml_db[k].wins == 0
                 ]
 
             # list of notes we have played
@@ -1598,6 +2137,25 @@ init 1001 python:
             # did player hit a note
             self.note_hit = False
 
+            # config mode, selected overlay (which contains the key)
+            self._sel_ovl = None
+
+            # live keymaps (the one we actually use
+            self.live_keymap = None
+
+            # setting up premature button stuff
+            if len(persistent._mas_piano_keymaps) == 0:
+                self._button_resetall.disable()
+                self.live_keymap = dict(mas_piano_keys.KEYMAP)
+            else:
+                self._initKeymap()
+                for key in persistent._mas_piano_keymaps:
+                    self._keymap_overlays[key] = self._buildKeyTextOverlay(key)
+
+            # this should be disabled at start
+            self._button_cancel.disable()
+            self._button_reset.disable()
+
             # integer to handle redraw calls.
             # NOTE: when we want to redraw, we add to this value. Render
             # decrements the value by 1 whenever it runs.
@@ -1637,6 +2195,168 @@ init 1001 python:
 #            else:
 #                self.redraw_count += 1
 #                renpy.redraw(self, timeout)
+
+
+        def _buildKeyTextOverlay(self, key):
+            """
+            Builds a keytext overlay for a key. This will check the keymaps
+            for the associated actual key and set everything up approptiately.
+            Assumes the given key has a keymap
+
+            IN:
+                key - the key to build a keytextoverlay for (the key user will
+                    press)
+
+            RETURNS:
+                MASButtonDisplayable of the text overlay. All states of this
+                button will be the same.
+            """
+            # get the actual button to determine if white or black key
+            real_key = self.live_keymap[key]
+            config_ovl_button = self._config_overlays[real_key]
+            if key in mas_piano_keys.NONCHAR_TEXT:
+                text_key = mas_piano_keys.NONCHAR_TEXT[key]
+            else:
+                text_key = chr(key).upper()
+
+            if config_ovl_button.height == self.ZZPK_IMG_EKEY_HEIGHT:
+                # this is a black key
+                ovl_text = Text(
+                    text_key,
+                    font=self.KMP_TXT_OVL_FONT,
+                    size=gui.text_size,
+                    color=self.KMP_TXT_OVL_B_FGCLR,
+                    outlines=[]
+                )
+                return MASButtonDisplayable(
+                    ovl_text,
+                    ovl_text,
+                    ovl_text,
+                    self._kmp_txt_ovl_b_bg,
+                    self._kmp_txt_ovl_b_bg,
+                    self._kmp_txt_ovl_b_bg,
+                    config_ovl_button.xpos,
+                    self.KMP_TXT_OVL_B_Y,
+                    self.KMP_TXT_OVL_B_W,
+                    self.KMP_TXT_OVL_B_H
+                )
+
+            else:
+                # this is a white key
+                ovl_text = Text(
+                    text_key,
+                    font=self.KMP_TXT_OVL_FONT,
+                    size=gui.text_size,
+                    color=self.KMP_TXT_OVL_W_FGCLR,
+                    outlines=[]
+                )
+                return MASButtonDisplayable(
+                    ovl_text,
+                    ovl_text,
+                    ovl_text,
+                    self._kmp_txt_ovl_w_bg,
+                    self._kmp_txt_ovl_w_bg,
+                    self._kmp_txt_ovl_w_bg,
+                    config_ovl_button.xpos,
+                    self.KMP_TXT_OVL_W_Y,
+                    self.KMP_TXT_OVL_W_W,
+                    self.KMP_TXT_OVL_W_H
+                )
+
+
+        def _initKeymap(self):
+            """
+            Initalizes the keymap, applying persistent adjustments.
+
+            ASSUMES:
+                persistent._mas_piano_keymaps
+                mas_piano_keys.KEYMAP - the defaults keymap
+                self.live_keymap - the keymap we use
+            """
+            # reset the keymaps
+            self.live_keymap = dict(mas_piano_keys.KEYMAP)
+
+            # now apply adjustments
+            for key,real_key in persistent._mas_piano_keymaps.iteritems():
+                if (
+                        real_key in self.live_keymap 
+                        and real_key == self.live_keymap[real_key]
+                    ):
+                    self.live_keymap.pop(real_key)
+                self.live_keymap[key] = real_key
+
+    
+        def _sendEventsToOverlays(self, ev, x, y, st):
+            """
+            Sends event overlays to the list of config overlays.
+            NOTE: massively assumes that only one clicked event can occur at a
+                time.
+
+            IN:
+                ev - pygame event
+                x - x coord of event
+                y - y coord of event
+                st - same as st in event
+
+            RETURNS:
+                the MASButtonDisplayable that returned a non None value, or 
+                None if all of them returned None
+            """
+            for ovl in self._config_overlays_list:
+                clicked_ev = ovl.event(ev, x, y, st)
+                if clicked_ev is not None:
+                    return ovl
+
+            return None
+
+
+        def _timeoutFlow(self):
+            """
+            Runs flow for timeout cases.
+            """
+            self.played = list()
+
+            # NOTE: in the listen state,  timeout means restart
+            # the played list (which is what handles the note
+            # matchin). Keep state.
+
+            # NOTE: in transitional post states, timeout means
+            # continue waiting.
+            # Keep state.
+
+            # NOTE: in done related states, timeout means quit
+            # the game.
+            if self.state in self.DONE_STATES:
+                return self.quitflow()
+
+            # NOTE: in the match-related states, timeout means
+            # they failed the expression.
+            elif self.state in self.TOUT_MATCH_STATES:
+                self.resetVerse()
+                self.state = self.STATE_LISTEN
+
+            # NOTE: in post-match related states, timeout means
+            # move onto the next expression.
+            elif self.state in self.TOUT_POST_STATES:
+                next_pnm = self.getnotematch()
+
+                if next_pnm:
+                    self.setsongmode(
+                        ev_tout=next_pnm.ev_timeout,
+                        vis_tout=self.match.vis_timeout
+                    )
+                    self.state = self.STATE_WPOST
+                    self.match = next_pnm
+                    self.match.matchdex = 0
+
+                # no more matches, we are done
+                else:
+                    self.state = self.STATE_WDONE
+                    self._button_config.disable()
+
+            # NOTE: in clean state, chnage state to listen.
+            elif self.state == self.STATE_CLEAN:
+                self.state = self.STATE_LISTEN
 
 
         def findnotematch(self, notes):
@@ -1724,7 +2444,7 @@ init 1001 python:
             completed_pnms = 0
 
             if not self.note_hit:
-                end_label = "zz_piano_none"
+                end_label = "mas_piano_result_none"
 
             elif self.pnml:
                 full_combo = True
@@ -1766,7 +2486,7 @@ init 1001 python:
                     is_prac = True
 
             else:
-                end_label = "zz_piano_default"
+                end_label = "mas_piano_result_default"
 
             # finally return the tuple
             return (
@@ -1815,12 +2535,13 @@ init 1001 python:
                 self.vis_timeout = self.VIS_TIMEOUT
 
 
-        def stateListen(self, ev):
+        def stateListen(self, ev, key):
             """
             Flow that occurs when we in listen state
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_LISTEN
@@ -1829,14 +2550,14 @@ init 1001 python:
             if self.mode == self.MODE_SONG:
 
                 # find a match
-                findex = self.match.isNoteMatch(ev.key, 0)
+                findex = self.match.isNoteMatch(key, 0)
 
                 if findex >= 0:
                     self.state = self.STATE_JMATCH
 
             # not in song mode, check for correct number of
             # notes
-            elif len(self.played) >= zzpianokeys.NOTE_SIZE:
+            elif len(self.played) >= mas_piano_keys.NOTE_SIZE:
 
                 # find a match
                 self.match = self.findnotematch(self.played)
@@ -1846,12 +2567,13 @@ init 1001 python:
                     self.state = self.STATE_JMATCH
 
 
-        def stateMatch(self, ev):
+        def stateMatch(self, ev, key):
             """
             Flow that occurs when we are matching notes
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_MATCH
@@ -1860,7 +2582,7 @@ init 1001 python:
             """
             # we have a match, check to ensure that this key
             # follows the pattern
-            findex = self.match.isNoteMatch(ev.key)
+            findex = self.match.isNoteMatch(key)
 
             # failed match
             if findex < 0:
@@ -1905,6 +2627,7 @@ init 1001 python:
                             self.state = self.STATE_JPOST
                         else:
                             self.state = self.STATE_DJPOST
+                            self._button_config.disable()
 
                         self.match.matchdex = 0
                         self.played = list()
@@ -1928,17 +2651,18 @@ init 1001 python:
                         # no more matches, we are done
                         else:
                             self.state = self.STATE_WDONE
-
+                            self._button_config.disable()
                 else:
                     self.state = self.STATE_MATCH
 
 
-        def statePost(self, ev):
+        def statePost(self, ev, key):
             """
             Flow that occurs when we are post matching notes
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_POST
@@ -1947,7 +2671,7 @@ init 1001 python:
                 STATE_DJPOST
             """
             # post match means we abort on the first miss
-            findex = self.match.isPostMatch(ev.key)
+            findex = self.match.isPostMatch(key)
 
             # check for a match
             if findex == -1:
@@ -1957,7 +2681,7 @@ init 1001 python:
                 # check next set of notes
                 if next_pnm:
 
-                    if next_pnm.isNoteMatch(ev.key, 0) >= 0:
+                    if next_pnm.isNoteMatch(key, 0) >= 0:
                         # match found
                         self.state = self.STATE_JMATCH
 
@@ -1972,11 +2696,12 @@ init 1001 python:
                         )
 
                     self.match = next_pnm
-                    self.played = [ev.key]
+                    self.played = [key]
 
                 # completed this song
                 else:
                     self.state = self.STATE_WDONE
+                    self._button_config.disable()
 
             # finished post complete
             elif self.match.matchdex == len(self.match.postnotes):
@@ -1999,15 +2724,17 @@ init 1001 python:
                 # song completel
                 else:
                     self.state = self.STATE_WDONE
+                    self._button_config.disable()
 
 
-        def stateWaitPost(self, ev):
+        def stateWaitPost(self, ev, key):
             """
             Flow that occurs when we are in a transitional phase from a note
             match to another
 
             IN:
                 ev - pygame event that occured
+                key - key that was pressed (post map)
 
             STATES:
                 STATE_WPOST
@@ -2015,7 +2742,7 @@ init 1001 python:
                 STATE_VPOST
             """
             # here we check the just hit note for matching
-            findex = self.match.isNoteMatch(ev.key, index=0)
+            findex = self.match.isNoteMatch(key, index=0)
 
             if findex > 0:
                 self.state = self.STATE_JMATCH
@@ -2024,7 +2751,7 @@ init 1001 python:
                 # missed the note, so take us back to verse
                 # start
                 self.state = self.STATE_CLEAN
-                self.played = [ev.key]
+                self.played = [key]
 
 
         def render(self, width, height, st, at):
@@ -2037,7 +2764,6 @@ init 1001 python:
             back = renpy.render(self.piano_back, 1280, 720, st, at)
             piano = renpy.render(self.piano_keys, 1280, 720, st, at)
 
-
             # now prepare overlays to render
             overlays = list()
             for k in self.pressed:
@@ -2049,6 +2775,18 @@ init 1001 python:
                             self.overlays[k][2]
                         )
                     )
+
+            # prepare keytext overlays
+            keytext_overlays = [
+                (
+                    self._keymap_overlays[key].render(
+                        width, height, st, at
+                    ),
+                    self._keymap_overlays[key].xpos,
+                    self._keymap_overlays[key].ypos
+                )
+                for key in self._keymap_overlays
+            ]
 
             # Draw the piano
             r.blit(
@@ -2076,165 +2814,250 @@ init 1001 python:
                     )
                 )
 
+            # keytext overlays
+            for ovl,x,y in keytext_overlays:
+                r.blit(ovl, (x, y))
+
             # True if we need to do an interaction restart
             restart_int = False
 
-            # True if we already called a redraw
-            redrawn = False
+            if self.state in self.CONFIG_STATES: 
 
-            # subtract a redraw count for every render
-#            if self.redraw_count > 0:
-#                self.redraw_count -= 1
+                # reset monika
+                if self.state == self.STATE_CONFIG_ENTRY:
 
-            # check if we are currently matching something
-            # NOTE: the following utilizies renpy.show, which means we need
-            #   to use renpy.restart_interaction(). This also means that the
-            #   changes that occur here shouldnt be rendered
-            # STATE MACHINE
-            if self.state in self.DONE_STATES:
-
-                if self.state == self.STATE_DJPOST:
-                    # display monikas post expression
-                    renpy.show(self.match.postexpress)
-
-                    # hide text
-                    if not self.match.posttext:
-                        self.lyric = None
+                    # config mode
+                    renpy.show(self.CONFIGGING)
 
                     restart_int = True
+                    self.state = self.STATE_CONFIG_WAIT
 
-                    # we go to DPOST instead of POST
-                    self.state = self.STATE_DPOST
+                # piano overlays 
+                # NOTE: ensure that this is after the key press overlay
+                # NOTE: this actually will be filled out differently 
+                # dpending on state
+                visible_overlays = list()
 
-                    # force a redraw
-                    renpy.redraw(self, self.vis_timeout)
+                # visible buttons
+                visible_buttons = [
+                    (
+                        b.render(width, height, st, at),
+    #                    renpy.render(b, width, height, st, at),
+                        b.xpos,
+                        b.ypos
+                    )
+                    for b in self._always_visible_config
+                ]
 
-                # check for visual timeout
-                elif st-self.prev_time >= self.vis_timeout:
+                # setup current state buttons
+                if self.state == self.STATE_CONFIG_WAIT:
+                    visible_buttons.append((
+                        self._button_resetall.render(width, height, st, at),
+                        self._button_resetall.xpos,
+                        self._button_resetall.ypos
+                    ))
 
-                    # force event call
-                    self.state = self.STATE_DONE
-                    renpy.timeout(1.0)
-#                    renpy.redraw(self, 1.0)
-#                    redrawn = True
+                    # everyoverlay is visible
+                    visible_overlays = [
+                        (
+                            ovl.render(width, height, st, at),
+                            ovl.xpos,
+                            ovl.ypos
+                        )
+                        for ovl in self._config_overlays_list
+                    ]
 
-                # do a redraw for the next timeout
-                else:
-                    renpy.redraw(self, self.vis_timeout)
-#                    redrawn = True
+                    # help text
+                    self.lyric = self._config_wait_help
 
-            elif (
-                    self.state == self.STATE_CLEAN
-                    or st-self.prev_time >= self.ev_timeout
-                ):
+                elif self.state == self.STATE_CONFIG_CHANGE:
+                    visible_buttons.append((
+                        self._button_reset.render(width, height, st, at),
+                        self._button_reset.xpos,
+                        self._button_reset.ypos
+                    ))
 
-                # default monika
-                renpy.show(self.DEFAULT)
+                    # no overlays are visible
 
-                # hide text
-                self.lyric = None
+                    # help text
+                    self.lyric = self._config_change_help
 
-                restart_int = True
 
-                if self.state not in self.DONE_STATES:
-                    self.state = self.STATE_LISTEN
-                    self.resetVerse()
-                self.setsongmode(False)
+                # bliting the key hover overlays here because its only for
+                # config mode anyway
+                for ovl,x,y in visible_overlays:
+                    r.blit(ovl, (x, y))
 
-            elif self.state != self.STATE_LISTEN:
+            else:
 
-                if self.state == self.STATE_JMATCH:
+                # setup quit and config
+                visible_buttons = [
+                    (
+                        b.render(width, height, st, at),
+                        b.xpos,
+                        b.ypos
+                    )
+                    for b in self._always_visible_play
+                ]
 
-                    # display monika's expression
-                    renpy.show(self.match.express)
+                # True if we already called a redraw
+                redrawn = False
 
-                    # display text
-                    self.lyric = self.match.say
+                # subtract a redraw count for every render
+    #            if self.redraw_count > 0:
+    #                self.redraw_count -= 1
 
-                    # set song mode
-                    self.setsongmode(vis_tout=self.match.vis_timeout)
+                # check if we are currently matching something
+                # NOTE: the following utilizies renpy.show, which means we need
+                #   to use renpy.restart_interaction(). This also means that the
+                #   changes that occur here shouldnt be rendered
+                # STATE MACHINE
+                if self.state in self.DONE_STATES:
 
-                    restart_int = True
-                    self.state = self.STATE_MATCH
-
-                elif self.state == self.STATE_MISS:
-
-                    # display an awkward expresseion monika
-                    renpy.show(self.AWKWARD)
-                    restart_int = True
-
-                elif self.state == self.STATE_VPOST:
-
-                    # display the post expression
-                    renpy.show(self.lastmatch.postexpress)
-                    restart_int = True
-
-                    # hide text
-                    if not self.lastmatch.posttext:
-                        self.lyric = None
-
-                    # setup visual timeout
-                    if self.lastmatch.vis_timeout:
-#                        self.customRedraw(
-#                            self.lastmatch.redraw_time,
-#                            from_render=True
-#                        )
-                        renpy.redraw(self, self.lastmatch.vis_timeout)
-                        self.drawn_time = st
-                        self.state = self.STATE_CPOST
-                        redrawn = True
-
-                    else:
-                        self.state = self.STATE_WPOST
-
-                elif self.state == self.STATE_CPOST:
-
-                    # check if timeout
-                    if st-self.drawn_time >= self.lastmatch.vis_timeout:
-
-                        # display default monika
-                        renpy.show(self.DEFAULT)
+                    if self.state == self.STATE_DJPOST:
+                        # display monikas post expression
+                        renpy.show(self.match.postexpress)
 
                         # hide text
-                        self.lyric = None
+                        if not self.match.posttext:
+                            self.lyric = None
 
                         restart_int = True
-                        self.state = self.STATE_WPOST
 
-                    # force a redraw in a second
+                        # we go to DPOST instead of POST
+                        self.state = self.STATE_DPOST
+
+                        # force a redraw
+                        renpy.redraw(self, self.vis_timeout)
+
+                    # check for visual timeout
+                    elif st-self.prev_time >= self.vis_timeout:
+
+                        # force event call
+                        self.state = self.STATE_DONE
+                        renpy.timeout(1.0)
+
+    #                    renpy.redraw(self, 1.0)
+    #                    redrawn = True
+
+                    # do a redraw for the next timeout
                     else:
-#                        self.customRedraw(1.0, from_render=True)
-                        renpy.redraw(self, 1.0)
-                        redrawn = True
+                        renpy.redraw(self, self.vis_timeout)
+    #                    redrawn = True
 
-                elif self.state == self.STATE_JPOST:
+                elif (
+                        self.state == self.STATE_CLEAN
+                        or st-self.prev_time >= self.ev_timeout
+                    ):
 
-                    # display monikas post expression
-                    renpy.show(self.match.postexpress)
-
-                    # hide text
-                    if not self.match.posttext:
-                        self.lyric = None
-
-                    restart_int = True
-                    self.state = self.STATE_POST
-
-                elif self.state == self.STATE_FAIL:
-
-                    # display failed monika
-                    renpy.show(self.FAILED)
+                    # default monika
+                    renpy.show(self.DEFAULT)
 
                     # hide text
                     self.lyric = None
 
                     restart_int = True
-                    self.state = self.STATE_CLEAN
 
-                # redraw timeout
-                if not redrawn:
-                    renpy.redraw(self, self.vis_timeout)
-#                    self.customRedraw(self.vis_timeout, from_render=True)
+                    if self.state not in self.DONE_STATES:
+                        self.state = self.STATE_LISTEN
+                        self.resetVerse()
+                    self.setsongmode(False)
 
+                elif self.state != self.STATE_LISTEN:
+
+                    if self.state == self.STATE_JMATCH:
+
+                        # display monika's expression
+                        renpy.show(self.match.express)
+
+                        # display text
+                        self.lyric = self.match.say
+
+                        # set song mode
+                        self.setsongmode(vis_tout=self.match.vis_timeout)
+
+                        restart_int = True
+                        self.state = self.STATE_MATCH
+
+                    elif self.state == self.STATE_MISS:
+
+                        # display an awkward expresseion monika
+                        renpy.show(self.AWKWARD)
+                        restart_int = True
+
+                    elif self.state == self.STATE_VPOST:
+
+                        # display the post expression
+                        renpy.show(self.lastmatch.postexpress)
+                        restart_int = True
+
+                        # hide text
+                        if not self.lastmatch.posttext:
+                            self.lyric = None
+
+                        # setup visual timeout
+                        if self.lastmatch.vis_timeout:
+    #                        self.customRedraw(
+    #                            self.lastmatch.redraw_time,
+    #                            from_render=True
+    #                        )
+                            renpy.redraw(self, self.lastmatch.vis_timeout)
+                            self.drawn_time = st
+                            self.state = self.STATE_CPOST
+                            redrawn = True
+
+                        else:
+                            self.state = self.STATE_WPOST
+
+                    elif self.state == self.STATE_CPOST:
+
+                        # check if timeout
+                        if st-self.drawn_time >= self.lastmatch.vis_timeout:
+
+                            # display default monika
+                            renpy.show(self.DEFAULT)
+
+                            # hide text
+                            self.lyric = None
+
+                            restart_int = True
+                            self.state = self.STATE_WPOST
+
+                        # force a redraw in a second
+                        else:
+    #                        self.customRedraw(1.0, from_render=True)
+                            renpy.redraw(self, 1.0)
+                            redrawn = True
+
+                    elif self.state == self.STATE_JPOST:
+
+                        # display monikas post expression
+                        renpy.show(self.match.postexpress)
+
+                        # hide text
+                        if not self.match.posttext:
+                            self.lyric = None
+
+                        restart_int = True
+                        self.state = self.STATE_POST
+
+                    elif self.state == self.STATE_FAIL:
+
+                        # display failed monika
+                        renpy.show(self.FAILED)
+
+                        # hide text
+                        self.lyric = None
+
+                        restart_int = True
+                        self.state = self.STATE_CLEAN
+
+                    # redraw timeout
+                    if not redrawn:
+                        renpy.redraw(self, self.vis_timeout)
+    #                    self.customRedraw(self.vis_timeout, from_render=True)
+
+            # lyrics can also be help text so
             if self.lyric:
                 lyric_bar = renpy.render(self.lyrical_bar, 1280, 720, st, at)
                 lyric = renpy.render(self.lyric, 1280, 720, st, at)
@@ -2270,6 +3093,10 @@ init 1001 python:
 #                    renpy.say(m, match.say, interact=False)
 #                    renpy.force_full_redraw()
 
+            # and finally visible buttons
+            for vis_b in visible_buttons:
+                r.blit(vis_b[0], (vis_b[1], vis_b[2]))
+
             if restart_int:
                 renpy.restart_interaction()
 
@@ -2286,119 +3113,214 @@ init 1001 python:
             # DONE state means you immediate quit
             if self.state in self.FINAL_DONE_STATES:
                 return self.quitflow()
+           
+            # all mouse events
+            if ev.type in self.MOUSE_EVENTS:
 
-            # when you press down a key, we launch a sound
-            if ev.type == pygame.KEYDOWN:
+                # config waiting
+                if self.state == self.STATE_CONFIG_WAIT:
 
-                if len(self.played) > self.KEY_LIMIT:
-                    self.played = list()
+                    # button handlers
+                    clicked_done = self._button_done.event(ev, x, y, st)
+                    clicked_resetall = self._button_resetall.event(ev, x, y, st)
 
-                # we only care about keydown events regarding timeout
-                elif st-self.prev_time >= self.ev_timeout:
+                    # overlay button handlers
+                    clicked_ovl = self._sendEventsToOverlays(ev, x, y, st)
 
-#                    self.testing.write("".join([chr(x) for x in self.played])+ "\n")
-                    self.played = list()
+                    if clicked_done is not None:
+                        # done was clicked, return to regular gameplay
+                        self.state = self.STATE_CLEAN
 
-                    # NOTE: in the listen state,  timeout means restart
-                    # the played list (which is what handles the note
-                    # matchin). Keep state.
+                    elif clicked_resetall is not None:
+                        # reset all keymaps
+                        # TODO: ask are you sure
+                        persistent._mas_piano_keymaps = dict()
+                        self._initKeymap()
+                        self._button_resetall.disable()
+                        self._keymap_overlays = dict()
 
-                    # NOTE: in transitional post states, timeout means
-                    # continue waiting.
-                    # Keep state.
+                    elif clicked_ovl is not None:
+                        # we've clicked a key, save that value and switch to
+                        # change
+                        self._sel_ovl = clicked_ovl
+                        self._sel_ovl.ground() # remove the hover property
+                        self.pressed[clicked_ovl.return_value] = True
+                        self.state = self.STATE_CONFIG_CHANGE
+                        self._button_done.disable()
+                        self._button_cancel.enable()
 
-                    # NOTE: in done related states, timeout means quit
-                    # the game.
-                    if self.state in self.DONE_STATES:
+                        # an existing keymap means we enable reset
+                        if mas_piano_keys._findKeymap(clicked_ovl.return_value):
+                            self._button_reset.enable()
+
+                # config change
+                elif self.state == self.STATE_CONFIG_CHANGE:
+                    
+                    # button handlers
+                    clicked_cancel = self._button_cancel.event(ev, x, y, st)
+                    clicked_reset = self._button_reset.event(ev, x, y, st)
+
+                    if clicked_cancel is not None:
+                        # cancel was clicked, return to wait state
+                        self.state = self.STATE_CONFIG_WAIT
+                        self._button_done.enable()
+                        self._button_cancel.disable()
+                        self._button_reset.disable()
+                        self.pressed[self._sel_ovl.return_value] = False
+
+                        if len(persistent._mas_piano_keymaps) > 0:
+                            self._button_resetall.enable()
+
+                    elif clicked_reset is not None:
+                        # reset, that means clear the selcted keymap
+                        old_key = mas_piano_keys._findKeymap(
+                            self._sel_ovl.return_value
+                        )
+                        
+                        if old_key:
+                            persistent._mas_piano_keymaps.pop(old_key)
+                            self._keymap_overlays.pop(old_key)
+
+                        self.state = self.STATE_CONFIG_WAIT
+                        self._button_done.enable()
+                        self._button_cancel.disable()
+                        self._button_reset.disable()
+                        self.pressed[self._sel_ovl.return_value] = False
+                        self._initKeymap()
+
+                # regular states
+                else:
+                    # check for config / quit button
+                    clicked_config = self._button_config.event(ev, x, y, st)
+                    clicked_quit = self._button_quit.event(ev, x, y, st)
+
+                    # check for config/quit
+                    if clicked_quit is not None:
                         return self.quitflow()
 
-                    # NOTE: in the match-related states, timeout means
-                    # they failed the expression.
-                    elif self.state in self.TOUT_MATCH_STATES:
+                    elif clicked_config is not None:
+                        self.state = self.STATE_CONFIG_ENTRY
+
+                        # reset your verse, also played
                         self.resetVerse()
-                        self.state = self.STATE_LISTEN
+                        self.setsongmode(False)
+                        self.played = list()
 
-                    # NOTE: in post-match related states, timeout means
-                    # move onto the next expression.
-                    elif self.state in self.TOUT_POST_STATES:
-                        next_pnm = self.getnotematch()
+                renpy.redraw(self, 0)
 
-                        if next_pnm:
-                            self.setsongmode(
-                                ev_tout=next_pnm.ev_timeout,
-                                vis_tout=self.match.vis_timeout
+            # when you press down a key, we launch a sound
+            elif ev.type == pygame.KEYDOWN:
+
+                if self.state == self.STATE_CONFIG_CHANGE:
+                    # blacklisted keys cannot be used
+                    if (
+                            ev.key not in mas_piano_keys.BLACKLIST
+                            and (ev.key in mas_piano_keys.NONCHAR_TEXT
+                                or 0 <= ev.key <= 255
                             )
-                            self.state = self.STATE_WPOST
-                            self.match = next_pnm
-                            self.match.matchdex = 0
+                        ):
 
-                        # no more matches, we are done
+                        # set keymap
+                        new_key, old_key = mas_piano_keys._setKeymap(
+                            self._sel_ovl.return_value,
+                            ev.key
+                        )
+
+                        # get back to wait state
+                        self.state = self.STATE_CONFIG_WAIT
+                        self._button_done.enable()
+                        self._button_cancel.disable()
+                        self._button_reset.disable()
+                        self.pressed[self._sel_ovl.return_value] = False
+                        self._initKeymap()
+
+                        # resetall enabled if we have keymaps
+                        if len(persistent._mas_piano_keymaps) > 0:
+                            self._button_resetall.enable()
                         else:
-                            self.state = self.STATE_WDONE
+                            self._button_resetall.disable()
 
-                    # NOTE: in clean state, chnage state to listen.
-                    elif self.state == self.STATE_CLEAN:
-                        self.state = self.STATE_LISTEN
+                        # update keymap overlays
+                        if old_key in self._keymap_overlays:
+                            self._keymap_overlays.pop(old_key)
+                        if new_key:
+                            self._keymap_overlays[new_key] = (
+                                self._buildKeyTextOverlay(new_key)
+                            )
 
-#   DEBUG: NOTE:
-#                if self.match:
-#                    self.testing.write(
-#                        chr(ev.key) + " : " + str(self.state) + " : " +
-#                        str(self.match.matchdex) + "\n")
-#                else:
-#                    self.testing.write(chr(ev.key) + " : " + str(self.state) + "\n")
+                        renpy.play(
+                            self.pkeys[self._sel_ovl.return_value], 
+                            channel="audio"
+                        )
 
-                # setup previous time thing
-                self.prev_time = st
+                        renpy.redraw(self, 0)
 
-                # but first, check for quit ("Z")
-                if ev.key == zzpianokeys.QUIT:
-                    return self.quitflow()
                 else:
+                    # check for mapping
+                    key = self.live_keymap.get(ev.key, None)
 
-                    # only play a sound if we've lifted the finger
-                    if not self.pressed.get(ev.key, True):
+                    if self.state not in self.CONFIG_STATES:
+                        # regular game mode only
 
-                        # note has been hit
-                        self.note_hit = True
+                        if len(self.played) > self.KEY_LIMIT:
+                            self.played = list()
 
-                        # add to played
-                        self.played.append(ev.key)
+                        # we only care about keydown events regarding timeout
+                        elif st-self.prev_time >= self.ev_timeout:
+                            self._timeoutFlow()
+
+                        # setup previous time thing
+                        self.prev_time = st
+
+                    # only play a sound if its pressable
+                    if not self.pressed.get(key, True):
 
                         # set appropriate value
-                        self.pressed[ev.key] = True
+                        self.pressed[key] = True
 
-                        # check if we have enough played notes
-                        if self.state == self.STATE_LISTEN:
-                            self.stateListen(ev)
+                        # only check states if we arent config
+                        if self.state not in self.CONFIG_STATES:
 
-                        # post match checking
-                        elif self.state in self.POST_STATES:
-                            self.statePost(ev)
+                            # note has been hit
+                            self.note_hit = True
 
-                        # waiting post
-                        elif self.state in self.TRANS_POST_STATES:
-                            self.stateWaitPost(ev)
+                            # add to played
+                            self.played.append(key)
 
-                        # match
-                        elif self.state in self.MATCH_STATES:
-                            self.stateMatch(ev)
+                            # check if we have enough played notes
+                            if self.state == self.STATE_LISTEN:
+                                self.stateListen(ev, key)
+
+                            # post match checking
+                            elif self.state in self.POST_STATES:
+                                self.statePost(ev, key)
+
+                            # waiting post
+                            elif self.state in self.TRANS_POST_STATES:
+                                self.stateWaitPost(ev, key)
+
+                            # match
+                            elif self.state in self.MATCH_STATES:
+                                self.stateMatch(ev, key)
 
                         # get a sound to play
-                        renpy.play(self.pkeys[ev.key], channel="audio")
+                        renpy.play(self.pkeys[key], channel="audio")
 
                         # now rerender
-#                        self.customRedraw(0)
+    #                        self.customRedraw(0)
                         renpy.redraw(self, 0)
 
             # keyup, means we should stop render
             elif ev.type == pygame.KEYUP:
 
+                # check for mapping
+                key = self.live_keymap.get(ev.key, None)
+
                 # only do this if we keyup a key we care about
-                if self.pressed.get(ev.key, False):
+                if self.pressed.get(key, False):
 
                     # set appropriate value
-                    self.pressed[ev.key] = False
+                    self.pressed[key] = False
 
                     # now rerender
 #                    self.customRedraw(0)
@@ -2411,3 +3333,4 @@ init 1001 python:
 
             # the default so we can keep going
             raise renpy.IgnoreEvent()
+

@@ -2,10 +2,8 @@
 # configuration
 
 ##### TESTING ========================########################################
-init 5 python:
-    for key in ["zzpgone"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_actone")
+#init 5 python:
+#    addEvent(
 
 ## This label directly calls actone style poem minigame
 label zz_mas_poemgame_actone:
@@ -28,10 +26,10 @@ label zz_mas_poemgame_actone:
     return
 
 
-init 5 python:
-    for key in ["zzpgtwo"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_acttwo")
+#init 5 python:
+#    for key in ["zzpgtwo"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_acttwo")
 
 ## This label directly calls act two style poem minigame
 label zz_mas_poemgame_acttwo:
@@ -53,10 +51,10 @@ label zz_mas_poemgame_acttwo:
     m "I hope that was fun!"
     return
 
-init 5 python:
-    for key in ["zzpgthr"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_actthr")
+#init 5 python:
+#    for key in ["zzpgthr"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_actthr")
 
 ## This label directly calls act three style poem minigame
 label zz_mas_poemgame_actthr:
@@ -71,10 +69,10 @@ label zz_mas_poemgame_actthr:
 
     return
 
-init 5 python:
-    for key in ["zzpgthrm"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_actthrm")
+#init 5 python:
+#    for key in ["zzpgthrm"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_actthrm")
 
 ## This label calls actthree but with hopping monika and words gathered
 label zz_mas_poemgame_actthrm:
@@ -105,10 +103,10 @@ label zz_mas_poemgame_actthrm:
     m "I hope that was fun!"
     return
 
-init 5 python:
-    for key in ["zzpgonept"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_actonept")
+#init 5 python:
+#    for key in ["zzpgonept"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_actonept")
 
 ## This label calls act one but with words being gathered
 label zz_mas_poemgame_actonept:
@@ -143,10 +141,10 @@ label zz_mas_poemgame_actonept:
     m "I hope that was fun!"
     return
 
-init 5 python:
-    for key in ["zzpgdg"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_dg")
+#init 5 python:
+#    for key in ["zzpgdg"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_dg")
 
 ## This label does a display mode run while gathering words
 ## This also shows how to do the call via kwargs
@@ -196,10 +194,10 @@ label zz_mas_poemgame_dg:
 
     return
 
-init 5 python:
-    for key in ["zzpgbgm"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_bgm")
+#init 5 python:
+#    for key in ["zzpgbgm"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_bgm")
 
 # This label runs stock mode background music
 # also only returns the winner
@@ -252,10 +250,10 @@ label zz_mas_poemgame_bgm:
 
     return
 
-init 5 python:
-    for key in ["zzpgoneg"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_oneg")
+# init 5 python:
+#    for key in ["zzpgoneg"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_oneg")
 
 ## This label does act1 style with glitched words
 label zz_mas_poemgame_oneg:
@@ -296,10 +294,10 @@ label zz_mas_poemgame_oneg:
 
     return
 
-init 5 python:
-    for key in ["zzpgoc"]:
-        monika_topics.setdefault(key,[])
-        monika_topics[key].append("zz_mas_poemgame_oc")
+#init 5 python:
+#    for key in ["zzpgoc"]:
+#        monika_topics.setdefault(key,[])
+#        monika_topics[key].append("zz_mas_poemgame_oc")
 
 ## This label uses custom poemwords (Thanks Fave)
 label zz_mas_poemgame_oc:
@@ -353,3 +351,97 @@ label zz_mas_poemgame_oc:
 
     return
 
+## labels to test out the textbutton grid
+# this label tests out the grid with no bg
+label zz_mas_pg_tb_grid_t1:
+    show monika at t21
+    # we are using a 4x3 grid
+    python:
+        # sample list of words
+        wordlist = [
+            "apple",
+            "candy",
+            "zebra",
+            "test2",
+            "keyboard",
+            "top",
+            "bottom",
+            "left",
+            "one",
+            "two",
+            "three",
+            "four"
+        ]
+        
+        # area/positiong of grid
+        xywh = (640, 10, 600, 400)
+        row_info = (4, None)
+        col_info = (3, None)
+
+        # generate the word:returnvalue tuples
+        words = [ (word,word) for word in wordlist]
+
+        # other kwargs for the screen
+        sc_args = {
+            "_zorder": 200,
+            "is_modal": True
+        }
+
+        # show a dialogue
+        renpy.say(m, "pick a word from the grid", interact=False)
+
+    call screen mas_pg_textbutton_grid(words, row_info, col_info, xywh, **sc_args)
+
+    $ picked = _return
+    m 1a "You picked '[picked]'"
+    show monika at t11
+    return
+    
+# this label tests out the grid with bg
+label zz_mas_pg_tb_grid_t2:
+    show monika at t22
+    # we are using a 6x2 grid
+    python:
+        # sample list of words
+        wordlist = [
+            "one",
+            "three",
+            "two",
+            "4",
+            "fove",
+            "ix",
+            "late",
+            "n",
+            "7",
+            "ben",
+            "11",
+            "number"
+        ]
+
+        # area/position of grid
+        xywh = (10, 10, 400, 500)
+
+        # using NOne for spacing should auto calc the spacing
+        row_info = (6, 50) 
+        col_info = (2, 250)
+
+        # generate the word:returnvalue tuples
+        words = [ (word,word) for word in wordlist]
+
+        # other kwargs for the screen
+        # including background image
+        sc_args = {
+            "_zorder": 200,
+            "is_modal": True,
+            "bg_image": Solid("#ffe6f4bb", xsize=400, ysize=500)
+        }
+
+        # show a dialogu3
+        renpy.say(m, "pick a word from the grid", interact=False)
+
+    call screen mas_pg_textbutton_grid(words, row_info, col_info, xywh, **sc_args)
+
+    $ picked = _return
+    m 1a "You picked '[picked]'"
+    show monika at t11
+    return 

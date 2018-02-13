@@ -174,6 +174,9 @@ init 10 python:
 #
 # NOTE: the labels here mean we are updating TO this version
 
+# TODO: piano label changed from 0.7.0 to 0.7.1:
+#   zz_play_piano -> mas_piano_start
+
 # all generic (only updateTopicID calls) go here
 label vgenericupdate(version="v0_2_2"):
 label v0_6_1(version=version): # 0.6.1
@@ -188,6 +191,22 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.7.1
+label v0_7_1(version="v0_7_1"):
+    python:
+
+        if persistent.you is not None:
+            persistent._mas_you_chr = persistent.you
+
+        if persistent.pnml_data is not None:
+            persistent._mas_pnml_data = persistent.pnml_data
+
+        if renpy.seen_label("zz_play_piano"):
+            removeTopicID("zz_play_piano")
+            persistent._seen_ever["mas_piano_start"] = True
+
+    return
 
 # 0.7.0
 label v0_7_0(version="v0_7_0"):

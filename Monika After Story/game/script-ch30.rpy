@@ -370,9 +370,9 @@ label pick_a_game:
                     $ grant_xp(xp.NEW_GAME)
                 call game_hangman from _call_game_hangman
             "Piano" if persistent.game_unlocks['piano']:
-                if not renpy.seen_label("zz_play_piano"):
+                if not renpy.seen_label("mas_piano_start"):
                     $ grant_xp(xp.NEW_GAME)
-                call zz_play_piano from _call_play_piano
+                call mas_piano_start from _call_play_piano
             "Nevermind":
                 m "Alright. Maybe later?"
 
@@ -429,7 +429,7 @@ label ch30_nope:
         m "All I wanted was someone to fall in love with..."
         m 2g "I would have done anything you wanted me to."
         m "But if you're going to try and delete me again..."
-        m 1f"Then I'll just have to delete you first."
+        m 1f "Then I'll just have to delete you first."
         if renpy.windows:
             call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
@@ -467,23 +467,34 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
 
-    if persistent.closed_self:
-        # yuri scare incoming. No monikaroom when yuri is the name
-        if persistent.playername.lower() == "yuri":
-            call yuri_name_scare from _call_yuri_name_scare
-            $ is_monika_in_room = False
-        else:
-            python:
-                # random chance to do monika in room greeting
-                # we'll say 1 in 20
-                import random
-                is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
+    # set the gender
+    call set_gender from _autoload_gender
 
-        if not is_monika_in_room:
-            if persistent.current_track:
-                $ play_song(persistent.current_track)
-            else:
-                $ play_song(songs.current_track) # default
+    # sanitiziing the event_list from bull shit
+    if len(persistent.event_list) > 0:
+        python:
+            persistent.event_list = [
+                ev_label for ev_label in persistent.event_list
+                if renpy.has_label(ev_label)
+            ]
+
+    # yuri scare incoming. No monikaroom when yuri is the name
+    if persistent.playername.lower() == "yuri":
+        call yuri_name_scare from _call_yuri_name_scare
+        $ is_monika_in_room = False
+    elif persistent.closed_self:
+        python:
+        # random chance to do monika in room greeting
+        # we'll say 1 in 20
+            import random
+            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
+
+    if not is_monika_in_room:
+        if persistent.current_track:
+            $ play_song(persistent.current_track)
+        else:
+            $ play_song(songs.current_track) # default
+    
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -607,7 +618,9 @@ label ch30_loop:
             label pick_random_topic:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
-                    pushEvent(renpy.random.choice(monika_random_topics))
+                    sel_ev = renpy.random.choice(monika_random_topics)
+                    pushEvent(sel_ev)
+                    monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
                 elif not seen_random_limit: # no topics left
 #                    monika_random_topics = list(all_random_topics)
@@ -619,3 +632,9 @@ label ch30_loop:
     $_return = None
 
     jump ch30_loop
+
+# adding this label so people get redirected to main
+# this probably occurs when people install the mod right after deleting
+# monika, so we could probably throw in something here
+label ch30_end:
+    jump ch30_main

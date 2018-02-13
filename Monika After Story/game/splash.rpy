@@ -264,6 +264,9 @@ label autoload:
         main_menu = False
         _in_replay = None
 
+    # explicity remove keymaps we dont want
+    $ config.keymap["debug_voicing"] = list()
+
     # Pop the _splashscreen label which has _confirm_quit as False and other stuff
     $ renpy.pop_call()
     jump expression persistent.autoload

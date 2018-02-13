@@ -157,6 +157,10 @@ python early:
                     data_row[0:len(stored_data_row)] = list(stored_data_row)
                     self.per_eventdb[self.eventlabel] = tuple(data_row)
 
+                # actaully this should be always
+                self.prompt = prompt
+                self.category = category
+
             # new items are added appropriately
             else:
                 # add this data to the DB
@@ -526,8 +530,317 @@ python early:
 
             return events
 
+# init -1 python:
+    # this should be in the EARLY block
+    class MASButtonDisplayable(renpy.Displayable):
+        """
+        Special button type that represents a usable button for custom
+        displayables.
+
+        PROPERTIES:
+            xpos - x position of this button (relative to container)
+            ypos - y position of this button (relative to container)
+            width - width of this button
+            height - height of this button
+            hover_sound - sound played when being hovered (this is played only
+                once per hover. IF None, no sound is played)
+            activate_sound - sound played when activated (this is played only
+                once per activation. If None, no sound is played)
+            enable_when_disabled - True means that the button is active even
+                if shown disabled. False if otherwise
+            sound_when_disabled - True means that sound is active even when the
+                button is shown disabled, False if not.
+                NOTE: only works if enable_when_disabled is True
+            return_value - Value returned when button is activated
+            disabled - True means to disable this button, False not
+            hovered - True if we are being hovered, False if not
+            _button_click - integer value to match a mouse click:
+                1 - left (Default)
+                2 - middle
+                3 - right
+                4 - scroll up
+                5 - scroll down
+            _button_down - pygame mouse button event type to activate button
+                MOUSEBUTTONDOWN (Default)
+                MOUSEBUTTONUP
+        """
+        import pygame
+
+        # states of the button
+        _STATE_IDLE = 0
+        _STATE_HOVER = 1
+        _STATE_DISABLED = 2
+
+        # indexes for button parts
+        _INDEX_TEXT = 0
+        _INDEX_BUTTON = 1
+
+        def __init__(self,
+                idle_text,
+                hover_text,
+                disable_text,
+                idle_back,
+                hover_back,
+                disable_back,
+                xpos,
+                ypos,
+                width,
+                height,
+                hover_sound=None,
+                activate_sound=None,
+                enable_when_disabled=False,
+                sound_when_disabled=False,
+                return_value=True
+            ):
+            """
+            Constructor for the custom displayable
+
+            IN:
+                idle_text - Text object to show when button is idle
+                hover_text - Text object to show when button is being hovered
+                disable_text - Text object to show when button is disabled
+                idle_back - Image object for background when button is idle
+                hover_back - Image object for background when button is being
+                    hovered
+                disable_back - Image object for background when button is
+                    disabled
+                xpos - x position of this button (relative to container)
+                ypos - y position of this button (relative to container)
+                with - with of this button
+                height - height of this button
+                hover_sound - sound to play when hovering. If None, no sound
+                    is played
+                    (Default: None)
+                activate_sound - sound to play when activated. If None, no
+                    sound is played
+                    (Default: None)
+                enable_when_disabled - True will enable the button even if
+                    it is visibly disabled. FAlse will not
+                    (Default: False)
+                sound_when_disabled - True will enable sound even if the
+                    button is visibly disabled. False will not. Only works if
+                    enable_when_disabled is True.
+                    (Default: False)
+                return_value - Value to return when the button is activated
+                    (Default: True)
+            """
+
+            # setup
+#            self.idle_text = idle_text
+#            self.hover_text = hover_text
+#            self.disable_text = disable_text
+#            self.idle_back = idle_back
+#            self.hover_back = hover_back
+#            self.disable_back = disable_back
+            self.xpos = xpos
+            self.ypos = ypos
+            self.width = width
+            self.height = height
+            self.hover_sound = hover_sound
+            self.activate_sound = activate_sound
+            self.enable_when_disabled = enable_when_disabled
+            self.sound_when_disabled = sound_when_disabled
+            self.return_value = return_value
+            self.disabled = False
+            self.hovered = False
+            self._button_click = 1
+            self._button_down = pygame.MOUSEBUTTONDOWN
+
+            # the states of a button
+            self._button_states = {
+                self._STATE_IDLE: (idle_text, idle_back),
+                self._STATE_HOVER: (hover_text, hover_back),
+                self._STATE_DISABLED: (disable_text, disable_back)
+            }
+
+            # current state
+            self._state = self._STATE_IDLE
+
+
+        def _isOverMe(self, x, y):
+            """
+            Checks if the given x and y coodrinates are over this button.
+
+            RETURNS: True if the given x, y is over this button, False if not
+            """
+            return (
+                0 <= (x - self.xpos) <= self.width
+                and 0 <= (y - self.ypos) <= self.height
+            )
+
+
+        def _playActivateSound(self):
+            """
+            Plays the activate sound if we are allowed to.
+            """
+            if not self.disabled or self.sound_when_disabled:
+                renpy.play(self.activate_sound, channel="sound")
+
+
+        def _playHoverSound(self):
+            """
+            Plays the hover soudn if we are allowed to.
+            """
+            if not self.disabled or self.sound_when_disabled:
+                renpy.play(self.hover_sound, channel="sound")
+
+
+        def disable(self):
+            """
+            Disables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property
+            directly
+            """
+            self.disabled = True
+            self._state = self._STATE_DISABLED
+
+
+        def enable(self):
+            """
+            Enables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property 
+            directly
+            """
+            self.disabled = False
+            self._state = self._STATE_IDLE
+
+
+        def getSize(self):
+            """
+            Returns the size of this button
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: width
+                    [1]: height
+            """
+            return (self.width, self.height)
+
+        
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
+
+
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
+
+
+        def render(self, width, height, st, at):
+
+            # pull out the current button back and text and render them
+            render_text, render_back = self._button_states[self._state]
+            render_text = renpy.render(render_text, width, height, st, at)
+            render_back = renpy.render(render_back, width, height, st, at)
+
+            # what is the text's with and height
+            rt_w, rt_h = render_text.get_size()
+
+            # build our renderer
+            r = renpy.Render(self.width, self.height)
+
+            # blit our textures
+            r.blit(render_back, (0, 0))
+            r.blit(
+                render_text,
+                (int((self.width - rt_w) / 2), int((self.height - rt_h) / 2))
+            )
+
+            # return rendere
+            return r
+
+
+        def event(self, ev, x, y, st):
+
+            # only check if we arent disabled (or are allowed to work while
+            #   disabled)
+            if self._state != self._STATE_DISABLED or self.enable_when_disabled:
+
+                # we onyl care about mouse events here
+                if ev.type == pygame.MOUSEMOTION:
+                    is_over_me = self._isOverMe(x, y)
+                    if self.hovered:
+                        if not is_over_me:
+                            self.hovered = False
+                            self._state = self._STATE_IDLE
+
+                        # else remain in hover mode
+
+                    elif is_over_me:
+                        self.hovered = True
+                        self._state = self._STATE_HOVER
+
+                        if self.hover_sound:
+                            self._playHoverSound()
+
+                elif (
+                        ev.type == self._button_down 
+                        and ev.button == self._button_click
+                    ):
+                    if self.hovered:
+                        if self.activate_sound:
+                            self._playActivateSound()
+                        return self.return_value
+
+            # otherwise continue on
+            return None
+
 
 init -1 python:
+    import datetime # for mac issues i guess.
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
@@ -595,7 +908,6 @@ init -1 python:
         except:
             appIds = None
         return appIds
-
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -1825,6 +2137,8 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
+define scene_change = True # we start off with a scene change
+define mas_monika_twitter_handle = "lilmonix3"
 init python:
     startup_check = False
     try:

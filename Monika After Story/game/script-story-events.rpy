@@ -77,6 +77,9 @@ label preferredname:
                     m 1q "..."
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
+                elif lowername == monika_twitter_handle:
+                    m 2h "..."
+                    # TODO: actaully have dialog here
                 elif len(lowername) >= 10:
                     m 2q "[player]..."
                     m 2l "That name's a bit too long."
@@ -145,6 +148,9 @@ label monika_changename:
                     m 2h "..."
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
+                elif lowername == monika_twitter_handle:
+                    m 2h "..."
+                    # TODO: actaully have dialog here
                 elif len(lowername) >= 10:
                     m 2q "[player]..."
                     m 2l "That name's a bit too long."
@@ -255,7 +261,7 @@ init 5 python:
 
 label unlock_piano:
     m 2a "Hey! I've got something exciting to tell you!"
-    m 2b "I've finally added a piano to the room for us to use, [player]"
+    m 2b "I've finally added a piano to the room for us to use, [player]."
     if not persistent.instrument:
         m 3b "I really want to hear you play!"
         m "It might seem overwhelming at first, but at least give it a try."
@@ -284,7 +290,7 @@ label random_limit_reached:
             "No point in trying to say everything right away...",
             "I hope you've enjoyed listening to everything I was thinking about today...",
             "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you to much."
+            "I hope I didn't bore you too much."
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1m "[limit_quip]"

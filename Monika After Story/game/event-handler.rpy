@@ -373,7 +373,7 @@ label prompt_menu:
         talk_menu.append(("Goodbye.", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
-        renpy.say(m, "Pick something to talk about?", interact=False)
+        renpy.say(m, "What would you like to talk about?", interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
@@ -537,7 +537,7 @@ label prompts_categories(pool=True):
                     prompt_category_menu.append([unlocked_events[event].prompt,event])
                 """
 
-        call screen twopane_scrollable_menu(prev_items, main_items, evhand.LEFT_AREA, evhand.LEFT_XALIGN, evhand.RIGHT_AREA, evhand.RIGHT_XALIGN, len(current_category)) nopredict
+        call screen twopane_scrollable_menu(prev_items, main_items, evhand.LEFT_AREA, evhand.LEFT_XALIGN, evhand.RIGHT_AREA, evhand.RIGHT_XALIGN, len(current_category))
 
 
 
