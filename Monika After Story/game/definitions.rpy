@@ -841,6 +841,18 @@ init -1 python:
             return
         if time <= 0: return
         renpy.pause(time)
+    def is_file_present(file):
+        try:
+            renpy.file(
+                config.basedir.replace("\\","/") +
+                file
+            )
+            is_file = True
+        except:
+            is_file = False
+
+        return is_file
+
 
         # Return installed Steam IDS from steam installation directory
     def enumerate_steam():
