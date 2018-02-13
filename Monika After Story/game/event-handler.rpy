@@ -311,7 +311,7 @@ label call_next_event:
         $ persistent.current_monikatopic=0
 
         #if this is a random topic, make sure it's unlocked for prompts
-        if event_label in monika_random_topics:
+        if event_label in evhand.event_database and evhand.event_database[event_label].random:
             if not evhand.event_database[event_label].unlocked:
                 python:
                     evhand.event_database[event_label].unlocked=True
