@@ -77,6 +77,9 @@ label preferredname:
                     m 1q "..."
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
+                elif lowername == monika_twitter_handle:
+                    m 2h "..."
+                    # TODO: actaully have dialog here
                 elif len(lowername) >= 10:
                     m 2q "[player]..."
                     m 2l "That name's a bit too long."
@@ -145,6 +148,9 @@ label monika_changename:
                     m 2h "..."
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
+                elif lowername == monika_twitter_handle:
+                    m 2h "..."
+                    # TODO: actaully have dialog here
                 elif len(lowername) >= 10:
                     m 2q "[player]..."
                     m 2l "That name's a bit too long."
