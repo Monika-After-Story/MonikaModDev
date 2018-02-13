@@ -1198,7 +1198,8 @@ label mas_chess_end:
         m 1a "It's okay if you find yourself struggling at times."
         m 1j "Remember, the important thing is to be able to learn from your mistakes."
     elif game_result == "*":
-        m 1a "TODO: okay lets play again soon"
+        # TODO: this really should be better
+        m 1a "Okay, [player], let's continue this game soon."
     else:
         m 2b "It's amazing how much more I have to learn even now."
         m 2a "I really don't mind losing as long as I can learn something."
