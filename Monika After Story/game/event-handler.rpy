@@ -311,11 +311,12 @@ label call_next_event:
         $ persistent.current_monikatopic=0
 
         #if this is a random topic, make sure it's unlocked for prompts
-        if event_label in evhand.event_database and evhand.event_database[event_label].random:
-            if not evhand.event_database[event_label].unlocked:
+        $ ev = evhand.event_database.get(event_label, None)
+        if ev is not None:
+            if ev.random and not ev.unlocked:
                 python:
-                    evhand.event_database[event_label].unlocked=True
-                    evhand.event_database[event_label].unlock_date=datetime.datetime.now()
+                    ev.unlocked=True
+                    ev.unlock_date=datetime.datetime.now()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
