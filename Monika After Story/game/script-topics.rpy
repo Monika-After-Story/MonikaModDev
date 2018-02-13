@@ -4930,13 +4930,16 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=["you", "misc"],random=True))
     
 label monika_hydration:
     m 1f "Hey [player]..."
     m 3f "Sorry if this is a little random but... do you get enough to drink?"
     m 1l "I'm just asking as a little reminder, I suppose."
     m 2d "Make sure you don't neglect your body, especially not when it comes to hydration!"
-    m    "Sometimes people tend to underestimate how important it actually is..."
+    m 2d "Sometimes people tend to underestimate how important it actually is..."
     m 1i "I bet you've also had these types of days when you feel really tired and nothing seems to motivate you."
     m 4c "I usually grab a glass of water right away."
     m 1a "It might not work all the time but it does help me wake up a little at least."
@@ -4945,27 +4948,30 @@ label monika_hydration:
     m 1c "But anyways, make sure to always stay hydrated, ok [player]?"
     m 4c "In fact..."
     m 1a "You should probably grab a glass of water right now, actually..."
-    m    "I don't mind waiting a minute or two."
+    m 1a "I don't mind waiting a minute or two."
     m 4k "It's not like I'd run away on you!"
-    m    "Ehehe~"
+    m 4k "Ehehe~"
 return
 
-label monika_jewellery_ramble:
+init 5 python:
+    addEvent(Event(persistent.event_database,"monika_jewelry_ramble",prompt="Jewelry",category=["misc"],random=True))
+
+label monika_jewelry_ramble:
     m 2b "Hey [player], have you ever seen one of those hidden wood rings?"
     m 1a "They look very pretty and all of them are unique in their own way!"
     m 3c "I mean... I guess that's just what happens when you break off a piece of wood."
-    m    "It's going to be only one of it's kind."
+    m 3c "It's going to be only one of it's kind."
     m 2a "That's what these rings are in essense, anyhow."
-    m    "A broken off piece of wood covered in resin and then cut to fit the form of the ring."
+    m 2a "A broken off piece of wood covered in resin and then cut to fit the form of the ring."
     m 1a "It's quite interesting, actually."
-    m 2a "Not only those rings but jewellery making in general."
+    m 2a "Not only those rings but jewelry making in general."
     m 1b "The craftsmanship behind them can be extremely fascinating!"
-    m 4e "Even the concept of jewellery alone is funny if you think about it."
+    m 4e "Even the concept of jewelry alone is funny if you think about it."
     m 1e "I mean... all you do is wear a piece of wood or rock that has no use other than to look pretty."
     m 1k "Not that I'd judge of course!"
     m 1a "I myself even thought about geting earrings at one point."
-    m    "But as you can see, I didn't follow through with that idea..."
+    m 1a "But as you can see, I didn't follow through with that idea..."
     m 1m "I'm sorry... I'm rambleing again, aren't I?"
     m 1e "Ehehe... sorry about that."
 return
-    
+
