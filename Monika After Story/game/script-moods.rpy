@@ -85,15 +85,18 @@ label mas_mood_start:
 
         # build menu list
         mood_menu_items = [
-            (mas_moods.mood_db[k].prompt, k) for k in mas_moods.mood_db
+            (mas_moods.mood_db[k].prompt, k, False, False) 
+            for k in mas_moods.mood_db
         ]
 
         # also sort this list
         mood_menu_items.sort()
 
+        # final quit item
+        final_item = (mas_moods.MOOD_RETURN, False, False, False, 20)
+
     # call scrollable pane
-    # TODO switch to the generic scrollable menu, maybe
-    call screen scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, mas_moods.MOOD_RETURN)
+    call screen mas_gen_scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item=final_item)
 
     # return value? then push 
     if _return:
