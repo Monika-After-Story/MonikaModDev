@@ -169,7 +169,7 @@ label greeting_visit5:
      return
 
 label greeting_visit6:
-     m 1a "Each day becomes better and better with you on my side!"
+     m 1a "Each day becomes better and better with you by my side!"
      m "That said, I'm so happy that you're finally here."
      m "Let's have another wonderful day together."
      return
