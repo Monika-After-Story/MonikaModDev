@@ -236,7 +236,7 @@
 label game_pong:
     hide screen keylistener
     m 1a "You wanna play a game of Pong? Okay!"
-    m 1b "I'll beat you for sure this time!"
+#    m 1b "I'll beat you for sure this time!" # this line is useless
     call demo_minigame_pong from _call_demo_minigame_pong
     return
 
@@ -272,8 +272,7 @@ label demo_minigame_pong:
     call spaceroom from _call_spaceroom_3
 
     if winner == "monika":
-
-        m 1j "I win~!"
+        $ inst_dialogue = store.mas_pong.DLG_WINNER
 
     else:
         #Give player XP if this is their first win
@@ -281,8 +280,9 @@ label demo_minigame_pong:
             $persistent.ever_won['pong'] = True
             $grant_xp(xp.WIN_GAME)
 
-        m 1a "You won! Congratulations."
+        $ inst_dialogue = store.mas_pong.DLG_LOSER
 
+    call expression inst_dialogue from _mas_pong_inst_dialogue
 
     menu:
         m "Do you want to play again?"
@@ -292,15 +292,78 @@ label demo_minigame_pong:
         "No.":
 
             if winner == "monika":
-                m 4e "I can't really get excited for a game this simple..."
-                m 1a "At least we can still hang out with each other."
-                m "Ahaha!"
-                m 1b "Thanks for letting me win, [player]."
-                m 1a "Only elementary schoolers seriously lose at Pong, right?"
-                m "Ehehe~"
+                if renpy.seen_label(store.mas_pong.DLG_WINNER_END):
+                    $ end_dialogue = store.mas_pong.DLG_WINNER_FAST
+                else:
+                    $ end_dialogue = store.mas_pong.DLG_WINNER_END
+
             else:
-                m 1d "Wow, I was actually trying that time."
-                m 1a "You must have really practiced at Pong to get so good."
-                m "Is that something for you to be proud of?"
-                m 1j "I guess you wanted to impress me, [player]~"
-            return
+                if renpy.seen_label(store.mas_pong.DLG_LOSER_END):
+                    $ end_dialogue = store.mas_pong.DLG_LOSER_FAST
+                else:
+                    $ end_dialogue = store.mas_pong.DLG_LOSER_END
+
+            call expression end_dialogue from _mas_pong_end_dialogue
+
+    return
+
+## pong text dialogue adjustments
+
+# store to hold pong related constants
+init -1 python in mas_pong:
+    
+    DLG_WINNER = "mas_pong_dlg_winner"
+    DLG_WINNER_FAST = "mas_pong_dlg_winner_fast"
+    DLG_LOSER = "mas_pong_dlg_loser"
+    DLG_LOSER_FAST = "mas_pong_dlg_loser_fast"
+
+    DLG_WINNER_END = "mas_pong_dlg_winner_end"
+    DLG_LOSER_END = "mas_pong_dlg_loser_end"
+
+    # tuple of all dialogue block labels
+    DLG_BLOCKS = (
+        DLG_WINNER,
+        DLG_WINNER_FAST,
+        DLG_WINNER_END,
+        DLG_LOSER,
+        DLG_LOSER_FAST,
+        DLG_LOSER_END
+    )
+
+# dialogue shown right when monika wins
+label mas_pong_dlg_winner:
+    m 1j "I win~!"
+    return
+
+# end dialogue shown when monika is the pong winner
+label mas_pong_dlg_winner_end:
+    m 4e "I can't really get excited for a game this simple..."
+    m 1a "At least we can still hang out with each other."
+    m "Ahaha!"
+    m 1b "Thanks for letting me win, [player]."
+    m 1a "Only elementary schoolers seriously lose at Pong, right?"
+    m "Ehehe~"   
+    return
+
+# quick dialogue shown when monika is the pong winner
+label mas_pong_dlg_winner_fast:
+    # there is nothing here on purpose
+    return
+
+# dialogtue shown right when monika loses
+label mas_pong_dlg_loser:
+    m 1a "You won! Congratulations."
+    return
+
+# end dialogue shown when monka is the pong loser
+label mas_pong_dlg_loser_end:
+    m 1d "Wow, I was actually trying that time."
+    m 1a "You must have really practiced at Pong to get so good."
+    m "Is that something for you to be proud of?"
+    m 1j "I guess you wanted to impress me, [player]~"   
+    return
+
+# quick dialogue shown when monika is the pong loser
+label mas_pong_dlg_loser_fast:
+    m 1e "I'll beat you next time, [player]."
+    return

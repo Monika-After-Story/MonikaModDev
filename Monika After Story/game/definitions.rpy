@@ -703,7 +703,7 @@ python early:
         def enable(self):
             """
             Enables this button. This changes the internal state, so its
-            preferable to use this over setting the disabled property
+            preferable to use this over setting the disabled property 
             directly
             """
             self.disabled = False
@@ -720,6 +720,37 @@ python early:
                     [1]: height
             """
             return (self.width, self.height)
+
+        
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
 
 
         def ground(self):
@@ -801,7 +832,7 @@ python early:
                             self._playHoverSound()
 
                 elif (
-                        ev.type == self._button_down
+                        ev.type == self._button_down 
                         and ev.button == self._button_click
                     ):
                     if self.hovered:
@@ -2124,6 +2155,7 @@ define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
 define scene_change = True # we start off with a scene change
+define mas_monika_twitter_handle = "lilmonix3"
 init python:
     startup_check = False
     try:

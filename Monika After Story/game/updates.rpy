@@ -194,10 +194,18 @@ label v0_3_1(version=version): # 0.3.1
 
 # 0.7.1
 label v0_7_1(version="v0_7_1"):
-    # TODO:
-    # piano adjustments:
-    # main label name change, update persistent._seen_ever
-    # persistent.pnml_data -> persistent._mas_pnml_data
+    python:
+
+        if persistent.you is not None:
+            persistent._mas_you_chr = persistent.you
+
+        if persistent.pnml_data is not None:
+            persistent._mas_pnml_data = persistent.pnml_data
+
+        if renpy.seen_label("zz_play_piano"):
+            removeTopicID("zz_play_piano")
+            persistent._seen_ever["mas_piano_start"] = True
+
     return
 
 # 0.7.0
