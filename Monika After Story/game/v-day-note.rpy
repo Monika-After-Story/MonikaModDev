@@ -1,7 +1,7 @@
 init 2 python:
     player = persistent.playername
 
-    poem_vday2 = Poem(
+    poem_vday = Poem(
     author = "monika",
     title = "My dearest {0},".format(player),
     text = """\

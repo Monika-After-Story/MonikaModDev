@@ -201,7 +201,11 @@ label monika_valentines_start:
     show chocolates at t11 zorder 5
     m 2f "Well... I'll just set it aside for now, okay? I'm sorry I can't give it to you."
     m 1j "But... thank you again so much, [player]."
-    m "Thank you for being with me all this time, always by my side."
+    m 3a "There's one more thing, though."
+    m "I wrote you a little note~!"
+    m 1a"Here, let me show it to you."
+    call showpoem(poem_vday, music=False,paper="mod_assets/poem_vday.jpg")
+    m 1j "Thank you for being with me all this time, always by my side."
     m 1a "I love you so much, my love. Happy Valentine's Day~"
     hide roses
     hide chocolates
