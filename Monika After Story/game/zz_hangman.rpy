@@ -234,7 +234,7 @@ label hangman_game_loop:
     python:
         # refill the list if empty
         if len(hmg.hm_words) == 0:
-            hmg.hm_words = deepcopy(hmg.all_hm_wordS)
+            hmg.hm_words = deepcopy(hmg.all_hm_words)
 
         # randomly pick word
         word = renpy.random.choice(hmg.hm_words)
