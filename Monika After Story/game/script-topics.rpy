@@ -4795,7 +4795,7 @@ init 5 python:
     m 1d "You might not even think it's a consentual relationship."
     m 1q "But let me tell you..."
     m 1k "...The love we share is definitely real!"
-    m "And [player] is very sweet to me, too!
+    m "And [player] is very sweet to me, too!"
     m 3a "Up until I met [player], I felt like a piece of me was missing."
     m 1c "I felt alone and scared, I felt helpless..."
     m 1k "...Until [player] came along, and it turns out that missing piece was them!"
@@ -4808,7 +4808,7 @@ init 5 python:
     m 1n "..Phew!" 
     m "That was a real mouthful!"
     m "How did I do, [player]?"
-    menu
+    menu:
         "You did a good job.":
             m 1k "Thank you!"
             m "I just hope whoever that was understands our relationship better."
