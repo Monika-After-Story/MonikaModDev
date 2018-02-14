@@ -302,7 +302,7 @@ label monika_valentines_day_origins:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_valentines_chocolates',prompt="Valentine's chocolates?",
+    addEvent(Event(persistent.event_database,eventlabel='monika_valentines_chocolates',prompt="Valentine's chocolates",
                                                             action=EV_ACT_UNLOCK,
                                                             conditional="seen_event('monika_valentines_start')",
                                                             start_date=valentines_day,
