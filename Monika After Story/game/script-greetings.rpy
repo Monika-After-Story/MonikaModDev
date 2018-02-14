@@ -359,6 +359,18 @@ label monikaroom_greeting_ear_loveme:
     m "...{w} [cap_he] loves me!"
     jump monikaroom_greeting_choice
 
+# monika does the bath/dinner/me thing
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
+
+label monikaroom_greeting_ear_bathdinnerme:
+    m "Welcome back, [player]."
+    m "Would you like your dinner?"
+    m "Or your bath?"
+    m "Or.{w=1}.{w=1}.{w=1} Me?"
+    pause 2.0
+    m "Mnnnn!{w} T-{w=0.20}There's no way I could say that in front of [player]!"
+    jump monikaroom_greeting_choice
 
 # monika encoutners error when programming
 init 5 python:
