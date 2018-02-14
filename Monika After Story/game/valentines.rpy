@@ -222,7 +222,8 @@ init 5 python:
                                                             ))
 
 label monika_valentines_colors:
-    m 1k "Hey [player], have you ever thought about the way colors are conveyed on Valentine's Day?"
+    m 1j "Of course I love them! They're from you after all."
+    m 1k "Have you ever thought about the way colors are conveyed on Valentine's Day?"
     m 1j "I find it intriguing how colors can symbolize such deep and romantic feelings."
     m 1a "It reminds me of when I made my first Valentine's card in grade school."
     m 3b "My class was instructed to exchange cards with a partner after making them."
@@ -257,8 +258,6 @@ init 5 python:
                                                             ))
 
 label monika_valentines_cliches:
-    m 3a "Oh, [player]!"
-    m "I've been meaning to talk to you about something."
     m 3c "Have you noticed that most Valentine's Day stories have lots of clichés in them?"
     m "I've noticed that many of them have similar plots..."
     m "There's either 'Oh, I'm lonely and I don't have someone to love,' or 'How will I confess to the one I love?'"
@@ -278,8 +277,8 @@ init 5 python:
                                                             ))
 
 label monika_valentines_day_origins:
-    m 3a "Hey, [player], in the spirit of things, would you like to learn about the history of Valentine's Day?"
-    m "It's quite interesting, I promise!"
+    m 3a "You'd like to learn about the history of Valentine's Day?"
+    m "It's quite interesting, really."
     m 1a "The way Valentine's Day came to be is rather dark and disturbing, actually."
     m "Its origin dates to as early as the second and third century, in Rome, where Christianity had just been declared the official state religion."
     m 1c "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
