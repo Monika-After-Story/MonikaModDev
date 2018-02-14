@@ -42,6 +42,24 @@ init 1 python in mas_chess:
         20
     )
 
+    CHESS_MENU_WAIT_VALUE = "MATTE"
+    CHESS_MENU_WAIT_ITEM = (
+        "I can't make this decision right now...",
+        CHESS_MENU_WAIT_VALUE,
+        False,
+        False,
+        20
+    )
+
+    ## dialogue constants
+    # TODO: this
+#    DLG_WINNER_L0 = "mas_chess_dlg_winner_l0"
+#    DLG_WINNER_L1 = "mas_chess_dlg_winner_l1"
+#    DLG_WINNER_END = "mas_chess_dlg_winner_end"
+#    DLG_WINNER_FAST = "mas_chess_dlg_winner_fast"
+#    DLG_LOSER_END = "mas_chess_dlg_loser_end"
+#    DLG_LOSER_FAST = "mas_chess_dlg_loser_fast"
+
     def isInProgressGame(filename, mth):
         """
         Checks if the pgn game with the given filename is valid and
@@ -971,44 +989,16 @@ label game_chess:
     return
 
 label demo_minigame_chess:
-    $ import chess.pgn # imperative for chess saving/loading
-    $ import os # we need it for filework
 
-    # NOTE: games CANNOT be deleted from here. maybe mention that if you
-    # want to delete games, you have to delete them from the folder?
-
-    # first, check for existing games
-    $ pgn_files = os.listdir(mas_chess.CHESS_SAVE_PATH)
-    $ loaded_game = None
-    if pgn_files:
-        python:
-            # only allow valid pgn files
-            pgn_games = list()
-            for filename in pgn_files:
-                in_prog_game = mas_chess.isInProgressGame(
-                    filename,
-                    mas_monika_twitter_handle
-                )
-
-                if in_prog_game:
-                    pgn_games.append((
-                        in_prog_game[0],
-                        in_prog_game[1],
-                        False,
-                        False
-                    ))
-
-        # now check if we have any games to show
-        if len(pgn_games) > 0:
-            if len(pgn_games) == 1:
-                $ game_s_dialog = "a game"
-            else:
-                $ game_s_dialog = "some games"
-
-            python:
-                # sort the games
-                pgn_games.sort()
-                pgn_games.reverse()
+#    if not renpy.seen_label(
+    # TODO:
+    # check if user has seen the chess_save_selected label, and if not,
+    # send them to the save migration.
+    # that label will handle if the user has saves or not, and will do
+    # appropraite stuff based on that.
+    # TODO: that label will also return either pgn object or a False.
+    # If False, we back out of chess. Otherwise we use the pgn object
+    # as the loaded game and continue.
 
             # need to add the play new game option
             $ pgn_games.append(mas_chess.CHESS_MENU_NEW_GAME_ITEM)
@@ -1219,6 +1209,63 @@ label mas_chess_confirm_context:
     call screen mas_chess_confirm 
     $ store.mas_chess.quit_game = _return
     return
+
+# label for chess save migration
+label mas_chess_save_migration:
+    python:
+        import chess.pgn
+        import os
+    
+        pgn_files = os.listdir(mas_chess.CHESS_SAVE_PATH)
+        sel_file = "nope"
+
+    if pgn_files:
+        python:
+            # only allow valid pgn files
+            pgn_games = list()
+            for filename in pgn_files:
+                in_prog_game = mas_chess.isInProgressGame(
+                    filename,
+                    mas_monika_twitter_handle
+                )
+
+                if in_prog_game:
+                    pgn_games.append((
+                        in_prog_game[0],
+                        filename,
+                        False,
+                        False
+                    ))
+
+            game_count = len(pgn_games)
+            pgn_games.sort()
+            pgn_games.reverse()
+
+        # only show this if we even have multiple pgn games
+        if game_count > 1:
+            m 1m "So I've been thinking, [player]..."
+            m "Most people who leave in the middle of a chess game don't come back to start a new one."
+            m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
+            m 1p "And since we have [game_count] games in progress..."
+            m 1g "I have to ask you to pick only one to keep.{w} Sorry, [player]."
+            show monika at t21
+            $ renpy.say(m, "Pick a game you'd like to keep.", interact=False)
+            
+            call screen mas_gen_scrollable_menu(pgn_games, mas_chess.CHESS_MENU_AREA, mas_chess.CHESS_MENU_XALIGN, mas_chess.CHESS_MENU_WAIT_ITEM)
+
+            if _return == mas_chess.CHESS_MENU_WAIT_VALUE:
+                # user backs out
+                # TODO: dialogue about not making a choice
+                return False
+            else:
+                # user selected a game
+                # TODO: monika deletes the other games, quicksaves the selected
+                # game, and then returns the selected filename
+                sel_file = _return
+
+# FALL THROUGH
+label mas_chess_save_selected: 
+    return sel_file
 
 # confirmation screen for chess
 screen mas_chess_confirm():
