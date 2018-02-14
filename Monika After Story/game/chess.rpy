@@ -984,7 +984,7 @@ label game_chess:
     hide screen keylistener
     m 1b "You want to play chess? Alright~"
 #   m 2a "Double click your king if you decide to surrender."
-    m 1a "Get ready!"
+#    m 1a "Get ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
     return
 
@@ -1243,25 +1243,40 @@ label mas_chess_save_migration:
 
         # only show this if we even have multiple pgn games
         if game_count > 1:
-            m 1m "So I've been thinking, [player]..."
-            m "Most people who leave in the middle of a chess game don't come back to start a new one."
-            m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
-            m 1p "And since we have [game_count] games in progress..."
-            m 1g "I have to ask you to pick only one to keep.{w} Sorry, [player]."
-            show monika at t21
-            $ renpy.say(m, "Pick a game you'd like to keep.", interact=False)
+            if renpy.seen_label("mas_chess_save_multi_dlg"):
+                $ pick_text = "You still need to pick a game to keep."
+            else:
+                label mas_chess_save_multi_dlg:
+                    m 1m "So I've been thinking, [player]..."
+                    m "Most people who leave in the middle of a chess game don't come back to start a new one."
+                    m 1n "It makes no sense for me to keep track of more than one unfinished game between us."
+                    m 1p "And since we have [game_count] games in progress..."
+                    m 1g "I have to ask you to pick only one to keep.{w} Sorry, [player]."
+                    $ pick_text = "Pick a game you'd like to keep."
+            show monika 1e at t21
+            $ renpy.say(m, pick_text, interact=False)
             
             call screen mas_gen_scrollable_menu(pgn_games, mas_chess.CHESS_MENU_AREA, mas_chess.CHESS_MENU_XALIGN, mas_chess.CHESS_MENU_WAIT_ITEM)
 
             if _return == mas_chess.CHESS_MENU_WAIT_VALUE:
                 # user backs out
-                # TODO: dialogue about not making a choice
+                m 2q "I see."
+                m 2a "In that case, please take your time."
+                m 1a "We'll play chess again once you've made your decision."
                 return False
             else:
                 # user selected a game
-                # TODO: monika deletes the other games, quicksaves the selected
-                # game, and then returns the selected filename
-                sel_file = _return
+                m 1a "Alright." 
+                python:
+                    sel_file = _return
+                    for pgn_game in pgn_games:
+                        if pgn_game[1] != sel_file:
+                            try:
+                                os.remove(os.path.normcase(
+                                    mas_chess.CHESS_SAVE_PATH + pgn_game[1]
+                                ))
+                            except:
+                                pass
 
 # FALL THROUGH
 label mas_chess_save_selected: 
