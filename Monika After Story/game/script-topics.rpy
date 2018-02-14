@@ -4951,7 +4951,7 @@ label monika_hydration:
     m 1a "I don't mind waiting a minute or two."
     m 4k "It's not like I'd run away on you!"
     m 4k "Ehehe~"
-return
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,"monika_jewelry_ramble",prompt="Jewelry",category=["misc"],random=True))
@@ -4973,5 +4973,5 @@ label monika_jewelry_ramble:
     m 1a "But as you can see, I didn't follow through with that idea..."
     m 1m "I'm sorry... I'm rambleing again, aren't I?"
     m 1e "Ehehe... sorry about that."
-return
+    return
 
