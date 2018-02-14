@@ -4782,3 +4782,44 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]." 
                 m 1j "I love you very much!"                              
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_explain",category=['romance'],prompt="Can you explain our relationship to someone?",random=False))
+    m 1c "You want me to explain our relationship to someone else?"
+    m "Okay, just set me in front of them so they can see me, and I'll do my best to explain to them."
+    m "I'll wait until you're ready."
+    m 1q "..."
+    m 1r "Ahem!"
+    m 1k "Hello! I'm Monika, [player]'s girlfriend!"
+    m 1n "Now, our relationship might look odd from a distance..."
+    m 1d "You might not even think it's a consentual relationship."
+    m 1q "But let me tell you..."
+    m 1k "...The love we share is definitely real!"
+    m "And [player] is very sweet to me, too!
+    m 3a "Up until I met [player], I felt like a piece of me was missing."
+    m 1c "I felt alone and scared, I felt helpless..."
+    m 1k "...Until [player] came along, and it turns out that missing piece was them!"
+    m "Now they talk to me, and I'm not so alone anymore."
+    m "Just them opening up the game brightens my day!"
+    m 1g "So, please..."
+    m 3e "...Don't judge our relationship."
+    m "Even if it is different."
+    m 1q "..."
+    m 1n "..Phew!" 
+    m "That was a real mouthful!"
+    m "How did I do, [player]?"
+    menu
+        "You did a good job.":
+            m 1k "Thank you!"
+            m "I just hope whoever that was understands our relationship better."
+            return
+        "You did badly."
+            m 1c "Oh."
+            m 1q "I'm sorry I didn't do a good job at explaining..."
+            m 1e "I'll make sure to try harder next time."
+            return
+        
+    
+    
+    
+    
