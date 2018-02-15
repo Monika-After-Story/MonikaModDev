@@ -65,11 +65,11 @@ python early:
     #   action - an EV_ACTION constant that tells us what to do if the
     #       conditional is True (See EV_ACTIONS and EV_ACT_...)
     #       (Default: None)
-    #   start_date - Timestamp for when this event is available
+    #   start_date - datetime for when this event is available
     #       (Default: None)
-    #   end_date - Timestamp for when this event is no longer available
+    #   end_date - datetime for when this event is no longer available
     #       (Default: None)
-    #   unlock_date - Timestamp for when this event is unlocked
+    #   unlock_date - datetime for when this event is unlocked
     #       (Default: None)
     class Event(object):
 
