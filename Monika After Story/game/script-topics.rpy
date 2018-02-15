@@ -4782,3 +4782,22 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]." 
                 m 1j "I love you very much!"                              
     return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="The_Great_Gatsby",category=['literature'],prompt="Gatsby",random=True))
+
+label The Great Gatsby:
+    m 1b "[player], have you ever heard of The Great Gatsby?"
+    m "You know, the novel from F.Scott Fitzgerald."
+    m 2d "The story primarily concerns the young and mysterious millionaire Jay Gatsby and his obsession for the beautiful Daisy Buchanan."
+    m 2c "For who he does everything"
+    m 2i "Buying a mansion, throwing big parties and even befriend with her Cousin Nick, just to be close to her."
+    m 3d "In the end Gatsby tragically dies for his obsession"
+    m 1h "..."
+    m 1n "Despite of this sad ending. I really love the story"
+    m 2b "It really creates a beautiful portrait of the Jazz Age with its decadence, social upheaval, and excess."
+    m 1p "I've always wondered how a Happy End for Gatsby would have turned out to be."
+    m 1n "One day, when I am by your side [player], you will be my Gatsby and I will be your Daisy."
+    m 1k "Except that I will stay loyal to you no matter what"
+    return
