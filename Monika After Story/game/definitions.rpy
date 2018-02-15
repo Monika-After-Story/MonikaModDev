@@ -71,6 +71,10 @@ python early:
     #       (Default: None)
     #   unlock_date - Timestamp for when this event is unlocked
     #       (Default: None)
+    #   shown_count - number of times this event has been shown to the user
+    #       NOTE: this must be set by the caller, and it is asssumed that
+    #           call_next_event is the only one who changes this
+    #       (Default: 0)
     class Event(object):
 
         # tuple constants
@@ -86,7 +90,8 @@ python early:
             "action":8,
             "start_date":9,
             "end_date":10,
-            "unlock_date":11
+            "unlock_date":11,
+            "shown_count":12
         }
 
         # name constants
@@ -107,7 +112,8 @@ python early:
                 action=None,
                 start_date=None,
                 end_date=None,
-                unlock_date=None):
+                unlock_date=None,
+                shown_count=0):
 
             # setting up defaults
             if not eventlabel:
@@ -143,7 +149,8 @@ python early:
                 action,
                 start_date,
                 end_date,
-                unlock_date
+                unlock_date,
+                shown_count
             )
 
             # if the item exists, reform data if the length has increased
@@ -238,6 +245,17 @@ python early:
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
             return ev.prompt.lower()
+
+
+        @staticmethod
+        def getSortShownCount(ev):
+            """
+            Function used for sorting by shown counts
+
+            RETURNS: the shown_count property of an event
+            """
+            return ev.shown_count
+
 
         @staticmethod
         def _filterEvent(

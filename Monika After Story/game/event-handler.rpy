@@ -318,6 +318,9 @@ label call_next_event:
                     ev.unlocked=True
                     ev.unlock_date=datetime.datetime.now()
 
+            # increment shown count
+            $ ev.shown_count += 1
+
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
             jump _quit
