@@ -123,7 +123,7 @@ init python:
             raise EventException("'" + event.eventlabel + "' does NOT exist")
         if event.conditional is not None:
             try:
-                if eval(event.conditional):
+                if eval(event.conditional, globals()):
                     pass
             except:
                 raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
