@@ -618,6 +618,13 @@ label ch30_loop:
                     pushEvent(sel_ev)
                     monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
+
+                elif persistent._mas_enable_random_topics:
+                    # user wishes for reptitive monika. We will oblige, but
+                    # a somewhat intelligently.
+                    # NOTE: these are ordered using the shown_count property
+                    #
+
                 elif not seen_random_limit: # no topics left
 #                    monika_random_topics = list(all_random_topics)
 #                    pushEvent(renpy.random.choice(monika_random_topics))
