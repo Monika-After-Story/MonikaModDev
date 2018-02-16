@@ -313,12 +313,12 @@ label mas_random_ask:
             m 1a "Great!"
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
             # TODO: this really should be a smug or wink face
-            m "That lets me know if {cps=*2}you're bored of me{/cps}{nw}"
-            m "That lets me know if {fast}you just want to quietly spend time with me."
+            m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
+            m "That tells me when {fast}you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
         "No":
             m 1e "I see."
             m 1a "If you change your mind, just open up the settings and click 'Repeat Topics'."
-            m "That lets me know if you're okay with me repeating anything I've said."
+            m "That tells me if you're okay with me repeating anything I've said."
             return 
