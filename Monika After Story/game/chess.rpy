@@ -1624,6 +1624,7 @@ label mas_chess_dlg_qs_lost_7r:
             #       3rd time and beyond - again? thats okay, i predicted this
             #           so i made a backup! (play continues with backup)
 
+# main label for quickfile lost flow
 label mas_chess_dlg_qf_lost:
     python:
         import store.mas_chess as mas_chess
@@ -1633,16 +1634,77 @@ label mas_chess_dlg_qf_lost:
     menu:
         m "[mas_chess.DLG_QF_LOST_MENU_Q]"
         "[mas_chess.DLG_QF_LOST_OFCN_CHOICE]" if mas_chess.DLG_QF_LOST_OFCN_ENABLE:
-#            $ qf_gone_label = mas_chess.DLG_QF_
+            $ qf_gone_label = mas_chess.DLG_QF_LOST_OFCN_START
         "[mas_chess.DLG_QF_LOST_MAY_CHOICE]" if mas_chess.DLG_QF_LOST_MAY_ENABLE:
+            $ qf_gone_label = mas_chess.DLG_QF_LOST_MAY_START
         "[mas_chess.DLG_QF_LOST_ACDNT_CHOICE]" if mas_chess.DLG_QF_LOST_ACDNT_ENABLE:
+            $ qf_gone_label = mas_chess.DLG_QF_LOST_ACDNT_START
 
+    call expression qf_gone_label from _mas_chess_dqfgl
 
+    return _return
 
+# intro to quickfile lost
 label mas_chess_dlg_qf_lost_start:
-    m 1m "Well,{w} this is embarrassing."
+    m 2m "Well,{w} this is embarrassing."
     m "I could have sworn that we had an unfinished game, but I can't find the save file."
     return
+
+## of course not flow
+label mas_chess_dlg_qf_lost_ofcn_start:
+    python: 
+        import store.mas_chess as mas_chess
+        persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_OFCN] += 1
+        qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_OFCN]
+
+    if qf_gone_count == 3:
+        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_3
+
+    elif qf_gone_count == 4:
+        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_4
+
+    elif qf_gone_count == 5:
+        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_5
+
+    elif qf_gone_count == 6:
+        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_6
+
+    else:
+        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_GEN
+
+    call expression qf_gone_ofcn_label from _mas_chess_dqfgofcnl
+
+    return _return
+
+# generic ofcnot monika
+label mas_chess_dlg_qf_lost_ofcn_gen:
+    m 1n "Ah, yeah. You wouldn't do that to me."
+    m "I must have misplaced the save files."
+    m 1o "Sorry, [player]."
+    m "I'll make it up to you..."
+    m 1a "by starting a new game!"
+    return
+
+# 3rd time you ofcn monika
+label mas_chess_dlg_qf_lost_ofcn_3:
+    m 2h "..."
+    m "[player],{w} did you..."
+    m 2q "Nevermind."
+    m 1h "Let's play a new game."
+    return
+
+# 4th time you ofcn monika
+label mas_chess_dlg_qf_lost_ofcn_4:
+    jump mas_chess_dlg_qf_lost_ofcn_3
+
+# 5th time you ofcn monika
+label mas_chess_dlg_qf_lost_ofcn_5:
+    return
+
+# 6th time you ofcn monika
+label mas_chess_dlg_qf_lost_ofcn_6:
+    # TODO we need to delete stuff and quit
+    jump _quit
 
 #### end dialogue blocks ######################################################
 
