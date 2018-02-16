@@ -84,6 +84,7 @@ init 1 python in mas_chess:
     ##### dialogue constants
     ## lost quicksave game
     DLG_QS_LOST = "mas_chess_dlg_qs_lost"
+    DLG_QS_LOST_START = "mas_chess_dlg_qs_lost_start"
     DLG_QS_LOST_GEN = "mas_chess_dlg_qs_lost_gen"
     DLG_QS_LOST_2 = "mas_chess_dlg_qs_lost_2"
     DLG_QS_LOST_3 = "mas_chess_dlg_qs_lost_3"
@@ -1517,7 +1518,7 @@ label mas_chess_dlg_qs_lost:
         persistent._mas_chess_dlg_actions[mas_chess.QS_LOST] += 1
         qs_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QS_LOST]
         
-    call mas_chess_dlg_qs_lost from _mas_chess_dql
+    call mas_chess_dlg_qs_lost_start from _mas_chess_dqls
     
     if qs_gone_count == 2:
         $ qs_gone_label = mas_chess.DLG_QS_LOST_2
@@ -1539,7 +1540,7 @@ label mas_chess_dlg_qs_lost:
     return _return
 
 # quicksave lost start
-label mas_chess_dlg_qs_lost:
+label mas_chess_dlg_qs_lost_start:
     m 2n "Uh, [player]...{w} It seems I messed up in saving our last game,"
     m "and now I can't open it anymore."
     return
@@ -1616,7 +1617,8 @@ label mas_chess_dlg_qs_lost_7r:
             #           so i made a backup! (play continues with backup)
 
 label mas_chess_dlg_qf_lost:
-    # TODO unfinished game dialogue
+    m 1m "Well,{w} this is embarrassing."
+    m "I could have sworn that we had an unfinished game, but I can't find the save file."
     return
 
 #### end dialogue blocks ######################################################
