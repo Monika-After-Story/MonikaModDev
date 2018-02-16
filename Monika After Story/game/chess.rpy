@@ -60,6 +60,17 @@ init 1 python in mas_chess:
 
     CHESS_NO_GAMES_FOUND = "NOGAMES"
 
+    # for dlg flow, return value for continuing instead of jumping to new
+    # game
+    CHESS_GAME_CONT = "USHO"
+
+    # for dlg flow, return value for using backup save instead of jumping to
+    # new game
+    CHESS_GAME_BACKUP = "foundyou"
+
+    # currently loaded game, because we need some sort of gscope
+    loaded_game_filename = None
+
     # dlg actions (for keeping count of things)
     # Quick Save LOST: the internal quick save got coruppted or modified, but
     #   assume corrupted.
@@ -111,8 +122,11 @@ init 1 python in mas_chess:
     DLG_QF_LOST_MAY_CHOICE = "Maybe..."
     DLG_QF_LOST_MAY_START = "mas_chess_dlg_qf_lost_may_start"
     DLG_QF_LOST_MAY_GEN = "mas_chess_dlg_qf_lost_may_gen"
+    DLG_QF_LOST_MAY_GEN_FOUND = "mas_chess_dlg_qf_lost_may_gen_found"
     DLG_QF_LOST_MAY_2 = "mas_chess_dlg_qf_lost_may_2"
+    DLG_QF_LOST_MAY_2_FOUND = "mas_chess_dlg_qf_lost_may_2_found"
     DLG_QF_LOST_MAY_3 = "mas_chess_dlg_qf_lost_may_3"
+    DLG_QF_LOST_MAY_FCHK = "mas_chess_dlg_qf_lost_may_filechecker"
 
     # accident
     DLG_QF_LOST_ACDNT_ENABLE = True
@@ -1103,6 +1117,8 @@ init:
 
 label game_chess:
     hide screen keylistener
+    # TODO: check if player is locekd out of chess, then 
+    # give some dialogue about this and return
     m 1b "You want to play chess? Alright~"
 #   m 2a "Double click your king if you decide to surrender."
 #    m 1a "Get ready!"
@@ -1113,6 +1129,9 @@ label demo_minigame_chess:
     $ import store.mas_chess as mas_chess
     $ loaded_game = None
 
+    # TODO: check if player is locked out of chess, then give some dialogue 
+    # about this and return
+
     if not renpy.seen_label("mas_chess_save_selected"):
         call mas_chess_save_migration from _mas_chess_savemg
 
@@ -1122,6 +1141,8 @@ label demo_minigame_chess:
 
         # otherwise user has selected a save, which is the pgn game file.
         $ loaded_game = _return
+
+    return # TODO: test migration code
 
     elif len(persistent._mas_chess_quicksave) > 0:
         # quicksave holds the pgn game in plaintext
@@ -1191,9 +1212,35 @@ label demo_minigame_chess:
 
         # failure reading the saved game from text
         if quicksaved_file is None:
-            # TODO: this
-            #$ persistent._mas_chess_quicksave = ""
-            jump mas_chess_new_game_start
+
+            # save the filename of what the game should have been
+            python:
+                import os
+
+                mas_chess.loaded_game_filename = (
+                    mas_chess.CHESS_SAVE_PATH + 
+                    quicksaved_game["Event"] + mas_chess.CHESS_SAVE_EXT
+                ).replace("\\", "/")
+
+            call mas_chess_dlg_qf_lost from _mas_chess_dql_main2
+
+            # do we have a backup
+            if _return == mas_chess.CHESS_GAME_BACKUP:
+                $ loaded_game = quicksaved_game
+                jump mas_chess_game_load_check
+
+            # check if we should conitnue or not
+            if _return != mas_chess.CHESS_GAME_CONT:
+
+                # kill the quicksave
+                $ persistent._mas_chess_quicksave = ""
+
+                # check if nonNone, which means quit
+                if _return is not None:
+                    return
+
+                # otherwise jump to new game
+                jump mas_chess_new_game_start
 
         python:
             # check for game modifications
@@ -1217,8 +1264,10 @@ label demo_minigame_chess:
             #   NO:
             #   first time - believe player, say that the files look different
             #       then she remembered, but (we'll keep playing)
+            #       20 chess strength (reset to normal post game)
             #   2nd time - again believe player, but be a bit suspiciuos
             #       (also keep playing)
+            #       20 chess strength (reset to normal post game)
             #   3rd time - she kept a backup, and knew you were cheating
             #       give player a choice. Say I'm sorry or not:
             #       if you apologize:
@@ -1226,9 +1275,29 @@ label demo_minigame_chess:
             #           from now on. Her mood post-chess will be different:
             #           in your face when she wins, and hmph you were lucky
             #           when she loses
+            #           20 chess strength (reset to normal post game)
+            #           Also, she will always use the internal save.
+            #           (unless it's missing, in which case she'll berate
+            #           player for modifing that too and start a new game at
+            #           20)
             #       if you dont:
             #           Says she can't trust you anymore. Deletes herself
             #           and a bunch of the mod files and quits.
+            #           - glitchtexts some files
+            #               definitions
+            #               event-handler
+            #               script-topics
+            #               zz_piano
+            #               zz_music
+            #               script-story
+            #               script-intro
+            #           - deletes some files
+            #               chess
+            #           - dleetes character
+            #           - deletes _seen_ever
+            #           - deletes other player specific values
+            #           - sets a persistent value that will be checked
+            #               in splash. If it is found, we repeat these steps
             jump mas_chess_new_game_start
 
         # otherwise we are in good hands
@@ -1240,6 +1309,8 @@ label demo_minigame_chess:
             m 1a "We still have an unfinished game in progress."
             m "Get ready!"
 
+label mas_chess_game_load_check:
+
     if loaded_game:
         # now figure out the player color
         if loaded_game.headers["White"] == mas_monika_twitter_handle:
@@ -1250,6 +1321,7 @@ label demo_minigame_chess:
 
 label mas_chess_new_game_start:
     # otherwise, new games only
+    # TODO: chess lock here
     menu:
         m "What color would suit you?"
 
@@ -1268,6 +1340,8 @@ label mas_chess_new_game_start:
 
 label mas_chess_game_start:
     window hide None
+
+    # TODO: chess lock here
 
     python:
         ui.add(ChessDisplayable(player_color, pgn_game=loaded_game))
@@ -1587,43 +1661,6 @@ label mas_chess_dlg_qs_lost_7r:
     jump mas_chess_dlg_qs_lost_3
 
 ### quickfile lost
-            # TODO: tell player that she thought yall had an unfinished game
-            # but cant find where she saved the data.
-            # TODO: prompt user: (Of Course not!) (Maybe...) (It was an accident!)
-            # TODO: if ofc not:
-            #   say that she must have misplaced the game files and says sorry
-            #   and says we can start a new game instead
-            #   (to make it up to you, we can start a new game instead)
-            # TODO: keep count of this happening
-            #   OFCN:
-            #       generic - say misplaced files and sorry
-            #       first time - generic
-            #       3rd time - be suspiciuos of player, but i believ eyou
-            #       4th time - same as 3rd
-            #       5th time - I don't believe you, but I'll let
-            #           this slide.
-            #       6th time - glitch scare and say that she's disappointed in
-            #           you. Permantently disable chess.
-            #   Maybe:
-            #       NOTE: this will require very expensive file checking.
-            #           (BUT ITS FOR THE IMMERSION)
-            #       generic - player! I should have known you were just messing
-            #           with me!
-            #       first time - generic
-            #       2nd time - stop messing with me!
-            #       (in above 2 cases, we do a 1 minute wait for player to move
-            #       file to folder, and we check every second.) if player
-            #       fails to move it, then monika just says we'll forget that
-            #       game and return out of chess)
-            #       3rd time and beyond - I predicted this, and i have backup
-            #   Accident:
-            #       generic - aw player, thats okay. accidents happen, we'll
-            #           play a new game instead
-            #       first time - generic
-            #       2nd time - again? stil okay
-            #       3rd time and beyond - again? thats okay, i predicted this
-            #           so i made a backup! (play continues with backup)
-
 # main label for quickfile lost flow
 label mas_chess_dlg_qf_lost:
     python:
@@ -1666,7 +1703,7 @@ label mas_chess_dlg_qf_lost_ofcn_start:
     elif qf_gone_count == 5:
         $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_5
 
-    elif qf_gone_count == 6:
+    elif qf_gone_count >= 6:
         $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_6
 
     else:
@@ -1699,12 +1736,155 @@ label mas_chess_dlg_qf_lost_ofcn_4:
 
 # 5th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_5:
-    return
+    m 2h "..."
+    m "[player],{w} this is happening way too much."
+    m 2q "I really don't believe you this time."
+    pause 2.0
+    m 2h "I hope you're not messing with me."
+    m "..."
+    m 1h "Whatever.{w} Let's just play a new game."
+    return 
 
 # 6th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_6:
-    # TODO we need to delete stuff and quit
-    jump _quit
+    # disable chess forever!
+    m 2h "..."
+    m "[player],{w} I don't believe you."
+    m "I can't believe you."
+    # TODO: we need an angry monika
+    m 2i "If you're just going to throw away our chess games like that,"
+    m "then I don't want to play chess with you anymore."
+    $ persistent.game_unlocks["chess"] = False
+    return True
+
+## maybe monika flow
+label mas_chess_dlg_qf_lost_may_start:
+    python: 
+        import store.mas_chess as mas_chess
+        persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_MAYBE] += 1
+        qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_MAYBE]
+
+    if qf_gone_count == 2:
+        $ qf_gone_maybe_label = mas_chess.DLG_QF_LOST_MAY_2
+
+    elif qf_gone_count >= 3:
+        $ qf_gone_maybe_label = mas_chess.DLG_QF_LOST_MAY_3
+
+    else:
+        $ qf_gone_maybe_label = mas_chess.DLG_QF_LOST_MAY_GEN
+
+    call expression qf_gone_maybe_label from _mas_chess_dqfgml
+
+    return _return
+
+# generic maybe monika
+# NOTE: we do a check for the file every line
+label mas_chess_dlg_qf_lost_may_gen:
+    m 2g "[player]!{w} I should have known you were just messing with me!"
+    jump mas_chess_dlg_qf_lost_may_filechecker
+
+# generic maybe monika, found file
+label mas_chess_dlg_qf_lost_may_gen_found:
+    m 2a "Oh!"
+    m 1j "There's the save.{w} Thanks for putting it back, [player]."
+    m 1a "Now we can continue our game."
+    return store.mas_chess.CHESS_GAME_CONT
+
+# 2nd time maybe monika
+label mas_chess_dlg_qf_lost_may_2:
+    m 2g "[player]!{w} Stop messing with me!"
+    jump mas_chess_dlg_qf_lost_may_filechecker
+
+# 2nd time maybe monika, found file
+label mas_chess_dlg_qf_lost_may_2_found:
+    jump mas_chess_dlg_qf_lost_may_gen_found
+
+# maybe monika file checking parts
+label mas_chess_dlg_qf_lost_may_filechecker:
+    $ import store.mas_chess as mas_chess
+    $ game_file = mas_chess.loaded_game_filename
+
+    if renpy.exists(game_file):
+        jump mas_chess_dlg_qf_lost_may_gen_found
+
+    m 1e "Can you put the save back so we can play?"
+    if renpy.exists(game_file):
+        jump mas_chess_dlg_qf_lost_may_gen_found
+
+    show monika 1a
+
+    # loop for about a minute and check for file xistence
+    python:
+        renpy.say(m, "I'll wait a minute...", interact=False)
+        file_found = False
+        seconds = 0
+        while not file_found and seconds < 60:
+            if renpy.exists(game_file):
+                file_found = True
+            else:
+                renpy.pause(1.0, hard=True)
+                seconds += 1
+
+    if file_found:
+        m 1j "Yay!{w} Thanks for putting it back, [player]."
+        m "Now we can continue our game."
+        return mas_chess.CHESS_GAME_CONT
+
+    # else:
+    m 1g "[player]..."
+    m 1e "That's okay. Let's just play a new game."
+    return
+
+# 3rd time maybe monika
+label mas_chess_dlg_qf_lost_may_3:
+    m 2g "[player]! That's-"
+    m 1 "Not a problem at all."
+    m "I knew you were going to do this again,"
+    m 1k "so I kept a backup of our save!"
+    m 1a "You can't trick me anymore, [player]."
+    m "Now let's continue our game."
+    return store.mas_chess.CHESS_GAME_BACKUP
+
+## Accident monika flow
+label mas_chess_dlg_qf_lost_acdnt_start:
+    python: 
+        import store.mas_chess as mas_chess
+        persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_ACDNT] += 1
+        qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_ACDNT]
+
+    if qf_gone_count == 2:
+        $ qf_gone_acdnt_label = mas_chess.DLG_QF_LOST_ACDNT_2
+
+    elif qf_gone_count >= 3:
+        $ qf_gone_acdnt_label = mas_chess.DLG_QF_LOST_ACDNT_3
+
+    else:
+        $ qf_gone_acdnt_label = mas_chess.DLG_QF_LOST_ACDNT_GEN
+
+    call expression qf_gone_acdnt_label from _mas_chess_dqfgacdntl
+
+    return _return
+
+# generic accident monika
+label mas_chess_dlg_qf_lost_acdnt_gen:
+    m 1e "[player]..."
+    m "That's okay.{w} Accidents happen."
+    m 1a "Let's play a new game instead."
+    return
+
+# 2nd accident monika
+label mas_chess_dlg_qf_lost_acdnt_2:
+    m 1e "Again? Don't be so clumsy, [player]."
+    m 1j "But that's okay."
+    m "We'll just play a new game instead."
+    return
+
+# 3rd accident monika
+label mas_chess_dlg_qf_lost_acdnt_3:
+    m 1e "I had a feeling this would happen again."
+    m 3k "So I kept a backup of our save!"
+    m 1a "Now we can continue our game."
+    return store.mas_chess.CHESS_GAME_BACKUP
 
 #### end dialogue blocks ######################################################
 
