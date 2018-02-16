@@ -44,3 +44,11 @@ label bye_untilwemeetagain:
     m 2e "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I’ll miss you, Until we meet again.{/i}'"
     m "Ehehe, 'till then, [player]!"
     return 'quit'
+    
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="take_care",random=True),eventdb=evhand.farewell_database)
+    
+label take_care:
+    m 1a "Don't forget that I'll always love you, [player]." 
+    m 1k "Take care! "
+    return 'quit'
