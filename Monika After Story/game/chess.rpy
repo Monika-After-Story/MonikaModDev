@@ -93,9 +93,13 @@ init 1 python in mas_chess:
 
     ## lost quicksave file
     DLG_QF_LOST = "mas_chess_dlg_qf_lost"
+    DLG_QF_LOST_START = "mas_chess_dlg_qf_lost_start"
+    DLG_QF_LOST_MENU_Q = "Did you mess with the saves, [player]?"
 
     # ofcnot
+    DLG_QF_LOST_OFCN_ENABLE = True
     DLG_QF_LOST_OFCN_CHOICE = "Of course not!"
+    DLG_QF_LOST_OFCN_START = "mas_chess_dlg_qf_lost_ofcn_start"
     DLG_QF_LOST_OFCN_GEN = "mas_chess_dlg_qf_lost_ofcn_gen"
     DLG_QF_LOST_OFCN_3 = "mas_chess_dlg_qf_lost_ofcn_3"
     DLG_QF_LOST_OFCN_4 = "mas_chess_dlg_qf_lost_ofcn_4"
@@ -103,13 +107,17 @@ init 1 python in mas_chess:
     DLG_QF_LOST_OFCN_6 = "mas_chess_dlg_qf_lost_ofcn_6"
 
     # maybe
+    DLG_QF_LOST_MAY_ENABLE = True
     DLG_QF_LOST_MAY_CHOICE = "Maybe..."
+    DLG_QF_LOST_MAY_START = "mas_chess_dlg_qf_lost_may_start"
     DLG_QF_LOST_MAY_GEN = "mas_chess_dlg_qf_lost_may_gen"
     DLG_QF_LOST_MAY_2 = "mas_chess_dlg_qf_lost_may_2"
     DLG_QF_LOST_MAY_3 = "mas_chess_dlg_qf_lost_may_3"
 
     # accident
+    DLG_QF_LOST_ACDNT_ENABLE = True
     DLG_QF_LOST_ACDNT_CHOICE = "It was an accident!"
+    DLG_QF_LOST_ACDNT_START = "mas_chess_dlg_qf_lost_acdnt_start"
     DLG_QF_LOST_ACDNT_GEN = "mas_chess_dlg_qf_lost_acdnt_gen"
     DLG_QF_LOST_ACDNT_2 = "mas_chess_dlg_qf_lost_acdnt_2"
     DLG_QF_LOST_ACDNT_3 = "mas_chess_dlg_qf_lost_acdnt_3"
@@ -1617,6 +1625,21 @@ label mas_chess_dlg_qs_lost_7r:
             #           so i made a backup! (play continues with backup)
 
 label mas_chess_dlg_qf_lost:
+    python:
+        import store.mas_chess as mas_chess
+    
+    call mas_chess_dlg_qf_lost_start from _mas_chess_dqls
+
+    menu:
+        m "[mas_chess.DLG_QF_LOST_MENU_Q]"
+        "[mas_chess.DLG_QF_LOST_OFCN_CHOICE]" if mas_chess.DLG_QF_LOST_OFCN_ENABLE:
+#            $ qf_gone_label = mas_chess.DLG_QF_
+        "[mas_chess.DLG_QF_LOST_MAY_CHOICE]" if mas_chess.DLG_QF_LOST_MAY_ENABLE:
+        "[mas_chess.DLG_QF_LOST_ACDNT_CHOICE]" if mas_chess.DLG_QF_LOST_ACDNT_ENABLE:
+
+
+
+label mas_chess_dlg_qf_lost_start:
     m 1m "Well,{w} this is embarrassing."
     m "I could have sworn that we had an unfinished game, but I can't find the save file."
     return
