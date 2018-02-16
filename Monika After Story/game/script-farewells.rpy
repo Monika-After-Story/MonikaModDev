@@ -46,9 +46,9 @@ label bye_untilwemeetagain:
     return 'quit'
     
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="take_care",random=True),eventdb=evhand.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_take_care",random=True),eventdb=evhand.farewell_database)
     
-label take_care:
+label bye_take_care:
     m 1a "Don't forget that I'll always love you, [player]." 
     m 1k "Take care! "
     return 'quit'
