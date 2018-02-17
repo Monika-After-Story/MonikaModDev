@@ -706,3 +706,14 @@ label greeting_sunshine:
     m 1l "I was just singing to myself to pass time."
     m 1b "But now that you're here, we can spend some time together."
     return
+
+label greeting_french:
+     m 1b "Bonjour, [player]!"
+     m 1j "Savais-tu que tu avais de beaux yeux, mon amour?"
+     m 1k "Ehehe!"
+     m 2l "I'm practicing my French. It means you have beautiful eyes~"
+     m 1a "From what I've heard, French literature is really good."
+     m 2a "Especially poetry!"
+     m 1b "Who knows? Maybe we could read some Baudelaire someday."
+     m 4k "Anyway, welcome back, {i}mon amour{/i}!"
+     return
