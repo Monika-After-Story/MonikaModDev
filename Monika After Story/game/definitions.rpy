@@ -505,6 +505,11 @@ python early:
                 if events[ev].end_date is not None:
                     if events[ev].end_date <= current_time:
                         event_time = False
+                        #Completely clear the event
+                        events[ev].unlocked = False
+                        events[ev].random = False
+                        events[ev].pool = False
+
 
                 if events[ev].conditional is not None:
                     if not eval(events[ev].conditional):
@@ -844,7 +849,7 @@ init -1 python:
     def is_file_present(file):
         try:
             renpy.file(
-                config.basedir.replace("\\","/") +
+                ".." +
                 file
             )
             is_file = True
