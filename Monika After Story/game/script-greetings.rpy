@@ -123,7 +123,7 @@ label greeting_goodmorning:
 
 label greeting_back2:
      m 1k "Hello, dear."
-     m 1n "I was starting to miss you terribly, it's so good to see you again!"
+     m 1n "I was starting to miss you terribly. It's so good to see you again!"
      m "Don't make me wait so long next time, ehehe~"
      return
 
