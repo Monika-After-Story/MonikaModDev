@@ -1982,7 +1982,13 @@ label mas_chess_dlg_qf_edit_y_1:
 
 # 2nd time yes edit
 label mas_chess_dlg_qf_edit_y_2:
-    # TODO
+    m 2q "I am incredibly disappointed in you."
+    m "I don't want to play chess right now."
+    return True
+
+# 3rd time yes edit
+label mas_chess_dlg_qf_edit_y_3:
+    # TODO:
     return
             
 
