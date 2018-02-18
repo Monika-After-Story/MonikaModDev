@@ -50,7 +50,7 @@ label bye_untilwemeetagain:
 
 label important_things:
     m 1d "You're leaving, [player]?"
-    m 1m "I suppose sometimes you really have to go take care of important things in your world..."
+    m 1m "I suppose sometimes you have to go take care of really important things in your world..."
     m 1n "It's okay. Don't worry, I'll still be here."
     m 2k "Come back soon, okay?"
     m 1e "Goodbye!"
