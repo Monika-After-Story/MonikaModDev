@@ -433,12 +433,18 @@ label hangman_game_loop:
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1n "[player]..."
-                m "You should at least play to the end..."
-                m 1f "Giving up so easily is a sign of poor resolve."
-                if chances > 1:
-                    m "I mean, you'd have to miss [chances] more letters to actually lose."
-                else:
-                    m "I mean, you'd have to miss [chances] more letter to actually lose."
+                if chances == 6:
+                    m "I thought you said you wanted to play Hangman."
+                    m 1o "You didn't even guess a single letter."
+                    m "..."
+                    m 1f "I really enjoy playing with you, you know."
+                else
+                    m "You should at least play to the end..."
+                    m 1f "Giving up so easily is a sign of poor resolve."
+                    if chances > 1:
+                        m "I mean, you'd have to miss [chances] more letters to actually lose."
+                    else:
+                        m "I mean, you'd have to miss [chances] more letter to actually lose."
                 m 1e "Can you play to the end next time, [player]? For me?"
             else:
                 python:
