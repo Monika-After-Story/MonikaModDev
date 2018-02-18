@@ -11,6 +11,12 @@ default persistent._mas_chess_dlg_actions = {}
 # when we need to disable chess for a period of time
 default persistent._mas_chess_timed_disable = None
 
+# if the player modified the games 3 times but apologized
+default persistent._mas_chess_3_edit_sorry = False
+
+# if the player modified the games 3 times but did not apologize
+default persistent._mas_chess_mangle_all = False
+
 define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
 define mas_chess.CHESS_SAVE_EXT = ".pgn"
 define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
@@ -75,6 +81,10 @@ init 1 python in mas_chess:
     # for dlg flow, return value for using backup save instead of jumping to
     # new game
     CHESS_GAME_BACKUP = "foundyou"
+
+    # for dlg flow, return value for using file save instead of jumping to new
+    # game
+    CHESS_GAME_FILE = "file"
 
     # currently loaded game, because we need some sort of gscope
     loaded_game_filename = None
@@ -2016,9 +2026,77 @@ label mas_chess_dlg_qf_edit_y_3:
     return store.mas_chess.CHESS_GAME_BACKUP
 
 ## No Edit flow
-#label mas_chess_dlg_qf_edit_n_start:
+label mas_chess_dlg_qf_edit_n_start:
+    python: 
+        import store.mas_chess as mas_chess
+        persistent._mas_chess_dlg_actions[mas_chess.QF_EDIT_NO] += 1
+        qf_edit_count = persistent._mas_chess_dlg_actions[mas_chess.QF_EDIT_NO]
 
-   
+    if qf_edit_count == 1:
+        $ qf_edit_no_label = mas_chess.DLG_QF_EDIT_NO_1
+
+    elif qf_edit_count == 2:
+        $ qf_edit_no_label = mas_chess.DLG_QF_EDIT_NO_2
+
+    else:
+        $ qf_edit_no_label = mas_chess.DLG_QF_EDIT_NO_3
+
+    call expression qf_edit_no_label from _mas_chess_dqenl
+
+    return _return
+
+# 1st time no edit
+label mas_chess_dlg_qf_edit_n_1:
+    m 1f "I see."
+    m "The save file looks different than how I last remembered it, but maybe that's just my memory failing me."
+    m 1a "Let's continue this game."
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20
+    return store.mas_chess.CHESS_GAME_FILE
+
+# 2nd time no edit
+label mas_chess_dlg_qf_edit_n_2:
+    m 1f "I see."
+    m "..."
+    m "Let's just continue this game."
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20
+    return store.mas_chess.CHESS_GAME_FILE
+
+# 3rd time no edit
+label mas_chess_dlg_qf_edit_n_3:
+    m 2q "[player]..."
+    m 2h "I kept a backup of our game.{w} I know you edited the save file."
+    m "I just-"
+    m "I just{fast} can't believe you would cheat and {i}lie{/i} to me."
+    m 2o "..."
+    
+    # THE ULTIMATE CHOICE
+    menu:
+        "I'm sorry":
+            $ qf_edit_no_label = store.mas_chess.DLG_QF_EDIT_NO_3_S
+
+        "...":
+            $ qf_edit_no_label = store.mas_chess.DLG_QF_EDIT_NO_3_N
+
+    call expression qf_edit_no_label from _mas_chess_dqenluc
+
+    return _return
+
+# 3rd time no edit, sorry
+label mas_chess_dlg_qf_edit_n_3_s:
+    show monika 2h
+    pause 1.0
+    show monika 2
+    pause 1.0
+    m "I forgive you, [player], but please don't do this to me again."
+#    m "
+    return
+
+# 3rd time no edit, no sorry
+label mas_chess_dlg_qf_edit_n_3_n:
+    # TODO
+    jump _quit
 
 #### end dialogue blocks ######################################################
 
