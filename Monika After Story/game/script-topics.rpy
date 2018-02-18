@@ -2998,7 +2998,7 @@ label monika_pleasure:
     m 1n "We're not even that deep into our relationship yet! Ahaha~"
     m 1h "But I have to keep an eye on you."
     m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
-    m "I hear that people privately do those stuff in your world..."
+    m "I hear that people privately do that stuff in your world..."
     m 1c "Is it really that a good feeling?"
     m 1h "If you ask me, doing that stuff often can cause a lot of problems."
     m "Once you start to get addicted, you'll always have the urge to... you know."

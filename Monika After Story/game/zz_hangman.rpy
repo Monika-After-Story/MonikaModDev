@@ -2,6 +2,7 @@
 #
 
 # hangman stuff only
+default persistent._mas_hangman_playername = False
 define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 
 # IMAGES-----------
@@ -184,6 +185,15 @@ init 10 python:
 
     all_hm_words = deepcopy(hm_words)
 
+    if (
+            not persistent._mas_hangman_playername
+            and persistent.playername.lower() != "sayori"
+            and persistent.playername.lower() != "yuri"
+            and persistent.playername.lower() != "natsuki"
+            and persistent.playername.lower() != "monika"
+        ):
+        hm_words.append(-1)
+
 #   NOTE: this is in case we decide to change wordlist
 #    with renpy.file("poemwords.txt") as words:
 #        for line in words:
@@ -232,6 +242,8 @@ label hangman_game_loop:
     pause 0.7
 
     python:
+        player_word = False
+
         # refill the list if empty
         if len(hmg.hm_words) == 0:
             hmg.hm_words = deepcopy(hmg.all_hm_words)
@@ -241,11 +253,26 @@ label hangman_game_loop:
         hmg.hm_words.remove(word)
 
         # setup display word and hint
-        display_word = list("_" * len(word[0]))
-        hm_hint = hmg.HM_HINT.format(word[1])
+        if (
+                word == -1 
+                and persistent.playername.isalpha()
+                and len(persistent.playername) <= 15
+            ):
+            display_word = list("_" * len(persistent.playername.lower()))
+            hm_hint = hmg.HM_HINT.format("I")
+            word = persistent.playername.lower()
+            player_word = True
+            persistent._mas_hangman_playername = True
 
-        # we dont need PoemWord anymore
-        word = word[0]
+        else:
+            if word == -1:
+                word = renpy.random.choice(hmg.hm_words)
+                hmg.hm_words.remove(word)
+            display_word = list("_" * len(word[0]))
+            hm_hint = hmg.HM_HINT.format(word[1])
+
+            # we dont need PoemWord anymore
+            word = word[0]
 
         # turn the word into hangman letters
         # NOTE: might not need this (or might). keep for reference
@@ -373,6 +400,9 @@ label hangman_game_loop:
 
         if chances == 0:
             $ done = True
+            if player_word:
+                m 1e "[player],..."
+                m "You couldn't guess your own name?"
             m 1j "Better luck next time~"
         elif "_" not in display_word:
             $ done = True
@@ -435,7 +465,13 @@ label hangman_game_loop:
     if win:
         if is_window_sayori_visible:
             show hm_s_win_6 as window_sayori at hangman_sayori_h
-        m 1j "Wow, you guessed the word correctly!"
+
+        if player_word:
+            $ the_word = "your name"
+        else:
+            $ the_word = "the word"
+
+        m 1j "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
