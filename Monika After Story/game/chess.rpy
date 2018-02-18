@@ -8,6 +8,9 @@ default persistent._mas_chess_quicksave = ""
 # dict containing action counts:
 default persistent._mas_chess_dlg_actions = {}
 
+# when we need to disable chess for a period of time
+default persistent._mas_chess_timed_disable = None
+
 define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
 define mas_chess.CHESS_SAVE_EXT = ".pgn"
 define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
@@ -1281,7 +1284,19 @@ label demo_minigame_chess:
             is_same = str(quicksaved_game) == str(quicksaved_file)
 
         if not is_same:
-            # TODO
+
+            call mas_chess_dlg_qf_edit from _mas_chess_dql_main3
+
+            # do we use backup
+            if _return == mas_chess.CHESS_GAME_BACKUP:
+                $ loaded_game = quicksaved_game
+                jump mas_chess_game_load_check
+
+            # quit out of chess
+            elif _return is not None:
+                return
+
+            # otherwise jump to a new game
             jump mas_chess_new_game_start
 
         # otherwise we are in good hands
@@ -1984,13 +1999,21 @@ label mas_chess_dlg_qf_edit_y_1:
 label mas_chess_dlg_qf_edit_y_2:
     m 2q "I am incredibly disappointed in you."
     m "I don't want to play chess right now."
+    python:
+        import datetime
+        persistent._mas_chess_timed_disable = datetime.datetime.now()
+        # TODO make one of the chess unlocked conditions timed based
     return True
 
 # 3rd time yes edit
 label mas_chess_dlg_qf_edit_y_3:
-    # TODO:
-    return
-            
+    m 2q "I'm not surprised..."
+    m 2h "But I am prepared."
+    m "I kept a backup of our game just in case you did this again."
+    m 1 "Now let's finish this game."
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20
+    return store.mas_chess.CHESS_GAME_BACKUP
 
 ## No Edit flow
 #label mas_chess_dlg_qf_edit_n_start:
