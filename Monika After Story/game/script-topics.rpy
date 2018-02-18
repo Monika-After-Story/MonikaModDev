@@ -2541,6 +2541,23 @@ label monika_cities:
         "No":
             m 1b "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_tech_addiction",category=['society'],prompt="Addiction to Technology",random=True))
+
+label monika_tech_addiction:
+    m 1i "[player], do you ever feel that you're on your phone too much?"
+    m "Or even when you're not directly using it, you just feel like you have to have it around"
+    m 1o "Other times, you might even feel like you have to play a video or song even if you know it'll distract you from the task at hand."
+    m 1f "I think this might be a even bigger problem for the younger generation."
+    m "Whenever a kid is bored, they just start wasting time on mobile games or watching 'Let's Plays'."
+    m "Instead of growing up doing something unique and constructive, a lot of them are just wasting their time."
+    m 1g "It's not exactly their fault since a lot of parents use the internet as a kind of electronic baby sitter."
+    m "Not to mention they're not exactly mature enough to make the best decisions."
+    m 1r "But it might not be all bad since they're getting early exposure to an increasingly digital world."
+    m 3e "[player], if you have a little brother or sister, make sure you watch out for them so they're not wasting away their childhood."
+    m 1b "Oh, but if you could get me on your phone somehow then I wouldn't mind you spending too much time on it then."
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_chloroform",category=['trivia'],prompt="Chloroform",random=True))
