@@ -366,14 +366,16 @@ label pick_a_game:
             _now = datetime.datetime.now()
             
             # chess has timed disabling
-            if (
-                    persistent._mas_chess_timed_disable is not None
-                    and persistent._mas_chess_timed_disable - _now >= _hour
-                ):
-                chess_disabled = False
-                persistent._mas_chess_timed_disable = None
+            if persistent._mas_chess_timed_disable is not None:
+                if persistent._mas_chess_timed_disable - _now >= _hour:
+                    chess_disabled = False
+                    persistent._mas_chess_timed_disable = None
+
+                else:
+                    chess_disabled = True
+
             else:
-                chess_disabled = True
+                chess_disabled = False
 
             # single var for readibility
             chess_unlocked = (

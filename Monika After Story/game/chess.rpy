@@ -1186,14 +1186,18 @@ label demo_minigame_chess:
         if not _return:
             return
 
+        # if the return is no games, jump to new game
+        elif _return == mas_chess.CHESS_NO_GAMES_FOUND:
+            jump mas_chess_new_game_start
+
         # otherwise user has selected a save, which is the pgn game file.
         $ loaded_game = _return
 
-    return # TODO: test migration code
+        # NOTE: debug this
+#        $ persistent._mas_chess_quicksave = str(loaded_game)
 
     elif len(persistent._mas_chess_quicksave) > 0:
         # quicksave holds the pgn game in plaintext
-
         python:
             import StringIO # python 2 
             import chess.pgn
@@ -1206,6 +1210,9 @@ label demo_minigame_chess:
                 quicksaved_game,
                 mas_monika_twitter_handle
             )
+
+        # TODO: test reading quicksaved game
+        return
 
         # failure reading a saved game
         if quicksaved_game is None:
@@ -1415,14 +1422,15 @@ label mas_chess_game_start:
             m "Would you like to save this game?"
             "Yes":
                 label mas_chess_savegame:
-                    python:
-                        if loaded_game: # previous game exists
+                    if loaded_game: # previous game exists
+                        python:
                             new_pgn_game.headers["Event"] = (
                                 loaded_game.headers["Event"]
                             )
                         
-                        # otherwise ask for name
-                        else:
+                    # otherwise ask for name
+                    else:
+                        python:
                             # get file name
                             save_name = ""
                             while len(save_name) == 0:
@@ -1439,17 +1447,18 @@ label mas_chess_game_start:
                                 os.F_OK
                             )
 
-                            # check if this file exists already
-                            if is_file_exist:
-                                m 1e "We already have a game named '[save_name]'."
-                                menu:
-                                    m "Should I overwrite it?"
-                                    "Yes":
-                                        pass
-                                    "No":
-                                        jump mas_chess_savegame
+                        # check if this file exists already
+                        if is_file_exist:
+                            m 1e "We already have a game named '[save_name]'."
+                            menu:
+                                m "Should I overwrite it?"
+                                "Yes":
+                                    pass
+                                "No":
+                                    jump mas_chess_savegame
 
-
+                    python:
+            
                         # filename 
                         save_filename = (
                             new_pgn_game.headers["Event"] + 
@@ -1459,8 +1468,6 @@ label mas_chess_game_start:
                         # now setup the file path
                         file_path = mas_chess.CHESS_SAVE_PATH + save_filename
                         
-                        
-                    python:
                         with open(file_path, "w") as pgn_file:
                             pgn_file.write(str(new_pgn_game))
 
@@ -1573,6 +1580,7 @@ label mas_chess_save_migration:
             
             call screen mas_gen_scrollable_menu(pgn_games, mas_chess.CHESS_MENU_AREA, mas_chess.CHESS_MENU_XALIGN, mas_chess.CHESS_MENU_WAIT_ITEM)
 
+            show monika at t11
             if _return == mas_chess.CHESS_MENU_WAIT_VALUE:
                 # user backs out
                 m 2q "I see."
@@ -1583,7 +1591,7 @@ label mas_chess_save_migration:
                 # user selected a game
                 m 1a "Alright." 
                 python:
-                    sel_game = actual_pgn_games.pop(game_dex)
+                    sel_game = actual_pgn_games.pop(_return)
                     for pgn_game in actual_pgn_games:
                         try:
                             os.remove(os.path.normcase(
@@ -1609,7 +1617,7 @@ label mas_chess_dlg_qs_lost:
         persistent._mas_chess_dlg_actions[mas_chess.QS_LOST] += 1
         qs_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QS_LOST]
         
-    call mas_chess_dlg_qs_lost_start from _mas_chess_dqls
+    call mas_chess_dlg_qs_lost_start from _mas_chess_dqsls
     
     if qs_gone_count == 2:
         $ qs_gone_label = mas_chess.DLG_QS_LOST_2
@@ -1675,7 +1683,7 @@ label mas_chess_dlg_qf_lost:
     python:
         import store.mas_chess as mas_chess
     
-    call mas_chess_dlg_qf_lost_start from _mas_chess_dqls
+    call mas_chess_dlg_qf_lost_start from _mas_chess_dqfls
 
     menu:
         m "[mas_chess.DLG_QF_LOST_MENU_Q]"
