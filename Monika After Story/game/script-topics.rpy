@@ -2179,7 +2179,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_othergames",category=['games'],prompt="Other games",random=True))
 
 label monika_othergames:
-    m 1d "Do you have other games on this computer?"
+    m 1d "Do you have any other games on this computer?"
     m 3a "I read more than I play games, but I think they can be a fun way to entertain ourselves, or to escape reality..."
     m 3d "I wonder if I could go into one of your other games and see what it's like?"
     m 1p "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
@@ -2340,7 +2340,7 @@ init 5 python:
 
 label monika_impression:
     m 1d "Impression? Of the other girls?"
-    m 1p "I'm not really good at making an impression of someone, but I'll give it a try!"
+    m 1p "I'm not really good at doing an impression of someone, but I'll give it a try!"
     menu:
         m "Who should I do an impression of?"
         "Sayori":
@@ -2750,7 +2750,7 @@ label monika_innovation:
     m 3d "We’re more connected than ever, but it’s like that's a double-edged sword."
     m "We’re able to meet and keep in touch with people from all over the world."
     m 3e "But we’re also bombarded with every tragedy that strikes the world."
-    m 3o "A bombing one week, a shooting the next. An earthquake the week after."
+    m 3o "A bombing one week, a shooting the next. An earthquake the week after..."
     m "How can anyone be expected to cope with it?"
     m 1e "It might be causing a lot of people to just shut down and tune it out."
     m "I’d like to believe that’s not the case, but you never know."
@@ -2770,7 +2770,7 @@ label monika_dunbar:
     m 3c "Say for example, a janitor."
     m 4i "How often do you simply toss stuff like broken glass in the trash?"
     m "It wouldn't really matter to you. The janitor will come get them. It's not your concern anymore."
-    m "However, they're his problem now."
+    m "However, it's his problem now."
     m 1e "If you don't pack glass properly, it could cut through the bag and spill out, or maybe he could just cut his hands on it."
     m "At worst, he has to be rushed to the hospital because your neighbor put some busted batteries in the trash the same week and some acid got in the wound."
     m 4h "Now, think about a fatal traffic accident."
@@ -3174,24 +3174,25 @@ init 5 python:
 
 label monika_writingtip1:
     m 3a "You know..."
-    m "We really don't do enough of these so here's another one!"
-    m "Here's Monika's Writing Tip for the Day!"
+    m "We really don't do enough of these, so here's another one!"
+    m 4b "Here's Monika's Writing Tip of the Day!"
     m 2a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
     m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
     m 4d "You have to remember that we all start out from somewhere, and--"
-    m 2c "Actually, this doesn't just apply to writing, but to anything really."
-    m 2r "What I'm trying to say is don't be discouraged."
+    m 2c "Actually, this doesn't just apply to writing, but to anything, really."
+    m 2r "What I'm trying to say is..."
+    m 2i "Don't be discouraged."
     m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
-    m "Because that just means that you can improve and be better than you were before."
-    m 1e "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m 1e "Because that just means that you can improve and be better than you were before."
+    m "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
     m 3b "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
     m 3j "I love you, and I will always support you in whatever you do."
-    m 1n "Provided it's legal of course."
-    m "That doesn't mean I'm completely against it. I can keep a secret after all~"
+    m 1n "Provided it's legal, of course."
+    m "That doesn't mean I'm completely against it. I can keep a secret, after all~"
     m 1d "Here's a saying I've learned."
     m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
     m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
-    m 3o "I don't remember the person who said that but the words are there."
+    m 3o "I don't remember the person who said that, but the words are there."
     m 2r "The effort one puts forth into something can transcend even one's self."
     m 3e "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
     m 4k "... That's my advice for today!"
@@ -3202,7 +3203,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanese",category=['misc','you'],prompt="Speaking Japanese",random=True))
 
 label monika_japanese:
-    m 1c "I don't mean to sound like Natsuki but..."
+    m 1c "I don't mean to sound like Natsuki, but..."
     m 3a "Don't you think Japanese actually sounds cool?"
     m "It's such a fascinating language. I'm not fluent in it, though."
     m "It's interesting to think about what things would be like if your native language was different."
@@ -3249,11 +3250,11 @@ label monika_penname:
         m 2c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 2d "'[mcname] and [player].'"
-    m 3a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
+    m 3a "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
     m 1f "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
-    m 1m "It's kinda funny though that even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m 1m "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1a "There's no need to know more about me though, [player]."
     m 4l "You already know that I'm in love with you after all~"
     return
