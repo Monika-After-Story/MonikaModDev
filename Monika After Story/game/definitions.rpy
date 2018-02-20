@@ -870,6 +870,44 @@ init -1 python:
     #Add entries with your script in script-topics.rpy
     monika_topics = {}
 
+    def get_procs():
+        """
+        Retrieves list of processes running right now!
+
+        Only works for windows atm
+
+        RETURNS: list of running processes, or an empty list if
+        we couldn't do that
+        """
+        if renpy.windows:
+            import subprocess
+            try:
+                return subprocess.check_output(
+                    "wmic process get Description", 
+                    shell=True
+                ).lower().replace("\r", "").replace(" ", "").split("\n")
+            except:
+                pass
+        return []
+
+
+    def is_running(proc_list):
+        """
+        Checks if a process in the given list is currently running.
+
+        RETURNS: True if a proccess in proc_list is running, False otherwise
+        """
+        running_procs = get_procs()
+        if len(running_procs) == 0:
+            return False
+
+        for proc in proc_list:
+            if proc in running_procs:
+                return True
+
+        # otherwise, not found
+        return False
+
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
