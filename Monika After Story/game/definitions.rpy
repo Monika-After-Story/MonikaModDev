@@ -1270,6 +1270,103 @@ python early:
             if self.raise_issues:
                 raise Exception(msg)
 
+# special store that contains powerful (see damaging) functions
+init -1 python in _mas_root:
+
+    def mangleFile(filepath, mangle_length=1000):
+        """
+        Mangles the file at the given filepath. Will create the file if it
+        doesnt exists
+
+        IN:
+            filepath - path of the file to mangle
+            mangle_length - how many characters to use to mangle
+                (Default: 1000)
+        """
+        import struct
+        bad_text = glitchtext(mangle_length)
+        bad_text = [ord(x) for x in bad_text]
+        bad_text = struct.pack("{0}i".format(mangle_length), *bad_text)
+        with open(filepath, "wb") as m_file:
+            m_file.write(bad_text)
+
+
+    def resetPlayerData():
+        """
+        Completely resets player data in persistents.
+
+        NOTE: Not all player-related persistent values may be reset by this
+        function. If there are more player-related data in persistent that is
+        not reset by this function, PLEASE LET US KNOW
+
+        ASSUMES: a ton of persistent stuff
+        """
+        # starting with hidden values
+        renpy.game.persistent._seen_ever = dict()
+
+        # now general player (stock) stuff
+        renpy.game.persistent.playername = ""
+        renpy.game.persistent.playthrough = 0
+        renpy.game.persistent.yuri_kill = 0
+        renpy.game.persistent.clear = [False] * 10
+        renpy.game.persistent.special_poems = None
+        renpy.game.persistent.clearall = None
+        renpy.game.persistent.first_load = None
+
+        # mod related general
+        renpy.game.persistent.event_database = dict()
+        renpy.game.persistent.farewell_database = dict()
+        renpy.game.persistent.closed_self = False
+        renpy.game.persistent.seen_monika_in_room = False
+        renpy.game.persistent.ever_won = {
+            'pong':False,
+            'chess':False,
+            'hangman':False,
+            'piano':False
+        }
+        renpy.game.persistent.game_unlocks = {
+            'pong':True,
+            'chess':False,
+            'hangman':False,
+            'piano':False
+        }
+        renpy.game.persistent.sessions={
+            'last_session_end':None,
+            'current_session_start':None,
+            'total_playtime':datetime.timedelta(seconds=0),
+            'total_sessions':0,
+            'first_session':datetime.datetime.now()
+        }
+        renpy.game.persistent.playerxp = 0
+        renpy.game.persistent.idlexp_total = 0
+        renpy.game.persistent.rejected_monika = True
+        renpy.game.persistent.current_track = None
+
+        # chess
+        renpy.game.persistent._mas_chess_stats = {
+            "wins": 0, 
+            "losses": 0, 
+            "draws": 0
+        }
+        renpy.game.persistent._mas_chess_quicksave = ""
+        renpy.game.persistent.chess_strength = 20
+        renpy.game.persistent._mas_chess_dlg_actions = dict()
+        renpy.game.persistent._mas_chess_timed_disable = None
+        renpy.game.persistent._mas_chess_3_edit_sorry = False
+        renpy.game.persistent._mas_chess_mangle_all = False
+
+        # greetings
+        renpy.game.persistent._mas_you_chr = False
+        renpy.game.persistent.opendoor_opencount = 0
+        renpy.game.persistent.opendoor_knockyes = False
+
+        # hangman
+        renpy.game.persistent._mas_hangman_playername = False
+
+        # piano
+        renpy.game.persistent._mas_pnml_data = list()
+        renpy.game.persistent._mas_piano_keymaps = dict()
+
 
 init -1 python:
     import datetime # for mac issues i guess.
