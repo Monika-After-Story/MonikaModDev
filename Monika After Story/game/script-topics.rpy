@@ -4804,6 +4804,6 @@ label monika_asks_family:
                 m 2d "You better be practicing those snuggling skills"
                 m ll "Ahaha."
                 m 1i "Just teasing you [player]."
-                m 1a "To be honest though, this is one of things I'll be looking forward to once I get out of here ehehe~"
+                m 1a "To be honest though, this is one of those things I'll be looking forward to once I get out of here ehehe~"
     Return                     
             
