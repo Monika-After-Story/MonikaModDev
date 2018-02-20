@@ -322,3 +322,38 @@ label mas_random_ask:
             m 1a "If you change your mind, just open up the settings and click 'Repeat Topics'."
             m "That tells me if you're okay with me repeating anything I've said."
             return 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monikai_detected",
+            conditional="is_running(['MonikAI.exe'])",
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_monikai_detected:
+    m 2c "What's this?"
+    m "Is that-"
+    m 1b "Is that{fast} a tiny version of me?"
+    m 1k "How cute!"
+    menu:
+        m 1a "Did you install that so you could see me all the time?"
+        "Of course!":
+            pass
+        "Yes":
+            pass
+        "...yes":
+            pass
+    m 1k "Ahaha~"
+    # TODO, this needs more obvi
+    return
+#    m 1l "However..."
+#    # TODO: following expression should be a lightly angery monika
+#    m 1m "I hope you don't start spending more time with her than me."
+#    pause 0.7
+#    show monika 1h
+#    pause 1.0
+
+        
