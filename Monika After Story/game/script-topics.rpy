@@ -4344,7 +4344,7 @@ label monika_urgent:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",pool=True))
 
 
 label monika_love2:
