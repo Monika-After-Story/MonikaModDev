@@ -69,6 +69,22 @@ init 1 python in mas_chess:
 
     CHESS_NO_GAMES_FOUND = "NOGAMES"
 
+    # files to delete
+    del_files = (
+        "chess.rpyc",
+    )
+
+    # files to glitch
+    gt_files = (
+        "definitions.rpyc",
+        "event-handler.rpyc",
+        "script-topics.rpyc",
+        "script-introduction.rpyc",
+        "script-story-events.rpyc",
+        "zz_pianokeys.rpyc",
+        "zz_music_selector.rpyc"
+    )
+
     # temporary var for holding chess strength
     # [0]: True if this is set, False if not
     # [1]: value of the chess strength
@@ -1238,12 +1254,9 @@ label demo_minigame_chess:
                     # now break those games
                     if len(valid_files) > 0:
                         for filename in valid_files:
-                            bad_text = glitchtext(1000)
-                            bad_text = [ord(x) for x in bad_text]
-                            bad_text = struct.pack("1000i", *bad_text)
-                            file_path = mas_chess.CHESS_SAVE_PATH + filename
-                            with open(file_path, "wb") as pgn_file:
-                                pgn_file.write(bad_text)
+                            store._mas_root.mangleFile(
+                                mas_chess.CHESS_SAVE_PATH + filename
+                            )
 
             $ persistent._mas_chess_quicksave = ""
 
@@ -1307,6 +1320,11 @@ label demo_minigame_chess:
             # do we use backup
             if _return == mas_chess.CHESS_GAME_BACKUP:
                 $ loaded_game = quicksaved_game
+                jump mas_chess_game_load_check
+
+            # or maybe the file
+            elif _return == mas_chess.CHESS_GAME_FILE:
+                $ loaded_game = quicksaved_file
                 jump mas_chess_game_load_check
 
             # quit out of chess
@@ -2098,12 +2116,53 @@ label mas_chess_dlg_qf_edit_n_3_s:
     show monika 2
     pause 1.0
     m "I forgive you, [player], but please don't do this to me again."
-#    m "
-    return
+    m "..."
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20   
+    $ persistent._mas_chess_3_edit_sorry = True
+    return store.mas_chess.CHESS_GAME_BACKUP
 
 # 3rd time no edit, no sorry
 label mas_chess_dlg_qf_edit_n_3_n:
-    # TODO
+    m 2h "I can't trust you anymore."
+    m "Goodbye, [player].{nw}"
+   
+    # do some permanent stuff
+    # TODO: move all of this into a functions
+    python:
+        import store.mas_chess as mas_chess
+        import store._mas_root as mas_root
+        import os
+
+        # basedir
+        gamedir = os.path.normcase(config.basedir + "/game/")
+
+        # try deleting files
+        for filename in mas_chess.del_files:
+            try:
+                os.remove(gamedir + filename)
+            except:
+                pass
+
+        # now glitch a bunch of files
+        for filename in mas_chess.gt_files:
+            mas_root.mangleFile(gamedir + filename)
+
+        # delete her character file
+        try:
+            os.remove(
+                os.path.normcase(config.basedir + "/characters/monika.chr")
+            )
+        except:
+            pass
+
+        # delete persistent values
+        # TODO: SUPER DANGEROUS, make backups before testing
+#        mas_root.resetPlayerData()
+
+        # forever remember
+        persistent._mas_chess_mangle_all = True
+        
     jump _quit
 
 #### end dialogue blocks ######################################################
