@@ -174,9 +174,6 @@ init 10 python:
 #
 # NOTE: the labels here mean we are updating TO this version
 
-# TODO: piano label changed from 0.7.0 to 0.7.1:
-#   zz_play_piano -> mas_piano_start
-
 # all generic (only updateTopicID calls) go here
 label vgenericupdate(version="v0_2_2"):
 label v0_6_1(version=version): # 0.6.1
@@ -191,6 +188,24 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.7.2
+label v_0_7_2(version="v0_7_2"):
+    python:
+        import store.evhand as evhand
+
+        # have to properly set seen randoms to unlocked again because of a bug)
+        for k in evhand.event_database:
+            event = evhand.event_database[k]
+            if (renpy.seen_label(event.eventlabel)
+                and (event.random or event.action == EV_ACT_RANDOM)):
+                event.unlocked = True
+                event.conditional = None
+
+        # is this an issue?
+#        if renpy.seen_label("preferredname"):
+#            evhand.event_database["monika_changename"].unlocked = True
+    return
 
 # 0.7.1
 label v0_7_1(version="v0_7_1"):
