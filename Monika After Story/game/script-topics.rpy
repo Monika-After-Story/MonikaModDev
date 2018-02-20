@@ -4782,3 +4782,28 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]." 
                 m 1j "I love you very much!"                              
     return
+    
+    init 5 python:
+       addEvent(Event(persistent.event_database,eventlabel="monika_good_afternoon",category=['misc'],prompt="[player]'s afternoon",random=True))
+    
+    label monika_good_afternoon:
+    m 1b "Good afternoon to you too, [player]!
+    m "How's the sky?"
+    menu:
+        "Bright and sunny!":
+                         m 1k "Really?! That sounds beautiful!"
+                         m 1a "You know, it's days like this I wish we could go to the park and have a nice romantic picnic ehehe~"
+                         m "You better have the perfect spot picked out for us~"
+        "Dark and rainy":
+                         m 1g "Aww that's okay"
+                         m 2e "How about we stay inside and watch a movie?"
+                         m 1k "While we're at it, why don't we pop some delicious popcorn!"
+                         m 1n "And You know..."
+                         m 1m "We can cuddle on the coach to keep eachother warm"
+                         m "Which reminds me.."
+                         m 2d "You better be practicing those snuggling skills"
+                         m ll "Ahaha."
+                         m 1i "Just teasing you [player]."
+                         m 1a "To be honest though, this is one of things I'll be looking forward to once I get out of here ehehe~"
+    Return                     
+            
