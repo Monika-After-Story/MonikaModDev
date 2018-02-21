@@ -193,7 +193,7 @@ label v0_3_1(version=version): # 0.3.1
 # non generic updates go here
 
 # 0.7.2
-label v_0_7_2(version="v0_7_2"):
+label v0_7_2(version="v0_7_2"):
     python:
         import store.evhand as evhand
 
