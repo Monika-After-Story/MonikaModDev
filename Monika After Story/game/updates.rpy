@@ -153,7 +153,10 @@ init 10 python:
 
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
-        vvvv_version = "v"+"_".join(persistent.version_number.split("."))
+        t_version = persistent.version_number
+        if "-" in t_version:
+            t_version = t_version[:t_version.index("-")]
+        vvvv_version = "v"+"_".join(t_version.split("."))
         # so update!
         updateGameFrom(vvvv_version)
 
