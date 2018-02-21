@@ -438,7 +438,7 @@ label hangman_game_loop:
                     m 1o "You didn't even guess a single letter."
                     m "..."
                     m 1f "I really enjoy playing with you, you know."
-                else
+                else:
                     m "You should at least play to the end..."
                     m 1f "Giving up so easily is a sign of poor resolve."
                     if chances > 1:
