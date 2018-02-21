@@ -1284,7 +1284,7 @@ init -1 python in _mas_root:
                 (Default: 1000)
         """
         import struct
-        bad_text = glitchtext(mangle_length)
+        bad_text = globals()["glitchtext"](mangle_length)
         bad_text = [ord(x) for x in bad_text]
         bad_text = struct.pack("{0}i".format(mangle_length), *bad_text)
         with open(filepath, "wb") as m_file:

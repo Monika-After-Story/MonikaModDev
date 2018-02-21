@@ -197,6 +197,9 @@ init 1 python in mas_chess:
     DLG_QF_EDIT_NO_3_S = "mas_chess_dlg_qf_edit_n_3_s"
     DLG_QF_EDIT_NO_3_N = "mas_chess_dlg_qf_edit_n_3_n"
 
+    ## if player is locked out of chess
+    DLG_CHESS_LOCKED = "mas_chess_dlg_chess_locked"
+
     # TODO: this
 #    DLG_WINNER_L0 = "mas_chess_dlg_winner_l0"
 #    DLG_WINNER_L1 = "mas_chess_dlg_winner_l1"
@@ -1179,9 +1182,12 @@ init:
 
 
 label game_chess:
+    if persistent._mas_chess_timed_disable is not None:
+        call mas_chess_dlg_chess_locked from _mas_chess_dclgc
+        return
+
     hide screen keylistener
-    # TODO: check if player is locekd out of chess, then 
-    # give some dialogue about this and return
+
     m 1b "You want to play chess? Alright~"
 #   m 2a "Double click your king if you decide to surrender."
 #    m 1a "Get ready!"
@@ -1192,8 +1198,9 @@ label demo_minigame_chess:
     $ import store.mas_chess as mas_chess
     $ loaded_game = None
 
-    # TODO: check if player is locked out of chess, then give some dialogue 
-    # about this and return
+    if persistent._mas_chess_timed_disable is not None:
+        call mas_chess_dlg_chess_locked from _mas_chess_dcldmc
+        return
 
     if not renpy.seen_label("mas_chess_save_selected"):
         call mas_chess_save_migration from _mas_chess_savemg
@@ -1226,9 +1233,6 @@ label demo_minigame_chess:
                 quicksaved_game,
                 mas_monika_twitter_handle
             )
-
-        # TODO: test reading quicksaved game
-        return
 
         # failure reading a saved game
         if quicksaved_game is None:
@@ -1922,57 +1926,6 @@ label mas_chess_dlg_qf_lost_acdnt_3:
     return store.mas_chess.CHESS_GAME_BACKUP
 
 ### quickfile edited
-            # TODO: ask player if they modified the game:
-            #   (Yes) (no)
-            # TODO: keep count of this happening:
-            #   Yes:
-            #   first time - you are disappointed, refuse to play the quicksaved
-            #       game until player says sorry. monika says she remembers a bit
-            #       of last game so she'll reset it to before you edited
-            #   2nd time - more disappoint, refuse to play quicksvaed game
-            #       quit out of chess
-            #   3rd time and beyond - she was expecting this. she kept a backup. 
-            #       continue the backuped game, but increase her chess
-            #       strength to 20 (save previous strength though and 
-            #       reset her back to normal after this game)
-            #
-            #   NO:
-            #   first time - believe player, say that the files look different
-            #       then she remembered, but (we'll keep playing)
-            #       20 chess strength (reset to normal post game)
-            #   2nd time - again believe player, but be a bit suspiciuos
-            #       (also keep playing)
-            #       20 chess strength (reset to normal post game)
-            #   3rd time - she kept a backup, and knew you were cheating
-            #       give player a choice. Say I'm sorry or not:
-            #       if you apologize:
-            #           she forgives you, but will keep backups of the game 
-            #           from now on. Her mood post-chess will be different:
-            #           in your face when she wins, and hmph you were lucky
-            #           when she loses
-            #           20 chess strength (reset to normal post game)
-            #           Also, she will always use the internal save.
-            #           (unless it's missing, in which case she'll berate
-            #           player for modifing that too and start a new game at
-            #           20)
-            #       if you dont:
-            #           Says she can't trust you anymore. Deletes herself
-            #           and a bunch of the mod files and quits.
-            #           - glitchtexts some files
-            #               definitions
-            #               event-handler
-            #               script-topics
-            #               zz_piano
-            #               zz_music
-            #               script-story
-            #               script-intro
-            #           - deletes some files
-            #               chess
-            #           - dleetes character
-            #           - deletes _seen_ever
-            #           - deletes other player specific values
-            #           - sets a persistent value that will be checked
-            #               in splash. If it is found, we repeat these steps
 # main label for quickfile edited flow
 label mas_chess_dlg_qf_edit:
     python:
@@ -2128,7 +2081,7 @@ label mas_chess_dlg_qf_edit_n_3_n:
     m "Goodbye, [player].{nw}"
    
     # do some permanent stuff
-    # TODO: move all of this into a functions
+label mas_chess_go_ham_and_delete_everything:
     python:
         import store.mas_chess as mas_chess
         import store._mas_root as mas_root
@@ -2164,6 +2117,13 @@ label mas_chess_dlg_qf_edit_n_3_n:
         persistent._mas_chess_mangle_all = True
         
     jump _quit
+
+## general dialogue
+# if chess is locked
+label mas_chess_dlg_chess_locked:
+    m 1o "..."
+    m "I don't feel like playing chess right now."
+    return
 
 #### end dialogue blocks ######################################################
 
