@@ -94,7 +94,7 @@ label greeting_goodmorning:
         m 1a "Remember to take care of yourself, okay?"
         m "Make me a proud girlfriend today, as always!"
     elif current_time >= 12 and current_time < 18:
-        m 1b "Good afternoon, [player]!
+        m 1b "Good afternoon, [player]!"
         m "How's the sky looking?"
         menu:
             "Bright and sunny!":
