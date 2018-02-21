@@ -94,14 +94,24 @@ label greeting_goodmorning:
         m 1a "Remember to take care of yourself, okay?"
         m "Make me a proud girlfriend today, as always!"
     elif current_time >= 12 and current_time < 18:
-        m 1b "Good afternoon, my love."
-        m 1a "Don't let the stress get to you, okay?"
-        m "I know you'll try your best again today, but..."
-        m 4a "It's still important to keep a clear mind!"
-        m "Keep yourself hydrated, take deep breaths..."
-        m "I promise I won't complain if you quit, so do what you have to."
-        m "Or you could stay with me, if you wanted."
-        m 4k "Just remember, I love you!"
+        m 1b "Good afternoon, [player]!"
+        m "How's the sky looking?"
+        menu:
+            "Bright and sunny!":
+                m 1k "Really?! That sounds beautiful!"
+                m 1a "You know, its days like this I wish we could go to the park and have a nice romantic picnic ehehe~"
+                m "You better have the perfect spot picked out for us~"
+            "Dark and rainy":
+                m 1g "Aww that's okay"
+                m 2e "How about we stay inside and watch a movie?"
+                m 1k "While we're at it, why don't we pop some delicious popcorn!"
+                m 1n "And you know..."
+                m 1m "We can cuddle on the couch to keep each other warm"
+                m "Which reminds me.."
+                m 2d "You better be practicing those snuggling skills"
+                m ll "Ahaha."
+                m 1i "Just teasing you [player]."
+                m 1a "To be honest though, this is one of those things I'll be looking forward to once I get out of here ehehe~"
     elif current_time >= 18:
         m 1b "Good evening, love!"
         menu:
