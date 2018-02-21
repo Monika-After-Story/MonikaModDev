@@ -1236,6 +1236,11 @@ label demo_minigame_chess:
 
         # failure reading a saved game
         if quicksaved_game is None:
+            # TODO: if certain conditions apply (like 3_edit_sorry), 
+            # we need to have a different set of dialogue and stuff for this
+            # TODO: if 3_edit_sorry, then berate player for editing the 
+            # internal save. Start a new game at 20 strength (reset to normal
+            # post game)
             python:
                 import os
                 import struct
@@ -1253,13 +1258,14 @@ label demo_minigame_chess:
                         )
 
                         if in_prog_game:
-                            valid_files.append(filename)
+                            valid_files.append((filename, in_prog_game[1]))
 
                     # now break those games
                     if len(valid_files) > 0:
-                        for filename in valid_files:
+                        for filename,pgn_game in valid_files:
                             store._mas_root.mangleFile(
-                                mas_chess.CHESS_SAVE_PATH + filename
+                                mas_chess.CHESS_SAVE_PATH + filename,
+                                mangle_length=len(str(pgn_game))*2
                             )
 
             $ persistent._mas_chess_quicksave = ""
@@ -1282,6 +1288,7 @@ label demo_minigame_chess:
             )
 
         # failure reading the saved game from text
+        # TODO test this
         if quicksaved_file is None:
 
             # save the filename of what the game should have been
@@ -1318,6 +1325,7 @@ label demo_minigame_chess:
             is_same = str(quicksaved_game) == str(quicksaved_file)
 
         if not is_same:
+            # TODO test this
 
             call mas_chess_dlg_qf_edit from _mas_chess_dql_main3
 
@@ -1340,6 +1348,8 @@ label demo_minigame_chess:
 
         # otherwise we are in good hands
         else:
+            # TODO test this
+
             $ loaded_game = quicksaved_game
 
             # we successfully loaded the unfinished game and player did not
@@ -1359,7 +1369,10 @@ label mas_chess_game_load_check:
 
 label mas_chess_new_game_start:
     # otherwise, new games only
-    # TODO: chess lock here
+    if persistent._mas_chess_timed_disable is not None:
+        call mas_chess_dlg_chess_locked from _mas_chess_dcldmc
+        return
+
     menu:
         m "What color would suit you?"
 
@@ -1523,7 +1536,7 @@ label mas_chess_playagain:
         m "Do you want to play again?"
 
         "Yes":
-            jump demo_minigame_chess
+            jump mas_chess_new_game_start
         "No":
             pass
 
@@ -1667,7 +1680,7 @@ label mas_chess_dlg_qs_lost_start:
     return
 
 # generic quicksave lost statement
-label mas_chess_dlg_qs_gen:
+label mas_chess_dlg_qs_lost_gen:
     m 1o "I'm sorry..."
     m "Let's start a new game instead."
     return
@@ -1676,6 +1689,7 @@ label mas_chess_dlg_qs_gen:
 label mas_chess_dlg_qs_lost_2:
     m 1p "I'm really, really sorry, [player]."
     m "I hope you can forgive me."
+    show monika 1f
     pause 1.0
     m 1q "I'll make it up to you..."
     m 1a "by starting a new game!"
@@ -1693,6 +1707,7 @@ label mas_chess_dlg_qs_lost_5r:
     m "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
     m 1i "Anyway..."   
     m "Let's start a new game."
+    show monika 1h
     return
 
 # 7th time recurring quicksave lost statement
@@ -1867,6 +1882,7 @@ label mas_chess_dlg_qf_lost_may_filechecker:
     if file_found:
         m 1j "Yay!{w} Thanks for putting it back, [player]."
         m "Now we can continue our game."
+        show monika 1a
         return mas_chess.CHESS_GAME_CONT
 
     # else:
@@ -1916,6 +1932,7 @@ label mas_chess_dlg_qf_lost_acdnt_2:
     m 1e "Again? Don't be so clumsy, [player]."
     m 1j "But that's okay."
     m "We'll just play a new game instead."
+    show monika 1a
     return
 
 # 3rd accident monika
@@ -1977,7 +1994,7 @@ label mas_chess_dlg_qf_edit_y_1:
     menu:
         "I'm sorry":
             m 1j "Apology accepted!"
-            m "Luckily, I still remember a little bit of the last game, so we can continue it from there."
+            m 1a "Luckily, I still remember a little bit of the last game, so we can continue it from there."
             return store.mas_chess.CHESS_GAME_BACKUP
         "...":
             m "Since that game's been ruined, let's just play a new game."
@@ -1991,7 +2008,6 @@ label mas_chess_dlg_qf_edit_y_2:
     python:
         import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
-        # TODO make one of the chess unlocked conditions timed based
     return True
 
 # 3rd time yes edit
