@@ -1273,6 +1273,22 @@ python early:
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
 
+    # redefine this because I can't get access to global functions, also
+    # i dont care to find out how
+    nonunicode = (
+        "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝ" +
+        "Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘę" +
+        "ĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖ" +
+        "ŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
+    )
+
+    def glitchtext(length):
+        import random
+        output = ""
+        for x in range(length):
+            output += random.choice(nonunicode)
+        return output
+
     def mangleFile(filepath, mangle_length=1000):
         """
         Mangles the file at the given filepath. Will create the file if it
@@ -1284,7 +1300,7 @@ init -1 python in _mas_root:
                 (Default: 1000)
         """
         import struct
-        bad_text = globals()["glitchtext"](mangle_length)
+        bad_text = glitchtext(mangle_length)
         bad_text = [ord(x) for x in bad_text]
         bad_text = struct.pack("{0}i".format(mangle_length), *bad_text)
         with open(filepath, "wb") as m_file:
