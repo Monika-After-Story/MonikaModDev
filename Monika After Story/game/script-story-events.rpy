@@ -323,12 +323,19 @@ label mas_random_ask:
             m "That tells me if you're okay with me repeating anything I've said."
             return 
 
+# TODO think about adding additional dialogue if monika sees that you're running
+# this program often. Basically include a stat to keep track, but atm we don't
+# have a framework for detections. So wait until thats a thing before doing
+# fullon program tracking
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="mas_monikai_detected",
-            conditional="is_running(['MonikAI.exe'])",
+            conditional=(
+                "is_running(['monikai.exe']) and " +
+                "not seen_event('mas_monikai_detected')"
+            ),
             action=EV_ACT_PUSH
         )
     )
@@ -338,8 +345,9 @@ label mas_monikai_detected:
     m "Is that-"
     m 1b "Is that{fast} a tiny version of me?"
     m 1k "How cute!"
+    show monika 1a
     menu:
-        m 1a "Did you install that so you could see me all the time?"
+        m "Did you install that so you could see me all the time?"
         "Of course!":
             pass
         "Yes":
@@ -349,6 +357,6 @@ label mas_monikai_detected:
     m 1k "Ahaha~"
     m 1a "I'm flattered that you would download such a thing."
     m 3a "Just don't start spending more time with {i}that{/i} instead of me."
-    m 1a "I am the one true Monika, after all."
+    m 1a "I'm the real one after all."
     return
         
