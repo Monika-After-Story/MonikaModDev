@@ -1197,6 +1197,7 @@ label game_chess:
 label demo_minigame_chess:
     $ import store.mas_chess as mas_chess
     $ loaded_game = None
+    $ ur_nice_today = True
 
     if persistent._mas_chess_timed_disable is not None:
         call mas_chess_dlg_chess_locked from _mas_chess_dcldmc
@@ -1236,6 +1237,7 @@ label demo_minigame_chess:
 
         # failure reading a saved game
         if quicksaved_game is None:
+            $ ur_nice_today = False
             # TODO: if certain conditions apply (like 3_edit_sorry), 
             # we need to have a different set of dialogue and stuff for this
             # TODO: if 3_edit_sorry, then berate player for editing the 
@@ -1304,7 +1306,7 @@ label demo_minigame_chess:
         # failure reading the saved game from text
         # TODO test this
         if quicksaved_file is None:
-
+            $ ur_nice_today = False
             # save the filename of what the game should have been
             python:
                 import os
@@ -1313,14 +1315,36 @@ label demo_minigame_chess:
 
             call mas_chess_dlg_qf_lost from _mas_chess_dql_main2
 
+            # should we continue or not
+            if _return == mas_chess.CHESS_GAME_CONT:
+                python:
+                    try:
+                        if renpy.file(quicksaved_filename_clean):
+                            quicksaved_file = mas_chess.isInProgressGame(
+                                quicksaved_filename,
+                                mas_monika_twitter_handle
+                            )
+                        else:
+                            quicksaved_file = None
+                    except:
+                        quicksaved_file = None
+
+                if quicksaved_file is None:
+                    # TODO: berate player on removing the game again,
+                    # say maybe you dont want to play chess right now,
+                    # timed disable chess
+                    return
+
+                # otherwise we have a chess game here
+                $ quicksaved_file = quicksaved_file[1]
+
             # do we have a backup
-            if _return == mas_chess.CHESS_GAME_BACKUP:
+            elif _return == mas_chess.CHESS_GAME_BACKUP:
                 $ loaded_game = quicksaved_game
                 jump mas_chess_game_load_check
 
-            # check if we should conitnue or not
-            if _return != mas_chess.CHESS_GAME_CONT:
-
+            # otherwise we are contiuing or quitting
+            else:
                 # kill the quicksave
                 $ persistent._mas_chess_quicksave = ""
 
@@ -1337,6 +1361,7 @@ label demo_minigame_chess:
 
         if not is_same:
             # TODO test this
+            $ ur_nice_today = False
 
             call mas_chess_dlg_qf_edit from _mas_chess_dql_main3
 
@@ -1363,9 +1388,10 @@ label demo_minigame_chess:
 
             $ loaded_game = quicksaved_game
 
-            # we successfully loaded the unfinished game and player did not
-            # cheat
-            m 1a "We still have an unfinished game in progress."
+            if ur_nice_today:
+                # we successfully loaded the unfinished game and player did not
+                # cheat
+                m 1a "We still have an unfinished game in progress."
             m "Get ready!"
 
 label mas_chess_game_load_check:
@@ -1403,7 +1429,9 @@ label mas_chess_new_game_start:
 label mas_chess_game_start:
     window hide None
 
-    # TODO: chess lock here
+    if persistent._mas_chess_timed_disable is not None:
+        call mas_chess_dlg_chess_locked from _mas_chess_dclgs
+        return
 
     python:
         ui.add(ChessDisplayable(player_color, pgn_game=loaded_game))
@@ -1415,9 +1443,16 @@ label mas_chess_game_start:
         # game result header
         game_result = new_pgn_game.headers["Result"]
 
+        # reset chess strength if avaiable
+        if mas_chess.chess_strength[0]:
+            persistent.chess_strength = mas_chess.chess_strength[1]
+            mas_chess.chess_strength = (False, 0)
+
     #Regenerate the spaceroom scene
     #$scene_change=True #Force scene generation
     #call spaceroom from _call_spaceroom
+
+    # TODO: we need to modify dialogue based on mas_3_edit_sorry
 
     # check results
     if game_result == "*":
@@ -1467,77 +1502,7 @@ label mas_chess_game_start:
         menu:
             m "Would you like to save this game?"
             "Yes":
-                label mas_chess_savegame:
-                    if loaded_game: # previous game exists
-                        python:
-                            new_pgn_game.headers["Event"] = (
-                                loaded_game.headers["Event"]
-                            )
-                        
-                    # otherwise ask for name
-                    else:
-                        python:
-                            # get file name
-                            save_name = ""
-                            while len(save_name) == 0:
-                                save_name = renpy.input(
-                                    "Enter a name for this game:",
-                                    allow=mas_chess.CHESS_SAVE_NAME,
-                                    length=15
-                                )
-                            new_pgn_game.headers["Event"] = save_name
-
-                            # file existence check
-                            is_file_exist = os.access(
-                                os.path.normcase(file_path),
-                                os.F_OK
-                            )
-
-                        # check if this file exists already
-                        if is_file_exist:
-                            m 1e "We already have a game named '[save_name]'."
-                            menu:
-                                m "Should I overwrite it?"
-                                "Yes":
-                                    pass
-                                "No":
-                                    jump mas_chess_savegame
-
-                    python:
-            
-                        # filename 
-                        save_filename = (
-                            new_pgn_game.headers["Event"] + 
-                            mas_chess.CHESS_SAVE_EXT
-                        )
-
-                        # now setup the file path
-                        file_path = mas_chess.CHESS_SAVE_PATH + save_filename
-                        
-                        with open(file_path, "w") as pgn_file:
-                            pgn_file.write(str(new_pgn_game))
-
-                        # the file path to show is different
-                        display_file_path = mas_chess.REL_DIR + save_filename
-
-                    m 1q ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
-                    m 1j "I've saved our game in '[display_file_path]'!"
-
-                    if not renpy.seen_label("mas_chess_pgn_explain"):
-
-                        label mas_chess_pgn_explain:
-                            m 1a "It's in a format called Portable Game Notation."
-                            m "You can open this file in PGN viewers."
-
-                            if game_result == "*": # ongoing game
-                                m 1n "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
-                                m 1e "Right, [player]?"
-                                menu:
-                                    "Of course not":
-                                        m 1j "Yay~"
-
-                    if game_result == "*":
-                        jump mas_chess_end
+                jump mas_chess_savegame
             "No":
                 # TODO: should there be dialogue here?
                 pass
@@ -1653,6 +1618,81 @@ label mas_chess_save_migration:
 # FALL THROUGH
 label mas_chess_save_selected: 
     return sel_game[0]
+
+label mas_chess_savegame:
+    if loaded_game: # previous game exists
+        python:
+            new_pgn_game.headers["Event"] = (
+                loaded_game.headers["Event"]
+            )
+        
+    # otherwise ask for name
+    else:
+        python:
+            # get file name
+            save_name = ""
+            while len(save_name) == 0:
+                save_name = renpy.input(
+                    "Enter a name for this game:",
+                    allow=mas_chess.CHESS_SAVE_NAME,
+                    length=15
+                )
+            new_pgn_game.headers["Event"] = save_name
+
+            # file existence check
+            is_file_exist = os.access(
+                os.path.normcase(file_path),
+                os.F_OK
+            )
+
+        # check if this file exists already
+        if is_file_exist:
+            m 1e "We already have a game named '[save_name]'."
+            menu:
+                m "Should I overwrite it?"
+                "Yes":
+                    pass
+                "No":
+                    jump mas_chess_savegame
+
+    python:
+
+        # filename 
+        save_filename = (
+            new_pgn_game.headers["Event"] + 
+            mas_chess.CHESS_SAVE_EXT
+        )
+
+        # now setup the file path
+        file_path = mas_chess.CHESS_SAVE_PATH + save_filename
+        
+        with open(file_path, "w") as pgn_file:
+            pgn_file.write(str(new_pgn_game))
+
+        # the file path to show is different
+        display_file_path = mas_chess.REL_DIR + save_filename
+
+    m 1q ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+    m 1j "I've saved our game in '[display_file_path]'!"
+
+    if not renpy.seen_label("mas_chess_pgn_explain"):
+
+        label mas_chess_pgn_explain:
+            m 1a "It's in a format called Portable Game Notation."
+            m "You can open this file in PGN viewers."
+
+            if game_result == "*": # ongoing game
+                m 1n "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
+                m 1e "Right, [player]?"
+                menu:
+                    "Of course not":
+                        m 1j "Yay~"
+
+    if game_result == "*":
+        jump mas_chess_end
+
+    jump mas_chess_playagain
+
 
 #### DIALOGUE BLOCKS BELOW ####################################################
 
@@ -1908,6 +1948,7 @@ label mas_chess_dlg_qf_lost_may_3:
     m 1 "Not a problem at all."
     m "I knew you were going to do this again,"
     m 1k "so I kept a backup of our save!"
+    # TODO: wink here please
     m 1a "You can't trick me anymore, [player]."
     m "Now let's continue our game."
     return store.mas_chess.CHESS_GAME_BACKUP
