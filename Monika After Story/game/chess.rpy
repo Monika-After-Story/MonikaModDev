@@ -1282,10 +1282,24 @@ label demo_minigame_chess:
         # otherwise, read the game from file
         python:
             quicksaved_game = quicksaved_game[1]
-            quicksaved_file = mas_chess.isInProgressGame(
-                quicksaved_game["Event"] + mas_chess.CHESS_SAVE_EXT,
-                mas_monika_twitter_handle
+
+            quicksaved_filename = (
+                quicksaved_game.headers["Event"] + mas_chess.CHESS_SAVE_EXT
             )
+            quicksaved_filename_clean = (
+                mas_chess.CHESS_SAVE_PATH + quicksaved_filename
+            ).replace("\\", "/")
+
+            try:
+                if renpy.file(quicksaved_filename_clean):
+                    quicksaved_file = mas_chess.isInProgressGame(
+                        quicksaved_filename,
+                        mas_monika_twitter_handle
+                    )
+                else:
+                    quicksaved_file = None
+            except:
+                quicksaved_file = None
 
         # failure reading the saved game from text
         # TODO test this
@@ -1295,10 +1309,7 @@ label demo_minigame_chess:
             python:
                 import os
 
-                mas_chess.loaded_game_filename = (
-                    mas_chess.CHESS_SAVE_PATH + 
-                    quicksaved_game["Event"] + mas_chess.CHESS_SAVE_EXT
-                ).replace("\\", "/")
+                mas_chess.loaded_game_filename = quicksaved_filename_clean
 
             call mas_chess_dlg_qf_lost from _mas_chess_dql_main2
 
@@ -1370,7 +1381,7 @@ label mas_chess_game_load_check:
 label mas_chess_new_game_start:
     # otherwise, new games only
     if persistent._mas_chess_timed_disable is not None:
-        call mas_chess_dlg_chess_locked from _mas_chess_dcldmc
+        call mas_chess_dlg_chess_locked from _mas_chess_dclngs
         return
 
     menu:
@@ -1723,7 +1734,7 @@ label mas_chess_dlg_qf_lost:
     call mas_chess_dlg_qf_lost_start from _mas_chess_dqfls
 
     menu:
-        m "[mas_chess.DLG_QF_LOST_MENU_Q]"
+        m "Did you mess with the saves, [player]?"
         "[mas_chess.DLG_QF_LOST_OFCN_CHOICE]" if mas_chess.DLG_QF_LOST_OFCN_ENABLE:
             $ qf_gone_label = mas_chess.DLG_QF_LOST_OFCN_START
         "[mas_chess.DLG_QF_LOST_MAY_CHOICE]" if mas_chess.DLG_QF_LOST_MAY_ENABLE:
@@ -1804,11 +1815,12 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     # disable chess forever!
     m 2h "..."
     m "[player],{w} I don't believe you."
-    m "I can't believe you."
     # TODO: we need an angry monika
     m 2i "If you're just going to throw away our chess games like that,"
     m "then I don't want to play chess with you anymore."
     $ persistent.game_unlocks["chess"] = False
+    # workaround to deal with peeople who havent seen the unlock chess label
+    $ persistent._seen_ever["unlock_chess"] = True
     return True
 
 ## maybe monika flow
