@@ -1888,7 +1888,7 @@ label monika_love:
             $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
             return
         
-        #After I love you has been received positively 5/10/15 times.
+        #After I love you has been received positively 5/10/15 etc times.
         elif persistent._mas_monika_lovecounter== 5:
             m 1k "I love you so much, [player]!"
            
