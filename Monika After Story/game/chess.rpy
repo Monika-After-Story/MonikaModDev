@@ -170,6 +170,7 @@ init 1 python in mas_chess:
     DLG_QF_LOST_MAY_2_FOUND = "mas_chess_dlg_qf_lost_may_2_found"
     DLG_QF_LOST_MAY_3 = "mas_chess_dlg_qf_lost_may_3"
     DLG_QF_LOST_MAY_FCHK = "mas_chess_dlg_qf_lost_may_filechecker"
+    DLG_QF_LOST_MAY_RM = "mas_chess_dlg_qf_lost_may_removed"
 
     # accident
     DLG_QF_LOST_ACDNT_ENABLE = True
@@ -1330,9 +1331,7 @@ label demo_minigame_chess:
                         quicksaved_file = None
 
                 if quicksaved_file is None:
-                    # TODO: berate player on removing the game again,
-                    # say maybe you dont want to play chess right now,
-                    # timed disable chess
+                    call mas_chess_dlg_qf_lost_may_removed from _mas_chess_dql_main3
                     return
 
                 # otherwise we have a chess game here
@@ -1952,6 +1951,18 @@ label mas_chess_dlg_qf_lost_may_3:
     m 1a "You can't trick me anymore, [player]."
     m "Now let's continue our game."
     return store.mas_chess.CHESS_GAME_BACKUP
+
+# maybe monika, but player removed the file again!
+label mas_chess_dlg_qf_lost_may_removed:
+    # TODO; angery monika here
+    m 2h "[player]!"
+    m 2q "You removed the save again."
+    pause 0.7
+    m "Let's just play chess at another time, then."
+    $ import datetime
+    $ persistent._mas_chess_timed_disable = datetime.datetime.now()
+    return True
+
 
 ## Accident monika flow
 label mas_chess_dlg_qf_lost_acdnt_start:
