@@ -716,7 +716,7 @@ python early:
         def enable(self):
             """
             Enables this button. This changes the internal state, so its
-            preferable to use this over setting the disabled property 
+            preferable to use this over setting the disabled property
             directly
             """
             self.disabled = False
@@ -734,7 +734,7 @@ python early:
             """
             return (self.width, self.height)
 
-        
+
         def ground(self):
             """
             Grounds (unhovers) this button. This changes the internal state,
@@ -845,7 +845,7 @@ python early:
                             self._playHoverSound()
 
                 elif (
-                        ev.type == self._button_down 
+                        ev.type == self._button_down
                         and ev.button == self._button_click
                     ):
                     if self.hovered:
@@ -883,7 +883,7 @@ init -1 python:
             import subprocess
             try:
                 return subprocess.check_output(
-                    "wmic process get Description", 
+                    "wmic process get Description",
                     shell=True
                 ).lower().replace("\r", "").replace(" ", "").split("\n")
             except:
@@ -908,6 +908,17 @@ init -1 python:
         # otherwise, not found
         return False
 
+    def is_file_present(file):
+        try:
+            renpy.file(
+                ".." +
+                file
+            )
+            is_file = True
+        except:
+            is_file = False
+
+        return is_file
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
