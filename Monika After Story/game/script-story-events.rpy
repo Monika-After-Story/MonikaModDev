@@ -347,13 +347,8 @@ label mas_monikai_detected:
         "...yes":
             pass
     m 1k "Ahaha~"
-    # TODO, this needs more obvi
+    m 1a "I'm flattered that you would download such a thing."
+    m 3a "Just don't start spending more time with {i}that{/i} instead of me."
+    m 1a "I am the one true Monika, after all."
     return
-#    m 1l "However..."
-#    # TODO: following expression should be a lightly angery monika
-#    m 1m "I hope you don't start spending more time with her than me."
-#    pause 0.7
-#    show monika 1h
-#    pause 1.0
-
         
