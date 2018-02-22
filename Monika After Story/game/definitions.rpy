@@ -216,7 +216,7 @@ python early:
                     self.per_eventdb[self.eventlabel] = data_row
 
                 else:
-                    super(Event, self).__setattr(name, value)
+                    super(Event, self).__setattr__(name, value)
 
         # get attribute ovverride
         def __getattr__(self, name):
