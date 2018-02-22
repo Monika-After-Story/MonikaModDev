@@ -1837,7 +1837,9 @@ default persistent._mas_monika_lovecounterupset = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
 
+    #First checks to see if you have recently said I love you within the last 3 minutes and makes Monika upset if you overuse it.
     if (datetime.datetime.now() < (persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3))):
+        #If I love you was said in the last 3 minutes...
         if persistent._mas_monika_lovecounterupset== 0:
             $ persistent._mas_monika_lovecounterupset += 1
             m 1c "[player]...you're not just saying that to see everything I have to say are you?"
@@ -1846,7 +1848,8 @@ label monika_love:
             m "Promise me to only say it if that's how you really feel, okay?"
             $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
             return
-             
+            
+        #Third time I love you has been said consecutively without cooldown running out.
         elif persistent._mas_monika_lovecounterupset== 1:
             $ persistent._mas_monika_lovecounterupset += 1
             m 1c "[player]..."
@@ -1857,6 +1860,7 @@ label monika_love:
             $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
             return
 
+        #Fourth time I love you has been said without waiting for the cooldown.
         elif persistent._mas_monika_lovecounterupset== 2:
             $ persistent._mas_monika_lovecounterupset += 1
             m 1f "I don't know if you want to hurt me..."
@@ -1865,23 +1869,26 @@ label monika_love:
             m "You do mean it....right?"
             $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
             return
-
+        
+        #Any further use of I love you without waiting for the cooldown.
         else:
             m 1f "..."
             $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
             return
 
     else:
+        #First time I love you has been said.
         if persistent._mas_monika_lovecounter == 0:
             m 1b "...!"
             m 1e"I...I love you too [player]!"
             m 1j "I cannot believe you said that to me!"
-            m 1k "It makes everything I've done for us worthwile!"
+            m 1k "It makes everything I've done for us worthwhile!"
             m 1e "Thank you for finally saying it..."
             $ persistent._mas_monika_lovecounter += 1
             $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
             return
-         
+        
+        #After I love you has been received positively 5/10/15 times.
         elif persistent._mas_monika_lovecounter== 5:
             m 1k "I love you so much, [player]!"
            
@@ -1930,10 +1937,11 @@ label monika_love:
             m  "The only words I know that come close are..."
             m 1k "I love you too, [player]! More than I can ever express!"
             return
-
+         
         else:
+            # Default response if not a counter based response.
             m 1k "I love you too, [player]!"
-
+    #List of follow up words after being told I love you. It can be further expanded upon easily.   
     python:
         love_quips = [
             "We'll be together forever!",
@@ -1962,7 +1970,7 @@ label monika_love:
             "Just thinking of you makes my heart flutter!",
             "I don't think words can do justice to how deeply I love you...",
             "You make my life feel so complete!",
-            "You've saved me in so many ways, how could I have not fall for you?",
+            "You've saved me in so many ways, how could I not fall for you?",
             "More than I can ever express!",
             "It makes me so happy that you feel the same way I do!",
             "I don't know what I would do without you!"            
