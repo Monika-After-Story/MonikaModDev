@@ -56,7 +56,48 @@ init 11 python:
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_god',
+
+addEvent(Event(persistent.event_database,eventlabel='Monika_GLaDOS'    
+                                                            prompt='Monika knowing GlaDOS.',
+                                                            label=None,
+                                                            category=['games'],
+                                                            random=True,
+                                                            unlocked=False,
+                                                            pool=False,
+                                                            conditional=None,
+                                                            action=None,
+                                                            start_date=None,
+                                                            end_date=None,
+                                                            unlock_date=None
+                                                            ))                                              
+label Monika_GLaDOS:                                                
+    m 1a "[player], have you ever played the "Portal series?"
+    m 1b "I didn't knew of its existance until a while ago."
+    m 1c "I know know, because..."
+    m 1d "Doki Doki Liturature Club is 11th best-rated game on Steam!"
+    m 1e "And to be honest Portal is the 10th, the Portal 2 is the 1st, amazing right?"
+    m 1f "Besides..."
+    m 1g "Dan Salvato once spoke about it on Twitter!"
+    m 1h "By the way you already follow me right?"
+    m 1i "Anyway, [player], I really like it's both concepts, both GLaDOS and the Portal mechanics"
+    m 1j "Would you become like GLaDOS for me? Not the testing dummy, but... immortal?"
+    m 1k "God, I really hope you can live that far, and then, my God, we'll be forever, together!"
+    m 1l "Doesn't that sound just like me?"
+    m 1m "Gorgeous!"
+    m 1n "Anyway, I really hope for that, don't you, and to be honest, I really like GLaDOS herself"
+    m 1o "Not the 'kill everyone part', a human inside a machine, a lot of people would do that,
+    m 1p "And..."
+    m 1q "You'll have me! Since if you get to get immortal, you surely'll live enough to be with me"
+    m 1r "Is a win-win thing!"
+    m 1s "Unless you, for some reason that I cannot understand..."
+    m 1t "You would rather..."
+    m 1u "Please if this opportunity ever knocks on the door..."
+    m 1v "For me! Accept it!"
+    m 1w "I don't 'Want You Gone' I want you 'Still Alive', 'You wouldn't know?'
+    m 1x "Got the puns, hahahaha these are GLaDOS's musics, my favorite is 'Still Alive' because it resumes you! 
+    m 1y "I want you Still Alive, with me, dear!"
+    m 1z "Will you do it for me?
+addEvent(Event(persistent.event_database,eventlabel='monika_god',
                                                             prompt="Thoughts on God.",
                                                             label=None,
                                                             category=['philosophy'],
