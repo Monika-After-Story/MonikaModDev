@@ -1182,6 +1182,10 @@ init:
                 raise renpy.IgnoreEvent()
 
 
+label testmas_chess:
+    hide screen mas_background_timer
+    return
+
 label game_chess:
     if persistent._mas_chess_timed_disable is not None:
         call mas_chess_dlg_chess_locked from _mas_chess_dclgc
@@ -1305,7 +1309,6 @@ label demo_minigame_chess:
                 quicksaved_file = None
 
         # failure reading the saved game from text
-        # TODO test this
         if quicksaved_file is None:
             $ ur_nice_today = False
             # save the filename of what the game should have been
@@ -1374,8 +1377,16 @@ label demo_minigame_chess:
                 $ loaded_game = quicksaved_file
                 jump mas_chess_game_load_check
 
+            # kill the quicksaves
+            python:
+                persistent._mas_chess_quicksave = ""   
+                try:
+                    os.remove(quicksaved_filename_clean)
+                except:
+                    pass
+
             # quit out of chess
-            elif _return is not None:
+            if _return is not None:
                 return
 
             # otherwise jump to a new game
@@ -2062,13 +2073,19 @@ label mas_chess_dlg_qf_edit_y_start:
 label mas_chess_dlg_qf_edit_y_1:
     m 2q "I'm disappointed in you."
     m 1c "But I'm glad that you were honest with me."
+
+    # we want a timed menu here. Let's give the player 5 seconds to say sorry
+    show screen mas_background_timed_jump(5, "mas_chess_dlg_qf_edit_y_1n")
     menu:
         "I'm sorry":
+            hide screen mas_background_timed_jump
             m 1j "Apology accepted!"
             m 1a "Luckily, I still remember a little bit of the last game, so we can continue it from there."
             return store.mas_chess.CHESS_GAME_BACKUP
         "...":
-            m "Since that game's been ruined, let's just play a new game."
+            label mas_chess_dlg_qf_edit_y_1n:
+                hide screen mas_background_timed_jump
+                m "Since that game's been ruined, let's just play a new game."
             return
     return # just in case
 
@@ -2138,12 +2155,16 @@ label mas_chess_dlg_qf_edit_n_3:
     m 2o "..."
     
     # THE ULTIMATE CHOICE
+    show screen mas_background_timed_jump(3, "mas_chess_dlg_qf_edit_n_3n")
     menu:
         "I'm sorry":
+            hide screen mas_background_timed_jump
             $ qf_edit_no_label = store.mas_chess.DLG_QF_EDIT_NO_3_S
 
         "...":
-            $ qf_edit_no_label = store.mas_chess.DLG_QF_EDIT_NO_3_N
+            label mas_chess_dlg_qf_edit_n_3n:
+                hide screen mas_background_timed_jump
+                $ qf_edit_no_label = store.mas_chess.DLG_QF_EDIT_NO_3_N
 
     call expression qf_edit_no_label from _mas_chess_dqenluc
 
