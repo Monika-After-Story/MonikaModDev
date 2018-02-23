@@ -404,6 +404,9 @@ init:
                 # NOTE: DEBUG
                 # Use this starting FEN line to do board testing
 #                DEBUG_STARTING_FEN = "qk6/p7/8/8/8/8/7P/QK6 w - - 0 1"
+                #These ones are for easy victory for white or black
+#                DEBUG_STARTING_FEN_WHITE = "4k3/R7/8/1p5R/8/3Q4/8/4K3 w - - 0 1"
+#                DEBUG_STARTING_FEN_BLACK = "4k3/8/r7/1p3P2/3q4/8/7r/4K3 w - - 0 1"
 
                 # handlign promo
                 self.promolist = ["q","r","n","b","r","k"]
@@ -763,11 +766,11 @@ init:
                             result = self.board.result()
 
                             # black won
-                            if str(piece) == "k" and result == "0-1":
+                            if str(piece) == "K" and result == "0-1":
                                 r.blit(highlight_red, (x, y))
 
                             # white won
-                            elif str(piece) == "K" and result == "1-0":
+                            elif str(piece) == "k" and result == "1-0":
                                 r.blit(highlight_red, (x, y))
                                
                         r.blit(get_piece_render_for_letter(str(piece)), (x, y))
