@@ -1331,7 +1331,7 @@ label demo_minigame_chess:
                         quicksaved_file = None
 
                 if quicksaved_file is None:
-                    call mas_chess_dlg_qf_lost_may_removed from _mas_chess_dql_main3
+                    call mas_chess_dlg_qf_lost_may_removed from _mas_chess_dqlqfr
                     return
 
                 # otherwise we have a chess game here
@@ -1624,6 +1624,15 @@ label mas_chess_savegame:
             new_pgn_game.headers["Event"] = (
                 loaded_game.headers["Event"]
             )
+
+            # filename 
+            save_filename = (
+                new_pgn_game.headers["Event"] + 
+                mas_chess.CHESS_SAVE_EXT
+            )
+
+            # now setup the file path
+            file_path = mas_chess.CHESS_SAVE_PATH + save_filename
         
     # otherwise ask for name
     else:
@@ -1637,6 +1646,11 @@ label mas_chess_savegame:
                     length=15
                 )
             new_pgn_game.headers["Event"] = save_name
+
+            # filename
+            save_filename = save_name + mas_chess.CHESS_SAVE_EXT
+
+            file_path = mas_chess.CHESS_SAVE_PATH + save_filename
 
             # file existence check
             is_file_exist = os.access(
@@ -1655,18 +1669,12 @@ label mas_chess_savegame:
                     jump mas_chess_savegame
 
     python:
-
-        # filename 
-        save_filename = (
-            new_pgn_game.headers["Event"] + 
-            mas_chess.CHESS_SAVE_EXT
-        )
-
-        # now setup the file path
-        file_path = mas_chess.CHESS_SAVE_PATH + save_filename
-        
+       
         with open(file_path, "w") as pgn_file:
             pgn_file.write(str(new_pgn_game))
+
+        # internal save too
+        persistent._mas_chess_quicksave = str(new_pgn_game)
 
         # the file path to show is different
         display_file_path = mas_chess.REL_DIR + save_filename
@@ -1962,7 +1970,6 @@ label mas_chess_dlg_qf_lost_may_removed:
     $ import datetime
     $ persistent._mas_chess_timed_disable = datetime.datetime.now()
     return True
-
 
 ## Accident monika flow
 label mas_chess_dlg_qf_lost_acdnt_start:
