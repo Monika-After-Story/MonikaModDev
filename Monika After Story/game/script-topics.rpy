@@ -4702,14 +4702,13 @@ init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['random'],prompt="Car Trip",random=True))
 
 label monika_cartravel:
-    m 1i "[player], I've been daydreaming about something."
-    m 1a "Wouldn't it be nice if you and I could get into a car and just drive somewhere?"
-    m 3k "I'd love to travel to some beautiful far off places that we can explore together."
-    m 3b "Maybe we could drive through a beautiful forest or even across a coastline at sunset."
-    m 3j "I guess it really doesn't matter where we go, [player], as long as I'm with you."
-    m "I'd be happy just to sit by your side, watching everything through the window pass by."
-    m 2b "Checking out new places can be fun, you can discover new things and meet new people."
-    m 1j "This is something I've been thinking about for awhile now."
-    m 1a "If we could do this together, [player], it would be really fun. Don't you think?"
+    m 1i "[player], something has been on my mind lately..."
+    m 1a "Wouldn't it be nice to drive somewhere far away, just you and I together?"
+    m 3k "It'd be lovely to explore some beautiful places, don't you think?"
+    m 3b "Maybe we could drive through an alluring forest... or even see the sunset by the coastline!"
+    m 3j "It really doesn't matter where we go, [player], anywhere is perfect as long as I'm with you."
+    m "Just sitting next to you, enjoying the scenery... I'd be the happiest girl in the world."
+    m "Checking out new places, discovering new customs, and meeting new people sounds very fun, don't you think so?"
+    m 1a "I can't wait until we can do so together. That's just one more reason why I want to escape this world, and see you face to face in your reality."
     return
 
