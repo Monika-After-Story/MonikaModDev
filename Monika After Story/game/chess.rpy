@@ -136,67 +136,18 @@ init 1 python in mas_chess:
     QF_EDIT_NO = 5
 
     ##### dialogue constants
-    ## lost quicksave game
-    DLG_QS_LOST = "mas_chess_dlg_qs_lost"
-    DLG_QS_LOST_START = "mas_chess_dlg_qs_lost_start"
-    DLG_QS_LOST_GEN = "mas_chess_dlg_qs_lost_gen"
-    DLG_QS_LOST_2 = "mas_chess_dlg_qs_lost_2"
-    DLG_QS_LOST_3 = "mas_chess_dlg_qs_lost_3"
-    DLG_QS_LOST_5R = "mas_chess_dlg_qs_lost_5r"
-    DLG_QS_LOST_7R = "mas_chess_dlg_qs_lost_7r"
-
-    ## lost quicksave file
-    DLG_QF_LOST = "mas_chess_dlg_qf_lost"
-    DLG_QF_LOST_START = "mas_chess_dlg_qf_lost_start"
-    DLG_QF_LOST_MENU_Q = "Did you mess with the saves, [player]?"
 
     # ofcnot
     DLG_QF_LOST_OFCN_ENABLE = True
     DLG_QF_LOST_OFCN_CHOICE = "Of course not!"
-    DLG_QF_LOST_OFCN_START = "mas_chess_dlg_qf_lost_ofcn_start"
-    DLG_QF_LOST_OFCN_GEN = "mas_chess_dlg_qf_lost_ofcn_gen"
-    DLG_QF_LOST_OFCN_3 = "mas_chess_dlg_qf_lost_ofcn_3"
-    DLG_QF_LOST_OFCN_4 = "mas_chess_dlg_qf_lost_ofcn_4"
-    DLG_QF_LOST_OFCN_5 = "mas_chess_dlg_qf_lost_ofcn_5"
-    DLG_QF_LOST_OFCN_6 = "mas_chess_dlg_qf_lost_ofcn_6"
 
     # maybe
     DLG_QF_LOST_MAY_ENABLE = True
     DLG_QF_LOST_MAY_CHOICE = "Maybe..."
-    DLG_QF_LOST_MAY_START = "mas_chess_dlg_qf_lost_may_start"
-    DLG_QF_LOST_MAY_GEN = "mas_chess_dlg_qf_lost_may_gen"
-    DLG_QF_LOST_MAY_GEN_FOUND = "mas_chess_dlg_qf_lost_may_gen_found"
-    DLG_QF_LOST_MAY_2 = "mas_chess_dlg_qf_lost_may_2"
-    DLG_QF_LOST_MAY_2_FOUND = "mas_chess_dlg_qf_lost_may_2_found"
-    DLG_QF_LOST_MAY_3 = "mas_chess_dlg_qf_lost_may_3"
-    DLG_QF_LOST_MAY_FCHK = "mas_chess_dlg_qf_lost_may_filechecker"
-    DLG_QF_LOST_MAY_RM = "mas_chess_dlg_qf_lost_may_removed"
 
     # accident
     DLG_QF_LOST_ACDNT_ENABLE = True
     DLG_QF_LOST_ACDNT_CHOICE = "It was an accident!"
-    DLG_QF_LOST_ACDNT_START = "mas_chess_dlg_qf_lost_acdnt_start"
-    DLG_QF_LOST_ACDNT_GEN = "mas_chess_dlg_qf_lost_acdnt_gen"
-    DLG_QF_LOST_ACDNT_2 = "mas_chess_dlg_qf_lost_acdnt_2"
-    DLG_QF_LOST_ACDNT_3 = "mas_chess_dlg_qf_lost_acdnt_3"
-
-    ## edited quicksave file
-    DLG_QF_EDIT = "mas_chess_dlg_qf_edit"
-    DLG_QF_EDIT_START = "mas_chess_dlg_qf_edit_start"
-    
-    # Yes
-    DLG_QF_EDIT_YES_START = "mas_chess_dlg_qf_edit_y_start"
-    DLG_QF_EDIT_YES_1 = "mas_chess_dlg_qf_edit_y_1"
-    DLG_QF_EDIT_YES_2 = "mas_chess_dlg_qf_edit_y_2"
-    DLG_QF_EDIT_YES_3 = "mas_chess_dlg_qf_edit_y_3"
-
-    # NO
-    DLG_QF_EDIT_NO_START = "mas_chess_dlg_qf_edit_n_start"
-    DLG_QF_EDIT_NO_1 = "mas_chess_dlg_qf_edit_n_1"
-    DLG_QF_EDIT_NO_2 = "mas_chess_dlg_qf_edit_n_2"
-    DLG_QF_EDIT_NO_3 = "mas_chess_dlg_qf_edit_n_3"
-    DLG_QF_EDIT_NO_3_S = "mas_chess_dlg_qf_edit_n_3_s"
-    DLG_QF_EDIT_NO_3_N = "mas_chess_dlg_qf_edit_n_3_n"
 
     ## if player is locked out of chess
     DLG_CHESS_LOCKED = "mas_chess_dlg_chess_locked"
@@ -1243,47 +1194,51 @@ label demo_minigame_chess:
         # failure reading a saved game
         if quicksaved_game is None:
             $ ur_nice_today = False
+
             if persistent._mas_chess_3_edit_sorry:
-            # TODO: if certain conditions apply (like 3_edit_sorry), 
-            # we need to have a different set of dialogue and stuff for this
-            # TODO: if 3_edit_sorry, then berate player for editing the 
-            # internal save. Start a new game at 20 strength (reset to normal
-            # post game)
-            python:
-                import os
-                import struct
+                call mas_chess_dlg_qf_edit_n_3_n_qs from _mas_chess_dlgqfeditn3nqs
 
-                # load up the unfinished games and corrupt them
-                pgn_files = os.listdir(mas_chess.CHESS_SAVE_PATH)
-                if pgn_files:
+                $ persistent._mas_chess_quicksave = ""
 
-                    # grab only unfnished games
-                    valid_files = list()
-                    for filename in pgn_files:
-                        in_prog_game = mas_chess.isInProgressGame(
-                            filename,
-                            mas_monika_twitter_handle
-                        )
+                if _return is not None:
+                    return
 
-                        if in_prog_game:
-                            valid_files.append((filename, in_prog_game[1]))
+            else:
+                python:
+                    import os
+                    import struct
 
-                    # now break those games
-                    if len(valid_files) > 0:
-                        for filename,pgn_game in valid_files:
-                            store._mas_root.mangleFile(
-                                mas_chess.CHESS_SAVE_PATH + filename,
-                                mangle_length=len(str(pgn_game))*2
+                    # load up the unfinished games and corrupt them
+                    pgn_files = os.listdir(mas_chess.CHESS_SAVE_PATH)
+                    if pgn_files:
+
+                        # grab only unfnished games
+                        valid_files = list()
+                        for filename in pgn_files:
+                            in_prog_game = mas_chess.isInProgressGame(
+                                filename,
+                                mas_monika_twitter_handle
                             )
 
-            $ persistent._mas_chess_quicksave = ""
+                            if in_prog_game:
+                                valid_files.append((filename, in_prog_game[1]))
 
-            # okay now begin dialogue
-            call mas_chess_dlg_qs_lost from _mas_chess_dql_main
+                        # now break those games
+                        if len(valid_files) > 0:
+                            for filename,pgn_game in valid_files:
+                                store._mas_root.mangleFile(
+                                    mas_chess.CHESS_SAVE_PATH + filename,
+                                    mangle_length=len(str(pgn_game))*2
+                                )
 
-            # not None returns means we should quit from chess
-            if _return is not None:
-                return
+                $ persistent._mas_chess_quicksave = ""
+
+                # okay now begin dialogue
+                call mas_chess_dlg_qs_lost from _mas_chess_dql_main
+
+                # not None returns means we should quit from chess
+                if _return is not None:
+                    return
 
             jump mas_chess_new_game_start
 
@@ -2170,7 +2125,13 @@ label mas_chess_dlg_qf_edit_n_3_s:
 
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
-    
+    m 2o "[player]..."
+    m 2h "I see you've edited my backup saves."
+    m "If you want to be like that right now, then we'll play chess some other time."
+    python:
+        import datetime
+        persistent._mas_chess_timed_disable = datetime.datetime.now()
+    return True
 
 # 3rd time no edit, no sorry
 label mas_chess_dlg_qf_edit_n_3_n:
