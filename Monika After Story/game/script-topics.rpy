@@ -4784,7 +4784,7 @@ label monika_asks_family:
     return
    
    init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_different_opinons",category=['Society'],prompt="Different beliefs",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_different_opinons",category=['Society'],prompt="different beliefs",random=True))
  
  label monika_different_opinions:
     m 1c "People can be very nasty with each other over little things"
