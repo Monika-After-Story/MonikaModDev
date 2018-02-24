@@ -4783,7 +4783,7 @@ label monika_asks_family:
                 m 1j "I love you very much!"                              
     return
    
-   init 5 python:
+ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_different_opinons",category=['Society'],prompt="different beliefs",random=True))
  
  label monika_different_opinions:
