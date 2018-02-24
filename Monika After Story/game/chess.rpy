@@ -1243,6 +1243,7 @@ label demo_minigame_chess:
         # failure reading a saved game
         if quicksaved_game is None:
             $ ur_nice_today = False
+            if persistent._mas_chess_3_edit_sorry:
             # TODO: if certain conditions apply (like 3_edit_sorry), 
             # we need to have a different set of dialogue and stuff for this
             # TODO: if 3_edit_sorry, then berate player for editing the 
@@ -1724,21 +1725,19 @@ label mas_chess_dlg_qs_lost:
     call mas_chess_dlg_qs_lost_start from _mas_chess_dqsls
     
     if qs_gone_count == 2:
-        $ qs_gone_label = mas_chess.DLG_QS_LOST_2
+        call mas_chess_dlg_qs_lost_2 from _mas_chess_dlgqslost2
 
     elif qs_gone_count == 3:
-        $ qs_gone_label = mas_chess.DLG_QS_LOST_3
+        call mas_chess_dlg_qs_lost_3 from _mas_chess_dlgqslost3
 
     elif qs_gone_count % 5 == 0:
-        $ qs_gone_label = mas_chess.DLG_QS_LOST_5R
+        call mas_chess_dlg_qs_lost_5r from _mas_chess_dlgqslost5r
 
     elif qs_gone_count % 7 == 0:
-        $ qs_gone_label = mas_chess.DLG_QS_LOST_7R
+        call mas_chess_dlg_qs_lost_7r from _mas_chess_dlgqslost7r
 
     else:
-        $ qs_gone_label = mas_chess.DLG_QS_LOST_GEN
-
-    call expression qs_gone_label from _mas_chess_dql_variable
+        call mas_chess_dlg_qs_lost_gen from _mas_chess_dlgqslostgen
 
     return _return
 
@@ -1794,13 +1793,13 @@ label mas_chess_dlg_qf_lost:
     menu:
         m "Did you mess with the saves, [player]?"
         "[mas_chess.DLG_QF_LOST_OFCN_CHOICE]" if mas_chess.DLG_QF_LOST_OFCN_ENABLE:
-            $ qf_gone_label = mas_chess.DLG_QF_LOST_OFCN_START
-        "[mas_chess.DLG_QF_LOST_MAY_CHOICE]" if mas_chess.DLG_QF_LOST_MAY_ENABLE:
-            $ qf_gone_label = mas_chess.DLG_QF_LOST_MAY_START
-        "[mas_chess.DLG_QF_LOST_ACDNT_CHOICE]" if mas_chess.DLG_QF_LOST_ACDNT_ENABLE:
-            $ qf_gone_label = mas_chess.DLG_QF_LOST_ACDNT_START
+            call mas_chess_dlg_qf_lost_ofcn_start from _mas_chess_dlgqflostofcnstart
 
-    call expression qf_gone_label from _mas_chess_dqfgl
+        "[mas_chess.DLG_QF_LOST_MAY_CHOICE]" if mas_chess.DLG_QF_LOST_MAY_ENABLE:
+            call mas_chess_dlg_qf_lost_may_start from _mas_chess_dlgqflostmaystart
+
+        "[mas_chess.DLG_QF_LOST_ACDNT_CHOICE]" if mas_chess.DLG_QF_LOST_ACDNT_ENABLE:
+            call mas_chesS_dlg_qf_lost_acdnt_start from _mas_chess_dlgqflostacdntstart
 
     return _return
 
@@ -1818,21 +1817,19 @@ label mas_chess_dlg_qf_lost_ofcn_start:
         qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_OFCN]
 
     if qf_gone_count == 3:
-        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_3
+        call mas_chess_dlg_qf_lost_ofcn_3 from _mas_chess_dlgqflostofcn3
 
     elif qf_gone_count == 4:
-        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_4
+        call mas_chess_dlg_qf_lost_ofcn_4 from _mas_chess_dlgqflostofcn4
 
     elif qf_gone_count == 5:
-        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_5
+        call mas_chess_dlg_qf_lost_ofcn_5 from _mas_chess_dlgqflostofcn5
 
     elif qf_gone_count >= 6:
-        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_6
+        call mas_chess_dlg_qf_lost_ofcn_6 from _mas_chess_dlgqflostofcn6
 
     else:
-        $ qf_gone_ofcn_label = mas_chess.DLG_QF_LOST_OFCN_GEN
-
-    call expression qf_gone_ofcn_label from _mas_chess_dqfgofcnl
+        call mas_chess_dlg_qf_lost_ofcn_gen from _mas_chess_dlgqflostofcngen
 
     return _return
 
@@ -1889,15 +1886,13 @@ label mas_chess_dlg_qf_lost_may_start:
         qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_MAYBE]
 
     if qf_gone_count == 2:
-        $ qf_gone_maybe_label = mas_chess.DLG_QF_LOST_MAY_2
+        call mas_chess_dlg_qf_lost_may_2 from _mas_chess_dlgqflostmay2
 
     elif qf_gone_count >= 3:
-        $ qf_gone_maybe_label = mas_chess.DLG_QF_LOST_MAY_3
+        call mas_chess_dlg_qf_lost_may_3 from _mas_chess_dlgqflostmay3
 
     else:
-        $ qf_gone_maybe_label = mas_chess.DLG_QF_LOST_MAY_GEN
-
-    call expression qf_gone_maybe_label from _mas_chess_dqfgml
+        call mas_chess_dlg_qf_lost_may_gen from _mas_chess_dlgqflostmaygen
 
     return _return
 
@@ -1990,15 +1985,13 @@ label mas_chess_dlg_qf_lost_acdnt_start:
         qf_gone_count = persistent._mas_chess_dlg_actions[mas_chess.QF_LOST_ACDNT]
 
     if qf_gone_count == 2:
-        $ qf_gone_acdnt_label = mas_chess.DLG_QF_LOST_ACDNT_2
+        call mas_chess_dlg_qf_lost_acdnt_2 from _mas_chess_dlgqflostacdnt2
 
     elif qf_gone_count >= 3:
-        $ qf_gone_acdnt_label = mas_chess.DLG_QF_LOST_ACDNT_3
+        call mas_chess_dlg_qf_lost_acdnt_3 from _mas_chess_dlgqflostacdnt3
 
     else:
-        $ qf_gone_acdnt_label = mas_chess.DLG_QF_LOST_ACDNT_GEN
-
-    call expression qf_gone_acdnt_label from _mas_chess_dqfgacdntl
+        call mas_chess_dlg_qf_lost_acdnt_gen from _mas_chess_dlgqflostacdntgen
 
     return _return
 
@@ -2030,17 +2023,15 @@ label mas_chess_dlg_qf_edit:
     python:
         import store.mas_chess as mas_chess
 
-    call mas_chess_dlg_qf_edit_start from _mas_chess_dqes
+    call mas_chess_dlg_qf_edit_start from _mas_chess_dlgqfeditstart
 
     show monika 2f
     menu:
         m "Did you edit the save file?"
         "Yes":
-            $ qf_edit_label = mas_chess.DLG_QF_EDIT_YES_START
+            call mas_chess_dlg_qf_edit_y_start from _mas_chess_dlgqfeditystart
         "No":
-            $ qf_edit_label = mas_chess.DLG_QF_EDIT_NO_START
-
-    call expression qf_edit_label from _mas_chess_dqel
+            call mas_chess_dlg_qf_edit_n_start from _mas_chess_dlgqfeditnstart
 
     return _return
 
@@ -2057,15 +2048,13 @@ label mas_chess_dlg_qf_edit_y_start:
         qf_edit_count = persistent._mas_chess_dlg_actions[mas_chess.QF_EDIT_YES]
 
     if qf_edit_count == 1:
-        $ qf_edit_yes_label = mas_chess.DLG_QF_EDIT_YES_1
+        call mas_chess_dlg_qf_edit_y_1 from _mas_chess_dlgqfedity1
 
     elif qf_edit_count == 2:
-        $ qf_edit_yes_label = mas_chess.DLG_QF_EDIT_YES_2
+        call mas_chess_dlg_qf_edit_y_2 from _mas_chess_dlgqfedity2
 
     else:
-        $ qf_edit_yes_label = mas_chess.DLG_QF_EDIT_YES_3
-
-    call expression qf_edit_yes_label from _mas_chess_dqeyl
+        call mas_chess_dlg_qf_edit_y_3 from _mas_chess_dlgqfedity3
 
     return _return
 
@@ -2116,15 +2105,13 @@ label mas_chess_dlg_qf_edit_n_start:
         qf_edit_count = persistent._mas_chess_dlg_actions[mas_chess.QF_EDIT_NO]
 
     if qf_edit_count == 1:
-        $ qf_edit_no_label = mas_chess.DLG_QF_EDIT_NO_1
+        call mas_chess_dlg_qf_edit_n_1 from _mas_chess_dlgqfeditn1
 
     elif qf_edit_count == 2:
-        $ qf_edit_no_label = mas_chess.DLG_QF_EDIT_NO_2
+        call mas_chess_dlg_qf_edit_n_2 from _mas_chess_dlgqfeditn2
 
     else:
-        $ qf_edit_no_label = mas_chess.DLG_QF_EDIT_NO_3
-
-    call expression qf_edit_no_label from _mas_chess_dqenl
+        call mas_chess_dlg_qf_edit_n_3 from _mas_chess_dlgqfeditn3
 
     return _return
 
@@ -2159,14 +2146,12 @@ label mas_chess_dlg_qf_edit_n_3:
     menu:
         "I'm sorry":
             hide screen mas_background_timed_jump
-            $ qf_edit_no_label = store.mas_chess.DLG_QF_EDIT_NO_3_S
+            call mas_chess_dlg_qf_edit_n_3_s from _mas_chess_dlgqfeditn3s
 
         "...":
             label mas_chess_dlg_qf_edit_n_3n:
                 hide screen mas_background_timed_jump
-                $ qf_edit_no_label = store.mas_chess.DLG_QF_EDIT_NO_3_N
-
-    call expression qf_edit_no_label from _mas_chess_dqenluc
+                call mas_chess_dlg_qf_ediit_n_3_n from _mas_chess_dlgqfeditn3n
 
     return _return
 
@@ -2182,6 +2167,10 @@ label mas_chess_dlg_qf_edit_n_3_s:
     $ persistent.chess_strength = 20   
     $ persistent._mas_chess_3_edit_sorry = True
     return store.mas_chess.CHESS_GAME_BACKUP
+
+# 3rd time no edit, sorry, edit qs
+label mas_chess_dlg_qf_edit_n_3_n_qs:
+    
 
 # 3rd time no edit, no sorry
 label mas_chess_dlg_qf_edit_n_3_n:
