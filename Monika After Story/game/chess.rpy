@@ -152,14 +152,31 @@ init 1 python in mas_chess:
     ## if player is locked out of chess
     DLG_CHESS_LOCKED = "mas_chess_dlg_chess_locked"
 
-    # TODO: this
-#    DLG_WINNER_L0 = "mas_chess_dlg_winner_l0"
-#    DLG_WINNER_L1 = "mas_chess_dlg_winner_l1"
-#    DLG_WINNER_END = "mas_chess_dlg_winner_end"
-#    DLG_WINNER_FAST = "mas_chess_dlg_winner_fast"
-#    DLG_LOSER_END = "mas_chess_dlg_loser_end"
-#    DLG_LOSER_FAST = "mas_chess_dlg_loser_fast"
+    # monika loses quips
+    # these are all mean
+    monika_loses_mean_quips = [
+        "Hmph.{w} You were just lucky today.",
+        "...{w}I'm just having an off day.",
+        "Ah, so you {i}are{/i} capable of winning...",
+        "I guess you're not {i}entirely{/i} terrible.",
+        "Tch-",
+        "Winning isn't everything, you know...",
+        "Ahaha,{w} I was just letting you win since you kept losing so much.",
+        ( # thanks syn
+            "Ahaha, surely you don't expect me to believe that you beat me " +
+            "fairly, especially for someone at your skill level.{w} Don't " +
+            "be so silly, [player]."
+        ),
+        "Oh, you won.{w} I should have taken this game seriously, then.",
+        -1 # glitchtext(40), cps*2
+        # TODO: look into more of these
+    ]
 
+    # TODO: quip class that allows for easy adding of labels, 
+    # single liners, glitchtext liners and so on.
+    # this class would do validation and other checks, as well as proper
+    # string format/replace calls and so on
+    # NOTE: Write this in master please
 
     def __initDLGActions():
         """
@@ -1424,11 +1441,13 @@ label mas_chess_game_start:
     if game_result == "*":
         # this should jump directly to (the twilight zone) the save game
         # name input flow.
+        call mas_chess_dlg_game_in_progress from _mas_chess_dlggameinprog
+
         jump mas_chess_savegame
 
     elif game_result == "1/2-1/2":
         # draw
-        m 3h "A draw? How boring..."
+        call mas_chess_dlg_game_drawed from _mas_chess_dlggamedrawed
         $ persistent._mas_chess_stats["draws"] += 1
 
     elif is_monika_winner:
@@ -1445,6 +1464,9 @@ label mas_chess_game_start:
             m 1l "I really was going easy on you!"
 
     else:
+        # TODO: 
+        # It's not like I let you win or anything, b-baka!
+        # ^ CHESS STRENGTH 16 ^
         $ persistent._mas_chess_stats["wins"] += 1
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
@@ -2125,7 +2147,7 @@ label mas_chess_dlg_qf_edit_n_3_s:
 
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
-    m 2o "[player]..."
+    m 2q "[player]..."
     m 2h "I see you've edited my backup saves."
     m "If you want to be like that right now, then we'll play chess some other time."
     python:
@@ -2179,9 +2201,63 @@ label mas_chess_go_ham_and_delete_everything:
 ## general dialogue
 # if chess is locked
 label mas_chess_dlg_chess_locked:
-    m 1o "..."
+    m 1q "..."
     m "I don't feel like playing chess right now."
     return
+
+### endgame dialogue
+# dialogue has 2 sets, one for friendly, one for not.
+# in some cases, we jump to the other because we dont care
+
+# in progress game
+label mas_chess_dlg_game_in_progress:
+    if persistent._mas_chess_3_edit_sorry:
+        # mean dialogue
+        pass
+    else:
+        # friendly dialogue
+        pass
+    return
+
+# draw game
+label mas_chess_dlg_game_drawed:
+    if persistent._mas_chess_3_edit_sorry:
+        m 2h "A draw?"
+        m 2q "Hmph."
+        m 2h "I'll beat you next time."
+    else:
+        m 3h "A draw? How boring..."
+    return
+
+## monika wins
+# main monika win label
+label mas_chess_dlg_game_monika_win:
+    # here we check strength and call the appropriate label
+    # TODO
+
+    # bad players get rekt by monika
+    if persistent._mas_chess_3_edit_sorry:
+        call mas_chess_dlg_game_monika_win_rekt from _mas_chess_dlggmwrekt
+
+    else:
+        python:
+            # first pick the appropriate chess strength to use
+            if store.mas_chess.chess_strength[0]:
+                t_chess_str = store.mas_chess.chess_strength[1]
+            else:
+                t_chess_str = perisstent.chess_strength
+    return
+
+# generic monika wins in ur face
+label mas_chess_dlg_game_monika_win_rekt:
+    m 1k "Ahaha~"
+    m "Maybe you should stick to checkers."
+    m 1 "I doubt you'll ever beat me."
+    return
+
+# chess strength 0
+#label mas_chess_dlg_game_monika_win_0:
+        
 
 #### end dialogue blocks ######################################################
 
