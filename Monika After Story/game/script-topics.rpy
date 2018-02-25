@@ -3855,17 +3855,11 @@ label monika_music2:
         m "I NEED DIALOGUE NOW" 
     
     elif songs.getPlayingMusicName() == "Play With Me (Variant 6)":
-        m 1p "Do you actually like this song [player]?"
-        m 1o "I didn't think you would."
-        m 2o "You don't remember having to watch Yuri's body decay for that whole weekend?"
-        m 1c "You know, I never intended for you to be trapped there with her."
-        m 2o "I feel awful for that too."
-        m 1e "I guess I had just really broken the game at that point."
-        m 1b "Try not to think about it, okay?"
-        m 1a "Just imagine though, what would've happend if we could have enjoyed that weekend together?"
-        m 1j "It could've been a lot of fun."
+        m 2o "To be honest, I don't know why you'd be listening to this music, [player]."
+        m 2f "I feel awful for that mistake."
+        m 2g "I didn't mean to force you to spend time with Yuri at that state..."
+        m 4f "Try not to think about it, okay?"
         
-
     else:
         m 1a "..."
         m 1a "...This silence..."
