@@ -856,6 +856,374 @@ python early:
             # otherwise continue on
             return None
 
+#init -1 python:
+    # new class to manage a list of quips
+    class MASQuipList(object):
+        """
+        Class that manages a list of quips. Quips have types which helps us
+        when deciding how to execute quips. Also we have some properties that
+        make it easy to customize a quiplist.
+
+        I suggest that you only use this if you need to have multipe types
+        of quips in a list. If you're only doing one-liners, a regular list
+        will suffice.
+
+        Currently 3 types of quips:
+            glitchtext - special type for a glitchtext generated quip.
+            label - this quip is actually the label for the actual quip
+                (assumed the label has a return and is designed to be called)
+            line - this quip is the actual line we want to display.
+            other - other types of quips
+
+        CONSTANTS:
+            TYPE_GLITCH - glitch text type quip
+            TYPE_LABEL - label type quip
+            TYPE_LINE - line type quip
+            TYPE_OTHER - other, custom types of quips
+
+        PROPERTIES:
+            allow_glitch - True means glitch quips can be added to this list
+            allow_label - True means label quips can be added to this list
+            allow_line - True means line quips can be added to this list
+            raise_issues - True will raise exceptions if bad things occur:
+                - if a quip that was not allowed was added
+                - if a label that does not exist was added
+                - etc...
+        """
+
+        TYPE_GLITCH = 0
+        TYPE_LABEL = 1
+        TYPE_LINE = 2
+        TYPE_OTHER = 50
+
+        TYPES = (
+            TYPE_GLITCH,
+            TYPE_LABEL,
+            TYPE_LINE,
+            TYPE_OTHER
+        )
+
+        def __init__(self,
+                allow_glitch=True,
+                allow_label=True,
+                allow_line=True,
+                raise_issues=True
+            ):
+            """
+            Constructor for MASQuipList
+
+            IN:
+                allow_glitch - True means glitch quips can be added to this
+                    list, False means no
+                    (Default: True)
+                allow_label - True means label quips can be added to this list,
+                    False means no
+                    (Default: True)
+                allow_line - True means line quips can be added to ths list,
+                    False means no
+                    (Default: True)
+                raise_issues - True means we will raise exceptions if bad
+                    things occour. False means we stay quiet
+                    (Default: True)
+            """
+            
+            # set properties
+            self.allow_glitch = allow_glitch
+            self.allow_label = allow_label
+            self.allow_line = allow_line
+            self.raise_issues = raise_issues
+
+            # this is the actual internal ist
+            self.__quiplist = list()
+
+    
+        def addGlitchQuip(self, 
+                length, 
+                cps_speed=0, 
+                wait_time=None, 
+                no_wait=False
+            ):
+            """
+            Adds a glitch quip based upon the given params.
+
+            IN:
+                length - length of the glitch text
+                cps_speed - integer value to use as glitchtext speed multiplier
+                    If 0 or 1, no cps speed change is done.
+                    (Default: 0)
+                wait_time - integer value to use as wait time. If None, no
+                    wait tag is used
+                    (Default: None)
+                no_wait - If True, a no wait tag is added to the glitchtext.
+                    otherwise, no no-wait tag is added.
+                    (Default: False)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+            """
+            if self.allow_glitch:
+                
+                # create the glitchtext quip
+                quip = glitchtext(length)
+
+                # check for cps speed adding
+                if cps_speed > 0 and cps_speed != 1:
+                    cps_speedtxt = "cps=*{0}".format(cps_speed)
+                    quip = "{" + cps_speedtxt + "}" + quip + "{/cps}"
+
+                # check for wait adding
+                if wait_time is not None:
+                    wait_text = "w={0}".format(wait_time)
+                    quip += "{" + wait_text + "}"
+
+                # check no wait
+                if no_wait:
+                    quip += "{nw}"
+
+                # now add the quip to the internal ist
+                self.__quiplist.append((self.TYPE_GLITCH, quip))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Glitchtext cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLabelQuip(self, label_name):
+            """
+            Adds a label quip.
+
+            IN:
+                label_name - label name of this quip
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the label didnt exist
+            """
+            if self.allow_label:
+
+                # check for label existence first
+                if not renpy.has_label(label_name):
+                    # okay throw an error and reutrn -1
+                    self.__throwError(
+                        "Label '{0}' does not exist".format(label_name)
+                    )
+                    return -1
+
+                # otherwise, we are good to add this thing
+                self.__quiplist.append((self.TYPE_LABEL, label_name))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Labels cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLineQuip(self, line, custom_type=None):
+            """
+            Adds a line quip. A custom type can be given if the caller wants
+            this line quip to be differentable from other line quips.
+
+            IN:
+                line - line quip
+                custom_type - the type to use for this line quip instead of
+                    TYPE_LINE. If None, TYPE_LINE is used.
+                    (Default: None)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the given custom_type is conflicting exisiting types.
+            """
+            if self.allow_line:
+
+                # check given type
+                if custom_type is None:
+                    custom_type = self.TYPE_LINE
+
+                elif custom_type in self.TYPES:
+                    # cant have conflicing types
+                    self.__throwError(
+                        (
+                            "Custom type for '{0}' conflicts with default " +
+                            "types."
+                        ).format(line)
+                    )
+                    return -1
+
+                # otherwise, we are good for adding this line
+                self.__quiplist.append((custom_type, line))
+
+                return len(self.__quiplist) -1
+
+            else:
+                self.__throwError(
+                    "Lines cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def quip(self, remove=False):
+            """
+            Randomly picks a quip and returns the result.
+
+            Line quips are automatically cleaned and prepared ([player], 
+            gender pronouns are all replaced appropraitely). If the caller
+            wants additional variable replacements, they must do that 
+            themselves.
+
+            IN:
+                remove - True means we remove the quip we select. False means
+                    keep it in the internal list.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            if remove:
+                # if we need to remove, we should use randint instead
+                sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
+                return self.__quiplist.pop(sel_index)
+
+            else:
+                # if we dont need to remove, we can just use renpy random
+                # choice
+                return renpy.random.choice(self.__quiplist)
+
+
+        def _getQuip(self, index):
+            """
+            Retrieves the quip at the given index.
+
+            IN:
+                index - the index the wanted quip is at
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            return self.__quiplist[index]
+
+
+        def _getQuipList(self):
+            """
+            Retrieves the internal quip list. This is a direct reference to 
+            the internal list, so be careful.
+
+            RETURNS:
+                the internal quiplist
+            """
+            return self.__quiplist
+
+
+        def _quipGlitch(self, gt_quip):
+            """
+            Processes the given glitch text quip for usage.
+
+            IN:
+                gt_quip - the glitchtext quip (value) to process
+
+            RETURNS:
+                glitchtext quip ready for display.
+            """
+            # NOTE: for now, we dont need to do processing here
+            return gt_quip
+
+
+        def _quipLabel(self, la_quip):
+            """
+            Processes the given label quip for usage.
+
+            IN:
+                la_quip - the label quip (value) to process
+
+            RETURNS:
+                label quip ready for call
+            """
+            # NOTE: for now, we dont need to do processing here
+            return la_quip
+
+
+        def _quipLine(self, li_quip):
+            """
+            Processes the given line quip for usage.
+
+            IN:
+                li_quip - the line quip (value) to process
+
+            RETURNS:
+                line quip ready for display
+            """
+            # lines need processing
+            quip_replacements = self.__generateLineQuipReplacements()
+
+            for keyword, value in quip_replacements:
+                li_quip = li_quip.replace(keyword, value)
+
+            return li_quip
+
+
+        def _removeQuip(self, index):
+            """
+            Removes the quip at the given index. (and returns it back)
+
+            IN:
+                index - the index of the quip to remove.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of the removed quip
+                    [1]: value of the removed quip
+            """
+            quip_tup = self.__quiplist.pop(index)
+            return quip_tup
+
+
+        def __generateLineQuipReplacements(self):
+            """
+            Generates line quip replacement list for easy string replacement.
+
+            RETURNS: a list for line quip variable replacements
+
+            ASSUMES:
+                player
+                currentuser
+                mcname
+                <all gender prounouns>
+            """
+            return [
+                ("[player]", player),
+                ("[currentuser]", currentuser),
+                ("[mcname]", mcname),
+                ("[his]", his),
+                ("[he]", he),
+                ("[hes]", hes),
+                ("[heis]", heis),
+                ("[bf]", bf),
+                ("[man]", man),
+                ("[boy]", boy),
+                ("[guy]", guy)
+            ]
+
+
+        def __throwError(self, msg):
+            """
+            Internal function that throws an error if we are allowed to raise
+            issues.
+
+            IN:
+                msg - message to display
+            """
+            if self.raise_issues:
+                raise Exception(msg)
+
 
 init -1 python:
     import datetime # for mac issues i guess.
