@@ -182,6 +182,25 @@ init 1 python in mas_chess:
 
     # monika wins quips
     # these are all mean
+    # first, lets generate line quips
+    _monika_wins_line_quips = (
+        "Wow. Do you even know how to play chess?",
+        "Are you {i}that{/i} bad? I wasn't even taking this game seriously."
+    )
+
+    # zdd those line quips
+    monika_wins_mean_quips = MASQuipList()
+    for _line in _monika_wins_line_quips:
+        monika_wins_mean_quips.addLineQuip(_line)
+
+    # generate label quips
+    _monika_wins_label_quips = (
+        "mas_chess_dlg_game_monika_win_rekt",
+    )
+
+    # add the label ones
+    for _label in monika_wins_label_quips:
+        monika_wins_mean_quips.addLabelQuip(_label)
 
 ## functions ==================================================================
 
