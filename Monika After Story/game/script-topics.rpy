@@ -3788,7 +3788,7 @@ label monika_daydream:
     return
 
 init 5 python:
-    monika_random_topics.append('monika_music2')
+     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
 
 label monika_music2:
     if songs.getVolume("music") == 0.0:
@@ -3821,6 +3821,19 @@ label monika_music2:
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "That would make me even happier than I already am~"
 
+    elif songs.getPlayingMusicName() == 'Your Reality (Piano Cover)':
+        m 1k "Enjoying my song, [player]?"
+        m 1a "It wasn't easy to create, you know?"
+        m "Making your own songs is a slow and difficult process, especially when it's about your own feelings."
+        m 3n "I needed it to be perfect before I shared it with you!"
+        m 1o "So I spent so many hours going through it over and over..."
+        m 1q "Time just passed by so quickly whenever I worked on it."
+        m 1j "After all that practice, I'm pretty proud of how it came out in the end."
+        m 3b "Since you're listening to it, I'm sure you like it too..."
+        m 3k "Thanks for listening to something I worked so hard on, [player]!"
+        show monika 5a at t11 zorder 2 with dissolve
+        m 5a "It makes me happy to know that you appreciate what I did for you~"
+
     elif songs.getPlayingMusicName() == 'I Still Love You':
         m 1f "Gosh, every time I hear this song it makes me sad."
         m "It reminds me of all the... regrettable things I have done to the other girls."
@@ -3851,9 +3864,13 @@ label monika_music2:
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
 
     elif songs.getPlayingMusicName() == "Doki Doki Theme (80s version)":
-        # TODO: add dialogue here
-        m "I NEED DIALOGUE NOW"
-
+        m 1b "A good choice, [player]!"
+        m 1l "Obviously, this theme wasn't actually out in the 80's..."
+        m 1a "But it does have a certain style that I really appreciate!"
+        m 3a "Do you like 80's music a lot, [player]?"
+        show monika 5a at t11 zorder 2 with dissolve
+        m 5a "I prefer the tune of an authentic piano, but if it makes you happy, I wouldn't mind spending hours listening to it with you~" 
+  
     else:
         m 1a "..."
         m 1a "...This silence..."
