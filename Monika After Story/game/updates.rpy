@@ -153,7 +153,10 @@ init 10 python:
 
     elif persistent.version_number != config.version:
         # parse this version number into something we can use
-        vvvv_version = "v"+"_".join(persistent.version_number.split("."))
+        t_version = persistent.version_number
+        if "-" in t_version:
+            t_version = t_version[:t_version.index("-")]
+        vvvv_version = "v"+"_".join(t_version.split("."))
         # so update!
         updateGameFrom(vvvv_version)
 
@@ -188,6 +191,40 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.7.2
+label v0_7_2(version="v0_7_2"):
+    python:
+        import store.evhand as evhand
+
+        # have to properly set seen randoms to unlocked again because of a bug)
+        for k in evhand.event_database:
+            event = evhand.event_database[k]
+            if (renpy.seen_label(event.eventlabel)
+                and (event.random or event.action == EV_ACT_RANDOM)):
+                event.unlocked = True
+                event.conditional = None
+
+        # is this an issue?
+#        if renpy.seen_label("preferredname"):
+#            evhand.event_database["monika_changename"].unlocked = True
+    return
+
+# 0.7.1
+label v0_7_1(version="v0_7_1"):
+    python:
+
+        if persistent.you is not None:
+            persistent._mas_you_chr = persistent.you
+
+        if persistent.pnml_data is not None:
+            persistent._mas_pnml_data = persistent.pnml_data
+
+        if renpy.seen_label("zz_play_piano"):
+            removeTopicID("zz_play_piano")
+            persistent._seen_ever["mas_piano_start"] = True
+
+    return
 
 # 0.7.0
 label v0_7_0(version="v0_7_0"):

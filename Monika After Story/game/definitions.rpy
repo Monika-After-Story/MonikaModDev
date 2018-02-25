@@ -65,12 +65,16 @@ python early:
     #   action - an EV_ACTION constant that tells us what to do if the
     #       conditional is True (See EV_ACTIONS and EV_ACT_...)
     #       (Default: None)
-    #   start_date - Timestamp for when this event is available
+    #   start_date - datetime for when this event is available
     #       (Default: None)
-    #   end_date - Timestamp for when this event is no longer available
+    #   end_date - datetime for when this event is no longer available
     #       (Default: None)
-    #   unlock_date - Timestamp for when this event is unlocked
+    #   unlock_date - datetime for when this event is unlocked
     #       (Default: None)
+    #   shown_count - number of times this event has been shown to the user
+    #       NOTE: this must be set by the caller, and it is asssumed that
+    #           call_next_event is the only one who changes this
+    #       (Default: 0)
     class Event(object):
 
         # tuple constants
@@ -86,7 +90,8 @@ python early:
             "action":8,
             "start_date":9,
             "end_date":10,
-            "unlock_date":11
+            "unlock_date":11,
+            "shown_count":12
         }
 
         # name constants
@@ -107,7 +112,8 @@ python early:
                 action=None,
                 start_date=None,
                 end_date=None,
-                unlock_date=None):
+                unlock_date=None,
+                shown_count=0):
 
             # setting up defaults
             if not eventlabel:
@@ -143,7 +149,8 @@ python early:
                 action,
                 start_date,
                 end_date,
-                unlock_date
+                unlock_date,
+                shown_count
             )
 
             # if the item exists, reform data if the length has increased
@@ -156,6 +163,10 @@ python early:
                     data_row = list(data_row)
                     data_row[0:len(stored_data_row)] = list(stored_data_row)
                     self.per_eventdb[self.eventlabel] = tuple(data_row)
+
+                # actaully this should be always
+                self.prompt = prompt
+                self.category = category
 
             # new items are added appropriately
             else:
@@ -205,7 +216,7 @@ python early:
                     self.per_eventdb[self.eventlabel] = data_row
 
                 else:
-                    super(Event, self).__setattr(name, value)
+                    super(Event, self).__setattr__(name, value)
 
         # get attribute ovverride
         def __getattr__(self, name):
@@ -234,6 +245,17 @@ python early:
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
             return ev.prompt.lower()
+
+
+        @staticmethod
+        def getSortShownCount(ev):
+            """
+            Function used for sorting by shown counts
+
+            RETURNS: the shown_count property of an event
+            """
+            return ev.shown_count
+
 
         @staticmethod
         def _filterEvent(
@@ -530,7 +552,7 @@ python early:
     # this should be in the EARLY block
     class MASButtonDisplayable(renpy.Displayable):
         """
-        Special button type that represents a usable button for custom 
+        Special button type that represents a usable button for custom
         displayables.
 
         PROPERTIES:
@@ -652,7 +674,7 @@ python early:
             # current state
             self._state = self._STATE_IDLE
 
-        
+
         def _isOverMe(self, x, y):
             """
             Checks if the given x and y coodrinates are over this button.
@@ -681,16 +703,6 @@ python early:
                 renpy.play(self.hover_sound, channel="sound")
 
 
-        def enable(self):
-            """
-            Enables this button. This changes the internal state, so its
-            preferable to use this over setting the disabled property 
-            directly
-            """
-            self.disabled = False
-            self._state = self._STATE_IDLE
-
-
         def disable(self):
             """
             Disables this button. This changes the internal state, so its
@@ -699,6 +711,16 @@ python early:
             """
             self.disabled = True
             self._state = self._STATE_DISABLED
+
+
+        def enable(self):
+            """
+            Enables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property 
+            directly
+            """
+            self.disabled = False
+            self._state = self._STATE_IDLE
 
 
         def getSize(self):
@@ -711,6 +733,68 @@ python early:
                     [1]: height
             """
             return (self.width, self.height)
+
+        
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
+
+
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
 
 
         def render(self, width, height, st, at):
@@ -738,7 +822,7 @@ python early:
 
 
         def event(self, ev, x, y, st):
-          
+
             # only check if we arent disabled (or are allowed to work while
             #   disabled)
             if self._state != self._STATE_DISABLED or self.enable_when_disabled:
@@ -756,7 +840,7 @@ python early:
                     elif is_over_me:
                         self.hovered = True
                         self._state = self._STATE_HOVER
-                        
+
                         if self.hover_sound:
                             self._playHoverSound()
 
@@ -771,9 +855,10 @@ python early:
 
             # otherwise continue on
             return None
-                
+
 
 init -1 python:
+    import datetime # for mac issues i guess.
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
@@ -784,6 +869,44 @@ init -1 python:
     #Lookup tables for Monika input topics
     #Add entries with your script in script-topics.rpy
     monika_topics = {}
+
+    def get_procs():
+        """
+        Retrieves list of processes running right now!
+
+        Only works for windows atm
+
+        RETURNS: list of running processes, or an empty list if
+        we couldn't do that
+        """
+        if renpy.windows:
+            import subprocess
+            try:
+                return subprocess.check_output(
+                    "wmic process get Description", 
+                    shell=True
+                ).lower().replace("\r", "").replace(" ", "").split("\n")
+            except:
+                pass
+        return []
+
+
+    def is_running(proc_list):
+        """
+        Checks if a process in the given list is currently running.
+
+        RETURNS: True if a proccess in proc_list is running, False otherwise
+        """
+        running_procs = get_procs()
+        if len(running_procs) == 0:
+            return False
+
+        for proc in proc_list:
+            if proc in running_procs:
+                return True
+
+        # otherwise, not found
+        return False
 
 
     def get_pos(channel='music'):
@@ -2059,6 +2182,7 @@ default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default seen_random_limit = False
+default persistent._mas_enable_random_repeats = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
@@ -2070,6 +2194,8 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define is_monika_in_room = False # since everyone gets this error apparently
+define scene_change = True # we start off with a scene change
+define mas_monika_twitter_handle = "lilmonix3"
 init python:
     startup_check = False
     try:

@@ -122,11 +122,12 @@ init python:
         if not renpy.has_label(event.eventlabel):
             raise EventException("'" + event.eventlabel + "' does NOT exist")
         if event.conditional is not None:
-            try:
-                if eval(event.conditional):
-                    pass
-            except:
-                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
+            eval(event.conditional)
+#            try:
+#                if eval(event.conditional, globals()):
+#                    pass
+#            except:
+#                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
@@ -311,11 +312,15 @@ label call_next_event:
         $ persistent.current_monikatopic=0
 
         #if this is a random topic, make sure it's unlocked for prompts
-        if event_label in monika_random_topics:
-            if not evhand.event_database[event_label].unlocked:
+        $ ev = evhand.event_database.get(event_label, None)
+        if ev is not None:
+            if ev.random and not ev.unlocked:
                 python:
-                    evhand.event_database[event_label].unlocked=True
-                    evhand.event_database[event_label].unlock_date=datetime.datetime.now()
+                    ev.unlocked=True
+                    ev.unlock_date=datetime.datetime.now()
+
+            # increment shown count
+            $ ev.shown_count += 1
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
