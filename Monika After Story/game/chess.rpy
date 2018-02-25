@@ -154,7 +154,8 @@ init 1 python in mas_chess:
 
     # monika loses quips
     # these are all mean
-    monika_loses_mean_quips = [
+    # first, lets take all the text based ones and group them
+    _monika_loses_line_quips = (
         "Hmph.{w} You were just lucky today.",
         "...{w}I'm just having an off day.",
         "Ah, so you {i}are{/i} capable of winning...",
@@ -167,16 +168,22 @@ init 1 python in mas_chess:
             "fairly, especially for someone at your skill level.{w} Don't " +
             "be so silly, [player]."
         ),
-        "Oh, you won.{w} I should have taken this game seriously, then.",
-        -1 # glitchtext(40), cps*2
+        "Oh, you won.{w} I should have taken this game seriously, then."
         # TODO: look into more of these
-    ]
+    )
 
-    # TODO: quip class that allows for easy adding of labels, 
-    # single liners, glitchtext liners and so on.
-    # this class would do validation and other checks, as well as proper
-    # string format/replace calls and so on
-    # NOTE: Write this in master please
+    # add those line quips
+    monika_loses_mean_quips = MASQuipList()
+    for _line in _monika_loses_line_quips:
+        monika_loses_mean_quips.addLineQuip(_line)
+
+    # now add the glitch text quip
+    monika_loses_mean_quips.addGlitchQuip(40, 2, 3, True)
+
+    # monika wins quips
+    # these are all mean
+
+## functions ==================================================================
 
     def __initDLGActions():
         """
@@ -1148,11 +1155,6 @@ init:
                         dec_musicvol()
 
                 raise renpy.IgnoreEvent()
-
-
-label testmas_chess:
-    hide screen mas_background_timer
-    return
 
 label game_chess:
     if persistent._mas_chess_timed_disable is not None:
@@ -2245,7 +2247,7 @@ label mas_chess_dlg_game_monika_win:
             if store.mas_chess.chess_strength[0]:
                 t_chess_str = store.mas_chess.chess_strength[1]
             else:
-                t_chess_str = perisstent.chess_strength
+                t_chess_str = persistent.chess_strength
     return
 
 # generic monika wins in ur face
