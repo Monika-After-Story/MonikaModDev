@@ -4699,16 +4699,16 @@ label monika_omamori:
     return    
     
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['random'],prompt="Car Trip",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['random'],prompt="Road Trip",random=True))
 
 label monika_cartravel:
-    m 1i "[player], something has been on my mind lately..."
-    m 1a "Wouldn't it be nice to drive somewhere far away, just you and I together?"
-    m 3k "It'd be lovely to explore some beautiful places, don't you think?"
-    m 3b "Maybe we could drive through an alluring forest... or even see the sunset by the coastline!"
-    m 3j "It really doesn't matter where we go, [player], anywhere is perfect as long as I'm with you."
-    m "Just sitting next to you, enjoying the scenery... I'd be the happiest girl in the world."
-    m "Checking out new places, discovering new customs, and meeting new people sounds very fun, don't you think so?"
-    m 1a "I can't wait until we can do so together. That's just one more reason why I want to escape this world, and see you face to face in your reality."
+    m 3c "[player], something has been on my mind lately..."
+    m 1a "Wouldn't it be nice to drive somewhere, just you and I together?"
+    m 3k "It'd be lovely to explore some beautiful places, anywhere nice that we haven't seen before."
+    m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
+    m "I bet we'd have a really good time if we took a road trip, [player].
+    m 1j "It really doesn't matter where we go, as long as I'm with you."
+    m "Just the idea of travelling around the world makes so excited!"
+    m 1e "I really can't wait, [player]~"
     return
 
