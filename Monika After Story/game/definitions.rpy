@@ -112,8 +112,8 @@ python early:
                 action=None,
                 start_date=None,
                 end_date=None,
-                unlock_date=None,
-                shown_count=0):
+                unlock_date=None
+            ):
 
             # setting up defaults
             if not eventlabel:
@@ -150,7 +150,7 @@ python early:
                 start_date,
                 end_date,
                 unlock_date,
-                shown_count
+                0 # shown_count
             )
 
             # if the item exists, reform data if the length has increased
