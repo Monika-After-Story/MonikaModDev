@@ -798,7 +798,7 @@ label monika_outfit:
         m 5a "We're not that far into our relationship yet. Ahaha!"
     else:
         m 4l "I don't want something so embarassing on there!"   
-        m 5a "We'll keep it between just us..."  
+        m 5a "So let's keep it between just us..."  
     return
 
 
@@ -2333,7 +2333,7 @@ label monika_nsfw:
     if not seen_event('anni_1'):
         m 1h "I know we haven't really gotten that far into the relationship yet..."
     else:
-        m 1h "I know we haven't been able to do such things yet..."       
+        m 1h "I know we haven't been able to do those kind of things yet..."       
     m "So it feels kind of embarrassing to talk about things like that."
     m 1m "But maybe I can let it go on rare occasions, [player]."
     m 3m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
@@ -4490,7 +4490,7 @@ label monika_marriage:
         m 1o "I think about how it would feel to be kissed by you at the altar..."
         m 1p "To hold your hand as your wife and to feel your embrace at our honeymoon..."
         m 1q "But until I get out it's simply not possible."
-        m 1g "...I'm sorry. Please do believe me that I would say yes in any other circumstance."
+        m 1g "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
         m 1e "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
     return
 
