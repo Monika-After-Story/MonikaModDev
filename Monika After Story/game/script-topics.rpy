@@ -4696,6 +4696,20 @@ label monika_omamori:
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
     return
+    
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['random'],prompt="Road Trip",random=True))
+
+label monika_cartravel:
+    m 3c "[player], something has been on my mind lately..."
+    m 1a "Wouldn't it be nice to drive somewhere, just you and I together?"
+    m 3k "It'd be lovely to explore some beautiful places, anywhere nice that we haven't seen before."
+    m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
+    m "I bet we'd have a really good time if we took a road trip, [player].
+    m 1j "It really doesn't matter where we go, as long as I'm with you."
+    m "Just the idea of travelling around the world makes so excited!"
+    m 1e "I really can't wait, [player]~"
+    return
 
 
 init 5 python:
@@ -4719,7 +4733,8 @@ label monika_100k:
     else:
         m 1m "Almost~"
     return
-    
+   
+   
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
