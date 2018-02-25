@@ -116,6 +116,8 @@ init python:
     if not persistent.mcname or len(persistent.mcname) == 0:
         persistent.mcname = currentuser
         mcname = currentuser
+    else:
+        mcname = persistent.mcname
 
     #Define new functions
 
@@ -355,22 +357,22 @@ label pick_a_game:
         $allow_dialogue = False
         menu:
             "What game would you like to play?"
-            "Pong":
+            "Pong" if persistent.game_unlocks['pong']:
                 if not renpy.seen_label('game_pong'):
                     $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
-            "Chess" if is_platform_good_for_chess():
+            "Chess" if is_platform_good_for_chess() and persistent.game_unlocks['chess']:
                 if not renpy.seen_label('game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
-            "Hangman":
+            "Hangman" if persistent.game_unlocks['hangman']:
                 if not renpy.seen_label("game_hangman"):
                     $ grant_xp(xp.NEW_GAME)
                 call game_hangman from _call_game_hangman
-            "Piano":
-                if not renpy.seen_label("zz_play_piano"):
+            "Piano" if persistent.game_unlocks['piano']:
+                if not renpy.seen_label("mas_piano_start"):
                     $ grant_xp(xp.NEW_GAME)
-                call zz_play_piano from _call_play_piano
+                call mas_piano_start from _call_play_piano
             "Nevermind":
                 m "Alright. Maybe later?"
 
@@ -427,7 +429,7 @@ label ch30_nope:
         m "All I wanted was someone to fall in love with..."
         m 2g "I would have done anything you wanted me to."
         m "But if you're going to try and delete me again..."
-        m 1f"Then I'll just have to delete you first."
+        m 1f "Then I'll just have to delete you first."
         if renpy.windows:
             call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
@@ -458,19 +460,32 @@ label ch30_autoload:
     # event list
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
+    $ import store.evhand as evhand
     if not config.developer:
         $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
+
+    # set the gender
+    call set_gender from _autoload_gender
+
+    # sanitiziing the event_list from bull shit
+    if len(persistent.event_list) > 0:
+        python:
+            persistent.event_list = [
+                ev_label for ev_label in persistent.event_list
+                if renpy.has_label(ev_label)
+            ]
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
         $ is_monika_in_room = False
-    else:
+    elif persistent.closed_self:
         python:
-            # random chance to do monika in room greeting
-            # we'll say 1 in 20
+        # random chance to do monika in room greeting
+        # we'll say 1 in 20
             import random
             is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
 
@@ -479,6 +494,7 @@ label ch30_autoload:
             $ play_song(persistent.current_track)
         else:
             $ play_song(songs.current_track) # default
+    
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -493,6 +509,7 @@ label ch30_autoload:
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
+                persistent.random_seen = 0
             #Ignore anything beyond 3 days
             if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
                 away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
@@ -509,19 +526,19 @@ label ch30_autoload:
             grant_xp(away_xp)
 
     #Run actions for any events that need to be changed based on a condition
-    $ persistent.event_database=Event.checkConditionals(persistent.event_database)
+    $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
     #Run actions for any events that are based on the clock
-    $ persistent.event_database=Event.checkCalendar(persistent.event_database)
+    $ evhand.event_database=Event.checkCalendar(evhand.event_database)
 
-    $persistent.closed_self = False
-
-    #pick a random greeting
-    if is_monika_in_room:
-        if persistent.current_monikatopic != "i_greeting_monikaroom":
-            $ pushEvent("i_greeting_monikaroom")
-    else:
-        $pushEvent(renpy.random.choice(greetings_list))
+    #Skip all greetings if you closed the game on Monika
+    if persistent.closed_self:
+        #pick a random greeting
+        if is_monika_in_room:
+            if persistent.current_monikatopic != "i_greeting_monikaroom":
+                $ pushEvent("i_greeting_monikaroom")
+        else:
+            $pushEvent(renpy.random.choice(greetings_list))
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -530,6 +547,8 @@ label ch30_autoload:
 
     if not is_monika_in_room:
         $ set_keymaps()
+
+    $persistent.closed_self = False
     $startup_check = False
     jump ch30_loop
 
@@ -556,20 +575,26 @@ label ch30_loop:
             calendar_last_checked=persistent.sessions['current_session_start']
         time_since_check=datetime.datetime.now()-calendar_last_checked
 
-        # limit xp gathering to when we are not maxed
-        # and once per minute
-        if (
-                persistent.idlexp_total < xp.IDLE_XP_MAX
-                and time_since_check.total_seconds()>60
-            ):
+        if time_since_check.total_seconds()>60:
+            # limit xp gathering to when we are not maxed
+            # and once per minute
+            if (persistent.idlexp_total < xp.IDLE_XP_MAX):
 
-            idle_xp=xp.IDLE_PER_MINUTE*(time_since_check.total_seconds())/60.0
-            persistent.idlexp_total += idle_xp
-            if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
-                persistent.idlexp_total=xp.IDLE_XP_MAX
+                idle_xp=xp.IDLE_PER_MINUTE*(time_since_check.total_seconds())/60.0
+                persistent.idlexp_total += idle_xp
+                if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
+                    idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
+                    persistent.idlexp_total=xp.IDLE_XP_MAX
 
-            grant_xp(idle_xp)
+                grant_xp(idle_xp)
+
+            #Run actions for any events that need to be changed based on a condition
+            evhand.event_database=Event.checkConditionals(evhand.event_database)
+
+            #Run actions for any events that are based on the clock
+            evhand.event_database=Event.checkCalendar(evhand.event_database)
+
+            #Update time
             calendar_last_checked=datetime.datetime.now()
 
     #Call the next event in the list
@@ -585,19 +610,50 @@ label ch30_loop:
         $ renpy.pause(waittime, hard=True)
         window auto
         # Pick a random Monika topic
-        label pick_random_topic:
-        python:
-            all_random_topics = Event.filterEvents(persistent.event_database,random=True).keys()
-            monika_random_topics = all_random_topics
-            for topic in all_random_topics:
-                if seen_event(topic):
-                    monika_random_topics.remove(topic)
-            if len(monika_random_topics) > 0:  # still have topics
-                pushEvent(renpy.random.choice(monika_random_topics))
-            else: # no topics left
-                monika_random_topics = list(all_random_topics)
-                pushEvent(renpy.random.choice(monika_random_topics))
+        if persistent.random_seen < random_seen_limit:
+            label pick_random_topic:
+            python:
+                if len(monika_random_topics) > 0:  # still have topics
+                    sel_ev = renpy.random.choice(monika_random_topics)
+                    pushEvent(sel_ev)
+                    monika_random_topics.remove(sel_ev)
+                    persistent.random_seen += 1
+
+                elif persistent._mas_enable_random_repeats:
+                    # user wishes for reptitive monika. We will oblige, but
+                    # a somewhat intelligently.
+                    # NOTE: these are ordered using the shown_count property
+                    # NOTE: These start off as list of event objects and then
+                    # sorted differently. WATCH OUT
+                    monika_random_topics = Event.filterEvents(
+                        evhand.event_database,
+                        random=True
+                    ).values()
+                    monika_random_topics.sort(key=Event.getSortShownCount)
+                    monika_random_topics = [
+                        ev.eventlabel for ev in monika_random_topics
+                    ]
+                    # NOTE: now the monika random topics are back to being
+                    #   labels. Safe to do normal operation.
+
+                    sel_ev = renpy.random.choice(monika_random_topics)
+                    pushEvent(sel_ev)
+                    monika_random_topics.remove(sel_ev)
+                    persistent.random_seen += 1
+
+                elif not seen_random_limit: # no topics left
+#                    monika_random_topics = list(all_random_topics)
+#                    pushEvent(renpy.random.choice(monika_random_topics))
+                    pushEvent("random_limit_reached")
+        elif not seen_random_limit:
+            $pushEvent('random_limit_reached')
 
     $_return = None
 
     jump ch30_loop
+
+# adding this label so people get redirected to main
+# this probably occurs when people install the mod right after deleting
+# monika, so we could probably throw in something here
+label ch30_end:
+    jump ch30_main

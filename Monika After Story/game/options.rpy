@@ -23,7 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "0.6.2"
+define config.version = "0.7.2"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -221,8 +221,7 @@ init python:
     #build.archive(build.name, "all")
 
     #Add the pictures necessary for the scrollable menu
-    build.classify("game/gui/button/scrollable_menu_hover_background.png",build.name)
-    build.classify("game/gui/button/scrollable_menu_idle_background.png",build.name)
+    build.classify("game/gui/**",build.name)
 
     ## These files get put into your data file
     build.classify("game/mod_assets/**",build.name)
