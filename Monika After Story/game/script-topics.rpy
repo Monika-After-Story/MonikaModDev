@@ -3870,7 +3870,13 @@ label monika_music2:
         m 3a "Do you like 80's music a lot, [player]?"
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "I prefer the tune of an authentic piano, but if it makes you happy, I wouldn't mind spending hours listening to it with you~" 
-  
+    
+    elif songs.getPlayingMusicName() == "Play With Me (Variant 6)":
+        m 2o "To be honest, I don't know why you'd be listening to this music, [player]."
+        m 2f "I feel awful for that mistake."
+        m 2g "I didn't mean to force you to spend time with Yuri at that state..."
+        m 4f "Try not to think about it, okay?"
+        
     else:
         m 1a "..."
         m 1a "...This silence..."
