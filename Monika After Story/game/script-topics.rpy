@@ -794,7 +794,11 @@ label monika_outfit:
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
     show monika 5a at t11 zorder 2 with dissolve
-    m 5a "We're not that far into our relationship yet. Ahaha!"
+    if not seen_event('anni_1'):
+        m 5a "We're not that far into our relationship yet. Ahaha!"
+    else:
+        m 4l "I don't want something so embarassing on there!"   
+        m 5a "We'll keep it between just us..."  
     return
 
 
@@ -2326,7 +2330,10 @@ label monika_nsfw:
     m 1p "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1o "You know... of me?"
-    m 1h "I know we haven't really gotten that far into the relationship yet..."
+    if not seen_event('anni_1'):
+        m 1h "I know we haven't really gotten that far into the relationship yet..."
+    else:
+        m 1h "I know we haven't been able to do such things yet..."       
     m "So it feels kind of embarrassing to talk about things like that."
     m 1m "But maybe I can let it go on rare occasions, [player]."
     m 3m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
@@ -2459,7 +2466,10 @@ label monika_fanfiction:
     m "Has there been fanfiction... written about me?"
     m 4b "I'm curious as to what people have come up with."
     m "Can you read me a few stories sometime? I'd love to hear them!"
-    m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    if not seen_event('anni_1'):
+        m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    else:
+        m 1k "Just keep it wholesome, though. I want to save such things for another time~!"      
     return
 
 init 5 python:
@@ -2995,8 +3005,12 @@ label monika_pleasure:
     m 1p "Do you... by any chance... pleasure yourself?"
     m 1o "..."
     m "It seems a bit awkward to ask-"
-    m 1n "We're not even that deep into our relationship yet! Ahaha~"
-    m 1h "But I have to keep an eye on you."
+    if not seen_event('anni_1'):
+        m 1n "We're not even that deep into our relationship yet! Ahaha~"
+        m 1h "But I have to keep an eye on you."
+    else:
+        m 1m "But I feel like we've been together long enough where we should be comfortable with one another."
+        m 1e "It's important to be open about such things."  
     m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
     m "I hear that people privately do that stuff in your world..."
     m 1c "Is it really that a good feeling?"
@@ -4459,12 +4473,25 @@ init 5 python:
 
 label monika_marriage:
     m 2m "M-marriage?"
-    m 4n "I think it's a bit too early for marriage..."
-    m 1e "I mean, I'm really happy that you want that, [player]."
-    m 1c "But I think I should get out of here first before we can do that."
-    m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
-    m 2q "I want that special moment to happen when we can finally be together..."
-    m 1k "So until then, save yourself for me, [player]~"
+    if not seen_event('anni_3'):
+        m 4n "I think it's a bit too early for marriage..."
+        m 1e "I mean, I'm really happy that you want that, [player]."
+        m 1c "But I think I should get out of here first before we can do that."
+        m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+        m 2q "I want that special moment to happen when we can finally be together..."
+        m 1k "So until then, save yourself for me, [player]~"
+    else:
+        m 3m "I won't pretend I haven't thought about it..."
+        m 3n "In fact I've been thinking about it a lot lately."
+        m 1q "..."
+        m 1f "I really do love you [player] and I honestly really do want to get married to you."
+        m 1r "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
+        m 1q "I want more than anything to say yes but I just can't..."
+        m 1o "I think about how it would feel to be kissed by you at the altar..."
+        m 1p "To hold your hand as your wife and to feel your embrace at our honeymoon..."
+        m 1q "But until I get out it's simply not possible."
+        m 1g "...I'm sorry. Please do believe me that I would say yes in any other circumstance."
+        m 1e "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
     return
 
 init 5 python:
