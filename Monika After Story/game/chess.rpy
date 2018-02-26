@@ -152,9 +152,20 @@ init 1 python in mas_chess:
     ## if player is locked out of chess
     DLG_CHESS_LOCKED = "mas_chess_dlg_chess_locked"
 
-    # monika loses quips
+    # base part of label for variable chess strength when monika wins
+    DLG_MONIKA_WIN_BASE = "mas_chess_dlg_game_monika_win_{0}"
+
+    # base part of label for variable chess strength when monika wins by 
+    # early surrender
+    DLG_MONIKA_WIN_SURR_BASE = "mas_chess_dlg_game_monika_win_surr_{0}"
+
+    # base part of label for variable chess strength when monika loses
+    DLG_MONIKA_LOSE_BASE = "mas_chess_dlg_game_monika_lose_{0}"
+
+    ##### monika loses quips #####
     # these are all mean
     # first, lets take all the text based ones and group them
+    # 1q
     _monika_loses_line_quips = (
         "Hmph.{w} You were just lucky today.",
         "...{w}I'm just having an off day.",
@@ -180,11 +191,12 @@ init 1 python in mas_chess:
     # now add the glitch text quip
     monika_loses_mean_quips.addGlitchQuip(40, 2, 3, True)
 
-    # monika wins quips
+    ##### monika wins quips #####
     # these are all mean
     # first, lets generate line quips
+    # 1k expressions
     _monika_wins_line_quips = (
-        "Wow. Do you even know how to play chess?",
+        "Ahaha, do you even know how to play chess?", # use this for surrenders too
         "Are you {i}that{/i} bad? I wasn't even taking this game seriously."
     )
 
@@ -201,6 +213,32 @@ init 1 python in mas_chess:
     # add the label ones
     for _label in monika_wins_label_quips:
         monika_wins_mean_quips.addLabelQuip(_label)
+
+    ##### monika wins by early surrender quips #####
+    # these are all mean
+    # first, lets generate line quips
+    _monika_wins_surr_line_quips = (
+        _monika_wins_line_quips[0],
+        (
+            "Figures you'd give up. You're not one to see things all the " +
+            "way through."
+        ),
+    )
+
+    # add those line quips
+    monika_wins_surr_mean_quips = MASQuipList()
+    for _line in _monika_wins_surr_line_quips:
+        monika_wins_surr_mean_quips.addLineQuip(_line)
+
+    # generate label quips
+    _monika_wins_surr_label_quips = (
+        "mas_chess_dlg_game_monika_win_surr_resolve",
+        "mas_chess_dlg_game_monika_win_surr_trying"
+    )
+
+    # add the label ones
+    for _label in monika_wins_surr_label_quips:
+        monika_wins_surr_mean_quips.addLabelQuip(_label)
 
 ## functions ==================================================================
 
@@ -1474,33 +1512,32 @@ label mas_chess_game_start:
     elif is_monika_winner:
         $ persistent._mas_chess_stats["losses"] += 1
         if is_surrender and num_turns <= 4:
-            m 1e "Come on, don't give up so easily."
-        else:
-            m 1b "I win!"
+           
+            # main dialogue
+            call mas_chess_dlg_game_monika_win_surr from _mas_chess_dlggmws
 
-        if persistent.chess_strength>0:
-            m 1j "I'll go a little easier on you next time."
-            $persistent.chess_strength += -1
         else:
-            m 1l "I really was going easy on you!"
+            # main dialogue
+            call mas_chess_dlg_game_monika_win from _mas_chess_dlggmw
+
+        # make monika a little easier
+        $ persistent.chess_strength -= 1
 
     else:
-        # TODO: 
-        # It's not like I let you win or anything, b-baka!
-        # ^ CHESS STRENGTH 16 ^
         $ persistent._mas_chess_stats["wins"] += 1
+
         #Give player XP if this is their first win
         if not persistent.ever_won['chess']:
             $persistent.ever_won['chess'] = True
             $grant_xp(xp.WIN_GAME)
 
-        m 2a "You won! Congratulations."
-        if persistent.chess_strength<20:
-            m 2 "I'll get you next time for sure!"
-            $persistent.chess_strength += 1
-        else:
-            m 2b "You really are an amazing player!"
-            m 3l "Are you sure you're not cheating?"
+        # main dialogue
+        call mas_chess_dlg_game_monika_lose from _mas_chess_dlggml
+
+        $ persistent.chess_strength += 1
+
+    # transitional dialogue setup
+    m 1a "Anyway..."
 
     # if you have a previous game, we are overwrititng it regardless
     if loaded_game:
@@ -2251,34 +2288,428 @@ label mas_chess_dlg_game_drawed:
     return
 
 ## monika wins
+# monika win pre dialogue
+label mas_chess_dlg_game_monika_win_pre:
+    m 1b "I win!"
+    return
+
 # main monika win label
 label mas_chess_dlg_game_monika_win:
-    # here we check strength and call the appropriate label
-    # TODO
+    python:
+        import store.mas_chess as mas_chess
+
+    # regardless of mode, call the pre dialogue
+    call mas_chess_dlg_game_monika_win_pre from _mas_chess_dlggmwpre
 
     # bad players get rekt by monika
     if persistent._mas_chess_3_edit_sorry:
-        call mas_chess_dlg_game_monika_win_rekt from _mas_chess_dlggmwrekt
+        
+        # pull a quip and say it
+        $ t_quip, v_quip = mas_chess.monika_wins_mean_quips.quip()
+
+        # check quip type
+        if t_quip == MASQuipList.TYPE_LABEL:
+            # this is a label, call it
+            call expression v_quip from _mas_chess_dlggmw3esl
+
+        else: # assume its a line
+            # this is a line, call it using 1k expression
+            m 1k "[v_quip]"
 
     else:
         python:
-            # first pick the appropriate chess strength to use
-            if store.mas_chess.chess_strength[0]:
-                t_chess_str = store.mas_chess.chess_strength[1]
-            else:
-                t_chess_str = persistent.chess_strength
+            # clean chess strength so its within bounds
+            if persistent.chess_strength < 0:
+                persistent.chess_strength = 0
+            elif t_chess_str > 20:
+                persistent.chess_strength = 20
+
+            chess_strength_label = mas_chess.DLG_MONIKA_WIN_BASE.format(
+                persistent.chess_strength
+            )
+
+        call expression chess_strength_label from _mas_chess_dlggmwcsl
+
     return
 
-# generic monika wins in ur face
+## monika wins quips
 label mas_chess_dlg_game_monika_win_rekt:
     m 1k "Ahaha~"
     m "Maybe you should stick to checkers."
     m 1 "I doubt you'll ever beat me."
     return
 
-# chess strength 0
-#label mas_chess_dlg_game_monika_win_0:
+# winning, chess strength 0
+label mas_chess_dlg_game_monika_win_0:
+    jump mas_chess_dlg_game_monika_win_2
+
+# winning, chess strength 1
+label mas_chess_dlg_game_monika_win_1:
+    jump mas_chess_dlg_game_monika_win_2
+
+# winning, chess strength 2
+label mas_chess_dlg_game_monika_win_2:
+    m 1l "I really was going easy on you!"
+    return
+
+# winning, chess strength 3
+label mas_chess_dlg_game_monika_win_3:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 4
+label mas_chess_dlg_game_monika_win_4:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 5
+label mas_chess_dlg_game_monika_win_5:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 6
+label mas_chess_dlg_game_monika_win_6:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 7
+label mas_chess_dlg_game_monika_win_7:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 8
+label mas_chess_dlg_game_monika_win_8:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 9
+label mas_chess_dlg_game_monika_win_9:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 10
+label mas_chess_dlg_game_monika_win_10:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 11
+label mas_chess_dlg_game_monika_win_11:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 12
+label mas_chess_dlg_game_monika_win_12:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 13
+label mas_chess_dlg_game_monika_win_13:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 14
+label mas_chess_dlg_game_monika_win_14:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 15
+label mas_chess_dlg_game_monika_win_15:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 16
+label mas_chess_dlg_game_monika_win_16:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 17
+label mas_chess_dlg_game_monika_win_17:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 18
+label mas_chess_dlg_game_monika_win_18:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 19
+label mas_chess_dlg_game_monika_win_19:
+    jump mas_chess_dlg_game_monika_win_20
+
+# winning, chess strength 20
+label mas_chess_dlg_game_monika_win_20:
+    m 1j "I'll go a little easier on you next time."
+    return      
+
+## monika wins by early surrender
+# monika win by early surrender dialogue start
+label mas_chess_dlg_game_monika_win_surr_pre:
+    m 1e "Come on, don't give up so easily."
+    return
+
+# main monika win by earlt surrenders label
+label mas_chess_dlg_game_monika_win_surr:
+    python:
+        import store.mas_chess as mas_chess
+
+    # bad players get rekt by monika
+    if persistent._mas_chess_3_edit_sorry:
         
+        # pull a quip and say it
+        $ t_quip, v_quip = mas_chess.monika_wins_surr_mean_quips.quip()
+
+        # check quip type
+        if t_quip == MASQuipList.TYPE_LABEL:
+            # this is a label, call it
+            call expression v_quip from _mas_chess_dlggmws3esl
+
+        else: # assume its a line
+            # this is a line, call it using 1k expression
+            m 1k "[v_quip]"
+
+    else:
+        # only the non bad players get the encouragement from monika
+        call mas_dlg_game_monika_win_surr_pre from _mas_chess_dlggmwspre
+
+        python:
+            # clean chess strength so its within bounds
+            if persistent.chess_strength < 0:
+                persistent.chess_strength = 0
+            elif t_chess_str > 20:
+                persistent.chess_strength = 20
+
+            chess_strength_label = mas_chess.DLG_MONIKA_WIN_SURR_BASE.format(
+                persistent.chess_strength
+            )
+
+        call expression chess_strength_label from _mas_chess_dlggmwscsl
+
+    return
+
+## monika wins by early surrender quips
+# poor resolve
+label mas_chess_dlg_game_monika_win_surr_resolve:
+    m 1k "Giving up is a sign of poor resolve..."
+    m 1h "I don't want a [bf] who has poor resolve."
+    return
+
+# have you tried
+label mas_chess_dlg_game_monika_win_surr_trying:
+    m 1k "Have you considered {i}actually trying{/i}?"
+    m 1 "I hear it is beneficial to your mental health."
+    return
+
+# winning by surrender, chess strength 0
+label mas_chess_dlg_game_monika_win_surr_0:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 1
+label mas_chess_dlg_game_monika_win_surr_1:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 2
+label mas_chess_dlg_game_monika_win_surr_2:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 3
+label mas_chess_dlg_game_monika_win_surr_3:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 4
+label mas_chess_dlg_game_monika_win_surr_4:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 5
+label mas_chess_dlg_game_monika_win_surr_5:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 6
+label mas_chess_dlg_game_monika_win_surr_6:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 7
+label mas_chess_dlg_game_monika_win_surr_7:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 8
+label mas_chess_dlg_game_monika_win_surr_8:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 9
+label mas_chess_dlg_game_monika_win_surr_9:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 10
+label mas_chess_dlg_game_monika_win_surr_10:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 11
+label mas_chess_dlg_game_monika_win_surr_11:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 12
+label mas_chess_dlg_game_monika_win_surr_12:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 13
+label mas_chess_dlg_game_monika_win_surr_13:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 14
+label mas_chess_dlg_game_monika_win_surr_14:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 15
+label mas_chess_dlg_game_monika_win_surr_15:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 16
+label mas_chess_dlg_game_monika_win_surr_16:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 17
+label mas_chess_dlg_game_monika_win_surr_17:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 18
+label mas_chess_dlg_game_monika_win_surr_18:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 19
+label mas_chess_dlg_game_monika_win_surr_19:
+    jump mas_chess_dlg_game_monika_win_surr_20
+
+# winning by surrender, chess strength 20
+label mas_chess_dlg_game_monika_win_surr_20:
+    # nothint for now
+    return      
+
+## monika loses
+# monika lose label start dialogue
+label mas_chess_dlg_game_monika_lose_pre:
+    m 2a "You won! Congratulations."
+    return
+
+# main monika lose label
+label mas_chess_dlg_game_monika_lose:
+    python:
+        import store.mas_chess as mas_chess
+
+    # bad players get rekt by monika
+    if persistent._mas_chess_3_edit_sorry:
+        
+        # pull a quip and say it
+        $ t_quip, v_quip = mas_chess.monika_loses_mean_quips.quip()
+
+        # check quip type
+        if t_quip == MASQuipList.TYPE_LABEL:
+            # this is a label, call it
+            call expression v_quip from _mas_chess_dlggml3esl
+
+        else: # assume its a line
+            # this is a line, call it using 1q expression
+            m 1q "[v_quip]"
+
+    else:
+        # only the non bad players get congrats
+        call mas_chess_dlg_game_monika_lose_pre from _mas_chess_dlggmlp
+
+        python:
+            # clean chess strength so its within bounds
+            if persistent.chess_strength < 0:
+                persistent.chess_strength = 0
+            elif t_chess_str > 20:
+                persistent.chess_strength = 20
+
+            chess_strength_label = mas_chess.DLG_MONIKA_LOSE_BASE.format(
+                persistent.chess_strength
+            )
+
+        call expression chess_strength_label from _mas_chess_dlggmlcsl
+
+    return
+
+# losing, chess strength 0
+label mas_chess_dlg_game_monika_lose_0:
+    jump mas_chess_dlg_game_monika_lose_2
+
+# losing, chess strength 1
+label mas_chess_dlg_game_monika_lose_1:
+    jump mas_chess_dlg_game_monika_lose_2
+
+# losing, chess strength 2
+label mas_chess_dlg_game_monika_lose_2:
+    m 1a "I have to admit, I put less pressure on you than I could have..."
+    m "I hope you don't mind! I'll be challenging you more as you get better."
+    return
+
+# losing, chess strength 3
+label mas_chess_dlg_game_monika_lose_3:
+    m 1a "I'll get you next time for sure!"
+    return
+
+# losing, chess strength 4
+label mas_chess_dlg_game_monika_lose_4:
+    m 1a "You played pretty well this game."
+    return
+
+# losing, chess strength 5
+label mas_chess_dlg_game_monika_lose_5:
+    jump mas_chess_dlg_game_monika_lose_6
+
+# losing, chess strength 6
+label mas_chess_dlg_game_monika_lose_6:
+    m 1a "This game was quite stimulating!"
+    return
+
+# losing, chess strength 7
+label mas_chess_dlg_game_monika_lose_7:
+    m 3a "Excellently played, [player]!"
+    return      
+
+# losing, chess strength 8
+label mas_chess_dlg_game_monika_lose_8:
+    jump mas_chess_dlg_game_monika_lose_10
+
+# losing, chess strength 9
+label mas_chess_dlg_game_monika_lose_9:
+    jump mas_chess_dlg_game_monika_lose_10
+
+# losing, chess strength 10
+label mas_chess_dlg_game_monika_lose_10:
+    m 1b "You're quite a strong chess player!"
+    return      
+
+# losing, chess strength 11
+label mas_chess_dlg_game_monika_lose_11:
+    jump mas_chess_dlg_game_monika_lose_12
+
+# losing, chess strength 12
+label mas_chess_dlg_game_monika_lose_12:
+    m 1d "You're a very challenging opponent, [player]!"
+    return      
+
+# losing, chess strength 13
+label mas_chess_dlg_game_monika_lose_13:
+    jump mas_chess_dlg_game_monika_lose_19
+
+# losing, chess strength 14
+label mas_chess_dlg_game_monika_lose_14:
+    jump mas_chess_dlg_game_monika_lose_19
+
+# losing, chess strength 15
+label mas_chess_dlg_game_monika_lose_15:
+    jump mas_chess_dlg_game_monika_lose_19
+
+# losing, chess strength 16
+label mas_chess_dlg_game_monika_lose_16:
+    # ee for good chess players
+    m 2n "I-{w=1}It's not like I let you win or anything, b-{w=1}baka!"
+    return      
+
+# losing, chess strength 17
+label mas_chess_dlg_game_monika_lose_17:
+    jump mas_chess_dlg_game_monika_lose_19
+
+# losing, chess strength 18
+label mas_chess_dlg_game_monika_lose_18:
+    jump mas_chess_dlg_game_monika_lose_19
+
+# losing, chess strength 19
+label mas_chess_dlg_game_monika_lose_19:
+    m 3d "Wow! You're amazing at chess."
+    m "You could be a professional chess player!"
+    return      
+
+# losing, chess strength 20
+label mas_chess_dlg_game_monika_lose_20:
+    m 3d "Wow!"
+    m 1m "Are you sure you're not cheating?"
+    return      
 
 #### end dialogue blocks ######################################################
 
