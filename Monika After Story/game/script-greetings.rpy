@@ -692,7 +692,8 @@ label greeting_sunshine:
     m 1b "But now that you're here, we can spend some time together."
     return
 
-if renpy.seen_label("monika_algernon"):
+#if the Flowers for Algernon topic has been seen but this label has not been seen, it can be queued
+if renpy.seen_label("monika_algernon") and not renpy.seen_label("greeting_amnesia"):
     label greeting_amnesia:
         m 2h "Oh, hello."
         m 2a "My name is Monika."
