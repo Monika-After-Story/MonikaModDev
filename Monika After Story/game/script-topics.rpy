@@ -2340,7 +2340,7 @@ init 5 python:
 
 label monika_impression:
     m 1d "Impression? Of the other girls?"
-    m 1p "I'm not really good at making an impression of someone, but I'll give it a try!"
+    m 1p "I'm not really good at doing an impression of someone, but I'll give it a try!"
     menu:
         m "Who should I do an impression of?"
         "Sayori":
@@ -3174,24 +3174,24 @@ init 5 python:
 
 label monika_writingtip1:
     m 3a "You know..."
-    m "We really don't do enough of these so here's another one!"
-    m "Here's Monika's Writing Tip for the Day!"
+    m "We really don't do enough of these, so here's another one!"
+    m 3b "Here's Monika's Writing Tip of the Day!"
     m 2a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
     m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
     m 4d "You have to remember that we all start out from somewhere, and--"
-    m 2c "Actually, this doesn't just apply to writing, but to anything really."
-    m 2r "What I'm trying to say is don't be discouraged."
+    m 2c "Actually, this doesn't just apply to writing, but to anything, really."
+    m 2r "What I'm trying to say is that you shouldn't be discouraged."
     m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
-    m "Because that just means that you can improve and be better than you were before."
-    m 1e "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m 1b "Because that just means that you can improve and be better than you were before."
+    m "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
     m 3b "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
     m 3j "I love you, and I will always support you in whatever you do."
-    m 1n "Provided it's legal of course."
-    m "That doesn't mean I'm completely against it. I can keep a secret after all~"
+    m 1n "Provided it's legal, of course."
+    m "That doesn't mean I'm completely against it. I can keep a secret, after all~"
     m 1d "Here's a saying I've learned."
     m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
     m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
-    m 3o "I don't remember the person who said that but the words are there."
+    m 3o "I don't remember the person who said that, but the words are there."
     m 2r "The effort one puts forth into something can transcend even one's self."
     m 3e "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
     m 4k "... That's my advice for today!"
@@ -3202,7 +3202,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanese",category=['misc','you'],prompt="Speaking Japanese",random=True))
 
 label monika_japanese:
-    m 1c "I don't mean to sound like Natsuki but..."
+    m 1c "I don't mean to sound like Natsuki, but..."
     m 3a "Don't you think Japanese actually sounds cool?"
     m "It's such a fascinating language. I'm not fluent in it, though."
     m "It's interesting to think about what things would be like if your native language was different."
@@ -3249,11 +3249,11 @@ label monika_penname:
         m 2c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 2d "'[mcname] and [player].'"
-    m 3a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
+    m 3a "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
     m 1f "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
-    m 1m "It's kinda funny though that even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m 1m "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1a "There's no need to know more about me though, [player]."
     m 4l "You already know that I'm in love with you after all~"
     return
