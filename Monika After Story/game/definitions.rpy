@@ -216,7 +216,9 @@ python early:
                     self.per_eventdb[self.eventlabel] = data_row
 
                 else:
-                    super(Event, self).__setattr__(name, value)
+                    raise EventException(
+                        "'{0}' is not a valid attribute for Event".format(name)
+                    )
 
         # get attribute ovverride
         def __getattr__(self, name):
