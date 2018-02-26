@@ -164,6 +164,8 @@ init 1 python in mas_chess:
 
     ##### monika loses quips #####
     # these are all mean
+    monika_loses_mean_quips = None # initalized later
+
     # first, lets take all the text based ones and group them
     # 1q
     _monika_loses_line_quips = (
@@ -183,16 +185,10 @@ init 1 python in mas_chess:
         # TODO: look into more of these
     )
 
-    # add those line quips
-    monika_loses_mean_quips = MASQuipList()
-    for _line in _monika_loses_line_quips:
-        monika_loses_mean_quips.addLineQuip(_line)
-
-    # now add the glitch text quip
-    monika_loses_mean_quips.addGlitchQuip(40, 2, 3, True)
-
     ##### monika wins quips #####
     # these are all mean
+    monika_wins_mean_quips = None # init later
+
     # first, lets generate line quips
     # 1k expressions
     _monika_wins_line_quips = (
@@ -200,22 +196,15 @@ init 1 python in mas_chess:
         "Are you {i}that{/i} bad? I wasn't even taking this game seriously."
     )
 
-    # zdd those line quips
-    monika_wins_mean_quips = MASQuipList()
-    for _line in _monika_wins_line_quips:
-        monika_wins_mean_quips.addLineQuip(_line)
-
     # generate label quips
     _monika_wins_label_quips = (
         "mas_chess_dlg_game_monika_win_rekt",
     )
 
-    # add the label ones
-    for _label in monika_wins_label_quips:
-        monika_wins_mean_quips.addLabelQuip(_label)
-
     ##### monika wins by early surrender quips #####
     # these are all mean
+    monika_wins_surr_mean_quips = None # init later
+
     # first, lets generate line quips
     _monika_wins_surr_line_quips = (
         _monika_wins_line_quips[0],
@@ -225,21 +214,13 @@ init 1 python in mas_chess:
         ),
     )
 
-    # add those line quips
-    monika_wins_surr_mean_quips = MASQuipList()
-    for _line in _monika_wins_surr_line_quips:
-        monika_wins_surr_mean_quips.addLineQuip(_line)
-
     # generate label quips
     _monika_wins_surr_label_quips = (
         "mas_chess_dlg_game_monika_win_surr_resolve",
         "mas_chess_dlg_game_monika_win_surr_trying"
     )
 
-    # add the label ones
-    for _label in monika_wins_surr_label_quips:
-        monika_wins_surr_mean_quips.addLabelQuip(_label)
-
+    
 ## functions ==================================================================
 
     def __initDLGActions():
@@ -267,12 +248,64 @@ init 1 python in mas_chess:
             dlg_actions.update(renpy.game.persistent._mas_chess_dlg_actions)
             renpy.game.persistent._mas_chess_dlg_actions = dlg_actions
 
+    def _initQuipLists(MASQL_class):
+        """
+        Initializes the mas quiplists.
 
-    def __initMASChess():
+        IN:
+            MASQL_class - the MASQuipList class so we can work with it
+                even though we arent global
+        """
+        # globalzie what we are setting
+        global monika_loses_mean_quips
+        global monika_wins_mean_quips
+        global monika_wins_surr_mean_quips
+
+        ## starting with monika losing quips
+        monika_loses_mean_quips = MASQL_class()
+
+        # add those line quips
+        for _line in _monika_loses_line_quips:
+            monika_loses_mean_quips.addLineQuip(_line)
+
+        # now add the glitch text quip
+        monika_loses_mean_quips.addGlitchQuip(40, 2, 3, True)
+
+        ## now for monika winning quips
+        monika_wins_mean_quips = MASQL_class()
+
+        # add line quips
+        for _line in _monika_wins_line_quips:
+            monika_wins_mean_quips.addLineQuip(_line)
+
+        # add the label ones
+        for _label in monika_wins_label_quips:
+            monika_wins_mean_quips.addLabelQuip(_label)
+
+        ## now for monika winning by surrender quips
+        monika_wins_surr_mean_quips = MASQL_class()
+
+        # add those line quips
+        for _line in _monika_wins_surr_line_quips:
+            monika_wins_surr_mean_quips.addLineQuip(_line)
+
+        # add the label ones
+            for _label in monika_wins_surr_label_quips:
+                monika_wins_surr_mean_quips.addLabelQuip(_label)
+
+
+    def _initMASChess(MASQL_class):
         """
         Initializes mas chess stuff that needs to be initalized
+
+        IN:
+            MASQL_class - the MASQuipList class so we can work with it
+                even though we arent global
         """
         __initDLGActions()
+        
+        if renpy.game.persistent._mas_chess_3_edit_sorry:
+            _initQuipLists(MASQL_class)
 
 
     def _checkInProgressGame(pgn_game, mth):
@@ -348,9 +381,9 @@ init 1 python in mas_chess:
         return _checkInProgressGame(pgn_game, mth)
 
 
-init 2018 python in mas_chess:
+init 2018 python:
     # run init function
-    __initMASChess()
+    store.mas_chess._initMASChess(MASQuipList)
 
 init:
     python:
@@ -1369,9 +1402,6 @@ label demo_minigame_chess:
                     call mas_chess_dlg_qf_lost_may_removed from _mas_chess_dqlqfr
                     return
 
-                # otherwise we have a chess game here
-                $ quicksaved_file = quicksaved_file[1]
-
             # do we have a backup
             elif _return == mas_chess.CHESS_GAME_BACKUP:
                 $ loaded_game = quicksaved_game
@@ -1390,6 +1420,10 @@ label demo_minigame_chess:
                 jump mas_chess_new_game_start
 
         python:
+           
+            # because quicksaved_file is different form isInProgress
+            quicksaved_file = quicksaved_file[1]
+
             # check for game modifications
             is_same = str(quicksaved_game) == str(quicksaved_file)
 
@@ -1494,7 +1528,9 @@ label mas_chess_game_start:
     #$scene_change=True #Force scene generation
     #call spaceroom from _call_spaceroom
 
-    # TODO: we need to modify dialogue based on mas_3_edit_sorry
+    # DEBUG:
+    # uncomment this interaction to allow for a pause
+    m "~~EDIT ME~~"
 
     # check results
     if game_result == "*":
@@ -1563,20 +1599,29 @@ label mas_chess_playagain:
             pass
 
 label mas_chess_end:
+
+    # monika wins
     if is_monika_winner:
-        m 2d "Despite its simple rules, chess is a really intricate game."
-        m 1a "It's okay if you find yourself struggling at times."
-        m 1j "Remember, the important thing is to be able to learn from your mistakes."
+        if renpy.seen_label("mas_chess_dlg_game_monika_win_end"):
+            call mas_chess_dlg_game_monika_win_end_quick from _mas_chess_dgmwequick
+        else:
+            call mas_chess_dlg_game_monika_win_end from _mas_chess_dgmwelong
+
+    # in progress game
     elif game_result == "*":
-        # TODO: this really should be better
-        m 1a "Okay, [player], let's continue this game soon."
+        if renpy.seen_label("mas_chess_dlg_game_in_progress_end"):
+            call mas_chess_dlg_game_in_progress_end_quick from _mas_chess_dgmipequick
+        else:
+            call mas_chess_dlg_game_in_progress_end from _mas_chess_dgmipelong
+
+    # monika loses
     else:
-        m 2b "It's amazing how much more I have to learn even now."
-        m 2a "I really don't mind losing as long as I can learn something."
-        m 1j "After all, the company is good."
-
+        if renpy.seen_label("mas_chess_dlg_game_monika_lose_end"):
+            call mas_chess_dlg_game_monika_lose_end_quick from _mas_chess_dgmlequick
+        else:
+            call mas_chess_dlg_game_monika_lose_end from _mas_chess_dgmlelong
+        
     return
-
 
 # label for new context for confirm screen
 label mas_chess_confirm_context:
@@ -1658,7 +1703,7 @@ label mas_chess_save_migration:
                             pass
 
         # we have one game, so return the game
-        else:
+        elif game_count == 1:
             $ sel_game = actual_pgn_games[0]
 
 # FALL THROUGH
@@ -2201,6 +2246,7 @@ label mas_chess_dlg_qf_edit_n_3_s:
     $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
     $ persistent.chess_strength = 20   
     $ persistent._mas_chess_3_edit_sorry = True
+    $ store.mas_chess._initQuipLists(MASQuipList)
     return store.mas_chess.CHESS_GAME_BACKUP
 
 # 3rd time no edit, sorry, edit qs
@@ -2321,7 +2367,7 @@ label mas_chess_dlg_game_monika_win:
             # clean chess strength so its within bounds
             if persistent.chess_strength < 0:
                 persistent.chess_strength = 0
-            elif t_chess_str > 20:
+            elif persistent.chess_strength > 20:
                 persistent.chess_strength = 20
 
             chess_strength_label = mas_chess.DLG_MONIKA_WIN_BASE.format(
@@ -2453,13 +2499,13 @@ label mas_chess_dlg_game_monika_win_surr:
 
     else:
         # only the non bad players get the encouragement from monika
-        call mas_dlg_game_monika_win_surr_pre from _mas_chess_dlggmwspre
+        call mas_chess_dlg_game_monika_win_surr_pre from _mas_chess_dlggmwspre
 
         python:
             # clean chess strength so its within bounds
             if persistent.chess_strength < 0:
                 persistent.chess_strength = 0
-            elif t_chess_str > 20:
+            elif persistent.chess_strength > 20:
                 persistent.chess_strength = 20
 
             chess_strength_label = mas_chess.DLG_MONIKA_WIN_SURR_BASE.format(
@@ -2602,7 +2648,7 @@ label mas_chess_dlg_game_monika_lose:
             # clean chess strength so its within bounds
             if persistent.chess_strength < 0:
                 persistent.chess_strength = 0
-            elif t_chess_str > 20:
+            elif persistent.chess_strength > 20:
                 persistent.chess_strength = 20
 
             chess_strength_label = mas_chess.DLG_MONIKA_LOSE_BASE.format(
@@ -2710,6 +2756,41 @@ label mas_chess_dlg_game_monika_lose_20:
     m 3d "Wow!"
     m 1m "Are you sure you're not cheating?"
     return      
+
+### chess has ended dialogue
+# monika won
+label mas_chess_dlg_game_monika_win_end:
+    m 2d "Despite its simple rules, chess is a really intricate game."
+    m 1a "It's okay if you find yourself struggling at times."
+    m 1j "Remember, the important thing is to be able to learn from your mistakes."
+    return
+
+# quick version of monika win
+label mas_chess_dlg_game_monika_win_end_quick:
+    m 1a "Okay, [player], let's play again soon."
+    return
+
+# monika lost
+label mas_chess_dlg_game_monika_lose_end:
+    m 2b "It's amazing how much more I have to learn even now."
+    m 2a "I really don't mind losing as long as I can learn something."
+    m 1j "After all, the company is good."
+    return
+
+#quick version of monika lose
+label mas_chess_dlg_game_monika_lose_end_quick:
+    jump mas_chess_dlg_game_monika_win_end_quick
+
+# game in progress
+label mas_chess_dlg_game_in_progress_end:
+    # TODO: this really should be better
+    # (i.e.: more than just the quick message
+    jump mas_chess_dlg_game_in_progress_end_quick
+
+# quick version of game in progress
+label mas_chess_dlg_game_in_progress_end_quick:
+    m 1a "Okay, [player], let's continue this game soon."
+    return
 
 #### end dialogue blocks ######################################################
 
