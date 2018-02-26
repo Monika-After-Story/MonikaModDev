@@ -175,14 +175,14 @@ init 1 python in mas_chess:
         "I guess you're not {i}entirely{/i} terrible.",
         "Tch-",
         "Winning isn't everything, you know...",
-        "Ahaha,{w} I was just letting you win since you kept losing so much.",
-        ( # thanks syn
-            "Ahaha, surely you don't expect me to believe that you beat me " +
-            "fairly, especially for someone at your skill level.{w} Don't " +
-            "be so silly, [player]."
-        ),
+        "Ahaha,{w} I was just letting you win since you keep losing so much.",
         "Oh, you won.{w} I should have taken this game seriously, then."
         # TODO: look into more of these
+    )
+
+    # label quips
+    _monika_loses_label_quips = (
+        "mas_chess_dlg_game_monika_lose_silly",
     )
 
     ##### monika wins quips #####
@@ -268,6 +268,10 @@ init 1 python in mas_chess:
         for _line in _monika_loses_line_quips:
             monika_loses_mean_quips.addLineQuip(_line)
 
+        # and label quips
+        for _label in _monika_loses_label_quips:
+            monika_loses_mean_quips.addLabelQuip(_label)
+
         # now add the glitch text quip
         monika_loses_mean_quips.addGlitchQuip(40, 2, 3, True)
 
@@ -279,7 +283,7 @@ init 1 python in mas_chess:
             monika_wins_mean_quips.addLineQuip(_line)
 
         # add the label ones
-        for _label in monika_wins_label_quips:
+        for _label in _monika_wins_label_quips:
             monika_wins_mean_quips.addLabelQuip(_label)
 
         ## now for monika winning by surrender quips
@@ -290,8 +294,8 @@ init 1 python in mas_chess:
             monika_wins_surr_mean_quips.addLineQuip(_line)
 
         # add the label ones
-            for _label in monika_wins_surr_label_quips:
-                monika_wins_surr_mean_quips.addLabelQuip(_label)
+        for _label in _monika_wins_surr_label_quips:
+            monika_wins_surr_mean_quips.addLabelQuip(_label)
 
 
     def _initMASChess(MASQL_class):
@@ -2657,6 +2661,14 @@ label mas_chess_dlg_game_monika_lose:
 
         call expression chess_strength_label from _mas_chess_dlggmlcsl
 
+    return
+
+## losing label quips
+# monika calls you silly
+# thanks syn
+label mas_chess_dlg_game_monika_lose_silly:
+    m 1q "Surely you don't expect me to believe that you beat me fairly, especially for someone at your skill level."
+    m 1 "Don't be so silly, [player]."
     return
 
 # losing, chess strength 0
