@@ -17,6 +17,9 @@ default persistent._mas_chess_3_edit_sorry = False
 # if the player modified the games 3 times but did not apologize
 default persistent._mas_chess_mangle_all = False
 
+# skip file checks
+default persistent._mas_chess_skip_file_checks = False
+
 define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
 define mas_chess.CHESS_SAVE_EXT = ".pgn"
 define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
@@ -1356,7 +1359,7 @@ label demo_minigame_chess:
             jump mas_chess_new_game_start
 
         # if player did bad, then we dont do file checks anymore
-        if persistent._mas_chess_3_edit_sorry:
+        if persistent._mas_chess_skip_file_checks:
             $ loaded_game = quicksaved_game[1]
             m "Let's continue our unfinished game."
             jump mas_chess_game_load_check
@@ -1540,7 +1543,7 @@ label mas_chess_game_start:
 
     # DEBUG:
     # uncomment this interaction to allow for a pause
-    m "~~EDIT ME~~"
+#    m "~~EDIT ME~~"
 
     # check results
     if game_result == "*":
@@ -2057,6 +2060,7 @@ label mas_chess_dlg_qf_lost_may_3:
     # TODO: wink here please
     m 1a "You can't trick me anymore, [player]."
     m "Now let's continue our game."
+    $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
 
 # maybe monika, but player removed the file again!
@@ -2108,6 +2112,7 @@ label mas_chess_dlg_qf_lost_acdnt_3:
     m 1e "I had a feeling this would happen again."
     m 3k "So I kept a backup of our save!"
     m 1a "Now we can continue our game."
+    $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
 
 ### quickfile edited
@@ -2188,6 +2193,7 @@ label mas_chess_dlg_qf_edit_y_3:
     m 1 "Now let's finish this game."
     $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
     $ persistent.chess_strength = 20
+    $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
 
 ## No Edit flow
@@ -2259,6 +2265,7 @@ label mas_chess_dlg_qf_edit_n_3_s:
     $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
     $ persistent.chess_strength = 20   
     $ persistent._mas_chess_3_edit_sorry = True
+    $ persistent._mas_chess_skip_file_checks = True
     $ store.mas_chess._initQuipLists(MASQuipList)
     return store.mas_chess.CHESS_GAME_BACKUP
 
