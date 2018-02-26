@@ -2562,6 +2562,7 @@ default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
+default persistent._mas_monika_repeated_herself = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600

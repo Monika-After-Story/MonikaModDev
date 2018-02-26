@@ -614,9 +614,14 @@ label ch30_loop:
             label pick_random_topic:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
-                    sel_ev = renpy.random.choice(monika_random_topics)
+
+                    if persistent._mas_monika_repeated_herself:
+                        sel_ev = monika_random_topics.pop()
+                    else:
+                        sel_ev = renpy.random.choice(monika_random_topics)
+                        monika_random_topics.remove(sel_ev)
+
                     pushEvent(sel_ev)
-                    monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
 
                 elif persistent._mas_enable_random_repeats:
@@ -636,9 +641,9 @@ label ch30_loop:
                     # NOTE: now the monika random topics are back to being
                     #   labels. Safe to do normal operation.
 
-                    sel_ev = renpy.random.choice(monika_random_topics)
+                    persistent._mas_monika_repeated_herself = True
+                    sel_ev = monika_random_topics.pop()
                     pushEvent(sel_ev)
-                    monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
 
                 elif not seen_random_limit: # no topics left
