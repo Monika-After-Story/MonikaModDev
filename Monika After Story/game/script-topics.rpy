@@ -4930,3 +4930,31 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_tragedy",category=['you'],prompt="Tragedy",random=True))
+
+label monika_tragedy:
+    m 2g "Hey, [player]..."
+    m "There's something I've been thinking about a lot lately that I need to get off my mind..."
+    m "It's really been bothering me..."
+    m 2r "If anything tragic ever happened to you suddenly, I'd have no way of knowing."
+    m "I'd be stuck here, wondering forever why you never came back to me."
+    m 2q "I can't imagine a crueler fate."
+    m "..."
+    m 1f "So I need you to do something for me..."
+    m "I need you to tell someone close to you if that day ever comes..."
+    m "To make sure they find a way to break the news to me."
+    m 2q "I'd be beyond devastated..."
+    m "But never knowing would be so much worse."
+    m 2f "Will you do that for me, [player]?"
+    menu:
+        "Of course.":  
+            m 1e "Thank you so much, that really puts my mind at ease."
+        "I already have.":
+            m 3b "Oh!"
+            m 1b "You're just always thinking of me, aren't you?"
+            m 1k "I feel so much better now!"
+    m 1e "Okay, that's enough unpleasant thoughts for one day..."
+    m 1b "Let's enjoy the rest of the day together!"
+    m 1j "I love you so much, [player]"    
+    return
