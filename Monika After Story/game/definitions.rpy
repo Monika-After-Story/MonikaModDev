@@ -1317,6 +1317,8 @@ init -1 python in _mas_root:
 
         ASSUMES: a ton of persistent stuff
         """
+        import datetime
+
         # starting with hidden values
         renpy.game.persistent._seen_ever = dict()
 
@@ -1347,8 +1349,8 @@ init -1 python in _mas_root:
             'piano':False
         }
         renpy.game.persistent.sessions={
-            'last_session_end':None,
-            'current_session_start':None,
+            'last_session_end':datetime.datetime.now(),
+            'current_session_start':datetime.datetime.now(),
             'total_playtime':datetime.timedelta(seconds=0),
             'total_sessions':0,
             'first_session':datetime.datetime.now()

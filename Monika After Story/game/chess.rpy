@@ -1355,6 +1355,12 @@ label demo_minigame_chess:
 
             jump mas_chess_new_game_start
 
+        # if player did bad, then we dont do file checks anymore
+        if persistent._mas_chess_3_edit_sorry:
+            $ loaded_game = quicksaved_game[1]
+            m "Let's continue our unfinished game."
+            jump mas_chess_game_load_check
+
         # otherwise, read the game from file
         python:
             quicksaved_game = quicksaved_game[1]
@@ -1769,8 +1775,11 @@ label mas_chess_savegame:
         with open(file_path, "w") as pgn_file:
             pgn_file.write(str(new_pgn_game))
 
-        # internal save too
-        persistent._mas_chess_quicksave = str(new_pgn_game)
+        # internal save too if in progress
+        if new_pgn_game.headers["Result"] == "*":
+            persistent._mas_chess_quicksave = str(new_pgn_game)
+        else:
+            persistent._mas_chess_quicksave = ""
 
         # the file path to show is different
         display_file_path = mas_chess.REL_DIR + save_filename
@@ -2235,7 +2244,7 @@ label mas_chess_dlg_qf_edit_n_3:
         "...":
             label mas_chess_dlg_qf_edit_n_3n:
                 hide screen mas_background_timed_jump
-                call mas_chess_dlg_qf_ediit_n_3_n from _mas_chess_dlgqfeditn3n
+                call mas_chess_dlg_qf_edit_n_3_n from _mas_chess_dlgqfeditn3n
 
     return _return
 
@@ -2299,10 +2308,11 @@ label mas_chess_go_ham_and_delete_everything:
 
         # delete persistent values
         # TODO: SUPER DANGEROUS, make backups before testing
-#        mas_root.resetPlayerData()
+        mas_root.resetPlayerData()
 
         # forever remember
         persistent._mas_chess_mangle_all = True
+        persistent.autoload = "mas_chess_go_ham_and_delete_everything"
         
     jump _quit
 
