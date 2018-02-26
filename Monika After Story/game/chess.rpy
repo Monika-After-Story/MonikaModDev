@@ -453,6 +453,9 @@ init:
                         ord(last_move[3]) - ord('1')
                     )
 
+                    # and finally the fullmove number
+                    self.num_turns = self.board.fullmove_number
+
                 else:
                     # start off with traditional board
                     self.board = chess.Board()
