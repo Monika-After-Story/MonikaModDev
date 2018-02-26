@@ -1089,12 +1089,24 @@ python early:
             if remove:
                 # if we need to remove, we should use randint instead
                 sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
-                return self.__quiplist.pop(sel_index)
+                quip_type, quip_value = self.__quiplist.pop(sel_index)
 
             else:
                 # if we dont need to remove, we can just use renpy random
                 # choice
-                return renpy.random.choice(self.__quiplist)
+                quip_type, quip_value = renpy.random.choice(self.__quiplist)
+
+            # now do preocessing then send
+            if quip_type == self.TYPE_GLITCH:
+                quip_value = self._quipGlitch(quip_value)
+
+            elif quip_type == self.TYPE_LABEL:
+                quip_value = self._quipLabel(quip_value)
+
+            elif quip_type == self.TYPE_LINE:
+                quip_value = self._quipLine(quip_value)
+
+            return (quip_type, quip_value)
 
 
         def _getQuip(self, index):
