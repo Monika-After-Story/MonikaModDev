@@ -616,7 +616,7 @@ label ch30_loop:
                 if len(monika_random_topics) > 0:  # still have topics
 
                     if persistent._mas_monika_repeated_herself:
-                        sel_ev = monika_random_topics.pop()
+                        sel_ev = monika_random_topics.pop(0)
                     else:
                         sel_ev = renpy.random.choice(monika_random_topics)
                         monika_random_topics.remove(sel_ev)
@@ -642,7 +642,7 @@ label ch30_loop:
                     #   labels. Safe to do normal operation.
 
                     persistent._mas_monika_repeated_herself = True
-                    sel_ev = monika_random_topics.pop()
+                    sel_ev = monika_random_topics.pop(0)
                     pushEvent(sel_ev)
                     persistent.random_seen += 1
 
