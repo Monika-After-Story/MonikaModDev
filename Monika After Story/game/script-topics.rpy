@@ -4705,7 +4705,7 @@ label monika_cartravel:
     m 1a "Wouldn't it be nice to drive somewhere, just you and I together?"
     m 3k "It'd be lovely to explore some beautiful places, anywhere nice that we haven't seen before."
     m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
-    m "I bet we'd have a really good time if we took a road trip, [player].
+    m "I bet we'd have a really good time if we took a road trip, [player]."
     m 1j "It really doesn't matter where we go, as long as I'm with you."
     m "Just the idea of travelling around the world makes so excited!"
     m 1e "I really can't wait, [player]~"
