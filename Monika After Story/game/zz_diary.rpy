@@ -40,6 +40,7 @@ define mas_diary.games_played = list()
 define mas_diary.game_outcomes = dict()
 
 # list of player moods (can also manage mood swings)
+# TODO: waiting on moods pr
 define mas_diary.moods = list()
 
 # list of special custom diary entry strings. Each string is considered a
@@ -81,15 +82,47 @@ init python in mas_diary:
     # list of the scanned valid templates
     templates = list()
 
-    # diary entry keywords dict
+    ########################## diary entry keywords dicts
     # these kwargs are treated as format specifier names in diary templates
     # TODO
+    # NOTE: for all DATES, look into strftime() and strptime() behavior
+    #   that has stuff for using abbrv names
     # we might replace some of this with renpy.substitute
-#    diary_keywords = {
-#        "player": None,
-#        "currentuser": None,
-#        "mcname": None,
-#        "his": None
+    # these are initliazed outside of this store at startup
+    # and are probably reinitalized 
+
+    # diary keywords for dates
+    diary_keywords_dates_auto = {
+        "YYYY": "%Y", # 4 digit current year
+        "YY": "%y", # 2 digit current year
+        "MM": "%m", # 2 digit current month
+        "Mfull": "%B", # full word current month
+        "Mshort": "%b", # abbv/3char current month
+        "DD": "%d", # 2 digit current day
+        "Dfull": "%A", # full word current day
+        "Dshort": "%a" # abbv current day 
+    }
+
+    # diary keywords for dates (custom)
+    diary_keywords_dates_custom = {
+        "mm": "{0}", # 2 digit current month, unpadded
+        "dd": "{0}" # 2 digit current day, unpadded
+    }
+
+
+    diary_keywords_games = {
+        "gamesCSV": None # games played, comma separated # TODO: framework for this?
+
+        # TODO: we need to figure out the framework for thesee 
+#        "game_chess": None, # result of chess game (if it was played)
+#        "game_piano": None, # result of piano (if it was played)
+#        "game_hangman": None, # results of hangman (if it was played)
+#        "game_pong": None # results of pong (if it was played)
+    }
+
+    diary_keywords_topics = {
+        "topicsCSV": None # category tags for topics shown, comma separated # TODO: framework for this?
+    }
 
     ################## functions ############################
     def addCategories(cat_list):
@@ -142,6 +175,56 @@ init python in mas_diary:
         )
 
 
+    def _fillDiaryKeywordsDates(using_date=None):
+        """
+        Fills the diary replacement keywords for dates dict
+
+        IN:
+            using_date - if not None, we use this date to populate the
+                dates dict. otherwise we use current date
+        """
+        import datetime
+
+        # check for ussing date
+        if using_date is None:
+            using_date = datetime.date.today()
+
+        # process keyword replacements
+        for date_kw in diary_keywords_dates_auto:
+            diary_keywords_dates_auto[date_kw] = (
+                using_date.strftime(diary_keywords_dates_auto[date_kw])
+            )
+
+        # and custom ones
+        diary_keywords_dates_custom["mm"] = (
+            diary_keywords_dates_custom["mm"].format(using_date.month)
+        )
+        diary_keywords_dates_custom["dd"] = (
+            diary_keywords_dates_custom["dd"].format(using_date.day)
+        )
+
+
+    def _initDiaryKeywordsGames():
+        """
+        Fills the diary replcaement keywords for games dict
+        """
+        # starting with the games CSV
+        if len(games_played) > 0:
+            games_played_str = ", ".join(games_played[:-1])
+            games_played_str += ", and {0}".format(games_played[-1:])
+
+        else:
+            games_played_str = ""
+
+        diary_keywords_games["gamesCSV"] = games_played_str
+
+
+    def _initDiaryKeywordsTopics():
+        """
+        Fills the diary replacement keywords for topics dict
+        """
+
+
     def _scanTemplates():
         """
         Scans the template folder for valid templates.
@@ -171,4 +254,33 @@ init 2018 python:
     
 
 # TODO:
-# go over the formats for the tempaltes
+# diary templates are nearly fully customizable. Using a {keyword} system, you
+# can construct templates of varying setups and stuff. Couple of key things:
+# - [player] variables work as well, they are treated using renpy.substitute.
+# - date keywords are designed to work for current date. 
+# - the CSV keywords generate comma separated lists of stuff.
+# - the section keywords are used to pick out lines/section of text that are
+#   related to one thing.
+
+# SECTIONS:
+# so sections are like text groups that are related to stuff
+# They have properties associated with them that are important for classifying
+# a section's availability, since sometimes we can't use templated sections
+# if some criteria isn't available.
+#
+# lets say this is an example:
+# NOTE: these are actually stored in a text file so we avoid storing execess
+# strings in memory
+#
+# GAMES:
+# @<game name>|<wlpn>@ (win, lost, played, not played)
+#   if game isnt there, assume not played
+    """
+    # Lost Chess, won pong 
+    # @chess|l@
+    # @pong|w@
+    [player] lost at chess today, but [he] beat me at pong!
+    I was quite surprised.
+    """
+
+# Topics?: that might be too variable
