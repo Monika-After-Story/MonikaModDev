@@ -1176,12 +1176,15 @@ python early:
                 line quip ready for display
             """
             # lines need processing
-            quip_replacements = self.__generateLineQuipReplacements()
+            #quip_replacements = self.__generateLineQuipReplacements()
 
-            for keyword, value in quip_replacements:
-                li_quip = li_quip.replace(keyword, value)
+            #for keyword, value in quip_replacements:
+            #    li_quip = li_quip.replace(keyword, value)
 
-            return li_quip
+            # turns out we can do this in one line
+            # TODO: test if this actually works, we might need to pass in
+            # scope as well
+            return renpy.substitute(li_quip)
 
 
         def _removeQuip(self, index):
