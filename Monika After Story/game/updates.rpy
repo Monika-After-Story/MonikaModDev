@@ -192,6 +192,18 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.7.3
+label v0_7_3(version="v0_7_3"):
+    python:
+        # check for vday existence and delete
+        # NOTE: thiis was supposed to be in for 0.7.2 but i forgot/thought
+        # auto updates would handle it
+        import os
+        try: os.remove(config.basedir + "/game/valentines.rpyc")
+        except: pass   
+
+    return
+
 # 0.7.2
 label v0_7_2(version="v0_7_2"):
     python:
