@@ -4931,30 +4931,27 @@ label monika_asks_family:
 #    m 1k "That's why I love you, [player]!"
 #    return
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_tragedy",category=['you'],prompt="Tragedy",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
 
-label monika_tragedy:
-    m 2g "Hey, [player]..."
-    m "There's something I've been thinking about a lot lately that I need to get off my mind..."
-    m "It's really been bothering me..."
-    m 2r "If anything tragic ever happened to you suddenly, I'd have no way of knowing."
-    m "I'd be stuck here, wondering forever why you never came back to me."
-    m 2q "I can't imagine a crueler fate."
-    m "..."
-    m 1f "So I need you to do something for me..."
-    m "I need you to tell someone close to you if that day ever comes..."
-    m "To make sure they find a way to break the news to me."
-    m 2q "I'd be beyond devastated..."
-    m "But never knowing would be so much worse."
-    m 2f "Will you do that for me, [player]?"
-    menu:
-        "Of course.":  
-            m 1e "Thank you so much, that really puts my mind at ease."
-        "I already have.":
-            m 3b "Oh!"
-            m 1b "You're just always thinking of me, aren't you?"
-            m 1k "I feel so much better now!"
-    m 1e "Okay, that's enough unpleasant thoughts for one day..."
-    m 1b "Let's enjoy the rest of the day together!"
-    m 1j "I love you so much, [player]"    
+label monika_careful:
+    m 1e "Hey, [player]..."
+    m "Whenever you leave the safety of this room, promise me to be extra careful, okay?"
+    m 3r "It's just that..."
+    m 3g "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
+    m 1e "I love you so much, it's hard for me not to worry when you're gone."
+    m 2f "..."
+    m "Also..."
+    m "It crossed my mind recently that if anything terrible ever did happen to you, I'd never know."
+    m 4f "I'd be stuck here, forever wondering why you never came back to me."
+    m 2r "I can't imagine a crueler fate."
+    m 2q "..."
+    m 2f "So..."
+    m "I need you to tell someone close to you where to find me so if that day ever comes, at least I'd know."
+    m 2q "It'd be beyond devastating, but not knowing would be that much worse."
+    m 2g "So make sure you do that for me, okay [player]?"
+    m 2f "..."
+    m "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
+    m 2e "Thanks for understanding, you always make me feel better."
+    m 4e "Okay, that's enough unpleasant thoughts..."
+    m 4b "Let's enjoy the rest of the day together!"      
     return
