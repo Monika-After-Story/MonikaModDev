@@ -52,12 +52,11 @@ define mas_diary.ps_entry_lines = list()
 
 #### persistents we need
 # True if we've written a diary entry today, False otherwise.
-# this should reset every day.
-# i think a cutoff of about 7am is a good cutoff for what constitutes a day
-# TODO: review this a little more
+# this should reset every day. and after a day has been written
 default persistent._mas_diary_written = False
 
 init python in mas_diary:
+    import os
 
     # folder path to diary templates (from game)
     DIARY_TEMPLATES_FOLDER = "mod_assets/templates/diary/"
@@ -66,6 +65,9 @@ init python in mas_diary:
     # we only need this until we create a mod_assets.rpa (probably)
     GAME_FOLDER = "/game/"
 
+    # internally stored folder, generated at start of game
+    diary_basedir = ""
+
     # template file template
     # probalby use this with startswith
     DIARY_TEMPLATE_NAME = "template_" 
@@ -73,14 +75,21 @@ init python in mas_diary:
     # template file extensions
     DIARY_TEMPLATE_EXT = "mde" # Monika Diary Entry
 
+    # diary comment character
+    DIARY_COMMENT = "#"
+
     # list of the scanned valid templates
-    template_paths = list()
+    templates = list()
 
     # diary entry keywords dict
     # these kwargs are treated as format specifier names in diary templates
     # TODO
+    # we might replace some of this with renpy.substitute
 #    diary_keywords = {
-#        "player": None
+#        "player": None,
+#        "currentuser": None,
+#        "mcname": None,
+#        "his": None
 
     ################## functions ############################
     def addCategories(cat_list):
@@ -98,6 +107,40 @@ init python in mas_diary:
             if cat not in category_tags:
                 category_tags.append(cat)
 
+    
+    def isValidTemplateFile(filepath):
+        """
+        Checks if the file at the given filepath is a valid template file
+
+        Valid template files start with a DIARY_COMMENT.
+        TODO: more on this later?
+
+        IN:
+            filepath - path to the file to check
+
+        RETURNS: True if the file at filepath is a valid template file,
+            false otherwise
+        """
+        with open(filepath, "r") as t_file:
+            return t_file.readline().startswith(DIARY_COMMENT)
+
+        return False
+
+    
+    def isValidTemplateFilename(filename):
+        """
+        Checks if the given filename is a valid template filename
+
+        IN:
+            filename - the filename to check
+
+        RETURNS: True if filename is a valid template filename, false otherwise
+        """
+        return (
+            filename.startswith(DIARY_TEMPLATE_NAME) and 
+            filename.endswith("." + DIARY_TEMPLATE_EXT)
+        )
+
 
     def _scanTemplates():
         """
@@ -105,9 +148,27 @@ init python in mas_diary:
 
         RETURNS: list of valid template filepaths
         """
-        # TODO:
-        pass
+        t_files = os.listdir(diary_basedir)
+        for t_filename in t_files:
+            t_filepath = diary_basedir + t_filename
+            
+            if (
+                    isValidTemplateFilename(t_filename) 
+                    and isValidTemplateFile(t_filepath)
+                ):
+                templates.append(t_filepath)
 
+
+# post startup stuff
+init 2018 python:
+    import store.mas_diary as mas_diary
+
+    mas_diary.diary_basedir = (
+        config.basedir +
+        mas_diary.GAME_FOLDER +
+        mas_diary.DIARY_TEMPLATE_FOLDER
+    ).replace("\\", "/")
+    
 
 # TODO:
 # go over the formats for the tempaltes
