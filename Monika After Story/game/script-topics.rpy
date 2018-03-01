@@ -4304,38 +4304,40 @@ init 5 python:
   
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
-     m 1e "You know about writer's block, right?"
+     m 3a "You know about writer's block, right?"
      m "I had it a lot, when I first started writing."
      m 1l "Sometimes it was halfway through a draft, but more often before I even started."
-     m 2f "Every time I tried to write a word, I thought, 'this isn't going to sound good', or 'this isn't how I want it to look'. So I'd stop, backtrack, and try again."
-     m 2d "But I realised it ultimately didn't matter if things didn't work out first time!"
-     m 2a "I feel the heart of writing is not about getting it right first time, but about perfecting it afterwards."
+     m 1n "Every time I tried to write a word, I thought, 'this isn't going to sound good,' or 'this isn't how I want it to look.' So I'd stop, backtrack, and try again."
+     m 1c "But I realised that it ultimately didn't matter if things didn't work out first time!"
+     m 1a "I feel that the heart of writing is not about getting it right first time, but about perfecting it afterwards."
      m "The end product is what matters, not the prototype."
      m 1b "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
-     m 3a "I think it's like that with all things - not just writing."
-     m "Anything that needs you to try and try again - art, music, learning, relationships, even..."
-     m 3h "It's hard to completely convince yourself that that's the case, sometimes."
-     m 3g "But you have to."
-     m 1g "You have to, if you want to get anywhere."
-     m 1a "...That's my advice for today!"
-     m 2j "Thanks for listening~"
+     m 3a "I think it's like that with all things, not just writing."
+     m "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
+     m 1h "It's hard to completely convince yourself that that's the case, sometimes."
+     m 1f "But you have to."
+     m "Otherwise, you won't to get anywhere."
+     m 3l "...That's my advice for today!"
+     m 1j "Thanks for listening~"
      return
-
+  
 init 5 python:
       addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
   
 label monika_writingtip5:
      m 3b "Here's Monika's Writing Tip of the Day!"
-     m 1d "If you want to improve at writing, I'd say that the most important thing - apart from actually doing it - is trying new things."
-     m 1b "Like writing prose if you're a poet, or free verse if you normally write rhyme."
-     m 1a "It may end up badly, but if you don't try, you won't know how it'll end up."
+     m 1d "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
+     m 3a "Like writing prose if you're a poet, or free verse if you normally write rhyme."
+     m 1m "It may end up badly, but if you don't try, you won't know how it'll end up."
      m 1j "And if things go well, you might end up finding something you like!"
-     m 1i "It's what keeps things moving: change, experimentation."
-     m 3i "I'd say it helps particularly if you're stuck on something, in a situation you want to solve, but don't know how."
-     m "Writer's block, but also math problems, general boredom, anything..."
-     m 1 "Trying new things might give you the momentum to break out."
+     m 1c "It's what keeps things moving: change and experimentation."
+     m 3c "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
+     m "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
+     m 1a "Changing your angle on approaching things can really yield some interesting results!"
+     m 3a "So try new things that might give you the momentum to break out."
+     m 1l "Just makes sure it's nothing too dangerous for you, [player]."
      m 1a "That's my advice for today!"
-     m 2j "Thanks for listening~"
+     m 1j "Thanks for listening~"
      return
 
 init 5 python:
