@@ -7,10 +7,16 @@ init python:
         old_month=starting_date.month
         old_year=starting_date.year
         old_day=starting_date.day
-
-        new_year=(old_year+(old_month+months-1)//12)+1
-        new_month=((old_month+months-1))%12+1
-
+        # get the total of months
+        total_months = old_month + months
+        # get the new month based on date
+        new_month = total_months % 12
+        # handle december specially
+        new_month = 12 if new_month == 0 else new_month
+        # get the total of years required for the months
+        years_to_add = total_months / 12
+        # get the new year
+        new_year = old_year + years_to_add
         #Try adding a month, if that doesn't work (there aren't enough days in the month)
         #keep subtracting days till it works.
         date_worked=False
