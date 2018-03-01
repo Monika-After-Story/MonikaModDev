@@ -4946,8 +4946,9 @@ label monika_prom:
     m 2f "Sometimes I wish it would have lasted the whole year. Not just the month leading up to the festival."
     m 3a "We could've enjoyed other events like sports festivals, christmas parties, field trips."
     m 3e "And maybe even prom..."
-    m 2e "I would've loved to havee been your prom date."
-    m 1e "Gosh, that would be a dream come true."
+    m 2e "I would've loved to have been your prom date."
+    m 1e "What I wouldn't give to get the opportunity..."
+    m 1q "..."
     m 1l "But I guess the game would never let me go that far."
     m 1a "Speaking of prom. [player], have you ever gone to prom?"
     menu:
@@ -4972,6 +4973,7 @@ label monika_prom:
                     m 2e "Awww, that so sweet [player]."
                     m 3b "I'm sure if we were together, it would have been ten times better!"
                     m 3k "{i}ahaha~{/i}"
+                    m 2b "By the way."
                     m 3b "Did you know how prom started [player]?"
         "Not really.":
             m 2d "Oh. Does that mean there's one coming up?"
@@ -4986,7 +4988,7 @@ label monika_prom:
                                     "Never."
                                         m 2e "[player]..."
                                         m 2j "If I was there beside you, I would've given you the biggest hug ever!"
-                                        m "I love you so much [player]
+                                        m "I love you so much [player]!"
                                         m 2k "{i}ehehe~{/i}"
                                         m 2j "..."
                                         m 2l "Where was I?"
@@ -5005,21 +5007,21 @@ label monika_prom:
                                         m 1o "Busy, huh..."
                                         m 2m "Well, I guess it can't be helped."
                                         m 3n "I guess its better than you going with some other girl."
-                                        m 1n "It's not that I'm worried! Um... Its just... Uh..."
+                                        m 1n "It's not that I'm worried! It's just that... Umm... Its just... Uh..."
                                         m 2l "Ahaha..."
                                         m 1l "Let's change the subject for now alright?."
                                     "You're not there with me.":
                                         m 2e "Aww... [player]"
-                                        m 1e "Me not going with you shouldnt stop you from having fun."
+                                        m 1e "Me not being there with you shouldnt stop you from having fun."
                                         m 3a "So if you really want to, just go!"
-                                        m 3j "Just promise to enjoy my share too, alright [player]?."
+                                        m 3j "Just promise to enjoy my share too, alright [player]?"
                                         m 3b "Let me tell you something interesting about prom."
                                     "Not interested.":
                                         m 1l "Really? I heard it was fun."
                                         m "Girls get dolled up and wear fancy dresses"
                                         m "If you have a date, the guy gives you a corsage."
-                                        m 3j "And you have fun dancing the night away!"
-                                        m 3k "It sounds pretty fun.
+                                        m 3j "And you have fun dancing the night away."
+                                        m 3k "It sounds pretty fun!"
                                         m 1n "But to each their own, I guess"
                                         m 3k "Ahaha~"
                                         m 3b "By the way, did you know?"
@@ -5041,21 +5043,22 @@ label monika_prom:
                                 "I was busy at that time.":
                                     m 1o "Busy, huh..."
                                     m 2m "Well, I guess it can't be helped."
+                                    m 3n "So...uh..."
                                     m 1l "Wanna know something cool about prom?."
                                 "It never really interested me.":
                                     m 1l "Really? I heard it was fun."
                                     m "Girls get dolled up and wear fancy dresses"
                                     m "If you have a date, the guy gives you a corsage."
-                                    m 3j "And you have fun dancing the night away!"
-                                    m 3k "It sounds pretty fun.
+                                    m 3j "And you have fun dancing the night away."
+                                    m 3k "It sounds pretty fun."
                                     m 1n "But to each their own, I guess"
                                     m 3k "Ahaha~"
-                                    m 3b "By the way, did you know?
+                                    m 3b "By the way, did you know?"
                                 "You weren't there with me.":
                                     m 1a "That's so cheesy."
                                     m 2e "Yet so sweet."
-                                    m 2j "If I was there beside you, I would've given you the biggest hug ever!"
-                                    m "I love you so much [player]
+                                    m 2j "If I was there beside you right now, I would've given you the biggest hug ever!"
+                                    m "I love you so much [player]!"
                                     m 2k "{i}ehehe~{/i}"
                                     m 2j "..."
                                     m 2l "Where was I?"
@@ -5063,8 +5066,8 @@ label monika_prom:
                                 "No date.":
                                     m 4l "I guess not having a date plays a huge part..."
                                     m 4h "Just remember."
-                                    m 1a "If we had met earlier, I would have loved to be your date."
-                                    m 4b "And you know it to."
+                                    m 1a "Had we met earlier, I would have loved to be your date."
+                                    m 4b "And you know it."
                                     m 2k "{i}ehehe~{/i}"
                                     m 2j "..."
                                     m 2l "Where was I?"
@@ -5093,10 +5096,10 @@ label monika_prom:
                                     m 3p "Getting caught up in the moment..."
                                     m 1b "But prom wasn't like that, you know."
                                 "Who knows. Just 'A series of unfortunate events' I guess~":
-                                    m 3b "Oh, I know that series!"
+                                    m 3b "Oh, I know that book series!"
                                     m "By {i}Lemony Snicket{/i}, right?"
                                     m 1a "I loved those stories when I was a kid."
-                                    m 1l "Maybe I should get back to talking about prom."
+                                    m 1l "...Maybe I should get back to talking about prom."
                                     m "I might get sidetracked."
     m 1b "A {i}Promenade{/i|, or {i}Prom{/i} for short was a formal parading of guests at a party that began in the mid to late at the 1800's."
     m 3b "Usually held in colleges and universities to signify a first adult social event for teenagers."
