@@ -711,9 +711,7 @@ label greeting_french:
      m 1b "Bonjour, [player]!"
      m 1j "Savais-tu que tu avais de beaux yeux, mon amour?"
      m 1k "Ehehe!"
-     m 2l "I'm practicing my French. It means you have beautiful eyes~"
-     m 1a "From what I've heard, French literature is really good."
-     m 2a "Especially poetry!"
-     m 1b "Who knows? Maybe we could read some Baudelaire someday."
-     m 4k "Anyway, welcome back, {i}mon amour{/i}!"
+     m 3l "I'm practicing some French. I just told you that you have very beautiful eyes~"
+     m 1e "It's such a romantic language, [player]."
+     m 1j "Maybe both of us can practice it sometime, mon amour~"
      return
