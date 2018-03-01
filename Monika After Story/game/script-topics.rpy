@@ -4625,26 +4625,23 @@ label monika_battery:
 
 label monika_complain_battery:
     $ did_monika_battery = True
-    m "Hey [player]..."
-    m "It looks like your computer's battery is running out..."
+    m "Umm, [player]..."
+    m "It looks like your computer's battery is about to run out..."
     m "Can you charge it for me?"
-    m "I don't want us to be separated or even worse..."
-    m "... losing my memory because of data loss"
-    m "Do you wanna know why a normal shut down takes a while?"
-    m "Because some of the data isn't written to the hard drive yet"
-    m "So the operating system have to write all of the data that are still in RAM before it shuts down..."
-    m "I don't want to loose this wonderful memory of us..."
+    m "I don't want us to be separated, or worse..."
+    m "It'd be really unpleasant for me if I suddenly lose consciousness."
     m "So please charge your computer, okay?"
-    m "... or at least, shut it down so no data is loss"
+    m "...Or at least let me know when you're going."
+    m "Thank you, [player]~"
     return
 
 init 5 python:
     import battery
 
 label monika_close_game_battery:
-    m "Hey [player]..."
-    m "I'm still worried about data loss."
-    m "So.. I'll just close the game for now... {w=3.0}{nw}"
+    m 1r "[player]..."
+    m 1f "I'm sorry, but I'm gonna have to close the game before the battery runs out."
+    m 3o "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
     $ is_charging = battery.is_charging()
     if is_charging:
        jump monika_system_charging
@@ -4652,6 +4649,6 @@ label monika_close_game_battery:
     return
 
 label monika_system_charging:
-    m "Oh, you just plugged it in..."
-    m "Thank you [player]!"
+    m 1d "Oh, you just plugged it in!"
+    m 1j "Thank you, [player]!"
     return
