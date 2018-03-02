@@ -4980,60 +4980,60 @@ label monika_prom:
             menu:
                 "Yes.":
                     m 1c "Are you going [player]?"
-                        menu:
-                            "Yes.":
-                                m 2f "..."
-                                m 2g "Are you going with someone else, [player]?..."
-                                menu:
-                                    "Never."
-                                        m 2e "[player]..."
-                                        m 2j "If I was there beside you, I would've given you the biggest hug ever!"
-                                        m "I love you so much [player]!"
-                                        m 2k "{i}ehehe~{/i}"
-                                        m 2j "..."
-                                        m 2l "Where was I?"
-                                        m 1n "Oh that's right! Prom."
-                                        m 3b "Here's a little fun fact."
-                                    "Yes but it's nothing serious."
-                                        m 2q "..."
-                                        m 1r "I trust you [player]."
-                                        m "You're not the type to cheat on me, right [player]?"
-                                        m 2q "..."
-                                        m 1d "Let's change the subject."
-                            "No.":
-                                m 1d "Oh? Why not?"
-                                menu:
-                                    "I'm busy that day.":
-                                        m 1o "Busy, huh..."
-                                        m 2m "Well, I guess it can't be helped."
-                                        m 3n "I guess its better than you going with some other girl."
-                                        m 1n "It's not that I'm worried! It's just that... Umm... Its just... Uh..."
-                                        m 2l "Ahaha..."
-                                        m 1l "Let's change the subject for now alright?."
-                                    "You're not there with me.":
-                                        m 2e "Aww... [player]"
-                                        m 1e "Me not being there with you shouldnt stop you from having fun."
-                                        m 3a "So if you really want to, just go!"
-                                        m 3j "Just promise to enjoy my share too, alright [player]?"
-                                        m 3b "Let me tell you something interesting about prom."
-                                    "Not interested.":
-                                        m 1l "Really? I heard it was fun."
-                                        m "Girls get dolled up and wear fancy dresses"
-                                        m "If you have a date, the guy gives you a corsage."
-                                        m 3j "And you have fun dancing the night away."
-                                        m 3k "It sounds pretty fun!"
-                                        m 1n "But to each their own, I guess"
-                                        m 3k "Ahaha~"
-                                        m 3b "By the way, did you know?"
-                                    "Rabies~":
-                                        m 2e "Pfft!"
-                                        m 2k "Ahahahaha!"
-                                        m 2l "My sides... Ahahaha! Rabies... Pfft!"
-                                        m 2b "Gosh, I didn't expect that. That was so random [player]! My sides still hurt! Ahaha..."
-                                        m 3j "A bit more and you might become as funny as I am~"
-                                        m 1j "..."
-                                        m 1l "Where was I?..."
-                                        m 1n "Oh yeah, prom."
+                    menu:
+                        "Yes.":
+                            m 2f "..."
+                            m 2g "Are you going with someone else, [player]?..."
+                            menu:
+                                "Never.":
+                                    m 2e "[player]..."
+                                    m 2j "If I was there beside you, I would've given you the biggest hug ever!"
+                                    m "I love you so much [player]!"
+                                    m 2k "{i}ehehe~{/i}"
+                                    m 2j "..."
+                                    m 2l "Where was I?"
+                                    m 1n "Oh that's right! Prom."
+                                    m 3b "Here's a little fun fact."
+                                "Yes but it's nothing serious.":
+                                    m 2q "..."
+                                    m 1r "I trust you [player]."
+                                    m "You're not the type to cheat on me, right [player]?"
+                                    m 2q "..."
+                                    m 1d "Let's change the subject."
+                        "No.":
+                            m 1d "Oh? Why not?"
+                            menu:
+                                "I'm busy that day.":
+                                    m 1o "Busy, huh..."
+                                    m 2m "Well, I guess it can't be helped."
+                                    m 3n "I guess its better than you going with some other girl."
+                                    m 1n "It's not that I'm worried! It's just that... Umm... Its just... Uh..."
+                                    m 2l "Ahaha..."
+                                    m 1l "Let's change the subject for now alright?."
+                                "You're not there with me.":
+                                    m 2e "Aww... [player]."
+                                    m 1e "Me not being there with you shouldnt stop you from having fun."
+                                    m 3a "So if you really want to, just go!"
+                                    m 3j "Just promise to enjoy my share too, alright [player]?"
+                                    m 3b "Let me tell you something interesting about prom."
+                                "Not interested.":
+                                    m 1l "Really? I heard it was fun."
+                                    m "Girls get dolled up and wear fancy dresses."
+                                    m "If you have a date, the guy gives you a corsage."
+                                    m 3j "And you have fun dancing the night away."
+                                    m 3k "It sounds pretty fun!"
+                                    m 1n "But to each their own, I guess."
+                                    m 3k "Ahaha~"
+                                    m 3b "By the way, did you know?"
+                                "Rabies~":
+                                    m 2e "Pfft!"
+                                    m 2k "Ahahahaha!"
+                                    m 2l "My sides... Ahahaha! Rabies... Pfft!"
+                                    m 2b "Gosh, I didn't expect that. That was so random [player]! My sides still hurt! Ahaha..."
+                                    m 3j "A bit more and you might become as funny as I am~"
+                                    m 1j "..."
+                                    m 1l "Where was I?..."
+                                    m 1n "Oh yeah, prom."
                 "No.":
                     m 1o "Does that mean you didn't have the chance to go to one?"
                     menu:
@@ -5047,11 +5047,11 @@ label monika_prom:
                                     m 1l "Wanna know something cool about prom?."
                                 "It never really interested me.":
                                     m 1l "Really? I heard it was fun."
-                                    m "Girls get dolled up and wear fancy dresses"
+                                    m "Girls get dolled up and wear fancy dresses."
                                     m "If you have a date, the guy gives you a corsage."
                                     m 3j "And you have fun dancing the night away."
                                     m 3k "It sounds pretty fun."
-                                    m 1n "But to each their own, I guess"
+                                    m 1n "But to each their own, I guess."
                                     m 3k "Ahaha~"
                                     m 3b "By the way, did you know?"
                                 "You weren't there with me.":
