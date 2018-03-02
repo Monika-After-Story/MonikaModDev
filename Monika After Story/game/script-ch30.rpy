@@ -83,6 +83,7 @@ init python:
     import os
     import eliza      # mod specific
     import datetime   # mod specific
+    import battery    # mod specific
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
@@ -609,6 +610,13 @@ label ch30_loop:
         $ waittime = renpy.random.randint(20, 45)
         $ renpy.pause(waittime, hard=True)
         window auto
+
+        python:
+            if battery.is_supported():
+               if battery.is_battery_present() and not battery.is_charging():
+                  if battery.get_level() < 20:
+                     pushEvent("monika_battery")
+
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
