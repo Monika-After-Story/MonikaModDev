@@ -4775,7 +4775,7 @@ label monika_omamori:
     return    
     
 init 5 python:                                                  
-    addEvent(Event(eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True)) 
+    addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True)) 
       
 label monika_smoking:
     m 2q "You know, [player]..."
@@ -4787,32 +4787,32 @@ label monika_smoking:
     m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
     m 1q "I really do despise them..."
     m 1o "But..."
-        menu:
+    menu:
         m "You don't smoke cigarettes, right, [player]?"      
-            "Yes, I do.":
-                m 2o "..."
-                m 2r "Thank you for being honest with me, [player]..."
-                m 4f "It's quite disheartening to hear that, though."
-                m 1f "Could you... promise me that you'll stop?"
-                m "I don't want you to deteriorate your health like that..."
-                m 3o "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
-                m 2q "But if you don't try..."
-                m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
-                m 4f "Please take care of your body. I want to always be with you."
-                m 1e "I love you so much."     
-            "No, I don't.":
-                m 1k "Ah, I'm relieved to hear that, [player]!"
-                m 3c "Just stay away from it as much as you can."
-                m 1o "It's an awful habit and won't do much more than slowly kill you."
-                m 3j "Thank you, [player], for not smoking~"
-            "I'm trying to quit.":
-                m 3a "That's a really good decision."
-                m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
-                m 1f "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
-                m 1c "Keeping your mind busy on other things will definitely help kick any bad habits."
-                m 3b "How about you think about me whenever you get a strong urge?"
-                m 1j "I'll be here to support you every step of the way."
-                m 1k "I believe in you [player], I know you can do it!"
+        "Yes, I do.":
+            m 2o "..."
+            m 2r "Thank you for being honest with me, [player]..."
+            m 4f "It's quite disheartening to hear that, though."
+            m 1f "Could you... promise me that you'll stop?"
+            m "I don't want you to deteriorate your health like that..."
+            m 3o "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
+            m 2q "But if you don't try..."
+            m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
+            m 4f "Please take care of your body. I want to always be with you."
+            m 1e "I love you so much."     
+        "No, I don't.":
+            m 1k "Ah, I'm relieved to hear that, [player]!"
+            m 3c "Just stay away from it as much as you can."
+            m 1o "It's an awful habit and won't do much more than slowly kill you."
+            m 3j "Thank you, [player], for not smoking~"
+        "I'm trying to quit.":
+            m 3a "That's a really good decision."
+            m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
+            m 1f "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
+            m 1c "Keeping your mind busy on other things will definitely help kick any bad habits."
+            m 3b "How about you think about me whenever you get a strong urge?"
+            m 1j "I'll be here to support you every step of the way."
+            m 1k "I believe in you [player], I know you can do it!"
     return
     
 init 5 python:
