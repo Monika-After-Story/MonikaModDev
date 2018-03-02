@@ -9,7 +9,7 @@ define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-define did_monika_battery = False
+define mas_did_monika_battery = False
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -4595,15 +4595,20 @@ label monika_wolf:
     m 1 "I can't help but be reminded of how you saved my life by being here with me."
     m 1e "I really do depend on you, [player]."
     m 3k "You're my hero after all~"
+    return
+
+# TODO: move these things over to a different file
+init 2 python:
+    import battery
 
 label monika_battery:
-    if did_monika_battery:
+    if mas_did_monika_battery:
        jump monika_close_game_battery
     else:
        jump monika_complain_battery
 
 label monika_complain_battery:
-    $ did_monika_battery = True
+    $ mas_did_monika_battery = True
     m "Umm, [player]..."
     m "It looks like your computer's battery is about to run out..."
     m "Can you charge it for me?"
@@ -4614,9 +4619,6 @@ label monika_complain_battery:
     m "Thank you, [player]~"
     return
 
-init 5 python:
-    import battery
-
 label monika_close_game_battery:
     m 1r "[player]..."
     m 1f "I'm sorry, but I'm gonna have to close the game before the battery runs out."
@@ -4624,7 +4626,8 @@ label monika_close_game_battery:
     $ is_charging = battery.is_charging()
     if is_charging:
        jump monika_system_charging
-    $ renpy.quit()
+    $ persistent.closed_self = True
+    jump _quit
     return
 
 label monika_system_charging:

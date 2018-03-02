@@ -5,6 +5,7 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define allow_dialogue = True
 define modoorg.CHANCE = 20
+define mas_battery_supported = False
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -119,6 +120,9 @@ init python:
         mcname = currentuser
     else:
         mcname = persistent.mcname
+
+    # check for battery support
+    mas_battery_supported = battery.is_supported()
 
     #Define new functions
 
@@ -612,10 +616,13 @@ label ch30_loop:
         window auto
 
         python:
-            if battery.is_supported():
-               if battery.is_battery_present() and not battery.is_charging():
-                  if battery.get_level() < 20:
-                     pushEvent("monika_battery")
+            if (
+                    mas_battery_supported 
+                    and battery.is_battery_present() 
+                    and not battery.is_charging()
+                    and battery.get_level() < 20
+                ):
+                pushEvent("monika_battery")
 
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
