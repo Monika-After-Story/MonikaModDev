@@ -38,7 +38,7 @@ the AC Line status.
 """
 AC_LINE_CHECK_REGEX = {
     'FreeBSD': r'hw\.acpi\.acline: (\d)',
-    'Darwin': r'\d+%; (\w+);'
+    'Darwin': r'\d+%; (\w+|AC attached);'
 }
 
 _system = platform.system()
@@ -97,11 +97,11 @@ def get_level():
     try:
         output = _run_command_based_by_system(BATTERY_LEVEL_COMMANDS,
                                               BATTERY_LEVEL_REGEX)
-        value = int(output.rstrip())
+        value = int(output.rstrip().replace('%',''))
     except RegexDidNotMatchError:
         return None
 
-    return int(output.rstrip())
+    return int(output.rstrip().replace('%',''))
 
 
 def get_supported_systems():
