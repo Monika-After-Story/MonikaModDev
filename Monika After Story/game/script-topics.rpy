@@ -4628,7 +4628,6 @@ label monika_close_game_battery:
        jump monika_system_charging
     $ persistent.closed_self = True
     jump _quit
-    return
 
 label monika_system_charging:
     m 1d "Oh, you just plugged it in!"
