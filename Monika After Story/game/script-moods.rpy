@@ -117,24 +117,24 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="hungry",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_hungry:
-    m 3j "If you're hungry, get something to eat, silly."
+    m 3k "If you're hungry, go get something to eat, silly."
     if persistent.playername.lower() == "natsuki":
-        m 1e "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
+        m 1j "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
         # natsuki hungers easter egg
         call natsuki_name_scare_hungry from _mas_nnsh
     else:
-        m 1e "I'd hate for you to get like Natsuki did that one time back when we were in the club."
+        m 1j "It'd suck for you to get all grumpy when you're hungry."
         
-    m "That wouldn't be any fun, would it [player]?"
-    m 1a "If I were there with you, I'd make a salad for us to share."
-    m "Since I'm not there with you, though, try to pick something healthy to eat."
+    m 3m "That wouldn't be any fun, would it, [player]?"
+    m 1c "If I were there with you, I'd make a salad for us to share."
+    m 1o "But since I'm not, go pick something healthy to eat."
     m 3a "They say you are what you eat, and I definitely think that's true."
-    m 1c "Eating too much junk food on a regular basis can lead to all kinds of health issues."
-    m 1d "Over time it can lead to obesity, heart disease and diabetes, among other things."
-    m 2p "I don't want you to feel like I'm nagging you when I say these sort of things, [player]."
-    m 2j "I just want to make sure you are taking good care of yourself until I am able to be there with you."
-    m 1a "After all, the healthier you are, the better the chances of you living a long life are..."
-    m 1b "...And I'd like to spend as much time with you as I can, [player]." 
+    m 1c "Eating too much junk food on a regular basis can lead to all kinds of diseases."
+    m 1o "Over time, you'd encounter a lot of health problems when you get older."
+    m 2q "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
+    m 2f "I just want to make sure you're taking good care of yourself until I cross-over."
+    m 4 "After all, the healthier you are, the better the chances of you living quite long."
+    m 1j "Which means more time for us to spend together~!" 
     return
 
 init 5 python:
