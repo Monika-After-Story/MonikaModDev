@@ -4699,37 +4699,43 @@ label monika_omamori:
     return    
     
 init 5 python:                                                  
-    addEvent(Event(eventlabel="monika_smoking",category=['random'],prompt="Smoking",random=True)) 
+    addEvent(Event(eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True)) 
       
 label monika_smoking:
-    m 2b "You know, I heard that a lot of people died last year from smoking cigarettes."
-    m 1o "..."
+    m 2q "You know, [player]..."
+    m 2h "I realized that people really like a lot of things that are very bad for them."
+    m "One particular vice that intrigues me the most is cigarettes."
+    m 2o "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
+    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick carcinogens."
+    m 2q "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
+    m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
+    m 1q "I really do despise them..."
+    m 1o "But..."
         menu:
-        m 1i "You don't smoke, do you [player]?"
-        
+        m "You don't smoke cigarettes, right, [player]?"      
             "Yes, I do.":
-                m 1i "Thank you for being honest with me,"
-                m 1r "However, I'm really sad to hear that."
-                m 1i "Please promise that you'll quit for me, okay?"
-                m 1i "I don't want to see you destroy yourself that way."
-                m 1b "I just want you to be healthy."
-                m 1j "Stay well for me [player]."
-                m 1k "I love you so much."
-        
+                m 2o "..."
+                m 2r "Thank you for being honest with me, [player]..."
+                m 4f "It's quite disheartening to hear that, though."
+                m 1f "Could you... promise me that you'll stop?"
+                m "I don't want you to deteriorate your health like that..."
+                m 3o "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
+                m 2q "But if you don't try..."
+                m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
+                m 4f "Please take care of your body. I want to always be with you."
+                m 1e "I love you so much."     
             "No, I don't.":
-                m 1k "I'm really glad you don't [player]."
-                m 2d "You shouldn't start either."
-                m 2d "It's an awful habit, and will only make your health worse."
-           
+                m 1k "Ah, I'm relieved to hear that, [player]!"
+                m 3c "Just stay away from it as much as you can."
+                m 1o "It's an awful habit and won't do much more than slowly kill you."
+                m 3j "Thank you, [player], for not smoking~"
             "I'm trying to quit.":
-                m 2b "That's a really good decision."
-                m 1d "I know it can be hard at times."
-                m 1d "If you ever feel like you need a cigarette, just do something else instead."
-                m 1b "I heard it's easier if you keep your mind busy."
-                m 1k "If you can't find anything that helps, just think about me. Okay?"
-                m 1b "I believe in you [player], I know you can do it."
-            
-    
-        
+                m 3a "That's a really good decision."
+                m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
+                m 1f "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
+                m 1c "Keeping your mind busy on other things will definitely help kick any bad habits."
+                m 3b "How about you think about me whenever you get a strong urge?"
+                m 1j "I'll be here to support you every step of the way."
+                m 1k "I believe in you [player], I know you can do it!"
     return
 
