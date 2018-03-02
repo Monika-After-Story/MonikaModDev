@@ -4780,7 +4780,7 @@ label monika_smoking:
     return
     
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['random'],prompt="Road Trip",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road Trip",random=True))
 
 label monika_cartravel:
     m 3c "[player], something has been on my mind lately..."
