@@ -40,6 +40,8 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_7_2 = "v0_7_2"
+        vv0_7_1 = "v0_7_1"
         vv0_7_0 = "v0_7_0"
         vv0_6_3 = "v0_6_3"
         vv0_6_2 = "v0_6_1"
@@ -57,10 +59,11 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
-# TODO: uncomment when bready
-#        updates.version_updates[vv0_6_3] = vv0_7_0
-#        updates.version_updates[vv0_6_2] = vv0_7_0
-#        updates.version_updates[vv0_6_1] = vv0_7_0
+        updates.version_updates[vv0_7_1] = vv0_7_2
+        updates.version_updates[vv0_7_0] = vv0_7_1
+        updates.version_updates[vv0_6_3] = vv0_7_0
+        updates.version_updates[vv0_6_2] = vv0_7_0
+        updates.version_updates[vv0_6_1] = vv0_7_0
         updates.version_updates[vv0_6_0] = vv0_6_1
         updates.version_updates[vv0_5_1] = vv0_6_1
         updates.version_updates[vv0_5_0] = vv0_5_1
@@ -70,7 +73,6 @@ label vv_updates_topics:
         updates.version_updates[vv0_3_1] = vv0_3_2
         updates.version_updates[vv0_3_0] = vv0_3_1
         updates.version_updates[vv0_2_2] = vv0_3_0
-
 
         # version structures:
         # if a version has changed / removed IDS, then add it as a dict
@@ -91,9 +93,11 @@ label vv_updates_topics:
             "monika_games": None,
             "monika_chess": None,
             "monika_pong": None,
-            "monika_vulgarity": None
+            "monika_vulgarity": None,
+            "monika_goodbye": None,
+            "monika_night": None
         }
-        # updates.topics[vv0_7_0] = changedIDs # TODO: uncomment when bready
+        updates.topics[vv0_7_0] = changedIDs 
 
         # (0.5.1 - 0.6.0) -> 0.6.1
         changedIDs = {

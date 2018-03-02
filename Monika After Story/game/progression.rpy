@@ -6,6 +6,10 @@ init python:
         #Check level before experience gain
         old_level = get_level()
 
+        #0 out negative experience
+        if experience<0:
+            experience=0
+
         #Add XP
         persistent.playerxp += experience
 
@@ -23,6 +27,8 @@ init python:
     def get_level():
         import math
 
+        if persistent.playerxp<0:
+            persistent.playerxp=0
         xp = persistent.playerxp
 
         if xp <= 390:

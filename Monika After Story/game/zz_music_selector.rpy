@@ -14,6 +14,7 @@ init -1 python in songs:
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
+    PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     NO_SONG = "None"
 
     # SONG FILEPATHS
@@ -26,6 +27,7 @@ init -1 python in songs:
         "<loop 17.451 to 119.999>mod_assets/bgm/ddlc_maintheme_80s.ogg"
     )
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
+    FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
     FP_NO_SONG = None
 
 
@@ -126,6 +128,7 @@ init -1 python in songs:
 
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
             music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
+            music_choices.append((PLAYWITHME_VAR6, FP_PLAYWITHME_VAR6))
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
@@ -161,6 +164,7 @@ init 10 python:
     if persistent.playername.lower() == "sayori":
         store.songs.current_track = store.songs.FP_SAYO_NARA
         store.songs.selected_track = store.songs.FP_SAYO_NARA
+        persistent.current_track = store.songs.FP_SAYO_NARA
     else:
         store.songs.current_track = persistent.current_track
         store.songs.selected_track = store.songs.current_track

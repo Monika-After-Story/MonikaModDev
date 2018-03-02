@@ -1,5 +1,5 @@
 init 100 python:
-    layout.QUIT = "Are you really leaving me, [player]?"
+    layout.QUIT = "Leaving without saying goodbye, [player]?"
 ## Initialization
 ################################################################################
 
@@ -962,6 +962,11 @@ screen preferences():
                     label _("Room Animation")
                     textbutton _("Disable") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
 
+                vbox:
+                    style_prefix "check"
+                    label _("Gameplay")
+                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
 
@@ -1425,6 +1430,34 @@ screen dialog(message, ok_action):
 
                 textbutton _("OK") action ok_action
 
+screen quit_dialog(message, ok_action):
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "confirm"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+            label _(message):
+                style "confirm_prompt"
+                xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("QUIT") action ok_action
+
 image confirm_glitch:
     "gui/overlay/confirm_glitch.png"
     pause 0.02
@@ -1462,7 +1495,7 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action Show(screen="dialog", message="I see...\nPlease come back soon, [player]!", ok_action=yes_action)
+                textbutton _("Yes") action Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)
                 textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
@@ -1794,6 +1827,12 @@ style scrollable_menu_special_button is scrollable_menu_button
 style scrollable_menu_special_button_text is scrollable_menu_button_text:
     bold True
 
+style scrollable_menu_crazy_button is scrollable_menu_button
+
+style scrollable_menu_crazy_button_text is scrollable_menu_button_text:
+    italic True
+    bold True
+
 # two pane stuff
 style twopane_scrollable_menu_vbox:
     xalign 0.5
@@ -1912,3 +1951,68 @@ screen scrollable_menu(items, display_area, scroll_align):
                     null height 20
 
                     textbutton _("That's enough for now.") action Return(False)
+
+# more generali scrollable menu. This one takes the following params:
+# IN:
+#   items - list of items to display in the menu. Each item must be a tuple of
+#       the following format:
+#           [0]: prompt button
+#           [1]: prompt return object
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#   display_area - defines the display area of the menu. Tuple of the following
+#       format:
+#           [0]: x coordinate of menu
+#           [1]: y coordinate of menu
+#           [2]: width of menu
+#           [3]: height of menu
+#   scroll_align - alignment of vertical scrollbar
+#   final_item - represents the final (usually quit item) of the menu
+#       tuple of the following format:
+#           [0]: text of the button
+#           [1]: return value of the button
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#           [4]: integer spacing between this button and the regular buttons
+#               NOTE: must be >= 0
+#       (Default: None)
+screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=None):
+        style_prefix "scrollable_menu"
+
+        fixed:
+            area display_area
+
+            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+
+            viewport:
+                yadjustment prev_adj
+                mousewheel True
+
+                vbox:
+#                    xpos x
+#                    ypos y
+
+                    for item_prompt,item_value,is_italic,is_bold in items:
+                        textbutton item_prompt:
+                            if is_italic and is_bold:
+                                style "scrollable_menu_crazy_button"
+                            elif is_italic:
+                                style "scrollable_menu_new_button"
+                            elif is_bold:
+                                style "scrollable_menu_special_button"
+                            action Return(item_value)
+
+                    if final_item:
+                        if final_item[4] > 0:
+                            null height final_item[4]
+
+                        textbutton _(final_item[0]):
+                            if final_item[2] and final_item[3]:
+                                style "scrollable_menu_crazy_button"
+                            elif final_item[2]:
+                                style "scrollable_menu_new_button"
+                            elif final_item[3]:
+                                style "scrollable_menu_special_button"
+                            action Return(final_item[1])
+
+

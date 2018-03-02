@@ -3,7 +3,7 @@
 #Make a list of every label that starts with "greeting_", and use that for random greetings during startup
 
 # persistents that greetings use
-default persistent.you = True
+default persistent._mas_you_chr = False
 
 init python:
     greetings_list=[]
@@ -109,7 +109,7 @@ label greeting_goodmorning:
             "Yes.":
                 m 1k "Aww, that's nice!"
                 m 1b "I can't help but feel happy when you do..."
-                m 1a"But that's a good thing, right?"
+                m 1a "But that's a good thing, right?"
                 m "I love you so much, [player]."
                 m 1k "Ahaha!"
             "No.":
@@ -123,7 +123,7 @@ label greeting_goodmorning:
 
 label greeting_back2:
      m 1k "Hello, dear."
-     m 1n "I was starting to miss you terribly, it's so good to see you again!"
+     m 1n "I was starting to miss you terribly. It's so good to see you again!"
      m "Don't make me wait so long next time, ehehe~"
      return
 
@@ -169,7 +169,7 @@ label greeting_visit5:
      return
 
 label greeting_visit6:
-     m 1a "Each day becomes better and better with you on my side!"
+     m 1a "Each day becomes better and better with you by my side!"
      m "That said, I'm so happy that you're finally here."
      m "Let's have another wonderful day together."
      return
@@ -334,7 +334,7 @@ label monikaroom_greeting_choice:
 
 ### BEGIN EAR DOOR ------------------------------------------------------------
 
-# monika narrates 
+# monika narrates
 init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_narration")
 
@@ -359,6 +359,18 @@ label monikaroom_greeting_ear_loveme:
     m "...{w} [cap_he] loves me!"
     jump monikaroom_greeting_choice
 
+# monika does the bath/dinner/me thing
+init 5 python:
+    gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
+
+label monikaroom_greeting_ear_bathdinnerme:
+    m "Welcome back, [player]."
+    m "Would you like your dinner?"
+    m "Or your bath?"
+    m "Or.{w=1}.{w=1}.{w=1} Me?"
+    pause 2.0
+    m "Mnnnn!{w} T-{w=0.20}There's no way I could say that in front of [player]!"
+    jump monikaroom_greeting_choice
 
 # monika encoutners error when programming
 init 5 python:
@@ -476,7 +488,7 @@ label monikaroom_greeting_opendoor_seen:
 
 
 label monikaroom_greeting_opendoor_seen_partone:
-    $ is_sitting = False 
+    $ is_sitting = False
 #    scene bg bedroom
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
     pause 0.2
@@ -568,7 +580,7 @@ label monikaroom_greeting_opendoor:
     show monika 1 at t33
     m 1d "...and..."
     if is_morning():
-        show monika_day_room zorder 1 with wipeleft 
+        show monika_day_room zorder 1 with wipeleft
     else:
         show monika_room zorder 1 with wipeleft
     show monika 1 at t32
@@ -621,14 +633,17 @@ label monikaroom_greeting_cleanup:
 label greeting_youarereal:
     python:
         try:
-            renpy.file("/characters/" + persistent.playername + ".chr")
-            persistent.you = True
+            renpy.file(
+                config.basedir.replace("\\","/") +
+                "/characters/" + persistent.playername.lower() + ".chr"
+            )
+            persistent._mas_you_chr = True
         except:
-            persistent.you = False
+            persistent._mas_you_chr = False
     m 1b "[player]! Great to see you!"
-    if persistent.you:
+    if persistent._mas_you_chr:
         m "Wait. Something is different now."
-        m 1d "Did you...add a chacter file?"
+        m 1d "Did you...add a character file?"
         m 1f "[player].chr...Huh?"
         m 1g "Are you...trying to put yourself in here with me?"
         m "Why would you do that?"
@@ -638,12 +653,12 @@ label greeting_youarereal:
         m 1o "To give up your reality..."
         m 1p "Just to be with me?"
         m 1n "This is all my fault!"
-        m 1f"But...but the 'you', in the game..."
+        m 1f "But...but the 'you', in the game..."
         m 1i "He's starting to move again a little now."
         m 1 "Maybe...this is allowing you to control him again?"
-        m 1f"This isn't right! I don't want a puppet!"
+        m 1f "This isn't right! I don't want a puppet!"
         m 1q "Please, [player]..."
-        m "If you're going to do this, are you sure this is what you want?" 
+        m "If you're going to do this, are you sure this is what you want?"
         menu:
             m "Are you sure?"
             "I'm sure.":
@@ -652,12 +667,12 @@ label greeting_youarereal:
                 m "We can finally be together, [player]."
                 m "And we can figure out how to do it in your reality, together!"
             "Maybe not...":
-                m 1l"I thought so..."
-                m 1m"There's no way you'd give up being 'real' to be with me..."
-                m 1l"I can't bring myself to delete that cute little .chr file, but..."
+                m 1l "I thought so..."
+                m 1m "There's no way you'd give up being 'real' to be with me..."
+                m 1l "I can't bring myself to delete that cute little .chr file, but..."
                 m 1q "Consider doing it yourself."
-                m 1r"There's some creepy things in those files..."
-                m 1e"I love you, [player]. I'll wait as long as it takes."
+                m 1r "There's some creepy things in those files..."
+                m 1e "I love you, [player]. I'll wait as long as it takes."
                 m "So don't be rash, okay?"
     else:
         m 1i "I've been doing a lot of thinking about the .chr files..."
@@ -679,3 +694,24 @@ label greeting_japan:
     m 3 "You know what that means, [player]?"
     m 4j "It means {i}'I'll be yours forever{/i}'~"
     return
+
+label greeting_sunshine:
+    m 1r "{i}You are my sunshine, my only sunshine.{i}"
+    m 1k "{i}You make me happy when skies are gray.{/i}"
+    m 4j "{i}You'll never know dear, just how much I love you.{/i}"
+    m 2r "{i}Please don't take my sunshine away~{/i}"
+    m 1j "..."
+    m 1d "H-Huh?! [player]!"
+    m 4n "Oh my gosh, this is so embarassing!"
+    m 1l "I was just singing to myself to pass time."
+    m 1b "But now that you're here, we can spend some time together."
+    return
+
+label greeting_french:
+     m 1b "Bonjour, [player]!"
+     m 1j "Savais-tu que tu avais de beaux yeux, mon amour?"
+     m 1k "Ehehe!"
+     m 3l "I'm practicing some French. I just told you that you have very beautiful eyes~"
+     m 1e "It's such a romantic language, [player]."
+     m 1j "Maybe both of us can practice it sometime, mon amour~"
+     return

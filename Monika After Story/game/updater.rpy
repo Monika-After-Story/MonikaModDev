@@ -21,5 +21,6 @@ label update_now:
         call screen update_check(Return(True),Return(False))
 
         if _return:
+            $ persistent.closed_self = True # we take updates as self closed
             $updater.update('http://updates.monikaafterstory.com/updates.json',restart=True)
     return
