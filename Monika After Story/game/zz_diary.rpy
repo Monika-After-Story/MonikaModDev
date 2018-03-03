@@ -92,18 +92,14 @@ init python in mas_diary:
     # diary comment character
     DIARY_COMMENT = "#"
 
+    # internal value copies because of issues with scope
+    _internal_twitter = None
+
     # list of the scanned valid templates
     templates = list()
 
-    ########################## diary entry keywords dicts
-    # these kwargs are treated as format specifier names in diary templates
-    # TODO
-    # NOTE: for all DATES, look into strftime() and strptime() behavior
-    #   that has stuff for using abbrv names
-    # we might replace some of this with renpy.substitute
-    # these are initliazed outside of this store at startup
-    # and are probably reinitalized 
-
+    # literal diary keyword dicts
+    # these ones dont call into functions
     # diary keywords for dates
     diary_keywords_dates_auto = {
         "YYYY": "%Y", # 4 digit current year
@@ -120,37 +116,6 @@ init python in mas_diary:
     diary_keywords_dates_custom = {
         "mm": "{0}", # 2 digit current month, unpadded
         "dd": "{0}" # 2 digit current day, unpadded
-    }
-
-    # diary keywords for games
-    diary_keywords_games = {
-        "gamesCSV": None # games played, comma separated # TODO: framework for this?
-
-        # TODO: we need to figure out the framework for thesee 
-#        "game_chess": None, # result of chess game (if it was played)
-#        "game_piano": None, # result of piano (if it was played)
-#        "game_hangman": None, # results of hangman (if it was played)
-#        "game_pong": None # results of pong (if it was played)
-    }
-
-    # diary keywords for topics
-    diary_keywords_topics = {
-        "topicsCSV": None # category tags for topics shown, comma separated # TODO: framework for this?
-    }
-
-    # diary keywords general
-    # consists of other diary-related things
-    diary_keywords_gen = {
-        # like the Dear Diary stuff. this should be 
-        # customizable by adding a file with lines
-        "greeting": None,
-
-        # sincerely, love, from. This also should be 
-        # customizable by aadding a fiel with lines
-        "closing": None,
-
-        # body section is where paragraph diary entries from topics go
-        "body": None
     }
 
     ################## functions ############################
@@ -232,35 +197,6 @@ init python in mas_diary:
             diary_keywords_dates_custom["dd"].format(using_date.day)
         )
 
-
-    def _initDiaryKeywordsGames():
-        """
-        Fills the diary replcaement keywords for games dict
-        """
-        # starting with the games CSV
-        if len(games_played) > 0:
-            if len(games_played) > 1:
-                games_played_str = ", ".join(games_played[:-1])
-                games_played_str += " and {0}".format(games_played[-1:])
-            else:
-                games_played_str = games_played[0]
-            diary_keywords_games["gamesCSV"] = games_played_str
-
-
-    def _initDiaryKeywordsTopics():
-        """
-        Fills the diary replacement keywords for topics dict
-        """
-        # starting with topics CSV
-        if len(category_tags) > 0:
-            if len(category_tags) > 1:
-                category_tags_str = ", ".join(category_tags[:-1])
-                category_tags_str += " and {0}".format(category_tags[-1:])
-            else:
-                category_tags_str = category_tags[0]
-            diary_keywords_topics["topicsCSV"] = category_tags_str
-
-
     def _scanTemplates():
         """
         Scans the template folder for valid templates.
@@ -277,6 +213,140 @@ init python in mas_diary:
                 ):
                 templates.append(t_filepath)
 
+############## diary keyword functions ######################
+    # these functions will be set to values in some of the dicts 
+    def _dk_body(modifier):
+        """
+        Generates the body
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+
+        RETURNS:
+            body string
+        """
+        # TODO
+        return ""
+
+
+    def _dk_closing(modifier):
+        """
+        Generates the closing
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+
+        RETURNS:
+            closing string
+        """
+        # TODO
+        return ""
+    
+
+    def _dk_gamesCSV(modifier):
+        """
+        Sets up the games CSV string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+
+        RETURNS:
+            games CSV string
+        """       
+        # TODO: use modifier name to limit lenght of string
+        if len(games_played) > 0:
+            if len(games_played) > 1:
+                return (
+                    ", ".join(games_played[:-1]) +
+                    " and {0}".format(games_played[-1:])
+                )
+
+            # otherwise
+            return games_played[0]
+
+        # otherwise
+        return ""
+
+    
+    def _dk_greeting():
+        """
+        Generates a greeting
+
+        RETURNS:
+            greeting string
+        """
+        # TODO:
+        return ""
+
+
+    def _dk_m_name(modifier):
+        """
+        Generates monika's name
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+        """
+        if modifier == "t":
+            return _internal_twitter
+
+        # otherwise
+        return "Monika"
+
+
+# some stuff should happen a bit later
+init 1 python in mas_diary:
+    ########################## diary entry keywords dicts
+    # these kwargs are treated as format specifier names in diary templates
+    # TODO
+    # NOTE: for all DATES, look into strftime() and strptime() behavior
+    #   that has stuff for using abbrv names
+    # we might replace some of this with renpy.substitute
+    # these are initliazed outside of this store at startup
+    # and are probably reinitalized 
+
+    # diary keywords for games
+    diary_keywords_games = {
+        # games played, comma separated
+        # gamesCSV|<modifier>
+        # modifier rules:
+        #   b - break the line into multiple if needed
+        "gamesCSV": _dk_gamesCSV
+
+        # TODO: we need to figure out the framework for thesee 
+#        "game_chess": None, # result of chess game (if it was played)
+#        "game_piano": None, # result of piano (if it was played)
+#        "game_hangman": None, # results of hangman (if it was played)
+#        "game_pong": None # results of pong (if it was played)
+    }
+
+    # diary keywords general
+    # consists of other diary-related things
+    diary_keywords_gen = {
+        # like the Dear Diary stuff. this should be 
+        # customizable by adding a file with lines
+        "greeting": _dk_greeting,
+
+        # sincerely, love, from. This also should be 
+        # customizable by aadding a fiel with lines
+        "closing": _dk_closing,
+
+        # body section is where paragraph diary entries from topics go
+        # body|<modifier>
+        # modifier rules:
+        #   %## - percentage of main diary entries to use (randomized)
+        #   ## - number of main diary entries to use (randomized)
+        #   a - use all diary entries
+        "body": _dk_body,
+
+        # monika's name
+        # name|<modifier>
+        # modifier rules:
+        #   t - use twitter name
+        "m_name": _dk_gen_monikaName
+
+    }
+
+
 
 # post startup stuff
 init 2018 python:
@@ -287,7 +357,8 @@ init 2018 python:
         mas_diary.GAME_FOLDER +
         mas_diary.DIARY_TEMPLATE_FOLDER
     ).replace("\\", "/")
-    
+   
+   mas_diary._internal_twitter = mas_monika_twitter_handle
 
 # TODO:
 # diary templates are nearly fully customizable. Using a {keyword} system, you
