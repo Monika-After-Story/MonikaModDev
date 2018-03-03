@@ -5,6 +5,7 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define allow_dialogue = True
 define modoorg.CHANCE = 20
+define mas_battery_supported = False
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -83,6 +84,7 @@ init python:
     import os
     import eliza      # mod specific
     import datetime   # mod specific
+    import battery    # mod specific
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
@@ -118,6 +120,9 @@ init python:
         mcname = currentuser
     else:
         mcname = persistent.mcname
+
+    # check for battery support
+    mas_battery_supported = battery.is_supported()
 
     #Define new functions
 
@@ -609,6 +614,16 @@ label ch30_loop:
         $ waittime = renpy.random.randint(20, 45)
         $ renpy.pause(waittime, hard=True)
         window auto
+
+        python:
+            if (
+                    mas_battery_supported 
+                    and battery.is_battery_present() 
+                    and not battery.is_charging()
+                    and battery.get_level() < 20
+                ):
+                pushEvent("monika_battery")
+
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:

@@ -9,6 +9,7 @@ define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+define mas_did_monika_battery = False
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -2340,7 +2341,7 @@ init 5 python:
 
 label monika_impression:
     m 1d "Impression? Of the other girls?"
-    m 1p "I'm not really good at making an impression of someone, but I'll give it a try!"
+    m 1p "I'm not really good at doing an impression of someone, but I'll give it a try!"
     menu:
         m "Who should I do an impression of?"
         "Sayori":
@@ -3174,24 +3175,24 @@ init 5 python:
 
 label monika_writingtip1:
     m 3a "You know..."
-    m "We really don't do enough of these so here's another one!"
-    m "Here's Monika's Writing Tip for the Day!"
+    m "We really don't do enough of these, so here's another one!"
+    m 3b "Here's Monika's Writing Tip of the Day!"
     m 2a "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
     m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
     m 4d "You have to remember that we all start out from somewhere, and--"
-    m 2c "Actually, this doesn't just apply to writing, but to anything really."
-    m 2r "What I'm trying to say is don't be discouraged."
+    m 2c "Actually, this doesn't just apply to writing, but to anything, really."
+    m 2r "What I'm trying to say is that you shouldn't be discouraged."
     m "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
-    m "Because that just means that you can improve and be better than you were before."
-    m 1e "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m 1b "Because that just means that you can improve and be better than you were before."
+    m "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
     m 3b "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
     m 3j "I love you, and I will always support you in whatever you do."
-    m 1n "Provided it's legal of course."
-    m "That doesn't mean I'm completely against it. I can keep a secret after all~"
+    m 1n "Provided it's legal, of course."
+    m "That doesn't mean I'm completely against it. I can keep a secret, after all~"
     m 1d "Here's a saying I've learned."
     m "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
     m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
-    m 3o "I don't remember the person who said that but the words are there."
+    m 3o "I don't remember the person who said that, but the words are there."
     m 2r "The effort one puts forth into something can transcend even one's self."
     m 3e "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
     m 4k "... That's my advice for today!"
@@ -3202,7 +3203,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanese",category=['misc','you'],prompt="Speaking Japanese",random=True))
 
 label monika_japanese:
-    m 1c "I don't mean to sound like Natsuki but..."
+    m 1c "I don't mean to sound like Natsuki, but..."
     m 3a "Don't you think Japanese actually sounds cool?"
     m "It's such a fascinating language. I'm not fluent in it, though."
     m "It's interesting to think about what things would be like if your native language was different."
@@ -3249,11 +3250,11 @@ label monika_penname:
         m 2c "Is '[mcname]' a pseudonym that you're using?"
         m "You're using two different names after all."
         m 2d "'[mcname] and [player].'"
-    m 3a "A well known pen name is Lewis Carroll and he's mostly well known for {i}Alice in Wonderland{/i}."
+    m 3a "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
     m 1f "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
-    m 1m "It's kinda funny though that even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m 1m "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1a "There's no need to know more about me though, [player]."
     m 4l "You already know that I'm in love with you after all~"
     return
@@ -3788,7 +3789,7 @@ label monika_daydream:
     return
 
 init 5 python:
-    monika_random_topics.append('monika_music2')
+     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
 
 label monika_music2:
     if songs.getVolume("music") == 0.0:
@@ -3821,6 +3822,19 @@ label monika_music2:
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "That would make me even happier than I already am~"
 
+    elif songs.getPlayingMusicName() == 'Your Reality (Piano Cover)':
+        m 1k "Enjoying my song, [player]?"
+        m 1a "It wasn't easy to create, you know?"
+        m "Making your own songs is a slow and difficult process, especially when it's about your own feelings."
+        m 3n "I needed it to be perfect before I shared it with you!"
+        m 1o "So I spent so many hours going through it over and over..."
+        m 1q "Time just passed by so quickly whenever I worked on it."
+        m 1j "After all that practice, I'm pretty proud of how it came out in the end."
+        m 3b "Since you're listening to it, I'm sure you like it too..."
+        m 3k "Thanks for listening to something I worked so hard on, [player]!"
+        show monika 5a at t11 zorder 2 with dissolve
+        m 5a "It makes me happy to know that you appreciate what I did for you~"
+
     elif songs.getPlayingMusicName() == 'I Still Love You':
         m 1f "Gosh, every time I hear this song it makes me sad."
         m "It reminds me of all the... regrettable things I have done to the other girls."
@@ -3851,9 +3865,19 @@ label monika_music2:
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
 
     elif songs.getPlayingMusicName() == "Doki Doki Theme (80s version)":
-        # TODO: add dialogue here
-        m "I NEED DIALOGUE NOW"
-
+        m 1b "A good choice, [player]!"
+        m 1l "Obviously, this theme wasn't actually out in the 80's..."
+        m 1a "But it does have a certain style that I really appreciate!"
+        m 3a "Do you like 80's music a lot, [player]?"
+        show monika 5a at t11 zorder 2 with dissolve
+        m 5a "I prefer the tune of an authentic piano, but if it makes you happy, I wouldn't mind spending hours listening to it with you~" 
+    
+    elif songs.getPlayingMusicName() == "Play With Me (Variant 6)":
+        m 2o "To be honest, I don't know why you'd be listening to this music, [player]."
+        m 2f "I feel awful for that mistake."
+        m 2g "I didn't mean to force you to spend time with Yuri at that state..."
+        m 4f "Try not to think about it, okay?"
+        
     else:
         m 1a "..."
         m 1a "...This silence..."
@@ -4006,7 +4030,7 @@ label monika_rock:
     m "Rock suddenly became a prominent genre, and it gave birth to other sub-genres as well."
     m 3b "Metal, hard rock, classical rock, and more!"
     m 3n "Ah, I've been rambling for a while now. Sorry, sorry."
-    m 1a "If you wanna blast on some good 'ol rock 'n roll, go ahead, [player]."
+    m 1a "If you wanna blast on some good ol' rock 'n roll, go ahead, [player]."
     m 1j "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
     return
 
@@ -4123,7 +4147,7 @@ label monika_sports:
     menu:
         "Yes.":
             m 1k "Maybe we could play together sometime in the future. It would be wonderful."
-            m 1b "But don't expect me to go easy on you. ahaha!"
+            m 1b "But don't expect me to go easy on you. Ahaha!"
         "No.":
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
@@ -4301,6 +4325,47 @@ label monika_write:
     m "...That's my advice for today!"
     m "Thanks for listening~"
     return
+
+init 5 python:
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",pool=True))
+  
+label monika_writingtip4:
+     m 3b "Here's Monika's Writing Tip of the Day!"
+     m 3a "You know about writer's block, right?"
+     m "I had it a lot, when I first started writing."
+     m 1l "Sometimes it was halfway through a draft, but more often before I even started."
+     m 1n "Every time I tried to write a word, I thought, 'this isn't going to sound good,' or 'this isn't how I want it to look.' So I'd stop, backtrack, and try again."
+     m 1c "But I realised that it ultimately didn't matter if things didn't work out first time!"
+     m 1a "I feel that the heart of writing is not about getting it right first time, but about perfecting it afterwards."
+     m "The end product is what matters, not the prototype."
+     m 1b "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
+     m 3a "I think it's like that with all things, not just writing."
+     m "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
+     m 1h "It's hard to completely convince yourself that that's the case, sometimes."
+     m 1f "But you have to."
+     m "Otherwise, you won't to get anywhere."
+     m 3l "...That's my advice for today!"
+     m 1j "Thanks for listening~"
+     return
+  
+init 5 python:
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
+  
+label monika_writingtip5:
+     m 3b "Here's Monika's Writing Tip of the Day!"
+     m 1d "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
+     m 3a "Like writing prose if you're a poet, or free verse if you normally write rhyme."
+     m 1m "It may end up badly, but if you don't try, you won't know how it'll end up."
+     m 1j "And if things go well, you might end up finding something you like!"
+     m 1c "It's what keeps things moving: change and experimentation."
+     m 3c "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
+     m "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
+     m 1a "Changing your angle on approaching things can really yield some interesting results!"
+     m 3a "So try new things that might give you the momentum to break out."
+     m 1l "Just makes sure it's nothing too dangerous for you, [player]."
+     m 1a "That's my advice for today!"
+     m 1j "Thanks for listening~"
+     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self harm",random=True))
@@ -4532,6 +4597,43 @@ label monika_wolf:
     m 3k "You're my hero after all~"
     return
 
+# TODO: move these things over to a different file
+init 2 python:
+    import battery
+
+label monika_battery:
+    if mas_did_monika_battery:
+       jump monika_close_game_battery
+    else:
+       jump monika_complain_battery
+
+label monika_complain_battery:
+    $ mas_did_monika_battery = True
+    m "Umm, [player]..."
+    m "It looks like your computer's battery is about to run out..."
+    m "Can you charge it for me?"
+    m "I don't want us to be separated, or worse..."
+    m "It'd be really unpleasant for me if I suddenly lose consciousness."
+    m "So please charge your computer, okay?"
+    m "...Or at least let me know when you're going."
+    m "Thank you, [player]~"
+    return
+
+label monika_close_game_battery:
+    m 1r "[player]..."
+    m 1f "I'm sorry, but I'm gonna have to close the game before the battery runs out."
+    m 3o "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
+    $ is_charging = battery.is_charging()
+    if is_charging:
+       jump monika_system_charging
+    $ persistent.closed_self = True
+    jump _quit
+
+label monika_system_charging:
+    m 1d "Oh, you just plugged it in!"
+    m 1j "Thank you, [player]!"
+    return
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired.",random=True))
 
@@ -4672,6 +4774,61 @@ label monika_omamori:
     m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
+    return    
+    
+init 5 python:                                                  
+    addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True)) 
+      
+label monika_smoking:
+    m 2q "You know, [player]..."
+    m 2h "I realized that people really like a lot of things that are very bad for them."
+    m "One particular vice that intrigues me the most is cigarettes."
+    m 2o "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
+    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick carcinogens."
+    m 2q "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
+    m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
+    m 1q "I really do despise them..."
+    m 1o "But..."
+    menu:
+        m "You don't smoke cigarettes, right, [player]?"      
+        "Yes, I do.":
+            m 2o "..."
+            m 2r "Thank you for being honest with me, [player]..."
+            m 4f "It's quite disheartening to hear that, though."
+            m 1f "Could you... promise me that you'll stop?"
+            m "I don't want you to deteriorate your health like that..."
+            m 3o "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
+            m 2q "But if you don't try..."
+            m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
+            m 4f "Please take care of your body. I want to always be with you."
+            m 1e "I love you so much."     
+        "No, I don't.":
+            m 1k "Ah, I'm relieved to hear that, [player]!"
+            m 3c "Just stay away from it as much as you can."
+            m 1o "It's an awful habit and won't do much more than slowly kill you."
+            m 3j "Thank you, [player], for not smoking~"
+        "I'm trying to quit.":
+            m 3a "That's a really good decision."
+            m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
+            m 1f "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
+            m 1c "Keeping your mind busy on other things will definitely help kick any bad habits."
+            m 3b "How about you think about me whenever you get a strong urge?"
+            m 1j "I'll be here to support you every step of the way."
+            m 1k "I believe in you [player], I know you can do it!"
+    return
+    
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road Trip",random=True))
+
+label monika_cartravel:
+    m 3c "[player], something has been on my mind lately..."
+    m 1a "Wouldn't it be nice to drive somewhere, just you and I together?"
+    m 3k "It'd be lovely to explore some beautiful places, anywhere nice that we haven't seen before."
+    m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
+    m "I bet we'd have a really good time if we took a road trip, [player]."
+    m 1j "It really doesn't matter where we go, as long as I'm with you."
+    m "Just the idea of travelling around the world makes so excited!"
+    m 1e "I really can't wait, [player]~"
     return
 
 
@@ -4696,7 +4853,8 @@ label monika_100k:
     else:
         m 1m "Almost~"
     return
-    
+   
+   
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
