@@ -43,13 +43,17 @@ define mas_diary.game_outcomes = dict()
 # TODO: waiting on moods pr
 define mas_diary.moods = list()
 
+# list of topic entries. these should only contain stuff from event's
+# diary_entry property, also these should be in chronological order
+define mas_diary.topic_entries = list()
+
 # list of special custom diary entry strings. Each string is considered a
 # "line". These are placed after main diary entry but before the PS section
-define mas_diary.custom_entry_lines = list()
+define mas_diary.custom_entries = list()
 
 # list of PS diary entry lines. Each string is considered a "line"
 # each line gets an extra P (PS, PPS, PPPS...)
-define mas_diary.ps_entry_lines = list()
+define mas_diary.ps_entries = list()
 
 # diary been touched today? (by the player)
 # this value should be set at start in the same location session time
@@ -137,10 +141,16 @@ init python in mas_diary:
     # diary keywords general
     # consists of other diary-related things
     diary_keywords_gen = {
-        "greeting": None, # like the Dear Diary stuff. this should be 
-            # customizable by adding a file with lines
-        "closing": None # sincerely, love, from. This also should be 
-            # customizable by aadding a fiel with lines
+        # like the Dear Diary stuff. this should be 
+        # customizable by adding a file with lines
+        "greeting": None,
+
+        # sincerely, love, from. This also should be 
+        # customizable by aadding a fiel with lines
+        "closing": None,
+
+        # body section is where paragraph diary entries from topics go
+        "body": None
     }
 
     ################## functions ############################
