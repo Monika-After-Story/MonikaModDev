@@ -51,10 +51,19 @@ define mas_diary.custom_entry_lines = list()
 # each line gets an extra P (PS, PPS, PPPS...)
 define mas_diary.ps_entry_lines = list()
 
+# diary been touched today? (by the player)
+# this value should be set at start in the same location session time
+# is handled.
+define mas_diary.diary_opened = False
+
 #### persistents we need
 # True if we've written a diary entry today, False otherwise.
 # this should reset every day. and after a day has been written
 default persistent._mas_diary_written = False
+
+# checksum of the diary
+# if this None, we assume no diary exists
+default persistent._mas_diary_checksum = None
 
 init python in mas_diary:
     import os
@@ -109,7 +118,7 @@ init python in mas_diary:
         "dd": "{0}" # 2 digit current day, unpadded
     }
 
-
+    # diary keywords for games
     diary_keywords_games = {
         "gamesCSV": None # games played, comma separated # TODO: framework for this?
 
@@ -120,8 +129,18 @@ init python in mas_diary:
 #        "game_pong": None # results of pong (if it was played)
     }
 
+    # diary keywords for topics
     diary_keywords_topics = {
         "topicsCSV": None # category tags for topics shown, comma separated # TODO: framework for this?
+    }
+
+    # diary keywords general
+    # consists of other diary-related things
+    diary_keywords_gen = {
+        "greeting": None, # like the Dear Diary stuff. this should be 
+            # customizable by adding a file with lines
+        "closing": None # sincerely, love, from. This also should be 
+            # customizable by aadding a fiel with lines
     }
 
     ################## functions ############################
@@ -210,19 +229,26 @@ init python in mas_diary:
         """
         # starting with the games CSV
         if len(games_played) > 0:
-            games_played_str = ", ".join(games_played[:-1])
-            games_played_str += ", and {0}".format(games_played[-1:])
-
-        else:
-            games_played_str = ""
-
-        diary_keywords_games["gamesCSV"] = games_played_str
+            if len(games_played) > 1:
+                games_played_str = ", ".join(games_played[:-1])
+                games_played_str += " and {0}".format(games_played[-1:])
+            else:
+                games_played_str = games_played[0]
+            diary_keywords_games["gamesCSV"] = games_played_str
 
 
     def _initDiaryKeywordsTopics():
         """
         Fills the diary replacement keywords for topics dict
         """
+        # starting with topics CSV
+        if len(category_tags) > 0:
+            if len(category_tags) > 1:
+                category_tags_str = ", ".join(category_tags[:-1])
+                category_tags_str += " and {0}".format(category_tags[-1:])
+            else:
+                category_tags_str = category_tags[0]
+            diary_keywords_topics["topicsCSV"] = category_tags_str
 
 
     def _scanTemplates():

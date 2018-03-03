@@ -322,9 +322,7 @@ label call_next_event:
             # increment shown count
             $ ev.shown_count += 1
 
-            # TODO: diary entry lines could go here probably.
-#            if ev.category and len(ev.category) > 0:
-                # TODO: add category tags. (we need a function for this)
+            # TODO: diary entries
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
