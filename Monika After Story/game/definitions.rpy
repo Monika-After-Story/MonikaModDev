@@ -81,6 +81,10 @@ python early:
     #       NOTE: diary entries cannot be longer than 500 characters
     #       NOTE: treat diary entries as single paragraphs
     #       (Default: None)
+    #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: refer to RULES documentation in event-rules
+    #       NOTE: if you set this to None, you will break this forever
+    #       (Default: empty dict)
     class Event(object):
 
         # tuple constants
@@ -98,7 +102,8 @@ python early:
             "end_date":10,
             "unlock_date":11,
             "shown_count":12,
-            "diary_entry":13
+            "diary_entry":13,
+            "rules":14
         }
 
         # name constants
@@ -123,7 +128,8 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-                diary_entry=None):
+                diary_entry=None,
+                rules=dict()):
 
             # setting up defaults
             if not eventlabel:
@@ -138,7 +144,10 @@ python early:
                         "diary entry for {0} is longer than {1} characters"
                     ).format(eventlabel, self.DIARY_LIMIT)
                 )
-
+            if rules is None:
+                raise Exception(
+                    "'{0}' - rules property cannot be None".format(eventlabel)
+                )
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -150,7 +159,6 @@ python early:
             # default label is a prompt
             if not label:
                 label = prompt
-
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -168,7 +176,8 @@ python early:
                 end_date,
                 unlock_date,
                 0,
-                diary_entry
+                diary_entry,
+                rules
             )
 
             # if the item exists, reform data if the length has increased
