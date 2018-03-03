@@ -192,6 +192,53 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.7.3
+label v0_7_3(version="v0_7_3"):
+    python:
+        # check for vday existence and delete
+        # NOTE: thiis was supposed to be in for 0.7.2 but i forgot/thought
+        # auto updates would handle it
+        import os
+        try: os.remove(config.basedir + "/game/valentines.rpyc")
+        except: pass   
+
+        # anniversary dates relying on add_months need to be tweaked
+        # define a special function for this
+        import store.evhand as evhand
+        import datetime
+        fullday = datetime.timedelta(days=1)
+        threeday = datetime.timedelta(days=3)
+        week = datetime.timedelta(days=7)
+        month = datetime.timedelta(days=30)
+        year = datetime.timedelta(days=365)
+        def _month_adjuster(key, months, span):
+            new_anni_date = add_months(
+                start_of_day(persistent.sessions["first_session"]), 
+                months
+            )
+            evhand.event_database[key].start_date = new_anni_date
+            evhand.event_database[key].end_date = new_anni_date + span
+
+        # now start adjusting annis
+        _month_adjuster("anni_1month", 1, fullday)
+        _month_adjuster("anni_3month", 3, fullday)
+        _month_adjuster("anni_6month", 6, fullday)
+        _month_adjuster("anni_1", 12, fullday)
+        _month_adjuster("anni_2", 24, fullday)
+        _month_adjuster("anni_3", 36, threeday)
+        _month_adjuster("anni_4", 48, week)
+        _month_adjuster("anni_5", 60, week)
+        _month_adjuster("anni_10", 120, month)
+        _month_adjuster("anni_20", 240, year)
+        evhand.event_database["anni_100"].start_date = add_months(
+            start_of_day(persistent.sessions["first_session"]), 
+            1200
+        )
+            
+
+
+    return
+
 # 0.7.2
 label v0_7_2(version="v0_7_2"):
     python:

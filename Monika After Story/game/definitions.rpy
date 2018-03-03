@@ -75,6 +75,16 @@ python early:
     #       NOTE: this must be set by the caller, and it is asssumed that
     #           call_next_event is the only one who changes this
     #       (Default: 0)
+    #   diary_entry - string that will be added as a diary entry if this event
+    #       has been seen. This string will respect \n and other formatting
+    #       characters. Can be None
+    #       NOTE: diary entries cannot be longer than 500 characters
+    #       NOTE: treat diary entries as single paragraphs
+    #       (Default: None)
+    #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: refer to RULES documentation in event-rules
+    #       NOTE: if you set this to None, you will break this forever
+    #       (Default: empty dict)
     class Event(object):
 
         # tuple constants
@@ -91,11 +101,16 @@ python early:
             "start_date":9,
             "end_date":10,
             "unlock_date":11,
-            "shown_count":12
+            "shown_count":12,
+            "diary_entry":13,
+            "rules":14
         }
 
         # name constants
         N_EVENT_NAMES = ("per_eventdb", "eventlabel")
+
+        # other constants
+        DIARY_LIMIT = 500
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -113,7 +128,9 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-                shown_count=0):
+                diary_entry=None,
+                rules=dict()
+            ):
 
             # setting up defaults
             if not eventlabel:
@@ -122,6 +139,16 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
+            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+                raise Exception(
+                    (
+                        "diary entry for {0} is longer than {1} characters"
+                    ).format(eventlabel, self.DIARY_LIMIT)
+                )
+            if rules is None:
+                raise Exception(
+                    "'{0}' - rules property cannot be None".format(eventlabel)
+                )
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -133,7 +160,6 @@ python early:
             # default label is a prompt
             if not label:
                 label = prompt
-
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -150,7 +176,9 @@ python early:
                 start_date,
                 end_date,
                 unlock_date,
-                shown_count
+                0, # shown_count
+                diary_entry,
+                rules
             )
 
             # if the item exists, reform data if the length has increased
@@ -167,6 +195,7 @@ python early:
                 # actaully this should be always
                 self.prompt = prompt
                 self.category = category
+                self.diary_entry = diary_entry
 
             # new items are added appropriately
             else:
@@ -216,7 +245,9 @@ python early:
                     self.per_eventdb[self.eventlabel] = data_row
 
                 else:
-                    super(Event, self).__setattr__(name, value)
+                    raise EventException(
+                        "'{0}' is not a valid attribute for Event".format(name)
+                    )
 
         # get attribute ovverride
         def __getattr__(self, name):
@@ -716,7 +747,7 @@ python early:
         def enable(self):
             """
             Enables this button. This changes the internal state, so its
-            preferable to use this over setting the disabled property 
+            preferable to use this over setting the disabled property
             directly
             """
             self.disabled = False
@@ -734,7 +765,7 @@ python early:
             """
             return (self.width, self.height)
 
-        
+
         def ground(self):
             """
             Grounds (unhovers) this button. This changes the internal state,
@@ -845,7 +876,7 @@ python early:
                             self._playHoverSound()
 
                 elif (
-                        ev.type == self._button_down 
+                        ev.type == self._button_down
                         and ev.button == self._button_click
                     ):
                     if self.hovered:
@@ -855,6 +886,389 @@ python early:
 
             # otherwise continue on
             return None
+
+#init -1 python:
+    # new class to manage a list of quips
+    class MASQuipList(object):
+        """
+        Class that manages a list of quips. Quips have types which helps us
+        when deciding how to execute quips. Also we have some properties that
+        make it easy to customize a quiplist.
+
+        I suggest that you only use this if you need to have multipe types
+        of quips in a list. If you're only doing one-liners, a regular list
+        will suffice.
+
+        Currently 3 types of quips:
+            glitchtext - special type for a glitchtext generated quip.
+            label - this quip is actually the label for the actual quip
+                (assumed the label has a return and is designed to be called)
+            line - this quip is the actual line we want to display.
+            other - other types of quips
+
+        CONSTANTS:
+            TYPE_GLITCH - glitch text type quip
+            TYPE_LABEL - label type quip
+            TYPE_LINE - line type quip
+            TYPE_OTHER - other, custom types of quips
+
+        PROPERTIES:
+            allow_glitch - True means glitch quips can be added to this list
+            allow_label - True means label quips can be added to this list
+            allow_line - True means line quips can be added to this list
+            raise_issues - True will raise exceptions if bad things occur:
+                - if a quip that was not allowed was added
+                - if a label that does not exist was added
+                - etc...
+        """
+
+        TYPE_GLITCH = 0
+        TYPE_LABEL = 1
+        TYPE_LINE = 2
+        TYPE_OTHER = 50
+
+        TYPES = (
+            TYPE_GLITCH,
+            TYPE_LABEL,
+            TYPE_LINE,
+            TYPE_OTHER
+        )
+
+        def __init__(self,
+                allow_glitch=True,
+                allow_label=True,
+                allow_line=True,
+                raise_issues=True
+            ):
+            """
+            Constructor for MASQuipList
+
+            IN:
+                allow_glitch - True means glitch quips can be added to this
+                    list, False means no
+                    (Default: True)
+                allow_label - True means label quips can be added to this list,
+                    False means no
+                    (Default: True)
+                allow_line - True means line quips can be added to ths list,
+                    False means no
+                    (Default: True)
+                raise_issues - True means we will raise exceptions if bad
+                    things occour. False means we stay quiet
+                    (Default: True)
+            """
+            
+            # set properties
+            self.allow_glitch = allow_glitch
+            self.allow_label = allow_label
+            self.allow_line = allow_line
+            self.raise_issues = raise_issues
+
+            # this is the actual internal ist
+            self.__quiplist = list()
+
+    
+        def addGlitchQuip(self, 
+                length, 
+                cps_speed=0, 
+                wait_time=None, 
+                no_wait=False
+            ):
+            """
+            Adds a glitch quip based upon the given params.
+
+            IN:
+                length - length of the glitch text
+                cps_speed - integer value to use as glitchtext speed multiplier
+                    If 0 or 1, no cps speed change is done.
+                    (Default: 0)
+                wait_time - integer value to use as wait time. If None, no
+                    wait tag is used
+                    (Default: None)
+                no_wait - If True, a no wait tag is added to the glitchtext.
+                    otherwise, no no-wait tag is added.
+                    (Default: False)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+            """
+            if self.allow_glitch:
+                
+                # create the glitchtext quip
+                quip = glitchtext(length)
+
+                # check for cps speed adding
+                if cps_speed > 0 and cps_speed != 1:
+                    cps_speedtxt = "cps=*{0}".format(cps_speed)
+                    quip = "{" + cps_speedtxt + "}" + quip + "{/cps}"
+
+                # check for wait adding
+                if wait_time is not None:
+                    wait_text = "w={0}".format(wait_time)
+                    quip += "{" + wait_text + "}"
+
+                # check no wait
+                if no_wait:
+                    quip += "{nw}"
+
+                # now add the quip to the internal ist
+                self.__quiplist.append((self.TYPE_GLITCH, quip))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Glitchtext cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLabelQuip(self, label_name):
+            """
+            Adds a label quip.
+
+            IN:
+                label_name - label name of this quip
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the label didnt exist
+            """
+            if self.allow_label:
+
+                # check for label existence first
+                if not renpy.has_label(label_name):
+                    # okay throw an error and reutrn -1
+                    self.__throwError(
+                        "Label '{0}' does not exist".format(label_name)
+                    )
+                    return -1
+
+                # otherwise, we are good to add this thing
+                self.__quiplist.append((self.TYPE_LABEL, label_name))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Labels cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLineQuip(self, line, custom_type=None):
+            """
+            Adds a line quip. A custom type can be given if the caller wants
+            this line quip to be differentable from other line quips.
+
+            IN:
+                line - line quip
+                custom_type - the type to use for this line quip instead of
+                    TYPE_LINE. If None, TYPE_LINE is used.
+                    (Default: None)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the given custom_type is conflicting exisiting types.
+            """
+            if self.allow_line:
+
+                # check given type
+                if custom_type is None:
+                    custom_type = self.TYPE_LINE
+
+                elif custom_type in self.TYPES:
+                    # cant have conflicing types
+                    self.__throwError(
+                        (
+                            "Custom type for '{0}' conflicts with default " +
+                            "types."
+                        ).format(line)
+                    )
+                    return -1
+
+                # otherwise, we are good for adding this line
+                self.__quiplist.append((custom_type, line))
+
+                return len(self.__quiplist) -1
+
+            else:
+                self.__throwError(
+                    "Lines cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def quip(self, remove=False):
+            """
+            Randomly picks a quip and returns the result.
+
+            Line quips are automatically cleaned and prepared ([player], 
+            gender pronouns are all replaced appropraitely). If the caller
+            wants additional variable replacements, they must do that 
+            themselves.
+
+            IN:
+                remove - True means we remove the quip we select. False means
+                    keep it in the internal list.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            if remove:
+                # if we need to remove, we should use randint instead
+                sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
+                quip_type, quip_value = self.__quiplist.pop(sel_index)
+
+            else:
+                # if we dont need to remove, we can just use renpy random
+                # choice
+                quip_type, quip_value = renpy.random.choice(self.__quiplist)
+
+            # now do preocessing then send
+            if quip_type == self.TYPE_GLITCH:
+                quip_value = self._quipGlitch(quip_value)
+
+            elif quip_type == self.TYPE_LABEL:
+                quip_value = self._quipLabel(quip_value)
+
+            elif quip_type == self.TYPE_LINE:
+                quip_value = self._quipLine(quip_value)
+
+            return (quip_type, quip_value)
+
+
+        def _getQuip(self, index):
+            """
+            Retrieves the quip at the given index.
+
+            IN:
+                index - the index the wanted quip is at
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            return self.__quiplist[index]
+
+
+        def _getQuipList(self):
+            """
+            Retrieves the internal quip list. This is a direct reference to 
+            the internal list, so be careful.
+
+            RETURNS:
+                the internal quiplist
+            """
+            return self.__quiplist
+
+
+        def _quipGlitch(self, gt_quip):
+            """
+            Processes the given glitch text quip for usage.
+
+            IN:
+                gt_quip - the glitchtext quip (value) to process
+
+            RETURNS:
+                glitchtext quip ready for display.
+            """
+            # NOTE: for now, we dont need to do processing here
+            return gt_quip
+
+
+        def _quipLabel(self, la_quip):
+            """
+            Processes the given label quip for usage.
+
+            IN:
+                la_quip - the label quip (value) to process
+
+            RETURNS:
+                label quip ready for call
+            """
+            # NOTE: for now, we dont need to do processing here
+            return la_quip
+
+
+        def _quipLine(self, li_quip):
+            """
+            Processes the given line quip for usage.
+
+            IN:
+                li_quip - the line quip (value) to process
+
+            RETURNS:
+                line quip ready for display
+            """
+            # lines need processing
+            #quip_replacements = self.__generateLineQuipReplacements()
+
+            #for keyword, value in quip_replacements:
+            #    li_quip = li_quip.replace(keyword, value)
+
+            # turns out we can do this in one line
+            # TODO: test if this actually works, we might need to pass in
+            # scope as well
+            return renpy.substitute(li_quip)
+
+
+        def _removeQuip(self, index):
+            """
+            Removes the quip at the given index. (and returns it back)
+
+            IN:
+                index - the index of the quip to remove.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of the removed quip
+                    [1]: value of the removed quip
+            """
+            quip_tup = self.__quiplist.pop(index)
+            return quip_tup
+
+
+        def __generateLineQuipReplacements(self):
+            """
+            Generates line quip replacement list for easy string replacement.
+
+            RETURNS: a list for line quip variable replacements
+
+            ASSUMES:
+                player
+                currentuser
+                mcname
+                <all gender prounouns>
+            """
+            return [
+                ("[player]", player),
+                ("[currentuser]", currentuser),
+                ("[mcname]", mcname),
+                ("[his]", his),
+                ("[he]", he),
+                ("[hes]", hes),
+                ("[heis]", heis),
+                ("[bf]", bf),
+                ("[man]", man),
+                ("[boy]", boy),
+                ("[guy]", guy)
+            ]
+
+
+        def __throwError(self, msg):
+            """
+            Internal function that throws an error if we are allowed to raise
+            issues.
+
+            IN:
+                msg - message to display
+            """
+            if self.raise_issues:
+                raise Exception(msg)
 
 
 init -1 python:
@@ -883,7 +1297,7 @@ init -1 python:
             import subprocess
             try:
                 return subprocess.check_output(
-                    "wmic process get Description", 
+                    "wmic process get Description",
                     shell=True
                 ).lower().replace("\r", "").replace(" ", "").split("\n")
             except:
@@ -908,6 +1322,17 @@ init -1 python:
         # otherwise, not found
         return False
 
+    def is_file_present(file):
+        try:
+            renpy.file(
+                ".." +
+                file
+            )
+            is_file = True
+        except:
+            is_file = False
+
+        return is_file
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
@@ -2183,6 +2608,7 @@ default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
+default persistent._mas_monika_repeated_herself = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600

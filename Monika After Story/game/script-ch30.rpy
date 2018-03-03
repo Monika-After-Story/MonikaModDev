@@ -5,6 +5,7 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define allow_dialogue = True
 define modoorg.CHANCE = 20
+define mas_battery_supported = False
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -83,6 +84,7 @@ init python:
     import os
     import eliza      # mod specific
     import datetime   # mod specific
+    import battery    # mod specific
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
@@ -118,6 +120,9 @@ init python:
         mcname = currentuser
     else:
         mcname = persistent.mcname
+
+    # check for battery support
+    mas_battery_supported = battery.is_supported()
 
     #Define new functions
 
@@ -609,14 +614,29 @@ label ch30_loop:
         $ waittime = renpy.random.randint(20, 45)
         $ renpy.pause(waittime, hard=True)
         window auto
+
+        python:
+            if (
+                    mas_battery_supported 
+                    and battery.is_battery_present() 
+                    and not battery.is_charging()
+                    and battery.get_level() < 20
+                ):
+                pushEvent("monika_battery")
+
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
-                    sel_ev = renpy.random.choice(monika_random_topics)
+
+                    if persistent._mas_monika_repeated_herself:
+                        sel_ev = monika_random_topics.pop(0)
+                    else:
+                        sel_ev = renpy.random.choice(monika_random_topics)
+                        monika_random_topics.remove(sel_ev)
+
                     pushEvent(sel_ev)
-                    monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
 
                 elif persistent._mas_enable_random_repeats:
@@ -636,9 +656,9 @@ label ch30_loop:
                     # NOTE: now the monika random topics are back to being
                     #   labels. Safe to do normal operation.
 
-                    sel_ev = renpy.random.choice(monika_random_topics)
+                    persistent._mas_monika_repeated_herself = True
+                    sel_ev = monika_random_topics.pop(0)
                     pushEvent(sel_ev)
-                    monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
 
                 elif not seen_random_limit: # no topics left
