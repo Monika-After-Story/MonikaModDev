@@ -339,10 +339,10 @@ label mas_pong_dlg_winner:
 label mas_pong_dlg_winner_end:
     m 4e "I can't really get excited for a game this simple..."
     m 1a "At least we can still hang out with each other."
-    m "Ahaha!"
+    m 1k "Ahaha!"
     m 1b "Thanks for letting me win, [player]."
     m 1a "Only elementary schoolers seriously lose at Pong, right?"
-    m "Ehehe~"   
+    m 1j "Ehehe~"   
     return
 
 # quick dialogue shown when monika is the pong winner

@@ -122,11 +122,12 @@ init python:
         if not renpy.has_label(event.eventlabel):
             raise EventException("'" + event.eventlabel + "' does NOT exist")
         if event.conditional is not None:
-            try:
-                if eval(event.conditional, globals()):
-                    pass
-            except:
-                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
+            eval(event.conditional)
+#            try:
+#                if eval(event.conditional, globals()):
+#                    pass
+#            except:
+#                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
@@ -535,7 +536,7 @@ label prompts_categories(pool=True):
                     prompt_category_menu.append([unlocked_events[event].prompt,event])
                 """
 
-        call screen twopane_scrollable_menu(prev_items, main_items, evhand.LEFT_AREA, evhand.LEFT_XALIGN, evhand.RIGHT_AREA, evhand.RIGHT_XALIGN, len(current_category))
+        call screen twopane_scrollable_menu(prev_items, main_items, evhand.LEFT_AREA, evhand.LEFT_XALIGN, evhand.RIGHT_AREA, evhand.RIGHT_XALIGN, len(current_category)) nopredict
 
 
 

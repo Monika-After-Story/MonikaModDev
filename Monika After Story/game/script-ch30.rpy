@@ -614,10 +614,38 @@ label ch30_loop:
             label pick_random_topic:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
-                    sel_ev = renpy.random.choice(monika_random_topics)
+
+                    if persistent._mas_monika_repeated_herself:
+                        sel_ev = monika_random_topics.pop(0)
+                    else:
+                        sel_ev = renpy.random.choice(monika_random_topics)
+                        monika_random_topics.remove(sel_ev)
+
                     pushEvent(sel_ev)
-                    monika_random_topics.remove(sel_ev)
                     persistent.random_seen += 1
+
+                elif persistent._mas_enable_random_repeats:
+                    # user wishes for reptitive monika. We will oblige, but
+                    # a somewhat intelligently.
+                    # NOTE: these are ordered using the shown_count property
+                    # NOTE: These start off as list of event objects and then
+                    # sorted differently. WATCH OUT
+                    monika_random_topics = Event.filterEvents(
+                        evhand.event_database,
+                        random=True
+                    ).values()
+                    monika_random_topics.sort(key=Event.getSortShownCount)
+                    monika_random_topics = [
+                        ev.eventlabel for ev in monika_random_topics
+                    ]
+                    # NOTE: now the monika random topics are back to being
+                    #   labels. Safe to do normal operation.
+
+                    persistent._mas_monika_repeated_herself = True
+                    sel_ev = monika_random_topics.pop(0)
+                    pushEvent(sel_ev)
+                    persistent.random_seen += 1
+
                 elif not seen_random_limit: # no topics left
 #                    monika_random_topics = list(all_random_topics)
 #                    pushEvent(renpy.random.choice(monika_random_topics))
