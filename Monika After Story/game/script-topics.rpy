@@ -5072,7 +5072,7 @@ label monika_prom:
                                     m 2j "..."
                                     m 2l "Where was I?"
                                     m 1n "Almost forgot. Prom."
-                        "No."
+                        "No.":
                             m 1d "Why not?"
                             menu:
                                 "Not old enough yet.":
