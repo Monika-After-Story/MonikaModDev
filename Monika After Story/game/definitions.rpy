@@ -75,6 +75,12 @@ python early:
     #       NOTE: this must be set by the caller, and it is asssumed that
     #           call_next_event is the only one who changes this
     #       (Default: 0)
+    #   diary_entry - string that will be added as a diary entry if this event
+    #       has been seen. This string will respect \n and other formatting
+    #       characters. Can be None
+    #       NOTE: diary entries cannot be longer than 500 characters
+    #       NOTE: treat diary entries as single paragraphs
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -91,11 +97,15 @@ python early:
             "start_date":9,
             "end_date":10,
             "unlock_date":11,
-            "shown_count":12
+            "shown_count":12,
+            "diary_entry":13
         }
 
         # name constants
         N_EVENT_NAMES = ("per_eventdb", "eventlabel")
+
+        # other constants
+        DIARY_LIMIT = 500
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -113,7 +123,7 @@ python early:
                 start_date=None,
                 end_date=None,
                 unlock_date=None,
-                shown_count=0):
+                diary_entry=None):
 
             # setting up defaults
             if not eventlabel:
@@ -122,6 +132,13 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
+            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+                raise Exception(
+                    (
+                        "diary entry for {0} is longer than {1} characters"
+                    ).format(eventlabel, self.DIARY_LIMIT)
+                )
+
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -150,7 +167,8 @@ python early:
                 start_date,
                 end_date,
                 unlock_date,
-                shown_count
+                0,
+                diary_entry
             )
 
             # if the item exists, reform data if the length has increased
@@ -167,6 +185,7 @@ python early:
                 # actaully this should be always
                 self.prompt = prompt
                 self.category = category
+                self.diary_entry = diary_entry
 
             # new items are added appropriately
             else:
