@@ -141,35 +141,34 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="sad",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_sad:
-    m 3f "Gosh, I'm really sorry to hear that you are feeling down today."
-    m 3g "Is it because you're having a bad day or anything like that [player]?"
+    m 1f "Gosh, I'm really sorry to hear that you're feeling down."
+    m 3g "Are you having a bad day, [player]?"
     menu:
         "Yes":
-            m 1e "I'll do my best to cheer you up then."
-            m 4e "Whenever I'm having a bad day, I always remember that the sun will shine again tomorrow."
-            m 2j "I suppose that may sound kinda cheesy, but I always like to look on the bright side of things."
-            m 2a "After all, sometimes things like that are easy to forget, so just keep it in mind [player]."
-            m 1h "I don't care how many many other people dislike you or find you off-putting."
-            m 1j "I think you're wonderful and I will always love you."
-            m 1a "I hope, if nothing else, that makes your day just a tiny bit brighter."
+            m 1q "Whenever I'm having a bad day, I always remember that the sun will shine again tomorrow."
+            m 1e "I suppose that may sound kinda cheesy, but I always like to look on the bright side of things."
+            m 1a "After all, things like that are easy to forget. So just keep it in mind [player]."
+            m 1h "I don't care how many other people don't like you, or find you off-putting."
+            m 1j "You're a wonderful person, and I will always love you."
+            m 1a "I hope that makes your day just a tiny bit brighter, [player]."
             m 1e "And remember, if you're having a bad day, you can always come to me and I'll talk to you for as long as you need."
         "No":
-            m 1e "I have an idea, why don't you tell me what's bothering you and maybe it'll make you feel better."
-            m "I don't want to interrupt you while you're talking, so let me know when you are done."
+            m 3e "I have an idea, why don't you tell me what's bothering you and maybe it'll make you feel better."
+            m 1a "I don't want to interrupt you while you're talking, so let me know when you are done."
             menu: 
                 "I'm done.":
                     m "Do you feel a little better now [player]?"
                     menu:
                         "Yeah I do.":
-                            m 1j "That's great [player]. I'm glad that talking about it with me made you feel better."
-                            m 1e "Sometimes telling someone that you trust what's bothering you is all you need."
-                            m "If you're ever having a bad day, you can always come to me and I'll listen to you." 
-                            m 2b "Never forget that I think that you're wonderful and I will always love you."
+                            m 1j "That's great [player]! I'm glad that talking about it made you feel better."
+                            m 1e "Sometimes, telling someone that you trust what's bothering you is all you need."
+                            m "If you're ever having a bad day, you can always come to me, and I'll listen to whatever you need to vent out." 
+                            m 1j "Never forget that you're wonderful and I will always love you~"
                         "Not really.":
                             m 1f "Well it was worth a shot."
                             m 1e "Sometimes telling someone that you trust what's bothering you is all you need."
-                            m "Maybe you'll feel better after we spend some more time together."
-                            m "I love you [player] and I always will."
+                            m 1a "Maybe you'll feel better after we spend some more time together."
+                            m 1j "I love you [player], and I always will~"
     return
 
 init 5 python:
