@@ -70,6 +70,7 @@ default persistent._mas_diary_checksum = None
 
 init python in mas_diary:
     import os
+    from cStringIO import StringIO # we do alot of string work here
 
     # folder path to diary templates (from game)
     DIARY_TEMPLATES_FOLDER = "mod_assets/templates/diary/"
@@ -118,6 +119,53 @@ init python in mas_diary:
     }
 
     ################## functions ############################
+    def breakLines(string, min_length=100, max_length=120, use_nl=False):
+        """
+        Breaks the given string into multiple lines that follow the min/max
+        line length rule.
+
+        IN:
+            string - the string we want to break up
+            min_length - the minimum length per line
+                (Default: 100)
+            max_length - the maximum length per line
+                (Default: 120)
+            use_nl - True means use newlines to identify line breaks.
+                False will add each line to a list
+                (Default: False)
+
+        RETURNS:
+            if use_nl is True, then a single string with newlines for handling
+            line breaks.
+            If use_nl is False, then a list of strings where each string 
+            represents a line.
+        """
+        output = StringIO() # cStringIO version
+
+        curr_line = string
+        while len(curr_line) > max_length:
+
+            # limit this line and continue
+            new_line, curr_line = limitLine(curr_line, min_length, max_length)
+            output.write(new_line)
+            output.write("\n")
+
+        # at this point, curr_line will contain either the last line or 
+        # nothing if theres no more lines
+        if len(curr_line) > 0:
+            output.write(curr_line)
+
+        outstring = output.getvalue()
+        output.close()
+
+        # if we're not using newlines, better split by them
+        if not use_nl:
+            return outstring.splitlines()
+
+        # otherwise we're done
+        return outstring
+        
+
     def indexLeftSpace(string, loc, end_loc=0):
         """
         Returns the index of the nearest space on the left of the string
@@ -292,7 +340,7 @@ init python in mas_diary:
             nonspace_dex = indexRightNonSpace(line, limit_dex+1)
 
             if nonspace_dex < 0:
-                nonspace_dex = limit_dex    
+                nonspace_dex = len(line)
 
         # otherwise, just use limit dex
         else:
@@ -387,18 +435,25 @@ init python in mas_diary:
         RETURNS:
             games CSV string
         """       
-        # TODO: use modifier name to limit lenght of string
         if len(games_played) > 0:
+
             if len(games_played) > 1:
-                return (
+                games_played_str = (
                     ", ".join(games_played[:-1]) +
                     " and {0}".format(games_played[-1:])
                 )
 
-            # otherwise
+                # break up the lines
+                if modifier == "b":
+                    return breakLines(games_played_str)
+
+                # otherwise as is
+                return games_played_str
+
+            # otherwise only one game played today
             return games_played[0]
 
-        # otherwise
+        # otherwise no games played today
         return ""
 
     
