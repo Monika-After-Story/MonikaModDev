@@ -27,8 +27,11 @@
 # we should display it in the diary.
 
 #### metric datas. These should NOT be persisetent.
-# list of category tags shown today
-define mas_diary.category_tags = list()
+# list of tuples of event entries:
+#   [0]: event_database of this entry
+#   [1]: key of this entry
+# NOTE: these are assumed in chronological-like order
+define mas_diary.event_entries = list()
 
 # list of games played today 
 define mas_diary.games_played = list()
@@ -41,11 +44,7 @@ define mas_diary.game_outcomes = dict()
 
 # list of player moods (can also manage mood swings)
 # TODO: waiting on moods pr
-define mas_diary.moods = list()
-
-# list of topic entries. these should only contain stuff from event's
-# diary_entry property, also these should be in chronological order
-define mas_diary.topic_entries = list()
+define mas_diary.player_moods = list()
 
 # list of special custom diary entry strings. Each string is considered a
 # "line". These are placed after main diary entry but before the PS section
@@ -119,22 +118,79 @@ init python in mas_diary:
     }
 
     ################## functions ############################
-    def addCategories(cat_list):
+    def indexLeftSpace(string, loc, end_loc=0):
         """
-        Adds the given list of category tags to the category tags diary entry
-        list
+        Returns the index of the nearest space on the left of the string
 
         IN:
-            cat_list - list of category tags to add to the diary entry list
+            string - the string to check
+            loc - the index to begin check
+            end_loc - the index to stop check
+                NOTE: the check INCLUDES this index
+                (Default: 0)
 
-        ASSUMES:
-            category_tags
+        RETURNS: the index of the nearest space, or -1 if no spcae found
         """
-        for cat in cat_list:
-            if cat not in category_tags:
-                category_tags.append(cat)
+        index = loc
+        while index >= end_loc and not string[index].isspace():
+            index -= 1
 
-    
+        return index
+
+
+    def indexRightNonSpace(string, loc, end_loc=None):
+        """
+        Returns the index of the nearest nonspcae character on the right of
+        the string
+
+        IN:
+            string - string to check
+            loc - the index to begin check
+            end_loc the index to stop check
+                NOTE: the check does NOT include this index
+                (Defualt: None - the length of hte string)
+
+        RETURNS: the index of the nearest nonspace, -1 if no nonspace found
+        """
+        if end_loc is None:
+            end_loc = len(string)
+
+        index = loc
+        while index < end_loc and string[index].isspace():
+            index += 1
+
+        if index >= len(string):
+            return -1
+
+        return index
+       
+
+    def indexRightSpace(string, loc, end_loc=None):
+        """
+        Returns the index of the nearest space on the right of the string
+
+        IN:
+            string - the string to check
+            loc - the index to begin check
+            end_loc - the index to stop check
+                NOTE: the check does NOT include this index
+                (Default: None - the length of the string)
+
+        RETURNS: the index of the nearest space, or -1 if no space found
+        """
+        if end_loc is None:
+            end_loc = len(string)
+
+        index = loc
+        while index < end_loc and not string[index].isspace():
+            index += 1
+
+        if index >= len(string):
+            return -1
+
+        return index
+
+
     def isValidTemplateFile(filepath):
         """
         Checks if the file at the given filepath is a valid template file
@@ -169,6 +225,82 @@ init python in mas_diary:
         )
 
 
+    def limitLine(line, min_length=100, max_length=120):
+        """
+        Limits the length of the given line so it is within a particular length
+        range.
+        Lines are broken by whitespace
+
+        IN:
+            line - the string to limit
+            min_length - the minimum length this string should be
+                (Default: 100)
+            max_length - the maximum length this string should be
+
+        RETURNS:
+            tuple of the following format:
+                [0]: the length-limited line
+                [1]: the rest of the string 
+        """
+        # first, check if the min_length/max_length numbers are valid
+        if min_length > max_length:
+            return ("", line)
+
+        # check if we have to do any changes
+        if len(line) <= max_length:
+            return (line, "")
+
+        # otherwise, we need to do some limiting
+        limit_dex = indexLeftSpace(line, max_length - 1, min_length)
+        found_right = False
+
+        # if we didn't find a length smaller, try slightly bigger, using 
+        # difference between max and min
+        if limit_dex < 0:
+            limit_dex = indexRightSpace(
+                line, 
+                max_length -1, 
+                max_length + (max_length - min_length)
+            )
+
+            # still not found, try any space left
+            if limit_dex < 0:
+                limit_dex = indexLeftSpace(line, min_length - 1)
+
+                # still not found? try any space right
+                if limit_dex < 0:
+                    limit_dex = indexRightSpace(
+                        line, 
+                        max_length + (max_length - min_length) - 1
+                    )
+
+                    # still not found? forget limiting, this string is too long
+                    if limit_dex < 0:
+                        return (line, "")
+
+                    # found white spcae by moving right
+                    else:
+                        found_right = True
+
+            # found white spcae by moving right
+            else:
+                found_right = True
+
+        # if our limit dex was found via a right-space check, then we
+        # should find the first nonspace index
+        if found_right:
+            nonspace_dex = indexRightNonSpace(line, limit_dex+1)
+
+            if nonspace_dex < 0:
+                nonspace_dex = limit_dex    
+
+        # otherwise, just use limit dex
+        else:
+            nonspace_dex = limit_dex
+                
+        return (line[:limit_dex], line[nonspace_dex:])
+
+
     def _fillDiaryKeywordsDates(using_date=None):
         """
         Fills the diary replacement keywords for dates dict
@@ -197,6 +329,7 @@ init python in mas_diary:
             diary_keywords_dates_custom["dd"].format(using_date.day)
         )
 
+
     def _scanTemplates():
         """
         Scans the template folder for valid templates.
@@ -212,6 +345,7 @@ init python in mas_diary:
                     and isValidTemplateFile(t_filepath)
                 ):
                 templates.append(t_filepath)
+
 
 ############## diary keyword functions ######################
     # these functions will be set to values in some of the dicts 
