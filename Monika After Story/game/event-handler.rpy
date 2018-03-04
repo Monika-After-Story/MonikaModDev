@@ -111,7 +111,7 @@ label call_next_event:
             $monika_random_topics.remove(event_label)
 
         if _return == 'quit':
-            $persistent.closed_self = True #Monika happily closes herself
+            $persistent._mas_closed_self = True #Monika happily closes herself
             $ renpy.quit(0)
 
         $ allow_dialogue = True

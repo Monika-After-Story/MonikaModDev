@@ -298,7 +298,7 @@ label i_greeting_monikaroom:
     # atm, making this a persistent makes it easier to test as well as allows
     # users who didnt see the entire event a chance to see it again.
 #    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
-    if persistent.seen_monika_in_room:
+    if persistent._mas_seen_monika_in_room:
         menu:
             "Knock":
                 jump monikaroom_greeting_knock
@@ -344,7 +344,7 @@ label monikaroom_greeting_opendoor:
             show monika 1 at lhide
             hide monika
             $ renpy.hide("bedroom")
-    $ persistent.seen_monika_in_room = True
+    $ persistent._mas_seen_monika_in_room = True
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 

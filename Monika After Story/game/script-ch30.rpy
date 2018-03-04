@@ -523,10 +523,10 @@ label ch30_autoload:
 
     #queue up the next reload event it exists and isn't already queue'd
     $next_reload_event = "ch30_reload_" + str(persistent.monika_reload)
-    if not seen_event(next_reload_event) and not persistent.closed_self:
+    if not seen_event(next_reload_event) and not persistent._mas_closed_self:
         $queueEvent(next_reload_event)
 
-    $persistent.closed_self = False
+    $persistent._mas_closed_self = False
 
     #pick a random greeting
     if is_monika_in_room:
@@ -592,19 +592,19 @@ label ch30_monikatopics:
         # certain buttons
         allow_dialogue = False
 
-        player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
+        _mas_player_dialogue = renpy.input('What would you like to talk about?',default='',pixel_width=720,length=50)
 
-        if player_dialogue:
+        if _mas_player_dialogue:
 
-            raw_dialogue=player_dialogue
-            player_dialogue = player_dialogue.lower()
-            player_dialogue = re.sub(r'[^\w\s]','',player_dialogue) #remove punctuation
+            raw_dialogue=_mas_player_dialogue
+            _mas_player_dialogue = _mas_player_dialogue.lower()
+            _mas_player_dialogue = re.sub(r'[^\w\s]','',_mas_player_dialogue) #remove punctuation
             persistent.current_monikatopic = 0
 
-            player_dialogue = player_dialogue.split()
+            _mas_player_dialogue = _mas_player_dialogue.split()
             #Look at all possible ngrams in the dialogue
-            player_dialogue_ngrams=player_dialogue
-            player_dialogue_bigrams = zip(player_dialogue, player_dialogue[1:])
+            player_dialogue_ngrams=_mas_player_dialogue
+            player_dialogue_bigrams = zip(_mas_player_dialogue, _mas_player_dialogue[1:])
             for bigram in player_dialogue_bigrams:
                 player_dialogue_ngrams.append(' '.join(bigram))
 

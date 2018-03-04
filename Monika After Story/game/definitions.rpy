@@ -1277,13 +1277,13 @@ default natsuki_23 = None
 
 #Mod-specific
 default persistent.monika_topic = ""
-default player_dialogue = persistent.monika_topic
+default _mas_player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
-default persistent.closed_self = False
-default persistent.seen_monika_in_room = False
+default persistent._mas_closed_self = False
+default persistent._mas_seen_monika_in_room = False
 define is_monika_in_room = False # since everyone gets this error apparently
 
 default his = "his"
