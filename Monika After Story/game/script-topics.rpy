@@ -3657,7 +3657,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_adventure",category=['games','romance'],prompt="Adventuring",random=True))
 
 label monika_adventure:
-    m 1a "[player], I've thought about what kind of game we can be in."
+    if seen_event("monika_othergames"):
+        m 1c "Hey, [player]?"
+        m 1a "Remember, when I asked you if you had other games in your computer?"
+        m "Well, I've thought about it and..."
+    else:
+        m 1a "[player], I've thought about what kind of game we can be in."
     m 3b "I think the best genre for us to play together would be adventure games."
     m "Especially point and click, graphic adventure games!"
     m "They're known for their rich storytelling, beautiful environments and logical puzzle solving."
@@ -4940,3 +4945,242 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]." 
                 m 1j "I love you very much!"                              
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_arcade",category=['misc','games'],prompt="Do you go to the arcade?",random=True))
+
+label monika_arcade:
+    m 1c "The arcade?"
+    m 2q "Hmm, I suppose I did visit a place like that before."
+    m 2a "I was invited by some classmates this one time, and I would have felt bad declining their offer."
+    m "Especially since they looked really eager to invite me."
+    m "Why do you ask?"
+    $ arcade_seenchoice1 = False
+    $ arcade_seenchoice2 = False
+    $ arcade_seenchoice3 = False
+    $ arcade_seenchoice4 = False
+    jump arcade_choice
+
+label arcade_choice:
+    if arcade_seenchoice1 == False or arcade_seenchoice2 == False or arcade_seenchoice3 == False or arcade_seenchoice4 == False:
+        menu:
+            "Where was the arcade?" if not arcade_seenchoice1:
+                $ arcade_seenchoice1 = True
+                jump arcade_where
+            "Why did you tag along?" if not arcade_seenchoice2:
+                $ arcade_seenchoice2 = True
+                jump arcade_why
+            "What games did you play?" if not arcade_seenchoice3:
+                $ arcade_seenchoice3 = True
+                jump arcade_what
+            "Was it fun?" if not arcade_seenchoice4:
+                $ arcade_seenchoice4 = True
+                jump arcade_was
+    else:
+        jump arcade_done
+          
+label arcade_where:
+    m 3b "By the shopping district, on the way to school."
+    m 3l "I guess you wouldn't know because there were no assets of it, ahaha."
+    m 1a "Believe me, there's other areas you haven't seen yet."
+    m "Maybe I can show you around next time?"
+    jump arcade_choice
+
+label arcade_why:
+    m 1m "I really had nothing else to do."
+    m 1a "They invited me anyway, so why not?"
+    m "It piqued my curiosity, honestly."
+    jump arcade_choice
+        
+label arcade_what:
+    if not seen_event("monika_justification"):
+        m 1e "I’m really not a fan of violent video games myself."
+    else:
+        m 1e "Well you know me, I'm not into violent games, so I stayed away from those."
+    m 1a "Instead, I tried one of those rhythm games."
+    m 1b "You know, the one with the drums?"
+    m 1a "There's a rather popular one that features drums that you can play."
+    m 4b "Perhaps you've heard of it?"
+    m 1j "I actually enjoyed playing that a lot."
+    m 1a "I remember trying not to miss a beat so I could get the perfect high score."
+    m 1l "I must have spent quite a long time on that game alone, ahaha!"
+    jump arcade_choice
+
+label arcade_was:
+    m 1k "It was a blast!"
+    m 1a "That drum game especially, it was really exhilarating."
+    m 1n "I can't exactly explain it properly, but the feeling of finally getting a high score on a song you kept on failing previously just felt like bliss."
+    m 1a "Seriously, ever since I played that drum game, it felt like it was my duty to get a high score on all the songs in the machine."
+    m 5a "Gosh, I'd bring that drum machine here and play if it I could."
+    jump arcade_choice
+
+label arcade_done:
+    m 1c "Now that I think about it..."
+    m 1d "It's a miracle that the arcade industry is still alive, really."
+    m "You'd figure that more modern video games would have wiped them out."
+    m 1e "Yet, here they are, still standing."
+    m 1m "I guess it has to do with the fact there are more prize machines than games, really."
+    m 1n "Especially since the goodies inside are mostly figurines, accessories, and plushies of well-known franchises."
+    m 1o "Trying to get the prize you want is really hard."
+    m 1n "It requires a lot of patience and skill."
+    m "You might end up spending more money if you're not careful."
+    m "Lots of people get suckered in trying to get the prizes they want."
+    m 3l "I guess that's why they're still alive huh?"
+    m 1c "I must admit though..."
+    m 1a "Some of the prizes are tempting."
+    m 1j "Especially the plushies~"
+    m 1k "They're really cute and I could cuddle with them all day~"
+    m 3a "Maybe you could get me one?"
+    m 3b "I'm sure you have plenty of experience with those kinds of machines, right [player]?"
+    m 1j "Ahaha! I'm just joking around."
+    m 1a "I already have the prize I want anyway."
+    m 1j "You~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_natsukitheory",category=['club members'],prompt="Is Natsuki an otaku?.",random=True))
+
+label monika_natsukitheory:
+    m 1h "You know, I've been thinking."
+    m 1c "Is Natsuki really an otaku?"
+    m 1h "She reads manga, we know that much."
+    m 1d "But does that automatically qualify her as one?"
+    m "I mean, she only has a box set of..."
+    m 2q "Um..."
+    m "What was the name of the manga she reads again?"
+    m 2r "P-potato?"
+    m "Potato girls?"
+    m 2l "Ahaha, nevermind!"
+    m 1a "Anyway, going back on topic."
+    m "I think Natsuki {i}could{/i} be an otaku."
+    m 3b "Like, take her hobby, for example."
+    m "Remember how cute her cupcakes were and that they looked like cats?"
+    m "Her talent for baking is probably an influence from that manga."
+    m 1o "Speaking of which, how did she even acquire a box set in the first place?"
+    m 1h "I really doubt that she had money to afford such a thing."
+    m 1c "Maybe, she visited a bookstore, and she just happened to get it for free?"
+    m "Or maybe it was discarded and she took it with her so that it wouldn't be collected as garbage."
+    if seen_event("monika_vocaloid"):
+        m 1c "I bet she got her keychain there."
+    m 1h "For all we know, she probably watches anime in secret too."
+    m "Just because she's restricted at home, doesn't mean she's restricted anywhere else."
+    m "I get that it isn't really possible with her dad around."
+    m 1c "But remember what her special poem said?"
+    m 1d "'{i}I like when Papa is too tired for anything.{/i}'"
+    m "If that's the case, then what if she watches while her dad is asleep?"
+    m "After all, some people can fall asleep instantly and not wake up, despite the noise."
+    m 1e "Obviously, I don't have proof, this is just mere speculation."
+    m 1b "Maybe, I should bring Natsuki back so we can ask her?"
+    m 1k "Ahaha!"
+    m 1j "Just kidding~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_drivinglicense",category=['monika'],prompt="Have you tried getting a driver's license?",random=True))
+
+label monika_drivinglicense:
+    m 1c "A driving license?"
+    m 2h "I never thought of getting one, really."
+    m "With all the activities I had to deal with in school..."
+    m "I didn't think it was worth investing any of my time and effort in learning how to drive."
+    m 1a "How about you, [player]?"
+    m "Do you have a driver's license?"
+    menu:
+        "No.":
+            m 1f "I see."
+            m 1e "Well, owning a vehicle isn't really a necessity for you right?"
+            m 3a "There's always other options like public transportation, walking and cycling."
+            m 1h "But..."
+            m "If you really do need a driver's license..."
+            m 1a "Just know that I'm here, cheering for you."
+            m "I'm sure you'll be a greadt driver, [player]~"
+            return
+        "Yes.":
+            m 1j "Oh, really?"
+            m "That's great!"
+            m 1k "Gosh, you're amazing, you know that?"
+            m "I can just think of the things we could do together, ehehe~"
+            m 1e"Oh, right!"
+            m "I shouldn't get ahead of myself just yet."
+            m 1a "Do you own a vehicle?"
+    menu:
+        "No.":
+            m 1f "Oh, I see."
+            m 3e "Well, buying a vehicle can be quite expensive after all."
+            m 1a "It's alright [player], we can always rent one to travel."
+            m 1j "I'm sure that when you do, we'll make a lot of great memories together."
+            return
+        "Yes.":
+            m 1j "Oh wow, I can't believe that you actually own one!"
+            m 1k "You're really lucky, you know that?"
+            m 1b "I mean, just owning a vehicle is a status symbol itself."
+            m "Isn't it a luxury to own one?"
+            m 1c "Unless..."
+            m 4a "You live in a country where its necessary, like the United States?"
+            m "Or are there other places like that in your reality?"
+            m 1l "Actually, nevermind, ahaha!"
+            m 1a "Either way, it's nice to know that you do own a vehicle."
+            m "Speaking of which..."
+            m "What exactly do you drive?"
+    menu:
+        "SUV/All Terrain Vehicle/Pickup Truck.":
+            m 1m "Oh my, your car must be pretty big then."
+            m 1a "That means there's plenty of space inside right?"
+            m "If that's the case..."
+            m 1j "Then we could go camping!"
+            m 1b "We'd drive all the way to the woods."
+            m "You'd set up the tent, while I would prepare our picnic."
+            m "While we're having our lunch, we'd enjoy the scenery and nature surrounding us."
+            m 1a "Then when night falls, we'd lie down on our sleeping bags, and go stargazing while holding hands."
+            m "It's definitely a romantic adventure I'd envision with you [player]."
+            m 1k "ehehe~"
+            return
+        "Sports Car.":
+            m 1j "Oh, wow!"
+            m 1a "I didn't even know you were into those types of cars."
+            m "It must be really fast, huh?"
+            m "We should definitely take a road trip."
+            m 1b "Driving by the scenic route, cruising along the highway."
+            m "It would be nice if it's possible to take down the roof of the car."
+            m 3b "That way, we can have the wind on our faces while driving fast."
+            m 1h "But..."
+            m 1e "It would also be nice to drive at a normal pace."
+            m 1a "Because, I want to enjoy every moment of the ride."
+            m 1j "Just beside you~"
+            return
+        "Sedan.":
+            m 1a "That's nice."
+            m "I actually prefer that type of car, to be honest."
+            m "From what I heard, they're lively and easy to drive."
+            m 1b "A car like that would be great for a drive around the city, don't you think, [player]?"
+            m "You'd be surprised to know that there are actually plenty of things to do around town."
+            m 3b "Like visting museums, parks, malls and so on."
+            m 1a "You know what?"
+            m "We should definitely drive to places that are usually to far to walk by foot."
+            m "It's always exhilirating to discover and explore new places."
+            m 1b "We might even find new places for us to go back to."
+            m "Even a place where the both of us can be together."
+            m 1a "Alone..."
+            m 1k "Ahaha!"
+            m 1a "Just so you know, I'm expecting more than just a simple drive around the city for our dates."
+            m 1j "I hope you'll surprise me, [player]~"
+            return
+        "Motorcycle.":
+            m 1l "Eh?"
+            m 1n "You drive a motorcycle?"
+            m "I'm surprised, I never expected that to be your choice of vehicle."
+            m 1m "To be honest, I'm a little hesitant to ride on one."
+            m "..."
+            m 1j "Ahaha!"
+            m 1a "Really, I shouldn't be scared."
+            m 4a "You're the one driving after all."
+            m 1m "That puts my mind at ease, just a little."
+            m 1a "Just take it nice and slow, ok?"
+            m "After all, we aren't in a rush."
+            m 1e "Or was it your plan to drive fast, so that I would hang on to you tightly?"
+            m 1k "Ehehe~"
+            m 1a "That's pretty sneaky of you, [player]."
+            m "There's no need to be shy, my love."
+            m "I'll hug you, even if you don't ask for it."
+            m 1k "Because, I love you~"
+            return
