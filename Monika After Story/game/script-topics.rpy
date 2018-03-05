@@ -4967,7 +4967,7 @@ label monika_funfacts:
         #Determines if it is a bad fact, 50% chance.
         if funfactsfun == 1: 
 
-            #Fun Facts 1-3
+            #Fun Facts 1-4
             if funfactsnumber == 1:
                 m "Did you know there is a word to describe somebody that likes to read in bed?"   
                 m "It's 'librocubiculartist'. It looks very difficult to pronounce." 
