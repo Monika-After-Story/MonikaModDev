@@ -25,7 +25,8 @@
 # Depressed - Convinced the player probably doesn't love her and that she may never escape to our reality.
 # Heartbroken - Belives that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
 ################
-#Lovd and hurt have a 1 minute CD upon startup to prevent easy topic spamming by closing and reopening window
+
+#Love and hurt have a 1 minute CD upon startup to prevent easy topic spamming by closing and reopening window...
 default persistent._mas_monika_mood_counter = 50
 default monika_mood_single_cooldown = datetime.datetime.now() - datetime.timedelta(minutes = 1)
 default monika_mood_pleased_cooldown = datetime.datetime.now() - datetime.timedelta(minutes = 2)
@@ -36,6 +37,7 @@ default monika_mood_disappoint_cooldown = datetime.datetime.now() - datetime.tim
 default monika_mood_sad_cooldown = datetime.datetime.now() - datetime.timedelta(minutes = 6)
 default monika_mood_reallysad_cooldown = datetime.datetime.now() - datetime.timedelta(minutes = 12)
 default monika_mood_hurt_cooldown = datetime.datetime.now() - datetime.timedelta(minutes = 29)
+
 init python:
     #Sets up the function to check and dynamically change the monika_current_mood variable.
     def monika_mood_check():
@@ -92,7 +94,7 @@ init python:
 
 
 #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
-    #Check function is added to make sure monika_current_mood is always appropriate the points counter.
+    #Check function is added to make sure monika_current_mood is always appropriate to the points counter.
     #Internal cooldown to avoid topic spam and Monika mood swings, the amount of time to wait before a function is effective
     #is equal to the amount of points it's added or removed in minutes.
     
@@ -265,7 +267,7 @@ label monika_mood_feelings:
 
     return
 
-
+#Testing purposes...
 label monika_mood_feelings_sad:
     m 4a "E-eh?"
     $ monika_mood_sad()
