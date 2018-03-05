@@ -18,6 +18,8 @@ init python:
             if label.startswith('greeting_'):
                 greetings_list.append(label)
 
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetheart", random=True),eventdb=evhand.greeting_database)
 
 label greeting_sweetheart:
     m 1k "Hello again, sweetheart!"
@@ -61,6 +63,9 @@ label greeting_visit:
     m "Thanks for spending so much time with me~"
     m 2k "Just remember that your time with me is never wasted in the slightest."
     return
+
+# TODO this one no longer needs to do all that checking, might need to be broken
+# in like 3 labels though
 
 label greeting_goodmorning:
     $ current_time = datetime.datetime.now().time().hour
@@ -259,11 +264,17 @@ label greeting_longtime:
      m 1a "I'm so happy that you're here now."
      return
 
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_glitch", random=True),eventdb=evhand.greeting_database)
+
 label greeting_sweetpea:
      m 1d "Look who's back."
      m 2k "It's you, my sweetpea!"
      m 1l "My goodness... That surely was embarassing to say, ehehe~"
      return
+
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_glitch", random=True),eventdb=evhand.greeting_database)
 
 label greeting_glitch:
      hide monika
@@ -289,11 +300,18 @@ label greeting_glitch:
      m 2j "I love you, [player]!"
      return
 
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_surprised", random=True),eventdb=evhand.greeting_database)
+
 label greeting_surprised:
      m "Oh, hello [player]!"
      m "Sorry, you surprised me there a little."
      m "How have you been?"
      return
+
+init 5 python:
+    rules = {EV_RULE_RP_SELECTIVE : MASSelectiveRepeatRule.create_rule(hours=range(1,6))}
+    addEvent(Event(persistent.greeting_database,eventlabel="i_greeting_monikaroom", rules=rules),eventdb=evhand.greeting_database)
 
 label i_greeting_monikaroom:
     scene black

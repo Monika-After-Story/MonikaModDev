@@ -683,6 +683,29 @@ python early:
 
             return events
 
+        @staticmethod
+        def checkRules(events, check_time=None):
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            if check_time is None:
+                check_time = datetime.datetime.now()
+
+            available_events = dict()
+
+            for label, event in events.iteritems():
+
+                if EV_RULE_RP_SELECTIVE in event.rules:
+                    if MASSelectiveRepeatRule.evaluate_rule(check_time,event.rules[EV_RULE_RP_SELECTIVE]):
+                        available_events[label] = event
+                if EV_RULE_RP_NUMERICAL in event.rules:
+                    if MASNumericalRepeatRule.evaluate_rule(check_time, ev=v,rule=event.rules[EV_RULE_RP_NUMERICAL]):
+                        available_events[label] = event
+
+            return available_events
+
 # init -1 python:
     # this should be in the EARLY block
     class MASButtonDisplayable(renpy.Displayable):
@@ -1061,7 +1084,7 @@ python early:
                     things occour. False means we stay quiet
                     (Default: True)
             """
-            
+
             # set properties
             self.allow_glitch = allow_glitch
             self.allow_label = allow_label
@@ -1071,11 +1094,11 @@ python early:
             # this is the actual internal ist
             self.__quiplist = list()
 
-    
-        def addGlitchQuip(self, 
-                length, 
-                cps_speed=0, 
-                wait_time=None, 
+
+        def addGlitchQuip(self,
+                length,
+                cps_speed=0,
+                wait_time=None,
                 no_wait=False
             ):
             """
@@ -1097,7 +1120,7 @@ python early:
                 index location of the added quip, or -1 if we werent allowed to
             """
             if self.allow_glitch:
-                
+
                 # create the glitchtext quip
                 quip = glitchtext(length)
 
@@ -1207,9 +1230,9 @@ python early:
             """
             Randomly picks a quip and returns the result.
 
-            Line quips are automatically cleaned and prepared ([player], 
+            Line quips are automatically cleaned and prepared ([player],
             gender pronouns are all replaced appropraitely). If the caller
-            wants additional variable replacements, they must do that 
+            wants additional variable replacements, they must do that
             themselves.
 
             IN:
@@ -1261,7 +1284,7 @@ python early:
 
         def _getQuipList(self):
             """
-            Retrieves the internal quip list. This is a direct reference to 
+            Retrieves the internal quip list. This is a direct reference to
             the internal list, so be careful.
 
             RETURNS:
@@ -2723,6 +2746,7 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
+default persistent.greeting_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False

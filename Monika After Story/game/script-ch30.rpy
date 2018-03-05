@@ -499,7 +499,7 @@ label ch30_autoload:
             $ play_song(persistent.current_track)
         else:
             $ play_song(songs.current_track) # default
-    
+
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -538,12 +538,22 @@ label ch30_autoload:
 
     #Skip all greetings if you closed the game on Monika
     if persistent.closed_self:
-        #pick a random greeting
-        if is_monika_in_room:
-            if persistent.current_monikatopic != "i_greeting_monikaroom":
-                $ pushEvent("i_greeting_monikaroom")
-        else:
-            $pushEvent(renpy.random.choice(greetings_list))
+        # pick a proper greeting
+        # TODO use the ev handler to make it work
+        # $pushEvent(renpy.random.choice(greetings_list))
+        python:
+            ruled_greetings = Event.checkRules(evhand.greeting_database).keys()
+            if len(ruled_greetings) > 0:
+                pushEvent(renpy.random.choice(ruled_greetings))
+            else:
+                random_greetings = Event.filterEvents(evhand.greeting_database,random=True).keys()
+                pushEvent(renpy.random.choice(random_greetings))
+
+#        if is_monika_in_room:
+#            if persistent.current_monikatopic != "i_greeting_monikaroom":
+#                $ pushEvent("i_greeting_monikaroom")
+#        else:
+#            $pushEvent(renpy.random.choice(greetings_list))
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -617,8 +627,8 @@ label ch30_loop:
 
         python:
             if (
-                    mas_battery_supported 
-                    and battery.is_battery_present() 
+                    mas_battery_supported
+                    and battery.is_battery_present()
                     and not battery.is_charging()
                     and battery.get_level() < 20
                 ):
