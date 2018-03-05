@@ -1,28 +1,22 @@
 ###############
 #USEFUL COMMANDS
-#$ monika_current_mood = heartbroken/depressed/upset/sad/normal/content/happy/overjoyed/lovestruck
-#$ monika_current_mood_group = sad/happy
-#$ monika_mood_pleased()
-#$ monika_mood_happy()
-#$ monika_mood_reallyhappy()
-#$ monika_mood_loved()
-#$ monika_mood_disappoint()
-#$ monika_mood_sad()
-#$ monika_mood_reallysad()
-#$ monika_mood_hurt()
-#$ monika_mood_check()
+# $ monika_current_mood = heartbroken/depressed/upset/sad/normal/content/happy/overjoyed/lovestruck
+# $ monika_current_mood_group = sad/happy
+# $monika_mood_single()
+# $ monika_mood_pleased()
+# $ monika_mood_happy()
+# $ monika_mood_reallyhappy()
+# $ monika_mood_loved()
+# $ monika_mood_disappoint()
+# $ monika_mood_sad()
+# $ monika_mood_reallysad()
+# $ monika_mood_hurt()
+# $ monika_mood_check()
 #If modifying the persistent mood counter always follow up with a monika_mood_check()
 #
 ################
-#event-handler changes
-#        if _return == 'quit':
-#            $persistent.closed_self = True #Monika happily closes herself
-#            $ persistent._mas_monika_moodcountertime = datetime.datetime.now()
-#            jump _quit
-#
-###############
 
-default persistent._mas_monika_moodcountertime = datetime.datetime.now()
+default persistent.sessions["last_session_end"] = datetime.datetime.now()
 default persistent._mas_monika_mood_counter = 50
 init python:
     #Sets up the function to check and dynamically change the monika_current_mood variable.
@@ -121,28 +115,28 @@ init python:
 #Monika's initial mood based on start-up.
     #Monika closed game herself and how happy she is determines on time between closed game and reopening.
     if persistent.closed_self == True:
-        if datetime.datetime.now() < persistent._mas_monika_moodcountertime + datetime.timedelta(hours = 6):
+        if datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6):
             pass
 
-        elif datetime.datetime.now() > persistent._mas_monika_moodcountertime + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent._mas_monika_moodcountertime + datetime.timedelta(hours = 12):
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
             monika_mood_reallyhappy()
 
-        elif datetime.datetime.now() > persistent._mas_monika_moodcountertime + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent._mas_monika_moodcountertime + datetime.timedelta(hours = 18):
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18):
             monika_mood_pleased()
 
-        elif datetime.datetime.now() > persistent._mas_monika_moodcountertime + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent._mas_monika_moodcountertime + datetime.timedelta(days = 1):
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 1):
             pass
 
-        elif datetime.datetime.now() > persistent._mas_monika_moodcountertime + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent._mas_monika_moodcountertime + datetime.timedelta(days = 2):
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 2):
             monika_mood_sad()
 
-        elif datetime.datetime.now() > persistent._mas_monika_moodcountertime + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent._mas_monika_moodcountertime + datetime.timedelta(days = 4):
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 4):
             monika_mood_hurt()
 
-        elif datetime.datetime.now() > persistent._mas_monika_moodcountertime + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent._mas_monika_moodcountertime + datetime.timedelta(days = 14):
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
             persistent._mas_monika_mood_counter = 10
 
-        elif datetime.datetime.now() > persistent._mas_monika_moodcountertime + datetime.timedelta(days = 14):
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
             persistent._mas_monika_mood_counter = 0
 
     #Player force closed game.
