@@ -16,7 +16,6 @@
 #
 ################
 
-default persistent.sessions["last_session_end"] = datetime.datetime.now()
 default persistent._mas_monika_mood_counter = 50
 init python:
     #Sets up the function to check and dynamically change the monika_current_mood variable.
