@@ -4934,3 +4934,289 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_funfacts",category=['misc'],prompt="Fun facts",pool=True))
+
+default funfactstart = 0
+default persistent._mas_funfactfun = True
+label monika_funfacts:
+    #Determines the fact number and whether it's a bad fact
+    python:
+        funfactsnumber = random.randint(1,10)
+        funfactsfun = random.randint(1,2)
+
+    #If player has opened fun facts this session
+    if funfactstart == 1:
+        m "Up for another fun fact [player]?"
+        if persistent._mas_funfactfun == True:
+            m "That last one was pretty interesting after all!"
+        else:
+            m "I know that last one wasn't great...but I'm sure this next one will be better."
+    else:
+        m 1k "Say [player], would you like to hear a fun fact?"
+        m "I've been looking some up just to try and teach us both something new."
+        m "They say you learn something new everyday, this way I'm guaranteeing it!"
+        m "I found most of these online so I can't say they're {i}definitely{/i} true... "
+        $ funfactstart = 1
+    m "Now, let's see..."
+
+    #A bad fact "roll" will only occur if the initial fun fact number is 1 to 4.
+    if funfactsnumber >= 1 and funfactsnumber <=4:
+
+        #Determines if it is a bad fact, 50% chance.
+        if funfactsfun == 1: 
+
+            #Fun Facts 1-3
+            if funfactsnumber == 1:
+                m "Did you know there is a word to describe somebody that likes to read in bed?"   
+                m "It's 'librocubiculartist'. It looks very difficult to pronounce." 
+                m "Some words just never get used in general conversation and that's a real shame..." 
+                m "But I imagine if you said this nobody would really know what you're talking about." 
+                m "Maybe you would have to explain what it means but that would kind of defeat the point of using the word." 
+                m "If only people read more and improved their vocabulary!" 
+                m "Ahahah! Sorry [player], I didn't mean to get so bothered!"
+
+            elif funfactsnumber == 2:
+                m "Supposebly many restaurants purposefully leave out any sign of currency on their menus."  
+                m "This is done to psychologically manipulate people into spending more money than they intended."
+                m "It works because a currency sign, such as a dollar, is used to represent a cost."
+                m "By removing it you remove the association of that cost and only think about the food that awaits!"
+                m "It's a very sinister, dishonest and manipulative thing to do, if you ask me."
+                m "But restaurants exist not for the art of cuisine but to make money, so in the end that's all they care about."
+                m "What can you do..."
+
+            elif funfactsnumber == 3:
+                m "Ahh, I'm not sure if I should tell you [i]this[/i] fact." 
+                m "It's not for the faint of heart after all..." 
+                m "...Well alright, I'll tell you."
+                m "The fact is..."  
+                m "..." 
+                m "I love you, [player]!"  
+                m "Eheh, sorry, I just couldn't help myself."
+                m "I'll have a real fact next time, don't you worry~"
+                return
+
+            elif funfactsnumber == 4:
+                m "Oh! A language based fact. I always like these." 
+                m "The word 'morphine is based on the greek god 'Morpheus'." 
+                m "Morpheus was the greek god of dreams so to have a word based on him makes sense." 
+                m "But then again...wasn't his father Hypnos the god of sleep?" 
+                m "Morphine does let a person dream but it's really about making someone fall asleep."
+                m "Wouldn't it make more sense to name it after Hypnos then?"
+                m "Too little, too late I guess."
+                
+            else:
+                m "...Nope. Nothing comes to mind!"
+                m "I think I messed up somewhere."
+
+        #Bad facts!
+        else:
+            if funfactsnumber == 1:
+                m "Did you know that...!"   
+                m "T-this isn't a true fact at all!"
+                m "'Humans only use 10 perce-', what nonsense."
+                m "People don't really believe this, do they?"   
+
+            elif funfactsnumber == 2:
+                m "Hm? That doesn't sound right..."
+                m "It says here that different areas of the tounge tastes different flavors."  
+                m "One area for bitter tastes, another for sweet..." 
+                m "Only children would believe this."
+
+            elif funfactsnumber == 3:
+                m "'Vaccines cause austim...'" 
+                m "Wow. This must be a joke." 
+                m "That's not even funny and if they're serious it's long since been disproven."
+                m "Who still says such nonsense? Such misinformation could cause some really harm!"  
+                m "I hope no one believes this..." 
+
+            elif funfactsnumber == 4:
+                m "Oh." 
+                m "I'm not even sure it's worth telling you this one, [player]." 
+                m "It says here that moss only grows on the north side of trees but I know that it's only a myth."
+                m "A very popular one too!"  
+                m "You see moss grows wherever there is shady and damp conditions so people thought that since the sun comes from a certain direciton it means there will be moss there too." 
+                m "But relying on that kind of logic is dangerous!" 
+                m "It ignores the very idea that forests already have many things, especially trees, that creates the ideal conditions for it to grow in." 
+                m "Plus even if it wasn't like that the trick would only work in the northern hemisphere." 
+                m "Anyone that's in the southern hemisphere would have it grow facing south."
+                m "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
+                m "I would hate for something to happen to you, espically because of misinformation like this."
+
+            else:
+                m "Geez, my mind is drawing a blank! Sorry [player]." 
+
+            m "That fact wasn't very good...I'll try better next time, [player]."
+            $ persistent._mas_funfactfun = False   
+            return
+
+    else:
+        #Fun Facts from this point on...
+
+
+        elif funfactsnumber == 5:
+            m "Aww, this one is really sweet."
+            m "Did you know that sea otters hold hands when they sleep to stop themselves drifting away from one another?"
+            m "I know it's really happens because it's practical but there is something so cute to it!"
+            m "Sometimes I imagine myself in their position..."
+            m "Oh, not being a sea otter but holding the hand of the one I love while I sleep."
+            m "Such thoughts really make me envious of them. We'll get there one day though, my love."
+
+        elif funfactsnumber == 6:
+            m "Now this is a fun fact!"
+            m "There was a man named Claude Shannon who calculated the maximum amount of possible moves in chess."
+            m "That number is called the 'Shannon number' and says that the amount of chess games possible is 10^120."
+            m "It's often compared to the number of atoms in the observable universe which is 10^80."
+            m "It's kind of crazy to think that there could be more chess games than atoms, isn't it?"
+            m "We could play until the end of our days and it wouldn't come even close to a fraction of what is possible."
+            m "Speaking of which, [player]..."
+            m "Do you want to play a game of chess with me? I might even go easy on you, Ehehe~"
+
+        elif funfactsnumber == 7:
+            m "Hmm, this one seems a bit misleading to me..."
+            m "'Men are 6 times more likely to be struck by lightning than women.'"
+            m "It's probably true but the way some of these facts are phrased really oversimplify them to the point where it's almost a lie."
+            m "If men are more likely to be struck by lightning it's likely the landscape and circumstances of their work that lead them to be more prone to being hit."
+            m "Men traditionally have always worked more dangerous and elevated jobs so it's no surprise that it's going to happen to them more often."
+            m "Yet the way this fact is put out there makes it sound that by simply being a man it's more likely, which is ridiculous."
+            m "Maybe if people phrased facts better people wouldn't be so misinformed about them..."
+
+        elif funfactsnumber == 8:
+            m "Ah, this is a nice easy one."
+            m "Did you know [player], that like my love for you honey never spoils?"
+            m "Honey can crystalize and some may see this in itself as spoiling but it's still completely edible and fine!"
+            m "Honestly so many people throw it away thinking it's no good, it's such a waste."
+            m "Well if you want to avoid it crystalizing  try not to store it in a refridgerator."
+            m "Honey can really be unappreciated, the process of it being made is so unique compared to other foods."
+            m "I always see news reports of how bees are slowly dying and it kind of saddens me..."
+            m "It also means that one day we may not even have honey. "
+            m "Well I think it to be one of the sweetest things out there!"
+            m "Other than you of course, my love."
+
+        elif funfactsnumber == 9:
+            m "Ah, this one..."
+            m "It's a little disheartening [player]...."
+            m "Well did you know that Vincent Van Gogh's last words were 'La tristesse durera toujours'?" 
+            m "When translated it means 'The sadness will last forever'." 
+            m "..." 
+            m "It's a little scary to know that someone so renowned would say something so dark with his last breathes." 
+            m "I don't think it's true though, I think no matter how bad things can get and how deep the sadness can go..." 
+            m "There will come a time when the sadness is no longer there." 
+            m "At the very least it won't be noticeable.
+            m "If you're ever worried about any sadness you have then just come talk to me, okay?"
+            m "I will always accept and take on any burdens that you shoulder, my love."
+            $ persistent._mas_funfactfun = True
+            return
+
+        elif funfactsnumber == 10:
+            m "Hmm...Did you know that if a snake has the word 'king' in it's name that means it devours other snakes?"
+            m "I had wondered why a king cobra would be named that but never really thought about it before."
+            m "Does that mean if I eat you all up would I be King Monika or Queen Monika?."
+            m "Ahahah, I'm just kidding [player]."
+            m "Sorry for being a little weird~"
+
+        elif funfactsnumber == 11:
+            m "This fact might be quite motivating!"
+            m "The longest word in English that only contains a single vowel is the word 'strength'."
+            m "It's funny how out of every word in the language it was such a meaningful word that had that little detail."
+            m "Or maybe it's because it only has a single vowel that it has such a feeling of power behind it?"
+            m "Little details like that really make language so fascinating to me!"
+            m "Do you want to know what comes to mind when I think of the word 'strength'?"
+            m "You."
+            m "Because you are the source of my strength, ehehe~"
+
+        elif funfactsnumber == 12:
+            m "Ready for this one?"
+            m "A reindeer's eyes changes color depending on the season. They're gold in summer and blue in winter."
+            m "What a strange occurence, I wonder why that is..."
+            m "Nature was always odd in how it works in that some things that provide no benefit appear, isn't it?"
+            m "There is probably a good scientific reason why it happens but I don't know it."
+            m "Sorry [player]. Maybe you can look up this one yourself?"
+            m "It'll be fun to have you be the one that teaches me~"
+
+        elif funfactsnumber == 13:
+            m "I would say this fact is healthy for the mind!"
+            m "Did you know that when a banana grows, it curves to face the sun?"
+            m "That's pretty neat!"
+            m "...Ah..."
+            m "I guess I don't really have much else to say on it. Ehehe..."
+            m "D-Did you also know that bananas aren't actually fruits but berries?"
+            m "Or that the original bananas were large, green and full of hard seeds?"
+            m "How about the fact that they're slightly radioactive?"
+            m "..."
+            m "...I'm just rambling on about bananas now."
+            m "Ummm..."
+
+        elif funfactsnumber == 14:
+            m "I already knew this one, [player]."
+            m "The word 'pen' is derived from the latin word 'penna', which means feather in latin."
+            m "Pens back then were sharpened goose feathers dabbed in ink so it's not hard to see why they were called pens."
+            m "Quill pens were a the primary writing tool for a very long time, starting as early at the 6th century."
+            m "It was only until the 19th century when metal pens were being made that they started to fall into deline."
+            m "In fact penknives are called that because they were originally used for thinning and pointing quill pens."
+            m "I imagine Yuri would know more about that than me though..."
+
+        elif funfactsnumber == 15:
+            m "This fact is out of this world!"
+            m "...I should have thought of a better pun..."
+            m "Anyway, did you know that the densest planet in our solar System is Earth itself?"
+            m "And that Saturn is the least dense?"
+            m "It makes sense when you know how what the planets are made from but since Satern is the second largest it was still a little bit of a surprise."
+            m "I guess size really doesn't matter, at least here~"
+            m "But between you and me, [player]..."
+            m "I suspect Earth may only be the densest because of a certain main character but I won't say any more~"
+
+        elif funfactsnumber == 16:
+            m "Aww, how cute!"
+            m "This fact will really send you hopping [player]!"
+            m "Whenever a rabbit hops around excitedly it's called a binky!"
+            m "Binky is such a cute sounding word, it really does suit the action."
+            m "It is the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
+            m "Sometimes you make me so happy that I can't help but be filled with energy."
+            m "But don't expect me to start hopping, that would be way too embarassing!"
+
+        elif funfactsnumber == 17:
+            m "Hmm, maybe this one will be more interesting to you."
+            m "The card game Solitaire was introduced originally into Windows in 1990."
+            m "The game was added as a feature to teach users how to use the mouse."
+            m "Similarly Minesweeper was added to familiarise users with left and right clicking."
+            m "Computers have been around for so long it's hard to think of a time when they weren't revelent."
+            m "Each generation becomes more and more familiar with the technology... "
+            m "Eventually there may come a day where not a single person isn't computer-literate."
+            m "I guess most of the worlds problems need to disappear before then though..."
+
+        elif funfactsnumber == 18:
+            m "Ready for an interesting one [player]?"
+            m "The brain is a fickle thing..."
+            m "The way it composes information and archives it is very unique..."
+            m "Naturally it differs from person to person but reading slowly like we're taught is usually less effective than going at a faster pace!"
+            m "Our brains process information very rapidly and loves predictability in our language."
+            m "For example, in this sentence by the the time you are done reading you will have already skipped over the double 'the'."
+            m "Ahaha! See? Your brain just filled it in naturally!"
+            m "You can check the history log if you really want to check~"
+
+        elif funfactsnumber == 19:
+            m "Mmmm, I love language facts!"
+            m "In English the shortest complete sentence is 'I am.'"
+            m "Ehehe, I can already see how I would use it!"
+            m "'Monika! Were you the one that moved my manga again!?'"
+            m "'I am!'"
+            m "Ehehe~"
+            m "S-sorry [player]! I was just self-indulging..."
+
+        elif funfactsnumber == 20:
+            m "Now this is a wholesome one..."
+            m "Right now, globally, we have the lowest crime rates, maternity death, infant morality and illteracy ever in human history!"
+            m "Life expectancy, average income and standards of living is the highest for the most amount of people ever too!"
+            m "I know it can always can get better but it really does show that despite the bad there really is some good too."
+            m "There really is always hope..."
+
+        else:
+            m "Hmm...I can't think of any right now...Ahahah...Sorry [player]!"
+            m "I feel like something went wrong somewhere..."
+
+
+        m "I hope you enjoyed another session of 'Learning with Monika!'"
+        $ persistent._mas_funfactfun = True
+    return
