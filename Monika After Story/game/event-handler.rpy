@@ -167,7 +167,6 @@ label call_next_event:
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
-            $ persistent._mas_monika_moodcountertime = datetime.datetime.now()
             jump _quit
 
         $ allow_dialogue = True
