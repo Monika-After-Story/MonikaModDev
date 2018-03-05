@@ -1895,7 +1895,7 @@ label mas_chess_dlg_qf_lost:
             call mas_chess_dlg_qf_lost_may_start from _mas_chess_dlgqflostmaystart
 
         "[mas_chess.DLG_QF_LOST_ACDNT_CHOICE]" if mas_chess.DLG_QF_LOST_ACDNT_ENABLE:
-            call mas_chesS_dlg_qf_lost_acdnt_start from _mas_chess_dlgqflostacdntstart
+            call mas_chess_dlg_qf_lost_acdnt_start from _mas_chess_dlgqflostacdntstart
 
     return _return
 
