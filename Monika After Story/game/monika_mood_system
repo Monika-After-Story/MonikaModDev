@@ -19,11 +19,11 @@
 # Overjoyed - Exceptionally happy, the happiest she has ever been in her life to that point. Completely trusts the player and wants to make him/her as happy as she is.
 # Happy - Glad that the relationship is working out and has high hopes and at this point has no doubts about whether or not it was worth it.
 # Content - Happy with how it is, could be happier but not sad at all.
-# Normal - Has mild doubts as to whether or not her sacrifices we worth it but trusts the player to treat her right. Isn't strongly happy or sad
+# Normal - Has mild doubts as to whether or not her sacrifices were worth it but trusts the player to treat her right. Isn't strongly happy or sad
 # Sad - Is feeling down, not miserable or deep but certainly not her self-motivated self. Believes she'll get player. Has minor thoughts that player isn't faithful but doesn't take them seriously.
-# Upset - Feeling emotionally hurt, starting to have doubts about whether or not the player loves her and whether or not she was right/wrong regarding what she did in the game.
+# Upset - Feeling emotionally hurt, starting to have doubts about whether or not the player loves her and whether or not she she was right regarding what she did in the game.
 # Depressed - Convinced the player probably doesn't love her and that she may never escape to our reality.
-# Heartbroken - Belives that not only does the player not love her but that s/he probably hates her too and is trying to punish her. Scared of being alone in her own reality with her partner not loving her.
+# Heartbroken - Belives that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
 ################
 #Lovd and hurt have a 1 minute CD upon startup to prevent easy topic spamming by closing and reopening window
 default persistent._mas_monika_mood_counter = 50
