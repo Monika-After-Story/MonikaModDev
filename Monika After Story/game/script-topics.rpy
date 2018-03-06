@@ -5138,7 +5138,7 @@ label fun_facts_14:
 label fun_facts_15:
     m 1j "This fact is out of this world!"
     m 1m "...I should have thought of a better pun..."
-    m 2a "Anyway, did you know that the densest planet in our solar System is Earth itself?"
+    m 2a "Anyway, did you know that the densest planet in our solar system is Earth itself?"
     m "And that Saturn is the least dense?"
     m 2c "It makes sense when you know how what the planets are made from but since Saturn is the second largest it was still a little bit of a surprise."
     m 3j "I guess size really doesn't matter, at least here~"
