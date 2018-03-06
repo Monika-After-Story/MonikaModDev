@@ -4946,8 +4946,7 @@ define mas_funfact.bad_count = 4
 
 label monika_fun_facts_open:
     #Determines the fact number and whether it's a bad fact
-    python:
-        fun_facts_bad_chance = renpy.random.randint(1,100)
+    fun_facts_bad_chance = renpy.random.randint(1,100)
 
     #If player has opened fun facts this session
     if fun_facts_started:
