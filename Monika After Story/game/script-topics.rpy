@@ -4958,7 +4958,7 @@ label monika_fun_facts_open:
         $ fun_facts_start = True
     else:
         m 1b "Up for another fun fact [player]?"
-        if persistent._mas_funfactfun == True:
+        if persistent._mas_funfactfun:
            m 2j "That last one was pretty interesting after all!"
         else:
            m 2m "I know that last one wasn't great...but I'm sure this next one will be better."
