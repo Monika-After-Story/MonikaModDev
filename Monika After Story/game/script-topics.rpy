@@ -4950,18 +4950,18 @@ label monika_fun_facts_open:
         fun_facts_bad_chance = renpy.random.randint(1,100)
 
     #If player has opened fun facts this session
-    if fun_facts_started == True:
-        m 1b "Up for another fun fact [player]?"
-        if persistent._mas_funfactfun == True:
-           m 2j "That last one was pretty interesting after all!"
-        else:
-           m 2m "I know that last one wasn't great...but I'm sure this next one will be better."
-    else:
+    if fun_facts_started:
         m 1a "Say [player], would you like to hear a fun fact?"
         m 4a "I've been looking some up just to try and teach us both something new."
         m 4j "They say you learn something new everyday, this way I'm guaranteeing it!"
         m 2l "I found most of these online so I can't say they're {i}definitely{/i} true... "
         $ fun_facts_start = True
+    else:
+        m 1b "Up for another fun fact [player]?"
+        if persistent._mas_funfactfun == True:
+           m 2j "That last one was pretty interesting after all!"
+        else:
+           m 2m "I know that last one wasn't great...but I'm sure this next one will be better."
     m 3a "Now, let's see..."
 
 #Determines if it is a bad fact, 10% chance.
