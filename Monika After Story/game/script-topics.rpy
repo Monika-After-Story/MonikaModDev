@@ -5139,7 +5139,7 @@ label fun_facts_15:
     m 1m "...I should have thought of a better pun..."
     m 2a "Anyway, did you know that the densest planet in our solar System is Earth itself?"
     m "And that Saturn is the least dense?"
-    m 2c "It makes sense when you know how what the planets are made from but since Satern is the second largest it was still a little bit of a surprise."
+    m 2c "It makes sense when you know how what the planets are made from but since Saturn is the second largest it was still a little bit of a surprise."
     m 3j "I guess size really doesn't matter, at least here~"
     m 1a "But between you and me, [player]..."
     m 1j "I suspect Earth may only be the densest because of a certain main character but I won't say any more~"
