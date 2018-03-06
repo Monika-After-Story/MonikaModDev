@@ -4939,16 +4939,18 @@ label monika_asks_family:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fun_facts_open",category=['misc'],prompt="Fun facts",pool=True))
 
-default fun_facts_start = 0
+default fun_facts_started = False
 default persistent._mas_funfactfun = True
+define mas_funfact.fun_count = 20
+define mas_funfact.bad_count = 4
 
 label monika_fun_facts_open:
     #Determines the fact number and whether it's a bad fact
     python:
-        fun_facts_bad_chance = random.randint(1,100)
+        fun_facts_bad_chance = renpy.random.randint(1,100)
 
     #If player has opened fun facts this session
-    if fun_facts_start == 1:
+    if fun_facts_started == True:
         m 1b "Up for another fun fact [player]?"
         if persistent._mas_funfactfun == True:
            m 2j "That last one was pretty interesting after all!"
@@ -4959,14 +4961,15 @@ label monika_fun_facts_open:
         m 4a "I've been looking some up just to try and teach us both something new."
         m 4j "They say you learn something new everyday, this way I'm guaranteeing it!"
         m 2l "I found most of these online so I can't say they're {i}definitely{/i} true... "
-        $ fun_facts_start = 1
+        $ fun_facts_start = True
     m 3a "Now, let's see..."
 
 #Determines if it is a bad fact, 10% chance.
     if fun_facts_bad_chance <= 10:
-        $ renpy.jump('bad_facts_'+str(renpy.random.randint(1,4)))
+        $ jump_fact = "bad_facts_{0}".format(renpy.random.randint(1,4))
     else:
-        $ renpy.jump('fun_facts_'+str(renpy.random.randint(1,20)))
+        $ jump_fact = "fun_facts_{0}".format(renpy.random.randint(1,20))
+    jump expression jump_fact
 
 #Most labels end here
 label fun_facts_end:
