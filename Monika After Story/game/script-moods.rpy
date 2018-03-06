@@ -175,20 +175,20 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="happy",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_happy:
-    m 3b "That's wonderful! I'm happy when you're happy."
+    m 1b "That's wonderful! I'm happy when you're happy."
     m 1j "Know that you can always come up to me and I'll cheer up, [player]."
-    m 3a "I love you and I'll always be here for you so don't you ever forget that~"
+    m 3a "I love you and I'll always be here for you so don't ever forget that~"
     return
     
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="sick",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_sick:
-    m 1g "Aw, I'm sorry to hear that, [player]."
-    m 1r "I hate to see you suffering like this."
-    m 3e "I know you love spending time with me, but maybe you should go get some rest."
-    m 1k "Don't worry, I'll be here waiting for you when you get back."
-    m  "Get well soon!"
+    m 1f "Aw, I'm sorry to hear that, [player]."
+    m "I hate knowing you're suffering like this."
+    m 1e "I know you love spending time with me, but maybe you should go get some rest."
+    m 1j "Don't worry, I'll be here waiting for you when you get back."
+    m 3k "Get well soon, my love!"
     $ persistent._mas_mood_sick = True
     return 'quit'
     
@@ -227,17 +227,18 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt="angry",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
     
 label mas_mood_angry:
-    m 2f "Gosh, I'm sorry that you feel that way, [player]."
-    m 2e "I'll do my best to make you feel better."
-    m 3e "Before we do anything though, we should probably get you to calm down."
-    m 2e "It's hard to make rational decisions when you are worked up."
-    m 2c "You may end up saying or doing things you may regret later."
-    m 2e "And I'd hate for you to say something you really don't mean to me."
-    m 3a "Let's try a few things that I do to try to calm myself, hopefully they work for you."
-    m 3e "First, try taking a few deep breaths and slowly counting to 10."
-    m 2d "If that doesn't work, if you can, retreat to somewhere calm, until you cool off a bit."
-    m 1c "I suppose if that doesn't work, you can always try what I do as a last resort."
-    m 1d "Whenever I can't calm down, I just go outside, pick a direction and just start running."
+    m 1f "Gosh, I'm sorry that you feel that way, [player]."
+    m 3f "I'll do my best to make you feel better."
+    m 1c "Before we do anything, we should probably get you to calm down."
+    m 1o "It's hard to make rational decisions when you are worked up."
+    m 1h "You may end up saying or doing things you may regret later."
+    m 1p "And I'd hate for you to say something you really don't mean to me."
+    m 3a "Let's try a few things that I do to calm myself first, [player]."
+    m 3b "Hopefully they work for you as they do for me."
+    m 1a "First, try taking a few deep breaths and slowly counting to 10."
+    m "If that doesn't work, if you can, retreat to somewhere calm until you clear your mind."
+    m 1c "If that doesn't work, you can try what I do as a last resort."
+    m 1q "Whenever I can't calm down, I just go outside, pick a direction, and just start running."
     m 1c "I don't stop until I'm in a better state of mind."
     m 3d "Sometimes exerting yourself through physical activity is a good way to blow off some steam."
     m 2e "I probably don't seem like the type that gets angry very often, and you'd be right about that."
