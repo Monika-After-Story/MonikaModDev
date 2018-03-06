@@ -4946,7 +4946,7 @@ define mas_funfact.bad_count = 4
 
 label monika_fun_facts_open:
     #Determines the fact number and whether it's a bad fact
-    fun_facts_bad_chance = renpy.random.randint(1,100)
+    $ fun_facts_bad_chance = renpy.random.randint(1,100)
 
     #If player has opened fun facts this session
     if fun_facts_started:
@@ -4963,11 +4963,12 @@ label monika_fun_facts_open:
            m 2m "I know that last one wasn't great...but I'm sure this next one will be better."
     m 3a "Now, let's see..."
 
+
 #Determines if it is a bad fact, 10% chance.
     if fun_facts_bad_chance <= 10:
-        $ jump_fact = "bad_facts_{0}".format(renpy.random.randint(1,4))
+        $ jump_fact = "bad_facts_{0}".format(renpy.random.randint(1,mas_funfact.bad_count))
     else:
-        $ jump_fact = "fun_facts_{0}".format(renpy.random.randint(1,20))
+        $ jump_fact = "fun_facts_{0}".format(renpy.random.randint(1,mas_funfact.fun_count))
     jump expression jump_fact
 
 #Most labels end here
