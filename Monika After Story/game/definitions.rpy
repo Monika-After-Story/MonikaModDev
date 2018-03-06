@@ -1284,6 +1284,25 @@ init -1 python:
     #Add entries with your script in script-topics.rpy
     monika_topics = {}
 
+    def mas_tryparseint(value, default=0):
+        """
+        Attempts to parse the given value into an int. Returns the default if
+        that parse failed.
+
+        IN:
+            value - value to parse
+            default - value to return if parse fails
+            (Default: 0)
+
+        RETURNS: an integer representation of the given value, or default if
+            the given value could not be parsed into an int
+        """
+        try:
+            return int(value)
+        except:
+            return default
+
+
     def get_procs():
         """
         Retrieves list of processes running right now!
