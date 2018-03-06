@@ -420,11 +420,9 @@ init python in mas_diary:
 
             elif modifier.startswith("%"):
                 # use a percentage of entires
-                modifier = modifier[1:]
-                try:
-                    sel_count = int(modifier)
-                except:
-                    # it wasn't a string, 
+                sel_pct = mas_tryparse
+
+                sel_count = 
 
             else:
                 # modifier is a number probably
