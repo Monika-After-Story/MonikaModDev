@@ -92,6 +92,9 @@ init python in mas_diary:
     # diary comment character
     DIARY_COMMENT = "#"
 
+    # default count for entires (for a body)
+    DEFAULT_BODY_COUNT = 3
+
     # internal value copies because of issues with scope
     _internal_twitter = None
 
@@ -119,7 +122,7 @@ init python in mas_diary:
     }
 
     ################## functions ############################
-    def breakLines(string, min_length=100, max_length=120, use_nl=False):
+    def breakLines(string, min_length=100, max_length=120, use_nl=True):
         """
         Breaks the given string into multiple lines that follow the min/max
         line length rule.
@@ -132,7 +135,7 @@ init python in mas_diary:
                 (Default: 120)
             use_nl - True means use newlines to identify line breaks.
                 False will add each line to a list
-                (Default: False)
+                (Default: True)
 
         RETURNS:
             if use_nl is True, then a single string with newlines for handling
@@ -397,7 +400,7 @@ init python in mas_diary:
 
 ############## diary keyword functions ######################
     # these functions will be set to values in some of the dicts 
-    def _dk_body(modifier):
+    def _dk_body(modifier)
         """
         Generates the body
 
@@ -407,7 +410,35 @@ init python in mas_diary:
         RETURNS:
             body string
         """
-        # TODO
+        if len(modifier) > 0:
+            # the modifier is a real value
+
+            if modifier.startswith("a"):
+                # use all entries
+                #TODO
+                # this should return
+
+            elif modifier.startswith("%"):
+                # use a percentage of entires
+                modifier = modifier[1:]
+                try:
+                    sel_count = int(modifier)
+                except:
+                    # it wasn't a string, 
+
+            else:
+                # modifier is a number probably
+                try:
+                    sel_count = int(modifier)
+                except:
+                    # it wasnt a string, but thats okay, use the default
+                    sel_count = DEFAULT_BODY_COUNT
+
+            # take
+
+        # otherwise, we are using a numerical value
+            
+
         return ""
 
 
@@ -525,6 +556,7 @@ init 1 python in mas_diary:
         #   %## - percentage of main diary entries to use (randomized)
         #   ## - number of main diary entries to use (randomized)
         #   a - use all diary entries
+        #   (Default option is to use mas_diary.DEFAULT_BODY_COUNT
         "body": _dk_body,
 
         # monika's name
@@ -535,6 +567,12 @@ init 1 python in mas_diary:
 
     }
 
+
+#### functions for parsing #####################
+    def parseLine(line, use_nl=False):
+        """
+        Parses the given line appropriately
+        """
 
 
 # post startup stuff
