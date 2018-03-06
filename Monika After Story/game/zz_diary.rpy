@@ -69,7 +69,14 @@ default persistent._mas_diary_written = False
 default persistent._mas_diary_checksum = None
 
 init python in mas_diary:
+    # global stuff
     import os
+    import math # yuck
+
+    # store stuff
+    import store.mas_utils as mas_utils
+
+    # specific stuff
     from cStringIO import StringIO # we do alot of string work here
 
     # folder path to diary templates (from game)
@@ -87,7 +94,8 @@ init python in mas_diary:
     DIARY_TEMPLATE_NAME = "template_" 
 
     # template file extensions
-    DIARY_TEMPLATE_EXT = "mde" # Monika Diary Entry
+    DIARY_TEMPLATE_EXT = "mdet" # Monika Diary Entry Template
+#    DIARY_GAME_LINES_EXT = "mdgl" # Monika Diary Game Lines
 
     # diary comment character
     DIARY_COMMENT = "#"
@@ -352,6 +360,39 @@ init python in mas_diary:
         return (line[:limit_dex], line[nonspace_dex:])
 
 
+    def _chooseEventEntries(count=None, random=True, chrono=True, use_nl=True):
+        """
+        Picks entries from the event_entries list according to the given params
+        NOTE: will return a generic for no entries, if applicable
+
+        IN:
+            count - number of entries to pick. If None, then we pick all
+                (Default: None)
+            random - True means we pick randomly, False means in order.
+                NOTE: this only applies if count is not None
+                (Default: True)
+            chrono - True means respect chronological adding order, False
+                means do not.
+                (Default: True)
+            use_nl - True means return the output as a string with newlines.
+                False means return the output as a list of strings, with each
+                string being a line
+                (Default: True)
+
+        RETURNS:
+            If use_nl - one giant string with newlines
+            if not use_nl - list of strings, each string being a line
+
+        ASSUMES:
+            event_entries
+        """
+        output - StringIO() # cStringIO version
+
+        # we are assuming that the range
+        # TODO
+
+
+
     def _fillDiaryKeywordsDates(using_date=None):
         """
         Fills the diary replacement keywords for dates dict
@@ -409,6 +450,9 @@ init python in mas_diary:
 
         RETURNS:
             body string
+
+        ASSUMES:
+            event_entries
         """
         if len(modifier) > 0:
             # the modifier is a real value
@@ -420,9 +464,27 @@ init python in mas_diary:
 
             elif modifier.startswith("%"):
                 # use a percentage of entires
-                sel_pct = mas_tryparse
+                sel_pct = tryparseint(modifier[1:], -1)
 
-                sel_count = 
+                # they decided to negative us? use the default
+                if sel_pct < 0:
+                    sel_count = DEFAULT_BODY_COUNT
+
+                elif sel_pct >= 100:
+                    # wait, they wanted all? why u gotta trick me
+                    return _dk_body("a")
+
+                else:
+                    # otherwise, we need to ceil this
+                    sel_count = math.ceil(
+                        len(event_entries) * (sel_pct / 100.0)
+                    )
+
+                    if sel_count >= len(event_entries):
+                        # again, if you got all of them, lets make this easy
+                        return _dk_body(modifier)
+
+
 
             else:
                 # modifier is a number probably

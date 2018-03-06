@@ -1271,8 +1271,57 @@ python early:
                 raise Exception(msg)
 
 
-init -1 python in mas_utils:
+init -100 python in mas_utils:
     # utility functions for other stores.
+
+    def randrange(count, start, end, order=False, dups=False):
+        """
+        Generates a range of count numbers within the specified start-end range
+        The selected numbers are picked randomly (unless count == end-start)
+
+        IN:
+            count - number of numbers to generate
+            start - starting number (inclusive)
+            end - ending number (inclusive)
+            order - True will sort the resulting range. False will not.
+                NOTE: sort is from least to greatest
+                (Default: False)
+            dups - True will allow duplicate values. False will not
+                (Default: False)
+
+        RETURNS: an iterable range of numbers, or None if a range could not
+            be built
+        """
+        if start > end:
+            # this is impossible, wtf you doin
+            return None
+
+        if not dups:
+        
+            if count > (end - start + 1):
+                # no dups but pick more than the given range? wtf man
+                return None
+
+            if order and count == (end - start + 1):
+                # no dups, in order, and count is exact to range
+                return range(start, end + 1)
+
+        # otherwise, time to generate a range
+        r_range = list()
+        for index in range(0, count):
+            
+            # generate a rando
+            sel_num = renpy.random.randint(start, end)
+            while not dups and sel_num in r_range:
+                sel_num = renpy.random.randint(start, end)
+
+            r_range.append(sel_num)
+
+        if order:
+            r_range.sort()
+
+        return r_range
+
     
     def tryparseint(value, default=0):
         """
