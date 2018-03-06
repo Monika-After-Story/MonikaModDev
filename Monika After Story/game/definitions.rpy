@@ -1271,20 +1271,10 @@ python early:
                 raise Exception(msg)
 
 
-init -1 python:
-    import datetime # for mac issues i guess.
-    config.keymap['game_menu'].remove('mouseup_3')
-    config.keymap['hide_windows'].append('mouseup_3')
-    config.keymap['self_voicing'] = []
-    config.keymap['clipboard_voicing'] = []
-    config.keymap['toggle_skip'] = []
-    renpy.music.register_channel("music_poem", mixer="music", tight=True)
-
-    #Lookup tables for Monika input topics
-    #Add entries with your script in script-topics.rpy
-    monika_topics = {}
-
-    def mas_tryparseint(value, default=0):
+init -1 python in mas_utils:
+    # utility functions for other stores.
+    
+    def tryparseint(value, default=0):
         """
         Attempts to parse the given value into an int. Returns the default if
         that parse failed.
@@ -1302,6 +1292,20 @@ init -1 python:
         except:
             return default
 
+
+
+init -1 python:
+    import datetime # for mac issues i guess.
+    config.keymap['game_menu'].remove('mouseup_3')
+    config.keymap['hide_windows'].append('mouseup_3')
+    config.keymap['self_voicing'] = []
+    config.keymap['clipboard_voicing'] = []
+    config.keymap['toggle_skip'] = []
+    renpy.music.register_channel("music_poem", mixer="music", tight=True)
+
+    #Lookup tables for Monika input topics
+    #Add entries with your script in script-topics.rpy
+    monika_topics = {}
 
     def get_procs():
         """
