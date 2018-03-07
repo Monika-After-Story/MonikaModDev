@@ -54,6 +54,9 @@ define mas_diary.custom_entries = list()
 # each line gets an extra P (PS, PPS, PPPS...)
 define mas_diary.ps_entries = list()
 
+# this needs to be closed self related
+#define mas_diary.
+
 # diary been touched today? (by the player)
 # this value should be set at start in the same location session time
 # is handled.
@@ -372,7 +375,7 @@ init python in mas_diary:
         return (line[:limit_dex], line[nonspace_dex:])
 
 
-    def _chooseEventEntries(count=None, random=True, chrono=True, use_nl=True):
+    def _chooseEventEntries(count=None, chrono=True, use_nl=True):
         """
         Picks entries from the event_entries list according to the given params
         NOTE: will return a generic for no entries, if applicable
@@ -380,9 +383,6 @@ init python in mas_diary:
         IN:
             count - number of entries to pick. If None, then we pick all
                 (Default: None)
-            random - True means we pick randomly, False means in order.
-                NOTE: this only applies if count is not None
-                (Default: True)
             chrono - True means respect chronological adding order, False
                 means do not.
                 (Default: True)
@@ -509,12 +509,11 @@ init python in mas_diary:
 
             if modifier.startswith("a"):
                 # use all entries
-                #TODO
-                # this should return
+                return _chooseEventEntries()
 
             elif modifier.startswith("%"):
                 # use a percentage of entires
-                sel_pct = tryparseint(modifier[1:], -1)
+                sel_pct = mas_utils.tryparseint(modifier[1:], -1)
 
                 # they decided to negative us? use the default
                 if sel_pct < 0:
@@ -522,34 +521,27 @@ init python in mas_diary:
 
                 elif sel_pct >= 100:
                     # wait, they wanted all? why u gotta trick me
-                    return _dk_body("a")
+                    return _chooseEventEntries()
 
                 else:
-                    # otherwise, we need to ceil this
+                    # otherwise, we need to get an integer value out of this
+                    # percetnage
                     sel_count = math.ceil(
                         len(event_entries) * (sel_pct / 100.0)
                     )
 
                     if sel_count >= len(event_entries):
                         # again, if you got all of them, lets make this easy
-                        return _dk_body(modifier)
+                        return _chooseEventEntries()
 
-
+                # now that we have a number, countinue
 
             else:
                 # modifier is a number probably
-                try:
-                    sel_count = int(modifier)
-                except:
-                    # it wasnt a string, but thats okay, use the default
-                    sel_count = DEFAULT_BODY_COUNT
-
-            # take
+                sel_count = mas_utils.tryparseint(modifier, DEFAULT_BODY_COUNT)
 
         # otherwise, we are using a numerical value
-            
-
-        return ""
+        return _chooseEventEntries(sel_count)
 
 
     def _dk_closing(modifier):
@@ -620,6 +612,7 @@ init python in mas_diary:
             return _internal_twitter
 
         # otherwise
+        # NOTE: not a constant because YOU CANT CHANGE THIS
         return "Monika"
 
 
@@ -673,7 +666,9 @@ init 1 python in mas_diary:
         # name|<modifier>
         # modifier rules:
         #   t - use twitter name
-        "m_name": _dk_gen_monikaName
+        "m_name": _dk_gen_monikaName,
+
+        # stuff to say about how long since last opened
 
     }
 
@@ -712,6 +707,8 @@ init 2018 python:
 # a section's availability, since sometimes we can't use templated sections
 # if some criteria isn't available.
 #
+# Sections use: @keyword|modifier@
+#
 # lets say this is an example:
 # NOTE: these are actually stored in a text file so we avoid storing execess
 # strings in memory
@@ -726,6 +723,18 @@ init 2018 python:
     [player] lost at chess today, but [he] beat me at pong!
     I was quite surprised.
     """
+#
+# BODY (missing)
+# these are lines to display if you didn't talk with the player at all
+# - no modifieres for now
+#
+# GREETINGS:
+# these are like the Dear Diary starters.
+# - no modifiers for now
+#
+# CLOSINGS: 
+# like, Love, sincerely, and so on
+# - no modifiers for now
 
 # keywords process:
 # {keyword} - these are for direct string-string replacements
@@ -734,3 +743,4 @@ init 2018 python:
 # [player] - these are handled by renpy.substitute
 # ``` <text> ``` - anything in 3 backticks is considered literal text and will
 #   appear as is in the diary (minus the ticks)
+
