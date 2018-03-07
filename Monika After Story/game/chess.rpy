@@ -1738,6 +1738,9 @@ label mas_chess_savegame:
 
             # now setup the file path
             file_path = mas_chess.CHESS_SAVE_PATH + save_filename
+
+            # the loaded game needs to be reset if it exists
+            loaded_game = None
         
     # otherwise ask for name
     else:
