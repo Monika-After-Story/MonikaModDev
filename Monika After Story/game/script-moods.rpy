@@ -248,9 +248,23 @@ label mas_mood_angry:
     m "Remember: A happy [player] makes a happy Monika!"
     return
     
+    
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="lucky",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_lucky:
+    m 2r "You gotta ask yourself."
+    m 2h "{i}Do I feel lucky?{/i}"
+    m "Well..."
+    m 4j "Do ya, [player]?"
+    m 1k "Ahaha!"
+    return
+
+    
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
     
+
 label mas_mood_bored:
     m 1o "Oh, I'm sorry that I'm boring you, [player]."
     
