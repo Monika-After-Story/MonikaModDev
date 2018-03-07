@@ -5002,7 +5002,7 @@ label fun_facts_2:
     jump fun_facts_end
 
 label fun_facts_3:
-    m 1d "Ahh, I'm not sure if I should tell you [i]this[/i] fact." 
+    m 1d "Ahh, I'm not sure if I should tell you {i}this{/i} fact." 
     m 1h "It's not for the faint of heart after all..." 
     m 3e "...Well alright, I'll tell you."
     m "The fact is..."  
