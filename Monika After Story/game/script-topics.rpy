@@ -4954,7 +4954,7 @@ label monika_fun_facts_open:
         m 4a "I've been looking some up just to try and teach us both something new."
         m 4j "They say you learn something new everyday, this way I'm guaranteeing it!"
         m 2l "I found most of these online so I can't say they're {i}definitely{/i} true... "
-        $ fun_facts_start = True
+        $ fun_facts_started = True
     else:
         m 1b "Up for another fun fact [player]?"
         if persistent._mas_funfactfun:
