@@ -4910,3 +4910,24 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]." 
                 m 1j "I love you very much!"                              
     return
+   
+ init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_different_opinons",category=['Society'],prompt="different beliefs",random=True))
+ 
+ label monika_different_opinions:
+    m 1c "People can be very nasty with each other over little things"
+    m 3o"Like simply admitting you like a tv show can get you heat."
+    m 3h "Even if I don't like Shakesphere, being mad at the people who do is kinda silly isn't it."
+    m 3j"That's most likely the reason why Natsuki is embarrased by her hobbies."
+    m 1p"Though she did lash out at Yuri for her way of writing."
+    m 2g "People often assort the worst traits on people if they have a hobby or passion they don't like."
+    m 4g"Like when someone commits a horrible, heinous crime and it breaks news..."
+    m 1r "There are alawys people, who try to associate a hobby or belief they have with the crime they committed."
+    m 1r "Even if it had nothing to with the crime they committed at all."
+    m 1g "Like what polictial candiate they supported, or what video games they played."
+    m 3d "I hope you don't do that stuff [player]."
+    m 3f "You don't want to be associtaed as a viloent person, for just playing video games would you?"
+    m 1o "Or some pretentious snob for being passionate about literature."
+    m 1n "....."
+    m 1e "Just remember to not judge harshly, or at least don't be cruel to others for trivial things like that."
+    return
