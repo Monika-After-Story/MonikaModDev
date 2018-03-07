@@ -4935,11 +4935,10 @@ label monika_asks_family:
 #    m 1k "That's why I love you, [player]!"
 #    return
     
-
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fun_facts_open",category=['misc'],prompt="Fun facts",pool=True))
 
-default fun_facts_started = False
+default fun_facts_started = True
 default persistent._mas_funfactfun = True
 define mas_funfact.fun_count = 20
 define mas_funfact.bad_count = 4
@@ -4954,7 +4953,7 @@ label monika_fun_facts_open:
         m 4a "I've been looking some up just to try and teach us both something new."
         m 4j "They say you learn something new everyday, this way I'm guaranteeing it!"
         m 2l "I found most of these online so I can't say they're {i}definitely{/i} true... "
-        $ fun_facts_started = True
+        $ fun_facts_started = False
     else:
         m 1b "Up for another fun fact [player]?"
         if persistent._mas_funfactfun:
