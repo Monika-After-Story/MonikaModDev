@@ -236,21 +236,23 @@ label mas_mood_angry:
     m 3a "Let's try a few things that I do to calm myself first, [player]."
     m 3b "Hopefully they work for you as they do for me."
     m 1a "First, try taking a few deep breaths and slowly counting to 10."
-    m "If that doesn't work, if you can, retreat to somewhere calm until you clear your mind."
-    m 1c "If that doesn't work, you can try what I do as a last resort."
-    m 1q "Whenever I can't calm down, I just go outside, pick a direction, and just start running."
-    m 1c "I don't stop until I'm in a better state of mind."
-    m 3d "Sometimes exerting yourself through physical activity is a good way to blow off some steam."
-    m 2e "I probably don't seem like the type that gets angry very often, and you'd be right about that."
-    m 1a "But even I have my moments and those are some of the ways I deal with my anger."
-    m 1b "I hope my tips helped you calm down [player]."
+    m 3c "If that doesn't work, if you can, retreat to somewhere calm until you clear your mind."
+    m 1d "If you're still feeling angry after that, do what I'd do as a last resort!"
+    m 3a "Whenever I can't calm down, I just go outside, pick a direction, and just start running."
+    m 1j "I don't stop until I've cleared my head."
+    m 3b "Sometimes exerting yourself through physical activity is a good way to blow off some steam."
+    m 1e "You'd think that I'm the type that doesn't get angry often, and you'd be right."
+    m 1a "But even I have my moments..."
+    m "So I make sure I have ways to deal with them!"
+    m 1b "I hope my tips helped you calm down, [player]."
+    m "Remember: A happy [player] makes a happy Monika!"
     return
     
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
     
 label mas_mood_bored:
-    m 2q "I'm sorry that I'm boring you, [player]."
+    m 1o "Oh, I'm sorry that I'm boring you, [player]."
     
     python:
         unlockedgames = [
@@ -264,7 +266,7 @@ label mas_mood_bored:
     if gamepicked == "piano":
         m 1b  "Maybe you could play something for me on the piano?"
     else:
-        m 1a "Maybe we could play a game of [gamepicked]."
+        m 3j "Maybe we could play a game of [gamepicked]."
     
     m "What do you say, [player]?"
     menu: 
@@ -278,7 +280,8 @@ label mas_mood_bored:
             elif gamepicked == "piano":
                 call zz_play_piano
         "No":
-            m 2e "Oh, alright then, it was just a suggestion."
+            m 1f "Oh, alright then."
+            m 1e "Let me know if you want to do something with me, [player]~"
     return
 
     
