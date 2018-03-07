@@ -129,6 +129,18 @@ init python in mas_diary:
         "dd": "{0}" # 2 digit current day, unpadded
     }
 
+    # diary keywords for times
+    # TODO: do we really need this
+    # NOTE: we would also need session start times as well
+    diary_keywords_times_ls_auto = {
+        # time ones
+        "lsHH": "%H", # 24 hour time, last session
+        "lshh": "%I", # 12 hour time, last session
+        "lsAP": "%p", # am,pm thing, last session
+        "lsMI": "%M", # minute, last session
+        "lsSS": "%S" # second, last session
+    }
+
     ################## functions ############################
     def breakLines(string, min_length=100, max_length=120, use_nl=True):
         """
@@ -388,9 +400,47 @@ init python in mas_diary:
         """
         output - StringIO() # cStringIO version
 
-        # we are assuming that the range
-        # TODO
+        # minor optimization? maybe
+        entry_length = len(event_entries)
 
+        # inital check if we even have entries to grab
+        if entry_length == 0:
+            # TODO: we want to select from a predeteremined list of lines
+            return "nothing here for now"
+
+        if entry_length < count:
+            # this means the amount of options available is less than what we
+            # wanted. make this flow select all then.
+            count = None
+
+        # otherwise, normal operation
+
+        # first, generate a range for us to use
+        if count is None:
+            selected = range(0, entry_length)
+        else:
+            selected = mas_utils.randrange(count, 0, entry_length, True)
+
+        # the first entry is special!
+        # (we dont add a newline prior to the entry
+        ev_db, ev_key = selected[0]
+        output.write(ev_db[ev_key].diary_entry)
+
+        # now iterate over that range
+        for index in selected[1:]:
+            ev_db, ev_key = selected[index]
+
+            output.write("\n")
+            output.write(ev_db[ev_key].diary_entry)
+
+        # split line check
+        body_str = output.getvalue()
+        output.close()
+
+        if not use_nl:
+            return body_str.splitlines()
+
+        return body_str
 
 
     def _fillDiaryKeywordsDates(using_date=None):
@@ -677,4 +727,10 @@ init 2018 python:
     I was quite surprised.
     """
 
-# Topics?: that might be too variable
+# keywords process:
+# {keyword} - these are for direct string-string replacements
+# @section|mod@ - these are for section replacements. these may also include
+#   modifiers
+# [player] - these are handled by renpy.substitute
+# ``` <text> ``` - anything in 3 backticks is considered literal text and will
+#   appear as is in the diary (minus the ticks)
