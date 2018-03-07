@@ -536,14 +536,17 @@ label ch30_autoload:
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
 
-    #Skip all greetings if you closed the game on Monika
+   #Skip all greetings if you closed the game on Monika
     if persistent.closed_self:
         #pick a random greeting
         if is_monika_in_room:
             if persistent.current_monikatopic != "i_greeting_monikaroom":
                 $ pushEvent("i_greeting_monikaroom")
-        else:
-            $pushEvent(renpy.random.choice(greetings_list))
+            #if the player told Monika that they are sick, jump to this greeting.
+            elif persistent._mas_mood_sick:
+                $ pushEvent("greeting_sick")
+            else:
+                $pushEvent(renpy.random.choice(greetings_list))
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
@@ -554,6 +557,7 @@ label ch30_autoload:
         $ set_keymaps()
 
     $persistent.closed_self = False
+    
     $startup_check = False
     jump ch30_loop
 

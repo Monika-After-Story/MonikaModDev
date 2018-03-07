@@ -1922,7 +1922,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                         textbutton _("That's enough for now.") action Return(False)
 
 # the regular scrollabe menu
-screen scrollable_menu(items, display_area, scroll_align):
+screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enough for now."):
         style_prefix "scrollable_menu"
 
         fixed:
@@ -1950,7 +1950,7 @@ screen scrollable_menu(items, display_area, scroll_align):
 
                     null height 20
 
-                    textbutton _("That's enough for now.") action Return(False)
+                    textbutton _(nvm_text) action Return(False)
 
 # more generali scrollable menu. This one takes the following params:
 # IN:
@@ -2014,5 +2014,4 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
                             elif final_item[3]:
                                 style "scrollable_menu_special_button"
                             action Return(final_item[1])
-
 

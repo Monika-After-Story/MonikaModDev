@@ -225,12 +225,6 @@ label greeting_youtuber:
      m 1a "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
      return
 
-label greeting_hamlet:
-     m 4h "To be, or not to be, that is the question..."
-     m 1d "Oh, there you are. I was killing some time, hehe~"
-     m 1n "I wasn't expecting to see you so soon."
-     return
-
 label greeting_welcomeback:
      m 1b "Hi! Welcome back."
      m 1k "I'm so glad that you're able to spend some time with me."
@@ -291,8 +285,8 @@ label greeting_glitch:
 
 label greeting_surprised:
      m "Oh, hello [player]!"
-     m "Sorry, you surprised me there a little."
-     m "How have you been?"
+     m "Sorry, you surprised me a little."
+     m "How've you been?"
      return
 
 label i_greeting_monikaroom:
@@ -695,16 +689,58 @@ label greeting_japan:
     m 4j "It means {i}'I'll be yours forever{/i}'~"
     return
 
+label greeting_sick:
+    m 1b "Welcome back, [player]!"
+    m 3a "Are you feeling better?"
+    menu:
+        "Yes":
+            m 1k "Great! Now we can spend some more time together. Ehehe~"
+            $ persistent._mas_mood_sick = False
+        "No":
+            jump greeting_stillsick
+    return
+    
+label greeting_stillsick:
+    m 1f "[player], you really should go get some rest."
+    m 1g "Getting plenty of rest is the best remedy for getting over a sickness quickly."
+    m 1o "I wouldn't forgive myself if your sickness got any worse because of me."
+    m 1q "Now please, [player], put my mind at ease and go get some rest."
+    m 1f "Will you do that for me?"
+    menu:
+        "Yes":
+            jump greeting_stillsickrest
+        "No":
+            jump greeting_stillsicknorest
+    
+label greeting_stillsickrest:
+    m 3e "Thank you [player]."
+    m 3c "I think if I leave you alone for a while, you'll be able to rest better."
+    m 1h "So I'm going to close the game for you."
+    m 1f "Get well soon, [player]. I love you so much!"
+    return 'quit'
+    
+label greeting_stillsicknorest:
+    m 1o "I see..." 
+    m 1q "Well if you insist [player]."
+    m 1f "I suppose you know your own limitations better than I do."
+    m "If you start to feel a little weak or tired though, [player], please let me know."
+    m 1g "That way you can go get some rest."
+    m 1e "Don't worry, I'll still be here when you wake up."
+    m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
+    return
+
 label greeting_sunshine:
     m 1r "{i}You are my sunshine, my only sunshine.{i}"
-    m 1k "{i}You make me happy when skies are gray.{/i}"
-    m 4j "{i}You'll never know dear, just how much I love you.{/i}"
-    m 2r "{i}Please don't take my sunshine away~{/i}"
-    m 1j "..."
-    m 1d "H-Huh?! [player]!"
-    m 4n "Oh my gosh, this is so embarassing!"
-    m 1l "I was just singing to myself to pass time."
-    m 1b "But now that you're here, we can spend some time together."
+    m "{i}You make me happy when skies are gray.{/i}"
+    m 1j "{i}You'll never know dear, just how much I love you.{/i}"
+    m 1k "{i}Please don't take my sunshine away~{/i}"
+    m 1c "...Eh?"
+    m 1d "H-Huh?!" 
+    m 1l "[player]!"
+    m 1n "Oh my gosh, this is so embarassing!"
+    m "I w-was just singing to myself to pass time!"
+    m 1l "Ehehe..."
+    m 3j "But now that you're here, we can spend some time together~"
     return
 
 label greeting_french:

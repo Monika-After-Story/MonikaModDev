@@ -121,27 +121,6 @@ label monika_death:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_bad_day",category=['life'],prompt="Want to hear about my day?",random=True))
-
-label monika_bad_day:
-    m 2e "...Hey, are you having a bad day or anything like that?"
-    m "Sometimes I get frustrated that a normal day can be ruined even by really small things."
-    m 4l "Like if you accidentally say something in a conversation that someone doesn't like."
-    m "Or if you start thinking about how awful of a person you used to be five years ago."
-    m "Or if you feel worthless for putting off important work and failing to get simple tasks done."
-    m "Or when you think about all the different people who probably hate you or think you're off-putting."
-    m 4e "I understand those days."
-    m "Just remember that the sun will shine again tomorrow."
-    m "Those kinds of things are as easy to forget and ignore as they are to remember."
-    m "And besides..."
-    m 1j "I don't care how many people might hate you or find you off-putting."
-    m "I think you're wonderful and I will always love you."
-    m "I hope, if nothing else, that knowing that helps you feel just a tiny bit better about yourself."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfesteem",category=['advice'],prompt="Self-esteem",random=True))
 
 label monika_selfesteem:
@@ -3160,16 +3139,7 @@ label monika_closet:
     m 1j "You're more romantic than that."
     m 3k "So I'm expecting a lot more than just a dark closet~"
     return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_playerhappy",category=['you'],prompt="I'm happy",pool=True))
-
-label monika_playerhappy:
-    m 3b "That's wonderful! I'm happy when you're happy."
-    m 1j "Know that you can always come up to me and I'll cheer you up, [player]."
-    m 3a "I love you and I'll always be here for you so don't you ever forget that~"
-    return
-
+    
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
 
