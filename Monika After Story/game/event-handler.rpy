@@ -292,7 +292,39 @@ init python:
                 persistent.current_monikatopic = 0
         return
 
+    #Used to adjust the good and bad experience factors that are used to adjust affection levels.
+    def _mas_updateAffectionExp():
+        #If affection is between 30 and 49, update good exp. Simulates growing affection.
+        if persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] < 50:
+            persistent._mas_affection["goodexp"] = 3
+            persistent._mas_affection["badexp"] = -1
+    
+        #If affection is more than 50, update both exp types. Simulates increasing affection and it will now take longer to erode that affection.
+        elif persistent._mas_affection["affection"] >= 50:
+            persistent._mas_affection["goodexp"] = 5
+            persistent._mas_affection["badexp"] = -0.5
+    
+        #If affection is between -30 and -49, update bad exp. Simulates erosion of affection.
+        elif persistent._mas_affection["affection"] <= -30 and persistent._mas_affection["affection"] > -50:
+            persistent._mas_affection["goodexp"] = 1
+            persistent._mas_affection["badexp"] = -3
+    
+        #If affection is less than -50, update both exp types. Simulates increasing loss of affection and now harder to get it back.
+        elif persistent._mas_affection["affection"] <= -50:
+            persistent._mas_affection["goodexp"] = 0.5
+            persistent._mas_affection["badexp"] = -5
 
+    #Used to increment affection whenever something positive happens.
+    def _mas_gainAffection(amount = 1):
+        persistent._mas_affection["affection"] += amount
+        
+        _mas_updateAffectionExp()
+            
+    #Used to subtract affection whenever something negative happens.
+    def _mas_loseAffection(amount = -1):
+        persistent._mas_affection["affection"] += amount
+        
+        _mas_updateAffectionExp()
 
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
