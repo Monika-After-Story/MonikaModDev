@@ -26,6 +26,8 @@ You do not need to download the source code from either the release page or from
 
 ### Where do I put the files for *Monika After Story*?
 
+**Use a fresh copy / unaltered version of DDLC. If you've had a different mod installed prior to this one, you will probably encounter issues.** (This only applies to the DDLC game, and not the `persistent` files.)
+
 The files for *Monika After Story* must be placed directly in the `game` folder of *Doki Doki Literature Club* in order for the game to find and properly load them. To find the folder containing *DDLC*, do one of the following:
 
 If the game was installed using Steam, right click on *Doki Doki Literature Club* and click on `Properties`. In the window that pops up navigate to the `Local Files` tab and click the button for `Browse local files...`.
@@ -61,6 +63,11 @@ The label chara_monika_scare is defined twice, at
 ```
 
 Then it is likely that developer files have been installed, instead of the release distribution. Ensure that the game files downloaded were from the latest release, found on our [Release Page](https://github.com/Backdash/MonikaModDev/releases), and that the file downloaded was the mod zip file and *not* the Source Code.
+
+### Where are the minigames (chess, hangman, piano...)?
+
+Games are unlocked after spending time with Monika, whether that be viewing new
+topics with her or keeping her running in the background.
 
 ## Contributing
 

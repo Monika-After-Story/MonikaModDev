@@ -2,7 +2,8 @@
 #
 
 # hangman stuff only
-define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!"
+default persistent._mas_hangman_playername = False
+define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 
 # IMAGES-----------
 # hangman
@@ -27,7 +28,7 @@ image hm_s:
 
         # this block makes the image flicker
         # the numbers are times to display
-        block: 
+        block:
             choice:
                 0.075
             choice:
@@ -35,6 +36,19 @@ image hm_s:
             choice:
                 0.05
         repeat
+
+# window sayori
+# we are dependent on exisitng images to create the window sayori
+define hm.SAYORI_SCALE = 0.25
+image hm_s_win_6 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4r"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_5 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2a"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_4 = im.FactorScale(im.Flip(getCharacterImage("sayori", "2i"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_3 = im.FactorScale(im.Flip(getCharacterImage("sayori", "1f"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_2 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4u"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_1 = im.FactorScale(im.Flip(getCharacterImage("sayori", "4w"), horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_0 = im.FactorScale(im.Flip("images/sayori/end-glitch1.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_fail = im.FactorScale(im.Flip("images/sayori/3c.png", horizontal=True), hm.SAYORI_SCALE)
+image hm_s_win_leave = im.FactorScale(getCharacterImage("sayori", "1a"), hm.SAYORI_SCALE)
 
 #image hm_s1 = "mod_assets/hangman/hm_s1.png"
 #image hm_s2 = "mod_assets/hangman/hm_s2.png"
@@ -57,6 +71,32 @@ transform hangman_display_word:
 
 transform hangman_hangman:
     xanchor 0 yanchor 0 xpos 880 ypos 125
+
+# window sayori
+# left in
+transform hangman_sayori(z=1.0):
+    xcenter -300 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
+    easein 0.25 xcenter 90
+
+# regular
+transform hangman_sayori_i(z=1.0):
+    xcenter 90 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
+
+# 3c offset
+transform hangman_sayori_i3(z=1.0):
+    xcenter 82 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
+
+# hop
+transform hangman_sayori_h(z=1.0):
+    xcenter 90 yoffset 0 yalign 0.47 zoom z*1.00 alpha 1.00 subpixel True
+    easein 0.1 yoffset -20
+    easeout 0.1 yoffset 0
+
+# left out, slower
+transform hangman_sayori_lh(z=1.0):
+    subpixel True
+    on hide:
+        easeout 0.5 xcenter -300
 
 # we want monika on a kind of offset to the left
 transform hangman_monika(z=0.80):
@@ -120,7 +160,7 @@ init -1 python in hangman:
 
 # post processing
 init 10 python:
-    
+
     # setting up wordlist
     from store.hangman import hm_words, all_hm_words
     from copy import deepcopy
@@ -128,7 +168,7 @@ init 10 python:
     # for now, lets use full_wordlist defined in poemgame
     # this is a list of PoemWord objects
     for word in full_wordlist:
-        
+
         winner = ""
 
         # figure out who likes this word the most
@@ -145,6 +185,15 @@ init 10 python:
 
     all_hm_words = deepcopy(hm_words)
 
+    if (
+            not persistent._mas_hangman_playername
+            and persistent.playername.lower() != "sayori"
+            and persistent.playername.lower() != "yuri"
+            and persistent.playername.lower() != "natsuki"
+            and persistent.playername.lower() != "monika"
+        ):
+        hm_words.append(-1)
+
 #   NOTE: this is in case we decide to change wordlist
 #    with renpy.file("poemwords.txt") as words:
 #        for line in words:
@@ -154,7 +203,7 @@ init 10 python:
 #            if len(line) != 0 and line[0] != "#":
 #
 #                # word, sPt, nPt, yPt
-#                hm_words.append(line.split(",")[0]) 
+#                hm_words.append(line.split(",")[0])
 #    all_hm_words = list(hm_words)
 
     # setting up image names
@@ -165,6 +214,8 @@ init 10 python:
 label game_hangman:
     $ import store.hangman as hmg
     $ from copy import deepcopy
+    $ is_sayori = persistent.playername.lower() == "sayori"
+    $ is_window_sayori_visible = False
     m 2b "You want to play hangman? Okay!"
     # setup positions
     show monika at hangman_monika
@@ -173,39 +224,56 @@ label game_hangman:
     python:
         # setup constant displayabels
         missed_label = Text(
-            "Missed:", 
+            "Missed:",
             font=hmg.WORD_FONT,
             color=hmg.WORD_COLOR,
             size=hmg.WORD_SIZE,
             outlines=hmg.WORD_OUTLINE
         )
 
-    # show missed label 
+    # show missed label
     show text missed_label zorder 10 as hmg_mis_label at hangman_missed_label
-    
+
     # FALL THROUGH TO NEXT LABEL
 
 # looping location for the hangman game
 label hangman_game_loop:
     m 1a "I'll think of a word..."
     pause 0.7
-   
+
     python:
+        player_word = False
+
         # refill the list if empty
         if len(hmg.hm_words) == 0:
-            hmg.hm_words = deepcopy(hmg.all_hm_wordS)
+            hmg.hm_words = deepcopy(hmg.all_hm_words)
 
         # randomly pick word
         word = renpy.random.choice(hmg.hm_words)
         hmg.hm_words.remove(word)
 
         # setup display word and hint
-        display_word = list("_" * len(word[0]))
-        hm_hint = hmg.HM_HINT.format(word[1])
+        if (
+                word == -1 
+                and persistent.playername.isalpha()
+                and len(persistent.playername) <= 15
+            ):
+            display_word = list("_" * len(persistent.playername.lower()))
+            hm_hint = hmg.HM_HINT.format("I")
+            word = persistent.playername.lower()
+            player_word = True
+            persistent._mas_hangman_playername = True
 
-        # we dont need PoemWord anymore
-        word = word[0]
-      
+        else:
+            if word == -1:
+                word = renpy.random.choice(hmg.hm_words)
+                hmg.hm_words.remove(word)
+            display_word = list("_" * len(word[0]))
+            hm_hint = hmg.HM_HINT.format(word[1])
+
+            # we dont need PoemWord anymore
+            word = word[0]
+
         # turn the word into hangman letters
         # NOTE: might not need this (or might). keep for reference
 #       hm_letters = list()
@@ -215,9 +283,18 @@ label hangman_game_loop:
 #               hmg.WORD_XPOS_START + (hmg,LETTER_SPACE * dex),
 #               hmg.WORD_YPOS_START
 #           )
-    
+
+    # sayori window
+    if is_sayori:
+        if is_window_sayori_visible:
+            show hm_s_win_6 as window_sayori at hangman_sayori_i
+        else:
+            show hm_s_win_6 as window_sayori at hangman_sayori
+        $ is_window_sayori_visible = True
+
     m "Alright, I've got one."
     m "[hm_hint]"
+
     # main loop for hangman game
     $ done = False
     $ win = False
@@ -234,7 +311,7 @@ label hangman_game_loop:
                 dt_color = hmg.WORD_COLOR_GET
 
             display_text = Text(
-                "".join(display_word), 
+                "".join(display_word),
                 font=hmg.WORD_FONT,
                 color=dt_color,
                 size=hmg.WORD_SIZE,
@@ -255,50 +332,66 @@ label hangman_game_loop:
         show text display_text zorder 10 as hmg_dis_text at hangman_display_word
         show text missed_text zorder 10 as hmg_mis_text at hangman_missed_chars
 
-        # sayori easter egg
-        if persistent.playername.lower() == "sayori" and chances == 0:
+        # sayori window easter egg
+        if is_sayori:
 
-            # disable hotkeys, music and more
-            $ disable_esc()
-            $ store.songs.enabled = False
-            $ store.hkb_button.enabled = False
+            # glitch out
+            if chances == 0:
 
-            # setup glitch text
-            $ hm_glitch_word = glitchtext(40) + "?"
-            $ style.say_dialogue = style.edited
+                # disable hotkeys, music and more
+                $ disable_esc()
+                $ store.songs.enabled = False
+                $ store.hkb_button.enabled = False
 
-            # show hanging sayori
-            show hm_s zorder 10 at hangman_hangman
+                # setup glitch text
+                $ hm_glitch_word = glitchtext(40) + "?"
+                $ style.say_dialogue = style.edited
 
-            # hide monika and display glitch version
-            hide monika 
-            show monika_body_glitch1 as mbg zorder 3 at hangman_monika_i(z=1.0)
+                # show hanging sayori
+                show hm_s zorder 10 at hangman_hangman
 
-            # tear screen and glitch sound
-            show screen tear(20, 0.1, 0.1, 0, 40)
-            play sound "sfx/s_kill_glitch1.ogg"
-            pause 0.2
-            stop sound
-            hide screen tear
+                # hide monika and display glitch version
+                hide monika
+                show monika_body_glitch1 as mbg zorder 2 at hangman_monika_i(z=1.0)
 
-            # display weird text
-            m "{cps=*2}[hm_glitch_word]{/cps}{nw}"
+                # hide window sayori and display glitch version
+                show hm_s_win_0 as window_sayori
 
-            # tear screen and glitch sound
-            show screen tear(20, 0.1, 0.1, 0, 40)
-            play sound "sfx/s_kill_glitch1.ogg"
-            pause 0.2
-            stop sound
-            hide screen tear
+                # tear screen and glitch sound
+                show screen tear(20, 0.1, 0.1, 0, 40)
+                play sound "sfx/s_kill_glitch1.ogg"
+                pause 0.2
+                stop sound
+                hide screen tear
 
-            # hide scary shit and return to normal
-            hide mbg
-            show monika 1 at hangman_monika_i
-            hide hm_s
-            $ style.say_dialogue = style.default_monika
-            $ store.songs.enabled = True
-            $ store.hkb_button.enabled = True
-            $ enable_esc()
+                # display weird text
+                m "{cps=*2}[hm_glitch_word]{/cps}{w=0.2}{nw}"
+
+                # tear screen and glitch sound
+                show screen tear(20, 0.1, 0.1, 0, 40)
+                play sound "sfx/s_kill_glitch1.ogg"
+                pause 0.2
+                stop sound
+                hide screen tear
+
+                # hide scary shit and return to normal
+                hide mbg
+                hide window_sayori
+                hide hm_s
+                show monika 1 zorder 2 at hangman_monika_i
+                if config.developer:
+                    $ style.say_dialogue = style.normal
+                else:
+                    $ style.say_dialogue = style.default_monika
+                $ is_window_sayori_visible = False
+                $ store.songs.enabled = True
+                $ store.hkb_button.enabled = True
+                $ enable_esc()
+
+            # otherwise, window sayori
+            else:
+                $ next_window_sayori = "hm_s_win_" + str(chances)
+                show expression next_window_sayori as window_sayori
 
         $ hm_display = hmg.HM_IMG_NAME + str(chances)
 
@@ -307,6 +400,9 @@ label hangman_game_loop:
 
         if chances == 0:
             $ done = True
+            if player_word:
+                m 1e "[player],..."
+                m "You couldn't guess your own name?"
             m 1j "Better luck next time~"
         elif "_" not in display_word:
             $ done = True
@@ -326,21 +422,29 @@ label hangman_game_loop:
 
                     if len(guess) != 0:
                         bad_input = False
-                
+
             # parse input
             if guess == "?": # hint text
                 m "[hm_hint]"
             elif guess == "!": # give up dialogue
+                if is_window_sayori_visible:
+                    show hm_s_win_fail as window_sayori at hangman_sayori_i3
                 $ done = True
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1n "[player]..."
-                m "You should at least play to the end..."
-                m 1f "Giving up so easily is a sign of poor resolve."
-                if chances > 1:
-                    m "I mean, you'd have to miss [chances] more letters to actually lose."
+                if chances == 6:
+                    m "I thought you said you wanted to play Hangman."
+                    m 1o "You didn't even guess a single letter."
+                    m "..."
+                    m 1f "I really enjoy playing with you, you know."
                 else:
-                    m "I mean, you'd have to miss [chances] more letter to actually lose."
+                    m "You should at least play to the end..."
+                    m 1f "Giving up so easily is a sign of poor resolve."
+                    if chances > 1:
+                        m "I mean, you'd have to miss [chances] more letters to actually lose."
+                    else:
+                        m "I mean, you'd have to miss [chances] more letter to actually lose."
                 m 1e "Can you play to the end next time, [player]? For me?"
             else:
                 python:
@@ -365,9 +469,19 @@ label hangman_game_loop:
 
     # post loop
     if win:
-        m 1j "Wow, you guessed the word correctly!"
+        if is_window_sayori_visible:
+            show hm_s_win_6 as window_sayori at hangman_sayori_h
+
+        if player_word:
+            $ the_word = "your name"
+        else:
+            $ the_word = "the word"
+
+        m 1j "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
-        $ grant_xp(xp.WIN_GAME)
+        if not persistent.ever_won['hangman']:
+            $ persistent.ever_won['hangman']=True
+            $ grant_xp(xp.WIN_GAME)
 
     # try again?
     menu:
@@ -377,7 +491,7 @@ label hangman_game_loop:
         "No":
             jump hangman_game_end
 
-    # RETURN AT END 
+    # RETURN AT END
 
 # end of game flow
 label hangman_game_end:
@@ -388,6 +502,10 @@ label hangman_game_end:
     hide hmg_mis_text
     hide hm_frame
     show monika at t32
+    if is_window_sayori_visible:
+        show hm_s_win_leave as window_sayori at hangman_sayori_lh
+        pause 0.1
+        hide window_sayori
 
     m 1d "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."

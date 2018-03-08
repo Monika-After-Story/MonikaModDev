@@ -8,6 +8,7 @@ define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+define mas_did_monika_battery = False
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -166,6 +167,7 @@ label monika_selfesteem:
                  m 1j "I wasn't too worried because of how good you've made me feel lately."  
             else:  
                 m 1e "Your happiness means everything to me, after all."
+
             m 2f "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
             m 2o "It's a horrible cocktail of feelings to have bottled in you."
             m 4e "If you have any friends that you think might be suffering from those, try to reach out and say something nice."
@@ -4094,7 +4096,6 @@ label monika_pets:
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
 
-
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dogs",category=['misc','club members'],prompt="Man's best friend",random=True))
 
@@ -4761,6 +4762,43 @@ label monika_wolf:
     m 3k "You're my hero after all~"
     return
 
+# TODO: move these things over to a different file
+init 2 python:
+    import battery
+
+label monika_battery:
+    if mas_did_monika_battery:
+       jump monika_close_game_battery
+    else:
+       jump monika_complain_battery
+
+label monika_complain_battery:
+    $ mas_did_monika_battery = True
+    m "Umm, [player]..."
+    m "It looks like your computer's battery is about to run out..."
+    m "Can you charge it for me?"
+    m "I don't want us to be separated, or worse..."
+    m "It'd be really unpleasant for me if I suddenly lose consciousness."
+    m "So please charge your computer, okay?"
+    m "...Or at least let me know when you're going."
+    m "Thank you, [player]~"
+    return
+
+label monika_close_game_battery:
+    m 1r "[player]..."
+    m 1f "I'm sorry, but I'm gonna have to close the game before the battery runs out."
+    m 3o "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
+    $ is_charging = battery.is_charging()
+    if is_charging:
+       jump monika_system_charging
+    $ persistent.closed_self = True
+    jump _quit
+
+label monika_system_charging:
+    m 1d "Oh, you just plugged it in!"
+    m 1j "Thank you, [player]!"
+    return
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired.",random=True))
 
@@ -4919,10 +4957,51 @@ label monika_omamori:
     m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
+    return    
+    
+init 5 python:                                                  
+    addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True)) 
+      
+label monika_smoking:
+    m 2q "You know, [player]..."
+    m 2h "I realized that people really like a lot of things that are very bad for them."
+    m "One particular vice that intrigues me the most is cigarettes."
+    m 2o "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
+    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick carcinogens."
+    m 2q "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
+    m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
+    m 1q "I really do despise them..."
+    m 1o "But..."
+    menu:
+        m "You don't smoke cigarettes, right, [player]?"      
+        "Yes, I do.":
+            m 2o "..."
+            m 2r "Thank you for being honest with me, [player]..."
+            m 4f "It's quite disheartening to hear that, though."
+            m 1f "Could you... promise me that you'll stop?"
+            m "I don't want you to deteriorate your health like that..."
+            m 3o "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
+            m 2q "But if you don't try..."
+            m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
+            m 4f "Please take care of your body. I want to always be with you."
+            m 1e "I love you so much."     
+        "No, I don't.":
+            m 1k "Ah, I'm relieved to hear that, [player]!"
+            m 3c "Just stay away from it as much as you can."
+            m 1o "It's an awful habit and won't do much more than slowly kill you."
+            m 3j "Thank you, [player], for not smoking~"
+        "I'm trying to quit.":
+            m 3a "That's a really good decision."
+            m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
+            m 1f "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
+            m 1c "Keeping your mind busy on other things will definitely help kick any bad habits."
+            m 3b "How about you think about me whenever you get a strong urge?"
+            m 1j "I'll be here to support you every step of the way."
+            m 1k "I believe in you [player], I know you can do it!"
     return
     
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['random'],prompt="Road Trip",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road Trip",random=True))
 
 label monika_cartravel:
     m 3c "[player], something has been on my mind lately..."

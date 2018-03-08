@@ -12,8 +12,9 @@ init -1 python in songs:
     YOURE_REAL = "Your Reality"
     STILL_LOVE = "I Still Love You"
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
-    DDLC_MT_80 = "Doki Doki Theme (80s version)"
+    DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
+    PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     NO_SONG = "None"
 
     # SONG FILEPATHS
@@ -26,6 +27,7 @@ init -1 python in songs:
         "<loop 17.451 to 119.999>mod_assets/bgm/ddlc_maintheme_80s.ogg"
     )
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
+    FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
     FP_NO_SONG = None
 
 
@@ -49,7 +51,7 @@ init -1 python in songs:
             new_vol = 0.0
         elif new_vol > 1.0:
             new_vol = 1.0
-        
+
         renpy.music.set_volume(new_vol, channel=channel)
 
     def getVolume(channel):
@@ -68,7 +70,7 @@ init -1 python in songs:
         # Gets the name of the currently playing song.
         #
         # IN:
-        #   channel - the audio channel to get the playing file 
+        #   channel - the audio channel to get the playing file
         #
         # RETURNS:
         #   The name of the currently playing song, as defined here in
@@ -120,11 +122,13 @@ init -1 python in songs:
         if not sayori:
             music_choices.append((JUST_MONIKA, FP_JUST_MONIKA))
             music_choices.append((YOURE_REAL, FP_YOURE_REAL))
-            music_choices.append((STILL_LOVE, FP_STILL_LOVE))
-            music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
 
             # Shoutout to Rune0n for this wonderful piano cover!
             music_choices.append((PIANO_COVER, FP_PIANO_COVER))
+
+            music_choices.append((STILL_LOVE, FP_STILL_LOVE))
+            music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
+            music_choices.append((PLAYWITHME_VAR6, FP_PLAYWITHME_VAR6))
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
@@ -160,6 +164,7 @@ init 10 python:
     if persistent.playername.lower() == "sayori":
         store.songs.current_track = store.songs.FP_SAYO_NARA
         store.songs.selected_track = store.songs.FP_SAYO_NARA
+        persistent.current_track = store.songs.FP_SAYO_NARA
     else:
         store.songs.current_track = persistent.current_track
         store.songs.selected_track = store.songs.current_track
