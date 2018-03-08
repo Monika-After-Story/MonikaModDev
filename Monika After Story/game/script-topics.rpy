@@ -4930,3 +4930,222 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+#I need help in coding here. If this doesn't get removed. If someone knows the commands or how to do it, I'd appreciate it if you tell me. Assuming this topic isn't removed by then#
+#Also spoilers up ahead. You've been warned#
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_watches_whiplash",category=['media'],prompt="Watching a movie while you were away",random=True))
+
+label monika_watches_whiplash:
+    m "[player], have you ever wondered what I do to pass the time whenever you're not around?"
+    m "Well, I usually go online and read some books or articles that could be fun to talk about."
+    m "But sometimes, I watch a movie."
+    m "You know, just to pass the time ahaha."
+    menu:
+        "Wow, really?":
+            m "Is it really that surprising [player]?"
+            menu:
+                "Kinda.":
+                    m "Well, I guess you're not the first one to think that."
+                    m "People often think I'm for not interested in movies some reason."
+                    m "Maybe because I was in a literatire club?"
+                    m "And a debate club before that? I don't know."
+                    m "But that's beside the point. Anyway..."
+                "Not really.":
+                    m "Well I {i}am{/i} just a teenager after all."
+                    m "I can watch a movie too ahaha."
+                    m "So anyways..."
+                "I thought you were more interested in reading than watching.":
+                    m "Well, most of the time I am."
+                    m "But sometimes, even I'd get tired of only reading."
+                    m "Sometimes I just feel like watching a random movie."
+                    m "But I don't blame you for being surprised [player]."
+        "That's pretty normal":
+            m "Well, even I get bored waiting ahaha."
+            m "I-It's not that I'm demanding you to spend more time with me...I understand that you're busy in your reality too."
+            m "But I'm not saying you shouldn't {i}not{/i} spend time with me...{w} It's just..."
+            m "Uhh...{w} How do I explain this?"
+            menu:
+                "You can do it!~":
+                    m "Don't be such a tease [player]~"
+                    m "Ahaha~"
+                "You don't have to force yourself.":
+                    m "I'm not really forcing myself [player]."
+                    m "I just need a bit of time to gather my thoughts."
+                    m "..."
+                "Okay, everyone! It's time to explain yourself~":
+                    m "Pfft!"
+                    m "Ahahahaha!"
+                    m "That's a nice impression of me [player]!"
+                    m "So, where was I?{w} Oh yeah! {i}explaining myself{/i}~"
+                    m "Ahaha~"
+            m "You know that I love it when you come to spend time with me right? And I'm always happy waiting for you to come here."
+            m "But it get's boring sometimes and I pass the time. You get that, right [player]?
+            m "This is kinda awkward.{w}Umm...{w}Movies! Where was I?"
+        "You mean like adaptations of your favourite books?":
+            m "Well, usually yes."
+            m "But I also watch regular movies from time to time."
+            m "There are some pretty interesting movies out there too."
+            m "For example."
+    m "While you were gone, I watched this movie called '{i}Whiplash{/i}'."
+    m "It was pretty good."
+    m "Maybe you know the movie too [player]?"
+    menu:
+        "Yes."
+            m "Oh, really now?"
+            m "Would you mind if I test you then?"
+            menu:
+                "Bring it!":
+#I need a way to bring the topic to when she asks later "want a synopsis?" if you get a question wrong. The questions are pretty basic, just what's the name of the main caracters.#
+                    m "Alright! Let's start!"
+                    m "What was the name of the MC?"
+                    menu:
+                        "Andrew":
+                            m "Correct!"
+                            m "Or maybe it was just a lucky guess? Okay, here's another one [player!"
+                            m "What's the name of the main antagonist?"
+                            menu:
+                                "Tanner":
+                                    m "Wrong! Caught you [player]!"
+                                    m "Ahaha!"
+#This is where I need the code or a way to somehow jump to another part of this topic#
+                                "Fletcher":
+                                    m "That's Right!"
+                                    m "I guess you did watch it."
+                                    m "Sorry for doubting you [player]."
+                                    menu:
+                                        "It's fine.":
+                                            m "Sorry I ever doubted you [player]."
+                                            m "So, what'd you think of the movie?"
+                                            menu:
+                                                "Pretty good."
+                                                    m "Yeah, It was pretty good."
+                                                    m "I really liked the jazz orchestra at the end!"
+                                                    m "The music was good too."
+                                                    m "It's not like that movie is gonna be my all time favourite."
+                                                    m "But I enjoyed watching it."
+                                                    m "Maybe we could even watch it together some other time!"
+                                                    menu:
+                                                        "Fine by me.":
+                                                            m "You and me, watching a movie together."
+                                                            m "That'd be something."
+                                                            m "I can't wait!"
+                                                        "Maybe something else.":
+                                                            m "Yeah, maybe it's not the type of movie anyone would watch again and again."
+                                                            m "There are other better ones out there."
+                                                            m "Maybe we could find one together [player]?"
+                                                            m "You and me, watching a movie together."
+                                                            m "Wouldn't that be fun?"
+                                                            m "Even just spending time with you is enough to make my heart pound."
+                                                            m "{i}Ehehe{/i}~"
+                                                        "I'd be too busy watching you instead.":
+                                                            m "That's so cheesy."
+                                                            m "You're making me blush."
+                                                            m "Calm down Monika, Calm down..."
+                                                "Not my type."
+                                                    m "Well, I guess it's not everyone's cup of tea."
+                                                    m "To each their own I guess."
+                                                    m "Maybe we could watch something else together instead?"
+                                                    m "Maybe we could find one together [player]?"
+                                                    m "You and me, watching a movie together."
+                                                    m "Wouldn't that be fun?"
+                                                    m "Even just spending time with you is enough to make my heart pound."
+                                                    m "{i}Ehehe{/i}~"
+                                        "Those were just lucky guesses.":
+                                            m "Well, I guess you managed to fool me [player]~"
+                                            m "So that means you haven't watched it yet huh."
+#This is where I need the code or a way to somehow jump to another part of this topic#
+                                "Neiman":
+                                    m "Wrong! Caught you [player]!"
+                                    m "Ahaha!"
+#This is where I need the code or a way to somehow jump to another part of this topic# 
+                        "Nicole":
+                            m "Wrong! Caught you [player]!"
+                            m "Ahaha!"
+#This is where I need the code or a way to somehow jump to another part of this topic#
+                        "Terrance":
+                            m "Wrong! Caught you [player]!"
+                            m "Ahaha!"
+#This is where I need the code or a way to somehow jump to another part of this topic#
+                "I was just kidding."
+        "No.":
+            m "It's a pretty good movie."
+            m "Not my favourite, but if was nice."
+#I need here way to code if the player has seen the jazz topic and said they like jazz. If it's impossible, then nevermind#
+#It would go something like:#
+# m "You once said you like jazz right? So I think you might like this one."#
+            m "You want me to give you a short synopsis [player]?"
+            menu:
+                "Sure.":
+                    m "Algirht!"
+                    m "So it's abou-"
+                    m "..."
+                    m "I might get into some spoilers, would you mind that [player]?"
+                    menu:
+                        "Not really.":
+                            m "Great!"
+                            m "So this movie is about a guy named Andrew who wanted to become one of the best jazz drummers in the world."
+                            m "His teacher, Fletcher, is one of the best jazz instructiors there."
+                            m "He brought Andrew to be one of his drummers for his band."
+                            m "But then you find out that he's a really abusive teacher."
+                            m "He'd belittle you, berate you, physically and emotionally abuse you."
+                            m "And even hurl a chair!"
+                            m "I'm not kidding!"
+                            m "The whole movie is about the relationship between Andrew handling Fletcher's '{i}questionable{/i}' teaching methods."
+                            m "And what an ambitious student is willing to go through for his dream."
+                            m "And how far a teacher is willing to go to push his students to reach greatness."
+                        "I would mind."
+                            m "Oh, this is gonna be tough one..."
+                            m "The movie the relationship between guy named Andrew who's an abitious jazz student."
+                            m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
+                    m "...And that's basically it."
+                    m "It was pretty interesting to me."
+                    m "But maybe your opinions different."
+                    m "Does it seem interesting to you [player]?"
+                    menu:
+                        "It is.":
+                            m "That's great!"
+                            m "I hope you like it too [player]."
+                        "It isn't.":
+                            m "Well, I guess it's not for everybody."
+                            m "To each their own, right [player]?"
+                "No thanks.":
+                    m "Oh? Why not?"
+                    menu:
+                        "You might spoil me.":
+                            m "Oh [player], you have nothing to worry about."
+                            m "I'll do my best not to spoil you."
+                            m "Give me a second..."
+                            m "The movie the relationship between guy named Andrew who's an abitious jazz student."
+                            m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
+                            m "And that's about it."
+                            m "No spoilers, right? Ahaha~"
+                            m "I told you you had nothing to worry about."
+                            m "And honestly."
+                        "Not really interested.":
+                            m "Well, I guess it's not for everybody."
+                            m "To each their own, right [player]?"
+                            m "But even if you don't find it interesting."
+                        "I'll find it out for myself.":
+                            m "I guess I can accept that."
+                            m "This way, you can be sure if it really does interest you."
+                            m "And not just take my word for it."
+                            m "Have fun finding it out for yourself."
+                            m "But even if you don't like the movie all that much."
+    m "I really enjoy just talking about it with you [player]!"
+    m "Aftr all, the company's good."
+    m "Especially if the company is you~"
+    m "And even before then, not a lot of people thought I'd be interested in talking about mundane stull like this."
+    m "Maybe they got the impression because I was in a debate club before and a literature club too?"
+    m "They keep forgetting that I'm still a teenager."
+    m "Despite my... {w}'{i}enlightenment my the world{/i}..."
+    m "Even I just wanna talk about a movie I thought was pretty neat, no matter how aimless it is."
+    m "So I'm really glad I can talk to you about these things. No matter how silly it may be."
+    m "You're the love of my life after all. Ehehe~"
+    return
+
+
+
+
+
+
