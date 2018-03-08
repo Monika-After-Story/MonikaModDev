@@ -5,6 +5,7 @@ init python:
     # special constants for rule type identifiers for rule dict on Event class
     EV_RULE_RP_SELECTIVE = "rp_selective"
     EV_RULE_RP_NUMERICAL = "rp_numerical"
+    EV_RULE_GREET_RANDOM = "greet_random"
 
 
     # special constants for numerical repeat rules
@@ -200,17 +201,45 @@ init python:
                 return False
 
             # check if current hours are in the valid interval
+            if hours and check_time.hour not in hours:
+                return False
+
+            # check if current days are in the valid interval
             if days and check_time.day not in days:
                 return False
 
-            # check if current seconds are in the valid interval
+            # check if current months are in the valid interval
             if months and check_time.month not in months:
                 return False
 
-            # check if current seconds are in the valid interval
+            # check if current years are in the valid interval
             if years and check_time.year not in years:
                 return False
 
             # since we passed all checks we return true to indicate that we comply
             # to that rule
             return True
+
+    class MASGreetingRule(object):
+        """docstring for MASGreetingRule."""
+        #TODO check other random chances and see how they defined them
+        @staticmethod
+        def create_rule(skip_visual=False, random_chance=0):
+            if random_chance < 0:
+                raise Exception("random_chance can't be negative")
+            return (skip_visual, random_chance)
+        @staticmethod
+        def evaluate_rule(rule):
+            skip_visual, random_chance = rule
+            if random_chance == 0:
+                return False
+            return random.randint(1,random_chance) == 1
+        @staticmethod
+        def should_skip_visual(rule):
+            return rule[0]
+        @staticmethod
+        def should_skip_visual_if_rule_exists(rules):
+            if EV_RULE_GREET_RANDOM in rules:
+                return MASGreetingRule.should_skip_visual(rules[EV_RULE_GREET_RANDOM])
+            else:
+                return False

@@ -18,7 +18,7 @@ init python:
             if label.startswith('greeting_'):
                 greetings_list.append(label)
 
-init 5 python:
+init python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetheart", random=True),eventdb=evhand.greeting_database)
 
 label greeting_sweetheart:
@@ -264,7 +264,7 @@ label greeting_longtime:
      m 1a "I'm so happy that you're here now."
      return
 
-init 5 python:
+init python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_glitch", random=True),eventdb=evhand.greeting_database)
 
 label greeting_sweetpea:
@@ -273,7 +273,7 @@ label greeting_sweetpea:
      m 1l "My goodness... That surely was embarassing to say, ehehe~"
      return
 
-init 5 python:
+init python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_glitch", random=True),eventdb=evhand.greeting_database)
 
 label greeting_glitch:
@@ -300,7 +300,7 @@ label greeting_glitch:
      m 2j "I love you, [player]!"
      return
 
-init 5 python:
+init python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_surprised", random=True),eventdb=evhand.greeting_database)
 
 label greeting_surprised:
@@ -309,8 +309,9 @@ label greeting_surprised:
      m "How have you been?"
      return
 
-init 5 python:
-    rules = {EV_RULE_RP_SELECTIVE : MASSelectiveRepeatRule.create_rule(hours=range(1,6))}
+init python:
+    rules = {EV_RULE_RP_SELECTIVE : MASSelectiveRepeatRule.create_rule(hours=range(1,6)),
+             EV_RULE_GREET_RANDOM : MASGreetingRule.create_rule(skip_visual=True)}
     addEvent(Event(persistent.greeting_database,eventlabel="i_greeting_monikaroom", rules=rules),eventdb=evhand.greeting_database)
 
 label i_greeting_monikaroom:

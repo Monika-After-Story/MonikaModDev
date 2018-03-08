@@ -114,7 +114,7 @@ python early:
 
         # initaliztion locks
         # dict of tuples, where each item in the tuple represents each property
-        # of an event. If the item is True, then the property cannot be 
+        # of an event. If the item is True, then the property cannot be
         # modified during object creation. If false, then the property can be
         # modified during object creation
         # NOTE: this is set in evhand at an init level of -500
@@ -213,13 +213,13 @@ python early:
                     # if the lock exists, then iterate through the names
                     # and only update items that are unlocked
                     for name,index in Event.T_EVENT_NAMES.iteritems():
-                        
+
                         if not lock_entry[index]:
                             stored_data_list[index] = data_row[index]
 
                     self.per_eventdb[eventlabel] = tuple(stored_data_list)
-                            
-                else:        
+
+                else:
                     # otherwise, no lock entry, update normally
 
                     if len(stored_data_row) < len(data_row):
@@ -701,7 +701,24 @@ python early:
                     if MASSelectiveRepeatRule.evaluate_rule(check_time,event.rules[EV_RULE_RP_SELECTIVE]):
                         available_events[label] = event
                 if EV_RULE_RP_NUMERICAL in event.rules:
-                    if MASNumericalRepeatRule.evaluate_rule(check_time, ev=v,rule=event.rules[EV_RULE_RP_NUMERICAL]):
+                    if MASNumericalRepeatRule.evaluate_rule(check_time, ev=event,rule=event.rules[EV_RULE_RP_NUMERICAL]):
+                        available_events[label] = event
+
+            return available_events
+
+        @staticmethod
+        def checkGreetingRules(events):
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            available_events = dict()
+
+            for label, event in events.iteritems():
+
+                if EV_RULE_GREET_RANDOM in event.rules:
+                    if MASGreetingRule.evaluate_rule(event.rules[EV_RULE_GREET_RANDOM]):
                         available_events[label] = event
 
             return available_events
@@ -1400,7 +1417,7 @@ python early:
 
 init -1 python in mas_utils:
     # utility functions for other stores.
-    
+
     def tryparseint(value, default=0):
         """
         Attempts to parse the given value into an int. Returns the default if
@@ -2770,7 +2787,7 @@ define xp.AWAY_PER_HOUR = 10
 define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
-define is_monika_in_room = False # since everyone gets this error apparently
+define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 init python:

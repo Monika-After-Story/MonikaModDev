@@ -336,7 +336,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
 
 label ch30_main:
-    $ is_monika_in_room = False
+    $ mas_skip_visuals = False
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ quick_menu = True
@@ -483,23 +483,62 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
+    #Skip all greetings if you closed the game on Monika
+#    if persistent.closed_self:
+        # pick a proper greeting
+        # TODO use the ev handler to make it work
+#        $ ruled_greetings_dict = Event.checkRules(evhand.greeting_database)
+#        $ ruled_greetings = ruled_greetings_dict.keys()
+#        if len(ruled_greetings) > 0:
+#            $ selected_label = renpy.random.choice(ruled_greetings)
+#            $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(ruled_greetings_dict[selected_label].rules)
+#            $ pushEvent(selected_label)
+#        else:
+#            $ special_random_greetings_dict = Event.checkGreetingRules(evhand.greeting_database)
+#            $ special_random_greetings = special_random_greetings_dict.keys()
+#            if len(special_random_greetings) > 0:
+#                $ selected_label = renpy.random.choice(special_random_greetings)
+#                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(special_random_greetings_dict[selected_label].rules)
+#                $ pushEvent(selected_label)
+#            else:
+#                $ random_greetings_dict = Event.filterEvents(evhand.greeting_database,random=True)
+#                $ random_greetings = random_greetings_dict.keys()
+#                $ selected_label = renpy.random.choice(random_greetings)
+#                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(random_greetings_dict[selected_label].rules)
+#                $ pushEvent(selected_label)
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
-        $ is_monika_in_room = False
+        $ mas_skip_visuals = False
     elif persistent.closed_self:
-        python:
-        # random chance to do monika in room greeting
-        # we'll say 1 in 20
-            import random
-            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
+        # pick a proper greeting
+        # TODO use the ev handler to make it work
+        $ ruled_greetings_dict = Event.checkRules(evhand.greeting_database)
+        $ ruled_greetings = ruled_greetings_dict.keys()
+        if len(ruled_greetings) > 0:
+            $ selected_label = renpy.random.choice(ruled_greetings)
+            $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(ruled_greetings_dict[selected_label].rules)
+            $ pushEvent(selected_label)
+        else:
+            $ special_random_greetings_dict = Event.checkGreetingRules(evhand.greeting_database)
+            $ special_random_greetings = special_random_greetings_dict.keys()
+            if len(special_random_greetings) > 0:
+                $ selected_label = renpy.random.choice(special_random_greetings)
+                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(special_random_greetings_dict[selected_label].rules)
+                $ pushEvent(selected_label)
+            else:
+                $ random_greetings_dict = Event.filterEvents(evhand.greeting_database,random=True)
+                $ random_greetings = random_greetings_dict.keys()
+                $ selected_label = renpy.random.choice(random_greetings)
+                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(random_greetings_dict[selected_label].rules)
+                $ pushEvent(selected_label)
 
-    if not is_monika_in_room:
+    if not mas_skip_visuals:
         if persistent.current_track:
             $ play_song(persistent.current_track)
         else:
             $ play_song(songs.current_track) # default
-
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -536,31 +575,12 @@ label ch30_autoload:
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
 
-    #Skip all greetings if you closed the game on Monika
-    if persistent.closed_self:
-        # pick a proper greeting
-        # TODO use the ev handler to make it work
-        # $pushEvent(renpy.random.choice(greetings_list))
-        python:
-            ruled_greetings = Event.checkRules(evhand.greeting_database).keys()
-            if len(ruled_greetings) > 0:
-                pushEvent(renpy.random.choice(ruled_greetings))
-            else:
-                random_greetings = Event.filterEvents(evhand.greeting_database,random=True).keys()
-                pushEvent(renpy.random.choice(random_greetings))
-
-#        if is_monika_in_room:
-#            if persistent.current_monikatopic != "i_greeting_monikaroom":
-#                $ pushEvent("i_greeting_monikaroom")
-#        else:
-#            $pushEvent(renpy.random.choice(greetings_list))
-
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-
-    if not is_monika_in_room:
+    # TODO change this one
+    if not mas_skip_visuals:
         $ set_keymaps()
 
     $persistent.closed_self = False
@@ -571,10 +591,11 @@ label ch30_loop:
     $ quick_menu = True
 
     # this event can call spaceroom
-    if not is_monika_in_room:
+    # TODO refactor this
+    if not mas_skip_visuals:
         call spaceroom from _call_spaceroom_2
     else:
-        $ is_monika_in_room = False
+        $ mas_skip_visuals = False
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
