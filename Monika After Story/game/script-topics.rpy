@@ -1830,7 +1830,7 @@ label monika_natsuki:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
 
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecounterupset = 0
@@ -1940,7 +1940,7 @@ label monika_love:
          
         else:
             # Default response if not a counter based response.
-            m 1k "I love you too, [player]!"
+            m 3j "I love you too, [player]!"
     #List of follow up words after being told I love you. It can be further expanded upon easily.   
     python:
         love_quips = [
