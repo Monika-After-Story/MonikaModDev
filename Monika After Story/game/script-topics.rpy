@@ -5138,14 +5138,9 @@ label monika_watches_whiplash:
     m "And even before then, not a lot of people thought I'd be interested in talking about mundane stull like this."
     m "Maybe they got the impression because I was in a debate club before and a literature club too?"
     m "They keep forgetting that I'm still a teenager."
-    m "Despite my... {w}'{i}enlightenment my the world{/i}..."
+    m "Despite the... {w}'{i}enlightenment of my reality{/i}..."
     m "Even I just wanna talk about a movie I thought was pretty neat, no matter how aimless it is."
     m "So I'm really glad I can talk to you about these things. No matter how silly it may be."
     m "You're the love of my life after all. Ehehe~"
     return
-
-
-
-
-
-
+    
