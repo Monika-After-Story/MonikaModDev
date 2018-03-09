@@ -4937,120 +4937,133 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_watches_whiplash",category=['media'],prompt="Watching a movie while you were away",random=True))
 
 label monika_watches_whiplash:
-    m "[player], have you ever wondered what I do to pass the time whenever you're not around?"
-    m "Well, I usually go online and read some books or articles that could be fun to talk about."
-    m "But sometimes, I watch a movie."
-    m "You know, just to pass the time ahaha."
+    m 3d "[player], have you ever wondered what I do to pass the time whenever you're not around?"
+    m 1d "Well, I usually go online and read some books or articles that could be fun to talk about."
+    m 4b "But sometimes, I watch a movie."
+    m 2b"You know, just to pass the time ahaha."
     menu:
         "Wow, really?":
-            m "Is it really that surprising [player]?"
+            m 2l "Is it really that surprising [player]?"
             menu:
                 "Kinda.":
-                    m "Well, I guess you're not the first one to think that."
-                    m "People often think I'm for not interested in movies some reason."
-                    m "Maybe because I was in a literatire club?"
-                    m "And a debate club before that? I don't know."
-                    m "But that's beside the point. Anyway..."
+                    m 2m "Well, I guess you're not the first one to think that."
+                    m 3n "People often think I'm for not interested in movies some reason."
+                    m 4d "Maybe because I was in a literatire club?"
+                    m "And a debate club before that?"
+                    m 1g "I don't know..."
+                    m 3p "But that's beside the point. Anyway..."
                 "Not really.":
-                    m "Well I {i}am{/i} just a teenager after all."
-                    m "I can watch a movie too ahaha."
-                    m "So anyways..."
+                    m 1l "Well I {i}am{/i} a teenager after all."
+                    m 2j "I can watch a movie too ahaha."
+                    m 1d "So anyways..."
                 "I thought you were more interested in reading than watching.":
-                    m "Well, most of the time I am."
-                    m "But sometimes, even I'd get tired of only reading."
-                    m "Sometimes I just feel like watching a random movie."
-                    m "But I don't blame you for being surprised [player]."
+                    m 2c "Well, most of the time I am."
+                    m 3m "But sometimes, even I'd get tired of only reading."
+                    m 3a "Sometimes I just feel like watching a random movie."
+                    m 2e "But I don't blame you for being surprised [player]."
         "That's pretty normal":
-            m "Well, even I get bored waiting ahaha."
-            m "I-It's not that I'm demanding you to spend more time with me...I understand that you're busy in your reality too."
-            m "But I'm not saying you shouldn't {i}not{/i} spend time with me...{w} It's just..."
-            m "Uhh...{w} How do I explain this?"
+            m 2b "Well, even I get bored waiting ahaha."
+            m 2n "I-It's not that I'm demanding you to spend more time with me...I understand that you're busy in your reality too."
+            m 1l "But I'm not saying you shouldn't {i}not{/i} spend time with me...{w} It's just..."
+            m 2l "Uhh...{w} How do I explain this?"
             menu:
                 "You can do it!~":
-                    m "Don't be such a tease [player]~"
+                    m 1k "Don't be such a tease [player]~"
                     m "Ahaha~"
                 "You don't have to force yourself.":
-                    m "I'm not really forcing myself [player]."
-                    m "I just need a bit of time to gather my thoughts."
-                    m "..."
+                    m 1e "I'm not really forcing myself [player]."
+                    m 2e "Give me a second to gather my thoughts."
+                    m 2q "..."
                 "Okay, everyone! It's time to explain yourself~":
-                    m "Pfft!"
-                    m "Ahahahaha!"
-                    m "That's a nice impression of me [player]!"
-                    m "So, where was I?{w} Oh yeah! {i}explaining myself{/i}~"
-                    m "Ahaha~"
-            m "You know that I love it when you come to spend time with me right? And I'm always happy waiting for you to come here."
-            m "But it get's boring sometimes and I pass the time. You get that, right [player]?
-            m "This is kinda awkward.{w}Umm...{w}Movies! Where was I?"
+                    m 2e "Pfft!"
+                    m 2k "Ahahahaha!"
+                    m 4k "That's a nice impression of me [player]!"
+                    m 2m "So, where was I?{w} Oh yeah! {i}explaining myself{/i}~"
+                    m 2j "Ahaha~"
+            m 3b "You know that I love it when you come to spend time with me right? And I'm always happy waiting for you to come here."
+            m 4d "But it get's boring sometimes and I pass the time. You get that, right [player]?"
+            m 2p "This is kinda awkward.{w}Umm...{w}Movies! Where was I?"
         "You mean like adaptations of your favourite books?":
-            m "Well, usually yes."
-            m "But I also watch regular movies from time to time."
-            m "There are some pretty interesting movies out there too."
-            m "For example."
-    m "While you were gone, I watched this movie called '{i}Whiplash{/i}'."
-    m "It was pretty good."
-    m "Maybe you know the movie too [player]?"
+            m 1i "Well, usually yes."
+            m 2d "But I also watch regular movies from time to time."
+            m 2b "There are some pretty interesting movies out there too."
+            m 4c "For example."
+    m 3d "While you were gone, I watched this movie called '{i}Whiplash{/i}'."
+    m 2b "It was pretty good."
+    m 2d "Maybe you know the movie too [player]?"
     menu:
-        "Yes."
-            m "Oh, really now?"
-            m "Would you mind if I test you then?"
+        "Yes.":
+            m 2d "Oh, really now?"
+            m 4a "Would you mind if I test you then?"
             menu:
                 "Bring it!":
 #I need a way to bring the topic to when she asks later "want a synopsis?" if you get a question wrong. The questions are pretty basic, just what's the name of the main caracters.#
-                    m "Alright! Let's start!"
+                    m 3b "Alright! Let's start!"
                     m "What was the name of the MC?"
                     menu:
                         "Andrew":
-                            m "Correct!"
-                            m "Or maybe it was just a lucky guess? Okay, here's another one [player!"
-                            m "What's the name of the main antagonist?"
+                            m 4k "Correct!"
+                            m 4l "Or maybe it was just a lucky guess? Okay, here's another one [player]!"
+                            m 4a "What's the name of the main antagonist?"
                             menu:
                                 "Tanner":
-                                    m "Wrong! Caught you [player]!"
-                                    m "Ahaha!"
+                                    m 1j "Wrong! Caught you [player]!"
+                                    m 1k "Ahaha!"
 #This is where I need the code or a way to somehow jump to another part of this topic#
                                 "Fletcher":
-                                    m "That's Right!"
-                                    m "I guess you did watch it."
-                                    m "Sorry for doubting you [player]."
+                                    m 3k "That's Right!"
+                                    m 1j "I guess you did watch it."
+                                    m 2e "Sorry for doubting you [player]."
                                     menu:
                                         "It's fine.":
-                                            m "Sorry I ever doubted you [player]."
-                                            m "So, what'd you think of the movie?"
+                                            m 1e "Sorry I ever doubted you [player]."
+                                            m 4a "So, what'd you think of the movie?"
                                             menu:
-                                                "Pretty good."
-                                                    m "Yeah, It was pretty good."
-                                                    m "I really liked the jazz orchestra at the end!"
-                                                    m "The music was good too."
-                                                    m "It's not like that movie is gonna be my all time favourite."
-                                                    m "But I enjoyed watching it."
-                                                    m "Maybe we could even watch it together some other time!"
+                                                "Pretty good.":
+                                                    m 1b "Yeah, It was pretty good."
+                                                    m 3b "I really liked the jazz orchestra at the end!"
+                                                    m 3a "The music was good too."
+                                                    m 1m "It's not like that movie is gonna be my all time favourite."
+                                                    m 1a "But I enjoyed watching it."
+                                                    m 4j "Maybe we could even watch it together some time!"
                                                     menu:
                                                         "Fine by me.":
-                                                            m "You and me, watching a movie together."
-                                                            m "That'd be something."
-                                                            m "I can't wait!"
+                                                            m 1a "You and me, watching a movie together."
+                                                            m 1k "That'd be something!"
+                                                            m 1j "I can't wait!"
                                                         "Maybe something else.":
-                                                            m "Yeah, maybe it's not the type of movie anyone would watch again and again."
-                                                            m "There are other better ones out there."
-                                                            m "Maybe we could find one together [player]?"
-                                                            m "You and me, watching a movie together."
-                                                            m "Wouldn't that be fun?"
+                                                            m 3l "Yeah, maybe it's not the type of movie anyone would watch again and again."
+                                                            m 3a "There are other better ones out there."
+                                                            m 4b "Maybe we could find one together [player]?"
+                                                            m 1a "You and me, watching a movie together."
+                                                            m 1k "Wouldn't that be fun?"
                                                             m "Even just spending time with you is enough to make my heart pound."
                                                             m "{i}Ehehe{/i}~"
                                                         "I'd be too busy watching you instead.":
-                                                            m "That's so cheesy."
-                                                            m "You're making me blush."
-                                                            m "Calm down Monika, Calm down..."
-                                                "Not my type."
-                                                    m "Well, I guess it's not everyone's cup of tea."
-                                                    m "To each their own I guess."
-                                                    m "Maybe we could watch something else together instead?"
-                                                    m "Maybe we could find one together [player]?"
-                                                    m "You and me, watching a movie together."
-                                                    m "Wouldn't that be fun?"
+                                                            m 2l "That's so cheesy."
+                                                            m 2l "You're making me blush."
+                                                            m 1m "Calm down Monika, Calm down..."
+                                                "Not my type of movie.":
+                                                    m 3l "Well, I guess it's not everyone's cup of tea."
+                                                    m 3a "To each their own I guess."
+                                                    m 3b "Maybe we could watch something else together instead?"
+                                                    m 4b "Maybe we could find one together [player]?"
+                                                    m 1a "You and me, watching a movie together."
+                                                    m 1k "Wouldn't that be fun?"
                                                     m "Even just spending time with you is enough to make my heart pound."
                                                     m "{i}Ehehe{/i}~"
+                                            m 2a "[player]."
+                                            m 4a "What did you think about Fletcher?"
+                                            menu:
+                                                "He's an asshole!":
+                                                    m 2p "[player]! {w} Language please?"
+                                                    m 1o "But I can't really blame you for thinking that way."
+                                                    m 1d "He was a really abusive teacher after all."
+                                                    m 3d "He'd belittle you, berate you, physically and emotionally abuse you."
+                                                    m 3i "And even hurl a chair!"
+                                                    m 2h "Who does that? {w}Gosh..."
+                                                "He's a good teacher underneath it all.":
+                                                "Who?":
                                         "Those were just lucky guesses.":
                                             m "Well, I guess you managed to fool me [player]~"
                                             m "So that means you haven't watched it yet huh."
@@ -5094,7 +5107,7 @@ label monika_watches_whiplash:
                             m "The whole movie is about the relationship between Andrew handling Fletcher's '{i}questionable{/i}' teaching methods."
                             m "And what an ambitious student is willing to go through for his dream."
                             m "And how far a teacher is willing to go to push his students to reach greatness."
-                        "I would mind."
+                        "I would mind.":
                             m "Oh, this is gonna be tough one..."
                             m "The movie the relationship between guy named Andrew who's an abitious jazz student."
                             m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
