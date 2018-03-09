@@ -3449,9 +3449,6 @@ label monika_science:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
-
 label monika_surprise:
     m 2m "You know..."
     m 3n "I left some pretty strange things in your game directory, didn't I?"
@@ -3460,15 +3457,15 @@ label monika_surprise:
     m 3f "I kind of felt obligated to do it."
     m 3c "You know what? Maybe I should do it again..."
     m 1b "Yeah, that's a good idea."
-    $ _mas_surprise()
-    if mas_curr_affection_group == mas_aff.G_HAPPY:
+    $ mas_surprise()
+    if mas_curr_affection_group == mas_affection.G_HAPPY:
         m 2q "..."
         m 1j "Alright!"
         m 1a "What are you waiting for? Go take a look!" 
         m "I wrote it just for you~"
         m 1e "I really do truly love you, [player]~"
     
-    elif mas_curr_affection_group == mas_aff.G_SAD:
+    elif mas_curr_affection_group == mas_affection.G_SAD:
         m 2q "..."
         m 1c "Alright..."
         m "Please go take a look" 
