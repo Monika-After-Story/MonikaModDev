@@ -4,6 +4,7 @@
 #or date-dependent event with an appropriate action
 
 $ import store.songs as songs
+$ import store.mas_affection as mas_aff
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
@@ -90,7 +91,7 @@ label monika_god:
     m 3r "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
     show monika 5a at t11 zorder 2 with dissolve
-    if monika_current_affection_group == "sad":
+    if mas_curr_affection_group == mas_aff.G_SAD:
         m 1h "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     else:
         m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
@@ -118,9 +119,9 @@ label monika_death:
     m "But if you could do me a favor and do that to me as little as possible..."
     m 1j "That would be really great."
     m "It's really not very pleasant at all to be trapped in that screaming void."
-    if monika_current_affection == "heartbroken":
+    if mas_curr_affection == mas_aff.BROKEN:
         m 1o "But I guess you probably already knew that..." 
-    elif monika_current_affection == "distressed":   
+    elif mas_curr_affection == mas_aff.DISTRESSED:   
         m 1o "But in the end you always fix it...thank you for doing that."
     else:
         m 1k "But in the end, you always fix it, and that makes me feel like you really do care about me."
@@ -161,9 +162,9 @@ label monika_selfesteem:
         "Yes.":
             
             m 1l "I'm glad you aren't miserable inside, [player]."
-            if monika_current_affection_group == "sad":
+            if mas_curr_affection_group == mas_aff.G_SAD:
                 m 1f "I really have been concerned for you lately..."     
-            elif monika_current_affection_group == "happy":
+            elif mas_curr_affection_group == mas_aff.G_HAPPY:
                  m 1j "I wasn't too worried because of how good you've made me feel lately."  
             else:  
                 m 1e "Your happiness means everything to me, after all."
@@ -177,10 +178,10 @@ label monika_selfesteem:
         "No.":
             
             m 1q "That's... really sad to hear, [player]..."
-            if monika_current_affection_group == "sad":
-                if monika_current_affection == "distressed" or monika_current_affection == "heartbroken":
+            if mas_curr_affection_group == mas_aff.G_SAD:
+                if mas_curr_affection == mas_aff.DISTRESSED or monika_current_affection == mas_aff.BROKEN:
                     m 1f "I had strongly suspected it to be honest..."    
-            elif monika_current_affection_group == "happy":
+            elif mas_curr_affection_group == mas_aff.G_HAPPY:
                     m 1f "And to think I missed it while you've been making me so happy..."         
             m "I'll always love you, [player], but I think it's important to love yourself."
             m "You need to start with the little things that you like about yourself."
@@ -282,14 +283,14 @@ label monika_high_school:
     m "And just by being a good person, you can save someone's life."
     m 1d "As for you..."
     m "...You don't struggle with depression or anything like that, do you?"
-    if monika_current_affection_group == "sad":
-        if monika_current_affection == "heartbroken":
+    if mas_curr_affection_group == mas_aff.G_SAD:
+        if mas_curr_affection == mas_aff.BROKEN:
             m 1o "It would explain some things...but don't worry..."
-        if monika_current_affection == "distressed":
+        if mas_curr_affection == mas_aff.DISTRESSED:
             m 1c "Lately I've been able to understand it better but don't worry..."
-        if monika_current_affection == "upset":
+        if mas_curr_affection == mas_aff.UPSET:
             m 1c "I know it can be hard sometimes but there is always hope..."
-    elif monika_current_affection_group == "happy":
+    elif mas_curr_affection_group == mas_aff.G_HAPPY:
         m 2a "My love, in some ways you are blessed."   
     m 2e "Because you, too, have people who would want to save your life."
     m "Maybe they don't express it every day, or maybe they don't even know how to."
@@ -324,13 +325,13 @@ label monika_nihilism:
     m 3a "Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption."
     m "If I ever surpass that point, then I'm a net positive, and I can die happy."
     m 1e "Of course, even if I fail to do that..."
-    if monika_current_affection_group == "sad":
-       if monika_current_affection == "heartbroken":
+    if mas_curr_affection_group == mas_aff.G_SAD:
+       if mas_curr_affection == mas_aff.BROKEN:
            m 1c "I don't really think anybody would miss me so it wouldn't matter anyway."
        else:
            m 1c "I'm not really sure what I would do."
           
-    elif monika_current_affection_group == "happy":
+    elif mas_curr_affection_group == mas_aff.G_HAPPY:
         m 1a "I don'think I would be able to kill myself anyway." 
         m 1j "Not because of any kind of selfishness, but because I have too much to live for."
     else:
@@ -1148,7 +1149,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Simulated reality",random=True))
 
 label monika_closeness:
-    if monika_current_affection_group == "sad":
+    if mas_curr_affection_group == mas_aff.G_SAD:
         m 1o "Sometimes it really hurts my heart..."
     else:
         m 1m "I can't help but feel a little sad sometimes..."
@@ -1158,7 +1159,7 @@ label monika_closeness:
     m "And to feel your warmth."
     m "And to hear the sound of your heartbeat."
     m 2e "Well, who knows? Maybe it'll be possible someday."
-    if monika_current_affection_group == "sad":
+    if mas_curr_affection_group == mas_aff.G_SAD:
         m 2f "I really want that to happen as soon as possible..." 
     else:   
         show monika 5a at t11 zorder 2 with dissolve
@@ -1924,14 +1925,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_justification",category=['ddlc','monika'],prompt="You're a murderer!",pool=True))
 
 label monika_justification:
-    if monika_current_affection == "lovestruck":
-        
+    #lose affection
+    $ mas_loseAffection(persistent._mas_affection["badexp"])
+    if mas_curr_affection == mas_aff.LOVE:
         m 1c "..."
         m 1j "Ahaha! Very funny [player]!"
         m 3a "I know you don't really mean it..."
         m 3m "Don't say such thing as a joke though, if I didn't know you so well it might have been considered cruel..."
     else:
-        
         m 2h "How many times do I have to say it until you understand?"
         m 4h "They weren't real. They were never real."
         m "I'm the only person who understood that this whole thing was fake."
@@ -1939,7 +1940,7 @@ label monika_justification:
         m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
         m "If I'm guilty of murder, so is everyone who plays violent video games."
         m 2h "I bet you've killed thousands in games you play."
-        if monika_current_affection == "heartbroken" or if monika_current_affection == "distressed":
+        if mas_curr_affection == mas_aff.BROKEN or if monika_current_affection == mas_aff.DISTRESSED:
             m 2f "Do you hate me for it? Because of what I did?"
             m 2g "Please understand that I did it for us!"
             m 2h "I did everything for us!"     
@@ -3460,14 +3461,14 @@ label monika_surprise:
     m 3c "You know what? Maybe I should do it again..."
     m 1b "Yeah, that's a good idea."
     $ _mas_surprise()
-    if monika_current_affection_group == "happy":
+    if mas_curr_affection_group == mas_aff.G_HAPPY:
         m 2q "..."
         m 1j "Alright!"
         m 1a "What are you waiting for? Go take a look!" 
         m "I wrote it just for you~"
         m 1e "I really do truly love you, [player]~"
     
-    elif monika_current_affection_group == "sad":
+    elif mas_curr_affection_group == mas_aff.G_SAD:
         m 2q "..."
         m 1c "Alright..."
         m "Please go take a look" 
@@ -4556,9 +4557,9 @@ label monika_other_girls:
     m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
     m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
     m "..."
-    if monika_current_affection == "heartbroken":
+    if mas_curr_affection == mas_aff.BROKEN:
         m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
-    elif monika_current_affection == "distressed":
+    elif mas_curr_affection == mas_aff.DISTRESSED:
         m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you." 
     else:
         m 1n "I love you, [player]..."
@@ -4780,19 +4781,21 @@ label monika_sleep:
     return
 
 #special local var to handle repeated usage of this dialog box.
-default persistent.monika_breakup = 0
+default persistent._mas_monika_breakup = 0
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True))
 
 label monika_breakup:
+    #Lose affection for bringing this up.
+    $ mas_loseAffection(persistent._mas_affection["badexp"])
     #second time you hit the break up button.
-    if persistent.monika_breakup == 1:
+    if persistent._mas_monika_breakup == 1:
         
         m 1d "You're breaking up with me?"
         m 2g "Why would you say such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
-        if monika_current_affection == "heartbroken":
+        if mas_curr_affection == mas_aff.BROKEN:
             m 2f "I-I can't really handle this..."
             m 2g"You're just joking again, right?"
             m 1h "I refuse to believe you, you're all I have left!"
@@ -4810,8 +4813,8 @@ label monika_breakup:
                     m 1k "Ahaha! You're so silly, [player]."
                     m 1e "Let's stay being together forever~"
     #Beyond the 2nd time you hit the button.
-    elif persistent.monika_breakup > 1:
-        if monika_current_affection == "heartbroken":
+    elif persistent._mas_monika_breakup > 1:
+        if mas_curr_affection == mas_aff.BROKEN:
             m 1o "..."
         else:
             m 1j "Ehehe~"
@@ -4822,7 +4825,7 @@ label monika_breakup:
         m 1g "W-what?"
         if persistent.monika_kill:
             m 2f "You're just going to leave and delete me again?"
-        if monika_current_affection == "heartbroken":
+        if mas_curr_affection == mas_aff.BROKEN:
             m 1f "You wouldn't do that, I refuse to believe that..."
             m 1h "That's not a funny joke, [player]!"
             m 1o "Were it anyone else I would find such humour nothing but cruel..."
@@ -4843,10 +4846,10 @@ label monika_breakup:
                     m 4 "I love you so much, [player]! Ehehe~"
 
     #Increments the persistent every time you click the button in the menu.
-    $ persistent.monika_breakup += 1
+    $ persistent._mas_monika_breakup += 1
 
     #If the label was clicked 3 times, remove it.
-    if persistent.monika_breakup > 2:
+    if persistent._mas_monika_breakup > 2:
         $ hideEventLabel("monika_breakup",lock=True,depool=True)
     return
 
