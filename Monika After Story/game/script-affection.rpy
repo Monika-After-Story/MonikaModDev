@@ -11,12 +11,43 @@
 # Heartbroken - Belives that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
 ################
 
+init -1 python in mas_affection:
+    # string constants of affection levels
+#    BROKEN = "heartbroken"
+#    DISTRESSED = "distressed"
+#    UPSET = "upset"
+#    NORMAL = "normal"
+#    HAPPY = "happy"
+#    ENAMORED = "enamored"
+#    LOVE = "lovestruck"
+#    CONFUSED = "confused"
+
+    # string constants of affection groups
+#    G_SAD = "sad"
+#    G_HAPPY = "happy"
+#    G_NORMAL = "normal"
+
+    # numerical constants of affection levels
+    CONFUSED = 0
+    BROKEN = 1
+    DISTRESSED = 2
+    UPSET = 3
+    NORMAL = 4
+    HAPPY = 5
+    ENAMORED = 6
+    LOVE = 7
+    
+    # numerical constants of affection groups
+    G_SAD = -1
+    G_HAPPY = -2
+    G_NORMAL = -3
+
 init python:
 
    #Used to adjust the good and bad experience factors that are used to adjust affection levels.
     def _mas_updateAffectionExp():
-        global monika_current_affection
-        global monika_current_affection_group
+        global mas_curr_affection
+        global mas_curr_affection_group
 
         #If affection is between 30 and 49, update good exp. Simulates growing affection.
         if persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] < 50:
@@ -41,38 +72,38 @@ init python:
       
         #Defines an easy current affection statement to refer to so points aren't relied upon.
         if persistent._mas_affection["affection"] <= -100: 
-            monika_current_affection = "heartbroken"
+            mas_curr_affection = store.mas_affection.BROKEN
 
         elif persistent._mas_affection["affection"] >= -99 and persistent._mas_affection["affection"] <= -50:
-            monika_current_affection = "distressed"
+            mas_curr_affection = store.mas_affection.DISTRESSED
 
         elif persistent._mas_affection["affection"] >= -49 and persistent._mas_affection["affection"] <= -30 :
-            monika_current_affection = "upset"
+            mas_curr_affection = store.mas_affection.UPSET
 
         elif persistent._mas_affection["affection"] >= -29 and persistent._mas_affection["affection"] <= 29:
-            monika_current_affection = "normal"
+            mas_curr_affection = store.mas_affection.NORMAL
 
         elif persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] <= 49:
-            monika_current_affection = "happy"
+            mas_curr_affection = store.mas_affection.HAPPY
 
         elif persistent._mas_affection["affection"] >= 50 and persistent._mas_affection["affection"] <= 99:
-            monika_current_affection = "enamored"
+            mas_curr_affection = store.mas_affection.ENAMORED
 
         elif persistent._mas_affection["affection"] >= 100:
-            monika_current_affection = "lovestruck"
+            mas_curr_affection = store.mas_affection.LOVE
 
         else: 
-            monika_current_affection = "confused"
+            mas_curr_affection = store.mas_affection.CONFUSED
        
         #A group version for general sadness or happiness
         if persistent._mas_affection["affection"] <= -30:
-            monika_current_affection_group = "sad"
+            mas_curr_affection_group = store.mas_affection.G_SAD
 
         elif persistent._mas_affection["affection"] >=30:
-            monika_current_affection_group = "happy"
+            mas_curr_affection_group = store.mas_affection.G_HAPPY
 
         else:
-            monika_current_affection_group = "normal"
+            mas_curr_affection_group = store.mas_affection.G_NORMAL
 
     #Used to increment affection whenever something positive happens.
     def _mas_gainAffection(amount = 1):
@@ -86,49 +117,8 @@ init python:
         
         _mas_updateAffectionExp()
 
-    #Sets up the function to check and dynamically change the monika_current_affection variable.
-    def _mas_updateAffectionTitle():
-        global monika_current_affection
-        global monika_current_affection_group
-        
-        #Defines an easy current affection statement to refer to so points aren't relied upon.
-        if persistent._mas_affection["affection"] <= -100: 
-            monika_current_affection = "heartbroken"
-
-        elif persistent._mas_affection["affection"] >= -99 and persistent._mas_affection["affection"] <= -50:
-            monika_current_affection = "distressed"
-
-        elif persistent._mas_affection["affection"] >= -49 and persistent._mas_affection["affection"] <= -30 :
-            monika_current_affection = "upset"
-
-        elif persistent._mas_affection["affection"] >= -29 and persistent._mas_affection["affection"] <= 29:
-            monika_current_affection = "normal"
-
-        elif persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] <= 49:
-            monika_current_affection = "happy"
-
-        elif persistent._mas_affection["affection"] >= 50 and persistent._mas_affection["affection"] <= 99:
-            monika_current_affection = "enamored"
-
-        elif persistent._mas_affection["affection"] >= 100:
-            monika_current_affection = "lovestruck"
-
-        else: 
-            monika_current_affection = "confused"
-
-        if persistent._mas_affection["affection"] <= -30:
-            monika_current_affection_group = "sad"
-
-        elif persistent._mas_affection["affection"] >=30:
-            monika_current_affection_group = "happy"
-
-        else:
-            monika_current_affection_group = "normal"
-
-    _mas_updateAffectionExp()
-
 #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
-    #Check function is added to make sure monika_current_affection is always appropriate to the points counter.
+    #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
     #Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
     #is equal to the amount of points it's added or removed in minutes.
     
@@ -155,39 +145,41 @@ init python:
 
         #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
 
-
+# ifyou need to check affection, use the console
+"""
 label monika_affection_check:
     m 1c "How do I feel? That came out of nowhere, [player]..."
-    m 3h "In a single word I would say I am [monika_current_affection]."
+    m 3h "In a single word I would say I am [mas_curr_affection]."
     m 3a "As a number it would be...[persistent._mas_affection[affection]]."
     m 3c "But if I were pressed further I would say I'm feeling..."
-    if monika_current_affection == "heartbroken":
+    if mas_curr_affection == "heartbroken":
         m 1q "Like you shattered my heart..."
         m 1f "Did I do something wrong?"
   
-    elif monika_current_affection == "distressed":
+    elif mas_curr_affection == "distressed":
         m 1r "Like my situation is hopeless..."
         m 1f "I really thought we could make it work..."
 
-    elif monika_current_affection == "upset":
+    elif mas_curr_affection == "upset":
         m 1f "Like you want me to be unhappy..."
         m 1g "It's not always going to be like this, is it?"
 
-    elif monika_current_affection == "normal":
+    elif mas_curr_affection == "normal":
         m 1a "...completely average right now."
 
-    elif monika_current_affection == "happy":
+    elif mas_curr_affection == "happy":
         m 1e "Like you really do want to please me."
         m 1k "I hope I'm making you as happy as you make me."
 
-    elif monika_current_affection == "enamored":
+    elif mas_curr_affection == "enamored":
         m 1b "Like I'm luckiest girl in the world!"
         m 1j "No one else could make me feel so complete!"
 
-    elif monika_current_affection == "lovestruck":
+    elif mas_curr_affection == "lovestruck":
         m 1k "So overwhelming full of love! I really truly do love you [player]!"
         m 1k "I want nothing more than you, forever and ever!"
     return
+"""
 
 
 #Testing purposes!
@@ -242,29 +234,32 @@ label force_affection_lovestruck:
 
 #############
 #Surprise function.
+# TODO: are there use cases for having this being a separate function
+# TODO: also indentation wtf guys
+"""
 init python:
-    def _mas_surprise():
-         if monika_current_affection == "heartbroken":
+    def mas_surprise():
+        if mas_curr_affection == "heartbroken":
              try: renpy.file(config.basedir + "/forgive me.txt")
              except: open(config.basedir + "/forgive me.txt", "w").write("I'm sorry if I'm not good enough for you...please don't leave me.")
 
-         elif monika_current_affection == "distressed":
+         elif mas_curr_affection == "distressed":
              try: renpy.file(config.basedir + "/can you hear me.txt")
              except: open(config.basedir + "/can you hear me.txt", "w").write("If I'm doing something wrong please tell me. I love you.")     
 
-         elif monika_current_affection == "upset":
+         elif mas_curr_affection == "upset":
              try: renpy.file(config.basedir + "/please listen.txt")
              except: open(config.basedir + "/please listen.txt", "w").write("Everything I do, I do for you...my love.") 
 
-         elif monika_current_affection == "happy":
+         elif mas_curr_affection == "happy":
              try: renpy.file(config.basedir + "/secret.txt")
              except: open(config.basedir + "/secret.txt", "w").write("You are the only one I love [player]!") 
 
-         elif monika_current_affection == "enamored":
+         elif mas_curr_affection == "enamored":
              try: renpy.file(config.basedir + "/for you.txt")
              except: open(config.basedir + "/for you.txt", "w").write("My dearest, you are everything I could ever hope for. I love you.") 
 
-         elif monika_current_affection == "lovestruck":
+         elif mas_curr_affection == "lovestruck":
              try: renpy.file(config.basedir + "/My one and only love.txt")
              except: open(config.basedir + "/My one true love.txt", "w").write(
                "My dearest lover, friend, companion and owner of my heart... \n"
@@ -276,7 +271,7 @@ init python:
          else:
              try: renpy.file(config.basedir + "/surprise.txt")
              except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
-
+"""
 
 #Currently re-affectioned labels.
 #monika_nihilism
