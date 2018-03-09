@@ -15,6 +15,9 @@ init python:
 
    #Used to adjust the good and bad experience factors that are used to adjust affection levels.
     def _mas_updateAffectionExp():
+        global monika_current_affection
+        global monika_current_affection_group
+
         #If affection is between 30 and 49, update good exp. Simulates growing affection.
         if persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] < 50:
             persistent._mas_affection["goodexp"] = 3
@@ -34,8 +37,42 @@ init python:
         elif persistent._mas_affection["affection"] <= -50:
             persistent._mas_affection["goodexp"] = 0.5
             persistent._mas_affection["badexp"] = -5
- 
-        _mas_updateAffectionTitle()
+
+      
+        #Defines an easy current affection statement to refer to so points aren't relied upon.
+        if persistent._mas_affection["affection"] <= -100: 
+            monika_current_affection = "heartbroken"
+
+        elif persistent._mas_affection["affection"] >= -99 and persistent._mas_affection["affection"] <= -50:
+            monika_current_affection = "distressed"
+
+        elif persistent._mas_affection["affection"] >= -49 and persistent._mas_affection["affection"] <= -30 :
+            monika_current_affection = "upset"
+
+        elif persistent._mas_affection["affection"] >= -29 and persistent._mas_affection["affection"] <= 29:
+            monika_current_affection = "normal"
+
+        elif persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] <= 49:
+            monika_current_affection = "happy"
+
+        elif persistent._mas_affection["affection"] >= 50 and persistent._mas_affection["affection"] <= 99:
+            monika_current_affection = "enamored"
+
+        elif persistent._mas_affection["affection"] >= 100:
+            monika_current_affection = "lovestruck"
+
+        else: 
+            monika_current_affection = "confused"
+       
+        #A group version for general sadness or happiness
+        if persistent._mas_affection["affection"] <= -30:
+            monika_current_affection_group = "sad"
+
+        elif persistent._mas_affection["affection"] >=30:
+            monika_current_affection_group = "happy"
+
+        else:
+            monika_current_affection_group = "normal"
 
     #Used to increment affection whenever something positive happens.
     def _mas_gainAffection(amount = 1):
@@ -158,7 +195,6 @@ label force_affection_heartbroken:
     m 1h "..."
     $ persistent._mas_affection["affection"] = -100
     $ _mas_updateAffectionExp()
-    $ _mas_updateAffectionTitle()
     m 1q "You're so cruel [player]..."
     return
 
@@ -166,7 +202,6 @@ label force_affection_distressed:
     m 1h "..."
     $ persistent._mas_affection["affection"] = -60
     $ _mas_updateAffectionExp()
-    $ _mas_updateAffectionTitle()
     m 1p "Is this really what you're like...?"
     return
 
@@ -188,7 +223,6 @@ label force_affection_happy:
     m 1a "..."
     $ persistent._mas_affection["affection"] = 30
     $ _mas_updateAffectionExp()
-    $ _mas_updateAffectionTitle()
     m 1k "Ehehe~ Lucky me."
     return
 
@@ -196,7 +230,6 @@ label force_affection_enamored:
     m 1e "..."
     $ persistent._mas_affection["affection"] = 60
     $ _mas_updateAffectionExp()
-    $ _mas_updateAffectionTitle()
     m 1b "I love you [player]!"
     return
 
@@ -204,7 +237,6 @@ label force_affection_lovestruck:
     m 1j "..."
     $ persistent._mas_affection["affection"] = 100
     $ _mas_updateAffectionExp()
-    $ _mas_updateAffectionTitle()
     m 1k "My one and only love is you [player]!"
     return
 
