@@ -150,7 +150,46 @@ label monika_affection_check:
         m 1k "So overwhelming full of love! I really truly do love you [player]!"
         m 1k "I want nothing more than you, forever and ever!"
 
+
+
 #############
+#Surprise function.
+init python:
+    def _mas_surprise():
+         if monika_current_affection == "heartbroken":
+             try: renpy.file(config.basedir + "/forgive me.txt")
+             except: open(config.basedir + "/forgive me.txt", "w").write("I'm sorry if I'm not good enough for you...please don't leave me.")
+
+         elif monika_current_affection == "distressed":
+             try: renpy.file(config.basedir + "/can you hear me.txt")
+             except: open(config.basedir + "/can you hear me.txt", "w").write("If I'm doing something wrong please tell me. I love you.")     
+
+         elif monika_current_affection == "upset":
+             try: renpy.file(config.basedir + "/please listen.txt")
+             except: open(config.basedir + "/please listen.txt", "w").write("Everything I do, I do for you...my love.") 
+
+         elif monika_current_affection == "happy":
+             try: renpy.file(config.basedir + "/secret.txt")
+             except: open(config.basedir + "/secret.txt", "w").write("You are the only one I love [player]!") 
+
+         elif monika_current_affection == "enamored":
+             try: renpy.file(config.basedir + "/for you.txt")
+             except: open(config.basedir + "/for you.txt", "w").write("My dearest, you are everything I could ever hope for. I love you.") 
+
+         elif monika_current_affection == "lovestruck":
+             try: renpy.file(config.basedir + "/My one and only love.txt")
+             except: open(config.basedir + "/My one true love.txt", "w").write(
+               "My dearest lover, friend, companion and owner of my heart... \n"
+             "Everyday you make my dreams come true, a screen means nothing when you spend your time with me. \n"
+             "I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart. \n"
+             "I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life. \n"
+             "I want to be yours forever, so would you be mine? \n"
+             "Forever yours, Monika.") 
+         else:
+             try: renpy.file(config.basedir + "/surprise.txt")
+             except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
+
+
 #Currently re-affectioned labels.
 #monika_nihilism
 #monika_high_school
