@@ -685,42 +685,91 @@ python early:
 
         @staticmethod
         def checkRules(events, check_time=None):
+            """
+            checks the event dict against their own rules, filters out those Events
+            which the rule can't be applied for the given check_time.
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                check_time - the datetime object that will be used to check the
+                    timed rules, if none is passed we check against the current time
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+                for the given check_time
+            """
 
             # sanity check
             if not events or len(events) == 0:
                 return None
 
+            # if check_time is none we check against current time
             if check_time is None:
                 check_time = datetime.datetime.now()
 
+            # prepare empty dict to store events that pass their own rules
             available_events = dict()
 
+            # iterate over each event in the given events dict
             for label, event in events.iteritems():
 
+                # check if the event contains a MASSelectiveRepeatRule
                 if EV_RULE_RP_SELECTIVE in event.rules:
+
+                    # we call evaluate_rule to check if we pass the rule
                     if MASSelectiveRepeatRule.evaluate_rule(check_time,event.rules[EV_RULE_RP_SELECTIVE]):
-                        available_events[label] = event
-                if EV_RULE_RP_NUMERICAL in event.rules:
-                    if MASNumericalRepeatRule.evaluate_rule(check_time, ev=event,rule=event.rules[EV_RULE_RP_NUMERICAL]):
+
+                        # add the event to our available events dict
                         available_events[label] = event
 
+                # check if the event contains a MASNumericalRepeatRule
+                if EV_RULE_RP_NUMERICAL in event.rules:
+
+                    # we call evaluate_rule to check if we pass the rule
+                    if MASNumericalRepeatRule.evaluate_rule(check_time, ev=event,rule=event.rules[EV_RULE_RP_NUMERICAL]):
+
+                        # add the event to our available events dict
+                        available_events[label] = event
+
+            # return the available events dict
             return available_events
 
         @staticmethod
         def checkGreetingRules(events):
+            """
+            Checks the event dict (greetings) against their own greeting specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
 
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event objec
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
             # sanity check
             if not events or len(events) == 0:
                 return None
 
+            # prepare empty dict to store events that pass their own rules
             available_events = dict()
 
+            # iterate over each event in the given events dict
             for label, event in events.iteritems():
 
+                # check if the event contains a MASGreetingRule
                 if EV_RULE_GREET_RANDOM in event.rules:
+
+                    # we call evaluate_rule to check if we pass the rule
                     if MASGreetingRule.evaluate_rule(event.rules[EV_RULE_GREET_RANDOM]):
+
+                        # add the event to our available events dict
                         available_events[label] = event
 
+            # return the available events dict
             return available_events
 
 # init -1 python:

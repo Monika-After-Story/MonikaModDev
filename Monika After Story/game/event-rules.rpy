@@ -1,8 +1,11 @@
-# Module that defines functions for handling game progression and leveling up
+# Module that defines static classes used to create the rule tuples used in the
+# Event class.
+# The static classes are the ones used to manipulate the rule tuples
+# Each class has a method named evaluate_rule
 
 init python:
 
-    # special constants for rule type identifiers for rule dict on Event class
+    # special constants for rule type identifiers for the rule dict on Event class
     EV_RULE_RP_SELECTIVE = "rp_selective"
     EV_RULE_RP_NUMERICAL = "rp_numerical"
     EV_RULE_GREET_RANDOM = "greet_random"
@@ -30,8 +33,14 @@ init python:
         intervals the next repetition is going to get scheduled.
         The repetition rule increases the event start_date and end_date and
         works seamlessly with the current calendar function.
-
         """
+
+        # tuple constants
+        NUM_RULE_T_NAMES = {
+            "repeat":0,
+            "advance_by":1
+        }
+
         @staticmethod
         def create_rule(repeat, advance_by=1):
             """
@@ -44,8 +53,8 @@ init python:
 
             RETURNS:
                 a tuple (repeat, advance_by), containing the specified rules
-
             """
+
             if repeat not in EV_NUM_RULES:
                 raise Exception("'{0}' is not a valid repeat rule".format(repeat))
             elif advance_by > 0:
@@ -56,12 +65,17 @@ init python:
         @staticmethod
         def update_dates(start_date, end_date, rule, check_time):
             """
+            Updates the start_date and end_date to be the next possible dates
+            checked against check_time
             IN:
                 start_date - The Event's start date in datetime
                 end_date - The Event's end_date in datetime
                 rule - a MASNumericalRepeatRule tuple containing the rules for the
                     appropiate update
                 check_time - The time to check and update against
+
+            RETURNS:
+                A tuple containing the new start_date and end_date
             """
 
             # Check if the event is already in the future so we don't do anything
@@ -115,11 +129,32 @@ init python:
 
             @staticmethod
             def evaluate_rule(check_time, ev=None, rule=None):
+                """
+                Evaluates the rule given and updates the event's start_date and
+                end_date
+
+                IN:
+                    check_time - The datetime to check the rule against
+                    ev - The Event's to check
+                    rule - a MASNumericalRepeatRule tuple containing the rules for the
+                        appropiate update
+
+                RETURNS:
+                    True if the event date comply to the rule, False if it doesn't
+                """
+
+                # sanity check if we don't have a rule or event we raise an Exception
                 if ev is None or rule is None:
-                    return False
+                    raise Exception("Evaluate rule needs an Event and a Rule")
+
+                # call update dates to get the new start and end dates
                 ev.start_date, ev.end_date = update_dates(ev.start_date, ev.end_date, rule)
+
+                # finally check if the event is available for the given datetime
                 if ev.start_date <= check_time <= ev.end_date:
+
                     return True
+
                 return False
 
     class MASSelectiveRepeatRule(object):
@@ -128,6 +163,16 @@ init python:
         Each rule is defined by a list of acceptable values for that rule.
         The rules then are evaluated against the current datetime.
         """
+
+        # tuple constants
+        SEL_RULE_T_NAMES = {
+            "seconds":0,
+            "minutes":1,
+            "hours":2,
+            "days":3,
+            "months":4,
+            "years":5
+        }
 
         @staticmethod
         def create_rule(seconds=None, minutes=None, hours=None, days=None, months=None, years=None):
@@ -221,24 +266,77 @@ init python:
             return True
 
     class MASGreetingRule(object):
-        """docstring for MASGreetingRule."""
-        #TODO check other random chances and see how they defined them
+        """
+        Static Class used to create greeting specific rules in tuple form.
+        Each rule is defined by a skip_visual boolean and a special random chance.
+        skip_visual is used to store if the greeting should be executed without
+        executing the normal visual setup, this is useful for special greetings
+        random_chance is used to define the 1 in random_chance chance that this
+        greeting can be called
+        """
+
+        # tuple constants
+        GREET_RULE_T_NAMES = {
+            "skip_visual":0,
+            "random_chance":1
+        }
+
         @staticmethod
         def create_rule(skip_visual=False, random_chance=0):
+            """
+            IN:
+                skip_visual - A boolean stating wheter we should skip visual
+                    initialization
+                random_chance - An int used to determine 1 in random_chance
+                    special chance for this greeting to appear
+
+            RETURNS:
+                a tuple (skip_visual, random_chance), containing the specified rules
+            """
+
+            # random_chance can't be negative
             if random_chance < 0:
                 raise Exception("random_chance can't be negative")
+
+            # return the tuple
             return (skip_visual, random_chance)
+
         @staticmethod
         def evaluate_rule(rule):
-            skip_visual, random_chance = rule
-            if random_chance == 0:
+            """
+            IN:
+                rule - the MASGreetingRule to check it's random_chance
+
+            RETURNS:
+                True if the random returned 1
+            """
+
+            # check if random_chance is 0 return False
+            if rule[MASGreetingRule.GREET_RULE_T_NAMES["random_chance"]] == 0:
                 return False
-            return random.randint(1,random_chance) == 1
+
+            # Evaluate randint with a chance of 1 in random_chance
+            return random.randint(1,rule[MASGreetingRule.GREET_RULE_T_NAMES["random_chance"]]) == 1
+
         @staticmethod
         def should_skip_visual(rule):
-            return rule[0]
+
+            # returns the skip_visual boolean
+            return rule[MASGreetingRule.GREET_RULE_T_NAMES["skip_visual"]]
+
         @staticmethod
-        def should_skip_visual_if_rule_exists(rules):
+        def check_visual_skip_in_rules(rules):
+            """
+            checks in the rules dict if the MASGreetingRule exists
+            if it exists returns the skip_visual value otherwise returns False
+
+            IN:
+                rules - the rules dict to check
+
+            RETURNS:
+                The value of skip_visual, False if it doesn't exists
+            """
+
             if EV_RULE_GREET_RANDOM in rules:
                 return MASGreetingRule.should_skip_visual(rules[EV_RULE_GREET_RANDOM])
             else:

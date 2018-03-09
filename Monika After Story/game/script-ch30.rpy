@@ -483,55 +483,60 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
-    #Skip all greetings if you closed the game on Monika
-#    if persistent.closed_self:
-        # pick a proper greeting
-        # TODO use the ev handler to make it work
-#        $ ruled_greetings_dict = Event.checkRules(evhand.greeting_database)
-#        $ ruled_greetings = ruled_greetings_dict.keys()
-#        if len(ruled_greetings) > 0:
-#            $ selected_label = renpy.random.choice(ruled_greetings)
-#            $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(ruled_greetings_dict[selected_label].rules)
-#            $ pushEvent(selected_label)
-#        else:
-#            $ special_random_greetings_dict = Event.checkGreetingRules(evhand.greeting_database)
-#            $ special_random_greetings = special_random_greetings_dict.keys()
-#            if len(special_random_greetings) > 0:
-#                $ selected_label = renpy.random.choice(special_random_greetings)
-#                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(special_random_greetings_dict[selected_label].rules)
-#                $ pushEvent(selected_label)
-#            else:
-#                $ random_greetings_dict = Event.filterEvents(evhand.greeting_database,random=True)
-#                $ random_greetings = random_greetings_dict.keys()
-#                $ selected_label = renpy.random.choice(random_greetings)
-#                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(random_greetings_dict[selected_label].rules)
-#                $ pushEvent(selected_label)
-
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
         $ mas_skip_visuals = False
+
+    # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
-        # pick a proper greeting
-        # TODO use the ev handler to make it work
+
+        # filter greetings using the special rules dict
         $ ruled_greetings_dict = Event.checkRules(evhand.greeting_database)
-        $ ruled_greetings = ruled_greetings_dict.keys()
-        if len(ruled_greetings) > 0:
-            $ selected_label = renpy.random.choice(ruled_greetings)
-            $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(ruled_greetings_dict[selected_label].rules)
+
+        # check if we have a greeting that actually should be shown now
+        if len(ruled_greetings_dict) > 0:
+
+            # select one label randomly
+            $ selected_label = renpy.random.choice(ruled_greetings_dict.keys())
+
+            # store if we have to skip visuals ( used to prevent visual bugs)
+            $ mas_skip_visuals = MASGreetingRule.check_visual_skip_in_rules(ruled_greetings_dict[selected_label].rules)
+
+            # push the selected greeting
             $ pushEvent(selected_label)
+
+        # since we don't have special greetings for this time we now check for special random chance
         else:
+
+            # pick a greeting filtering by special random chance rule
             $ special_random_greetings_dict = Event.checkGreetingRules(evhand.greeting_database)
-            $ special_random_greetings = special_random_greetings_dict.keys()
-            if len(special_random_greetings) > 0:
-                $ selected_label = renpy.random.choice(special_random_greetings)
-                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(special_random_greetings_dict[selected_label].rules)
+
+            # check if we have a greeting that actually should be shown now
+            if len(special_random_greetings_dict) > 0:
+
+                # select on label randomly
+                $ selected_label = renpy.random.choice(special_random_greetings_dict.keys())
+
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                $ mas_skip_visuals = MASGreetingRule.check_visual_skip_in_rules(special_random_greetings_dict[selected_label].rules)
+
+                # push the selected greeting
                 $ pushEvent(selected_label)
+
+            # We couldn't find a suitable greeting we have to default to normal random selection
             else:
+
+                # filter random events normally
                 $ random_greetings_dict = Event.filterEvents(evhand.greeting_database,random=True)
-                $ random_greetings = random_greetings_dict.keys()
-                $ selected_label = renpy.random.choice(random_greetings)
-                $ mas_skip_visuals = MASGreetingRule.should_skip_visual_if_rule_exists(random_greetings_dict[selected_label].rules)
+
+                # select one randomly
+                $ selected_label = renpy.random.choice(random_greetings_dict.keys())
+
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                $ mas_skip_visuals = MASGreetingRule.check_visual_skip_in_rules(random_greetings_dict[selected_label].rules)
+
+                # push the selected greeting
                 $ pushEvent(selected_label)
 
     if not mas_skip_visuals:
@@ -579,7 +584,7 @@ label ch30_autoload:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
-    # TODO change this one
+
     if not mas_skip_visuals:
         $ set_keymaps()
 
@@ -591,7 +596,6 @@ label ch30_loop:
     $ quick_menu = True
 
     # this event can call spaceroom
-    # TODO refactor this
     if not mas_skip_visuals:
         call spaceroom from _call_spaceroom_2
     else:
