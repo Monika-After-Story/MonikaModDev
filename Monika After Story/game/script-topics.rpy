@@ -4941,6 +4941,13 @@ label monika_asks_family:
                 m 1j "I love you very much!"                              
     return
 
+####################################################
+# Saving this for future use
+# Could be expanded to something better
+# where where persistent.playthrough can be
+# checked and have a different response
+# depending on what the player did
+####################################################
 
 #init 5 python:
 #    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
