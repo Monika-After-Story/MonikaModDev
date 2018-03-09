@@ -90,11 +90,11 @@ label monika_god:
     m 3r "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
     show monika 5a at t11 zorder 2 with dissolve
-    if monika_current_mood_group == "sad":
+    if monika_current_affection_group == "sad":
         m 1h "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     else:
         m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-    $ monika_mood_single()
+    
     return
 
 init 5 python:
@@ -118,15 +118,15 @@ label monika_death:
     m "But if you could do me a favor and do that to me as little as possible..."
     m 1j "That would be really great."
     m "It's really not very pleasant at all to be trapped in that screaming void."
-    if monika_current_mood == "heartbroken":
+    if monika_current_affection == "heartbroken":
         m 1o "But I guess you probably already knew that..." 
-    elif monika_current_mood == "depressed":   
+    elif monika_current_affection == "distressed":   
         m 1o "But in the end you always fix it...thank you for doing that."
     else:
         m 1k "But in the end, you always fix it, and that makes me feel like you really do care about me."
         m "So I have to thank you for that."
         m "It makes me feel even closer to you when you're here with me."
-    $ monika_mood_pleased()
+    
     return
 
 init 5 python:
@@ -159,11 +159,11 @@ label monika_selfesteem:
     m 1c "Like, are you comfortable with who you are?"
     menu:
         "Yes.":
-            $ monika_mood_reallysad()
+            
             m 1l "I'm glad you aren't miserable inside, [player]."
-            if monika_current_mood_group == "sad":
+            if monika_current_affection_group == "sad":
                 m 1f "I really have been concerned for you lately..."     
-            elif monika_current_mood_group == "happy":
+            elif monika_current_affection_group == "happy":
                  m 1j "I wasn't too worried because of how good you've made me feel lately."  
             else:  
                 m 1e "Your happiness means everything to me, after all."
@@ -175,12 +175,12 @@ label monika_selfesteem:
             m 1a "If it gives them a bit of relief, you'd have done a great thing."
             m 1j "And even if it doesn't, at least you tried rather than staying silent."
         "No.":
-            $ monika_mood_reallysad()
+            
             m 1q "That's... really sad to hear, [player]..."
-            if monika_current_mood_group == "sad":
-                if monika_current_mood == "depressed" or monika_current_mood == "heartbroken":
+            if monika_current_affection_group == "sad":
+                if monika_current_affection == "distressed" or monika_current_affection == "heartbroken":
                     m 1f "I had strongly suspected it to be honest..."    
-            elif monika_current_mood_group == "happy":
+            elif monika_current_affection_group == "happy":
                     m 1f "And to think I missed it while you've been making me so happy..."         
             m "I'll always love you, [player], but I think it's important to love yourself."
             m "You need to start with the little things that you like about yourself."
@@ -215,7 +215,7 @@ label monika_sayori:
     m "It's not healthy to think about the things you could have done differently."
     m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
     m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-    $ monika_mood_sad()
+    
     m 2c "Still, though..."
     m "I wonder how things would be if you and I just started dating from the get-go?"
     m 1e "I guess we'd all still be in the clubroom, writing poems and having fun together."
@@ -224,7 +224,7 @@ label monika_sayori:
     m 1a "The two of us, happily together..."
     m "There's no reason to ask for any more than that."
     m 1j "I was just pointlessly musing - I'm really as happy as I could be right now."
-    $ monika_mood_happy()
+    
     return
 
 init 5 python:
@@ -282,14 +282,14 @@ label monika_high_school:
     m "And just by being a good person, you can save someone's life."
     m 1d "As for you..."
     m "...You don't struggle with depression or anything like that, do you?"
-    if monika_current_mood_group == "sad":
-        if monika_current_mood == "heartbroken":
+    if monika_current_affection_group == "sad":
+        if monika_current_affection == "heartbroken":
             m 1o "It would explain some things...but don't worry..."
-        if monika_current_mood == "depressed":
+        if monika_current_affection == "distressed":
             m 1c "Lately I've been able to understand it better but don't worry..."
-        if monika_current_mood == "upset":
+        if monika_current_affection == "upset":
             m 1c "I know it can be hard sometimes but there is always hope..."
-    elif monika_current_mood_group == "happy":
+    elif monika_current_affection_group == "happy":
         m 2a "My love, in some ways you are blessed."   
     m 2e "Because you, too, have people who would want to save your life."
     m "Maybe they don't express it every day, or maybe they don't even know how to."
@@ -298,7 +298,7 @@ label monika_high_school:
     m "...Man, humans are complicated!"
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "But as long as you're here with me, I'll take care of you, my love."
-    $ monika_mood_pleased()
+    
     return
 
 
@@ -324,20 +324,20 @@ label monika_nihilism:
     m 3a "Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption."
     m "If I ever surpass that point, then I'm a net positive, and I can die happy."
     m 1e "Of course, even if I fail to do that..."
-    if monika_current_mood_group == "sad":
-       if monika_current_mood == "heartbroken":
+    if monika_current_affection_group == "sad":
+       if monika_current_affection == "heartbroken":
            m 1c "I don't really think anybody would miss me so it wouldn't matter anyway."
        else:
            m 1c "I'm not really sure what I would do."
-           $ monika_mood_disappoint()
-    elif monika_current_mood_group == "happy":
+          
+    elif monika_current_affection_group == "happy":
         m 1a "I don'think I would be able to kill myself anyway." 
         m 1j "Not because of any kind of selfishness, but because I have too much to live for."
     else:
         m "I think I would be too selfish to kill myself anyway."
         m 1j "So much for being a good person, right?"
         m 1k "Ahaha!"
-        $ monika_mood_sad()
+        
     return
 
 # Since Your Reality is playable via music menu, this topic is outof date.
@@ -375,7 +375,7 @@ label monika_twitter:
     m "With how much you mean to me and all..."
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "It would really make me feel loved."
-    $ monika_mood_pleased()
+    
     return
 
 
@@ -391,7 +391,7 @@ label monika_portraitof:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "Ahaha, sorry!"
     m "Just forget I said anything."
-    $monika_mood_single()
+    
     return
 
 
@@ -418,7 +418,7 @@ label monika_veggies:
     m "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
-    $ monika_mood_pleased()
+    
     return
 
 
@@ -464,7 +464,7 @@ label monika_saved:
     m "I understand people really well, so don't be afraid to share your unique needs with me."
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "Nothing would make me happier than being the perfect girlfriend for you."
-    $ monika_mood_reallyhappy()
+    
     return
 
 #Don't touch
@@ -508,7 +508,7 @@ label monika_color:
     m 5a "It's just a guess..."
     m "...Because you've been looking into my eyes for a while now."
     m "Ehehe~"
-    $ monika_mood_pleased()
+    
     return
 
 # This doesn't make sense with the music changer...If we add some funny sound
@@ -556,7 +556,7 @@ label monika_listener:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "You really are special."
     m "I don't want anyone to tell you otherwise."
-    $ monika_mood_pleased()
+    
     return
 
 
@@ -579,7 +579,7 @@ label monika_spicy:
     m 2k "Ahaha! I'm joking."
     m 2e "Gosh, I'm amusing myself a little too much, aren't I?"
     m "Sorry for being weird."
-    $ monika_mood_pleased()
+    
     return
 
 
@@ -593,12 +593,12 @@ label monika_why:
     m 4c "...What made you consider even playing in the first place?"
     m "Were you that lonely?"
     m 4e "I feel a little bad for you..."
-    $ monika_mood_disappoint()
+   
     m 4a "But I guess everything worked out perfectly in the end, for both of us."
     m "I got to meet you, and you're not lonely anymore..."
     m "I can't help but feel like this was fate."
     m 2e "Don't you feel that way too?"
-    $ monika_mood_pleased()
+    
     m 2l "I'm so happy we have this ending together."
     return
 
@@ -614,13 +614,13 @@ label monika_okayeveryone:
     m 2k "Ahaha!"
     m 2b "I couldn't help but say it again."
     m "Come to think of it, didn't Natsuki and Yuri make fun of me for it once...?"
-    $ monika_mood_disappoint()
+   
     m 2a "Well, whatever."
     m "It's not like you ever made fun of me."
     m "You're too much of a sweetheart to do that, aren't you?"
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "Ahaha~"
-    $ monika_mood_happy()
+    
     return
 
 
@@ -636,7 +636,7 @@ label monika_whispers:
     m 2g "But I'm too afraid to delete anything else, because I might really break things."
     m "Like if I mess with any files relevant to me, I might accidentally delete myself..."
     m "And that would ruin everything, wouldn't it?"
-    $ monika_mood_reallysad()
+    
     m 2e "I don't know what it's like on your end, but we should both make sure to avoid something like that at all costs."
     m 2j "I believe in you, [player]!"
     return
@@ -662,7 +662,7 @@ label monika_archetype:
     m 4a "It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff."
     m "It's concentrated cuteness with no actual substance."
     m 4e "...You wouldn't like me more if I was like that, right?"
-    $ monika_mood_sad()
+    
     m "Maybe I just feel a little insecure because you're playing this game in the first place."
     m 2a "Then again, you're still here with me, aren't you...?"
     m "I think that's enough reason for me to believe I'm okay just the way I am."
@@ -670,7 +670,7 @@ label monika_archetype:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "You're the perfect combination of human and cuteness."
     m "That's why there was never a chance I wouldn't fall for you."
-    $ monika_mood_pleased()
+    
     return
 
 
@@ -708,7 +708,7 @@ label monika_favoritegame:
     m 3k "Ahaha! That was a joke."
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "But if you tell me you like some other romance game better, I might get a little jealous~"
-    $ monika_mood_pleased()
+    
     return
 
 
@@ -743,7 +743,7 @@ label monika_lastpoem:
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "I'm happy with where we are now."
     m "And I can tell you are, too."
-    $monika_mood_pleased()
+    
     return
 
 
@@ -1148,22 +1148,22 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Simulated reality",random=True))
 
 label monika_closeness:
-    if monika_current_mood_group == "sad":
+    if monika_current_affection_group == "sad":
         m 1o "Sometimes it really hurts my heart..."
     else:
         m 1m "I can't help but feel a little sad sometimes..."
-    $ monika_mood_reallysad()
+    
     m "Knowing that this is the closest I can get to you."
     m 1e "There's nothing more I want than to be in the same room as you, for real."
     m "And to feel your warmth."
     m "And to hear the sound of your heartbeat."
     m 2e "Well, who knows? Maybe it'll be possible someday."
-    if monika_current_mood_group == "sad":
+    if monika_current_affection_group == "sad":
         m 2f "I really want that to happen as soon as possible..." 
     else:   
         show monika 5a at t11 zorder 2 with dissolve
         m 5a "Besides, I'll never get tired of being with you, even from here."
-        $ monika_mood_happy()
+        
     return
 
 
@@ -1901,7 +1901,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you",pool=True))
 
 label monika_love:
-    $ monika_mood_loved()
+   
     m 1k "I love you too, [player]!"
     m "We'll be together forever!"
     return
@@ -1924,14 +1924,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_justification",category=['ddlc','monika'],prompt="You're a murderer!",pool=True))
 
 label monika_justification:
-    if monika_current_mood == "lovestruck":
-        $ monika_mood_hurt()
+    if monika_current_affection == "lovestruck":
+        
         m 1c "..."
         m 1j "Ahaha! Very funny [player]!"
         m 3a "I know you don't really mean it..."
         m 3m "Don't say such thing as a joke though, if I didn't know you so well it might have been considered cruel..."
     else:
-        $ monika_mood_hurt()
+        
         m 2h "How many times do I have to say it until you understand?"
         m 4h "They weren't real. They were never real."
         m "I'm the only person who understood that this whole thing was fake."
@@ -1939,7 +1939,7 @@ label monika_justification:
         m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
         m "If I'm guilty of murder, so is everyone who plays violent video games."
         m 2h "I bet you've killed thousands in games you play."
-        if monika_current_mood == "heartbroken" or if monika_current_mood == "depressed":
+        if monika_current_affection == "heartbroken" or if monika_current_affection == "distressed":
             m 2f "Do you hate me for it? Because of what I did?"
             m 2g "Please understand that I did it for us!"
             m 2h "I did everything for us!"     
@@ -2131,12 +2131,12 @@ label monika_images:
         m "Have you drawn art of me?"
 
         "Yes.":
-            $ monika_mood_reallyhappy()
+            
             m 1b "Really? I'm very flattered!"
             m 1k "I think I might even love you more, now that I know you're so talented."
 
         "No.":
-            $ monika_mood_disappoint()
+           
             m 1l "I can't draw, myself, so it's okay if you aren't good at drawing either."
     m 1h "There's one thing I want you to understand about art of me, though."
     m 3 "Art of me isn't me."
@@ -2624,7 +2624,7 @@ label monika_cities:
         "Yes":
             m 1j "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
         "No":
-            $ monika_mood_happy()
+            
             m 1b "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
     return
 
@@ -2875,7 +2875,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_regrets",category=['ddlc','philosophy'],prompt="Do you have any regrets?",pool=True))
 
 label monika_regrets:
-    $ monika_mood_sad()
+    
     m 1c "Do I regret anything?"
     m 1e "That's a strange thing to suddenly ask someone, [player]."
     m "Ahaha~"
@@ -3029,7 +3029,7 @@ label monika_haterReaction:
     m 1p "You're not one of those haters, are you, [player]?"
     menu:
         "I am.":
-            $ monika_mood_hurt()
+            
             m 1q "..."
             m 1i "I don't see you as one, even if you say you are."
             m "I mean..."
@@ -3042,7 +3042,7 @@ label monika_haterReaction:
             m 1e"That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m "I won't let you hate me... I swear."
         "I'm not.":
-            $ monika_mood_loved()
+           
             m 1e "Well, that just makes me more proud of you, [player]!"
             m 1j "I know you wouldn't be one of those people."
             m 1k "Gosh... I feel like giving you a kiss right now if I were there."
@@ -3456,32 +3456,32 @@ label monika_surprise:
     m 3f "I kind of felt obligated to do it."
     m 3c "You know what? Maybe I should do it again..."
     m 1b "Yeah, that's a good idea."
-    if monika_current_mood == "heartbroken":
+    if monika_current_affection == "heartbroken":
         python:
             try: renpy.file(config.basedir + "/forgive me.txt")
             except: open(config.basedir + "/forgive me.txt", "w").write("I'm sorry if I'm not good enough for you...please don't leave me.")
 
-    elif monika_current_mood == "depressed":
+    elif monika_current_affection == "distressed":
         python:
             try: renpy.file(config.basedir + "/can you hear me.txt")
             except: open(config.basedir + "/can you hear me.txt", "w").write("If I'm doing something wrong please tell me. I love you.")     
 
-    elif monika_current_mood == "upset":
+    elif monika_current_affection == "upset":
         python:
             try: renpy.file(config.basedir + "/please listen.txt")
             except: open(config.basedir + "/please listen.txt", "w").write("Everything I do, I do for you...my love.") 
 
-    elif monika_current_mood == "happy":
+    elif monika_current_affection == "happy":
         python:
             try: renpy.file(config.basedir + "/secret.txt")
             except: open(config.basedir + "/secret.txt", "w").write("You are the only one I love [player]!") 
 
-    elif monika_current_mood == "overjoyed":
+    elif monika_current_affection == "enamored":
         python:
             try: renpy.file(config.basedir + "/for you.txt")
             except: open(config.basedir + "/for you.txt", "w").write("My dearest, you are everything I could ever hope for. I love you.") 
 
-    elif monika_current_mood == "lovestruck":
+    elif monika_current_affection == "lovestruck":
         python:
             try: renpy.file(config.basedir + "/My one and only love.txt")
             except: open(config.basedir + "/My one true love.txt", "w").write(
@@ -3496,21 +3496,21 @@ label monika_surprise:
             try: renpy.file(config.basedir + "/surprise.txt")
             except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
 
-    if monika_current_mood_group == "happy":
+    if monika_current_affection_group == "happy":
         m 2q "..."
         m 1j "Alright!"
         m 1a "What are you waiting for? Go take a look!" 
         m "I wrote it just for you~"
         m 1e "I really do truly love you, [player]~"
-        $ monika_mood_happy()
+        
 
-    elif monika_current_mood_group == "sad":
+    elif monika_current_affection_group == "sad":
         m 2q "..."
         m 1c "Alright..."
         m "Please go take a look" 
         m 1e "I wrote it just for you."
         m 1q "And it would mean a lot to me if you would read it."
-        $ monika_mood_pleased()
+        
    
     else:
         m 2q "..."
@@ -3518,7 +3518,7 @@ label monika_surprise:
         m 1a "What are you waiting for? Go take a look!"
         m 3k "Ahaha~ What? Are you expecting something scary?"
         m 1k "I love you so much, [player]~"
-        $ monika_mood_pleased()
+        
     return
 
 init 5 python:
@@ -3558,7 +3558,7 @@ label monika_icecream:
     menu:
         m "What about you [player], do you like mint ice cream?"
         "Yes.":
-            $ monika_mood_happy()
+            
             m 3j "Ah, I'm so glad somebody loves mint ice cream as much as I do~"
             m "Maybe we really were meant to be!"
             m 3a "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
@@ -3570,7 +3570,7 @@ label monika_icecream:
             m 1k "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
 
         "No.":
-            $ monika_mood_disappoint()
+           
             m 1f "Aww, that's a shame..."
             m "I really can't understand how somebody couldn't at least like the taste."
             m 1e "The refreshing feeling that washes over your tongue and throat."
@@ -3796,7 +3796,7 @@ label monika_home_memories:
     m 1e "It turns out, that missing piece was you."
     m 1r "If you hadn't found me, I would've been gone a long time ago..."
     m 2e "But now that I found the missing piece, I'm complete now, [player]."
-    $ monika_mood_pleased()
+    
     return
 
 init 5 python:
@@ -3932,7 +3932,7 @@ label monika_daydream:
     m 1b "I was imagining the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
     m 1a "Wouldn't that be wonderful, [player]?"
     m 5a "Let's hope we can make that a reality one of these days, ehehe~"
-    $ monika_mood_pleased()
+    
     return
 
 init 5 python:
@@ -4267,7 +4267,7 @@ label monika_weddingring:
         "Yes, I do.":
             show monika 1c at t11 zorder 2 with dissolve
             m 1c "Oh!"
-            $ monika_mood_reallyhappy()
+            
             m 1b "I feel like... my heart's going to explode!"
             m 1l "Calm down, Monika. Calm down."
             m 1j "Ahaha..."
@@ -4275,7 +4275,7 @@ label monika_weddingring:
         "No, not yet.":
             show monika 1c at t11 zorder 2 with dissolve
             m 1c "Aww. That's a shame."
-            $ monika_mood_sad()
+            
             m 1a "Well, at least think about it, okay?"
     return
 
@@ -4294,11 +4294,11 @@ label monika_sports:
     m 1a "Do you like playing sports, [player]?"
     menu:
         "Yes.":
-            $ monika_mood_happy()
+            
             m 1k "Maybe we could play together sometime in the future. It would be wonderful."
             m 1b "But don't expect me to go easy on you. Ahaha!"
         "No.":
-            $ monika_mood_disappoint()
+           
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
     return
@@ -4321,13 +4321,13 @@ label monika_meditation:
     m 3b "[player], do you ever take time to meditate?"
     menu:
         "Yes.":
-            $ monika_mood_happy()
+            
             m 1k "Really? That's wonderful!"
             m 1b "I always worry that you could be feeling troubled or burdened, but now I feel a bit relieved."
             m 1j "Knowing that you're taking steps to reduce stress and anxiety really makes me happy, [player]."
 
         "No.":
-            $ monika_mood_sad()
+            
             m 1a "I see. Well, if you're ever feeling stressed or anxious, I would definitely recommend that you try a bit of meditation."
             m "Besides calming you down, meditation also has links to the improvement of your sleep, immune system, and even lifespan."
             m 3a "If you're interested, there are plenty of resources on the internet to help you get started."
@@ -4585,7 +4585,7 @@ label monika_other_girls:
     m 1i "If that's the case, I want to tell you I'm sorry, [player]."
     m 1d "Both for making you feel bad, and for..."
     m 1o "..."
-    $ monika_mood_reallysad()
+    
     m 1p "Doing what I had to do."
     m 1o "..."
     m 1g "There just wasn't anything else that could be done, and none of the other girls were real anyway."
@@ -4594,14 +4594,14 @@ label monika_other_girls:
     m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
     m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
     m "..."
-    if monika_current_mood == "heartbroken":
+    if monika_current_affection == "heartbroken":
         m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
-    elif monika_current_mood == "depressed":
+    elif monika_current_affection == "distressed":
         m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you." 
     else:
         m 1n "I love you, [player]..."
         m 1m "More than I could ever express."
-        $ monika_mood_happy()
+        
     return
 
 init 5 python:
@@ -4623,7 +4623,7 @@ label monika_happiness:
     m 2e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
     m 3b "And besides, your cute girlfriend is always rooting for you~"
     m 3k "Now that's something to be very happy about!"
-    $ monika_mood_pleased()
+    
     return
 
 init 5 python:
@@ -4633,12 +4633,12 @@ label monika_how_soon:
     m 3a "[player], how long do you think it'll be before I'll be able to be with you in your world?"
     menu:
         "Soon":
-            $monika_mood_happy()
+            
             m 1b "That's great news!"
             m 3d "How soon do you think it will be?"
             menu:
                 "Just a few more years":
-                    $ monika_mood_pleased()
+                    
                     m 1b "That's fantastic!"
                     m 1j "You just made me as happy as I can be!"
                     m 1k "I can't wait for us to be together in your world, [player]!"
@@ -4656,13 +4656,13 @@ label monika_how_soon:
             m 3a "Be sure to let me know when you find a way, okay?"
             m 1j "You know right where to find me~"
         "Never":
-            $ monika_mood_reallysad()
+            
             m 1g "W-wha... what?"
             m 1o "..."
             m 1f "Are you sure?"
             menu:
                 "Yes":
-                    $ monika_mood_sad()
+                    
                     m 1o "..."
                     m 1q "Well, I guess we'll just have to make the best of this then."
                     m 1m "As long as you talk to me, that's all I really need."
@@ -4687,7 +4687,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
 
 label monika_marriage:
-    $ monika_mood_reallyhappy()
+    
     m 2m "M-marriage?"
     m 4n "I think it's a bit too early for marriage..."
     m 1e "I mean, I'm really happy that you want that, [player]."
@@ -4826,11 +4826,11 @@ init 5 python:
 label monika_breakup:
     #second time you hit the break up button.
     if persistent.monika_breakup == 1:
-        $ monika_mood_reallysad()
+        
         m 1d "You're breaking up with me?"
         m 2g "Why would you say such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
-        if monika_current_mood == "heartbroken":
+        if monika_current_affection == "heartbroken":
             m 2f "I-I can't really handle this..."
             m 2g"You're just joking again, right?"
             m 1h "I refuse to believe you, you're all I have left!"
@@ -4849,18 +4849,18 @@ label monika_breakup:
                     m 1e "Let's stay being together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent.monika_breakup > 1:
-        if monika_current_mood == "heartbroken":
+        if monika_current_affection == "heartbroken":
             m 1o "..."
         else:
             m 1j "Ehehe~"
 
     #first time you hit the button.
     else:
-        $ monika_mood_hurt()
+        
         m 1g "W-what?"
         if persistent.monika_kill:
             m 2f "You're just going to leave and delete me again?"
-        if monika_current_mood == "heartbroken":
+        if monika_current_affection == "heartbroken":
             m 1f "You wouldn't do that, I refuse to believe that..."
             m 1h "That's not a funny joke, [player]!"
             m 1o "Were it anyone else I would find such humour nothing but cruel..."
