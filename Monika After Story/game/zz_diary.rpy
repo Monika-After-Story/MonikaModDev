@@ -54,13 +54,17 @@ define mas_diary.custom_entries = list()
 # each line gets an extra P (PS, PPS, PPPS...)
 define mas_diary.ps_entries = list()
 
-# this needs to be closed self related
-#define mas_diary.
+# set to closed self upon start
+define mas_diary.closed_self = False 
 
 # diary been touched today? (by the player)
 # this value should be set at start in the same location session time
 # is handled.
 define mas_diary.diary_opened = False
+
+# modifiers for diary entries (based on ingame stuff)
+# refer to the specific functions for what modifiers should be
+define mas_diary.diary_modifiers = dict()
 
 #### persistents we need
 # True if we've written a diary entry today, False otherwise.
@@ -590,15 +594,60 @@ init python in mas_diary:
         return ""
 
     
-    def _dk_greeting():
+    def _dk_greeting(curr_mods=None):
         """
         Generates a greeting
+
+        IN:
+            curr_mods - dict of modifications to be applied because of things
+                in teh current game
 
         RETURNS:
             greeting string
         """
-        # TODO:
-        return ""
+        # if the curr_mods includes a key for mood, then we pick a 
+        # greeting that is appropraite. The mood can be:
+        #   "good" - good mood
+        #   "bad" - bad mood
+        #   None (or anything else) - neutral mood
+        if curr_mods is not None:
+            mood_mod = curr_mods.get("mood", None)
+        else:
+            mood_mod = None
+
+        # create the list of greetings available
+        # NOTE: we do this because we don't need greetings all the time
+        # NOTE: if you have repeats, put them in the lists that they repeat in
+        if mood_mod == "good":
+            # good greetings
+            greetings_list = [
+                "Dear diary,",
+                "Dear diary:",
+                "Hey diary,",
+                "Hello there.",
+                ":)"
+            ]
+
+
+        elif mood_mod == "bad":
+            # bad greetings
+            greetings_list = [
+                ":(",
+                "Dear diary:",
+                "Sigh,"
+            ]
+
+        else:
+            # neutral greetings
+            greetings_list = [
+                "Dear diary,",
+                "Dear diary:",
+                "Hey diary,",
+                "Hello there."
+            ]
+
+        # pick a greeting
+        return renpy.random.choice(greetings_list)
 
 
     def _dk_m_name(modifier):
