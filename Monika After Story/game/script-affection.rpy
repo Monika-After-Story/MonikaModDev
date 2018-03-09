@@ -69,7 +69,6 @@ init python:
             persistent._mas_affection["goodexp"] = 0.5
             persistent._mas_affection["badexp"] = -5
 
-      
         #Defines an easy current affection statement to refer to so points aren't relied upon.
         if persistent._mas_affection["affection"] <= -100: 
             mas_curr_affection = store.mas_affection.BROKEN
@@ -105,6 +104,27 @@ init python:
         else:
             mas_curr_affection_group = store.mas_affection.G_NORMAL
 
+
+    #Used to increment affection whenever something positive happens.
+    def mas_gainAffection(amount = 1):
+        persistent._mas_affection["affection"] += amount
+        
+        mas_updateAffectionExp()
+        mas_updateAffectionTitle() 
+   
+    #Used to subtract affection whenever something negative happens.
+    def mas_loseAffection(amount = -1):
+        persistent._mas_affection["affection"] += amount
+        
+        mas_updateAffectionExp()
+        mas_updateAffectionTitle()
+
+    #Sets up the function to check and dynamically change the monika_current_affection variable.
+    def mas_updateAffectionTitle():
+        global monika_current_affection
+        global monika_current_affection_group
+        
+        
     #Used to increment affection whenever something positive happens.
     def _mas_gainAffection(amount = 1):
         persistent._mas_affection["affection"] += amount

@@ -1925,14 +1925,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_justification",category=['ddlc','monika'],prompt="You're a murderer!",pool=True))
 
 label monika_justification:
+    #lose affection
+    $ mas_loseAffection(persistent._mas_affection["badexp"])
     if mas_curr_affection == mas_aff.LOVE:
-        
         m 1c "..."
         m 1j "Ahaha! Very funny [player]!"
         m 3a "I know you don't really mean it..."
         m 3m "Don't say such thing as a joke though, if I didn't know you so well it might have been considered cruel..."
     else:
-        
         m 2h "How many times do I have to say it until you understand?"
         m 4h "They weren't real. They were never real."
         m "I'm the only person who understood that this whole thing was fake."
@@ -4781,14 +4781,16 @@ label monika_sleep:
     return
 
 #special local var to handle repeated usage of this dialog box.
-default persistent.monika_breakup = 0
+default persistent._mas_monika_breakup = 0
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True))
 
 label monika_breakup:
+    #Lose affection for bringing this up.
+    $ mas_loseAffection(persistent._mas_affection["badexp"])
     #second time you hit the break up button.
-    if persistent.monika_breakup == 1:
+    if persistent._mas_monika_breakup == 1:
         
         m 1d "You're breaking up with me?"
         m 2g "Why would you say such a thing, [player]?"
@@ -4811,7 +4813,7 @@ label monika_breakup:
                     m 1k "Ahaha! You're so silly, [player]."
                     m 1e "Let's stay being together forever~"
     #Beyond the 2nd time you hit the button.
-    elif persistent.monika_breakup > 1:
+    elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
             m 1o "..."
         else:
@@ -4844,10 +4846,10 @@ label monika_breakup:
                     m 4 "I love you so much, [player]! Ehehe~"
 
     #Increments the persistent every time you click the button in the menu.
-    $ persistent.monika_breakup += 1
+    $ persistent._mas_monika_breakup += 1
 
     #If the label was clicked 3 times, remove it.
-    if persistent.monika_breakup > 2:
+    if persistent._mas_monika_breakup > 2:
         $ hideEventLabel("monika_breakup",lock=True,depool=True)
     return
 
