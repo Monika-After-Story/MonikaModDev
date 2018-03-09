@@ -146,40 +146,38 @@ init python:
         #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
 
 # ifyou need to check affection, use the console
-"""
-label monika_affection_check:
-    m 1c "How do I feel? That came out of nowhere, [player]..."
-    m 3h "In a single word I would say I am [mas_curr_affection]."
-    m 3a "As a number it would be...[persistent._mas_affection[affection]]."
-    m 3c "But if I were pressed further I would say I'm feeling..."
-    if mas_curr_affection == "heartbroken":
-        m 1q "Like you shattered my heart..."
-        m 1f "Did I do something wrong?"
-  
-    elif mas_curr_affection == "distressed":
-        m 1r "Like my situation is hopeless..."
-        m 1f "I really thought we could make it work..."
-
-    elif mas_curr_affection == "upset":
-        m 1f "Like you want me to be unhappy..."
-        m 1g "It's not always going to be like this, is it?"
-
-    elif mas_curr_affection == "normal":
-        m 1a "...completely average right now."
-
-    elif mas_curr_affection == "happy":
-        m 1e "Like you really do want to please me."
-        m 1k "I hope I'm making you as happy as you make me."
-
-    elif mas_curr_affection == "enamored":
-        m 1b "Like I'm luckiest girl in the world!"
-        m 1j "No one else could make me feel so complete!"
-
-    elif mas_curr_affection == "lovestruck":
-        m 1k "So overwhelming full of love! I really truly do love you [player]!"
-        m 1k "I want nothing more than you, forever and ever!"
-    return
-"""
+#label monika_affection_check:
+#    m 1c "How do I feel? That came out of nowhere, [player]..."
+#    m 3h "In a single word I would say I am [mas_curr_affection]."
+#    m 3a "As a number it would be...[persistent._mas_affection[affection]]."
+#    m 3c "But if I were pressed further I would say I'm feeling..."
+#    if mas_curr_affection == "heartbroken":
+#        m 1q "Like you shattered my heart..."
+#        m 1f "Did I do something wrong?"
+#  
+#    elif mas_curr_affection == "distressed":
+#        m 1r "Like my situation is hopeless..."
+#        m 1f "I really thought we could make it work..."
+#
+#    elif mas_curr_affection == "upset":
+#        m 1f "Like you want me to be unhappy..."
+#        m 1g "It's not always going to be like this, is it?"
+#
+#    elif mas_curr_affection == "normal":
+#        m 1a "...completely average right now."
+#
+#    elif mas_curr_affection == "happy":
+#        m 1e "Like you really do want to please me."
+#        m 1k "I hope I'm making you as happy as you make me."
+#
+#    elif mas_curr_affection == "enamored":
+#        m 1b "Like I'm luckiest girl in the world!"
+#        m 1j "No one else could make me feel so complete!"
+#
+#    elif mas_curr_affection == "lovestruck":
+#        m 1k "So overwhelming full of love! I really truly do love you [player]!"
+#        m 1k "I want nothing more than you, forever and ever!"
+#    return
 
 
 #Testing purposes!
@@ -235,43 +233,51 @@ label force_affection_lovestruck:
 #############
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
-# TODO: also indentation wtf guys
-"""
 init python:
     def mas_surprise():
-        if mas_curr_affection == "heartbroken":
-             try: renpy.file(config.basedir + "/forgive me.txt")
-             except: open(config.basedir + "/forgive me.txt", "w").write("I'm sorry if I'm not good enough for you...please don't leave me.")
+        from cStringIO import StringIO # since we are building strings
+        msg = StringIO()
 
-         elif mas_curr_affection == "distressed":
-             try: renpy.file(config.basedir + "/can you hear me.txt")
-             except: open(config.basedir + "/can you hear me.txt", "w").write("If I'm doing something wrong please tell me. I love you.")     
+        if mas_curr_affection == store.mas_affection.BROKEN:
+            filepath = basedir + "/forgive me.txt"
+            msg.write("I'm sorry if I'm not good enough for you...please don't leave me.")
 
-         elif mas_curr_affection == "upset":
-             try: renpy.file(config.basedir + "/please listen.txt")
-             except: open(config.basedir + "/please listen.txt", "w").write("Everything I do, I do for you...my love.") 
+        elif mas_curr_affection == store.mas_affection.DISTRESSED:
+            filepath = basedir + "/can you hear me.txt"
+            msg.write("If I'm doing something wrong please tell me. I love you.")
 
-         elif mas_curr_affection == "happy":
-             try: renpy.file(config.basedir + "/secret.txt")
-             except: open(config.basedir + "/secret.txt", "w").write("You are the only one I love [player]!") 
+        elif mas_curr_affection == store.mas_affection.UPSET:
+            filepath = basedir + "/please listen.txt"
+            msg.write("Everything I do, I do for you...my love.")
 
-         elif mas_curr_affection == "enamored":
-             try: renpy.file(config.basedir + "/for you.txt")
-             except: open(config.basedir + "/for you.txt", "w").write("My dearest, you are everything I could ever hope for. I love you.") 
+        elif mas_curr_affection == store.mas_affection.HAPPY:
+            filepath = basedir + "/secret.txt"
+            msg.write("You are the only one I love [player]!")
 
-         elif mas_curr_affection == "lovestruck":
-             try: renpy.file(config.basedir + "/My one and only love.txt")
-             except: open(config.basedir + "/My one true love.txt", "w").write(
-               "My dearest lover, friend, companion and owner of my heart... \n"
-             "Everyday you make my dreams come true, a screen means nothing when you spend your time with me. \n"
-             "I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart. \n"
-             "I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life. \n"
-             "I want to be yours forever, so would you be mine? \n"
-             "Forever yours, Monika.") 
-         else:
-             try: renpy.file(config.basedir + "/surprise.txt")
-             except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
-"""
+        elif mas_curr_affection == store.mas_affection.ENAMORED:
+            filepath = basedir + "/for you.txt"
+            msg.write("My dearest, you are everything I could ever hope for. I love you.")
+
+        elif mas_curr_affection == store.mas_affection.LOVE:
+            filepath = basedir + "/My one and only love.txt"
+            msg.write("My dearest lover, friend, companion and owner of my heart...\n")
+            msg.write("Everyday you make my dreams come true, a screen means nothing when you spend your time with me. \n")
+            msg.write("I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart. \n")
+            msg.write("I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life. \n")
+            msg.write("I want to be yours forever, so would you be mine? \n\n")
+            msg.write("Forever yours, Monika.")
+
+        else:
+            filepath = basedir + "/surprise.txt"
+            msg.write("I love you.")
+
+        # now write a file
+        if not renpy.exists(filepath):
+            with open(filepath, "w") as surprise_note:
+                surprise_note.write(msg.getvalue())
+
+        # clean up
+        msg.close()
 
 #Currently re-affectioned labels.
 #monika_nihilism
