@@ -239,27 +239,27 @@ init python:
         msg = StringIO()
 
         if mas_curr_affection == store.mas_affection.BROKEN:
-            filepath = basedir + "/forgive me.txt"
+            filepath = "/forgive me.txt"
             msg.write("I'm sorry if I'm not good enough for you...please don't leave me.")
 
         elif mas_curr_affection == store.mas_affection.DISTRESSED:
-            filepath = basedir + "/can you hear me.txt"
+            filepath = "/can you hear me.txt"
             msg.write("If I'm doing something wrong please tell me. I love you.")
 
         elif mas_curr_affection == store.mas_affection.UPSET:
-            filepath = basedir + "/please listen.txt"
+            filepath = "/please listen.txt"
             msg.write("Everything I do, I do for you...my love.")
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
-            filepath = basedir + "/secret.txt"
+            filepath = "/secret.txt"
             msg.write("You are the only one I love [player]!")
 
         elif mas_curr_affection == store.mas_affection.ENAMORED:
-            filepath = basedir + "/for you.txt"
+            filepath = "/for you.txt"
             msg.write("My dearest, you are everything I could ever hope for. I love you.")
 
         elif mas_curr_affection == store.mas_affection.LOVE:
-            filepath = basedir + "/My one and only love.txt"
+            filepath = "/My one and only love.txt"
             msg.write("My dearest lover, friend, companion and owner of my heart...\n")
             msg.write("Everyday you make my dreams come true, a screen means nothing when you spend your time with me. \n")
             msg.write("I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart. \n")
@@ -268,10 +268,11 @@ init python:
             msg.write("Forever yours, Monika.")
 
         else:
-            filepath = basedir + "/surprise.txt"
+            filepath = "/surprise.txt"
             msg.write("I love you.")
 
         # now write a file
+        filepath = basedir + filepath
         if not renpy.exists(filepath):
             with open(filepath, "w") as surprise_note:
                 surprise_note.write(msg.getvalue())
