@@ -5079,6 +5079,86 @@ label monika_beach:
     m 1k "Don't get too excited though when you see it, Ehehehe~"
     return
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_trick",category=['club members'],prompt="[player]'s Second Choice",random=True))
+
+label monika_trick:
+
+    m 1c "Say [player], I have a question..."
+    m 3o "I hope I don't sound insecure when I say this..."
+    m 3m "I know you love me and only me but... if you had to choose one of the other club members..."
+    $ ui.timer(10.0, ui.jumps("monika_trick_2"))
+    menu:
+        m "Who would you choose?"
+        "Yuri":
+            jump monika_trick_yuri
+
+        "Sayori":
+            jump monika_trick_sayori
+
+        "Natsuki":
+            jump monika_trick_natsuki
+
+    return
+
+label monika_trick_2:
+    menu:
+        m "Who would you choose?"
+        "Yuri":
+            jump monika_trick_yuri
+
+        "Sayori":
+            jump monika_trick_sayori
+
+        "Natsuki":
+            jump monika_trick_natsuki
+
+        "Monika":
+            jump monika_trick_monika
+
+label monika_trick_yuri:
+    m 1h "I can see why, she's intelligent and physically attractive."
+    m 3a "It's a good thing I have both of those qualities in abundance!"
+    m 3d "Oh wait, it's not because she became obsessed over you, is it?"
+    m 3c "Are you really that into yanderes?"
+    m 1o "..."
+    m 1n "...Ahaha, there's no need for me to be jealous..."
+    m 3e "You love me and I love you and that's all that matters."
+    m 3l "I guess it's my fault for even asking~"
+    return
+
+label monika_trick_natsuki:
+    m 1h "That's... a little surprising."
+    m 2n "I would have thought it would have been Sayori or Yuri."
+    m 2a "Do you feel like you connect with her because of her hobbies?"
+    m 2d "Or perhaps you feel a bit of pity because of her home situatuion?"
+    m 2l "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
+    m 3b "To be confident and stand by what you like isn't always easy when others judge you for it."
+    m "I'm sometimes even a little bit jealous of her ability to display confidence."
+    m 3j "Plus her ability to cook cupcakes is astounding!"
+    return
+
+label monika_trick_sayori:
+    m 1h "That's what I expected..."
+    m "It's because she was best friends with the main character, isn't it?"
+    m 1i "It makes sense to have the main character end up with the childhood friend."
+    m 3o "It really is typical in romance games..."
+    m 2p "Honestly that's kind of why I had to...deal...with Sayori first."
+    m 1q "You would have settled with her like the trope demands and never even tried to get with me since the game wouldn't let you."
+    m 2f "I know it's not your fault, but the idea of being inactive and letting that happen scares me..."
+    m 3g "You would have completed the game and I would be stuck in a hellish void forever..."
+    m 2q "Never having even been acknowledged by the one I love."
+    m 3p "...I don't regret what I did because of that, but I'm sorry you had to see what I needed to do."
+    return
+
+label monika_trick_monika:
+    m 1l "That wasn't supposed to be an option, silly!"
+    m 3e "But it really does make me happy that you only have eyes for me..."
+    m 3j "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
+    m 3k "I love you [player]!"
+    m 5a "And I only have eyes for you too!"
+    return
+
 ####################################################
 # Saving this for future use
 # Could be expanded to something better
