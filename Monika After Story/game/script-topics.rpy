@@ -4942,14 +4942,14 @@ label monika_asks_family:
     return
 
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
 
-label monika_playerapologizes:
-    m 1g "Did something happen?"
-    m 2f "I can't remember what you'd be sorry about."
-    m 1q "..."
-    m 1b "Anyway, thank you for the apology."
-    m 1a "I know you're doing your best to make things right."
-    m 1k "That's why I love you, [player]!"
-    return
+#label monika_playerapologizes:
+#    m 1g "Did something happen?"
+#    m 2f "I can't remember what you'd be sorry about."
+#    m 1q "..."
+#    m 1b "Anyway, thank you for the apology."
+#    m 1a "I know you're doing your best to make things right."
+#    m 1k "That's why I love you, [player]!"
+#    return
