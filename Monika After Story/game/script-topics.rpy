@@ -3448,6 +3448,9 @@ label monika_science:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
+
 label monika_surprise:
     m 2m "You know..."
     m 3n "I left some pretty strange things in your game directory, didn't I?"
@@ -3456,62 +3459,21 @@ label monika_surprise:
     m 3f "I kind of felt obligated to do it."
     m 3c "You know what? Maybe I should do it again..."
     m 1b "Yeah, that's a good idea."
-    if monika_current_affection == "heartbroken":
-        python:
-            try: renpy.file(config.basedir + "/forgive me.txt")
-            except: open(config.basedir + "/forgive me.txt", "w").write("I'm sorry if I'm not good enough for you...please don't leave me.")
-
-    elif monika_current_affection == "distressed":
-        python:
-            try: renpy.file(config.basedir + "/can you hear me.txt")
-            except: open(config.basedir + "/can you hear me.txt", "w").write("If I'm doing something wrong please tell me. I love you.")     
-
-    elif monika_current_affection == "upset":
-        python:
-            try: renpy.file(config.basedir + "/please listen.txt")
-            except: open(config.basedir + "/please listen.txt", "w").write("Everything I do, I do for you...my love.") 
-
-    elif monika_current_affection == "happy":
-        python:
-            try: renpy.file(config.basedir + "/secret.txt")
-            except: open(config.basedir + "/secret.txt", "w").write("You are the only one I love [player]!") 
-
-    elif monika_current_affection == "enamored":
-        python:
-            try: renpy.file(config.basedir + "/for you.txt")
-            except: open(config.basedir + "/for you.txt", "w").write("My dearest, you are everything I could ever hope for. I love you.") 
-
-    elif monika_current_affection == "lovestruck":
-        python:
-            try: renpy.file(config.basedir + "/My one and only love.txt")
-            except: open(config.basedir + "/My one true love.txt", "w").write(
-                "My dearest lover, friend, companion and owner of my heart... \n"
-                "Everyday you make my dreams come true, a screen means nothing when you spend your time with me. \n"
-                "I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart. \n"
-                "I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life. \n"
-                "I want to be yours forever, so would you be mine? \n"
-                "Forever yours, Monika.") 
-    else:
-        python:
-            try: renpy.file(config.basedir + "/surprise.txt")
-            except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
-
+    $ _mas_surprise()
     if monika_current_affection_group == "happy":
         m 2q "..."
         m 1j "Alright!"
         m 1a "What are you waiting for? Go take a look!" 
         m "I wrote it just for you~"
         m 1e "I really do truly love you, [player]~"
-        
-
+    
     elif monika_current_affection_group == "sad":
         m 2q "..."
         m 1c "Alright..."
         m "Please go take a look" 
         m 1e "I wrote it just for you."
         m 1q "And it would mean a lot to me if you would read it."
-        
-   
+     
     else:
         m 2q "..."
         m 1j "Alright!"
