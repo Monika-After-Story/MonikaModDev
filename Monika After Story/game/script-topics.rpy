@@ -4860,7 +4860,7 @@ label monika_breakup:
     else:
         
         m 1g "W-what?"
-        if persistent._mas_monika_kill:
+        if persistent.monika_kill:
             m 2f "You're just going to leave and delete me again?"
         if monika_current_affection == "heartbroken":
             m 1f "You wouldn't do that, I refuse to believe that..."
