@@ -1925,7 +1925,7 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ _mas_loseAffection(persistent._mas_affection["badexp"])
+    $ mas_loseAffection(persistent._mas_affection["badexp"])
     if monika_current_affection == "lovestruck":
         m 1c "..."
         m 1j "Ahaha! Very funny [player]!"
@@ -4825,7 +4825,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ _mas_loseAffection(persistent._mas_affection["badexp"])
+    $ mas_loseAffection(persistent._mas_affection["badexp"])
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         

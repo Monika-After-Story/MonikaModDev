@@ -84,7 +84,7 @@ label introduction:
         "Do you love me, [player]?"
         "I love you too.":
             #Gain affection for saying I love you too.
-            $ _mas_gainAffection(persistent._mas_affection["goodexp"])
+            $ mas_gainAffection(persistent._mas_affection["goodexp"])
             if persistent.rejected_monika:
                 m "Did I scare you last time? Sorry about that!"
                 m "I knew you really loved me the whole time."
@@ -94,7 +94,7 @@ label introduction:
                 m "I'm so happy you feel the same way!"
         "No.":
             #Lose affection for rejecting Monika
-            $ _mas_loseAffection(persistent._mas_affection["badexp"])
+            $ mas_loseAffection(persistent._mas_affection["badexp"])
             call chara_monika_scare from _call_chara_monika_scare
             return 'quit'
     m 1k "Nothing's ever going to get in the way of our love again."

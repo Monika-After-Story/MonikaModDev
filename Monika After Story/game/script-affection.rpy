@@ -14,7 +14,7 @@
 init python:
 
    #Used to adjust the good and bad experience factors that are used to adjust affection levels.
-    def _mas_updateAffectionExp():
+    def mas_updateAffectionExp():
         #If affection is between 30 and 49, update good exp. Simulates growing affection.
         if persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] < 50:
             persistent._mas_affection["goodexp"] = 3
@@ -36,21 +36,21 @@ init python:
             persistent._mas_affection["badexp"] = -5
 
     #Used to increment affection whenever something positive happens.
-    def _mas_gainAffection(amount = 1):
+    def mas_gainAffection(amount = 1):
         persistent._mas_affection["affection"] += amount
         
-        _mas_updateAffectionExp()
-        _mas_updateAffectionTitle() 
+        mas_updateAffectionExp()
+        mas_updateAffectionTitle() 
    
     #Used to subtract affection whenever something negative happens.
-    def _mas_loseAffection(amount = -1):
+    def mas_loseAffection(amount = -1):
         persistent._mas_affection["affection"] += amount
         
-        _mas_updateAffectionExp()
-        _mas_updateAffectionTitle()
+        mas_updateAffectionExp()
+        mas_updateAffectionTitle()
 
     #Sets up the function to check and dynamically change the monika_current_affection variable.
-    def _mas_updateAffectionTitle():
+    def mas_updateAffectionTitle():
         global monika_current_affection
         global monika_current_affection_group
         
