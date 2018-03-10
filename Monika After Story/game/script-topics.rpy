@@ -5130,7 +5130,7 @@ label monika_watches_whiplash:
             m 4b"It's a pretty good movie."
             m 2b "Not my favourite, but if was nice."
             if renpy.seen_label('monika_jazz'):
-                m 4b "And it's a jazz movie too, like what we were talking about before"
+                m 4b "And remember when we were talking about jazz? This is a jazz movie."
             jump monika_watches_whiplash_synopsis
             
 label: monika_watches_whiplash_synopsis:
