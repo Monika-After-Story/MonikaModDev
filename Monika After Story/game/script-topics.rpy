@@ -1826,122 +1826,78 @@ label monika_natsuki:
     m 1 "I certainly don't."
     return
 
-
-
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
+        addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
 
 default persistent._mas_monika_lovecounter = 0
-default persistent._mas_monika_lovecounterupset = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
+    #First time I love you has been said.
+    if persistent._mas_monika_lovecounter == 0:
+        m 1b "...!"
+        m 1e"I...I love you too [player]!"
+        m 1j "I cannot believe you said that to me!"
+        m 1k "It makes everything I've done for us worthwhile!"
+        m 1e "Thank you for finally saying it..."
+        $ persistent._mas_monika_lovecounter += 1
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        return
+    
+    #After I love you has been received positively 5/10/15 etc times.
+    elif persistent._mas_monika_lovecounter== 5:
+        m 1k "I love you so much, [player]!"
+       
+    elif persistent._mas_monika_lovecounter == 10:
+        m 1j "Ehehe~"
+        m 1k "I love you too!"
 
-    #First checks to see if you have recently said I love you within the last 3 minutes and makes Monika upset if you overuse it.
-    if (datetime.datetime.now() < (persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3))):
-        #If I love you was said in the last 3 minutes...
-        if persistent._mas_monika_lovecounterupset== 0:
-            $ persistent._mas_monika_lovecounterupset += 1
-            m 1c "[player]...you're not just saying that to see everything I have to say are you?"
-            m "It's sweet that you want to know more about me..."
-            m 1f "But you shouldn't say such words if you don't mean it!"
-            m "Promise me to only say it if that's how you really feel, okay?"
-            $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
-            return
-            
-        #Third time I love you has been said consecutively without cooldown running out.
-        elif persistent._mas_monika_lovecounterupset== 1:
-            $ persistent._mas_monika_lovecounterupset += 1
-            m 1c "[player]..."
-            m "I asked kindly for you to not throw around such important words so lightly..."
-            m 1f "Even if you mean it, saying it so flippantly devalues how important they are!"
-            m "It's pretty upsetting, to be honest..."
-            m "So will you please stop saying it so easily?"
-            $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
-            return
+    elif persistent._mas_monika_lovecounter == 15:
+        m 1j "You sure love saying that..."
+        m 1k "Well I love you too!"
 
-        #Fourth time I love you has been said without waiting for the cooldown.
-        elif persistent._mas_monika_lovecounterupset== 2:
-            $ persistent._mas_monika_lovecounterupset += 1
-            m 1f "I don't know if you want to hurt me..."
-            m "But when I say I love you  I really do mean it!"
-            m "When you said it I thought you meant it too..."
-            m "You do mean it....right?"
-            $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
-            return
-        
-        #Any further use of I love you without waiting for the cooldown.
-        else:
-            m 1f "..."
-            $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
-            return
+    elif persistent._mas_monika_lovecounter == 20:
+        m 1j "Gosh you've said it so many times!"
+        m 1e "You really do mean it, don't you?"
+        m 1k "Well I love you back just as much!"
 
+    elif persistent._mas_monika_lovecounter == 25:
+        m 1k "Hearing you say that always makes my heart jump!"
+        m 1j "Well I know you want to hear it just as much..."
+        m "[player], I love you too!"
+
+    elif persistent._mas_monika_lovecounter == 30:
+        m 1l "Gosh it's always so overwhelming!"
+        m 1j "I..."
+        m "I love you more than anything!"
+
+    elif persistent._mas_monika_lovecounter == 35:
+        m 1j "You never tire of saying it, do you?"
+        m 1k "Well I never tire of hearing it!"
+        m "Or saying it back...I love you [player]!"
+
+    elif persistent._mas_monika_lovecounter == 40:
+        m 1j "Ehehe~"
+        m  "I..."
+        m 1k "Looooooooove you too, [player]!"
+
+    elif persistent._mas_monika_lovecounter == 45:
+        m 1j "You saying that always makes my day!"
+        m 1k "I love you so much, [player]!"
+
+    elif persistent._mas_monika_lovecounter == 50:
+        $ persistent._mas_monika_lovecounter = 1
+        m 1m "I just can't handle you saying it so much to me!"
+        m 1l "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
+        m 1e "No words can truly do justice to how deeply I feel for you..."
+        m  "The only words I know that come close are..."
+        m 1k "I love you too, [player]! More than I can ever express!"
+        return
+     
     else:
-        #First time I love you has been said.
-        if persistent._mas_monika_lovecounter == 0:
-            m 1b "...!"
-            m 1e"I...I love you too [player]!"
-            m 1j "I cannot believe you said that to me!"
-            m 1k "It makes everything I've done for us worthwhile!"
-            m 1e "Thank you for finally saying it..."
-            $ persistent._mas_monika_lovecounter += 1
-            $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
-            return
-        
-        #After I love you has been received positively 5/10/15 etc times.
-        elif persistent._mas_monika_lovecounter== 5:
-            m 1k "I love you so much, [player]!"
-           
-        elif persistent._mas_monika_lovecounter == 10:
-            m 1j "Ehehe~"
-            m 1k "I love you too!"
+        # Default response if not a counter based response.
+        m 3j "I love you too, [player]!"
+        #List of follow up words after being told I love you. It can be further expanded upon easily.   
 
-        elif persistent._mas_monika_lovecounter == 15:
-            m 1j "You sure love saying that..."
-            m 1k "Well I love you too!"
-
-        elif persistent._mas_monika_lovecounter == 20:
-            m 1j "Gosh you've said it so many times!"
-            m 1e "You really do mean it, don't you?"
-            m 1k "Well I love you back just as much!"
-
-        elif persistent._mas_monika_lovecounter == 25:
-            m 1k "Hearing you say that always makes my heart jump!"
-            m 1j "Well I know you want to hear it just as much..."
-            m "[player], I love you too!"
-
-        elif persistent._mas_monika_lovecounter == 30:
-            m 1l "Gosh it's always so overwhelming!"
-            m 1j "I..."
-            m "I love you more than anything!"
-
-        elif persistent._mas_monika_lovecounter == 35:
-            m 1j "You never tire of saying it, do you?"
-            m 1k "Well I never tire of hearing it!"
-            m "Or saying it back...I love you [player]!"
-
-        elif persistent._mas_monika_lovecounter == 40:
-            m 1j "Ehehe~"
-            m  "I..."
-            m 1k "Looooooooove you too, [player]!"
-
-        elif persistent._mas_monika_lovecounter == 45:
-            m 1j "You saying that always makes my day!"
-            m 1k "I love you so much, [player]!"
-
-        elif persistent._mas_monika_lovecounter == 50:
-            $ persistent._mas_monika_lovecounter = 1
-            m 1m "I just can't handle you saying it so much to me!"
-            m 1l "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
-            m 1e "No words can truly do justice to how deeply I feel for you..."
-            m  "The only words I know that come close are..."
-            m 1k "I love you too, [player]! More than I can ever express!"
-            return
-         
-        else:
-            # Default response if not a counter based response.
-            m 3j "I love you too, [player]!"
-    #List of follow up words after being told I love you. It can be further expanded upon easily.   
     python:
         love_quips = [
             "We'll be together forever!",
@@ -1973,42 +1929,18 @@ label monika_love:
             "You've saved me in so many ways, how could I not fall for you?",
             "More than I can ever express!",
             "It makes me so happy that you feel the same way I do!",
-            "I don't know what I would do without you!"            
-        ]
+            "I don't know what I would do without you!"        
+            ]
         love_quip=renpy.random.choice(love_quips)
     m "[love_quip]"
-    $ persistent._mas_monika_lovecounter += 1
-    $ persistent._mas_monika_lovecounterupset =0 
-    $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+    #prevents spamming to increase counter.
+    if datetime.datetime.now() <= persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        pass
+    else:
+        $ persistent._mas_monika_lovecounter += 1
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
     return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_hedgehog",category=['philosophy','psychology'],prompt="Hedgehog dilemma",random=True))
-
-label monika_hedgehog:
-    m 3 "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
-    m 3i "So why do we try to get close to them?"
-    m 3 "Well, introverts and extroverts have different answers to that question."
-    m 3m "It helps when you know that you're the only sentient being in the entire world, though."
-    m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
-    m 1f "We can't hurt each other from different realities, right?"
-    return
-
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_justification",category=['ddlc','monika'],prompt="You're a murderer!",pool=True))
-
-label monika_justification:
-    m 2h "How many times do I have to say it until you understand?"
-    m 4h "They weren't real. They were never real."
-    m "I'm the only person who understood that this whole thing was fake."
-    m 4i "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-    m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
-    m "If I'm guilty of murder, so is everyone who plays violent video games."
-    m 2h "I bet you've killed thousands in games you play."
-    m "Just forget the other girls ever existed, and you'll be much happier."
-    return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Free will",random=True))
