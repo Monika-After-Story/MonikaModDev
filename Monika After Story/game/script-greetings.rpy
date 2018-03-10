@@ -379,6 +379,21 @@ label greeting_surprised:
      return
 
 init python:
+    rules = {EV_RULE_RP_NUMERICAL : MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_WEEK,advance_by=1),
+             EV_RULE_GREET_RANDOM : MASGreetingRule.create_rule(skip_visual=False)}
+    start_date = datetime.datetime(2018, 3, 3)
+    end_date = datetime.datetime(2018, 3, 4)
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_saturday", start_date=start_date,
+                                                            end_date=end_date, rules=rules),eventdb=evhand.greeting_database)
+
+
+label greeting_saturday:
+     m "Oh, hello [player]!"
+     m "Sorry, you surprised me there a little."
+     m "How have you been?"
+     return
+
+init python:
     rules = {EV_RULE_RP_SELECTIVE : MASSelectiveRepeatRule.create_rule(hours=range(1,6)),
              EV_RULE_GREET_RANDOM : MASGreetingRule.create_rule(skip_visual=True)}
     addEvent(Event(persistent.greeting_database,eventlabel="i_greeting_monikaroom", rules=rules),eventdb=evhand.greeting_database)

@@ -727,7 +727,7 @@ python early:
                 if EV_RULE_RP_NUMERICAL in event.rules:
 
                     # we call evaluate_rule to check if we pass the rule
-                    if MASNumericalRepeatRule.evaluate_rule(check_time, ev=event,rule=event.rules[EV_RULE_RP_NUMERICAL]):
+                    if MASNumericalRepeatRule.evaluate_rule(check_time, event, event.rules[EV_RULE_RP_NUMERICAL]):
 
                         # add the event to our available events dict
                         available_events[label] = event

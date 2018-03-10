@@ -127,35 +127,35 @@ init python:
                 # return the new dates
                 return (new_start_date, new_end_date)
 
-            @staticmethod
-            def evaluate_rule(check_time, ev=None, rule=None):
-                """
-                Evaluates the rule given and updates the event's start_date and
-                end_date
+        @staticmethod
+        def evaluate_rule(check_time, ev=None, rule=None):
+            """
+            Evaluates the rule given and updates the event's start_date and
+            end_date
 
-                IN:
-                    check_time - The datetime to check the rule against
-                    ev - The Event's to check
-                    rule - a MASNumericalRepeatRule tuple containing the rules for the
-                        appropiate update
+            IN:
+                check_time - The datetime to check the rule against
+                ev - The Event's to check
+                rule - a MASNumericalRepeatRule tuple containing the rules for the
+                    appropiate update
 
-                RETURNS:
-                    True if the event date comply to the rule, False if it doesn't
-                """
+            RETURNS:
+                True if the event date comply to the rule, False if it doesn't
+            """
 
-                # sanity check if we don't have a rule or event we raise an Exception
-                if ev is None or rule is None:
-                    raise Exception("Evaluate rule needs an Event and a Rule")
+            # sanity check if we don't have a rule or event we raise an Exception
+            if ev is None or rule is None:
+                raise Exception("Evaluate rule needs an Event and a Rule")
 
-                # call update dates to get the new start and end dates
-                ev.start_date, ev.end_date = update_dates(ev.start_date, ev.end_date, rule)
+            # call update dates to get the new start and end dates
+            ev.start_date, ev.end_date = MASNumericalRepeatRule.update_dates(ev.start_date, ev.end_date, rule, check_time)
 
-                # finally check if the event is available for the given datetime
-                if ev.start_date <= check_time <= ev.end_date:
+            # finally check if the event is available for the given datetime
+            if ev.start_date <= check_time <= ev.end_date:
 
-                    return True
+                return True
 
-                return False
+            return False
 
     class MASSelectiveRepeatRule(object):
         """
