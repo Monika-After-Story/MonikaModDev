@@ -5147,7 +5147,7 @@ label monika_watches_whiplash_synopsis:
                     m 4i "He brought Andrew to be one of his drummers for his band."
                     m 2i "But then you find out that he's a really abusive teacher."
                     m "He'd belittle you, berate you, physically and emotionally abuse you."
-                    m 2p "And even hurl a chair!"
+                    m 2p "He even hurled a chair!"
                     m 4p "I'm not kidding!"
                     m 1i "The whole movie is about the relationship between Andrew handling Fletcher's '{i}questionable{/i}' teaching methods."
                     m "And what an ambitious student is willing to go through for his dream."
@@ -5182,7 +5182,7 @@ label monika_watches_whiplash_synopsis:
                     m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
                     m 3a "And that's about it."
                     m 4k "No spoilers, right? Ahaha~"
-                    m 2j "I told you you had nothing to worry about."
+                    m 2j "I told you, you had nothing to worry about."
                     m 2e "And honestly."
                     jump monika_watches_whiplash_end
                 "Not really interested.":
