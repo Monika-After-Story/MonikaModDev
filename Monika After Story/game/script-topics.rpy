@@ -1943,6 +1943,34 @@ label monika_love:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_hedgehog",category=['philosophy','psychology'],prompt="Hedgehog dilemma",random=True))
+
+label monika_hedgehog:
+    m 3 "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
+    m 3i "So why do we try to get close to them?"
+    m 3 "Well, introverts and extroverts have different answers to that question."
+    m 3m "It helps when you know that you're the only sentient being in the entire world, though."
+    m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
+    m 1f "We can't hurt each other from different realities, right?"
+    return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_justification",category=['ddlc','monika'],prompt="You're a murderer!",pool=True))
+
+label monika_justification:
+    m 2h "How many times do I have to say it until you understand?"
+    m 4h "They weren't real. They were never real."
+    m "I'm the only person who understood that this whole thing was fake."
+    m 4i "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
+    m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
+    m "If I'm guilty of murder, so is everyone who plays violent video games."
+    m 2h "I bet you've killed thousands in games you play."
+    m "Just forget the other girls ever existed, and you'll be much happier."
+    return
+
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Free will",random=True))
 
 label monika_freewill:
