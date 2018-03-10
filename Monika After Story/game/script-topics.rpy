@@ -4997,7 +4997,6 @@ label monika_watches_whiplash:
             m 4a "Would you mind if I test you then?"
             menu:
                 "Bring it!":
-#I need a way to bring the topic to when she asks later "want a synopsis?" if you get a question wrong. The questions are pretty basic, just what's the name of the main caracters.#
                     m 3b "Alright! Let's start!"
                     m "What was the name of the MC?"
                     menu:
@@ -5009,7 +5008,7 @@ label monika_watches_whiplash:
                                 "Tanner":
                                     m 1j "Wrong! Caught you [player]!"
                                     m 1k "Ahaha!"
-#This is where I need the code or a way to somehow jump to another part of this topic#
+                                    jump monika_watches_whiplash_synopsis
                                 "Fletcher":
                                     m 3k "That's Right!"
                                     m 1j "I guess you did watch it."
@@ -5106,91 +5105,102 @@ label monika_watches_whiplash:
                                             m 4h "We both have our reasons too."
                                             m 1c "So I guess I can understand him somewhat."
                                             m 4l "But there's {i}no way{/i} I can ever hurl a chair at someone! Ahaha."
-#This is where I need the code or a way to somehow jump to another part of this topic#
+                                            jump monika_watches_whiplash_end
                                         "Those were just lucky guesses.":
                                             m 1l "Well, I guess you managed to fool me [player]~"
                                             m 4a "So that means you haven't watched it yet huh."
-#This is where I need the code or a way to somehow jump to another part of this topic#
+                                            jump monika_watches_whiplash_synopsis
                                 "Neiman":
                                     m 2l "Wrong! Caught you [player]!"
                                     m 1j "Ahaha!"
-#This is where I need the code or a way to somehow jump to another part of this topic# 
+                                    jump monika_watches_whiplash_synopsis
                         "Nicole":
                             m 2l "Wrong! Caught you [player]!"
                             m 1j "Ahaha!"
-#This is where I need the code or a way to somehow jump to another part of this topic#
+                            jump monika_watches_whiplash_synopsis
                         "Terrance":
                             m 2l "Wrong! Caught you [player]!"
                             m 1j "Ahaha!"
-#This is where I need the code or a way to somehow jump to another part of this topic#
+                            jump monika_watches_whiplash_synopsis
                 "I was just kidding.":
                     m 2l "Well, you could've foole me [player]"
                     m "Ahaha."
-#This is where I need the code or a way to somehow jump to another part of this topic#
+                    jump monika_watches_whiplash_synopsis
         "No.":
-            m "It's a pretty good movie."
-            m "Not my favourite, but if was nice."
-#I need here way to code if the player has seen the jazz topic and said they like jazz. If it's impossible, then nevermind#
-#It would go something like:#
-# m "You once said you like jazz right? So I think you might like this one."#
-            m 3b "You want me to give you a short synopsis [player]?"
+            m 4b"It's a pretty good movie."
+            m 2b "Not my favourite, but if was nice."
+            if renpy.seen_label('monika_jazz'):
+                m 4b "And it's a jazz movie too, like what we were talking about before"
+            jump monika_watches_whiplash_synopsis
+            
+label: monika_watches_whiplash_synopsis:
+    m 3b "You want me to give you a short synopsis [player]?"
+    menu:
+        "Sure.":
+            m 1j "Alright!"
+            m 3k "So it's abou-"
+            m 3l "..."
+            m 1n "I might get into some spoilers, would you mind that [player]?"
             menu:
-                "Sure.":
-                    m 1j "Alright!"
-                    m 3k "So it's abou-"
-                    m 3l "..."
-                    m 1n "I might get into some spoilers, would you mind that [player]?"
-                    menu:
-                        "Not really.":
-                            m 1j "Great!"
-                            m 3b "So this movie is about the MC, a guy named Andrew who wanted to become one of the best jazz drummers in the world."
-                            m 3d "His teacher, Fletcher, is one of the best jazz instructiors there."
-                            m 4i "He brought Andrew to be one of his drummers for his band."
-                            m 2i "But then you find out that he's a really abusive teacher."
-                            m "He'd belittle you, berate you, physically and emotionally abuse you."
-                            m 2p "And even hurl a chair!"
-                            m 4p "I'm not kidding!"
-                            m 1i "The whole movie is about the relationship between Andrew handling Fletcher's '{i}questionable{/i}' teaching methods."
-                            m "And what an ambitious student is willing to go through for his dream."
-                            m "And how far a teacher is willing to go to push his students to reach greatness."
-                        "I would mind.":
-                            m 2p "Oh, this is gonna be tough one..."
-                            m 3d "The movie is about the relationship between the MC, a guy named Andrew who's an abitious jazz student."
-                            m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
-                    m 3a "...And that's basically it."
-                    m 3b "It was pretty interesting to me."
-                    m 2c "But maybe your opinions different."
-                    m 2d "Does it seem interesting to you [player]?"
-                    menu:
-                        "It is.":
-                            m 1k "That's great!"
-                            m 2j "I hope you like it too [player]."
-                        "It isn't.":
-                            m 2e "Well, I guess it's not for everybody."
-                            m 3a "To each their own, right [player]?"
-                "No thanks.":
-                    m 2d "Oh? Why not?"
-                    menu:
-                        "You might spoil me.":
-                            m 1j "Oh [player], you have nothing to worry about."
-                            m 4l "I'll do my best not to spoil you."
-                            m 2a "Give me a second..."
-                            m 3d "{w}The movie the relationship between guy named Andrew who's an abitious jazz student."
-                            m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
-                            m 3a "And that's about it."
-                            m 4k "No spoilers, right? Ahaha~"
-                            m 2j "I told you you had nothing to worry about."
-                            m 2e "And honestly."
-                        "Not really interested.":
-                            m 2e "Well, I guess it's not for everybody."
-                            m 3a "To each their own, right [player]?"
-                            m 2e "But even if you don't find it interesting."
-                        "I'll find it out for myself.":
-                            m 3e "I guess I can accept that."
-                            m 4b "This way, you can be sure if it really does interest you."
-                            m 2a "And not just take my word for it."
-                            m 2j "Have fun finding it out for yourself."
-                            m 2e "But even if you don't like the movie all that much."
+                "Not really.":
+                    m 1j "Great!"
+                    m 3b "So this movie is about the MC, a guy named Andrew who wanted to become one of the best jazz drummers in the world."
+                    m 3d "His teacher, Fletcher, is one of the best jazz instructiors there."
+                    m 4i "He brought Andrew to be one of his drummers for his band."
+                    m 2i "But then you find out that he's a really abusive teacher."
+                    m "He'd belittle you, berate you, physically and emotionally abuse you."
+                    m 2p "And even hurl a chair!"
+                    m 4p "I'm not kidding!"
+                    m 1i "The whole movie is about the relationship between Andrew handling Fletcher's '{i}questionable{/i}' teaching methods."
+                    m "And what an ambitious student is willing to go through for his dream."
+                    m "And how far a teacher is willing to go to push his students to reach greatness."
+                "I would mind.":
+                    m 2p "Oh, this is gonna be tough one..."
+                    m 3d "The movie is about the relationship between the MC, a guy named Andrew who's an abitious jazz student."
+                    m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
+            m 3a "...And that's basically it."
+            m 3b "It was pretty interesting to me."
+            m 2c "But maybe your opinions different."
+            m 2d "Does it seem interesting to you [player]?"
+            menu:
+                "It is.":
+                    m 1k "That's great!"
+                    m 2j "I hope you like it too [player]."
+                    m 2e "But even if you don't find it interesting."
+                    jump monika_watches_whiplash_end
+                "It isn't.":
+                    m 2e "Well, I guess it's not for everybody."
+                    m 3a "To each their own, right [player]?"
+                    m 2e "But even if you don't find it interesting."
+                    jump monika_watches_whiplash_end
+        "No thanks.":
+        m 2d "Oh? Why not?"
+        menu:
+            "You might spoil me.":
+                m 1j "Oh [player], you have nothing to worry about."
+                m 4l "I'll do my best not to spoil you."
+                m 2a "Give me a second..."
+                m 3d "{w}The movie the relationship between guy named Andrew who's an abitious jazz student."
+                m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
+                m 3a "And that's about it."
+                m 4k "No spoilers, right? Ahaha~"
+                m 2j "I told you you had nothing to worry about."
+                m 2e "And honestly."
+                jump monika_watches_whiplash_end
+            "Not really interested.":
+                m 2e "Well, I guess it's not for everybody."
+                m 3a "To each their own, right [player]?"
+                m 2e "But even if you don't find it interesting."
+                jump monika_watches_whiplash_end
+            "I'll find it out for myself.":
+                m 3e "I guess I can accept that."
+                m 4b "This way, you can be sure if it really does interest you."
+                m 2a "And not just take my word for it."
+                m 2j "Have fun finding it out for yourself."
+                m 2e "But even if you don't like the movie all that much."
+                jump monika_watches_whiplash_end
+                            
+label monika_watches_whiplash_end:
     m 1e "I really enjoy just talking about it with you [player]!"
     m 1j "Aftr all, the company's good."
     m 3k "Especially if the company is you~"
