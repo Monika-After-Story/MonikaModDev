@@ -5123,7 +5123,7 @@ label monika_watches_whiplash:
                             m 1j "Ahaha!"
                             jump monika_watches_whiplash_synopsis
                 "I was just kidding.":
-                    m 2l "Well, you could've foole me [player]"
+                    m 2l "Well, you could've fooled me [player]"
                     m "Ahaha."
                     jump monika_watches_whiplash_synopsis
         "No.":
