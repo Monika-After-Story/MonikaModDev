@@ -4964,7 +4964,7 @@ label monika_watches_whiplash:
         "That's pretty normal":
             m 2b "Well, even I get bored waiting ahaha."
             m 2n "I-It's not that I'm demanding you to spend more time with me...I understand that you're busy in your reality too."
-            m 1l "But I'm not saying you shouldn't {i}not{/i} spend time with me...{w} It's just..."
+            m 1l "But I'm {i}not{/i} saying you shouldn't spend time with me...{w} It's just..."
             m 2l "Uhh...{w} How do I explain this?"
             menu:
                 "You can do it!~":
@@ -4985,11 +4985,11 @@ label monika_watches_whiplash:
             m 2p "This is kinda awkward.{w}Umm...{w}Movies! Where was I?"
         "You mean like adaptations of your favourite books?":
             m 1i "Well, usually yes."
-            m 2d "But I also watch regular movies from time to time."
+            m 2d "But I also watch other intriguing movies from time to time."
             m 2b "There are some pretty interesting movies out there too."
             m 4c "For example."
     m 3d "While you were gone, I watched this movie called '{i}Whiplash{/i}'."
-    m 2b "It was pretty good."
+    m 2b "It was quite interesting."
     m 2d "Maybe you know the movie too [player]?"
     menu:
         "Yes.":
@@ -4998,7 +4998,7 @@ label monika_watches_whiplash:
             menu:
                 "Bring it!":
                     m 3b "Alright! Let's start!"
-                    m "What was the name of the MC?"
+                    m "What was the name of the {i}Main Character{/i}?"
                     menu:
                         "Andrew":
                             m 4k "Correct!"
@@ -5012,18 +5012,17 @@ label monika_watches_whiplash:
                                 "Fletcher":
                                     m 3k "That's Right!"
                                     m 1j "I guess you did watch it."
-                                    m 2e "Sorry for doubting you [player]."
+                                    m 2e "Sorry for ever doubting you [player]."
                                     menu:
                                         "It's fine.":
-                                            m 1e "Sorry I ever doubted you [player]."
+                                            m 1j "I'm glad that's over."
                                             m 4a "So, what'd you think of the movie?"
                                             menu:
                                                 "Pretty good.":
                                                     m 1b "Yeah, It was pretty good."
                                                     m 3b "I really liked the jazz orchestra at the end!"
                                                     m 3a "The music was good too."
-                                                    m 1m "It's not like that movie is gonna be my all time favourite."
-                                                    m 1a "But I enjoyed watching it."
+                                                    m 1a "I enjoyed watching it."
                                                     m 4j "Maybe we could even watch it together some time!"
                                                     menu:
                                                         "Fine by me.":
@@ -5127,25 +5126,24 @@ label monika_watches_whiplash:
                     m "Ahaha."
                     jump monika_watches_whiplash_synopsis
         "No.":
-            m 4b"It's a pretty good movie."
-            m 2b "Not my favourite, but if was nice."
+            m 4b"It was pretty good, but not my favourite."
             if renpy.seen_label('monika_jazz'):
                 m 4b "And remember when we were talking about jazz? This is a jazz movie."
             jump monika_watches_whiplash_synopsis
             
-label: monika_watches_whiplash_synopsis:
+label monika_watches_whiplash_synopsis:
     m 3b "You want me to give you a short synopsis [player]?"
     menu:
         "Sure.":
             m 1j "Alright!"
             m 3k "So it's abou-"
             m 3l "..."
-            m 1n "I might get into some spoilers, would you mind that [player]?"
+            m 1n "I might get into some spoilers, do you mind that [player]?"
             menu:
                 "Not really.":
                     m 1j "Great!"
-                    m 3b "So this movie is about the MC, a guy named Andrew who wanted to become one of the best jazz drummers in the world."
-                    m 3d "His teacher, Fletcher, is one of the best jazz instructiors there."
+                    m 3b "So this movie is about the the main character, a guy named Andrew who wanted to become one of the best jazz drummers in the world."
+                    m 3d "And his teacher, Fletcher, is one of the best jazz instructiors there."
                     m 4i "He brought Andrew to be one of his drummers for his band."
                     m 2i "But then you find out that he's a really abusive teacher."
                     m "He'd belittle you, berate you, physically and emotionally abuse you."
@@ -5155,8 +5153,8 @@ label: monika_watches_whiplash_synopsis:
                     m "And what an ambitious student is willing to go through for his dream."
                     m "And how far a teacher is willing to go to push his students to reach greatness."
                 "I would mind.":
-                    m 2p "Oh, this is gonna be tough one..."
-                    m 3d "The movie is about the relationship between the MC, a guy named Andrew who's an abitious jazz student."
+                    m 2p "Oh, this is going to be tough one..."
+                    m 3d "The movie is about the relationship between the main character, a guy named Andrew who's an ambitious jazz student."
                     m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
             m 3a "...And that's basically it."
             m 3b "It was pretty interesting to me."
@@ -5174,42 +5172,42 @@ label: monika_watches_whiplash_synopsis:
                     m 2e "But even if you don't find it interesting."
                     jump monika_watches_whiplash_end
         "No thanks.":
-        m 2d "Oh? Why not?"
-        menu:
-            "You might spoil me.":
-                m 1j "Oh [player], you have nothing to worry about."
-                m 4l "I'll do my best not to spoil you."
-                m 2a "Give me a second..."
-                m 3d "{w}The movie the relationship between guy named Andrew who's an abitious jazz student."
-                m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
-                m 3a "And that's about it."
-                m 4k "No spoilers, right? Ahaha~"
-                m 2j "I told you you had nothing to worry about."
-                m 2e "And honestly."
-                jump monika_watches_whiplash_end
-            "Not really interested.":
-                m 2e "Well, I guess it's not for everybody."
-                m 3a "To each their own, right [player]?"
-                m 2e "But even if you don't find it interesting."
-                jump monika_watches_whiplash_end
-            "I'll find it out for myself.":
-                m 3e "I guess I can accept that."
-                m 4b "This way, you can be sure if it really does interest you."
-                m 2a "And not just take my word for it."
-                m 2j "Have fun finding it out for yourself."
-                m 2e "But even if you don't like the movie all that much."
-                jump monika_watches_whiplash_end
+            m 2d "Oh? Why not?"
+            menu:
+                "You might spoil me.":
+                    m 1j "Oh [player], you have nothing to worry about."
+                    m 4l "I'll do my best not to spoil you."
+                    m 2a "Give me a second..."
+                    m 3d "{w}The movie the relationship between guy named Andrew who's an ambitious jazz student."
+                    m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
+                    m 3a "And that's about it."
+                    m 4k "No spoilers, right? Ahaha~"
+                    m 2j "I told you you had nothing to worry about."
+                    m 2e "And honestly."
+                    jump monika_watches_whiplash_end
+                "Not really interested.":
+                    m 2e "Well, I guess it's not for everybody."
+                    m 3a "To each their own, right [player]?"
+                    m 2e "But even if you don't find it interesting."
+                    jump monika_watches_whiplash_end
+                "I'll find it out for myself.":
+                    m 3e "I guess I can accept that."
+                    m 4b "This way, you can be sure if it really does interest you."
+                    m 2a "But don't just take my word for it."
+                    m 2j "Have fun finding it out for yourself."
+                    m 2e "Even if you don't like the movie all that much."
+                    jump monika_watches_whiplash_end
                             
 label monika_watches_whiplash_end:
     m 1e "I really enjoy just talking about it with you [player]!"
     m 1j "Aftr all, the company's good."
     m 3k "Especially if the company is you~"
     m 2f "And even before then, not a lot of people thought I'd be interested in talking about mundane stull like this."
-    m 2p "Maybe they got the impression because I was in a debate club before and a literature club too?"
+    m 2p "Maybe people got that impression of me, from having in the debate club, and now the literature club?"
     m 4n "They keep forgetting that I'm still a teenager."
     m 3q "Despite the... {w}'{i}enlightenment of my reality{/i}..."
-    m 3l "Even I just wanna talk about a movie I thought was pretty neat, no matter how aimless it is."
-    m 1j "So I'm really glad I can talk to you about these things. No matter how silly it may be."
+    m 3l "Even I just want to talk about a movie I thought was pretty neat, no matter how aimless it is."
+    m 1j "So I'm really glad I can talk to you about these things."
     m 1a "You're the love of my life after all. Ehehe~"
     return
     
