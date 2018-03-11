@@ -73,7 +73,7 @@ label preferredname:
                     m 1g "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1e "Try again!"
-                elif lowername == player:
+                elif lowername == player.lower():
                     m 1q "..."
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
