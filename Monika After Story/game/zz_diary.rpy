@@ -34,6 +34,7 @@
 define mas_diary.event_entries = list()
 
 # list of games played today 
+# TODO: change this to include stats on how many times we've played these games
 define mas_diary.games_played = list()
 
 # list of game outcomes
@@ -46,9 +47,13 @@ define mas_diary.game_outcomes = dict()
 # TODO: waiting on moods pr
 define mas_diary.player_moods = list()
 
+# list of story-based entries.  These are written in list order.
+# each string is considered a "line".
+define mas_diary.story_entries = list()
+
 # list of special custom diary entry strings. Each string is considered a
 # "line". These are placed after main diary entry but before the PS section
-define mas_diary.custom_entries = list()
+#define mas_diary.custom_entries = list()
 
 # list of PS diary entry lines. Each string is considered a "line"
 # each line gets an extra P (PS, PPS, PPPS...)
@@ -71,9 +76,17 @@ define mas_diary.diary_modifiers = dict()
 # this should reset every day. and after a day has been written
 default persistent._mas_diary_written = False
 
-# checksum of the diary
-# if this None, we assume no diary exists
-default persistent._mas_diary_checksum = None
+# list of dicts of the following format:
+#   "filepath": file path to diary
+#   "checksum": checksum of the file
+#   "entries": number of entries written to this file
+#
+# NOTE: we assume that the first entry in this list is the latest diary.
+# NOTE: we doing this historically so we can:
+#   a - not use the same place/name twice
+#   b - see if the player modded any of these diaries
+#   c - kind of give us an idea of how many times player has intruded privacy
+default persistent._mas_diary_files = list()
 
 init python in mas_diary:
     # global stuff
@@ -109,6 +122,25 @@ init python in mas_diary:
 
     # default count for entires (for a body)
     DEFAULT_BODY_COUNT = 3
+
+    # section delimiter
+    DLMTR_S = "@"
+
+    # keyword delimeter
+    DLMTR_KW_S = "{"
+    DLMTR_KW_E = "}"
+
+    # renpy sub delimiters
+    DLMTR_RS_S = "["
+    DLMTR_RS_E = "]"
+
+    # modifier delimiters
+    DLMTR_MOD = "|"
+
+    # diary entry size limits
+    # 80 sheets - 160 entries
+    # 100 sheets - 200 entries
+    # TODO: decide this
 
     # internal value copies because of issues with scope
     _internal_twitter = None
@@ -148,7 +180,19 @@ init python in mas_diary:
         "lsSS": "%S" # second, last session
     }
 
+    # this is the dict that we actually use when parsing.
+    # make sure to fill it before use using the init functions
+    diary_keywords = dict()
+
     ################## functions ############################
+    def addGamePlayed(game):
+        """
+        Adds the game played to the games played list, if it has not been
+        added already
+        """
+        # TODO:
+        # NOTE i think we need to rethink this
+
     def breakLines(string, min_length=100, max_length=120, use_nl=True):
         """
         Breaks the given string into multiple lines that follow the min/max
@@ -194,6 +238,28 @@ init python in mas_diary:
 
         # otherwise we're done
         return outstring
+
+
+    def combineDiaryKeywords(using_date=None):
+        """
+        Combines diary keywords into a dict
+        NOTE: does not apply to teh gen dict
+
+        IN:
+            ** various keyword args to apply to differing fill functions **
+            ** Refer to the individual fill functions for explanations **
+
+        RETURNS: a dict containing combined diary keywords
+        """
+        # start by filling the individual dicts
+        _fillDiaryKeywordsDates(using_date=using_date)
+
+        # now combine all of them into a single dict
+        combined = dict()
+        combined.update(diary_keywords_dates_auto)
+        combined.update(diary_keywords_dates_custom)
+
+        return combined
         
 
     def indexLeftSpace(string, loc, end_loc=0):
@@ -409,8 +475,9 @@ init python in mas_diary:
 
         # inital check if we even have entries to grab
         if entry_length == 0:
-            # TODO: we want to select from a predeteremined list of lines
-            return "nothing here for now"
+            return renpy.random.choice([
+                "We didn't talk about much today."
+            ])
 
         if entry_length < count:
             # this means the amount of options available is less than what we
@@ -428,14 +495,15 @@ init python in mas_diary:
         # the first entry is special!
         # (we dont add a newline prior to the entry
         ev_db, ev_key = selected[0]
-        output.write(ev_db[ev_key].diary_entry)
+        if ev_db[ev_key].diary_entry[0] is not None):
+            output.write(ev_db[ev_key].diary_entry[0])
 
         # now iterate over that range
         for index in selected[1:]:
             ev_db, ev_key = selected[index]
 
             output.write("\n")
-            output.write(ev_db[ev_key].diary_entry)
+            output.write(ev_db[ev_key].diary_entry[0])
 
         # split line check
         body_str = output.getvalue()
@@ -480,7 +548,8 @@ init python in mas_diary:
         """
         Scans the template folder for valid templates.
 
-        RETURNS: list of valid template filepaths
+        ASSUMES:
+            templates
         """
         t_files = os.listdir(diary_basedir)
         for t_filename in t_files:
@@ -490,12 +559,13 @@ init python in mas_diary:
                     isValidTemplateFilename(t_filename) 
                     and isValidTemplateFile(t_filepath)
                 ):
+                # TODO, this really should be a dict with ## as the keys
                 templates.append(t_filepath)
 
 
 ############## diary keyword functions ######################
     # these functions will be set to values in some of the dicts 
-    def _dk_body(modifier, curr_mods=None)
+    def _dk_body(modifier, curr_mods)
         """
         Generates the body
 
@@ -549,12 +619,14 @@ init python in mas_diary:
         return _chooseEventEntries(sel_count)
 
 
-    def _dk_closing(curr_mods=None):
+    def _dk_closing(modifier, curr_mods):
         """
         Generates the closing
 
         IN:
-            modifier - modifier as a string (SEE the dict for rules)
+            modifier - UNUSED
+            curr_mods - dict of modifications to apply because of in-game 
+                events
 
         RETURNS:
             closing string
@@ -604,7 +676,7 @@ init python in mas_diary:
         return renpy.random.choice(greetings_list)
     
 
-    def _dk_gamesCSV(modifier, curr_mods=None):
+    def _dk_gamesCSV(modifier, curr_mods):
         """
         Sets up the games CSV string
 
@@ -637,13 +709,13 @@ init python in mas_diary:
         return ""
 
     
-    def _dk_greeting(curr_mods=None):
+    def _dk_greeting(modifier, curr_mods):
         """
         Generates a greeting
 
         IN:
-            curr_mods - dict of modifications to be applied because of things
-                in teh current game
+            modifier - UNUSED 
+            curr_mods - dict of mods to apply because of in-game events
 
         RETURNS:
             greeting string
@@ -691,20 +763,67 @@ init python in mas_diary:
         return renpy.random.choice(greetings_list)
 
 
-    def _dk_m_name(modifier, curr_mods=None):
+    def _dk_m_name(modifier, curr_mods):
         """
         Generates monika's name
 
         IN:
             modifier - modifier as a string (SEE the dict for rules)
             curr_mods - UNUSED
+
+        RETURNS: monika's name
         """
         if modifier == "t":
             return _internal_twitter
 
         # otherwise
         # NOTE: not a constant because YOU CANT CHANGE THIS
+        # TODO this needs to be changed because of the new nickname thing
+        # probably another modifier
         return "Monika"
+
+
+    def _dk_topicsCSV(modifier, curr_mods):
+        """
+        Generates CSV of topics discussed today. this uses the short diary
+        entries
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+
+        RETURN: CSV of topics discussed today.
+
+        ASSUMES:
+            event_entries 
+        """
+        if len(event_entries) > 0:
+
+            # we only want short entries that exist
+            short_entry_list = [
+                ev_db[ev_key].diary_entry[1]
+                for ev_db,ev_key in event_entries
+                if ev_db[ev_key].diary_entry[1] is not None
+            ]
+
+            if len(short_entry_list) > 1:
+                topics_str = (
+                    ", ".join(short_entry_list[:-1]) + 
+                    " and {0}".format(short_entry_list[-1:])
+                )
+
+                # break up lines
+                if modifier = "b":
+                    return breakLines(topics_str)
+
+                # otherwise as is
+                return topics_str
+
+            # otherwise only one topic
+            return short_entry_list[0]
+
+        # otherwise no topics discussed today
+        return ""
 
 
 # some stuff should happen a bit later
@@ -717,21 +836,6 @@ init 1 python in mas_diary:
     # we might replace some of this with renpy.substitute
     # these are initliazed outside of this store at startup
     # and are probably reinitalized 
-
-    # diary keywords for games
-    diary_keywords_games = {
-        # games played, comma separated
-        # gamesCSV|<modifier>
-        # modifier rules:
-        #   b - break the line into multiple if needed
-        "gamesCSV": _dk_gamesCSV
-
-        # TODO: we need to figure out the framework for thesee 
-#        "game_chess": None, # result of chess game (if it was played)
-#        "game_piano": None, # result of piano (if it was played)
-#        "game_hangman": None, # results of hangman (if it was played)
-#        "game_pong": None # results of pong (if it was played)
-    }
 
     # diary keywords general
     # consists of other diary-related things
@@ -761,16 +865,164 @@ init 1 python in mas_diary:
         #   t - use twitter name
         "m_name": _dk_gen_monikaName,
 
-        # stuff to say about how long since last opened
+        # games played, comma separated
+        # gamesCSV|<modifier>
+        # modifier rules:
+        #   b - break the lines into multiple ones
+        "gamesCSV": _dk_gamesCSV,
+
+        # topics discussed, comma separated
+        # topicsCSV|<modifier>
+        # modifier rules:
+        #   b - break the lines into multiple ones
+        "topicsCSV": _dk_topicsCSV
+
+        # story entries. These will only be populated if we have any story
+        # events, like changing name, knocking on the door, stuff like that
+        # NOTE: these are pulled from story_entries
+        # TODO
+#        "story": _dk_story
 
     }
 
 
 #### functions for parsing #####################
-    def parseLine(line, use_nl=False):
+    def parseLine(line, diary_kws, curr_mods):
         """
-        Parses the given line appropriately
+        Parses the given line appropriately. This function applies replacements
+        in the following order:
+
+        1. Sections 
+        2. keywords
+        3. renpy subs
+
+        Note that a "line" in the diary template can expand to multiple lines
+        in the actual diary.
+
+        NOTE: breaklines isnt used here. I'm not sure how/when we really 
+            should apply breaklines because of custom formatting for entires
+
+        IN:
+            line - the line to parse
+            diary_kws - dict of diary keywords to apply to line
+            curr_mods - dict of current modifiers to apply to section
+                generation functions
+
+        RETURNS:
+            string to write being parsed, or NONE if this line should be
+            ignored
         """
+        # if the line is empty or just a newline, return it
+        if len(line) == 0 or line.isspace():
+            return line
+
+        # if the line starts with a comment, return None, which means we 
+        # shouldn't write anything out for this line
+        if line[0] == DIARY_COMMENT:
+            return None
+
+        # start with section parsing
+        line = _parseSections(line, curr_mods)
+
+        # now keyword parsing
+        line = line.format(diary_kws)
+
+        # now renpy sub
+        # NOTE: this can also be adjusted for scope and translation by kw:
+        #   scope - scope to substitute, i think its a dict
+        #       (Default: use default store, which is probably global)
+        #   translate - True means to translate, false to not
+        #       (Defaullt: True)
+        line = renpy.substitute(line)
+
+        return line
+
+
+    def _parseSection(section, curr_mods):
+        """
+        Parses the given section for modifiers and stuff.
+        Does NOT resolve {keywords} or [subs]
+
+        IN:
+            section - section string. assumes modifiers are attached
+            curr_mods - dict of current modifiers to apply to section
+                generation functions
+
+        RETURNS:
+            the result of the parsed section. If the section was invalid, the
+            string is not changed.
+
+        ASSUMES:
+            diary_keywords_gen
+        """
+        if len(section) == 0:
+            # this means template did an @@
+            return DMLTR_S
+
+        # now parse modifiers
+        section_kw, dlmtr, modifier = section.partition(DLMTR_MOD)
+
+        generator = diary_keywords_gen.get(section_kw, None)
+
+        if generator is None:
+            # no generator function means we have an invalid keyword. Just
+            # return the given string.
+            return section
+
+        # otherwise we can process the generator
+        return generator(modifier, curr_mods)
+
+
+    def _parseSections(line, curr_mods):
+        """
+        Parses the given line for sections, and fills them out. 
+        Does NOT resolve {keywords} or [subs]
+
+        IN:
+            line - the line we are parsing
+            curr_mods - dict of curent modifiers to apply to section 
+                generation functions
+
+        RETURNS:
+            the line after filling in sections. If no sections are found, the
+            line will be returned as is.
+        """
+        if DLMTR_S not in line:
+            return line
+
+        # we have confirmed the presence of section delimiters
+        outline = StringIO() # lots of string building here
+        curr_line = line
+        while DLMTR_S in curr_line:
+        
+            # the first parition call sets up the start of the section keyword
+            first, dlmtr, curr_line = curr_line.partition(DLMTR_S)
+
+            if len(first) > 0:
+                # stuff before the first delimiter should be written
+                outline.write(first)
+
+            # the 2nd partition call retrieves the value of the section and
+            # sets up the next part of the line to parse
+            section_kw, dlmtr, curr_line = curr_line.partition(DLMTR_S)
+
+            if len(dlmtr) == 0:
+                # if dlmtr is an empty string, then we have a dangling 
+                # delimiter.For the sake of not having runtime exceptions, 
+                # just treat the remainder of this string as a comment and 
+                # ignore it.
+                # NOTE: this is NOT what DLMTR_S should be used for. Comments
+                #   should start at the beginning of the line with a #
+                outline.write("\n")
+
+            else:
+                # dlmtr non empty string, we have a section keyword
+                outline.write(_parseSection(section_kw, curr_mods))
+
+        # alright, we've finished parsing sections for this string.
+        outstr = outline.getvalue()
+        outline.close()
+        return outstr
 
 
 # post startup stuff
@@ -783,7 +1035,34 @@ init 2018 python:
         mas_diary.DIARY_TEMPLATE_FOLDER
     ).replace("\\", "/")
    
-   mas_diary._internal_twitter = mas_monika_twitter_handle
+    mas_diary._internal_twitter = mas_monika_twitter_handle
+
+    def mas_writeDiary(template_choice):
+        """
+        Writes a diary entry to file.
+        """
+
+        # TODO: determining what file to write.
+        # TODO: determining which template to pick
+
+        # NOTE: debug stuff right now
+        mas_diary._scanTemplates()
+
+        # NOTE: debug
+        # template_choice should be an int
+        sel_template = mas_diary.templates[template_choice]
+    
+        # okay
+        diary_kws = mas_diary.combineDiaryKeywords()
+
+        # TODO,if the file doesnt exist, use "w"
+        # otherwise, use "a"
+        with open(basedir + "/test.bin", "a") as diary:
+            with open(sel_template, "r") as diary_template:
+                for line in diary_template:
+                    out_line = mas_diary.parseLine(line, diary_kws, None)
+                    if out_line is not None:
+                        diary.write(out_line)
 
 # TODO:
 # diary templates are nearly fully customizable. Using a {keyword} system, you
@@ -835,5 +1114,10 @@ init 2018 python:
 #   modifiers
 # [player] - these are handled by renpy.substitute
 # ``` <text> ``` - anything in 3 backticks is considered literal text and will
-#   appear as is in the diary (minus the ticks)
+#   appear as is in the diary (minus the ticks) TODO
+
+# order of operations:
+# 1. @section@
+# 2. {keyword}
+# 3. [player]
 
