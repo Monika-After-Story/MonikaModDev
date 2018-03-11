@@ -4,6 +4,8 @@
 # Each class has a method named evaluate_rule
 
 init python:
+    import datetime
+    import random
 
     # special constants for rule type identifiers for the rule dict on Event class
     EV_RULE_RP_SELECTIVE = "rp_selective"
@@ -147,6 +149,10 @@ init python:
             if ev is None or rule is None:
                 raise Exception("Evaluate rule needs an Event and a Rule")
 
+            # sanity check 2 if we don' have start_date and end_date we raise an Exception
+            if ev.start_date is None or ev.end_date is None:
+                raise Exception("Event must contain an start_date and end_date to use Numerical rules")
+
             # call update dates to get the new start and end dates
             ev.start_date, ev.end_date = MASNumericalRepeatRule.update_dates(ev.start_date, ev.end_date, rule, check_time)
 
@@ -170,12 +176,13 @@ init python:
             "minutes":1,
             "hours":2,
             "days":3,
-            "months":4,
-            "years":5
+            "weekdays":4,
+            "months":5,
+            "years":6
         }
 
         @staticmethod
-        def create_rule(seconds=None, minutes=None, hours=None, days=None, months=None, years=None):
+        def create_rule(seconds=None, minutes=None, hours=None, days=None, weekdays=None, months=None, years=None):
             """
             NOTE: these values are assumed to be the same as stored in datetime
 
@@ -184,6 +191,7 @@ init python:
                 minutes - list of minutess this rule will match to
                 hours - list of hours this rule will match to
                 days - list of days this rule will match to
+                weekdays - list of weekdays this rule will match to
                 months - list of months this rule will match to
                 years - list of years this rule will match to
 
@@ -193,32 +201,36 @@ init python:
             """
 
             # check if seconds are defined that they are valid
-            if seconds and all([(s < 0 and s > 59) for s in seconds]):
+            if seconds and any([(s < 0 or s > 59) for s in seconds]):
                 raise Exception("seconds are out of a valid range")
 
             # check if valid minutes
-            if minutes and all([(m < 0 and m > 59) for m in minutes]):
+            if minutes and any([(m < 0 or m > 59) for m in minutes]):
                 raise Exception("minutes are out of a valid range")
 
             # check for invalid hours
-            if hours and all([(h < 0 and h > 23) for h in hours]):
+            if hours and any([(h < 0 or h > 23) for h in hours]):
                 raise Exception("hours are out of a valid range")
 
             # check for invalid days
-            if days and all([(d < 1 and d > 31) for d in days]):
+            if days and any([(d < 1 or d > 31) for d in days]):
                 raise Exception("days are out of a valid range")
 
+            # check for invalid weekdays
+            if weekdays and any([(d < 0 or d > 6) for d in weekdays]):
+                raise Exception("weekdays are out of a valid range")
+
             # check for invalid months
-            if months and all([(m < 1 and m > 12) for m in months]):
-                raise Exception("seconds are out of a valid range")
+            if months and any([(m < 1 or m > 12) for m in months]):
+                raise Exception("months are out of a valid range")
 
             # check for invalid years meaning from this year 2018 to 2100
             # Monika should be in our reality by then
-            if months and all([(m < 2018 and m > 2100) for m in months]):
+            if years and any([(y < 2018 or y > 2100) for y in years]):
                 raise Exception("seconds are out of a valid range")
 
             # return as a tuple
-            return (seconds, minutes, hours, days, months, years)
+            return (seconds, minutes, hours, days, weekdays, months, years)
 
         @staticmethod
         def evaluate_rule(check_time, rule=None):
@@ -235,7 +247,7 @@ init python:
             """
 
             # unpack tuple for easy access
-            seconds, minutes, hours, days, months, years = rule
+            seconds, minutes, hours, days, weekdays, months, years = rule
 
             # check if current seconds are in the valid interval
             if seconds and check_time.second not in seconds:
@@ -245,12 +257,16 @@ init python:
             if minutes and check_time.minute not in minutes:
                 return False
 
-            # check if current hours are in the valid interval
+            # check if hours are in the valid interval
             if hours and check_time.hour not in hours:
                 return False
 
-            # check if current days are in the valid interval
+            # check if days are in the valid interval
             if days and check_time.day not in days:
+                return False
+
+            # check if weekdays are in the valid interval
+            if weekdays and check_time.weekday() not in weekdays:
                 return False
 
             # check if current months are in the valid interval
@@ -341,3 +357,107 @@ init python:
                 return MASGreetingRule.should_skip_visual(rules[EV_RULE_GREET_RANDOM])
             else:
                 return False
+
+    def mas_create_rules(**kwargs):
+        """
+        helper method used to create Event rules in an easy way,
+        it accepts all the current rules arguments and creates
+        the appropriate rule for each given argument
+
+        IN:
+            MASNumericalRepeatRule args:
+                repeat - An EV_NUM_RULE, that determines the time unit we'll be
+                    using to increment the start_date and end_date
+                advance_by - A positive integer used to determine how many times
+                    the desired time unit will be added to start_date and
+                    end_date
+
+            MASSelectiveRepeatRule args:
+                seconds -  list of seconds this rule will match to
+                minutes - list of minutes this rule will match to
+                hours - list of hours this rule will match to
+                days - list of days this rule will match to
+                weekdays - list of weekdays this rule will match to
+                months - list of months this rule will match to
+                years - list of years this rule will match to
+
+            MASGreetingRule args:
+                skip_visual - A boolean stating wheter we should skip visual
+                    initialization
+                random_chance - An int used to determine 1 in random_chance
+                    special chance for this greeting to appear
+
+        RETURNS:
+            A dict containing only the defined rules, if no rules were created it
+            returns an empty dict
+        """
+
+        # empty dict to store the created rules
+        rules = dict()
+
+        # if no arguments given return an empty dict
+        if kwargs is None:
+            return rules
+
+        # check if we have any of the possible arguments for Greeting rule
+        if any((True for x in MASGreetingRule.GREET_RULE_T_NAMES.keys() if x in kwargs.keys())):
+
+            # retrieve values from the arguments
+            skip_visual = False
+            random_chance = 0
+
+            if "skip_visual" in kwargs:
+                skip_visual = kwargs["skip_visual"]
+            if "random_chance" in kwargs:
+                random_chance = kwargs["random_chance"]
+
+            # create the rule and add it to rules
+            rules[EV_RULE_GREET_RANDOM] = MASGreetingRule.create_rule(skip_visual,random_chance)
+
+        # check if we have any of the possible arguments for Selective repeat rule
+        if any((True for x in MASSelectiveRepeatRule.SEL_RULE_T_NAMES.keys() if x in kwargs.keys())):
+
+            # retrieve values from the arguments
+            seconds = None
+            minutes = None
+            hours = None
+            days = None
+            weekdays = None
+            months = None
+            years = None
+
+            if "seconds" in kwargs:
+                seconds = kwargs["seconds"]
+            if "minutes" in kwargs:
+                minutes = kwargs["minutes"]
+            if "hours" in kwargs:
+                hours = kwargs["hours"]
+            if "days" in kwargs:
+                days = kwargs["days"]
+            if "weekdays" in kwargs:
+                weekdays = kwargs["weekdays"]
+            if "months" in kwargs:
+                months = kwargs["months"]
+            if "years" in kwargs:
+                years = kwargs["years"]
+
+            # create the rule and add it to rules
+            rules[EV_RULE_RP_SELECTIVE] = MASSelectiveRepeatRule.create_rule(seconds, minutes, hours, days, weekdays, months, years)
+
+        # check if we have any of the possible arguments for Selective repeat rule
+        if any((True for x in MASNumericalRepeatRule.NUM_RULE_T_NAMES.keys() if x in kwargs.keys())):
+
+            # retrieve values from the arguments
+            repeat = None
+            advance_by = 1
+
+            if "repeat" in kwargs:
+                repeat = kwargs["repeat"]
+            if "advance_by" in kwargs:
+                advance_by = kwargs["advance_by"]
+
+            # create the rule and add it to rules
+            rules[EV_RULE_RP_NUMERICAL] = MASNumericalRepeatRule.create_rule(repeat, advance_by)
+
+        # return the rules dict
+        return rules

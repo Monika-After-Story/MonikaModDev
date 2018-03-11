@@ -378,24 +378,52 @@ label greeting_surprised:
      m "How have you been?"
      return
 
+# TODO Delete this *Insert Monika with a handgun*
+# Seriously this is for testing only
 init python:
-    rules = {EV_RULE_RP_NUMERICAL : MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_WEEK,advance_by=1),
-             EV_RULE_GREET_RANDOM : MASGreetingRule.create_rule(skip_visual=False)}
-    start_date = datetime.datetime(2018, 3, 3)
-    end_date = datetime.datetime(2018, 3, 4)
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_saturday", start_date=start_date,
+    rules = mas_create_rules(repeat=EV_NUM_RULE_YEAR)
+    start_date = datetime.datetime(2018, 3, 17)
+    end_date = datetime.datetime(2018, 3, 18)
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_st_patrick", start_date=start_date,
                                                             end_date=end_date, rules=rules),eventdb=evhand.greeting_database)
 
+label greeting_st_patrick:
+    m "Oh, hello [player]!"
+    m "Happy St. Patrick day!"
+    menu:
+        m "Are you drunk yet?"
+        "I'm drunk":
+            m 1k "Aww, that's nice!"
+            m 1b "I can't help but feel happy when you do..."
+            m 1b "Go and drink another one for me"
+            m "I love you so much, [player]."
+        "No.":
+            m 1g "Oh dear..."
+            m "I hope you'll get drunk soon"
+            m "Just remember that no matter what happens, no matter what anyone says or does..."
+            m "Just get drunk."
+            m "Just get drunk."
+            menu:
+                "Just get drunk.":
+                    m 4j "Drink vodnika!"
+    return
 
-label greeting_saturday:
-     m "Oh, hello [player]!"
-     m "Sorry, you surprised me there a little."
-     m "How have you been?"
-     return
+# TODO Monika Monday Morning, an idea we had this one is just a placeholder, writers could do it 1000 times better
+init python:
+    rules = mas_create_rules(weekdays=[0], hours=range(5,13))
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_monika_monday_morning", start_date=start_date,
+                                                            end_date=end_date, rules=rules),eventdb=evhand.greeting_database)
+
+label greeting_monika_monday_morning:
+    m "Another monday morning, eh [player]''"
+    m 1r "It surely sucks to wake up and start off the week ..."
+    m 1 "But seeing you makes all that laziness go away"
+    m 1k "You are the sunshine that wakes me up every morning!"
+    m "I love you so much, [player]~"
+    return
 
 init python:
-    rules = {EV_RULE_RP_SELECTIVE : MASSelectiveRepeatRule.create_rule(hours=range(1,6)),
-             EV_RULE_GREET_RANDOM : MASGreetingRule.create_rule(skip_visual=True)}
+    rules = mas_create_rules(hours=range(1,6),skip_visual=True)
     addEvent(Event(persistent.greeting_database,eventlabel="i_greeting_monikaroom", rules=rules),eventdb=evhand.greeting_database)
 
 label i_greeting_monikaroom:
