@@ -2502,7 +2502,7 @@ label monika_name:
         m 1b "But I think I like '[player]' better!"
         m 1a "Ehehe~"
     else:
-        m 1a "'[player]'" is a lovely name, too."
+        m 1a "'[player]' is a lovely name, too."
         m 1a "Ehehe~"
     return
 
