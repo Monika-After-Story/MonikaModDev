@@ -3,8 +3,7 @@
 #to either be a random topic, a prompt "pool" topics, or a special conditional
 #or date-dependent event with an appropriate action
 
-$ import store.songs as songs
-$ import store.mas_affection as mas_aff
+
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
@@ -14,6 +13,10 @@ define mas_did_monika_battery = False
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
+  
+    import store.songs as songs
+    import store.mas_affection as mas_aff
+
     def remove_seen_labels(pool):
         #
         # Removes seen labels from the given pool
