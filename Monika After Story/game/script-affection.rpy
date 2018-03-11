@@ -166,31 +166,16 @@ init python:
         #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
 
 
-$ import re
-label monika_affection_nickname:
-    python:
 
+label monika_affection_nickname:
+    
+    python:
+        import re
         bad_nickname_list = [
-            "Scum", 
-            "Murder",
-            "Bitch",
-            "Fuck.",
-            "Bully",
-            "Bulli", 
-            "Yuri",
-            "Sayori",
-            "Natsuki"
-            ]
+            "Scum", "Murder", "Bitch", "Fuck", "Bully", "Bulli", "Yuri", "Sayori", "Natsuki" ]
 
         good_nickname_list = [
-            "love",
-            "sweet",
-            "cute",
-            "heart",
-            "darling",
-            "beautiful",
-            "honey"
-                ]
+            "love", "sweet", "cute", "heart", "darling", "beautiful", "honey"]
 
 
     m 1h "I've been thinking a bit lately [player]..."
@@ -209,6 +194,8 @@ label monika_affection_nickname:
             while not done:
                 $ inputname = renpy.input("So what do you want to call me?",allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
                 $ lowername = inputname.lower()
+                $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+                $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
                 #lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
                     m 1f "Oh I see."
@@ -228,11 +215,9 @@ label monika_affection_nickname:
                     m 1l "I thought we were choosing a new name, silly."
                     m 1e "Try again~"
                 else:
-                    $ nickname = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-                    $ bad_nickname = nickname.search(inputname)
+                    $ bad_nickname = bad_nickname_search.search(inputname)
                     if bad_nickname == None:
-                        $ nickname = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
-                        $ good_nickname = nickname.search(inputname)
+                        $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
                             m "Ehehe~ Back to the classics?"
                         elif good_nickname == None:
