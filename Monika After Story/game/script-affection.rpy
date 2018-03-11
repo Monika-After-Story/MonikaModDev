@@ -189,13 +189,13 @@ label monika_affection_nickname:
     m "What do you say?"
     menu:
         "Yes":
+            $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+            $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
             $ done = False
             m 1a "Ok, just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 $ inputname = renpy.input("So what do you want to call me?",allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
                 $ lowername = inputname.lower()
-                $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
-                $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
                 #lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
                     m 1f "Oh I see."
@@ -206,16 +206,15 @@ label monika_affection_nickname:
                     m 1l "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1e "Try again!"
-                elif inputname == player:
+                elif lowername == player.lower():
                     m 1c "..."
                     m 1m "That's your name [player]! Give me my own!"
                     m 1a "Try again~"
-                elif inputname == m_name:
+                elif lowername == m_name.lower():
                     m 1c "..."
                     m 1l "I thought we were choosing a new name, silly."
                     m 1e "Try again~"
                 else:
-                    $ bad_nickname = bad_nickname_search.search(inputname)
                     if bad_nickname == None:
                         $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
