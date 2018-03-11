@@ -316,7 +316,20 @@ label monika_nihilism:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_twitter",category=['monika'],prompt="Twitter",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_twitter",
+            category=['monika'],
+            prompt="Twitter",
+            random=True,
+            diary_entry=(
+                "I told [player] about my Twitter. I hope [he] follows me!\n"+
+                "I wonder what [he] tweets...\n",
+                "my twitter"
+            )
+        )
+    )
 
 label monika_twitter:
     m 4a "Did you know I'm on Twitter?"
@@ -375,7 +388,15 @@ label monika_veggies:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_saved",category=['monika'],prompt="Saving Monika",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_saved",
+            category=['monika'],
+            prompt="Saving Monika",
+            random=True
+        )
+    )
 
 label monika_saved:
     m 2a "You know, I really do think you literally saved my life by being here with me, [player]."

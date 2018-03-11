@@ -127,6 +127,7 @@ label mas_piano_setupstart:
                 pass
 
 label mas_piano_loopend:
+    $ store.mas_diary.addGamePlayed("piano")
     return
 
 ### labels for piano states ===================================================

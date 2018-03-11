@@ -305,6 +305,7 @@ label demo_minigame_pong:
 
             call expression end_dialogue from _mas_pong_end_dialogue
 
+    $ store.mas_diary.addGamePlayed("pong")
     return
 
 ## pong text dialogue adjustments

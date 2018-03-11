@@ -506,6 +506,7 @@ label hangman_game_end:
         show hm_s_win_leave as window_sayori at hangman_sayori_lh
         pause 0.1
         hide window_sayori
+    $ store.mas_diary.addGamePlayed("hangman")
 
     m 1d "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."

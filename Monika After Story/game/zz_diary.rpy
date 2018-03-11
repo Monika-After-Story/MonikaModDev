@@ -192,6 +192,9 @@ init python in mas_diary:
         """
         # TODO:
         # NOTE i think we need to rethink this
+        # TODO: chess
+        if game not in games_played:
+            games_played.append(game)
 
     def breakLines(string, min_length=100, max_length=120, use_nl=True):
         """
