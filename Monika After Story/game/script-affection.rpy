@@ -106,14 +106,14 @@ init python:
 
 
     #Used to increment affection whenever something positive happens.
-    def mas_gainAffection(amount = 1):
+    def mas_gainAffection(amount=persistent._mas_affection["goodexp"],modifier=1):
         persistent._mas_affection["affection"] += amount
         
         mas_updateAffectionExp()
         mas_updateAffectionTitle() 
    
     #Used to subtract affection whenever something negative happens.
-    def mas_loseAffection(amount = -1):
+    def mas_loseAffection(amount=persistent._mas_affection["badexp"],modifier=1):
         persistent._mas_affection["affection"] += amount
         
         mas_updateAffectionExp()
