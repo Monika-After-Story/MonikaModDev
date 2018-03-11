@@ -4947,9 +4947,9 @@ label monika_watches_whiplash:
             menu:
                 "Kinda.":
                     m 2m "Well, I guess you're not the first one to think that."
-                    m 3n "People often think I'm for not interested in movies some reason."
-                    m 4d "Maybe because I was in a literatire club?"
-                    m "And a debate club before that?"
+                    m 3n "People often think I'm not interested in movies for some reason."
+                    m 4d "Maybe because I'm in the Literatire Club?"
+                    m "And the Debate Club before that?"
                     m 1g "I don't know..."
                     m 3p "But that's beside the point. Anyway..."
                 "Not really.":
