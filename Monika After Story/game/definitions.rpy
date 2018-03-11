@@ -75,11 +75,19 @@ python early:
     #       NOTE: this must be set by the caller, and it is asssumed that
     #           call_next_event is the only one who changes this
     #       (Default: 0)
-    #   diary_entry - string that will be added as a diary entry if this event
-    #       has been seen. This string will respect \n and other formatting
-    #       characters. Can be None
-    #       NOTE: diary entries cannot be longer than 500 characters
-    #       NOTE: treat diary entries as single paragraphs
+    #   diary_entry - tuple containing long and short forms of a diary entry.
+    #       Format:
+    #           [0]: long form of a diary entry. Consider this a single 
+    #               paragraph entry. This respects \n and other formatting
+    #               charactesr.
+    #               NOTE: long entries cannot be longer than 500 characters
+    #               May be None, in which case it is not used
+    #           [1]: short form of a diary entry. Consider this a single
+    #               word or descriptor of this Event.
+    #               NOTE: this should be a string that can be used in a comma
+    #               separated list
+    #               NOTE: short entries cannot be longer than 30 characters
+    #               May be None, in which case it is not used
     #       (Default: None)
     #   rules - dict of special rules that this event uses for various cases.
     #       NOTE: refer to RULES documentation in event-rules
@@ -110,7 +118,8 @@ python early:
         N_EVENT_NAMES = ("per_eventdb", "eventlabel")
 
         # other constants
-        DIARY_LIMIT = 500
+        DIARY_LONG_LIMIT = 500
+        DIARY_SHORT_LIMIT = 30
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -139,15 +148,34 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
-            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
-                raise Exception(
-                    (
-                        "diary entry for {0} is longer than {1} characters"
-                    ).format(eventlabel, self.DIARY_LIMIT)
-                )
+            if diary_entry is not None:
+                if len(diary_entry) != 2:
+                    raise Exception((
+                        "{0} - diary entry is an invalid format"
+                    ).format(eventlabel))
+
+                elif (
+                        diary_entry[0] is not None 
+                        and len(diary_entry[0]) > self.DIARY_LONG_LIMIT
+                    ):
+                    raise Exception(
+                        (
+                            "{0} - diary long entry is longer than {1} characters"
+                        ).format(eventlabel, self.DIARY_LONG_LIMIT)
+                    )
+
+                elif (
+                        diary_entry[1] is not None
+                        and len(diary_entry[1]) > self.DIARY_SHORT_LIMIT
+                    ):
+                    raise Exception(
+                        (
+                            "{0} - diary short entry is longer than {1} characters"
+                        ).format(eventlabel, self.DIARY_SHORT_LIMIT)
+                    )
             if rules is None:
                 raise Exception(
-                    "'{0}' - rules property cannot be None".format(eventlabel)
+                    "{0} - rules property cannot be None".format(eventlabel)
                 )
 
             self.eventlabel = eventlabel
