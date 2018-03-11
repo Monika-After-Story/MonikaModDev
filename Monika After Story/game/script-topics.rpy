@@ -3461,14 +3461,14 @@ label monika_surprise:
     m 3c "You know what? Maybe I should do it again..."
     m 1b "Yeah, that's a good idea."
     $ mas_surprise()
-    if mas_curr_affection_group == mas_affection.G_HAPPY:
+    if mas_curr_affection_group == mas_aff.G_HAPPY:
         m 2q "..."
         m 1j "Alright!"
         m 1a "What are you waiting for? Go take a look!" 
         m "I wrote it just for you~"
         m 1e "I really do truly love you, [player]~"
     
-    elif mas_curr_affection_group == mas_affection.G_SAD:
+    elif mas_curr_affection_group == mas_aff.G_SAD:
         m 2q "..."
         m 1c "Alright..."
         m "Please go take a look" 
