@@ -495,12 +495,13 @@ init python in mas_diary:
 
 ############## diary keyword functions ######################
     # these functions will be set to values in some of the dicts 
-    def _dk_body(modifier)
+    def _dk_body(modifier, curr_mods=None)
         """
         Generates the body
 
         IN:
             modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
 
         RETURNS:
             body string
@@ -548,7 +549,7 @@ init python in mas_diary:
         return _chooseEventEntries(sel_count)
 
 
-    def _dk_closing(modifier):
+    def _dk_closing(curr_mods=None):
         """
         Generates the closing
 
@@ -558,16 +559,58 @@ init python in mas_diary:
         RETURNS:
             closing string
         """
-        # TODO
-        return ""
+        # if the curr_mods includes a key for mood, then we pick a closing
+        # that is appropriate. The mood can be:
+        #   "good" - good mood
+        #   "bad" - bad mood
+        #   None (or anything else) - neutral mood
+        if curr_mods is not None:
+            mood_mod = curr_mods.get("mood", None)
+        else:
+            mood_mod = None
+
+        # create list of closings available
+        # NOTE: we do this because we don't need closings all the time
+        # NOTE: if you have repeats, put them in the lists they repeat in
+        if mood_mod == "good":
+            # good closings
+            greetings_list = [
+                "With love,",
+                "Love,",
+                "Happily in love,", # TODO: probably should be separated when we do friends
+                "Until next time,",
+                ":)"
+            ]
+
+        elif mood_mod == "bad":
+            # bad closings
+            greetings_list = [
+                "Unhappily,",
+                ":(",
+                "Whatever,",
+                "Bye."
+            ]
+
+        else:
+            # neutral closings
+            greetings_list = [
+                "Sincerely,",
+                "From,",
+                "Love,",
+                "Until next time,"
+            ]
+
+        # pick a greetings
+        return renpy.random.choice(greetings_list)
     
 
-    def _dk_gamesCSV(modifier):
+    def _dk_gamesCSV(modifier, curr_mods=None):
         """
         Sets up the games CSV string
 
         IN:
             modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
 
         RETURNS:
             games CSV string
@@ -624,15 +667,13 @@ init python in mas_diary:
                 "Dear diary,",
                 "Dear diary:",
                 "Hey diary,",
-                "Hello there.",
-                ":)"
+                "Hello there."
             ]
 
 
         elif mood_mod == "bad":
             # bad greetings
             greetings_list = [
-                ":(",
                 "Dear diary:",
                 "Sigh,"
             ]
@@ -650,12 +691,13 @@ init python in mas_diary:
         return renpy.random.choice(greetings_list)
 
 
-    def _dk_m_name(modifier):
+    def _dk_m_name(modifier, curr_mods=None):
         """
         Generates monika's name
 
         IN:
             modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
         """
         if modifier == "t":
             return _internal_twitter
@@ -693,6 +735,8 @@ init 1 python in mas_diary:
 
     # diary keywords general
     # consists of other diary-related things
+    # all functions accept a curr_mods dict of modifiers.
+    #   (not all of them use it though)
     diary_keywords_gen = {
         # like the Dear Diary stuff. this should be 
         # customizable by adding a file with lines
