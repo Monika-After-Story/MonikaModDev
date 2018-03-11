@@ -342,7 +342,7 @@ label ch30_main:
     $ quick_menu = True
     if not config.developer:
         $ style.say_dialogue = style.default_monika
-    $ m_name = "Monika"
+    $ m_name = persistent._mas_affection_nickname
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
@@ -444,7 +444,7 @@ label ch30_nope:
         pause 3.0
         call hideconsole from _call_hideconsole_2
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-        $ m_name = "Monika"
+        $ m_name = persistent._mas_affection_nickname
         $ quick_menu = True
         m 1l "Ahaha!"
         m "I'm just kidding!"
