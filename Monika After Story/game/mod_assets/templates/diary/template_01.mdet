@@ -1,0 +1,16 @@
+# Diary Entry Template 01
+# aka: the example 2
+# author: potato
+#
+# lines starting with '#' are ignored
+====== {Mfull} {dd}, {YYYY} =====
+
+@greeting@
+
+Here is a body section using all:
+@body|a@
+
+@closing@
+
+# twitter name
+@m_name|t@

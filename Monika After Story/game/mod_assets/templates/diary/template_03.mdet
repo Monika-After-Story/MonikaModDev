@@ -1,0 +1,15 @@
+# Diary Entry Template 03
+# aka: example 3
+# author: potato
+#
+# lines starting with '#' are ignored
+enough of the date testing
+test the body using percentage
+
+@body|%50@
+
+@greeting@@m_name@
+
+this line here showcases how the at symbol functions as comments @ since you cannot see this
+
+# oops

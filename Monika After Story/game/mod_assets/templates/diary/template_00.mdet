@@ -1,0 +1,27 @@
+# Diary Entry Template 00 
+# aka: the example
+# author: potato
+#
+# lines starting with '#' are ignored 
+~~~~~~~ {YYYY}-{MM}-{DD} ~~~~~~~
+
+@greeting@
+
+This is an example of me, @m_name@, writing in you. ;) 
+
+Here is a list of games [player] and I played today:
+@gamesCSV|b@
+
+Here is a list of topics [player] and I discussed today:
+@topicsCSV|b@
+
+Now for a body section:
+# check template 01-03 for other examples of body
+@body@
+
+@closing@
+
+@m_name@
+
+# TODO
+# PS entries
