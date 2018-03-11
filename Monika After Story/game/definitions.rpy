@@ -2546,6 +2546,7 @@ default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
 default persistent.has_merged = False
+default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
 default anticheat = 0
@@ -2558,7 +2559,7 @@ default faint_effect = None
 
 
 default s_name = "Sayori"
-default m_name = "Monika"
+default m_name = persistent._mas_monika_nickname
 default n_name = "Natsuki"
 default y_name = "Yuri"
 

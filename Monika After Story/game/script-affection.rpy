@@ -167,6 +167,88 @@ init python:
 
 
 
+label monika_affection_nickname:
+    
+    python:
+        import re
+        bad_nickname_list = [
+            "Scum", "Murder", "Bitch", "Fuck", "Bully", "Bulli", "Yuri", "Sayori", "Natsuki" ]
+
+        good_nickname_list = [
+            "love", "sweet", "cute", "heart", "darling", "beautiful", "honey"]
+
+
+    m 1h "I've been thinking a bit lately [player]..."
+    m 1d "You know how there are potentially infinite Monikas right?"
+    if renpy.seen_label('monika_clones'):
+        m 2m "We did discuss this before after all."
+    m 3a "Well I thought of a potential solution!"
+    m "Why not give me a nickname? It would make me the only Monika in the universe with that name."
+    m 3e "It would mean a lot to me if you were the one to choose it..."
+    m 3j "But I still get the final say!"
+    m "What do you say?"
+    menu:
+        "Yes":
+            $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
+            $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
+            $ done = False
+            m 1a "Ok, just type 'Nevermind' if you change your mind, [player]."
+            while not done:
+                $ inputname = renpy.input("So what do you want to call me?",allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
+                $ lowername = inputname.lower()
+                #lowername isn't detecting player or m_name?
+                if lowername == "nevermind":
+                    m 1f "Oh I see."
+                    m 1e "Well...that's a shame but it's okay. I like the name '[m_name]' anyway."
+                    $ done = True
+                elif lowername == "":
+                    m 1c "..."
+                    m 1l "You have to give me a name, [player]!"
+                    m 1m "I swear you're just so silly sometimes."
+                    m 1e "Try again!"
+                elif lowername == player.lower():
+                    m 1c "..."
+                    m 1m "That's your name [player]! Give me my own!"
+                    m 1a "Try again~"
+                elif lowername == m_name.lower():
+                    m 1c "..."
+                    m 1l "I thought we were choosing a new name, silly."
+                    m 1e "Try again~"
+                else:
+                    if bad_nickname == None:
+                        $ good_nickname = good_nickname_search.search(inputname)
+                        if inputname == "Monika":
+                            m "Ehehe~ Back to the classics?"
+                        elif good_nickname == None:
+                            m 1c "...I can't say that I particularly like it..."
+                            m 2e "But since you came up with it I'll accept it!"
+                        else:
+                            m 3b "Oh! That's a wonderful name!"
+                            m 3j "What a sweetheart you are."
+                        $ persistent._mas_affection_nickname = inputname
+                        $ m_name = inputname
+                        m 2a "Okay then [player]!"
+                        if m_name == "Monika":
+                            m 3b "I'll go back to being called 'Monika' again!"
+                        else:
+                            m 3j "From now on, I'll be called {i}'[m_name]'{/i}, ehehe~"
+                        $ done = True
+                    else:
+                        #$ mas_loseAffection(persistent._mas_affection["badexp"])
+                        m 1h "[player]! That's not nice at all!" 
+                        m 2i "This was supposed to be something nice for both of us...why would you say such things?" 
+                        m 1o "If you don't like the idea you should have just said so."
+                        m 3q "...I don't like this idea any more..."
+                        $ hideEventLabel("monika_affection_nickname",lock=False,depool=False)
+                        $ done = True
+
+        "No":
+            m 1f "Oh... ok then, if you say so."
+            m 1e "Just tell me whenever you change your mind, [player]."
+            $ done = True 
+    return
+
+
 #############
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
