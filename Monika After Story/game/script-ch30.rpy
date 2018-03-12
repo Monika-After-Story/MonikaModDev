@@ -342,7 +342,7 @@ label ch30_main:
     $ quick_menu = True
     if not config.developer:
         $ style.say_dialogue = style.default_monika
-    $ m_name = persistent._mas_monika_nickname
+    $ m_name = "Monika"
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
@@ -444,7 +444,7 @@ label ch30_nope:
         pause 3.0
         call hideconsole from _call_hideconsole_2
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-        $ m_name = persistent._mas_monika_nickname
+        $ m_name = "Monika"
         $ quick_menu = True
         m 1l "Ahaha!"
         m "I'm just kidding!"
@@ -530,14 +530,14 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
             
-    #Grant good exp for closing the game correctly.
-    $ _mas_gainAffection(persistent._mas_affection["goodexp"])
-
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
+    
+    #Checks to see if affection levels have met the criteria to push an event or not.
+    $ mas_checkAffection()
 
     #Skip all greetings if you closed the game on Monika
     if persistent.closed_self:

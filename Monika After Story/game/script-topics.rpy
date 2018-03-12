@@ -1905,7 +1905,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you",pool=True))
 
 label monika_love:
-   
     m 1k "I love you too, [player]!"
     m "We'll be together forever!"
     return
