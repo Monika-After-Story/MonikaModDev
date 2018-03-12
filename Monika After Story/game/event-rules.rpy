@@ -3,9 +3,8 @@
 # The static classes are the ones used to manipulate the rule tuples
 # Each class has a method named evaluate_rule
 
-init python:
+init -1 python:
     import datetime
-    import random
 
     # special constants for rule type identifiers for the rule dict on Event class
     EV_RULE_RP_SELECTIVE = "rp_selective"
@@ -39,7 +38,7 @@ init python:
         """
 
         @staticmethod
-        def create_rule(repeat, advance_by=1):
+        def create_rule(repeat, advance_by=1, ev=None):
             """
             IN:
                 repeat - An EV_NUM_RULE, that determines the time unit we'll be
@@ -47,6 +46,10 @@ init python:
                 advance_by - A positive integer used to determine how many times
                     the desired time unit will be added to start_date and
                     end_date
+                    (Default: 1)
+                ev - Event to add this rule to. This will replace exisiting
+                    rules of the same key.
+                    (Default: None)
 
             RETURNS:
                 a dict containing the specified rule with the appropriate key
@@ -59,27 +62,57 @@ init python:
             # since repeat is correct we just check if advance by is higher than 0
             if advance_by > 0:
 
+                rule = {EV_RULE_RP_NUMERICAL : (repeat, advance_by)}
+
+                if ev:
+                    ev.rules.update(rule)
+
                 # return the dict containing the specified rule
-                return {EV_RULE_RP_NUMERICAL : (repeat, advance_by)}
+                return rule
 
             # raise exception since advance by was 0 or lower
             raise Exception("'{0}' is not a valid 'advance_by' rule, it should be higher than 0".format(repeat))
 
         @staticmethod
-        def update_dates(start_date, end_date, rule, check_time):
+        def update_dates(rule, check_time, ev=None, start_end_dates=None):
             """
             Updates the start_date and end_date to be the next possible dates
             checked against check_time
+
             IN:
-                start_date - The Event's start date in datetime
-                end_date - The Event's end_date in datetime
                 rule - a MASNumericalRepeatRule tuple containing the rules for the
                     appropiate update
                 check_time - The time to check and update against
+                ev - Event to update as well. This will update the existing
+                    rules of the same key.
+                    NOTE: this has priority over start_end_dates
+                    (Default: None)
+                start_end_date - tuple of the following format:
+                    [0]: start_date
+                    [1]: end_date
+                    (Default: None)
 
             RETURNS:
-                A tuple containing the new start_date and end_date
+                A tuple containing the new start_date and end_date. If bad 
+                values were given, (-1, -1) is returned
             """
+            # sanity check
+            if ev:
+                # priortize event
+                start_date = ev.start_date
+                end_date = ev.end_date
+
+            elif start_end_dates and len(start_end_dates) >= 2:
+                # use range tuple
+                start_date, end_date = start_end_dates
+
+            else:
+                # user gave us weird values
+                return (-1, -1)
+
+            # final check to ensure start and end date are appropriate
+            if start_date is None or end_date is None:
+                return (-1, -1)
 
             # Check if the event is already in the future so we don't do anything
             if check_time < end_date:
@@ -127,47 +160,61 @@ init python:
             # finally we determine the new_start_date by subtracting the delta
             new_start_date = new_end_date - delta
 
+            # update event if we have one
+            if ev:
+                ev.start_date = new_start_date
+                ev.end_date = new_end_date
+
             # return the new dates
             return (new_start_date, new_end_date)
 
         @staticmethod
-        def evaluate_rule(check_time, ev, rule=None):
+        def evaluate_rule(check_time, ev, rule=None, skip_update=False):
             """
             Evaluates the rule given and updates the event's start_date and
             end_date
 
             IN:
                 check_time - The datetime to check the rule against
-                ev - The Event's to check
+                ev - The Event to check and update
                 rule - a MASNumericalRepeatRule tuple containing the rules for the
                     appropiate update
+                    If passed in, we use this instead of the given event's rule
+                    (Default: None)
+                skip_update - True means we shoudl skip updating the given
+                    Event's rule.
+                    (Default: False)
 
             RETURNS:
                 True if the event date comply to the rule, False if it doesn't
             """
-
-            rule_to_check = None
-
-            # if the event contains the rule use that one
-            if EV_RULE_RP_NUMERICAL in ev.rules:
-                rule_to_check = ev.rules[EV_RULE_RP_NUMERICAL]
-
-            # if we have a rule use that one instead
-            if rule:
-                rule_to_check = rule
-
-            # sanity check if we don' have start_date, end_date and a rule we return False
-            if ev.start_date is None or ev.end_date is None or rule_to_check is None:
+            # sanity check
+            if ev is None:
                 return False
 
+            # sanity check if we don' have start_date, end_date
+            if ev.start_date is None or ev.end_date is None
+                return False
+
+            # sanity check for a rule to use
+            if rule is None:
+                    
+                if EV_RULE_RP_NUMERICAL not in ev.rules:
+                    return False
+
+                # use event's rule if user didn't give us a rule
+                rule = ev.rules[EV_RULE_RP_NUMERICAL]
+
+            # if we skipping update, just check
+            if skip_update:
+                return ev.start_date <= check_time <= ev.end_date
+
             # call update dates to get the new start and end dates
-            ev.start_date, ev.end_date = MASNumericalRepeatRule.update_dates(ev.start_date, ev.end_date, rule_to_check, check_time)
+            start_date, end_date = MASNumericalRepeatRule.update_dates(rule, check_time, ev=ev)
 
             # finally check if the event is available for the given datetime
-            if ev.start_date <= check_time <= ev.end_date:
-                return True
+            return start_date <= check_time <= end_date
 
-            return False
 
     class MASSelectiveRepeatRule(object):
         """
@@ -178,7 +225,16 @@ init python:
         """
 
         @staticmethod
-        def create_rule(seconds=None, minutes=None, hours=None, days=None, weekdays=None, months=None, years=None):
+        def create_rule(
+                seconds=None, 
+                minutes=None, 
+                hours=None, 
+                days=None, 
+                weekdays=None, 
+                months=None, 
+                years=None,
+                ev=None
+            ):
             """
             NOTE: these values are assumed to be the same as stored in datetime
 
@@ -190,6 +246,8 @@ init python:
                 weekdays - list of weekdays this rule will match to
                 months - list of months this rule will match to
                 years - list of years this rule will match to
+                ev - Event to store this rule in, if not None
+                    (Default: None)
 
             RETURNS:
                 a dict containing the specified rules
@@ -225,39 +283,40 @@ init python:
                 raise Exception("seconds are out of a valid range")
 
             # return as a dict
-            return {EV_RULE_RP_SELECTIVE : (seconds, minutes, hours, days, weekdays, months, years)}
+            rule = {EV_RULE_RP_SELECTIVE : (seconds, minutes, hours, days, weekdays, months, years)}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
 
         @staticmethod
-        def evaluate_rule(check_time, event=None, rule=None):
+        def evaluate_rule(check_time, ev=None, rule=None):
             """
             Checks if the current_time is valid for the rule
 
             IN:
-                rule - The rule tuple that contains the valid intervals to check
-                    against
                 check_time - The time to check against the rule
+                ev - Event to check
+                    NOTE: this takes prioriy over the rule param
+                    (Default: None)
+                rule - MASSelectiveRepeatRule to check
+                    (Default: None)
 
             RETURNS:
                 A boolean value indicating if the time is in the defined interval
             """
-
-            rule_to_check = None
-
-            #check if we have a rule defined
-            if rule:
-                rule_to_check = rule
-
             # check if we have an event that contains the rule we need
             # event rule takes priority so it's checked here
-            if event and EV_RULE_RP_SELECTIVE in event.rules:
-                rule_to_check = event.rules[EV_RULE_RP_SELECTIVE]
+            if ev and EV_RULE_RP_SELECTIVE in ev.rules:
+                rule = ev.rules[EV_RULE_RP_SELECTIVE]
 
             # sanity check if we don't have a rule return False
-            if rule_to_check is None:
+            if rule is None:
                 return False
 
             # unpack tuple for easy access
-            seconds, minutes, hours, days, weekdays, months, years = rule_to_check
+            seconds, minutes, hours, days, weekdays, months, years = rule
 
             # check if current seconds are in the valid interval
             if seconds and check_time.second not in seconds:
@@ -303,13 +362,15 @@ init python:
         """
 
         @staticmethod
-        def create_rule(skip_visual=False, random_chance=0):
+        def create_rule(skip_visual=False, random_chance=0, ev=None):
             """
             IN:
                 skip_visual - A boolean stating wheter we should skip visual
                     initialization
                 random_chance - An int used to determine 1 in random_chance
                     special chance for this greeting to appear
+                ev - Event to create rule for, if passed in
+                    (Default: None)
 
             RETURNS:
                 a dict containing the specified rules
@@ -320,7 +381,13 @@ init python:
                 raise Exception("random_chance can't be negative")
 
             # return the tuple
-            return {EV_RULE_GREET_RANDOM : (skip_visual, random_chance)}
+            rule = {EV_RULE_GREET_RANDOM : (skip_visual, random_chance)}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
 
         @staticmethod
         def evaluate_rule(event=None, rule=None):
@@ -332,31 +399,25 @@ init python:
             RETURNS:
                 True if the random returned 1
             """
-
-            rule_to_check = None
-
-            #check if we have a rule defined
-            if rule:
-                rule_to_check = rule
-
             # check if we have an event that contains the rule we need
             # event rule takes priority so it's checked here
             if event and EV_RULE_GREET_RANDOM in event.rules:
-                rule_to_check = event.rules[EV_RULE_GREET_RANDOM]
+                rule = event.rules[EV_RULE_GREET_RANDOM]
 
             # sanity check if we don't have a rule return False
-            if rule_to_check is None:
+            if rule is None:
                 return False
 
             # unpack the tuple for easy access
-            skip_visual, random_chance = rule_to_check
+            skip_visual, random_chance = rule
 
             # check if random_chance is 0 return False
             if random_chance == 0:
                 return False
 
             # Evaluate randint with a chance of 1 in random_chance
-            return random.randint(1,random_chance) == 1
+            return renpy.random.randint(1,random_chance) == 1
+
 
         @staticmethod
         def should_skip_visual(event=None, rule=None):
