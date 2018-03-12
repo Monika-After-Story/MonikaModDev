@@ -235,7 +235,7 @@ label monika_affection_nickname:
                             m 3j "From now on, I'll be called {i}'[m_name]'{/i}, ehehe~"
                         $ done = True
                     else:
-                        #$ mas_loseAffection(persistent._mas_affection["badexp"])
+                        $ mas_loseAffection()
                         m 1h "[player]! That's not nice at all!"
                         m 2i "This was supposed to be something nice for both of us...why would you say such things?"
                         m 1o "If you didn't want this you should have just said so."
