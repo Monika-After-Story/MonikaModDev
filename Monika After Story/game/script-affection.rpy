@@ -106,16 +106,28 @@ init python:
 
 
     #Used to increment affection whenever something positive happens.
-    def mas_gainAffection(amount=persistent._mas_affection["goodexp"],modifier=1):
+    def mas_gainAffection(
+            amount=persistent._mas_affection["goodexp"],
+            modifier=1
+        ):
+
+        #Otherwise, use the value passed in the argument.
         persistent._mas_affection["affection"] += amount
         
+        #Updates the experience levels if necessary.
         mas_updateAffectionExp()
   
 
     #Used to subtract affection whenever something negative happens.
-    def mas_loseAffection(amount=persistent._mas_affection["badexp"],modifier=1):
+    def mas_loseAffection(
+            amount=persistent._mas_affection["badexp"],
+            modifier=1
+        ):
+            
+        #Otherwise, use the value passed in the argument.
         persistent._mas_affection["affection"] += amount
         
+        #Updates the experience levels if necessary.
         mas_updateAffectionExp()
         
         
@@ -134,7 +146,6 @@ init python:
         #If affection level is greater than 50 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif persistent._mas_affection["affection"] >= 50 and not seen_event("monika_affection_nickname"):
             pushEvent("monika_affection_nickname")
-            
             
     #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
@@ -163,9 +174,11 @@ init python:
 
 
         #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
+        
 
-
-
+#Unlocked when affection level reaches 50.
+#This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
+#There is a character limit of 10 characters.
 label monika_affection_nickname:
     python:
         import re
@@ -310,12 +323,14 @@ label monika_affection_nickname:
             $ done = True
     return
 
+#Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
     m 1r "Hey [player], don't take this the wrong way..."
     m 1f "...but I feel like the love and affection I've been giving you hasn't been reciprocated by you."
     m 1e "I just thought I'd let you know how I feel. After all, communication is the key to a strong relationship."
     return
     
+#Event to indicate that Monika is happy to be receiving your affection.
 label mas_affection_happynotif:
     m "Hey [player], I just wanted to say I really enjoy spending time with you."
     m "You make me so happy and I'm not sure what I'd do if I didn't have you around."

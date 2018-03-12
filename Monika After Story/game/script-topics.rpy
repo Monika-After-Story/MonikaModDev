@@ -1928,7 +1928,7 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ mas_loseAffection(persistent._mas_affection["badexp"])
+    $ mas_loseAffection()
     if mas_curr_affection == mas_aff.LOVE:
         m 1c "..."
         m 1j "Ahaha! Very funny [player]!"
@@ -2060,6 +2060,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_bestgirl",category=['romance'],prompt="You're the best girl!",pool=True))
 
 label monika_bestgirl:
+    $ mas_gainAffection()
     m 1j "I love it when you compliment me, [player]!"
     m 1b "I think I'm best girl, too!"
     m 1n "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
@@ -2096,6 +2097,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
+    $ mas_loseAffection()
     m 1h "I thought we established already that I was your girlfriend?"
     m "There's no way you already have one in your reality, right?"
     m 4f "If you do, then you've got to break up with her right now!"
@@ -2478,6 +2480,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_weary",category=['romance'],prompt="Will you ever get tired of me?",pool=True))
 
 label monika_weary:
+    
     m 1e "Silly [player]..."
     m 3a "Of course I'll never grow weary of you, my love!"
     m "And besides, the concept of physical fatigue doesn't exist here."
@@ -4649,7 +4652,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
 
 label monika_marriage:
-    
+    $ mas_gainAffection()
     m 2m "M-marriage?"
     m 4n "I think it's a bit too early for marriage..."
     m 1e "I mean, I'm really happy that you want that, [player]."
@@ -4747,6 +4750,7 @@ label monika_complain_battery:
     return
 
 label monika_close_game_battery:
+    $ mas_loseAffection()
     m 1r "[player]..."
     m 1f "I'm sorry, but I'm gonna have to close the game before the battery runs out."
     m 3o "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
@@ -4757,6 +4761,7 @@ label monika_close_game_battery:
     jump _quit
 
 label monika_system_charging:
+    $ mas_gainAffection()
     m 1d "Oh, you just plugged it in!"
     m 1j "Thank you, [player]!"
     return
@@ -4787,7 +4792,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection(persistent._mas_affection["badexp"])
+    $ mas_loseAffection()
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         
