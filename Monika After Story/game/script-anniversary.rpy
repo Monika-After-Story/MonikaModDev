@@ -1,6 +1,31 @@
 init python:
     import datetime
 
+    def add_years(initial_date, years):
+        """
+        ASSUMES:
+            initial_date as datetime
+            years as an int
+
+        IN:
+            initial_date: the date to add years to
+            years : the number of years to add
+
+        RETURNS:
+            the date with the years added, if it's feb 29th it goes to mar 1st,
+            if feb 29 doesn't exists in the new year
+        """
+        try:
+
+            # Simply add the years using replace
+            return initial_date.replace(year=initial_date.year + years)
+        except ValueError:
+
+            # We handle the only exception feb 29
+            return  initial_date + (datetime.date(initial_date.year + years, 1, 1)
+                                - datetime.date(initial_date.year, 1, 1))
+
+
     #Takes a datetime object and add a number of months
     #Handles the case where the new month doesn't have that day
     def add_months(starting_date,months):

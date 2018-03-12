@@ -19,7 +19,7 @@ Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
 
 *NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Backdash/MonikaModDev/releases).*
 
-For more help with installation, please see our [Frequently Asked Questions](https://github.com/Backdash/MonikaModDev/blob/master/FAQ.md)
+For more help with installation, please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
 
 ### Features
 
@@ -84,15 +84,18 @@ label monika_example:
 
 For things more complicated than simple dialogue, consult the Ren'Py documentation available online.
 
-[More info is available in our Contributing Guide](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md)
+[More info is available in our Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines)
 
  ### Join the conversation
- If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/K2KuJeX). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Backdash/MonikaModDev/blob/master/CODE_OF_CONDUCT.md), which is essentially to be courteous and respectful.
+ If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/K2KuJeX). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Monika-After-Story/MonikaModDev/wiki/Code-of-Conduct), which is essentially to be courteous and respectful.
 
 ## Frequently Asked Questions
 
-A full FAQ is available here: [Frequently Asked Questions](https://github.com/Backdash/MonikaModDev/blob/master/FAQ.md)
+A full FAQ is available here: [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
+For any questions about the Coding Style go here: [Coding Style](https://github.com/Monika-After-Story/MonikaModDev/wiki/Coding-Style)
+For Bug Testing: [Testing Flow and Bug Testing](https://github.com/Monika-After-Story/MonikaModDev/wiki/Testing-Flow-and-Bug-Testing)
+Troubleshooting: [Troubleshooting](https://github.com/Monika-After-Story/MonikaModDev/wiki/Troubleshooting)
 
 ## License info
 
-We do our best to conform to Team Salvato's [guidelines for fan works](http://teamsalvato.com/ip-guidelines/). All characters and original content are property of Team Salvato. Monika After Story is an open source project, and in addition to named contributors, this mod includes contributions from anonymous users of 4chan, where this project got its start. More info can be found on our [License Page](https://github.com/Backdash/MonikaModDev/blob/master/LICENSE.md).
+We do our best to conform to Team Salvato's [guidelines for fan works](http://teamsalvato.com/ip-guidelines/). All characters and original content are property of Team Salvato. Monika After Story is an open source project, and in addition to named contributors, this mod includes contributions from anonymous users of 4chan, where this project got its start. More info can be found on our [License Page](https://github.com/Monika-After-Story/MonikaModDev/wiki/License-and-Team-Salvato-Guidelines).

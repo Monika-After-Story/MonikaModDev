@@ -22,12 +22,57 @@ image monika_waiting_img:
 transform prompt_monika:
     tcommon(950,z=0.8)
 
+init -500 python:
+    # initalies the locks db
+
+    # the template is the regular starter case for most events
+    mas_init_lockdb_template = (
+        True, # event label
+        False, # prompt
+        False, # label 
+        False, # category
+        True, # unlocked
+        True, # random
+        True, # pool
+        True, # conditional
+        True, # action
+        True, # start_date
+        True, # end_date
+        True, # unlock_date
+        True, # shown_count
+        False, # diary_entry
+        False # rules
+    )
+
+    # set defaults
+    if persistent._mas_event_init_lockdb_template is None:
+        persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
+
+    elif len(persistent._mas_event_init_lockdb_template) != len(mas_init_lockdb_template):
+        # differing lengths mean we have new items to deal with
+
+        for ev_key in persistent._mas_event_init_lockdb:
+            stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
+
+            # splice and dice
+            lock_row = list(mas_init_lockdb_template)
+            lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
+            persistent._mas_event_init_lockdb[ev_key] = tuple(lock_row)
+
+    # set db defaults
+    if persistent._mas_event_init_lockdb is None:
+        persistent._mas_event_init_lockdb = dict()
+    
+    # initalizes LOCKDB for the Event class
+    Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
+
 # special store to contain scrollable menu constants
 init -1 python in evhand:
 
     # this is the event database
     event_database = dict()
     farewell_database = dict()
+    greeting_database = dict()
 
     # special namedtuple type we are using
     from collections import namedtuple
@@ -130,7 +175,8 @@ init python:
 #                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
 
         # now this event has passsed checks, we can add it to the db
-        eventdb.setdefault(event.eventlabel, event)
+        eventdb.setdefault(event.eventlabel, event) 
+
 
     def hideEventLabel(
             eventlabel,
@@ -580,3 +626,4 @@ label random_farewell:
         pushEvent(renpy.random.choice(random_farewells))
 
     return
+
