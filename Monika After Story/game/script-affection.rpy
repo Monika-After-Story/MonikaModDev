@@ -167,7 +167,6 @@ init python:
 
 
 label monika_affection_nickname:
-
     python:
         import re
         bad_nickname_list = [
