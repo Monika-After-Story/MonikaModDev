@@ -65,19 +65,19 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            "monika_example", # event label
-            prompt="Example Topic", # button text
+            eventlabel="monika_example", # event label
             category=["example", "topic"], # list of categories this topic belongs in
+            prompt="Example Topic", # button text
             random=True, # True if this topic should appear randomly
             pool=True # True if this topic should appear in "Ask a Question"
         )
     )
 
 label monika_example:
-    m "This is an example topic."
-    m "I feel like this doesn't actually belong here..."
-    m "Why would somebody just add the example template directly into the mod?"
-    m "They really shouldn't be allowed to contribute to this repository anymore."
+    m 1a "This is an example topic."
+    m 3d "I feel like this doesn't actually belong here..."
+    m 2e "Why would somebody just add the example template directly into the mod?"
+    m 5r "They really shouldn't be allowed to contribute to this repository anymore."
     return
 ```
 **For full explanations and details on all the possible keywords for Event, check the documentation for Event located in `definitions.rpy`**
