@@ -532,12 +532,15 @@ label ch30_autoload:
             
     #Grant good exp for closing the game correctly.
     $ _mas_gainAffection(persistent._mas_affection["goodexp"])
-
+            
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
+    
+    #Checks to see if affection levels have met the criteria to push an event or not.
+    $ mas_checkAffection()
 
     #Skip all greetings if you closed the game on Monika
     if persistent.closed_self:
