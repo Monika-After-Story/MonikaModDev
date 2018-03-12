@@ -193,7 +193,7 @@ init -1 python:
                 return False
 
             # sanity check if we don' have start_date, end_date
-            if ev.start_date is None or ev.end_date is None
+            if ev.start_date is None or ev.end_date is None:
                 return False
 
             # sanity check for a rule to use

@@ -497,25 +497,25 @@ label ch30_autoload:
         $ unlocked_greetings = Event.filterEvents(evhand.greeting_database, unlocked=True)
 
         # filter greetings using the special rules dict
-        $ ruled_greetings_dict = Event.checkRules(unlocked_greetings)
+        $ random_greetings_dict = Event.checkRules(unlocked_greetings)
 
         # check if we have a greeting that actually should be shown now
-        if len(ruled_greetings_dict) > 0:
+        if len(random_greetings_dict) > 0:
 
             # select one label randomly
-            $ selected_greeting = renpy.random.choice(ruled_greetings_dict.keys())
+            $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
 
         # since we don't have special greetings for this time we now check for special random chance
         else:
 
             # pick a greeting filtering by special random chance rule
-            $ special_random_greetings_dict = Event.checkGreetingRules(unlocked_greetings)
+            $ random_greetings_dict = Event.checkGreetingRules(unlocked_greetings)
 
             # check if we have a greeting that actually should be shown now
-            if len(special_random_greetings_dict) > 0:
+            if len(random_greetings_dict) > 0:
 
                 # select on label randomly
-                $ selected_greeting = renpy.random.choice(special_random_greetings_dict.keys())
+                $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
 
             # We couldn't find a suitable greeting we have to default to normal random selection
             else:
@@ -527,7 +527,7 @@ label ch30_autoload:
                 $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
 
         # store if we have to skip visuals ( used to prevent visual bugs)
-        $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=special_random_greetings_dict[selected_greeting])
+        $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=random_greetings_dict[selected_greeting])
 
     if not mas_skip_visuals:
         if persistent.current_track:
