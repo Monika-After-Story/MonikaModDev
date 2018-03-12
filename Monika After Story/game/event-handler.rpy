@@ -41,7 +41,7 @@ init -500 python:
         True, # unlock_date
         True, # shown_count
         False, # diary_entry
-        True # rules
+        False # rules
     )
 
     # set defaults
