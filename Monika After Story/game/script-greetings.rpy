@@ -36,6 +36,7 @@ init 5 python:
     rules = dict()
     rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=10))
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_gooday", unlocked=True, rules=rules),eventdb=evhand.greeting_database)
+    del rules
 
 label greeting_gooday:
     m 1k "Hello again, [player]. How are you doing?"
@@ -379,43 +380,13 @@ label greeting_surprised:
      m "How have you been?"
      return
 
-# TODO Delete this *Insert Monika with a handgun*
-# Seriously this is for testing only
-init 5 python:
-    rules = dict()
-    rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
-    start_date = datetime.datetime(2017, 3, 17)
-    end_date = datetime.datetime(2017, 3, 18)
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_st_patrick", start_date=start_date,
-                            end_date=end_date, unlocked=True, rules=rules),eventdb=evhand.greeting_database)
-
-label greeting_st_patrick:
-    m "Oh, hello [player]!"
-    m "Happy St. Patrick day!"
-    menu:
-        m "Are you drunk yet?"
-        "I'm drunk":
-            m 1k "Aww, that's nice!"
-            m 1b "I can't help but feel happy when you do..."
-            m 1b "Go and drink another one for me"
-            m "I love you so much, [player]."
-        "No.":
-            m 1g "Oh dear..."
-            m "I hope you'll get drunk soon"
-            m "Just remember that no matter what happens, no matter what anyone says or does..."
-            m "Just get drunk."
-            m "Just get drunk."
-            menu:
-                "Just get drunk.":
-                    m 4j "Drink vodnika!"
-    return
-
 # TODO Monika Monday Morning, an idea we had, this one is just a placeholder, writers could do it 1000 times better
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12)))
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_monika_monday_morning", start_date=start_date,
-                                                            end_date=end_date, unlocked=True, rules=rules),eventdb=evhand.greeting_database)
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_monika_monday_morning",
+        unlocked=True, rules=rules),eventdb=evhand.greeting_database)
+    del rules
 
 label greeting_monika_monday_morning:
     m "Another monday morning, eh [player]?"
@@ -425,11 +396,36 @@ label greeting_monika_monday_morning:
     m "I love you so much, [player]~"
     return
 
+# special local var to handle custom monikaroom options
+define gmr.eardoor = list()
+define gmr.eardoor_all = list()
+define opendoor.MAX_DOOR = 10
+define opendoor.chance = 20
+default persistent.opendoor_opencount = 0
+default persistent.opendoor_knockyes = False
+
 init 5 python:
     rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
-    rules.update(MASGreetingRule.create_rule(skip_visual=True))
-    addEvent(Event(persistent.greeting_database,eventlabel="i_greeting_monikaroom", unlocked=True, rules=rules),eventdb=evhand.greeting_database)
+    # why are we limiting this to certain day range?
+#    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
+    rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True,
+            random_chance=opendoor.chance
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="i_greeting_monikaroom", 
+            unlocked=True, 
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+    del rules
 
 label i_greeting_monikaroom:
     scene black
@@ -438,13 +434,6 @@ label i_greeting_monikaroom:
     # users who didnt see the entire event a chance to see it again.
 #    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
     $ has_listened = False
-
-# special local var to handle custom monikaroom options
-define gmr.eardoor = list()
-define gmr.eardoor_all = list()
-define opendoor.MAX_DOOR = 10
-default persistent.opendoor_opencount = 0
-default persistent.opendoor_knockyes = False
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
@@ -765,6 +754,11 @@ label monikaroom_greeting_cleanup:
         HKBShowButtons()
         set_keymaps()
     return
+
+## TODO
+# need a greeting setup for this
+# and the remaining
+# we'll do it later
 
 label greeting_youarereal:
     python:
