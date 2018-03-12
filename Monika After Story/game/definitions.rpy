@@ -715,14 +715,16 @@ python early:
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
 
-                # check if the event contains a MASSelectiveRepeatRule and evaluate it
-                if EV_RULE_RP_SELECTIVE in event.rules and MASSelectiveRepeatRule.evaluate_rule(check_time,event=event):
+                # check if the event contains a MASSelectiveRepeatRule and 
+                # evaluate it
+                if MASSelectiveRepeatRule.evaluate_rule(check_time, event):
 
                     # add the event to our available events dict
                     available_events[label] = event
 
-                # check if the event contains a MASNumericalRepeatRule and evaluate it
-                if EV_RULE_RP_NUMERICAL in event.rules and MASNumericalRepeatRule.evaluate_rule(check_time, event):
+                # check if the event contains a MASNumericalRepeatRule and 
+                # evaluate it
+                if MASNumericalRepeatRule.evaluate_rule(check_time, event):
 
                     # add the event to our available events dict
                     available_events[label] = event
@@ -756,7 +758,7 @@ python early:
             for label, event in events.iteritems():
 
                 # check if the event contains a MASGreetingRule and evaluate it
-                if EV_RULE_GREET_RANDOM in event.rules and MASGreetingRule.evaluate_rule(event):
+                if MASGreetingRule.evaluate_rule(event):
 
                     # add the event to our available events dict
                     available_events[label] = event
