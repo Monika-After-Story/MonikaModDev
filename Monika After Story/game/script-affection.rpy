@@ -171,7 +171,8 @@ label monika_affection_nickname:
         import re
         bad_nickname_list = [
             "Scum", "Murder", "Bitch", "Fuck", "Bully", "Bulli", "Yuri", "Sayori", "Natsuki", "cunt", "dick", "kunt", "horrible", "evil", "witch", "dumb", "stupid", "worthless", "crap", "disgusting", "pretentious", "awful", "shit"
-            "waste, "kill", "blood", "corrupt", "hate", "ugly", "atrocious", "foul", "poison", "wrong", "vile", "repulsive", "damn", "hideous", "nefarious", "wicked", "immoral", "stink", "creepy", "nasty", "foul", "gruesome", "horrid"]
+            "waste, "kill", "blood", "corrupt", "hate", "ugly", "atrocious", "foul", "poison", "wrong", "vile", "repulsive", "damn", "hideous", "nefarious", "wicked", "immoral", "stink", "creepy", "nasty", "foul", "gruesome", "horrid"
+            "troll", "slaughter"]
 
         good_nickname_list = [
             "love", "sweet", "cute", "heart", "darling", "beautiful", "honey", "Moni", "Mon", "cutie", "angel", "best", "great"]
