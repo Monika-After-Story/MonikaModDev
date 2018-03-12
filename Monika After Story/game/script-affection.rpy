@@ -167,7 +167,7 @@ init python:
 
 
 label monika_affection_nickname:
-    
+
     python:
         import re
         bad_nickname_list = [
@@ -214,6 +214,7 @@ label monika_affection_nickname:
                     m 1l "I thought we were choosing a new name, silly."
                     m 1e "Try again~"
                 else:
+                    $ bad_nickname = bad_nickname_search.search(inputname)
                     if bad_nickname == None:
                         $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
@@ -234,9 +235,9 @@ label monika_affection_nickname:
                         $ done = True
                     else:
                         #$ mas_loseAffection(persistent._mas_affection["badexp"])
-                        m 1h "[player]! That's not nice at all!" 
-                        m 2i "This was supposed to be something nice for both of us...why would you say such things?" 
-                        m 1o "If you don't like the idea you should have just said so."
+                        m 1h "[player]! That's not nice at all!"
+                        m 2i "This was supposed to be something nice for both of us...why would you say such things?"
+                        m 1o "If you didn't want this you should have just said so."
                         m 3q "...I don't like this idea any more..."
                         $ hideEventLabel("monika_affection_nickname",lock=False,depool=False)
                         $ done = True
@@ -244,7 +245,7 @@ label monika_affection_nickname:
         "No":
             m 1f "Oh... ok then, if you say so."
             m 1e "Just tell me whenever you change your mind, [player]."
-            $ done = True 
+            $ done = True
     return
 
 label mas_affection_upsetwarn:
