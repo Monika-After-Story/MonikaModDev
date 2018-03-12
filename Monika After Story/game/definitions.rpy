@@ -107,10 +107,18 @@ python early:
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel")
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
 
         # other constants
         DIARY_LIMIT = 500
+
+        # initaliztion locks
+        # dict of tuples, where each item in the tuple represents each property
+        # of an event. If the item is True, then the property cannot be 
+        # modified during object creation. If false, then the property can be
+        # modified during object creation
+        # NOTE: this is set in evhand at an init level of -500
+        INIT_LOCKDB = None
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -181,26 +189,58 @@ python early:
                 rules
             )
 
+            stored_data_row = self.per_eventdb.get(eventlabel, None)
+
             # if the item exists, reform data if the length has increased
             # if the length shrinks, use updates scripts
-            if self.eventlabel in self.per_eventdb:
-                stored_data_row = self.per_eventdb[self.eventlabel]
+            if stored_data_row:
 
-                if len(stored_data_row) < len(data_row):
-                    # splice and dice
-                    data_row = list(data_row)
-                    data_row[0:len(stored_data_row)] = list(stored_data_row)
-                    self.per_eventdb[self.eventlabel] = tuple(data_row)
+                stored_data_list = list(stored_data_row)
 
-                # actaully this should be always
-                self.prompt = prompt
-                self.category = category
-                self.diary_entry = diary_entry
+                # first, check for lock existence
+                lock_entry = Event.INIT_LOCKDB.get(eventlabel, None)
+
+                if lock_entry:
+
+                    if len(stored_data_row) < len(data_row):
+                        # with differing lengths, we need to append the
+                        # changes to the stored data row prior to update
+                        # using the lock entry
+                        stored_data_list.extend(
+                            data_row[len(stored_data_row):]
+                        )
+
+                    # if the lock exists, then iterate through the names
+                    # and only update items that are unlocked
+                    for name,index in Event.T_EVENT_NAMES.iteritems():
+                        
+                        if not lock_entry[index]:
+                            stored_data_list[index] = data_row[index]
+
+                    self.per_eventdb[eventlabel] = tuple(stored_data_list)
+                            
+                else:        
+                    # otherwise, no lock entry, update normally
+
+                    if len(stored_data_row) < len(data_row):
+                        # splice and dice
+                        data_row = list(data_row)
+                        data_row[0:len(stored_data_list)] = stored_data_list
+                        self.per_eventdb[self.eventlabel] = tuple(data_row)
+
+                    # actaully this should be always
+                    self.prompt = prompt
+                    self.category = category
+                    self.diary_entry = diary_entry
 
             # new items are added appropriately
             else:
                 # add this data to the DB
                 self.per_eventdb[self.eventlabel] = data_row
+
+            # setup lock entry
+            Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
+
 
         # equality override
         def __eq__(self, other):
@@ -286,6 +326,70 @@ python early:
             RETURNS: the shown_count property of an event
             """
             return ev.shown_count
+
+        @staticmethod
+        def lockInit(name, ev=None, ev_label=None):
+            """
+            Locks the property for a given event object or eventlabel.
+            This will prevent the property from being overwritten on object
+            creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def unlockInit(name, ev=None, ev_label=None):
+            """
+            Unlocks the property for a given event object or event label.
+            This will allow the property to be overwritten on object creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def _modifyInitLock(name, value, ev=None, ev_label=None):
+            """
+            Modifies the init lock for a given event/eventlabel
+
+            IN:
+                name - name of property to modify
+                value - value to set the property
+                ev - Eveng object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            # check if we have somthing to work with
+            if ev is None and ev_label is None:
+                return
+
+            # check if we have a valid property
+            property_dex = Event.T_EVENT_NAMES.get(name, None)
+            if property_dex is None:
+                return
+
+            # prioritize Event over evlabel
+            if ev:
+                ev_label = ev.eventlabel
+
+            # now lock the property
+            lock_entry = list(Event.INIT_LOCKDB[ev_label])
+            lock_entry[property_dex] = value
+            Event.INIT_LOCKDB[ev_label] = tuple(lock_entry)
 
 
         @staticmethod
