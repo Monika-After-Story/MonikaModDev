@@ -114,7 +114,7 @@ python early:
 
         # initaliztion locks
         # dict of tuples, where each item in the tuple represents each property
-        # of an event. If the item is True, then the property cannot be 
+        # of an event. If the item is True, then the property cannot be
         # modified during object creation. If false, then the property can be
         # modified during object creation
         # NOTE: this is set in evhand at an init level of -500
@@ -213,13 +213,13 @@ python early:
                     # if the lock exists, then iterate through the names
                     # and only update items that are unlocked
                     for name,index in Event.T_EVENT_NAMES.iteritems():
-                        
+
                         if not lock_entry[index]:
                             stored_data_list[index] = data_row[index]
 
                     self.per_eventdb[eventlabel] = tuple(stored_data_list)
-                            
-                else:        
+
+                else:
                     # otherwise, no lock entry, update normally
 
                     if len(stored_data_row) < len(data_row):
@@ -232,6 +232,7 @@ python early:
                     self.prompt = prompt
                     self.category = category
                     self.diary_entry = diary_entry
+                    self.rules = rules
 
             # new items are added appropriately
             else:
@@ -683,6 +684,88 @@ python early:
 
             return events
 
+        @staticmethod
+        def checkRules(events, check_time=None):
+            """
+            checks the event dict against their own rules, filters out those Events
+            which the rule can't be applied for the given check_time.
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                check_time - the datetime object that will be used to check the
+                    timed rules, if none is passed we check against the current time
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+                for the given check_time
+            """
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # if check_time is none we check against current time
+            if check_time is None:
+                check_time = datetime.datetime.now()
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASSelectiveRepeatRule and 
+                # evaluate it
+                if MASSelectiveRepeatRule.evaluate_rule(check_time, event):
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+                # check if the event contains a MASNumericalRepeatRule and 
+                # evaluate it
+                if MASNumericalRepeatRule.evaluate_rule(check_time, event):
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+        @staticmethod
+        def checkGreetingRules(events):
+            """
+            Checks the event dict (greetings) against their own greeting specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event objec
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASGreetingRule and evaluate it
+                if MASGreetingRule.evaluate_rule(event):
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
 # init -1 python:
     # this should be in the EARLY block
     class MASButtonDisplayable(renpy.Displayable):
@@ -1061,7 +1144,7 @@ python early:
                     things occour. False means we stay quiet
                     (Default: True)
             """
-            
+
             # set properties
             self.allow_glitch = allow_glitch
             self.allow_label = allow_label
@@ -1071,11 +1154,11 @@ python early:
             # this is the actual internal ist
             self.__quiplist = list()
 
-    
-        def addGlitchQuip(self, 
-                length, 
-                cps_speed=0, 
-                wait_time=None, 
+
+        def addGlitchQuip(self,
+                length,
+                cps_speed=0,
+                wait_time=None,
                 no_wait=False
             ):
             """
@@ -1097,7 +1180,7 @@ python early:
                 index location of the added quip, or -1 if we werent allowed to
             """
             if self.allow_glitch:
-                
+
                 # create the glitchtext quip
                 quip = glitchtext(length)
 
@@ -1207,9 +1290,9 @@ python early:
             """
             Randomly picks a quip and returns the result.
 
-            Line quips are automatically cleaned and prepared ([player], 
+            Line quips are automatically cleaned and prepared ([player],
             gender pronouns are all replaced appropraitely). If the caller
-            wants additional variable replacements, they must do that 
+            wants additional variable replacements, they must do that
             themselves.
 
             IN:
@@ -1261,7 +1344,7 @@ python early:
 
         def _getQuipList(self):
             """
-            Retrieves the internal quip list. This is a direct reference to 
+            Retrieves the internal quip list. This is a direct reference to
             the internal list, so be careful.
 
             RETURNS:
@@ -1377,7 +1460,7 @@ python early:
 
 init -1 python in mas_utils:
     # utility functions for other stores.
-    
+
     def tryparseint(value, default=0):
         """
         Attempts to parse the given value into an int. Returns the default if
@@ -2723,6 +2806,7 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
+default persistent.greeting_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
@@ -2746,7 +2830,7 @@ define xp.AWAY_PER_HOUR = 10
 define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
-define is_monika_in_room = False # since everyone gets this error apparently
+define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 init python:

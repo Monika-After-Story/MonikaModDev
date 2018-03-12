@@ -72,6 +72,7 @@ init -1 python in evhand:
     # this is the event database
     event_database = dict()
     farewell_database = dict()
+    greeting_database = dict()
 
     # special namedtuple type we are using
     from collections import namedtuple
