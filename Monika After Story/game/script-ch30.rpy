@@ -530,6 +530,9 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
             
+    #Grant good exp for closing the game correctly.
+    $ _mas_gainAffection(persistent._mas_affection["goodexp"])
+            
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
