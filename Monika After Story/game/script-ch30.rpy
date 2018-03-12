@@ -483,6 +483,8 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
+    $ selected_greeting = None
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
@@ -491,53 +493,47 @@ label ch30_autoload:
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
 
+        # filter events by their unlocked property first
+        $ unlocked_greetings = Event.filterEvents(evhand.greeting_database, unlocked=True)
+
         # filter greetings using the special rules dict
-        $ ruled_greetings_dict = Event.checkRules(evhand.greeting_database)
+        $ ruled_greetings_dict = Event.checkRules(unlocked_greetings)
 
         # check if we have a greeting that actually should be shown now
         if len(ruled_greetings_dict) > 0:
 
             # select one label randomly
-            $ selected_label = renpy.random.choice(ruled_greetings_dict.keys())
+            $ selected_greeting = renpy.random.choice(ruled_greetings_dict.keys())
 
             # store if we have to skip visuals ( used to prevent visual bugs)
-            $ mas_skip_visuals = MASGreetingRule.check_visual_skip_in_rules(ruled_greetings_dict[selected_label].rules)
-
-            # push the selected greeting
-            $ pushEvent(selected_label)
+            $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=ruled_greetings_dict[selected_greeting])
 
         # since we don't have special greetings for this time we now check for special random chance
         else:
 
             # pick a greeting filtering by special random chance rule
-            $ special_random_greetings_dict = Event.checkGreetingRules(evhand.greeting_database)
+            $ special_random_greetings_dict = Event.checkGreetingRules(unlocked_greetings)
 
             # check if we have a greeting that actually should be shown now
             if len(special_random_greetings_dict) > 0:
 
                 # select on label randomly
-                $ selected_label = renpy.random.choice(special_random_greetings_dict.keys())
+                $ selected_greeting = renpy.random.choice(special_random_greetings_dict.keys())
 
                 # store if we have to skip visuals ( used to prevent visual bugs)
-                $ mas_skip_visuals = MASGreetingRule.check_visual_skip_in_rules(special_random_greetings_dict[selected_label].rules)
-
-                # push the selected greeting
-                $ pushEvent(selected_label)
+                $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=special_random_greetings_dict[selected_greeting])
 
             # We couldn't find a suitable greeting we have to default to normal random selection
             else:
 
                 # filter random events normally
-                $ random_greetings_dict = Event.filterEvents(evhand.greeting_database,random=True)
+                $ random_greetings_dict = Event.filterEvents(unlocked_greetings, random=True)
 
                 # select one randomly
-                $ selected_label = renpy.random.choice(random_greetings_dict.keys())
+                $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
 
                 # store if we have to skip visuals ( used to prevent visual bugs)
-                $ mas_skip_visuals = MASGreetingRule.check_visual_skip_in_rules(random_greetings_dict[selected_label].rules)
-
-                # push the selected greeting
-                $ pushEvent(selected_label)
+                $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=random_greetings_dict[selected_greeting])
 
     if not mas_skip_visuals:
         if persistent.current_track:
@@ -579,6 +575,10 @@ label ch30_autoload:
 
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
+
+    # push greeting if we have one
+    if selected_greeting:
+        $ pushEvent(selected_greeting)
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True

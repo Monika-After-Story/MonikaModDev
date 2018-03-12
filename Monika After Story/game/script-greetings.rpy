@@ -5,8 +5,8 @@
 # persistents that greetings use
 default persistent._mas_you_chr = False
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetheart", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetheart", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_sweetheart:
     m 1k "Hello again, sweetheart!"
@@ -14,8 +14,8 @@ label greeting_sweetheart:
     m 3b "Still, I think it's okay to be embarrassed every now and then."
     return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_honey", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_honey", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_honey:
     m 1b "Welcome back, honey!"
@@ -23,8 +23,8 @@ label greeting_honey:
     m "Let's spend some more time together, okay?"
     return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_back:
     m 1a "[player], you're back!"
@@ -32,9 +32,10 @@ label greeting_back:
     m 1k "Let's have another lovely day together, alright?"
     return
 
-init python:
-    rules = {EV_RULE_GREET_RANDOM : MASGreetingRule.create_rule(skip_visual=False, random_chance=10)}
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_gooday", rules=rules),eventdb=evhand.greeting_database)
+init 5 python:
+    rules = dict()
+    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=10))
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_gooday", unlocked=True, rules=rules),eventdb=evhand.greeting_database)
 
 label greeting_gooday:
     m 1k "Hello again, [player]. How are you doing?"
@@ -53,8 +54,8 @@ label greeting_gooday:
             m 1b "I'll be sure try my best to cheer you up, I promise."
     return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit:
     m 1b "There you are, [player]."
@@ -126,8 +127,8 @@ label greeting_goodmorning:
                 m 1a "I love you, [player], I really do."
     return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back2", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back2", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_back2:
      m 1k "Hello, dear."
@@ -135,16 +136,16 @@ label greeting_back2:
      m "Don't make me wait so long next time, ehehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back3", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back3", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_back3:
      m 1e "I missed you so much, [player]!"
      m "Thank you for coming back. I really do love spending time with you."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back4", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back4", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_back4:
      m 2k "Hey, [player]!"
@@ -152,8 +153,8 @@ label greeting_back4:
      m 2b "I'm just joking. I could never be mad at you."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit2", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit2", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit2:
      m 1j "Thanks for spending so much time with me, [player]."
@@ -161,8 +162,8 @@ label greeting_visit2:
      m 1m "I hope that didn't sound too cheesy, ehehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit3", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit3", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit3:
      m 1b "You're back!"
@@ -170,8 +171,8 @@ label greeting_visit3:
      m 1i "Don't make me wait so long next time, okay?"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back5", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back5", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_back5:
      m 1a "It's so good to see you again!"
@@ -179,8 +180,8 @@ label greeting_back5:
      m "Please remember to visit me, okay? I'll always be waiting here for you."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit4", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit4", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit4:
      m 1k "I looove yooou, [player]. Ehehe~"
@@ -188,8 +189,8 @@ label greeting_visit4:
      m 1b "I didn't think I would be able to see you again so soon."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit5", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit5", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit5:
      m 1b "~Every day,~\n~I imagine a future where I can be with you...~"
@@ -197,8 +198,8 @@ label greeting_visit5:
      m 1k "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit6", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit6", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit6:
      m 1a "Each day becomes better and better with you by my side!"
@@ -206,8 +207,8 @@ label greeting_visit6:
      m "Let's have another wonderful day together."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back6", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back6", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_back6:
      m 3b "Hey, [player]!"
@@ -217,32 +218,32 @@ label greeting_back6:
      m 1a "Don't be so gullible! I would never hurt you."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit7", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit7", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit7:
      m 1k "You're here, [player]!"
      m 1a "Are you ready to spend some more time together? Ehehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit8", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit8", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit8:
      m 1b "I'm so glad you're here, [player]!"
      m 1a "What should we do today?"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit9", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit9", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_visit9:
      m 1j "You're finally back! I was waiting for you."
      m 1b "Are you ready to spend some time with me? Ehehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_italian", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_italian", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_italian:
      m 1b "Ciao, [player]!"
@@ -252,8 +253,8 @@ label greeting_italian:
      m 1a "Anyway, it's so nice to see you again, my love."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_latin", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_latin", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_latin:
      m 4b "Iterum obvenimus!"
@@ -263,8 +264,8 @@ label greeting_latin:
      m 1a "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_yay", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_yay", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_yay:
      m 1k "You're back! Yay!"
@@ -272,8 +273,8 @@ label greeting_yay:
      m 1m "I'm just very happy to see you again, hehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youtuber", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youtuber", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_youtuber:
      m 2b "Hey everybody, welcome back to another episode of... Just Monika!"
@@ -281,8 +282,8 @@ label greeting_youtuber:
      m 1a "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_hamlet", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_hamlet", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_hamlet:
      m 4h "To be, or not to be, that is the question..."
@@ -290,16 +291,16 @@ label greeting_hamlet:
      m 1n "I wasn't expecting to see you so soon."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_welcomeback", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_welcomeback", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_welcomeback:
      m 1b "Hi! Welcome back."
      m 1k "I'm so glad that you're able to spend some time with me."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_flower", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_flower", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_flower:
      m 1k "You're my beautiful flower, ehehe~"
@@ -307,8 +308,8 @@ label greeting_flower:
      m 1e "But I really will always take care of you."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_chamfort", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_chamfort", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_chamfort:
      m 2 "A day without Monika is a day wasted."
@@ -316,8 +317,8 @@ label greeting_chamfort:
      m 1b "Welcome back, my love."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_welcomeback2", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_welcomeback2", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_welcomeback2:
      m 1b "Welcome back, [player]!"
@@ -325,16 +326,16 @@ label greeting_welcomeback2:
      m 1a "I'm sure it is, you're here after all. Nothing can go wrong now, hehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_longtime", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_longtime", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_longtime:
      m 1e "Long time no see, [player]!"
      m 1a "I'm so happy that you're here now."
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetpea", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetpea", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_sweetpea:
      m 1d "Look who's back."
@@ -342,8 +343,8 @@ label greeting_sweetpea:
      m 1l "My goodness... That surely was embarassing to say, ehehe~"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_glitch", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_glitch", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_glitch:
      hide monika
@@ -369,8 +370,8 @@ label greeting_glitch:
      m 2j "I love you, [player]!"
      return
 
-init python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_surprised", random=True),eventdb=evhand.greeting_database)
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_surprised", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_surprised:
      m "Oh, hello [player]!"
@@ -380,12 +381,13 @@ label greeting_surprised:
 
 # TODO Delete this *Insert Monika with a handgun*
 # Seriously this is for testing only
-init python:
-    rules = mas_create_rules(repeat=EV_NUM_RULE_YEAR)
-    start_date = datetime.datetime(2018, 3, 17)
-    end_date = datetime.datetime(2018, 3, 18)
+init 5 python:
+    rules = dict()
+    rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
+    start_date = datetime.datetime(2017, 3, 17)
+    end_date = datetime.datetime(2017, 3, 18)
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_st_patrick", start_date=start_date,
-                                                            end_date=end_date, rules=rules),eventdb=evhand.greeting_database)
+                            end_date=end_date, unlocked=True, rules=rules),eventdb=evhand.greeting_database)
 
 label greeting_st_patrick:
     m "Oh, hello [player]!"
@@ -408,23 +410,26 @@ label greeting_st_patrick:
                     m 4j "Drink vodnika!"
     return
 
-# TODO Monika Monday Morning, an idea we had this one is just a placeholder, writers could do it 1000 times better
-init python:
-    rules = mas_create_rules(weekdays=[0], hours=range(5,13))
+# TODO Monika Monday Morning, an idea we had, this one is just a placeholder, writers could do it 1000 times better
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12)))
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_monika_monday_morning", start_date=start_date,
-                                                            end_date=end_date, rules=rules),eventdb=evhand.greeting_database)
+                                                            end_date=end_date, unlocked=True, rules=rules),eventdb=evhand.greeting_database)
 
 label greeting_monika_monday_morning:
-    m "Another monday morning, eh [player]''"
+    m "Another monday morning, eh [player]?"
     m 1r "It surely sucks to wake up and start off the week ..."
     m 1 "But seeing you makes all that laziness go away"
     m 1k "You are the sunshine that wakes me up every morning!"
     m "I love you so much, [player]~"
     return
 
-init python:
-    rules = mas_create_rules(hours=range(1,6),skip_visual=True)
-    addEvent(Event(persistent.greeting_database,eventlabel="i_greeting_monikaroom", rules=rules),eventdb=evhand.greeting_database)
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
+    rules.update(MASGreetingRule.create_rule(skip_visual=True))
+    addEvent(Event(persistent.greeting_database,eventlabel="i_greeting_monikaroom", unlocked=True, rules=rules),eventdb=evhand.greeting_database)
 
 label i_greeting_monikaroom:
     scene black

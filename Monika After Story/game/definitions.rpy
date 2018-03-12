@@ -232,6 +232,7 @@ python early:
                     self.prompt = prompt
                     self.category = category
                     self.diary_entry = diary_entry
+                    self.rules = rules
 
             # new items are added appropriately
             else:
@@ -714,23 +715,17 @@ python early:
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
 
-                # check if the event contains a MASSelectiveRepeatRule
-                if EV_RULE_RP_SELECTIVE in event.rules:
+                # check if the event contains a MASSelectiveRepeatRule and evaluate it
+                if EV_RULE_RP_SELECTIVE in event.rules and MASSelectiveRepeatRule.evaluate_rule(check_time,event=event):
 
-                    # we call evaluate_rule to check if we pass the rule
-                    if MASSelectiveRepeatRule.evaluate_rule(check_time,event.rules[EV_RULE_RP_SELECTIVE]):
+                    # add the event to our available events dict
+                    available_events[label] = event
 
-                        # add the event to our available events dict
-                        available_events[label] = event
+                # check if the event contains a MASNumericalRepeatRule and evaluate it
+                if EV_RULE_RP_NUMERICAL in event.rules and MASNumericalRepeatRule.evaluate_rule(check_time, event):
 
-                # check if the event contains a MASNumericalRepeatRule
-                if EV_RULE_RP_NUMERICAL in event.rules:
-
-                    # we call evaluate_rule to check if we pass the rule
-                    if MASNumericalRepeatRule.evaluate_rule(check_time, event, event.rules[EV_RULE_RP_NUMERICAL]):
-
-                        # add the event to our available events dict
-                        available_events[label] = event
+                    # add the event to our available events dict
+                    available_events[label] = event
 
             # return the available events dict
             return available_events
@@ -760,14 +755,11 @@ python early:
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
 
-                # check if the event contains a MASGreetingRule
-                if EV_RULE_GREET_RANDOM in event.rules:
+                # check if the event contains a MASGreetingRule and evaluate it
+                if EV_RULE_GREET_RANDOM in event.rules and MASGreetingRule.evaluate_rule(event):
 
-                    # we call evaluate_rule to check if we pass the rule
-                    if MASGreetingRule.evaluate_rule(event.rules[EV_RULE_GREET_RANDOM]):
-
-                        # add the event to our available events dict
-                        available_events[label] = event
+                    # add the event to our available events dict
+                    available_events[label] = event
 
             # return the available events dict
             return available_events
