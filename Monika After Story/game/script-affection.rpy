@@ -106,16 +106,30 @@ init python:
 
 
     #Used to increment affection whenever something positive happens.
-    def mas_gainAffection(amount=persistent._mas_affection["goodexp"],modifier=1):
-        persistent._mas_affection["affection"] += amount
+    def mas_gainAffection(amount=0,modifier=1):
+        #if amount not specified, then use the good exp default value.
+        if amount == 0:
+            persistent._mas_affection["affection"] += persistent._mas_affection["goodexp"]
+            
+        #Otherwise, use the value passed in the argument.
+        else:
+            persistent._mas_affection["affection"] += amount
         
+        #Updates the experience levels if necessary.
         mas_updateAffectionExp()
   
 
     #Used to subtract affection whenever something negative happens.
-    def mas_loseAffection(amount=persistent._mas_affection["badexp"],modifier=1):
-        persistent._mas_affection["affection"] += amount
+    def mas_loseAffection(amount=0,modifier=1):
+        #if amount not specified, then use the good exp default value.
+        if amount == 0:
+            persistent._mas_affection["affection"] += persistent._mas_affection["badexp"]
+            
+        #Otherwise, use the value passed in the argument.
+        else:
+            persistent._mas_affection["affection"] += amount
         
+        #Updates the experience levels if necessary.
         mas_updateAffectionExp()
         
         
@@ -134,7 +148,6 @@ init python:
         #If affection level is greater than 50 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif persistent._mas_affection["affection"] >= 50 and not seen_event("monika_affection_nickname"):
             pushEvent("monika_affection_nickname")
-            
             
     #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
@@ -163,11 +176,12 @@ init python:
 
 
         #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
+        
 
-
-
+#Unlocked when affection level reaches 50.
+#This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
+#There is a character limit of 10 characters.
 label monika_affection_nickname:
-    
     python:
         import re
         bad_nickname_list = [
@@ -214,6 +228,7 @@ label monika_affection_nickname:
                     m 1l "I thought we were choosing a new name, silly."
                     m 1e "Try again~"
                 else:
+                    $ bad_nickname = bad_nickname_search.search(inputname)
                     if bad_nickname == None:
                         $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
@@ -233,10 +248,10 @@ label monika_affection_nickname:
                             m 3j "From now on, I'll be called {i}'[m_name]'{/i}, ehehe~"
                         $ done = True
                     else:
-                        #$ mas_loseAffection(persistent._mas_affection["badexp"])
-                        m 1h "[player]! That's not nice at all!" 
-                        m 2i "This was supposed to be something nice for both of us...why would you say such things?" 
-                        m 1o "If you don't like the idea you should have just said so."
+                        #$ mas_loseAffection()
+                        m 1h "[player]! That's not nice at all!"
+                        m 2i "This was supposed to be something nice for both of us...why would you say such things?"
+                        m 1o "If you didn't want this you should have just said so."
                         m 3q "...I don't like this idea any more..."
                         $ hideEventLabel("monika_affection_nickname",lock=False,depool=False)
                         $ done = True
@@ -244,15 +259,17 @@ label monika_affection_nickname:
         "No":
             m 1f "Oh... ok then, if you say so."
             m 1e "Just tell me whenever you change your mind, [player]."
-            $ done = True 
+            $ done = True
     return
 
+#Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
     m 1r "Hey [player], don't take this the wrong way..."
     m 1f "...but I feel like the love and affection I've been giving you hasn't been reciprocated by you."
     m 1e "I just thought I'd let you know how I feel. After all, communication is the key to a strong relationship."
     return
     
+#Event to indicate that Monika is happy to be receiving your affection.
 label mas_affection_happynotif:
     m "Hey [player], I just wanted to say I really enjoy spending time with you."
     m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
