@@ -471,6 +471,7 @@ label ch30_autoload:
         $ config.allow_skipping = False
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
+    $ mas_skip_visuals = False
 
     # set the gender
     call set_gender from _autoload_gender
@@ -488,7 +489,6 @@ label ch30_autoload:
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
-        $ mas_skip_visuals = False
 
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
@@ -505,9 +505,6 @@ label ch30_autoload:
             # select one label randomly
             $ selected_greeting = renpy.random.choice(ruled_greetings_dict.keys())
 
-            # store if we have to skip visuals ( used to prevent visual bugs)
-            $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=ruled_greetings_dict[selected_greeting])
-
         # since we don't have special greetings for this time we now check for special random chance
         else:
 
@@ -520,9 +517,6 @@ label ch30_autoload:
                 # select on label randomly
                 $ selected_greeting = renpy.random.choice(special_random_greetings_dict.keys())
 
-                # store if we have to skip visuals ( used to prevent visual bugs)
-                $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=special_random_greetings_dict[selected_greeting])
-
             # We couldn't find a suitable greeting we have to default to normal random selection
             else:
 
@@ -532,8 +526,8 @@ label ch30_autoload:
                 # select one randomly
                 $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
 
-                # store if we have to skip visuals ( used to prevent visual bugs)
-                $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=random_greetings_dict[selected_greeting])
+        # store if we have to skip visuals ( used to prevent visual bugs)
+        $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=special_random_greetings_dict[selected_greeting])
 
     if not mas_skip_visuals:
         if persistent.current_track:
