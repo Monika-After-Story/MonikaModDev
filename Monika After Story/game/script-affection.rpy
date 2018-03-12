@@ -136,13 +136,30 @@ init python:
         persistent._mas_affection["affection"] += amount
         
         _mas_updateAffectionExp()
-
-#Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
+        
+    #Used to check to see if affection level has reached the point where it should trigger an event.
+    def mas_checkAffection():
+        #If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
+        #This is an indicator you are heading in a negative direction.
+        if persistent._mas_affection["affection"] <= -15 and persistent._mas_affection["affection"] <= -20 and not seen_event("mas_affection_upsetwarn"):
+            pushEvent("mas_affection_upsetwarn")
+            
+        #If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
+        #This is an indicator you are heading in a positive direction.
+        elif persistent._mas_affection["affection"] >= 15 and persistent._mas_affection["affection"] <= 20 and not seen_event("mas_affection_happynotif"):
+            pushEvent("mas_affection_happynotif")
+        
+        #If affection level is greater than 50 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
+        elif persistent._mas_affection["affection"] >= 50 and not seen_event("monika_affection_nickname"):
+            pushEvent("monika_affection_nickname")
+            
+            
+    #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
     #Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
     #is equal to the amount of points it's added or removed in minutes.
     
-#Monika's initial affection based on start-up. Need to decide on super exp before we do anything else...
+    #Monika's initial affection based on start-up. Need to decide on super exp before we do anything else...
     #Monika closed game herself and how happy she is determines on time between closed game and reopening.
     #if persistent.closed_self == True:
        # if datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6):
@@ -248,6 +265,17 @@ label monika_affection_nickname:
             $ done = True 
     return
 
+label mas_affection_upsetwarn:
+    m 1r "Hey [player], don't take this the wrong way..."
+    m 1f "...but I feel like the love and affection I've been giving you hasn't been reciprocated by you."
+    m 1e "I just thought I'd let you know how I feel. After all, communication is the key to a strong relationship."
+    return
+    
+label mas_affection_happynotif:
+    m "Hey [player], I just wanted to say I really enjoy spending time with you."
+    m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
+    m "Thanks for being such a great person!"
+    return
 
 #############
 #Surprise function.

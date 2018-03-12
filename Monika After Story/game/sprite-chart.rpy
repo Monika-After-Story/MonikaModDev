@@ -538,3 +538,6 @@ image monika g2:
     repeat
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
+
+#empty desk image, used when Monika is no longer in the room.
+image emptydesk = "mod_assets/emptydesk.png"
