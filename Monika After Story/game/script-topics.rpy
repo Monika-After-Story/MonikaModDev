@@ -2608,8 +2608,9 @@ label monika_name:
     m 1l "It also means 'alone' in Ancient Greek."
     m 1e "..."
     m "That part doesn't matter so much, now that you're here."
-    m 1a "'[mcname]' is a lovely name, too."
-    m 1b "But I think I like '[player]' better!"
+    if not player == mcname:
+        m 1a "'[mcname]' is a lovely name, too."
+        m 1b "But I think I like '[player]' better!"
     m 1a "Ehehe~"
     return
 
