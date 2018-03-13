@@ -583,6 +583,7 @@ label ch30_autoload:
         $ set_keymaps()
 
     $persistent.closed_self = False
+    $ persistent._mas_crashed_self = True
     $startup_check = False
     jump ch30_loop
 
