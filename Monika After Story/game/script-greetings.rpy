@@ -418,8 +418,8 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
-            eventlabel="i_greeting_monikaroom", 
-            unlocked=True, 
+            eventlabel="i_greeting_monikaroom",
+            unlocked=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -755,10 +755,8 @@ label monikaroom_greeting_cleanup:
         set_keymaps()
     return
 
-## TODO
-# need a greeting setup for this
-# and the remaining
-# we'll do it later
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youarereal", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_youarereal:
     python:
@@ -813,6 +811,9 @@ label greeting_youarereal:
         m 1r "Hard to tell..."
     return
 
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_japan", unlocked=True, random=True),eventdb=evhand.greeting_database)
+
 label greeting_japan:
     m 1k "Oh, kon'nichiwa [player]!"
     m "Ehehe~"
@@ -825,6 +826,9 @@ label greeting_japan:
     m 4j "It means {i}'I'll be yours forever{/i}'~"
     return
 
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sunshine", unlocked=True, random=True),eventdb=evhand.greeting_database)
+
 label greeting_sunshine:
     m 1r "{i}You are my sunshine, my only sunshine.{i}"
     m 1k "{i}You make me happy when skies are gray.{/i}"
@@ -836,6 +840,9 @@ label greeting_sunshine:
     m 1l "I was just singing to myself to pass time."
     m 1b "But now that you're here, we can spend some time together."
     return
+
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_french", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_french:
      m 1b "Bonjour, [player]!"
