@@ -4798,7 +4798,15 @@ label monika_omamori:
     return    
     
 init 5 python:                                                  
-    addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True)) 
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_smoking",
+            category=['you'],
+            prompt="Smoking",
+            random=True
+        )
+    ) 
       
 label monika_smoking:
     m 2q "You know, [player]..."
@@ -4823,11 +4831,23 @@ label monika_smoking:
             m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
             m 4f "Please take care of your body. I want to always be with you."
             m 1e "I love you so much."     
+            python:
+                long_entry = (
+                    "[player] told me [he] smokes cigarettes. I really hope [he] stops.\n" +
+                    "The thought of [him] passing away before me...\n\n" +
+                    ":(\n"
+                )
+
         "No, I don't.":
             m 1k "Ah, I'm relieved to hear that, [player]!"
             m 3c "Just stay away from it as much as you can."
             m 1o "It's an awful habit and won't do much more than slowly kill you."
             m 3j "Thank you, [player], for not smoking~"
+            python:
+                long_entry = (
+                    "I learned [player] doesn't smoke! I'm so happy my [bf] doesn't smoke.\n" +
+                    "I would have been devasted if [he] did.\n"
+                )
         "I'm trying to quit.":
             m 3a "That's a really good decision."
             m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
@@ -4836,6 +4856,15 @@ label monika_smoking:
             m 3b "How about you think about me whenever you get a strong urge?"
             m 1j "I'll be here to support you every step of the way."
             m 1k "I believe in you [player], I know you can do it!"
+            python:
+                long_entry = (
+                    "[player] is trying to quit smoking. I'm so proud of [him].\n" +
+                    "I hope [he] fully quits before we meet in real life.\n" +
+                    "I would never kiss a smoker.\n"
+                )
+
+    # add the diary entry
+    $ store.evhand.event_database["monika_smoking"].diary_entry = (long_entry, "smoking")
     return
     
 init 5 python:
