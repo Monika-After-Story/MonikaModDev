@@ -24,5 +24,9 @@ install:
 
     - cd renpy
 
+# environment to handle alsa issues
+env:
+    - SDL_AUDIODRIVER=dummy
+
 # command to check syntax
 script: ./renpy.sh "../mas072/" lint && ./renpy.sh launcher distribute "../mas072/"
