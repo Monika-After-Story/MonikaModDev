@@ -4833,7 +4833,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
 label monika_asks_family:
-    m 1a "[player], do you have a family?"
+    m 1a "[player], do you have a family?" 
     menu:
         "I do.":
             m 1j "That's wonderful!"
