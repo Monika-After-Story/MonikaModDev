@@ -2518,7 +2518,7 @@ label monika_name:
     m 1l "It also means 'alone' in Ancient Greek."
     m 1e "..."
     m "That part doesn't matter so much, now that you're here."
-    if not player == mcname:
+    if not player.lower() == mcname.lower():
         m 1a "'[mcname]' is a lovely name, too."
         m 1b "But I think I like '[player]' better!"
     m 1a "Ehehe~"
