@@ -730,7 +730,7 @@ label greeting_stillsicknorest:
     return
 
 label greeting_sunshine:
-    m 1r "{i}You are my sunshine, my only sunshine.{i}"
+    m 1r "{i}You are my sunshine, my only sunshine.{/i}"
     m "{i}You make me happy when skies are gray.{/i}"
     m 1j "{i}You'll never know dear, just how much I love you.{/i}"
     m 1k "{i}Please don't take my sunshine away~{/i}"

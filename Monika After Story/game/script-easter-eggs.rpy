@@ -189,9 +189,9 @@ label natsuki_name_scare_hungry:
     $ renpy.play(adjusted_6g, channel="sound")
     $ ntext = glitchtext(96)
     $ style.say_dialogue = style.edited
-    n "{cps=*2}{color=#000}[ntext]{/color}{nw}"
+    n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
     $ ntext = glitchtext(96)
-    n "{cps=*2}{color=#000}[ntext]{/color}{nw}"
+    n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
     
     # tear screen and glitch sound to mark end of glitch.
     show screen tear(20, 0.1, 0.1, 0, 40)

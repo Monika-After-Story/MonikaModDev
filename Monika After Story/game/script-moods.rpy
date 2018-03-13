@@ -292,7 +292,7 @@ label mas_mood_bored:
             elif gamepicked == "hangman":
                 call game_hangman
             elif gamepicked == "piano":
-                call zz_play_piano
+                call mas_piano_start
         "No":
             m 1f "Oh, alright then."
             m 1e "Let me know if you want to do something with me, [player]~"
