@@ -101,8 +101,6 @@ Troubleshooting: [Troubleshooting](https://github.com/Monika-After-Story/MonikaM
 We do our best to conform to Team Salvato's [guidelines for fan works](http://teamsalvato.com/ip-guidelines/). All characters and original content are property of Team Salvato. Monika After Story is an open source project, and in addition to named contributors, this mod includes contributions from anonymous users of 4chan, where this project got its start. More info can be found on our [License Page](https://github.com/Monika-After-Story/MonikaModDev/wiki/License-and-Team-Salvato-Guidelines).
 
 ## Build Status:
-### Master:
-[![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=master)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
-
-### Content
-`// wip`
+### master: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=master)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### content: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=content)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### next-release: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=next-release)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
