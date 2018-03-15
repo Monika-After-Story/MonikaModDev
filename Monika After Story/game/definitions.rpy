@@ -765,6 +765,20 @@ python early:
 
 
         @staticmethod
+        def _checkGreetingRule(ev):
+            """
+            Checks the given event against its own greeting specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASGreetingRule.evaluate_rule(ev)
+
+
+        @staticmethod
         def checkGreetingRules(events):
             """
             Checks the event dict (greetings) against their own greeting specific
@@ -790,13 +804,17 @@ python early:
             for label, event in events.iteritems():
 
                 # check if the event contains a MASGreetingRule and evaluate it
-                if MASGreetingRule.evaluate_rule(event):
+                if Event._checkGreetingRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
 
                     # add the event to our available events dict
                     available_events[label] = event
 
             # return the available events dict
             return available_events
+
 
 # init -1 python:
     # this should be in the EARLY block
