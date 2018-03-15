@@ -120,7 +120,7 @@ label import_ddlc_persistent:
                     "Yes":
                         m "You really haven't changed. Have you?"
                     "No":
-                        jump save_merge_or_replace
+                        jump .save_merge_or_replace
             "Cancel.":
                 "DDLC data can be imported later in the Settings menu."
                 return
