@@ -2828,7 +2828,15 @@ label monika_regrets:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_hypnosis",category=['trivia','psychology'],prompt="Being hypnotized",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hypnosis",
+            category=['trivia','psychology'],
+            prompt="Being hypnotized",
+            random=True
+        )
+    )
 
 label monika_hypnosis:
     m 3a "...Say, [player]?"
@@ -4389,7 +4397,21 @@ label monika_writingtip5:
      return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self harm",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_selfharm",
+            category=['psychology'],
+            prompt="Self harm",
+            random=True,
+            diary_entry=(
+                "I confessed to [player] about the time I cut myself.\n" +
+                "I'm still ashamed I did that. What was I thinking...\n" +
+                "I hope [he] doesn't purposefully hurt [himself]\n",
+                "self-harm"
+            )
+        )
+    )
 
 label monika_selfharm:
     m 1f "Hey [player]..."
@@ -4541,7 +4563,20 @@ label monika_how_soon:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_marriage",
+            category=['romance'],
+            prompt="Will you marry me?",
+            pool=True,
+            diary_entry=(
+                "[player] asked me to marry [him]! I'm so happy!!!\n" +
+                "If only I could accept in person... T_T\n",
+                None
+            )
+        )
+    )
 
 label monika_marriage:
     m 2m "M-marriage?"
