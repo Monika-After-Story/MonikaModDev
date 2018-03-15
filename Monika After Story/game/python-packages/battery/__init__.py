@@ -52,8 +52,7 @@ def _run_function_by_system(funcdict):
     elif misc.can_check():
         func = funcdict['*']
     else:
-        raise NotImplementedError('%s is not supported'
-                                  % _system)
+        return None
 
     return func()
 
