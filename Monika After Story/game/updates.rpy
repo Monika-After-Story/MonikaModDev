@@ -192,8 +192,9 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.7.3
-label v0_7_3(version="v0_7_3"):
+# NOTE: well shit this wasnt ready and now it has to be done later
+# 0.7.4
+label v0_7_4(version="v0_7_4"):
     python:
         # check for vday existence and delete
         # NOTE: thiis was supposed to be in for 0.7.2 but i forgot/thought
