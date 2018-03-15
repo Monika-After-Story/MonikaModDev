@@ -370,10 +370,11 @@ label call_next_event:
 
             # check for a diary entry
             if ev.diary_entry is not None:
-                store.mas_diary.event_entries.append((
-                    evhand.event_database,
-                    event_label
-                ))
+                python:
+                    store.mas_diary.event_entries.append((
+                        evhand.event_database,
+                        event_label
+                    ))
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself

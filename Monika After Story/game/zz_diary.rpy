@@ -100,7 +100,7 @@ init python in mas_diary:
     from cStringIO import StringIO # we do alot of string work here
 
     # folder path to diary templates (from game)
-    DIARY_TEMPLATES_FOLDER = "mod_assets/templates/diary/"
+    DIARY_TEMPLATE_FOLDER = "mod_assets/templates/diary/"
 
     # game folder
     # we only need this until we create a mod_assets.rpa (probably)
@@ -471,7 +471,7 @@ init python in mas_diary:
         ASSUMES:
             event_entries
         """
-        output - StringIO() # cStringIO version
+        output = StringIO() # cStringIO version
 
         # minor optimization? maybe
         entry_length = len(event_entries)
@@ -493,17 +493,17 @@ init python in mas_diary:
         if count is None:
             selected = range(0, entry_length)
         else:
-            selected = mas_utils.randrange(count, 0, entry_length, True)
+            selected = mas_utils.randrange(count, 0, entry_length-1, True)
 
         # the first entry is special!
         # (we dont add a newline prior to the entry
-        ev_db, ev_key = selected[0]
-        if ev_db[ev_key].diary_entry[0] is not None):
+        ev_db, ev_key = event_entries[selected[0]]
+        if ev_db[ev_key].diary_entry[0] is not None:
             output.write(ev_db[ev_key].diary_entry[0])
 
         # now iterate over that range
         for index in selected[1:]:
-            ev_db, ev_key = selected[index]
+            ev_db, ev_key = event_entries[selected[index]]
 
             output.write("\n")
             output.write(ev_db[ev_key].diary_entry[0])
@@ -554,6 +554,8 @@ init python in mas_diary:
         ASSUMES:
             templates
         """
+        global templates
+        templates = list()
         t_files = os.listdir(diary_basedir)
         for t_filename in t_files:
             t_filepath = diary_basedir + t_filename
@@ -568,7 +570,7 @@ init python in mas_diary:
 
 ############## diary keyword functions ######################
     # these functions will be set to values in some of the dicts 
-    def _dk_body(modifier, curr_mods)
+    def _dk_body(modifier, curr_mods):
         """
         Generates the body
 
@@ -617,6 +619,10 @@ init python in mas_diary:
             else:
                 # modifier is a number probably
                 sel_count = mas_utils.tryparseint(modifier, DEFAULT_BODY_COUNT)
+
+        else:
+            # otherwise, assume default number of entries
+            sel_count = DEFAULT_BODY_COUNT
 
         # otherwise, we are using a numerical value
         return _chooseEventEntries(sel_count)
@@ -695,7 +701,7 @@ init python in mas_diary:
             if len(games_played) > 1:
                 games_played_str = (
                     ", ".join(games_played[:-1]) +
-                    " and {0}".format(games_played[-1:])
+                    " and {0}".format(games_played.pop())
                 )
 
                 # break up the lines
@@ -812,11 +818,11 @@ init python in mas_diary:
             if len(short_entry_list) > 1:
                 topics_str = (
                     ", ".join(short_entry_list[:-1]) + 
-                    " and {0}".format(short_entry_list[-1:])
+                    " and {0}".format(short_entry_list.pop())
                 )
 
                 # break up lines
-                if modifier = "b":
+                if modifier == "b":
                     return breakLines(topics_str)
 
                 # otherwise as is
@@ -866,7 +872,7 @@ init 1 python in mas_diary:
         # name|<modifier>
         # modifier rules:
         #   t - use twitter name
-        "m_name": _dk_gen_monikaName,
+        "m_name": _dk_m_name,
 
         # games played, comma separated
         # gamesCSV|<modifier>
@@ -928,7 +934,7 @@ init 1 python in mas_diary:
         line = _parseSections(line, curr_mods)
 
         # now keyword parsing
-        line = line.format(diary_kws)
+        line = line.format(**diary_kws)
 
         # now renpy sub
         # NOTE: this can also be adjusted for scope and translation by kw:
@@ -1017,10 +1023,14 @@ init 1 python in mas_diary:
                 # NOTE: this is NOT what DLMTR_S should be used for. Comments
                 #   should start at the beginning of the line with a #
                 outline.write("\n")
+                curr_line = ""
 
             else:
                 # dlmtr non empty string, we have a section keyword
                 outline.write(_parseSection(section_kw, curr_mods))
+
+        # now write the remainder of curr_line
+        outline.write(curr_line)
 
         # alright, we've finished parsing sections for this string.
         outstr = outline.getvalue()
