@@ -713,12 +713,12 @@ python early:
             """
             # check if the event contains a MASSelectiveRepeatRule and 
             # evaluate it
-            if MASSelectiveRepeatRule.evaluate_rule(check_time, event):
+            if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
                 return True
 
             # check if the event contains a MASNumericalRepeatRule and 
             # evaluate it
-            if MASNumericalRepeatRule.evaluate_rule(check_time, event):
+            if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
                 return True
 
             return False

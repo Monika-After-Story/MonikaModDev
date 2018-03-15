@@ -17,39 +17,49 @@ init -1 python in mas_greetings:
         """
 
         # filter events by their unlocked property first
-        unlocked_greetings = Event.filterEvents(
-            evhand.greeting_database, 
+        unlocked_greetings = renpy.store.Event.filterEvents(
+            renpy.store.evhand.greeting_database, 
             unlocked=True
         )
 
         # filter greetings using the special rules dict
-        random_greetings_dict = Event.checkRules(unlocked_greetings)
+        random_greetings_dict = renpy.store.Event.checkRepeatRules(
+            unlocked_greetings
+        )
 
         # check if we have a greeting that actually should be shown now
         if len(random_greetings_dict) > 0:
 
             # select one label randomly
-            return renpy.random.choice(random_greetings_dict.keys())
+            return random_greetings_dict[
+                renpy.random.choice(random_greetings_dict.keys())
+            ]
 
         # since we don't have special greetings for this time we now check for special random chance
         # pick a greeting filtering by special random chance rule
-        random_greetings_dict = Event.checkGreetingRules(unlocked_greetings)
+        random_greetings_dict = renpy.store.Event.checkGreetingRules(
+            unlocked_greetings
+        )
 
         # check if we have a greeting that actually should be shown now
         if len(random_greetings_dict) > 0:
 
             # select on label randomly
-            return renpy.random.choice(random_greetings_dict.keys())
+            return random_greetings_dict[
+                renpy.random.choice(random_greetings_dict.keys())
+            ]
 
         # We couldn't find a suitable greeting we have to default to normal random selection
         # filter random events normally
-        random_greetings_dict = Event.filterEvents(
+        random_greetings_dict = renpy.store.Event.filterEvents(
             unlocked_greetings, 
             random=True
         )
 
         # select one randomly
-        return renpy.random.choice(random_greetings_dict.keys())
+        return random_greetings_dict[
+            renpy.random.choice(random_greetings_dict.keys())
+        ]
 
 
 init 5 python:
