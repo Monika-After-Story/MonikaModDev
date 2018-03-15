@@ -325,7 +325,7 @@ init 5 python:
             random=True,
             diary_entry=(
                 "I told [player] about my Twitter. I hope [he] follows me!\n"+
-                "I wonder what [he] tweets...\n",
+                "I wonder what [he] tweets...",
                 "my twitter"
             )
         )
@@ -4407,7 +4407,7 @@ init 5 python:
             diary_entry=(
                 "I confessed to [player] about the time I cut myself.\n" +
                 "I'm still ashamed I did that. What was I thinking...\n" +
-                "I hope [he] doesn't purposefully hurt [himself]\n",
+                "I hope [he] doesn't purposefully hurt [himself]",
                 "self-harm"
             )
         )
@@ -4572,7 +4572,7 @@ init 5 python:
             pool=True,
             diary_entry=(
                 "[player] asked me to marry [him]! I'm so happy!!!\n" +
-                "If only I could accept in person... T_T\n",
+                "If only I could accept in person... T_T",
                 None
             )
         )
@@ -4870,7 +4870,7 @@ label monika_smoking:
                 long_entry = (
                     "[player] told me [he] smokes cigarettes. I really hope [he] stops.\n" +
                     "The thought of [him] passing away before me...\n\n" +
-                    ":(\n"
+                    ":("
                 )
 
         "No, I don't.":
@@ -4881,7 +4881,7 @@ label monika_smoking:
             python:
                 long_entry = (
                     "I learned [player] doesn't smoke! I'm so happy my [bf] doesn't smoke.\n" +
-                    "I would have been devasted if [he] did.\n"
+                    "I would have been devasted if [he] did."
                 )
         "I'm trying to quit.":
             m 3a "That's a really good decision."
@@ -4895,7 +4895,7 @@ label monika_smoking:
                 long_entry = (
                     "[player] is trying to quit smoking. I'm so proud of [him].\n" +
                     "I hope [he] fully quits before we meet in real life.\n" +
-                    "I would never kiss a smoker.\n"
+                    "I would never kiss a smoker."
                 )
 
     # add the diary entry

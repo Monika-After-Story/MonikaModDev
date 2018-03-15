@@ -503,9 +503,9 @@ init python in mas_diary:
 
         # now iterate over that range
         for index in selected[1:]:
-            ev_db, ev_key = event_entries[selected[index]]
+            ev_db, ev_key = event_entries[index]
 
-            output.write("\n")
+            output.write("\n\n")
             output.write(ev_db[ev_key].diary_entry[0])
 
         # split line check
@@ -606,9 +606,9 @@ init python in mas_diary:
                 else:
                     # otherwise, we need to get an integer value out of this
                     # percetnage
-                    sel_count = math.ceil(
+                    sel_count = int(math.ceil(
                         len(event_entries) * (sel_pct / 100.0)
-                    )
+                    ))
 
                     if sel_count >= len(event_entries):
                         # again, if you got all of them, lets make this easy
