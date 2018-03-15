@@ -2903,6 +2903,8 @@ default bf = "boyfriend"
 default man = "man"
 default boy = "boy"
 default guy = "guy"
+default him = "him"
+default himself = "himself"
 
 return
 
@@ -2923,6 +2925,8 @@ label set_gender:
         $man = "man"
         $boy = "boy"
         $guy = "guy"
+        $ him = "him"
+        $ himself = "himself"
     elif persistent.gender == "F":
         $his = "her"
         $he = "she"
@@ -2932,6 +2936,8 @@ label set_gender:
         $man = "woman"
         $boy = "girl"
         $guy = "girl"
+        $ him = "her"
+        $ himself = "herself"
     else:
         $his = "their"
         $he = "they"
@@ -2941,4 +2947,6 @@ label set_gender:
         $man = "person"
         $boy = "person"
         $guy = "person"
+        $ him = "them"
+        $ himself = "themselves"
     return
