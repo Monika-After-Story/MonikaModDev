@@ -19,6 +19,19 @@ init python:
 
         fo.close()
 
+label import_ddlc_persistent_in_settings:
+    $ prev_songs_enabled = store.songs.enabled
+    $ prev_dialogue = allow_dialogue
+    $ store.songs.enabled = False
+    $ allow_dialogue = False
+#    $ disable_esc() # tthis doesnt work somehow
+    call import_ddlc_persistent from _call_import_ddlc_persistent_1
+    $ quick_menu = True
+    $ store.songs.enabled = prev_songs_enabled
+    $ allow_dialogue = prev_dialogue
+#    $ enable_esc()
+    return
+
 label import_ddlc_persistent:
     python:
         from renpy.loadsave import dump, loads
@@ -65,7 +78,7 @@ label import_ddlc_persistent:
         $quick_menu = False
         "Save data from Doki Doki Literature Club could not be found."
         menu:
-            "[config.name] will begin with a new save."
+            "Save data will not be imported at this time."
             "Okay":
                 pause 0.3
                 pass
@@ -93,7 +106,7 @@ label import_ddlc_persistent:
         #dumpPersistentToFile(old_persistent,basedir + '/old_persistent.txt')
 
     #Check if previous MAS data exists
-    $merge_previous=False
+    default merge_previous=False
     if persistent.first_run:
         label .save_merge_or_replace:
         menu:
@@ -107,7 +120,7 @@ label import_ddlc_persistent:
                     "Yes":
                         m "You really haven't changed. Have you?"
                     "No":
-                        jump save_merge_or_replace
+                        jump .save_merge_or_replace
             "Cancel.":
                 "DDLC data can be imported later in the Settings menu."
                 return
@@ -186,9 +199,6 @@ label import_ddlc_persistent:
             persistent._seen_ever.update(old_persistent._seen_ever)
         elif old_persistent._seen_ever is not None:
             persistent._seen_ever=old_persistent._seen_ever
-
-        # after importing/merging _seen_ever, need to redo removeing seen
-        remove_seen_topics()
 
         #Renpy defined list of all seen images
         #Format: dict with (keys) file path (value) Boolean for if seen
@@ -318,6 +328,7 @@ label import_ddlc_persistent:
 
         #dumpPersistentToFile(persistent,basedir + '/merged_persistent.txt')
         persistent.has_merged = True
+
     return
 
 label merge_unmatched_names:

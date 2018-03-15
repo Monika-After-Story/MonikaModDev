@@ -6,7 +6,1533 @@ python early:
     import singleton
     me = singleton.SingleInstance()
 
+# uncomment this if you want syntax highlighting support on vim
+#init -1 python:
+
+    # special constants for event
+    EV_ACT_PUSH = "push"
+    EV_ACT_QUEUE = "queue"
+    EV_ACT_UNLOCK = "unlock"
+    EV_ACT_RANDOM = "random"
+    EV_ACT_POOL = "pool"
+
+    # list of those special constants
+    EV_ACTIONS = [
+        EV_ACT_PUSH,
+        EV_ACT_QUEUE,
+        EV_ACT_UNLOCK,
+        EV_ACT_RANDOM,
+        EV_ACT_POOL
+    ]
+
+    # custom event exceptions
+    class EventException(Exception):
+        def __init__(self, _msg):
+            self.msg = _msg
+        def __str__(self):
+            return "EventError: " + self.msg
+
+    # event class for chatbot replacement
+    # NOTE: effectively a wrapper for dict of tuples
+    # NOTE: Events are TIED to the database they are found in. Moving databases
+    #   is not supported ATM
+    #
+    # PROPERTIES:
+    #   per_eventdb - persistent database (dict of tupes) this event is
+    #       connectet to
+    #       NOTE: REQUIRED
+    #   eventlabel - the identifier for this event. basically the label that
+    #       this event is tied to. MUST BE UNIQUE
+    #       NOTE: REQUIRED
+    #   prompt - String label shown on the button for this topic in the prompt
+    #       menu
+    #       (Default: eventlabel)
+    #   label - Optional plain text name of the event, good for calendars
+    #       (Default: prompt)
+    #   category - Tuple of string that define the categories for the event
+    #       (Default: None)
+    #   unlocked - True if the event appears in the prompt menu, False if not
+    #       (Default: False)
+    #   random - True if the event can appear in random chatter, False if not
+    #       (Default: False)
+    #   pool - True if the event is in the pool of prompts that get drawn from
+    #       when new prompts become randomly available, False if not
+    #       (Default: False)
+    #   conditional - string that is a conditional expression that can be
+    #       executed via eval. This is checked at various points to determine
+    #       if this event gets pushed to the stack or not
+    #       (Default: None)
+    #   action - an EV_ACTION constant that tells us what to do if the
+    #       conditional is True (See EV_ACTIONS and EV_ACT_...)
+    #       (Default: None)
+    #   start_date - datetime for when this event is available
+    #       (Default: None)
+    #   end_date - datetime for when this event is no longer available
+    #       (Default: None)
+    #   unlock_date - datetime for when this event is unlocked
+    #       (Default: None)
+    #   shown_count - number of times this event has been shown to the user
+    #       NOTE: this must be set by the caller, and it is asssumed that
+    #           call_next_event is the only one who changes this
+    #       (Default: 0)
+    #   diary_entry - string that will be added as a diary entry if this event
+    #       has been seen. This string will respect \n and other formatting
+    #       characters. Can be None
+    #       NOTE: diary entries cannot be longer than 500 characters
+    #       NOTE: treat diary entries as single paragraphs
+    #       (Default: None)
+    #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: refer to RULES documentation in event-rules
+    #       NOTE: if you set this to None, you will break this forever
+    #       (Default: empty dict)
+    class Event(object):
+
+        # tuple constants
+        T_EVENT_NAMES = {
+            "eventlabel":0,
+            "prompt":1,
+            "label":2,
+            "category":3,
+            "unlocked":4,
+            "random":5,
+            "pool":6,
+            "conditional":7,
+            "action":8,
+            "start_date":9,
+            "end_date":10,
+            "unlock_date":11,
+            "shown_count":12,
+            "diary_entry":13,
+            "rules":14
+        }
+
+        # name constants
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
+
+        # other constants
+        DIARY_LIMIT = 500
+
+        # initaliztion locks
+        # dict of tuples, where each item in the tuple represents each property
+        # of an event. If the item is True, then the property cannot be
+        # modified during object creation. If false, then the property can be
+        # modified during object creation
+        # NOTE: this is set in evhand at an init level of -500
+        INIT_LOCKDB = None
+
+        # NOTE: _eventlabel is required, its the key to this event
+        # its also how we handle equality. also it cannot be None
+        def __init__(self,
+                per_eventdb,
+                eventlabel,
+                prompt=None,
+                label=None,
+                category=None,
+                unlocked=False,
+                random=False,
+                pool=False,
+                conditional=None,
+                action=None,
+                start_date=None,
+                end_date=None,
+                unlock_date=None,
+                diary_entry=None,
+                rules=dict()
+            ):
+
+            # setting up defaults
+            if not eventlabel:
+                raise EventException("'_eventlabel' cannot be None")
+            if per_eventdb is None:
+                raise EventException("'per_eventdb' cannot be None")
+            if action is not None and action not in EV_ACTIONS:
+                raise EventException("'" + action + "' is not a valid action")
+            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+                raise Exception(
+                    (
+                        "diary entry for {0} is longer than {1} characters"
+                    ).format(eventlabel, self.DIARY_LIMIT)
+                )
+            if rules is None:
+                raise Exception(
+                    "'{0}' - rules property cannot be None".format(eventlabel)
+                )
+
+            self.eventlabel = eventlabel
+            self.per_eventdb = per_eventdb
+
+            # default prompt is the eventlabel
+            if not prompt:
+                prompt = self.eventlabel
+
+            # default label is a prompt
+            if not label:
+                label = prompt
+
+            # this is the data tuple. we assemble it here because we need
+            # it in two different flows
+            data_row = (
+                self.eventlabel,
+                prompt,
+                label,
+                category,
+                unlocked,
+                random,
+                pool,
+                conditional,
+                action,
+                start_date,
+                end_date,
+                unlock_date,
+                0, # shown_count
+                diary_entry,
+                rules
+            )
+
+            stored_data_row = self.per_eventdb.get(eventlabel, None)
+
+            # if the item exists, reform data if the length has increased
+            # if the length shrinks, use updates scripts
+            if stored_data_row:
+
+                stored_data_list = list(stored_data_row)
+
+                # first, check for lock existence
+                lock_entry = Event.INIT_LOCKDB.get(eventlabel, None)
+
+                if lock_entry:
+
+                    if len(stored_data_row) < len(data_row):
+                        # with differing lengths, we need to append the
+                        # changes to the stored data row prior to update
+                        # using the lock entry
+                        stored_data_list.extend(
+                            data_row[len(stored_data_row):]
+                        )
+
+                    # if the lock exists, then iterate through the names
+                    # and only update items that are unlocked
+                    for name,index in Event.T_EVENT_NAMES.iteritems():
+
+                        if not lock_entry[index]:
+                            stored_data_list[index] = data_row[index]
+
+                    self.per_eventdb[eventlabel] = tuple(stored_data_list)
+
+                else:
+                    # otherwise, no lock entry, update normally
+
+                    if len(stored_data_row) < len(data_row):
+                        # splice and dice
+                        data_row = list(data_row)
+                        data_row[0:len(stored_data_list)] = stored_data_list
+                        self.per_eventdb[self.eventlabel] = tuple(data_row)
+
+                    # actaully this should be always
+                    self.prompt = prompt
+                    self.category = category
+                    self.diary_entry = diary_entry
+                    self.rules = rules
+
+            # new items are added appropriately
+            else:
+                # add this data to the DB
+                self.per_eventdb[self.eventlabel] = data_row
+
+            # setup lock entry
+            Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
+
+
+        # equality override
+        def __eq__(self, other):
+            if isinstance(self, other.__class__):
+                return self.eventlabel == other.eventlabel
+            return False
+
+        # equality override
+        def __ne__(self, other):
+            return not self.__eq__(other)
+
+        # set attr overrride
+        def __setattr__(self, name, value):
+            #
+            # Override of setattr so we can do cool things
+            #
+            if name in self.N_EVENT_NAMES:
+                super(Event, self).__setattr__(name, value)
+#                self.__dict__[name] = value
+
+            # otherwise, figure out the location of an attribute, then repack
+            # a tup
+            else:
+                attr_loc = self.T_EVENT_NAMES.get(name, None)
+
+                if attr_loc:
+                    # found the location
+                    data_row = self.per_eventdb.get(self.eventlabel, None)
+
+                    if not data_row:
+                        # couldnt find this event, raise excp
+                        raise EventException(
+                            self.eventlabel + " not found in eventdb"
+                        )
+
+                    # otherwise, repack the tuples
+                    data_row = list(data_row)
+                    data_row[attr_loc] = value
+                    data_row = tuple(data_row)
+
+                    # now put it back in the dict
+                    self.per_eventdb[self.eventlabel] = data_row
+
+                else:
+                    raise EventException(
+                        "'{0}' is not a valid attribute for Event".format(name)
+                    )
+
+        # get attribute ovverride
+        def __getattr__(self, name):
+            attr_loc = self.T_EVENT_NAMES.get(name, None)
+
+            if attr_loc:
+                # found the location
+                data_row = self.per_eventdb.get(self.eventlabel, None)
+
+                if not data_row:
+                    # couldnt find this event, raise exp
+                    raise EventException(
+                        self.eventlabel + " not found in db"
+                    )
+
+                # otherwise return the attribute
+                return data_row[attr_loc]
+
+            else:
+                return super(Event, self).__getattribute__(name)
+
+
+        def monikaWantsThisFirst(self):
+            """
+            Checks if a special instant key is in this Event's rule dict
+
+            RETURNS: True if the this key is here, false otherwise
+            """
+            return (
+                self.rules is not None 
+                and "monika wants this first" in self.rules
+            )
+
+
+        @staticmethod
+        def getSortPrompt(ev):
+            #
+            # Special function we use to get a lowercased version of the prompt
+            # for sorting purposes
+            return ev.prompt.lower()
+
+
+        @staticmethod
+        def getSortShownCount(ev):
+            """
+            Function used for sorting by shown counts
+
+            RETURNS: the shown_count property of an event
+            """
+            return ev.shown_count
+
+        @staticmethod
+        def lockInit(name, ev=None, ev_label=None):
+            """
+            Locks the property for a given event object or eventlabel.
+            This will prevent the property from being overwritten on object
+            creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def unlockInit(name, ev=None, ev_label=None):
+            """
+            Unlocks the property for a given event object or event label.
+            This will allow the property to be overwritten on object creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def _modifyInitLock(name, value, ev=None, ev_label=None):
+            """
+            Modifies the init lock for a given event/eventlabel
+
+            IN:
+                name - name of property to modify
+                value - value to set the property
+                ev - Eveng object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            # check if we have somthing to work with
+            if ev is None and ev_label is None:
+                return
+
+            # check if we have a valid property
+            property_dex = Event.T_EVENT_NAMES.get(name, None)
+            if property_dex is None:
+                return
+
+            # prioritize Event over evlabel
+            if ev:
+                ev_label = ev.eventlabel
+
+            # now lock the property
+            lock_entry = list(Event.INIT_LOCKDB[ev_label])
+            lock_entry[property_dex] = value
+            Event.INIT_LOCKDB[ev_label] = tuple(lock_entry)
+
+
+        @staticmethod
+        def _filterEvent(
+                event,
+                category=None,
+                unlocked=None,
+                random=None,
+                pool=None,
+                action=None,
+                seen=None):
+            #
+            # Filters the given event object accoridng to the given filters
+            # NOTE: NO SANITY CHECKS
+            #
+            # For variable explanations, please see the static method
+            #   filterEvents
+            #
+            # RETURNS:
+            #   True if this event passes the filter, False if not
+
+            # collections allow us to match all
+            from collections import Counter
+
+            # now lets filter
+            if unlocked is not None and event.unlocked != unlocked:
+                return False
+
+            if random is not None and event.random != random:
+                return False
+
+            if pool is not None and event.pool != pool:
+                return False
+
+            if seen is not None and renpy.seen_label(event.eventlabel) != seen:
+                return False
+
+            if category is not None:
+                # USE OR LOGIC
+                if category[0]:
+                    if len(set(category[1]).intersection(set(event.category))) == 0:
+                        return False
+
+                # USE AND logic
+                elif len(set(category[1]).intersection(set(event.category))) != len(category[1]):
+                    return False
+
+            if action is not None and event.action not in action:
+                return False
+
+            # we've passed all the filtering rules somehow
+            return True
+
+        @staticmethod
+        def filterEvents(
+                events,
+#                full_copy=False,
+                category=None,
+                unlocked=None,
+                random=None,
+                pool=None,
+                action=None,
+                seen=None):
+            #
+            # Filters the given events dict according to the given filters.
+            # HOW TO USE: Use ** to pass in a dict of filters. they must match
+            # the names we use here.
+            #
+            # IN:
+            #   events - the dict of events we want to filter
+            #   full_copy - True means we create a new dict with deepcopies of
+            #       the events. False will only copy references
+            #       (Default: False)
+            #
+            #   FILTERING RULES: (recommend to use **kwargs)
+            #   NOTE: None means we ignore that filtering rule
+            #   category - Tuple of the following format:
+            #       [0]: True means we use OR logic. False means AND logic.
+            #       [1]: Tuple/list of strings that to match category.
+            #       (Default: None)
+            #       NOTE: If either element is None, we ignore this filteirng
+            #           rule.
+            #   unlocked - boolean value to match unlocked attribute.
+            #       (Default: None)
+            #   random - boolean value to match random attribute
+            #       (Default: None)
+            #   pool - boolean value to match pool attribute
+            #       (Default: None)
+            #   action - Tuple/list of strings/EV_ACTIONS to match action
+            #       NOTE: OR logic is applied
+            #       (Default: None)
+            #   seen - boolean value to match renpy.seen_label
+            #       (True means include seen, False means dont include seen)
+            #       (Default: None)
+            #
+            # RETURNS:
+            #   if full_copy is True, we return a completely separate copy of
+            #   Events (in a new dict) with the given filters applied
+            #   If full_copy is False, we return a copy of references of the
+            #   Events (in a new dict) with the given filters applied
+            #   if the given events is None, empty, or no filters are given,
+            #   events is returned
+
+            # sanity check
+            if (not events or len(events) == 0 or (
+                    category is None
+                    and unlocked is None
+                    and random is None
+                    and pool is None
+                    and action is None
+                    and seen is None)):
+                return events
+
+            # copy check
+#            if full_copy:
+#                from copy import deepcopy
+
+            # setting up rules
+            if (category and (
+                    len(category) < 2
+                    or category[0] is None
+                    or category[1] is None
+                    or len(category[1]) == 0)):
+                category = None
+            if action and len(action) == 0:
+                action = None
+
+            filt_ev_dict = dict()
+
+            # python 2
+            for k,v in events.iteritems():
+                # time to apply filtering rules
+                if Event._filterEvent(v,category=category, unlocked=unlocked,
+                        random=random, pool=pool, action=action, seen=seen):
+
+                    filt_ev_dict[k] = v
+
+            return filt_ev_dict
+
+        @staticmethod
+        def getSortedKeys(events, include_none=False):
+            #
+            # Returns a list of eventlables (keys) of the given dict of events
+            # sorted by the field unlock_date. The list is sorted in
+            # chronological order (newest first). Events with an unlock_date
+            # of None are not included unless include_none is True, in which
+            # case, Nones are put after everything else
+            #
+            # IN:
+            #   events - dict of events of the following format:
+            #       eventlabel: event object
+            #   include_none - True means we include events that have None for
+            #       unlock_date int he sorted key list, False means we dont
+            #       (Default: False)
+            #
+            # RETURNS:
+            #   list of eventlabels (keys), sorted in chronological order.
+            #   OR: [] if the given events is empty or all unlock_date fields
+            #   were None and include_none is False
+
+            # sanity check
+            if not events or len(events) == 0:
+                return []
+
+            # dict check
+            ev_list = events.values() # python 2
+
+            # none check
+            if include_none:
+                none_labels = list()
+
+            # insertion sort
+            eventlabels = list()
+            for ev in ev_list:
+
+                if ev.unlock_date is not None:
+                    index = 0
+
+                    while (index < len(eventlabels)
+                            and ev.unlock_date < events[
+                                eventlabels[index]
+                            ].unlock_date):
+                        index += 1
+                    eventlabels.insert(index, ev.eventlabel)
+
+                elif include_none: # eventlabel was none
+                    none_labels.append(ev.eventlabel)
+
+            if include_none:
+                eventlabels.extend(none_labels)
+
+            # final sanity check
+            if len(eventlabels) == 0:
+                return []
+
+            return eventlabels
+
+        @staticmethod
+        def checkConditionals(events):
+            #
+            # This checks the conditionals for all of the events in the event list
+            # if any evaluate to true, run the desired action then clear the
+            # conditional.
+            import datetime
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.keys() # python 2
+
+            # insertion sort
+            for ev in ev_list:
+                #Calendar events use a different function
+                date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
+                if not date_based and events[ev].conditional is not None:
+                    if eval(events[ev].conditional) and events[ev].action is not None:
+                        #Perform the event's action
+                        if events[ev].action == EV_ACT_PUSH:
+                            pushEvent(ev)
+                        elif events[ev].action == EV_ACT_QUEUE:
+                            queueEvent(ev)
+                        elif events[ev].action == EV_ACT_UNLOCK:
+                            events[ev].unlocked = True
+                            events[ev].unlock_date = datetime.datetime.now()
+                        elif events[ev].action == EV_ACT_RANDOM:
+                            events[ev].random = True
+                        elif events[ev].action == EV_ACT_POOL:
+                            events[ev].pool = True
+
+                        #Clear the conditional
+                        events[ev].conditional = None
+
+            return events
+
+        @staticmethod
+        def checkCalendar(events):
+            #
+            # This checks the date for all events to see if they are active.
+            # If they are active, then it checks for a conditional, and evaluates
+            # if an action should be run.
+            import datetime
+
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # dict check
+            ev_list = events.keys() # python 2
+
+            current_time = datetime.datetime.now()
+            # insertion sort
+            for ev in ev_list:
+                event_time = True
+
+                #If the event has no time-dependence, don't check it
+                if (events[ev].start_date is None) and (events[ev].end_date is None):
+                    event_time = False
+
+                #Calendar must be based on a date
+                if events[ev].start_date is not None:
+                    if events[ev].start_date > current_time:
+                        event_time = False
+
+                if events[ev].end_date is not None:
+                    if events[ev].end_date <= current_time:
+                        event_time = False
+
+                if events[ev].conditional is not None:
+                    if not eval(events[ev].conditional):
+                        event_time = False
+
+
+                if event_time and events[ev].action is not None:
+                    #Perform the event's action
+                    if events[ev].action == EV_ACT_PUSH:
+                        pushEvent(ev)
+                    elif events[ev].action == EV_ACT_QUEUE:
+                        queueEvent(ev)
+                    elif events[ev].action == EV_ACT_UNLOCK:
+                        events[ev].unlocked = True
+                        events[ev].unlock_date = current_time
+                    elif events[ev].action == EV_ACT_RANDOM:
+                        events[ev].random = True
+                    elif events[ev].action == EV_ACT_POOL:
+                        events[ev].pool = True
+
+                    #Clear the conditional
+                    events[ev].conditional = "False"
+
+            return events
+
+
+        @staticmethod
+        def _checkRepeatRule(ev, check_time):
+            """
+            Checks a single event against its repeat rules, which are evaled
+            to a time.
+            NOTE: no sanity checks
+
+            IN:
+                ev - single event to check
+                check_time - datetime used to check time rules
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            # check if the event contains a MASSelectiveRepeatRule and 
+            # evaluate it
+            if MASSelectiveRepeatRule.evaluate_rule(check_time, event):
+                return True
+
+            # check if the event contains a MASNumericalRepeatRule and 
+            # evaluate it
+            if MASNumericalRepeatRule.evaluate_rule(check_time, event):
+                return True
+
+            return False
+
+
+        @staticmethod
+        def checkRepeatRules(events, check_time=None):
+            """
+            checks the event dict against repeat rules, which are evaluated
+            to a time.
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                check_time - the datetime object that will be used to check the
+                    timed rules, if none is passed we check against the current time
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+                for the given check_time
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # if check_time is none we check against current time
+            if check_time is None:
+                check_time = datetime.datetime.now()
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+                if Event._checkRepeatRule(event, check_time):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    available_events[event.eventlabel] = event
+
+            # return the available events dict
+            return available_events
+
+
+        @staticmethod
+        def _checkGreetingRule(ev):
+            """
+            Checks the given event against its own greeting specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASGreetingRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkGreetingRules(events):
+            """
+            Checks the event dict (greetings) against their own greeting specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event objec
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASGreetingRule and evaluate it
+                if Event._checkGreetingRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+
+# init -1 python:
+    # this should be in the EARLY block
+    class MASButtonDisplayable(renpy.Displayable):
+        """
+        Special button type that represents a usable button for custom
+        displayables.
+
+        PROPERTIES:
+            xpos - x position of this button (relative to container)
+            ypos - y position of this button (relative to container)
+            width - width of this button
+            height - height of this button
+            hover_sound - sound played when being hovered (this is played only
+                once per hover. IF None, no sound is played)
+            activate_sound - sound played when activated (this is played only
+                once per activation. If None, no sound is played)
+            enable_when_disabled - True means that the button is active even
+                if shown disabled. False if otherwise
+            sound_when_disabled - True means that sound is active even when the
+                button is shown disabled, False if not.
+                NOTE: only works if enable_when_disabled is True
+            return_value - Value returned when button is activated
+            disabled - True means to disable this button, False not
+            hovered - True if we are being hovered, False if not
+            _button_click - integer value to match a mouse click:
+                1 - left (Default)
+                2 - middle
+                3 - right
+                4 - scroll up
+                5 - scroll down
+            _button_down - pygame mouse button event type to activate button
+                MOUSEBUTTONDOWN (Default)
+                MOUSEBUTTONUP
+        """
+        import pygame
+
+        # states of the button
+        _STATE_IDLE = 0
+        _STATE_HOVER = 1
+        _STATE_DISABLED = 2
+
+        # indexes for button parts
+        _INDEX_TEXT = 0
+        _INDEX_BUTTON = 1
+
+        def __init__(self,
+                idle_text,
+                hover_text,
+                disable_text,
+                idle_back,
+                hover_back,
+                disable_back,
+                xpos,
+                ypos,
+                width,
+                height,
+                hover_sound=None,
+                activate_sound=None,
+                enable_when_disabled=False,
+                sound_when_disabled=False,
+                return_value=True
+            ):
+            """
+            Constructor for the custom displayable
+
+            IN:
+                idle_text - Text object to show when button is idle
+                hover_text - Text object to show when button is being hovered
+                disable_text - Text object to show when button is disabled
+                idle_back - Image object for background when button is idle
+                hover_back - Image object for background when button is being
+                    hovered
+                disable_back - Image object for background when button is
+                    disabled
+                xpos - x position of this button (relative to container)
+                ypos - y position of this button (relative to container)
+                with - with of this button
+                height - height of this button
+                hover_sound - sound to play when hovering. If None, no sound
+                    is played
+                    (Default: None)
+                activate_sound - sound to play when activated. If None, no
+                    sound is played
+                    (Default: None)
+                enable_when_disabled - True will enable the button even if
+                    it is visibly disabled. FAlse will not
+                    (Default: False)
+                sound_when_disabled - True will enable sound even if the
+                    button is visibly disabled. False will not. Only works if
+                    enable_when_disabled is True.
+                    (Default: False)
+                return_value - Value to return when the button is activated
+                    (Default: True)
+            """
+
+            # setup
+#            self.idle_text = idle_text
+#            self.hover_text = hover_text
+#            self.disable_text = disable_text
+#            self.idle_back = idle_back
+#            self.hover_back = hover_back
+#            self.disable_back = disable_back
+            self.xpos = xpos
+            self.ypos = ypos
+            self.width = width
+            self.height = height
+            self.hover_sound = hover_sound
+            self.activate_sound = activate_sound
+            self.enable_when_disabled = enable_when_disabled
+            self.sound_when_disabled = sound_when_disabled
+            self.return_value = return_value
+            self.disabled = False
+            self.hovered = False
+            self._button_click = 1
+            self._button_down = pygame.MOUSEBUTTONDOWN
+
+            # the states of a button
+            self._button_states = {
+                self._STATE_IDLE: (idle_text, idle_back),
+                self._STATE_HOVER: (hover_text, hover_back),
+                self._STATE_DISABLED: (disable_text, disable_back)
+            }
+
+            # current state
+            self._state = self._STATE_IDLE
+
+
+        def _isOverMe(self, x, y):
+            """
+            Checks if the given x and y coodrinates are over this button.
+
+            RETURNS: True if the given x, y is over this button, False if not
+            """
+            return (
+                0 <= (x - self.xpos) <= self.width
+                and 0 <= (y - self.ypos) <= self.height
+            )
+
+
+        def _playActivateSound(self):
+            """
+            Plays the activate sound if we are allowed to.
+            """
+            if not self.disabled or self.sound_when_disabled:
+                renpy.play(self.activate_sound, channel="sound")
+
+
+        def _playHoverSound(self):
+            """
+            Plays the hover soudn if we are allowed to.
+            """
+            if not self.disabled or self.sound_when_disabled:
+                renpy.play(self.hover_sound, channel="sound")
+
+
+        def disable(self):
+            """
+            Disables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property
+            directly
+            """
+            self.disabled = True
+            self._state = self._STATE_DISABLED
+
+
+        def enable(self):
+            """
+            Enables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property
+            directly
+            """
+            self.disabled = False
+            self._state = self._STATE_IDLE
+
+
+        def getSize(self):
+            """
+            Returns the size of this button
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: width
+                    [1]: height
+            """
+            return (self.width, self.height)
+
+
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
+
+
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
+
+
+        def render(self, width, height, st, at):
+
+            # pull out the current button back and text and render them
+            render_text, render_back = self._button_states[self._state]
+            render_text = renpy.render(render_text, width, height, st, at)
+            render_back = renpy.render(render_back, width, height, st, at)
+
+            # what is the text's with and height
+            rt_w, rt_h = render_text.get_size()
+
+            # build our renderer
+            r = renpy.Render(self.width, self.height)
+
+            # blit our textures
+            r.blit(render_back, (0, 0))
+            r.blit(
+                render_text,
+                (int((self.width - rt_w) / 2), int((self.height - rt_h) / 2))
+            )
+
+            # return rendere
+            return r
+
+
+        def event(self, ev, x, y, st):
+
+            # only check if we arent disabled (or are allowed to work while
+            #   disabled)
+            if self._state != self._STATE_DISABLED or self.enable_when_disabled:
+
+                # we onyl care about mouse events here
+                if ev.type == pygame.MOUSEMOTION:
+                    is_over_me = self._isOverMe(x, y)
+                    if self.hovered:
+                        if not is_over_me:
+                            self.hovered = False
+                            self._state = self._STATE_IDLE
+
+                        # else remain in hover mode
+
+                    elif is_over_me:
+                        self.hovered = True
+                        self._state = self._STATE_HOVER
+
+                        if self.hover_sound:
+                            self._playHoverSound()
+
+                elif (
+                        ev.type == self._button_down
+                        and ev.button == self._button_click
+                    ):
+                    if self.hovered:
+                        if self.activate_sound:
+                            self._playActivateSound()
+                        return self.return_value
+
+            # otherwise continue on
+            return None
+
+#init -1 python:
+    # new class to manage a list of quips
+    class MASQuipList(object):
+        """
+        Class that manages a list of quips. Quips have types which helps us
+        when deciding how to execute quips. Also we have some properties that
+        make it easy to customize a quiplist.
+
+        I suggest that you only use this if you need to have multipe types
+        of quips in a list. If you're only doing one-liners, a regular list
+        will suffice.
+
+        Currently 3 types of quips:
+            glitchtext - special type for a glitchtext generated quip.
+            label - this quip is actually the label for the actual quip
+                (assumed the label has a return and is designed to be called)
+            line - this quip is the actual line we want to display.
+            other - other types of quips
+
+        CONSTANTS:
+            TYPE_GLITCH - glitch text type quip
+            TYPE_LABEL - label type quip
+            TYPE_LINE - line type quip
+            TYPE_OTHER - other, custom types of quips
+
+        PROPERTIES:
+            allow_glitch - True means glitch quips can be added to this list
+            allow_label - True means label quips can be added to this list
+            allow_line - True means line quips can be added to this list
+            raise_issues - True will raise exceptions if bad things occur:
+                - if a quip that was not allowed was added
+                - if a label that does not exist was added
+                - etc...
+        """
+
+        TYPE_GLITCH = 0
+        TYPE_LABEL = 1
+        TYPE_LINE = 2
+        TYPE_OTHER = 50
+
+        TYPES = (
+            TYPE_GLITCH,
+            TYPE_LABEL,
+            TYPE_LINE,
+            TYPE_OTHER
+        )
+
+        def __init__(self,
+                allow_glitch=True,
+                allow_label=True,
+                allow_line=True,
+                raise_issues=True
+            ):
+            """
+            Constructor for MASQuipList
+
+            IN:
+                allow_glitch - True means glitch quips can be added to this
+                    list, False means no
+                    (Default: True)
+                allow_label - True means label quips can be added to this list,
+                    False means no
+                    (Default: True)
+                allow_line - True means line quips can be added to ths list,
+                    False means no
+                    (Default: True)
+                raise_issues - True means we will raise exceptions if bad
+                    things occour. False means we stay quiet
+                    (Default: True)
+            """
+
+            # set properties
+            self.allow_glitch = allow_glitch
+            self.allow_label = allow_label
+            self.allow_line = allow_line
+            self.raise_issues = raise_issues
+
+            # this is the actual internal ist
+            self.__quiplist = list()
+
+
+        def addGlitchQuip(self,
+                length,
+                cps_speed=0,
+                wait_time=None,
+                no_wait=False
+            ):
+            """
+            Adds a glitch quip based upon the given params.
+
+            IN:
+                length - length of the glitch text
+                cps_speed - integer value to use as glitchtext speed multiplier
+                    If 0 or 1, no cps speed change is done.
+                    (Default: 0)
+                wait_time - integer value to use as wait time. If None, no
+                    wait tag is used
+                    (Default: None)
+                no_wait - If True, a no wait tag is added to the glitchtext.
+                    otherwise, no no-wait tag is added.
+                    (Default: False)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+            """
+            if self.allow_glitch:
+
+                # create the glitchtext quip
+                quip = glitchtext(length)
+
+                # check for cps speed adding
+                if cps_speed > 0 and cps_speed != 1:
+                    cps_speedtxt = "cps=*{0}".format(cps_speed)
+                    quip = "{" + cps_speedtxt + "}" + quip + "{/cps}"
+
+                # check for wait adding
+                if wait_time is not None:
+                    wait_text = "w={0}".format(wait_time)
+                    quip += "{" + wait_text + "}"
+
+                # check no wait
+                if no_wait:
+                    quip += "{nw}"
+
+                # now add the quip to the internal ist
+                self.__quiplist.append((self.TYPE_GLITCH, quip))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Glitchtext cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLabelQuip(self, label_name):
+            """
+            Adds a label quip.
+
+            IN:
+                label_name - label name of this quip
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the label didnt exist
+            """
+            if self.allow_label:
+
+                # check for label existence first
+                if not renpy.has_label(label_name):
+                    # okay throw an error and reutrn -1
+                    self.__throwError(
+                        "Label '{0}' does not exist".format(label_name)
+                    )
+                    return -1
+
+                # otherwise, we are good to add this thing
+                self.__quiplist.append((self.TYPE_LABEL, label_name))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Labels cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLineQuip(self, line, custom_type=None):
+            """
+            Adds a line quip. A custom type can be given if the caller wants
+            this line quip to be differentable from other line quips.
+
+            IN:
+                line - line quip
+                custom_type - the type to use for this line quip instead of
+                    TYPE_LINE. If None, TYPE_LINE is used.
+                    (Default: None)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the given custom_type is conflicting exisiting types.
+            """
+            if self.allow_line:
+
+                # check given type
+                if custom_type is None:
+                    custom_type = self.TYPE_LINE
+
+                elif custom_type in self.TYPES:
+                    # cant have conflicing types
+                    self.__throwError(
+                        (
+                            "Custom type for '{0}' conflicts with default " +
+                            "types."
+                        ).format(line)
+                    )
+                    return -1
+
+                # otherwise, we are good for adding this line
+                self.__quiplist.append((custom_type, line))
+
+                return len(self.__quiplist) -1
+
+            else:
+                self.__throwError(
+                    "Lines cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def quip(self, remove=False):
+            """
+            Randomly picks a quip and returns the result.
+
+            Line quips are automatically cleaned and prepared ([player],
+            gender pronouns are all replaced appropraitely). If the caller
+            wants additional variable replacements, they must do that
+            themselves.
+
+            IN:
+                remove - True means we remove the quip we select. False means
+                    keep it in the internal list.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            if remove:
+                # if we need to remove, we should use randint instead
+                sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
+                quip_type, quip_value = self.__quiplist.pop(sel_index)
+
+            else:
+                # if we dont need to remove, we can just use renpy random
+                # choice
+                quip_type, quip_value = renpy.random.choice(self.__quiplist)
+
+            # now do preocessing then send
+            if quip_type == self.TYPE_GLITCH:
+                quip_value = self._quipGlitch(quip_value)
+
+            elif quip_type == self.TYPE_LABEL:
+                quip_value = self._quipLabel(quip_value)
+
+            elif quip_type == self.TYPE_LINE:
+                quip_value = self._quipLine(quip_value)
+
+            return (quip_type, quip_value)
+
+
+        def _getQuip(self, index):
+            """
+            Retrieves the quip at the given index.
+
+            IN:
+                index - the index the wanted quip is at
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            return self.__quiplist[index]
+
+
+        def _getQuipList(self):
+            """
+            Retrieves the internal quip list. This is a direct reference to
+            the internal list, so be careful.
+
+            RETURNS:
+                the internal quiplist
+            """
+            return self.__quiplist
+
+
+        def _quipGlitch(self, gt_quip):
+            """
+            Processes the given glitch text quip for usage.
+
+            IN:
+                gt_quip - the glitchtext quip (value) to process
+
+            RETURNS:
+                glitchtext quip ready for display.
+            """
+            # NOTE: for now, we dont need to do processing here
+            return gt_quip
+
+
+        def _quipLabel(self, la_quip):
+            """
+            Processes the given label quip for usage.
+
+            IN:
+                la_quip - the label quip (value) to process
+
+            RETURNS:
+                label quip ready for call
+            """
+            # NOTE: for now, we dont need to do processing here
+            return la_quip
+
+
+        def _quipLine(self, li_quip):
+            """
+            Processes the given line quip for usage.
+
+            IN:
+                li_quip - the line quip (value) to process
+
+            RETURNS:
+                line quip ready for display
+            """
+            # lines need processing
+            #quip_replacements = self.__generateLineQuipReplacements()
+
+            #for keyword, value in quip_replacements:
+            #    li_quip = li_quip.replace(keyword, value)
+
+            # turns out we can do this in one line
+            # TODO: test if this actually works, we might need to pass in
+            # scope as well
+            return renpy.substitute(li_quip)
+
+
+        def _removeQuip(self, index):
+            """
+            Removes the quip at the given index. (and returns it back)
+
+            IN:
+                index - the index of the quip to remove.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of the removed quip
+                    [1]: value of the removed quip
+            """
+            quip_tup = self.__quiplist.pop(index)
+            return quip_tup
+
+
+        def __generateLineQuipReplacements(self):
+            """
+            Generates line quip replacement list for easy string replacement.
+
+            RETURNS: a list for line quip variable replacements
+
+            ASSUMES:
+                player
+                currentuser
+                mcname
+                <all gender prounouns>
+            """
+            return [
+                ("[player]", player),
+                ("[currentuser]", currentuser),
+                ("[mcname]", mcname),
+                ("[his]", his),
+                ("[he]", he),
+                ("[hes]", hes),
+                ("[heis]", heis),
+                ("[bf]", bf),
+                ("[man]", man),
+                ("[boy]", boy),
+                ("[guy]", guy)
+            ]
+
+
+        def __throwError(self, msg):
+            """
+            Internal function that throws an error if we are allowed to raise
+            issues.
+
+            IN:
+                msg - message to display
+            """
+            if self.raise_issues:
+                raise Exception(msg)
+
+
+init -1 python in mas_utils:
+    # utility functions for other stores.
+
+    def tryparseint(value, default=0):
+        """
+        Attempts to parse the given value into an int. Returns the default if
+        that parse failed.
+
+        IN:
+            value - value to parse
+            default - value to return if parse fails
+            (Default: 0)
+
+        RETURNS: an integer representation of the given value, or default if
+            the given value could not be parsed into an int
+        """
+        try:
+            return int(value)
+        except:
+            return default
+
+
+
 init -1 python:
+    import datetime # for mac issues i guess.
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
@@ -18,6 +1544,55 @@ init -1 python:
     #Add entries with your script in script-topics.rpy
     monika_topics = {}
 
+    def get_procs():
+        """
+        Retrieves list of processes running right now!
+
+        Only works for windows atm
+
+        RETURNS: list of running processes, or an empty list if
+        we couldn't do that
+        """
+        if renpy.windows:
+            import subprocess
+            try:
+                return subprocess.check_output(
+                    "wmic process get Description",
+                    shell=True
+                ).lower().replace("\r", "").replace(" ", "").split("\n")
+            except:
+                pass
+        return []
+
+
+    def is_running(proc_list):
+        """
+        Checks if a process in the given list is currently running.
+
+        RETURNS: True if a proccess in proc_list is running, False otherwise
+        """
+        running_procs = get_procs()
+        if len(running_procs) == 0:
+            return False
+
+        for proc in proc_list:
+            if proc in running_procs:
+                return True
+
+        # otherwise, not found
+        return False
+
+    def is_file_present(file):
+        try:
+            renpy.file(
+                ".." +
+                file
+            )
+            is_file = True
+        except:
+            is_file = False
+
+        return is_file
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
@@ -74,7 +1649,6 @@ init -1 python:
         except:
             appIds = None
         return appIds
-
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -1180,139 +2754,10 @@ image yuri dragon:
     xoffset 0
     "yuri 3"
 
-# Monika
-image monika 1 = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-image monika 2 = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-image monika 3 = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-image monika 4 = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-image monika 5 = im.Composite((960, 960), (0, 0), "monika/3a.png")
-
-image monika 1a = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-image monika 1b = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/b.png")
-image monika 1c = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/c.png")
-image monika 1d = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/d.png")
-image monika 1e = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/e.png")
-image monika 1f = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/f.png")
-image monika 1g = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/g.png")
-image monika 1h = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/h.png")
-image monika 1i = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/i.png")
-image monika 1j = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/j.png")
-image monika 1k = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/k.png")
-image monika 1l = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/l.png")
-image monika 1m = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/m.png")
-image monika 1n = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/n.png")
-image monika 1o = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/o.png")
-image monika 1p = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/p.png")
-image monika 1q = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/q.png")
-image monika 1r = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/r.png")
-
-image monika 2a = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-image monika 2b = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/b.png")
-image monika 2c = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/c.png")
-image monika 2d = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/d.png")
-image monika 2e = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/e.png")
-image monika 2f = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/f.png")
-image monika 2g = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/g.png")
-image monika 2h = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/h.png")
-image monika 2i = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/i.png")
-image monika 2j = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/j.png")
-image monika 2k = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/k.png")
-image monika 2l = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/l.png")
-image monika 2m = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/m.png")
-image monika 2n = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/n.png")
-image monika 2o = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/o.png")
-image monika 2p = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/p.png")
-image monika 2q = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/q.png")
-image monika 2r = im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/r.png")
-
-image monika 3a = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-image monika 3b = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/b.png")
-image monika 3c = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/c.png")
-image monika 3d = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/d.png")
-image monika 3e = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/e.png")
-image monika 3f = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/f.png")
-image monika 3g = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/g.png")
-image monika 3h = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/h.png")
-image monika 3i = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/i.png")
-image monika 3j = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/j.png")
-image monika 3k = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/k.png")
-image monika 3l = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/l.png")
-image monika 3m = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/m.png")
-image monika 3n = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/n.png")
-image monika 3o = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/o.png")
-image monika 3p = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/p.png")
-image monika 3q = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/q.png")
-image monika 3r = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/r.png")
-
-image monika 4a = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-image monika 4b = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/b.png")
-image monika 4c = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/c.png")
-image monika 4d = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/d.png")
-image monika 4e = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/e.png")
-image monika 4f = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/f.png")
-image monika 4g = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/g.png")
-image monika 4h = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/h.png")
-image monika 4i = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/i.png")
-image monika 4j = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/j.png")
-image monika 4k = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/k.png")
-image monika 4l = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/l.png")
-image monika 4m = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/m.png")
-image monika 4n = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/n.png")
-image monika 4o = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/o.png")
-image monika 4p = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/p.png")
-image monika 4q = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/q.png")
-image monika 4r = im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/r.png")
-
-image monika 5a = im.Composite((960, 960), (0, 0), "monika/3a.png")
-image monika 5b = im.Composite((960, 960), (0, 0), "monika/3b.png")
-
-image monika g1:
-    "monika/g1.png"
-    xoffset 35 yoffset 55
-    parallel:
-        zoom 1.00
-        linear 0.10 zoom 1.03
-        repeat
-    parallel:
-        xoffset 35
-        0.20
-        xoffset 0
-        0.05
-        xoffset -10
-        0.05
-        xoffset 0
-        0.05
-        xoffset -80
-        0.05
-        repeat
-    time 1.25
-    xoffset 0 yoffset 0 zoom 1.00
-    "monika 3"
-
-image monika g2:
-    block:
-        choice:
-            "monika/g2.png"
-        choice:
-            "monika/g3.png"
-        choice:
-            "monika/g4.png"
-    block:
-        choice:
-            pause 0.05
-        choice:
-            pause 0.1
-        choice:
-            pause 0.15
-        choice:
-            pause 0.2
-    repeat
-
 # Character variables
 define narrator = Character(ctc="ctc", ctc_position="fixed")
 define mc = DynamicCharacter('player', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 define s = DynamicCharacter('s_name', image='sayori', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
-define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 define n = DynamicCharacter('n_name', image='natsuki', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 define y = DynamicCharacter('y_name', image='yuri', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 define ny = Character('Nat & Yuri', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
@@ -1321,6 +2766,9 @@ define _dismiss_pause = config.developer
 
 default persistent.playername = ""
 default player = persistent.playername
+
+## NOTE: name changing moved to script-ch30 because of currentuser
+
 default persistent.playthrough = 0
 default persistent.yuri_kill = 0
 default persistent.seen_eyes = None
@@ -1405,3 +2853,100 @@ default natsuki_23 = None
 default persistent.monika_topic = ""
 default player_dialogue = persistent.monika_topic
 default persistent.monika_said_topics = []
+default persistent.event_list = []
+default persistent.event_database = dict()
+default persistent.farewell_database = dict()
+default persistent.greeting_database = dict()
+default persistent.gender = "M" #Assume gender matches the PC
+default persistent.chess_strength = 3
+default persistent.closed_self = False
+default persistent._mas_crashed_self = True # always assume crash unless player clicks quit
+default persistent.seen_monika_in_room = False
+default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
+default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
+default persistent.sessions={'last_session_end':None,'current_session_start':None,'total_playtime':datetime.timedelta(seconds=0),'total_sessions':0,'first_session':datetime.datetime.now()}
+default persistent.playerxp = 0
+default persistent.idlexp_total = 0
+default persistent.random_seen = 0
+default seen_random_limit = False
+default persistent._mas_enable_random_repeats = False
+default persistent._mas_monika_repeated_herself = False
+define random_seen_limit = 30
+define times.REST_TIME = 6*3600
+define times.FULL_XP_AWAY_TIME = 24*3600
+define times.HALF_XP_AWAY_TIME = 72*3600
+define xp.NEW_GAME = 30
+define xp.WIN_GAME = 30
+define xp.AWAY_PER_HOUR = 10
+define xp.IDLE_PER_MINUTE = 1
+define xp.IDLE_XP_MAX = 120
+define xp.NEW_EVENT = 15
+define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
+define scene_change = True # we start off with a scene change
+define mas_monika_twitter_handle = "lilmonix3"
+init python:
+    startup_check = False
+    try:
+        persistent.ever_won['hangman']
+    except:
+        persistent.ever_won['hangman']=False
+    try:
+        persistent.ever_won['piano']
+    except:
+        persistent.ever_won['piano']=False
+
+default his = "his"
+default he = "he"
+default hes = "he's"
+default heis = "he is"
+default bf = "boyfriend"
+default man = "man"
+default boy = "boy"
+default guy = "guy"
+default him = "him"
+default himself = "himself"
+
+return
+
+#Gender specific word replacement
+#Those are to be used like this "It is [his] pen." Output:
+#"It is his pen." (if the player's gender is declared as male)
+#"It is her pen." (if the player's gender is decalred as female)
+#"It is their pen." (if player's gender is not declared)
+#Variables (i.e. what you put in square brackets) so far: his, he, hes, heis, bf, man, boy,
+#Please remember to update the list if you add more gender exclusive words. ^
+label set_gender:
+    if persistent.gender == "M":
+        $his = "his"
+        $he = "he"
+        $hes = "he's"
+        $heis = "he is"
+        $bf = "boyfriend"
+        $man = "man"
+        $boy = "boy"
+        $guy = "guy"
+        $ him = "him"
+        $ himself = "himself"
+    elif persistent.gender == "F":
+        $his = "her"
+        $he = "she"
+        $hes = "she's"
+        $heis = "she is"
+        $bf = "girlfriend"
+        $man = "woman"
+        $boy = "girl"
+        $guy = "girl"
+        $ him = "her"
+        $ himself = "herself"
+    else:
+        $his = "their"
+        $he = "they"
+        $hes = "they're"
+        $heis = "they are"
+        $bf = "partner"
+        $man = "person"
+        $boy = "person"
+        $guy = "person"
+        $ him = "them"
+        $ himself = "themselves"
+    return

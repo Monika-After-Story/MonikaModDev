@@ -22,6 +22,8 @@ Adding new content to this game is easy, and doesn't require any specialized too
 
 To add new [random topics](https://github.com/Backdash/MonikaModDev/blob/content/Monika%20After%20Story/game/script-topics.rpy) and [greetings](https://github.com/Backdash/MonikaModDev/blob/content/Monika%20After%20Story/game/script-greetings.rpy), or to make changes and fix typos, you can simply navigate to the appropriate file on the `content` branch of our github site and click the pencil icon in the upper right corner to begin making changes. When you are finished, add a short message describing your changes, and click the green button labeled "Propose Changes." A collaborator will be notified, and will review your changes before merging them into the mod.
 
+Now that monika's dialogue includes expressions, please use [this cheatsheet](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/MonikaCheatsheetupdate2.jpg) to pick appropriate expressions and poses for your topics. At the moment, all poses revert to Monika's standard sitting pose, but when more poses are added, any expressions using them will update automatically.
+
 For new game art or music, please open a ticket on [issues](https://github.com/Backdash/MonikaModDev/issues), and attach the files you'd like to submit. Again, a collaborator will look over your submission and figure out how best to use it in our game. To get an idea of what we might be needing, check for any open [art-related issues](https://github.com/Backdash/MonikaModDev/issues?q=is%3Aissue+is%3Aopen+label%3Aart).
 
  ### Bug fixes and New Software Features
@@ -60,7 +62,7 @@ While we're generally accepting of most help, there are a few things that we are
 * Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get community feedback.
 * Code clearly, using descriptive variable names, comments, and modularizing as functions wherever appropriate.
 * Keep feature submissions as small as possible, preferably one new feature per submission.
-* Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See our [Community Code of Conduct](https://github.com/Backdash/MonikaModDev/blob/master/CODE_OF_CONDUCT.md).
+* Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See our [Community Code of Conduct](https://github.com/Monika-After-Story/MonikaModDev/wiki/Code-of-Conduct).
 * Ensure all dialogue fits Monika's voice. Do your best to consider word choice, conversationalism, and her interests.
 
 ### Monika's "Voice"
@@ -76,7 +78,7 @@ From her dialogue in the game, there are a few consistent traits you should note
 * Though dark topics are discussed, Monika tends to end conversations on a positive note. Possibly caused by the unique relationship she maintains with the player.
 * Love for the player. Most of her conversations and dialogue will contain a reminder of her affection. That being said, it is NOT a requirement. In-game conversations without an "I love you" do exist.
 * An ability to tease and joke around. When instances of this occur, she makes sure to point it out at the end of the conversation. Occasionally accompanied by a tilde (~).
-* An interest in written arts and philsophy. From her abundance of advice on writing, emotions, and other life topics, it is safe to assume that she enjoys thinking about abstract or controversial topics. Her passion for the Literature Club supports this.
+* An interest in written arts and philosophy. From her abundance of advice on writing, emotions, and other life topics, it is safe to assume that she enjoys thinking about abstract or controversial topics. Her passion for the Literature Club supports this.
 
 As we would like to keep Monika as close as possible to what's established in game, keeping her unique character traits in mind while you work on contributions would be appreciated.
 
@@ -98,6 +100,53 @@ At this point, you're ready to make your changes! Feel free to ask for help; eve
 
 >If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch so it's easier to merge.
 
+## Making Dialogue
+
+![Guide 1](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide1.png?raw=True)
+
+Before you make dialogue ensure the branch is set to **content**, NOT **master**. However, if you're writing jokes set the branch to **jokes-concept**
+
+If you're planning to write multiple topics, please submit a pull request with all the topics inside it.
+
+Once the branch is set to **content**, click the pencil button to start editing.
+
+![Guide 2](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/Making-Dialogue-Guide1.png)
+
+List of categories:
+Psychology, Society, School, Life, Media,Literature,Games Literature Club, Romance, Club Members,You,Monika, DDLC, Mod, Technology, Philosophy, Misc, and Trivia.
+
+**IMPORTANT:** Do NOT use capital letters on keywords. The input lowercases all strings, hence making capitalized letters in keywords unreachable.
+
+When writing dialogue always start with m **#X** " and end with".
+
+For **#X** refer to the [cheat sheet](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/MonikaCheatsheetupdate2.jpg) for the numbers and letters.
+
+If you want to write more complicated dialogue, visit [Dialogue Coding](https://github.com/Monika-After-Story/MonikaModDev/wiki/Dialogue-Coding) 
+
+Place return at the last line, after the last sentence of your dialogue.
+
+Once you're done, refer to the guide below to submit your topic as a pull request.
+
+## Submitting a Pull Request
+
+![Guide 1](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide1.png?raw=True)
+
+Click the pencil icon to start editing.
+
+![Guide 2](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide2.png?raw=True)
+
+When you're done making changes, click propose file change.
+
+Note: If you're writing dialogue, do NOT use capital letters on keywords. The input lowercases all strings, hence making capitalized letters in keywords unreachable.
+
+![Guide 3](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide3.png?raw=True)
+
+Click create pull request.
+
+![Guide 4](https://github.com/Backdash/MonikaModDev/blob/master/docs/guide4.png?raw=True)
+
+Add an appropriate title and a description of the changes you made, before you create your pull request.
+
 # Join us!
 
-You can chat with the core team on [our development Discord channel](https://discord.gg/MRKPk4). We're always friendly to new contributors, and it's not just a great place to get help but also just a fun place to hang out with like-minded DDLC fans.
+You can chat with the core team on [our development Discord channel](https://discord.gg/K2KuJeX). We're always friendly to new contributors, and it's not just a great place to get help, but also just a fun place to hang out with like-minded DDLC fans.

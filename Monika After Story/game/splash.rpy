@@ -162,12 +162,15 @@ image tos2 = "bg/warning2.png"
 
 
 label splashscreen:
+    python:
+        persistent.sessions['current_session_start']=datetime.datetime.now()
+        persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
+    scene white
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
     if not persistent.first_run:
         $ quick_menu = False
-        scene white
         pause 0.5
         scene tos
         with Dissolve(1.0)
@@ -186,14 +189,16 @@ label splashscreen:
         scene white
         with Dissolve(1.5)
 
-
         #Optional, load a copy of DDLC save data
         if not persistent.has_merged:
             call import_ddlc_persistent from _call_import_ddlc_persistent
 
-    $ persistent.first_run = True
+        $ persistent.first_run = True
 
     $ basedir = config.basedir.replace('\\', '/')
+
+    #Check for game updates before loading the game or the splash screen
+    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
@@ -242,7 +247,6 @@ label after_load:
     return
 
 
-
 label autoload:
     python:
         # Stuff that's normally done after splash
@@ -260,6 +264,10 @@ label autoload:
         main_menu = False
         _in_replay = None
 
+    # explicity remove keymaps we dont want
+    $ config.keymap["debug_voicing"] = list()
+    $ config.keymap["choose_renderer"] = list()
+
     # Pop the _splashscreen label which has _confirm_quit as False and other stuff
     $ renpy.pop_call()
     jump expression persistent.autoload
@@ -269,4 +277,7 @@ label before_main_menu:
     return
 
 label quit:
+    $persistent.sessions['last_session_end']=datetime.datetime.now()
+    $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
+
     return

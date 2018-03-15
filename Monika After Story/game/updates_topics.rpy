@@ -39,27 +39,44 @@ label vv_updates_topics:
         updates.topics = {}
 
         # versions
-        # use the v### notation so we can work with labels
-        vv051 = "v051"
-        vv050 = "v050"
-        vv040 = "v040"
-        vv033 = "v033"
-        vv032 = "v032"
-        vv031 = "v031"
-        vv030 = "v030"
-        vv022 = "v022"
+        # use the v#_#_# notation so we can work with labels
+        vv0_7_4 = "v0_7_4"
+        vv0_7_3 = "v0_7_3"
+        vv0_7_2 = "v0_7_2"
+        vv0_7_1 = "v0_7_1"
+        vv0_7_0 = "v0_7_0"
+        vv0_6_3 = "v0_6_3"
+        vv0_6_2 = "v0_6_1"
+        vv0_6_1 = "v0_6_1"
+        vv0_6_0 = "v0_6_0"
+        vv0_5_1 = "v0_5_1"
+        vv0_5_0 = "v0_5_0"
+        vv0_4_0 = "v0_4_0"
+        vv0_3_3 = "v0_3_3"
+        vv0_3_2 = "v0_3_2"
+        vv0_3_1 = "v0_3_1"
+        vv0_3_0 = "v0_3_0"
+        vv0_2_2 = "v0_2_2"
 
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
-        updates.version_updates[vv050] = vv051
-        updates.version_updates[vv040] = vv051
-        updates.version_updates[vv033] = vv051
-        updates.version_updates[vv032] = vv033
-        updates.version_updates[vv031] = vv032
-        updates.version_updates[vv030] = vv031
-        updates.version_updates[vv022] = vv030
-
+        updates.version_updates[vv0_7_3] = vv0_7_4
+        updates.version_updates[vv0_7_2] = vv0_7_4
+        updates.version_updates[vv0_7_1] = vv0_7_2
+        updates.version_updates[vv0_7_0] = vv0_7_1
+        updates.version_updates[vv0_6_3] = vv0_7_0
+        updates.version_updates[vv0_6_2] = vv0_7_0
+        updates.version_updates[vv0_6_1] = vv0_7_0
+        updates.version_updates[vv0_6_0] = vv0_6_1
+        updates.version_updates[vv0_5_1] = vv0_6_1
+        updates.version_updates[vv0_5_0] = vv0_5_1
+        updates.version_updates[vv0_4_0] = vv0_5_1
+        updates.version_updates[vv0_3_3] = vv0_5_1
+        updates.version_updates[vv0_3_2] = vv0_3_3
+        updates.version_updates[vv0_3_1] = vv0_3_2
+        updates.version_updates[vv0_3_0] = vv0_3_1
+        updates.version_updates[vv0_2_2] = vv0_3_0
 
         # version structures:
         # if a version has changed / removed IDS, then add it as a dict
@@ -72,6 +89,25 @@ label vv_updates_topics:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+
+        # (0.6.1 - 0.6.3) -> 0.7.0
+        changedIDs = {
+            "monika_deleted": None,
+            "monika_whatever": None,
+            "monika_games": None,
+            "monika_chess": None,
+            "monika_pong": None,
+            "monika_vulgarity": None,
+            "monika_goodbye": None,
+            "monika_night": None
+        }
+        updates.topics[vv0_7_0] = changedIDs 
+
+        # (0.5.1 - 0.6.0) -> 0.6.1
+        changedIDs = {
+            "monika_piano": None
+        }
+        updates.topics[vv0_6_1] = changedIDs
 
         # (0.3.3 - 0.5.0) -> 0.5.1
         changedIDs = dict()
@@ -87,17 +123,17 @@ label vv_updates_topics:
         changedIDs["monika_kyon"] = None
         changedIDs["monika_water"] = None
         changedIDs["monika_computer"] = None
-        updates.topics[vv051] = changedIDs
+        updates.topics[vv0_5_1] = changedIDs
 
         # 0.3.1 -> 0.3.2
         changedIDs = dict()
         changedIDs["monika_monika"] = None
-        updates.topics[vv032] = changedIDs
+        updates.topics[vv0_3_2] = changedIDs
 
         # 0.3.0 -> 0.3.1
         changedIDs = dict()
         changedIDs["monika_ghosts"] = "monika_whispers"
-        updates.topics[vv031] = changedIDs
+        updates.topics[vv0_3_1] = changedIDs
 
         # 0.2.2 -> 0.3.0
         # this is a long list...
@@ -214,7 +250,7 @@ label vv_updates_topics:
             # changedIDs dict (these must be handled in updates.rpy)
             # monika_piano
             # monika_college was pointing to ch30_31 (monika_middleschool)
-        updates.topics[vv030] = changedIDs
+        updates.topics[vv0_3_0] = changedIDs
 
         # ensuring no refs to old dicts
         changedIDs = None

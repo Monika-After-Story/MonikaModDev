@@ -24,4 +24,11 @@ Monika After Story/game/screens.rpyc
 Monika After Story/project.json
 *.chr
 *.rpyc
-*.json
+Monika After Story/project.json
+Monika After Story/characters/monika.chr
+*.rpyc
+Monika After Story/project.json
+.DS_Store
+Monika After Story/.DS_Store
+Monika After Story/characters/monika.chr
+Monika After Story/update/updates.json
