@@ -311,6 +311,18 @@ python early:
                 return super(Event, self).__getattribute__(name)
 
 
+        def monikaWantsThisFirst(self):
+            """
+            Checks if a special instant key is in this Event's rule dict
+
+            RETURNS: True if the this key is here, false otherwise
+            """
+            return (
+                self.rules is not None 
+                and "monika wants this first" in self.rules
+            )
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -684,11 +696,39 @@ python early:
 
             return events
 
+
         @staticmethod
-        def checkRules(events, check_time=None):
+        def _checkRepeatRule(ev, check_time):
             """
-            checks the event dict against their own rules, filters out those Events
-            which the rule can't be applied for the given check_time.
+            Checks a single event against its repeat rules, which are evaled
+            to a time.
+            NOTE: no sanity checks
+
+            IN:
+                ev - single event to check
+                check_time - datetime used to check time rules
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            # check if the event contains a MASSelectiveRepeatRule and 
+            # evaluate it
+            if MASSelectiveRepeatRule.evaluate_rule(check_time, event):
+                return True
+
+            # check if the event contains a MASNumericalRepeatRule and 
+            # evaluate it
+            if MASNumericalRepeatRule.evaluate_rule(check_time, event):
+                return True
+
+            return False
+
+
+        @staticmethod
+        def checkRepeatRules(events, check_time=None):
+            """
+            checks the event dict against repeat rules, which are evaluated
+            to a time.
 
             IN:
                 events - dict of events of the following format:
@@ -700,7 +740,6 @@ python early:
                 A filtered dict containing the events that passed their own rules
                 for the given check_time
             """
-
             # sanity check
             if not events or len(events) == 0:
                 return None
@@ -714,23 +753,16 @@ python early:
 
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
+                if Event._checkRepeatRule(event, check_time):
 
-                # check if the event contains a MASSelectiveRepeatRule and 
-                # evaluate it
-                if MASSelectiveRepeatRule.evaluate_rule(check_time, event):
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
 
-                    # add the event to our available events dict
-                    available_events[label] = event
-
-                # check if the event contains a MASNumericalRepeatRule and 
-                # evaluate it
-                if MASNumericalRepeatRule.evaluate_rule(check_time, event):
-
-                    # add the event to our available events dict
-                    available_events[label] = event
+                    available_events[event.eventlabel] = event
 
             # return the available events dict
             return available_events
+
 
         @staticmethod
         def checkGreetingRules(events):
