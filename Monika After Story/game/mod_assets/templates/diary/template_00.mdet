@@ -10,11 +10,9 @@
 
 This is an example of me, @m_name@, writing in you. ;) 
 
-Here is a list of games [player] and I played today:
-@gamesCSV|b@
+@gamesCSV|bi@
 
-Here is a list of topics [player] and I discussed today:
-@topicsCSV|b@
+@topicsCSV|bi@
 
 Now for a body section:
 # check template 01-03 for other examples of body
@@ -22,7 +20,9 @@ Now for a body section:
 
 @closing@
 
-@m_name@
+@m_name|t@
+
+Oh hi, [player]!
 
 # TODO
 # PS entries
