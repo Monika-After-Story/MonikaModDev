@@ -651,23 +651,36 @@ init python in mas_diary:
         if len(games_played) > 0:
 
             if len(games_played) > 1:
+                # more than one game played
                 games_played_str = (
                     ", ".join(games_played[:-1]) +
                     " and {0}".format(games_played.pop())
                 )
 
-                # break up the lines
-                if modifier == "b":
-                    return breakLines(games_played_str)
+            else:
+                # otherwise only one game played today
+                games_played_str = games_played[0]
 
-                # otherwise as is
-                return games_played_str
+        else:
+            # otherwise no games played today
+            games_played_str = ""
 
-            # otherwise only one game played today
-            return games_played[0]
+        if "i" in modifier:
+            # intro text was requested
 
-        # otherwise no games played today
-        return ""
+            if len(games_played_str) == 0:
+                # no games played
+                return "We didn't play any games today."
+
+            # games were played
+            games_played_str = "Today we played {0}.".format(games_played_str)
+
+        if "b" in modifier:
+            # break lines was requested
+            return breakLines(games_played_str)
+
+        # othrwise as is
+        return games_played_str
 
     
     def _dk_greeting(modifier, curr_mods):
@@ -794,23 +807,36 @@ init python in mas_diary:
             ]
 
             if len(short_entry_list) > 1:
+                # more than one topic
                 topics_str = (
                     ", ".join(short_entry_list[:-1]) + 
                     " and {0}".format(short_entry_list.pop())
                 )
 
-                # break up lines
-                if modifier == "b":
-                    return breakLines(topics_str)
+            else:
+                # otherwise only one topic
+                topics_str = short_entry_list[0]
 
-                # otherwise as is
-                return topics_str
+        else:
+            # otherwise no topics discussed today
+            topics_str = ""
 
-            # otherwise only one topic
-            return short_entry_list[0]
+        if "i" in modifier:
+            # intro text was requested
 
-        # otherwise no topics discussed today
-        return ""
+            if len(topics_str) == 0:
+                # no topics discussed
+                return "We didn't talk about much today."
+
+            # topics were discussed
+            topics_str = "Today we talked about {0}.".format(topics_str)
+
+        if "b" in modifier:
+            # break lines was requested
+            return breakLines(topics_str)
+
+        # otherwise as is
+        return topics_str
 
 
     def _dk_year(modifier, curr_mods):
