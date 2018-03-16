@@ -4469,7 +4469,8 @@ label monika_selfharm:
     m 1o "I mean."
     m 2g "After I found out about Yuri, I got a bit curious..."
     m 1o "I just wanted to see what it felt like..."
-    m 2q "I won't do it again, though."
+    if show_bandages == False:
+        m 2q "I won't do it again, though."
     m 1f "If you ever feel depressed, just come to me okay?"
     m "It'd hurt me even more to see you in pain..."
     m 1g "Just know that people do care about you!"
