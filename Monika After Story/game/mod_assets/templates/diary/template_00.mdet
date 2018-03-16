@@ -4,7 +4,7 @@
 #
 # lines starting with '#' are ignored 
 
-~~~~~~~ {YYYY}-{MM}-{DD} ~~~~~~~
+~~~~~~~ @Y@-@M@-@D@ ~~~~~~~
 
 @greeting@
 

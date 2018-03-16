@@ -22,10 +22,6 @@
 #
 # diary templates are scanned via the startswith keyword and extension
 
-# TODO: we're not gonna do this yet, but at some point, add a property to Event
-# for diary lines. Basically if an event will trigger a specific diary entry
-# we should display it in the diary.
-
 #### metric datas. These should NOT be persisetent.
 # list of tuples of event entries:
 #   [0]: event_database of this entry
@@ -92,6 +88,7 @@ init python in mas_diary:
     # global stuff
     import os
     import math # yuck
+    import datetime
 
     # store stuff
     import store.mas_utils as mas_utils
@@ -147,26 +144,6 @@ init python in mas_diary:
 
     # list of the scanned valid templates
     templates = list()
-
-    # literal diary keyword dicts
-    # these ones dont call into functions
-    # diary keywords for dates
-    diary_keywords_dates_auto = {
-        "YYYY": "%Y", # 4 digit current year
-        "YY": "%y", # 2 digit current year
-        "MM": "%m", # 2 digit current month
-        "Mfull": "%B", # full word current month
-        "Mshort": "%b", # abbv/3char current month
-        "DD": "%d", # 2 digit current day
-        "Dfull": "%A", # full word current day
-        "Dshort": "%a" # abbv current day 
-    }
-
-    # diary keywords for dates (custom)
-    diary_keywords_dates_custom = {
-        "mm": "{0}", # 2 digit current month, unpadded
-        "dd": "{0}" # 2 digit current day, unpadded
-    }
 
     # diary keywords for times
     # TODO: do we really need this
@@ -242,28 +219,6 @@ init python in mas_diary:
         # otherwise we're done
         return outstring
 
-
-    def combineDiaryKeywords(using_date=None):
-        """
-        Combines diary keywords into a dict
-        NOTE: does not apply to teh gen dict
-
-        IN:
-            ** various keyword args to apply to differing fill functions **
-            ** Refer to the individual fill functions for explanations **
-
-        RETURNS: a dict containing combined diary keywords
-        """
-        # start by filling the individual dicts
-        _fillDiaryKeywordsDates(using_date=using_date)
-
-        # now combine all of them into a single dict
-        combined = dict()
-        combined.update(diary_keywords_dates_auto)
-        combined.update(diary_keywords_dates_custom)
-
-        return combined
-        
 
     def indexLeftSpace(string, loc, end_loc=0):
         """
@@ -518,35 +473,6 @@ init python in mas_diary:
         return body_str
 
 
-    def _fillDiaryKeywordsDates(using_date=None):
-        """
-        Fills the diary replacement keywords for dates dict
-
-        IN:
-            using_date - if not None, we use this date to populate the
-                dates dict. otherwise we use current date
-        """
-        import datetime
-
-        # check for ussing date
-        if using_date is None:
-            using_date = datetime.date.today()
-
-        # process keyword replacements
-        for date_kw in diary_keywords_dates_auto:
-            diary_keywords_dates_auto[date_kw] = (
-                using_date.strftime(diary_keywords_dates_auto[date_kw])
-            )
-
-        # and custom ones
-        diary_keywords_dates_custom["mm"] = (
-            diary_keywords_dates_custom["mm"].format(using_date.month)
-        )
-        diary_keywords_dates_custom["dd"] = (
-            diary_keywords_dates_custom["dd"].format(using_date.day)
-        )
-
-
     def _scanTemplates():
         """
         Scans the template folder for valid templates.
@@ -683,7 +609,33 @@ init python in mas_diary:
 
         # pick a greetings
         return renpy.random.choice(greetings_list)
-    
+   
+
+    def _dk_day(modifier, curr_mods):
+        """
+        Gets the current day as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+
+        RETURNS: current day as a string
+        """
+        if modifier == "f":
+            # full word day
+            return datetime.date.today().strftime("%A")
+
+        elif modifier == "2u":
+            # 2 digit day, unpadded
+            return str(datetime.date.today().day)
+
+        elif modifier == "s":
+            # short word day
+            return datetime.date.today().strftime("%a")
+
+        # 2 digit day
+        return datetime.date.today().strftime("%d")
+
 
     def _dk_gamesCSV(modifier, curr_mods):
         """
@@ -792,6 +744,32 @@ init python in mas_diary:
         return "Monika"
 
 
+    def _dk_month(modifier, curr_mods):
+        """
+        Gets current month as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+
+        RETURNS: current month as a string
+        """
+        if modifier == "f":
+            # full word month
+            return datetime.date.today().strftime("%B")
+
+        elif modifier == "s":
+            # short word month
+            return datetime.date.today().strftime("%b")
+
+        elif modifier == "2u":
+            # 2 digit month, unpadded
+            return str(datetime.date.today().month)
+
+        # 2 digit month
+        return datetime.date.today().strftime("%m")
+
+
     def _dk_topicsCSV(modifier, curr_mods):
         """
         Generates CSV of topics discussed today. this uses the short diary
@@ -833,6 +811,24 @@ init python in mas_diary:
 
         # otherwise no topics discussed today
         return ""
+
+
+    def _dk_year(modifier, curr_mods):
+        """
+        Gets current year as a string.
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+
+        RETURNS: current year as a string
+        """
+        if modifier == "2":
+            # 2 digit year
+            return datetime.date.today().strftime("%y")
+
+        # default is 4 digit year
+        return datetime.date.today().strftime("%Y")
 
 
 # some stuff should happen a bit later
@@ -878,13 +874,17 @@ init 1 python in mas_diary:
         # gamesCSV|<modifier>
         # modifier rules:
         #   b - break the lines into multiple ones
+        #   i - include intro text
+        # combinable: b, i
         "gamesCSV": _dk_gamesCSV,
 
         # topics discussed, comma separated
         # topicsCSV|<modifier>
         # modifier rules:
         #   b - break the lines into multiple ones
-        "topicsCSV": _dk_topicsCSV
+        #   i - include intro text
+        # combinable: b, i
+        "topicsCSV": _dk_topicsCSV,
 
         # story entries. These will only be populated if we have any story
         # events, like changing name, knocking on the door, stuff like that
@@ -892,6 +892,32 @@ init 1 python in mas_diary:
         # TODO
 #        "story": _dk_story
 
+        # current year
+        # Y|<modifier>
+        # modifier rules:
+        #   4 - 4 digit current year (Default)
+        #   2 - 2 digit current year
+        "Y": _dk_year,
+
+        # current month
+        # M|<modifier>
+        # modifier rules:
+        #   2 - 2 digit current month (Default)
+        #   2u - 2 digit current month, unpadded
+        #   f - full word current month
+        #   s - short/abbreviated word current month
+        "M": _dk_month,
+
+        # current day
+        # D|<modifier>
+        # modifier rules:
+        #   2 - 2 digit current day (date) (Default)
+        #   2u - 2 digit current day, unpadded (date)
+        #   f - full word current day
+        #   s - short/abbrv word current day
+        "D": _dk_day
+
+        # TODO: times
     }
 
 
@@ -1065,9 +1091,6 @@ init 2018 python:
         # template_choice should be an int
         sel_template = mas_diary.templates[template_choice]
     
-        # okay
-        diary_kws = mas_diary.combineDiaryKeywords()
-
         # TODO,if the file doesnt exist, use "w"
         # otherwise, use "a"
         with open(basedir + "/test.bin", "a") as diary:
