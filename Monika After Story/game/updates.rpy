@@ -203,6 +203,10 @@ label v0_7_4(version="v0_7_4"):
         try: os.remove(config.basedir + "/game/valentines.rpyc")
         except: pass   
 
+        # remove white day stuff
+        try: os.remove(config.basedir + "/game/white-day.rpyc")
+        except: pass
+
         # anniversary dates relying on add_months need to be tweaked
         # define a special function for this
         import store.evhand as evhand
