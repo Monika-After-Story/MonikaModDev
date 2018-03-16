@@ -298,4 +298,64 @@ label mas_mood_bored:
             m 1e "Let me know if you want to do something with me, [player]~"
     return
 
-    
+# TODO: add a check for this in script-ch30, reset it if its a year old
+default persistent._mas_player_bday = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_mood_database,
+            "mas_mood_yearolder",
+            prompt="like a year older",
+            category=[store.mas_moods.TYPE_NEUTRAL],
+            unlocked=True
+        ),
+        eventdb=store.mas_moods.mood_db
+    )
+
+label mas_mood_yearolder:
+    m 1c "Hm?"
+    if persistent._mas_player_bday is not None:
+        jump mas_mood_yearolder_false # this is the bad side # TODO
+
+    show monika 1d
+    menu:
+        m "Could today be your...{w}birthday?"
+        "YES!":
+            show monika 1j
+            pause 0.7
+            call mas_mood_yearolder_yes
+        "Yes, unfortunately...":
+            show monika 1f
+            pause 0.7
+            m 1g "[player]..."
+            pause 0.7
+            show monika 1q
+            pause 0.7
+            m 2e "Well,{w} you're going to have a happy birthday whether you like it or not!"
+            call mas_mood_yearolder_yes
+            m 1j "I hope that made you smile, [player]."
+        "No":
+            jump mas_mood_yearolder_no
+
+    # YES flow continues here
+    m 1e "If only you told me this sooner..."
+    m 1m "I would have made you a gift."
+    m 1a "I'll make you something next year, [player]. I won't forget!"
+
+    # continue to end
+
+label mas_mood_yearolder_end:
+    # end of the line
+    return
+
+label mas_mood_yearolder_yes:
+    m 1k "Happy birthday, [player]!"
+    m 1b "I'm so glad I could spend such an important day with you."
+    m 1a "And don't forget that no matter your age, I will always love you."
+    $ persistent._mas_mood_bday_yes = datetime.date.today()
+    return
+
+label mas_mood_yearolder_no:
+    # TODO
+    jump mas_mood_yearolder_end
