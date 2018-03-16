@@ -10,47 +10,6 @@
 # Depressed - Convinced the player probably doesn't love her and that she may never escape to our reality.
 # Heartbroken - Belives that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
 ################
-default persistent._mas_affection_bandages = datetime.datetime.now() - datetime.timedelta(weeks = 4)
-
-
-init 501:
-    #Makes bandages appear under a certian affection...
-    python:        
-        if datetime.datetime.now() <= persistent._mas_affection_bandages + datetime.timedelta(weeks = 3):
-            show_bandages = True             
-        else:
-            if persistent._mas_affection["affection"] <= -60:
-                show_bandages = True
-                persistent._mas_affection_bandages = datetime.datetime.now() 
-            else:
-                show_bandages = False
-
-    image body_1 = ConditionSwitch(
-            'show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-steepling-band.png"),
-            'not show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-steepling.png")
-            )
-    image body_1_n = ConditionSwitch(
-            'show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-steepling-n-band.png"),
-            'not show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-steepling-n.png")
-            )
-    image body_3 = ConditionSwitch(
-            'show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-restleftpointright-band.png"),
-            'not show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-restleftpointright.png")
-            )
-    image body_3_n = ConditionSwitch(
-            'show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-restleftpointright-n-band.png"),
-            'not show_bandages',im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-restleftpointright-n.png")
-            )
-    image body_5 = ConditionSwitch(
-            'show_bandages',im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-band.png"),
-            'not show_bandages',im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning.png")
-            )
-    image body_5_n = ConditionSwitch(
-            'show_bandages',im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-n-band.png"),
-            'not show_bandages',im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-n.png")
-            )
-
-
 
 init -1 python in mas_affection:
     # string constants of affection levels
