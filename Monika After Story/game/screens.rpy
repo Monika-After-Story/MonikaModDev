@@ -1495,7 +1495,7 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)
+                textbutton _("Yes") action [SetField(persistent, "_mas_crashed_self", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
                 textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
@@ -1922,7 +1922,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                         textbutton _("That's enough for now.") action Return(False)
 
 # the regular scrollabe menu
-screen scrollable_menu(items, display_area, scroll_align):
+screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enough for now."):
         style_prefix "scrollable_menu"
 
         fixed:
@@ -1950,7 +1950,7 @@ screen scrollable_menu(items, display_area, scroll_align):
 
                     null height 20
 
-                    textbutton _("That's enough for now.") action Return(False)
+                    textbutton _(nvm_text) action Return(False)
 
 # more generali scrollable menu. This one takes the following params:
 # IN:
@@ -2014,5 +2014,4 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
                             elif final_item[3]:
                                 style "scrollable_menu_special_button"
                             action Return(final_item[1])
-
 

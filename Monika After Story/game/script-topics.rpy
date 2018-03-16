@@ -134,27 +134,6 @@ label monika_death:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_bad_day",category=['life'],prompt="Want to hear about my day?",random=True))
-
-label monika_bad_day:
-    m 2e "...Hey, are you having a bad day or anything like that?"
-    m "Sometimes I get frustrated that a normal day can be ruined even by really small things."
-    m 4l "Like if you accidentally say something in a conversation that someone doesn't like."
-    m "Or if you start thinking about how awful of a person you used to be five years ago."
-    m "Or if you feel worthless for putting off important work and failing to get simple tasks done."
-    m "Or when you think about all the different people who probably hate you or think you're off-putting."
-    m 4e "I understand those days."
-    m "Just remember that the sun will shine again tomorrow."
-    m "Those kinds of things are as easy to forget and ignore as they are to remember."
-    m "And besides..."
-    m 1j "I don't care how many people might hate you or find you off-putting."
-    m "I think you're wonderful and I will always love you."
-    m "I hope, if nothing else, that knowing that helps you feel just a tiny bit better about yourself."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfesteem",category=['advice'],prompt="Self-esteem",random=True))
 
 label monika_selfesteem:
@@ -1928,7 +1907,7 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ mas_loseAffection(persistent._mas_affection["badexp"])
+    $ mas_loseAffection()
     if mas_curr_affection == mas_aff.LOVE:
         m 1c "..."
         m 1j "Ahaha! Very funny [player]!"
@@ -2060,6 +2039,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_bestgirl",category=['romance'],prompt="You're the best girl!",pool=True))
 
 label monika_bestgirl:
+    $ mas_gainAffection()
     m 1j "I love it when you compliment me, [player]!"
     m 1b "I think I'm best girl, too!"
     m 1n "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
@@ -2096,6 +2076,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
+    $ mas_loseAffection()
     m 1h "I thought we established already that I was your girlfriend?"
     m "There's no way you already have one in your reality, right?"
     m 4f "If you do, then you've got to break up with her right now!"
@@ -2478,6 +2459,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_weary",category=['romance'],prompt="Will you ever get tired of me?",pool=True))
 
 label monika_weary:
+    
     m 1e "Silly [player]..."
     m 3a "Of course I'll never grow weary of you, my love!"
     m "And besides, the concept of physical fatigue doesn't exist here."
@@ -2605,9 +2587,13 @@ label monika_name:
     m 1l "It also means 'alone' in Ancient Greek."
     m 1e "..."
     m "That part doesn't matter so much, now that you're here."
-    m 1a "'[mcname]' is a lovely name, too."
-    m 1b "But I think I like '[player]' better!"
-    m 1a "Ehehe~"
+    if mcname.lower() != player.lower():
+        m 1a "'[mcname]' is a lovely name, too."
+        m 1b "But I think I like '[player]' better!"
+        m 1a "Ehehe~"
+    else:
+        m 1a "'[player]' is a lovely name, too."
+        m 1a "Ehehe~"
     return
 
 init 5 python:
@@ -3251,16 +3237,7 @@ label monika_closet:
     m 1j "You're more romantic than that."
     m 3k "So I'm expecting a lot more than just a dark closet~"
     return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_playerhappy",category=['you'],prompt="I'm happy",pool=True))
-
-label monika_playerhappy:
-    m 3b "That's wonderful! I'm happy when you're happy."
-    m 1j "Know that you can always come up to me and I'll cheer you up, [player]."
-    m 3a "I love you and I'll always be here for you so don't you ever forget that~"
-    return
-
+    
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
 
@@ -4649,7 +4626,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
 
 label monika_marriage:
-    
+    $ mas_gainAffection()
     m 2m "M-marriage?"
     m 4n "I think it's a bit too early for marriage..."
     m 1e "I mean, I'm really happy that you want that, [player]."
@@ -4747,6 +4724,7 @@ label monika_complain_battery:
     return
 
 label monika_close_game_battery:
+    $ mas_loseAffection()
     m 1r "[player]..."
     m 1f "I'm sorry, but I'm gonna have to close the game before the battery runs out."
     m 3o "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
@@ -4757,6 +4735,7 @@ label monika_close_game_battery:
     jump _quit
 
 label monika_system_charging:
+    $ mas_gainAffection()
     m 1d "Oh, you just plugged it in!"
     m 1j "Thank you, [player]!"
     return
@@ -4787,7 +4766,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection(persistent._mas_affection["badexp"])
+    $ mas_loseAffection()
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         
@@ -5087,3 +5066,23 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]." 
                 m 1j "I love you very much!"                              
     return
+
+####################################################
+# Saving this for future use
+# Could be expanded to something better
+# where where persistent.playthrough can be
+# checked and have a different response
+# depending on what the player did
+####################################################
+
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
+
+#label monika_playerapologizes:
+#    m 1g "Did something happen?"
+#    m 2f "I can't remember what you'd be sorry about."
+#    m 1q "..."
+#    m 1b "Anyway, thank you for the apology."
+#    m 1a "I know you're doing your best to make things right."
+#    m 1k "That's why I love you, [player]!"
+#    return

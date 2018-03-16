@@ -77,7 +77,7 @@ We're always happy to hear new ideas! Suggestions can be made on our issues page
 
 ### I would like to contribute, but I don't know how to code. Is there any way I can help?
 
-We are always looking for new dialogue and art. Please see our [Contributing Guide](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md) for information on how to submit new dialogue and art to Monika After Story. In this guide you will find tips on writing good dialogue in Monika's style, and learn how to open a "Pull Request" which will allow you to submit new topics for review and inclusion in the game.
+We are always looking for new dialogue and art. Please see our [Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines) for information on how to submit new dialogue and art to Monika After Story. In this guide you will find tips on writing good dialogue in Monika's style, and learn how to open a "Pull Request" which will allow you to submit new topics for review and inclusion in the game.
 
 ### Where can I find things to help with?
 

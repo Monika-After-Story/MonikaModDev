@@ -336,7 +336,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
 
 label ch30_main:
-    $ is_monika_in_room = False
+    $ mas_skip_visuals = False
     $ m.display_args["callback"] = slow_nodismiss
     $ m.what_args["slow_abortable"] = config.developer
     $ quick_menu = True
@@ -471,6 +471,7 @@ label ch30_autoload:
         $ config.allow_skipping = False
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
+    $ mas_skip_visuals = False
 
     # set the gender
     call set_gender from _autoload_gender
@@ -483,23 +484,29 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
+    $ selected_greeting = None
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
-        $ is_monika_in_room = False
+
+    # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
         python:
-        # random chance to do monika in room greeting
-        # we'll say 1 in 20
-            import random
-            is_monika_in_room = random.randint(1,modoorg.CHANCE) == 1
 
-    if not is_monika_in_room:
+            sel_greeting_event = store.mas_greetings.selectGreeting()
+            selected_greeting = sel_greeting_event.eventlabel
+
+            # store if we have to skip visuals ( used to prevent visual bugs)
+            mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                event=sel_greeting_event
+            )
+
+    if not mas_skip_visuals:
         if persistent.current_track:
             $ play_song(persistent.current_track)
         else:
             $ play_song(songs.current_track) # default
-    
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -531,7 +538,7 @@ label ch30_autoload:
             grant_xp(away_xp)
             
     #Grant good exp for closing the game correctly.
-    $ _mas_gainAffection(persistent._mas_affection["goodexp"])
+    $ mas_gainAffection()
             
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
@@ -542,24 +549,20 @@ label ch30_autoload:
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
 
-    #Skip all greetings if you closed the game on Monika
-    if persistent.closed_self:
-        #pick a random greeting
-        if is_monika_in_room:
-            if persistent.current_monikatopic != "i_greeting_monikaroom":
-                $ pushEvent("i_greeting_monikaroom")
-        else:
-            $pushEvent(renpy.random.choice(greetings_list))
+    # push greeting if we have one
+    if selected_greeting:
+        $ pushEvent(selected_greeting)
 
     if not persistent.tried_skip:
         $ config.allow_skipping = True
     else:
         $ config.allow_skipping = False
 
-    if not is_monika_in_room:
+    if not mas_skip_visuals:
         $ set_keymaps()
 
     $persistent.closed_self = False
+    $ persistent._mas_crashed_self = True
     $startup_check = False
     jump ch30_loop
 
@@ -567,10 +570,10 @@ label ch30_loop:
     $ quick_menu = True
 
     # this event can call spaceroom
-    if not is_monika_in_room:
+    if not mas_skip_visuals:
         call spaceroom from _call_spaceroom_2
     else:
-        $ is_monika_in_room = False
+        $ mas_skip_visuals = False
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
@@ -623,8 +626,8 @@ label ch30_loop:
 
         python:
             if (
-                    mas_battery_supported 
-                    and battery.is_battery_present() 
+                    mas_battery_supported
+                    and battery.is_battery_present()
                     and not battery.is_charging()
                     and battery.get_level() < 20
                 ):

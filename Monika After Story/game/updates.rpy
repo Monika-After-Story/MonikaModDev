@@ -192,8 +192,9 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.7.3
-label v0_7_3(version="v0_7_3"):
+# NOTE: well shit this wasnt ready and now it has to be done later
+# 0.7.4
+label v0_7_4(version="v0_7_4"):
     python:
         # check for vday existence and delete
         # NOTE: thiis was supposed to be in for 0.7.2 but i forgot/thought
@@ -335,3 +336,37 @@ label v0_3_0(version="v0_3_0"):
         # update!
         persistent = updateTopicIDs(version)
     return
+
+
+###############################################################################
+### Even earlier UPDATE SCRIPTS
+# these scripts are for doing python things REALLY earlly in the pipeline.
+# this consists of a giant init python block. 
+# make sure to del your vars after creating them
+# also start these in progressive order and explain reasoning behind
+# changes
+# NOTE: the lockDB initalization occours at -500, so this must be after that
+#init -300 python:
+#    _mas_events_unlocked_v073 = False
+#
+#    if persistent.version_number == "0.7.3":
+#        # 0.7.3 released some new properties for Events before they were ready
+#        # for widespread use. These properties must be unlocked so new code
+#        # can set them
+#        for ev_key in persistent._mas_event_init_lockdb:
+#            Event.unlockInit("rules", ev_label=ev_key)
+#
+#        _mas_events_unlocked_v073 = True # use this to relock everyone after
+#        del ev_key
+
+# clean up for early update scripts
+#init 1000 python:
+#
+#    if _mas_events_unlocked_v073:
+#        for ev_key in persistent._mas_event_init_lockdb:
+#            Event.lockInit("rules", ev_label=ev_key)
+#
+#        del _mas_events_unlocked_v073
+#        del ev_key
+        
+
