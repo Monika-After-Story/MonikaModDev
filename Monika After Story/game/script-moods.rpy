@@ -298,9 +298,6 @@ label mas_mood_bored:
             m 1e "Let me know if you want to do something with me, [player]~"
     return
 
-# TODO: add a check for this in script-ch30, reset it if its a year old
-default persistent._mas_player_bday = None
-
 init 5 python:
     addEvent(
         Event(
@@ -314,48 +311,137 @@ init 5 python:
     )
 
 label mas_mood_yearolder:
+    $ import datetime
+
     m 1c "Hm?"
     if persistent._mas_player_bday is not None:
-        jump mas_mood_yearolder_false # this is the bad side # TODO
+        # player's bday has been saved from before
+
+        python:
+            today = datetime.date.today()
+            is_today_bday = (
+                persistent._mas_player_bday.month == today.month 
+                and persistent._mas_player_bday.day == today.day
+            )
+
+        if is_today_bday:
+            # today is! player's bday!
+            jump .mas_mood_yearolder_yesloud
+
+        python:
+            is_today_leap_bday = (
+                persistent._mas_player_bday.month == 2
+                and persistent._mas_player_bday.day == 29
+                and (
+                    (today.month == 2 and today.day == 28)
+                    or (today.month == 3 and today.day == 1)
+                )
+            )
+
+        if is_today_leap_bday:
+            # febuary 29 is special case
+            # but we need to check if a feb 29 works for this year, in which
+            # case, player is misinformed
+            python:
+                try:
+                    datetime.date(today.year, 2, 29)
+
+                    # 29th exists this year, sorry player
+                    leap_year = True 
+
+                except ValueError:
+                    # 29th no exists, we use this as ur bday
+                    leap_year = False
+
+            if leap_year:
+                # if its a leap year, then player you are either late or
+                # or early
+                # TODO jump somewhere
+                pass
+
+            # otherwise, we can treat this day as your birthday, but we need
+            # to mention the leapyear thing
+            jump mas_mood_yearolder_leap_today
+
+        # otherwise it is NOT the player's birthday lol
+        jump mas_mood_yearolder_false 
 
     show monika 1d
     menu:
         m "Could today be your...{w}birthday?"
         "YES!":
-            show monika 1j
-            pause 0.7
-            call mas_mood_yearolder_yes
+            label .mas_mood_yearolder_yesloud:
+                jump mas_mood_yearolder_yes
         "Yes, unfortunately...":
-            show monika 1f
-            pause 0.7
-            m 1g "[player]..."
-            pause 0.7
-            show monika 1q
-            pause 0.7
-            m 2e "Well,{w} you're going to have a happy birthday whether you like it or not!"
-            call mas_mood_yearolder_yes
-            m 1j "I hope that made you smile, [player]."
+            jump mas_mood_yearolder_yesu
+
         "No":
             jump mas_mood_yearolder_no
-
-    # YES flow continues here
-    m 1e "If only you told me this sooner..."
-    m 1m "I would have made you a gift."
-    m 1a "I'll make you something next year, [player]. I won't forget!"
-
-    # continue to end
 
 label mas_mood_yearolder_end:
     # end of the line
     return
 
+label mas_mood_yearolder_wontforget:
+    # YES flow continues here
+    m 1e "If only you told me this sooner..."
+    m 1m "I would have made you a gift."
+    m 1a "I'll make you something next year, [player]. I won't forget!"
+    jump mas_mood_yearolder_end
+
+# empathatic yes, today is your birthday
 label mas_mood_yearolder_yes:
+    show monika 1j
+    pause 0.7
+    call mas_mood_yearolder_yes_post
+    jump mas_mood_yearolder_wontforget
+
+# sad yes, today is your birthday
+label mas_mood_yearolder_yesu:
+    show monika 1f
+    pause 0.7
+    m 1g "[player]..."
+    pause 0.7
+    show monika 1q
+    pause 0.7
+    m 2e "Well,{w} you're going to have a happy birthday whether you like it or not!"
+    call mas_mood_yearolder_yes_post
+    m 1j "I hope that made you smile, [player]."
+    jump mas_mood_yearolder_wontforget
+
+# general happy birthday
+label mas_mood_yearolder_yes_post:
     m 1k "Happy birthday, [player]!"
     m 1b "I'm so glad I could spend such an important day with you."
     m 1a "And don't forget that no matter your age, I will always love you."
     $ persistent._mas_mood_bday_yes = datetime.date.today()
     return
 
+# today is not your birthday
 label mas_mood_yearolder_no:
-    # TODO
+    m 1m "Aw, well,{w} it was worth a guess."
     jump mas_mood_yearolder_end
+
+# year older stuff
+# reference: Paul Janet, Maximilian Kiener
+label mas_mood_yearolder_years:
+    m 3a "Speaking of getting older,{w} did you know that how you perceive time changes as you age?"
+    m "For example, when you're a year old, you see one year as 100% of your life."
+    m 1a "But when you're 18, you see a year as only 5.6% of your life."
+    m "As you get older, the proportion of a year compared to your entire lifespan decreases."
+    m 3a "And in turn, time {i}feels{/i} like it's moving faster as you grow up."
+    show monika 1a
+    pause 0.7
+    # TODO: affection crew might want to change this up
+    m "So I always cherish our moments together, no matter how long or short they are."
+    m 1k "Although sometimes it feels like time stops when I'm with you."
+    m 1a "Do you feel the same, [player]?"
+    $ renpy.pause(2.0, hard=True)
+    m 1j "Aha, I thought so."
+    m 1j "You should visit me more often then, [player]."
+    return
+
+# today is your birthday, but its a leap day
+label mas_mood_yearolder_leap_today:
+    # TODO
+    return
