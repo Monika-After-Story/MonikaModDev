@@ -44,7 +44,7 @@ define mas_diary.game_outcomes = dict()
 define mas_diary.player_moods = list()
 
 # list of story-based entries.  These are written in list order.
-# each string is considered a "line".
+# each string is considered an entry
 define mas_diary.story_entries = list()
 
 # list of special custom diary entry strings. Each string is considered a
@@ -783,6 +783,74 @@ init python in mas_diary:
         return datetime.date.today().strftime("%m")
 
 
+    def _dk_ps(modifier, curr_mods):
+        """
+        Generates PS entries.
+        Breaklines is automatically assumed
+
+        IN:
+            modifier - UNUSED
+            curr_mods - UNUSED
+
+        RETURNS:
+            PS entry string
+
+        ASSUMES:
+            ps_entries
+        """
+        if len(ps_entries) > 0:
+            # at least one PS entry
+
+            output = StringIO() # from cStringIO
+            
+            # setup base values
+            ps_base = "P.S: "
+            ps_part = "P."
+            entry_count = 0
+
+            for entry in ps_entries:
+
+                # build PS string
+                ps_str = (ps_part * entry_count) + ps_base + entry
+
+                # write breaklines version of ps string
+                output.write(breakLines(ps_str))
+                output.write("\n")
+
+                # increase the P
+                entry_count + =1
+
+            # return PS entries
+            outstr = output.getvalue()
+            output.close()
+            return outstr
+
+        # otherwise no PS entries
+        return None
+
+    
+    def _dk_story(modifier, curr_mods):
+        """
+        Generates story event entries.
+
+        IN:
+            modifier - UNUSED
+            curr_mods - UNUSED
+
+        RETURNS:
+            story event string
+
+        ASSUMES:
+            story_entries
+        """
+        if len(story_entries) > 0:
+            # at least one story entry
+            return "\n\n".join(story_entries)
+
+        # otherwise no story entries
+        return None
+
+
     def _dk_topicsCSV(modifier, curr_mods):
         """
         Generates CSV of topics discussed today. this uses the short diary
@@ -914,9 +982,14 @@ init 1 python in mas_diary:
 
         # story entries. These will only be populated if we have any story
         # events, like changing name, knocking on the door, stuff like that
-        # NOTE: these are pulled from story_entries
-        # TODO
-#        "story": _dk_story
+        # Each story event is written in its own separate block, like a
+        # paragraph
+        "story": _dk_story,
+
+        # PS entries. 
+        # Each entry is written on a new line, but not separated by a newline
+        # NOTE: breaklines are automatically applied
+        "ps": _dk_ps,
 
         # current year
         # Y|<modifier>
@@ -954,8 +1027,7 @@ init 1 python in mas_diary:
         in the following order:
 
         1. Sections 
-        2. keywords
-        3. renpy subs
+        2. renpy subs
 
         Note that a "line" in the diary template can expand to multiple lines
         in the actual diary.
@@ -986,7 +1058,7 @@ init 1 python in mas_diary:
         line = _parseSections(line, curr_mods)
 
         # now keyword parsing
-        line = line.format(**diary_kws)
+#        line = line.format(**diary_kws)
 
         # now renpy sub
         # NOTE: this can also be adjusted for scope and translation by kw:
