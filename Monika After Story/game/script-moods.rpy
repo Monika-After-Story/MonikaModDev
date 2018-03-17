@@ -310,6 +310,9 @@ init 5 python:
         eventdb=store.mas_moods.mood_db
     )
 
+define mas_mood_yearolder_bday_yes_count = 0
+define mas_mood_yearolder_bday_no_count = 0
+
 label mas_mood_yearolder:
     $ import datetime
 
@@ -382,6 +385,27 @@ label mas_mood_yearolder_end:
     # end of the line
     return
 
+# today is NOT the player's birthday 
+# (or is it?)
+label mas_mood_yearolder_false:
+    m 2q "[player]..."
+    m 2f "Today isn't your birthday!"
+    python:
+        bday_str = (
+            persistent._mas_player_bday.strftime("%B") + " "
+            str(persistent._mas_player_bday.day)
+        )
+    m "You told me it was [bday_str]!"
+    # TODO: make this a timed jump
+    menu:
+        m "Is that not your birthday?"
+        "It's not":
+            # TODO
+        "It is!":
+            # TODO
+
+    jump mas_mood_yearolder_end
+
 label mas_mood_yearolder_wontforget:
     # YES flow continues here
     m 1e "If only you told me this sooner..."
@@ -420,6 +444,13 @@ label mas_mood_yearolder_yes_post:
 # today is not your birthday
 label mas_mood_yearolder_no:
     m 1m "Aw, well,{w} it was worth a guess."
+    if renpy.seen_label("mas_mood_yearolder_years"):
+        # TODO
+        pass
+
+    else:
+        call mas_mood_yearolder_years
+
     jump mas_mood_yearolder_end
 
 # year older stuff
