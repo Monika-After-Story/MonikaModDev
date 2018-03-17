@@ -43,6 +43,26 @@ init -1 python in mas_affection:
     G_NORMAL = -3
 
 init python:
+    #Functions to freeze exp progression for story events, use wisely.
+    def mas_FreezeGoodAffExp():
+        persistent._mas_affection_goodexp_freeze = True
+        
+    def mas_FreezeBadAffExp():
+        persistent._mas_affection_badexp_freeze = True
+        
+    def mas_FreezeBothAffExp():
+        mas_FreezeGoodAffExp()
+        mas_FreezeBadAffExp()
+        
+    def mas_UnfreezeBadAffExp():
+        persistent._mas_affection_badexp_freeze = False
+        
+    def mas_UnfreezeGoodAffExp():
+        persistent._mas_affection_badexp_freeze = False
+        
+    def mas_UnfreezeBothExp():
+        mas_UnfreezeBadAffExp()
+        mas_UnfreezeGoodAffExp()
 
    #Used to adjust the good and bad experience factors that are used to adjust affection levels.
     def mas_updateAffectionExp():
@@ -110,12 +130,11 @@ init python:
             amount=persistent._mas_affection["goodexp"],
             modifier=1
         ):
-
-        #Otherwise, use the value passed in the argument.
-        persistent._mas_affection["affection"] += amount
-
-        #Updates the experience levels if necessary.
-        mas_updateAffectionExp()
+        if not persistent._mas_affection_goodexp_freeze:
+            #Otherwise, use the value passed in the argument.
+            persistent._mas_affection["affection"] += amount
+            #Updates the experience levels if necessary.
+            mas_updateAffectionExp()
 
 
     #Used to subtract affection whenever something negative happens.
@@ -123,12 +142,11 @@ init python:
             amount=persistent._mas_affection["badexp"],
             modifier=1
         ):
-
-        #Otherwise, use the value passed in the argument.
-        persistent._mas_affection["affection"] += amount
-
-        #Updates the experience levels if necessary.
-        mas_updateAffectionExp()
+        if not persistent._mas_affection_badexp_freeze:
+            #Otherwise, use the value passed in the argument.
+            persistent._mas_affection["affection"] += amount
+            #Updates the experience levels if necessary.
+            mas_updateAffectionExp()
 
 
     #Used to check to see if affection level has reached the point where it should trigger an event.
