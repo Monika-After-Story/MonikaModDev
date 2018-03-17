@@ -130,7 +130,7 @@ init python:
             amount=persistent._mas_affection["goodexp"],
             modifier=1
         ):
-        if not persistent._mas_affection_goodexp_freeze == True:
+        if not persistent._mas_affection_goodexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] += amount
             #Updates the experience levels if necessary.
@@ -142,7 +142,7 @@ init python:
             amount=persistent._mas_affection["badexp"],
             modifier=1
         ):
-        if not persistent._mas_affection_badexp_freeze == True:
+        if not persistent._mas_affection_badexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] += amount
             #Updates the experience levels if necessary.
