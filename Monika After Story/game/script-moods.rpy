@@ -310,8 +310,12 @@ init 5 python:
         eventdb=store.mas_moods.mood_db
     )
 
-define mas_mood_yearolder_bday_yes_count = 0
-define mas_mood_yearolder_bday_no_count = 0
+# some values i need for single session checking
+# TODO some of these might need to be persstetns
+define mas_mood_yearolder.bday_yes_count = 0
+define mas_mood_yearolder.bday_no_count = 0
+define mas_mood_yearolder.bday_not_not = 0
+define mas_mood_yearolder.bday_not_yes = 0
 
 label mas_mood_yearolder:
     $ import datetime
@@ -396,11 +400,14 @@ label mas_mood_yearolder_false:
             str(persistent._mas_player_bday.day)
         )
     m "You told me it was [bday_str]!"
-    # TODO: make this a timed jump
     menu:
         m "Is that not your birthday?"
         "It's not":
-            # TODO
+            # puffy check monika please
+            show monika 2q
+            pause 0.7
+            m 2h "You lied to me, [player]."
+
         "It is!":
             # TODO
 
@@ -445,7 +452,8 @@ label mas_mood_yearolder_yes_post:
 label mas_mood_yearolder_no:
     m 1m "Aw, well,{w} it was worth a guess."
     if renpy.seen_label("mas_mood_yearolder_years"):
-        # TODO
+        # TODO this should be a short thing to say to player
+        # about feeling a year older
         pass
 
     else:
