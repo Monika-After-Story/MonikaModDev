@@ -412,8 +412,8 @@ init -1 python:
             # unpack the tuple for easy access
             skip_visual, random_chance = rule
 
-            # check if random_chance is 0 return False
-            if random_chance == 0:
+            # check if random_chance is less or equal to 0 return False
+            if random_chance <= 0:
                 return False
 
             # Evaluate randint with a chance of 1 in random_chance
@@ -501,8 +501,8 @@ init -1 python:
             # the same code structure, also it's more readable changing the name
             random_chance = rule
 
-            # check if random_chance is 0 return False
-            if random_chance == 0:
+            # check if random_chance is less or equal to 0 return False
+            if random_chance <= 0:
                 return False
 
             # Evaluate randint with a chance of 1 in random_chance
