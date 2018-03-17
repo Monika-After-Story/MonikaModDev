@@ -201,7 +201,7 @@ label v0_7_4(version="v0_7_4"):
         # auto updates would handle it
         import os
         try: os.remove(config.basedir + "/game/valentines.rpyc")
-        except: pass   
+        except: pass
 
         # remove white day stuff
         try: os.remove(config.basedir + "/game/white-day.rpyc")
@@ -218,7 +218,7 @@ label v0_7_4(version="v0_7_4"):
         year = datetime.timedelta(days=365)
         def _month_adjuster(key, months, span):
             new_anni_date = add_months(
-                start_of_day(persistent.sessions["first_session"]), 
+                start_of_day(persistent.sessions["first_session"]),
                 months
             )
             evhand.event_database[key].start_date = new_anni_date
@@ -236,10 +236,15 @@ label v0_7_4(version="v0_7_4"):
         _month_adjuster("anni_10", 120, month)
         _month_adjuster("anni_20", 240, year)
         evhand.event_database["anni_100"].start_date = add_months(
-            start_of_day(persistent.sessions["first_session"]), 
+            start_of_day(persistent.sessions["first_session"]),
             1200
         )
-            
+
+       # now properly set all farewells as unlocked, since the new system checks
+       # for the unlocked status
+        for k in evhand.farewell_database:
+            # no need to do any special checks since all farewells were already available
+            evhand.farewell_database[k].unlocked = True
 
 
     return
@@ -345,7 +350,7 @@ label v0_3_0(version="v0_3_0"):
 ###############################################################################
 ### Even earlier UPDATE SCRIPTS
 # these scripts are for doing python things REALLY earlly in the pipeline.
-# this consists of a giant init python block. 
+# this consists of a giant init python block.
 # make sure to del your vars after creating them
 # also start these in progressive order and explain reasoning behind
 # changes
@@ -372,5 +377,3 @@ label v0_3_0(version="v0_3_0"):
 #
 #        del _mas_events_unlocked_v073
 #        del ev_key
-        
-
