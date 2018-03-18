@@ -91,38 +91,38 @@ init python:
 
         #Defines an easy current affection statement to refer to so points aren't relied upon.
         if persistent._mas_affection["affection"] <= -100:
-            mas_curr_affection = store.mas_affection.BROKEN
+            mas_curr_affection = store.mas_aff.BROKEN
 
         elif persistent._mas_affection["affection"] >= -99 and persistent._mas_affection["affection"] <= -50:
-            mas_curr_affection = store.mas_affection.DISTRESSED
+            mas_curr_affection = store.mas_aff.DISTRESSED
 
         elif persistent._mas_affection["affection"] >= -49 and persistent._mas_affection["affection"] <= -30 :
-            mas_curr_affection = store.mas_affection.UPSET
+            mas_curr_affection = store.mas_aff.UPSET
 
         elif persistent._mas_affection["affection"] >= -29 and persistent._mas_affection["affection"] <= 29:
-            mas_curr_affection = store.mas_affection.NORMAL
+            mas_curr_affection = store.mas_aff.NORMAL
 
         elif persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] <= 49:
-            mas_curr_affection = store.mas_affection.HAPPY
+            mas_curr_affection = store.mas_aff.HAPPY
 
         elif persistent._mas_affection["affection"] >= 50 and persistent._mas_affection["affection"] <= 99:
-            mas_curr_affection = store.mas_affection.ENAMORED
+            mas_curr_affection = store.mas_aff.ENAMORED
 
         elif persistent._mas_affection["affection"] >= 100:
-            mas_curr_affection = store.mas_affection.LOVE
+            mas_curr_affection = store.mas_aff.LOVE
 
         else:
-            mas_curr_affection = store.mas_affection.CONFUSED
+            mas_curr_affection = store.mas_aff.CONFUSED
 
         #A group version for general sadness or happiness
         if persistent._mas_affection["affection"] <= -30:
-            mas_curr_affection_group = store.mas_affection.G_SAD
+            mas_curr_affection_group = store.mas_aff.G_SAD
 
         elif persistent._mas_affection["affection"] >=30:
-            mas_curr_affection_group = store.mas_affection.G_HAPPY
+            mas_curr_affection_group = store.mas_aff.G_HAPPY
 
         else:
-            mas_curr_affection_group = store.mas_affection.G_NORMAL
+            mas_curr_affection_group = store.mas_aff.G_NORMAL
 
 
     #Used to increment affection whenever something positive happens.
