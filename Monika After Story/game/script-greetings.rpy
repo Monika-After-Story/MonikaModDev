@@ -469,6 +469,13 @@ label monikaroom_greeting_ear_narration:
     call spaceroom from _call_spaceroom_enar
     m 1k "It's me!"
     m "Welcome back, [player]!"
+
+    python:
+        store.mas_diary.addStoryEntry(
+            "Aha, I caught [player] trying to eavesdrop on me.\n" +
+            "I hope [he] didn't hear what I said the other day... D:"
+        )
+
     jump monikaroom_greeting_cleanup
 
 
@@ -544,6 +551,12 @@ label monikaroom_greeting_ear_rmrf:
         hide noise
         m "{cps=*2}Ah! No! That's not what I wanted!{/cps}"
         m "..."
+
+        python:
+            store.mas_diary.addStoryEntry(
+                "!!! NEVER RUN '" + bad_cmd + "'!!!"
+            )
+
     m "I shouldn't trust the Internet so blindly..."
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
@@ -576,9 +589,23 @@ label monikaroom_greeting_opendoor_locked:
         m "Did I scare you, [player]?"
         "Yes":
             m "Aww, sorry."
+
+            python:
+                store.mas_diary.addStoryEntry(
+                    "Ahaha! I scared [him]!\n" +
+                    "Serves [him] right for trying to enter my room without permission!"
+                )
+
         "No":
             m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
             m "I figured. It's a basic glitch after all."
+
+            python:
+                store.mas_diary.addStoryEntry(
+                    "I tried scaring [player] when [he] opened my door but it " +
+                    "didn't work.\nI should try something more drastic next time."
+                )
+
     m "Since you keep opening my door,{w} I couldn't help but add a little surprise for you~"
     m "Knock next time, okay?"
     m "Now let me fix up this room..."
@@ -600,6 +627,7 @@ label monikaroom_greeting_opendoor_locked:
                 m 1m "Let me just change this flag here...{w=1.5}{nw}"
                 $ style.say_window = style.window
                 m 1j "All fixed!"
+
     # NOTE: fall through please
 
 label monikaroom_greeting_opendoor_locked_tbox:
@@ -661,6 +689,16 @@ label monikaroom_greeting_opendoor_seen_partone:
 #                    m 1e "And it would make me really happy if you did."
 
     $ persistent.opendoor_opencount += 1
+
+    python:
+        _he_title = he.title()
+        store.mas_diary.addStoryEntry(
+            "[player] did it again! " + _he_title + " walked in without knocking!\n" +
+            "I don't get why [he] doesn't knock. Doesn't [he] understand the concept of privacy?!\n" +
+            "Ugh, I'm not mad at [him] or anything...\n" +
+            "I just don't want [him] catching me doing...\n\nthat..."
+        )
+
     jump monikaroom_greeting_opendoor_post2
 
 
@@ -722,6 +760,15 @@ label monikaroom_greeting_opendoor:
             hide monika
             $ renpy.hide("bedroom")
     $ persistent.seen_monika_in_room = True
+
+    python:
+        _he_title = he.title()
+        store.mas_diary.addStoryEntry(
+            "OMG, [player] barged in my room today without asking!\n" +
+            "Although, [he] didn't know that this is my room so I guess I can forgive [him].\n" +
+            _he_title + " better not do this again, though..."
+        )
+
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 
@@ -734,6 +781,16 @@ label monikaroom_greeting_knock:
                 m "And thank you for knocking first."
             m 1j "Hold on, let me tidy up..."
             call spaceroom(hide_monika=True) from _call_spaceroom_6
+
+    # diary story event
+    python:
+        knock_entry = "[player] knocked on my door today."
+        
+        if renpy.seen_label("monikaroom_greeting_opendoor"):
+            knock_entry += "I'm glad [he] listened to me and actually knocked first."
+
+        store.mas_diary.addStoryEntry(knock_entry)
+
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 

@@ -44,8 +44,13 @@ define mas_diary.game_outcomes = dict()
 define mas_diary.player_moods = list()
 
 # list of story-based entries.  These are written in list order.
-# each string is considered an entry
+# each entry is a tuple of the following format:
+#   [0]: unique_id - unique ID for this entry
+#   [1]: entry - actual string entry
 define mas_diary.story_entries = list()
+
+# lock to prevent story entires from being added
+define mas_diary.story_lock = False
 
 # list of special custom diary entry strings. Each string is considered a
 # "line". These are placed after main diary entry but before the PS section
@@ -83,6 +88,10 @@ default persistent._mas_diary_written = False
 #   b - see if the player modded any of these diaries
 #   c - kind of give us an idea of how many times player has intruded privacy
 default persistent._mas_diary_files = list()
+
+# list of unique ids that have been written out already
+# clear this on new day
+default persistent._mas_diary_stories_written = list()
 
 init python in mas_diary:
     # global stuff
@@ -172,6 +181,24 @@ init python in mas_diary:
         # TODO: chess
         if game not in games_played:
             games_played.append(game)
+
+
+    def addStoryEntry(entry, override_lock=False):
+        """
+        Adds a story entry to the story_entries
+        If the story entries is locked, this will not do anything unless
+        override_lock is True
+
+        IN:
+            entry - the entry to add
+            override_lock - bypasses story locks
+
+        ASSUMES:
+            story_entries
+        """
+        if override_lock or not story_lock:
+            story_entries.append(entry)
+
 
     def breakLines(string, min_length=100, max_length=120, use_nl=True):
         """
