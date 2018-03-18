@@ -114,7 +114,7 @@ init python in mas_diary:
     from cStringIO import StringIO # we do alot of string work here
 
     # folder path to diary templates (from game)
-    DIARY_TEMPLATE_FOLDER = "mod_assets/templates/diary/"
+    DIARY_TEMPLATE_FOLDER = "mod_assets/templates/diary/main/"
 
     # game folder
     # we only need this until we create a mod_assets.rpa (probably)
