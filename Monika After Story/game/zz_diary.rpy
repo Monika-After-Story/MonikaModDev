@@ -72,6 +72,14 @@ define mas_diary.diary_opened = False
 # refer to the specific functions for what modifiers should be
 define mas_diary.diary_modifiers = dict()
 
+### UNIQUE IDS for story events
+define mas_diary.opendoor_knock = 1
+define mas_diary.opendoor_open_one = 2
+define mas_diary.opendoor_open_two = 3
+define mas_diary.opendoor_open_three = 4
+define mas_diary.opendoor_listen_rmrf = 11
+define mas_diary.opendoor_listen_surprise = 12
+
 #### persistents we need
 # True if we've written a diary entry today, False otherwise.
 # this should reset every day. and after a day has been written
@@ -183,20 +191,33 @@ init python in mas_diary:
             games_played.append(game)
 
 
-    def addStoryEntry(entry, override_lock=False):
+    def addStoryEntry(entry, override_lock=False, replace=False):
         """
         Adds a story entry to the story_entries
         If the story entries is locked, this will not do anything unless
         override_lock is True
 
         IN:
-            entry - the entry to add
-            override_lock - bypasses story locks
+            entry - the entry to add. tuple of the following format:
+                [0]: unique id of this entry
+                [1]: the entry itself
+            override_lock - True means we bypass story locks, False means we
+                do not
+                (Default: False)
+            replace - True means we replace the first instance of an entyr with
+                the same unique ID. False means we append as usual
+                (Default: False)
 
         ASSUMES:
             story_entries
         """
         if override_lock or not story_lock:
+            if replace:
+                loc = indexStoryEntry(entry[0], story_entries)
+                if loc >= 0:
+                    story_entries.pop(loc)
+
+            # entries are always appended
             story_entries.append(entry)
 
 
@@ -318,6 +339,23 @@ init python in mas_diary:
             return -1
 
         return index
+
+
+    def indexStoryEntry(entry_id, entry_list):
+        """
+        Returns index of the story entry with the same id
+
+        IN:
+            entry_id - id the entry to find
+            entry_list - the list of entries to search through
+
+        RETURNS: index of this story entry, or -1 if not found
+        """
+        for index in range(0, len(entry_list)):
+            if entry_id == entry_list[index][0]:
+                return index
+
+        return -1
 
 
     def isValidTemplateFile(filepath):
@@ -872,7 +910,7 @@ init python in mas_diary:
         """
         if len(story_entries) > 0:
             # at least one story entry
-            return "\n\n".join(story_entries)
+            return "\n\n".join([entry[1] for entry in story_entries])
 
         # otherwise no story entries
         return None
@@ -1011,7 +1049,8 @@ init 1 python in mas_diary:
         # events, like changing name, knocking on the door, stuff like that
         # Each story event is written in its own separate block, like a
         # paragraph
-        "story": _dk_story,
+        # NOTE: disabled for now
+#        "story": _dk_story,
 
         # PS entries. 
         # Each entry is written on a new line, but not separated by a newline
