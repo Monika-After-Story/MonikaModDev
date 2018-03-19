@@ -376,7 +376,7 @@ label mas_affection_absence:
         m 1o "Umm...[player]...you've already said that recently..."
         m 3h "You're not saying that to avoid me are you?"
         m 2f "If you really do mean it then tell me again in an hour or so..."
-        m 3o "I know you can get really busy"
+        m 3o "I know you can get really busy but it seems odd you're going away for a long time so much."
     if absence_counter == 1:
         jump mas_affection_absense_2
     else:
