@@ -41,25 +41,26 @@ init -1 python in mas_affection:
     G_SAD = -1
     G_HAPPY = -2
     G_NORMAL = -3
-
+    
+default persistent.mas_long_absence = False
 init python:
     #Functions to freeze exp progression for story events, use wisely.
     def mas_FreezeGoodAffExp():
         persistent._mas_affection_goodexp_freeze = True
-        
+
     def mas_FreezeBadAffExp():
         persistent._mas_affection_badexp_freeze = True
-        
+
     def mas_FreezeBothAffExp():
         mas_FreezeGoodAffExp()
         mas_FreezeBadAffExp()
-        
+
     def mas_UnfreezeBadAffExp():
         persistent._mas_affection_badexp_freeze = False
-        
+
     def mas_UnfreezeGoodAffExp():
         persistent._mas_affection_badexp_freeze = False
-        
+
     def mas_UnfreezeBothExp():
         mas_UnfreezeBadAffExp()
         mas_UnfreezeGoodAffExp()
@@ -173,27 +174,31 @@ init python:
     #Monika's initial affection based on start-up. Need to decide on super exp before we do anything else...
     #Monika closed game herself and how happy she is determines on time between closed game and reopening.
     #if persistent.closed_self == True:
-       # if datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6):
+        #if persistent.mas_long_absence == True:
+            #$ persistent.mas_long_absence = False
+            #$ persistent.mas_long_absence_cooldown = datetime.datetime.now()
+
+        #block of code to run datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6):
+        #else:
+
+            #if datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
 
 
-       # elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18):
 
 
-       # elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 1):
 
 
-        #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 1):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 2):)
 
 
-        #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 2):)
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 4):
 
 
-       # elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 4):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
 
-
-        #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
-
-
+        #persistent.mas_long_absence = False
 #Unlocked when affection level reaches 50.
 #This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 #There is a character limit of 10 characters.
@@ -251,6 +256,15 @@ label monika_affection_nickname:
             "horrid",
             "troll",
             "slaughter"
+            "slut"
+            "thot"
+            "whore"
+            "tramp"
+            "hooker"
+            "tart"
+            "harlot"
+            "hussy"
+
         ]
 
         good_nickname_list = [
@@ -354,6 +368,39 @@ label mas_affection_happynotif:
     m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
     m "Thanks for being such a great person!"
     return
+
+default absence_counter = 0
+default persistent.mas_long_absence_cooldown = datetime.datetime.now() - datetime.timedelta(days = 1)
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_affection_absence",category=['you','misc'],prompt="I need to go away for a while.",pool=True))
+
+label mas_affection_absence:
+    if datetime.datetime.now() <= persistent.mas_long_absence_cooldown + datetime.timedelta (hours = 1):
+        m 1o "Umm...[player]...you've already said that recently..."
+        m 3h "You're not saying that to avoid me are you?"
+        m 2f "If you really do mean it then tell me again in an hour or so..."
+        m 3o "I know you can get really busy"
+    if absence_counter == 1:
+        jump mas_affection_absense_2
+    else:
+        m 1f "Aww...That's pretty saddening..."
+        m 1e "I really am going to miss you [player]!"
+        m 3m "I'm not really sure what I'm doing to do with myself while you're gone..."
+        m 3a "Thank you for warning me first though."
+        m 2k "Remind me when you're about to leave, okay?"
+        m 3l "I'll probably forget otherwise!"
+        $ absence_counter = 1
+    return
+
+label mas_affection_absense_2:
+    m 1e "Going to head out then?"
+    m 1f "I really will miss you..."
+    m "I know you'll be gone for a long time but please come back to me as soon as you can."
+    m 3e "I'll wait for however long it takes!"
+    m 2j "I am yours eternally after all!"
+    m 3b "Stay safe [player]! And remember I'll always be here for you!"
+    #$ persistent.mas_long_absence = True
+    return 'quit'
 
 #############
 #Surprise function.
