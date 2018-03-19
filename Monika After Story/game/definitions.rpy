@@ -318,7 +318,7 @@ python early:
             RETURNS: True if the this key is here, false otherwise
             """
             return (
-                self.rules is not None 
+                self.rules is not None
                 and "monika wants this first" in self.rules
             )
 
@@ -711,12 +711,12 @@ python early:
             RETURNS:
                 True if this event passes its repeat rule, False otherwise
             """
-            # check if the event contains a MASSelectiveRepeatRule and 
+            # check if the event contains a MASSelectiveRepeatRule and
             # evaluate it
             if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
                 return True
 
-            # check if the event contains a MASNumericalRepeatRule and 
+            # check if the event contains a MASNumericalRepeatRule and
             # evaluate it
             if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
                 return True
@@ -787,7 +787,7 @@ python early:
 
             IN:
                 events - dict of events of the following format:
-                    eventlabel: event objec
+                    eventlabel: event object
 
             RETURNS:
                 A filtered dict containing the events that passed their own rules
@@ -805,6 +805,109 @@ python early:
 
                 # check if the event contains a MASGreetingRule and evaluate it
                 if Event._checkGreetingRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+        @staticmethod
+        def _checkFarewellRule(ev):
+            """
+            Checks the given event against its own farewell specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASFarewellRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkFarewellRules(events):
+            """
+            Checks the event dict (farewells) against their own farewell specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASFarewellRule and evaluate it
+                if Event._checkFarewellRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+        @staticmethod
+        def _checkAffectionRule(ev):
+            """
+            Checks the given event against its own affection specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASAffectionRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkAffectionRules(events):
+            """
+            Checks the event dict against their own affection specific rules,
+            filters out those Events whose rule check return true. This rule
+            checks if current affection is inside the specified range contained
+            on the rule
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASAffectionRule and evaluate it
+                if Event._checkAffectionRule(event):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}

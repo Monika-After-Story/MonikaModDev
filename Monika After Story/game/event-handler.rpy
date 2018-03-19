@@ -29,7 +29,7 @@ init -500 python:
     mas_init_lockdb_template = (
         True, # event label
         False, # prompt
-        False, # label 
+        False, # label
         False, # category
         True, # unlocked
         True, # random
@@ -62,7 +62,7 @@ init -500 python:
     # set db defaults
     if persistent._mas_event_init_lockdb is None:
         persistent._mas_event_init_lockdb = dict()
-    
+
     # initalizes LOCKDB for the Event class
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
@@ -175,7 +175,7 @@ init python:
 #                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
 
         # now this event has passsed checks, we can add it to the db
-        eventdb.setdefault(event.eventlabel, event) 
+        eventdb.setdefault(event.eventlabel, event)
 
 
     def hideEventLabel(
@@ -440,7 +440,7 @@ label prompt_menu:
             jump prompt_menu
 
     elif madechoice == "goodbye":
-        call random_farewell from _call_random_farewell
+        call select_farewell from _call_select_farewell
 
     else: #nevermind
         $_return = None
@@ -617,10 +617,9 @@ label prompts_categories(pool=True):
 
     return
 
-label random_farewell:
+label select_farewell:
     python:
-        random_farewells = Event.filterEvents(evhand.farewell_database,random=True).keys()
-        pushEvent(renpy.random.choice(random_farewells))
+        farewell = store.mas_farewells.selectFarewell()
+        pushEvent(farewell.eventlabel)
 
     return
-

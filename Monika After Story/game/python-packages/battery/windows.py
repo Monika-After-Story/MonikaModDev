@@ -45,7 +45,7 @@ def _system_power_status():
     status = SYSTEM_POWER_STATUS()
 
     if not GetSystemPowerStatus(ctypes.pointer(status)):
-        raise ctypes.WinError()
+        return None
 
     return status
 
@@ -92,4 +92,4 @@ def is_battery_present():
 
     :return: True if there's a battery, false otherwise
     """
-    return _get_battery_flag() != 128 or _get_battery_flag() != 255
+    return (_get_battery_flag() != 128 or _get_battery_flag() != 255) and _get_battery_flag() != -1

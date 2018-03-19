@@ -52,8 +52,7 @@ def _run_function_by_system(funcdict):
     elif misc.can_check():
         func = funcdict['*']
     else:
-        raise NotImplementedError('%s is not supported'
-                                  % _system)
+        return None
 
     return func()
 
@@ -63,21 +62,30 @@ def get_level():
     Return the system battery level, otherwise None if the system
     doesn't have any batteries.
     """
-    return _run_function_by_system(BATTERY_LEVEL_FUNCTIONS)
+    try:
+        return _run_function_by_system(BATTERY_LEVEL_FUNCTIONS)
+    except:
+        return None
 
 
 def is_battery_present():
     """
     Check if the system has a battery present.
     """
-    return _run_function_by_system(BATTERY_CHECK_FUNCTIONS)
+    try:
+        return _run_function_by_system(BATTERY_CHECK_FUNCTIONS)
+    except:
+        return False
 
 
 def is_charging():
     """
     Check if the system is charging.
     """
-    return _run_function_by_system(AC_LINE_CHECK_FUNCTIONS)
+    try:
+        return _run_function_by_system(AC_LINE_CHECK_FUNCTIONS)
+    except:
+        return False
 
 
 def get_supported_systems():
