@@ -99,7 +99,7 @@ default persistent._mas_diary_files = list()
 
 # list of unique ids that have been written out already
 # clear this on new day
-default persistent._mas_diary_stories_written = list()
+#default persistent._mas_diary_stories_written = list()
 
 init python in mas_diary:
     # global stuff
