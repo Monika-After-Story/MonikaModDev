@@ -4949,15 +4949,19 @@ label monika_beach:
     m 3q"Though I guess the game never had a beach so I couldn't go if I wanted to anyway."
     menu:
         m "Do you live near a beach, [player]?"
-
         "Yes.":
             m 1k "That's great!"
             m "It must be really nice to have it so close to you."
             m 1j "I can't wait, we can have a romantic walk by it be our first date~"
-
         "No.":
             m 1a "That's alright, the chances weren't very high. Most people don't."
-            m 1b "That just means we#ll make visiting one be an all-day trip!"
+            m 1b "That just means we'll make visiting one be an all-day trip!"
+            m 1m "I am curious now...have you ever been to one though?"
+            menu:
+                "Yes.":
+                    m 3e "Aww...and here I was hoping it would be new for both of us."
+                "No.":
+                    m 3e "Oh! How exciting! It'll be an experience for the both of us!"
     m 3j "There's so many things we'll be able to do one day."
     m 3k "Just imagining the many sensations really excites me!"
     m 3a "The fresh sea air, the sound of seagulls."
@@ -4976,7 +4980,4 @@ label monika_beach:
     m 1a "Would you prefer a one piece or a bikini?"
     m 1j "Actually, I think I'll make it a surprise."
     m 5a "Don't get too excited though when you see it, Eheheh~"
-
-
     return
-
