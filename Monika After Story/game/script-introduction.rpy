@@ -297,7 +297,7 @@ label ch30_reload_continuous:
 
     if mas_curr_affection_group == mas_affection.G_SAD:
         m 4o "...[reload_quip_bad]"
-        m 2f "Can you please not quit without saying 'Goodbye'? It really does hurt..."
+        m 2f "Can you please not quit without saying 'Goodbye'? It would mean a lot to me."
     elif mas_curr_affection_group == mas_affection.G_HAPPY:
         m 2m "[reload_quip_good]"
         m 2h "[player], please don't quit without saying 'Goodbye'."
