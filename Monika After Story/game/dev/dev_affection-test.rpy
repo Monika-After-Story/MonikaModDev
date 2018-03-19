@@ -1,5 +1,7 @@
 #Testing purposes!
-
+init -1 python:
+    import store.mas_affection as mas_aff
+    
 label monika_affection_check:
     m 1c "How do I feel? That came out of nowhere, [player]..."
     m 3h "In a single word I would say I am [monika_current_affection]."
