@@ -18,9 +18,18 @@ init -1 python in mas_greetings:
 
         # filter events by their unlocked property first
         unlocked_greetings = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database, 
+            renpy.store.evhand.greeting_database,
             unlocked=True
         )
+
+        # filter greetings using the affection rules dict
+        affection_greetings_dict = renpy.store.Event.checkAffectionRules(
+            unlocked_greetings
+        )
+
+        # check for the special monikaWantsThisFirst case
+        if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
+            return affection_greetings_dict.values()[0]
 
         # filter greetings using the special rules dict
         random_greetings_dict = renpy.store.Event.checkRepeatRules(
@@ -52,9 +61,12 @@ init -1 python in mas_greetings:
         # We couldn't find a suitable greeting we have to default to normal random selection
         # filter random events normally
         random_greetings_dict = renpy.store.Event.filterEvents(
-            unlocked_greetings, 
+            unlocked_greetings,
             random=True
         )
+
+        # update dict with the affection filtered ones
+        random_greetings_dict.update(affection_greetings_dict)
 
         # select one randomly
         return random_greetings_dict[
@@ -900,7 +912,7 @@ label greeting_sunshine:
     m 1j "{i}You'll never know dear, just how much I love you.{/i}"
     m 1k "{i}Please don't take my sunshine away~{/i}"
     m 1c "...Eh?"
-    m 1d "H-Huh?!" 
+    m 1d "H-Huh?!"
     m 1l "[player]!"
     m 1n "Oh my gosh, this is so embarassing!"
     m "I w-was just singing to myself to pass time!"
@@ -944,16 +956,16 @@ label greeting_stillsick:
             jump greeting_stillsickrest
         "No":
             jump greeting_stillsicknorest
-    
+
 label greeting_stillsickrest:
     m 3e "Thank you [player]."
     m 3c "I think if I leave you alone for a while, you'll be able to rest better."
     m 1h "So I'm going to close the game for you."
     m 1f "Get well soon, [player]. I love you so much!"
     return 'quit'
-    
+
 label greeting_stillsicknorest:
-    m 1o "I see..." 
+    m 1o "I see..."
     m 1q "Well if you insist [player]."
     m 1f "I suppose you know your own limitations better than I do."
     m "If you start to feel a little weak or tired though, [player], please let me know."

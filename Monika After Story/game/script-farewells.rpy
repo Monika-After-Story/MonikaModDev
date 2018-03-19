@@ -1,6 +1,6 @@
 ##This file contains all of the variations of goodbye that monika can give.
 ## This also contains a store with a utility function to select an appropriate
-## farewell 
+## farewell
 
 init -1 python in mas_farewells:
     # custom farewell functions
@@ -18,6 +18,15 @@ init -1 python in mas_farewells:
             renpy.store.evhand.farewell_database,
             unlocked=True
         )
+
+        # filter greetings using the affection rules dict
+        affection_farewells_dict = renpy.store.Event.checkAffectionRules(
+            unlocked_farewells
+        )
+
+        # check for the special monikaWantsThisFirst case
+        if len(affection_farewells_dict) == 1 and affection_farewells_dict.values()[0].monikaWantsThisFirst():
+            return affection_farewells_dict.values()[0]
 
         # filter farewells using the special rules dict
         random_farewells_dict = renpy.store.Event.checkRepeatRules(
@@ -52,6 +61,9 @@ init -1 python in mas_farewells:
             unlocked_farewells,
             random=True
         )
+
+        # update dict with the affection filtered ones
+        random_farewells_dict.update(affection_farewells_dict)
 
         # select one randomly
         return random_farewells_dict[

@@ -866,6 +866,58 @@ python early:
             # return the available events dict
             return available_events
 
+        @staticmethod
+        def _checkAffectionRule(ev):
+            """
+            Checks the given event against its own affection specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASAffectionRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkAffectionRules(events):
+            """
+            Checks the event dict against their own affection specific rules,
+            filters out those Events whose rule check return true. This rule
+            checks if current affection is inside the specified range contained
+            on the rule
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASAffectionRule and evaluate it
+                if Event._checkAffectionRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
 
 # init -1 python:
     # this should be in the EARLY block
