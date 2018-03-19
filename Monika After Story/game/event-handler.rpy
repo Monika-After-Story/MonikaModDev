@@ -204,30 +204,24 @@ init python:
         #       (DEfault: evhand.event_database)
         ev = eventdb.get(eventlabel, None)
 
-        if ev:
+        hideEvent(
+            ev, 
+            lock=lock, 
+            derandom=derandom, 
+            depool=depool. 
+            decond=decond
+        )
 
-            if lock:
-                ev.unlocked = False
-
-            if derandom:
-                ev.random = False
-
-            if depool:
-                ev.pool = False
-
-            if decond:
-                ev.conditional = None
 
     def hideEvent(
             event,
             lock=False,
             derandom=False,
             depool=False,
-            decond=False,
-            eventdb=evhand.event_database
+            decond=False
         ):
         #
-        # hide an event in the given eventdb by Falsing its unlocked,
+        # hide an event by Falsing its unlocked,
         # random, and pool properties.
         #
         # IN:
@@ -241,16 +235,21 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
-        #   eventdb - the event database (dict) we want to reference
-        #       (DEfault: evhand.event_database)
-        hideEventLabel(
-            event.eventlabel,
-            lock=lock,
-            derandom=derandom,
-            depool=depool,
-            decond=decond,
-            eventdb=eventdb
-        )
+
+        if event:
+
+            if lock:
+                event.unlocked = False
+
+            if derandom:
+                event.random = False
+
+            if depool:
+                ev.pool = False
+
+            if decond:
+                event.conditional = None
+
 
     def pushEvent(event_label):
         #
