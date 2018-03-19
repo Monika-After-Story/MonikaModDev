@@ -161,7 +161,7 @@ label monika_selfesteem:
             
             m 1q "That's... really sad to hear, [player]..."
             if mas_curr_affection_group == mas_aff.G_SAD:
-                if mas_curr_affection == mas_aff.DISTRESSED or monika_current_affection == mas_aff.BROKEN:
+                if mas_curr_affection == mas_aff.DISTRESSED or mas_curr_affection == mas_aff.BROKEN:
                     m 1f "I had strongly suspected it to be honest..."    
             elif mas_curr_affection_group == mas_aff.G_HAPPY:
                     m 1f "And to think I missed it while you've been making me so happy..."         
@@ -1921,7 +1921,7 @@ label monika_justification:
         m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
         m "If I'm guilty of murder, so is everyone who plays violent video games."
         m 2h "I bet you've killed thousands in games you play."
-        if mas_curr_affection == mas_aff.BROKEN or if monika_current_affection == mas_aff.DISTRESSED:
+        if mas_curr_affection == mas_aff.BROKEN or mas_curr_affection == mas_aff.DISTRESSED:
             m 2f "Do you hate me for it? Because of what I did?"
             m 2g "Please understand that I did it for us!"
             m 2h "I did everything for us!"     
