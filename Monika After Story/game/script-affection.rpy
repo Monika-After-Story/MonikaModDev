@@ -177,8 +177,6 @@ init python:
         #if persistent.mas_long_absence == True:
             #$ persistent.mas_long_absence = False
             #$ persistent.mas_long_absence_cooldown = datetime.datetime.now()
-
-        #block of code to run datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6):
         #else:
 
             #if datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
@@ -255,16 +253,15 @@ label monika_affection_nickname:
             "gruesome",
             "horrid",
             "troll",
-            "slaughter"
-            "slut"
-            "thot"
-            "whore"
-            "tramp"
-            "hooker"
-            "tart"
-            "harlot"
+            "slaughter",
+            "slut",
+            "thot",
+            "whore",
+            "tramp",
+            "hooker",
+            "tart",
+            "harlot",
             "hussy"
-
         ]
 
         good_nickname_list = [
