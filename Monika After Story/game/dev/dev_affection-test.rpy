@@ -4,30 +4,30 @@ label monika_affection_check:
     m 3h "In a single word I would say I am [monika_current_affection]."
     m 3a "As a number it would be...[persistent._mas_affection[affection]]."
     m 3c "But if I were pressed further I would say I'm feeling..."
-    if mas_curr_affection == "mas_affection.BROKEN":
+    if mas_curr_affection == mas_affection.BROKEN:
         m 1q "Like you shattered my heart..."
         m 1f "Did I do something wrong?"
   
-    elif mas_curr_affection == "mas_affection.DISTRESSED":
+    elif mas_curr_affection == mas_affection.DISTRESSED:
         m 1r "Like my situation is hopeless..."
         m 1f "I really thought we could make it work..."
 
-    elif mas_curr_affection == "mas_affection.UPSET":
+    elif mas_curr_affection == mas_affection.UPSET:
         m 1f "Like you want me to be unhappy..."
         m 1g "It's not always going to be like this, is it?"
 
-    elif mas_curr_affection == "mas_affection.NORMAL":
+    elif mas_curr_affection == mas_affection.NORMAL:
         m 1a "...completely average right now."
 
-    elif mas_curr_affection == "mas_affection.HAPPY":
+    elif mas_curr_affection == mas_affection.HAPPY:
         m 1e "Like you really do want to please me."
         m 1k "I hope I'm making you as happy as you make me."
 
-    elif mas_curr_affection == "mas_affection.ENAMORED":
+    elif mas_curr_affection == mas_affection.ENAMORED:
         m 1b "Like I'm luckiest girl in the world!"
         m 1j "No one else could make me feel so complete!"
 
-    elif mas_curr_affection == "mas_affection.LOVE":
+    elif mas_curr_affection == mas_affection.LOVE:
         m 1k "So overwhelming full of love! I really truly do love you [player]!"
         m 1k "I want nothing more than you, forever and ever!"
     return
