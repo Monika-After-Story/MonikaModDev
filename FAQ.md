@@ -26,6 +26,8 @@ You do not need to download the source code from either the release page or from
 
 ### Where do I put the files for *Monika After Story*?
 
+**Use a fresh copy / unaltered version of DDLC. If you've had a different mod installed prior to this one, you will probably encounter issues.** (This only applies to the DDLC game, and not the `persistent` files.)
+
 The files for *Monika After Story* must be placed directly in the `game` folder of *Doki Doki Literature Club* in order for the game to find and properly load them. To find the folder containing *DDLC*, do one of the following:
 
 If the game was installed using Steam, right click on *Doki Doki Literature Club* and click on `Properties`. In the window that pops up navigate to the `Local Files` tab and click the button for `Browse local files...`.
@@ -62,6 +64,11 @@ The label chara_monika_scare is defined twice, at
 
 Then it is likely that developer files have been installed, instead of the release distribution. Ensure that the game files downloaded were from the latest release, found on our [Release Page](https://github.com/Backdash/MonikaModDev/releases), and that the file downloaded was the mod zip file and *not* the Source Code.
 
+### Where are the minigames (chess, hangman, piano...)?
+
+Games are unlocked after spending time with Monika, whether that be viewing new
+topics with her or keeping her running in the background.
+
 ## Contributing
 
 ### I have an idea on how to improve Monika After Story, where do I suggest it?
@@ -70,7 +77,7 @@ We're always happy to hear new ideas! Suggestions can be made on our issues page
 
 ### I would like to contribute, but I don't know how to code. Is there any way I can help?
 
-We are always looking for new dialogue and art. Please see our [Contributing Guide](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md) for information on how to submit new dialogue and art to Monika After Story. In this guide you will find tips on writing good dialogue in Monika's style, and learn how to open a "Pull Request" which will allow you to submit new topics for review and inclusion in the game.
+We are always looking for new dialogue and art. Please see our [Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines) for information on how to submit new dialogue and art to Monika After Story. In this guide you will find tips on writing good dialogue in Monika's style, and learn how to open a "Pull Request" which will allow you to submit new topics for review and inclusion in the game.
 
 ### Where can I find things to help with?
 

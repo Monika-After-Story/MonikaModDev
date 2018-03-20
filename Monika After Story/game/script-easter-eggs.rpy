@@ -3,11 +3,12 @@
 # sayori music chnage/scare
 label sayori_name_scare:
     python:
-        store.songs.initMusicChoices(sayori=True)
-        play_song(songs.sayori_track)
-        persistent.current_track = songs.sayori_track
-        store.songs.selected_track = songs.sayori_track
-        store.songs.current_track = songs.sayori_track
+        from store.songs import FP_SAYO_NARA, initMusicChoices
+        initMusicChoices(sayori=True)
+        play_song(FP_SAYO_NARA)
+        persistent.current_track = FP_SAYO_NARA
+        store.songs.selected_track = FP_SAYO_NARA
+        store.songs.current_track = FP_SAYO_NARA
     return
 
 # yuri scare
@@ -134,3 +135,90 @@ image n_rects_ghost3_instant:
     RectCluster(Solid("#000"), 4, 15, 5).sm
     pos (616, 310)
     size (25, 15)
+
+#modified hungry natsuki image animation
+define ns.NATSUKI_SCALE = 0.15
+#image ns2_n_win = im.FactorScale("images/cg/n_cg1b.png", ns.NATSUKI_SCALE)(882,325)
+image n_cg1bs = LiveComposite((1280,720), (10, 300), im.FactorScale(im.Flip("images/cg/n_cg1b.png",horizontal=True), ns.NATSUKI_SCALE), (64,347), "n_rects1", (85,360), "n_rects2", (71,370), "n_rects3")
+# regular
+
+#modified rectangles for Natsuki's eyes and mouth
+image n_rects1:
+    RectCluster(Solid("#000"), 3, 5, 3).sm
+    pos (0, 0)
+    size (7, 7)
+
+image n_rects2:
+    RectCluster(Solid("#000"), 2, 4, 2).sm
+    pos (0, 0)
+    size (5, 5)
+
+image n_rects3:
+    RectCluster(Solid("#000"), 2, 1, 2).sm
+    pos (0, 0)
+    size (3, 3)
+
+#natsuki scare 2:
+label natsuki_name_scare_hungry:
+#label natsuki_name_scare2:
+    # disable stuff
+    $ HKBHideButtons()
+    $ disable_esc()
+    $ store.songs.enabled = False
+    $ quick_menu = False
+    $ curr_music_vol = store.songs.getVolume("music")
+    $ curr_sound_vol = store.songs.getVolume("sound")
+    $ renpy.music.set_volume(0.0, channel="music") # kill music 
+    $ renpy.sound.set_volume(1.0) # max sound
+    
+     # tear screen and glitch sound
+    show screen tear(20, 0.1, 0.1, 0, 40)
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.2
+    stop sound
+    hide screen tear
+
+
+    #show hungry Natsuki and Monika glitch, hide regular Monika
+    show n_cg1bs
+    show monika_body_glitch1 at t11 zorder 2
+    hide monika
+    
+    #play special music and display glitch text.
+    $ adjusted_6g = "<from 6.0>bgm/6g.ogg"
+    $ renpy.play(adjusted_6g, channel="sound")
+    $ ntext = glitchtext(96)
+    $ style.say_dialogue = style.edited
+    n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
+    $ ntext = glitchtext(96)
+    n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
+    
+    # tear screen and glitch sound to mark end of glitch.
+    show screen tear(20, 0.1, 0.1, 0, 40)
+    play sound "sfx/s_kill_glitch1.ogg"
+    pause 0.2
+    stop sound
+    hide screen tear
+    
+    #show Monika and hide Natsuki and glitch Monika.
+    show monika 1 at t11 zorder 2
+    hide n_cg1bs
+    hide monika_body_glitch1
+
+    if config.developer:
+        $ style.say_dialogue = style.normal
+    else:
+        $ style.say_dialogue = style.default_monika
+    
+    # cleanup
+    python:
+        HKBShowButtons()
+        enable_esc()
+        store.songs.enabled = True
+        quick_menu = True
+        renpy.sound.stop()
+        renpy.sound.set_volume(curr_sound_vol)
+        renpy.music.set_volume(curr_music_vol, channel="music")
+        
+    #go back to dialog
+    return

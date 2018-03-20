@@ -5,117 +5,152 @@ We need to give credit where it’s due, please help by adding user names with n
 
 *Monika After Story* is a collaborative project, made possible by the contributions of so many great people.
 
-## Story
+## Dev Team
 
-### Scenario and Story Writing
+### Creator
 
+Backdash
+
+### Lead designer
+
+Pi
+
+### Writing Lead
 
 monikLover
 
-### Topic Writing
+Rune0n
 
-Yukipedia
-
-A
-
-Kreikon
-
-Monika_DREB
-
-FaverosGema
-
-ashameimaru
-
-Kyle(Solaire)
+### Editor
 
 Lucian Winters
 
-Subzero
-
-Kiosho
-
-Neko
-
-Yumeko-Jabami
-
 Synnnical
+
+winblows
+
+### Writer
+
+Aya Shameimaru
+
+Fave
 
 FireyAmber
 
-therationalpi
+NotSoGiantDad
 
-MadHaetter
+Subzero
 
-ThePyClone
+### Code Lead
 
-Dwyer
+ThePotatoGuy
 
-stmobo
+### QA Testing
+
+0xFF
+
+### Artist
+
+Danymations
+
+DayDreamer
+
+TheAloofPotato
+
+Ryuse
+
+## Contributors
+
+### Writing
+A
+
+AndreiN00B
+
+Aya Shameimaru
+
+CGanimated1227
+
+DDLC
 
 Danymations
 
 DoomTheRobot
 
-Rocketriate
+Dwyer
 
-DDLC
+FaverosGema
 
-Tuebor1837
-
-Onfaut
-
-AndreiN00B
-
-CGanimated1227
-
-Spodacus
-
-Iamgoofball
-
-Nep-Waffiez
-
-Winblows
-
-Rune0n
-
-monikLover
+FireyAmber
 
 HalHarrison
 
-### Editing
+Iamgoofball
+
+Kiosho
+
+Kreikon
+
+Kyle(Solaire)
 
 Lucian Winters
 
+MadHaetter
+
+Monika_DREB
+
+Mxrio
+
+Neko
+
+Nep-Waffiez
+
+Onfaut
+
+Pi
+
+Rocketriate
+
 Rune0n
 
-monikLover
+Spodacus
+
+Subzero
+
+Synnnical
+
+ThePyClone
+
+Tuebor1837
 
 Winblows
 
+Yukipedia
+
+Yumeko-Jabami
+
 [R]
 
-Mxrio (added expressions)
+monikLover
 
-## Code
+stmobo
 
-### Feature Contributions
+therationalpi
 
-Therationalpi
+### Code
 
-ThePotatoGuy
+TDmarab2 - Pong
 
 Kadava - Chess
 
-Dmarab2 - Pong
-
 Ohxeighty - Steam library detection
 
-haloff1 - Scrollable menu and mod template
+ThePotatoGuy
 
-
-### Bugfixes
+Therationalpi
 
 avocadianmage
+
+haloff1 - Scrollable menu and mod template
 
 ### Testing
 
@@ -127,27 +162,20 @@ TacticalGrill
 
 winblows
 
-## Art
+### Art
+Danymations
 
-### Original Art
+Daydreamer
+
+NotSoGiantDad
+
+Pi
 
 Ryuse
 
 TheAloofPotato
 
-NotSoGiantDad
-
-Daydreamer
-
-Danymations
-
-### Original Backgrounds
-
 Yuro Foxclaw
-
-### Image Editing
-
-Therationalpi
 
 ## Version and Feature MVP’s
 These members are recognized for making a significant contribution that make a new version of the game or a new feature possible.

@@ -1,6 +1,6 @@
 #This file goes through the actions for updating Monika After story
 label update_now:
-    $import time
+    $import time #this instance of time can stay
     python:
         last_updated=0
         for url in persistent._update_last_checked:
@@ -21,5 +21,6 @@ label update_now:
         call screen update_check(Return(True),Return(False))
 
         if _return:
+            $ persistent.closed_self = True # we take updates as self closed
             $updater.update('http://updates.monikaafterstory.com/updates.json',restart=True)
     return
