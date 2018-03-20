@@ -420,7 +420,7 @@ label prompt_menu:
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
         talk_menu.append(("I'm feeling...", "moods"))
-        talk_menu.append(("Goodbye.", "goodbye"))
+        talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
         renpy.say(m, "What would you like to talk about?", interact=False)
@@ -441,7 +441,7 @@ label prompt_menu:
             jump prompt_menu
 
     elif madechoice == "goodbye":
-        call select_farewell from _call_select_farewell
+        call mas_farewell_start from _call_select_farewell
 
     else: #nevermind
         $_return = None
@@ -618,9 +618,3 @@ label prompts_categories(pool=True):
 
     return
 
-label select_farewell:
-    python:
-        farewell = store.mas_farewells.selectFarewell()
-        pushEvent(farewell.eventlabel)
-
-    return
