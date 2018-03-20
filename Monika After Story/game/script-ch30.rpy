@@ -495,7 +495,7 @@ label ch30_autoload:
 
         # Sick mood special greeting flow
         if persistent._mas_mood_sick:
-            $ pushEvent("greeting_sick")
+            $ selected_greeting = "greeting_sick"
 
         else:
             python:
