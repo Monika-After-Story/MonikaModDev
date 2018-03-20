@@ -3,6 +3,12 @@ This module provides functions to check information for the battery and
 the AC Line for supported systems.
 """
 
+# known issues/help needed:
+# Running through wine makes it impossible to detect the battery
+# The Darwin linux distro conflicts with the OSX battery detection
+# The battery doesn't get properly detected on some linux distros
+# Testing on linux distros, like seriously, a lot of testing 
+
 import platform
 
 from . import windows, linux, misc

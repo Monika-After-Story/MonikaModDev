@@ -492,15 +492,21 @@ label ch30_autoload:
 
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
-        python:
 
-            sel_greeting_event = store.mas_greetings.selectGreeting()
-            selected_greeting = sel_greeting_event.eventlabel
+        # Sick mood special greeting flow
+        if persistent._mas_mood_sick:
+            $ selected_greeting = "greeting_sick"
 
-            # store if we have to skip visuals ( used to prevent visual bugs)
-            mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
-            )
+        else:
+            python:
+
+                sel_greeting_event = store.mas_greetings.selectGreeting()
+                selected_greeting = sel_greeting_event.eventlabel
+
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_event
+                )
 
     if not mas_skip_visuals:
         if persistent.current_track:
