@@ -17,7 +17,8 @@ init -1 python in mas_farewells:
         # filter events by their unlocked property first
         unlocked_farewells = renpy.store.Event.filterEvents(
             renpy.store.evhand.farewell_database,
-            unlocked=True
+            unlocked=True,
+            pool=False
         )
 
         # filter farewells using the special rules dict
@@ -67,7 +68,7 @@ label mas_farewell_start:
     python:
         # preprocessing menu
         bye_pool_events = Event.filterEvents(
-            evhand.event_database,
+            evhand.farewell_database,
             unlocked=True,
             pool=True
         )
@@ -85,10 +86,10 @@ label mas_farewell_start:
             bye_prompt_list.append(("Goodbye", -1, False, False))
 
             # setup the last option
-            bye_prompt_back = ("Nevermind", False, False, False)
+            bye_prompt_back = ("Nevermind", False, False, False, 20)
 
         # call the menu
-        call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, UNSE_XALIGN, bye_prompt_back)
+        call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)
 
         if not _return:
             # user its nevermind
