@@ -4932,7 +4932,7 @@ label monika_asks_family:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreams",category=['psychology'],prompt="Do you dream?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dream",category=['psychology'],prompt="Do you dream?",random=True))
 
 label monika_dream:
     m 2a "Did you know that it is possible to be aware of when you are having a dream?"
