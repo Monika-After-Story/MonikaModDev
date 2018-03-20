@@ -4930,7 +4930,7 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
-Init 5 python:
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_beauty",category=['misc'],prompt="Beauty Standards",random=True))
 
 label monika_beauty:
