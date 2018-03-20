@@ -208,7 +208,7 @@ init python:
             ev, 
             lock=lock, 
             derandom=derandom, 
-            depool=depool. 
+            depool=depool,
             decond=decond
         )
 
