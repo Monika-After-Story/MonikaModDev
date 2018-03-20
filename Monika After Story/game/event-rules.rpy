@@ -10,6 +10,7 @@ init -1 python:
     EV_RULE_RP_SELECTIVE = "rp_selective"
     EV_RULE_RP_NUMERICAL = "rp_numerical"
     EV_RULE_GREET_RANDOM = "greet_random"
+    EV_RULE_FAREWELL_RANDOM = "farewell_random"
 
 
     # special constants for numerical repeat rules
@@ -93,7 +94,7 @@ init -1 python:
                     (Default: None)
 
             RETURNS:
-                A tuple containing the new start_date and end_date. If bad 
+                A tuple containing the new start_date and end_date. If bad
                 values were given, (-1, -1) is returned
             """
             # sanity check
@@ -198,7 +199,7 @@ init -1 python:
 
             # sanity check for a rule to use
             if rule is None:
-                    
+
                 if EV_RULE_RP_NUMERICAL not in ev.rules:
                     return False
 
@@ -226,12 +227,12 @@ init -1 python:
 
         @staticmethod
         def create_rule(
-                seconds=None, 
-                minutes=None, 
-                hours=None, 
-                days=None, 
-                weekdays=None, 
-                months=None, 
+                seconds=None,
+                minutes=None,
+                hours=None,
+                days=None,
+                weekdays=None,
+                months=None,
                 years=None,
                 ev=None
             ):
@@ -380,7 +381,7 @@ init -1 python:
             if random_chance < 0:
                 raise Exception("random_chance can't be negative")
 
-            # return the tuple
+            # return the tuple inside a dict
             rule = {EV_RULE_GREET_RANDOM : (skip_visual, random_chance)}
 
             if ev:
@@ -411,8 +412,8 @@ init -1 python:
             # unpack the tuple for easy access
             skip_visual, random_chance = rule
 
-            # check if random_chance is 0 return False
-            if random_chance == 0:
+            # check if random_chance is less or equal to 0 return False
+            if random_chance <= 0:
                 return False
 
             # Evaluate randint with a chance of 1 in random_chance
@@ -437,6 +438,72 @@ init -1 python:
             # returns the skip_visual boolean of the rule
             if rule:
                 return rule[0]
-                
+
             # False since there was no rule to check
             return False
+
+    class MASFarewellRule(object):
+        """
+        Static Class used to create farewell specific rules in tuple form.
+        That tuple is then stored in a dict containing this rule name constant.
+        Each rule is defined by a special random chance.
+        random_chance is used to define the 1 in random_chance chance that this
+        farewell can be called
+        """
+
+        @staticmethod
+        def create_rule(random_chance, ev=None):
+            """
+            IN:
+                random_chance - An int used to determine 1 in random_chance
+                    special chance for this farewell to appear
+                ev - Event to create rule for, if passed in
+                    (Default: None)
+
+            RETURNS:
+                a dict containing the specified rules
+            """
+
+            # random_chance can't be negative
+            if random_chance < 0:
+                raise Exception("random_chance can't be negative")
+
+            # return the rule inside a dict
+            rule = {EV_RULE_FAREWELL_RANDOM : random_chance}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
+
+        @staticmethod
+        def evaluate_rule(event=None, rule=None):
+            """
+            IN:
+                event - the event to evaluate
+                rule - the MASFarewellRule to check it's random_chance
+
+            RETURNS:
+                True if the random returned 1
+            """
+            # check if we have an event that contains the rule we need
+            # event rule takes priority so it's checked here
+            if event and EV_RULE_FAREWELL_RANDOM in event.rules:
+                rule = event.rules[EV_RULE_FAREWELL_RANDOM]
+
+            # sanity check if we don't have a rule return False
+            if rule is None:
+                return False
+
+            # store the rule for easy access
+            # keeping this so when we add another rule we'll keep
+            # the same code structure, also it's more readable changing the name
+            random_chance = rule
+
+            # check if random_chance is less or equal to 0 return False
+            if random_chance <= 0:
+                return False
+
+            # Evaluate randint with a chance of 1 in random_chance
+            return renpy.random.randint(1,random_chance) == 1

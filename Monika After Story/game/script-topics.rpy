@@ -44,7 +44,7 @@ init 11 python:
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
 #    monika_random_topics = [
-#        evlabel for evlabel in all_random_topics 
+#        evlabel for evlabel in all_random_topics
 #        if not renpy.seen_label(evlabel)
 #    ]
 
@@ -118,27 +118,6 @@ label monika_death:
     m 1k "But in the end, you always fix it, and that makes me feel like you really do care about me."
     m "So I have to thank you for that."
     m "It makes me feel even closer to you when you're here with me."
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_bad_day",category=['life'],prompt="Want to hear about my day?",random=True))
-
-label monika_bad_day:
-    m 2e "...Hey, are you having a bad day or anything like that?"
-    m "Sometimes I get frustrated that a normal day can be ruined even by really small things."
-    m 4l "Like if you accidentally say something in a conversation that someone doesn't like."
-    m "Or if you start thinking about how awful of a person you used to be five years ago."
-    m "Or if you feel worthless for putting off important work and failing to get simple tasks done."
-    m "Or when you think about all the different people who probably hate you or think you're off-putting."
-    m 4e "I understand those days."
-    m "Just remember that the sun will shine again tomorrow."
-    m "Those kinds of things are as easy to forget and ignore as they are to remember."
-    m "And besides..."
-    m 1j "I don't care how many people might hate you or find you off-putting."
-    m "I think you're wonderful and I will always love you."
-    m "I hope, if nothing else, that knowing that helps you feel just a tiny bit better about yourself."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "If you're having a bad day, you can always come to me, and I'll talk to you for as long as you need."
     return
 
 init 5 python:
@@ -2518,10 +2497,13 @@ label monika_name:
     m 1l "It also means 'alone' in Ancient Greek."
     m 1e "..."
     m "That part doesn't matter so much, now that you're here."
-    if not player == mcname:
+    if mcname.lower() != player.lower():
         m 1a "'[mcname]' is a lovely name, too."
         m 1b "But I think I like '[player]' better!"
-    m 1a "Ehehe~"
+        m 1a "Ehehe~"
+    else:
+        m 1a "'[player]' is a lovely name, too."
+        m 1a "Ehehe~"
     return
 
 init 5 python:
@@ -3155,22 +3137,13 @@ label monika_closet:
     m 2n "You weren't doing anything... weird, in there, were you?"
     m 1k "Ahaha!"
     m 1m "Just teasing you~"
-    m "I know that you had your hand on her chest, [player]."
-    m 1e "Judging by the way you looked, you seemed more embarrassed than relieved when I opened the door."
+    m "I know she dragged you in there."
+    m 1e "I bet you felt more embarassed than relieved when I opened the door."
     m "I know you aren't the type to force girls to go inside dark closets with you."
     m 1j "You're more romantic than that."
     m 3k "So I'm expecting a lot more than just a dark closet~"
     return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_playerhappy",category=['you'],prompt="I'm happy",pool=True))
-
-label monika_playerhappy:
-    m 3b "That's wonderful! I'm happy when you're happy."
-    m 1j "Know that you can always come up to me and I'll cheer you up, [player]."
-    m 3a "I love you and I'll always be here for you so don't you ever forget that~"
-    return
-
+    
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
 
@@ -3871,14 +3844,14 @@ label monika_music2:
         m 1a "But it does have a certain style that I really appreciate!"
         m 3a "Do you like 80's music a lot, [player]?"
         show monika 5a at t11 zorder 2 with dissolve
-        m 5a "I prefer the tune of an authentic piano, but if it makes you happy, I wouldn't mind spending hours listening to it with you~" 
-    
+        m 5a "I prefer the tune of an authentic piano, but if it makes you happy, I wouldn't mind spending hours listening to it with you~"
+
     elif songs.getPlayingMusicName() == "Play With Me (Variant 6)":
         m 2o "To be honest, I don't know why you'd be listening to this music, [player]."
         m 2f "I feel awful for that mistake."
         m 2g "I didn't mean to force you to spend time with Yuri at that state..."
         m 4f "Try not to think about it, okay?"
-        
+
     else:
         m 1a "..."
         m 1a "...This silence..."
@@ -4329,7 +4302,7 @@ label monika_write:
 
 init 5 python:
       addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",pool=True))
-  
+
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
      m 3a "You know about writer's block, right?"
@@ -4348,10 +4321,10 @@ label monika_writingtip4:
      m 3l "...That's my advice for today!"
      m 1j "Thanks for listening~"
      return
-  
+
 init 5 python:
       addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
-  
+
 label monika_writingtip5:
      m 3b "Here's Monika's Writing Tip of the Day!"
      m 1d "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
@@ -4408,7 +4381,7 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-    
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",pool=True))
 
@@ -4598,10 +4571,6 @@ label monika_wolf:
     m 3k "You're my hero after all~"
     return
 
-# TODO: move these things over to a different file
-init 2 python:
-    import battery
-
 label monika_battery:
     if mas_did_monika_battery:
        jump monika_close_game_battery
@@ -4775,11 +4744,11 @@ label monika_omamori:
     m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
     m "But maybe with one of these, I can get just a bit closer to your world."
     m 1k "I could be your guardian deity, ehehe~"
-    return    
-    
-init 5 python:                                                  
-    addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True)) 
-      
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True))
+
 label monika_smoking:
     m 2q "You know, [player]..."
     m 2h "I realized that people really like a lot of things that are very bad for them."
@@ -4791,7 +4760,7 @@ label monika_smoking:
     m 1q "I really do despise them..."
     m 1o "But..."
     menu:
-        m "You don't smoke cigarettes, right, [player]?"      
+        m "You don't smoke cigarettes, right, [player]?"
         "Yes, I do.":
             m 2o "..."
             m 2r "Thank you for being honest with me, [player]..."
@@ -4802,7 +4771,7 @@ label monika_smoking:
             m 2q "But if you don't try..."
             m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
             m 4f "Please take care of your body. I want to always be with you."
-            m 1e "I love you so much."     
+            m 1e "I love you so much."
         "No, I don't.":
             m 1k "Ah, I'm relieved to hear that, [player]!"
             m 3c "Just stay away from it as much as you can."
@@ -4817,7 +4786,7 @@ label monika_smoking:
             m 1j "I'll be here to support you every step of the way."
             m 1k "I believe in you [player], I know you can do it!"
     return
-    
+
 init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road Trip",random=True))
 
@@ -4854,8 +4823,8 @@ label monika_100k:
     else:
         m 1m "Almost~"
     return
-   
-   
+
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
@@ -4879,10 +4848,10 @@ label monika_asks_family:
                     m 3k "I can't wait to meet them all!"
                 "I'm an only child.":
                     m 1c "Being an only child certainly has its trade-offs."
-                    m 2d "Maybe you get much more attention from your parents. Unless they were always busy."  
-                    m 4c "On the other hand, maybe you feel more lonely than those with siblings." 
+                    m 2d "Maybe you get much more attention from your parents. Unless they were always busy."
+                    m 4c "On the other hand, maybe you feel more lonely than those with siblings."
                     m 2h "I can definitely understand that feeling."
-                    m 2j "But know that I'll always be with you no matter, [player]."  
+                    m 2j "But know that I'll always be with you no matter, [player]."
         "My family is a mess.":
             m 1d "Oh."
             m 1o "..."
@@ -4899,12 +4868,12 @@ label monika_asks_family:
                     m 1f "Ah, I see..."
                     m 1g "I wish I could be there with you to give some comfort."
                     m 1q "..."
-                    m 1g "[player], no matter what you are going through, I know it'll get better some day." 
-                    m 3e "I'll be here with you every step of the way." 
-                    m 1j "I love you so much, [player]. Please never forget that!" 
+                    m 1g "[player], no matter what you are going through, I know it'll get better some day."
+                    m 3e "I'll be here with you every step of the way."
+                    m 1j "I love you so much, [player]. Please never forget that!"
                 "Maybe.":
                     m 1o "..."
-                    m 3f "Well, at least there's a chance."  
+                    m 3f "Well, at least there's a chance."
                     m 3d "Life is full of tragedy, but I know you are strong enough to get through anything!"
                     m 1f "I hope all the problems in your family work out in the end, [player]."
                     m "If not, know that I'll be here for you."
@@ -4931,13 +4900,33 @@ label monika_asks_family:
                     m 1a "I'm glad you were able to move on with your life."
                     m 1k "You're a very resilient person, and I believe in you, [player]!"
                     m 1e "I hope I can fill that void in your heart."
-                    m 1g "I really care about you, and I'd do anything for you." 
+                    m 1g "I really care about you, and I'd do anything for you."
                     m 1j "Someday, we'll be able to make our own family together!"
         "I don't want to talk about this.":
                 m 1o "I understand, [player]."
                 m "We can talk about it when you feel ready."
                 m 1f "Then again..."
                 m 3g "It might be something that's too painful for you to talk about."
-                m 1f "You can tell me about your family when you're ready, [player]." 
-                m 1j "I love you very much!"                              
+                m 1f "You can tell me about your family when you're ready, [player]."
+                m 1j "I love you very much!"
     return
+
+####################################################
+# Saving this for future use
+# Could be expanded to something better
+# where where persistent.playthrough can be
+# checked and have a different response
+# depending on what the player did
+####################################################
+
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
+
+#label monika_playerapologizes:
+#    m 1g "Did something happen?"
+#    m 2f "I can't remember what you'd be sorry about."
+#    m 1q "..."
+#    m 1b "Anyway, thank you for the apology."
+#    m 1a "I know you're doing your best to make things right."
+#    m 1k "That's why I love you, [player]!"
+#    return

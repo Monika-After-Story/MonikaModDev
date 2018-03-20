@@ -132,7 +132,7 @@ style hangman_text:
 #            self.ypos = ypos
 #            self.visible = False
 
-init -1 python in hangman:
+init -1 python in mas_hangman:
     # preprocessing
     # get poemwords as hangman words
     hm_words = list()
@@ -162,7 +162,7 @@ init -1 python in hangman:
 init 10 python:
 
     # setting up wordlist
-    from store.hangman import hm_words, all_hm_words
+    from store.mas_hangman import hm_words, all_hm_words
     from copy import deepcopy
 
     # for now, lets use full_wordlist defined in poemgame
@@ -212,7 +212,7 @@ init 10 python:
 
 # entry point for the hangman game
 label game_hangman:
-    $ import store.hangman as hmg
+    $ import store.mas_hangman as hmg
     $ from copy import deepcopy
     $ is_sayori = persistent.playername.lower() == "sayori"
     $ is_window_sayori_visible = False
@@ -237,7 +237,7 @@ label game_hangman:
     # FALL THROUGH TO NEXT LABEL
 
 # looping location for the hangman game
-label hangman_game_loop:
+label mas_hangman_game_loop:
     m 1a "I'll think of a word..."
     pause 0.7
 
@@ -487,14 +487,14 @@ label hangman_game_loop:
     menu:
         m "Would you like to play again?"
         "Yes":
-            jump hangman_game_loop
+            jump mas_hangman_game_loop
         "No":
-            jump hangman_game_end
+            jump mas_hangman_game_end
 
     # RETURN AT END
 
 # end of game flow
-label hangman_game_end:
+label mas_hangman_game_end:
     # hide the stuff
     hide hmg_hanging_man
     hide hmg_mis_label
@@ -507,8 +507,23 @@ label hangman_game_end:
         pause 0.1
         hide window_sayori
 
+    if renpy.seen_label("mas_hangman_dlg_game_end_long"):
+        call mas_hangman_dlg_game_end_short from _mas_hangman_dges
+    else:
+        call mas_hangman_dlg_game_end_long from _mas_hangman_dgel
+
+    return
+
+# dialogue related stuff
+# long form of ending dialgoue
+label mas_hangman_dlg_game_end_long:
     m 1d "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
     m 1j "The best way to improve that is to read more books!"
-    m 1a "I'd be very happy if you did that for me, [player]."
+    m 1a "I'd be very happy if you did that for me, [player]."   
+    return
+
+# short form of ending dialogue
+label mas_hangman_dlg_game_end_short:
+    m 1a "Okay. Let's play again soon!"
     return

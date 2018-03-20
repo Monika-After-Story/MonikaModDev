@@ -493,41 +493,20 @@ label ch30_autoload:
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
 
-        # filter events by their unlocked property first
-        $ unlocked_greetings = Event.filterEvents(evhand.greeting_database, unlocked=True)
+        # Sick mood special greeting flow
+        if persistent._mas_mood_sick:
+            $ selected_greeting = "greeting_sick"
 
-        # filter greetings using the special rules dict
-        $ random_greetings_dict = Event.checkRules(unlocked_greetings)
-
-        # check if we have a greeting that actually should be shown now
-        if len(random_greetings_dict) > 0:
-
-            # select one label randomly
-            $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
-
-        # since we don't have special greetings for this time we now check for special random chance
         else:
+            python:
 
-            # pick a greeting filtering by special random chance rule
-            $ random_greetings_dict = Event.checkGreetingRules(unlocked_greetings)
+                sel_greeting_event = store.mas_greetings.selectGreeting()
+                selected_greeting = sel_greeting_event.eventlabel
 
-            # check if we have a greeting that actually should be shown now
-            if len(random_greetings_dict) > 0:
-
-                # select on label randomly
-                $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
-
-            # We couldn't find a suitable greeting we have to default to normal random selection
-            else:
-
-                # filter random events normally
-                $ random_greetings_dict = Event.filterEvents(unlocked_greetings, random=True)
-
-                # select one randomly
-                $ selected_greeting = renpy.random.choice(random_greetings_dict.keys())
-
-        # store if we have to skip visuals ( used to prevent visual bugs)
-        $ mas_skip_visuals = MASGreetingRule.should_skip_visual(event=random_greetings_dict[selected_greeting])
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_event
+                )
 
     if not mas_skip_visuals:
         if persistent.current_track:
@@ -583,6 +562,7 @@ label ch30_autoload:
         $ set_keymaps()
 
     $persistent.closed_self = False
+    $ persistent._mas_crashed_self = True
     $startup_check = False
     jump ch30_loop
 
