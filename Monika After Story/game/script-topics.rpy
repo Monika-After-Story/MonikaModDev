@@ -4911,6 +4911,31 @@ label monika_asks_family:
                 m 1j "I love you very much!"
     return
 
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music Concerts",random=True))
+
+label monika_concerts:
+    m 1c "Hey [player], I've been thinking about something we could do together one day..."
+    m 1d "You know how I like different forms of music?"
+    m 1j "Well..."
+    m 3b "Why don't we go to a concert one day?"
+    m 1b "I've heard they really make you feel alive! And with different types of music genres, comes unique and unforgettable atmospheres!"
+    m 1j "We could gently sway our heads to the sound of a soothing orchestra..."
+    m 1k "...Or jump up and down with the rest of the crowd to some good ol' Rock and Roll!"
+    m 2n "Oh gosh, maybe I'm getting a little carried away at the thought of it hehe~"
+    m 2d "It's just the idea of seeing your idol performing right in front of you is incredible."
+    m 2m "Although, I have heard that ticket prices these days are kind of expensive..."
+    m 2j "But I still think it would be worth it!"
+    m 3a "Do you know any bands or acts that would be good to see live, [player]?"
+    m 3b "I'd want to go to at least one just for the experience alone you know?"
+    m 5a "And if you were to take me [player]..."
+    m 5a "Then that truly would be a dream come true!"
+    m 4a "If you're not that interested in concerts though..."
+    m 1a "Then we could always snuggle under a blanket and put on a record or CD at home!"
+    m 1j "That would be more than enough for me hehe~"
+    return
+
+
 ####################################################
 # Saving this for future use
 # Could be expanded to something better
