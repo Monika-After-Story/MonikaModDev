@@ -3,6 +3,7 @@
 ## farewell 
 
 init -1 python in mas_farewells:
+
     # custom farewell functions
     def selectFarewell():
         """
@@ -58,6 +59,59 @@ init -1 python in mas_farewells:
             renpy.random.choice(random_farewells_dict.keys())
         ]
 
+# farewells selection label
+label mas_farewell_start:
+    $ import store.evhand as evhand
+    # we use unseen menu values
+
+    python:
+        # preprocessing menu
+        bye_pool_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=True,
+            pool=True
+        )
+
+    if len(bye_pool_events) > 0:
+        # we have selectable options
+        python:
+            # build a prompt list
+            bye_prompt_list = [
+                (ev.prompt, ev, False, False) 
+                for k,ev in bye_pool_events.iteritems()
+            ]
+
+            # add the random selection
+            bye_prompt_list.append(("Goodbye", -1, False, False))
+
+            # setup the last option
+            bye_prompt_back = ("Nevermind", False, False, False)
+
+        # call the menu
+        call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, UNSE_XALIGN, bye_prompt_back)
+
+        if not _return:
+            # user its nevermind
+            return
+
+        if _return != -1:
+            # push teh selected event
+            $ pushEvent(_return.eventlabel)
+            return
+
+    # otherwise, select a random farewell
+    $ farewell = store.mas_farewells.selectFarewell()
+    $ pushEvent(farewell.eventlabel)
+
+    return
+
+###### BEGIN FAREWELLS ########################################################
+## FARE WELL RULES:
+# unlocked - True means this farewell is ready for selection
+# random - randoms are used in teh default farewell action
+# pool - pooled ones are selectable in the menu
+# rules - TODO documentation
+###
 
 init 5 python:
     addEvent(Event(persistent.farewell_database,eventlabel="bye_leaving_already",unlocked=True,random=True),eventdb=evhand.farewell_database)
@@ -125,4 +179,98 @@ init 5 python:
 label bye_going_to_sleep:
     m "Are you going to sleep, [player]?"
     m 1e "I'll be seeing you in your dreams"
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_sleep",
+            unlocked=True,
+            prompt="I'm going to sleep.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_prompt_sleep:
+
+    python:
+        import datetime
+        curr_hour = datetime.datetime.now().hour
+
+    # these conditions are in order of most likely to happen with our target
+    # audience
+
+    if 20 <= curr_hour < 24:
+        # decent time to sleep
+        m "Alright, [player]."
+        m 1j "Sweet dreams!"
+
+    elif 0 <= curr_hour < 3:
+        # somewhat late to sleep
+        m "Alright, [player]."
+        m 3e "But you should sleep a little earlier next time."
+        m 1j "Anyway, good night!"
+
+    elif 3 <= curr_hour < 5:
+        # pretty late to sleep
+        m 1m "[player]..."
+        m "Make sure you get enough rest, okay?"
+        m "I don't want you to get sick."
+        m 1j "Good night!"
+        m 1n "Or morning, rather. Ahaha~"
+        m 1j "Sweet dreams!"
+
+    elif 5 <= curr_hour < 12:
+        # you probably stayed up the whole night
+        show monika 2q
+        pause 0.7
+        m 2g "[player]!"
+        m "You stayed up the entire night!"
+        m 2i "I bet you can barely keep your eyes open."
+        $ _cantsee_a = glitchtext(15)
+        $ _cantsee_b = glitchtext(12)
+        menu:
+            "[_cantsee_a]":
+                pass
+            "[_cantsee_b]":
+                pass
+        m 2q "I thought so.{w} Go get some rest, [player]."
+        m 2f "I wouldn't want you to get sick."
+        m 1e "Sleep earlier next time, okay?"
+        m 1j "Sweet dreams!"
+
+    elif 12 <= curr_hour < 18:
+        # afternoon nap
+        m 1m "Taking an afternoon nap, I see."
+        # TODO: monika says she'll join you, use sleep sprite here
+        # and setup code for napping
+        m 1j "Ahaha~ Have a good nap, [player]."
+
+    elif 18 <= curr_hour < 20:
+        # little early to sleep
+        m 1f "Already going to bed?"
+        m "It's a little early, though..."
+        show monika 1m
+        menu:
+            m "Care to spend a little more time with me?"
+            "Of course!":
+                m 1j "Yay!"
+                m 1a "Thanks, [player]."
+                return
+            "Sorry, I'm really tired.":
+                m 1e "Aww, that's okay."
+                m 1 "Good night, [player]."
+
+# TODO: probably a shocked sprite and additonal dialgoue, also potentially
+# tie this with affection later
+#            "No.":
+#                m 2r "..."
+#                m "Fine."  
+    else:
+        # otheerwise
+        m "Alright, [player]."
+        m 1j "Sweet dreams!"
+
     return 'quit'
