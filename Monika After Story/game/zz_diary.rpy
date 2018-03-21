@@ -114,7 +114,13 @@ init python in mas_diary:
     from cStringIO import StringIO # we do alot of string work here
 
     # folder path to diary templates (from game)
-    DIARY_TEMPLATE_FOLDER = "mod_assets/templates/diary/main/"
+    DIARY_TEMPLATE_FOLDER = "mod_assets/templates/diary"
+
+    # main templates folder
+    MAIN_FOLDER = "/main/"
+
+    # PS entry folder
+    PS_FOLDER = "/ps/"
 
     # game folder
     # we only need this until we create a mod_assets.rpa (probably)
@@ -538,18 +544,40 @@ init python in mas_diary:
         return body_str
 
 
-    def _scanTemplates():
+    def _scanEntryTemplates():
+        """
+        Scans the template folder for valid entry templates.
+
+        RETURNS:
+            list of template filepaths we found
+        """
+        return _scanTemplates(MAIN_FOLDER)
+
+
+    def _scanPSTemplates():
+        """
+        Scans the template folder for valid PS templates.
+
+        RETURNS:
+            list of template filepaths we found
+        """
+        return _scanTemplates(PS_FOLDER)
+
+
+    def _scanTemplates(folder):
         """
         Scans the template folder for valid templates.
 
-        ASSUMES:
-            templates
+        IN:
+            folder - the folder we are getting templates from
+
+        RETURNS:
+            list of template filepaths we found
         """
-        global templates
         templates = list()
-        t_files = os.listdir(diary_basedir)
+        t_files = os.listdir(diary_basedir + folder)
         for t_filename in t_files:
-            t_filepath = diary_basedir + t_filename
+            t_filepath = diary_basedir + folder + t_filename
             
             if (
                     isValidTemplateFilename(t_filename) 
@@ -557,6 +585,8 @@ init python in mas_diary:
                 ):
                 # TODO, this really should be a dict with ## as the keys
                 templates.append(t_filepath)
+
+        return templates
 
 
 ############## diary keyword functions ######################
@@ -1053,9 +1083,10 @@ init 1 python in mas_diary:
 #        "story": _dk_story,
 
         # PS entries. 
-        # Each entry is written on a new line, but not separated by a newline
-        # NOTE: breaklines are automatically applied
-        "ps": _dk_ps,
+        # no modifier
+        # NOTE: ps entry is no longer used. Instead PS entries are considerd
+        # multiple sessions
+#        "ps": _dk_ps,
 
         # current year
         # Y|<modifier>
@@ -1083,6 +1114,9 @@ init 1 python in mas_diary:
         "D": _dk_day
 
         # TODO: times
+
+        # 
+        "h": _dk_hour,
     }
 
 
@@ -1249,11 +1283,11 @@ init 2018 python:
         # TODO: determining which template to pick
 
         # NOTE: debug stuff right now
-        mas_diary._scanTemplates()
+        entry_templates = mas_diary._scanEntryTemplates()
 
         # NOTE: debug
         # template_choice should be an int
-        sel_template = mas_diary.templates[template_choice]
+        sel_template = entry_templates[template_choice]
     
         # TODO,if the file doesnt exist, use "w"
         # otherwise, use "a"
