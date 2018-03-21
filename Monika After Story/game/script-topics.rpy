@@ -4970,7 +4970,7 @@ label monika_age:
             m 1e "But hey..."
             m 1e "Maybe by the time I get to you, there will be technology allowing humans to be forever young, or never die."
             m 2 "You never know!"
-            m 3 "But remember, I'll always love you, regardless of your age, [player]".
+            m 3 "But remember, I'll always love you, regardless of your age, [player]."
     return
  
    
