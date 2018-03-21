@@ -41,7 +41,7 @@ init -1 python in mas_affection:
     G_SAD = -1
     G_HAPPY = -2
     G_NORMAL = -3
-    
+
 default persistent.mas_long_absence = False
 init python:
     #Functions to freeze exp progression for story events, use wisely.
@@ -175,32 +175,26 @@ init python:
     #Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
     #is equal to the amount of points it's added or removed in minutes.
 
-    #Monika's initial affection based on start-up. Need to decide on super exp before we do anything else...
-    #Monika closed game herself and how happy she is determines on time between closed game and reopening.
-    #if persistent.closed_self == True:
-        #if persistent.mas_long_absence == True:
-            #$ persistent.mas_long_absence = False
-            #$ persistent.mas_long_absence_cooldown = datetime.datetime.now()
-        #else:
+    #Monika's initial affection based on start-up.
+    if persistent.mas_long_absence == False:
+        if datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
+            #mas_gainAffection()
+            pass
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 2):
+            persistent._mas_affection["affection"] -= 30
+            mas_updateAffectionExp()
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(weeks= 3):
+            persistent._mas_affection["affection"] -= 50
+            mas_updateAffectionExp()
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(weeks =3) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 4):
+            persistent._mas_affection["affection"] -= 70
+            mas_updateAffectionExp()
+        elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(weeks =4):
+            persistent._mas_affection["affection"] = -115
+            mas_updateAffectionExp()
+            mas_FreezeBothAffExp()
 
-            #if datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 1):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 2):)
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 4):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
-
-        #persistent.mas_long_absence = False
+    persistent.mas_long_absence = False
 #Unlocked when affection level reaches 50.
 #This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 #There is a character limit of 10 characters.
