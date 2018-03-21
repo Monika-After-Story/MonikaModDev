@@ -294,7 +294,7 @@ label random_limit_reached:
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1m "[limit_quip]"
-    if len(monika_random_topics)>0:
+    if len(monika_random_topics)>0 or persistent._mas_enable_random_repeats:
         m 1f "I'm sure I'll have something to talk about after a little rest."
     else:
         if not renpy.seen_label("mas_random_ask"):
