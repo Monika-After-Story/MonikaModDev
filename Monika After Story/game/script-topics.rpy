@@ -4938,7 +4938,7 @@ label monika_age:
     m 1c "Hey [player], I've been wondering but never bothered to ask..."
     m 1c "What is your age?"
     menu:
-        m 1c "So, what's your age?"
+        m "So, what's your age?"
         "Around the same as yours.":
             m 1b "Oh, that's great!"
             m 1j "We could live the rest of our lives together, without the fear of one outliving the other!"
