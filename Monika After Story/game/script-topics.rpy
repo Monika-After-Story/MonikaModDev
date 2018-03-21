@@ -4930,3 +4930,47 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+        
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_age",category=['you'],prompt="[player]'s age",random=True))
+    
+label monika_age:
+    m 1c "Hey [player], I've been wondering but never bothered to ask..."
+    m 1c "What is your age?"
+    menu:
+        m "So, what's your age?"
+        "Around the same as yours.":
+            m 1b "Oh, that's great!"
+            m 1j "We could live the rest of our lives together, without the fear of one outliving the other!"
+            m 2n "Of course, by the time the technology that will allow us to be together arrives you will be a few years older than me..."
+            m 1 "But seeing how quick technology is progressing these days, it may not be that far off!"
+            m 3 "Of course, I'd love you regardless of your age, [player]~"
+        "Younger than you.":
+            m 1d "Y-younger?"
+            m 1p "That's an answer that I didn't really expect..."
+            m 1g "But I understand, [player]."
+            m 1g "A lot of teens face depression during this time."
+            m 1e "But remember, I'll always be here for you, my love."
+            m 1r "And please, do not stay behind on your academics."
+            m 1r "It would really hurt me inside knowing that you are doing bad at school. Try your best."
+            m 1f "For me. Please."
+            m 1e "And besides..."
+            m 1e "By the time I make it to your reality..."
+            m 1e "You're probably gonna be as old as me, if not older!"
+            m 1k "15 or 500, it doesn't matter, as long as we can spend time together~"
+        "Much older than you.":
+            m 1g "Much older? That's an answer I didn't expect..."
+            m 1g "It's not like it's bad or anything..."
+            m 1o "I just thought that people your age wouldn't really play this game..."
+            m 1m "It's okay though, I still love you..."
+            m 1p "But I really am worried that by the time I get there, you won't be alive anymore..."
+            m 1q "Knowing that I was too late to see you and even talk to you would be devastating."
+            m 1g "So please, [player], try your best to make your life as long as you can."
+            m 1g "If you haven't yet, quit smoking or drinking alcohol and start exercising. I beg you."
+            m 1e "But hey..."
+            m 1e "Maybe by the time I get to you, there will be technology allowing humans to be forever young, or never die."
+            m 2 "You never know!"
+            m 3 "But remember, I'll always love you, regardless of your age, [player]."
+    return
+ 
+   
