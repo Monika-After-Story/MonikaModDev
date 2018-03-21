@@ -353,7 +353,7 @@ label bye_long_absence:
                 m 3q "..."
                 m 3r "Just...just come back when you can, I can't make you stay but please don't do that to me."
             "I don't know.":
-                m 1l "To be honest, that's a little concerning [player]!"
+                m 1l "Ehehe, that's a little concerning [player]!"
                 m 1e "But if you don't know, then you don't know!"
                 m "It sometimes just can't be helped."
                 m 2j "I'll be waiting here for you patiently, my love."
