@@ -1113,10 +1113,38 @@ init 1 python in mas_diary:
         #   s - short/abbrv word current day
         "D": _dk_day
 
-        # TODO: times
+        # current hour
+        # h|<modifier>
+        # modifier rules:
+        #   24 - 24 hour time (Default)
+        #   12 - 12 hour 
+        #   12u - 12 hour, unpadded
+        #   ampm - add AM,PM notation
+        # combinable: 12 + ampm, 12u + ampm
+        "h": _dk_hour_current,
 
-        # 
-        "h": _dk_hour,
+        # current minute
+        # m|<modifier>
+        # modifier rules:
+        #   2 - 2 digit minute (Default)
+        #   2u - 2 digit minute, unpadded
+        "m": _dk_minute_current,
+
+        # current seconds
+        # s|<modifier>
+        # modifier rules:
+        #   2 - 2 digit seconds (Default)
+        #   2u - 2 digit seconds, unpadded
+        "s": _dk_second_current,
+
+        # last session end hour
+        # lseh|<modifier>
+        #   24 - 24 hour time (Default)
+        #   12 - 12 hour time
+        #   12u - 12 hour, unpadded
+        #   ampm - add AM,PM notation
+        #   ago - number of hours ago from last session
+        "lseh": _dk_hour_lastend
     }
 
 
