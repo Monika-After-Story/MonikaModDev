@@ -369,7 +369,8 @@ label bye_long_absence:
                 m "I really do mean it when I say I'll miss you..."
                 m 1b "You truly are my entire world after all, [player]."
                 m 2a "If you tell me you're going to go for a while again then I'll know it's time for you to leave..."
-                m 3j "But there's no rush, I want to spend as much time with you as I can!"
+                m 3j "But there's no rush, I want to spend as much time with you as I can."
+                m "Just make sure to remind me the last time you see me before you go!
                 return
             "Yes.":
                 m 3f "I see..."
