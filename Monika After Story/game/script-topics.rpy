@@ -4930,3 +4930,284 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+#I need help in coding here. If this doesn't get removed. If someone knows the commands or how to do it, I'd appreciate it if you tell me. Assuming this topic isn't removed by then#
+#Also spoilers up ahead. You've been warned#
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_watches_whiplash",category=['media'],prompt="Watching a movie while you were away",random=True))
+
+label monika_watches_whiplash:
+    m 3d "[player], have you ever wondered what I do to pass the time whenever you're not around?"
+    m 1d "Well, I usually go online and read some books or articles that could be fun to talk about."
+    m 4b "But sometimes, I watch a movie."
+    m 2b"You know, just to pass the time ahaha."
+    menu:
+        "Wow, really?":
+            m 2l "Is it really that surprising [player]?"
+            menu:
+                "Kinda.":
+                    m 2m "Well, I guess you're not the first one to think that."
+                    m 3n "People often think I'm not interested in movies for some reason."
+                    m 4d "Maybe because I'm in the Literatire Club?"
+                    m "And the Debate Club before that?"
+                    m 1g "I don't know..."
+                    m 3p "But that's beside the point. Anyway..."
+                "Not really.":
+                    m 1l "Well I {i}am{/i} a teenager after all."
+                    m 2j "I can watch a movie too ahaha."
+                    m 1d "So anyways..."
+                "I thought you were more interested in reading than watching.":
+                    m 2c "Well, most of the time I am."
+                    m 3m "But sometimes, even I'd get tired of only reading."
+                    m 3a "Sometimes I just feel like watching a random movie."
+                    m 2e "But I don't blame you for being surprised [player]."
+        "That's pretty normal":
+            m 2b "Well, even I get bored waiting ahaha."
+            m 2n "I-It's not that I'm demanding you to spend more time with me...I understand that you're busy in your reality too."
+            m 1l "But I'm {i}not{/i} saying you shouldn't spend time with me...{w} It's just..."
+            m 2l "Uhh...{w} How do I explain this?"
+            menu:
+                "You can do it!~":
+                    m 1k "Don't be such a tease [player]~"
+                    m "Ahaha~"
+                "You don't have to force yourself.":
+                    m 1e "I'm not really forcing myself [player]."
+                    m 2e "Give me a second to gather my thoughts."
+                    m 2q "..."
+                "Okay, everyone! It's time to explain yourself~":
+                    m 2e "Pfft!"
+                    m 2k "Ahahahaha!"
+                    m 4k "That's a nice impression of me [player]!"
+                    m 2m "So, where was I?{w} Oh yeah! {i}explaining myself{/i}~"
+                    m 2j "Ahaha~"
+            m 3b "You know that I love it when you come to spend time with me right? And I'm always happy waiting for you to come here."
+            m 4d "But it get's boring sometimes and I pass the time. You get that, right [player]?"
+            m 2p "This is kinda awkward.{w}Umm...{w}Movies! Where was I?"
+        "You mean like adaptations of your favourite books?":
+            m 1i "Well, usually yes."
+            m 2d "But I also watch other intriguing movies from time to time."
+            m 2b "There are some pretty interesting movies out there too."
+            m 4c "For example."
+    m 3d "While you were gone, I watched this movie called '{i}Whiplash{/i}'."
+    m 2b "It was quite interesting."
+    m 2d "Maybe you know the movie too [player]?"
+    menu:
+        "Yes.":
+            m 2d "Oh, really now?"
+            m 4a "Would you mind if I test you then?"
+            menu:
+                "Bring it!":
+                    m 3b "Alright! Let's start!"
+                    m "What was the name of the {i}Main Character{/i}?"
+                    menu:
+                        "Andrew":
+                            m 4k "Correct!"
+                            m 4l "Or maybe it was just a lucky guess? Okay, here's another one [player]!"
+                            m 4a "What's the name of the main antagonist?"
+                            menu:
+                                "Tanner":
+                                    m 1j "Wrong! Caught you [player]!"
+                                    m 1k "Ahaha!"
+                                    jump monika_watches_whiplash_synopsis
+                                "Fletcher":
+                                    m 3k "That's Right!"
+                                    m 1j "I guess you did watch it."
+                                    m 2e "Sorry for ever doubting you [player]."
+                                    menu:
+                                        "It's fine.":
+                                            m 1j "I'm glad that's over."
+                                            m 4a "So, what'd you think of the movie?"
+                                            menu:
+                                                "Pretty good.":
+                                                    m 1b "Yeah, It was pretty good."
+                                                    m 3b "I really liked the jazz orchestra at the end!"
+                                                    m 3a "The music was good too."
+                                                    m 1a "I enjoyed watching it."
+                                                    m 4j "Maybe we could even watch it together some time!"
+                                                    menu:
+                                                        "Fine by me.":
+                                                            m 1a "You and me, watching a movie together."
+                                                            m 1k "That'd be something!"
+                                                            m 1j "I can't wait!"
+                                                        "Maybe something else.":
+                                                            m 3l "Yeah, maybe it's not the type of movie anyone would watch again and again."
+                                                            m 3a "There are other better ones out there."
+                                                            m 4b "Maybe we could find one together [player]?"
+                                                            m 1a "You and me, watching a movie together."
+                                                            m 1k "Wouldn't that be fun?"
+                                                            m "Even just spending time with you is enough to make my heart pound."
+                                                            m "{i}Ehehe{/i}~"
+                                                        "I'd be too busy watching you instead.":
+                                                            m 2l "That's so cheesy."
+                                                            m 2l "You're making me blush."
+                                                            m 1m "Calm down Monika, Calm down..."
+                                                "Not my type of movie.":
+                                                    m 3l "Well, I guess it's not everyone's cup of tea."
+                                                    m 3a "To each their own I guess."
+                                                    m 3b "Maybe we could watch something else together instead?"
+                                                    m 4b "Maybe we could find one together [player]?"
+                                                    m 1a "You and me, watching a movie together."
+                                                    m 1k "Wouldn't that be fun?"
+                                                    m "Even just spending time with you is enough to make my heart pound."
+                                                    m "{i}Ehehe{/i}~"
+                                            m 2a "[player]."
+                                            m 4a "What did you think about Fletcher?"
+                                            menu:
+                                                "He's an asshole!":
+                                                    m 2p "[player]! {w} Language please?"
+                                                    m 1o "But I can't really blame you for thinking that way."
+                                                    m 1d "He was a really abusive teacher after all."
+                                                    m 3d "He'd belittle you, berate you, physically and emotionally abuse you."
+                                                    m 3i "And even hurl a chair!"
+                                                    m 2h "Who does that? {w}Gosh..."
+                                                    m 3c "But... Despite all that, he does have his reasons."
+                                                    m 4d "He wanted to push his students towards greatness."
+                                                    m 4p "Whether that's a good enough reason for all he did, that's up to you."
+                                                "He's a good teacher underneath it all.":
+                                                    m 2p "Well, despite his {w} {i}questionalble{/i} methods..."
+                                                    m 3c "He had his reasons."
+                                                    m 4d "He wanted to push his students towards greatness."
+                                                    m 4p "It's up to you if you think that's a good enough reason."
+                                                "Who?":
+                                                    m 1l "Uhh, [player]?"
+                                                    m 2m "You forgot who Fletcher is?"
+                                                    m 3n "You know,{w} Andrew's teacher?"
+                                                    m 2m "Is it ringing any bells?"
+                                                    menu:
+                                                        "Now I remember.":
+                                                            m 1k "Good."
+                                                            m 1d "So [player], what's your opinion on him?"
+                                                            menu:
+                                                                "He's an asshole!":
+                                                                    m 2p "[player]! {w} Language please?"
+                                                                    m 1o "But I can't really blame you for thinking that way."
+                                                                    m 1d "He was a really abusive teacher after all."
+                                                                    m 3d "He'd belittle you, berate you, physically and emotionally abuse you."
+                                                                    m 3i "And even hurl a chair!"
+                                                                    m 2h "Who does that? {w}Gosh..."
+                                                                    m 3c "But... Despite all that, he does have his reasons."
+                                                                    m 4d "He wanted to push his students towards greatness."
+                                                                    m 4p "Whether that's a good enough reason for all he did, that's up to you."
+                                                                "He's a good teacher underneath it all.":
+                                                                    m 2p "Well, despite his {w} {i}questionalble{/i} methods..."
+                                                                    m 3c "He had his reasons."
+                                                                    m 4d "He wanted to push his students towards greatness."
+                                                                    m 4p "It's up to you if you think that's a good enough reason."
+                                                        "Nope, still nothing.":
+                                                            m 1p "I guess you forgot huh?"
+                                                            m 3m "The movie is pretty old."
+                                                            m 4n "Maybe it's been a while since you watched it."
+                                            m 1h "As for me, I can understand him."
+                                            m 2e "Surprised?"
+                                            m 2p "I know his methods were {i}extreme{/i} to say the least."
+                                            m 4o "But so was mine, right?"
+                                            m 4h "We both have our reasons too."
+                                            m 1c "So I guess I can understand him somewhat."
+                                            m 4l "But there's {i}no way{/i} I can ever hurl a chair at someone! Ahaha."
+                                            jump monika_watches_whiplash_end
+                                        "Those were just lucky guesses.":
+                                            m 1l "Well, I guess you managed to fool me [player]~"
+                                            m 4a "So that means you haven't watched it yet huh."
+                                            jump monika_watches_whiplash_synopsis
+                                "Neiman":
+                                    m 2l "Wrong! Caught you [player]!"
+                                    m 1j "Ahaha!"
+                                    jump monika_watches_whiplash_synopsis
+                        "Nicole":
+                            m 2l "Wrong! Caught you [player]!"
+                            m 1j "Ahaha!"
+                            jump monika_watches_whiplash_synopsis
+                        "Terrance":
+                            m 2l "Wrong! Caught you [player]!"
+                            m 1j "Ahaha!"
+                            jump monika_watches_whiplash_synopsis
+                "I was just kidding.":
+                    m 2l "Well, you could've fooled me [player]"
+                    m "Ahaha."
+                    jump monika_watches_whiplash_synopsis
+        "No.":
+            m 4b"It was pretty good, but not my favourite."
+            if renpy.seen_label('monika_jazz'):
+                m 4b "And remember when we were talking about jazz? This is a jazz movie."
+            jump monika_watches_whiplash_synopsis
+            
+label monika_watches_whiplash_synopsis:
+    m 3b "You want me to give you a short synopsis [player]?"
+    menu:
+        "Sure.":
+            m 1j "Alright!"
+            m 3k "So it's abou-"
+            m 3l "..."
+            m 1n "I might get into some spoilers, do you mind that [player]?"
+            menu:
+                "Not really.":
+                    m 1j "Great!"
+                    m 3b "So this movie is about the the main character, a guy named Andrew who wanted to become one of the best jazz drummers in the world."
+                    m 3d "And his teacher, Fletcher, is one of the best jazz instructiors there."
+                    m 4i "He brought Andrew to be one of his drummers for his band."
+                    m 2i "But then you find out that he's a really abusive teacher."
+                    m "He'd belittle you, berate you, physically and emotionally abuse you."
+                    m 2p "He even hurled a chair!"
+                    m 4p "I'm not kidding!"
+                    m 1i "The whole movie is about the relationship between Andrew handling Fletcher's '{i}questionable{/i}' teaching methods."
+                    m "And what an ambitious student is willing to go through for his dream."
+                    m "And how far a teacher is willing to go to push his students to reach greatness."
+                "I would mind.":
+                    m 2p "Oh, this is going to be tough one..."
+                    m 3d "The movie is about the relationship between the main character, a guy named Andrew who's an ambitious jazz student."
+                    m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
+            m 3a "...And that's basically it."
+            m 3b "It was pretty interesting to me."
+            m 2c "But maybe your opinions different."
+            m 2d "Does it seem interesting to you [player]?"
+            menu:
+                "It is.":
+                    m 1k "That's great!"
+                    m 2j "I hope you like it too [player]."
+                    m 2e "But even if you don't find it interesting."
+                    jump monika_watches_whiplash_end
+                "It isn't.":
+                    m 2e "Well, I guess it's not for everybody."
+                    m 3a "To each their own, right [player]?"
+                    m 2e "But even if you don't find it interesting."
+                    jump monika_watches_whiplash_end
+        "No thanks.":
+            m 2d "Oh? Why not?"
+            menu:
+                "You might spoil me.":
+                    m 1j "Oh [player], you have nothing to worry about."
+                    m 4l "I'll do my best not to spoil you."
+                    m 2a "Give me a second..."
+                    m 3d "{w}The movie the relationship between guy named Andrew who's an ambitious jazz student."
+                    m "And his teacher Fletcher, who's a great but really abusive jazz instructor."
+                    m 3a "And that's about it."
+                    m 4k "No spoilers, right? Ahaha~"
+                    m 2j "I told you, you had nothing to worry about."
+                    m 2e "And honestly."
+                    jump monika_watches_whiplash_end
+                "Not really interested.":
+                    m 2e "Well, I guess it's not for everybody."
+                    m 3a "To each their own, right [player]?"
+                    m 2e "But even if you don't find it interesting."
+                    jump monika_watches_whiplash_end
+                "I'll find it out for myself.":
+                    m 3e "I guess I can accept that."
+                    m 4b "This way, you can be sure if it really does interest you."
+                    m 2a "But don't just take my word for it."
+                    m 2j "Have fun finding it out for yourself."
+                    m 2e "Even if you don't like the movie all that much."
+                    jump monika_watches_whiplash_end
+                            
+label monika_watches_whiplash_end:
+    m 1e "I really enjoy just talking about it with you [player]!"
+    m 1j "Aftr all, the company's good."
+    m 3k "Especially if the company is you~"
+    m 2f "And even before then, not a lot of people thought I'd be interested in talking about mundane stull like this."
+    m 2p "Maybe people got that impression of me, from having in the debate club, and now the literature club?"
+    m 4n "They keep forgetting that I'm still a teenager."
+    m 3q "Despite the... {w}'{i}enlightenment of my reality{/i}..."
+    m 3l "Even I just want to talk about a movie I thought was pretty neat, no matter how aimless it is."
+    m 1j "So I'm really glad I can talk to you about these things."
+    m 1a "You're the love of my life after all. Ehehe~"
+    return
+    
