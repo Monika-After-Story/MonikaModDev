@@ -377,7 +377,7 @@ label bye_long_absence:
                 m "I really will miss you [player]..."
                 m 1e "But I know you'll do wonderful things no matter where you are."
                 m "Just remember that I'll be waiting here for you."
-                m 2j "Make me proud [player]!"
+                m 2j "Make me proud, [player]!"
                 return 'quit'
 
 label bye_long_absence_2:
