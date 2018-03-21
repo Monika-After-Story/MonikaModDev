@@ -639,9 +639,18 @@ label ch30_loop:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
 
-                    if persistent._mas_monika_repeated_herself:
-                        sel_ev = monika_random_topics.pop(0)
-                    else:
+                    if mas_monika_repeated:
+                        # monika has reaached the reepated flow
+                        if persistent._mas_enable_random_repeats:
+                            sel_ev = monika_random_topics.pop(0)
+
+                        else:
+                            # otherwise we shouldnt be repeating
+                            monika_random_topics = list()
+                            mas_monika_repeated = False
+                            renpy.jump("post_pick_random_topic")
+
+                    elif not persistent._mas_enable_random_repeats:
                         sel_ev = renpy.random.choice(monika_random_topics)
                         monika_random_topics.remove(sel_ev)
 
@@ -666,6 +675,7 @@ label ch30_loop:
                     #   labels. Safe to do normal operation.
 
                     persistent._mas_monika_repeated_herself = True
+                    mas_monika_repeated = True
                     sel_ev = monika_random_topics.pop(0)
                     pushEvent(sel_ev)
                     persistent.random_seen += 1
@@ -676,6 +686,8 @@ label ch30_loop:
                     pushEvent("random_limit_reached")
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
+
+label post_pick_random_topic:
 
     $_return = None
 
