@@ -4824,6 +4824,65 @@ label monika_100k:
         m 1m "Almost~"
     return
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_asks_charity",category=['you'],prompt="Charity",random=True))
+
+label monika_asks_charity:
+    m 1a "Say, [player]."
+    m 1a "Have you ever contributed to a charity?"
+    menu:
+        "I donated money or things.":
+           m 1k "That's great!"
+           m 2c "Though you could argue that volunteering is better, I think there's nothing wrong with donating."
+           m 3c "It's better than nothing, and you are definitely contributing, even if you have a limited budget or little time to spend."
+           m 3d "It's sad to say, but charities will always need people giving money or things to help people."
+           m 2f "There are so many causes that need it, after all."
+           m 2g "Helping the homeless, giving food for those in need..."
+           m 2f "It feels like it is never going to end."
+           m 2f "..."
+           m 2l "I'm sorry, I didn't want things to go so dark."
+           m 1l "What I wanted to say was that thank you for helping that charity."
+           m 5a "I knew you would be kind enough to do such a thing."
+           m 5j "That's the kind of thing I love about you, [player]."
+           m 1a "You've always been so sweet."
+        
+        "I volunteered.":
+           m 1b "Really?"
+           m 1j "That's so wonderful!"
+           m 1c "While donating is really great and all, there are lots of charities that need a few extra people."
+           m 3d "Of course, money and resources are important, but usually, the main problems of charities is the organization."
+           m 2c "It's understandable, people don't necessarily have time to spend for them."
+           m 2c "So, most of the time, retired people do the organization part, and it can be a problem if they have to carry something heavy."
+           m 2d "That's why they sometimes need help from the outside, particularly from teenagers or young adults, since they have more time to spend."
+           m 1a "Anyway, what I wanted to say was that it's a good thing you did that."
+           m 3k "Plus, I've heard that it can be great to have this kind of experience in a resume, when you apply for a job."
+           m 3b "So, whether you did it for that or just out of kindness, it's a good thing either way."
+           m 1a "..."
+           m 5a "You know, it's the kind of things that makes me love you even more, [player]."
+           m 5a "I just feel so proud that you helped people in need."
+           m 1c "I mean, I knew you were willing to help people with what happened to Sayori."
+           m 1c "But at the same time, I guess it's easier to involve yourself when all in all, people like her were never real to begin with."
+           m 5a "So knowing that you also did it in your reality makes my heart flutter."
+           m 5a "I love you so much, [player]. I mean it."
+        
+        
+        "No.":
+           m 1a "Oh, I see."
+           m 2c "I can understand, actually."
+           m 2d "While there are lots of different charities, you have to be careful, since there are some frauds in some of them."
+           m 2c "So, it can be hard to trust them in the first place."
+           m 3c "Not to mention, seeing all those people suffering from hunger or poverty in general..."
+           m 3c "Or even the people that try to help them and ask you for some money..."
+           m 2f "It can be a bit embarrassing. Depressing, at worst."
+           m 2g "But, you know..."
+           m 2g "Even if you can't do anything to contribute, it can be helpful to just smile at people."
+           m 2e "Being ignored by passers-by can be tough for people who contribute."
+           m 2r "It's like as if they were seen as a nuisance by society, when they're just trying to help."
+           m 2g "Sometimes, a smile is all you need to make you go further."
+           m 5a "Just like when I'm with you."
+           m 5a "With just a smile, you make all my troubles go away."
+           m 1e "I love you so much, [player]."
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
