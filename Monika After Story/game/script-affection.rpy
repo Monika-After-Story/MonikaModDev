@@ -176,7 +176,7 @@ init python:
     #is equal to the amount of points it's added or removed in minutes.
 
     #Monika's initial affection based on start-up.
-    if persistent.mas_long_absence == False:
+    if persistent._mas_long_absence == False:
         if persistent.sessions["last_session_end"] == None:
             pass
         elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
