@@ -4911,6 +4911,24 @@ label monika_asks_family:
                 m 1j "I love you very much!"
     return
 
+
+init 5 python:    
+     addEvent(Event(persistent.event_database,eventlabel="monika_selfishness",category['monika','psychology'],prompt="Selfishness",random=True)) 
+
+     label monika_selfishness: 
+     m 1d "I've been worrying about one thing for a while..." 
+     m "Do you think I am a selfish person, [player]?" 
+     m 1c "..." 
+     m "I am asking because people generally dislike when someone is selfish. I wouldn't like to be compared to people who are doing bad things just for their own self-satisfaction." 
+     m 1f "But you can say I really did some bad things. Like making Sayori more depressed or pushing Yuri further into her obsessive behaviour." 
+     m "Or even me talking to you right now can be somehow considered as an act of my selfishness." 
+     m 2n "But please, trust me, [player]. Everything I've ever done was for you. I wanted to make you more happy. More interested. More aware." 
+     m 2q "Yes, it is true that I wanted you to be more happy with me. Be more interested in me. Be more aware of me." 
+     m 2k "Yet... I still believe it is the best for both of us, you know?" 
+     m "Ahaha." 
+     m 4b "I might be a little selfish after all~" 
+     return
+     
 ####################################################
 # Saving this for future use
 # Could be expanded to something better
