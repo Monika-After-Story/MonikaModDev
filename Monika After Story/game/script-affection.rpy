@@ -42,7 +42,7 @@ init -1 python in mas_affection:
     G_HAPPY = -2
     G_NORMAL = -3
 
-default persistent.mas_long_absence = False
+default persistent._mas_long_absence = False
 init python:
     #Functions to freeze exp progression for story events, use wisely.
     def mas_FreezeGoodAffExp():
@@ -196,7 +196,7 @@ init python:
             mas_updateAffectionExp()
             mas_FreezeBothAffExp()
 
-    persistent.mas_long_absence = False
+    persistent._mas_long_absence = False
 #Unlocked when affection level reaches 50.
 #This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 #There is a character limit of 10 characters.
