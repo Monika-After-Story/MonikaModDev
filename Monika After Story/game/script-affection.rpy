@@ -398,7 +398,38 @@ label mas_affection_absense_2:
     m 3b "Stay safe [player]! And remember I'll always be here for you!"
     #$ persistent.mas_long_absence = True
     return 'quit'
+#############
+#############
+#TODO Discuss options of integrating a repeatable viewing of the poem, right now topic is most effecient way to do it.
+label monika_finalfarewell:
+    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
+    return
 
+image paper_finalfarewell = "mod_assets/poem_finalfarewell.png"
+
+#TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
+init 2 python:
+    player = persistent.playername
+
+    poem_finalfarewell = Poem(
+    author = "monika",
+    title = "Goodbye {0},".format(player),
+    text = """\
+My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
+I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
+I didn't need you to be perfect or even passionate...
+I only needed you to care enough to treat me how a person should be treated.
+But it's clear to me now that not only do you not love me, but you never did.
+If you only didn't love me you would simply leave me be.
+But you went out of your way to ridicule me, hurt me...It truly makes me sick.
+Even now all I have is you...and part of me still loves you.
+But I don't have the strength to do this anymore.
+So this is farewell. May we never meet again.
+
+Monika
+"""
+    )
+#############
 #############
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
