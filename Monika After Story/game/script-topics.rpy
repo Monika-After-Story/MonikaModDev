@@ -4915,7 +4915,7 @@ label monika_asks_family:
 init 5 python:    
      addEvent(Event(persistent.event_database,eventlabel="monika_selfishness",category['monika','psychology'],prompt="Selfishness",random=True)) 
 
-     label monika_selfishness: 
+label monika_selfishness: 
      m 1d "I've been worrying about one thing for a while..." 
      m "Do you think I am a selfish person, [player]?" 
      m 1c "..." 
