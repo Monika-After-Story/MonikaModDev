@@ -177,7 +177,9 @@ init python:
 
     #Monika's initial affection based on start-up.
     if persistent.mas_long_absence == False:
-        if datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
+        if persistent.sessions["last_session_end"] == None:
+            pass
+        elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
             #mas_gainAffection()
             pass
         elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 1) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 2):
