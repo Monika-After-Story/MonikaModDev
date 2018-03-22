@@ -1489,6 +1489,25 @@ python early:
 init -100 python in mas_utils:
     # utility functions for other stores.
 
+
+    def pluralize(value, unit):
+        """
+        Generates an appropriate pluralized string if required for a value
+        ASSUMEs that the unit given is pluralized with a simple s
+
+        IN:
+            value - numerical value we are comparing against
+            unit - the singular unit we may pluralize
+
+        RETURNS:
+            potentially pluralized unit
+        """
+        if value == 1:
+            return unit
+
+        return unit + "s"
+
+
     def randrange(count, start, end, order=False, dups=False):
         """
         Generates a range of count numbers within the specified start-end range
@@ -1555,6 +1574,26 @@ init -100 python in mas_utils:
             return int(value)
         except:
             return default
+
+
+    def valuepluralize(value, unit):
+        """
+        Version of pluralize that also checks the given value and returns it in
+        the string.
+
+        IN:
+            value - numerical value we are comparing against
+            unit - the singular unit we may pluralize
+
+        RETURNS:
+            potentially pluralized unit + value
+        """
+        if value == 0:
+            # valueless
+            return ""
+
+        # otherwise we can return this appropriately
+        return "{0} {1}".format(value, pluralize(value, unit))
 
 
 

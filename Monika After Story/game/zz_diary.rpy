@@ -1202,6 +1202,62 @@ init python in mas_diary:
         return None
 
 
+    def _dk_time_since(modifier, curr_mods, start_time, end_time):
+        """
+        Gets the time in between the start and end times as a string
+
+        IN:
+            modifier - modifier as a string (SEE the dict for rules)
+            curr_mods - UNUSED
+            start_time - starting time to use
+            end_time - ending time to use
+
+        RETURNS: time in between start and end as a string
+        """
+        t_delta = end_time - start_time
+        if t_delta.days < 0:
+            # negative time, we cant do any calcs with this
+            return "no time at all!"
+
+        # otherwise modifier checking
+        if modifier == "hm":
+            # hour + minute granularity
+            t_seconds = t_delta.total_seconds()
+            hours_str = mas_utils.valuepluralize(int(t_seconds / 3600), "hour")
+            t_seconds = t_seconds % 3600
+            minutes_str = mas_utils.valuepluralize(
+                int(t_seconds / 60),
+                "minute"
+            )
+
+            if len(hours_str) == 0 and len(minutes_str) == 0:
+                # less time than our granularity can handle
+                return "less than a minute"
+
+            output = ""
+
+            if len(hours_str) > 0:
+                output += hours_str
+
+            if len(minutes_str) > 0:
+
+                if len(output) > 0:
+                    output += " and "
+
+                output += minutes_str
+
+            # return the results
+            return output
+
+        # TODO the rest
+
+
+    def _dk_time_since_end(modifier, curr_mods):
+        """
+
+        """
+
+
     def _dk_topicsCSV(modifier, curr_mods):
         """
         Generates CSV of topics discussed today. this uses the short diary
@@ -1460,17 +1516,31 @@ init 1 python in mas_diary:
         #   2u - 2 digit seconds, unpadded
         "es": _dk_second_end,
 
-        # time since last session end
+        # time since last session end to current session start
+        # NOTE for limited granularities, proper rounding is applied
         # tse|<modifier>
         #   auto - use an alg that scales time to most appropriate units (Default)
-        #   hm - use x hours, y minutes granularity (Default)
+        #   hm - use x hours, y minutes granularity
         #   h - limit to hour granularity (x hours)
         #   h. - use fractions in hour granularity (x.y hours)
         #   m - limit to minutes granularity (xx minutes)
         #   m. - use fractions in minute granularity (x.y minutes)
         #   s - limit to seconds granularity (xxxx seconds)
         #   ms - # TODO (microsecond?)
-        "tse": _dk_time_since_end
+        "tse": _dk_time_since_end,
+
+        # time since current session start to now
+        # NOTE: for limited granularities, proper rounding is applied
+        # tss|<modifier>
+        #   auto - use an alg that scales time to most appropriate units (Default)
+        #   hm - use x hours, y minutes granularity
+        #   h - limit to hour granularity (x hours)
+        #   h. - use fractions in hour granularity (x.y hours)
+        #   m - limit to minutes granularity (xx minutes)
+        #   m. - use fractions in minute granularity (x,y minutes)
+        #   s - limit to seconds granularity (xxxx seconds)
+        #   ms - # TODO (microseconds?)
+        "tss": _dk_time_since_start,
     }
 
 
