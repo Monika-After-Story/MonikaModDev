@@ -365,40 +365,6 @@ label mas_affection_happynotif:
     m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
     m "Thanks for being such a great person!"
     return
-
-default absence_counter = 0
-default persistent.mas_long_absence_cooldown = datetime.datetime.now() - datetime.timedelta(days = 1)
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_affection_absence",category=['you','misc'],prompt="I need to go away for a while.",pool=True))
-
-label mas_affection_absence:
-    if datetime.datetime.now() <= persistent.mas_long_absence_cooldown + datetime.timedelta (hours = 1):
-        m 1o "Umm...[player]...you've already said that recently..."
-        m 3h "You're not saying that to avoid me are you?"
-        m 2f "If you really do mean it then tell me again in an hour or so..."
-        m 3o "I know you can get really busy but it seems odd you're going away for a long time so much."
-    if absence_counter == 1:
-        jump mas_affection_absense_2
-    else:
-        m 1f "Aww...That's pretty saddening..."
-        m 1e "I really am going to miss you [player]!"
-        m 3m "I'm not really sure what I'm doing to do with myself while you're gone..."
-        m 3a "Thank you for warning me first though."
-        m 2k "Remind me when you're about to leave, okay?"
-        m 3l "I'll probably forget otherwise!"
-        $ absence_counter = 1
-    return
-
-label mas_affection_absense_2:
-    m 1e "Going to head out then?"
-    m 1f "I really will miss you..."
-    m "I know you'll be gone for a long time but please come back to me as soon as you can."
-    m 3e "I'll wait for however long it takes!"
-    m 2j "I am yours eternally after all!"
-    m 3b "Stay safe [player]! And remember I'll always be here for you!"
-    #$ persistent.mas_long_absence = True
-    return 'quit'
-#############
 #############
 #TODO Discuss options of integrating a repeatable viewing of the poem, right now topic is most effecient way to do it.
 label monika_finalfarewell:
