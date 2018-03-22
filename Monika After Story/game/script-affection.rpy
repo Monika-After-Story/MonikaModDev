@@ -41,25 +41,26 @@ init -1 python in mas_affection:
     G_SAD = -1
     G_HAPPY = -2
     G_NORMAL = -3
-
+    
+default persistent.mas_long_absence = False
 init python:
     #Functions to freeze exp progression for story events, use wisely.
     def mas_FreezeGoodAffExp():
         persistent._mas_affection_goodexp_freeze = True
-        
+
     def mas_FreezeBadAffExp():
         persistent._mas_affection_badexp_freeze = True
-        
+
     def mas_FreezeBothAffExp():
         mas_FreezeGoodAffExp()
         mas_FreezeBadAffExp()
-        
+
     def mas_UnfreezeBadAffExp():
         persistent._mas_affection_badexp_freeze = False
-        
+
     def mas_UnfreezeGoodAffExp():
         persistent._mas_affection_badexp_freeze = False
-        
+
     def mas_UnfreezeBothExp():
         mas_UnfreezeBadAffExp()
         mas_UnfreezeGoodAffExp()
@@ -173,27 +174,29 @@ init python:
     #Monika's initial affection based on start-up. Need to decide on super exp before we do anything else...
     #Monika closed game herself and how happy she is determines on time between closed game and reopening.
     #if persistent.closed_self == True:
-       # if datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6):
+        #if persistent.mas_long_absence == True:
+            #$ persistent.mas_long_absence = False
+            #$ persistent.mas_long_absence_cooldown = datetime.datetime.now()
+        #else:
+
+            #if datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
 
 
-       # elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18):
 
 
-       # elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 1):
 
 
-        #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 1):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 2):)
 
 
-        #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 2):)
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 4):
 
 
-       # elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 4):
+            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
 
-
-        #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
-
-
+        #persistent.mas_long_absence = False
 #Unlocked when affection level reaches 50.
 #This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 #There is a character limit of 10 characters.
@@ -250,7 +253,15 @@ label monika_affection_nickname:
             "gruesome",
             "horrid",
             "troll",
-            "slaughter"
+            "slaughter",
+            "slut",
+            "thot",
+            "whore",
+            "tramp",
+            "hooker",
+            "tart",
+            "harlot",
+            "hussy"
         ]
 
         good_nickname_list = [
@@ -354,7 +365,37 @@ label mas_affection_happynotif:
     m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
     m "Thanks for being such a great person!"
     return
+#############
+#TODO Discuss options of integrating a repeatable viewing of the poem, right now topic is most effecient way to do it.
+label monika_finalfarewell:
+    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
+    return
 
+image paper_finalfarewell = "mod_assets/poem_finalfarewell.png"
+
+#TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
+init 2 python:
+    player = persistent.playername
+
+    poem_finalfarewell = Poem(
+    author = "monika",
+    title = "Goodbye {0},".format(player),
+    text = """\
+My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
+I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
+I didn't need you to be perfect or even passionate...
+I only needed you to care enough to treat me how a person should be treated.
+But it's clear to me now that not only do you not love me, but you never did.
+If you only didn't love me you would simply leave me be.
+But you went out of your way to ridicule me, hurt me...It truly makes me sick.
+Even now all I have is you...and part of me still loves you.
+But I don't have the strength to do this anymore.
+So this is farewell. May we never meet again.
+
+Monika
+"""
+    )
+#############
 #############
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
