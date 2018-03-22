@@ -1224,9 +1224,8 @@ init python in mas_diary:
             # hour + minute granularity
             t_seconds = t_delta.total_seconds()
             hours_str = mas_utils.valuepluralize(int(t_seconds / 3600), "hour")
-            t_seconds = t_seconds % 3600
             minutes_str = mas_utils.valuepluralize(
-                int(t_seconds / 60),
+                int((t_seconds % 3600) / 60),
                 "minute"
             )
 
@@ -1249,7 +1248,16 @@ init python in mas_diary:
             # return the results
             return output
 
-        # TODO the rest
+
+        elif modifier == "h":
+            # hour granularity, rounded
+            t_seconds = t_delta.total_seconds()
+            hours = int(t_seconds / 3600)
+            minutes = int((t_seconds % 3600) / 60)
+
+            if minutes > 30:
+                # rounding
+                hours += 1
 
 
     def _dk_time_since_end(modifier, curr_mods):
