@@ -321,8 +321,8 @@ label bye_illseeyou:
     return 'quit'
     
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_haveagoodday",random=True),eventdb=evhand.farewell_database)
-label bye_haveagoodday
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_prompt_haveagoodday",random=True,unlocked=True,pool=True),eventdb=evhand.farewell_database)
+label bye_prompt_haveagoodday
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 6 and current_time <= 11:
         m 1b "Have a good day today [player]."
@@ -335,8 +335,8 @@ label bye_haveagoodday
         return 'quit'
         
 init 5 python: 
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_enjoyyourafternoon",random=True),eventdb=evhand.farewell_database)
-label bye_enjoyyourafternoon
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_prompt_enjoyyourafternoon",random=True,unlocked=True,pool=True),eventdb=evhand.farewell_database)
+label bye_prompt_enjoyyourafternoon
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 12 and current_time <= 16:
         m 1i "I hate to see you go so early [player]."
@@ -347,8 +347,8 @@ label bye_enjoyyourafternoon
         return 'quit'
         
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_goodevening",random=True),eventdb=evhand.farewell_database)
-label bye_goodevening
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_prompt_goodevening",random=True,unlocked=True,pool=True),eventdb=evhand.farewell_database)
+label bye_prompt_goodevening
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 17 and current_time <= 19:
         m 1k "I had fun today."
@@ -358,8 +358,8 @@ label bye_goodevening
         return 'quit'
         
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_goodnight",random=True),eventdb=evhand.farewell_database)
-label bye_goodnight
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_prompt_goodnight",random=True,unlocked=True,pool=True),eventdb=evhand.farewell_database)
+label bye_prompt_goodnight
     $ current_time = datetime.datetime.now().time().hour
     if current time >= 18 and current_time <= 24:
         m 1k "Goodnight [player]."
