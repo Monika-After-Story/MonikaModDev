@@ -177,21 +177,19 @@ init python:
 
     #Monika's initial affection based on start-up.
     if persistent._mas_long_absence == False:
+        $ current_time = datetime.now()
         if persistent.sessions["last_session_end"] == None:
             pass
-        elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
+        elif current_time >= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and current_time <= persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
             #mas_gainAffection()
             pass
-        elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 1) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 2):
-            persistent._mas_affection["affection"] -= 30
-            mas_updateAffectionExp()
-        elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 2) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(weeks= 3):
-            persistent._mas_affection["affection"] -= 50
-            mas_updateAffectionExp()
-        elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks =3) and datetime.datetime.now() <= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 4):
-            persistent._mas_affection["affection"] -= 70
-            mas_updateAffectionExp()
-        elif datetime.datetime.now() >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks =4):
+        elif current_time >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 1) and current_time <= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 2):
+            mas_loseAffection(30)
+        elif current_time >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 2) and current_time <= persistent.sessions["last_session_end"] + datetime.timedelta(weeks= 3):
+            mas_loseAffection(50)
+        elif current_time >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks =3) and current_time <= persistent.sessions["last_session_end"] + datetime.timedelta(weeks = 4):
+            mas_loseAffection(70)
+        elif current_time >= persistent.sessions["last_session_end"] + datetime.timedelta(weeks =4):
             persistent._mas_affection["affection"] = -115
             mas_updateAffectionExp()
             mas_FreezeBothAffExp()
