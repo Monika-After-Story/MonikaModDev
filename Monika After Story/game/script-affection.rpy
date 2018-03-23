@@ -152,7 +152,7 @@ init python:
     def mas_setAffection(
             amount=persistent._mas_affection["affection"]
         ):
-        if not persistent._mas_affection_badexp_freeze or persistent_mas_affection_goodexp_freeze:
+        if not persistent._mas_affection_badexp_freeze and not persistent_mas_affection_goodexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] = amount
             #Updates the experience levels if necessary.
@@ -185,7 +185,7 @@ init python:
     #is equal to the amount of points it's added or removed in minutes.
 
     #Monika's initial affection based on start-up.
-    if persistent._mas_long_absence == False:
+    if not persistent._mas_long_absence == True:
         if persistent.sessions["last_session_end"] == None:
             pass
         else:
