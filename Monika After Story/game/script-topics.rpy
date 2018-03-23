@@ -41,6 +41,10 @@ init 11 python:
     # for compatiblity purposes:
     monika_random_topics = all_random_topics
 
+    if len(monika_random_topics) == 0:
+        # you've seen everything?! here, higher session limit
+        random_seen_limit = 100
+
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
 #    monika_random_topics = [
