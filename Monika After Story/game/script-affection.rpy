@@ -371,8 +371,25 @@ label mas_affection_happynotif:
 image paper_finalfarewell = "mod_assets/poem_finalfarewell.png"
 image paper_finalfarewell_desk = "mod_assets/poem_finalfarewell_desk.png"
 
+# prepwork for the finalfarewell
+label monika_finalfarewell_start:
+    call spaceroom(hide_monika=True)
+    show emptydesk zorder 2
+
+    python:
+        HKBHideButtons()
+        disable_esc()
+        allow_dialogue = False
+        store.songs.enabled = False
+
+
+
+    jump monika_finalfarewell
+
 # this will loop through the final poem everytime!
 label monika_finalfarewell:
+
+    
 
     python:
         ui.add(MASFinalNoteDisplayable())
