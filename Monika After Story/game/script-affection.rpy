@@ -365,13 +365,99 @@ label mas_affection_happynotif:
     m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
     m "Thanks for being such a great person!"
     return
+
 #############
-#TODO Discuss options of integrating a repeatable viewing of the poem, right now topic is most effecient way to do it.
-label monika_finalfarewell:
-    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
-    return
 
 image paper_finalfarewell = "mod_assets/poem_finalfarewell.png"
+image paper_finalfarewell_desk = "mod_assets/poem_finalfarewell_desk.png"
+
+# this will loop through the final poem everytime!
+label monika_finalfarewell:
+
+    python:
+        ui.add(MASFinalNoteDisplayable())
+        scratch_var = ui.interact()
+
+    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
+
+    jump monika_finalfarewell
+    
+
+init python:
+    
+    # custom displayabe for the poem screen
+    class MASFinalNoteDisplayable(renpy.Displayable):
+        import pygame # mouse stuff
+
+        # CONSTANTS
+        POEM_WIDTH = 234
+        POEM_HEIGHT= 85
+
+        MOUSE_EVENTS = (
+            pygame.MOUSEMOTION,
+            pygame.MOUSEBUTTONUP,
+            pygame.MOUSEBUTTONDOWN
+        )
+
+        def __init__(self):
+            """
+            Creates the final poem displayable
+            """
+            super(renpy.Displayable, self).__init__()
+
+            # final poem is a button
+            paper_idle = Image("mod_assets/poem_finalfarewell_desk.png")
+            paper_hover = Image("mod_assets/poem_finalfarewell_desk_select.png")
+            
+            # no button text
+            empty_button_text = Text("")
+
+            # calculate paper location
+            paper_x = int((1280 - self.POEM_WIDTH) / 2)
+            paper_y = int(720 - self.POEM_HEIGHT)
+
+            # build the paper as a button
+            self._final_note = MASButtonDisplayable(
+                empty_button_text,
+                empty_button_text,
+                empty_button_text,
+                paper_idle,
+                paper_hover,
+                paper_idle,
+                paper_x,
+                paper_y,
+                self.POEM_WIDTH,
+                self.POEM_HEIGHT
+            )
+
+
+        def render(self, width, height, st, at):
+            """
+            Render function
+            """
+            r = renpy.Render(width, height)
+
+            # render the paper
+            r.blit(
+                self._final_note.render(width, height, st, at),
+                (self._final_note.xpos, self._final_note.ypos)
+            )
+
+            return r
+
+
+        def event(self, ev, x, y, st):
+            """
+            Event function
+            """
+            if (
+                    ev.type in self.MOUSE_EVENTS 
+                    and self._final_note.event(ev, x, y, st)
+                ):
+                return True
+
+            raise renpy.IgnoreEvent()
+
 
 #TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
 init 2 python:

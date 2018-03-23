@@ -476,6 +476,9 @@ label ch30_autoload:
     # set the gender
     call set_gender from _autoload_gender
 
+    # TODO: temporary for testing
+    jump monika_finalfarewell
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
