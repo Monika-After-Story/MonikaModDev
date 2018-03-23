@@ -383,6 +383,7 @@ label mas_mood_yearolder:
             jump mas_mood_yearolder_yesu
 
         "No":
+            m 1m "Aw, well,{w} it was worth a guess."
             jump mas_mood_yearolder_no
 
 label mas_mood_yearolder_end:
@@ -403,13 +404,18 @@ label mas_mood_yearolder_false:
     menu:
         m "Is that not your birthday?"
         "It's not":
-            # puffy check monika please
+            # TODO: puffy cheek monika please
             show monika 2q
             pause 0.7
             m 2h "You lied to me, [player]."
+            # TODO: keep track of this transgression
+            # confirm with player if today is their bday
+            # if so, save it, otherwise end
 
         "It is!":
-            # TODO
+            # TODO: monika comments on this
+            # TODO: maybe we dont jump to no flow
+            jump mas_mood_yearolder_no
 
     jump mas_mood_yearolder_end
 
@@ -450,7 +456,6 @@ label mas_mood_yearolder_yes_post:
 
 # today is not your birthday
 label mas_mood_yearolder_no:
-    m 1m "Aw, well,{w} it was worth a guess."
     if renpy.seen_label("mas_mood_yearolder_years"):
         # TODO this should be a short thing to say to player
         # about feeling a year older
