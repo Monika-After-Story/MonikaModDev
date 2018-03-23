@@ -88,7 +88,7 @@ init python:
         #If affection is less than -50, update both exp types. Simulates increasing loss of affection and now harder to get it back.
         elif persistent._mas_affection["affection"] <= -50:
             persistent._mas_affection["goodexp"] = 0.5
-            persistent._mas_affection["badexp"] = 5
+            persistent._mas_affection["badexp"] = -5
 
         #Defines an easy current affection statement to refer to so points aren't relied upon.
         if persistent._mas_affection["affection"] <= -100:
