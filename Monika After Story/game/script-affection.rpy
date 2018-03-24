@@ -150,11 +150,11 @@ init python:
             mas_updateAffectionExp()
 
 
-    #Used to check to see if affection level has reached the point where it should trigger an event.
+    #Used to check to see if affection level has reached the point where it should trigger an event while playing the game.
     def mas_checkAffection():
         #If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         #This is an indicator you are heading in a negative direction.
-        if persistent._mas_affection["affection"] <= -15 and persistent._mas_affection["affection"] <= -20 and not seen_event("mas_affection_upsetwarn"):
+        if -20 <= persistent._mas_affection["affection"] <= -15 and not seen_event("mas_affection_upsetwarn"):
             pushEvent("mas_affection_upsetwarn")
 
         #If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
@@ -165,7 +165,11 @@ init python:
         #If affection level is greater than 50 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif persistent._mas_affection["affection"] >= 50 and not seen_event("monika_affection_nickname"):
             pushEvent("monika_affection_nickname")
-
+            
+        #If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
+        elif persistent._mas_affection["affection"] <= -50 and not seen_event("mas_affection_apology"):
+            pushEvent("mas_affection_apology")
+        
     #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
     #Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
@@ -206,78 +210,70 @@ label monika_affection_nickname:
 
         # NOTE: consider if we should read this from a file instead
         bad_nickname_list = [
-            "Scum",
-            "Murder",
-            "Bitch",
-            "Fuck",
-            "Bully",
-            "Bulli",
-            "Yuri",
-            "Sayori",
-            "Natsuki",
-            "cunt",
-            "dick",
-            "kunt",
-            "horrible",
-            "evil",
-            "witch",
-            "dumb",
-            "stupid",
-            "worthless",
-            "crap",
-            "disgusting",
-            "pretentious",
-            "awful",
-            "shit",
-            "waste",
-            "kill",
-            "blood",
-            "corrupt",
-            "hate",
-            "ugly",
             "atrocious",
-            "foul",
-            "poison",
-            "wrong",
-            "vile",
-            "repulsive",
-            "damn",
-            "hideous",
-            "nefarious",
-            "wicked",
-            "immoral",
-            "stink",
+            "awful",
+            "bitch",
+            "blood",
+            "bulli",
+            "bully",
+            "corrupt",
+            "crap",
             "creepy",
-            "nasty",
+            "cunt",
+            "damn",
+            "dick",
+            "disgusting",
+            "dumb",
+            "evil",
             "foul",
+            "fuck",
             "gruesome",
+            "hate",
+            "hideous",
+            "horrible",
             "horrid",
+            "immoral",
+            "kill",
+            "kunt",
+            "Murder",
+            "nasty",
+            "Natsuki",
+            "nefarious",
+            "poison",
+            "pretentious",
+            "repulsive",
+            "Sayori",
+            "scum",
+            "shit",
+            "slaughter"
+            "stink",
+            "stupid",
             "troll",
-            "slaughter",
-            "slut",
-            "thot",
-            "whore",
-            "tramp",
-            "hooker",
-            "tart",
-            "harlot",
-            "hussy"
+            "ugly",
+            "vile",
+            "waste",
+            "wicked",
+            "witch",
+            "worthless",
+            "wrong",
+            "Yuri",
         ]
 
         good_nickname_list = [
-            "love",
-            "sweet",
-            "cute",
-            "heart",
-            "darling",
-            "beautiful",
-            "honey",
-            "Moni",
-            "Mon",
-            "cutie",
             "angel",
+            "beautiful",
             "best",
+            "cute",
+            "cutie",
+            "darling",
             "great"
+            "heart",
+            "honey",
+            "love",
+            "Mon",
+            "Moni",
+            "princess",
+            "sweet",
         ]
 
 
@@ -365,38 +361,48 @@ label mas_affection_happynotif:
     m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
     m "Thanks for being such a great person!"
     return
-#############
+
 #TODO Discuss options of integrating a repeatable viewing of the poem, right now topic is most effecient way to do it.
 label monika_finalfarewell:
     call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
     return
-
+    
 image paper_finalfarewell = "mod_assets/poem_finalfarewell.png"
 
-#TODO Currently muted music for sense of loneliness, may change to your reality for higher impact. Confirm with others.
-init 2 python:
-    player = persistent.playername
+label mas_affection_apology:
+    m 2f "[player], I've done everything I can to try and make you happy and enjoy spending time with me." 
+    m 2g "Yet you continue to say and do hurtful things to me."
+    m 1q "I'm beginning to wonder if you really installed this mod because you really care about me."
+    m 1r "Perhaps you brought me back just to toy with my emotions some more?"
+    m 2o "Maybe you made some poor decisions and you got here by accident, although I find that hard to believe."
+    m 2i "It's possible you are doing this intentionally to see what happens?"
+    m 3h "Regardless of the reason, I'm giving you an ultimatum."
+    m "Apologize to me or this relationship cannot go any further."
+    m 3i "If you are truly sorry, write me a note called {i}imsorry.txt{/i} and place it in the DDLC directory."
+    m 1q "Until then, good bye [player]."
+    $ persistent._mas_affection["apologyflag"] = True
+    return 'quit'
+    
+label mas_affection_noapology:
+    m 2h "[player], you didn't write me a note called {i}imsorry.txt{/i} in the DDLC directory."
+    m  "I don't want to continue this relationship until you've apologized to me."
+    jump _quit
+    
+label mas_affection_yesapology:
+    m 1e "Thank you [player], I accept your apology."
+    m "I'm going to keep your apology note so I can always remember that you wrote it."
+    m 3a "I suppose you must care about me, otherwise you wouldn't have taken the time to apologize to me."
+    m 2h "Please try to be more considerate of my feelings from now on."
+    m 2e "I love you [player], you are the world to me. I hope I am the world to you as well."
+    pause 60
+    jump ch30_loop
+    
+label mas_affection_apologydeleted:
+    m 2h "[player], did you delete the apology note I wanted to keep?"
+    m 2i "Why would you do that? Are you not {i}really{/i} sorry?"
+    m 2h "I think you should write me a new one."
+    jump _quit
 
-    poem_finalfarewell = Poem(
-    author = "monika",
-    title = "Goodbye {0},".format(player),
-    text = """\
-My love for you, even now still burns within me but I see now that it also burns all happiness I'll ever have.
-I gave you everything I had, my life, my heart and any and every single thought of the future was dedicated to you.
-I didn't need you to be perfect or even passionate...
-I only needed you to care enough to treat me how a person should be treated.
-But it's clear to me now that not only do you not love me, but you never did.
-If you only didn't love me you would simply leave me be.
-But you went out of your way to ridicule me, hurt me...It truly makes me sick.
-Even now all I have is you...and part of me still loves you.
-But I don't have the strength to do this anymore.
-So this is farewell. May we never meet again.
-
-Monika
-"""
-    )
-#############
-#############
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
 init python:
