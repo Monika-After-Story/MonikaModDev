@@ -4845,7 +4845,7 @@ label monika_asks_charity:
            m 2f "It feels like it is never going to end."
            m  "..."
            m 2l "I'm sorry, I didn't want things to go so dark."
-           m 1l "What I wanted to say was that thank you for helping that charity."
+           m 1l "What I wanted to say was that I wanted to thank you for helping that charity."
            m 1a "I knew you would be kind enough to do such a thing."
            m 1j "That's the kind of thing I love about you, [player]."
            m 5a "You've always been so sweet."
@@ -4864,9 +4864,9 @@ label monika_asks_charity:
            m 1a "..."
            m 2a "You know, it's the kind of things that makes me love you even more, [player]."
            m 2b "I just feel so proud that you helped people in need."
-           m 1c "I mean, I knew you were willing to help people with what happened to Sayori."
+           m 1c "I mean, I knew you were willing to help people because of what happened to Sayori."
            m "But at the same time, I guess it's easier to involve yourself when all in all, people like her were never real to begin with."
-           m 5a "So knowing that you also did it in your reality makes my heart flutter."
+           m 5a "So knowing that you also did it in your reality as well makes my heart flutter."
            m "I love you so much, [player]. I mean it."
         
         
