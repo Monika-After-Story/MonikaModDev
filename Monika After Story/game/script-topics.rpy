@@ -4974,23 +4974,24 @@ label monika_timeconcern:
     else:
         if persistent._mas_timeconcerngraveyard:
             jump monika_timeconcern_graveyard_day
-        if not persistent._mas_timeconernclose:
-            if persistent._mas_timeconern >= 6 and persistent._mas_timeconern <=8:
-                jump monika_timeconcern_disallow
         if persistent._mas_timeconern == 0:
             jump monika_timeconcern_day_0
         elif persistent._mas_timeconcern == 2:
             jump monika_timeconcern_day_2
-        elif persistent._mas_timeconern == 6:
-            jump monika_timeconcern_day_allow_6
-        elif persistent._mas_timeconern == 7:
-            jump monika_timeconcern_day_allow_7
-        elif persistent._mas_timeconern == 8:
-            jump monika_timeconcern_day_allow_8
-        elif persistent._mas_timeconern == 9:
-            jump monika_timeconcern_day_final
+        if not persistent._mas_timeconernclose:
+            if persistent._mas_timeconern >= 6 and persistent._mas_timeconern <=8:
+                jump monika_timeconcern_disallow
         else:
-            jump monika_timeconcern_day_0
+            if persistent._mas_timeconern == 6:
+                jump monika_timeconcern_day_allow_6
+            elif persistent._mas_timeconern == 7:
+                jump monika_timeconcern_day_allow_7
+            elif persistent._mas_timeconern == 8:
+                jump monika_timeconcern_day_allow_8
+            elif persistent._mas_timeconern == 9:
+                jump monika_timeconcern_day_final
+            else:
+                jump monika_timeconcern_day_0
 
 
 
