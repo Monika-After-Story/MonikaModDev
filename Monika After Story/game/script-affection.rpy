@@ -185,7 +185,7 @@ init python:
     #is equal to the amount of points it's added or removed in minutes.
 
     #Monika's initial affection based on start-up.
-    if not persistent._mas_long_absence == True:
+    if not persistent._mas_long_absence:
         if persistent.sessions["last_session_end"] == None:
             pass
         else:
