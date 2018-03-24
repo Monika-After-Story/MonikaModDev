@@ -946,7 +946,7 @@ label greeting_sunshine:
 init 5 python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_hai_domo", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
-label greeting_hai_domo
+label greeting_hai_domo:
     m 1k "はいども!"
     m "Virtual Girlfriend, Monika Here!"
     m 1l "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
