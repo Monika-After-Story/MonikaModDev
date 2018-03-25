@@ -400,6 +400,12 @@ label mas_affection_finalfarewell:
 
     call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
 
+    menu:
+        "I'm sorry":
+            pass
+        "...":
+            pass
+
     jump mas_affection_finalfarewell
     
 
