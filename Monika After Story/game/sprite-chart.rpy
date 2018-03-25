@@ -541,5 +541,9 @@ define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suff
 
 #empty desk image, used when Monika is no longer in the room.
 #image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
-image emptydesk = "mod_assets/emptydesk.png"
+image emptydesk = ConditionSwitch(
+    "morning_flag", "mod_assets/emptydesk.png",
+    "not morning_flag", "mod_assets/emptydesk_n.png"
+)
+
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"

@@ -364,8 +364,6 @@ label mas_affection_happynotif:
 
 #############
 
-image paper_finalfarewell = "mod_assets/poem_finalfarewell.png"
-image paper_finalfarewell_desk = "mod_assets/poem_finalfarewell_desk.png"
 define mas_finalfarewell_mode = False
 
 # prepwork for the finalfarewell
