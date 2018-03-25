@@ -487,8 +487,29 @@ label ch30_autoload:
                 ev_label for ev_label in persistent.event_list
                 if renpy.has_label(ev_label)
             ]
-
+    
     $ selected_greeting = None
+    
+    if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
+        #If the conditions are met and Monika expects an apology, jump to this label.
+        if persistent._mas_affection["apologyflag"] == True and not is_file_present('/imsorry.txt'):
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_noapology
+        
+        #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
+        elif persistent._mas_affection["apologyflag"] == True and is_file_present('/imsorry.txt'):
+            $ persistent._mas_affection["apologyflag"] = False
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_yesapology 
+            
+        #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
+        elif persistent._mas_affection["apologyflag"] == False and not is_file_present('/imsorry.txt'):
+            $ persistent._mas_affection["apologyflag"] = True
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_apologydeleted
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
@@ -541,8 +562,12 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
             
-    #Grant good exp for closing the game correctly.
-    $ mas_gainAffection()
+            #Grant good exp for closing the game correctly.
+            mas_gainAffection()
+            
+        else:
+            #Grant good exp for closing the game correctly.
+            mas_loseAffection()
             
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
@@ -594,6 +619,10 @@ label ch30_loop:
         time_since_check=datetime.datetime.now()-calendar_last_checked
 
         if time_since_check.total_seconds()>60:
+            
+            #Checks to see if affection levels have met the criteria to push an event or not.
+            mas_checkAffection()
+            
             # limit xp gathering to when we are not maxed
             # and once per minute
             if (persistent.idlexp_total < xp.IDLE_XP_MAX):

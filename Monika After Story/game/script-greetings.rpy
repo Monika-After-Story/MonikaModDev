@@ -439,10 +439,10 @@ label greeting_glitch:
      $ monika_clone1 = "Yes"
      m 2j "I love you, [player]!"
      return
-
+     
 init 5 python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_surprised", unlocked=True, random=True),eventdb=evhand.greeting_database)
-
+    
 label greeting_surprised:
      m "Oh, hello [player]!"
      m "Sorry, you surprised me a little."
