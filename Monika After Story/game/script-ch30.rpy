@@ -476,8 +476,9 @@ label ch30_autoload:
     # set the gender
     call set_gender from _autoload_gender
 
-    # TODO: temporary for testing
-    jump monika_finalfarewell_start
+    # general affection checks that hijack flow
+    if persistent._mas_affection["affection"] <= -115:
+        jump mas_affection_finalfarewell_start
 
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:

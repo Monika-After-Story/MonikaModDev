@@ -540,4 +540,6 @@ image monika g2:
 define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 
 #empty desk image, used when Monika is no longer in the room.
+#image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
 image emptydesk = "mod_assets/emptydesk.png"
+image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"

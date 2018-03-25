@@ -370,24 +370,27 @@ label mas_affection_happynotif:
 
 image paper_finalfarewell = "mod_assets/poem_finalfarewell.png"
 image paper_finalfarewell_desk = "mod_assets/poem_finalfarewell_desk.png"
+define mas_finalfarewell_mode = False
 
 # prepwork for the finalfarewell
-label monika_finalfarewell_start:
+label mas_affection_finalfarewell_start:
     call spaceroom(hide_monika=True)
-    show emptydesk zorder 2
+    show emptydesk zorder 2 at i11
+    show mas_finalnote_idle zorder 3
 
     python:
         HKBHideButtons()
         disable_esc()
         allow_dialogue = False
         store.songs.enabled = False
+        mas_finalfarewell_mode = True
+        layout.QUIT = glitchtext(20)
 
 
-
-    jump monika_finalfarewell
+    jump mas_affection_finalfarewell
 
 # this will loop through the final poem everytime!
-label monika_finalfarewell:
+label mas_affection_finalfarewell:
 
     
 
@@ -397,7 +400,7 @@ label monika_finalfarewell:
 
     call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
 
-    jump monika_finalfarewell
+    jump mas_affection_finalfarewell
     
 
 init python:
@@ -407,8 +410,8 @@ init python:
         import pygame # mouse stuff
 
         # CONSTANTS
-        POEM_WIDTH = 234
-        POEM_HEIGHT= 85
+        POEM_WIDTH = 200
+        POEM_HEIGHT= 73
 
         MOUSE_EVENTS = (
             pygame.MOUSEMOTION,
@@ -473,6 +476,7 @@ init python:
                 ):
                 return True
 
+            renpy.redraw(self, 0)
             raise renpy.IgnoreEvent()
 
 
