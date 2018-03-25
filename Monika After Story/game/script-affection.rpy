@@ -186,9 +186,7 @@ init python:
 
     #Monika's initial affection based on start-up.
     if not persistent._mas_long_absence:
-        if persistent.sessions["last_session_end"] == None:
-            pass
-        else:
+        if persistent.sessions["last_session_end"] is not None:
             time_difference = datetime.datetime.now() - persistent.sessions["last_session_end"]
             if time_difference >= datetime.timedelta(hours = 6) and time_difference <= datetime.timedelta(hours = 12):
                 #mas_gainAffection()
