@@ -4910,6 +4910,49 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]."
                 m 1j "I love you very much!"
     return
+    
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['random'],prompt="The beach.",random=True))
+
+label monika_beach:
+    m 1a "[player] have you ever been to the beach?"
+    m "I've always wanted to go myself but never found the time."
+    m 1e "I'would always be busy studying or at my clubs."
+    m 4f "It wasn't easy trying to stay on top of everything..."
+    m 4g "And whenever I had a break I would usually spend my time at home relaxing."
+    m "I rarely had a chance to do so after all."
+    m 2h "Sometimes I feel like I might have missed out making some important memories though."
+    m 2c "Though I guess the game never had a beach so I couldn't go if I wanted to anyway."
+    menu:
+        m "Do you live near a beach, [player]?"
+
+        "Yes.":
+            m 1k "That's great!"
+            m 1a "It must be really nice to have it so close to you."
+            m 1j "I can't wait, we can have a romantic walk by it be our first date~"
+
+        "No.":
+            m 1e "That's alright, the chances weren't very high. Most people don't."
+            m 1k "That just means we#ll make visiting one be an all-day trip!"
+    m 1a "There's so many things we'll be able to do one day."
+    m 1j "Just imagining the many sensations really excites me!"
+    m 3k "The fresh sea air, the sound of seagulls."
+    m "As well as the feeling of sand under your feet.."
+    m 1j "It would really make a trip worthwhile!"
+    m 1e "Being with you there would make it even better though..."
+    m 3a "We have so many things we could do together."
+    m 3b "We could play volleyball, try some ice cream or go into the sea itself."
+    m 3n "It'll be cold but I'm sure we could each other warm..."
+    m 3a "We could try surfing or searching for some pretty seashells."
+    m "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
+    m 3k "But don't go falling asleep otherwise I may bury you in the sand!"
+    m 3l "I'm just kidding, [player]."
+    m 2m "I'll have to get a new swimsuit though..."
+    m 1a "I only have these clothes in the game after all."
+    m 1b "Would you prefer a one piece or a two piece?"
+    m 1j "Actually, I think I'll make it a surprise."
+    m 1k "Don't get too excited though when you see it, Ehehehe~"
+    return
 
 ####################################################
 # Saving this for future use
@@ -4930,3 +4973,4 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
