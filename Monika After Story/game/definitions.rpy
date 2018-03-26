@@ -1489,6 +1489,105 @@ python early:
 init -100 python in mas_utils:
     # utility functions for other stores.
 
+    
+    def gethours(t_delta=None, t_seconds=None):
+        """
+        Gets the number of hours from either a time delta or number of seconds.
+        timedelta has higher priority
+
+        IN:
+            t_delta - the timedelta to get hours from
+                (Default: None)
+            t_seconds - the number of seconds to get hours from
+                (Default: None)
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of hours in the given timedelta
+            [1]: remainder number of seconds
+        """
+        if t_delta is not None:
+            t_seconds = t_delta.total_seconds()
+
+        if t_seconds is None:
+            return (0, 0)
+
+        return (int(t_seconds / 3600), int(t_seconds % 3600))
+
+
+    def getminutes(t_delta=None, t_seconds=None):
+        """
+        Gest the number of minutes from either a timedelta or number of secs.
+        timedelta has higher pirority
+
+        IN:
+            t_delta - the timedelta to get minutes from
+                (Default: None)
+            t_seconds - the number of seconds to get minutes from
+                (Default: None)
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of minutes in the given timedelta
+            [1]: remainder number of seconds
+        """
+        if t_delta is not None:
+            t_seconds = t_delta.total_seconds()
+
+        if t_seconds is None:
+            return (0, 0)
+
+        return (int(t_seconds / 60), int(t_seconds % 60))
+
+
+    def getmonths(t_delta=None, t_weeks=None, t_days=None, groupbydays=False):
+        """
+        Gets the number of months from either a timedelta, weeks, or days
+        depending on the input args
+        timedelta has higher priority
+
+        IN:
+            t_delta - the timedelta to get months from
+                (Default: None)
+            t_weeks - number of weeks to get months from
+                (Default: None)
+            t_days - number of days to get months from
+                (Default: None)
+            groupbydays - True means to use 30 days for a month. False will use
+                4 weeks for a month (28 days)
+                NOTE: True will use t_days, False will use t_weeks
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of months in the given timedelta
+            [1]: reaminder number of weeks, days if groupbydays is True
+        """
+        # TODO
+
+
+    def getweeks(t_delta=None, t_days=None):
+        """
+        Gets the number of weeks from either a timedelta or number of days
+        timedelta has higher priority
+
+        IN:
+            t_delta - the timedelta to get weeks from
+                (Default: None)
+            t_days - the number of days to get weeks from
+
+        RETURNS:
+            tuple of the following format:
+            [0]: number of weeks in the given timedelta
+            [1]: remainder number of days
+        """
+        if t_delta is not None:
+            t_days = t_delta.days
+
+        if t_days is None:
+            return (0, 0)
+
+        return (int(t_days / 7), int(t_days % 7))
+
 
     def pluralize(value, unit):
         """
