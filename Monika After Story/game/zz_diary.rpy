@@ -916,7 +916,7 @@ init python in mas_diary:
         
         elif modifier == "12":
             # 2 digit hour, padded
-            # TODO: 12 hour padded (strftime)
+            return use_time.strftime("%I")
 
         # otherwise use the 24 hour default
         return str(curr_hour)
@@ -1000,8 +1000,7 @@ init python in mas_diary:
             return str(use_time.minute)
 
         # otherwise 2 digit minute padded
-        # TODO strftime
-        return ""
+        return use_time.strftime("%M")
 
 
     def _dk_minute_current(modifier, curr_mods):
@@ -1134,8 +1133,7 @@ init python in mas_diary:
             return str(use_time.second)
 
         # otherwise, 2 digit second padded
-        # TODO: strftime
-        return ""
+        return use_time.strftime("%S")
 
 
     def _dk_second_current(modifier, curr_mods):
@@ -1258,6 +1256,48 @@ init python in mas_diary:
             if minutes > 30:
                 # rounding
                 hours += 1
+
+            return mas_utils.valuepluralize(hours, "hour")
+
+        elif modifier == "h.":
+            # hour granularity, fraction
+            hours = t_delta.total_seconds() / 3600
+
+            # TODO: format specifier, round to 1 dec point
+            return "TODO"
+
+        elif modifier == "m":
+            # minute granularity, rounded
+            t_seconds = t_delta.total_seconds()
+            minutes = int(t_seconds / 60)
+            r_seconds = t_seconds - (minutes * 60)
+
+            if r_seconds > 30:
+                # rounding
+                minutes += 1
+
+            return mas_utils.valuepluralize(minutes, "minute")
+
+        elif modifier == "m.":
+            # minute granularity, fraction
+            minutes = t_delta.total_seconds() / 60
+
+            # TODO: format specifier, round to 1 dec point
+            return "TODO"
+
+        elif modifier == "s":
+            # seconds granularity
+            return mas_utils.valuepluralize(t_delta.total_seconds(), "second")
+
+        elif modifier == "ms":
+            # microseconds
+            # TODO
+            return "TODO"
+
+        # otherwise, we are using the auto alg, which scales based the amount
+        # of time. This also displays all level
+
+
 
 
     def _dk_time_since_end(modifier, curr_mods):
@@ -1528,6 +1568,7 @@ init 1 python in mas_diary:
         # NOTE for limited granularities, proper rounding is applied
         # tse|<modifier>
         #   auto - use an alg that scales time to most appropriate units (Default)
+        #   all - display all time scales
         #   hm - use x hours, y minutes granularity
         #   h - limit to hour granularity (x hours)
         #   h. - use fractions in hour granularity (x.y hours)
@@ -1541,6 +1582,7 @@ init 1 python in mas_diary:
         # NOTE: for limited granularities, proper rounding is applied
         # tss|<modifier>
         #   auto - use an alg that scales time to most appropriate units (Default)
+        #   all - display all time scales
         #   hm - use x hours, y minutes granularity
         #   h - limit to hour granularity (x hours)
         #   h. - use fractions in hour granularity (x.y hours)
