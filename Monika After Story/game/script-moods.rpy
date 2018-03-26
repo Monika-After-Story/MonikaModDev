@@ -388,8 +388,12 @@ label mas_mood_yearolder_end:
     # end of the line
 
     # we're going to limit this interaction to once a day
-    $ persistent._mas_mood_bday_last = datetime.date.today()
-    $ store.mas_moods.mood_db["mas_mood_yearolder"].unlocked = False
+    python:
+        persistent._mas_mood_bday_last = datetime.date.today()
+        hideEvent(
+            store.mas_moods.mood_db.get("mas_mood_yearolder", None), 
+            lock=True
+        )
     return
 
 # today is NOT the player's birthday 
