@@ -87,6 +87,7 @@ label mas_mood_start:
         mood_menu_items = [
             (mas_moods.mood_db[k].prompt, k, False, False) 
             for k in mas_moods.mood_db
+            if mas_moods.mood_db[k].unlocked
         ]
 
         # also sort this list
@@ -332,8 +333,8 @@ label mas_mood_yearolder:
             )
 
         if is_today_bday:
-            # today is! player's bday!
-            jump mas_mood_yearolder_yes
+            # today is player's bday!
+            jump mas_mood_yearolder_bday_true
 
         python:
             is_today_leap_bday = (
@@ -360,7 +361,7 @@ label mas_mood_yearolder:
                     # 29th no exists, we use this as ur bday
                     leap_year = False
 
-            if not leap_year::
+            if not leap_year:
                 # we can treat today as your bday
                 jump mas_mood_yearolder_leap_today
 
@@ -403,7 +404,7 @@ label mas_mood_yearolder_false:
     m 2f "Today isn't your birthday!"
     python:
         bday_str = (
-            persistent._mas_player_bday.strftime("%B") + " "
+            persistent._mas_player_bday.strftime("%B") + " " +
             str(persistent._mas_player_bday.day)
         )
     m "You told me it was [bday_str]!"
@@ -421,6 +422,7 @@ label mas_mood_yearolder_false:
                 # TODO: minus a decent amount of affection
                 $ persistent._mas_mood_bday_locked = True
                 $ store.mas_moods.mood_db.pop("mas_mood_yearolder")
+                # TODO need to say somthing here
                 jump mas_mood_yearolder_end
 
             menu: 
@@ -440,9 +442,16 @@ label mas_mood_yearolder_false:
 
         "It is!":
             m 2e "I believe you, [player]."
+            m "I'll just assume that your mouse slipped or something."
             jump mas_mood_yearolder_no
 
     jump mas_mood_yearolder_end
+
+label mas_mood_yearolder_bday_true:
+    # TODO: actually give a gift
+    # as of now, we just assume there's been a bunch of time in between so
+    # its possible that monika forgot.
+    jump mas_mood_yearolder_yes
 
 label mas_mood_yearolder_wontforget:
     # YES flow continues here
@@ -495,8 +504,8 @@ label mas_mood_yearolder_no:
 # reference: Paul Janet, Maximilian Kiener
 label mas_mood_yearolder_years:
     m 3a "Speaking of getting older,{w} did you know that how you perceive time changes as you age?"
-    m "For example, when you're a year old, you see one year as 100% of your life."
-    m 1a "But when you're 18, you see a year as only 5.6% of your life."
+    m "For example, when you're a year old, you see one year as 100%% of your life."
+    m 1a "But when you're 18, you see a year as only 5.6%% of your life."
     m "As you get older, the proportion of a year compared to your entire lifespan decreases."
     m 3a "And in turn, time {i}feels{/i} like it's moving faster as you grow up."
     show monika 1a
@@ -505,7 +514,10 @@ label mas_mood_yearolder_years:
     m "So I always cherish our moments together, no matter how long or short they are."
     m 1k "Although sometimes it feels like time stops when I'm with you."
     m 1a "Do you feel the same, [player]?"
-    $ renpy.pause(2.0, hard=True)
+    python:
+        import time
+        time.sleep(2)
+#    $ renpy.pause(2.0, hard=True)
     m 1j "Aha, I thought so."
     m 1j "You should visit me more often then, [player]."
     return
@@ -513,4 +525,4 @@ label mas_mood_yearolder_years:
 # today is your birthday, but its a leap day
 label mas_mood_yearolder_leap_today:
     # nothing special occurs here for now
-    jump mas_mood_yearolder_yes
+    jump mas_mood_yearolder_bday_true
