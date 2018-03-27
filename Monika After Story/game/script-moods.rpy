@@ -299,23 +299,23 @@ label mas_mood_bored:
     return
 
 init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_mood_database,
-            "mas_mood_yearolder",
-            prompt="like a year older",
-            category=[store.mas_moods.TYPE_NEUTRAL],
-            unlocked=True
-        ),
-        eventdb=store.mas_moods.mood_db
-    )
+    if not persistent._mas_mood_bday_locked:
+        addEvent(
+            Event(
+                persistent._mas_mood_database,
+                "mas_mood_yearolder",
+                prompt="like a year older",
+                category=[store.mas_moods.TYPE_NEUTRAL],
+                unlocked=True
+            ),
+            eventdb=store.mas_moods.mood_db
+        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns
-define mas_mood_yearolder.bday_yes_count = 0
-define mas_mood_yearolder.bday_no_count = 0
-define mas_mood_yearolder.bday_not_not = 0
-define mas_mood_yearolder.bday_not_yes = 0
+default persistent._mas_mood_bday_last = None
+default persistent._mas_mood_bday_lies = 0
+default persistent._mas_mood_bday_locked = False
 
 label mas_mood_yearolder:
     $ import datetime
@@ -333,7 +333,7 @@ label mas_mood_yearolder:
 
         if is_today_bday:
             # today is! player's bday!
-            jump .mas_mood_yearolder_yesloud
+            jump mas_mood_yearolder_yes
 
         python:
             is_today_leap_bday = (
@@ -360,15 +360,11 @@ label mas_mood_yearolder:
                     # 29th no exists, we use this as ur bday
                     leap_year = False
 
-            if leap_year:
-                # if its a leap year, then player you are either late or
-                # or early
-                # TODO jump somewhere
-                pass
+            if not leap_year::
+                # we can treat today as your bday
+                jump mas_mood_yearolder_leap_today
 
-            # otherwise, we can treat this day as your birthday, but we need
-            # to mention the leapyear thing
-            jump mas_mood_yearolder_leap_today
+            # otherwise its not ur bday
 
         # otherwise it is NOT the player's birthday lol
         jump mas_mood_yearolder_false 
@@ -377,16 +373,27 @@ label mas_mood_yearolder:
     menu:
         m "Could today be your...{w}birthday?"
         "YES!":
+            $ persistent._mas_player_bday = datetime.date.today()
             label .mas_mood_yearolder_yesloud:
                 jump mas_mood_yearolder_yes
         "Yes, unfortunately...":
+            $ persistent._mas_player_bday = datetime.date.today()
             jump mas_mood_yearolder_yesu
 
         "No":
+            m 1m "Aw, well,{w} it was worth a guess."
             jump mas_mood_yearolder_no
 
 label mas_mood_yearolder_end:
     # end of the line
+
+    # we're going to limit this interaction to once a day
+    python:
+        persistent._mas_mood_bday_last = datetime.date.today()
+        hideEvent(
+            store.mas_moods.mood_db.get("mas_mood_yearolder", None), 
+            lock=True
+        )
     return
 
 # today is NOT the player's birthday 
@@ -403,13 +410,37 @@ label mas_mood_yearolder_false:
     menu:
         m "Is that not your birthday?"
         "It's not":
-            # puffy check monika please
+            # TODO: puffy cheek monika please
             show monika 2q
             pause 0.7
             m 2h "You lied to me, [player]."
+            $ persistent._mas_mood_bday_lies += 1
+
+            if persistent._mas_mood_bday_lies >= 3:
+                # sliently lock this
+                # TODO: minus a decent amount of affection
+                $ persistent._mas_mood_bday_locked = True
+                $ store.mas_moods.mood_db.pop("mas_mood_yearolder")
+                jump mas_mood_yearolder_end
+
+            menu: 
+                m "Then is today your birthday?"
+                "Yes":
+                    $ persistent._mas_player_bday = datetime.date.today()
+                    m 1a "Happy birthday, [player]."
+                    m 1e "But don't lie to me next time."
+                    jump mas_mood_yearolder_end
+
+                "No":
+                    $ persistent._mas_player_bday = None
+                    m 2q "..."
+                    m 2h "Alright, [player]."
+                    m "Don't lie to me next time."
+                    jump mas_mood_yearolder_end
 
         "It is!":
-            # TODO
+            m 2e "I believe you, [player]."
+            jump mas_mood_yearolder_no
 
     jump mas_mood_yearolder_end
 
@@ -445,19 +476,18 @@ label mas_mood_yearolder_yes_post:
     m 1k "Happy birthday, [player]!"
     m 1b "I'm so glad I could spend such an important day with you."
     m 1a "And don't forget that no matter your age, I will always love you."
-    $ persistent._mas_mood_bday_yes = datetime.date.today()
     return
 
 # today is not your birthday
 label mas_mood_yearolder_no:
-    m 1m "Aw, well,{w} it was worth a guess."
-    if renpy.seen_label("mas_mood_yearolder_years"):
+#    if renpy.seen_label("mas_mood_yearolder_years"):
         # TODO this should be a short thing to say to player
         # about feeling a year older
-        pass
+#        pass
 
-    else:
-        call mas_mood_yearolder_years
+#    else:
+    # For simplicity's sake, we're just going to repeat this
+    call mas_mood_yearolder_years
 
     jump mas_mood_yearolder_end
 
@@ -482,5 +512,5 @@ label mas_mood_yearolder_years:
 
 # today is your birthday, but its a leap day
 label mas_mood_yearolder_leap_today:
-    # TODO
-    return
+    # nothing special occurs here for now
+    jump mas_mood_yearolder_yes

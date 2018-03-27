@@ -492,15 +492,21 @@ label ch30_autoload:
 
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
-        python:
 
-            sel_greeting_event = store.mas_greetings.selectGreeting()
-            selected_greeting = sel_greeting_event.eventlabel
+        # Sick mood special greeting flow
+        if persistent._mas_mood_sick:
+            $ selected_greeting = "greeting_sick"
 
-            # store if we have to skip visuals ( used to prevent visual bugs)
-            mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
-            )
+        else:
+            python:
+
+                sel_greeting_event = store.mas_greetings.selectGreeting()
+                selected_greeting = sel_greeting_event.eventlabel
+
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_event
+                )
 
     if not mas_skip_visuals:
         if persistent.current_track:
@@ -680,3 +686,18 @@ label ch30_loop:
 # monika, so we could probably throw in something here
 label ch30_end:
     jump ch30_main
+
+# label for things that may reset after a certain amount of time/conditions
+label ch30_reset:
+    python:
+        import datetime
+        today = datetime.date.today()
+
+    # reset mas mood bday
+    python:
+        if (
+                persistent._mas_mood_bday_last 
+                and persistent._mas_mood_bday_last < today
+            ):
+            persistent._mas_mood_bday_last = None
+            store.mas_moods.mood_db["mas_mood_yearolder"].unlocked = True
