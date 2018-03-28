@@ -4949,13 +4949,13 @@ label monika_stoicism:
     m 2a "However, stoics are not just a bunch of unfeeling people who are serious all the time!"
     m "It's just that stoics practice self control over the way they feel about unfortunate events and react accordingly instead of impulsively."
     m 2d "For example, maybe you failed an important exam at school."
-    m "What would you do, [player]?
-    m "Would you panic? Become really depressed and give up trying? Or will you get angry over it and take it out on others?"
+    m "What would you do, [player]?"
+    m "Would you panic? Become really depressed and give up trying? Or will you get angry over it and blame others?"
     m 2r "You and I both know 3 girls who would react just like that, respectively."
     m 4a "I don't know what you would do, but maybe you can take an example from the stoics and don't indulge such bad feelings!" 
     m 4b "Maybe instead of doing all that, you can look at the whole situation objectively."
     m 4e "Although the situation is not the best, there's really no practical reason to expend more energy into something you can't control."
-    m "You should focus on what you can change. Maybe study harder for your next exam, get tutoring, and ask your teacher for extra credit? 
+    m "You should focus on what you can change. Maybe study harder for your next exam, get tutoring, and ask your teacher for extra credit?" 
     m 4l "It beats doing nothing! But that's just my opinion though! It's not that easy to be emotionally resilient to most things in life..."
     m 4b "You should do whatever helps you destress. Your happiness is really important to me."
     m "Besides, if you ever feel bad about something that's happened to you in your life..."
