@@ -4986,6 +4986,7 @@ label monika_solipsism:
      m "Then we could talk about it more in-depth."
      m 1k "I am very much looking forward to talk about philosophy with you, [player]!"
      m 1a "It really helps me to understand more about your way of thinking."
+     return
      
 ####################################################
 # Saving this for future use
