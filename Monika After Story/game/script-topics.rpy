@@ -4934,3 +4934,31 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_stoicism",category=['philosophy'],prompt="Stoicism",random=True))
+
+label monika_stoicism:
+    m 2b "I've been reading up on some ancient Greek and Roman philosophy when you're not around, [player]."
+    m 2l "Ahaha! I know, that sounds super boring when you think about it."
+    m 2d "But there was a certain philosophy that caught my attention when I was reading."
+    m "It's called Stoicism, and it's a philosophy founded in Athens back in the 3rd century BCE."
+    m 4d "To put it simply, Stoicism is a philosophy that believes that human beings should learn to accept the circumstances of their situation..."
+    m "...And prevent themselves to be controlled by an irrational desire for pleasure or fear of pain so they can act accordingly in nature's plan."
+    m 2h "They usually get a bad rep today because people think that they're just cold and unfeeling." 
+    m 2a "However, stoics are not just a bunch of unfeeling people who are serious all the time!"
+    m "It's just that stoics practice self control over the way they feel about unfortunate events and react accordingly instead of impulsively."
+    m 2d "For example, maybe you failed an important exam at school."
+    m "What would you do, [player]?
+    m "Would you panic? Become really depressed and give up trying? Or will you get angry over it and take it out on others?"
+    m 2r "You and I both know 3 girls who would react just like that, respectively."
+    m 4a "I don't know what you would do, but maybe you can take an example from the stoics and don't indulge such bad feelings!" 
+    m 4b "Maybe instead of doing all that, you can look at the whole situation objectively."
+    m 4e "Although the situation is not the best, there's really no practical reason to expend more energy into something you can't control."
+    m "You should focus on what you can change. Maybe study harder for your next exam, get tutoring, and ask your teacher for extra credit? 
+    m 4l "It beats doing nothing! But that's just my opinion though! It's not that easy to be emotionally resilient to most things in life..."
+    m 4b "You should do whatever helps you destress. Your happiness is really important to me."
+    m "Besides, if you ever feel bad about something that's happened to you in your life..."
+    show monika 5a at t11 zorder 2 with dissolve
+    m "You can always come home to your sweet girlfriend and tell me what's been bothering you~"
+    return
