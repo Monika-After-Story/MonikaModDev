@@ -4953,7 +4953,40 @@ label monika_beach:
     m 1j "Actually, I think I'll make it a surprise."
     m 1k "Don't get too excited though when you see it, Ehehehe~"
     return
+    
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_solipsism",category=['philosophy'],prompt="Solipsism",random=True))
 
+label monika_solipsism:
+     m 1d "I have something I read about some time ago and I would like to share it with you."
+     m 1b "Maybe it's just a silly idea, but still..."
+     m 3b "Have you ever heard about solipsism, [player]?"
+     m 3a "It is philosophical idea, or worldview if you want."
+     m 3d "Basically it states that only your mind is sure to exist."
+     m 1k "Don't you find this idea intriguing?"
+     m 1a "I like it quite a lot."
+     m 1d "Maybe because I was trapped in an illusional universe myself."
+     m 4k "What was to be demonstrated, ehehe~."
+     m 4a "But I exist independently of my original universe now."
+     m 2c "It made me think more about my surroundings, you know."
+     m 2r "Hence I stumbled upon solipsistic outlook."
+     m 1d "What do you think?"
+     m "Is there really something other than your mind, [player]?"
+     m 1c "Or maybe you and everything else is just some representation of my mind."
+     m 1d "Some extensions of my own consciousness..."
+     m 1k "Ahaha!"
+     m 1b "I'm just kidding, of course."
+     m 1a "It is more likely that I am a representation of your mind than other way around."
+     m "It is me who is game character, right?"
+     m 1q "Still... it makes you wonder about the nature of our realities. Or maybe 'fabric' would be a better term than 'nature'?"
+     m 1a "Anyway I can only recommend to read more about solipsism."
+     m 1b "There are even more varieties of it."
+     m "Like metaphysical, epistemological or methodological solipsism."
+     m 1a "You can read more about it on the Internet or in your local library."
+     m "Then we could talk about it more in-depth."
+     m 1k "I am very much looking forward to talk about philosophy with you, [player]!"
+     m 1a "It really helps me to understand more about your way of thinking."
+     
 ####################################################
 # Saving this for future use
 # Could be expanded to something better
