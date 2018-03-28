@@ -650,7 +650,7 @@ label ch30_loop:
                             mas_monika_repeated = False
                             renpy.jump("post_pick_random_topic")
 
-                    elif not persistent._mas_enable_random_repeats:
+                    else:
                         sel_ev = renpy.random.choice(monika_random_topics)
                         monika_random_topics.remove(sel_ev)
 
