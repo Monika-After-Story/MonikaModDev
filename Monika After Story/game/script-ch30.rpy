@@ -358,6 +358,32 @@ label continue_event:
 
 label pick_a_game:
     if allow_dialogue and not songs.menu_open:
+        python:
+            # preprocessing for games
+
+            import datetime
+            _hour = datetime.timedelta(hours=1)
+            _now = datetime.datetime.now()
+            
+            # chess has timed disabling
+            if persistent._mas_chess_timed_disable is not None:
+                if persistent._mas_chess_timed_disable - _now >= _hour:
+                    chess_disabled = False
+                    persistent._mas_chess_timed_disable = None
+
+                else:
+                    chess_disabled = True
+
+            else:
+                chess_disabled = False
+
+            # single var for readibility
+            chess_unlocked = (
+                is_platform_good_for_chess()
+                and persistent.game_unlocks["chess"]
+                and not chess_disabled
+            )
+
         $previous_dialogue = allow_dialogue
         $allow_dialogue = False
         menu:
@@ -366,7 +392,7 @@ label pick_a_game:
                 if not renpy.seen_label('game_pong'):
                     $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
-            "Chess" if is_platform_good_for_chess() and persistent.game_unlocks['chess']:
+            "Chess" if chess_unlocked:
                 if not renpy.seen_label('game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
