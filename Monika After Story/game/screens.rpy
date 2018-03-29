@@ -1,5 +1,11 @@
 init 100 python:
     layout.QUIT = "Leaving without saying goodbye, [player]?"
+    layout.UNSTABLE = (
+        "WARNING: Enabling unstable mode will download updates from the " +
+        "experimental unstable branch. It is HIGHLY recommended to make a " +
+        "backup of your persistent before enabling this mode. Please report " +
+        "issues found here with an [[UNSTABLE] tag."
+    )
 ## Initialization
 ################################################################################
 
@@ -969,6 +975,23 @@ screen preferences():
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
+
+            hbox:
+                box_wrap True
+
+                vbox:
+                    style_prefix "check"
+                    label _("Dev")
+                    if persistent._mas_unstable_mode:
+                        textbutton _("Unstable"):
+                            action SetField(persistent, "_mas_unstable_mode", False)
+                            selected persistent._mas_unstable_mode
+
+                    else:
+                        textbutton _("Unstable"):
+                            action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
+                            selected persistent._mas_unstable_mode
+                    
 
             null height (4 * gui.pref_spacing)
 
