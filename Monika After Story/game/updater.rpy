@@ -29,8 +29,8 @@ label update_now:
             $ update_link = mas_updater.regular
 
         $timeout = False
-        $latest_version = updater.UpdateVersion(update_link, check_interval=0)
-        call screen update_check(Return(True),Return(False))
+#        $latest_version = updater.UpdateVersion(update_link, check_interval=0)
+        call screen update_check(Return(True),Return(False), update_link, 0)
 
         if _return:
             $ persistent.closed_self = True # we take updates as self closed
