@@ -117,12 +117,13 @@ screen hkb_overlay():
                 action NullAction()
                 style "hkbd_button"
 
-        if allow_dialogue and store.hkb_button.enabled:
-            textbutton _("Movies") action Jump("ch30_monikamovie")
-        else:
-            textbutton _("Movies"):
-                action NullAction()
-                style "hkbd_button"
+# NOTE: disabled until we have additoinal content
+#if allow_dialogue and store.hkb_button.enabled:
+#            textbutton _("Movies") action Jump("ch30_monikamovie")
+#        else:
+#            textbutton _("Movies"):
+#                action NullAction()
+#                style "hkbd_button"
 
 
         if store.hkb_button.enabled:
