@@ -229,7 +229,7 @@ init python:
     build.classify("game/*.rpyc",build.name) #Serialized scripts must be included
     build.classify("game/dev/*.*",None) #But not the dev folder
     build.classify("README.html",build.name) #Included help file for mod installation
-    build.classify("game/python-packages/**.**",build.name)#Additional python pacakges
+    build.classify("game/python-packages/**",build.name)#Additional python pacakges
     build.classify("CustomIcon**.**",build.name)
 
 
