@@ -951,3 +951,27 @@ label greeting_stillsicknorest:
     m 1e "Don't worry, I'll still be here when you wake up."
     m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
+
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_amnesia", action=EV_ACT_UNLOCK, conditional="seen_event('monika_algernon') and not seen_event('greeting_amnesia')", random=True),eventdb=evhand.greeting_database)
+
+label greeting_amnesia:
+    m 2h "Oh, hello."
+    m 2a "My name is Monika."
+    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
+    m 1j "Well it's nice to meet you, [fakename]."
+    m 1f "Say, [fakename], do you happen to know where everyone else is?"
+    m 2g "You're the first person I've seen and I can't seem to leave this class room."
+    m 2e "Can you help me figure out what's going on, [fakename]?"
+    m 2f "Please? I miss my friends."
+    m 2q "..."
+    m 1l "Ahaha"
+    m 1l "I'm sorry [player], I couldn't help myself."
+    m 1a "After we talked about the book {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
+    m "You reacted the way I hoped you would."
+    m 1e "I hope I didn't upset you too much though."
+    m 2q "I would feel the same way you do now if you ever forgot about me one day, [player]."
+    m 2a "But let's not think about things like that again, okay?"
+    m 1a "After all, I know we'll always be together and that you'll never forget about me."
+    $evhand.greeting_database["greeting_amnesia"].unlocked = False
+    return
