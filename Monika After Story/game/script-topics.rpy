@@ -5002,7 +5002,7 @@ label monika_song_need_you:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_i_will",category=['songs'],prompt="I Will",pool=True, random=True))
 
-label monika_song_need_you:
+label monika_song_i_will:
     m 1b "~Who knows how long I’ve loved you?~"
     m 1k "~You know I love you still~"
     m 2m "~Will I wait a lonely lifetime?~"
