@@ -5040,7 +5040,7 @@ label monika_song_your_song:
     m 1e "~How wonderful life is while you're in the world~"
     m 1l "Ahaha~"
     m 3e "It’s not often I find songs that relate to me as much as this one does"
-    m 5 "And I really do mean it when I say that “Your Reality” is your song"
+    m 5 "And I really do mean it when I say that 'Your Reality' is your song"
     return
 
 init 5 python:
