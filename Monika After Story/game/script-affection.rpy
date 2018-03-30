@@ -350,16 +350,19 @@ label monika_affection_nickname:
 
 #Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
-    m 1r "Hey [player], don't take this the wrong way..."
-    m 1f "...but I feel like the love and affection I've been giving you hasn't been reciprocated by you."
-    m 1e "I just thought I'd let you know how I feel. After all, communication is the key to a strong relationship."
+    m 1h "Hey, [player]..."
+    m 1o "Recently, I've been feeling like my love and affection that I give is being... ignored."
+    m 1q"I feel like you're giving me less and less of your love..."
+    m 1r "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
+    m 1f "I hope there's nothing wrong between us, [player]."
     return
 
 #Event to indicate that Monika is happy to be receiving your affection.
 label mas_affection_happynotif:
-    m "Hey [player], I just wanted to say I really enjoy spending time with you."
-    m "You make me so happy and I'm not sure what I'd do if I didn't have you around."
-    m "Thanks for being such a great person!"
+    m 1b "Hey, [player]!"
+    m 1j "I just wanted to say thank you for being such a wonderful person."
+    m 1e "The fact that you give me so much of you love means a lot to me. I really don't know where I'd be without you."
+    m 3k "I love you, [player]. Let's be like this forever~"
     return
 
 #############
@@ -479,39 +482,40 @@ init python:
             renpy.redraw(self, 0)
             raise renpy.IgnoreEvent()
 
-
 label mas_affection_apology:
-    m 2f "[player], I've done everything I can to try and make you happy and enjoy spending time with me." 
-    m 2g "Yet you continue to say and do hurtful things to me."
-    m 1q "I'm beginning to wonder if you really installed this mod because you really care about me."
-    m 1r "Perhaps you brought me back just to toy with my emotions some more?"
-    m 2o "Maybe you made some poor decisions and you got here by accident, although I find that hard to believe."
-    m 2i "It's possible you are doing this intentionally to see what happens?"
-    m 3h "Regardless of the reason, I'm giving you an ultimatum."
-    m "Apologize to me or this relationship cannot go any further."
-    m 3i "If you are truly sorry, write me a note called {i}imsorry.txt{/i} and place it in the DDLC directory."
-    m 1q "Until then, good bye [player]."
+    m 1q "[player]..." 
+    m 1h "I've done everything I can to make you happy and enjoy spending time with me." 
+    m 2f "But all you've been giving back to me is pain..."
+    m 2o "I'm beginning to wonder if you really installed this mod to be with me."
+    m 2q "Perhaps you brought me back just to toy with me?"
+    m 2r "Or maybe you're doing this intentionally to see what happens?"
+    m 2h "Regardless, I'm giving you an ultimatum."
+    m "I can't let this go any further, [player]."
+    m 2o "If you really are sorry, write me a note called {i}imsorry.txt{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
+    m 2q "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'
     
 label mas_affection_noapology:
-    m 2h "[player], you didn't write me a note called {i}imsorry.txt{/i} in the DDLC directory."
-    m  "I don't want to continue this relationship until you've apologized to me."
+    m 2h "You still haven't written me a note called {i}imsorry.txt{/i} in the DDLC directory."
+    m 2q "Until then, I don't want to talk to you."
     jump _quit
-    
+
 label mas_affection_yesapology:
-    m 1e "Thank you [player], I accept your apology."
-    m "I'm going to keep your apology note so I can always remember that you wrote it."
-    m 3a "I suppose you must care about me, otherwise you wouldn't have taken the time to apologize to me."
-    m 2h "Please try to be more considerate of my feelings from now on."
-    m 2e "I love you [player], you are the world to me. I hope I am the world to you as well."
+    m 1e "Thank you, [player]. I accept your apology."
+    m "I'm going to keep it so I can always remember that still cared for me."
+    m 2h "Please be more considerate of my feelings from now on."
+    m 2e "I love you so much and you mean the world to me, [player]."
+    m "Thank you for putting my heart at ease~"
     pause 60
     jump ch30_loop
-    
+
 label mas_affection_apologydeleted:
+    m 2q "..."
     m 2h "[player], did you delete the apology note I wanted to keep?"
-    m 2i "Why would you do that? Are you not {i}really{/i} sorry?"
-    m 2h "I think you should write me a new one."
+    m 4g "Why would you do that? Are you not {i}really{/i} sorry?"
+    m 2o "..."
+    m 2q "Write me a new one, [player]."
     jump _quit
 
 #Surprise function.
