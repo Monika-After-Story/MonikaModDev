@@ -5063,3 +5063,4 @@ label monika_song_dream:
     m 2b “~Whenever I want you, all I have to do is dream~”
     m 1a “Now that you’re here, [player] I don’t have to dream anymore”
     m 5 “My dream finally came true~”
+    return
