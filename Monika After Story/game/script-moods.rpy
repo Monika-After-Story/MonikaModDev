@@ -417,13 +417,13 @@ label mas_mood_yearolder_false:
             m 2h "You lied to me, [player]."
             $ persistent._mas_mood_bday_lies += 1
 
-            if persistent._mas_mood_bday_lies >= 3:
+        # TODO: actually, this part should be tied to affection, basically
+        # for every lie, we decrease a certain amount
+#            if persistent._mas_mood_bday_lies >= 3:
                 # sliently lock this
-                # TODO: minus a decent amount of affection
-                $ persistent._mas_mood_bday_locked = True
-                $ store.mas_moods.mood_db.pop("mas_mood_yearolder")
-                # TODO need to say somthing here
-                jump mas_mood_yearolder_end
+#                $ persistent._mas_mood_bday_locked = True
+#                $ store.mas_moods.mood_db.pop("mas_mood_yearolder")
+#                jump mas_mood_yearolder_end
 
             menu: 
                 m "Then is today your birthday?"
