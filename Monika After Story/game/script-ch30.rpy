@@ -476,6 +476,9 @@ label ch30_autoload:
     # set the gender
     call set_gender from _autoload_gender
 
+    # call reset stuff
+    call ch30_reset
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
