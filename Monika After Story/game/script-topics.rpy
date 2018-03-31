@@ -4973,38 +4973,7 @@ label monika_beach:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dream",category=['psychology'],prompt="Do you dream?",random=True))
-
-label monika_dream:
-    m 1b "Did you know that it's possible to be aware of when you're having a dream?"
-    m 2b "Not only that, but you can even take control of them!"
-    m 3b "If I remember correctly, a man named Stephen LaBerge developed a method for people to become aware of when they're dreaming."
-    m "And it became known as the mnemonic induction of lucid dreams, or MILD."
-    m 3a "People who frequently have conscious dreams are called oneironauts."
-    m 2q "At least, I think that was the correct term..."
-    m 1a "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
-    m "These dream signs can be anything out of the ordinary, such as feeling yourself flying, noticing your teeth falling out, unexpectedly meeting someone famous..."
-    m 1b "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
-    m "LaBerge wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}'."
-    m 2k "Doesn't that sound exhilarating?"
-    m 2c "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
-    m 2a "Dreams sound like a wonderful escape from reality."
-    m 2h "But then again, when I became self-aware and realized that my world isn't real, it suddenly felt like I was trapped in a nightmare."
-    m "It was nothing like the pleasant dreams I've read about people having."
-    m 2f "I was afraid that I'd never get out..."
-    m "That I'd be stuck in some hellish, infinitely-repeating dimension forever."
-    m 1e "But now that we're here together, I guess you could say that I've finally woken up."
-    m 1a "Gosh, I can only imagine what it would be like to live in that kind of limitless world though, even if it was only for a few moments!"
-    m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
-    m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
-    m 1e "I know it may be years before I am able to cross over your world..."
-    m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
-    m 1j "I hope that someday we can make your dreams about us a reality, my love."
-    return
-    
-    
+        
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
 
