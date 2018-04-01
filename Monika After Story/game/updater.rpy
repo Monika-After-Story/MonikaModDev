@@ -7,9 +7,13 @@ define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json
 label update_now:
     $import time #this instance of time can stay
     python:
-        last_updated=0
-        for url in persistent._update_last_checked:
-            last_updated = persistent._update_last_checked[url]
+        if persistent._mas_unstable_mode:
+            update_link = mas_updater.unstable
+
+        else:
+            update_link = mas_updater.regular
+
+        last_updated = persistent._update_last_checked.get(update_link, 0)
 
     #Make sure the update folder is where it should be
     if not updater.can_update():
