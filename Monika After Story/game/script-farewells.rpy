@@ -207,7 +207,7 @@ init 5 python:
             eventlabel="bye_prompt_to_work",
             unlocked=True,
             prompt="I'm going to work.",
-            pool=True,
+            pool=True
         ),
         eventdb=evhand.farewell_database
     )
