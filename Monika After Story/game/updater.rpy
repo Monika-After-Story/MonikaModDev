@@ -15,6 +15,9 @@ label update_now:
 
         last_updated = persistent._update_last_checked.get(update_link, 0)
 
+        if last_updated > time.time():
+            last_updated = 0
+
     #Make sure the update folder is where it should be
     if not updater.can_update():
         python:
