@@ -729,4 +729,6 @@ label ch30_reset:
                 and persistent._mas_mood_bday_last < today
             ):
             persistent._mas_mood_bday_last = None
-            store.mas_moods.mood_db["mas_mood_yearolder"].unlocked = True
+            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
+            if mood_ev:
+                mood_ev.unlocked = True
