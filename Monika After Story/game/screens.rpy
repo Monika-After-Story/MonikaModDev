@@ -2038,3 +2038,11 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
                                 style "scrollable_menu_special_button"
                             action Return(final_item[1])
 
+# background timed jump screen
+# NOTE: caller is responsible for hiding this screen
+# 
+# IN:
+#   timeout - number of seconds to time
+#   timeout_label - label to jump to when timeout
+screen mas_background_timed_jump(timeout, timeout_label):
+    timer timeout action Jump(timeout_label)
