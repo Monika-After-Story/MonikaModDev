@@ -502,6 +502,9 @@ label ch30_autoload:
     # set the gender
     call set_gender from _autoload_gender
 
+    # call reset stuff
+    call ch30_reset
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
@@ -712,3 +715,18 @@ label ch30_loop:
 # monika, so we could probably throw in something here
 label ch30_end:
     jump ch30_main
+
+# label for things that may reset after a certain amount of time/conditions
+label ch30_reset:
+    python:
+        import datetime
+        today = datetime.date.today()
+
+    # reset mas mood bday
+    python:
+        if (
+                persistent._mas_mood_bday_last 
+                and persistent._mas_mood_bday_last < today
+            ):
+            persistent._mas_mood_bday_last = None
+            store.mas_moods.mood_db["mas_mood_yearolder"].unlocked = True
