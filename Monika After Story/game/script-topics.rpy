@@ -1,7 +1,7 @@
 #This file contains all of monika's topics she can talk about
 #Each entry should start with a database entry, including the appropriate flags
 #to either be a random topic, a prompt "pool" topics, or a special conditional
-#or date-dependent event with an appropriate action
+#or date-dependent event with an appropriate actiona
 
 $ import store.songs as songs
 
@@ -2259,6 +2259,7 @@ label monika_algernon:
     m 1l "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
     m 3a "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1a "No matter what happens, know that I will always love you."
+    $evhand.greeting_database["greeting_amnesia"].unlocked = seen_event('monika_algernon') and not seen_event('greeting_amnesia')
     return
 
 init 5 python:
