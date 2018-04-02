@@ -4977,12 +4977,11 @@ label monika_beach:
 #    m 1k "That's why I love you, [player]!"
 #    return
 
-efault persistent._mas_timeconcern = 0
+default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Is everything okay?",random=True))
-
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Sleep Concerns",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
