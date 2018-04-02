@@ -65,12 +65,26 @@ python early:
     #   action - an EV_ACTION constant that tells us what to do if the
     #       conditional is True (See EV_ACTIONS and EV_ACT_...)
     #       (Default: None)
-    #   start_date - Timestamp for when this event is available
+    #   start_date - datetime for when this event is available
     #       (Default: None)
-    #   end_date - Timestamp for when this event is no longer available
+    #   end_date - datetime for when this event is no longer available
     #       (Default: None)
-    #   unlock_date - Timestamp for when this event is unlocked
+    #   unlock_date - datetime for when this event is unlocked
     #       (Default: None)
+    #   shown_count - number of times this event has been shown to the user
+    #       NOTE: this must be set by the caller, and it is asssumed that
+    #           call_next_event is the only one who changes this
+    #       (Default: 0)
+    #   diary_entry - string that will be added as a diary entry if this event
+    #       has been seen. This string will respect \n and other formatting
+    #       characters. Can be None
+    #       NOTE: diary entries cannot be longer than 500 characters
+    #       NOTE: treat diary entries as single paragraphs
+    #       (Default: None)
+    #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: refer to RULES documentation in event-rules
+    #       NOTE: if you set this to None, you will break this forever
+    #       (Default: empty dict)
     class Event(object):
 
         # tuple constants
@@ -86,11 +100,25 @@ python early:
             "action":8,
             "start_date":9,
             "end_date":10,
-            "unlock_date":11
+            "unlock_date":11,
+            "shown_count":12,
+            "diary_entry":13,
+            "rules":14
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel")
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
+
+        # other constants
+        DIARY_LIMIT = 500
+
+        # initaliztion locks
+        # dict of tuples, where each item in the tuple represents each property
+        # of an event. If the item is True, then the property cannot be
+        # modified during object creation. If false, then the property can be
+        # modified during object creation
+        # NOTE: this is set in evhand at an init level of -500
+        INIT_LOCKDB = None
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -107,7 +135,10 @@ python early:
                 action=None,
                 start_date=None,
                 end_date=None,
-                unlock_date=None):
+                unlock_date=None,
+                diary_entry=None,
+                rules=dict()
+            ):
 
             # setting up defaults
             if not eventlabel:
@@ -116,6 +147,16 @@ python early:
                 raise EventException("'per_eventdb' cannot be None")
             if action is not None and action not in EV_ACTIONS:
                 raise EventException("'" + action + "' is not a valid action")
+            if diary_entry is not None and len(diary_entry) > self.DIARY_LIMIT:
+                raise Exception(
+                    (
+                        "diary entry for {0} is longer than {1} characters"
+                    ).format(eventlabel, self.DIARY_LIMIT)
+                )
+            if rules is None:
+                raise Exception(
+                    "'{0}' - rules property cannot be None".format(eventlabel)
+                )
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -127,7 +168,6 @@ python early:
             # default label is a prompt
             if not label:
                 label = prompt
-
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -143,24 +183,65 @@ python early:
                 action,
                 start_date,
                 end_date,
-                unlock_date
+                unlock_date,
+                0, # shown_count
+                diary_entry,
+                rules
             )
+
+            stored_data_row = self.per_eventdb.get(eventlabel, None)
 
             # if the item exists, reform data if the length has increased
             # if the length shrinks, use updates scripts
-            if self.eventlabel in self.per_eventdb:
-                stored_data_row = self.per_eventdb[self.eventlabel]
+            if stored_data_row:
 
-                if len(stored_data_row) < len(data_row):
-                    # splice and dice
-                    data_row = list(data_row)
-                    data_row[0:len(stored_data_row)] = list(stored_data_row)
-                    self.per_eventdb[self.eventlabel] = tuple(data_row)
+                stored_data_list = list(stored_data_row)
+
+                # first, check for lock existence
+                lock_entry = Event.INIT_LOCKDB.get(eventlabel, None)
+
+                if lock_entry:
+
+                    if len(stored_data_row) < len(data_row):
+                        # with differing lengths, we need to append the
+                        # changes to the stored data row prior to update
+                        # using the lock entry
+                        stored_data_list.extend(
+                            data_row[len(stored_data_row):]
+                        )
+
+                    # if the lock exists, then iterate through the names
+                    # and only update items that are unlocked
+                    for name,index in Event.T_EVENT_NAMES.iteritems():
+
+                        if not lock_entry[index]:
+                            stored_data_list[index] = data_row[index]
+
+                    self.per_eventdb[eventlabel] = tuple(stored_data_list)
+
+                else:
+                    # otherwise, no lock entry, update normally
+
+                    if len(stored_data_row) < len(data_row):
+                        # splice and dice
+                        data_row = list(data_row)
+                        data_row[0:len(stored_data_list)] = stored_data_list
+                        self.per_eventdb[self.eventlabel] = tuple(data_row)
+
+                    # actaully this should be always
+                    self.prompt = prompt
+                    self.category = category
+                    self.diary_entry = diary_entry
+                    self.rules = rules
 
             # new items are added appropriately
             else:
                 # add this data to the DB
                 self.per_eventdb[self.eventlabel] = data_row
+
+            # setup lock entry
+            Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
+
 
         # equality override
         def __eq__(self, other):
@@ -205,7 +286,9 @@ python early:
                     self.per_eventdb[self.eventlabel] = data_row
 
                 else:
-                    super(Event, self).__setattr(name, value)
+                    raise EventException(
+                        "'{0}' is not a valid attribute for Event".format(name)
+                    )
 
         # get attribute ovverride
         def __getattr__(self, name):
@@ -228,12 +311,99 @@ python early:
                 return super(Event, self).__getattribute__(name)
 
 
+        def monikaWantsThisFirst(self):
+            """
+            Checks if a special instant key is in this Event's rule dict
+
+            RETURNS: True if the this key is here, false otherwise
+            """
+            return (
+                self.rules is not None
+                and "monika wants this first" in self.rules
+            )
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
             return ev.prompt.lower()
+
+
+        @staticmethod
+        def getSortShownCount(ev):
+            """
+            Function used for sorting by shown counts
+
+            RETURNS: the shown_count property of an event
+            """
+            return ev.shown_count
+
+        @staticmethod
+        def lockInit(name, ev=None, ev_label=None):
+            """
+            Locks the property for a given event object or eventlabel.
+            This will prevent the property from being overwritten on object
+            creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def unlockInit(name, ev=None, ev_label=None):
+            """
+            Unlocks the property for a given event object or event label.
+            This will allow the property to be overwritten on object creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def _modifyInitLock(name, value, ev=None, ev_label=None):
+            """
+            Modifies the init lock for a given event/eventlabel
+
+            IN:
+                name - name of property to modify
+                value - value to set the property
+                ev - Eveng object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            # check if we have somthing to work with
+            if ev is None and ev_label is None:
+                return
+
+            # check if we have a valid property
+            property_dex = Event.T_EVENT_NAMES.get(name, None)
+            if property_dex is None:
+                return
+
+            # prioritize Event over evlabel
+            if ev:
+                ev_label = ev.eventlabel
+
+            # now lock the property
+            lock_entry = list(Event.INIT_LOCKDB[ev_label])
+            lock_entry[property_dex] = value
+            Event.INIT_LOCKDB[ev_label] = tuple(lock_entry)
+
 
         @staticmethod
         def _filterEvent(
@@ -527,7 +697,1008 @@ python early:
             return events
 
 
+        @staticmethod
+        def _checkRepeatRule(ev, check_time):
+            """
+            Checks a single event against its repeat rules, which are evaled
+            to a time.
+            NOTE: no sanity checks
+
+            IN:
+                ev - single event to check
+                check_time - datetime used to check time rules
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            # check if the event contains a MASSelectiveRepeatRule and
+            # evaluate it
+            if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
+                return True
+
+            # check if the event contains a MASNumericalRepeatRule and
+            # evaluate it
+            if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
+                return True
+
+            return False
+
+
+        @staticmethod
+        def checkRepeatRules(events, check_time=None):
+            """
+            checks the event dict against repeat rules, which are evaluated
+            to a time.
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                check_time - the datetime object that will be used to check the
+                    timed rules, if none is passed we check against the current time
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+                for the given check_time
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # if check_time is none we check against current time
+            if check_time is None:
+                check_time = datetime.datetime.now()
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+                if Event._checkRepeatRule(event, check_time):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    available_events[event.eventlabel] = event
+
+            # return the available events dict
+            return available_events
+
+
+        @staticmethod
+        def _checkGreetingRule(ev):
+            """
+            Checks the given event against its own greeting specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASGreetingRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkGreetingRules(events):
+            """
+            Checks the event dict (greetings) against their own greeting specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASGreetingRule and evaluate it
+                if Event._checkGreetingRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+        @staticmethod
+        def _checkFarewellRule(ev):
+            """
+            Checks the given event against its own farewell specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASFarewellRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkFarewellRules(events):
+            """
+            Checks the event dict (farewells) against their own farewell specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASFarewellRule and evaluate it
+                if Event._checkFarewellRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+
+# init -1 python:
+    # this should be in the EARLY block
+    class MASButtonDisplayable(renpy.Displayable):
+        """
+        Special button type that represents a usable button for custom
+        displayables.
+
+        PROPERTIES:
+            xpos - x position of this button (relative to container)
+            ypos - y position of this button (relative to container)
+            width - width of this button
+            height - height of this button
+            hover_sound - sound played when being hovered (this is played only
+                once per hover. IF None, no sound is played)
+            activate_sound - sound played when activated (this is played only
+                once per activation. If None, no sound is played)
+            enable_when_disabled - True means that the button is active even
+                if shown disabled. False if otherwise
+            sound_when_disabled - True means that sound is active even when the
+                button is shown disabled, False if not.
+                NOTE: only works if enable_when_disabled is True
+            return_value - Value returned when button is activated
+            disabled - True means to disable this button, False not
+            hovered - True if we are being hovered, False if not
+            _button_click - integer value to match a mouse click:
+                1 - left (Default)
+                2 - middle
+                3 - right
+                4 - scroll up
+                5 - scroll down
+            _button_down - pygame mouse button event type to activate button
+                MOUSEBUTTONDOWN (Default)
+                MOUSEBUTTONUP
+        """
+        import pygame
+
+        # states of the button
+        _STATE_IDLE = 0
+        _STATE_HOVER = 1
+        _STATE_DISABLED = 2
+
+        # indexes for button parts
+        _INDEX_TEXT = 0
+        _INDEX_BUTTON = 1
+
+        def __init__(self,
+                idle_text,
+                hover_text,
+                disable_text,
+                idle_back,
+                hover_back,
+                disable_back,
+                xpos,
+                ypos,
+                width,
+                height,
+                hover_sound=None,
+                activate_sound=None,
+                enable_when_disabled=False,
+                sound_when_disabled=False,
+                return_value=True
+            ):
+            """
+            Constructor for the custom displayable
+
+            IN:
+                idle_text - Text object to show when button is idle
+                hover_text - Text object to show when button is being hovered
+                disable_text - Text object to show when button is disabled
+                idle_back - Image object for background when button is idle
+                hover_back - Image object for background when button is being
+                    hovered
+                disable_back - Image object for background when button is
+                    disabled
+                xpos - x position of this button (relative to container)
+                ypos - y position of this button (relative to container)
+                with - with of this button
+                height - height of this button
+                hover_sound - sound to play when hovering. If None, no sound
+                    is played
+                    (Default: None)
+                activate_sound - sound to play when activated. If None, no
+                    sound is played
+                    (Default: None)
+                enable_when_disabled - True will enable the button even if
+                    it is visibly disabled. FAlse will not
+                    (Default: False)
+                sound_when_disabled - True will enable sound even if the
+                    button is visibly disabled. False will not. Only works if
+                    enable_when_disabled is True.
+                    (Default: False)
+                return_value - Value to return when the button is activated
+                    (Default: True)
+            """
+
+            # setup
+#            self.idle_text = idle_text
+#            self.hover_text = hover_text
+#            self.disable_text = disable_text
+#            self.idle_back = idle_back
+#            self.hover_back = hover_back
+#            self.disable_back = disable_back
+            self.xpos = xpos
+            self.ypos = ypos
+            self.width = width
+            self.height = height
+            self.hover_sound = hover_sound
+            self.activate_sound = activate_sound
+            self.enable_when_disabled = enable_when_disabled
+            self.sound_when_disabled = sound_when_disabled
+            self.return_value = return_value
+            self.disabled = False
+            self.hovered = False
+            self._button_click = 1
+            self._button_down = pygame.MOUSEBUTTONDOWN
+
+            # the states of a button
+            self._button_states = {
+                self._STATE_IDLE: (idle_text, idle_back),
+                self._STATE_HOVER: (hover_text, hover_back),
+                self._STATE_DISABLED: (disable_text, disable_back)
+            }
+
+            # current state
+            self._state = self._STATE_IDLE
+
+
+        def _isOverMe(self, x, y):
+            """
+            Checks if the given x and y coodrinates are over this button.
+
+            RETURNS: True if the given x, y is over this button, False if not
+            """
+            return (
+                0 <= (x - self.xpos) <= self.width
+                and 0 <= (y - self.ypos) <= self.height
+            )
+
+
+        def _playActivateSound(self):
+            """
+            Plays the activate sound if we are allowed to.
+            """
+            if not self.disabled or self.sound_when_disabled:
+                renpy.play(self.activate_sound, channel="sound")
+
+
+        def _playHoverSound(self):
+            """
+            Plays the hover soudn if we are allowed to.
+            """
+            if not self.disabled or self.sound_when_disabled:
+                renpy.play(self.hover_sound, channel="sound")
+
+
+        def disable(self):
+            """
+            Disables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property
+            directly
+            """
+            self.disabled = True
+            self._state = self._STATE_DISABLED
+
+
+        def enable(self):
+            """
+            Enables this button. This changes the internal state, so its
+            preferable to use this over setting the disabled property
+            directly
+            """
+            self.disabled = False
+            self._state = self._STATE_IDLE
+
+
+        def getSize(self):
+            """
+            Returns the size of this button
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: width
+                    [1]: height
+            """
+            return (self.width, self.height)
+
+
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
+
+
+        def ground(self):
+            """
+            Grounds (unhovers) this button. This changes the internal state,
+            so its preferable to use this over setting the hovered property
+            directly
+
+            NOTE: If this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = False
+
+                if self.disabled:
+                    self._state = self._STATE_DISABLED
+                else:
+                    self._state = self._STATE_IDLE
+
+
+        def hover(self):
+            """
+            Hovers this button. This changes the internal state, so its
+            preferable to use this over setting the hovered property directly
+
+            NOTE: IF this button is disabled (and not enable_when_disabled),
+            this will do NOTHING
+            """
+            if not self.disabled or self.enable_when_disabled:
+                self.hovered = True
+                self._state = self._STATE_HOVER
+
+
+        def render(self, width, height, st, at):
+
+            # pull out the current button back and text and render them
+            render_text, render_back = self._button_states[self._state]
+            render_text = renpy.render(render_text, width, height, st, at)
+            render_back = renpy.render(render_back, width, height, st, at)
+
+            # what is the text's with and height
+            rt_w, rt_h = render_text.get_size()
+
+            # build our renderer
+            r = renpy.Render(self.width, self.height)
+
+            # blit our textures
+            r.blit(render_back, (0, 0))
+            r.blit(
+                render_text,
+                (int((self.width - rt_w) / 2), int((self.height - rt_h) / 2))
+            )
+
+            # return rendere
+            return r
+
+
+        def event(self, ev, x, y, st):
+
+            # only check if we arent disabled (or are allowed to work while
+            #   disabled)
+            if self._state != self._STATE_DISABLED or self.enable_when_disabled:
+
+                # we onyl care about mouse events here
+                if ev.type == pygame.MOUSEMOTION:
+                    is_over_me = self._isOverMe(x, y)
+                    if self.hovered:
+                        if not is_over_me:
+                            self.hovered = False
+                            self._state = self._STATE_IDLE
+
+                        # else remain in hover mode
+
+                    elif is_over_me:
+                        self.hovered = True
+                        self._state = self._STATE_HOVER
+
+                        if self.hover_sound:
+                            self._playHoverSound()
+
+                elif (
+                        ev.type == self._button_down
+                        and ev.button == self._button_click
+                    ):
+                    if self.hovered:
+                        if self.activate_sound:
+                            self._playActivateSound()
+                        return self.return_value
+
+            # otherwise continue on
+            return None
+
+#init -1 python:
+    # new class to manage a list of quips
+    class MASQuipList(object):
+        """
+        Class that manages a list of quips. Quips have types which helps us
+        when deciding how to execute quips. Also we have some properties that
+        make it easy to customize a quiplist.
+
+        I suggest that you only use this if you need to have multipe types
+        of quips in a list. If you're only doing one-liners, a regular list
+        will suffice.
+
+        Currently 3 types of quips:
+            glitchtext - special type for a glitchtext generated quip.
+            label - this quip is actually the label for the actual quip
+                (assumed the label has a return and is designed to be called)
+            line - this quip is the actual line we want to display.
+            other - other types of quips
+
+        CONSTANTS:
+            TYPE_GLITCH - glitch text type quip
+            TYPE_LABEL - label type quip
+            TYPE_LINE - line type quip
+            TYPE_OTHER - other, custom types of quips
+
+        PROPERTIES:
+            allow_glitch - True means glitch quips can be added to this list
+            allow_label - True means label quips can be added to this list
+            allow_line - True means line quips can be added to this list
+            raise_issues - True will raise exceptions if bad things occur:
+                - if a quip that was not allowed was added
+                - if a label that does not exist was added
+                - etc...
+        """
+
+        TYPE_GLITCH = 0
+        TYPE_LABEL = 1
+        TYPE_LINE = 2
+        TYPE_OTHER = 50
+
+        TYPES = (
+            TYPE_GLITCH,
+            TYPE_LABEL,
+            TYPE_LINE,
+            TYPE_OTHER
+        )
+
+        def __init__(self,
+                allow_glitch=True,
+                allow_label=True,
+                allow_line=True,
+                raise_issues=True
+            ):
+            """
+            Constructor for MASQuipList
+
+            IN:
+                allow_glitch - True means glitch quips can be added to this
+                    list, False means no
+                    (Default: True)
+                allow_label - True means label quips can be added to this list,
+                    False means no
+                    (Default: True)
+                allow_line - True means line quips can be added to ths list,
+                    False means no
+                    (Default: True)
+                raise_issues - True means we will raise exceptions if bad
+                    things occour. False means we stay quiet
+                    (Default: True)
+            """
+
+            # set properties
+            self.allow_glitch = allow_glitch
+            self.allow_label = allow_label
+            self.allow_line = allow_line
+            self.raise_issues = raise_issues
+
+            # this is the actual internal ist
+            self.__quiplist = list()
+
+
+        def addGlitchQuip(self,
+                length,
+                cps_speed=0,
+                wait_time=None,
+                no_wait=False
+            ):
+            """
+            Adds a glitch quip based upon the given params.
+
+            IN:
+                length - length of the glitch text
+                cps_speed - integer value to use as glitchtext speed multiplier
+                    If 0 or 1, no cps speed change is done.
+                    (Default: 0)
+                wait_time - integer value to use as wait time. If None, no
+                    wait tag is used
+                    (Default: None)
+                no_wait - If True, a no wait tag is added to the glitchtext.
+                    otherwise, no no-wait tag is added.
+                    (Default: False)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+            """
+            if self.allow_glitch:
+
+                # create the glitchtext quip
+                quip = glitchtext(length)
+
+                # check for cps speed adding
+                if cps_speed > 0 and cps_speed != 1:
+                    cps_speedtxt = "cps=*{0}".format(cps_speed)
+                    quip = "{" + cps_speedtxt + "}" + quip + "{/cps}"
+
+                # check for wait adding
+                if wait_time is not None:
+                    wait_text = "w={0}".format(wait_time)
+                    quip += "{" + wait_text + "}"
+
+                # check no wait
+                if no_wait:
+                    quip += "{nw}"
+
+                # now add the quip to the internal ist
+                self.__quiplist.append((self.TYPE_GLITCH, quip))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Glitchtext cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLabelQuip(self, label_name):
+            """
+            Adds a label quip.
+
+            IN:
+                label_name - label name of this quip
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the label didnt exist
+            """
+            if self.allow_label:
+
+                # check for label existence first
+                if not renpy.has_label(label_name):
+                    # okay throw an error and reutrn -1
+                    self.__throwError(
+                        "Label '{0}' does not exist".format(label_name)
+                    )
+                    return -1
+
+                # otherwise, we are good to add this thing
+                self.__quiplist.append((self.TYPE_LABEL, label_name))
+
+                return len(self.__quiplist) - 1
+
+            else:
+                self.__throwError(
+                    "Labels cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def addLineQuip(self, line, custom_type=None):
+            """
+            Adds a line quip. A custom type can be given if the caller wants
+            this line quip to be differentable from other line quips.
+
+            IN:
+                line - line quip
+                custom_type - the type to use for this line quip instead of
+                    TYPE_LINE. If None, TYPE_LINE is used.
+                    (Default: None)
+
+            RETURNS:
+                index location of the added quip, or -1 if we werent allowed to
+                or the given custom_type is conflicting exisiting types.
+            """
+            if self.allow_line:
+
+                # check given type
+                if custom_type is None:
+                    custom_type = self.TYPE_LINE
+
+                elif custom_type in self.TYPES:
+                    # cant have conflicing types
+                    self.__throwError(
+                        (
+                            "Custom type for '{0}' conflicts with default " +
+                            "types."
+                        ).format(line)
+                    )
+                    return -1
+
+                # otherwise, we are good for adding this line
+                self.__quiplist.append((custom_type, line))
+
+                return len(self.__quiplist) -1
+
+            else:
+                self.__throwError(
+                    "Lines cannot be added to this MASQuipList"
+                )
+                return -1
+
+
+        def quip(self, remove=False):
+            """
+            Randomly picks a quip and returns the result.
+
+            Line quips are automatically cleaned and prepared ([player],
+            gender pronouns are all replaced appropraitely). If the caller
+            wants additional variable replacements, they must do that
+            themselves.
+
+            IN:
+                remove - True means we remove the quip we select. False means
+                    keep it in the internal list.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            if remove:
+                # if we need to remove, we should use randint instead
+                sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
+                quip_type, quip_value = self.__quiplist.pop(sel_index)
+
+            else:
+                # if we dont need to remove, we can just use renpy random
+                # choice
+                quip_type, quip_value = renpy.random.choice(self.__quiplist)
+
+            # now do preocessing then send
+            if quip_type == self.TYPE_GLITCH:
+                quip_value = self._quipGlitch(quip_value)
+
+            elif quip_type == self.TYPE_LABEL:
+                quip_value = self._quipLabel(quip_value)
+
+            elif quip_type == self.TYPE_LINE:
+                quip_value = self._quipLine(quip_value)
+
+            return (quip_type, quip_value)
+
+
+        def _getQuip(self, index):
+            """
+            Retrieves the quip at the given index.
+
+            IN:
+                index - the index the wanted quip is at
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of this quip
+                    [1]: value of this quip
+            """
+            return self.__quiplist[index]
+
+
+        def _getQuipList(self):
+            """
+            Retrieves the internal quip list. This is a direct reference to
+            the internal list, so be careful.
+
+            RETURNS:
+                the internal quiplist
+            """
+            return self.__quiplist
+
+
+        def _quipGlitch(self, gt_quip):
+            """
+            Processes the given glitch text quip for usage.
+
+            IN:
+                gt_quip - the glitchtext quip (value) to process
+
+            RETURNS:
+                glitchtext quip ready for display.
+            """
+            # NOTE: for now, we dont need to do processing here
+            return gt_quip
+
+
+        def _quipLabel(self, la_quip):
+            """
+            Processes the given label quip for usage.
+
+            IN:
+                la_quip - the label quip (value) to process
+
+            RETURNS:
+                label quip ready for call
+            """
+            # NOTE: for now, we dont need to do processing here
+            return la_quip
+
+
+        def _quipLine(self, li_quip):
+            """
+            Processes the given line quip for usage.
+
+            IN:
+                li_quip - the line quip (value) to process
+
+            RETURNS:
+                line quip ready for display
+            """
+            # lines need processing
+            #quip_replacements = self.__generateLineQuipReplacements()
+
+            #for keyword, value in quip_replacements:
+            #    li_quip = li_quip.replace(keyword, value)
+
+            # turns out we can do this in one line
+            # TODO: test if this actually works, we might need to pass in
+            # scope as well
+            return renpy.substitute(li_quip)
+
+
+        def _removeQuip(self, index):
+            """
+            Removes the quip at the given index. (and returns it back)
+
+            IN:
+                index - the index of the quip to remove.
+
+            RETURNS:
+                tuple of the following format:
+                    [0]: type of the removed quip
+                    [1]: value of the removed quip
+            """
+            quip_tup = self.__quiplist.pop(index)
+            return quip_tup
+
+
+        def __generateLineQuipReplacements(self):
+            """
+            Generates line quip replacement list for easy string replacement.
+
+            RETURNS: a list for line quip variable replacements
+
+            ASSUMES:
+                player
+                currentuser
+                mcname
+                <all gender prounouns>
+            """
+            return [
+                ("[player]", player),
+                ("[currentuser]", currentuser),
+                ("[mcname]", mcname),
+                ("[his]", his),
+                ("[he]", he),
+                ("[hes]", hes),
+                ("[heis]", heis),
+                ("[bf]", bf),
+                ("[man]", man),
+                ("[boy]", boy),
+                ("[guy]", guy)
+            ]
+
+
+        def __throwError(self, msg):
+            """
+            Internal function that throws an error if we are allowed to raise
+            issues.
+
+            IN:
+                msg - message to display
+            """
+            if self.raise_issues:
+                raise Exception(msg)
+
+# special store that contains powerful (see damaging) functions
+init -1 python in _mas_root:
+
+    # redefine this because I can't get access to global functions, also
+    # i dont care to find out how
+    nonunicode = (
+        "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝ" +
+        "Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘę" +
+        "ĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖ" +
+        "ŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
+    )
+
+    def glitchtext(length):
+        import random
+        output = ""
+        for x in range(length):
+            output += random.choice(nonunicode)
+        return output
+
+    def mangleFile(filepath, mangle_length=1000):
+        """
+        Mangles the file at the given filepath. Will create the file if it
+        doesnt exists
+
+        IN:
+            filepath - path of the file to mangle
+            mangle_length - how many characters to use to mangle
+                (Default: 1000)
+        """
+        import struct
+        bad_text = glitchtext(mangle_length)
+        bad_text = [ord(x) for x in bad_text]
+        bad_text = struct.pack("{0}i".format(mangle_length), *bad_text)
+        with open(filepath, "wb") as m_file:
+            m_file.write(bad_text)
+
+
+    def resetPlayerData():
+        """
+        Completely resets player data in persistents.
+
+        NOTE: Not all player-related persistent values may be reset by this
+        function. If there are more player-related data in persistent that is
+        not reset by this function, PLEASE LET US KNOW
+
+        ASSUMES: a ton of persistent stuff
+        """
+        import datetime
+
+        # starting with hidden values
+        renpy.game.persistent._seen_ever = dict()
+
+        # now general player (stock) stuff
+        renpy.game.persistent.playername = ""
+        renpy.game.persistent.playthrough = 0
+        renpy.game.persistent.yuri_kill = 0
+        renpy.game.persistent.clear = [False] * 10
+        renpy.game.persistent.special_poems = None
+        renpy.game.persistent.clearall = None
+        renpy.game.persistent.first_load = None
+
+        # mod related general
+        renpy.game.persistent.event_database = dict()
+        renpy.game.persistent.farewell_database = dict()
+        renpy.game.persistent.closed_self = False
+        renpy.game.persistent.seen_monika_in_room = False
+        renpy.game.persistent.ever_won = {
+            'pong':False,
+            'chess':False,
+            'hangman':False,
+            'piano':False
+        }
+        renpy.game.persistent.game_unlocks = {
+            'pong':True,
+            'chess':False,
+            'hangman':False,
+            'piano':False
+        }
+        renpy.game.persistent.sessions={
+            'last_session_end':datetime.datetime.now(),
+            'current_session_start':datetime.datetime.now(),
+            'total_playtime':datetime.timedelta(seconds=0),
+            'total_sessions':0,
+            'first_session':datetime.datetime.now()
+        }
+        renpy.game.persistent.playerxp = 0
+        renpy.game.persistent.idlexp_total = 0
+        renpy.game.persistent.rejected_monika = True
+        renpy.game.persistent.current_track = None
+
+        # chess
+        renpy.game.persistent._mas_chess_stats = {
+            "wins": 0, 
+            "losses": 0, 
+            "draws": 0
+        }
+        renpy.game.persistent._mas_chess_quicksave = ""
+        renpy.game.persistent.chess_strength = 20
+        renpy.game.persistent._mas_chess_dlg_actions = dict()
+        renpy.game.persistent._mas_chess_timed_disable = None
+        renpy.game.persistent._mas_chess_3_edit_sorry = False
+        renpy.game.persistent._mas_chess_mangle_all = False
+
+        # greetings
+        renpy.game.persistent._mas_you_chr = False
+        renpy.game.persistent.opendoor_opencount = 0
+        renpy.game.persistent.opendoor_knockyes = False
+
+        # hangman
+        renpy.game.persistent._mas_hangman_playername = False
+
+        # piano
+        renpy.game.persistent._mas_pnml_data = list()
+        renpy.game.persistent._mas_piano_keymaps = dict()
+
+
+init -1 python in mas_utils:
+    # utility functions for other stores.
+
+    def tryparseint(value, default=0):
+        """
+        Attempts to parse the given value into an int. Returns the default if
+        that parse failed.
+
+        IN:
+            value - value to parse
+            default - value to return if parse fails
+            (Default: 0)
+
+        RETURNS: an integer representation of the given value, or default if
+            the given value could not be parsed into an int
+        """
+        try:
+            return int(value)
+        except:
+            return default
+
+
+
 init -1 python:
+    import datetime # for mac issues i guess.
     config.keymap['game_menu'].remove('mouseup_3')
     config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
@@ -539,6 +1710,55 @@ init -1 python:
     #Add entries with your script in script-topics.rpy
     monika_topics = {}
 
+    def get_procs():
+        """
+        Retrieves list of processes running right now!
+
+        Only works for windows atm
+
+        RETURNS: list of running processes, or an empty list if
+        we couldn't do that
+        """
+        if renpy.windows:
+            import subprocess
+            try:
+                return subprocess.check_output(
+                    "wmic process get Description",
+                    shell=True
+                ).lower().replace("\r", "").replace(" ", "").split("\n")
+            except:
+                pass
+        return []
+
+
+    def is_running(proc_list):
+        """
+        Checks if a process in the given list is currently running.
+
+        RETURNS: True if a proccess in proc_list is running, False otherwise
+        """
+        running_procs = get_procs()
+        if len(running_procs) == 0:
+            return False
+
+        for proc in proc_list:
+            if proc in running_procs:
+                return True
+
+        # otherwise, not found
+        return False
+
+    def is_file_present(file):
+        try:
+            renpy.file(
+                ".." +
+                file
+            )
+            is_file = True
+        except:
+            is_file = False
+
+        return is_file
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
@@ -595,7 +1815,6 @@ init -1 python:
         except:
             appIds = None
         return appIds
-
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -1803,9 +3022,11 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
+default persistent.greeting_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
+default persistent._mas_crashed_self = True # always assume crash unless player clicks quit
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
@@ -1814,6 +3035,10 @@ default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default seen_random_limit = False
+default persistent._mas_enable_random_repeats = False
+default persistent._mas_monika_repeated_herself = False
+default persistent._mas_player_bday = None
+define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
@@ -1824,7 +3049,9 @@ define xp.AWAY_PER_HOUR = 10
 define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
-define is_monika_in_room = False # since everyone gets this error apparently
+define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
+define scene_change = True # we start off with a scene change
+define mas_monika_twitter_handle = "lilmonix3"
 init python:
     startup_check = False
     try:
@@ -1844,6 +3071,8 @@ default bf = "boyfriend"
 default man = "man"
 default boy = "boy"
 default guy = "guy"
+default him = "him"
+default himself = "himself"
 
 return
 
@@ -1864,6 +3093,8 @@ label set_gender:
         $man = "man"
         $boy = "boy"
         $guy = "guy"
+        $ him = "him"
+        $ himself = "himself"
     elif persistent.gender == "F":
         $his = "her"
         $he = "she"
@@ -1873,6 +3104,8 @@ label set_gender:
         $man = "woman"
         $boy = "girl"
         $guy = "girl"
+        $ him = "her"
+        $ himself = "herself"
     else:
         $his = "their"
         $he = "they"
@@ -1882,4 +3115,6 @@ label set_gender:
         $man = "person"
         $boy = "person"
         $guy = "person"
+        $ him = "them"
+        $ himself = "themselves"
     return

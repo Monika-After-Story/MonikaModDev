@@ -195,7 +195,10 @@ label splashscreen:
 
         $ persistent.first_run = True
 
-    $ basedir = config.basedir.replace('\\', '/')
+#    $ basedir = config.basedir.replace('\\', '/')
+#   NOTE: this keeps screwing with my syntax coloring
+    python:
+        basedir = config.basedir.replace("\\", "/")
 
     #Check for game updates before loading the game or the splash screen
     call update_now from _call_update_now
@@ -264,8 +267,17 @@ label autoload:
         main_menu = False
         _in_replay = None
 
+    # explicity remove keymaps we dont want
+    $ config.keymap["debug_voicing"] = list()
+    $ config.keymap["choose_renderer"] = list()
+
     # Pop the _splashscreen label which has _confirm_quit as False and other stuff
     $ renpy.pop_call()
+
+    # oh shit we are going to break everything right here
+    if persistent._mas_chess_mangle_all:
+        jump mas_chess_go_ham_and_delete_everything
+
     jump expression persistent.autoload
 
 label before_main_menu:
