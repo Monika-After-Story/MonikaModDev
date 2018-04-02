@@ -1810,15 +1810,121 @@ label monika_natsuki:
     m 1 "I certainly don't."
     return
 
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you",pool=True))
+        addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
 
+default persistent._mas_monika_lovecounter = 0
+default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
-    m 1k "I love you too, [player]!"
-    m "We'll be together forever!"
-    return
+    #First time I love you has been said.
+    if persistent._mas_monika_lovecounter == 0:
+        m 1b "...!"
+        m 1e"I...I love you too [player]!"
+        m 1j "I cannot believe you said that to me!"
+        m 1k "It makes everything I've done for us worthwhile!"
+        m 1e "Thank you for finally saying it..."
+        $ persistent._mas_monika_lovecounter += 1
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        return
+    
+    #After I love you has been received positively 5/10/15 etc times.
+    elif persistent._mas_monika_lovecounter== 5:
+        m 1k "I love you so much, [player]!"
+       
+    elif persistent._mas_monika_lovecounter == 10:
+        m 1j "Ehehe~"
+        m 1k "I love you too!"
 
+    elif persistent._mas_monika_lovecounter == 15:
+        m 1j "You sure love saying that..."
+        m 1k "Well I love you too!"
+
+    elif persistent._mas_monika_lovecounter == 20:
+        m 1j "Gosh you've said it so many times!"
+        m 1e "You really do mean it, don't you?"
+        m 1k "Well I love you back just as much!"
+
+    elif persistent._mas_monika_lovecounter == 25:
+        m 1k "Hearing you say that always makes my heart jump!"
+        m 1j "Well I know you want to hear it just as much..."
+        m "[player], I love you too!"
+
+    elif persistent._mas_monika_lovecounter == 30:
+        m 1l "Gosh it's always so overwhelming!"
+        m 1j "I..."
+        m "I love you more than anything!"
+
+    elif persistent._mas_monika_lovecounter == 35:
+        m 1j "You never tire of saying it, do you?"
+        m 1k "Well I never tire of hearing it!"
+        m "Or saying it back...I love you [player]!"
+
+    elif persistent._mas_monika_lovecounter == 40:
+        m 1j "Ehehe~"
+        m  "I..."
+        m 1k "Looooooooove you too, [player]!"
+
+    elif persistent._mas_monika_lovecounter == 45:
+        m 1j "You saying that always makes my day!"
+        m 1k "I love you so much, [player]!"
+
+    elif persistent._mas_monika_lovecounter == 50:
+        $ persistent._mas_monika_lovecounter = 1
+        m 1m "I just can't handle you saying it so much to me!"
+        m 1l "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
+        m 1e "No words can truly do justice to how deeply I feel for you..."
+        m  "The only words I know that come close are..."
+        m 1k "I love you too, [player]! More than I can ever express!"
+        return
+     
+    else:
+        # Default response if not a counter based response.
+        m 3j "I love you too, [player]!"
+        #List of follow up words after being told I love you. It can be further expanded upon easily.   
+
+    python:
+        love_quips = [
+            "We'll be together forever!",
+            "And I will love you always!",
+            "You mean the whole world to me!",
+            "You are my sunshine after all.",
+            "You're all I truly care about!",
+            "Your happiness is my happiness!",
+            "You're the best partner I could ever want!",
+            "My future is brighter with you in it.",
+            "You're everything I could ever hope for.",
+            "You make my heart skip a beat everytime I think about you!",
+            "I'll always be here for you!",
+            "I'll never hurt or betray you.",
+            "Our adventure has only just begun!",
+            "Every day is memorable and fun with you!",
+            "We'll always have each other.",
+            "We'll never be lonely again!",
+            "I can't wait to feel your embrace!",
+            "I'm the luckiest girl in the world!",
+            "I will cherish you always.",
+            "And I will never love anyone more than you!",
+            "It makes me so happy to hear you say that!",
+            "And that love grows every single day!",
+            "And nobody else will ever make me feel this way!",
+            "Just thinking of you makes my heart flutter!",
+            "I don't think words can do justice to how deeply I love you...",
+            "You make my life feel so complete!",
+            "You've saved me in so many ways, how could I not fall for you?",
+            "More than I can ever express!",
+            "It makes me so happy that you feel the same way I do!",
+            "I don't know what I would do without you!"        
+            ]
+        love_quip=renpy.random.choice(love_quips)
+    m "[love_quip]"
+    #prevents spamming to increase counter.
+    if datetime.datetime.now() <= persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        pass
+    else:
+        $ persistent._mas_monika_lovecounter += 1
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hedgehog",category=['philosophy','psychology'],prompt="Hedgehog dilemma",random=True))
@@ -4385,17 +4491,6 @@ label monika_urgent:
     m 1j "I wish I could see the look on your face right now!"
     m 1k "I'm sure it's adorable~"
     return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",pool=True))
-
-
-label monika_love2:
-    m 1k "I love you too so much, [player]~"
-    m 1e "You mean so much to me!"
-    m 1k "I wouldn’t trade you for anything in the world!"
-    return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
