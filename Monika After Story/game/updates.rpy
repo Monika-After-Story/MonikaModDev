@@ -192,15 +192,20 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.7.3
-label v0_7_3(version="v0_7_3"):
+# NOTE: well shit this wasnt ready and now it has to be done later
+# 0.7.4
+label v0_7_4(version="v0_7_4"):
     python:
         # check for vday existence and delete
         # NOTE: thiis was supposed to be in for 0.7.2 but i forgot/thought
         # auto updates would handle it
         import os
         try: os.remove(config.basedir + "/game/valentines.rpyc")
-        except: pass   
+        except: pass
+
+        # remove white day stuff
+        try: os.remove(config.basedir + "/game/white-day.rpyc")
+        except: pass
 
         # anniversary dates relying on add_months need to be tweaked
         # define a special function for this
@@ -213,7 +218,7 @@ label v0_7_3(version="v0_7_3"):
         year = datetime.timedelta(days=365)
         def _month_adjuster(key, months, span):
             new_anni_date = add_months(
-                start_of_day(persistent.sessions["first_session"]), 
+                start_of_day(persistent.sessions["first_session"]),
                 months
             )
             evhand.event_database[key].start_date = new_anni_date
@@ -231,11 +236,17 @@ label v0_7_3(version="v0_7_3"):
         _month_adjuster("anni_10", 120, month)
         _month_adjuster("anni_20", 240, year)
         evhand.event_database["anni_100"].start_date = add_months(
-            start_of_day(persistent.sessions["first_session"]), 
+            start_of_day(persistent.sessions["first_session"]),
             1200
         )
-            
 
+       # now properly set all farewells as unlocked, since the new system checks
+       # for the unlocked status
+        for k in evhand.farewell_database:
+            # no need to do any special checks since all farewells were already available
+            evhand.farewell_database[k].unlocked = True
+
+        persistent = updateTopicIDs(version)
 
     return
 
@@ -335,3 +346,35 @@ label v0_3_0(version="v0_3_0"):
         # update!
         persistent = updateTopicIDs(version)
     return
+
+
+###############################################################################
+### Even earlier UPDATE SCRIPTS
+# these scripts are for doing python things REALLY earlly in the pipeline.
+# this consists of a giant init python block.
+# make sure to del your vars after creating them
+# also start these in progressive order and explain reasoning behind
+# changes
+# NOTE: the lockDB initalization occours at -500, so this must be after that
+#init -300 python:
+#    _mas_events_unlocked_v073 = False
+#
+#    if persistent.version_number == "0.7.3":
+#        # 0.7.3 released some new properties for Events before they were ready
+#        # for widespread use. These properties must be unlocked so new code
+#        # can set them
+#        for ev_key in persistent._mas_event_init_lockdb:
+#            Event.unlockInit("rules", ev_label=ev_key)
+#
+#        _mas_events_unlocked_v073 = True # use this to relock everyone after
+#        del ev_key
+
+# clean up for early update scripts
+#init 1000 python:
+#
+#    if _mas_events_unlocked_v073:
+#        for ev_key in persistent._mas_event_init_lockdb:
+#            Event.lockInit("rules", ev_label=ev_key)
+#
+#        del _mas_events_unlocked_v073
+#        del ev_key

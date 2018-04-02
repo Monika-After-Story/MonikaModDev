@@ -107,10 +107,18 @@ python early:
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel")
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
 
         # other constants
         DIARY_LIMIT = 500
+
+        # initaliztion locks
+        # dict of tuples, where each item in the tuple represents each property
+        # of an event. If the item is True, then the property cannot be
+        # modified during object creation. If false, then the property can be
+        # modified during object creation
+        # NOTE: this is set in evhand at an init level of -500
+        INIT_LOCKDB = None
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -181,26 +189,59 @@ python early:
                 rules
             )
 
+            stored_data_row = self.per_eventdb.get(eventlabel, None)
+
             # if the item exists, reform data if the length has increased
             # if the length shrinks, use updates scripts
-            if self.eventlabel in self.per_eventdb:
-                stored_data_row = self.per_eventdb[self.eventlabel]
+            if stored_data_row:
 
-                if len(stored_data_row) < len(data_row):
-                    # splice and dice
-                    data_row = list(data_row)
-                    data_row[0:len(stored_data_row)] = list(stored_data_row)
-                    self.per_eventdb[self.eventlabel] = tuple(data_row)
+                stored_data_list = list(stored_data_row)
 
-                # actaully this should be always
-                self.prompt = prompt
-                self.category = category
-                self.diary_entry = diary_entry
+                # first, check for lock existence
+                lock_entry = Event.INIT_LOCKDB.get(eventlabel, None)
+
+                if lock_entry:
+
+                    if len(stored_data_row) < len(data_row):
+                        # with differing lengths, we need to append the
+                        # changes to the stored data row prior to update
+                        # using the lock entry
+                        stored_data_list.extend(
+                            data_row[len(stored_data_row):]
+                        )
+
+                    # if the lock exists, then iterate through the names
+                    # and only update items that are unlocked
+                    for name,index in Event.T_EVENT_NAMES.iteritems():
+
+                        if not lock_entry[index]:
+                            stored_data_list[index] = data_row[index]
+
+                    self.per_eventdb[eventlabel] = tuple(stored_data_list)
+
+                else:
+                    # otherwise, no lock entry, update normally
+
+                    if len(stored_data_row) < len(data_row):
+                        # splice and dice
+                        data_row = list(data_row)
+                        data_row[0:len(stored_data_list)] = stored_data_list
+                        self.per_eventdb[self.eventlabel] = tuple(data_row)
+
+                    # actaully this should be always
+                    self.prompt = prompt
+                    self.category = category
+                    self.diary_entry = diary_entry
+                    self.rules = rules
 
             # new items are added appropriately
             else:
                 # add this data to the DB
                 self.per_eventdb[self.eventlabel] = data_row
+
+            # setup lock entry
+            Event.INIT_LOCKDB.setdefault(eventlabel, mas_init_lockdb_template)
+
 
         # equality override
         def __eq__(self, other):
@@ -270,6 +311,18 @@ python early:
                 return super(Event, self).__getattribute__(name)
 
 
+        def monikaWantsThisFirst(self):
+            """
+            Checks if a special instant key is in this Event's rule dict
+
+            RETURNS: True if the this key is here, false otherwise
+            """
+            return (
+                self.rules is not None
+                and "monika wants this first" in self.rules
+            )
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -286,6 +339,70 @@ python early:
             RETURNS: the shown_count property of an event
             """
             return ev.shown_count
+
+        @staticmethod
+        def lockInit(name, ev=None, ev_label=None):
+            """
+            Locks the property for a given event object or eventlabel.
+            This will prevent the property from being overwritten on object
+            creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, True, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def unlockInit(name, ev=None, ev_label=None):
+            """
+            Unlocks the property for a given event object or event label.
+            This will allow the property to be overwritten on object creation.
+
+            IN:
+                name - name of property to lock
+                ev - Event object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            Event._modifyInitLock(name, False, ev=ev, ev_label=ev_label)
+
+
+        @staticmethod
+        def _modifyInitLock(name, value, ev=None, ev_label=None):
+            """
+            Modifies the init lock for a given event/eventlabel
+
+            IN:
+                name - name of property to modify
+                value - value to set the property
+                ev - Eveng object to property lock
+                    (Default: None)
+                ev_label - event label of Event to property lock
+                    (Default: None)
+            """
+            # check if we have somthing to work with
+            if ev is None and ev_label is None:
+                return
+
+            # check if we have a valid property
+            property_dex = Event.T_EVENT_NAMES.get(name, None)
+            if property_dex is None:
+                return
+
+            # prioritize Event over evlabel
+            if ev:
+                ev_label = ev.eventlabel
+
+            # now lock the property
+            lock_entry = list(Event.INIT_LOCKDB[ev_label])
+            lock_entry[property_dex] = value
+            Event.INIT_LOCKDB[ev_label] = tuple(lock_entry)
 
 
         @staticmethod
@@ -578,6 +695,177 @@ python early:
                     events[ev].conditional = "False"
 
             return events
+
+
+        @staticmethod
+        def _checkRepeatRule(ev, check_time):
+            """
+            Checks a single event against its repeat rules, which are evaled
+            to a time.
+            NOTE: no sanity checks
+
+            IN:
+                ev - single event to check
+                check_time - datetime used to check time rules
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            # check if the event contains a MASSelectiveRepeatRule and
+            # evaluate it
+            if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
+                return True
+
+            # check if the event contains a MASNumericalRepeatRule and
+            # evaluate it
+            if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
+                return True
+
+            return False
+
+
+        @staticmethod
+        def checkRepeatRules(events, check_time=None):
+            """
+            checks the event dict against repeat rules, which are evaluated
+            to a time.
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                check_time - the datetime object that will be used to check the
+                    timed rules, if none is passed we check against the current time
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+                for the given check_time
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # if check_time is none we check against current time
+            if check_time is None:
+                check_time = datetime.datetime.now()
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+                if Event._checkRepeatRule(event, check_time):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    available_events[event.eventlabel] = event
+
+            # return the available events dict
+            return available_events
+
+
+        @staticmethod
+        def _checkGreetingRule(ev):
+            """
+            Checks the given event against its own greeting specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASGreetingRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkGreetingRules(events):
+            """
+            Checks the event dict (greetings) against their own greeting specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASGreetingRule and evaluate it
+                if Event._checkGreetingRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+        @staticmethod
+        def _checkFarewellRule(ev):
+            """
+            Checks the given event against its own farewell specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASFarewellRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkFarewellRules(events):
+            """
+            Checks the event dict (farewells) against their own farewell specific
+            rules, filters out those Events whose rule check return true. As for
+            now the only rule specific is their specific special random chance
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASFarewellRule and evaluate it
+                if Event._checkFarewellRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
 
 # init -1 python:
     # this should be in the EARLY block
@@ -957,7 +1245,7 @@ python early:
                     things occour. False means we stay quiet
                     (Default: True)
             """
-            
+
             # set properties
             self.allow_glitch = allow_glitch
             self.allow_label = allow_label
@@ -967,11 +1255,11 @@ python early:
             # this is the actual internal ist
             self.__quiplist = list()
 
-    
-        def addGlitchQuip(self, 
-                length, 
-                cps_speed=0, 
-                wait_time=None, 
+
+        def addGlitchQuip(self,
+                length,
+                cps_speed=0,
+                wait_time=None,
                 no_wait=False
             ):
             """
@@ -993,7 +1281,7 @@ python early:
                 index location of the added quip, or -1 if we werent allowed to
             """
             if self.allow_glitch:
-                
+
                 # create the glitchtext quip
                 quip = glitchtext(length)
 
@@ -1103,9 +1391,9 @@ python early:
             """
             Randomly picks a quip and returns the result.
 
-            Line quips are automatically cleaned and prepared ([player], 
+            Line quips are automatically cleaned and prepared ([player],
             gender pronouns are all replaced appropraitely). If the caller
-            wants additional variable replacements, they must do that 
+            wants additional variable replacements, they must do that
             themselves.
 
             IN:
@@ -1157,7 +1445,7 @@ python early:
 
         def _getQuipList(self):
             """
-            Retrieves the internal quip list. This is a direct reference to 
+            Retrieves the internal quip list. This is a direct reference to
             the internal list, so be careful.
 
             RETURNS:
@@ -1269,6 +1557,144 @@ python early:
             """
             if self.raise_issues:
                 raise Exception(msg)
+
+# special store that contains powerful (see damaging) functions
+init -1 python in _mas_root:
+
+    # redefine this because I can't get access to global functions, also
+    # i dont care to find out how
+    nonunicode = (
+        "¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝ" +
+        "Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘę" +
+        "ĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖ" +
+        "ŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž"
+    )
+
+    def glitchtext(length):
+        import random
+        output = ""
+        for x in range(length):
+            output += random.choice(nonunicode)
+        return output
+
+    def mangleFile(filepath, mangle_length=1000):
+        """
+        Mangles the file at the given filepath. Will create the file if it
+        doesnt exists
+
+        IN:
+            filepath - path of the file to mangle
+            mangle_length - how many characters to use to mangle
+                (Default: 1000)
+        """
+        import struct
+        bad_text = glitchtext(mangle_length)
+        bad_text = [ord(x) for x in bad_text]
+        bad_text = struct.pack("{0}i".format(mangle_length), *bad_text)
+        with open(filepath, "wb") as m_file:
+            m_file.write(bad_text)
+
+
+    def resetPlayerData():
+        """
+        Completely resets player data in persistents.
+
+        NOTE: Not all player-related persistent values may be reset by this
+        function. If there are more player-related data in persistent that is
+        not reset by this function, PLEASE LET US KNOW
+
+        ASSUMES: a ton of persistent stuff
+        """
+        import datetime
+
+        # starting with hidden values
+        renpy.game.persistent._seen_ever = dict()
+
+        # now general player (stock) stuff
+        renpy.game.persistent.playername = ""
+        renpy.game.persistent.playthrough = 0
+        renpy.game.persistent.yuri_kill = 0
+        renpy.game.persistent.clear = [False] * 10
+        renpy.game.persistent.special_poems = None
+        renpy.game.persistent.clearall = None
+        renpy.game.persistent.first_load = None
+
+        # mod related general
+        renpy.game.persistent.event_database = dict()
+        renpy.game.persistent.farewell_database = dict()
+        renpy.game.persistent.closed_self = False
+        renpy.game.persistent.seen_monika_in_room = False
+        renpy.game.persistent.ever_won = {
+            'pong':False,
+            'chess':False,
+            'hangman':False,
+            'piano':False
+        }
+        renpy.game.persistent.game_unlocks = {
+            'pong':True,
+            'chess':False,
+            'hangman':False,
+            'piano':False
+        }
+        renpy.game.persistent.sessions={
+            'last_session_end':datetime.datetime.now(),
+            'current_session_start':datetime.datetime.now(),
+            'total_playtime':datetime.timedelta(seconds=0),
+            'total_sessions':0,
+            'first_session':datetime.datetime.now()
+        }
+        renpy.game.persistent.playerxp = 0
+        renpy.game.persistent.idlexp_total = 0
+        renpy.game.persistent.rejected_monika = True
+        renpy.game.persistent.current_track = None
+
+        # chess
+        renpy.game.persistent._mas_chess_stats = {
+            "wins": 0, 
+            "losses": 0, 
+            "draws": 0
+        }
+        renpy.game.persistent._mas_chess_quicksave = ""
+        renpy.game.persistent.chess_strength = 20
+        renpy.game.persistent._mas_chess_dlg_actions = dict()
+        renpy.game.persistent._mas_chess_timed_disable = None
+        renpy.game.persistent._mas_chess_3_edit_sorry = False
+        renpy.game.persistent._mas_chess_mangle_all = False
+
+        # greetings
+        renpy.game.persistent._mas_you_chr = False
+        renpy.game.persistent.opendoor_opencount = 0
+        renpy.game.persistent.opendoor_knockyes = False
+
+        # hangman
+        renpy.game.persistent._mas_hangman_playername = False
+
+        # piano
+        renpy.game.persistent._mas_pnml_data = list()
+        renpy.game.persistent._mas_piano_keymaps = dict()
+
+
+init -1 python in mas_utils:
+    # utility functions for other stores.
+
+    def tryparseint(value, default=0):
+        """
+        Attempts to parse the given value into an int. Returns the default if
+        that parse failed.
+
+        IN:
+            value - value to parse
+            default - value to return if parse fails
+            (Default: 0)
+
+        RETURNS: an integer representation of the given value, or default if
+            the given value could not be parsed into an int
+        """
+        try:
+            return int(value)
+        except:
+            return default
+
 
 
 init -1 python:
@@ -2596,9 +3022,11 @@ default persistent.monika_said_topics = []
 default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
+default persistent.greeting_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
+default persistent._mas_crashed_self = True # always assume crash unless player clicks quit
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
@@ -2609,6 +3037,8 @@ default persistent.random_seen = 0
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 default persistent._mas_monika_repeated_herself = False
+default persistent._mas_player_bday = None
+define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
@@ -2619,7 +3049,7 @@ define xp.AWAY_PER_HOUR = 10
 define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
-define is_monika_in_room = False # since everyone gets this error apparently
+define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 init python:
@@ -2641,6 +3071,8 @@ default bf = "boyfriend"
 default man = "man"
 default boy = "boy"
 default guy = "guy"
+default him = "him"
+default himself = "himself"
 
 return
 
@@ -2661,6 +3093,8 @@ label set_gender:
         $man = "man"
         $boy = "boy"
         $guy = "guy"
+        $ him = "him"
+        $ himself = "himself"
     elif persistent.gender == "F":
         $his = "her"
         $he = "she"
@@ -2670,6 +3104,8 @@ label set_gender:
         $man = "woman"
         $boy = "girl"
         $guy = "girl"
+        $ him = "her"
+        $ himself = "herself"
     else:
         $his = "their"
         $he = "they"
@@ -2679,4 +3115,6 @@ label set_gender:
         $man = "person"
         $boy = "person"
         $guy = "person"
+        $ him = "them"
+        $ himself = "themselves"
     return
