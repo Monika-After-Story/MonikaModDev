@@ -4977,4 +4977,49 @@ label monika_beach:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+        
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
 
+label monika_fastfood:
+    m 1c "Hm? Do I like fast food?"
+    m 1o "Honestly, the thought of it slightly disgusts me."
+    m 3f "Most places that serve it put a lot of unhealthy things in their food."
+    m 1f "Even the vegetarian options can be awful."
+    menu:
+        m "[player], do you eat fast food often?"
+
+        "Yes, I do.":
+            m 3d "I guess it's ok to have it every once in a while."
+            m 2o "Yet I can't help but worry if you're eating such awful things."
+            m "If I were there I'd cook much healthier things for you."
+            m 4l "Even though I can't cook very well yet..."
+            m 4k "Well, love is always the secret ingredient to any good food!"
+            m 1a "So [player], would you do something for me?"
+            m 3l "Could you please try to eat better?"
+            m "I would hate it if you became sick because of your lifestyle."
+            m 1e "I know it's easier to order out since preparing your own food can be a hassle sometimes..."
+            m 1a "But maybe you could see cooking as an opportunity to have fun?"
+            m 3b "Or perhaps a skill for you to become really good at?"
+            m 1j "Knowing how to cook is always a good thing, you know!"
+            m 1a "Plus, I would really love to try your dishes someday."
+            m "You could serve me some of your own dishes when we go on our first date."
+            m 1e "That would be really romantic~"
+            m 1b "And that way, we can both enjoy ourselves and you would be eating better."
+            m 1j "That's what I call a win-win!"
+            m 3d "Just don't forget, [player]."
+            m 3l "I'm a vegetarian! Ahaha!"
+
+        "No, I don't.":
+            m 1l "Oh, that's a relief."
+            m 1e "Sometimes you really worry me, [player]."
+            m 1a "I suppose instead of eating out, you make your own food?"
+            m "Fast food can be really expensive over time, so doing it yourself is usually a cheaper alternative."
+            m 1b "It also tastes a lot better!"
+            m 3n "I know some people can find cooking overwhelming..."
+            m 3f "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
+            m 1a "But I think I think the results are worth the effort."
+            m 3b "Are you any good at cooking [player]?"
+            m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
+            m 1n "As long as it's not charcoal or meat that is. Ehehe~"
+    return        
