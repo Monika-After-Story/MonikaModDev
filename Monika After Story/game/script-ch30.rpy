@@ -653,14 +653,14 @@ label ch30_loop:
         $ renpy.pause(waittime, hard=True)
         window auto
 
-        python:
-            if (
-                    mas_battery_supported
-                    and battery.is_battery_present()
-                    and not battery.is_charging()
-                    and battery.get_level() < 20
-                ):
-                pushEvent("monika_battery")
+#        python:
+#            if (
+#                    mas_battery_supported
+#                    and battery.is_battery_present()
+#                    and not battery.is_charging()
+#                    and battery.get_level() < 20
+#                ):
+#                pushEvent("monika_battery")
 
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
