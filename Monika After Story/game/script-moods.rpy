@@ -177,7 +177,7 @@ init 5 python:
 
 label mas_mood_happy:
     m 1b "That's wonderful! I'm happy when you're happy."
-    m 1j "Know that you can always come up to me and I'll cheer up, [player]."
+    m 1j "Know that you can always come up to me and I'll cheer you up, [player]."
     m 3a "I love you and I'll always be here for you so don't ever forget that~"
     return
     
@@ -200,7 +200,7 @@ init 5 python:
 
 label mas_mood_tired:
     m 1e "If you're tired, maybe you should go lie down for a while?"
-    m 1a "Getting enough sleep on a daily basis is very important to your over health."
+    m 1a "Getting enough sleep on a daily basis is very important to your overall health."
     m 3d "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
     m 3f "It can really mess with your health, [player]."
     m 1e "So do me a favor and get some rest, okay? It will put my mind at ease."
