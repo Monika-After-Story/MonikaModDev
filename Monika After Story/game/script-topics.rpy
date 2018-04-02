@@ -4446,16 +4446,6 @@ label monika_urgent:
     m 1k "I'm sure it's adorable~"
     return
     
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",random=True))
-
-
-label monika_love2:
-    m 1k "I love you too so much, [player]~"
-    m 1e "You mean so much to me!"
-    m 1k "I wouldn’t trade you for anything in the world!"
-    return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
