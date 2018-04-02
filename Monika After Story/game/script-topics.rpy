@@ -5020,7 +5020,7 @@ label monika_familygathering:
             m 1p "Oh, I didn't realize."
             m 1d "I understand though."
             m 2b "Just know I'd try my best to make them like me."
-            m 1b "Even if they never will"
+            m 1b "Even if they never will."
             m 1j "I'll always stick by your side forever~"
         "...":
             m 2p "Don't tell me, [player]."
