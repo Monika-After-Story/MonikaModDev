@@ -4977,6 +4977,60 @@ label monika_beach:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
+
+label monika_challenge:
+    m 2c "I've noticed something kind of sad recently."
+    m 1c "When certain people attempt to learn a skill or pick up a new hobby, they usually quit within a week or two."
+    m "Everyone claims that it's too hard, or that they just don't have the time for it."
+    m 1b "However, I don't believe that."
+    m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
+    m 2b "Can you think of a time you've challenged yourself, [player]?"
+    m "Did you ever overcome it, or did you just give up?"
+    m 1a "I'm sure you've gave it all you had."
+    m "You seem like a very determined person to me."
+    m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
+    m "You can always come back to it after all."
+    m "If you ever need motivation, just come to me."
+    m 1j "I'd love to help you reach your goals."
+    m 1k "After all, you're my motivation in life~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['you'],prompt="Family Gatherings",random=True))
+
+label monika_familygathering:
+    m 1b "Hey [player], do you go to family gatherings often?"
+    m "Most families usually get together around the holidays to celebrate them together."
+    m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
+    m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
+    m 1p "Not even around the holidays or on special occassions."
+    m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
+    m 1k "I'd love to meet all of your relatives."
+    menu:
+        "Do you think they'd like me [player]?"
+        "Yes.": 
+            m 1k "I'm glad you think so."
+            m "I'm sure we'd all get along nicely."
+            m 1a "I'm looking forward to it my dear~"
+        "No.":
+            m 1o "..."
+            m 1p "Oh, I didn't realize."
+            m 1d "I understand though."
+            m 2b "Just know I'd try my best to make them like me."
+            m 1b "Even if they never will."
+            m 1j "I'll always stick by your side forever~"
+        "...":
+            m 2p "Don't tell me, [player]."
+            m 1p "Are you afraid that I'll embarass you?"
+            m "..."
+            m 1o "Don't worry, I completely understand."
+            m 1n "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
+            m 1b "If you want to keep me a secret, then that's fine."
+            m 1k "After all, it just means more alone time with you~"
+    return
         
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
