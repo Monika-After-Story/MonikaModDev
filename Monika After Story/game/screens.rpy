@@ -1553,7 +1553,7 @@ style confirm_button_text is navigation_button_text:
 
 ##Updating screen
 
-screen update_check(ok_action,cancel_action):
+screen update_check(ok_action,cancel_action,update_link,check_interval):
 
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
@@ -1571,7 +1571,7 @@ screen update_check(ok_action,cancel_action):
             yalign .5
             spacing 30
 
-            $latest_version = updater.UpdateVersion('http://updates.monikaafterstory.com/updates.json',check_interval=0)
+            $latest_version = updater.UpdateVersion(update_link, check_interval=check_interval)
             if latest_version != None:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
@@ -1581,7 +1581,7 @@ screen update_check(ok_action,cancel_action):
                     style "confirm_prompt"
                     xalign 0.5
             else:
-                label _('No updates available.'):
+                label _('Timeout occured while checking for updates. Try again later.'):
                     style "confirm_prompt"
                     xalign 0.5
 
@@ -1593,7 +1593,7 @@ screen update_check(ok_action,cancel_action):
 
                 textbutton _("Cancel") action cancel_action
 
-    timer 5.0 action [SetVariable("timeout",True), renpy.restart_interaction]
+    timer 10.0 action [SetVariable("timeout",True), renpy.restart_interaction]
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -2038,3 +2038,11 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
                                 style "scrollable_menu_special_button"
                             action Return(final_item[1])
 
+# background timed jump screen
+# NOTE: caller is responsible for hiding this screen
+# 
+# IN:
+#   timeout - number of seconds to time
+#   timeout_label - label to jump to when timeout
+screen mas_background_timed_jump(timeout, timeout_label):
+    timer timeout action Jump(timeout_label)

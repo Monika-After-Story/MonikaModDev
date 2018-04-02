@@ -90,6 +90,12 @@ label vv_updates_topics:
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
 
+        # (0.7.0 - 0.7.3) -> 0.7.4
+        updates.topics[vv0_7_4] = {
+            "monika_playerhappy": None,
+            "monika_bad_day": None
+        }
+
         # (0.6.1 - 0.6.3) -> 0.7.0
         changedIDs = {
             "monika_deleted": None,
