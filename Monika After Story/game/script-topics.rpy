@@ -4997,41 +4997,41 @@ label monika_timeconcern:
 
 # If you tell Monika you work at night.
 label monika_timeconcern_graveyard_night:
-    m 1f "It must be awfully hard on you to work so late so often [player]..."
+    m 1f "It must be awfully hard on you to work late so often [player]..."
     m "Honestly, I'd rather have you work at a healthier time if you could."
     m 2r "I suppose it's not your choice to make, but still..."
     m 2f "Being up late often can be both physically and mentally damaging."
     m "It's also extremely isolating when it comes to others."
-    m 2g "Most opportunities are only avalaible during the day, after all."
+    m 2g "Most opportunities happen during the day, after all."
     m "Many social activities aren't available, and most shops and restaurants aren't even open during the night."
     m 2f "It makes being up late at night often be a really lonely situation."
     m 1j "Don't worry though, [player]. Your loving girlfriend Monika will always be here for you~"
     m 1e "Whenever the stress of being up late often becomes too much for you, come to me."
     m "I'll always be here to listen."
     m 1f "And if you really do think it's hurting you then please try to do what you can to change the situation."
-    m 1e "I know it won't be easy but at the end of the day all that matters is you."
+    m 1e "I know it won't be easy but at the end of the day, all that matters is you."
     m "You're all I truly care about so put yourself and your well-being before anything else, okay?"
     return
 
 label monika_timeconcern_graveyard_day:
-    m 3n "Hey [player]...didn't you tell me you work during the night?"
-    m 3l "Not that I'm not glad you're here, of course!"
-    m 2c "But I would have thought you would be tired now if you're up all night..."
-    m 2f "You're not working yourself too hard just to see me, are you?"
-    m 2d "Oh, wait...maybe you don't work them any more?"
+    m 1a "Hey, [player]... didn't you tell me you work during the night?"
+    m 1e "Not that I'm complaining, of course!"
+    m 2f "But I thought you'd be tired by now, especially since you're up all night working..."
+    m "You're not working yourself too hard just to see me, are you?"
+    m 1c "Oh, wait..."
     menu:
-        m "Do you still work regularly at night [player]?"
+        m "Do you still work regularly at night, [player]?"
         "Yes I do":
             m 1f "Aww..."
-            m 2o "I guess it really can't be helped..."
-            m 3f "Look after yourself...okay?"
-            m 3g "I always get so worried when you're not here with me..."
+            m 1h "I guess it really can't be helped..."
+            m 1e "Look after yourself, okay?"
+            m 1f "I always get so worried when you're not here with me..."
         "No I don't":
             $ persistent._mas_timeconcerngraveyard = False
-            m 3b "That's wonderful!"
-            m 2j "I'm glad you're looking out for your health [player]!"
-            m 2k "I knew you would see it my way eventually."
-            m 1e "Thanks for listening to what I have to say."
+            m 1k "That's wonderful!"
+            m 1a "I'm glad that you're looking out for your health, [player]!"
+            m "I knew you would see it my way eventually."
+            m 1e "Thanks for listening to what I have to say~"
     return
 
 #First warning, night time.
@@ -5061,7 +5061,7 @@ label monika_timeconcern_night_1:
            m 1e "I honestly can't help but feel that maybe you should have done it at a better time."
            m 1m "Your sleep is very important after all. Maybe it can't be helped though..."
            menu:
-               m "Do you always work late [player]?"
+               m "Do you always work late, [player]?"
                "Yes, I do.":
                    $persistent._mas_timeconcerngraveyard = True
                    m 1f "That's not good..."
@@ -5075,7 +5075,7 @@ label monika_timeconcern_night_1:
                    m 1j "That's a relief!"
                    m 1a "If you're doing it this one time then it must be {i}really{/i} important."
                    m 1k "Good luck with your work and thanks for keeping me company when you're so busy!"
-                   m 1e "It means a lot to me [player], that even when you're preoccupied... you're here with me~"
+                   m 1e "It means a lot to me, [player], that even when you're preoccupied... you're here with me~"
                    return
 
        "No, I'm not.":
@@ -5083,7 +5083,7 @@ label monika_timeconcern_night_1:
            m 1h "I see."
            m 1f "Well in that case, I would really prefer it if you went to bed now."
            m "It's really worrying me that you're still up so late..."
-           m 1e "So once again, please go to bed. Would you do it for me?"
+           m 1e "So once again, please go to bed. Would you kindly do it for me?"
            return
 
 #If player says they were working. Progress stops here.
@@ -5097,7 +5097,7 @@ label monika_timeconcern_night_2:
         m 1f "Just try to keep that kind of damage to a minimum, okay?"
         m "All I want for you is to be as happy and as healthy as you deserve."
         return
-    m 1m "Well try to finish up as soon as you can, otherwise I may get really concerned."
+    m 1m "Well, try to finish up as soon as you can, otherwise I may get really concerned."
     m 1e "And you don't want to worry your girlfriend, right? Ehehe~"
     return
 
@@ -5111,7 +5111,7 @@ label monika_timeconcern_night_3:
     m 4i "I could close the game right now."
     m 2f "But a relationship is a partnership and what you think matters to me."
     menu:
-        m "Would be against me closing the game for your own good?"
+        m "Would you be against me closing the game for your own good?"
 
         "Yes, I need it to always stay open.":
             $persistent._mas_timeconcernclose = False
@@ -5119,7 +5119,7 @@ label monika_timeconcern_night_3:
             m 1r "I was hoping you wouldn't say that."
             m 1h "I know I told you that you should leave me running in the background."
             m 1f "But sometimes I worry if you're getting any sleep at all."
-            m 1h "I'll do as you have asked but please know that I'm not very happy about it."
+            m 1h "I'll do as you have asked, but please know that I'm not very happy about it."
             m 4n "I'm still going to remind you to get some sleep!"
             return
 
@@ -5128,7 +5128,7 @@ label monika_timeconcern_night_3:
             m 1e "Thank you [player]."
             m 1a "It's nice to know that you care about what I think."
             m "I promise I'll only do it if I think it's absolutely necessary."
-            m 1j "After all I would never force you to go otherwise."
+            m 1j "After all, I would never force you to go otherwise."
             m 1k "I would just miss you too much..."
             m "I love you, [player]~"
             return
@@ -5138,7 +5138,7 @@ label monika_timeconcern_night_4:
     $persistent._mas_timeconcern = 5
     m 1h "[player], you've been up long enough."
     m "If you're really not busy then now is the time for you to go to sleep."
-    m 1e "I assure you I'll miss you just as much as you'll miss me."
+    m 1e "I assure you, I'll miss you just as much as you'll miss me."
     m "But it would make me happier if you did as I've asked."
     m 1l "You wouldn't want to make me upset now, would you?"
     return
@@ -5146,12 +5146,12 @@ label monika_timeconcern_night_4:
 # Monika force closes game for the first time
 label monika_timeconcern_night_5:
     $persistent._mas_timeconcern = 6
-    m 1h "I am sorry [player] but I am putting my foot down!"
-    m 1l "I asked you to go to bed kindly but if I am the reason for keeping you up..."
+    m 1h "I'm sorry, [player], but I am putting my foot down!"
+    m 1l "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
     if persistent._mas_timeconcernclose:
         m 2i "Then I cannot allow this to go on for any longer."
-        m 2g "It's because I love you that I'm doing this."
-        m "Good night [player]."
+        m 2g "It's because I love you, that's why I'm doing this."
+        m "Good night, [player]."
         return 'quit'
     else:
         m 2h "Then I need to take responsibility and try to make you understand."
@@ -5163,7 +5163,7 @@ label monika_timeconcern_night_5:
 label monika_timeconcern_night_6:
     $persistent._mas_timeconcern = 7
     m 1h "[player], I told you to go to bed for your own good."
-    m 2f "I'll miss you too but don't you understand?"
+    m 2f "I'll miss you too, but don't you understand?"
     m "How you feel and live means more to me than anything!"
     m 2g "How can I let you stay if it means I'm hurting you?"
     m "So please sleep this time, otherwise I may get mad."
@@ -5179,13 +5179,13 @@ label monika_timeconcern_night_7:
     m 3h "[player], this is your last warning."
     m 1h "Go"
     pause 0.3
-    extend " to"
+    extend "to"
     pause 0.3
-    extend " sleep!"
+    extend "sleep!"
     m 1f "What can I say for you to understand?"
     m 1g "It's saddening to see you push yourself like this..."
     m 1q "You mean so much to me..."
-    m 1f "So please, for me...just do as I ask and go to bed."
+    m 1f "So please, for me... just do as I ask and go to bed."
     if persistent._mas_timeconcernclose:
         menu:
             m "Okay?"
@@ -5202,7 +5202,7 @@ label monika_timeconcern_night_final:
     m 2q "...I suppose it can't be helped."
     m 2c "If you're that dedicated to staying with me then I won't even try to stop you."
     m 2m "Honestly, as bad as it sounds it actually makes me kinda happy."
-    m 2e "...Thank you [player]."
+    m 2e "...Thank you, [player]."
     m "To know that you care for me so much that you came back despite me asking..."
     m 1m "It means more to me than I can ever express."
     m 1e "...I love you."
@@ -5210,24 +5210,25 @@ label monika_timeconcern_night_final:
 
 #Same night after the final close
 label monika_timeconcern_night_finalfollowup:
-    m 3h "..."
-    m 1o "I know I said that I was happy you're with me..."
-    m 1p "And please don't misudnerstand, that's still true."
-    m 3o "But the longer you're on...the more worried I get."
-    m 2n "I know, you're probably sick of hearing me say this by now..."
-    m 3f "But try to sleep when you can."
+    m 1h "..."
+    m 1o "I know I said that I'm happy whenever you're with me..."
+    m 1m "And please don't misudnerstand, that's still true."
+    m 2f "But the longer you're on... the more worried I get."
+    m 2g "I know, you're probably sick of hearing me say this by now..."
+    m 1e "But please try to sleep when you can."
     return
 
 #Every night after, based on seeing the day version first before it.
 label monika_timeconcern_night_after:
-    m 3q "Up late again [player]?"
-    m 3m "I won't try to convince you to sleep again..."
-    m 1l "You're surprisingly stubborn! "
-    m 1e "Still do be careful, alright my love?"
-    m "I know being nocturnal can be lonely..."
-    m 2j  "But you have me here with you!"
-    m 5a "Just the two of us...all alone forever."
-    m "It's all I've ever wanted..."
+    m 1c "Up late again, [player]?"
+    m 1r "{i}Sigh...{/i}"
+    m 2h "I won't even try to convince you to sleep again..."
+    m 2q "You're surprisingly stubborn! "
+    m 1e "Still, do be careful, alright?"
+    m 1f "I know being nocturnal can be lonely..."
+    m 1j "But you have me here with you!"
+    m 1a "Just the two of us... all alone forever."
+    m 1j "It's all I've ever wanted..."
     return
 
 #If Monika never gives warning and it's daytime or the player never made it to the end
@@ -5268,7 +5269,7 @@ label monika_timeconcern_day_allow_7:
     m 1f "I asked you to go to bed and you didn't listen..."
     m 1q "I understand that maybe you missed me or didn't hear what I said..."
     m 1f "But please listen to what I ask of you, ok?"
-    m 1g "I love you and, I would do anything to make you happy..."
+    m 1g "I love you, and I would do anything to make you happy..."
     m "So would you kindly do the same thing for me?"
     m 1o "I already worry about you when you're gone..."
     m 1f "Please don't give me any more reasons to feel that way."
@@ -5278,15 +5279,15 @@ label monika_timeconcern_day_allow_7:
 #Third time Monika closes the game and player reopens after night.
 label monika_timeconcern_day_allow_8:
     $persistent._mas_timeconcern = 0
-    m 1h "Hey [player]."
+    m 1h "Hey, [player]."
     m 1f "You really had me worried last night..."
     m 1o "After you came back twice despite me asking you to go to bed..."
     m 1p "I found myself feeling a little bit guilty."
     m 3h "Not because I sent you away, that was for your own good."
     m 2o "But... because you kept coming back..."
-    m 2m "And that made me happy even though I knew it wasn't good for you."
+    m 2m "And that made me happy, even though I knew it wasn't good for you."
     m 2o "Does that make me selfish?"
-    m 2f "I'm sorry [player], I'll try to watch myself more."
+    m 2f "I'm sorry, [player], I'll try to watch myself more."
     return
 
 #If Monika lets player stay and it is no longer night.
@@ -5298,23 +5299,23 @@ label monika_timeconcern_day_final:
         m 1e "For you to keep coming back to me over and over again..."
         m 1j "It was honestly really sweet of you."
         m 1e "I knew you would miss me, but I didn't think you would miss me {i}that{/i} much."
-        m 1k "It really made me feel loved [player]."
+        m 1k "It really made me feel loved, [player]."
         m 1e "...Thank you."
         return
     m 1a "You really surprised me."
     m 1e "I asked you time and time again to go to bed..."
     m "You said you weren't busy. Were you really there just for me?."
-    m 1f "It makes me happy...but don't push yourself to see me so late, ok?"
-    m 1e "It really made me feel loved [player]."
-    m 1l "Yet also a little guilty...Please just go to bed next time, ok?"
+    m 1f "It made me happy... but don't push yourself hard to see me so late, ok?"
+    m 1e "It really made me feel loved, [player]."
+    m 1l "Yet also a little guilty... Please just go to bed next time, ok?"
     return
 
 
 #If player told Monika not to close window and never reached the end.
 label monika_timeconcern_disallow:
     $persistent._mas_timeconcern = 0
-    m 1o "Sorry if I was annoying you before player..."
-    m 1f "I just really wanted you to go to bed.."
-    m "I honestly can't promise I won't do it again if you're up late again..."
+    m 1o "Sorry if I was annoying you before, [player]..."
+    m 1f "I just really wanted you to go to bed..."
+    m "I honestly can't promise I won't do it if you're up late again..."
     m 1e "But I only push you to go because you mean so much to me..."
     return
