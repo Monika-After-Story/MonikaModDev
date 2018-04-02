@@ -4948,7 +4948,7 @@ label monika_challenge:
     m "You can always come back to it after all."
     m "If you ever need motivation, just come to me."
     m 1j "I'd love to help you reach your goals."
-    m 1k "After all, you're my motivation in life~
+    m 1k "After all, you're my motivation in life~"
     return
 
 init 5 python:
