@@ -4916,7 +4916,7 @@ label monika_asks_family:
     return
     
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['random'],prompt="The beach.",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['misc'],prompt="The beach.",random=True))
 
 label monika_beach:
     m 1a "[player], have you ever been to the beach?"
@@ -4978,7 +4978,7 @@ label monika_beach:
 #    return
         
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",random=True))
 
 label monika_fastfood:
     m 1c "Hm? Do I like fast food?"
