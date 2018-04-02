@@ -514,6 +514,11 @@ label ch30_autoload:
             ]
 
     $ selected_greeting = None
+#Force topic back up if it gets late enough.
+    if persistent._mas_timeconcern >= 6 and persistent._mas_timeconern <= 9:
+        $scene_change = True
+        call spaceroom
+        jump monika_timeconcern
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
