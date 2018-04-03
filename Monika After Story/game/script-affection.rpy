@@ -183,7 +183,10 @@ init python:
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
     #Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
     #is equal to the amount of points it's added or removed in minutes.
-
+    
+    #Makes the game update affection on start-up so the global variables are defined at all times.
+    mas_updateAffectionExp()
+    
     #Monika's initial affection based on start-up.
     if not persistent._mas_long_absence:
         if persistent.sessions["last_session_end"] is not None:
@@ -201,7 +204,6 @@ init python:
                 mas_loseAffection(50)
             elif time_difference >= datetime.timedelta(weeks = 1):
                 mas_loseAffection(30)
-    persistent._mas_long_absence = False
     
 #Unlocked when affection level reaches 50.
 #This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
