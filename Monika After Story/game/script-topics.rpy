@@ -4977,7 +4977,7 @@ label monika_beach:
 #    m 1k "That's why I love you, [player]!"
 #    return
 
-ddefault persistent._mas_timeconcern = 0
+default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
 init 5 python:
