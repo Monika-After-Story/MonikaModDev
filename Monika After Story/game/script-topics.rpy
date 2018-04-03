@@ -5020,7 +5020,7 @@ label monika_fastfood:
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
     return        
 init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel=“monika_gender_preferences", category=["you"], prompt="What are your preferences?", random=true))
+    addEvent(Event(persistent.event_database, eventlabel=“monika_gender_preferences", conditional="persistant.gender == "F""))
 
 label monika_gender_preferences:
     m 1d "Hey, [player]?"
