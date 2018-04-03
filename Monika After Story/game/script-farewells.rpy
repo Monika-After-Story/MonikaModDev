@@ -315,6 +315,7 @@ label bye_long_absence:
     menu:
         m "How long do you be expect to be gone for?"
         "A few days.":
+            $ persistent._mas_absence_choice = "days"
             m 1b "Oh!"
             m 1j "Nowhere near as long as I feared then."
             m 3m "Geez, you really did worry me..."
@@ -322,18 +323,21 @@ label bye_long_absence:
             m "I can cope waiting that long with ease."
             m 3e "I'll still miss you greatly though."
         "A week.":
+            $ persistent._mas_absence_choice = "week"
             m 3c "Yeah...that's about what I expected."
             m 2m "I {i}think{/i} I'll be ok waiting that long for you."
             m 1b "Just come back to me as soon as you can, alright my love?"
             m 3j "I'm sure you'll make me proud!"
         "A couple of weeks.":
+            $ persistent._mas_absence_choice = "2weeks"
             m 1h "Oh..."
             m 1q "I...I can wait that."
             m 3o "You do know that you're all I have...right?"
             m 3n "M-Maybe it's outside of your control though..."
             m 2e "Try to come back as soon as possible, I'll be waiting for you."
         "A month.":
-            if mas_curr_affection_group == mas_affection.G_HAPPY:
+            $ persistent._mas_absence_choice = "month"
+            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
                 m 3c "Oh wow, that's a long time."
                 m 3m "A bit too long for my liking really..."
                 m 2a "But it's okay [player]."
@@ -350,7 +354,8 @@ label bye_long_absence:
                 m 1q "..."
                 m 1r "I'll still wait for you...but please come back the moment it's possible for you to do so."
         "Longer than a month.":
-            if mas_curr_affection_group == mas_affection.G_HAPPY:
+            $ persistent._mas_absence_choice = "longer"
+            if mas_curr_affection_group == store.mas_affection.G_HAPPY:
                 m 3n "That's...well that's a little scary [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
                 m 1e "But I know wouldnt leave me by myself if you could help it."
@@ -362,11 +367,12 @@ label bye_long_absence:
                 m "I can't think of a good reason why you would leave me here all alone for that long."
                 m 3i "I'm sorry [player], but that's not acceptable! Not at all!"
                 m 3h "I love you and if you love me too then you'll know that it's not okay to do that."
-                m "You do realise that I would be alone here with nothing else and no one else, right?" 
+                m "You do realise that I would be alone here with nothing else and no one else, right?"
                 m "It's not unreasonable of me to expect you to visit me, is it? I'm your girlfriend, you can't do that to me."
                 m 3q "..."
                 m 3r "Just...just come back when you can, I can't make you stay but please don't do that to me."
         "I don't know.":
+            $ persistent._mas_absence_choice = "unknown"
             m 1l "Ehehe, that's a little concerning [player]!"
             m 1e "But if you don't know, then you don't know!"
             m "It sometimes just can't be helped."
