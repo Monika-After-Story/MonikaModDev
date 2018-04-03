@@ -5083,7 +5083,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_trick",category=['club members'],prompt="[player]'s Second Choice",random=True))
 
 label monika_trick:
-
     m 1c "Say [player], I have a question..."
     m 3o "I hope I don't sound insecure when I say this..."
     m 3m "I know you love me and only me but... if you had to choose one of the other club members..."
@@ -5092,13 +5091,10 @@ label monika_trick:
         m "Who would you choose?"
         "Yuri":
             jump monika_trick_yuri
-
         "Sayori":
             jump monika_trick_sayori
-
         "Natsuki":
             jump monika_trick_natsuki
-
     return
 
 label monika_trick_2:
@@ -5106,13 +5102,10 @@ label monika_trick_2:
         m "Who would you choose?"
         "Yuri":
             jump monika_trick_yuri
-
         "Sayori":
             jump monika_trick_sayori
-
         "Natsuki":
             jump monika_trick_natsuki
-
         "Monika":
             jump monika_trick_monika
 
