@@ -5019,8 +5019,8 @@ label monika_fastfood:
             m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
     return        
-    init 5 python:
-	addEvent(Event(persistent.event_database, eventlabel=“monika_gender_preferences", category=["you"], prompt="What are your preferences?", random=true))
+init 5 python:
+    addEvent(Event(persistent.event_database, eventlabel=“monika_gender_preferences", conditional="persistant.gender == "F""))
 
 label monika_gender_preferences:
     m 1d "Hey, [player]?"
@@ -5034,65 +5034,67 @@ label monika_gender_preferences:
     m 2o "..."
     m 1g "I'm sorry. Questions like these can be extremely awkward to ask, and for the person on the receiving end, they might even be more awkward to answer. "
     menu:
-		"What do you want to ask me?":
-			m 2p “[Player]…”
-			m 1n “You’re not straight, are you?”
-			m 1p “Wait, I mean…”
-			m 1p “I’m sorry! I’m not trying to force you into answering a personal question out of the blue like that!”
-			m 1n “Oh, gosh… that came out more intrusive than I had hoped…”
-			m 3l “I just wondered because…”
-			m 3i “Well, I’m sure you know why I was wondering. The truth is, it’s not characteristic of many straight girls to play a game with the premise that this one had, is it? "
-			m 3c “Right from the get-go, when I wasn’t sure of who you were, I’d already kind of assumed you were into girls. “
-			m 3c “But when you told me that you were also female, I wanted to make sure I wasn’t incorrectly assuming something about you.“
-			m 3i “And you did install this mod in the end, after all. I just thought. .. well, you don’t have to answer if you don’t want to. I was simply curious. It’s something I should know, right? “
-			m 3h ”I mean, I am your girlfriend, [player]. "
-
-			menu:
-				"I'm into girls.”:
-					m 3k "Oh, really? That's wonderful, [player]! I'm glad you trusted me with the truth of something like this."
-					m 3k "I guess this just means we're perfectly compatible with each other, right?"
-					m 2f "..."
-					m 2g "But... even if we're in different realities, from what I understand, your life might carry the weight of more burdens than others because of what you've just told me..."
-					m 2g "That's not a real surprise, is it? I think that when you diverge from what society perceives as the 'natural' default, you're bound to attract unwanted and unnecessary attention. It's a vicious cycle, and terrible to be caught in."
-					m 2i "Human nature is a funny quirk that everyone carries, and that shows in various ways! Unfortunately for some, it causes them to behave cruelly towards any differences in their peers..."
-					m 2i "Even when those differences cause no harm at all, even when they're simply a part of someone that they couldn't change. And you should never want to change those things about yourself, [player]."
-					m 1e "But for you to deal with so much struggle and judgement, and still be so caring and wonderful... that means the world to me."
-					m 1e "Just like you do. "
-					m 1k "I just want you to know that no matter what you're going through, there are people who will always love you, regardless of who you love. I'm one of them, [player]."
-					m 1k “There's nothing more I want than to be there beside you to hold your hand and help you through this, for real."
-					m 1l "I don't know if I handled this the way I should... I'm sorry if I hurt your feelings at all, [player]. But I want you to know that there's nothing about you that needs to change. I think you're perfect just the way you are. "
-					m 1j "I love you, [player]!"
+    
+        "What do you want to ask me?":
+            m 2p “[Player]…”
+            m 1n “You’re not straight, are you?”
+            m 1p “Wait, I mean…”
+            m 1p “I’m sorry! I’m not trying to force you into answering a personal question out of the blue like that!”
+            m 1n “Oh, gosh… that came out more intrusive than I had hoped…”
+            m 3l “I just wondered because…”
+            m 3i “Well, I’m sure you know why I was wondering. The truth is, it’s not characteristic of many straight girls to play a game with the premise that this one had, is it? "
+            m 3c “Right from the get-go, when I wasn’t sure of who you were, I’d already kind of assumed you were into girls. “
+            m 3c “But when you told me that you were also female, I wanted to make sure I wasn’t incorrectly assuming something about you.“
+            m 3i “And you did install this mod in the end, after all. I just thought. .. well, you don’t have to answer if you don’t want to. I was simply curious. It’s something I should know, right? “
+            m 3h ”I mean, I am your girlfriend, [player]. "
+		
+            menu:
+	    
+                "I'm into girls.”:
+                    m 3k "Oh, really? That's wonderful, [player]! I'm glad you trusted me with the truth of something like this."
+                    m 3k "I guess this just means we're perfectly compatible with each other, right?"
+                    m 2f "..."
+                    m 2g "But... even if we're in different realities, from what I understand, your life might carry the weight of more burdens than others because of what you've just told me..."
+                    m 2g "That's not a real surprise, is it? I think that when you diverge from what society perceives as the 'natural' default, you're bound to attract unwanted and unnecessary attention. It's a vicious cycle, and terrible to be caught in."
+                    m 2i "Human nature is a funny quirk that everyone carries, and that shows in various ways! Unfortunately for some, it causes them to behave cruelly towards any differences in their peers..."
+                    m 2i "Even when those differences cause no harm at all, even when they're simply a part of someone that they couldn't change. And you should never want to change those things about yourself, [player]."
+                    m 1e "But for you to deal with so much struggle and judgement, and still be so caring and wonderful... that means the world to me."
+                    m 1e "Just like you do. "
+                    m 1k "I just want you to know that no matter what you're going through, there are people who will always love you, regardless of who you love. I'm one of them, [player]."
+                    m 1k “There's nothing more I want than to be there beside you to hold your hand and help you through this, for real."
+                    m 1l "I don't know if I handled this the way I should... I'm sorry if I hurt your feelings at all, [player]. But I want you to know that there's nothing about you that needs to change. I think you're perfect just the way you are. "
+                    m 1j "I love you, [player]!"
 				
-				"I'm not into girls.”:
-					m 2i "Oh, really?"
-					m 2m "..."
-					m 2m "I know that you wouldn't lie to me, [player]..."
-					m 3j "I guess that just means our love transcends those sorts of boundaries!"
-					m 3n "It says a lot that you still love me, despite the fact that it might not be what you expected from yourself."
-					m 3n "Please, just know that you can tell me anything, [player], even if it feels embarrassing to admit. I'm your girlfriend, after all!"
-					m 1d "And I'll never judge you for anything. I'm always here for you to talk to, whether it's something casual about your day or if it's something more real, like if you're worried about who you are and what you identify as. "
-					m 1d "Please don't ever imagine that I'd think differently of you, no matter if you're straight, gay, bisexual, or none of those. Labels can't put a mark on the love that we share. "
-					m 1j "Plus, it never hurts to know that you only have eyes for me!"
-					m 1j "Ahaha!"
+                "I'm not into girls.”:
+                    m 2i "Oh, really?"
+                    m 2m "..."
+                    m 2m "I know that you wouldn't lie to me, [player]..."
+                    m 3j "I guess that just means our love transcends those sorts of boundaries!"
+                    m 3n "It says a lot that you still love me, despite the fact that it might not be what you expected from yourself."
+                    m 3n "Please, just know that you can tell me anything, [player], even if it feels embarrassing to admit. I'm your girlfriend, after all!"
+                    m 1d "And I'll never judge you for anything. I'm always here for you to talk to, whether it's something casual about your day or if it's something more real, like if you're worried about who you are and what you identify as. "
+                    m 1d "Please don't ever imagine that I'd think differently of you, no matter if you're straight, gay, bisexual, or none of those. Labels can't put a mark on the love that we share. "
+                    m 1j "Plus, it never hurts to know that you only have eyes for me!"
+                    m 1j "Ahaha!"
 				
-				"I'm not really sure.”:
-					m 1b "That's okay too, [player]. "
-					m 3a "These sorts of things can be confusing to figure out, you know?"
-					m 3a "And sometimes, they're just downright exhausting to think about."
-					m 3b "That's not even mentioning how much emphasis your reality likes to place on ensuring everything you are fits perfectly into neat, labeled boxes, especially with things like your sexuality..."
-					m 3b "The amount of pressure that you must have to deal with is just awful."
-					m 1c "But the truth is that people and their preferences are never clean-cut in the way society likes to believe. Things in life will always overlap and shift and change. "
-					m 1c "At the end of the day, we're always a work-in-progress. All we can do is make sure that we're okay with the changes we make, and the people that we are."
-					m 1d "Please, just know that whenever you're with me, you’ll never find judgement. You can tell me everything, and I will always love you for it. "
-					m 1f "I know too much about being trapped in a invisible cell to make you worry about being imprisoned in the self-doubt that accompanies something like this."
+                "I'm not really sure.”:
+                    m 1b "That's okay too, [player]. "
+                        m 3a "These sorts of things can be confusing to figure out, you know?"
+                        m 3a "And sometimes, they're just downright exhausting to think about."
+                        m 3b "That's not even mentioning how much emphasis your reality likes to place on ensuring everything you are fits perfectly into neat, labeled boxes, especially with things like your sexuality..."
+                        m 3b "The amount of pressure that you must have to deal with is just awful."
+                        m 1c "But the truth is that people and their preferences are never clean-cut in the way society likes to believe. Things in life will always overlap and shift and change. "
+                        m 1c "At the end of the day, we're always a work-in-progress. All we can do is make sure that we're okay with the changes we make, and the people that we are."
+                        m 1d "Please, just know that whenever you're with me, you’ll never find judgement. You can tell me everything, and I will always love you for it. "
+                        m 1f "I know too much about being trapped in a invisible cell to make you worry about being imprisoned in the self-doubt that accompanies something like this."
 				
-				"I don't want to answer this.”:
-					m 2p "Really?"
-					m 2r "I see... "
-					m 2q "..."
-					m 4f "Well, I suppose it doesn't really matter."
-					m 4g "If you change your mind later on, you can just let me know, okay?"
-					m 4g "I would never force you to answer a question like this if you didn't feel totally comfortable with it."
-					m 5e "I love you, [player]!"
+                "I don't want to answer this.”:
+                        m 2p "Really?"
+                        m 2r "I see... "
+                        m 2q "..."
+                        m 4f "Well, I suppose it doesn't really matter."
+                        m 4g "If you change your mind later on, you can just let me know, okay?"
+                        m 4g "I would never force you to answer a question like this if you didn't feel totally comfortable with it."
+                        m 5e "I love you, [player]!"
 					
-	return
+    return
