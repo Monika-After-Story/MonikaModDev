@@ -514,7 +514,7 @@ label ch30_autoload:
             ]
 
     $ selected_greeting = None
-    
+
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
