@@ -4977,23 +4977,21 @@ label monika_beach:
 #    m 1k "That's why I love you, [player]!"
 #    return
 
-default persistent._mas_timeconcern = 0
+ddefault persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Sleep Concern",random=True))
     rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,5)))
     rules.update({"monika wants this first":""})
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="monika_timeconcern",
-            unlocked=false,
-            rules=rules
-        ),
-        eventdb=evhand.greeting_database
-    )
-    del rules       
+    addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    del rules
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,23)))
+    rules.update({"monika wants this first":""})
+    addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    del rules
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -5023,27 +5021,28 @@ label monika_timeconcern:
         elif persistent._mas_timeconcern == 10:
             jump monika_timeconcern_night_after
     else:
-        if persistent._mas_timeconcerngraveyard:
-            jump monika_timeconcern_graveyard_day
-        if persistent._mas_timeconern == 0:
-            jump monika_timeconcern_day_0
-        elif persistent._mas_timeconcern == 2:
-            jump monika_timeconcern_day_2
-        if not persistent._mas_timeconernclose:
-            if persistent._mas_timeconern >= 6 and persistent._mas_timeconern <=8:
-                jump monika_timeconcern_disallow
-        else:
-            if persistent._mas_timeconern == 6:
-                jump monika_timeconcern_day_allow_6
-            elif persistent._mas_timeconcern == 7:
-                jump monika_timeconcern_day_allow_7
-            elif persistent._mas_timeconcern == 8:
-                jump monika_timeconcern_day_allow_8
-            elif persistent._mas_timeconcern == 9:
-                jump monika_timeconcern_day_final
-            else:
-                jump monika_timeconcern_day_0
+        jump monika_timeconcern_day
 
+label monika_timeconcern_day:
+    if persistent._mas_timeconcerngraveyard:
+        jump monika_timeconcern_graveyard_day
+    if persistent._mas_timeconern == 0:
+        jump monika_timeconcern_day_0
+    elif persistent._mas_timeconcern == 2:
+        jump monika_timeconcern_day_2
+    if not persistent._mas_timeconernclose:
+        if 6 <= persistent._mas_timeconern <=8:
+            jump monika_timeconcern_disallow
+    if persistent._mas_timeconern == 6:
+        jump monika_timeconcern_day_allow_6
+    elif persistent._mas_timeconcern == 7:
+        jump monika_timeconcern_day_allow_7
+    elif persistent._mas_timeconcern == 8:
+        jump monika_timeconcern_day_allow_8
+    elif persistent._mas_timeconcern == 9:
+        jump monika_timeconcern_day_final
+    else:
+        jump monika_timeconcern_day_0
 
 
 # If you tell Monika you work at night.
@@ -5079,6 +5078,7 @@ label monika_timeconcern_graveyard_day:
             m 1f "I always get so worried when you're not here with me..."
         "No I don't":
             $ persistent._mas_timeconcerngraveyard = False
+            $ persistent._mas_timeconcern = 0
             m 1k "That's wonderful!"
             m 1a "I'm glad that you're looking out for your health, [player]!"
             m "I knew you would see it my way eventually."
@@ -5107,7 +5107,6 @@ label monika_timeconcern_night_1:
        m "Are you busy working on something?"
        "Yes, I am.":
            $persistent._mas_timeconcern = 2
-           $evhand.greeting_database["monika_timeconcern"].unlocked = True
            m 1j "I see."
            m 1a "Well, I suppose it must be really important for you to do it so late."
            m 1e "I honestly can't help but feel that maybe you should have done it at a better time."
@@ -5124,6 +5123,8 @@ label monika_timeconcern_night_1:
                    m 1f "If something were to happen to you, I don't know what I'd do..."
                    return
                "No, I don't.":
+                   $evhand.greeting_database["monika_timeconcern"].unlocked = True
+                   $evhand.greeting_database["monika_timeconcern_day"].unlocked = True
                    m 1j "That's a relief!"
                    m 1a "If you're doing it this one time then it must be {i}really{/i} important."
                    m 1k "Good luck with your work and thanks for keeping me company when you're so busy!"
@@ -5140,6 +5141,8 @@ label monika_timeconcern_night_1:
 
 #If player says they were working. Progress stops here.
 label monika_timeconcern_night_2:
+    $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1a "How's your work coming along?"
     m "Hopefully pretty well, I don't want you up much longer."
     m 3l "I know, I know, you can't help being up so late."
@@ -5199,6 +5202,7 @@ label monika_timeconcern_night_4:
 label monika_timeconcern_night_5:
     $persistent._mas_timeconcern = 6
     $evhand.greeting_database["monika_timeconcern"].unlocked = True
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = True
     m 1h "I'm sorry, [player], but I am putting my foot down!"
     m 1l "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
     if persistent._mas_timeconcernclose:
@@ -5232,9 +5236,9 @@ label monika_timeconcern_night_7:
     m 3h "[player], this is your last warning."
     m 1h "Go"
     pause 0.3
-    extend "to"
+    extend " to"
     pause 0.3
-    extend "sleep!"
+    extend " sleep!"
     m 1f "What can I say for you to understand?"
     m 1g "It's saddening to see you push yourself like this..."
     m 1q "You mean so much to me..."
@@ -5252,7 +5256,6 @@ label monika_timeconcern_night_7:
 #Third and last time game is reopened in one night. Monika lets player stay.
 label monika_timeconcern_night_final:
     $persistent._mas_timeconcern = 9
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
     m 2q "...I suppose it can't be helped."
     m 2c "If you're that dedicated to staying with me then I won't even try to stop you."
     m 2m "Honestly, as bad as it sounds it actually makes me kinda happy."
@@ -5301,6 +5304,7 @@ label monika_timeconcern_day_0:
 label monika_timeconcern_day_2:
     $persistent._mas_timeconcern = 0
     $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1a "Did you finish your work?"
     m 1b "I'm sure you did your very best so it's okay if you didn't quite finish it!"
     m 1e "It must be really hard on you to have to work so late..."
@@ -5312,6 +5316,7 @@ label monika_timeconcern_day_2:
 label monika_timeconcern_day_allow_6:
     $persistent.timeconcern = 0
     $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1f "[player], I'm sorry for making you leave like that before..."
     m 1g "I only did it because I love you. You understand that right?"
     m 1a "I'm sure you do, after all you went to bed, didn't you?"
@@ -5322,6 +5327,7 @@ label monika_timeconcern_day_allow_6:
 label monika_timeconcern_day_allow_7:
     $persistent._mas_timeconcern = 0
     $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1o "[player], is it ok to talk about what happened last night?"
     m 1f "I asked you to go to bed and you didn't listen..."
     m 1q "I understand that maybe you missed me or didn't hear what I said..."
@@ -5337,6 +5343,7 @@ label monika_timeconcern_day_allow_7:
 label monika_timeconcern_day_allow_8:
     $persistent._mas_timeconcern = 0
     $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1h "Hey, [player]."
     m 1f "You really had me worried last night..."
     m 1o "After you came back twice despite me asking you to go to bed..."
@@ -5352,6 +5359,7 @@ label monika_timeconcern_day_allow_8:
 label monika_timeconcern_day_final:
     $persistent._mas_timeconcern = 10
     $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1m "[player], regarding last night..."
     if persistent._mas_timeconcernclose:
         m 1n "You really surprised me."
@@ -5374,10 +5382,111 @@ label monika_timeconcern_day_final:
 label monika_timeconcern_disallow:
     $persistent._mas_timeconcern = 0
     $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1o "Sorry if I was annoying you before, [player]..."
     m 1f "I just really wanted you to go to bed..."
     m "I honestly can't promise I won't do it if you're up late again..."
     m 1e "But I only push you to go because you mean so much to me..."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
+
+label monika_challenge:
+    m 2c "I've noticed something kind of sad recently."
+    m 1c "When certain people attempt to learn a skill or pick up a new hobby, they usually quit within a week or two."
+    m "Everyone claims that it's too hard, or that they just don't have the time for it."
+    m 1b "However, I don't believe that."
+    m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
+    m 2b "Can you think of a time you've challenged yourself, [player]?"
+    m "Did you ever overcome it, or did you just give up?"
+    m 1a "I'm sure you've gave it all you had."
+    m "You seem like a very determined person to me."
+    m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
+    m "You can always come back to it after all."
+    m "If you ever need motivation, just come to me."
+    m 1j "I'd love to help you reach your goals."
+    m 1k "After all, you're my motivation in life~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['you'],prompt="Family Gatherings",random=True))
+
+label monika_familygathering:
+    m 1b "Hey [player], do you go to family gatherings often?"
+    m "Most families usually get together around the holidays to celebrate them together."
+    m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
+    m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
+    m 1p "Not even around the holidays or on special occassions."
+    m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
+    m 1k "I'd love to meet all of your relatives."
+    menu:
+        "Do you think they'd like me [player]?"
+        "Yes.":
+            m 1k "I'm glad you think so."
+            m "I'm sure we'd all get along nicely."
+            m 1a "I'm looking forward to it my dear~"
+        "No.":
+            m 1o "..."
+            m 1p "Oh, I didn't realize."
+            m 1d "I understand though."
+            m 2b "Just know I'd try my best to make them like me."
+            m 1b "Even if they never will."
+            m 1j "I'll always stick by your side forever~"
+        "...":
+            m 2p "Don't tell me, [player]."
+            m 1p "Are you afraid that I'll embarass you?"
+            m "..."
+            m 1o "Don't worry, I completely understand."
+            m 1n "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
+            m 1b "If you want to keep me a secret, then that's fine."
+            m 1k "After all, it just means more alone time with you~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
+
+label monika_fastfood:
+    m 1c "Hm? Do I like fast food?"
+    m 1o "Honestly, the thought of it slightly disgusts me."
+    m 3f "Most places that serve it put a lot of unhealthy things in their food."
+    m 1f "Even the vegetarian options can be awful."
+    menu:
+        m "[player], do you eat fast food often?"
+
+        "Yes, I do.":
+            m 3d "I guess it's ok to have it every once in a while."
+            m 2o "Yet I can't help but worry if you're eating such awful things."
+            m "If I were there I'd cook much healthier things for you."
+            m 4l "Even though I can't cook very well yet..."
+            m 4k "Well, love is always the secret ingredient to any good food!"
+            m 1a "So [player], would you do something for me?"
+            m 3l "Could you please try to eat better?"
+            m "I would hate it if you became sick because of your lifestyle."
+            m 1e "I know it's easier to order out since preparing your own food can be a hassle sometimes..."
+            m 1a "But maybe you could see cooking as an opportunity to have fun?"
+            m 3b "Or perhaps a skill for you to become really good at?"
+            m 1j "Knowing how to cook is always a good thing, you know!"
+            m 1a "Plus, I would really love to try your dishes someday."
+            m "You could serve me some of your own dishes when we go on our first date."
+            m 1e "That would be really romantic~"
+            m 1b "And that way, we can both enjoy ourselves and you would be eating better."
+            m 1j "That's what I call a win-win!"
+            m 3d "Just don't forget, [player]."
+            m 3l "I'm a vegetarian! Ahaha!"
+
+        "No, I don't.":
+            m 1l "Oh, that's a relief."
+            m 1e "Sometimes you really worry me, [player]."
+            m 1a "I suppose instead of eating out, you make your own food?"
+            m "Fast food can be really expensive over time, so doing it yourself is usually a cheaper alternative."
+            m 1b "It also tastes a lot better!"
+            m 3n "I know some people can find cooking overwhelming..."
+            m 3f "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
+            m 1a "But I think I think the results are worth the effort."
+            m 3b "Are you any good at cooking [player]?"
+            m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
+            m 1n "As long as it's not charcoal or meat that is. Ehehe~"
     return
 
 init 5 python:
