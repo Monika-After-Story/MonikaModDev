@@ -1632,6 +1632,7 @@ screen updater:
 
             vbox:
 
+                $ up_to_date = False
 
                 if u.state == u.ERROR:
                     text _("An error has occured:")
@@ -1645,6 +1646,7 @@ screen updater:
                 elif u.state == u.UPDATE_AVAILABLE:
                     if u.version == config.version:
                         $ u.can_proceed = False
+                        $ up_to_date = True
                         text _("Monika After Story is up to date.")
                     else:
                         text _("Version [u.version] is available. Do you want to install it?")
@@ -1682,8 +1684,11 @@ screen updater:
             if u.can_proceed:
                 textbutton _("Proceed") action u.proceed
 
-            if u.can_cancel:
+            if u.can_cancel and not up_to_date:
                 textbutton _("Cancel") action Return()
+
+            elif up_to_date:
+                textbutton _("Ok") action Return()
 
 style updater_button_text is navigation_button_text
 style updater_button is confirm_button

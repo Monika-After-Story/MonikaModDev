@@ -5,6 +5,99 @@ define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
 
+init -1 python:
+    # custom displayable for the updater screen
+    class MASUpdaterDisplayable(renpy.Displayable):
+        # this displayable will handle UpdateVersion on its own while enabling
+        # interactions
+        # in particular, we want a cancel button and a sensistive update
+        # button as well an Okay
+        # well, we'll figure it out as we go along.
+       
+        BUTTON_WIDTH = 120
+        BUTTON_HEIGHT = 35
+
+        FRAME_WIDTH = 500
+        FRAME_HEIGHT = 250
+
+        VIEW_WIDTH = 1280
+        VIEW_HEIGHT = 720
+
+        def __init__(self, update_link):
+            """
+            Constructor
+            """
+            self.update_link = update_link
+
+            # background tile
+            # hangman frame color (50% trans)
+            self.background = Solid(
+                "#FFE6F47F", 
+                xsize=self.VIEW_WIDTH,
+                ysize=self.VIEW_HEIGHT
+            )
+
+            # confirm screen (black, 70%)
+            self.confirm = Solid(
+                "#000000B2",
+                xsize=self.FRAME_WIDTH,
+                ysize=self.FRAME_HEIGHT
+            )
+
+            # ok button text
+            button_text_ok_idle = Text(
+                "Ok",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_text_ok_hover = Text(
+                "Ok",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+
+            # cancel button text
+            button_text_cancel_idle = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_text_cancel_hover = Text(
+                "Cancel",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+
+            # update button text
+            button_text_update_idle = Text(
+                "Update",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#000",
+                outlines=[]
+            )
+            button_text_update_hover = Text(
+                "Update",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#fa9",
+                outlines=[]
+            )
+
+            # calculate positions
+            self._confirm_x = self.
+
+
+
+
 label forced_update_now:
     $ mas_updater.force = True
 
@@ -47,13 +140,13 @@ label update_now:
 
 
         $ mas_updater.timeout = 10 # set timeout var
-        $ persistent._update_last_checked[update_link] = time.time()
-        $ updater.update(update_link, restart=True)
+#        $ persistent._update_last_checked[update_link] = time.time()
+#        $ updater.update(update_link, restart=True)
 
         # if we reach here, no update occured, probably
-        if mas_updater.timeout <= 0:
+#        if mas_updater.timeout <= 0:
             # timeout is empty, show a confirm screen
-            call screen dialog("Timeout occured while checking for updates. Try again later.", Return(True))
+#            call screen dialog("Timeout occured while checking for updates. Try again later.", Return(True))
             
 
 #        $timeout = 10 # 10 second timeout
