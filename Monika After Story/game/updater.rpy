@@ -47,6 +47,7 @@ label update_now:
 
 
         $ mas_updater.timeout = 10 # set timeout var
+        $ persistent._update_last_checked[update_link] = time.time()
         $ updater.update(update_link, restart=True)
 
         # if we reach here, no update occured, probably
