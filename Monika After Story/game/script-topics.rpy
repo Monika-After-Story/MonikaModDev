@@ -5023,11 +5023,11 @@ label monika_timeconcern:
         else:
             if persistent._mas_timeconern == 6:
                 jump monika_timeconcern_day_allow_6
-            elif persistent._mas_timeconern == 7:
+            elif persistent._mas_timeconcern == 7:
                 jump monika_timeconcern_day_allow_7
-            elif persistent._mas_timeconern == 8:
+            elif persistent._mas_timeconcern == 8:
                 jump monika_timeconcern_day_allow_8
-            elif persistent._mas_timeconern == 9:
+            elif persistent._mas_timeconcern == 9:
                 jump monika_timeconcern_day_final
             else:
                 jump monika_timeconcern_day_0
