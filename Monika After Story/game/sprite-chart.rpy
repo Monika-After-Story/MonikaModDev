@@ -538,3 +538,304 @@ image monika g2:
     repeat
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
+
+# Dynamic sprite builder
+# retrieved from a Dress Up Renpy Cookbook
+# https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
+
+init -2 python:
+    import renpy.store as store
+    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
+    from operator import attrgetter # we need this for sorting items
+    import math
+
+    # Monika character base
+    class MASMonika(renpy.store.object):
+        def __init__(self):
+            self.name="Monika"
+            self.haircut="default"
+            self.haircolor="default"
+            self.skin_hue=0 # monika probably doesn't have different skin color
+            self.lipstick="default" # i guess no lipstick
+            self.wearing=[] # no clothes is considered monika's school outfit 
+            self.hair_hue=0 # hair color?
+            
+        def remove(self,clothes):
+            if clothes in self.wearing:
+                self.wearing.remove(clothes)
+            return
+        
+        def wear(self,clothes):
+            self.wearing.append(clothes)
+            return
+        
+        def remove_all(self):
+            list = [item for item in self.wearing if item.can_strip]
+            if list!=[]:
+                for item in list:
+                    self.wearing.remove(item)
+            return
+
+    hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
+                        0, 1, 0, 0, 0,
+                        0, 0, 1, 0, 0,
+                        0, 0, 0, 1, 0 ])
+    hair_hue2 = im.matrix([ 3.734, 0, 0, 0, 0,
+                        0, 3.531, 0, 0, 0,
+                        0, 0, 1.375, 0, 0,
+                        0, 0, 0, 1, 0 ])
+    hair_hue3 = im.matrix([ 3.718, 0, 0, 0, 0,
+                        0, 3.703, 0, 0, 0,
+                        0, 0, 3.781, 0, 0,
+                        0, 0, 0, 1, 0 ])
+    hair_hue4 = im.matrix([ 3.906, 0, 0, 0, 0,
+                        0, 3.671, 0, 0, 0,
+                        0, 0, 3.375, 0, 0,
+                        0, 0, 0, 1, 0 ])
+    skin_hue1 = hair_hue1
+    skin_hue2 = im.matrix([ 0.925, 0, 0, 0, 0,
+                        0, 0.840, 0, 0, 0,
+                        0, 0, 0.806, 0, 0,
+                        0, 0, 0, 1, 0 ])
+    skin_hue3 = im.matrix([ 0.851, 0, 0, 0, 0,
+                        0, 0.633, 0, 0, 0,
+                        0, 0, 0.542, 0, 0,
+                        0, 0, 0, 1, 0 ])
+        
+    hair_huearray = [hair_hue1,hair_hue2,hair_hue3,hair_hue4]
+    
+    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
+            
+            # Define a clothing item : a name, a pic and a priority order for drawing...
+    
+    class MASclothing(renpy.store.object):
+        def __init__(self, name,pic,priority=10,bra=False,can_strip=True):
+            self.name=name
+            self.pic=pic
+            self.priority=priority
+
+            # this is for "Special Effects" like a scar or a wound, that 
+            # shouldn't be removed by undressing.
+            self.can_strip=can_strip 
+
+            self.bra=bra # probably not using this
+            
+     
+    # The main drawing function...
+    # NB : "art_path" is just there in case I change the internal structure of the art_assets directory, feel free to remove it and hardcode the path
+    def draw_clothing(
+            st,
+            at,
+            character,
+            art_path="",
+            mouth="normal",
+            eyes="normal_straight",
+            blushing=""
+        ):
+        
+        # Each item as a priority so we don't draw the blouse over the 
+        # vest, etc
+        list=sorted(character.wearing, key=attrgetter('priority')) 
+        
+        startpic= (
+            "im.MatrixColor(\""+
+            art_path+
+            "_skin_pale.png\",skin_huearray["
+            +str(character.skin_hue)+"])"
+        )
+        
+        # Following bit of optional code was there for "boobs physics", or adapt it to more SFW ideas. 
+        # I removed it for simplicity sake. The fundamental idea is that some clothing items affect the base body form we use
+        
+        #for item in list :
+        #    if item.bra :
+        #       startpic= art_path+"_skin_"+character.skin+"_bra.png"  
+        # First composite the body with the face expression (passed through the function)    
+        
+        command_line="LiveComposite((344,600),(0,0),"+startpic
+        command_line=command_line+",(0,0),\""+art_path+"_eye_pale_"+eyes+".png\""
+        command_line=command_line+",(0,0),\""+art_path+"_mouth_"+mouth+"_"+character.lipstick+".png\""
+        if blushing<>"":
+             command_line=command_line+",(0,0),\""+art_path+"_blushing_"+blushing+".png\""
+        command_line=command_line+",(0,0),im.MatrixColor(\""+art_path+"_hair_"+character.haircut+"_brunette.png\",hair_huearray["+str(character.hair_hue)+"])"
+        
+        # Then we draw each item the char is wearing.
+        for item in list:
+            command_line=command_line+",(0,0),\""+art_path+item.pic+"\""
+        command_line=command_line+")"
+        
+        return eval(command_line),None # Unless you're using animations, you can set refresh rate to None
+        
+init -1 python:
+            
+#    seraphim_jeans=clothing("Jeans","_jeans.png",5,True)
+#    seraphim_leather_skirt=clothing("Leather Skirt","_leather_skirt.png",10)
+#    seraphim_miniskirt_brown=clothing("Brown Mini Skirt","_miniskirt_brown.png",5)
+#    seraphim_fishnet=clothing("Fishnet","_fishnet.png",1)
+#    seraphim_stockings_black=clothing("Black Stockings","_stockings_black.png",1)
+#    seraphim_tshirt_white=clothing("White Tshirt","_tshirt_white.png",5,True)
+#    seraphim_tshirt_black=clothing("Black Tshirt","_tshirt_black.png",5,True)
+
+#    seraphim_visor=clothing("Visor","_visor.png",15)
+#    seraphim_power_armor=clothing("Power Armor","_power_armor.png",15)
+    
+#    seraphim_facial_scar=clothing("Facial Scar ","_facial_scar.png",1,False,False)
+    
+    # We sort the clothing by item type for the cloth select screen. Another option would be to create an inventory screen
+#    tops = ["",seraphim_tshirt_white,seraphim_tshirt_black,seraphim_power_armor]
+#    pants = ["",seraphim_leather_skirt,seraphim_miniskirt_brown,seraphim_jeans]
+#    stockings = ["",seraphim_stockings_black,seraphim_fishnet]
+#    eyewear = ["",seraphim_visor]
+    
+init :
+    $ seraphim = PCstats("Seraphim")
+    
+    image seraphim normal = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="normal",eyes="normal_straight")
+    image seraphim angry = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="grit",eyes="angry_straight")
+    image seraphim angry blushing = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="grit",eyes="angry_straight",blushing="light")
+
+    image side seraphim normal = LiveCrop((102,41,150,150),"seraphim normal")
+    image side seraphim angry = LiveCrop((102,41,150,150),"seraphim angry")
+    image side seraphim angry blushing = LiveCrop((102,41,150,150),"seraphim angry blushing")
+
+    define ser = Character(seraphim.name, color="#c8ffc8",image="seraphim",window_left_padding=150)
+
+
+label start:
+    show seraphim normal at left
+    ser "So I'll be part of this action game ? "
+    ser angry "Hey !? Why am I not wearing any clothes ?"
+    ser angry blushing "at least, I'm in underwear..."
+    "Oops, sorry about that... Let's give you a power armor"
+    $ seraphim.wear(seraphim_power_armor)
+    $ seraphim.wear(seraphim_visor)
+    ser normal "Much better! I though it was a different kind of game at first..."
+    "Never crossed my mind..."
+    "No, let's take a closer look"
+    ser angry "Not TOO close, please..."
+    hide seraphim
+    jump body_selection
+
+label body_selection:
+    show seraphim normal at right
+    menu:
+        ser " Do I look ok like this ?"
+        "Your skin should be":
+            menu:
+                "Deathly pale":
+                    $ seraphim.skin_hue=0
+                "Sorta pinkish...":
+                    $ seraphim.skin_hue=1
+                "Beach Tan":
+                    $ seraphim.skin_hue=2
+        "Your haircut should be":
+            menu:
+                "Long":
+                    $ seraphim.haircut="long"
+                "Short":
+                    $ seraphim.haircut="short"
+        "Your hair color should be":
+            menu:
+                "White":
+                    $ seraphim.haircolor="white"
+                "Blonde":
+                    $ seraphim.haircolor="blonde"
+                "Brunette":
+                    $ seraphim.haircolor="brunette"
+        "Increment Hue":
+            $seraphim.hair_hue=(seraphim.hair_hue+1 )%len(hair_huearray)
+            ser "[seraphim.hair_hue]"
+        "About your make up":
+            menu:
+                "No lipstick":
+                    $ seraphim.lipstick="nude"
+                "Red lipstick":
+                    $ seraphim.lipstick="red"
+                "Purple lipstick":
+                    $ seraphim.lipstick="purple"
+        "You're fine as you are":
+             jump clothes_selection_1
+    jump body_selection
+
+label clothes_selection_1:
+    ser normal "I like this power armor, I look badass"
+    "You know what's missing ? Some battle scars..."
+    ser angry "Ouch!!"
+    $ seraphim.wear(seraphim_facial_scar)
+    ser angry "That hurts !!"
+    $ seraphim.remove_all()
+    ser angry "Hey !Not again!!"
+    "It's only to demonstrate the remove function! Your scar is still in place, because it's defined as a 'permanent' clothing "
+    ser normal "Great..."
+    ser "Now can I get some clothes ?"
+    "Sure..."
+    $ index_e, index_t, index_p, index_s = 0,0,0,0
+    jump clothes_selection_2
+
+label clothes_selection_2:
+    show seraphim at center
+    $ seraphim.remove_all()
+    python:
+        if eyewear[index_e]!="":
+            seraphim.wear(eyewear[index_e])
+        if tops[index_t]!="":
+            seraphim.wear(tops[index_t])
+        if pants[index_p]!="":
+            seraphim.wear(pants[index_p])
+        if stockings[index_s]!="":
+            seraphim.wear(stockings[index_s])
+    
+        # display the arrows for changing the dress:
+        y = 50
+        ui.imagebutton("arrowL.png", "arrowL.png", clicked=ui.returns(("eyewear","L")), ypos=y, xpos=150)
+        ui.imagebutton("arrowR.png", "arrowR.png", clicked=ui.returns(("eyewear","R")), ypos=y, xpos=650)
+        y += 80
+        ui.imagebutton("arrowL.png", "arrowL.png", clicked=ui.returns(("tops","L")), ypos=y, xpos=150)
+        ui.imagebutton("arrowR.png", "arrowR.png", clicked=ui.returns(("tops","R")), ypos=y, xpos=650)
+        y += 80
+        ui.imagebutton("arrowL.png", "arrowL.png", clicked=ui.returns(("pants","L")), ypos=y, xpos=150)
+        ui.imagebutton("arrowR.png", "arrowR.png", clicked=ui.returns(("pants","R")), ypos=y, xpos=650)
+        y += 80     
+        ui.imagebutton("arrowL.png", "arrowL.png", clicked=ui.returns(("stockings","L")), ypos=y, xpos=150)
+        ui.imagebutton("arrowR.png", "arrowR.png", clicked=ui.returns(("stockings","R")), ypos=y, xpos=650)
+        
+        ui.textbutton("Return", clicked=ui.returns("goback"), xpos=50, ypos=50)
+    $ picked = ui.interact()
+    if picked == "goback":
+        jump startgame    
+    if picked[0]=="eyewear":
+        if picked[1] == "R":
+            $ index_e+=1
+        else:
+            $ index_e-=1
+        $ index_e = index_e %len(eyewear)
+        
+    if picked[0]=="tops":
+        if picked[1] == "R":
+            $ index_t+=1
+        else:
+            $ index_t-=1
+        $ index_t = index_t %len(tops)
+        
+    if picked[0]=="pants":
+        if picked[1] == "R":
+            $ index_p+=1
+        else:
+            $ index_p-=1
+        $ index_p = index_p %len(pants)
+        
+    if picked[0]=="stockings":
+        if picked[1] == "R":
+            $ index_s+=1
+        else:
+            $ index_s-=1
+        $ index_s = index_s %len(stockings)
+        
+    jump clothes_selection_2
+
+label startgame:
+    show seraphim at right
+    ser normal "That's what you want me to wear ?"
+    ser "Have fun..."
+
+
