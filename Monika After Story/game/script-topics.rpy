@@ -4993,12 +4993,7 @@ init 5 python:
         ),
         eventdb=evhand.greeting_database
     )
-    del rules
-    
-    if  6 =< persistent._mas_timeconcern <= 9:
-        
-    else:
-        
+    del rules       
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
