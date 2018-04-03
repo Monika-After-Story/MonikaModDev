@@ -5087,7 +5087,7 @@ label monika_trick:
     m 1c "Say [player], I have a question..."
     m 3o "I hope I don't sound insecure when I say this..."
     m 3m "I know you love me and only me but... if you had to choose one of the other club members..."
-    timer 10 action Jump(monika_trick_2)
+    show screen mas_background_timed_jump(10, "monika_trick_2")
     menu:
         m "Who would you choose?"
         "Yuri":
