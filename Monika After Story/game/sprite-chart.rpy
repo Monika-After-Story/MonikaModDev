@@ -576,6 +576,7 @@ init -2 python:
                     self.wearing.remove(item)
             return
 
+    # hues, probably not going to use these
     hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
                         0, 1, 0, 0, 0,
                         0, 0, 1, 0, 0,
@@ -622,16 +623,35 @@ init -2 python:
             
      
     # The main drawing function...
-    # NB : "art_path" is just there in case I change the internal structure of the art_assets directory, feel free to remove it and hardcode the path
+    # Monika consits of 5 parts when sitting and 2 parts when not:
+    # sitting:  (also has a separate night version)
+    #   4 parts of the face
+    #   1 parts of the body
+    # not sitting, most poses:
+    #   1 left part of body 
+    #   1 right part of body
+    #   1 face
+    # not sitting, pose 5:
+    #   1 part, full body
     def draw_clothing(
             st,
             at,
             character,
-            art_path="",
-            mouth="normal",
-            eyes="normal_straight",
+            sitting=True, 
+            expression="", 
             blushing=""
         ):
+        """
+        IN:
+            st - renpy related
+            at - renpy related
+            character - MASMonika character object
+            sitting - True if Monika is sitting down, false otherwise
+                (Default: True)
+            expression - expression code to display 
+                (Default: None, which is a default expression)
+            blushing - UNUSED
+        """
         
         # Each item as a priority so we don't draw the blouse over the 
         # vest, etc
