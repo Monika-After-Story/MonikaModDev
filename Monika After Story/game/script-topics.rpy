@@ -4982,16 +4982,6 @@ default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Sleep Concern",random=True))
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,5)))
-    rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
-    del rules
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,23)))
-    rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
-    del rules
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -5043,7 +5033,14 @@ label monika_timeconcern_day:
         jump monika_timeconcern_day_final
     else:
         jump monika_timeconcern_day_0
-
+        
+#Used at the end to lock the forced greeting.        
+label monika_timeconcern_lock:
+    if not persistent._mas_timeconcern == 10:
+        $persistent._mas_timeconcern = 0
+    $evhand.greeting_database["monika_timeconcern"].unlocked = False
+    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
+    return
 
 # If you tell Monika you work at night.
 label monika_timeconcern_graveyard_night:
@@ -5141,8 +5138,7 @@ label monika_timeconcern_night_1:
 
 #If player says they were working. Progress stops here.
 label monika_timeconcern_night_2:
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
+
     m 1a "How's your work coming along?"
     m "Hopefully pretty well, I don't want you up much longer."
     m 3l "I know, I know, you can't help being up so late."
@@ -5154,7 +5150,7 @@ label monika_timeconcern_night_2:
         return
     m 1m "Well, try to finish up as soon as you can, otherwise I may get really concerned."
     m 1e "And you don't want to worry your girlfriend, right? Ehehe~"
-    return
+    jump monika_timeconcern_lock
 
 #If player says he was not working. Monika asks the state of the game being open.
 label monika_timeconcern_night_3:
@@ -5302,32 +5298,23 @@ label monika_timeconcern_day_0:
 
 # Daytime, if player tells Monika they worked last night but don't work graveyards.
 label monika_timeconcern_day_2:
-    $persistent._mas_timeconcern = 0
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1a "Did you finish your work?"
     m 1b "I'm sure you did your very best so it's okay if you didn't quite finish it!"
     m 1e "It must be really hard on you to have to work so late..."
     m 1j "If you find it's a bit too much, feel free to come talk to me!"
     m 1k "I'll always be here for you."
-    return
+    jump monika_timeconcern_lock
 
 #First time Monika closes at night and player reopens during day without coming back.
 label monika_timeconcern_day_allow_6:
-    $persistent.timeconcern = 0
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1f "[player], I'm sorry for making you leave like that before..."
     m 1g "I only did it because I love you. You understand that right?"
     m 1a "I'm sure you do, after all you went to bed, didn't you?"
     m 1e "Thanks for respecting my wishes, it makes me happy that you listen to me."
-    return
+    jump monika_timeconcern_lock
 
 #Second time Monika closes at night and player then reopens during day.
 label monika_timeconcern_day_allow_7:
-    $persistent._mas_timeconcern = 0
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1o "[player], is it ok to talk about what happened last night?"
     m 1f "I asked you to go to bed and you didn't listen..."
     m 1q "I understand that maybe you missed me or didn't hear what I said..."
@@ -5337,13 +5324,10 @@ label monika_timeconcern_day_allow_7:
     m 1o "I already worry about you when you're gone..."
     m 1f "Please don't give me any more reasons to feel that way."
     m "Thank you for understanding."
-    return
+    jump monika_timeconcern_lock
 
 #Third time Monika closes the game and player reopens after night.
 label monika_timeconcern_day_allow_8:
-    $persistent._mas_timeconcern = 0
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1h "Hey, [player]."
     m 1f "You really had me worried last night..."
     m 1o "After you came back twice despite me asking you to go to bed..."
@@ -5353,13 +5337,11 @@ label monika_timeconcern_day_allow_8:
     m 2m "And that made me happy, even though I knew it wasn't good for you."
     m 2o "Does that make me selfish?"
     m 2f "I'm sorry, [player], I'll try to watch myself more."
-    return
+    jump monika_timeconcern_lock
 
 #If Monika lets player stay and it is no longer night.
 label monika_timeconcern_day_final:
     $persistent._mas_timeconcern = 10
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1m "[player], regarding last night..."
     if persistent._mas_timeconcernclose:
         m 1n "You really surprised me."
@@ -5368,26 +5350,22 @@ label monika_timeconcern_day_final:
         m 1e "I knew you would miss me, but I didn't think you would miss me {i}that{/i} much."
         m 1k "It really made me feel loved, [player]."
         m 1e "...Thank you."
-        return
+        jump monika_timeconcern_lock
     m 1a "You really surprised me."
     m 1e "I asked you time and time again to go to bed..."
     m "You said you weren't busy. Were you really there just for me?."
     m 1f "It made me happy... but don't push yourself hard to see me so late, ok?"
     m 1e "It really made me feel loved, [player]."
     m 1l "Yet also a little guilty... Please just go to bed next time, ok?"
-    return
-
+    jump monika_timeconcern_lock
 
 #If player told Monika not to close window and never reached the end.
 label monika_timeconcern_disallow:
-    $persistent._mas_timeconcern = 0
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
     m 1o "Sorry if I was annoying you before, [player]..."
     m 1f "I just really wanted you to go to bed..."
     m "I honestly can't promise I won't do it if you're up late again..."
     m 1e "But I only push you to go because you mean so much to me..."
-    return
+    jump monika_timeconcern_lock
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
