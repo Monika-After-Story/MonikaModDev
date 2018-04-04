@@ -540,6 +540,8 @@ label update_now:
             ui.add(MASUpdaterDisplayable(update_link))
             updater_selection = ui.interact()
 
+#        "hold up"
+
         if updater_selection > 0:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed

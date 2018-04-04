@@ -1047,7 +1047,7 @@ screen preferences():
 
             hbox:
                 textbutton _("Update Version"):
-                    action Jump('forced_update_now')
+                    action Function(renpy.call, 'forced_update_now')
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
