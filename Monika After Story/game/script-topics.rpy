@@ -5038,8 +5038,8 @@ label monika_timeconcern_day:
 label monika_timeconcern_lock:
     if not persistent._mas_timeconcern == 10:
         $persistent._mas_timeconcern = 0
-    $evhand.greeting_database["monika_timeconcern"].unlocked = False
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = False
+    $evhand.greeting_database["greeting_timeconcern"].unlocked = False
+    $evhand.greeting_database["greeting_timeconcern_day"].unlocked = False
     return
 
 # If you tell Monika you work at night.
@@ -5120,8 +5120,8 @@ label monika_timeconcern_night_1:
                    m 1f "If something were to happen to you, I don't know what I'd do..."
                    return
                "No, I don't.":
-                   $evhand.greeting_database["monika_timeconcern"].unlocked = True
-                   $evhand.greeting_database["monika_timeconcern_day"].unlocked = True
+                   $evhand.greeting_database["greeting_timeconcern"].unlocked = True
+                   $evhand.greeting_database["greeting_timeconcern"].unlocked = True
                    m 1j "That's a relief!"
                    m 1a "If you're doing it this one time then it must be {i}really{/i} important."
                    m 1k "Good luck with your work and thanks for keeping me company when you're so busy!"
@@ -5197,8 +5197,8 @@ label monika_timeconcern_night_4:
 # Monika force closes game for the first time
 label monika_timeconcern_night_5:
     $persistent._mas_timeconcern = 6
-    $evhand.greeting_database["monika_timeconcern"].unlocked = True
-    $evhand.greeting_database["monika_timeconcern_day"].unlocked = True
+    $evhand.greeting_database["greeting_timeconcern"].unlocked = True
+    $evhand.greeting_database["greeting_timeconcern"].unlocked = True
     m 1h "I'm sorry, [player], but I am putting my foot down!"
     m 1l "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
     if persistent._mas_timeconcernclose:
