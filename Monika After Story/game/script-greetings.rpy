@@ -951,3 +951,16 @@ label greeting_stillsicknorest:
     m 1e "Don't worry, I'll still be here when you wake up."
     m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
+    
+#Time Concern  
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,5)))
+    rules.update({"monika wants this first":""})
+    addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    del rules
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,23)))
+    rules.update({"monika wants this first":""})
+    addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    del rules
