@@ -955,12 +955,12 @@ label greeting_stillsicknorest:
 #Time Concern  
 init 5 python:
     rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,5)))
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,6)))
     rules.update({"monika wants this first":""})
     addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
     del rules
     rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,23)))
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
     rules.update({"monika wants this first":""})
     addEvent(Event(persistent.greeting_database,eventlabel="monika_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
     del rules
