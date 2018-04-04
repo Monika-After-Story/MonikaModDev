@@ -161,7 +161,7 @@ init -1 python:
 
             # top left, center button x y
             button_center_x = (
-                int((self.VIEW_WIDTH - self.BUTTON_WIDTH) / 2) +
+                int((self.FRAME_WIDTH - self.BUTTON_WIDTH) / 2) +
                 self._confirm_x
             )
             button_center_y = (
@@ -306,16 +306,26 @@ init -1 python:
             if self._state == self.STATE_CHECKING:
                 # checking for updates
                 
-                if time.time() - self._prev_time > self.TIMEOUT:
-                    # we've timed out!
-                    self._state = self.STATE_TIMEOUT
-                    return
-
                 # check for new version
                 latest_version = updater.UpdateVersion(
                     self.update_link,
                     0
                 )
+
+                if time.time() - self._prev_time > self.TIMEOUT:
+                    # we've timed out! (maybe)
+                    
+                    if latest_version == config.version:
+                        # we're actually on the current version.
+                        # this is a workaround because UpdateVersion does not
+                        # return None when no new update is available
+                        self._state = self.STATE_UPDATED
+
+                    else:
+                        # we actually timed out, i swear
+                        self._state = self.STATE_TIMEOUT
+
+                    return
 
                 if (
                         latest_version is not None and 
@@ -328,6 +338,7 @@ init -1 python:
                 elif (
                         latest_version is None and
                         self.update_link in persistent._update_version
+                        
                     ):
                     # if update_link is in the update version (which means
                     # we have checked for an update using this url before),
