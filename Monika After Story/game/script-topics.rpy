@@ -5121,7 +5121,7 @@ label monika_timeconcern_night_1:
                    return
                "No, I don't.":
                    $evhand.greeting_database["greeting_timeconcern"].unlocked = True
-                   $evhand.greeting_database["greeting_timeconcern"].unlocked = True
+                   $evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
                    m 1j "That's a relief!"
                    m 1a "If you're doing it this one time then it must be {i}really{/i} important."
                    m 1k "Good luck with your work and thanks for keeping me company when you're so busy!"
@@ -5198,7 +5198,7 @@ label monika_timeconcern_night_4:
 label monika_timeconcern_night_5:
     $persistent._mas_timeconcern = 6
     $evhand.greeting_database["greeting_timeconcern"].unlocked = True
-    $evhand.greeting_database["greeting_timeconcern"].unlocked = True
+    $evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
     m 1h "I'm sorry, [player], but I am putting my foot down!"
     m 1l "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
     if persistent._mas_timeconcernclose:
