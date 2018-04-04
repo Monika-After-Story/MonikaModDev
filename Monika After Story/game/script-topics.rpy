@@ -5230,11 +5230,7 @@ label monika_timeconcern_night_6:
 label monika_timeconcern_night_7:
     $persistent._mas_timeconcern = 8
     m 3h "[player], this is your last warning."
-    m 1h "Go"
-    pause 0.3
-    extend " to"
-    pause 0.3
-    extend " sleep!"
+    m 1h "Go{w=0.6} to{w=0.6} sleep!"
     m 1f "What can I say for you to understand?"
     m 1g "It's saddening to see you push yourself like this..."
     m 1q "You mean so much to me..."
