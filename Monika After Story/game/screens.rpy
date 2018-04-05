@@ -1047,7 +1047,7 @@ screen preferences():
 
             hbox:
                 textbutton _("Update Version"):
-                    action Function(renpy.call, 'forced_update_now')
+                    action Function(renpy.call_in_new_context, 'forced_update_now')
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
@@ -1632,24 +1632,12 @@ screen updater:
 
             vbox:
 
-                $ up_to_date = False
-
                 if u.state == u.ERROR:
                     text _("An error has occured:")
                 elif u.state == u.CHECKING:
-                    if mas_updater.timeout <= 0:
-                        $renpy.return_statement()
-
-                    else:
-                        $ mas_updater.timeout -= 1                   
-                        text _("Checking for updates.")
+                    text _("Checking for updates.")
                 elif u.state == u.UPDATE_AVAILABLE:
-                    if u.version == config.version:
-                        $ u.can_proceed = False
-                        $ up_to_date = True
-                        text _("Monika After Story is up to date.")
-                    else:
-                        text _("Version [u.version] is available. Do you want to install it?")
+                    text _("Version [u.version] is available. Do you want to install it?")
 
                 elif u.state == u.UPDATE_NOT_AVAILABLE:
                     text _("Monika After Story is up to date.")
@@ -1662,7 +1650,6 @@ screen updater:
                 elif u.state == u.FINISHING:
                     text _("Finishing up.")
                 elif u.state == u.DONE:
-                    $ persistent.closed_self = True
                     text _("The updates have been installed. Please reopen Monika After Story.")
                 elif u.state == u.DONE_NO_RESTART:
                     text _("The updates have been installed.")
@@ -1684,11 +1671,9 @@ screen updater:
             if u.can_proceed:
                 textbutton _("Proceed") action u.proceed
 
-            if u.can_cancel and not up_to_date:
+            if u.can_cancel:
                 textbutton _("Cancel") action Return()
 
-            elif up_to_date:
-                textbutton _("Ok") action Return()
 
 style updater_button_text is navigation_button_text
 style updater_button is confirm_button
