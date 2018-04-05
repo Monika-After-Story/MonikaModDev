@@ -959,13 +959,16 @@ init 5 python:
     rules.update({"monika wants this first":""})
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
     del rules
+    
+label greeting_timeconcern:
+    jump monika_timeconcern
+
+init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
     rules.update({"monika wants this first":""})
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
-    del rules
+    del rules  
     
-label greeting_timeconcern:
-    jump monika_timeconcern
 label greeting_timeconcern_day:
     jump monika_timeconcern_day
