@@ -6,6 +6,7 @@ define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
 
 init -1 python:
+
     # custom displayable for the updater screen
     class MASUpdaterDisplayable(renpy.Displayable):
         # this displayable will handle UpdateVersion on its own while enabling
@@ -18,6 +19,7 @@ init -1 python:
 
         import pygame # mouse stuff
         import time # for timeouts
+        import threading
        
         # CONSTANTS
         BUTTON_WIDTH = 120
@@ -43,6 +45,10 @@ init -1 python:
 
         # STATES
 
+        # prior to checking for an update. This is visiually the same as 
+        # checking for an update.
+        STATE_PRECHECK = -1
+
         # checknig for an update. This should also be the inital state
         # update button disabled, cancel button clickable
         STATE_CHECKING = 0
@@ -61,6 +67,17 @@ init -1 python:
         # we timed out.
         # Update button becomes try again and is enabled. Cancel button enabled
         STATE_TIMEOUT = 3
+
+        # in correct response from server
+        # didnt get an OK
+        # Update button becomes retry and is enabled. cancel button enabled
+        STATE_NO_OK = 4
+
+        # json decoding error
+        # didnt get a valid json from server
+        # Update button becomes retry and is enabled. cancel button enabled
+        STATE_BAD_JSON = 5
+
 
         def __init__(self, update_link):
             """
@@ -274,6 +291,20 @@ init -1 python:
                 color="#ffe6f4",
                 outlines=[]
             )
+            self._text_badresponse = Text(
+                "Server returned bad response.",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#ffe6f4",
+                outlines=[]
+            )
+            self._text_badjson = Text(
+                "Server returned bad JSON.",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#ffe6f4",
+                outlines=[]
+            )
 
             # grouped buttons
             self._checking_buttons = [
@@ -288,7 +319,7 @@ init -1 python:
             ]
 
             # inital state
-            self._state = self.STATE_CHECKING
+            self._state = self.STATE_PRECHECK
 
             # inital button states
             self._button_update.disable()
@@ -296,63 +327,134 @@ init -1 python:
             # inital time 
             self._prev_time = time.time()
 
+            # thread stuff
+            self._check_thread = None
+            self._thread_result = list()
+
 
         def _checkUpdate(self):
             """
             Does the purely logical update checking
             This will set the appropriate states
             """
-
+            
             if self._state == self.STATE_CHECKING:
                 # checking for updates
-                
-                # check for new version
-                latest_version = updater.UpdateVersion(
-                    self.update_link,
-                    0
+
+                # lists are thread-safe!
+                if len(self._thread_result) > 0:
+                    self._state = self._thread_result.pop()
+
+                    # special state processing
+                    if self._state == self.STATE_BEHIND:
+                        # this state needs to enable the update button
+                        self._button_update.enable()
+
+                elif time.time() - self._prev_time > self.TIMEOUT:
+                    # timeout!
+                    self._state = self.STATE_TIMEOUT
+
+            elif self._state == self.STATE_PRECHECK:
+                # pre check, launch the checking thread
+                # threading stuff for the web connection
+#                MASUpdaterDisplayable._sendRequest(self.update_link, self._thread_result)
+                self._thread_result = list() 
+                self._check_thread = threading.Thread(
+                    target=MASUpdaterDisplayable._sendRequest,
+                    args=(self.update_link, self._thread_result)
                 )
+                self._check_thread.start()
+                self._state = self.STATE_CHECKING
 
-                if time.time() - self._prev_time > self.TIMEOUT:
-                    # we've timed out! (maybe)
-                    
-                    if latest_version == config.version:
-                        # we're actually on the current version.
-                        # this is a workaround because UpdateVersion does not
-                        # return None when no new update is available
-                        self._state = self.STATE_UPDATED
 
-                    else:
-                        # we actually timed out, i swear
-                        self._state = self.STATE_TIMEOUT
+        # some function here
+        @staticmethod
+        def _sendRequest(update_link, thread_result):
+            """
+            Sends out the http request and returns a response and stuff
+            NOTE: designed to be called as a background thread
+            
+            ASSUMES:
+                _thread_result
+                    appends appropriate state for use
+            """
+            import httplib
+            import json
 
+            # separate the update link parts
+            # (its okay to access this, main thread does not)
+            _http, double_slash, url = update_link.partition("//")
+            url, single_slash, json_file = url.partition("/")
+            read_json = None
+            h_conn = httplib.HTTPConnection(
+                url 
+            )
+
+            try:
+                # make connection and attempt to connect
+                h_conn.connect()
+
+                # get the file we need
+                h_conn.request("GET", "/" + json_file)
+                server_response = h_conn.getresponse()
+
+                # check status
+                if server_response.status != 200:
+                    # didnt get an OK response
+                    thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
                     return
 
-                if (
-                        latest_version is not None and 
-                        latest_version != config.version
-                    ):
-                    # UpdateVersion returns the new version when update found
-                    self._state = self.STATE_BEHIND
-                    self._button_update.enable()
-                
-                elif (
-                        latest_version is None and
-                        self.update_link in persistent._update_version
-                        
-                    ):
-                    # if update_link is in the update version (which means
-                    # we have checked for an update using this url before),
-                    # and UpdateVersion returns None, then no update is
-                    # available
-                    self._state = self.STATE_UPDATED
+                # good status, lets get the value
+                read_json = server_response.read()
 
-                # otherwise
-                # UpdateVersion has either:
-                # - returned the current verison, which means its still
-                #   processing
-                # - returned None and has never contacted the server 
-                #   before (which means update_link is not in 
-                #   update_version)
+            except httplib.HTTPException:
+                # we assume a timeout / connection error
+                thread_result.append(MASUpdaterDisplayable.STATE_TIMEOUT)
+                return
+
+            finally:
+                h_conn.close()
+
+            # now to parse the json
+            try:
+                read_json = json.loads(read_json)
+
+            except ValueError:
+                # error decoding the json
+                thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
+                return
+
+            # now to get the pretty version
+            try:
+                _mod = read_json.get("Mod", None)
+
+            except:
+                # this wasnt a dict?!
+                thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
+                return
+
+            if _mod is None:
+                # json is missing Mod
+                thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
+                return
+
+            latest_version = _mod.get("pretty_version", None)
+
+            if latest_version is None:
+                # json is missing pretty version
+                thread_result.append(MASUpdaterDisplayable.STATE_BAD_JSON)
+                return
+
+            # okay we have a latest version, compare to the current version
+            if latest_version == config.version:
+                # same version
+                thread_result.append(MASUpdaterDisplayable.STATE_UPDATED)
+
+            else:
+                # new version found!
+                thread_result.append(MASUpdaterDisplayable.STATE_BEHIND)
+
+            return
 
 
         def render(self, width, height, st, at):
@@ -370,7 +472,10 @@ init -1 python:
             back = renpy.render(self.background, width, height, st, at)
             confirm = renpy.render(self.confirm, width, height, st, at)
 
-            if self._state == self.STATE_CHECKING:
+            if (
+                    self._state == self.STATE_CHECKING
+                    or self._state == self.STATE_PRECHECK
+                ):
                 # checking for updates
                 display_text = renpy.render(
                     self._text_checking,
@@ -405,13 +510,39 @@ init -1 python:
 
             else:
                 # timed out
-                display_text = renpy.render(
-                    self._text_timeout,
-                    width,
-                    height,
-                    st,
-                    at
-                )
+                # connection error
+                # json error
+
+                if self._state == self.STATE_TIMEOUT:
+                    # timeout  
+                    display_text = renpy.render(
+                        self._text_timeout,
+                        width,
+                        height,
+                        st,
+                        at
+                    )
+
+                elif self._state == self.STATE_NO_OK:
+                    # connection error
+                    display_text = renpy.render(
+                        self._text_badresponse,
+                        width,
+                        height,
+                        st,
+                        at
+                    )
+
+                else:
+                    # json error
+                    display_text = renpy.render(
+                        self._text_badjson,
+                        width,
+                        height,
+                        st,
+                        at
+                    )
+
                 display_buttons = self._timeout_buttons
 
             # render the buttons
@@ -451,7 +582,10 @@ init -1 python:
             """
             if ev.type in self.MOUSE_EVENTS:
 
-                if self._state == self.STATE_CHECKING:
+                if (
+                        self._state == self.STATE_CHECKING
+                        or self._state == self.STATE_PRECHECK
+                    ):
                     # checking for an update state
 
                     if self._button_cancel.event(ev, x, y, st):
@@ -478,6 +612,8 @@ init -1 python:
 
                 else:
                     # timeout state
+                    # connection error state
+                    # bad json state
 
                     if self._button_cancel.event(ev, x, y, st):
                         # cancel clicked! return -1
@@ -487,7 +623,7 @@ init -1 python:
                         # retry clicked! go back to checking
                         self._button_update.disable()
                         self._prev_time = time.time()
-                        self._state = self.STATE_CHECKING
+                        self._state = self.STATE_PRECHECK
 
                 renpy.redraw(self, 0)
 
