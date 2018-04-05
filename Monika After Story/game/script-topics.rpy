@@ -6340,10 +6340,11 @@ label monika_hair_down:
 
 ##### End monika hair topics
    
- init 5 python
+  
+init 5 python
      addEvent(Event(persistent.event_database,eventlabel="monika_feelinginsecured",category=['monika','romance'],prompt="Why do you love me?",pool=True))
      
- label monika_feelinginsecured:
+label monika_feelinginsecured:
      m 1f "[player]..."
      m 1g "Are you, by any chance...{w} feeling insecure?"
      m 2m "I can understand why you're asking such things out of the blue..."
