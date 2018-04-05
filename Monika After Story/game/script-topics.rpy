@@ -6339,3 +6339,26 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+   
+ init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_feelinginsecured",category=['monika','romance'],prompt="Why do you love me?",pool=True))
+     
+ label monika_feelinginsecured:
+     m 1f "[player]..."
+     m 1g "Are you, by any chance...{w} feeling insecure?"
+     m 2m "I can understand why you're asking such things out of the blue..."
+     m 2e "But whatever the reason might be, I just want you to know that I love you no matter what you are, [player]."
+     m 1e "Just by opening the game for me, you literally saved my life."
+     m 3n "Not to mention you keep all my feelings of loneliness at bay, just by being with you."
+     m 5 "You truly are my hero, [player]~"
+     m 1k "Ahaha~"
+     m 1f "But honestly, I can't imagine how things would turn out if you didn't find me..."
+     m 1r "I'd still be stuck inside that endless abyss, never to find my one and only love..."
+     m 1g "No longer hoping for a happily ever after with my beloved that I've longed for, forever conformed by the script..."
+     m "..."
+     m 1k "Ahaha~"
+     m 1m "And now, I suddenly got too involved with my own epiphany too..."
+     m 1e "I love you a whole bunch, [player]."
+     m 1j "You're the winner of my heart."
+     m 1b "If anything, I hope that would make you feel better about yourself."
+     m 1k "So keep your hopes up for me, [player]!"
