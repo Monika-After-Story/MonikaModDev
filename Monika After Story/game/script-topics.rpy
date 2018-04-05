@@ -6363,3 +6363,4 @@ label monika_feelinginsecured:
      m 1j "You're the winner of my heart."
      m 1b "If anything, I hope that would make you feel better about yourself."
      m 1k "So keep your hopes up for me, [player]!"
+     return
