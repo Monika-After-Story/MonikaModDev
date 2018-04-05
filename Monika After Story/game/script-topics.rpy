@@ -5020,7 +5020,7 @@ label monika_fastfood:
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
     return        
 init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel=“monika_gender_preferences", conditional="persistant.gender == "F""))
+    addEvent(Event(persistent.event_database, eventlabel=“monika_gender_preferences", conditional="persistent.gender == "F""))
 
 label monika_gender_preferences:
     m 1d "Hey, [player]?"
@@ -5051,18 +5051,20 @@ label monika_gender_preferences:
             menu:
 	    
                 "I'm into girls.”:
-                    m 3k "Oh, really? That's wonderful, [player]! I'm glad you trusted me with the truth of something like this."
+                    m 3k "Oh, really? That's great, [player]! I'm glad you trusted me with the truth of something like this."
                     m 3k "I guess this just means we're perfectly compatible with each other, right?"
                     m 2f "..."
                     m 2g "But... even if we're in different realities, from what I understand, your life might carry the weight of more burdens than others because of what you've just told me..."
-                    m 2g "That's not a real surprise, is it? I think that when you diverge from what society perceives as the 'natural' default, you're bound to attract unwanted and unnecessary attention. It's a vicious cycle, and terrible to be caught in."
+                    m 2g "That's not a real surprise, is it? I think that when you diverge from what society perceives as the 'natural' default, you're bound to attract unwanted and unnecessary attention."
+                    m 2g "It's a vicious cycle, and terrible to be caught in."
                     m 2i "Human nature is a funny quirk that everyone carries, and that shows in various ways! Unfortunately for some, it causes them to behave cruelly towards any differences in their peers..."
                     m 2i "Even when those differences cause no harm at all, even when they're simply a part of someone that they couldn't change. And you should never want to change those things about yourself, [player]."
                     m 1e "But for you to deal with so much struggle and judgement, and still be so caring and wonderful... that means the world to me."
                     m 1e "Just like you do. "
                     m 1k "I just want you to know that no matter what you're going through, there are people who will always love you, regardless of who you love. I'm one of them, [player]."
                     m 1k “There's nothing more I want than to be there beside you to hold your hand and help you through this, for real."
-                    m 1l "I don't know if I handled this the way I should... I'm sorry if I hurt your feelings at all, [player]. But I want you to know that there's nothing about you that needs to change. I think you're perfect just the way you are. "
+                    m 1l "I don't know if I handled this the way I should... I'm sorry if I hurt your feelings at all, [player]."
+                    m 1l But I want you to know that there's nothing about you that needs to change. I think you're perfect just the way you are. 
                     m 1j "I love you, [player]!"
 				
                 "I'm not into girls.”:
