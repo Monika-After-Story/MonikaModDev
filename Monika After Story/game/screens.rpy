@@ -1047,7 +1047,7 @@ screen preferences():
 
             hbox:
                 textbutton _("Update Version"):
-                    action [SetVariable('check_wait',0), Jump('update_now')]
+                    action Function(renpy.call_in_new_context, 'forced_update_now')
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
@@ -1553,7 +1553,7 @@ style confirm_button_text is navigation_button_text:
 
 ##Updating screen
 
-screen update_check(ok_action,cancel_action,update_link,check_interval):
+screen update_check(ok_action,cancel_action,mode):
 
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
@@ -1571,16 +1571,22 @@ screen update_check(ok_action,cancel_action,update_link,check_interval):
             yalign .5
             spacing 30
 
-            $latest_version = updater.UpdateVersion(update_link, check_interval=check_interval)
-            if latest_version != None:
+            if mode == 0:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
                     xalign 0.5
-            elif not timeout:
+
+            elif mode == 1:
+                label _("No update available."):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            elif mode == 2:
                 label _('Checking for updates...'):
                     style "confirm_prompt"
                     xalign 0.5
             else:
+                # otherwise, we assume a timeout
                 label _('Timeout occured while checking for updates. Try again later.'):
                     style "confirm_prompt"
                     xalign 0.5
@@ -1589,11 +1595,11 @@ screen update_check(ok_action,cancel_action,update_link,check_interval):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Install") action [ok_action, SensitiveIf(latest_version)]
+                textbutton _("Install") action [ok_action, SensitiveIf(mode == 0)]
 
                 textbutton _("Cancel") action cancel_action
 
-    timer 10.0 action [SetVariable("timeout",True), renpy.restart_interaction]
+    timer 1.0 action Return("None")
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -1630,10 +1636,11 @@ screen updater:
                     text _("An error has occured:")
                 elif u.state == u.CHECKING:
                     text _("Checking for updates.")
-                elif u.state == u.UPDATE_NOT_AVAILABLE:
-                    text _("Monika After Story is up to date.")
                 elif u.state == u.UPDATE_AVAILABLE:
                     text _("Version [u.version] is available. Do you want to install it?")
+
+                elif u.state == u.UPDATE_NOT_AVAILABLE:
+                    text _("Monika After Story is up to date.")
                 elif u.state == u.PREPARING:
                     text _("Preparing to download the updates.")
                 elif u.state == u.DOWNLOADING:
@@ -1666,6 +1673,7 @@ screen updater:
 
             if u.can_cancel:
                 textbutton _("Cancel") action Return()
+
 
 style updater_button_text is navigation_button_text
 style updater_button is confirm_button
