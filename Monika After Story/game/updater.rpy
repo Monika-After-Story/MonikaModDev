@@ -682,4 +682,8 @@ label update_now:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
             $ updater.update(update_link, restart=True)
+
+        else:
+            # just update the last checked, regardless of issue
+            $ persistent._update_last_checked[update_link] = time.time()
     return
