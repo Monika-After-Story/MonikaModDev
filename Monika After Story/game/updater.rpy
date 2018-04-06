@@ -651,7 +651,7 @@ label update_now:
     #Make sure the update folder is where it should be
     if not updater.can_update():
         python:
-            try: renpy.file(config.basedir + "/update/current.json")
+            try: renpy.file("../update/current.json")
             except:
                 try: os.rename(config.basedir + "/game/update", config.basedir + "/update")
                 except: pass
