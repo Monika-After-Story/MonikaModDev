@@ -539,6 +539,170 @@ image monika g2:
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 
+init -1 python in mas_sprites:
+    # specific image generation functions
+
+    # main art path
+    MOD_ART_PATH = "mod_assets/monika/"
+    STOCK_ART_PATH = "monika/"
+
+    # delimiters
+    ART_DLM = "-"
+
+    ### other paths:
+    # H - hair (and body by connection)
+    # C - clothing
+    # T - sitting
+    # S - standing
+    # F - face parts
+    # A - accessories
+    C_MAIN = MOD_ART_PATH + "c/"
+    F_MAIN = MOD_ART_PATH + "f/"
+    A_MAIN = MOD_ART_PATH + "a/"
+
+    # sitting standing parts
+    T_MAIN = "sitting/"
+    S_MAIN = "standing/"
+
+    # facial parts
+    F_T_MAIN = F_MAIN + T_MAIN
+    F_S_MAIN = F_MAIN + S_MAIN
+    
+    # accessories TBD
+
+    ### End paths
+
+    # location stuff for some of the compsoite
+    LOC_REG = "(1280, 850)"
+    LOC_LEAN = "(1280, 742)"
+    LOC_Z = "(0, 0)"
+    LOC_STAND = "(960, 960)"
+
+    # composite stuff
+    I_COMP = "im.Composite"
+    L_COMP = "LiveComposite"
+    TRAN = "Transform"
+
+    # zoom
+    ZOOM = "zoom=1.25"
+
+    # Prefixes for files
+    PREFIX_BODY = "torso" + ART_DLM
+    PREFIX_ARMS = "arms" + ART_DLM
+    PREFIX_BODY_LEAN = "torso-leaning" + ART_DLM
+    PREFIX_FACE = "face" + ART_DLM
+    PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
+    PREFIX_EYEB = "eyebrows" + ART_DLM
+    PREFIX_EYES = "eyes" + ART_DLM
+    PREFIX_NOSE = "nose" + ART_DLM
+    PREFIX_MOUTH = "mouth" + ART_DLM
+    PREFIX_SWEAT = "sweatdrop" + ART_DLM
+    PREFIX_EMOTE = "emote" + ART_DLM
+    PREFIX_TEARS = "tears" + ART_DLM
+    PREFIX_EYEG = "eyebags" + ART_DLM
+    PREFIX_BLUSH = "blush" + ART_DLM
+
+    # suffixes
+    NIGHT_SUFFIX = ART_DLM + "n"
+    FILE_EXT = ".png"
+
+    def night_mode(isnight):
+        """
+        Returns the appropriate night string
+        """
+        if isnight:
+            return NIGHT_SUFFIX
+
+        return ""
+
+    # sprite maker functions
+    def _ms_arms(clothing, hair, arms, isnight):
+        """
+        Creates arms string
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            arms - type of arms
+            isnight - True will generate night string, false will not
+
+        RETURNS:
+            arms string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            C_MAIN,
+            clothing,
+            "/",
+            T_MAIN,
+            PREFIX_ARMS,
+            hair,
+            ART_DLM,
+            arms,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_torso(clothing, hair, isnight):
+        """
+        Creates torso string
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            isnight - True will generate night string, false will not
+
+        RETURNS:
+            torso string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            C_MAIN,
+            clothing,
+            "/",
+            T_MAIN,
+            PREFIX_BODY,
+            hair,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_torsoleaning(clothing, hair, lean, isnight):
+        """
+        Creates leaning torso string
+
+        IN:
+            clothing - type of clothing
+            hair - type of ahri
+            lean - type of leaning
+            isnight - True will genreate night string, false will not
+
+        RETURNS:
+            leaning torso string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            C_MAIN,
+            clothing,
+            "/",
+            T_MAIN,
+            PREFIX_BODY_LEAN,
+            lean,
+            ART_DLM,
+            hair,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+            
 # Dynamic sprite builder
 # retrieved from a Dress Up Renpy Cookbook
 # https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
@@ -620,7 +784,57 @@ init -2 python:
             self.can_strip=can_strip 
 
             self.bra=bra # probably not using this
-            
+          
+
+    def mas_drawsitting(
+            character,
+            body,
+            arms,
+            eyebrows,
+            eyes,
+            nose,
+            smile,
+            sweat=None
+        ):
+        """
+        returns the command to draw monika in regular sitting position
+
+        IN:
+            character - MASMonika object
+            body - selected body position
+            arms - selected arms
+            eyebrows - selected eyebrows
+            eyes - selected eyes
+            nose - selected nose
+            smile - selected smile
+            sweat - selected sweatdrop
+                (Default: None)
+
+        RETURNS:
+            cmd for creating this monika
+        """
+
+        if sweat is not None:
+            # sweat check
+            sweat_str = ',(0,0),"mod_assets/monika/face-{sweat}'
+
+        if morning_flag:
+            # morning time!
+            cmd = (
+                "Transform(" +
+                    "LiveComposite(" +
+                        "(1280, 850)," +
+                        "(0, 0)," +
+                        "im.Composite(" +
+                            "(1280, 850)," +
+                            "(0, 0)," +
+                            '"mod_assets/monika/{body}.png",' +
+                            "(0, 0)," +
+                            '"mod_assets/monika/arms-{arms}.png",' +
+                        ")," +
+                        "(0, 0)," +
+                        "im.
+
      
     # The main drawing function...
     # Monika consits of 5 parts when sitting and 2 parts when not:
