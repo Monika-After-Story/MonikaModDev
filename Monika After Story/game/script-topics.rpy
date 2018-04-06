@@ -3453,7 +3453,7 @@ label monika_surprise:
     m 3c "You know what? Maybe I should do it again..."
     m 1b "Yeah, that's a good idea."
     python:
-        try: renpy.file(config.basedir + "/surprise.txt")
+        try: renpy.file("../surprise.txt")
         except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
     m 2q "..."
     m 1j "Alright!"

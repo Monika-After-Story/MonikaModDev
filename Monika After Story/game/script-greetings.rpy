@@ -819,8 +819,7 @@ label greeting_youarereal:
     python:
         try:
             renpy.file(
-                config.basedir.replace("\\","/") +
-                "/characters/" + persistent.playername.lower() + ".chr"
+                "../characters/" + persistent.playername.lower() + ".chr"
             )
             persistent._mas_you_chr = True
         except:
