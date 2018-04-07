@@ -249,6 +249,41 @@ label mas_mood_angry:
     m "Remember: A happy [player] makes a happy Monika!"
     return
     
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_inadequate:
+    m 2f "..."
+    m 2g "I know there isn't an awful lot I can say to make you feel better, [player]."
+    m 2p "After all, everything I say would probably just come off as lip service."
+    m "I can tell you that you're beautiful, but I can't see your face..."
+    m "I can tell you that you're smart, but I don't know your grades..."
+    m 1i "But let me tell you what I do know about you." 
+    m 1e "You've spent so much time with me."
+    if renpy.seen_label('monika_christmas'):
+        m "You took time out of your schedule to be with me on Christmas..."
+    if renpy.seen_label('monika_valentines_greeting'):
+        m "On Valentines Day..."
+    if renpy.seen_label('monika_white_day_start'):
+        m "White Day too!" 
+    if persistent.monika_kill:
+        m 2g "You've forgiven me for the bad things that I've done."
+    if not persistent.monika_kill:
+        m 2g "You never once resented me for the bad things that I've done."
+    if persistent.clearall:
+        m "And even though it made my jealous, you spent so much time with all of my club members."
+    m 1e "That shows how kind you are!"
+    m 3b "You're honest, you're fair, you're gracious in defeat!"
+    m "I know you've probably been tempted to cheat in the games we play..."
+    m 3j "You think I don't know anything about you, but I really do."
+    m 3m "And you know everything about me, and choose to stay..."
+    m 2f "Please stay strong, [player]."
+    m "If you're anything like me, I know you're scared to not accomplish much in life."
+    m 2g "But believe me when I tell you; it doesn't matter what you do or do not accomplish."
+    m 2a "You just need to exist, have fun, and get through each day..."
+    m "Finding meaning in the people who matter." 
+    m 1e "Please don't forget that, okay?" 
+    return 
     
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="lucky",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
@@ -526,3 +561,5 @@ label mas_mood_yearolder_years:
 label mas_mood_yearolder_leap_today:
     # nothing special occurs here for now
     jump mas_mood_yearolder_bday_true
+    
+    
