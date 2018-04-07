@@ -606,6 +606,25 @@ init -1 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
+
+    def face_lean_mode(isleaning, lean):
+        """
+        Returns the appropriate face prefix depending on lean
+
+        IN:
+            isleaning - True means get the lean prefix, False means get the
+                regular prefix
+            lean - type of lean
+
+        RETURNS:
+            appropriate face prefix
+        """
+        if isleaning:
+            return "".join([PREFIX_FACE_LEAN, lean, ART_DLM])
+
+        return PREFIX_FACE
+
+
     def night_mode(isnight):
         """
         Returns the appropriate night string
@@ -640,6 +659,270 @@ init -1 python in mas_sprites:
             hair,
             ART_DLM,
             arms,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_body(clothing, hair, arms, isnight, isleaning, lean=""):
+        """
+        Creates body string
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            arms - type of arms
+            isnight - True will generate night string, false will not
+            isleaning - True will generate lean string, false will not
+            lean - type of lean
+                (Default: "")
+
+        RETURNS:
+            body string
+        """
+
+        # the parts of this string
+        parts = [
+            I_COMP,
+            "("
+        ]
+
+        if isleaning:
+            # leaning is a single parter
+            parts.append(",".join([
+                LOC_LEAN,
+                _ms_torsoleaning(clothing, hair, lean, isnight)
+            ]))
+
+        else:
+            # not leaning is a 2parter
+            parts.append(",".join([
+                LOC_REG,
+                _ms_torso(clothing, hair, isnight),
+                _ms_arms(clothing, hair, arms, isnight)
+            ]))
+
+        # add the rest of the parts
+        parts.append(")")
+
+        return "".join(parts)
+
+
+    def _ms_emote(emote, isnight, isleaning, lean=""):
+        """
+        Creates emote string
+
+        IN:
+            emote - type of emote
+            isnight - True will generate night string, false will not
+            isleaning - True will generate lean string, false will not
+            lean - type of lean
+                (Dfeualt: "")
+
+        RETURNS:
+            emote string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_EMOTE,
+            emote,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_eyebags(eyebags, isnight, isleaning, lean=""):
+        """
+        Creates eyebags string
+
+        IN:
+            eyebags - type of eyebags
+            isnight - True will generate night string, false will not
+            isleaning - True will generate lean string, False will not
+            lean - type of lean
+                (Dfeault: "")
+
+        RETURNS:
+            eyebags string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_EYEG,
+            eyebags,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_eyebrows(eyebrows, isnight, isleaning, lean=""):
+        """
+        Creates eyebrow string
+
+        IN:
+            eyebrows - type of eyebrows
+            isnight - True will generate night string, false will not
+            isleaning - True will generate lean string, False will not
+            lean - type of lean
+                (Default: "")
+
+        RETURNS:
+            eyebrows string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_EYEB,
+            eyebrows,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_eyes(eyes, isnight, isleaning, lean=""):
+        """
+        Creates eyes string
+
+        IN:
+            eyes - type of eyes
+            isnight - True will generate night string, false will not
+            isleaning - True will generate lean string, FAlse will not
+            lean - type of lean
+                (Default: "")
+
+        RETURNS:
+            eyes stirng
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_EYES,
+            eyes,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+            
+
+# TODO this later
+#    def _ms_face(eyebrows, eyes, nose, mouth, isnight, isleaning, lean=""
+
+
+    def _ms_nose(nose, isnight, isleaning, lean=""):
+        """
+        Creates nose string
+
+        IN:
+            nose - type of nose
+            isnight - True will genreate night string, false will not
+            isleaning - True will genreate lean sring, False will not
+            lean - type of lean
+                (Default: "")
+
+        RETURNS:
+            nose string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_NOSE,
+            nose,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_mouth(mouth, isnight, isleaning, lean=""):
+        """
+        Creates mouth string
+
+        IN:
+            mouth - type of mouse
+            isnight - True will generate night string, false will not
+            isleaning - True will genereate lean string, flase will not
+            lean - type of lean
+                (Default: "")
+
+        RETURNS:
+            mouth string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_MOUTH,
+            mouth,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_sweat(sweat, isnight, isleaning, lean=""):
+        """
+        Creates sweatdrop string
+    
+        IN:
+            sweat -  type of sweatdrop
+            isnight - True will generate night string, false will not
+            isleaning - True will generate lean string, false will not
+            lean - type of lean
+                (Defualt: "")
+
+        RETURNS:
+            sweatdrop string
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_SWEAT,
+            sweat,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_tears(tears, isnight, isleaning, lean=""):
+        """
+        Creates tear string
+
+        IN:
+            tears - type of tears
+            isnight - True will generate night string, false will not
+            isleaning - True will generate leaning string, false will not
+            lean - type of lean
+                (Default: "")
+
+        RETURNS:
+            tear strring
+        """
+        return "".join([
+            LOC_Z,
+            ',"',
+            F_T_MAIN,
+            face_lean_mode(isleaning, lean),
+            PREFIX_TEARS,
+            tears,
             night_mode(isnight),
             FILE_EXT,
             '"'
@@ -818,22 +1101,9 @@ init -2 python:
             # sweat check
             sweat_str = ',(0,0),"mod_assets/monika/face-{sweat}'
 
-        if morning_flag:
+#        if morning_flag:
             # morning time!
-            cmd = (
-                "Transform(" +
-                    "LiveComposite(" +
-                        "(1280, 850)," +
-                        "(0, 0)," +
-                        "im.Composite(" +
-                            "(1280, 850)," +
-                            "(0, 0)," +
-                            '"mod_assets/monika/{body}.png",' +
-                            "(0, 0)," +
-                            '"mod_assets/monika/arms-{arms}.png",' +
-                        ")," +
-                        "(0, 0)," +
-                        "im.
+
 
      
     # The main drawing function...
@@ -900,7 +1170,7 @@ init -2 python:
         
         return eval(command_line),None # Unless you're using animations, you can set refresh rate to None
         
-init -1 python:
+#init -1 python:
             
 #    seraphim_jeans=clothing("Jeans","_jeans.png",5,True)
 #    seraphim_leather_skirt=clothing("Leather Skirt","_leather_skirt.png",10)
