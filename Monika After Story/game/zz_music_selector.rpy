@@ -15,6 +15,7 @@ init -1 python in songs:
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
+    KAZOO_COVER = "Your Reality (Kazoo Cover)"
     NO_SONG = "None"
 
     # SONG FILEPATHS
@@ -28,6 +29,7 @@ init -1 python in songs:
     )
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
     FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
+    FP_KAZOO_COVER = "mod_assets/bgm/kazoo.ogg"
     FP_NO_SONG = None
 
 
@@ -126,6 +128,7 @@ init -1 python in songs:
             # Shoutout to Rune0n for this wonderful piano cover!
             music_choices.append((PIANO_COVER, FP_PIANO_COVER))
 
+            music_choices.append((KAZOO_COVER, FP_KAZOO_COVER))
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
             music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
             music_choices.append((PLAYWITHME_VAR6, FP_PLAYWITHME_VAR6))
