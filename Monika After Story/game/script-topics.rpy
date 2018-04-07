@@ -5070,7 +5070,7 @@ label monika_players_power:
     m 3b "Did you know [player], that you have more power over this game than I do?"
     m 3a "You have access to the game's codes and files."
     m 3a "You can change them however you wanted."
-    m 1a "Like having the characters act more realistic, change what we all say.'
+    m 1a "Like having the characters act more realistic, change what we all say."
     m 1a "Making alternate choices for the game, or even adding completely new mechanics."
     m 3b "I guess there is quite the appeal to video games."
     m 3b "With almost endless possibilities in a world, you can interact with."
