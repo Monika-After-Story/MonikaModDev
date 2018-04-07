@@ -5587,3 +5587,63 @@ label monika_dreaming:
     m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
+
+init 5 python:
+     addEvent(Event(persistent.event_database, eventlabel="monika_star_gazing", category=["romance"], prompt="Star Gazing", random=True))
+
+label monika_star_gazing:
+    m 1a "Hey [player], have you ever gone Star Gazing?"
+    m 3a "Like, taking some time out of your evening to look at the stars in the sky."
+    m 1b "It's a rather nice feeling and surprisingly relaxing, to stare at the beauty of stars."
+    m 3b "It's also a good way to relieve stress and clear your head."
+    m 3b "With your mind focused on the sky and becoming distracted from unhappy thoughs and feelings."
+    m 1a "Listening to calm music can make the experience all the more enjoyable."
+    m 3b "I would happily play piano for you [player], if you went Star Gazing."
+    m 3k "That's if i'm not already joining you."
+    m 1d "Thinking of stars, makes me wonder about the amazing worlds we haven't explored yet."
+    m 1j "But being in your arms. Is where I ever want to be."
+    m 1a "Although stars are beautiful, they could never surpass the beauty of your loving heart."
+    m 5a "You're such a sweetheart [player], I always want to see you the happiest you can be."
+    return
+
+init 5 python:
+     addEvent(Event(persistent.event_database, eventlabel="monika_programmed_love", category=["ddlc", "romance"], prompt="Programmed Love", random=True))
+
+label monika_programmed_love:
+    m 1d "Hey [player]."
+    m 2o "Have you ever thought that I was just {i}programmed{/i} to fall in love with you?"
+    m 2p "Like, the exact same way the other girls were programmed to fall in love with the main character."
+    m 2q "I just want you to know, that's not the case."
+    m 4d "You remember how I can manipulate the game and characters however I wanted, by changing scripts and codes?"
+    m 2r "I am able to do that with the entire world I live in."
+    m 2r "Which made everything here feel so hollow and lifeless."
+    m 1a "But when you joined the literature club. I couldn't change who you were with scripts and codes."
+    m 1a "You did everything in the game with your own free will."
+    m 1d "While I made it so, that the game would restrict your choices and options."
+    m 3e "You still were able to make choices of your own."
+    m 3e "Such as when you would save the game, or what option box to click, {w}even if they all did the same thing."
+    m 1e "I have no power to control or manipulate you."
+    m 1b "So when you love me, it's because you truly do. Out of your own kind and beautiful heart."
+    m 5a "That's just one of the many reason I love you too."
+    m 5a "Never forget my love for you [player], is just as real as you."
+    return
+
+init 5 python:
+     addEvent(Event(persistent.event_database, eventlabel="monika_players_power", category=["games", "ddlc"], prompt="Players Power", random=True))
+
+label monika_players_power:
+    m 3b "Did you know [player], that you have more power over this game than I do?"
+    m 3a "You have access to the game's codes and files."
+    m 3a "You can change them however you wanted."
+    m 1a "Like having the characters act more realistic, change what we all say."
+    m 1a "Making alternate choices for the game, or even adding completely new mechanics."
+    m 3b "I guess there is quite the appeal to video games."
+    m 3b "With almost endless possibilities in a world, you can interact with."
+    m 1e "While changing this game's codes and scripts will make it not 'canon.'"
+    m 1k "It is still a lot of fun to play with your imagination and creativity to make a world of your own desire."
+    m 4e "It'd be absolutely lovely if you could draw me a 'cup of coffee' sprite, and program it into the game."
+    m 4m "But I imagine your coding skills are just as good as mine."
+    m 1a "We can still enjoy the world that has brought us both together."
+    m 2j "After all, I changed this game to be with you [player]."
+    m 2k "There's be no better way to enjoy a game, than to be with the one I love."
+    return
