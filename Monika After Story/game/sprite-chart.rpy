@@ -1363,20 +1363,20 @@ init -2 python:
 #    stockings = ["",seraphim_stockings_black,seraphim_fishnet]
 #    eyewear = ["",seraphim_visor]
     
-init :
-    $ seraphim = PCstats("Seraphim")
+#init :
+#    $ seraphim = PCstats("Seraphim")
     
-    image seraphim normal = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="normal",eyes="normal_straight")
-    image seraphim angry = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="grit",eyes="angry_straight")
-    image seraphim angry blushing = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="grit",eyes="angry_straight",blushing="light")
+#    image seraphim normal = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="normal",eyes="normal_straight")
+#    image seraphim angry = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="grit",eyes="angry_straight")
+#    image seraphim angry blushing = DynamicDisplayable(draw_clothing,character=seraphim,art_path="seraphim/seraphim",mouth="grit",eyes="angry_straight",blushing="light")
 
-    image side seraphim normal = LiveCrop((102,41,150,150),"seraphim normal")
-    image side seraphim angry = LiveCrop((102,41,150,150),"seraphim angry")
-    image side seraphim angry blushing = LiveCrop((102,41,150,150),"seraphim angry blushing")
+#    image side seraphim normal = LiveCrop((102,41,150,150),"seraphim normal")
+#    image side seraphim angry = LiveCrop((102,41,150,150),"seraphim angry")
+#    image side seraphim angry blushing = LiveCrop((102,41,150,150),"seraphim angry blushing")
 
-    define ser = Character(seraphim.name, color="#c8ffc8",image="seraphim",window_left_padding=150)
+#    define ser = Character(seraphim.name, color="#c8ffc8",image="seraphim",window_left_padding=150)
 
-
+"""
 label start:
     show seraphim normal at left
     ser "So I'll be part of this action game ? "
@@ -1514,4 +1514,4 @@ label startgame:
     ser normal "That's what you want me to wear ?"
     ser "Have fun..."
 
-
+"""
