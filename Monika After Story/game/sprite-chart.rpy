@@ -1149,9 +1149,9 @@ init -1 python in mas_sprites:
             "/",
             T_MAIN,
             PREFIX_BODY_LEAN,
-            lean,
-            ART_DLM,
             hair,
+            ART_DLM,
+            lean,
             night_mode(isnight),
             FILE_EXT,
             '"'
