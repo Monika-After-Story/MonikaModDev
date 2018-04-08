@@ -689,17 +689,18 @@ init -1 python in mas_sprites:
         ])
 
 
-    def _ms_body(clothing, hair, arms, isnight, lean=None):
+    def _ms_body(clothing, hair, isnight, lean=None, arms=""):
         """
         Creates body string
 
         IN:
             clothing - type of clothing
             hair - type of hair
-            arms - type of arms
             isnight - True will generate night string, false will not
             lean - type of lean
                 (Default: None)
+            arms - type of arms
+                (Default: "")
 
         RETURNS:
             body string
@@ -961,6 +962,91 @@ init -1 python in mas_sprites:
             FILE_EXT,
             '"'
         ])
+
+
+    def _ms_sitting(
+            clothing, 
+            hair,
+            eyebrows,
+            eyes,
+            nose,
+            mouth,
+            isnight,
+            lean=None,
+            arms="",
+            eyebags=None,
+            sweat=None,
+            blush=None,
+            tears=None,
+            emote=None
+        ):
+        """
+        Creates sitting string
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            eyebrows - type of eyebrows
+            eyes - type of eyes
+            nose - type of nose
+            mouth - type of mouth
+            isnight - True will genreate night string, false will not
+            lean - type of lean
+                (Default: None)
+            arms - type of arms
+                (Default: "")
+            eyebags - type of eyebags
+                (Default: None)
+            sweat - type of sweatdrop
+                (Default: None)
+            blush - type of blush
+                (Default: None)
+            tears - type of tears
+                (Default: None)
+            emote - type of emote
+                (Default: None)
+
+        RETURNS:
+            sitting stirng
+        """
+        if lean:
+            loc_str = LOC_LEAN
+
+        else:
+            loc_str = LOC_REG
+
+        return "".join([
+            TRAN,
+            "(",
+            L_COMP,
+            "(",
+            loc_str,
+            ",",
+            LOC_Z,
+            ",",
+            _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
+            ",",
+            LOC_Z,
+            ",",
+            _ms_face(
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                isnight,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            ),
+            "),",
+            ZOOM,
+            ")"
+        ])
+
+
 
 
     def _ms_sweat(sweat, isnight, lean=None):
