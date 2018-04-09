@@ -571,7 +571,8 @@ init -1 python in mas_sprites:
     F_T_MAIN = F_MAIN
 #    F_S_MAIN = F_MAIN + S_MAIN
     
-    # accessories TBD
+    # accessories parts
+    A_T_MAIN = A_MAIN
 
     ### End paths
 
@@ -595,6 +596,8 @@ init -1 python in mas_sprites:
     PREFIX_BODY_LEAN = "torso-leaning" + ART_DLM
     PREFIX_FACE = "face" + ART_DLM
     PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
+    PREFIX_ACS = "acs" + ART_DLM
+    PREFIX_ACS_LEAN = "acs-leaning" + ART_DLM
     PREFIX_EYEB = "eyebrows" + ART_DLM
     PREFIX_EYES = "eyes" + ART_DLM
     PREFIX_NOSE = "nose" + ART_DLM
@@ -608,6 +611,22 @@ init -1 python in mas_sprites:
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
+
+
+    def acs_lean_mode(lean):
+        """
+        Returns the appropriate accessory prefix dpenedong on lean
+
+        IN:
+            lean - type of lean
+
+        RETURNS:
+            appropratie accessory prefix
+        """
+        if lean:
+            return "".join([PREFIX_ACS_LEAN, lean, ART_DLM])
+
+        return PREFIX_ACS
 
 
     def face_lean_mode(lean):
@@ -635,7 +654,65 @@ init -1 python in mas_sprites:
 
         return ""
 
+
     # sprite maker functions
+
+
+    def _ms_accessory(acs, isnight, issitting, lean=None):
+        """
+        Creates accessory string
+
+        IN:
+            acs - MASAccessory object
+            isnight - True will generate night string, false will not
+            issitting - True will use sitting pic, false will not
+            lean - type of lean
+                (Default: None)
+
+        RETURNS:
+            accessory string
+        """
+        if issitting:
+            acs_str = acs.sit
+
+        else:
+            acs_str = acs.stand
+
+        return "".join([
+            LOC_Z,
+            ',"',
+            A_T_MAIN,
+            acs_lean_mode(lean),
+            acs_str,
+            night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_accessorylist(acs_list, isnight, issitting, lean=None):
+        """
+        Creates accessory strings for a list of accessories
+
+        IN:
+            acs_list - list of MASAccessory object, in order of rendering
+            isnight - True will generate night string, false will not
+            issitting - True will use sitting pic, false will not
+            lean - type of lean
+                (Default: None)
+
+        RETURNS:
+            accessory string list
+        """
+        if len(acs_list) == 0:
+            return ""
+            
+        return "," + ",".join([
+            _ms_accessory(acs, isnight, issitting, lean=lean)
+            for acs in acs_list
+        ])
+
+
     def _ms_arms(clothing, hair, arms, isnight):
         """
         Creates arms string
@@ -1055,6 +1132,7 @@ init -1 python in mas_sprites:
             nose,
             mouth,
             isnight,
+            acs_list,
             lean=None,
             arms="",
             eyebags=None,
@@ -1074,6 +1152,7 @@ init -1 python in mas_sprites:
             nose - type of nose
             mouth - type of mouth
             isnight - True will genreate night string, false will not
+            acs_list - list of MASAccessory objects to draw
             lean - type of lean
                 (Default: None)
             arms - type of arms
@@ -1124,13 +1203,14 @@ init -1 python in mas_sprites:
                 tears=tears,
                 emote=emote
             ),
+            _ms_accessorylist(acs_list, isnight, True, lean=lean),
             "),",
             ZOOM,
             ")"
         ])
 
 
-    def _ms_standing(clothing, hair, head, left, right):
+    def _ms_standing(clothing, hair, head, left, right, acs_list):
         """
         Creates the custom standing string
         This is different than the stock ones because of image location
@@ -1141,6 +1221,7 @@ init -1 python in mas_sprites:
             head - type of head
             left - type of left side
             right - type of right side
+            acs_list - list of MASAccessory objects
 
         RETURNS:
             custom standing sprite
@@ -1156,11 +1237,12 @@ init -1 python in mas_sprites:
             _ms_right(clothing, hair, right),
             ",",
             _ms_head(clothing, hair, head),
+            _ms_accessorylist(acs_list, False, False),
             ")"
         ])
 
 
-    def _ms_standingstock(head, left, right):
+    def _ms_standingstock(head, left, right, acs_list):
         """
         Creates the stock standing string
         This is different then the custom ones because of image location
@@ -1171,6 +1253,7 @@ init -1 python in mas_sprites:
             head - type of head
             left - type of left side
             right - type of right side
+            acs_list - list of MASAccessory objects
 
         RETURNS:
             stock standing string
@@ -1197,6 +1280,7 @@ init -1 python in mas_sprites:
             STOCK_ART_PATH,
             head,
             FILE_EXT,
+            _ms_accessorylist(acs_list, False, False),
             '")'
         ])
 
@@ -1313,9 +1397,9 @@ init -1 python in mas_sprites:
 # https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
 
 init -2 python:
-    import renpy.store as store
-    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
-    from operator import attrgetter # we need this for sorting items
+#    import renpy.store as store
+#    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
+#    from operator import attrgetter # we need this for sorting items
     import math
 
     # Monika character base
@@ -1326,24 +1410,127 @@ init -2 python:
             self.haircolor="default"
             self.skin_hue=0 # monika probably doesn't have different skin color
             self.lipstick="default" # i guess no lipstick
-            self.wearing=[] # no clothes is considered monika's school outfit 
+            self.clothes = "def" # default clothes is school outfit
+            self.hair = "def" # default hair is the usual whtie ribbon
+            self.acs = [] # accesories
             self.hair_hue=0 # hair color?
-            
-        def remove(self,clothes):
-            if clothes in self.wearing:
-                self.wearing.remove(clothes)
-            return
+           
         
-        def wear(self,clothes):
-            self.wearing.append(clothes)
-            return
+        def change_clothes(self, new_cloth):
+            """
+            Changes clothes to the given cloth
+
+            IN:
+                new_cloth - new clothes to wear
+            """
+            self.clothes = new_cloth
+
         
-        def remove_all(self):
-            list = [item for item in self.wearing if item.can_strip]
-            if list!=[]:
-                for item in list:
-                    self.wearing.remove(item)
-            return
+        def change_hair(self, new_hair):
+            """
+            Changes hair to the given hair
+
+            IN:
+                new_hair - new hair to wear
+            """
+            self.hair = new_hair
+
+
+        def change_outfit(self, new_cloth, new_hair):
+            """
+            Changes both clothes and hair
+
+            IN:
+                new_cloth - new clothes to wear
+                new_hair - new hair to wear
+            """
+            self.change_clothes(new_cloth)
+            self.change_hair(new_hair)
+
+
+        def get_outfit(self):
+            """
+            Returns the current outfit
+
+            RETURNS:
+                tuple:
+                    [0] - current clothes
+                    [1] - current hair
+            """
+            return (self.clothes, self.hair)
+
+
+        def is_wearing_acs(self, accessory):
+            """
+            Checks if currently wearing the given accessory
+
+            IN:
+                accessory - accessory to check
+
+            RETURNS:
+                True if wearing accessory, false if not
+            """
+            return accessory in self.acs
+
+
+        def reset_all(self):
+            """
+            Resets all of monika
+            """
+            self.reset_clothes()
+            self.reset_hair()
+            self.remove_all_acs()
+
+
+        def remove_acs(self, accessory):
+            """
+            Removes the given accessory
+
+            IN:
+                accessory - accessory to remove
+            """
+            if accessory in self.acs:
+                self.acs.remove(accessory)
+
+
+        def remove_all_acs(self):
+            """
+            Removes all accessories
+            """
+            self.acs = list()
+
+
+        def reset_clothes(self):
+            """
+            Resets clothing to default
+            """
+            self.clothes = "def"
+
+
+        def reset_hair(self):
+            """
+            Resets hair to default
+            """
+            self.hair = "def"
+
+
+        def reset_outfit(self):
+            """
+            Resetse clothing and hair to default
+            """
+            self.reset_clothes()
+            self.reset_hair()
+
+       
+        def wear_acs(self, accessory):
+            """
+            Wears the given accessory
+
+            IN:
+                accessory - accessory to wear
+            """
+            self.acs.wear(accessory)
+        
 
     # hues, probably not going to use these
     hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
@@ -1376,191 +1563,141 @@ init -2 python:
     
     skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
             
-            # Define a clothing item : a name, a pic and a priority order for drawing...
-    
-    class MASclothing(renpy.store.object):
-        def __init__(self, name,pic,priority=10,bra=False,can_strip=True):
+   
+    # instead of clothes, these are accessories
+    class MASAccessory(renpy.store.object):
+        def __init__(self, 
+                name, 
+                sit,
+                stand=None,
+                priority=10,
+                can_strip=True
+            ):
             self.name=name
-            self.pic=pic
+            self.sit = sit
+            if stand is None:
+                stand = sit
+            self.stand = stand
             self.priority=priority
 
             # this is for "Special Effects" like a scar or a wound, that 
             # shouldn't be removed by undressing.
             self.can_strip=can_strip 
-
-            self.bra=bra # probably not using this
           
+        @staticmethod
+        def get_priority(acs):
+            """
+            Gets the priority of the given accessory
 
-    def mas_drawsitting(
-            character,
-            body,
-            arms,
-            eyebrows,
-            eyes,
-            nose,
-            smile,
-            sweat=None
-        ):
-        """
-        returns the command to draw monika in regular sitting position
-
-        IN:
-            character - MASMonika object
-            body - selected body position
-            arms - selected arms
-            eyebrows - selected eyebrows
-            eyes - selected eyes
-            nose - selected nose
-            smile - selected smile
-            sweat - selected sweatdrop
-                (Default: None)
-
-        RETURNS:
-            cmd for creating this monika
-        """
-
-        if sweat is not None:
-            # sweat check
-            sweat_str = ',(0,0),"mod_assets/monika/face-{sweat}'
-
-#        if morning_flag:
-            # morning time!
-
+            This is for sorting
+            """
+            return acs.priority
 
      
     # The main drawing function...
-    # Monika consits of 5 parts when sitting and 2 parts when not:
-    # sitting:  (also has a separate night version)
-    #   4 parts of the face
-    #   1 parts of the body
-    # not sitting, most poses:
-    #   1 left part of body 
-    #   1 right part of body
-    #   1 face
-    # not sitting, pose 5:
-    #   1 part, full body
-    def draw_clothing(
+    def mas_drawmonika(
             st,
             at,
             character,
-            sitting=True, 
-            expression="", 
-            blushing=""
+
+            # requried sitting parts
+            eyebrows,
+            eyes,
+            nose,
+            mouth,
+
+            # required standing parts
+            head,
+            left,
+            right,
+
+            # optional sitting parts
+            lean=None,
+            arms="",
+            eyebags=None,
+            sweat=None,
+            blush=None,
+            tears=None,
+            emote=None,
+
+            # optional standing parts
+            stock=True
         ):
         """
+        Draws monika dynamically
+        NOTE: custom standing stuff not ready for usage yet.
+        NOTE: the actual drawing of accessories happens in the respective
+            functions instead of here.
+        NOTE: because of how clothes, hair, and body is tied together,
+            monika can only have 1 type of clothing and 1 hair style
+            at a time.
+
         IN:
             st - renpy related
             at - renpy related
             character - MASMonika character object
-            sitting - True if Monika is sitting down, false otherwise
+            eyebrows - type of eyebrows (sitting)
+            eyes - type of eyes (sitting)
+            nose - type of nose (sitting)
+            mouth - type of mouth (sitting)
+            head - type of head (standing)
+            left - type of left side (standing)
+            right - type of right side (standing)
+            lean - type of lean (sitting)
+                (Default: None)
+            arms - type of arms (sitting)
+                (Default: "")
+            eyebags - type of eyebags (sitting)
+                (Default: None)
+            sweat - type of sweatdrop (sitting)
+                (Default: None)
+            blush - type of blush (sitting)
+                (Default: None)
+            tears - type of tears (sitting)
+                (Default: None)
+            emote - type of emote (sitting)
+                (Default: None)
+            stock - True means we are using stock standing, False means not
+                (standing)
                 (Default: True)
-            expression - expression code to display 
-                (Default: None, which is a default expression)
-            blushing - UNUSED
         """
         
-        # Each item as a priority so we don't draw the blouse over the 
-        # vest, etc
-        list=sorted(character.wearing, key=attrgetter('priority')) 
-        
-        startpic= (
-            "im.MatrixColor(\""+
-            art_path+
-            "_skin_pale.png\",skin_huearray["
-            +str(character.skin_hue)+"])"
-        )
-        
-        # Following bit of optional code was there for "boobs physics", or adapt it to more SFW ideas. 
-        # I removed it for simplicity sake. The fundamental idea is that some clothing items affect the base body form we use
-        
-        #for item in list :
-        #    if item.bra :
-        #       startpic= art_path+"_skin_"+character.skin+"_bra.png"  
-        # First composite the body with the face expression (passed through the function)    
-        
-        command_line="LiveComposite((344,600),(0,0),"+startpic
-        command_line=command_line+",(0,0),\""+art_path+"_eye_pale_"+eyes+".png\""
-        command_line=command_line+",(0,0),\""+art_path+"_mouth_"+mouth+"_"+character.lipstick+".png\""
-        if blushing<>"":
-             command_line=command_line+",(0,0),\""+art_path+"_blushing_"+blushing+".png\""
-        command_line=command_line+",(0,0),im.MatrixColor(\""+art_path+"_hair_"+character.haircut+"_brunette.png\",hair_huearray["+str(character.hair_hue)+"])"
-        
-        # Then we draw each item the char is wearing.
-        for item in list:
-            command_line=command_line+",(0,0),\""+art_path+item.pic+"\""
-        command_line=command_line+")"
-        
+        # accessories have a priority
+        acs_list=sorted(character.acs, key=MASAccessory.get_priority) 
+ 
+        # are we sitting or not
+        if is_sitting:
+            cmd = store.mas_sprites._ms_sitting(
+                character.clothing,
+                character.hair,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                not morning_flag,
+                acs_list,
+                lean=lean,
+                arms=arms,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            )
+
+        else: 
+        # TODO change this to an elif and else the custom stnading mode
+#        elif stock: 
+            # stock standing mode
+            cmd = store.mas_sprites._ms_standingstock(
+                head,
+                left,
+                right,
+                acs_list
+            )
+
+#        else:
+            # custom standing mode
+            
         return eval(command_line),None # Unless you're using animations, you can set refresh rate to None
         
-init 100 python:
-    def mas_test_sitting():
-        dd = {
-            "clothing": "def",
-            "hair": "def",
-            "eyebrows": "mid",
-            "eyes": "normal",
-            "nose": "def",
-            "mouth": "smile"
-        }
-
-        return [
-            store.mas_sprites._ms_sitting(
-                isnight=False,
-                arms="crossed",
-                **dd
-            ),
-            store.mas_sprites._ms_sitting(
-                isnight=True,
-                arms="crossed",
-                **dd
-            ),
-            store.mas_sprites._ms_sitting(
-                isnight=False,
-                lean="def",
-                **dd
-            ),
-            store.mas_sprites._ms_sitting(
-                isnight=True,
-                lean="def",
-                **dd
-            ),
-            store.mas_sprites._ms_sitting(
-                isnight=False,
-                arms="crossed",
-                eyebags="def",
-                sweat="def",
-                blush="def",
-                tears="def",
-                emote="def",
-                **dd
-            ),
-            store.mas_sprites._ms_sitting(
-                isnight=True,
-                arms="crossed",
-                eyebags="def",
-                sweat="def",
-                blush="def",
-                tears="def",
-                emote="def",
-                **dd
-            ),
-            store.mas_sprites._ms_sitting(
-                isnight=True,
-                lean="def",
-                eyebags="def",
-                sweat="def",
-                blush="def",
-                tears="def",
-                emote="def",
-                **dd
-            )
-        ]
-
-    def mas_supertest():
-        abc = open("test.log", "w")
-        tests = mas_test_sitting()
-
-        for line in tests:
-            abc.write(line + "\n")
-
-        abc.close()
