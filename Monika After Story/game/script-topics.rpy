@@ -5071,6 +5071,35 @@ label monika_beach:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_natsuki_letter",category=['club members'],prompt="Natsuki's Letter",random=True))
+label monika_natsuki_letter:
+    m 1c "You know, I was honestly surprised when Natsuki handed you that letter."
+    m "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
+    m "She’s probably the only one to mention that."
+    m 2f "I know people are afraid to call someone out, or confront them about their problem, but sometimes, suggesting a therapist can be the best course of action."
+    m 4g "It's a bad thing to put the burden on yourself, you know?" 
+    m 4c "As much as you want to help, it’s best to let a professional deal with it. "
+    m "I'm sure I've told you that before, but I need to make sure you’re aware of that."
+    m "How about you, [player]?"
+    menu:
+        m "Do you see a therapist?"
+
+        "Yes.":
+            m 1d "Oh, really?"
+            m 1f "Well, I hate that you don't feel well..."
+            m 1j "But I'm proud that you're working on getting better."
+            m 1a "It's really important to take care of your mental health, [player]."
+            m 1e "You accept you have a problem you need help with, and you're seeing someone about it. That's already half the battle."
+            m "I'm very proud of you for taking those steps."
+            m 1j "Just know that no matter what happens, I'll always be here for you~"
+
+        "No.":
+            m 1e "Well, I hope it's because you don't have to."
+            m 1a "If that ever changes, don't be shy!"
+            m 1j "But maybe I really am all the support you need? Ahaha!"
+    return
 
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
@@ -5556,7 +5585,7 @@ label monika_fastfood:
             m 3b "Are you any good at cooking [player]?"
             m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
-    return        
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc'],prompt="dreaming",random=True))
