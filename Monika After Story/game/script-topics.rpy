@@ -4935,7 +4935,7 @@ label monika_beach:
             m 1j "I can't wait, we can have a romantic walk by the shore for our first date~"
 
         "No.":
-            m 1e "That's alright, I mean what are the chances? Most people don't."
+            m 1e "That's alright. I mean, what are the chances? Most people don't."
             m 1k "That just means we'll make do by visiting one on an all-day trip!"
     m 1a "There's so many things we'll be able to do one day."
     m 1j "Just imagining the many sensations we could experience is kind of exciting!"
