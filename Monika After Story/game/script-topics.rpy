@@ -5616,6 +5616,7 @@ label monika_dreaming:
     m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_i_love_you" ,category=['romance'],prompt="how much do you love me?",random=True))
 
