@@ -549,6 +549,9 @@ init -1 python in mas_sprites:
     # delimiters
     ART_DLM = "-"
 
+    # important keywords
+    KW_STOCK_ART = "def"
+
     ### other paths:
     # H - hair (and body by connection)
     # C - clothing
@@ -559,14 +562,14 @@ init -1 python in mas_sprites:
     C_MAIN = MOD_ART_PATH + "c/"
     F_MAIN = MOD_ART_PATH + "f/"
     A_MAIN = MOD_ART_PATH + "a/"
+    S_MAIN = MOD_ART_PATH + "s/"
 
     # sitting standing parts
-    T_MAIN = "sitting/"
-    S_MAIN = "standing/"
+#    S_MAIN = "standing/"
 
     # facial parts
-    F_T_MAIN = F_MAIN + T_MAIN
-    F_S_MAIN = F_MAIN + S_MAIN
+    F_T_MAIN = F_MAIN
+#    F_S_MAIN = F_MAIN + S_MAIN
     
     # accessories TBD
 
@@ -652,7 +655,6 @@ init -1 python in mas_sprites:
             C_MAIN,
             clothing,
             "/",
-            T_MAIN,
             PREFIX_ARMS,
             hair,
             ART_DLM,
@@ -912,6 +914,60 @@ init -1 python in mas_sprites:
         ])
 
 
+    def _ms_head(clothing, hair, head):
+        """
+        Creates head string
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            head - type of head
+
+        RETURNS:
+            head string
+        """
+        # NOTE: untested
+        return "".join([
+            LOC_Z,
+            ',"',
+            S_MAIN,
+            clothing,
+            "/",
+            hair,
+            ART_DLM,
+            head,
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_left(clothing, hair, left):
+        """
+        Creates left side string
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            left - type of left side
+
+        RETURNS:
+            left side stirng
+        """
+        # NOTE UNTESTED
+        return "".join([
+            LOC_Z,
+            ',"',
+            S_MAIN,
+            clothing,
+            "/",
+            hair,
+            ART_DLM,
+            left,
+            FILE_EXT,
+            '"'
+        ])
+
+
     def _ms_mouth(mouth, isnight, lean=None):
         """
         Creates mouth string
@@ -959,6 +1015,33 @@ init -1 python in mas_sprites:
             PREFIX_NOSE,
             nose,
             night_mode(isnight),
+            FILE_EXT,
+            '"'
+        ])
+
+
+    def _ms_right(clothing, hair, right):
+        """
+        Creates right body string
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            right - type of right side
+
+        RETURNS:
+            right body string
+        """
+        # NOTE: UNTESTED
+        return "".join([
+            LOC_Z,
+            ',"',
+            S_MAIN,
+            clothing,
+            "/",
+            hair,
+            ART_DLM,
+            head,
             FILE_EXT,
             '"'
         ])
@@ -1047,6 +1130,75 @@ init -1 python in mas_sprites:
         ])
 
 
+    def _ms_standing(clothing, hair, head, left, right):
+        """
+        Creates the custom standing string
+        This is different than the stock ones because of image location
+
+        IN:
+            clothing - type of clothing
+            hair - type of hair
+            head - type of head
+            left - type of left side
+            right - type of right side
+
+        RETURNS:
+            custom standing sprite
+        """
+        # NOTE: UNTESTED
+        return "".join([
+            I_COMP,
+            "(",
+            LOC_STAND,
+            ",",
+            _ms_left(clothing, hair, left),
+            ",",
+            _ms_right(clothing, hair, right),
+            ",",
+            _ms_head(clothing, hair, head),
+            ")"
+        ])
+
+
+    def _ms_standingstock(head, left, right):
+        """
+        Creates the stock standing string
+        This is different then the custom ones because of image location
+
+        Also no night version atm.
+
+        IN:
+            head - type of head
+            left - type of left side
+            right - type of right side
+
+        RETURNS:
+            stock standing string
+        """
+        return "".join([
+            I_COMP,
+            "(",
+            LOC_STAND,
+            ",",
+            LOC_Z,
+            ',"',
+            STOCK_ART_PATH,
+            left,
+            FILE_EXT,
+            '",',
+            LOC_Z,
+            ',"',
+            STOCK_ART_PATH,
+            right,
+            FILE_EXT,
+            '",',
+            LOC_Z,
+            ',"',
+            STOCK_ART_PATH,
+            head,
+            FILE_EXT,
+            '")'
+        ])
 
 
     def _ms_sweat(sweat, isnight, lean=None):
@@ -1119,7 +1271,6 @@ init -1 python in mas_sprites:
             C_MAIN,
             clothing,
             "/",
-            T_MAIN,
             PREFIX_BODY,
             hair,
             night_mode(isnight),
@@ -1147,7 +1298,6 @@ init -1 python in mas_sprites:
             C_MAIN,
             clothing,
             "/",
-            T_MAIN,
             PREFIX_BODY_LEAN,
             hair,
             ART_DLM,
