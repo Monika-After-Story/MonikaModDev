@@ -5622,7 +5622,7 @@ label monika_gender_preferences_f:
     m "When you added this mod, you did tell me that you're a girl - assuming you were being serious, of course!"
     m 2j "Ahaha! I'm just teasing you, [player]. I know you would never lie to me about something like that!"
     if mcname.lower() == player.lower():
-        m 3b "Even though you shared the same name, your mannerisms were completely different.”
+        m 3b "Even though you shared the same name, your mannerisms were completely different."
     else:
         m 3b "Anyways, back to the differences... you two had different names, and totally different mannerisms!"
     m "Let's not even mention the fact that you're miles away from the type of person that he was... denser than a brick, and about as sensitive."
@@ -5636,7 +5636,7 @@ label monika_gender_preferences_f:
             m 2p "[player]…"
             m 1n "You’re not straight, are you?"
             m 1p "Wait, I mean…"
-            m “That sounded way too forward. I’m sorry! I’m not trying to startle you into answering a personal question out of the blue like that!"
+            m "That sounded way too forward. I’m sorry! I’m not trying to startle you into answering a personal question out of the blue like that!"
             m 1n "Oh, gosh… that came out more intrusive than I had hoped…"
             m 3l "I just wondered because…"
             m 3i "Well, I’m sure you know why I was wondering. The truth is, it’s not characteristic of many straight girls to play a game with the premise that this one had, is it?"
