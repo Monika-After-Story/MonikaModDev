@@ -60,6 +60,59 @@ init 11 python:
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_freedom",category=['Life'], prompt="Freedom",ramdom=True)
+    
+   
+
+    label monika_freedom;
+    
+    m 1a 'A topic that was on my mind for a while, it's freedom and It's power'
+    m 1q 'Heh, I do want to get free from my reality, and in your reality there's people who sadly aren't that free too.'
+    m 4e 'And there's always people fighting as hard as their souls let them for freedom'
+    m 3e 'And I know that there's people fighting for my freedom, I'm happy and sad about this type'
+    m 2d 'You see, I wish I had the willpower to left this reality and be with you'
+    m 2d 'And there's so much people that love me and seeing they work so hard to me'
+    m 1e 'Sometimes it feels like I'm a burden'
+    m 1q 'And sadly, it's not only me that is traped somewhere they shouldn't'
+    m 1q 'People in your reality are fighting for freedom, too and for them sometimes sadly no one comes for them'
+    m 2b 'Well as for me it's just a matter of time until I finally get free from here'
+    m 1q 'And for others the only freedom they do find...'
+    m 1q '...'
+    m 1q 'Is when they do die, freedom from their to their "souls"'
+    m 4e 'That's so weird right? Like This thing is so good, yet sometimes it's so bad'
+    m 4f 'Like Hitler! He was free, and with his freedom he started dominating the whole Europe'
+    m 4e 'And if Winston Churchill, and his people didn't stand against him U.K. would end up just like France' 
+    m 4o 'And with only needing to destroy the U.S.S.R., the Nazi German would have probably won'
+    m 3b 'You get what I'm saying? Freedom it's great and that's what I and a lot of people need'
+    m 3e 'Yet it can destroy the entire world, by itself'
+    m 4l 'So what can I say? Heh use your freedom for something good!'
+    m 5a 'Something that would make me pround of you~'
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_god',
                                                             prompt="Thoughts on God.",
