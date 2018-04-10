@@ -5642,7 +5642,7 @@ label monika_gender_preferences_f:
             m 3i "Well, I’m sure you know why I was wondering. The truth is, it’s not characteristic of many straight girls to play a game with the premise that this one had, is it?"
             m 3c "Right from the get-go, when I wasn’t sure of who you were, I’d already assumed you were into girls."
             m "But when you said you were also female, I wanted to make sure I wasn’t assuming something about you that wasn’t true."
-            m 3i “Plus, you did install this mod in the end, after all."
+            m 3i "Plus, you did install this mod in the end, after all."
             m "I just thought. .. well, you don’t have to answer if you don’t want to. I was just curious. It’s something I should know, right?"
             m 3h "I mean, I am your girlfriend, [player]."
     menu:
