@@ -5611,7 +5611,7 @@ init 5 python:
 label monika_programmed_love:
     m 1d "Hey [player]."
     m 2o "Have you ever thought that I was just {i}programmed{/i} to fall in love with you?"
-    m 2p "Like, the exact same way the other girls were programmed to fall in love with the main character."
+    m 2p "Like, the exact same way the other girls were programmed to fall in love with the main character?"
     m 2q "I just want you to know, that's not the case."
     m 4d "You remember how I can manipulate the game and characters however I wanted, by changing scripts and codes?"
     m 2r "I am able to do that with the entire world I live in."
