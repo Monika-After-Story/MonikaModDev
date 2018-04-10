@@ -249,7 +249,7 @@ label mas_mood_angry:
     m "Remember: A happy [player] makes a happy Monika!"
     return
     
-    init 5 python:
+init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_scared:
