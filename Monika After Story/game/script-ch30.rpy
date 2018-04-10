@@ -502,6 +502,9 @@ label ch30_autoload:
     # set the gender
     call set_gender from _autoload_gender
 
+    # call reset stuff
+    call ch30_reset
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
@@ -665,8 +668,17 @@ label ch30_loop:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
 
-                    if persistent._mas_monika_repeated_herself:
-                        sel_ev = monika_random_topics.pop(0)
+                    if mas_monika_repeated:
+                        # monika has reaached the reepated flow
+                        if persistent._mas_enable_random_repeats:
+                            sel_ev = monika_random_topics.pop(0)
+
+                        else:
+                            # otherwise we shouldnt be repeating
+                            monika_random_topics = list()
+                            mas_monika_repeated = False
+                            renpy.jump("post_pick_random_topic")
+
                     else:
                         sel_ev = renpy.random.choice(monika_random_topics)
                         monika_random_topics.remove(sel_ev)
@@ -692,6 +704,7 @@ label ch30_loop:
                     #   labels. Safe to do normal operation.
 
                     persistent._mas_monika_repeated_herself = True
+                    mas_monika_repeated = True
                     sel_ev = monika_random_topics.pop(0)
                     pushEvent(sel_ev)
                     persistent.random_seen += 1
@@ -703,6 +716,8 @@ label ch30_loop:
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
 
+label post_pick_random_topic:
+
     $_return = None
 
     jump ch30_loop
@@ -712,3 +727,20 @@ label ch30_loop:
 # monika, so we could probably throw in something here
 label ch30_end:
     jump ch30_main
+
+# label for things that may reset after a certain amount of time/conditions
+label ch30_reset:
+    python:
+        import datetime
+        today = datetime.date.today()
+
+    # reset mas mood bday
+    python:
+        if (
+                persistent._mas_mood_bday_last 
+                and persistent._mas_mood_bday_last < today
+            ):
+            persistent._mas_mood_bday_last = None
+            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
+            if mood_ev:
+                mood_ev.unlocked = True

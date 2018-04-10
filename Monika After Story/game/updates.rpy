@@ -246,6 +246,7 @@ label v0_7_4(version="v0_7_4"):
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True
 
+        persistent = updateTopicIDs(version)
 
     return
 
