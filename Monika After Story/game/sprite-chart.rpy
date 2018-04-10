@@ -749,7 +749,7 @@ init -1 python in mas_sprites:
         ])
 
 
-    def _ms_standingstock(head, left, right, acs_list):
+    def _ms_standingstock(head, left, right, acs_list, single=None):
         """
         Creates the stock standing string
         This is different then the custom ones because of image location
@@ -761,10 +761,28 @@ init -1 python in mas_sprites:
             left - type of left side
             right - type of right side
             acs_list - list of MASAccessory objects
+            single - type of single standing picture. 
+                (Defualt: None)
 
         RETURNS:
             stock standing string
         """
+        if single:
+            return "".join([
+                I_COMP,
+                "(",
+                LOC_STAND,
+                ",",
+                LOC_Z,
+                ',"',
+                STOCK_ART_PATH,
+                single,
+                FILE_EXT,
+                '"',
+                _ms_accessorylist(acs_list, False, False),
+                ")"
+            ])
+
         return "".join([
             I_COMP,
             "(",
@@ -787,8 +805,9 @@ init -1 python in mas_sprites:
             STOCK_ART_PATH,
             head,
             FILE_EXT,
+            '"',
             _ms_accessorylist(acs_list, False, False),
-            '")'
+            ")"
         ])
 
 
@@ -1129,6 +1148,7 @@ init -2 python:
 
             # optional standing parts
             stock=True
+            single=None
         ):
         """
         Draws monika dynamically
@@ -1167,6 +1187,8 @@ init -2 python:
             stock - True means we are using stock standing, False means not
                 (standing)
                 (Default: True)
+            single - type of single standing image (standing)
+                (Default: None)
         """
         
         # accessories have a priority
@@ -1175,7 +1197,7 @@ init -2 python:
         # are we sitting or not
         if is_sitting:
             cmd = store.mas_sprites._ms_sitting(
-                character.clothing,
+                character.clothes,
                 character.hair,
                 eyebrows,
                 eyes,
@@ -1200,13 +1222,14 @@ init -2 python:
                 head,
                 left,
                 right,
-                acs_list
+                acs_list,
+                single=single
             )
 
 #        else:
             # custom standing mode
             
-        return eval(command_line),None # Unless you're using animations, you can set refresh rate to None
+        return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
         
 #body poses
 image body_1 = im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-steepling.png")
@@ -1300,304 +1323,793 @@ image face_r_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-e
 image face_r_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedsad-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-small-n.png")
 
 # Monika
-image monika 1 = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_s"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_s_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-            )
-image monika 2 = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_s"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_s_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-            )
-image monika 3 = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_s"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_s_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-            )
-image monika 4 = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_s"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_s_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-            )
-image monika 5 = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5",(0,0),"face_a_l"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5_n",(0,0),"face_a_l_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/3a.png")
-            )
+define monika_chr = MASMonika()
 
-image monika 1a = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_a"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_a_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-            )
-image monika 1b = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_b"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_b_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/b.png")
-            )
-image monika 1c = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_c"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_c_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/c.png")
-            )
-image monika 1d = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_d"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_d_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/d.png")
-            )
-image monika 1e = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_e"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_e_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/e.png")
-            )
-image monika 1f = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_f"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_f_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/f.png")
-            )
-image monika 1g = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_g"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_g_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/g.png")
-            )
-image monika 1h = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_h"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_h_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/h.png")
-            )
-image monika 1i = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_i"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_i_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/i.png")
-            )
-image monika 1j = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_j"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_j_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/j.png")
-            )
-image monika 1k = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_k"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_k_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/k.png")
-            )
-image monika 1l = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_l"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_l_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/l.png")
-            )
-image monika 1m = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_m"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_m_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/m.png")
-            )
-image monika 1n = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_n"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_n_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/n.png")
-            )
-image monika 1o = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_o"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_o_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/o.png")
-            )
-image monika 1p = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_p"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_p_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/p.png")
-            )
-image monika 1q = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_q"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_q_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/q.png")
-            )
-image monika 1r = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1",(0,0),"face_r"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_1_n",(0,0),"face_r_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/1r.png", (0, 0), "monika/r.png")
-            )
+image monika 1 = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
 
-image monika 2a = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_a"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_a_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-            )
-image monika 2b = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_b"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_b_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/b.png")
-            )
-image monika 2c = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_c"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_c_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/c.png")
-            )
-image monika 2d = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_d"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_d_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/d.png")
-            )
-image monika 2e = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_e"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_e_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/e.png")
-            )
-image monika 2f = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_f"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_f_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/f.png")
-            )
-image monika 2g = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_g"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_g_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/g.png")
-            )
-image monika 2h = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_h"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_h_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/h.png")
-            )
-image monika 2i = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_i"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_i_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/i.png")
-            )
-image monika 2j = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_j"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_j_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/j.png")
-            )
-image monika 2k = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_k"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_k_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/k.png")
-            )
-image monika 2l = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_l"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_l_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/l.png")
-            )
-image monika 2m = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_m"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_m_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/m.png")
-            )
-image monika 2n = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_n"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_n_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/n.png")
-            )
-image monika 2o = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_o"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_o_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/o.png")
-            )
-image monika 2p = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_p"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_p_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/p.png")
-            )
-image monika 2q = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_q"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_q_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/q.png")
-            )
-image monika 2r = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2",(0,0),"face_r"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_2_n",(0,0),"face_r_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/1l.png", (0, 0), "monika/2r.png", (0, 0), "monika/r.png")
-            )
+image monika 2 = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
 
-image monika 3a = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_a"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_a_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/a.png")
-            )
-image monika 3b = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_b"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_b_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/b.png")
-            )
-image monika 3c = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_c"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_c_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/c.png")
-            )
-image monika 3d = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_d"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_d_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/d.png")
-            )
-image monika 3e = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_e"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_e_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/e.png")
-            )
-image monika 3f = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_f"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_f_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/f.png")
-            )
-image monika 3g = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_g"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_g_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/g.png")
-            )
-image monika 3h = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_h"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_h_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/h.png")
-            )
-image monika 3i = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_i"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_i_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/i.png")
-            )
-image monika 3j = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_j"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_j_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/j.png")
-            )
-image monika 3k = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_k"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_k_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/k.png")
-            )
-image monika 3l = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_l"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_l_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/l.png")
-            )
-image monika 3m = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_m"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_m_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/m.png")
-            )
-image monika 3n = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_n"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_n_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/n.png")
-            )
-image monika 3o = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_o"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_o_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/o.png")
-            )
-image monika 3p = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_p"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_p_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/p.png")
-            )
-image monika 3q = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_q"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_q_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/q.png")
-            )
-image monika 3r = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3",(0,0),"face_r"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_3_n",(0,0),"face_r_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/1r.png", (0, 0), "monika/r.png")
-            )
+image monika 3 = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 4 = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 5 = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    arms="pointright",
+    single="3a"
+)
+
+image monika 1a = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1b = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1c = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="c",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1d = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="d",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1e = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1f = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1g = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="g",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1h = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1i = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1j = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1k = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1l = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="l",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
+image monika 1m = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
+image monika 1n = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
+image monika 1o = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
+image monika 1p = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="small",
+    head="p",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
+image monika 1q = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1r = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 2a = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2b = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2c = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="c",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2d = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="d",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2e = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2f = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2g = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="g",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2h = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2i = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2j = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2k = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="k",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2l = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="l",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
+image monika 2m = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
+image monika 2n = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
+image monika 2o = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
+image monika 2p = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="small",
+    head="p",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
+image monika 2q = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2r = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="r",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 3a = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3b = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3c = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="c",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3d = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="d",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3e = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3f = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3g = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="g",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3h = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3i = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3j = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3k = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="k",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3l = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="l",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
+image monika 3m = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
+image monika 3n = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
+image monika 3o = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
+image monika 3p = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="small",
+    head="p",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
+image monika 3q = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3r = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="r",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+
 
 image monika 4a = ConditionSwitch(
             'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_a"),zoom=1.25),
