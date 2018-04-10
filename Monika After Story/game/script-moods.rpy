@@ -173,6 +173,35 @@ label mas_mood_sad:
     return
 
 init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="proud of myself",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_proud
+    m 2k "Really? That's exciting!"
+    m 2b "Was it a major accomplishment, or a minor one?
+    menu:
+        "Major":
+            m 1c "You know, [player]...
+            m 1d "It's times like these, more than most, that I wish I was with you, in your reality...
+            m 4k "Because if I was, I'd definitely give you a celebratory hug!"
+            m 3b "There's nothing quite like sharing your accomplishments with the people you care about."
+            m 1a "I would love nothing more than to hear all of the details!"
+            m "Just the thought of us, in cheerful discussion about what you've done..."
+            m 1b "My heart is fluttering just thinking about it!"
+            m 1m "Gosh, I'm getting awfully excited about this..."
+            m 3k "It'll be reality someday"
+            m 5a "But until then, just know that I'm very proud of you, my love"
+        "Minor":
+            m 2j "Ahaha!~'
+            m 2k "That's wonderful!"
+            m 4a "It's very important to celebrate the small victories in life."
+            m 2i "It can be very easy to become discouraged if you only focus on the bigger goals you have."
+            m 2h "They can be challenging to reach on their own"
+            m 4b "But setting and celebrating small goals that eventually lead to a big goal can make your big goals feel much more attainable."
+            m 4k "So keep hitting those small goals, [player]!"
+            m 4b "Always remember, I love you, and I'm always cheering you on!"
+return            
+
+init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="happy",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_happy:
