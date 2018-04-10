@@ -5596,11 +5596,11 @@ label monika_stargazing:
     m 3a "Like, taking some time out of your evening to look at the stars in the sky."
     m 1b "It's a rather nice feeling and surprisingly relaxing, to stare at the beauty of stars."
     m 3b "It's also a good way to relieve stress and clear your head."
-    m 3b "With your mind focused on the sky and becoming distracted from unhappy thoughs and feelings."
+    m 3b "With your mind focused on the sky and becoming distracted from unhappy thoughts and feelings."
     m 1a "Listening to calm music can make the experience all the more enjoyable."
     m 3b "I would happily play piano for you [player], if you went stargazing."
     m 1d "Thinking of stars, makes me wonder about the amazing worlds we haven't explored yet."
-    m 1j "But the only world I want to explore is yours, and see the lovely stars with you."
+    m 1j "But the only world I want to explore is yours, and to see the lovely stars with you."
     m 1a "Although stars are beautiful, they could never surpass the beauty of your loving heart."
     m 5a "You're such a sweetheart [player], I always want to see you the happiest you can be."
     return
