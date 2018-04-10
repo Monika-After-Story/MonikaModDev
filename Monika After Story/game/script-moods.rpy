@@ -177,11 +177,11 @@ init 5 python:
 
 label mas_mood_proud
     m 2k "Really? That's exciting!"
-    m 2b "Was it a major accomplishment, or a minor one?
+    m 2b "Was it a major accomplishment, or a minor one?"
     menu:
         "Major":
-            m 1c "You know, [player]...
-            m 1d "It's times like these, more than most, that I wish I was with you, in your reality...
+            m 1c "You know, [player]..."
+            m 1d "It's times like these, more than most, that I wish I was with you, in your reality..."
             m 4k "Because if I was, I'd definitely give you a celebratory hug!"
             m 3b "There's nothing quite like sharing your accomplishments with the people you care about."
             m 1a "I would love nothing more than to hear all of the details!"
@@ -191,7 +191,7 @@ label mas_mood_proud
             m 3k "It'll be reality someday"
             m 5a "But until then, just know that I'm very proud of you, my love"
         "Minor":
-            m 2j "Ahaha!~'
+            m 2j "Ahaha!~"
             m 2k "That's wonderful!"
             m 4a "It's very important to celebrate the small victories in life."
             m 2i "It can be very easy to become discouraged if you only focus on the bigger goals you have."
