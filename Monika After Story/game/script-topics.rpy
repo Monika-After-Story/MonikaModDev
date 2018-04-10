@@ -5488,6 +5488,24 @@ label monika_timeconcern_disallow:
     jump monika_timeconcern_lock
 
 init 5 python:
+    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=["you","misc"],random=True))
+    
+label monika_hydration:
+    m 1c "Hey, [player]..."
+    m "Do you drink enough water?"
+    m 1e "I just want to make sure you don't neglect your health, especially when it comes to hydration."
+    m 1d "Sometimes, people tend to underestimate how important it actually is."
+    m 1i "I bet you've had those days when you felt really tired and nothing seemed to motivate you."
+    m 1a "I just usually grab a glass of water right away."
+    m "It might not work all the time, but it does help."
+    m 3m "But I guess you don't want to go to the bathroom so much, huh?"
+    m 1e "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
+    m 1a "Anyways, make sure you always stay hydrated, ok?"
+    m 1d "So..."
+    m 4k "Why not get a glass of water right now, hmm?"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
 
 label monika_challenge:
@@ -5587,6 +5605,7 @@ label monika_fastfood:
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
     return
 
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc'],prompt="dreaming",random=True))
 
@@ -5616,3 +5635,4 @@ label monika_dreaming:
     m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
+
