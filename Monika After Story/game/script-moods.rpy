@@ -175,7 +175,7 @@ label mas_mood_sad:
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="proud of myself",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-label mas_mood_proud
+label mas_mood_proud:
     m 2k "Really? That's exciting!"
     m 2b "Was it a major accomplishment, or a minor one?"
     menu:
