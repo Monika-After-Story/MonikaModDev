@@ -198,7 +198,7 @@ label mas_mood_proud:
             m 2h "They can be challenging to reach on their own"
             m 4b "But setting and celebrating small goals that eventually lead to a big goal can make your big goals feel much more attainable."
             m 4k "So keep hitting those small goals, [player]!"
-            m 4b "Always remember, I love you, and I'm always cheering you on!"
+            m 4b "And remember, I love you, and I'm always cheering you on!"
 return            
 
 init 5 python:
