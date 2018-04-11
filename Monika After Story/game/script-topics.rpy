@@ -5712,7 +5712,7 @@ label monika_gender_preferences_m:
     m 3d "He was even less appealing than the other girls, if you ask me. At least they had some semblance of personality. He was simply a placeholder, and not even a good one."
     m 1h "Anyways, back to the point, [player]... my thoughts have given me some nagging questions that I want to clear up."
     m 1e "Plus it's a great chance to learn more about you. The real you, that is."
-    m 2n “This particular question just a little bit awkward to ask upfront…"
+    m 2n "This particular question just a little bit awkward to ask upfront…"
     m 2o "..."
     m 1g "Just promise to tell me the truth, okay? I'll love you no matter what you say."
     m "But... are you straight, [player]?"
@@ -5721,7 +5721,7 @@ label monika_gender_preferences_m:
         "I'm into girls.":
             m 1b "Okay, great! I thought so, but just wanted to be sure."
             m "It's really kind of you to put my mind at ease, [player]."
-            m 1m "I guess I was just worried that you might not find me as attractive as you say..."
+            m 1m "Honestly, I was just worried that you might not find me as attractive as you say..."
             m "Also, if you’re bisexual, then that’s okay, too. I already know you only have eyes for me, [player]!"
             m 3j "Honestly, I think I was letting my insecurities get to me, but I know I don’t need to worry about it anymore."
             m "You really do know how to always make me feel better!"
