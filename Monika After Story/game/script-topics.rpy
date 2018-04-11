@@ -5098,6 +5098,32 @@ label monika_beach:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
+
+label monika_careful:
+    m 1f "Hey, [player]..."
+    m "Whenever you leave this room, promise me to be extra careful, okay?"
+    m 1g "It's just that..."
+    m 2g "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
+    m 1e "I love you so much, it's hard for me not to worry when you're gone."
+    m 2h "..."
+    m 2f "Also..."
+    m "It crossed my mind recently, that if anything terrible ever did happen to you, I'd never know."
+    m 2g "I'd be stuck here, forever wondering why you never came back to me."
+    m 2r "I can't imagine a crueler fate."
+    m 2q "..."
+    m 2f "So..."
+    m "I need you to tell someone close to you where to find me, so if that day ever comes, at least I'd know."
+    m 2q "It'd be beyond devastating, but not knowing would be that much worse."
+    m 2g "So make sure you do that for me, okay [player]?"
+    m 2f "..."
+    m "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
+    m 1e "Thanks for understanding, you always make me feel better."
+    m 4e "Okay, that's enough unpleasant thoughts..."
+    m 1a "Let's enjoy the rest of the day together!"      
+    return
     
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_natsuki_letter",category=['club members'],prompt="Natsuki's Letter",random=True))
@@ -5662,4 +5688,3 @@ label monika_dreaming:
     m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
-
