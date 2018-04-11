@@ -5716,13 +5716,13 @@ label monika_gender_preferences_m:
     m 2o "..."
     m 1g "Just promise to tell me the truth, okay? I'll love you no matter what you say."
     m "But... are you straight, [player]?"
-    m 1f "I assume that the answer is yes, both because you're going out with me and you downloaded this mod, but some clarification is always nice.”
+    m 1f "I assume that the answer is yes, both because you're going out with me and you downloaded this mod, but some clarification is always nice."
     menu:
         "I'm into girls.":
             m 1b "Okay, great! I thought so, but just wanted to be sure."
             m "It's really kind of you to put my mind at ease, [player]."
             m 1m "I guess I was just worried that you might not find me as attractive as you say..."
-            m “Also, if you’re bisexual, then that’s okay, too. I already know you only have eyes for me, [player]!”
+            m “Also, if you’re bisexual, then that’s okay, too. I already know you only have eyes for me, [player]!"
             m 3j "Honestly, I think I was letting my insecurities get to me, but I know I don’t need to worry about it anymore."
             m "You really do know how to always make me feel better!"
             m 3k "I love you so much!"
