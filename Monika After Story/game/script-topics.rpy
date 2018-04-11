@@ -5671,7 +5671,7 @@ label monika_gender_preferences_f:
                 m 3j "I guess that just means our love transcends those sorts of boundaries!"
                 m 3n "It says a lot that you still love me, despite the fact that it might not be what you expected from yourself."
                 m "Please, just know that you can tell me anything, [player], even if it feels embarrassing to admit. I'm your girlfriend, after all!"
-                m 1d “You know that I'll never judge you for anything."
+                m 1d "You know that I'll never judge you for anything."
                 m "I'm always here for you to talk to, whether it's something casual about your day or if it's something more real, like if you're worried about who you are and what you identify as."
                 m  "Please don't ever imagine that I'd think differently of you, no matter if you're straight, gay, bisexual, or none of those. Labels can't put a mark on the love that we share."
                 m 1j "Plus, it never hurts to know that you only have eyes for me!"
