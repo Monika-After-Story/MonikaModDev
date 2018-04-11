@@ -5780,8 +5780,8 @@ label monika_gender_preferences_x:
             m 3j "Ahaha! That's a relief. I'm glad I can live up to your particular preference without stressing over things I can’t change."
             m 3k "Honestly, I was a bit concerned, but all of my doubts are alleviated now. You always know how to cheer me up, my love."
             m 1e "That’s just another thing that I adore about you."
-            m "Knowing this helps me to understand you better, and that’s really all I could hope for. So thank you for sharing a detail like that with me~”
-            m 5a “I just want to make you as happy as you make me, [player]."
+            m "Knowing this helps me to understand you better, and that’s really all I could hope for. So thank you for sharing a detail like that with me~"
+            m 5a "I just want to make you as happy as you make me, [player]."
 
         "I'm not into girls.":
             m 2i "Oh, really?"
