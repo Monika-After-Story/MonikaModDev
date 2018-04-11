@@ -5722,7 +5722,7 @@ label monika_gender_preferences_m:
             m 1b "Okay, great! I thought so, but just wanted to be sure."
             m "It's really kind of you to put my mind at ease, [player]."
             m 1m "I guess I was just worried that you might not find me as attractive as you say..."
-            m “Also, if you’re bisexual, then that’s okay, too. I already know you only have eyes for me, [player]!"
+            m "Also, if you’re bisexual, then that’s okay, too. I already know you only have eyes for me, [player]!"
             m 3j "Honestly, I think I was letting my insecurities get to me, but I know I don’t need to worry about it anymore."
             m "You really do know how to always make me feel better!"
             m 3k "I love you so much!"
@@ -5753,7 +5753,7 @@ label monika_gender_preferences_m:
 
         "I don't want to answer this.":
             m 2p "Really?"
-            m 2r "I see... "
+            m 2r "I see..."
             m 2q "..."
             m 4f "Well, I suppose it doesn't really matter."
             m 4g "If you change your mind later on, you can just let me know, okay?"
@@ -5772,7 +5772,7 @@ label monika_gender_preferences_x:
     m "So I really want to try and treat you how you want to be treated. You deserve that much, at the very least."
     m 3c "But if I’m going to try to do that, I wanted to tell you that I’ve been having doubts as to whether or not you’re normally attracted to girls."
     m "I'm not going to judge you or anything, [player]. I'll always accept you, no matter what you say."
-    m 1m "Gosh, I really do hope I'm not overstepping any boundaries here…"
+    m 1m "Gosh, I really hope I'm not overstepping any boundaries here…"
     m 1n "I'm just not sure how else to go about it besides just being direct with you. There’s that old axiom about things like this, right? That honesty is the best policy?"
     menu:
         m "So [player], do you like girls?"
