@@ -119,6 +119,11 @@ init -1 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
+    # non leanable clothes / hair
+    lean_blacklist = [
+        "test"
+    ]
+
 
     def acs_lean_mode(lean):
         """
@@ -1147,7 +1152,7 @@ init -2 python:
             emote=None,
 
             # optional standing parts
-            stock=True
+            stock=True,
             single=None
         ):
         """
@@ -1196,6 +1201,17 @@ init -2 python:
  
         # are we sitting or not
         if is_sitting:
+
+            if (
+                    lean
+                    and (
+                        character.clothes in store.mas_sprites.lean_blacklist
+                        or character.hair in store.mas_sprites.lean_blacklist
+                    )
+                ):
+                # set lean to None if its on the blacklist
+                lean = None
+
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes,
                 character.hair,
@@ -1231,97 +1247,6 @@ init -2 python:
             
         return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
         
-#body poses
-image body_1 = im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-steepling.png")
-image body_1_n = im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-steepling-n.png")
-image body_2 = im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-crossed.png")
-image body_2_n = im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-crossed-n.png")
-image body_3 = im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-restleftpointright.png")
-image body_3_n = im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-restleftpointright-n.png")
-image body_4 = im.Composite((1280,850),(0,0),"mod_assets/monika/torso.png",(0,0),"mod_assets/monika/arms-pointright.png")
-image body_4_n = im.Composite((1280,850),(0,0),"mod_assets/monika/torso-n.png",(0,0),"mod_assets/monika/arms-pointright-n.png")
-image body_5 = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning.png")
-image body_5_n = im.Composite((1280,742),(0,0),"mod_assets/monika/body-leaning-n.png")
-
-#faces
-image face_s = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smile.png")
-image face_s_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smile-n.png")
-image face_a = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smile.png")
-image face_a_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smile-n.png")
-image face_b = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-big.png")
-image face_b_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-big-n.png")
-image face_c = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smirk.png")
-image face_c_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smirk-n.png")
-image face_d = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-small.png")
-image face_d_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-small-n.png")
-image face_e = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smile.png")
-image face_e_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smile-n.png")
-image face_f = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smirk.png")
-image face_f_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smirk-n.png")
-image face_g = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-small.png")
-image face_g_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-small-n.png")
-image face_h = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smirk.png")
-image face_h_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smirk-n.png")
-image face_i = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid.png",(0,0),"mod_assets/monika/face-eyes-normal.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-small.png")
-image face_i_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-eyes-normal-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-small-n.png")
-image face_j = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up.png",(0,0),"mod_assets/monika/face-eyes-closedhappy.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smile.png")
-image face_j_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-eyes-closedhappy-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smile-n.png")
-image face_k = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up.png",(0,0),"mod_assets/monika/face-eyes-closedhappy.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-big.png")
-image face_k_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-eyes-closedhappy-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-big-n.png")
-image face_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-closedhappy.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-big.png",(0,0),"mod_assets/monika/face-sweatdrop.png")
-image face_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-closedhappy-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-big-n.png",(0,0),"mod_assets/monika/face-sweatdrop-n.png")
-image face_m = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-left.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smile.png",(0,0),"mod_assets/monika/face-sweatdrop.png")
-image face_m_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-left-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smile-n.png",(0,0),"mod_assets/monika/face-sweatdrop-n.png")
-image face_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-left.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-big.png",(0,0),"mod_assets/monika/face-sweatdrop.png")
-image face_n_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-left-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-big-n.png",(0,0),"mod_assets/monika/face-sweatdrop-n.png")
-image face_o = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-left.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smirk.png",(0,0),"mod_assets/monika/face-sweatdrop.png")
-image face_o_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-left-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smirk-n.png",(0,0),"mod_assets/monika/face-sweatdrop-n.png")
-image face_p = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit.png",(0,0),"mod_assets/monika/face-eyes-left.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-small.png",(0,0),"mod_assets/monika/face-sweatdrop.png")
-image face_p_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-eyes-left-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-small-n.png",(0,0),"mod_assets/monika/face-sweatdrop-n.png")
-image face_q = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid.png",(0,0),"mod_assets/monika/face-eyes-closedsad.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-smirk.png")
-image face_q_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-eyes-closedsad-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-smirk-n.png")
-image face_r = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid.png",(0,0),"mod_assets/monika/face-eyes-closedsad.png",(0,0),"mod_assets/monika/face-nose.png",(0,0),"mod_assets/monika/face-mouth-small.png")
-image face_r_n = im.Composite((1280,850),(0,0),"mod_assets/monika/face-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-eyes-closedsad-n.png",(0,0),"mod_assets/monika/face-nose-n.png",(0,0),"mod_assets/monika/face-mouth-small-n.png")
-
-image face_s_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile.png")
-image face_s_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile-n.png")
-image face_a_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile.png")
-image face_a_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile-n.png")
-image face_b_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-big.png")
-image face_b_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-big-n.png")
-image face_c_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk.png")
-image face_c_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk-n.png")
-image face_d_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-small.png")
-image face_d_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-small-n.png")
-image face_e_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile.png")
-image face_e_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile-n.png")
-image face_f_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk.png")
-image face_f_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk-n.png")
-image face_g_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-small.png")
-image face_g_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-small-n.png")
-image face_h_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk.png")
-image face_h_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk-n.png")
-image face_i_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-small.png")
-image face_i_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-normal-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-small-n.png")
-image face_j_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedhappy.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile.png")
-image face_j_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedhappy-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile-n.png")
-image face_k_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedhappy.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-big.png")
-image face_k_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-up-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedhappy-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-big-n.png")
-image face_l_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedhappy.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-big.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop.png")
-image face_l_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedhappy-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-big-n.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop-n.png")
-image face_m_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-left.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop.png")
-image face_m_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-left-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smile-n.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop-n.png")
-image face_n_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-left.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-big.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop.png")
-image face_n_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-left-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-big-n.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop-n.png")
-image face_o_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-left.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop.png")
-image face_o_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-left-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk-n.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop-n.png")
-image face_p_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit.png",(0,0),"mod_assets/monika/face-leaning-eyes-left.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-small.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop.png")
-image face_p_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-knit-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-left-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-small-n.png",(0,0),"mod_assets/monika/face-leaning-sweatdrop-n.png")
-image face_q_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedsad.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk-n.png")
-image face_q_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedsad-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-smirk-n.png")
-image face_r_l = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedsad.png",(0,0),"mod_assets/monika/face-leaning-nose.png",(0,0),"mod_assets/monika/face-leaning-mouth-small-n.png")
-image face_r_l_n = im.Composite((1280,742),(0,0),"mod_assets/monika/face-leaning-eyebrows-mid-n.png",(0,0),"mod_assets/monika/face-leaning-eyes-closedsad-n.png",(0,0),"mod_assets/monika/face-leaning-nose-n.png",(0,0),"mod_assets/monika/face-leaning-mouth-small-n.png")
-
 # Monika
 define monika_chr = MASMonika()
 
@@ -1388,7 +1313,6 @@ image monika 5 = DynamicDisplayable(
     left="",
     right="",
     lean="def",
-    arms="pointright",
     single="3a"
 )
 
@@ -2109,107 +2033,270 @@ image monika 3r = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 4a = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
 
+image monika 4b = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
 
-image monika 4a = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_a"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_a_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/a.png")
-            )
-image monika 4b = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_b"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_b_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/b.png")
-            )
-image monika 4c = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_c"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_c_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/c.png")
-            )
-image monika 4d = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_d"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_d_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/d.png")
-            )
-image monika 4e = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_e"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_e_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/e.png")
-            )
-image monika 4f = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_f"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_f_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/f.png")
-            )
-image monika 4g = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_g"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_g_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/g.png")
-            )
-image monika 4h = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_h"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_h_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/h.png")
-            )
-image monika 4i = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_i"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_i_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/i.png")
-            )
-image monika 4j = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_j"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_j_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/j.png")
-            )
-image monika 4k = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_k"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_k_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/k.png")
-            )
-image monika 4l = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_l"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_l_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/l.png")
-            )
-image monika 4m = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_m"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_m_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/m.png")
-            )
-image monika 4n = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_n"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_n_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/n.png")
-            )
-image monika 4o = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_o"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_o_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/o.png")
-            )
-image monika 4p = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_p"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_p_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/p.png")
-            )
-image monika 4q = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_q"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_q_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/q.png")
-            )
-image monika 4r = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4",(0,0),"face_r"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,850),(0,0),"body_4_n",(0,0),"face_r_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/2l.png", (0, 0), "monika/2r.png", (0, 0), "monika/r.png")
-            )
+image monika 4c = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="c",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
 
-image monika 5a = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5",(0,0),"face_a_l"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5_n",(0,0),"face_a_l_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/3a.png")
-            )
-image monika 5b = ConditionSwitch(
-            'is_sitting and morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5",(0,0),"face_h_l"),zoom=1.25),
-            'is_sitting and not morning_flag',Transform(LiveComposite((1280,742),(0,0),"body_5_n",(0,0),"face_h_l_n"),zoom=1.25),
-            'not is_sitting',im.Composite((960, 960), (0, 0), "monika/3b.png")
-            )
+image monika 4d = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="d",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4e = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4f = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4g = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="g",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4h = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4i = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4j = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4k = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="k",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4l = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="l",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="def"
+)
+
+image monika 4m = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="def"
+)
+
+image monika 4n = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="def"
+)
+
+image monika 4o = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="def"
+)
+
+image monika 4p = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="small",
+    head="p",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="def"
+)
+
+image monika 4q = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4r = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="r",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 5a = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3a"
+)
+
+image monika 5b = DynamicDisplayable(
+    mas_drawmonika, 
+    character=monika_chr, 
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3b"
+)
 
