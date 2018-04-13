@@ -5722,8 +5722,7 @@ label monika_yellowwp:
         "No.":
             m 1c "Oh, I see."
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
-            m 1a "It'll definitely be an interesting read for you."
-            
+            m 1a "It'll definitely be an interesting read for you."         
     return
     
     
