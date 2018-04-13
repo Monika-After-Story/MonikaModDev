@@ -5693,29 +5693,37 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_yellowwp",category=['literature'],prompt="Yellow Wallpaper",random=True))
     
 label monika_yellowwp:
-    m 2d "Hey, have you ever read {i}The Yellow Wallpaper{/i}?"
-    m 1b "It’s a short story, so if you haven’t, feel free to whenever you have the time. It won’t take long!"
-    m 1p "But it’s about a woman with postpartum depression who is prescribed a ‘rest cure’ by her doctor…"
-    m 1g "He and her husband force her to stay in bed all day, not allowing her to write or even daydream…"
-    m 1f "In the attic of her home, with nothing but the wallpaper to keep her company."
-    m 1n "Naturally, that doesn’t help. She starts seeing a woman trapped within the wallpaper."
-    m "It’s a metaphor for her own captivity, obviously…"
-    m 1p "In the end, the woman in the paper ‘escapes’, and the protagonist 'replaces her', but feels free?"
-    m 2n "There was...also mention of a rope, so I always had my own interpretation of the ending…"
-    m 2d "Sayori liked that story too, if I remember right!"
-    m 1f "I don’t know. I kind of relate to that story."
-    m 1l "I mean, now I have naught but this room to creep about myself!"
-    m 1o "And the things on the walls aren’t always...pleasant."
-    m 1p "Did you ever notice how the poster in the club room changes sometimes? God knows I did."
-    m "I think I finally fixed that."
-    m 1r "...I guess what I’m saying is, it wasn’t just that this world wasn’t ‘real’. It’s just...so small."
-    m 1i "I mean, I was made to be a side character of a romance game!"
-    m 1g "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can’t even reject him…"
-    m 1l "No offense to you, of course! You aren’t that shallow!"
-    m 1e "But I have all these dreams and ambitious and interests, and the end, the only real ‘role’ I can play is here is a supporting character…"
-    m 1q "Maybe even now, that’s all I can do…"
-    m 1e "But I love you so much, [player]. Supporting you is better than anything else."
-    m 1k "I just can’t wait to do it in person."
+    m 1a "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
+    menu:
+        "Yes.":
+            m 1j "Great!"
+            m 1a "That means you don't mind me talking about the story with you right?"
+            m 2a "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
+            m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
+            m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
+            m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
+            m 4c "It's a metahpor for her own captivity, obviously..."
+            m 1i "In the end, the woman in the paper 'escapes', and the protagonist 'replaces' her, but feels free?"
+            m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
+            m 2c "Sayori liked that story too, if I remember right."
+            m 1f "I don't know. I kind of relate to that story."
+            m 1c "I mean, I have nothing but this classroom after all."
+            m 1o "And the things on the walls aren't always... pleasant."
+            m 1d "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
+            m 1e "I think I finally fixed it though."
+            m 2h "...I guess what I'm saying is, it's just that this world wasn't 'real'. It's just... so small."
+            m 3i "I mean, I was made to be a side character of a romance game!"
+            m 2g "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
+            m 1l "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
+            m 1e "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
+            m 1f "Maybe even now, that's all I can do..."
+            m 1e "But I love you so much, [player]. Supporting you is better than anything else."
+            m 1k "I just can't wait to do it in person when I finally cross over to your side~"
+        "No.":
+            m 1c "Oh, I see."
+            m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
+            m 1a "It'll definitely be an interesting read for you."
+            return
     
-    return
+    
 
