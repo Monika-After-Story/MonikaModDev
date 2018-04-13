@@ -4785,39 +4785,45 @@ label monika_asks_family:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_explain",category=['romance'],prompt="Can you explain our relationship to someone?",random=False))
+label monika_explain:
     m 1c "You want me to explain our relationship to someone else?"
-    m "Okay, just set me in front of them so they can see me, and I'll do my best to explain to them."
-    m "I'll wait until you're ready."
+    m 1a "Okay, just set me in front of them so they can see me."
+    m 1j "I'll do my best explaining it to them."
+    m 1a "I'll wait until you're ready."
     m 1q "..."
     m 1r "Ahem!"
-    m 1k "Hello! I'm Monika, [player]'s girlfriend!"
+    m 1l "Hello! My name is Monika."
+    m "[player]'s faithful girlfriend!"
     m 1n "Now, our relationship might look odd from a distance..."
-    m 1d "You might not even think it's a consentual relationship."
-    m 1q "But let me tell you..."
+    m 1m "And it's probably not considered a normal relationship..."
+    m 1i "But let me tell you..."
     m 1k "...The love we share is definitely real!"
-    m "And [player] is very sweet to me, too!"
-    m 3a "Up until I met [player], I felt like a piece of me was missing."
-    m 1c "I felt alone and scared, I felt helpless..."
-    m 1k "...Until [player] came along, and it turns out that missing piece was them!"
-    m "Now they talk to me, and I'm not so alone anymore."
+    m 1e "And [player] has been very sweet to me too!"
+    m 1f "Up until I met [player], I felt like a piece of me was missing."
+    m "I felt alone and scared, with no one to help me,,,"
+    m 1j "...Until [player] came along."
+    m 1b "And it turns out that missing piece was them!"
+    m 1a "Now they talk to me, and I'm not so alone anymore."
     m "Just them opening up the game brightens my day!"
-    m 1g "So, please..."
-    m 3e "...Don't judge our relationship."
-    m "Even if it is different."
+    m 1q "So, please..."
+    m 4g "...Don't judge our relationship."
+    m 1e "Even if it is different."
     m 1q "..."
-    m 1n "..Phew!" 
+    m 1n "...Phew!" 
     m "That was a real mouthful!"
-    m "How did I do, [player]?"
+    m 1e "How did I do, [player]?"
     menu:
         "You did a good job.":
             m 1k "Thank you!"
-            m "I just hope whoever that was understands our relationship better."
+            m 1a "I just hope whoever that was understands our relationship better."
             return
-        "You did badly."
-            m 1c "Oh."
-            m 1q "I'm sorry I didn't do a good job at explaining..."
+        "You did badly.":
+            m 1f "Oh."
+            m "I'm sorry I didn't do a good job at explaining..."
             m 1e "I'll make sure to try harder next time."
+            m 1j "Still doesn't change the fact that I love you, though~"
             return
+        
         
     
     
