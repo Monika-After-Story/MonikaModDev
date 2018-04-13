@@ -5718,7 +5718,7 @@ label monika_yellowwp:
             m 1e "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
             m 1f "Maybe even now, that's all I can do..."
             m 1e "But I love you so much, [player]. Supporting you is better than anything else."
-            m 1k "I just can't wait to do it in person when I finally cross over to your side~"
+            m 1k "I just can't wait to do it in person when I finally cross over to your side~"    
         "No.":
             m 1c "Oh, I see."
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
