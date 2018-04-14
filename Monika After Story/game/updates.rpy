@@ -192,6 +192,17 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.0
+label v0_8_0(version="v0_8_0"):
+    python:
+
+        # unlock change name if the name promtps hjave been seen
+        if (
+                renpy.seen_label("monika_changename")
+                or renpy.seen_label("preferredname")
+            ):
+            store.evhand.event_database["monika_changename"].unlocked = True
+
 # NOTE: well shit this wasnt ready and now it has to be done later
 # 0.7.4
 label v0_7_4(version="v0_7_4"):
