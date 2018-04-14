@@ -243,7 +243,7 @@ screen music_menu():
         style_prefix "navigation"
 
         xpos gui.navigation_xpos
-        yalign 0.3
+        yalign 0.4
         spacing gui.navigation_spacing
 
         # wonderful loop so we can dynamically add songs
