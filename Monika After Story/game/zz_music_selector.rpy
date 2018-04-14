@@ -15,6 +15,7 @@ init -1 python in songs:
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
+    YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
     NO_SONG = "None"
 
     # SONG FILEPATHS
@@ -28,6 +29,7 @@ init -1 python in songs:
     )
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
     FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
+    FP_YR_EUROBEAT = "mod_assets/bgm/eurobeatreality.ogg"
     FP_NO_SONG = None
 
 
@@ -125,6 +127,9 @@ init -1 python in songs:
 
             # Shoutout to Rune0n for this wonderful piano cover!
             music_choices.append((PIANO_COVER, FP_PIANO_COVER))
+
+            # Shoutout to TheAloofPotato for this wonderful eurobeat version!
+            music_choices.append((YR_EUROBEAT, FP_YR_EUROBEAT))
 
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
             music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
