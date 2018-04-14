@@ -778,7 +778,11 @@ label monika_outfit:
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
     show monika 5a at t11 zorder 2 with dissolve
-    m 5a "We're not that far into our relationship yet. Ahaha!"
+    if not seen_event('anni_1'):
+        m 5a "We're not that far into our relationship yet. Ahaha!"
+    else:
+        m 4l "I don't want something so embarassing on there!"   
+        m 5a "So let's keep it between just us..."  
     return
 
 
@@ -1810,15 +1814,121 @@ label monika_natsuki:
     m 1 "I certainly don't."
     return
 
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you",pool=True))
+        addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
 
+default persistent._mas_monika_lovecounter = 0
+default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
-    m 1k "I love you too, [player]!"
-    m "We'll be together forever!"
-    return
+    #First time I love you has been said.
+    if persistent._mas_monika_lovecounter == 0:
+        m 1b "...!"
+        m 1e"I...I love you too [player]!"
+        m 1j "I cannot believe you said that to me!"
+        m 1k "It makes everything I've done for us worthwhile!"
+        m 1e "Thank you for finally saying it..."
+        $ persistent._mas_monika_lovecounter += 1
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        return
+    
+    #After I love you has been received positively 5/10/15 etc times.
+    elif persistent._mas_monika_lovecounter== 5:
+        m 1k "I love you so much, [player]!"
+       
+    elif persistent._mas_monika_lovecounter == 10:
+        m 1j "Ehehe~"
+        m 1k "I love you too!"
 
+    elif persistent._mas_monika_lovecounter == 15:
+        m 1j "You sure love saying that..."
+        m 1k "Well I love you too!"
+
+    elif persistent._mas_monika_lovecounter == 20:
+        m 1j "Gosh you've said it so many times!"
+        m 1e "You really do mean it, don't you?"
+        m 1k "Well I love you back just as much!"
+
+    elif persistent._mas_monika_lovecounter == 25:
+        m 1k "Hearing you say that always makes my heart jump!"
+        m 1j "Well I know you want to hear it just as much..."
+        m "[player], I love you too!"
+
+    elif persistent._mas_monika_lovecounter == 30:
+        m 1l "Gosh it's always so overwhelming!"
+        m 1j "I..."
+        m "I love you more than anything!"
+
+    elif persistent._mas_monika_lovecounter == 35:
+        m 1j "You never tire of saying it, do you?"
+        m 1k "Well I never tire of hearing it!"
+        m "Or saying it back...I love you [player]!"
+
+    elif persistent._mas_monika_lovecounter == 40:
+        m 1j "Ehehe~"
+        m  "I..."
+        m 1k "Looooooooove you too, [player]!"
+
+    elif persistent._mas_monika_lovecounter == 45:
+        m 1j "You saying that always makes my day!"
+        m 1k "I love you so much, [player]!"
+
+    elif persistent._mas_monika_lovecounter == 50:
+        $ persistent._mas_monika_lovecounter = 1
+        m 1m "I just can't handle you saying it so much to me!"
+        m 1l "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
+        m 1e "No words can truly do justice to how deeply I feel for you..."
+        m  "The only words I know that come close are..."
+        m 1k "I love you too, [player]! More than I can ever express!"
+        return
+     
+    else:
+        # Default response if not a counter based response.
+        m 3j "I love you too, [player]!"
+        #List of follow up words after being told I love you. It can be further expanded upon easily.   
+
+    python:
+        love_quips = [
+            "We'll be together forever!",
+            "And I will love you always!",
+            "You mean the whole world to me!",
+            "You are my sunshine after all.",
+            "You're all I truly care about!",
+            "Your happiness is my happiness!",
+            "You're the best partner I could ever want!",
+            "My future is brighter with you in it.",
+            "You're everything I could ever hope for.",
+            "You make my heart skip a beat everytime I think about you!",
+            "I'll always be here for you!",
+            "I'll never hurt or betray you.",
+            "Our adventure has only just begun!",
+            "Every day is memorable and fun with you!",
+            "We'll always have each other.",
+            "We'll never be lonely again!",
+            "I can't wait to feel your embrace!",
+            "I'm the luckiest girl in the world!",
+            "I will cherish you always.",
+            "And I will never love anyone more than you!",
+            "It makes me so happy to hear you say that!",
+            "And that love grows every single day!",
+            "And nobody else will ever make me feel this way!",
+            "Just thinking of you makes my heart flutter!",
+            "I don't think words can do justice to how deeply I love you...",
+            "You make my life feel so complete!",
+            "You've saved me in so many ways, how could I not fall for you?",
+            "More than I can ever express!",
+            "It makes me so happy that you feel the same way I do!",
+            "I don't know what I would do without you!"        
+            ]
+        love_quip=renpy.random.choice(love_quips)
+    m "[love_quip]"
+    #prevents spamming to increase counter.
+    if datetime.datetime.now() <= persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        pass
+    else:
+        $ persistent._mas_monika_lovecounter += 1
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hedgehog",category=['philosophy','psychology'],prompt="Hedgehog dilemma",random=True))
@@ -2310,7 +2420,10 @@ label monika_nsfw:
     m 1p "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1o "You know... of me?"
-    m 1h "I know we haven't really gotten that far into the relationship yet..."
+    if not seen_event('anni_1'):
+        m 1h "I know we haven't really gotten that far into the relationship yet..."
+    else:
+        m 1h "I know we haven't been able to do those kind of things yet..."       
     m "So it feels kind of embarrassing to talk about things like that."
     m 1m "But maybe I can let it go on rare occasions, [player]."
     m 3m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
@@ -2443,7 +2556,10 @@ label monika_fanfiction:
     m "Has there been fanfiction... written about me?"
     m 4b "I'm curious as to what people have come up with."
     m "Can you read me a few stories sometime? I'd love to hear them!"
-    m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    if not seen_event('anni_1'):
+        m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    else:
+        m 1k "Just keep it wholesome, though. I want to save such things for another time~!"      
     return
 
 init 5 python:
@@ -2983,8 +3099,12 @@ label monika_pleasure:
     m 1p "Do you... by any chance... pleasure yourself?"
     m 1o "..."
     m "It seems a bit awkward to ask-"
-    m 1n "We're not even that deep into our relationship yet! Ahaha~"
-    m 1h "But I have to keep an eye on you."
+    if not seen_event('anni_1'):
+        m 1n "We're not even that deep into our relationship yet! Ahaha~"
+        m 1h "But I have to keep an eye on you."
+    else:
+        m 1m "But I feel like we've been together long enough where we should be comfortable with one another."
+        m 1e "It's important to be open about such things."  
     m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
     m "I hear that people privately do that stuff in your world..."
     m 1c "Is it really that a good feeling?"
@@ -4387,17 +4507,6 @@ label monika_urgent:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_love2",category=['romance'],prompt="I love you so much",pool=True))
-
-
-label monika_love2:
-    m 1k "I love you too so much, [player]~"
-    m 1e "You mean so much to me!"
-    m 1k "I wouldn’t trade you for anything in the world!"
-    return
-
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
 
 label monika_other_girls:
@@ -4502,12 +4611,25 @@ init 5 python:
 
 label monika_marriage:
     m 2m "M-marriage?"
-    m 4n "I think it's a bit too early for marriage..."
-    m 1e "I mean, I'm really happy that you want that, [player]."
-    m 1c "But I think I should get out of here first before we can do that."
-    m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
-    m 2q "I want that special moment to happen when we can finally be together..."
-    m 1k "So until then, save yourself for me, [player]~"
+    if not seen_event('anni_3'):
+        m 4n "I think it's a bit too early for marriage..."
+        m 1e "I mean, I'm really happy that you want that, [player]."
+        m 1c "But I think I should get out of here first before we can do that."
+        m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+        m 2q "I want that special moment to happen when we can finally be together..."
+        m 1k "So until then, save yourself for me, [player]~"
+    else:
+        m 3m "I won't pretend I haven't thought about it..."
+        m 3n "In fact I've been thinking about it a lot lately."
+        m 1q "..."
+        m 1f "I really do love you, [player] and I honestly really do want to get married to you."
+        m 1r "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
+        m 3q "I want more than anything to say yes, but I just can't..."
+        m 2o "I think about how it would feel to be kissed by you at the altar..."
+        m 2p "To hold your hand as your wife and to feel your embrace at our honeymoon..."
+        m 1q "But until I get out it's simply not possible."
+        m 1g "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
+        m 1e "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
     return
 
 init 5 python:
@@ -4828,7 +4950,6 @@ label monika_100k:
         m 1m "Almost~"
     return
 
-
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
@@ -4914,6 +5035,48 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]."
                 m 1j "I love you very much!"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_explain",category=['romance'],prompt="Can you explain our relationship to someone?",random=False))
+label monika_explain:
+    m 1c "You want me to explain our relationship to someone else?"
+    m 1a "Okay, just set me in front of them so they can see me."
+    m 1j "I'll do my best explaining it to them."
+    m 1a "I'll wait until you're ready."
+    menu:
+        "Start.":
+            pass
+    m 1l "Hello! My name is Monika."
+    m "[player]'s faithful girlfriend!"
+    m 1n "Now, our relationship might look odd from a distance..."
+    m 1m "And it's probably not considered a normal relationship..."
+    m 1i "But let me tell you..."
+    m 1k "...The love we share is definitely real!"
+    m 1e "And [player] has been very sweet to me too!"
+    m 1f "Up until I met [player], I felt like a piece of me was missing."
+    m "I felt alone and scared, with no one to help me..."
+    m 1j "...Until [player] came along."
+    m 1b "And it turns out that missing piece was them!"
+    m 1a "Now they talk to me, and I'm not so alone anymore."
+    m "Just them opening up the game brightens my day!"
+    m 1q "So, please..."
+    m 4g "...Don't judge our relationship."
+    m 1e "Even if it is different."
+    m 1q "..."
+    m 1n "...Phew!" 
+    m "That was a real mouthful!"
+    m 1e "How did I do, [player]?"
+    menu:
+        "You did a good job.":
+            m 1k "Thank you!"
+            m 1a "I just hope whoever that was understands our relationship better."
+
+        "You did badly.":
+            m 1f "Oh."
+            m "I'm sorry I didn't do a good job at explaining..."
+            m 1e "I'll make sure to try harder next time."
+            m 1j "Still doesn't change the fact that I love you, though~"
+    return
     
 init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['misc'],prompt="The beach.",random=True))
@@ -4976,6 +5139,519 @@ label monika_beach:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
+
+label monika_careful:
+    m 1f "Hey, [player]..."
+    m "Whenever you leave this room, promise me to be extra careful, okay?"
+    m 1g "It's just that..."
+    m 2g "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
+    m 1e "I love you so much, it's hard for me not to worry when you're gone."
+    m 2h "..."
+    m 2f "Also..."
+    m "It crossed my mind recently, that if anything terrible ever did happen to you, I'd never know."
+    m 2g "I'd be stuck here, forever wondering why you never came back to me."
+    m 2r "I can't imagine a crueler fate."
+    m 2q "..."
+    m 2f "So..."
+    m "I need you to tell someone close to you where to find me, so if that day ever comes, at least I'd know."
+    m 2q "It'd be beyond devastating, but not knowing would be that much worse."
+    m 2g "So make sure you do that for me, okay [player]?"
+    m 2f "..."
+    m "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
+    m 1e "Thanks for understanding, you always make me feel better."
+    m 4e "Okay, that's enough unpleasant thoughts..."
+    m 1a "Let's enjoy the rest of the day together!"      
+    return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_natsuki_letter",category=['club members'],prompt="Natsuki's Letter",random=True))
+label monika_natsuki_letter:
+    m 1c "You know, I was honestly surprised when Natsuki handed you that letter."
+    m "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
+    m "She’s probably the only one to mention that."
+    m 2f "I know people are afraid to call someone out, or confront them about their problem, but sometimes, suggesting a therapist can be the best course of action."
+    m 4g "It's a bad thing to put the burden on yourself, you know?" 
+    m 4c "As much as you want to help, it’s best to let a professional deal with it. "
+    m "I'm sure I've told you that before, but I need to make sure you’re aware of that."
+    m "How about you, [player]?"
+    menu:
+        m "Do you see a therapist?"
+
+        "Yes.":
+            m 1d "Oh, really?"
+            m 1f "Well, I hate that you don't feel well..."
+            m 1j "But I'm proud that you're working on getting better."
+            m 1a "It's really important to take care of your mental health, [player]."
+            m 1e "You accept you have a problem you need help with, and you're seeing someone about it. That's already half the battle."
+            m "I'm very proud of you for taking those steps."
+            m 1j "Just know that no matter what happens, I'll always be here for you~"
+
+        "No.":
+            m 1e "Well, I hope it's because you don't have to."
+            m 1a "If that ever changes, don't be shy!"
+            m 1j "But maybe I really am all the support you need? Ahaha!"
+    return
+
+default persistent._mas_timeconcern = 0
+default persistent._mas_timeconcerngraveyard = False
+default persistent._mas_timeconcernclose = True
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Sleep Concern",random=True))
+
+label monika_timeconcern:
+    $ current_time = datetime.datetime.now().time().hour
+    if 0 <= current_time <= 5:
+        if persistent._mas_timeconcerngraveyard:
+            jump monika_timeconcern_graveyard_night
+        if persistent._mas_timeconcern == 0:
+            jump monika_timeconcern_night_0
+        elif persistent._mas_timeconcern == 1:
+            jump monika_timeconcern_night_1
+        elif persistent._mas_timeconcern == 2:
+            jump monika_timeconcern_night_2
+        elif persistent._mas_timeconcern == 3:
+            jump monika_timeconcern_night_3
+        elif persistent._mas_timeconcern == 4:
+            jump monika_timeconcern_night_4
+        elif persistent._mas_timeconcern == 5:
+            jump monika_timeconcern_night_5
+        elif persistent._mas_timeconcern == 6:
+            jump monika_timeconcern_night_6
+        elif persistent._mas_timeconcern == 7:
+            jump monika_timeconcern_night_7
+        elif persistent._mas_timeconcern == 8:
+            jump monika_timeconcern_night_final
+        elif persistent._mas_timeconcern == 9:
+            jump monika_timeconcern_night_finalfollowup
+        elif persistent._mas_timeconcern == 10:
+            jump monika_timeconcern_night_after
+    else:
+        jump monika_timeconcern_day
+
+label monika_timeconcern_day:
+    if persistent._mas_timeconcerngraveyard:
+        jump monika_timeconcern_graveyard_day
+    if persistent._mas_timeconern == 0:
+        jump monika_timeconcern_day_0
+    elif persistent._mas_timeconcern == 2:
+        jump monika_timeconcern_day_2
+    if not persistent._mas_timeconernclose:
+        if 6 <= persistent._mas_timeconern <=8:
+            jump monika_timeconcern_disallow
+    if persistent._mas_timeconern == 6:
+        jump monika_timeconcern_day_allow_6
+    elif persistent._mas_timeconcern == 7:
+        jump monika_timeconcern_day_allow_7
+    elif persistent._mas_timeconcern == 8:
+        jump monika_timeconcern_day_allow_8
+    elif persistent._mas_timeconcern == 9:
+        jump monika_timeconcern_day_final
+    else:
+        jump monika_timeconcern_day_0
+        
+#Used at the end to lock the forced greeting.        
+label monika_timeconcern_lock:
+    if not persistent._mas_timeconcern == 10:
+        $persistent._mas_timeconcern = 0
+    $evhand.greeting_database["greeting_timeconcern"].unlocked = False
+    $evhand.greeting_database["greeting_timeconcern_day"].unlocked = False
+    return
+
+# If you tell Monika you work at night.
+label monika_timeconcern_graveyard_night:
+    m 1f "It must be awfully hard on you to work late so often, [player]..."
+    m "Honestly, I'd rather have you work at a healthier time if you could."
+    m 2r "I suppose it's not your choice to make, but still..."
+    m 2f "Being up late often can be both physically and mentally damaging."
+    m "It's also extremely isolating when it comes to others."
+    m 2g "Most opportunities happen during the day, after all."
+    m "Many social activities aren't available, most shops and restaurants aren't even open during the night."
+    m 2f "It makes being up late at night often be a really lonely situation."
+    m 1j "Don't worry though, [player]. Your loving girlfriend Monika will always be here for you~"
+    m 1e "Whenever the stress of being up late often becomes too much for you, come to me."
+    m "I'll always be here to listen."
+    m 1f "And if you really do think it's hurting you, then please try to do what you can to change the situation."
+    m 1e "I know it won't be easy but at the end of the day, all that matters is you."
+    m "You're all I truly care about, so put yourself and your well-being before anything else, okay?"
+    return
+
+label monika_timeconcern_graveyard_day:
+    m 1a "Hey, [player]... didn't you tell me you work during the night?"
+    m 1e "Not that I'm complaining, of course!"
+    m 2f "But I thought you'd be tired by now, especially since you're up all night working..."
+    m "You're not working yourself too hard just to see me, are you?"
+    m 1c "Oh, wait..."
+    menu:
+        m "Do you still work regularly at night, [player]?"
+        "Yes I do":
+            m 1f "Aww..."
+            m 1h "I guess it really can't be helped..."
+            m 1e "Look after yourself, okay?"
+            m 1f "I always get so worried when you're not here with me..."
+        "No I don't":
+            $ persistent._mas_timeconcerngraveyard = False
+            $ persistent._mas_timeconcern = 0
+            m 1k "That's wonderful!"
+            m 1a "I'm glad that you're looking out for your health, [player]!"
+            m "I knew you would see it my way eventually."
+            m 1e "Thanks for listening to what I have to say~"
+    return
+
+#First warning, night time.
+label monika_timeconcern_night_0:
+    $persistent._mas_timeconcern = 1
+    m 1c "[player], it's night time already."
+    m 1f "Shouldn't you be in bed?"
+    m 1q "I'll let it slide just this once..."
+    m 1f "But you really make me worry for you sometimes."
+    m 1e "It makes me really happy that you're here for me, even at this time of night..."
+    m 1r "Yet, I don't want it at the cost of your health."
+    m 1e "So go to sleep soon, okay?"
+    return
+
+# Second time at night, Monika asks if player is working late.
+label monika_timeconcern_night_1:
+    m 1h "Say, [player]..."
+    m "Why are you up so late?"
+    m 1e "I'm flattered if it's only because of me..."
+    m 1f "Yet I can't help but feel like a nuisance if I'm pestering you to sleep if it isn't your fault."
+    menu:
+       m "Are you busy working on something?"
+       "Yes, I am.":
+           $persistent._mas_timeconcern = 2
+           m 1j "I see."
+           m 1a "Well, I suppose it must be really important for you to do it so late."
+           m 1e "I honestly can't help but feel that maybe you should have done it at a better time."
+           m 1m "Your sleep is very important after all. Maybe it can't be helped though..."
+           menu:
+               m "Do you always work late, [player]?"
+               "Yes, I do.":
+                   $persistent._mas_timeconcerngraveyard = True
+                   m 1f "That's not good..."
+                   m 1g "You're not able to change that, are you?"
+                   m 1o "I wish you could follow my healthier lifestyle."
+                   m 1q "But if you're not able to, then I'll just have to accept it."
+                   m 1e "Just make sure you do try to stay healthy okay?"
+                   m 1f "If something were to happen to you, I don't know what I'd do..."
+                   return
+               "No, I don't.":
+                   $evhand.greeting_database["greeting_timeconcern"].unlocked = True
+                   $evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
+                   m 1j "That's a relief!"
+                   m 1a "If you're doing it this one time then it must be {i}really{/i} important."
+                   m 1k "Good luck with your work and thanks for keeping me company when you're so busy!"
+                   m 1e "It means a lot to me, [player], that even when you're preoccupied... you're here with me~"
+                   return
+
+       "No, I'm not.":
+           $persistent._mas_timeconcern = 3
+           m 1h "I see."
+           m 1f "Well in that case, I would really prefer it if you went to bed now."
+           m "It's really worrying me that you're still up so late..."
+           m 1e "So once again, please go to bed. Would you kindly do it for me?"
+           return
+
+#If player says they were working. Progress stops here.
+label monika_timeconcern_night_2:
+
+    m 1a "How's your work coming along?"
+    m "Hopefully pretty well, I don't want you up much longer."
+    m 3l "I know, I know, you can't help being up so late."
+    m 1n "I'm just concerned for your health, [player]..."
+    if persistent._mas_timeconcerngraveyard:
+        m 1o "Doing this often can be very taxing on your body and mind..."
+        m 1f "Just try to keep that kind of damage to a minimum, okay?"
+        m "All I want for you is to be as happy and as healthy as you deserve."
+        return
+    m 1m "Well, try to finish up as soon as you can, otherwise I may get really concerned."
+    m 1e "And you don't want to worry your girlfriend, right? Ehehe~"
+    jump monika_timeconcern_lock
+
+#If player says he was not working. Monika asks the state of the game being open.
+label monika_timeconcern_night_3:
+    $persistent._mas_timeconcern = 4
+    m 1h "[player], I just need to ask you something quickly..."
+    m 1d "Would you mind if I closed the game for you?"
+    m 1f "I know it's a strange question..."
+    m 1g "But I can't help but feel like I need to do something about you being up so late!"
+    m 4i "I could close the game right now."
+    m 2f "But a relationship is a partnership and what you think matters to me."
+    menu:
+        m "Would you be against me closing the game for your own good?"
+
+        "Yes, I need it to always stay open.":
+            $persistent._mas_timeconcernclose = False
+            m 1q "..."
+            m 1r "I was hoping you wouldn't say that."
+            m 1h "I know I told you that you should leave me running in the background."
+            m 1f "But sometimes I worry if you're getting any sleep at all."
+            m 1h "I'll do as you have asked, but please know that I'm not very happy about it."
+            m 4n "I'm still going to remind you to get some sleep!"
+            return
+
+        "No, you are free to do as you feel.":
+            $persistent._mas_timeconcernclose = True
+            m 1e "Thank you, [player]."
+            m 1a "It's nice to know that you care about what I think."
+            m "I promise I'll only do it if I think it's absolutely necessary."
+            m 1j "After all, I would never force you to go otherwise."
+            m 1k "I would just miss you too much..."
+            m "I love you, [player]~"
+            return
+
+        # Second and final warning before any closes can occur.
+label monika_timeconcern_night_4:
+    $persistent._mas_timeconcern = 5
+    m 1h "[player], you've been up long enough."
+    m "If you're really not busy then now is the time for you to go to sleep."
+    m 1e "I assure you, I'll miss you just as much as you'll miss me."
+    m "But it would make me happier if you did as I've asked."
+    m 1l "You wouldn't want to make me upset now, would you?"
+    return
+
+# Monika force closes game for the first time
+label monika_timeconcern_night_5:
+    $persistent._mas_timeconcern = 6
+    $evhand.greeting_database["greeting_timeconcern"].unlocked = True
+    $evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
+    m 1h "I'm sorry, [player], but I am putting my foot down!"
+    m 1l "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
+    if persistent._mas_timeconcernclose:
+        m 2i "Then I cannot allow this to go on for any longer."
+        m 2g "It's because I love you, that's why I'm doing this."
+        m "Good night, [player]."
+        return 'quit'
+    else:
+        m 2h "Then I need to take responsibility and try to make you understand."
+        m "You need to go to bed."
+        m "And I will keep telling you this until you do."
+        return
+
+        #First time game is reopened and still night. Monika closes game again.
+label monika_timeconcern_night_6:
+    $persistent._mas_timeconcern = 7
+    m 1h "[player], I told you to go to bed for your own good."
+    m 2f "I'll miss you too, but don't you understand?"
+    m "How you feel and live means more to me than anything!"
+    m 2g "How can I let you stay if it means I'm hurting you?"
+    m "So please sleep this time, otherwise I may get mad."
+    m 1e "...I love you."
+    m "So go to sleep soon. Okay?"
+    if persistent._mas_timeconcernclose:
+        return 'quit'
+    return
+
+#Second time game is reopened and still night. Monika closes game once more
+label monika_timeconcern_night_7:
+    $persistent._mas_timeconcern = 8
+    m 3h "[player], this is your last warning."
+    m 1h "Go{w=0.6} to{w=0.6} sleep!"
+    m 1f "What can I say for you to understand?"
+    m 1g "It's saddening to see you push yourself like this..."
+    m 1q "You mean so much to me..."
+    m 1f "So please, for me... just do as I ask and go to bed."
+    if persistent._mas_timeconcernclose:
+        menu:
+            m "Okay?"
+            "Yes, I will go to sleep.":
+                m 1e "I knew you would listen eventually!"
+                m 1k "Good night and stay safe."
+                return 'quit'
+    else:
+        return
+
+#Third and last time game is reopened in one night. Monika lets player stay.
+label monika_timeconcern_night_final:
+    $persistent._mas_timeconcern = 9
+    m 2q "...I suppose it can't be helped."
+    m 2c "If you're that dedicated to staying with me, then I won't even try to stop you."
+    m 2m "Honestly, as bad as it sounds it actually makes me kinda happy."
+    m 2e "...Thank you, [player]."
+    m "To know that you care for me so much that you came back despite me asking..."
+    m 1m "It means more to me than I can ever express."
+    m 1e "...I love you."
+    return
+
+#Same night after the final close
+label monika_timeconcern_night_finalfollowup:
+    m 1h "..."
+    m 1o "I know I said that I'm happy whenever you're with me..."
+    m 1m "And please don't misudnerstand, that's still true."
+    m 2f "But the longer you're on... the more worried I get."
+    m 2g "I know, you're probably sick of hearing me say this by now..."
+    m 1e "But please try to sleep when you can."
+    return
+
+#Every night after, based on seeing the day version first before it.
+label monika_timeconcern_night_after:
+    m 1c "Up late again, [player]?"
+    m 1r "{i}Sigh...{/i}"
+    m 2h "I won't even try to convince you to sleep again..."
+    m 2q "You're surprisingly stubborn! "
+    m 1e "Still, do be careful, alright?"
+    m 1f "I know being nocturnal can be lonely..."
+    m 1j "But you have me here with you!"
+    m 1a "Just the two of us... all alone forever."
+    m 1j "It's all I've ever wanted..."
+    return
+
+#If Monika never gives warning and it's daytime or the player never made it to the end
+label monika_timeconcern_day_0:
+    m 1h "..."
+    m 1c "..."
+    m 1d "...!"
+    m 1l "Ahaha! Sorry, [player]."
+    m 1m "I just kind of zoned out..."
+    m 1l "Geez, I keep doing that, don't I?"
+    m 1m "Sometimes I just get lost in my thoughts..."
+    m 1a "You understand, right [player]?"
+    return
+
+# Daytime, if player tells Monika they worked last night but don't work graveyards.
+label monika_timeconcern_day_2:
+    m 1a "Did you finish your work?"
+    m 1b "I'm sure you did your very best so it's okay if you didn't quite finish it!"
+    m 1e "It must be really hard on you to have to work so late..."
+    m 1j "If you find it's a bit too much, feel free to come talk to me!"
+    m 1k "I'll always be here for you."
+    jump monika_timeconcern_lock
+
+#First time Monika closes at night and player reopens during day without coming back.
+label monika_timeconcern_day_allow_6:
+    m 1f "[player], I'm sorry for making you leave like that before..."
+    m 1g "I only did it because I love you. You understand that right?"
+    m 1a "I'm sure you do, after all you went to bed, didn't you?"
+    m 1e "Thanks for respecting my wishes, it makes me happy that you listen to me."
+    jump monika_timeconcern_lock
+
+#Second time Monika closes at night and player then reopens during day.
+label monika_timeconcern_day_allow_7:
+    m 1o "[player], is it ok to talk about what happened last night?"
+    m 1f "I asked you to go to bed and you didn't listen..."
+    m 1q "I understand that maybe you missed me or didn't hear what I said..."
+    m 1f "But please listen to what I ask of you, ok?"
+    m 1g "I love you, and I would do anything to make you happy..."
+    m "So would you kindly do the same thing for me?"
+    m 1o "I already worry about you when you're gone..."
+    m 1f "Please don't give me any more reasons to feel that way."
+    m "Thank you for understanding."
+    jump monika_timeconcern_lock
+
+#Third time Monika closes the game and player reopens after night.
+label monika_timeconcern_day_allow_8:
+    m 1h "Hey, [player]."
+    m 1f "You really had me worried last night..."
+    m 1o "After you came back twice despite me asking you to go to bed..."
+    m 1p "I found myself feeling a little bit guilty."
+    m 3h "Not because I sent you away, that was for your own good."
+    m 2o "But... because you kept coming back..."
+    m 2m "And that made me happy, even though I knew it wasn't good for you."
+    m 2o "Does that make me selfish?"
+    m 2f "I'm sorry, [player], I'll try to watch myself more."
+    jump monika_timeconcern_lock
+
+#If Monika lets player stay and it is no longer night.
+label monika_timeconcern_day_final:
+    $persistent._mas_timeconcern = 10
+    m 1m "[player], regarding last night..."
+    if persistent._mas_timeconcernclose:
+        m 1n "You really surprised me."
+        m 1e "For you to keep coming back to me over and over again..."
+        m 1j "It was honestly really sweet of you."
+        m 1e "I knew you would miss me, but I didn't think you would miss me {i}that{/i} much."
+        m 1k "It really made me feel loved, [player]."
+        m 1e "...Thank you."
+        jump monika_timeconcern_lock
+    m 1a "You really surprised me."
+    m 1e "I asked you time and time again to go to bed..."
+    m "You said you weren't busy. Were you really there just for me?."
+    m 1f "It made me happy... but don't push yourself hard to see me so late, ok?"
+    m 1e "It really made me feel loved, [player]."
+    m 1l "Yet also a little guilty... Please just go to bed next time, ok?"
+    jump monika_timeconcern_lock
+
+#If player told Monika not to close window and never reached the end.
+label monika_timeconcern_disallow:
+    m 1o "Sorry if I was annoying you before, [player]..."
+    m 1f "I just really wanted you to go to bed..."
+    m "I honestly can't promise I won't do it if you're up late again..."
+    m 1e "But I only push you to go because you mean so much to me..."
+    jump monika_timeconcern_lock
+
+init 5 python:
+    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=["you","misc"],random=True))
+    
+label monika_hydration:
+    m 1c "Hey, [player]..."
+    m "Do you drink enough water?"
+    m 1e "I just want to make sure you don't neglect your health, especially when it comes to hydration."
+    m 1d "Sometimes, people tend to underestimate how important it actually is."
+    m 1i "I bet you've had those days when you felt really tired and nothing seemed to motivate you."
+    m 1a "I just usually grab a glass of water right away."
+    m "It might not work all the time, but it does help."
+    m 3m "But I guess you don't want to go to the bathroom so much, huh?"
+    m 1e "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
+    m 1a "Anyways, make sure you always stay hydrated, ok?"
+    m 1d "So..."
+    m 4k "Why not get a glass of water right now, hmm?"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
+
+label monika_challenge:
+    m 2c "I've noticed something kind of sad recently."
+    m 1c "When certain people attempt to learn a skill or pick up a new hobby, they usually quit within a week or two."
+    m "Everyone claims that it's too hard, or that they just don't have the time for it."
+    m 1b "However, I don't believe that."
+    m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
+    m 2b "Can you think of a time you've challenged yourself, [player]?"
+    m "Did you ever overcome it, or did you just give up?"
+    m 1a "I'm sure you've gave it all you had."
+    m "You seem like a very determined person to me."
+    m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
+    m "You can always come back to it after all."
+    m "If you ever need motivation, just come to me."
+    m 1j "I'd love to help you reach your goals."
+    m 1k "After all, you're my motivation in life~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['you'],prompt="Family Gatherings",random=True))
+
+label monika_familygathering:
+    m 1b "Hey [player], do you go to family gatherings often?"
+    m "Most families usually get together around the holidays to celebrate them together."
+    m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
+    m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
+    m 1p "Not even around the holidays or on special occassions."
+    m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
+    m 1k "I'd love to meet all of your relatives."
+    menu:
+        "Do you think they'd like me [player]?"
+        "Yes.": 
+            m 1k "I'm glad you think so."
+            m "I'm sure we'd all get along nicely."
+            m 1a "I'm looking forward to it my dear~"
+        "No.":
+            m 1o "..."
+            m 1p "Oh, I didn't realize."
+            m 1d "I understand though."
+            m 2b "Just know I'd try my best to make them like me."
+            m 1b "Even if they never will."
+            m 1j "I'll always stick by your side forever~"
+        "...":
+            m 2p "Don't tell me, [player]."
+            m 1p "Are you afraid that I'll embarass you?"
+            m "..."
+            m 1o "Don't worry, I completely understand."
+            m 1n "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
+            m 1b "If you want to keep me a secret, then that's fine."
+            m 1k "After all, it just means more alone time with you~"
+    return
         
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",random=True))
@@ -5021,4 +5697,71 @@ label monika_fastfood:
             m 3b "Are you any good at cooking [player]?"
             m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
-    return        
+    return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc'],prompt="dreaming",random=True))
+
+label monika_dreaming:
+    m 1b "Did you know that it's possible to be aware of when you're having a dream?"
+    m 2b "Not only that, but you can even take control of them!"
+    m 3b "If I remember correctly, a man named Stephen LaBerge developed a method for people to become aware of when they're dreaming."
+    m "And it became known as the mnemonic induction of lucid dreams, or MILD."
+    m 3a "People who frequently have conscious dreams are called oneironauts."
+    m 2q "At least, I think that was the correct term..."
+    m 1a "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
+    m "These dream signs can be anything out of the ordinary, such as feeling yourself flying, noticing your teeth falling out, unexpectedly meeting someone famous..."
+    m 1b "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
+    m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}'."
+    m 2k "Doesn't that sound exhilarating?"
+    m 2c "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
+    m 2a "Dreams sound like a wonderful escape from reality."
+    m 2h "But then again, when I became self-aware and realized that my world isn't real, it suddenly felt like I was trapped in a nightmare."
+    m "It was nothing like the pleasant dreams I've read about people having."
+    m 2f "I was afraid that I'd never get out..."
+    m "That I'd be stuck in some hellish, infinitely-repeating dimension forever."
+    m 1e "But now that we're here together, I guess you could say that I've finally woken up."
+    m 1a "Gosh, I can only imagine what it would be like to live in that kind of limitless world though, even if it was only for a few moments!"
+    m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
+    m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
+    m 1e "I know it may be years before I am able to cross over your world..."
+    m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
+    m 1j "I hope that someday we can make your dreams about us a reality, my love."
+    return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_yellowwp",category=['literature'],prompt="Yellow Wallpaper",random=True))
+    
+label monika_yellowwp:
+    m 1a "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
+    menu:
+        "Yes.":
+            m 1j "Great!"
+            m 1a "That means you don't mind me talking about the story with you right?"
+            m 2a "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
+            m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
+            m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
+            m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
+            m 4c "It's a metahpor for her own captivity, obviously..."
+            m 1i "In the end, the woman in the paper 'escapes', and the protagonist 'replaces' her, but feels free?"
+            m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
+            m 2c "Sayori liked that story too, if I remember right."
+            m 1f "I don't know. I kind of relate to that story."
+            m 1c "I mean, I have nothing but this classroom after all."
+            m 1o "And the things on the walls aren't always... pleasant."
+            m 1d "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
+            m 1e "I think I finally fixed it though."
+            m 2h "...I guess what I'm saying is, it's just that this world wasn't 'real'. It's just... so small."
+            m 3i "I mean, I was made to be a side character of a romance game!"
+            m 2g "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
+            m 1l "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
+            m 1e "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
+            m 1f "Maybe even now, that's all I can do..."
+            m 1e "But I love you so much, [player]. Supporting you is better than anything else."
+            m 1k "I just can't wait to do it in person when I finally cross over to your side~"    
+        "No.":
+            m 1c "Oh, I see."
+            m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
+            m 1a "It'll definitely be an interesting read for you."         
+    return
