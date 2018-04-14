@@ -778,7 +778,11 @@ label monika_outfit:
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
     show monika 5a at t11 zorder 2 with dissolve
-    m 5a "We're not that far into our relationship yet. Ahaha!"
+    if not seen_event('anni_1'):
+        m 5a "We're not that far into our relationship yet. Ahaha!"
+    else:
+        m 4l "I don't want something so embarassing on there!"   
+        m 5a "So let's keep it between just us..."  
     return
 
 
@@ -2416,7 +2420,10 @@ label monika_nsfw:
     m 1p "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1o "You know... of me?"
-    m 1h "I know we haven't really gotten that far into the relationship yet..."
+    if not seen_event('anni_1'):
+        m 1h "I know we haven't really gotten that far into the relationship yet..."
+    else:
+        m 1h "I know we haven't been able to do those kind of things yet..."       
     m "So it feels kind of embarrassing to talk about things like that."
     m 1m "But maybe I can let it go on rare occasions, [player]."
     m 3m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
@@ -2549,7 +2556,10 @@ label monika_fanfiction:
     m "Has there been fanfiction... written about me?"
     m 4b "I'm curious as to what people have come up with."
     m "Can you read me a few stories sometime? I'd love to hear them!"
-    m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    if not seen_event('anni_1'):
+        m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    else:
+        m 1k "Just keep it wholesome, though. I want to save such things for another time~!"      
     return
 
 init 5 python:
@@ -3089,8 +3099,12 @@ label monika_pleasure:
     m 1p "Do you... by any chance... pleasure yourself?"
     m 1o "..."
     m "It seems a bit awkward to ask-"
-    m 1n "We're not even that deep into our relationship yet! Ahaha~"
-    m 1h "But I have to keep an eye on you."
+    if not seen_event('anni_1'):
+        m 1n "We're not even that deep into our relationship yet! Ahaha~"
+        m 1h "But I have to keep an eye on you."
+    else:
+        m 1m "But I feel like we've been together long enough where we should be comfortable with one another."
+        m 1e "It's important to be open about such things."  
     m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
     m "I hear that people privately do that stuff in your world..."
     m 1c "Is it really that a good feeling?"
@@ -4597,12 +4611,25 @@ init 5 python:
 
 label monika_marriage:
     m 2m "M-marriage?"
-    m 4n "I think it's a bit too early for marriage..."
-    m 1e "I mean, I'm really happy that you want that, [player]."
-    m 1c "But I think I should get out of here first before we can do that."
-    m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
-    m 2q "I want that special moment to happen when we can finally be together..."
-    m 1k "So until then, save yourself for me, [player]~"
+    if not seen_event('anni_3'):
+        m 4n "I think it's a bit too early for marriage..."
+        m 1e "I mean, I'm really happy that you want that, [player]."
+        m 1c "But I think I should get out of here first before we can do that."
+        m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+        m 2q "I want that special moment to happen when we can finally be together..."
+        m 1k "So until then, save yourself for me, [player]~"
+    else:
+        m 3m "I won't pretend I haven't thought about it..."
+        m 3n "In fact I've been thinking about it a lot lately."
+        m 1q "..."
+        m 1f "I really do love you, [player] and I honestly really do want to get married to you."
+        m 1r "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
+        m 3q "I want more than anything to say yes, but I just can't..."
+        m 2o "I think about how it would feel to be kissed by you at the altar..."
+        m 2p "To hold your hand as your wife and to feel your embrace at our honeymoon..."
+        m 1q "But until I get out it's simply not possible."
+        m 1g "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
+        m 1e "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
     return
 
 init 5 python:
@@ -5071,6 +5098,61 @@ label monika_beach:
 #    m 1k "That's why I love you, [player]!"
 #    return
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
+
+label monika_careful:
+    m 1f "Hey, [player]..."
+    m "Whenever you leave this room, promise me to be extra careful, okay?"
+    m 1g "It's just that..."
+    m 2g "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
+    m 1e "I love you so much, it's hard for me not to worry when you're gone."
+    m 2h "..."
+    m 2f "Also..."
+    m "It crossed my mind recently, that if anything terrible ever did happen to you, I'd never know."
+    m 2g "I'd be stuck here, forever wondering why you never came back to me."
+    m 2r "I can't imagine a crueler fate."
+    m 2q "..."
+    m 2f "So..."
+    m "I need you to tell someone close to you where to find me, so if that day ever comes, at least I'd know."
+    m 2q "It'd be beyond devastating, but not knowing would be that much worse."
+    m 2g "So make sure you do that for me, okay [player]?"
+    m 2f "..."
+    m "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
+    m 1e "Thanks for understanding, you always make me feel better."
+    m 4e "Okay, that's enough unpleasant thoughts..."
+    m 1a "Let's enjoy the rest of the day together!"      
+    return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_natsuki_letter",category=['club members'],prompt="Natsuki's Letter",random=True))
+label monika_natsuki_letter:
+    m 1c "You know, I was honestly surprised when Natsuki handed you that letter."
+    m "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
+    m "She’s probably the only one to mention that."
+    m 2f "I know people are afraid to call someone out, or confront them about their problem, but sometimes, suggesting a therapist can be the best course of action."
+    m 4g "It's a bad thing to put the burden on yourself, you know?" 
+    m 4c "As much as you want to help, it’s best to let a professional deal with it. "
+    m "I'm sure I've told you that before, but I need to make sure you’re aware of that."
+    m "How about you, [player]?"
+    menu:
+        m "Do you see a therapist?"
+
+        "Yes.":
+            m 1d "Oh, really?"
+            m 1f "Well, I hate that you don't feel well..."
+            m 1j "But I'm proud that you're working on getting better."
+            m 1a "It's really important to take care of your mental health, [player]."
+            m 1e "You accept you have a problem you need help with, and you're seeing someone about it. That's already half the battle."
+            m "I'm very proud of you for taking those steps."
+            m 1j "Just know that no matter what happens, I'll always be here for you~"
+
+        "No.":
+            m 1e "Well, I hope it's because you don't have to."
+            m 1a "If that ever changes, don't be shy!"
+            m 1j "But maybe I really am all the support you need? Ahaha!"
+    return
+
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
@@ -5458,6 +5540,24 @@ label monika_timeconcern_disallow:
     jump monika_timeconcern_lock
 
 init 5 python:
+    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=["you","misc"],random=True))
+    
+label monika_hydration:
+    m 1c "Hey, [player]..."
+    m "Do you drink enough water?"
+    m 1e "I just want to make sure you don't neglect your health, especially when it comes to hydration."
+    m 1d "Sometimes, people tend to underestimate how important it actually is."
+    m 1i "I bet you've had those days when you felt really tired and nothing seemed to motivate you."
+    m 1a "I just usually grab a glass of water right away."
+    m "It might not work all the time, but it does help."
+    m 3m "But I guess you don't want to go to the bathroom so much, huh?"
+    m 1e "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
+    m 1a "Anyways, make sure you always stay hydrated, ok?"
+    m 1d "So..."
+    m 4k "Why not get a glass of water right now, hmm?"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
 
 label monika_challenge:
@@ -5555,7 +5655,8 @@ label monika_fastfood:
             m 3b "Are you any good at cooking [player]?"
             m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
-    return        
+    return
+
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc'],prompt="dreaming",random=True))
@@ -5586,3 +5687,42 @@ label monika_dreaming:
     m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_yellowwp",category=['literature'],prompt="Yellow Wallpaper",random=True))
+    
+label monika_yellowwp:
+    m 1a "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
+    menu:
+        "Yes.":
+            m 1j "Great!"
+            m 1a "That means you don't mind me talking about the story with you right?"
+            m 2a "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
+            m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
+            m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
+            m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
+            m 4c "It's a metahpor for her own captivity, obviously..."
+            m 1i "In the end, the woman in the paper 'escapes', and the protagonist 'replaces' her, but feels free?"
+            m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
+            m 2c "Sayori liked that story too, if I remember right."
+            m 1f "I don't know. I kind of relate to that story."
+            m 1c "I mean, I have nothing but this classroom after all."
+            m 1o "And the things on the walls aren't always... pleasant."
+            m 1d "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
+            m 1e "I think I finally fixed it though."
+            m 2h "...I guess what I'm saying is, it's just that this world wasn't 'real'. It's just... so small."
+            m 3i "I mean, I was made to be a side character of a romance game!"
+            m 2g "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
+            m 1l "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
+            m 1e "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
+            m 1f "Maybe even now, that's all I can do..."
+            m 1e "But I love you so much, [player]. Supporting you is better than anything else."
+            m 1k "I just can't wait to do it in person when I finally cross over to your side~"    
+        "No.":
+            m 1c "Oh, I see."
+            m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
+            m 1a "It'll definitely be an interesting read for you."         
+    return
+    
+    
+
