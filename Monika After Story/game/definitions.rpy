@@ -85,6 +85,8 @@ python early:
     #       NOTE: refer to RULES documentation in event-rules
     #       NOTE: if you set this to None, you will break this forever
     #       (Default: empty dict)
+    #   last_seen - datetime of the last time this topic has been seen
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -103,7 +105,8 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-            "rules":14
+            "rules":14,
+            "last_seen":15
         }
 
         # name constants
@@ -137,7 +140,8 @@ python early:
                 end_date=None,
                 unlock_date=None,
                 diary_entry=None,
-                rules=dict()
+                rules=dict(),
+                last_seen=None
             ):
 
             # setting up defaults
@@ -186,7 +190,8 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                rules
+                rules,
+                last_seen
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
