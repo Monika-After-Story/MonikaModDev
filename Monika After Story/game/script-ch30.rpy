@@ -697,9 +697,10 @@ label ch30_loop:
                         random=True
                     ).values()
                     monika_random_topics.sort(key=Event.getSortShownCount)
-                    monika_random_topics = [
-                        ev.eventlabel for ev in monika_random_topics
-                    ]
+                    monika_random_topics = mas_cleanJustSeen(
+                        [ev.eventlabel for ev in monika_random_topics],
+                        evhand.event_database
+                    )
                     # NOTE: now the monika random topics are back to being
                     #   labels. Safe to do normal operation.
 
