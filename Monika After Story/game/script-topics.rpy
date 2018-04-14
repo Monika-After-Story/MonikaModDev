@@ -5079,6 +5079,41 @@ label monika_beach:
     m 1k "Don't get too excited though when you see it, Ehehehe~"
     return
 
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_attractiveness",category=['club members','society'],prompt="Attractiveness",random=True))
+
+label monika_attractiveness:
+    m 3a "Say, [player], have you ever wondered how Sayori stayed so slim?"
+    m 3b "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
+    m 3a "At first I figured that it must be her metabolism keeping her from putting on weight."
+    m 1d "But when I learned that Sayori wasn't real, I came up with another theory."
+    m 3d "As a character in a game, she needed to have some sort of visual representation so that you, [player], could see her."
+    m "So a designer, possibly more than one, must have decided to draw her that way."
+    m 3b "And since all the images have the same body type, Sayori would always have the same figure no matter what she did."
+    m 1a "It would have to work like that for Yuri and Natsuki too."
+    m 1c "They decided that Natsuki should have a petite figure and that Yuri should be taller and ...{w} more developed."
+    m 1h "But haven't you noticed that the three of them still look similar in a lot of ways?"
+    m 4i "Like, none of them are muscular or fat ..."
+    m "... none of them have any kind of physical disability ..."
+    m "... none of them are bald or have hair shorter than chin length ..."
+    m "... and apart from Yuri having cuts on her arm, none of them have anything wrong with their skin."
+    m 2q "The designers must have thought that people would find all that stuff really repulsive."
+    m 2g "But people who aren't conventionally attractive end up in relationships all the time!"
+    m 2p "So did they really have to make the other girls so perfect-looking?"
+    m 2r "Did they really have to make it even harder for me to get chosen?"
+    m 2q "..."
+    m 2n "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
+    m 4a "Since I'm real unlike them, I don't get to look good for free."
+    m "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
+    m 4b "Well, I do that anyway because I want to stay healthy, but I also don't want you to find me repulsive."
+    m 1a "I must be doing a good job so far."
+    m 1j "After all, you've been looking at me all this time! Ahaha!"
+    m 1a "You don't have to worry though, [player]."
+    show monika 5a at t11 zorder 2 with dissolve
+    m 5a "I'll always love you no matter how you look."
+    return
+
 ####################################################
 # Saving this for future use
 # Could be expanded to something better
