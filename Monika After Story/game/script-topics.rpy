@@ -5085,7 +5085,7 @@ init 5 python:
 label monika_trick:
     m 1c "Say [player], I have a question..."
     m 3o "I hope I don't sound insecure when I say this..."
-    m 3m "I know you love me and only me but... if you had to choose one of the other club members..."
+    m 3m "I know you love me and only me but...if you {i}really{/i} had to choose one of the other club members to be with..."
     show screen mas_background_timed_jump(10, "monika_trick_2")
     menu:
         m "Who would you choose?"
@@ -5110,6 +5110,7 @@ label monika_trick_2:
             jump monika_trick_monika
 
 label monika_trick_yuri:
+    hide screen mas_background_timed_jump
     m 1h "I can see why, she's intelligent and physically attractive."
     m 3a "It's a good thing I have both of those qualities in abundance!"
     m 3d "Oh wait, it's not because she became obsessed over you, is it?"
@@ -5121,6 +5122,7 @@ label monika_trick_yuri:
     return
 
 label monika_trick_natsuki:
+    hide screen mas_background_timed_jump
     m 1h "That's... a little surprising."
     m 2n "I would have thought it would have been Sayori or Yuri."
     m 2a "Do you feel like you connect with her because of her hobbies?"
@@ -5132,6 +5134,7 @@ label monika_trick_natsuki:
     return
 
 label monika_trick_sayori:
+    hide screen mas_background_timed_jump
     m 1h "That's what I expected..."
     m "It's because she was best friends with the main character, isn't it?"
     m 1i "It makes sense to have the main character end up with the childhood friend."
