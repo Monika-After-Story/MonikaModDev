@@ -1,3 +1,87 @@
+# Monika's sprites!
+# To add a new image, please scroll to the IMAGE section (IMG002)
+#
+###### SPRITE CODE (IMG001)
+# 
+# The sprite code system is a way of picking an appropriate sprite without
+# having to look up what the sprite looks like.
+# All expressions use this code system, with the exception of the original
+# 19 + some counterparts to the look right expressions. These will be written
+# out later.
+#
+# The sprite code system consists of:
+# <pose number><eyes type><eyebrow type><nose type><eyebag type><blush type>
+# <tears type><sweat type><emote type><mouth type>
+#
+# Only <pose number><eyes type><eyebrow type><mouth type> are required
+#
+# Here are the available values for each type:
+# <pose number> - arms/body pose to use
+#   1 - resting on hands (steepling)
+#   2 - arms crossed (crossed)
+#   3 - resting on left arm, pointing to the right (restleftpointright)
+#   4 - pointing right (pointright)
+#   5 - leaning (def)
+#
+# <eyes type> - type of eyes
+#   e - normal eyes (normal)
+#   w - wide eyes (wide)
+#   s - sparkly eyes (sparkle)
+#   t - straight/smug eyes (smug)
+#   c - crazy eyes (crazy) NOTE: UNUSED
+#   r - look right eyes (right)
+#   l - look left eyes (left)
+#   h - closed happy eyes (closedhappy)
+#   d - closed sad eyes (closedsad)
+#
+# <eyebrow type> - type of eyebrow
+#   f - furrowed / angery (furrowed)
+#   u - up / happy (up)
+#   k - knit / upset / concerned (knit)
+#   s - straight / normal / regular (mid)
+#
+# <nose type> - type of nose
+#   nd - default nose (def) NOTE: UNUSED
+#
+# <eyebag type> - type of eyebags
+#   ebd - default eyebags (def) NOTE: UNUSED
+#
+# <blush type> - type of blush
+#   bl - blush lines (lines)
+#   bs - blush shade (shade)
+#   bf - full blush / lines and shade blush (full)
+#
+# <tears type> - type of tears
+#   ts - tears streaming / running (streaming)
+#   td - dried tears (dried)
+#
+# <sweat type> - type of sweat drop
+#   sdl - sweat drop left (def)
+#   sdr - sweat drop right (right)
+#
+# <emote type> - type of emote
+#   ec - confusion emote (confuse) NOTE: UNUSED
+#
+# <mouth type> - type of mouth
+#   a - smile (smile)
+#   b - open smile (big)
+#   c - apathetic / straight mouth / neither smile nor frown (smirk)
+#   d - open mouth (small)
+#   o - gasp / open mouth (gasp)
+#   u - smug (smug)
+#   w - wide / open mouth (wide)
+#   x - disgust / grit teeth (disgust)
+#
+# For example, the expression code 1sub is:
+#   1 - resting on hands pose
+#   s - sparkly eyes
+#   u - happy eyebrows
+#   b - big open smile
+#
+# NOTE:
+# not every possible combination has been created as an image. If you want
+# a particular expression, make a github issue about it and why we need it.
+
 # This defines a dynamic displayable for Monika whose position and style changes
 # depending on the variables is_sitting and the function morning_flag
 define is_sitting = True
@@ -1246,9 +1330,60 @@ init -2 python:
             # custom standing mode
             
         return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
-        
+
 # Monika
 define monika_chr = MASMonika()
+
+#### IMAGE START (IMG002)
+# Image are created using a DynamicDisplayable to allow for runtime changes
+# to sprites without having to remake everything. This saves us on image
+# costs.
+#
+# To create a new image, these parts are required:
+#   eyebrows, eyes, nose, mouth (for sitting)
+#   head, left, right OR a single image (for standing)
+#
+# Optional parts for sitting is:
+#   sweat, tears, blush, emote, eyebags
+#   
+# Non-leaning poses require an ARMS part.
+# leaning poses require a LEAN part.
+#
+# For more information see mas_drawmonika function
+#
+#### FOLDER IMAGE RULES: (IMG003)
+# To ensure that the images are created correctly, all images must be placed in
+# a specific folder heirarchy.
+#
+# mod_assets/monika/f/<facial expressions>
+# mod_assets/monika/c/<clothing types>/<body/arms/poses>
+# mod_assets/monika/a/<accessories> NOTE: UNTESTED, do not use
+#
+# All layers must have a night version, which is denoted using the -n suffix.
+# All leaning layers must have a non-leaning fallback
+#
+## FACIAL EXPRESSIONS:
+# Non leaning filenames: 
+#   face-{face part type}-{face part name}{-n}.png 
+#   (ie: face-mouth-big.png / face-mouth-big-n.png)
+# leaning filenames:
+#   face-leaning-{face part type}-{face part name}{-n}.png
+#   (ie: face-leaning-eyes-sparkle.png / face-leaning-eyes-sparkle-n.png)
+#
+## BODY / POSE:
+# Non leaning filenames / parts:
+#   torso-{hair type}{-n}.png
+#   arms-{hair type}-{arms name}{-n}.png
+#   (ie: torso-def.png / torso-def-n.png)
+#   (ie: arms-def-steepling.png / arms-def-steepling-n.png)
+# Leaning filenames:
+#   torso-leaning-{hair type}-{lean name}{-n}.png
+#   (ie: torso-leaning-def-def.png / torso-leaning-def-def-n.png)
+#   
+#
+# 
+#
+
 
 image monika 1 = DynamicDisplayable(
     mas_drawmonika, 
