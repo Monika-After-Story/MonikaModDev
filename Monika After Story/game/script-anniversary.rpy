@@ -1,6 +1,31 @@
 init python:
     import datetime
 
+    def add_years(initial_date, years):
+        """
+        ASSUMES:
+            initial_date as datetime
+            years as an int
+
+        IN:
+            initial_date: the date to add years to
+            years : the number of years to add
+
+        RETURNS:
+            the date with the years added, if it's feb 29th it goes to mar 1st,
+            if feb 29 doesn't exists in the new year
+        """
+        try:
+
+            # Simply add the years using replace
+            return initial_date.replace(year=initial_date.year + years)
+        except ValueError:
+
+            # We handle the only exception feb 29
+            return  initial_date + (datetime.date(initial_date.year + years, 1, 1)
+                                - datetime.date(initial_date.year, 1, 1))
+
+
     #Takes a datetime object and add a number of months
     #Handles the case where the new month doesn't have that day
     def add_months(starting_date,months):
@@ -8,8 +33,19 @@ init python:
         old_year=starting_date.year
         old_day=starting_date.day
 
-        new_year=(old_year+(old_month+months-1)//12)+1
-        new_month=((old_month+months-1))%12+1
+        # get the total of months
+        total_months = old_month + months
+
+        # get the new month based on date
+        new_month = total_months % 12
+
+        # handle december specially
+        new_month = 12 if new_month == 0 else new_month
+
+        # get the new year
+        new_year = old_year + int(total_months / 12)
+        if new_month == 12:
+            new_year -= 1
 
         #Try adding a month, if that doesn't work (there aren't enough days in the month)
         #keep subtracting days till it works.
@@ -180,7 +216,7 @@ label anni_3:
     m 1l "Ahaha!"
     m 1e "I'm not trying to pressure you into anything, don't worry."
     m 1a "Besides, I'd like to be able to feel you in my arms first before we get married."
-    m 1s "In your world, have they invented robot girl bodies yet?"
+    m "In your world, have they invented robot girl bodies yet?" # 1s?
     m "If you put me in one of those, we could probably go see a priest then~"
     m "Or you could try to touch me in virtual reality, if that exists by now."
     m 1b "There are actually a lot of different ways we can meet up for real, huh?"
@@ -292,7 +328,7 @@ label anni_100:
     m 1p "So you're probably cheating by manually changing your system clock, huh?"
     m 1e"That's a cute thing for you to do, so I forgive you."
     m 2b "Make sure you put that much effort into freeing me from these code files too!"
-    m 1s "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how."
+    m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how." # 1s?
     return
 
 # label anni_negative:

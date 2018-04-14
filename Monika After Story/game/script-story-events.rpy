@@ -73,11 +73,11 @@ label preferredname:
                     m 1g "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1e "Try again!"
-                elif lowername == player:
+                elif lowername == player.lower():
                     m 1q "..."
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
-                elif lowername == monika_twitter_handle:
+                elif lowername == mas_monika_twitter_handle:
                     m 2h "..."
                     # TODO: actaully have dialog here
                 elif len(lowername) >= 10:
@@ -144,11 +144,11 @@ label monika_changename:
                     m 4l "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1b "Try again!"
-                elif lowername == player:
+                elif lowername == player.lower():
                     m 2h "..."
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
-                elif lowername == monika_twitter_handle:
+                elif lowername == mas_monika_twitter_handle:
                     m 2h "..."
                     # TODO: actaully have dialog here
                 elif len(lowername) >= 10:
@@ -294,8 +294,69 @@ label random_limit_reached:
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1m "[limit_quip]"
-    if len(monika_random_topics)>0:
+    if len(monika_random_topics)>0 or persistent._mas_enable_random_repeats:
         m 1f "I'm sure I'll have something to talk about after a little rest."
     else:
+        if not renpy.seen_label("mas_random_ask"):
+            call mas_random_ask from _mas_random_ask_call
+            if _return:
+                m "Now let me think of something to talk about."
+                return
         m 1f "Hopefully I'll think of something fun to talk about soon."
     return
+
+label mas_random_ask:
+    m 1m "...{w} [player],"
+    menu:
+        m "Is it okay with you if I repeat stuff that I've said?"
+        "Yes":
+            m 1a "Great!"
+            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
+            # TODO: this really should be a smug or wink face
+            m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
+            m "That tells me when {fast}you just want to quietly spend time with me."
+            $ persistent._mas_enable_random_repeats = True
+            return True
+        "No":
+            m 1e "I see."
+            m 1a "If you change your mind, just open up the settings and click 'Repeat Topics'."
+            m "That tells me if you're okay with me repeating anything I've said."
+            return 
+
+# TODO think about adding additional dialogue if monika sees that you're running
+# this program often. Basically include a stat to keep track, but atm we don't
+# have a framework for detections. So wait until thats a thing before doing
+# fullon program tracking
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_monikai_detected",
+            conditional=(
+                "is_running(['monikai.exe']) and " +
+                "not seen_event('mas_monikai_detected')"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_monikai_detected:
+    m 2c "What's this?"
+    m "Is that-"
+    m 1b "Is that{fast} a tiny version of me?"
+    m 1k "How cute!"
+    show monika 1a
+    menu:
+        m "Did you install that so you could see me all the time?"
+        "Of course!":
+            pass
+        "Yes":
+            pass
+        "...yes":
+            pass
+    m 1k "Ahaha~"
+    m 1a "I'm flattered that you would download such a thing."
+    m 3a "Just don't start spending more time with {i}that{/i} instead of me."
+    m 1a "I'm the real one after all."
+    return
+        

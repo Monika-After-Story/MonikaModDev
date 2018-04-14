@@ -19,7 +19,7 @@ Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
 
 *NOTE: Source files and files downloaded directed from the repository are for development purposes and may not behave as expected if used to mod the game. Please only use one of our [Release Versions](https://github.com/Backdash/MonikaModDev/releases).*
 
-For more help with installation, please see our [Frequently Asked Questions](https://github.com/Backdash/MonikaModDev/blob/master/FAQ.md)
+For more help with installation, please see our [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
 
 ### Features
 
@@ -65,34 +65,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            "monika_example", # event label
-            prompt="Example Topic", # button text
+            eventlabel="monika_example", # event label
             category=["example", "topic"], # list of categories this topic belongs in
+            prompt="Example Topic", # button text
             random=True, # True if this topic should appear randomly
             pool=True # True if this topic should appear in "Ask a Question"
         )
     )
 
 label monika_example:
-    m "This is an example topic."
-    m "I feel like this doesn't actually belong here..."
-    m "Why would somebody just add the example template directly into the mod?"
-    m "They really shouldn't be allowed to contribute to this repository anymore."
+    m 1a "This is an example topic."
+    m 3d "I feel like this doesn't actually belong here..."
+    m 2e "Why would somebody just add the example template directly into the mod?"
+    m 5r "They really shouldn't be allowed to contribute to this repository anymore."
     return
 ```
 **For full explanations and details on all the possible keywords for Event, check the documentation for Event located in `definitions.rpy`**
 
 For things more complicated than simple dialogue, consult the Ren'Py documentation available online.
 
-[More info is available in our Contributing Guide](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md)
+[More info is available in our Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines)
 
  ### Join the conversation
- If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/K2KuJeX). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Backdash/MonikaModDev/blob/master/CODE_OF_CONDUCT.md), which is essentially to be courteous and respectful.
+ If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/K2KuJeX). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Monika-After-Story/MonikaModDev/wiki/Code-of-Conduct), which is essentially to be courteous and respectful.
 
 ## Frequently Asked Questions
 
-A full FAQ is available here: [Frequently Asked Questions](https://github.com/Backdash/MonikaModDev/blob/master/FAQ.md)
-
+A full FAQ is available here: [Frequently Asked Questions](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ)
+For any questions about the Coding Style go here: [Coding Style](https://github.com/Monika-After-Story/MonikaModDev/wiki/Coding-Style)
+For Bug Testing: [Testing Flow and Bug Testing](https://github.com/Monika-After-Story/MonikaModDev/wiki/Testing-Flow-and-Bug-Testing)
+Troubleshooting: [Troubleshooting](https://github.com/Monika-After-Story/MonikaModDev/wiki/Troubleshooting) Dialogue Coding: [Dialogue Coding](https://github.com/Monika-After-Story/MonikaModDev/wiki/Dialogue-Coding)
 ## License info
 
-We do our best to conform to Team Salvato's [guidelines for fan works](http://teamsalvato.com/ip-guidelines/). All characters and original content are property of Team Salvato. Monika After Story is an open source project, and in addition to named contributors, this mod includes contributions from anonymous users of 4chan, where this project got its start. More info can be found on our [License Page](https://github.com/Backdash/MonikaModDev/blob/master/LICENSE.md).
+We do our best to conform to Team Salvato's [guidelines for fan works](http://teamsalvato.com/ip-guidelines/). All characters and original content are property of Team Salvato. Monika After Story is an open source project, and in addition to named contributors, this mod includes contributions from anonymous users of 4chan, where this project got its start. More info can be found on our [License Page](https://github.com/Monika-After-Story/MonikaModDev/wiki/License-and-Team-Salvato-Guidelines).
+
+## Build Status:
+### master: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=master)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### content: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=content)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### enhancement: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=enhancement)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### unstable: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=unstable)](https://travis-ci.org/Monika-After-Story/MonikaModDev)

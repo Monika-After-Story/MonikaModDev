@@ -36,10 +36,11 @@ label mas_piano_loopstart:
 
     # get song list
     $ song_list = mas_piano_keys.getSongChoices()
-    $ pnml = None
     $ play_mode = PianoDisplayable.MODE_FREE
 
 label mas_piano_songchoice:
+    
+    $ pnml = None
 
     if len(song_list) > 1:
         show monika 1a
@@ -358,6 +359,7 @@ init -3 python in mas_piano_keys:
 
     # noncharable keymaps and display text dict
     NONCHAR_TEXT = {
+        pygame.K_LEFTBRACKET: "[[",
         pygame.K_BACKSPACE: "\\b",
         pygame.K_TAB: "\\t",
         pygame.K_CLEAR: "Cr",
