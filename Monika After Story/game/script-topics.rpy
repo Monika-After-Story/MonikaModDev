@@ -1055,7 +1055,7 @@ label monika_simulated:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=['monika'],prompt="Sounds of rain",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
     m 3b "I really like the sound of rain..."
@@ -1063,12 +1063,64 @@ label monika_rain:
     m "But a nice, quiet day at home with the sound of rainfall outside my window..."
     m 3j "It's very calming to me."
     m "Yeah..."
-    show monika 5a at t11 zorder 2 with dissolve
     m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
     m "That's not too cheesy or anything, is it?"
     m "Would you ever do that for me, [player]?"
+    menu:
+        "Yes":
+            $ scene_change = True
+            $ mas_is_raining = True
+            call spaceroom
+            play background audio.rain fadein 1.0 loop
+            m "Then hold me, [player]..."
+            # TODO: nice expression here, plus a 10 second wait
+            # TODO: unlock the can you stop the rain
+            # TODO: can you stop the rain pool prompt
+        "I hate rain":
+            pass
+            # TODO stuff about how rain is gloomy or something
+            # TODO: lock the ask a questions with rain
+
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_stop",
+            category=["weather"],
+            prompt="Can you stop the rain?",
+            pool=True,
+            unlocked=False
+        )
+    )
+
+label monika_rain_stop:
+    # NOTE: the label is here because its related to monika_rain
+    # TODO: stopping hte rain dailogue
+
+    # lock this event, unlock the rainstart one
+    $ hideEventLabel("monika_rain_stop", lock=True)
+    $ store.evhand.event_database["monika_rain_start"].unlocked = True
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_start",
+            category=["weather"],
+            prompt="Can you make it rain?",
+            pool=True,
+            unlocked=False
+        )
+    )
+
+label monika_rain_start:
+    # TODO: starting the rain dialogue
+    # TODO: lock this sevent, unlock the rainstop one
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Simulated reality",random=True))
