@@ -41,7 +41,8 @@ init -500 python:
         True, # unlock_date
         True, # shown_count
         False, # diary_entry
-        False # rules
+        False, # rules
+        True # last_seen
     )
 
     # set defaults
@@ -112,6 +113,10 @@ init -1 python in evhand:
     UNSE_H = 640
     UNSE_XALIGN = -0.05
     UNSE_AREA = (UNSE_X, UNSE_Y, UNSE_W, UNSE_H)
+
+    # time stuff
+    import datetime
+    LAST_SEEN_DELTA = datetime.timedelta(hours=2)
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -338,6 +343,35 @@ init python:
         return
 
 
+    def mas_cleanJustSeen(eventlist, db):
+        """
+        Cleans the given event list of just seen items (withitn the THRESHOLD)
+        retunrs not just seen items
+
+        IN:
+            eventlist - list of event labels to pick from
+            db - database these events are tied to
+
+        RETURNS:
+            cleaned list of events (stuff not in the time THREASHOLD)
+        """
+        import datetime
+        now = datetime.datetime.now()
+        cleanlist = list()
+
+        for evlabel in eventlist:
+            ev = db.get(evlabel, None)
+
+            if ev:
+                if ev.last_seen:
+                    if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA:
+                        cleanlist.append(evlabel)
+
+                else:
+                    cleanlist.append(evlabel)
+
+        return cleanlist
+
 
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
@@ -366,6 +400,7 @@ label call_next_event:
 
             # increment shown count
             $ ev.shown_count += 1
+            $ ev.last_seen = datetime.datetime.now()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
