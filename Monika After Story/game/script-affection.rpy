@@ -41,8 +41,8 @@ init -1 python in mas_affection:
     G_SAD = -1
     G_HAPPY = -2
     G_NORMAL = -3
-    
-default persistent.mas_long_absence = False
+
+default persistent._mas_long_absence = False
 init python:
     #Functions to freeze exp progression for story events, use wisely.
     def mas_FreezeGoodAffExp():
@@ -73,22 +73,22 @@ init python:
         #If affection is between 30 and 49, update good exp. Simulates growing affection.
         if persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] < 50:
             persistent._mas_affection["goodexp"] = 3
-            persistent._mas_affection["badexp"] = -1
+            persistent._mas_affection["badexp"] = 1
 
         #If affection is more than 50, update both exp types. Simulates increasing affection and it will now take longer to erode that affection.
         elif persistent._mas_affection["affection"] >= 50:
             persistent._mas_affection["goodexp"] = 5
-            persistent._mas_affection["badexp"] = -0.5
+            persistent._mas_affection["badexp"] = 0.5
 
         #If affection is between -30 and -49, update bad exp. Simulates erosion of affection.
         elif persistent._mas_affection["affection"] <= -30 and persistent._mas_affection["affection"] > -50:
             persistent._mas_affection["goodexp"] = 1
-            persistent._mas_affection["badexp"] = -3
+            persistent._mas_affection["badexp"] = 3
 
         #If affection is less than -50, update both exp types. Simulates increasing loss of affection and now harder to get it back.
         elif persistent._mas_affection["affection"] <= -50:
             persistent._mas_affection["goodexp"] = 0.5
-            persistent._mas_affection["badexp"] = -5
+            persistent._mas_affection["badexp"] = 5
 
         #Defines an easy current affection statement to refer to so points aren't relied upon.
         if persistent._mas_affection["affection"] <= -100:
@@ -145,7 +145,16 @@ init python:
         ):
         if not persistent._mas_affection_badexp_freeze:
             #Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] += amount
+            persistent._mas_affection["affection"] -= amount
+            #Updates the experience levels if necessary.
+            mas_updateAffectionExp()
+
+    def mas_setAffection(
+            amount=persistent._mas_affection["affection"]
+        ):
+        if not persistent._mas_affection_badexp_freeze and not persistent_mas_affection_goodexp_freeze:
+            #Otherwise, use the value passed in the argument.
+            persistent._mas_affection["affection"] = amount
             #Updates the experience levels if necessary.
             mas_updateAffectionExp()
 
@@ -174,33 +183,28 @@ init python:
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
     #Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
     #is equal to the amount of points it's added or removed in minutes.
-
-    #Monika's initial affection based on start-up. Need to decide on super exp before we do anything else...
-    #Monika closed game herself and how happy she is determines on time between closed game and reopening.
-    #if persistent.closed_self == True:
-        #if persistent.mas_long_absence == True:
-            #$ persistent.mas_long_absence = False
-            #$ persistent.mas_long_absence_cooldown = datetime.datetime.now()
-        #else:
-
-            #if datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 6) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 12) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(hours = 18) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 1):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 1) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 2):)
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 2) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 4):
-
-
-            #elif datetime.datetime.now() > persistent.sessions["last_session_end"] + datetime.timedelta(days = 4) and datetime.datetime.now() < persistent.sessions["last_session_end"] + datetime.timedelta(days = 14):
-
-        #persistent.mas_long_absence = False
+    
+    #Makes the game update affection on start-up so the global variables are defined at all times.
+    mas_updateAffectionExp()
+    
+    #Monika's initial affection based on start-up.
+    if not persistent._mas_long_absence:
+        if persistent.sessions["last_session_end"] is not None:
+            persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
+            time_difference = persistent._mas_absence_time
+            if time_difference >= datetime.timedelta(hours = 6) and time_difference <= datetime.timedelta(hours = 12):
+                #mas_gainAffection()
+                pass
+            elif time_difference >= datetime.timedelta(weeks = 4):
+                mas_setAffection(-115)
+                mas_FreezeBothAffExp()
+            elif time_difference >= datetime.timedelta(weeks = 3):
+                mas_loseAffection(70)
+            elif time_difference >= datetime.timedelta(weeks = 2):
+                mas_loseAffection(50)
+            elif time_difference >= datetime.timedelta(weeks = 1):
+                mas_loseAffection(30)
+    
 #Unlocked when affection level reaches 50.
 #This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 #There is a character limit of 10 characters.
