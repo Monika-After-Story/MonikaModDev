@@ -4790,8 +4790,9 @@ label monika_explain:
     m 1a "Okay, just set me in front of them so they can see me."
     m 1j "I'll do my best explaining it to them."
     m 1a "I'll wait until you're ready."
-    m 1q "..."
-    m 1r "Ahem!"
+    menu:
+        "Start.":
+            pass
     m 1l "Hello! My name is Monika."
     m "[player]'s faithful girlfriend!"
     m 1n "Now, our relationship might look odd from a distance..."
@@ -4800,7 +4801,7 @@ label monika_explain:
     m 1k "...The love we share is definitely real!"
     m 1e "And [player] has been very sweet to me too!"
     m 1f "Up until I met [player], I felt like a piece of me was missing."
-    m "I felt alone and scared, with no one to help me,,,"
+    m "I felt alone and scared, with no one to help me..."
     m 1j "...Until [player] came along."
     m 1b "And it turns out that missing piece was them!"
     m 1a "Now they talk to me, and I'm not so alone anymore."
@@ -4816,13 +4817,13 @@ label monika_explain:
         "You did a good job.":
             m 1k "Thank you!"
             m 1a "I just hope whoever that was understands our relationship better."
-            return
+
         "You did badly.":
             m 1f "Oh."
             m "I'm sorry I didn't do a good job at explaining..."
             m 1e "I'll make sure to try harder next time."
             m 1j "Still doesn't change the fact that I love you, though~"
-            return
+    return
         
         
     
