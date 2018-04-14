@@ -357,12 +357,20 @@ init python:
         """
         import datetime
         now = datetime.datetime.now()
-        return [
-            db[evlabel].eventlabel
-            for evlabel in eventlist
-            if now - db[evlabel].last_seen >= store.evhand.LAST_SEEN_DELTA
-        ]
+        cleanlist = list()
 
+        for evlabel in eventlist:
+            ev = db.get(evlabel, None)
+
+            if ev:
+                if ev.last_seen:
+                    if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA:
+                        cleanlist.append(evlabel)
+
+                else:
+                    cleanlist.append(evlabel)
+
+        return cleanlist
 
 
 # This calls the next event in the list. It returns the name of the
