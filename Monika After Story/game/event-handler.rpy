@@ -251,6 +251,27 @@ init python:
                 event.conditional = None
 
 
+    def lockEvent(ev):
+        """
+        Locks the given event object
+
+        IN:
+            ev - the event object to lock
+        """
+        hideEvent(ev, lock=True)
+
+
+    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Locks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+
+
     def pushEvent(event_label):
         #
         # This pushes high priority or time sensitive events onto the top of
@@ -278,6 +299,29 @@ init python:
 
         persistent.event_list.insert(0,event_label)
         return
+
+
+    def unlockEvent(ev):
+        """
+        Unlocks the given evnet object
+
+        IN:
+            ev - the event object to unlock
+        """
+        if ev:
+            ev.unlocked = True
+
+
+    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Unlocks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        unlockEvent(eventdb.get(evlabel, None))
+
 
     def popEvent(remove=True):
         #
