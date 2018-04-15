@@ -799,6 +799,6 @@ label ch30_reset:
             unlockEventLabel("monika_rain_start")
             lockEventLabel("monika_rain_stop")
             lockEventLabel("monika_rain_holdme")
-            lockEventLabel("monika_rain")
+            unlockEventLabel("monika_rain")
             
         
