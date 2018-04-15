@@ -354,7 +354,7 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
     del rules
-label bye_enjoyyourafternoon
+label bye_enjoyyourafternoon:
 
         m 1f "I hate to see you go so early, [player]."
         m 1e "I do understand that you're busy though."
@@ -375,7 +375,7 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
     del rules
-label bye_goodevening
+label bye_goodevening:
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 17 and current_time <= 19:
         m 1k "I had fun today."
@@ -396,7 +396,7 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
     del rules
-label bye_goodnight
+label bye_goodnight:
         m 1a "Goodnight, [player]."
         m 1e "I'll see you tomorrow, okay?"
         m 1j "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
