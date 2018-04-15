@@ -3,8 +3,6 @@
 #to either be a random topic, a prompt "pool" topics, or a special conditional
 #or date-dependent event with an appropriate action
 
-$ import store.songs as songs
-
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
@@ -14,6 +12,10 @@ define mas_did_monika_battery = False
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
+
+    import store.songs as songs
+    import store.evhand as evhand
+
     def remove_seen_labels(pool):
         #
         # Removes seen labels from the given pool
@@ -1069,17 +1071,32 @@ label monika_rain:
     menu:
         "Yes":
             $ scene_change = True
-            $ mas_is_raining = True
+            $ persistent._mas_is_raining = True
             call spaceroom
             play background audio.rain fadein 1.0 loop
             m "Then hold me, [player]..."
-            # TODO: nice expression here, plus a 10 second wait
-            # TODO: unlock the can you stop the rain
-            # TODO: can you stop the rain pool prompt
+            show monika 6dubsa
+            $ renpy.pause(10.0, hard=True)
+            m 1a "If you want the rain to stop, just ask me, okay?"
+
+            # lock / unlock the appropriate labels
+            $ evhand.unlockEventLabel("monika_rain_stop")
+            $ evhand.unlockEventLabel("monika_rain_holdme")
+            $ evhand.lockEventLabel("monika_rain_start")
+            $ evhand.lockEventLabel("monika_rain")
+
         "I hate rain":
-            pass
             # TODO stuff about how rain is gloomy or something
-            # TODO: lock the ask a questions with rain
+
+            # lock / unlock the appropraite labels
+            $ evhand.lockEventLabel("monika_rain_start")
+            $ evhand.lockEventLabel("monika_rain_stop")
+            $ evhand.lockEventLabel("monika_rain_holdme")
+            $ evhand.unlockEventLabel("monika_rain")
+
+    # unrandom this event if its currently random topic
+    if evhand.event_database["monika_rain"].random:
+        $ evhand.hideEventLabel("monika_rain", derandom=True)
 
     return
 
@@ -1101,8 +1118,10 @@ label monika_rain_stop:
     # TODO: stopping hte rain dailogue
 
     # lock this event, unlock the rainstart one
-    $ hideEventLabel("monika_rain_stop", lock=True)
-    $ store.evhand.event_database["monika_rain_start"].unlocked = True
+    $ evhand.lockEventLabel("monika_rain_stop")
+    $ evhand.unlockEventLabel("monika_rain_start")
+    $ evhand.unlockEventLabel("monika_rain")
+
     return
 
 init 5 python:
@@ -1119,7 +1138,34 @@ init 5 python:
 
 label monika_rain_start:
     # TODO: starting the rain dialogue
-    # TODO: lock this sevent, unlock the rainstop one
+
+    # lock this event, unlock rainstop and hold me
+    $ evhand.lockEventLabel("monika_rain_start")
+    $ evhand.lockEventLabel("monika_rain")
+    $ evhand.unlockEventLabel("monika_rain_stop")
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_holdme",
+            category=["monika"],
+            prompt="Can I hold you?",
+            pool=True,
+            unlocked=False
+        )
+    )
+
+label monika_rain_holdme:
+    # we only want this if it rains
+    if persistent._mas_is_raining:
+        # TODO say yes, let player hold
+
+    else:
+        # TODO no, the mood doesnt seem right
+
     return
 
 init 5 python:
