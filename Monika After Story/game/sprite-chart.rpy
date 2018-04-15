@@ -6776,7 +6776,7 @@ image monika 6dubsa = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 6dubsa = DynamicDisplayable(
+image monika 6dubsu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",

@@ -259,7 +259,7 @@ init python:
             morning_flag 
             mas_is_raining
         """
-        if mas_is_raining:
+        if persistent._mas_is_raining:
             # raining takes priority
             left_window = "rain_mask_left"
             right_window = "rain_mask_right"
