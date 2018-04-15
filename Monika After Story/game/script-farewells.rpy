@@ -198,6 +198,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
+            eventlabel="bye_prompt_to_class",
+            unlocked=True,
+            prompt="I'm going to class.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_prompt_to_class:
+    m 1j "Study hard, [player]!"
+    m 1 "Nothing is more attractive than a [guy] with good grades."
+    m 1j "See you later!"
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_to_work",
+            unlocked=True,
+            prompt="I'm going to work.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_prompt_to_work:
+    m 1j "Work hard, [player]!"
+    m 1 "I'll be here for you when you get home from work."
+    m 1j "Bye-bye!"
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
             eventlabel="bye_prompt_sleep",
             unlocked=True,
             prompt="I'm going to sleep.",

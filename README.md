@@ -102,4 +102,5 @@ We do our best to conform to Team Salvato's [guidelines for fan works](http://te
 ## Build Status:
 ### master: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=master)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
 ### content: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=content)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
-### next-release: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=next-release)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### enhancement: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=enhancement)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### unstable: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=unstable)](https://travis-ci.org/Monika-After-Story/MonikaModDev)

@@ -44,6 +44,10 @@ init 11 python:
     # for compatiblity purposes:
     monika_random_topics = all_random_topics
 
+    if len(monika_random_topics) == 0:
+        # you've seen everything?! here, higher session limit
+        random_seen_limit = 100
+
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
 #    monika_random_topics = [
@@ -3231,8 +3235,8 @@ label monika_closet:
     m 2n "You weren't doing anything... weird, in there, were you?"
     m 1k "Ahaha!"
     m 1m "Just teasing you~"
-    m "I know that you had your hand on her chest, [player]."
-    m 1e "Judging by the way you looked, you seemed more embarrassed than relieved when I opened the door."
+    m "I know she dragged you in there."
+    m 1e "I bet you felt more embarrassed than relieved when I opened the door."
     m "I know you aren't the type to force girls to go inside dark closets with you."
     m 1j "You're more romantic than that."
     m 3k "So I'm expecting a lot more than just a dark closet~"
@@ -4044,7 +4048,7 @@ label monika_dogs:
     m "Not to mention owning a dog has shown to help people with anxiety and depression since they're very sociable animals."
     m 3j "They're just so lovable, I really like them!"
     m 1m "I know Natsuki feels the same..."
-    m "She was always so embarassed to like cute things. I wish she was more accepting of her own interests."
+    m "She was always so embarrassed to like cute things. I wish she was more accepting of her own interests."
     m 2q "But..."
     m 2h "I suppose her environment had a hand in that."
     m 2f "If any of your friends have interests they care a lot about, make sure to always be supportive, okay?"
@@ -5062,6 +5066,48 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]."
                 m 1j "I love you very much!"
     return
+    
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['random'],prompt="The beach.",random=True))
+
+label monika_beach:
+    m 1a "[player], have you ever been to the beach?"
+    m "I've always wanted to go myself but I never found the time."
+    m 1e "I would always be busy studying or doing club activities."
+    m 4f "It wasn't easy trying to stay on top of everything, you know..."
+    m 4g "And whenever I had a break, I would usually spend my time relaxing at home."
+    m "I rarely had a chance to do so after all."
+    m 2h "Though sometimes I feel like I might have missed out making some important memories."
+    menu:
+        m "Do you live near a beach, [player]?"
+
+        "Yes.":
+            m 1k "That's great!"
+            m 1a "Gosh, it must be really nice to have it so close to you."
+            m 1j "I can't wait, we can have a romantic walk by the shore for our first date~"
+
+        "No.":
+            m 1e "That's alright, I mean what are the chances? Most people don't."
+            m 1k "That just means we'll make do by visiting one on an all-day trip!"
+    m 1a "There's so many things we'll be able to do one day."
+    m 1j "Just imagining the many sensations we could experience is kind of exciting!"
+    m 3k "The fresh sea air, the sound of seagulls."
+    m "As well as the feeling of sand under your feet..."
+    m 1j "It would really make a worthwhile trip!"
+    m 1e "Though being with you would make it even better..."
+    m 3a "We'd have so many things we could do together."
+    m 3b "We could play volleyball, try some ice cream or go swimming in the sea."
+    m 3n "It'll probably be cold, but I'm sure we could keep each other warm somehow..."
+    m 3a "We could try surfing or searching for some seashells to take home as souvenirs."
+    m "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
+    m 3k "But don't go falling asleep, otherwise I'll bury you in the sand!"
+    m 3l "Ahaha! I'm just kidding, [player]."
+    m 2m "I'll have to get a new swimsuit though..."
+    m 1a "I only have these clothes in the game after all."
+    m 1b "Would you prefer a one piece or a two piece?"
+    m 1j "Actually, I think I'll make it a surprise."
+    m 1k "Don't get too excited though when you see it. Ehehe~"
+    return
 
 ####################################################
 # Saving this for future use
@@ -5082,3 +5128,49 @@ label monika_asks_family:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+        
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
+
+label monika_fastfood:
+    m 1c "Hm? Do I like fast food?"
+    m 1o "Honestly, the thought of it slightly disgusts me."
+    m 3f "Most places that serve it put a lot of unhealthy things in their food."
+    m 1f "Even the vegetarian options can be awful."
+    menu:
+        m "[player], do you eat fast food often?"
+
+        "Yes, I do.":
+            m 3d "I guess it's ok to have it every once in a while."
+            m 2o "Yet I can't help but worry if you're eating such awful things."
+            m "If I were there, I'd cook much healthier things for you."
+            m 4l "Even though I can't cook very well yet..."
+            m 4k "Well, love is always the secret ingredient to any good food!"
+            m 1a "So [player], would you do something for me?"
+            m 3l "Could you please try to eat better?"
+            m "I would hate it if you became sick because of your lifestyle."
+            m 1e "I know it's easier to order out since preparing your own food can be a hassle sometimes..."
+            m 1a "But maybe you could see cooking as an opportunity to have fun?"
+            m 3b "Or perhaps a skill for you to become really good at?"
+            m 1j "Knowing how to cook is always a good thing, you know!"
+            m 1a "Plus, I would really love to try your dishes someday."
+            m "You could serve me some of your own dishes when we go on our first date."
+            m 1e "That would be really romantic~"
+            m 1b "And that way, we can both enjoy ourselves and you would be eating better."
+            m 1j "That's what I call a win-win!"
+            m 3d "Just don't forget, [player]."
+            m 3l "I'm a vegetarian! Ahaha!"
+
+        "No, I don't.":
+            m 1l "Oh, that's a relief."
+            m 1e "Sometimes you really worry me, [player]."
+            m 1a "I suppose instead of eating out, you make your own food?"
+            m "Fast food can be really expensive over time, so doing it yourself is usually a cheaper alternative."
+            m 1b "It also tastes a lot better!"
+            m 3n "I know some people can find cooking overwhelming..."
+            m 3f "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
+            m 1a "But I think the results are worth the effort."
+            m 3b "Are you any good at cooking [player]?"
+            m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
+            m 1n "As long as it's not charcoal or meat that is. Ehehe~"
+    return        

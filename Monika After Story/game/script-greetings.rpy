@@ -943,8 +943,6 @@ label greeting_sick:
             jump greeting_stillsick
     return
 
-# TODO:
-# sick greeting needs to meshed with new greeting system
 label greeting_stillsick:
     m 1f "[player], you really should go get some rest."
     m 1g "Getting plenty of rest is the best remedy for getting over a sickness quickly."

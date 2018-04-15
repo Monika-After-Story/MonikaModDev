@@ -23,7 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "0.7.2"
+define config.version = "0.7.4-hotfix.1"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -229,7 +229,7 @@ init python:
     build.classify("game/*.rpyc",build.name) #Serialized scripts must be included
     build.classify("game/dev/*.*",None) #But not the dev folder
     build.classify("README.html",build.name) #Included help file for mod installation
-    build.classify("game/python-packages/**.**",build.name)#Additional python pacakges
+    build.classify("game/python-packages/**",build.name)#Additional python pacakges
     build.classify("CustomIcon**.**",build.name)
 
 

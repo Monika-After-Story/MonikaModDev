@@ -358,6 +358,32 @@ label continue_event:
 
 label pick_a_game:
     if allow_dialogue and not songs.menu_open:
+        python:
+            # preprocessing for games
+
+            import datetime
+            _hour = datetime.timedelta(hours=1)
+            _now = datetime.datetime.now()
+            
+            # chess has timed disabling
+            if persistent._mas_chess_timed_disable is not None:
+                if persistent._mas_chess_timed_disable - _now >= _hour:
+                    chess_disabled = False
+                    persistent._mas_chess_timed_disable = None
+
+                else:
+                    chess_disabled = True
+
+            else:
+                chess_disabled = False
+
+            # single var for readibility
+            chess_unlocked = (
+                is_platform_good_for_chess()
+                and persistent.game_unlocks["chess"]
+                and not chess_disabled
+            )
+
         $previous_dialogue = allow_dialogue
         $allow_dialogue = False
         menu:
@@ -366,7 +392,7 @@ label pick_a_game:
                 if not renpy.seen_label('game_pong'):
                     $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
-            "Chess" if is_platform_good_for_chess() and persistent.game_unlocks['chess']:
+            "Chess" if chess_unlocked:
                 if not renpy.seen_label('game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
@@ -476,6 +502,9 @@ label ch30_autoload:
     # set the gender
     call set_gender from _autoload_gender
 
+    # call reset stuff
+    call ch30_reset
+
     # general affection checks that hijack flow
     if persistent._mas_affection["affection"] <= -115:
         jump mas_affection_finalfarewell_start
@@ -522,15 +551,21 @@ label ch30_autoload:
 
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
-        python:
 
-            sel_greeting_event = store.mas_greetings.selectGreeting()
-            selected_greeting = sel_greeting_event.eventlabel
+        # Sick mood special greeting flow
+        if persistent._mas_mood_sick:
+            $ selected_greeting = "greeting_sick"
 
-            # store if we have to skip visuals ( used to prevent visual bugs)
-            mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
-            )
+        else:
+            python:
+
+                sel_greeting_event = store.mas_greetings.selectGreeting()
+                selected_greeting = sel_greeting_event.eventlabel
+
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_event
+                )
 
     if not mas_skip_visuals:
         if persistent.current_track:
@@ -662,14 +697,14 @@ label ch30_loop:
         $ renpy.pause(waittime, hard=True)
         window auto
 
-        python:
-            if (
-                    mas_battery_supported
-                    and battery.is_battery_present()
-                    and not battery.is_charging()
-                    and battery.get_level() < 20
-                ):
-                pushEvent("monika_battery")
+#        python:
+#            if (
+#                    mas_battery_supported
+#                    and battery.is_battery_present()
+#                    and not battery.is_charging()
+#                    and battery.get_level() < 20
+#                ):
+#                pushEvent("monika_battery")
 
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
@@ -677,8 +712,17 @@ label ch30_loop:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
 
-                    if persistent._mas_monika_repeated_herself:
-                        sel_ev = monika_random_topics.pop(0)
+                    if mas_monika_repeated:
+                        # monika has reaached the reepated flow
+                        if persistent._mas_enable_random_repeats:
+                            sel_ev = monika_random_topics.pop(0)
+
+                        else:
+                            # otherwise we shouldnt be repeating
+                            monika_random_topics = list()
+                            mas_monika_repeated = False
+                            renpy.jump("post_pick_random_topic")
+
                     else:
                         sel_ev = renpy.random.choice(monika_random_topics)
                         monika_random_topics.remove(sel_ev)
@@ -704,6 +748,7 @@ label ch30_loop:
                     #   labels. Safe to do normal operation.
 
                     persistent._mas_monika_repeated_herself = True
+                    mas_monika_repeated = True
                     sel_ev = monika_random_topics.pop(0)
                     pushEvent(sel_ev)
                     persistent.random_seen += 1
@@ -715,6 +760,8 @@ label ch30_loop:
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
 
+label post_pick_random_topic:
+
     $_return = None
 
     jump ch30_loop
@@ -724,3 +771,20 @@ label ch30_loop:
 # monika, so we could probably throw in something here
 label ch30_end:
     jump ch30_main
+
+# label for things that may reset after a certain amount of time/conditions
+label ch30_reset:
+    python:
+        import datetime
+        today = datetime.date.today()
+
+    # reset mas mood bday
+    python:
+        if (
+                persistent._mas_mood_bday_last 
+                and persistent._mas_mood_bday_last < today
+            ):
+            persistent._mas_mood_bday_last = None
+            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
+            if mood_ev:
+                mood_ev.unlocked = True
