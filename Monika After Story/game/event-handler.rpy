@@ -22,12 +22,58 @@ image monika_waiting_img:
 transform prompt_monika:
     tcommon(950,z=0.8)
 
+init -500 python:
+    # initalies the locks db
+
+    # the template is the regular starter case for most events
+    mas_init_lockdb_template = (
+        True, # event label
+        False, # prompt
+        False, # label
+        False, # category
+        True, # unlocked
+        True, # random
+        True, # pool
+        True, # conditional
+        True, # action
+        True, # start_date
+        True, # end_date
+        True, # unlock_date
+        True, # shown_count
+        False, # diary_entry
+        False, # rules
+        True # last_seen
+    )
+
+    # set defaults
+    if persistent._mas_event_init_lockdb_template is None:
+        persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
+
+    elif len(persistent._mas_event_init_lockdb_template) != len(mas_init_lockdb_template):
+        # differing lengths mean we have new items to deal with
+
+        for ev_key in persistent._mas_event_init_lockdb:
+            stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
+
+            # splice and dice
+            lock_row = list(mas_init_lockdb_template)
+            lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
+            persistent._mas_event_init_lockdb[ev_key] = tuple(lock_row)
+
+    # set db defaults
+    if persistent._mas_event_init_lockdb is None:
+        persistent._mas_event_init_lockdb = dict()
+
+    # initalizes LOCKDB for the Event class
+    Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
+
 # special store to contain scrollable menu constants
 init -1 python in evhand:
 
     # this is the event database
     event_database = dict()
     farewell_database = dict()
+    greeting_database = dict()
 
     # special namedtuple type we are using
     from collections import namedtuple
@@ -67,6 +113,10 @@ init -1 python in evhand:
     UNSE_H = 640
     UNSE_XALIGN = -0.05
     UNSE_AREA = (UNSE_X, UNSE_Y, UNSE_W, UNSE_H)
+
+    # time stuff
+    import datetime
+    LAST_SEEN_DELTA = datetime.timedelta(hours=2)
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -132,6 +182,7 @@ init python:
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
+
     def hideEventLabel(
             eventlabel,
             lock=False,
@@ -158,30 +209,24 @@ init python:
         #       (DEfault: evhand.event_database)
         ev = eventdb.get(eventlabel, None)
 
-        if ev:
+        hideEvent(
+            ev, 
+            lock=lock, 
+            derandom=derandom, 
+            depool=depool,
+            decond=decond
+        )
 
-            if lock:
-                ev.unlocked = False
-
-            if derandom:
-                ev.random = False
-
-            if depool:
-                ev.pool = False
-
-            if decond:
-                ev.conditional = None
 
     def hideEvent(
             event,
             lock=False,
             derandom=False,
             depool=False,
-            decond=False,
-            eventdb=evhand.event_database
+            decond=False
         ):
         #
-        # hide an event in the given eventdb by Falsing its unlocked,
+        # hide an event by Falsing its unlocked,
         # random, and pool properties.
         #
         # IN:
@@ -195,16 +240,42 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
-        #   eventdb - the event database (dict) we want to reference
-        #       (DEfault: evhand.event_database)
-        hideEventLabel(
-            event.eventlabel,
-            lock=lock,
-            derandom=derandom,
-            depool=depool,
-            decond=decond,
-            eventdb=eventdb
-        )
+
+        if event:
+
+            if lock:
+                event.unlocked = False
+
+            if derandom:
+                event.random = False
+
+            if depool:
+                ev.pool = False
+
+            if decond:
+                event.conditional = None
+
+
+    def lockEvent(ev):
+        """
+        Locks the given event object
+
+        IN:
+            ev - the event object to lock
+        """
+        hideEvent(ev, lock=True)
+
+
+    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Locks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+
 
     def pushEvent(event_label):
         #
@@ -233,6 +304,29 @@ init python:
 
         persistent.event_list.insert(0,event_label)
         return
+
+
+    def unlockEvent(ev):
+        """
+        Unlocks the given evnet object
+
+        IN:
+            ev - the event object to unlock
+        """
+        if ev:
+            ev.unlocked = True
+
+
+    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Unlocks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        unlockEvent(eventdb.get(evlabel, None))
+
 
     def popEvent(remove=True):
         #
@@ -293,6 +387,35 @@ init python:
         return
 
 
+    def mas_cleanJustSeen(eventlist, db):
+        """
+        Cleans the given event list of just seen items (withitn the THRESHOLD)
+        retunrs not just seen items
+
+        IN:
+            eventlist - list of event labels to pick from
+            db - database these events are tied to
+
+        RETURNS:
+            cleaned list of events (stuff not in the time THREASHOLD)
+        """
+        import datetime
+        now = datetime.datetime.now()
+        cleanlist = list()
+
+        for evlabel in eventlist:
+            ev = db.get(evlabel, None)
+
+            if ev:
+                if ev.last_seen:
+                    if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA:
+                        cleanlist.append(evlabel)
+
+                else:
+                    cleanlist.append(evlabel)
+
+        return cleanlist
+
 
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
@@ -321,6 +444,7 @@ label call_next_event:
 
             # increment shown count
             $ ev.shown_count += 1
+            $ ev.last_seen = datetime.datetime.now()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
@@ -374,7 +498,8 @@ label prompt_menu:
         talk_menu.append(("Ask a question.", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
-        talk_menu.append(("Goodbye.", "goodbye"))
+        talk_menu.append(("I'm feeling...", "moods"))
+        talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
         renpy.say(m, "What would you like to talk about?", interact=False)
@@ -389,8 +514,13 @@ label prompt_menu:
     elif madechoice == "repeat":
         call prompts_categories(False) from _call_prompts_categories_1
 
+    elif madechoice == "moods":
+        call mas_mood_start from _call_mas_mood_start
+        if not _return:
+            jump prompt_menu
+
     elif madechoice == "goodbye":
-        call random_farewell from _call_random_farewell
+        call mas_farewell_start from _call_select_farewell
 
     else: #nevermind
         $_return = None
@@ -567,9 +697,3 @@ label prompts_categories(pool=True):
 
     return
 
-label random_farewell:
-    python:
-        random_farewells = Event.filterEvents(evhand.farewell_database,random=True).keys()
-        pushEvent(renpy.random.choice(random_farewells))
-
-    return

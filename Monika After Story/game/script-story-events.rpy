@@ -73,7 +73,7 @@ label preferredname:
                     m 1g "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1e "Try again!"
-                elif lowername == player:
+                elif lowername == player.lower():
                     m 1q "..."
                     m 1l "That's the same name you have right now, silly!"
                     m 1e "Try again~"
@@ -144,7 +144,7 @@ label monika_changename:
                     m 4l "You have to give me a name, [player]!"
                     m 1m "I swear you're just so silly sometimes."
                     m 1b "Try again!"
-                elif lowername == player:
+                elif lowername == player.lower():
                     m 2h "..."
                     m 4l "That's the same name you have right now, silly!"
                     m 1b "Try again~"
@@ -294,7 +294,7 @@ label random_limit_reached:
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1m "[limit_quip]"
-    if len(monika_random_topics)>0:
+    if len(monika_random_topics)>0 or persistent._mas_enable_random_repeats:
         m 1f "I'm sure I'll have something to talk about after a little rest."
     else:
         if not renpy.seen_label("mas_random_ask"):
