@@ -1076,7 +1076,7 @@ label monika_rain:
             play background audio.rain fadein 1.0 loop
             m "Then hold me, [player]..."
             show monika 6dubsa
-            $ renpy.pause(10.0, hard=True)
+            $ renpy.pause() # pause until pkayer click
             m 1a "If you want the rain to stop, just ask me, okay?"
 
             # lock / unlock the appropriate labels
@@ -1115,7 +1115,15 @@ init 5 python:
 
 label monika_rain_stop:
     # NOTE: the label is here because its related to monika_rain
-    # TODO: stopping hte rain dailogue
+    m "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ persistent._mas_is_raining = False
+    call spaceroom
+    stop background fadeout 1.0
+    m "If you want it to rain again, just ask me, okay?"
 
     # lock this event, unlock the rainstart one
     $ evhand.lockEventLabel("monika_rain_stop")
@@ -1137,7 +1145,15 @@ init 5 python:
     )
 
 label monika_rain_start:
-    # TODO: starting the rain dialogue
+    m "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ persistent._mas_is_raining = True
+    call spaceroom
+    play background audio.rain fadein 1.0 loop
+    m "If you want the rain to stop, just ask me, okay?"
 
     # lock this event, unlock rainstop and hold me
     $ evhand.lockEventLabel("monika_rain_start")
@@ -1161,10 +1177,18 @@ init 5 python:
 label monika_rain_holdme:
     # we only want this if it rains
     if persistent._mas_is_raining:
-        # TODO say yes, let player hold
+        # TODO adjust this for affection
+        m "Of course, [player]."
+        show monika 6dubsa
+        $ renpy.pause() # pause until player click
+        m 1a "You can hold me anytime you want, [player]."
+        m 1hfb "But only if the mood is right!" 
 
     else:
-        # TODO no, the mood doesnt seem right
+        # TODO adjust for affection maybe?
+        m 1mm "..."
+        m 1nn "The mood doesn't feel right, [player]."
+        m "Sorry..."
 
     return
 
