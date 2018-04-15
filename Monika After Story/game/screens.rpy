@@ -2054,3 +2054,25 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
 #   timeout_label - label to jump to when timeout
 screen mas_background_timed_jump(timeout, timeout_label):
     timer timeout action Jump(timeout_label)
+
+# generic custom displayabels below:
+init python:
+    class PauseDisplayable(renpy.Displayable):
+        """
+        Pause until click variant of Pause
+        This is because normal pause until click is broken for some reason
+        """
+        import pygame
+
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+
+        def render(self, width, height, st, at):
+            # dont actually render anything
+            return renpy.Render(width, height)
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                return True
+
+            raise renpy.IgnoreEvent()

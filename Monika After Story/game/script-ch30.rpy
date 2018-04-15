@@ -150,6 +150,7 @@ init python:
         stop_on_mute=True,
         tight=True
     )
+    renpy.music.set_volume(songs.getVolume("music"), channel="background")
 
     #Define new functions
 
@@ -259,7 +260,7 @@ init python:
             morning_flag 
             mas_is_raining
         """
-        if persistent._mas_is_raining:
+        if mas_is_raining:
             # raining takes priority
             left_window = "rain_mask_left"
             right_window = "rain_mask_right"
@@ -790,3 +791,14 @@ label ch30_reset:
             mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
             if mood_ev:
                 mood_ev.unlocked = True
+
+    # reset raining stuff
+    python:
+        mas_is_raining = False
+        if persistent._mas_likes_rain:
+            unlockEventLabel("monika_rain_start")
+            lockEventLabel("monika_rain_stop")
+            lockEventLabel("monika_rain_holdme")
+            lockEventLabel("monika_rain")
+            
+        

@@ -1071,32 +1071,46 @@ label monika_rain:
     menu:
         "Yes":
             $ scene_change = True
-            $ persistent._mas_is_raining = True
+            $ mas_is_raining = True
             call spaceroom
+            stop music fadeout 1.0
             play background audio.rain fadein 1.0 loop
+
+            # clear selected track
+            $ songs.current_track = songs.FP_NO_SONG
+            $ songs.selected_track = songs.FP_NO_SONG
+
             m "Then hold me, [player]..."
             show monika 6dubsa
-            $ renpy.pause() # pause until pkayer click
+            $ ui.add(PauseDisplayable())
+            $ ui.interact()
             m 1a "If you want the rain to stop, just ask me, okay?"
 
             # lock / unlock the appropriate labels
-            $ evhand.unlockEventLabel("monika_rain_stop")
-            $ evhand.unlockEventLabel("monika_rain_holdme")
-            $ evhand.lockEventLabel("monika_rain_start")
-            $ evhand.lockEventLabel("monika_rain")
+            $ unlockEventLabel("monika_rain_stop")
+            $ unlockEventLabel("monika_rain_holdme")
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = True
 
-        "I hate rain":
-            # TODO stuff about how rain is gloomy or something
+        "I hate the rain":
+            m 1oo "Aw, that's a shame."
+            m "But it's understandable."
+            m 4a "Rainy weather can look pretty gloomy."
+            m 4ll "Not to mention pretty cold!"
+            m 1duu "But if you focus on the sounds raindrops make..."
+            m 1a "I think you'll come to enjoy it."
 
             # lock / unlock the appropraite labels
-            $ evhand.lockEventLabel("monika_rain_start")
-            $ evhand.lockEventLabel("monika_rain_stop")
-            $ evhand.lockEventLabel("monika_rain_holdme")
-            $ evhand.unlockEventLabel("monika_rain")
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain_stop")
+            $ lockEventLabel("monika_rain_holdme")
+            $ unlockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = False
 
     # unrandom this event if its currently random topic
     if evhand.event_database["monika_rain"].random:
-        $ evhand.hideEventLabel("monika_rain", derandom=True)
+        $ hideEventLabel("monika_rain", derandom=True)
 
     return
 
@@ -1120,15 +1134,15 @@ label monika_rain_stop:
     show monika 1q
     pause 1.0
     $ scene_change = True
-    $ persistent._mas_is_raining = False
+    $ mas_is_raining = False
     call spaceroom
     stop background fadeout 1.0
     m "If you want it to rain again, just ask me, okay?"
 
     # lock this event, unlock the rainstart one
-    $ evhand.lockEventLabel("monika_rain_stop")
-    $ evhand.unlockEventLabel("monika_rain_start")
-    $ evhand.unlockEventLabel("monika_rain")
+    $ lockEventLabel("monika_rain_stop")
+    $ unlockEventLabel("monika_rain_start")
+    $ unlockEventLabel("monika_rain")
 
     return
 
@@ -1150,15 +1164,15 @@ label monika_rain_start:
     show monika 1q
     pause 1.0
     $ scene_change = True
-    $ persistent._mas_is_raining = True
+    $ mas_is_raining = True
     call spaceroom
     play background audio.rain fadein 1.0 loop
     m "If you want the rain to stop, just ask me, okay?"
 
     # lock this event, unlock rainstop and hold me
-    $ evhand.lockEventLabel("monika_rain_start")
-    $ evhand.lockEventLabel("monika_rain")
-    $ evhand.unlockEventLabel("monika_rain_stop")
+    $ lockEventLabel("monika_rain_start")
+    $ lockEventLabel("monika_rain")
+    $ unlockEventLabel("monika_rain_stop")
 
     return
 
@@ -1176,11 +1190,18 @@ init 5 python:
 
 label monika_rain_holdme:
     # we only want this if it rains
-    if persistent._mas_is_raining:
+    if mas_is_raining:
         # TODO adjust this for affection
+        stop music fadeout 1.0
+
+        # clear selected track
+        $ songs.current_track = songs.FP_NO_SONG
+        $ songs.selected_track = songs.FP_NO_SONG
+
         m "Of course, [player]."
         show monika 6dubsa
-        $ renpy.pause() # pause until player click
+        $ ui.add(PauseDisplayable())
+        $ ui.interact()
         m 1a "You can hold me anytime you want, [player]."
         m 1hfb "But only if the mood is right!" 
 
