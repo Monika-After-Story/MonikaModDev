@@ -4831,7 +4831,12 @@ label monika_asks_charity:
     m 1h "Say, [player]."
     m "There's something that crossed my mind lately."
     m 2h "Since this is all just a game here, there isn't any problem involving world hunger or poverty."
+    m "We all knew about it, obviously, when we watched TV at home or when we talked about it in some classes."
+    m "But I've never been directly confronted to it, and neither have the other girls."
+    m "I guess that's understable, though, since people wouldn't like to be reminded of this in a visual novel, I guess."
+    m "Or at least, it wouldn't be the main focus of a game, merely a plot device or something."
     m "But I know that's not the same in your reality, and that a lot of people need help just to survive."
+    m "You must have seen that kind of thing, if you've been in a big city before."
     m "So I was just wondering."
     m 2i "Have you ever contributed to a charity?"
     menu:
