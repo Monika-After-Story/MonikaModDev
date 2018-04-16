@@ -357,11 +357,11 @@ init 5 python:
     del rules
 label bye_enjoyyourafternoon:
 
-        m 1f "I hate to see you go so early, [player]."
-        m 1e "I do understand that you're busy though."
-        m 1a "Promise me you'll enjoy your afternoon, okay?"
-        m 1j "Goodbye~"
-        return 'quit'
+    m 1f "I hate to see you go so early, [player]."
+    m 1e "I do understand that you're busy though."
+    m 1a "Promise me you'll enjoy your afternoon, okay?"
+    m 1j "Goodbye~"
+    return 'quit'
         
 init 5 python:
     rules = dict()
@@ -378,10 +378,10 @@ init 5 python:
     del rules
 label bye_goodevening:
     
-        m 1k "I had fun today."
-        m 1a "Thank you for spending so much time with me, [player]."
-        m 1j "Until then, have a good evening."
-        return 'quit'
+    m 1k "I had fun today."
+    m 1a "Thank you for spending so much time with me, [player]."
+    m 1j "Until then, have a good evening."
+    return 'quit'
         
 init 5 python:
     rules = dict()
@@ -397,11 +397,11 @@ init 5 python:
     )
     del rules
 label bye_goodnight:
-        m 1a "Goodnight, [player]."
-        m 1e "I'll see you tomorrow, okay?"
-        m 1j "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
-        m 1k "I love you~"
-        return 'quit'
+    m 1a "Goodnight, [player]."
+    m 1e "I'll see you tomorrow, okay?"
+    m 1j "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+    m 1k "I love you~"
+    return 'quit'
         
     
     
