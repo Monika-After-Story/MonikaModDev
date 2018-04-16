@@ -309,13 +309,12 @@ init -1 python in mas_sprites:
         ])
 
 
-    def _ms_arms(clothing, hair, arms, isnight):
+    def _ms_arms(clothing, arms, isnight):
         """
         Creates arms string
 
         IN:
             clothing - type of clothing
-            hair - type of hair
             arms - type of arms
             isnight - True will generate night string, false will not
 
@@ -329,8 +328,6 @@ init -1 python in mas_sprites:
             clothing,
             "/",
             PREFIX_ARMS,
-            hair,
-            ART_DLM,
             arms,
             night_mode(isnight),
             FILE_EXT,
@@ -392,7 +389,7 @@ init -1 python in mas_sprites:
             body_str = ",".join([
                 LOC_REG,
                 _ms_torso(clothing, hair, isnight),
-                _ms_arms(clothing, hair, arms, isnight)
+                _ms_arms(clothing, arms, isnight)
             ])
 
         # add the rest of the parts
@@ -1373,7 +1370,7 @@ define monika_chr = MASMonika()
 ## BODY / POSE:
 # Non leaning filenames / parts:
 #   torso-{hair type}{-n}.png
-#   arms-{hair type}-{arms name}{-n}.png
+#   arms-{arms name}{-n}.png
 #   (ie: torso-def.png / torso-def-n.png)
 #   (ie: arms-def-steepling.png / arms-def-steepling-n.png)
 # Leaning filenames:
