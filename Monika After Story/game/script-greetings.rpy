@@ -492,6 +492,12 @@ label i_greeting_monikaroom:
 #    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
     $ has_listened = False
 
+    # reset monika's hair stuff since we dont have hair down for standing
+    if persistent._mas_likes_hairdown:
+        $ monika_chr.reset_outfit()
+        $ lockEventLabel("monika_hair_ponytail")
+        $ unlockEventLabel("monika_hair_down")
+
     # FALL THROUGH
 label monikaroom_greeting_choice:
     menu:
@@ -976,16 +982,16 @@ init 5 python:
     rules = dict()
     rules.update(MASGreetingRule.create_rule(skip_visual=True))
 
-#    addEvent(
-#        Event(
-#            persistent.greeting_database,
-#            eventlabel="greeting_hairdown",
-#            unlocked=True,
-#            random=True,
-#            rules=rules
-#        ),
-#        eventdb=evhand.greeting_database
-#    )
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_hairdown",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
     del rules
 
 label greeting_hairdown:
@@ -997,13 +1003,32 @@ label greeting_hairdown:
     m 1a "Hi there, [player]!"
     m 4a "You may have noticed that my hair is down."
     m "I decided to try something new today."
-#    menu:
-#        m "Do you like it?"
-#        "Yes":
+    menu:
+        m "Do you like it?"
+        "Yes":
+            # maybe 6sub is better?
+            # TODO: affection raise
+            m 1sub "Really?" # honto?!
+            m 1j "I'm glad!" # yokatta.."
+            m 1a "If you want me to tie my hair into a ponytail again, just ask me, okay?"
+
+            # make it possible to switch hair at will
+            $ unlockEventLabel("monika_hair_ponytail")
+            $ persistent._mas_likes_hairdown = True
+
+        "No":
+            # TODO: affection lowered?
+            m 1f "Oh, okay."
+            m "I'll put it back up for you."
+            m 1q "..."
+
+            $ monika_chr.reset_hair()
+
+            m 1a "There we go."
+            # you will never get this chance again
             
-    m 1j "I hope you like it!"
-#    m "If you want me to put my hair into a ponytail again, just ask me, okay?"
-    # THIS IS NTO READY
+    # lock this greeting forever.
+    $ lockEventLabel("greeting_hairdown", evhand.greeting_database)
 
     # monikaroom greeting cleanup can handle this part
     jump monikaroom_greeting_cleanup

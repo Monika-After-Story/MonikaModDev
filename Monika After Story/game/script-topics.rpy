@@ -5910,3 +5910,64 @@ label monika_yellowwp:
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1a "It'll definitely be an interesting read for you."         
     return
+
+##### monika hair topics [MONHAIR]
+# TODO: as we introduce addiotinal hair types, we need to change the dialogue
+# for these. 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_ponytail",
+            category=["monika"],
+            prompt="Can you tie your hair into a ponytail?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_ponytail:
+    m 1a "Sure thing, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+
+    $ monika_chr.reset_hair()
+
+    m 1a "If you want me to let my hair down, just ask me, okay?"
+
+    # lock this event, unlock hairdown
+    $ lockEventLabel("monika_hair_ponytail")
+    $ unlockEventLabel("monika_hair_down")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_down",
+            category=["monika"],
+            prompt="Can you let your hair down?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_down:
+    m 1a "Sure thing, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+
+    $ monika_chr.change_hair("down")
+
+    m 1a "If you want me to tie my hair into a ponytail again, just ask me, okay?"
+
+    # lock this event, unlock hairponytail
+    $ lockEventLabel("monika_hair_down")
+    $ unlockEventLabel("monika_hair_ponytail")
+
+##### End monika hair topics

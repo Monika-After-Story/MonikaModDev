@@ -3047,8 +3047,15 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
+
+# rain
 default persistent._mas_likes_rain = False
 define mas_is_raining = False
+
+# clothes
+default persistent._mas_monika_clothes = "def"
+default persistent._mas_monika_hair = "def"
+default persistent._mas_likes_hairdown = False
 define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
