@@ -2,7 +2,7 @@
 # To add a new image, please scroll to the IMAGE section (IMG002)
 #
 ###### SPRITE CODE (IMG001)
-# 
+#
 # The sprite code system is a way of picking an appropriate sprite without
 # having to look up what the sprite looks like.
 # All expressions use this code system, with the exception of the original
@@ -1343,7 +1343,7 @@ define monika_chr = MASMonika()
 #
 # Optional parts for sitting is:
 #   sweat, tears, blush, emote, eyebags
-#   
+#
 # Non-leaning poses require an ARMS part.
 # leaning poses require a LEAN part.
 #
@@ -1361,8 +1361,8 @@ define monika_chr = MASMonika()
 # All leaning layers must have a non-leaning fallback
 #
 ## FACIAL EXPRESSIONS:
-# Non leaning filenames: 
-#   face-{face part type}-{face part name}{-n}.png 
+# Non leaning filenames:
+#   face-{face part type}-{face part name}{-n}.png
 #   (ie: face-mouth-big.png / face-mouth-big-n.png)
 # leaning filenames:
 #   face-leaning-{face part type}-{face part name}{-n}.png
@@ -1377,9 +1377,9 @@ define monika_chr = MASMonika()
 # Leaning filenames:
 #   torso-leaning-{hair type}-{lean name}{-n}.png
 #   (ie: torso-leaning-def-def.png / torso-leaning-def-def-n.png)
-#   
 #
-# 
+#
+#
 #
 
 
@@ -1733,7 +1733,7 @@ image monika 1efc = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="small",
+    mouth="smirk",
     head="h",
     left="1l",
     right="1r",
@@ -2988,7 +2988,7 @@ image monika 2efc = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="small",
+    mouth="smirk",
     head="h",
     left="1l",
     right="2r",
@@ -4243,7 +4243,7 @@ image monika 3efc = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="small",
+    mouth="smirk",
     head="h",
     left="2l",
     right="1r",
@@ -5498,7 +5498,7 @@ image monika 4efc = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="small",
+    mouth="smirk",
     head="h",
     left="2l",
     right="2r",
