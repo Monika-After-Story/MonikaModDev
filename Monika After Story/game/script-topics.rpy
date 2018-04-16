@@ -1123,7 +1123,8 @@ init 5 python:
             category=["weather"],
             prompt="Can you stop the rain?",
             pool=True,
-            unlocked=False
+            unlocked=False,
+            rules={"no unlock": None}
         )
     )
 
@@ -1154,7 +1155,8 @@ init 5 python:
             category=["weather"],
             prompt="Can you make it rain?",
             pool=True,
-            unlocked=False
+            unlocked=False,
+            rules={"no unlock":None}
         )
     )
 
@@ -1184,7 +1186,8 @@ init 5 python:
             category=["monika"],
             prompt="Can I hold you?",
             pool=True,
-            unlocked=False
+            unlocked=False,
+            rules={"no unlock":None}
         )
     )
 
