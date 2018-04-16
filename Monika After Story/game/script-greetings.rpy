@@ -971,3 +971,39 @@ init 5 python:
     
 label greeting_timeconcern_day:
     jump monika_timeconcern_day
+
+init 5 python:
+    rules = dict()
+    rules.update(MASGreetingRule.create_rule(skip_visual=True))
+
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_hairdown",
+#            unlocked=True,
+#            random=True,
+#            rules=rules
+#        ),
+#        eventdb=evhand.greeting_database
+#    )
+    del rules
+
+label greeting_hairdown:
+
+    # have monika's hair down
+    $ monika_chr.change_hair("down")
+
+    call spaceroom
+    m 1a "Hi there, [player]!"
+    m 4a "You may have noticed that my hair is down."
+    m "I decided to try something new today."
+#    menu:
+#        m "Do you like it?"
+#        "Yes":
+            
+    m 1j "I hope you like it!"
+#    m "If you want me to put my hair into a ponytail again, just ask me, okay?"
+    # THIS IS NTO READY
+
+    # monikaroom greeting cleanup can handle this part
+    jump monikaroom_greeting_cleanup
