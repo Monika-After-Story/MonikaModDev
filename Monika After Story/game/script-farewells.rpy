@@ -338,7 +338,8 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
 label bye_haveagoodday:
     m 1b "Have a good day today [player]."
     m 1b "I hope you accomplish everything you had planned for today."
-    m 1b "I'll be here waiting for you when you get back."
+    m 1b "I'll be here waiting for you when you get back."  
+    return 'quit'
     
         
 init 5 python: 
@@ -376,8 +377,7 @@ init 5 python:
     )
     del rules
 label bye_goodevening:
-    $ current_time = datetime.datetime.now().time().hour
-    if current_time >= 17 and current_time <= 19:
+    
         m 1k "I had fun today."
         m 1a "Thank you for spending so much time with me, [player]."
         m 1j "Until then, have a good evening."
