@@ -205,7 +205,8 @@ init -1 python in mas_sprites:
 
     # non leanable clothes / hair
     lean_blacklist = [
-        "test"
+        "down",
+        "ponyup"
     ]
 
 
@@ -1225,7 +1226,7 @@ init -2 python:
 
             # optional sitting parts
             lean=None,
-            arms="",
+            arms="steepling",
             eyebags=None,
             sweat=None,
             blush=None,
@@ -1259,7 +1260,7 @@ init -2 python:
             lean - type of lean (sitting)
                 (Default: None)
             arms - type of arms (sitting)
-                (Default: "")
+                (Default: "steepling")
             eyebags - type of eyebags (sitting)
                 (Default: None)
             sweat - type of sweatdrop (sitting)

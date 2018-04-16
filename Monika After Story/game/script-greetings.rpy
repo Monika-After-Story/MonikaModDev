@@ -951,3 +951,35 @@ label greeting_stillsicknorest:
     m 1e "Don't worry, I'll still be here when you wake up."
     m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
+
+init 5 python:
+    rules = dict()
+    rules.update(MASGreetingRule.create_rule(skip_visual=True))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_hairdown",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_hairdown:
+
+    # have monika's hair down
+    $ monika_chr.change_hair("down")
+
+    call spaceroom
+    m 1a "Hi there, [player]!"
+    m 4a "You may have noticed that my hair is down."
+    m "I decided to try something new today."
+    m 1j "I hope you like it!"
+#    m "If you want me to put my hair into a ponytail again, just ask me, okay?"
+    # THIS IS NTO READY
+
+    # monikaroom greeting cleanup can handle this part
+    jump monikaroom_greeting_cleanup
