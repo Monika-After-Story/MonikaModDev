@@ -321,7 +321,6 @@ label bye_illseeyou:
     return 'quit'
     
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
-    
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
     addEvent(
@@ -340,8 +339,7 @@ label bye_haveagoodday:
     m 1b "I hope you accomplish everything you had planned for today."
     m 1b "I'll be here waiting for you when you get back."  
     return 'quit'
-    
-        
+ 
 init 5 python: 
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(12,16)))
@@ -355,14 +353,14 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
     del rules
-label bye_enjoyyourafternoon:
 
+label bye_enjoyyourafternoon:
     m 1f "I hate to see you go so early, [player]."
     m 1e "I do understand that you're busy though."
     m 1a "Promise me you'll enjoy your afternoon, okay?"
     m 1j "Goodbye~"
     return 'quit'
-        
+
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(17,19)))
@@ -376,13 +374,13 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
     del rules
-label bye_goodevening:
-    
+
+label bye_goodevening:    
     m 1k "I had fun today."
     m 1a "Thank you for spending so much time with me, [player]."
     m 1j "Until then, have a good evening."
     return 'quit'
-        
+
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(20,24)))
@@ -396,12 +394,10 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
     del rules
+    
 label bye_goodnight:
     m 1a "Goodnight, [player]."
     m 1e "I'll see you tomorrow, okay?"
     m 1j "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
     m 1k "I love you~"
     return 'quit'
-        
-    
-    
