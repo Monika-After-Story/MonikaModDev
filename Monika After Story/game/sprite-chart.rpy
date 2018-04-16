@@ -1873,7 +1873,7 @@ image monika 1wubso = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 1wubsw = DynamicDisplayable(
+image monika 1wuw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -3128,7 +3128,7 @@ image monika 2wubso = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 2wubsw = DynamicDisplayable(
+image monika 2wuw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -4383,7 +4383,7 @@ image monika 3wubso = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 3wubsw = DynamicDisplayable(
+image monika 3wuw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -5638,7 +5638,7 @@ image monika 4wubso = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 4wubsw = DynamicDisplayable(
+image monika 4wuw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
