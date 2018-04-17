@@ -1873,19 +1873,6 @@ image monika 1wubso = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 1wuw = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="up",
-    eyes="wide",
-    nose="def",
-    mouth="wide",
-    head="b",
-    left="1l",
-    right="1r",
-    arms="steepling"
-)
-
 image monika 1subftsb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3126,19 +3113,6 @@ image monika 2wubso = DynamicDisplayable(
     right="2r",
     arms="crossed",
     blush="shade"
-)
-
-image monika 2wuw = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="up",
-    eyes="wide",
-    nose="def",
-    mouth="wide",
-    head="b",
-    left="1l",
-    right="2r",
-    arms="crossed"
 )
 
 image monika 2subftsb = DynamicDisplayable(
@@ -4383,19 +4357,6 @@ image monika 3wubso = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 3wuw = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="up",
-    eyes="wide",
-    nose="def",
-    mouth="wide",
-    head="b",
-    left="2l",
-    right="1r",
-    arms="restleftpointright"
-)
-
 image monika 3subftsb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5636,19 +5597,6 @@ image monika 4wubso = DynamicDisplayable(
     right="2r",
     arms="pointright",
     blush="shade"
-)
-
-image monika 4wuw = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="up",
-    eyes="wide",
-    nose="def",
-    mouth="wide",
-    head="b",
-    left="2l",
-    right="2r",
-    arms="pointright"
 )
 
 image monika 4subftsb = DynamicDisplayable(
