@@ -2,7 +2,7 @@
 # To add a new image, please scroll to the IMAGE section (IMG002)
 #
 ###### SPRITE CODE (IMG001)
-# 
+#
 # The sprite code system is a way of picking an appropriate sprite without
 # having to look up what the sprite looks like.
 # All expressions use this code system, with the exception of the original
@@ -1352,7 +1352,7 @@ define monika_chr = MASMonika()
 #
 # Optional parts for sitting is:
 #   sweat, tears, blush, emote, eyebags
-#   
+#
 # Non-leaning poses require an ARMS part.
 # leaning poses require a LEAN part.
 #
@@ -1370,8 +1370,8 @@ define monika_chr = MASMonika()
 # All leaning layers must have a non-leaning fallback
 #
 ## FACIAL EXPRESSIONS:
-# Non leaning filenames: 
-#   face-{face part type}-{face part name}{-n}.png 
+# Non leaning filenames:
+#   face-{face part type}-{face part name}{-n}.png
 #   (ie: face-mouth-big.png / face-mouth-big-n.png)
 # leaning filenames:
 #   face-leaning-{face part type}-{face part name}{-n}.png
@@ -1386,9 +1386,9 @@ define monika_chr = MASMonika()
 # Leaning filenames:
 #   torso-leaning-{hair type}-{lean name}{-n}.png
 #   (ie: torso-leaning-def-def.png / torso-leaning-def-def-n.png)
-#   
 #
-# 
+#
+#
 #
 
 
@@ -6770,4 +6770,3 @@ image monika 5rfc = DynamicDisplayable(
     lean="def",
     single="3b"
 )
->>>>>>> expression-overhaul
