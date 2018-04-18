@@ -5148,6 +5148,7 @@ label monika_trick_sayori:
     return
 
 label monika_trick_monika:
+    hide screen mas_background_timed_jump
     m 1l "That wasn't supposed to be an option, silly!"
     m 3e "But it really does make me happy that you only have eyes for me..."
     m 3j "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
