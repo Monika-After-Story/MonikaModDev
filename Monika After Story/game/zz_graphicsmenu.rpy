@@ -280,13 +280,17 @@ init -1 python:
             )
 
             # grouped buttons
-            self.all_buttons = (
+            self.all_buttons = [
                 self.button_auto,
                 self.button_gl,
                 self.button_dx,
                 self.button_sw,
                 self.button_ret
-            )
+            ]
+
+            if not renpy.windows:
+                # non windows does not have angle
+                self.all_buttons.remove(self.button_dx)
 
             # disable a button
             if self.curr_renderer == "auto":
