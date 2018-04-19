@@ -335,7 +335,7 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
     del rules
 
 label bye_haveagoodday:
-    m 1b "Have a good day today [player]."
+    m 1b "Have a good day today, [player]."
     m 1b "I hope you accomplish everything you had planned for today."
     m 1b "I'll be here waiting for you when you get back."  
     return 'quit'
