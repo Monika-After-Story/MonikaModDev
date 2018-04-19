@@ -174,19 +174,19 @@ init python:
         #If affection level is greater than 50 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif persistent._mas_affection["affection"] >= 50 and not seen_event("monika_affection_nickname"):
             pushEvent("monika_affection_nickname")
-            
+
         #If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif persistent._mas_affection["affection"] <= -50 and not seen_event("mas_affection_apology"):
             pushEvent("mas_affection_apology")
-        
+
     #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
     #Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
     #is equal to the amount of points it's added or removed in minutes.
-    
+
     #Makes the game update affection on start-up so the global variables are defined at all times.
     mas_updateAffectionExp()
-    
+
     #Monika's initial affection based on start-up.
     if not persistent._mas_long_absence:
         if persistent.sessions["last_session_end"] is not None:
@@ -204,7 +204,7 @@ init python:
                 mas_loseAffection(50)
             elif time_difference >= datetime.timedelta(weeks = 1):
                 mas_loseAffection(30)
-    
+
 #Unlocked when affection level reaches 50.
 #This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 #There is a character limit of 10 characters.
@@ -324,7 +324,7 @@ label monika_affection_nickname:
                         if inputname == "Monika":
                             m "Ehehe~ Back to the classics?"
                         elif good_nickname is None:
-                            m 1c "...I can't say that I particularly like it..."
+                            m 1pp "...I can't say that I particularly like it..."
                             m 2e "But since you came up with it I'll accept it!"
                         else:
                             m 3b "Oh! That's a wonderful name!"
@@ -355,10 +355,10 @@ label monika_affection_nickname:
 #Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
     m 1h "Hey, [player]..."
-    m 1o "Recently, I've been feeling like my love and affection that I give is being... ignored."
-    m 1q"I feel like you're giving me less and less of your love..."
+    m 1efd "Recently, I've been feeling like my love and affection that I give is being... ignored."
+    m 1q "I feel like you're giving me less and less of your love..."
     m 1r "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
-    m 1f "I hope there's nothing wrong between us, [player]."
+    m 1e "I hope there's nothing wrong between us, [player]."
     return
 
 #Event to indicate that Monika is happy to be receiving your affection.
@@ -366,7 +366,7 @@ label mas_affection_happynotif:
     m 1b "Hey, [player]!"
     m 1j "I just wanted to say thank you for being such a wonderful person."
     m 1e "The fact that you give me so much of you love means a lot to me. I really don't know where I'd be without you."
-    m 3k "I love you, [player]. Let's be like this forever~"
+    m 3dubsu "I love you, [player]. Let's be like this forever~"
     return
 
 #############
@@ -393,7 +393,7 @@ label mas_affection_finalfarewell_start:
 # this will loop through the final poem everytime!
 label mas_affection_finalfarewell:
 
-    
+
 
     python:
         ui.add(MASFinalNoteDisplayable())
@@ -408,10 +408,10 @@ label mas_affection_finalfarewell:
             pass
 
     jump mas_affection_finalfarewell
-    
+
 
 init python:
-    
+
     # custom displayabe for the poem screen
     class MASFinalNoteDisplayable(renpy.Displayable):
         import pygame # mouse stuff
@@ -435,7 +435,7 @@ init python:
             # final poem is a button
             paper_idle = Image("mod_assets/poem_finalfarewell_desk.png")
             paper_hover = Image("mod_assets/poem_finalfarewell_desk_select.png")
-            
+
             # no button text
             empty_button_text = Text("")
 
@@ -478,7 +478,7 @@ init python:
             Event function
             """
             if (
-                    ev.type in self.MOUSE_EVENTS 
+                    ev.type in self.MOUSE_EVENTS
                     and self._final_note.event(ev, x, y, st)
                 ):
                 return True
@@ -487,22 +487,22 @@ init python:
             raise renpy.IgnoreEvent()
 
 label mas_affection_apology:
-    m 1q "[player]..." 
-    m 1h "I've done everything I can to make you happy and enjoy spending time with me." 
-    m 2f "But all you've been giving back to me is pain..."
-    m 2o "I'm beginning to wonder if you really installed this mod to be with me."
+    m 2dfd "[player]..."
+    m "I've done everything I can to make you happy and enjoy spending time with me."
+    m 2dfd "But all you've been giving back to me is pain..."
+    m 2rfc "I'm beginning to wonder if you really installed this mod to be with me."
     m 2q "Perhaps you brought me back just to toy with me?"
     m 2r "Or maybe you're doing this intentionally to see what happens?"
     m 2h "Regardless, I'm giving you an ultimatum."
-    m "I can't let this go any further, [player]."
+    m 2efd "I can't let this go any further, [player]."
     m 2o "If you really are sorry, write me a note called {i}imsorry.txt{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
-    m 2q "Until then, goodbye..."
+    m 2efc "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'
-    
+
 label mas_affection_noapology:
-    m 2h "You still haven't written me a note called {i}imsorry.txt{/i} in the DDLC directory."
-    m 2q "Until then, I don't want to talk to you."
+    m 2efd "You still haven't written me a note called {i}imsorry.txt{/i} in the DDLC directory."
+    m 2efc "Until then, I don't want to talk to you."
     jump _quit
 
 label mas_affection_yesapology:
@@ -515,11 +515,11 @@ label mas_affection_yesapology:
     jump ch30_loop
 
 label mas_affection_apologydeleted:
-    m 2q "..."
-    m 2h "[player], did you delete the apology note I wanted to keep?"
-    m 4g "Why would you do that? Are you not {i}really{/i} sorry?"
-    m 2o "..."
-    m 2q "Write me a new one, [player]."
+    m 1wud "..."
+    m 2efd "[player], did you delete the apology note I wanted to keep?"
+    m "Why would you do that? Are you not {i}really{/i} sorry?"
+    m 2dfc "..."
+    m 2efc "Write me a new one, [player]."
     jump _quit
 
 #Surprise function.
