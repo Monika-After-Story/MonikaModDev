@@ -903,8 +903,8 @@ python early:
                 4 - scroll up
                 5 - scroll down
             _button_down - pygame mouse button event type to activate button
-                MOUSEBUTTONDOWN (Default)
-                MOUSEBUTTONUP
+                MOUSEBUTTONUP (Default)
+                MOUSEBUTTONDOWN 
         """
         import pygame
 
@@ -986,7 +986,7 @@ python early:
             self.disabled = False
             self.hovered = False
             self._button_click = 1
-            self._button_down = pygame.MOUSEBUTTONDOWN
+            self._button_down = pygame.MOUSEBUTTONUP
 
             # the states of a button
             self._button_states = {
