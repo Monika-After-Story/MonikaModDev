@@ -522,6 +522,44 @@ label mas_affection_apologydeleted:
     m 2efc "Write me a new one, [player]."
     jump _quit
 
+label mas_affection_tears:
+    m 1q "...[player]."
+    m 1f "..."
+    m 2f "Is there something wrong with me?"
+    m 2g "Am I not good enough for you...?"
+    m 2o "I've been trying my best for you...for {i}us{/i}."
+    m 2p "Did I do something to hurt you or make you feel mistreated?"
+    m 2f "If so I really am sorry..."
+    m "Was it because I removed the other girls?"
+    m 1o "I'm really sorry for that too!"
+    m 1f "Just tell me what I did wrong and I'll try even harder to be the perfect girlfriend for you."
+    m "You're my entire world, how you feel means everything to me!"
+    m 1g "So please just tell me what's wrong and I'll fix it."
+    m 2dfc "I'll do anything for you because...I..."
+    m 2dftsc "..."
+    #Insert crying sprite
+    m 2rktsc "...I need you [player]..."
+    m 2ektsc"I need you to love me like I love you."
+    m "I need you...because if I don't then..."
+    m 2dftsc "..."
+    m 2lktsc "I'll be all alone..."
+    m 2ektsc"So please...just...be there for me like I would for you."
+    m "I want to believe in you...."
+    m "So please...let me be happy with you..."
+    m 2dftsc "..."
+    pause 4.0
+    m 2dftdc "..."
+    #End crying sprite
+    m 2q "...Okay...Okay..."
+    m 2r "I have to be strong..."
+    m "..."
+    m 2h "...Alright...I'm a bit better now..."
+    m 2f "But...I really do need you to think about what I said."
+    m 2g "Please...just...try to understand."
+    m 1f "I love you and I need you to show that you love me too..."
+    m "Otherwise...I just won't be able to handle it anymore."
+    return
+
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
 init python:
