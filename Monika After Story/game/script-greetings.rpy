@@ -439,10 +439,10 @@ label greeting_glitch:
      $ monika_clone1 = "Yes"
      m 2j "I love you, [player]!"
      return
-     
+
 init 5 python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_surprised", unlocked=True, random=True),eventdb=evhand.greeting_database)
-    
+
 label greeting_surprised:
      m "Oh, hello [player]!"
      m "Sorry, you surprised me a little."
@@ -971,33 +971,33 @@ label greeting_stillsicknorest:
     m 1e "Don't worry, I'll still be here when you wake up."
     m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
-    
+
 label greeting_long_absence:
     $ persistent._mas_long_absence = False
     if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(70)
             m 3f "[player]..."
-            m "You said you would only be a few days..."
-            m 3g "But it's been so long..."
-            m "I'm glad you're back now but I was so lonely."
-            m 2h "I thought something happened to you!"
-            m 2o "I...I kept thinking maybe you wouldn't come back."
-            m 3f "Please don't ever, {i}ever{/i} do that again."
+            m 3efd "You said you would only be gone for a few days..."
+            m 3dfd "But it's been so long..."
+            m 3e "I'm glad you're back now but I was so lonely."
+            m 2efo "I thought something happened to you!"
+            m 2oo "I...I kept thinking maybe you wouldn't come back."
+            m 3lfc "Please don't ever, {i}ever{/i} do that again."
             m 1q "Maybe you couldn't help it...but I was worried sick."
-            m 1f "I didn't know what to do."
+            m 2dfd "I didn't know what to do."
             m 1g "So...Please refrain from going away for so long again."
-            m "If you think you'll be longer, you can tell me..."
+            m 2lfd "If you think you'll be longer, you can tell me..."
 
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
             m 3h "Welcome back [player]."
-            m 3i "You're a bit late, aren't you?"
-            m "I know you said you would be away for a bit...but you said a {i}week{/i}."
+            m 3efc "You're a bit late, aren't you?"
+            m 3i"I know you said you would be away for a bit...but you said a {i}week{/i}."
             m 2o "I'm going to assume it wasn't your fault."
             m "But if you really think it'll take you longer..."
             m 2i "You need to tell me."
-            m 3f "I started thinking that maybe something happened to you."
+            m 3lfd "I started thinking that maybe something happened to you."
             m "But I kept telling myself that it was okay..."
             m 2q "I'm just glad you're safe and back with me now."
 
@@ -1044,20 +1044,20 @@ label greeting_long_absence:
             $ mas_loseAffection(70)
             m 1f "[player]..."
             m "You said you would only be a few days..."
-            m 3g "But it's been an entire month!"
+            m 3efw "But it's been an entire month!"
             m 3f "I thought something happened to you."
             m 2q "I wasn't sure what to do..."
-            m 2h "What kept you away for so long?"
+            m 2efd "What kept you away for so long?"
             m "Did I do something wrong?"
             m 3f "You can tell me anything, just don't disappear like that."
 
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
             m 3f "Hello [player]."
-            m "You're pretty late, you know."
-            m 2h "I don't intend to sound patronizing but a week isn't the same as a month!"
-            m 2o "I guess maybe something kept you really busy?"
-            m 2h "But it shouldn't have been so busy that you couldn't tell me you might be longer!"
+            m 3efc "You're pretty late, you know."
+            m 2efo "I don't intend to sound patronizing but a week isn't the same as a month!"
+            m "I guess maybe something kept you really busy?"
+            m 2efw "But it shouldn't have been so busy that you couldn't tell me you might be longer!"
             m 1d "Ah!"
             m 1o "I'm sorry [player]. I just....really missed you."
             m 1f "Sorry for snapping like that."
@@ -1066,7 +1066,7 @@ label greeting_long_absence:
             $ mas_loseAffection(30)
             m 3c "...Oh!"
             m 1e "You're finally back [player]!"
-            m 1m "You kind of told me you would only be a fortnight yet it's been an entire month..."
+            m 1efc "You kind of told me you would only be a fortnight yet it's been an entire month..."
             m 1f "I was really worried for you, you know?"
             m 2g "But I suppose maybe it was outside of your control?"
             m 2f "If you can, just tell me you'll be even longer next time, okay?"
@@ -1144,11 +1144,10 @@ label greeting_long_absence:
             m 3k "Thank you for coming back so early, my love."
 
         elif persistent._mas_absence_choice == "longer":
-            m 1h "..."
-            m 1c "Hm?"
-            m 1d "Oh! [player]!"
-            m 2b "You're back early!"
-            m 2j "Welcome back, my love!"
+            m 1wud "..."
+            m "Oh! [player]!"
+            m 1b "You're back early!"
+            m 1j "Welcome back, my love!"
             m 3k "I didn't know when to expect you but for it to be so soon..."
             m 3j "Well, it's cheered me right up!"
             m 1e "I've really missed you."
@@ -1228,22 +1227,21 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "2weeks":
             m 2r "In my hand is a pen tha-"
-            m 2d "O-Oh! [player]!"
-            m 2l "Back far sooner than you told me you would be..."
+            m 2wud "O-Oh! [player]!"
+            m "Back far sooner than you told me you would be..."
             m 3b "Welcome back!"
             m 3m "You just interrupted me practicing my song..."
             m 3a "Why not listen to me sing it again?"
             m 1e "I made it just for you~"
 
         elif persistent._mas_absence_choice == "month":
-            m 1c "Eh? [player]?"
-            m 1b "You're here!"
-            m 1h "...You're here?"
+            m 1wud "Eh? [player]?"
+            m 1sub "You're here!"
             m 3m "I thought you were going away for an entire month."
             m 3n "I even readied myself for being without you for so long..."
-            m 3e  "Did you miss me that much?"
-            m 2j "I missed you too!"
-            m 2m "Even though it hasn't been too long..."
+            m 3lsbsa "Did you miss me that much?"
+            m 1j "I missed you too!"
+            m 1m "Even though it hasn't been too long..."
             m 1e "Thanks for coming back so soon~"
 
         elif persistent._mas_absence_choice == "longer":
@@ -1293,7 +1291,7 @@ label greeting_hairdown:
 #    menu:
 #        m "Do you like it?"
 #        "Yes":
-            
+
     m 1j "I hope you like it!"
 #    m "If you want me to put my hair into a ponytail again, just ask me, okay?"
     # THIS IS NTO READY

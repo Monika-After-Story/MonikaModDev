@@ -323,7 +323,10 @@ label bye_prompt_sleep:
         m 1j "Sweet dreams!"
 
     return 'quit'
-    
+
+
+default mas_absence_counter = False
+
 init 5 python:
     addEvent(
         Event(
@@ -335,7 +338,7 @@ init 5 python:
         ),
         eventdb=evhand.farewell_database
     )
-default mas_absence_counter = False
+
 label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
