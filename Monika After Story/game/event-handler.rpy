@@ -210,9 +210,9 @@ init python:
         ev = eventdb.get(eventlabel, None)
 
         hideEvent(
-            ev, 
-            lock=lock, 
-            derandom=derandom, 
+            ev,
+            lock=lock,
+            derandom=derandom,
             depool=depool,
             decond=decond
         )
@@ -250,7 +250,7 @@ init python:
                 event.random = False
 
             if depool:
-                ev.pool = False
+                event.pool = False
 
             if decond:
                 event.conditional = None
@@ -696,4 +696,3 @@ label prompts_categories(pool=True):
             $pushEvent(_return)
 
     return
-

@@ -31,7 +31,7 @@ init -1 python in songs:
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
     FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
     FP_KAZOO_COVER = "mod_assets/bgm/kazoo.ogg"
-    FP_YR_EUROBEAT = "mod_assets/bgm/eurobeatreality.ogg"
+    FP_YR_EUROBEAT = "<loop 1.414>mod_assets/bgm/eurobeatreality.ogg"
     FP_NO_SONG = None
 
 
