@@ -134,7 +134,7 @@ define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suff
 #image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
 image emptydesk = ConditionSwitch(
     "morning_flag", "mod_assets/emptydesk.png",
-    "not morning_flag", "mod_assets/emptydesk_n.png"
+    "not morning_flag", "mod_assets/emptydesk-n.png"
 )
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
