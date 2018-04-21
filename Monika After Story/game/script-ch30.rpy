@@ -593,6 +593,7 @@ label ch30_autoload:
     $persistent.closed_self = False
     $ persistent._mas_crashed_self = True
     $startup_check = False
+    $ mas_checked_update = False
     jump ch30_loop
 
 label ch30_loop:
@@ -601,8 +602,15 @@ label ch30_loop:
     # this event can call spaceroom
     if not mas_skip_visuals:
         call spaceroom from _call_spaceroom_2
+
+        # updater check in here just because
+        if not mas_checked_update:
+            $ mas_backgroundUpdateCheck()
+            $ mas_checked_update = True
+
     else:
         $ mas_skip_visuals = False
+    
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
