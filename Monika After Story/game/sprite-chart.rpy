@@ -2,7 +2,7 @@
 # To add a new image, please scroll to the IMAGE section (IMG002)
 #
 ###### SPRITE CODE (IMG001)
-# 
+#
 # The sprite code system is a way of picking an appropriate sprite without
 # having to look up what the sprite looks like.
 # All expressions use this code system, with the exception of the original
@@ -1345,7 +1345,7 @@ define monika_chr = MASMonika()
 #
 # Optional parts for sitting is:
 #   sweat, tears, blush, emote, eyebags
-#   
+#
 # Non-leaning poses require an ARMS part.
 # leaning poses require a LEAN part.
 #
@@ -1363,8 +1363,8 @@ define monika_chr = MASMonika()
 # All leaning layers must have a non-leaning fallback
 #
 ## FACIAL EXPRESSIONS:
-# Non leaning filenames: 
-#   face-{face part type}-{face part name}{-n}.png 
+# Non leaning filenames:
+#   face-{face part type}-{face part name}{-n}.png
 #   (ie: face-mouth-big.png / face-mouth-big-n.png)
 # leaning filenames:
 #   face-leaning-{face part type}-{face part name}{-n}.png
@@ -1379,9 +1379,9 @@ define monika_chr = MASMonika()
 # Leaning filenames:
 #   torso-leaning-{hair type}-{lean name}{-n}.png
 #   (ie: torso-leaning-def-def.png / torso-leaning-def-def-n.png)
-#   
 #
-# 
+#
+#
 #
 
 
@@ -2706,6 +2706,20 @@ image monika 1hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 2a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3955,6 +3969,20 @@ image monika 2hubfb = DynamicDisplayable(
     nose="def",
     mouth="big",
     head="b",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="full"
+)
+
+image monika 2ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
     left="1l",
     right="2r",
     arms="crossed",
@@ -5216,6 +5244,20 @@ image monika 3hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="full"
+)
+
 image monika 4a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6465,6 +6507,20 @@ image monika 4hubfb = DynamicDisplayable(
     nose="def",
     mouth="big",
     head="b",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    blush="full"
+)
+
+image monika 4ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
     left="2l",
     right="2r",
     arms="pointright",
