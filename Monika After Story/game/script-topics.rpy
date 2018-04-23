@@ -1060,14 +1060,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
-    m 3b "I really like the sound of rain..."
-    m 3e "Not so much getting my clothes and hair wet, though."
-    m "But a nice, quiet day at home with the sound of rainfall outside my window..."
-    m 3j "It's very calming to me."
-    m "Yeah..."
-    m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
-    m "That's not too cheesy or anything, is it?"
-    m "Would you ever do that for me, [player]?"
+    m 3a "I really like the sound of rain..."
+    m 3m "Not so much getting my clothes and hair wet, though."
+    m 1a "But a nice, quiet day at home with the sound of rainfall outside my window..."
+    m 1j "It's very calming to me."
+    m 1q "Yeah..."
+    m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m 2lkbsa "That's not too cheesy or anything, is it?"
+    m 1ekbfa "Would you ever do that for me, [player]?"
     menu:
         "Yes":
             $ scene_change = True
@@ -1080,7 +1080,7 @@ label monika_rain:
             $ songs.current_track = songs.FP_NO_SONG
             $ songs.selected_track = songs.FP_NO_SONG
 
-            m "Then hold me, [player]..."
+            m 1j "Then hold me, [player]..."
             show monika 6dubsa
             $ ui.add(PauseDisplayable())
             $ ui.interact()
@@ -1094,12 +1094,12 @@ label monika_rain:
             $ persistent._mas_likes_rain = True
 
         "I hate the rain":
-            m 1oo "Aw, that's a shame."
-            m "But it's understandable."
-            m 4a "Rainy weather can look pretty gloomy."
-            m 4ll "Not to mention pretty cold!"
-            m 1duu "But if you focus on the sounds raindrops make..."
-            m 1a "I think you'll come to enjoy it."
+            m 2oo "Aw, that's a shame."
+            m 2e "But it's understandable."
+            m 1a "Rainy weather can look pretty gloomy."
+            m 3n "Not to mention pretty cold!"
+            m 1d "But if you focus on the sounds raindrops make..."
+            m 1j "I think you'll come to enjoy it."
 
             # lock / unlock the appropraite labels
             $ lockEventLabel("monika_rain_start")
@@ -1161,7 +1161,7 @@ init 5 python:
     )
 
 label monika_rain_start:
-    m "Alright, [player]."
+    m 1j "Alright, [player]."
     m "Just give me a second."
     show monika 1q
     pause 1.0
@@ -1169,7 +1169,7 @@ label monika_rain_start:
     $ mas_is_raining = True
     call spaceroom
     play background audio.rain fadein 1.0 loop
-    m "If you want the rain to stop, just ask me, okay?"
+    m 1a "If you want the rain to stop, just ask me, okay?"
 
     # lock this event, unlock rainstop and hold me
     $ lockEventLabel("monika_rain_start")
@@ -1201,18 +1201,17 @@ label monika_rain_holdme:
         $ songs.current_track = songs.FP_NO_SONG
         $ songs.selected_track = songs.FP_NO_SONG
 
-        m "Of course, [player]."
+        m 1a "Of course, [player]."
         show monika 6dubsa
         $ ui.add(PauseDisplayable())
         $ ui.interact()
-        m 1a "You can hold me anytime you want, [player]."
-        m 1hfb "But only if the mood is right!" 
+        m 1j "You can hold me anytime you want, [player]."
 
     else:
         # TODO adjust for affection maybe?
-        m 1mm "..."
-        m 1nn "The mood doesn't feel right, [player]."
-        m "Sorry..."
+        m 1oo "..."
+        m 1pp "The mood doesn't feel right, [player]."
+        m 1q "Sorry..."
 
     return
 
