@@ -1060,9 +1060,9 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
-    m 3a "I really like the sound of rain..."
+    m 3a "I really like the sound of rain~"
     m 3m "Not so much getting my clothes and hair wet, though."
-    m 1a "But a nice, quiet day at home with the sound of rainfall outside my window..."
+    m 1a "But a nice, quiet day at home with the sound of rainfall outside my window?"
     m 1j "It's very calming to me."
     m 1q "Yeah..."
     m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
@@ -1130,7 +1130,7 @@ init 5 python:
 
 label monika_rain_stop:
     # NOTE: the label is here because its related to monika_rain
-    m "Alright, [player]."
+    m 1j "Alright, [player]."
     m "Just give me a second."
     show monika 1q
     pause 1.0
@@ -1138,7 +1138,7 @@ label monika_rain_stop:
     $ mas_is_raining = False
     call spaceroom
     stop background fadeout 1.0
-    m "If you want it to rain again, just ask me, okay?"
+    m 1a "If you want it to rain again, just ask me, okay?"
 
     # lock this event, unlock the rainstart one
     $ lockEventLabel("monika_rain_stop")
