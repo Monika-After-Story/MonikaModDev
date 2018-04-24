@@ -810,25 +810,34 @@ label ch30_reset:
             persistent._mas_monika_hair
         )
 
-        # hair map
-        hair_map = {
-            "down": "monika_hair_down",
-            "def": "monika_hair_ponytail"
-            # "bun": "monika_hair_bun"
-        }
+        if (
+                renpy.seen_label("monika_hair_down")
+                and persistent._mas_likes_hairdown
+            ):
+            # hair adjustments only happen if the appropriate vent occured
 
+            # hair map
+            hair_map = {
+                "down": "monika_hair_down",
+                "def": "monika_hair_ponytail"
+                # "bun": "monika_hair_bun"
+            }
+
+          
+            for hair in hair_map:
+                # this is so we kind of automate the locking / unlocking prcoess
+                if hair == monika_chr.hair:
+                    lockEventLabel(hair_map[hair])
+                else:
+                    unlockEventLabel(hair_map[hair])
+
+        # currenly, the clothes part has noc hecks
         # clothes map
         # NOTE: unused
         clothes_map = {
 #            "def": "monika_clothes_school"
         }
-       
-        for hair in hair_map:
-            # this is so we kind of automate the locking / unlocking prcoess
-            if hair == monika_chr.hair:
-                lockEventLabel(hair_map[hair])
-            else:
-                unlockEventLabel(hair_map[hair])
+
 
         for clothes in clothes_map:
             if clothes == monika_chr.clothes:
