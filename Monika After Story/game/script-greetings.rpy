@@ -980,7 +980,7 @@ label greeting_timeconcern_day:
 
 init 5 python:
     rules = dict()
-    rules.update(MASGreetingRule.create_rule(skip_visual=True))
+    rules.update(MASGreetingRule.create_rule(skip_visual=True, random_chance=5))
 
     addEvent(
         Event(
