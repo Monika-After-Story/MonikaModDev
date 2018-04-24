@@ -3,8 +3,6 @@
 #to either be a random topic, a prompt "pool" topics, or a special conditional
 #or date-dependent event with an appropriate action
 
-$ import store.songs as songs
-
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
@@ -14,6 +12,10 @@ define mas_did_monika_battery = False
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
+
+    import store.songs as songs
+    import store.evhand as evhand
+
     def remove_seen_labels(pool):
         #
         # Removes seen labels from the given pool
@@ -1055,20 +1057,163 @@ label monika_simulated:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=['monika'],prompt="Sounds of rain",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
-    m 3b "I really like the sound of rain..."
-    m 3e "Not so much getting my clothes and hair wet, though."
-    m "But a nice, quiet day at home with the sound of rainfall outside my window..."
-    m 3j "It's very calming to me."
-    m "Yeah..."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
-    m "That's not too cheesy or anything, is it?"
-    m "Would you ever do that for me, [player]?"
+    m 3a "I really like the sound of rain~"
+    m 3m "Not so much getting my clothes and hair wet, though."
+    m 1a "But a nice, quiet day at home with the sound of rainfall outside my window?"
+    m 1j "It's very calming to me."
+    m 1q "Yeah..."
+    m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m 2lkbsa "That's not too cheesy or anything, is it?"
+    m 1ekbfa "Would you ever do that for me, [player]?"
+    menu:
+        "Yes":
+            $ scene_change = True
+            $ mas_is_raining = True
+            call spaceroom
+            stop music fadeout 1.0
+            play background audio.rain fadein 1.0 loop
+
+            # clear selected track
+            $ songs.current_track = songs.FP_NO_SONG
+            $ songs.selected_track = songs.FP_NO_SONG
+
+            m 1j "Then hold me, [player]..."
+            show monika 6dubsa
+            $ ui.add(PauseDisplayable())
+            $ ui.interact()
+            m 1a "If you want the rain to stop, just ask me, okay?"
+
+            # lock / unlock the appropriate labels
+            $ unlockEventLabel("monika_rain_stop")
+            $ unlockEventLabel("monika_rain_holdme")
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = True
+
+        "I hate the rain":
+            m 2oo "Aw, that's a shame."
+            m 2e "But it's understandable."
+            m 1a "Rainy weather can look pretty gloomy."
+            m 3n "Not to mention pretty cold!"
+            m 1d "But if you focus on the sounds raindrops make..."
+            m 1j "I think you'll come to enjoy it."
+
+            # lock / unlock the appropraite labels
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain_stop")
+            $ lockEventLabel("monika_rain_holdme")
+            $ unlockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = False
+
+    # unrandom this event if its currently random topic
+    if evhand.event_database["monika_rain"].random:
+        $ hideEventLabel("monika_rain", derandom=True)
+
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_stop",
+            category=["weather"],
+            prompt="Can you stop the rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_rain_stop:
+    # NOTE: the label is here because its related to monika_rain
+    m 1j "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ mas_is_raining = False
+    call spaceroom
+    stop background fadeout 1.0
+    m 1a "If you want it to rain again, just ask me, okay?"
+
+    # lock this event, unlock the rainstart one
+    $ lockEventLabel("monika_rain_stop")
+    $ unlockEventLabel("monika_rain_start")
+    $ unlockEventLabel("monika_rain")
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_start",
+            category=["weather"],
+            prompt="Can you make it rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_rain_start:
+    m 1j "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ mas_is_raining = True
+    call spaceroom
+    play background audio.rain fadein 1.0 loop
+    m 1a "If you want the rain to stop, just ask me, okay?"
+
+    # lock this event, unlock rainstop and hold me
+    $ lockEventLabel("monika_rain_start")
+    $ lockEventLabel("monika_rain")
+    $ unlockEventLabel("monika_rain_stop")
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_holdme",
+            category=["monika"],
+            prompt="Can I hold you?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_rain_holdme:
+    # we only want this if it rains
+    if mas_is_raining:
+        # TODO adjust this for affection
+        stop music fadeout 1.0
+
+        # clear selected track
+        $ songs.current_track = songs.FP_NO_SONG
+        $ songs.selected_track = songs.FP_NO_SONG
+
+        m 1a "Of course, [player]."
+        show monika 6dubsa
+        $ ui.add(PauseDisplayable())
+        $ ui.interact()
+        m 1j "You can hold me anytime you want, [player]."
+
+    else:
+        # TODO adjust for affection maybe?
+        m 1oo "..."
+        m 1pp "The mood doesn't feel right, [player]."
+        m 1q "Sorry..."
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Simulated reality",random=True))

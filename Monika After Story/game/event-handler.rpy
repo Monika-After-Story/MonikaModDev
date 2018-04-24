@@ -462,12 +462,18 @@ label call_next_event:
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        pool_event_keys = Event.filterEvents(evhand.event_database,unlocked=False,pool=True).keys()
+        pool_events = Event.filterEvents(evhand.event_database,unlocked=False,pool=True)
+        pool_event_keys = [
+            evlabel
+            for evlabel in pool_events
+            if "no unlock" not in pool_events[evlabel].rules
+        ]
 
         if len(pool_event_keys)>0:
-            unlock_event = renpy.random.choice(pool_event_keys)
-            evhand.event_database[unlock_event].unlocked = True
-            evhand.event_database[unlock_event].unlock_date = datetime.datetime.now()
+            sel_evlabel = renpy.random.choice(pool_event_keys)
+
+            evhand.event_database[sel_evlabel].unlocked = True
+            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
 
     return
 

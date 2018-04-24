@@ -70,13 +70,31 @@ image ut_slash:
     0.1
 
 
-
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
 image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None,image="mod_assets/window_1_fallback.png")
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
 image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
 image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
+image rain_mask_left = Movie(
+    channel="window_5", 
+    play="mod_assets/window_5.webm", 
+    mask=None,
+    image="mod_assets/window_5_fallback.png"
+)
+image rain_mask_right = Movie(
+    channel="window_6",
+    play="mod_assets/window_6.webm",
+    mask=None,
+    image="mod_assets/window_6_fallback.png"
+)
+
+# spaceroom window positions
+transform spaceroom_window_left:
+    size (320, 180) pos (30, 200)
+
+transform spaceroom_window_right:
+    size (320, 180) pos (935, 200)
 
 init python:
 
@@ -123,6 +141,16 @@ init python:
 
     # check for battery support
     mas_battery_supported = battery.is_supported()
+
+    # we need a new music channel for background audio (like rain!)
+    renpy.music.register_channel(
+        "background", 
+        mixer="music", 
+        loop=True,
+        stop_on_mute=True,
+        tight=True
+    )
+    renpy.music.set_volume(songs.getVolume("music"), channel="background")
 
     #Define new functions
 
@@ -223,6 +251,34 @@ init python:
         config.underlay.append(renpy.Keymap(inc_musicvol=inc_musicvol))
         config.underlay.append(renpy.Keymap(dec_musicvol=dec_musicvol))
 
+    def mas_drawSpaceroomMasks():
+        """
+        Draws the appropriate masks according to the current state of the
+        game.
+
+        ASSUMES:
+            morning_flag 
+            mas_is_raining
+        """
+        if mas_is_raining:
+            # raining takes priority
+            left_window = "rain_mask_left"
+            right_window = "rain_mask_right"
+
+        elif morning_flag:
+            # morning time!
+            left_window = "room_mask3"
+            right_window = "room_mask4"
+
+        else:
+            # night time
+            left_window = "room_mask"
+            right_window = "room_mask2"
+
+        # now show the masks
+        renpy.show(left_window, at_list=[spaceroom_window_left], tag="rm")
+        renpy.show(right_window, at_list=[spaceroom_window_right], tag="rm2")
+
 
     def show_dialogue_box():
         if allow_dialogue:
@@ -297,12 +353,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
         if morning_flag != True or scene_change:
             $ morning_flag = True
             if not hide_mask:
-                show room_mask3 as rm:
-                    size (320,180)
-                    pos (30,200)
-                show room_mask4 as rm2:
-                    size (320,180)
-                    pos (935,200)
+                $ mas_drawSpaceroomMasks()
             if start_bg:
                 $ renpy.show(start_bg, zorder=1)
             else:
@@ -315,12 +366,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             $ morning_flag = False
             scene black
             if not hide_mask:
-                show room_mask as rm:
-                    size (320,180)
-                    pos (30,200)
-                show room_mask2 as rm2:
-                    size (320,180)
-                    pos (935,200)
+                $ mas_drawSpaceroomMasks()
             if start_bg:
                 $ renpy.show(start_bg, zorder=1)
             else:
@@ -753,3 +799,14 @@ label ch30_reset:
             mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
             if mood_ev:
                 mood_ev.unlocked = True
+
+    # reset raining stuff
+    python:
+        mas_is_raining = False
+        if persistent._mas_likes_rain:
+            unlockEventLabel("monika_rain_start")
+            lockEventLabel("monika_rain_stop")
+            lockEventLabel("monika_rain_holdme")
+            unlockEventLabel("monika_rain")
+            
+        

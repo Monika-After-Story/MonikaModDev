@@ -2093,3 +2093,24 @@ screen mas_generic_restart:
 
                 textbutton _("OK") action Return(True)
 
+# generic custom displayabels below:
+init python:
+    class PauseDisplayable(renpy.Displayable):
+        """
+        Pause until click variant of Pause
+        This is because normal pause until click is broken for some reason
+        """
+        import pygame
+
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+
+        def render(self, width, height, st, at):
+            # dont actually render anything
+            return renpy.Render(width, height)
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                return True
+
+            raise renpy.IgnoreEvent()
