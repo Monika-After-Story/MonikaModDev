@@ -5929,14 +5929,15 @@ init 5 python:
     )
 
 label monika_hair_ponytail:
-    m 1a "Sure thing, [player]."
+    m 1a "Sure thing!"
     m "Just give me a second."
     show monika 1q
     pause 1.0
 
     $ monika_chr.reset_hair()
-
-    m 1a "If you want me to let my hair down, just ask me, okay?"
+    
+    m 3k "All done!"
+    m 1a "If you want me to let my hair down, just ask, okay?"
 
     # lock this event, unlock hairdown
     $ lockEventLabel("monika_hair_ponytail")
@@ -5958,13 +5959,14 @@ init 5 python:
 
 label monika_hair_down:
     m 1a "Sure thing, [player]."
-    m "Just give me a second."
+    m "Just give me a moment."
     show monika 1q
     pause 1.0
 
     $ monika_chr.change_hair("down")
 
-    m 1a "If you want me to tie my hair into a ponytail again, just ask me, okay?"
+    m 3k "And it's down!"
+    m 1a "If you want my hair in a ponytail again, just ask away, [player]~"
 
     # lock this event, unlock hairponytail
     $ lockEventLabel("monika_hair_down")
