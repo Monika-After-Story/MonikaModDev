@@ -1864,6 +1864,10 @@ define audio.closet_close = "sfx/closet-close.ogg"
 define audio.page_turn = "sfx/pageflip.ogg"
 define audio.fall = "sfx/fall.ogg"
 
+# custom audio
+# NOTE: awaiting full vote
+define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
+
 # Backgrounds
 image black = "#000000"
 image dark = "#000000e4"
@@ -3043,6 +3047,8 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
+default persistent._mas_likes_rain = False
+define mas_is_raining = False
 define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
