@@ -1001,16 +1001,16 @@ label greeting_hairdown:
 
     call spaceroom
     m 1a "Hi there, [player]!"
-    m 4a "You may have noticed that my hair is down."
-    m "I decided to try something new today."
+    m 4j "Notice anything different today?"
+    m 1k "I decided to try something new today~"
     menu:
         m "Do you like it?"
         "Yes":
             # maybe 6sub is better?
             # TODO: affection raise
             m 1sub "Really?" # honto?!
-            m 1j "I'm glad!" # yokatta.."
-            m 1a "If you want me to tie my hair into a ponytail again, just ask me, okay?"
+            m 1j "I'm so glad!" # yokatta.."
+            m 1a "Just ask me if you want to see my ponytail again, okay?"
 
             # make it possible to switch hair at will
             $ unlockEventLabel("monika_hair_ponytail")
@@ -1018,13 +1018,14 @@ label greeting_hairdown:
 
         "No":
             # TODO: affection lowered?
-            m 1f "Oh, okay."
-            m "I'll put it back up for you."
+            m 1f "Oh..."
+            m 1o "..."
+            m 1p "I'll put it back up for you, then."
             m 1q "..."
 
             $ monika_chr.reset_hair()
 
-            m 1a "There we go."
+            m 1h "There we go."
             # you will never get this chance again
             
     # lock this greeting forever.
