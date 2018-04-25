@@ -206,7 +206,7 @@ init -1 python in mas_sprites:
     # non leanable clothes / hair
     lean_blacklist = [
         "down",
-        "ponyup"
+        "bun"
     ]
 
 
@@ -2691,6 +2691,20 @@ image monika 1hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 2a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3927,6 +3941,20 @@ image monika 2hubfb = DynamicDisplayable(
     nose="def",
     mouth="big",
     head="b",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="full"
+)
+
+image monika 2ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
     left="1l",
     right="2r",
     arms="crossed",
@@ -5175,6 +5203,20 @@ image monika 3hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="full"
+)
+
 image monika 4a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6417,6 +6459,20 @@ image monika 4hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 4ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    blush="full"
+)
+
 image monika 5a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6708,4 +6764,32 @@ image monika 5rfc = DynamicDisplayable(
     right="",
     lean="def",
     single="3b"
+)
+
+image monika 6dubsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="shade"
+)
+
+image monika 6dubsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
+    nose="def",
+    mouth="smug",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="shade"
 )

@@ -965,8 +965,10 @@ screen preferences():
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
                     style_prefix "check"
-                    label _("Room Animation")
-                    textbutton _("Disable") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    label _("Graphics")
+                    textbutton _("Disable Animation") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
+
 
                 vbox:
                     style_prefix "check"
@@ -1525,6 +1527,8 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
+            
+
 style confirm_frame is gui_frame
 style confirm_prompt is gui_prompt
 style confirm_prompt_text is gui_prompt_text
@@ -2054,3 +2058,59 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
 #   timeout_label - label to jump to when timeout
 screen mas_background_timed_jump(timeout, timeout_label):
     timer timeout action Jump(timeout_label)
+
+# MAS restart monika screen
+screen mas_generic_restart:
+    # this will always return True
+    # this has like a be right back button
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "confirm"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+# TODO have a brb feature somehow
+# TODO: that would tie into the knowing how long player is out
+#            label _("Tell Monika that you'll be right back?"):
+            label _("Please restart Monika After Story."):
+                style "confirm_prompt"
+                xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("OK") action Return(True)
+
+# generic custom displayabels below:
+init python:
+    class PauseDisplayable(renpy.Displayable):
+        """
+        Pause until click variant of Pause
+        This is because normal pause until click is broken for some reason
+        """
+        import pygame
+
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+
+        def render(self, width, height, st, at):
+            # dont actually render anything
+            return renpy.Render(width, height)
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                return True
+
+            raise renpy.IgnoreEvent()

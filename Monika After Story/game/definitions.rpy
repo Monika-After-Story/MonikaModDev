@@ -903,8 +903,8 @@ python early:
                 4 - scroll up
                 5 - scroll down
             _button_down - pygame mouse button event type to activate button
-                MOUSEBUTTONDOWN (Default)
-                MOUSEBUTTONUP
+                MOUSEBUTTONUP (Default)
+                MOUSEBUTTONDOWN 
         """
         import pygame
 
@@ -986,7 +986,7 @@ python early:
             self.disabled = False
             self.hovered = False
             self._button_click = 1
-            self._button_down = pygame.MOUSEBUTTONDOWN
+            self._button_down = pygame.MOUSEBUTTONUP
 
             # the states of a button
             self._button_states = {
@@ -1863,6 +1863,10 @@ define audio.closet_open = "sfx/closet-open.ogg"
 define audio.closet_close = "sfx/closet-close.ogg"
 define audio.page_turn = "sfx/pageflip.ogg"
 define audio.fall = "sfx/fall.ogg"
+
+# custom audio
+# NOTE: awaiting full vote
+define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
 
 # Backgrounds
 image black = "#000000"
@@ -3043,6 +3047,15 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
+
+# rain
+default persistent._mas_likes_rain = False
+define mas_is_raining = False
+
+# clothes
+default persistent._mas_monika_clothes = "def"
+default persistent._mas_monika_hair = "def"
+default persistent._mas_likes_hairdown = False
 define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600

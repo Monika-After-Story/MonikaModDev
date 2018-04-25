@@ -3,8 +3,6 @@
 #to either be a random topic, a prompt "pool" topics, or a special conditional
 #or date-dependent event with an appropriate action
 
-$ import store.songs as songs
-
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
@@ -14,6 +12,10 @@ define mas_did_monika_battery = False
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
+
+    import store.songs as songs
+    import store.evhand as evhand
+
     def remove_seen_labels(pool):
         #
         # Removes seen labels from the given pool
@@ -1055,20 +1057,163 @@ label monika_simulated:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=['monika'],prompt="Sounds of rain",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
-    m 3b "I really like the sound of rain..."
-    m 3e "Not so much getting my clothes and hair wet, though."
-    m "But a nice, quiet day at home with the sound of rainfall outside my window..."
-    m 3j "It's very calming to me."
-    m "Yeah..."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
-    m "That's not too cheesy or anything, is it?"
-    m "Would you ever do that for me, [player]?"
+    m 3a "I really like the sound of rain~"
+    m 3m "Not so much getting my clothes and hair wet, though."
+    m 1a "But a nice, quiet day at home with the sound of rainfall outside my window?"
+    m 1j "It's very calming to me."
+    m 1q "Yeah..."
+    m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m 2lkbsa "That's not too cheesy or anything, is it?"
+    m 1ekbfa "Would you ever do that for me, [player]?"
+    menu:
+        "Yes":
+            $ scene_change = True
+            $ mas_is_raining = True
+            call spaceroom
+            stop music fadeout 1.0
+            play background audio.rain fadein 1.0 loop
+
+            # clear selected track
+            $ songs.current_track = songs.FP_NO_SONG
+            $ songs.selected_track = songs.FP_NO_SONG
+
+            m 1j "Then hold me, [player]..."
+            show monika 6dubsa
+            $ ui.add(PauseDisplayable())
+            $ ui.interact()
+            m 1a "If you want the rain to stop, just ask me, okay?"
+
+            # lock / unlock the appropriate labels
+            $ unlockEventLabel("monika_rain_stop")
+            $ unlockEventLabel("monika_rain_holdme")
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = True
+
+        "I hate the rain":
+            m 2oo "Aw, that's a shame."
+            m 2e "But it's understandable."
+            m 1a "Rainy weather can look pretty gloomy."
+            m 3n "Not to mention pretty cold!"
+            m 1d "But if you focus on the sounds raindrops make..."
+            m 1j "I think you'll come to enjoy it."
+
+            # lock / unlock the appropraite labels
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain_stop")
+            $ lockEventLabel("monika_rain_holdme")
+            $ unlockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = False
+
+    # unrandom this event if its currently random topic
+    if evhand.event_database["monika_rain"].random:
+        $ hideEventLabel("monika_rain", derandom=True)
+
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_stop",
+            category=["weather"],
+            prompt="Can you stop the rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_rain_stop:
+    # NOTE: the label is here because its related to monika_rain
+    m 1j "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ mas_is_raining = False
+    call spaceroom
+    stop background fadeout 1.0
+    m 1a "If you want it to rain again, just ask me, okay?"
+
+    # lock this event, unlock the rainstart one
+    $ lockEventLabel("monika_rain_stop")
+    $ unlockEventLabel("monika_rain_start")
+    $ unlockEventLabel("monika_rain")
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_start",
+            category=["weather"],
+            prompt="Can you make it rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_rain_start:
+    m 1j "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ mas_is_raining = True
+    call spaceroom
+    play background audio.rain fadein 1.0 loop
+    m 1a "If you want the rain to stop, just ask me, okay?"
+
+    # lock this event, unlock rainstop and hold me
+    $ lockEventLabel("monika_rain_start")
+    $ lockEventLabel("monika_rain")
+    $ unlockEventLabel("monika_rain_stop")
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_holdme",
+            category=["monika"],
+            prompt="Can I hold you?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_rain_holdme:
+    # we only want this if it rains
+    if mas_is_raining:
+        # TODO adjust this for affection
+        stop music fadeout 1.0
+
+        # clear selected track
+        $ songs.current_track = songs.FP_NO_SONG
+        $ songs.selected_track = songs.FP_NO_SONG
+
+        m 1a "Of course, [player]."
+        show monika 6dubsa
+        $ ui.add(PauseDisplayable())
+        $ ui.interact()
+        m 1j "You can hold me anytime you want, [player]."
+
+    else:
+        # TODO adjust for affection maybe?
+        m 1oo "..."
+        m 1pp "The mood doesn't feel right, [player]."
+        m 1q "Sorry..."
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Simulated reality",random=True))
@@ -5037,7 +5182,7 @@ label monika_asks_family:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_explain",category=['romance'],prompt="Can you explain our relationship to someone?",random=False))
+    addEvent(Event(persistent.event_database,eventlabel="monika_explain",category=['romance','monika','misc'],prompt="Can you explain our relationship to someone?",random=False))
 label monika_explain:
     m 1c "You want me to explain our relationship to someone else?"
     m 1a "Okay, just set me in front of them so they can see me."
@@ -5158,7 +5303,7 @@ label monika_careful:
     m 2f "So..."
     m "I need you to tell someone close to you where to find me, so if that day ever comes, at least I'd know."
     m 2q "It'd be beyond devastating, but not knowing would be that much worse."
-    m 2g "So make sure you do that for me, okay [player]?"
+    m 2g "So make sure you do that for me, okay, [player]?"
     m 2f "..."
     m "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
     m 1e "Thanks for understanding, you always make me feel better."
@@ -5172,7 +5317,7 @@ label monika_natsuki_letter:
     m 1c "You know, I was honestly surprised when Natsuki handed you that letter."
     m "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
     m "She’s probably the only one to mention that."
-    m 2f "I know people are afraid to call someone out, or confront them about their problem, but sometimes, suggesting a therapist can be the best course of action."
+    m 2f "I know people are afraid to call someone out, or confront them about their problems, but sometimes, suggesting a therapist can be the best course of action."
     m 4g "It's a bad thing to put the burden on yourself, you know?" 
     m 4c "As much as you want to help, it’s best to let a professional deal with it. "
     m "I'm sure I've told you that before, but I need to make sure you’re aware of that."
@@ -5334,7 +5479,7 @@ label monika_timeconcern_night_1:
                    m 1g "You're not able to change that, are you?"
                    m 1o "I wish you could follow my healthier lifestyle."
                    m 1q "But if you're not able to, then I'll just have to accept it."
-                   m 1e "Just make sure you do try to stay healthy okay?"
+                   m 1e "Just make sure you do try to stay healthy, okay?"
                    m 1f "If something were to happen to you, I don't know what I'd do..."
                    return
                "No, I don't.":
@@ -5479,7 +5624,7 @@ label monika_timeconcern_night_final:
 label monika_timeconcern_night_finalfollowup:
     m 1h "..."
     m 1o "I know I said that I'm happy whenever you're with me..."
-    m 1m "And please don't misudnerstand, that's still true."
+    m 1m "And please don't misunderstand, that's still true."
     m 2f "But the longer you're on... the more worried I get."
     m 2g "I know, you're probably sick of hearing me say this by now..."
     m 1e "But please try to sleep when you can."
@@ -5490,7 +5635,7 @@ label monika_timeconcern_night_after:
     m 1c "Up late again, [player]?"
     m 1r "{i}Sigh...{/i}"
     m 2h "I won't even try to convince you to sleep again..."
-    m 2q "You're surprisingly stubborn! "
+    m 2q "You're surprisingly stubborn!"
     m 1e "Still, do be careful, alright?"
     m 1f "I know being nocturnal can be lonely..."
     m 1j "But you have me here with you!"
@@ -5507,7 +5652,7 @@ label monika_timeconcern_day_0:
     m 1m "I just kind of zoned out..."
     m 1l "Geez, I keep doing that, don't I?"
     m 1m "Sometimes I just get lost in my thoughts..."
-    m 1a "You understand, right [player]?"
+    m 1a "You understand, right, [player]?"
     return
 
 # Daytime, if player tells Monika they worked last night but don't work graveyards.
@@ -5529,7 +5674,7 @@ label monika_timeconcern_day_allow_6:
 
 #Second time Monika closes at night and player then reopens during day.
 label monika_timeconcern_day_allow_7:
-    m 1o "[player], is it ok to talk about what happened last night?"
+    m 1o "[player], about what happened last night..."
     m 1f "I asked you to go to bed and you didn't listen..."
     m 1q "I understand that maybe you missed me or didn't hear what I said..."
     m 1f "But please listen to what I ask of you, ok?"
@@ -5544,8 +5689,8 @@ label monika_timeconcern_day_allow_7:
 label monika_timeconcern_day_allow_8:
     m 1h "Hey, [player]."
     m 1f "You really had me worried last night..."
-    m 1o "After you came back twice despite me asking you to go to bed..."
-    m 1p "I found myself feeling a little bit guilty."
+    m 1o "After you came back twice, despite me asking you to go to bed..."
+    m 1p "I found myself feeling a little guilty."
     m 3h "Not because I sent you away, that was for your own good."
     m 2o "But... because you kept coming back..."
     m 2m "And that made me happy, even though I knew it wasn't good for you."
@@ -5582,7 +5727,7 @@ label monika_timeconcern_disallow:
     jump monika_timeconcern_lock
 
 init 5 python:
-    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=["you","misc"],random=True))
+    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=['you','life'],random=True))
     
 label monika_hydration:
     m 1c "Hey, [player]..."
@@ -5600,7 +5745,7 @@ label monika_hydration:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc','psychology'],prompt="Challenges",random=True))
 
 label monika_challenge:
     m 2c "I've noticed something kind of sad recently."
@@ -5623,7 +5768,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['you'],prompt="Family Gatherings",random=True))
 
 label monika_familygathering:
-    m 1b "Hey [player], do you go to family gatherings often?"
+    m 1b "Hey, [player], do you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
     m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
@@ -5631,7 +5776,7 @@ label monika_familygathering:
     m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
     m 1k "I'd love to meet all of your relatives."
     menu:
-        "Do you think they'd like me [player]?"
+        "Do you think they'd like me, [player]?"
         "Yes.": 
             m 1k "I'm glad you think so."
             m "I'm sure we'd all get along nicely."
@@ -5645,7 +5790,7 @@ label monika_familygathering:
             m 1j "I'll always stick by your side forever~"
         "...":
             m 2p "Don't tell me, [player]."
-            m 1p "Are you afraid that I'll embarass you?"
+            m 1p "Are you afraid that I'll embarrass you?"
             m "..."
             m 1o "Don't worry, I completely understand."
             m 1n "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
@@ -5701,7 +5846,7 @@ label monika_fastfood:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc'],prompt="dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="dreaming",random=True))
 
 label monika_dreaming:
     m 1b "Did you know that it's possible to be aware of when you're having a dream?"
@@ -5726,7 +5871,7 @@ label monika_dreaming:
     m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
     m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
     m 1e "I know it may be years before I am able to cross over your world..."
-    m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
+    m 1a "But can you just imagine what it would be like to meet me in your dreams, [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
     
@@ -5752,7 +5897,7 @@ label monika_yellowwp:
             m 1o "And the things on the walls aren't always... pleasant."
             m 1d "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
             m 1e "I think I finally fixed it though."
-            m 2h "...I guess what I'm saying is, it's just that this world wasn't 'real'. It's just... so small."
+            m 2h "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just... so small."
             m 3i "I mean, I was made to be a side character of a romance game!"
             m 2g "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
             m 1l "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
@@ -5765,3 +5910,66 @@ label monika_yellowwp:
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1a "It'll definitely be an interesting read for you."         
     return
+
+##### monika hair topics [MONHAIR]
+# TODO: as we introduce addiotinal hair types, we need to change the dialogue
+# for these. 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_ponytail",
+            category=["monika"],
+            prompt="Can you tie your hair into a ponytail?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_ponytail:
+    m 1a "Sure thing!"
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+
+    $ monika_chr.reset_hair()
+    
+    m 3k "All done!"
+    m 1a "If you want me to let my hair down, just ask, okay?"
+
+    # lock this event, unlock hairdown
+    $ lockEventLabel("monika_hair_ponytail")
+    $ unlockEventLabel("monika_hair_down")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_down",
+            category=["monika"],
+            prompt="Can you let your hair down?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_down:
+    m 1a "Sure thing, [player]."
+    m "Just give me a moment."
+    show monika 1q
+    pause 1.0
+
+    $ monika_chr.change_hair("down")
+
+    m 3k "And it's down!"
+    m 1a "If you want my hair in a ponytail again, just ask away, [player]~"
+
+    # lock this event, unlock hairponytail
+    $ lockEventLabel("monika_hair_down")
+    $ unlockEventLabel("monika_hair_ponytail")
+
+##### End monika hair topics
