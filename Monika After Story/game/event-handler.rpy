@@ -60,6 +60,9 @@ init -500 python:
             lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
             persistent._mas_event_init_lockdb[ev_key] = tuple(lock_row)
 
+        # now set the new template
+        persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
+
     # set db defaults
     if persistent._mas_event_init_lockdb is None:
         persistent._mas_event_init_lockdb = dict()
