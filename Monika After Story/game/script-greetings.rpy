@@ -1006,15 +1006,15 @@ label greeting_hairdown:
     menu:
         m "Do you like it?"
         "Yes":
+            # make it possible to switch hair at will
+            $ unlockEventLabel("monika_hair_ponytail")
+            $ persistent._mas_likes_hairdown = True
+
             # maybe 6sub is better?
             # TODO: affection raise
             m 1sub "Really?" # honto?!
             m 1j "I'm so glad!" # yokatta.."
             m 1a "Just ask me if you want to see my ponytail again, okay?"
-
-            # make it possible to switch hair at will
-            $ unlockEventLabel("monika_hair_ponytail")
-            $ persistent._mas_likes_hairdown = True
 
         "No":
             # TODO: affection lowered?
@@ -1030,6 +1030,7 @@ label greeting_hairdown:
             
     # lock this greeting forever.
     $ lockEventLabel("greeting_hairdown", evhand.greeting_database)
+    $ persistent._mas_hair_changed = True # menas we have seen this
 
     # monikaroom greeting cleanup can handle this part
     jump monikaroom_greeting_cleanup
