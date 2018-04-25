@@ -5,6 +5,15 @@ define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
 
+# transform for the sliding updater
+transform mas_updater_slide:
+    xpos 641 xanchor 0 ypos -35 yanchor 0
+    linear 1.0 ypos 0 yanchor 0
+    time 10.0
+    linear 1.0 ypos -35 yanchor 0
+
+image mas_update_available = "mod_assets/updateavailable.png"
+
 init -1 python:
 
     # custom displayable for the updater screen
@@ -630,46 +639,118 @@ init -1 python:
             raise renpy.IgnoreEvent()
 
 
+init python in mas_updater:
+    
+
+    def checkUpdate():
+        """
+        RETURNS:
+            update_link if theres update available
+            None if no update avaiable, or no need to update rn
+        """
+        import time
+        import os
+
+        curr_time = time.time()
+
+        if renpy.game.persistent._mas_unstable_mode:
+            update_link = unstable
+
+        else:
+            update_link = regular
+
+        last_updated = renpy.game.persistent._update_last_checked.get(update_link, 0)
+
+        if last_updated > curr_time:
+            last_updated = 0
+
+        #Make sure the update folder is where it should be
+        can_update = renpy.store.updater.can_update()
+        if not can_update:
+            try: renpy.file("../update/current.json")
+            except:
+                try:
+                    os.rename(
+                        renpy.config.basedir + "/game/update", 
+                        renpy.config.basedir + "/update"
+                    )
+                except: pass
+
+        if force:
+            check_wait = 0
+        else:
+            # wait 24 hours before updating
+            check_wait = 3600 * 24
+
+        if curr_time-last_updated > check_wait and can_update:
+            return update_link
+
+        return None
+
+
+init 10 python:
+
+    def _mas_backgroundUpdateCheck():
+        """
+        THIS IS A PRIVATE FUNCTION
+        Background update check
+        """
+        import time
+        import store.mas_updater as mas_updater
+
+        update_link = mas_updater.checkUpdate()
+
+        if not update_link:
+            return 
+
+        # now we creathe thre thread list for renderering
+        thread_result = list()
+        MASUpdaterDisplayable._sendRequest(update_link, thread_result)
+
+        if len(thread_result) > 0:
+            # the update returned a result
+            state = thread_result.pop()
+
+            if state == MASUpdaterDisplayable.STATE_BEHIND:
+                # we have an update available
+                renpy.show(
+                    "mas_update_available",
+                    at_list=[mas_updater_slide],
+                    layer="front",
+                    zorder=10,
+                    tag="masupdateroverlay"
+                )
+
+        return
+
+
+    def mas_backgroundUpdateCheck():
+        """
+        This launches the background update thread
+        """
+        import threading
+
+#        _mas_backgroundUpdateCheck()
+        the_thread = threading.Thread(
+            target=_mas_backgroundUpdateCheck
+        )
+        the_thread.start()
+
+
 label forced_update_now:
     $ mas_updater.force = True
 
 #This file goes through the actions for updating Monika After story
 label update_now:
     $import time #this instance of time can stay
-    python:
-        if persistent._mas_unstable_mode:
-            update_link = mas_updater.unstable
 
-        else:
-            update_link = mas_updater.regular
+    # screen check
+    if renpy.showing("masupdateroverlay", layer="overlay"):
+        hide masupdateroverlay
 
-        last_updated = persistent._update_last_checked.get(update_link, 0)
+    $ update_link = store.mas_updater.checkUpdate()
 
-        if last_updated > time.time():
-            last_updated = 0
-
-    #Make sure the update folder is where it should be
-    if not updater.can_update():
-        python:
-            try: renpy.file("../update/current.json")
-            except:
-                try: os.rename(config.basedir + "/game/update", config.basedir + "/update")
-                except: pass
-
-    if mas_updater.force:
-        $ check_wait = 0
-    else:
-        # wait 24 hours before updating
-        $ check_wait = 3600 * 24
-
-    if time.time()-last_updated > check_wait and updater.can_update():
-        if persistent._mas_unstable_mode:
-            # use unstabel stuff
-            $ update_link = mas_updater.unstable
-        else:
-            # use regular updates
-            $ update_link = mas_updater.regular
-
+    if update_link:
 
         # call the updater displayable
         python:
