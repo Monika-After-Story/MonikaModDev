@@ -43,6 +43,24 @@ init python:
             persistent._seen_ever.pop(topicID)
 
 
+    def mas_eraseTopic(topicID, per_eventDB):
+        """
+        Erases an event from both seen and Event database
+        This should also handle lockdb data as well.
+        TopicIDs that are not in the given eventDB are silently ignored.
+        (LockDB data will be erased if found)
+
+        IN:
+            topicID - topic ID / label
+            per_eventDB - persistent database this topic is in
+        """
+        if topicID in per_eventDB:
+            per_eventDB.pop(topicID)
+
+        if topicID in Event.INIT_LOCKDB:
+            Event.INIT_LOCKDB.pop(topicID)
+
+
     def adjustTopicIDs(changedIDs,updating_persistent=persistent):
         #
         # Changes labels in persistent._seen_ever
@@ -195,13 +213,30 @@ label v0_3_1(version=version): # 0.3.1
 # 0.8.0
 label v0_8_0(version="v0_8_0"):
     python:
+        import store.evhand as evhand
 
         # unlock change name if the name promtps hjave been seen
         if (
                 renpy.seen_label("monika_changename")
                 or renpy.seen_label("preferredname")
             ):
-            store.evhand.event_database["monika_changename"].unlocked = True
+            evhand.event_database["monika_changename"].unlocked = True
+
+        # TODO anniversary force seen
+        # NOTE: this is awaiting the date functions
+
+        persistent = updateTopicIDs(version)
+
+        # need to erase 080
+        for k in updates.topics["v0_8_0"]:
+            mas_eraseTopic(k, persistent.event_database)
+
+        # have to erase 074 because we didn't do this before. 
+        # NOTE: we should never have to do this again
+        for k in updates.topics["v0_7_4"]:
+            mas_eraseTopic(k, persistent.event_database)            
+
+    return
 
 # NOTE: well shit this wasnt ready and now it has to be done later
 # 0.7.4
@@ -258,6 +293,11 @@ label v0_7_4(version="v0_7_4"):
             evhand.farewell_database[k].unlocked = True
 
         persistent = updateTopicIDs(version)
+
+        # NOTE: this is completel retroactive. Becuase this is a released
+        # version, we must also make this change in 0.8.0 updates
+        for k in updates.topics["v0_7_4"]:
+            mas_eraseTopic(k, persistent.event_database)            
 
     return
 
