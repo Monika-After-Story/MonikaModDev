@@ -819,7 +819,7 @@ label ch30_reset:
         )
 
         if (
-                renpy.seen_label("monika_hair_down")
+                persistent._mas_hair_changed
                 and persistent._mas_likes_hairdown
             ):
             # hair adjustments only happen if the appropriate vent occured

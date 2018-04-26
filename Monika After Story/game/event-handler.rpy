@@ -46,10 +46,11 @@ init -500 python:
     )
 
     # set defaults
-    if persistent._mas_event_init_lockdb_template is None:
-        persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
-
-    elif len(persistent._mas_event_init_lockdb_template) != len(mas_init_lockdb_template):
+    if (
+            persistent._mas_event_init_lockdb_template is not None 
+            and len(persistent._mas_event_init_lockdb_template) 
+                != len(mas_init_lockdb_template)
+        ):
         # differing lengths mean we have new items to deal with
 
         for ev_key in persistent._mas_event_init_lockdb:
@@ -59,6 +60,9 @@ init -500 python:
             lock_row = list(mas_init_lockdb_template)
             lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
             persistent._mas_event_init_lockdb[ev_key] = tuple(lock_row)
+
+    # set the new template
+    persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
 
     # set db defaults
     if persistent._mas_event_init_lockdb is None:
