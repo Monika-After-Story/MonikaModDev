@@ -47,8 +47,8 @@ init -500 python:
 
     # set defaults
     if (
-            persistent._mas_event_init_lockdb_template is not None 
-            and len(persistent._mas_event_init_lockdb_template) 
+            persistent._mas_event_init_lockdb_template is not None
+            and len(persistent._mas_event_init_lockdb_template)
                 != len(mas_init_lockdb_template)
         ):
         # differing lengths mean we have new items to deal with
@@ -330,6 +330,98 @@ init python:
             eventdb - Event database to find this label
         """
         unlockEvent(eventdb.get(evlabel, None))
+
+
+    def isFuture(ev, date=None):
+        """
+        Checks if the start_date of the given event happens after the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's start_date is in the future, False otherwise
+        """
+
+        # sanity check
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        start_date = ev.start_date
+
+        # if we don't have an end date we return false
+        if start_date is None:
+            return False
+
+        return date < start_date
+
+
+    def isPast(ev, date=None):
+        """
+        Checks if the end_date of the given event happens before the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's end_date is in the past, False otherwise
+        """
+
+        # if there's no event to check return False
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        end_date = ev.end_date
+
+        # if we don't have an end date we return false
+        if end_date is None:
+            return False
+
+        return end_date < date
+
+
+    def isPresent(ev):
+        """
+        Checks if current date falls within the given event's start/end date
+        range
+
+        IN:
+            ev - Event to check the start_time and end_time
+
+        RETURNS:
+            True if current time is inside the  Event's start_date/end_date
+            interval, False otherwise
+        """
+        # check we have an event
+        if ev is None:
+            return False
+
+        start_date = ev.start_date
+        end_date = ev.end_date
+
+        current = datetime.datetime.now()
+
+        # return false if either start or end is None
+        if start_date is None or end_date is None:
+            return False
+
+        return start_date <= current <= end_date
 
 
     def popEvent(remove=True):
