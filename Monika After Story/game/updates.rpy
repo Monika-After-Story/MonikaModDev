@@ -222,8 +222,15 @@ label v0_8_0(version="v0_8_0"):
             ):
             evhand.event_database["monika_changename"].unlocked = True
 
-        # TODO anniversary force seen
-        # NOTE: this is awaiting the date functions
+        annis = (
+            "anni_1week",
+            "anni_1month",
+            "anni_3month",
+            "anni_6month"
+        ) # impossible to reach a year
+        for anni in annis:
+            if isPast(evhand.event_database[anni]):
+                persistent._seen_ever[anni] = True
 
         persistent = updateTopicIDs(version)
 
