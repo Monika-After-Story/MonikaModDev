@@ -806,7 +806,7 @@ label ch30_reset:
         if persistent._mas_likes_rain:
             unlockEventLabel("monika_rain_start")
             lockEventLabel("monika_rain_stop")
-            lockEventLabel("monika_rain_holdme")
+#            lockEventLabel("monika_rain_holdme")
             unlockEventLabel("monika_rain")
             
        
@@ -852,4 +852,4 @@ label ch30_reset:
                 lockEventLabel(clothes_map[clothes])
             else:
                 unlockEventLabel(clothes_map[clothes])
-
+    return
