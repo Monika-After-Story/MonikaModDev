@@ -3057,6 +3057,8 @@ default persistent._mas_monika_clothes = "def"
 default persistent._mas_monika_hair = "def"
 default persistent._mas_likes_hairdown = False
 default persistent._mas_hair_changed = False
+
+define mas_checked_update = False
 define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
