@@ -243,6 +243,12 @@ label v0_8_0(version="v0_8_0"):
         for k in updates.topics["v0_7_4"]:
             mas_eraseTopic(k, persistent.event_database)            
 
+        # change fast food topic values
+        m_ff = evhand.event_database.get("monika_fastfood", None)
+        if m_ff:
+            hideEvent(m_ff, derandom=True)
+            m_ff.pool = True
+
     return
 
 # NOTE: well shit this wasnt ready and now it has to be done later
