@@ -5799,7 +5799,7 @@ label monika_familygathering:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",pool=True))
 
 label monika_fastfood:
     m 1c "Hm? Do I like fast food?"
