@@ -904,7 +904,7 @@ python early:
                 5 - scroll down
             _button_down - pygame mouse button event type to activate button
                 MOUSEBUTTONUP (Default)
-                MOUSEBUTTONDOWN 
+                MOUSEBUTTONDOWN
         """
         import pygame
 
@@ -1655,8 +1655,8 @@ init -1 python in _mas_root:
 
         # chess
         renpy.game.persistent._mas_chess_stats = {
-            "wins": 0, 
-            "losses": 0, 
+            "wins": 0,
+            "losses": 0,
             "draws": 0
         }
         renpy.game.persistent._mas_chess_quicksave = ""
@@ -3064,6 +3064,7 @@ default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
 default persistent.greeting_database = dict()
+default persistent.story_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
