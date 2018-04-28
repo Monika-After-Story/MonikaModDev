@@ -4545,7 +4545,7 @@ label monika_otaku:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",conditional="seen_event('monika_writingtip1')",action=EV_ACT_POOL))
 
 label monika_write:
     m 1a "I'm having fun doing these, so..."
@@ -4570,7 +4570,7 @@ label monika_write:
     return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",conditional="seen_event('monika_write')",action=EV_ACT_POOL))
 
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
@@ -4592,7 +4592,7 @@ label monika_writingtip4:
      return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
 
 label monika_writingtip5:
      m 3b "Here's Monika's Writing Tip of the Day!"
