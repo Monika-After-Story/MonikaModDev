@@ -34,6 +34,27 @@ label bye_dev:
     m 1k "Don't give up until everything works as expected!"
     return 'quit'
 
+# Dev Fast farewell
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+    rules.update({"monika wants this first":""})
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_fast",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
+label bye_fast:
+    m "{fast}Bye!{nw}"
+    return 'quit'
+
+
 # This one exists so devs get an autoupdate once they pull these changes
 init 5 python:
     ev = Event(persistent.farewell_database,eventlabel="bye_dev_temp",unlocked=True)

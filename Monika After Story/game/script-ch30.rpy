@@ -70,13 +70,31 @@ image ut_slash:
     0.1
 
 
-
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
 image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None,image="mod_assets/window_1_fallback.png")
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
 image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
 image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
+image rain_mask_left = Movie(
+    channel="window_5", 
+    play="mod_assets/window_5.webm", 
+    mask=None,
+    image="mod_assets/window_5_fallback.png"
+)
+image rain_mask_right = Movie(
+    channel="window_6",
+    play="mod_assets/window_6.webm",
+    mask=None,
+    image="mod_assets/window_6_fallback.png"
+)
+
+# spaceroom window positions
+transform spaceroom_window_left:
+    size (320, 180) pos (30, 200)
+
+transform spaceroom_window_right:
+    size (320, 180) pos (935, 200)
 
 init python:
 
@@ -123,6 +141,16 @@ init python:
 
     # check for battery support
     mas_battery_supported = battery.is_supported()
+
+    # we need a new music channel for background audio (like rain!)
+    renpy.music.register_channel(
+        "background", 
+        mixer="music", 
+        loop=True,
+        stop_on_mute=True,
+        tight=True
+    )
+    renpy.music.set_volume(songs.getVolume("music"), channel="background")
 
     #Define new functions
 
@@ -223,6 +251,34 @@ init python:
         config.underlay.append(renpy.Keymap(inc_musicvol=inc_musicvol))
         config.underlay.append(renpy.Keymap(dec_musicvol=dec_musicvol))
 
+    def mas_drawSpaceroomMasks():
+        """
+        Draws the appropriate masks according to the current state of the
+        game.
+
+        ASSUMES:
+            morning_flag 
+            mas_is_raining
+        """
+        if mas_is_raining:
+            # raining takes priority
+            left_window = "rain_mask_left"
+            right_window = "rain_mask_right"
+
+        elif morning_flag:
+            # morning time!
+            left_window = "room_mask3"
+            right_window = "room_mask4"
+
+        else:
+            # night time
+            left_window = "room_mask"
+            right_window = "room_mask2"
+
+        # now show the masks
+        renpy.show(left_window, at_list=[spaceroom_window_left], tag="rm")
+        renpy.show(right_window, at_list=[spaceroom_window_right], tag="rm2")
+
 
     def show_dialogue_box():
         if allow_dialogue:
@@ -297,12 +353,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
         if morning_flag != True or scene_change:
             $ morning_flag = True
             if not hide_mask:
-                show room_mask3 as rm:
-                    size (320,180)
-                    pos (30,200)
-                show room_mask4 as rm2:
-                    size (320,180)
-                    pos (935,200)
+                $ mas_drawSpaceroomMasks()
             if start_bg:
                 $ renpy.show(start_bg, zorder=1)
             else:
@@ -315,12 +366,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             $ morning_flag = False
             scene black
             if not hide_mask:
-                show room_mask as rm:
-                    size (320,180)
-                    pos (30,200)
-                show room_mask2 as rm2:
-                    size (320,180)
-                    pos (935,200)
+                $ mas_drawSpaceroomMasks()
             if start_bg:
                 $ renpy.show(start_bg, zorder=1)
             else:
@@ -358,6 +404,32 @@ label continue_event:
 
 label pick_a_game:
     if allow_dialogue and not songs.menu_open:
+        python:
+            # preprocessing for games
+
+            import datetime
+            _hour = datetime.timedelta(hours=1)
+            _now = datetime.datetime.now()
+            
+            # chess has timed disabling
+            if persistent._mas_chess_timed_disable is not None:
+                if persistent._mas_chess_timed_disable - _now >= _hour:
+                    chess_disabled = False
+                    persistent._mas_chess_timed_disable = None
+
+                else:
+                    chess_disabled = True
+
+            else:
+                chess_disabled = False
+
+            # single var for readibility
+            chess_unlocked = (
+                is_platform_good_for_chess()
+                and persistent.game_unlocks["chess"]
+                and not chess_disabled
+            )
+
         $previous_dialogue = allow_dialogue
         $allow_dialogue = False
         menu:
@@ -366,7 +438,7 @@ label pick_a_game:
                 if not renpy.seen_label('game_pong'):
                     $grant_xp(xp.NEW_GAME)
                 call game_pong from _call_game_pong
-            "Chess" if is_platform_good_for_chess() and persistent.game_unlocks['chess']:
+            "Chess" if chess_unlocked:
                 if not renpy.seen_label('game_chess'):
                     $grant_xp(xp.NEW_GAME)
                 call game_chess from _call_game_chess
@@ -476,6 +548,9 @@ label ch30_autoload:
     # set the gender
     call set_gender from _autoload_gender
 
+    # call reset stuff
+    call ch30_reset
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
@@ -492,15 +567,21 @@ label ch30_autoload:
 
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
-        python:
 
-            sel_greeting_event = store.mas_greetings.selectGreeting()
-            selected_greeting = sel_greeting_event.eventlabel
+        # Sick mood special greeting flow
+        if persistent._mas_mood_sick:
+            $ selected_greeting = "greeting_sick"
 
-            # store if we have to skip visuals ( used to prevent visual bugs)
-            mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
-            )
+        else:
+            python:
+
+                sel_greeting_event = store.mas_greetings.selectGreeting()
+                selected_greeting = sel_greeting_event.eventlabel
+
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_event
+                )
 
     if not mas_skip_visuals:
         if persistent.current_track:
@@ -558,6 +639,7 @@ label ch30_autoload:
     $persistent.closed_self = False
     $ persistent._mas_crashed_self = True
     $startup_check = False
+    $ mas_checked_update = False
     jump ch30_loop
 
 label ch30_loop:
@@ -566,8 +648,15 @@ label ch30_loop:
     # this event can call spaceroom
     if not mas_skip_visuals:
         call spaceroom from _call_spaceroom_2
+
+        # updater check in here just because
+        if not mas_checked_update:
+            $ mas_backgroundUpdateCheck()
+            $ mas_checked_update = True
+
     else:
         $ mas_skip_visuals = False
+    
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
@@ -618,14 +707,14 @@ label ch30_loop:
         $ renpy.pause(waittime, hard=True)
         window auto
 
-        python:
-            if (
-                    mas_battery_supported
-                    and battery.is_battery_present()
-                    and not battery.is_charging()
-                    and battery.get_level() < 20
-                ):
-                pushEvent("monika_battery")
+#        python:
+#            if (
+#                    mas_battery_supported
+#                    and battery.is_battery_present()
+#                    and not battery.is_charging()
+#                    and battery.get_level() < 20
+#                ):
+#                pushEvent("monika_battery")
 
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
@@ -633,8 +722,17 @@ label ch30_loop:
             python:
                 if len(monika_random_topics) > 0:  # still have topics
 
-                    if persistent._mas_monika_repeated_herself:
-                        sel_ev = monika_random_topics.pop(0)
+                    if mas_monika_repeated:
+                        # monika has reaached the reepated flow
+                        if persistent._mas_enable_random_repeats:
+                            sel_ev = monika_random_topics.pop(0)
+
+                        else:
+                            # otherwise we shouldnt be repeating
+                            monika_random_topics = list()
+                            mas_monika_repeated = False
+                            renpy.jump("post_pick_random_topic")
+
                     else:
                         sel_ev = renpy.random.choice(monika_random_topics)
                         monika_random_topics.remove(sel_ev)
@@ -653,13 +751,15 @@ label ch30_loop:
                         random=True
                     ).values()
                     monika_random_topics.sort(key=Event.getSortShownCount)
-                    monika_random_topics = [
-                        ev.eventlabel for ev in monika_random_topics
-                    ]
+                    monika_random_topics = mas_cleanJustSeen(
+                        [ev.eventlabel for ev in monika_random_topics],
+                        evhand.event_database
+                    )
                     # NOTE: now the monika random topics are back to being
                     #   labels. Safe to do normal operation.
 
                     persistent._mas_monika_repeated_herself = True
+                    mas_monika_repeated = True
                     sel_ev = monika_random_topics.pop(0)
                     pushEvent(sel_ev)
                     persistent.random_seen += 1
@@ -671,6 +771,8 @@ label ch30_loop:
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
 
+label post_pick_random_topic:
+
     $_return = None
 
     jump ch30_loop
@@ -680,3 +782,74 @@ label ch30_loop:
 # monika, so we could probably throw in something here
 label ch30_end:
     jump ch30_main
+
+# label for things that may reset after a certain amount of time/conditions
+label ch30_reset:
+    python:
+        import datetime
+        today = datetime.date.today()
+
+    # reset mas mood bday
+    python:
+        if (
+                persistent._mas_mood_bday_last 
+                and persistent._mas_mood_bday_last < today
+            ):
+            persistent._mas_mood_bday_last = None
+            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
+            if mood_ev:
+                mood_ev.unlocked = True
+
+    # reset raining stuff
+    python:
+        mas_is_raining = False
+        if persistent._mas_likes_rain:
+            unlockEventLabel("monika_rain_start")
+            lockEventLabel("monika_rain_stop")
+#            lockEventLabel("monika_rain_holdme")
+            unlockEventLabel("monika_rain")
+            
+       
+    # reset hair / clothes
+    python:
+        # setup hair / clothes
+        monika_chr.change_outfit(
+            persistent._mas_monika_clothes,
+            persistent._mas_monika_hair
+        )
+
+        if (
+                persistent._mas_hair_changed
+                and persistent._mas_likes_hairdown
+            ):
+            # hair adjustments only happen if the appropriate vent occured
+
+            # hair map
+            hair_map = {
+                "down": "monika_hair_down",
+                "def": "monika_hair_ponytail"
+                # "bun": "monika_hair_bun"
+            }
+
+          
+            for hair in hair_map:
+                # this is so we kind of automate the locking / unlocking prcoess
+                if hair == monika_chr.hair:
+                    lockEventLabel(hair_map[hair])
+                else:
+                    unlockEventLabel(hair_map[hair])
+
+        # currenly, the clothes part has noc hecks
+        # clothes map
+        # NOTE: unused
+        clothes_map = {
+#            "def": "monika_clothes_school"
+        }
+
+
+        for clothes in clothes_map:
+            if clothes == monika_chr.clothes:
+                lockEventLabel(clothes_map[clothes])
+            else:
+                unlockEventLabel(clothes_map[clothes])
+    return

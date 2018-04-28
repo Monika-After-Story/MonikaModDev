@@ -126,7 +126,7 @@ label chara_monika_scare:
 
     window hide
     hide monika
-    show monika_scare
+    show monika_scare zorder 2
     play music "mod_assets/mus_zzz_c2.ogg"
     show layer master:
         zoom 1.0 xalign 0.5 yalign 0 subpixel True
@@ -246,7 +246,7 @@ label ch30_reload_continuous:
             "I can't understand why you won't ask me to close the game...",
             "This is really painful for me, you know?",
             "Do you enjoy hurting me, {0}?".format(player),
-            "Too lazy to click the 'Talk' button, {0}?".format(player)    
+            "Too lazy to click the 'Talk' button, {0}?".format(player)
         ]
         reload_quip=renpy.random.choice(reload_quips)
     m 2o "[reload_quip]"
