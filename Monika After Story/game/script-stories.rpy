@@ -73,7 +73,7 @@ label story_tyrant:
 
 init 5 python:
     addEvent(Event(persistent.story_database,eventlabel="story_despise",
-        prompt="The Fox",unlocked=True),eventdb=store.mas_stories.story_database)
+        prompt="The Fox",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_despise:
     m "Ready for story time?"
@@ -160,5 +160,39 @@ label story_seeds:
     m "The birds paid no heed to the Swallow’s words, and by and by the hemp grew up and was made into cord, and of the cords nets were made, and many birds that had despised the Swallow’s advice were caught in nets made out of that very hemp."
     m 1k "“What did I tell you?” said the Swallow."
     m "The moral of this story is that: 'Destroy the seeds of evil before they grow up to your ruin'."
+    m "I hope you enjoyed this little story, [player]~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.story_database,eventlabel="story_gray_hair",
+        prompt="The gray hair",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label story_gray_hair:
+    m 3 "Let's begin~"
+    m "Ahem."
+    m "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired to see him like herself."
+    m 1 "The Man’s hair was turning grey, which the young Wife did not like, as it made him look too old."
+    m 1k "So, every night she picked out the white hairs."
+    m "But, the elder Wife did not like to be mistaken for his mother."
+    m "So, every morning she picked out as many of the black hairs as she could."
+    m 1k "The Man soon found himself entirely bald."
+    m "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
+    m "I hope you enjoyed this little story, [player]~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.story_database,eventlabel="story_fisherman",
+        prompt="The fisherman",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label story_fisherman:
+    m 3 "Let's begin~"
+    m "Ahem."
+    m "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
+    m 1 "The Fisherman was about to put it in his basket when the little Fish said:"
+    m 1k "“Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal.”"
+    m "But the Fisherman quickly put the fish into his basket."
+    m "So, every morning she picked out as many of the black hairs as she could."
+    m 1k "“How foolish I should be,” he said, “to throw you back. However small you may be, you are better than nothing at all.”"
+    m "The moral of this story is that: 'A small gain is worth more than a large promise'."
     m "I hope you enjoyed this little story, [player]~"
     return
