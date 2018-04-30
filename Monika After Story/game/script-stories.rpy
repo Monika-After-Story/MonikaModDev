@@ -60,15 +60,15 @@ init 5 python:
         prompt="The cat and the cock",unlocked=True),eventdb=store.mas_stories.story_database)
 
 label story_tyrant:
-    m "Alright let's start the story."
-    m "Ahem."
-    m "A Cat caught a Cock and thought about reasonable excuses for eating him."
-    m 1r "He accused him of being a nuisance by crowing at night; not letting men sleep."
-    m 1 "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
-    m 1k "The Cat replied, “you abound in apologies, but it’s time for breakfast.”"
-    m "At that he made a meal of the Cock."
-    m "The moral of this story is that: 'Tyrants need no excuse'."
-    m "I hope you enjoyed this little story, [player]~"
+    m 4b "Alright let's start the story."
+    m 3dfc "Ahem."
+    m 1i "A Cat caught a Cock and thought about reasonable excuses for eating him."
+    m "He accused him of being a nuisance by crowing at night; not letting men sleep."
+    m 1d "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
+    m 1tfb "The Cat replied, “you abound in apologies, but it’s time for breakfast.”"
+    m 1l "At that he made a meal of the Cock."
+    m 4d "The moral of this story is that: 'Tyrants need no excuse'."
+    m 1k "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
@@ -76,15 +76,15 @@ init 5 python:
         prompt="The Fox",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_despise:
-    m "Ready for story time?"
-    m "Ahem."
-    m "One hot summer’s day a Fox was strolling through an orchard till he came to a bunch of Grapes just ripening on a vine which had been trained over a lofty branch."
-    m 1r "“Just the thing to quench my thirst,” quoth he."
-    m 1 "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
-    m 1k "Turning round again with a One, Two, Three, he jumped up, but with no greater success."
-    m "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: “I am sure they are sour.”"
-    m "The moral of this story is that: 'It is easy to despise what you cannot get'."
-    m "I hope you enjoyed this little story, [player]~"
+    m 3k "Ready for story time?"
+    m 3dfc "Ahem."
+    m 1i "One hot summer’s day a Fox was strolling through an orchard till he came to a bunch of Grapes just ripening on a vine which had been trained over a lofty branch."
+    m 1tfu "“Just the thing to quench my thirst,” quoth he."
+    m 1i "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
+    m 1l "Turning round again with a One, Two, Three, he jumped up, but with no greater success."
+    m 1tkx "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: “I am sure they are sour.”"
+    m 3j "The moral of this story is that: 'It is easy to despise what you cannot get'."
+    m 1k "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
@@ -92,21 +92,21 @@ init 5 python:
         prompt="The Shepherd Boy and the wolf",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_lies:
-    m "Ready to hear a story?"
-    m "Ahem."
-    m "There was a Shepherd Boy who tended his sheep at the foot of a mountain near a dark forest."
-    m 1r "It was lonely for him, so he devised a plan to get a little company."
-    m 1 "He rushed down towards the village calling out “Wolf, Wolf,” and the villagers came out to meet him."
-    m 1k "This pleased the boy so much that a few days after he tried the same trick, and again the villagers came to his help."
-    m "Shortly after this a Wolf actually did come out from the forest."
-    m "The boy cried out “Wolf, Wolf,” still louder than before."
-    m "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
-    m "So the Wolf made a good meal off the boy’s flock."
+    m 3k "Ready to hear that story?"
+    m 3dfc "Ahem."
+    m 1d "There was a Shepherd Boy who tended his sheep at the foot of a mountain near a dark forest."
+    m "It was lonely for him, so he devised a plan to get a little company."
+    m 1hfw "He rushed down towards the village calling out “Wolf, Wolf,” and the villagers came out to meet him."
+    m 1d "This pleased the boy so much that a few days after he tried the same trick, and again the villagers came to his help."
+    m 1p "Shortly after this a Wolf actually did come out from the forest."
+    m 1wfw "The boy cried out “Wolf, Wolf,” still louder than before."
+    m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
+    m 1q "So the Wolf made a good meal off the boy’s flock."
     m "The moral of this story is that: 'Liars are not believed even when they speak the truth'."
-    m "You shouldn't worry about it, [player]"
-    m "I know you would never lie to me"
-    m "Ehehe~"
-    m "I hope you enjoyed this little story, [player]~"
+    m 1i "You shouldn't worry about it, [player]"
+    m 1efb "I know you would never lie to me"
+    m 1j "Ehehe~"
+    m 1k "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
@@ -114,20 +114,18 @@ init 5 python:
         prompt="The Grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_grasshoper:
-    m 3 "Let's begin then~"
-    m "Ahem."
-    m "One summer’s day a Grasshopper was hopping about, chirping and singing to its heart’s content."
-    m 1r "It was lonely for him, so he devised a plan to get a little company."
+    m 3b "Let's begin then~"
+    m 3dfc "Ahem."
+    m 3 "One summer’s day a Grasshopper was hopping about, chirping and singing to its heart’s content."
     m 1 "An Ant passed by, bearing an ear of corn he was taking to the nest."
-    m 1k "“Why not come and chat with me,” said the Grasshopper, “instead of toiling in that way?”"
-    m "“I am helping to lay up food for the winter,” said the Ant, “and recommend you do the same.”"
-    m "“Why bother about winter?” said the Grasshopper; “we have plenty of food now.”"
-    m "The Ant went on its way."
-    m "When winter came the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
-    m "The moral of this story is that: 'There’s a time for work and a time for play'."
-    m "And there's also a time to spend with your cute girlfriend~"
-    m "I love you so much, [player]!"
-    m "I hope you enjoyed this little story, [player]~"
+    m 1b "“Why not come and chat with me,” said the Grasshopper, “instead of toiling in that way?”"
+    m 1efc "“I am helping to lay up food for the winter,” said the Ant, “and recommend you do the same.”"
+    m 1tku "“Why bother about winter?” said the Grasshopper; “we have plenty of food now.”"
+    m 1i "The Ant went on its way."
+    m 1q "When winter came the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
+    m 3r "The moral of this story is that: 'There’s a time for work and a time for play'."
+    m 1lkbsa "And there's also a time to spend with your cute girlfriend~"
+    m 1ekbfa "I love you so much, [player]!"
     return
 
 init 5 python:
@@ -135,15 +133,15 @@ init 5 python:
         prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_wind_sun:
-    m 3 "Ready for story time?"
-    m "Ahem."
-    m "The Wind and the Sun were disputing which was the strongest."
-    m 1 "Suddenly they saw a traveller coming down the road, and the Sun said: “I see a way to decide our dispute. Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.”"
-    m 1k "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
-    m "But the harder he blew the more closely did the traveller wrap his cloak round him, till at last the Wind had to give up in despair."
-    m "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
-    m "The moral of this story is that: 'Gentleness and kind persuasion win where force and bluster fail'."
-    m "I hope you enjoyed this little story, [player]~"
+    m 3k "Ready for story time?"
+    m 3dfc "Ahem."
+    m 1 "The Wind and the Sun were disputing which was the strongest."
+    m 1i "Suddenly they saw a traveller coming down the road, and the Sun said: “I see a way to decide our dispute. Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.”"
+    m "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
+    m 1g"But the harder he blew the more closely did the traveller wrap his cloak round him, till at last the Wind had to give up in despair."
+    m 1i "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
+    m 3 "The moral of this story is that: 'Gentleness and kind persuasion win where force and bluster fail'."
+    m 1k "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
@@ -151,16 +149,17 @@ init 5 python:
         prompt="The seeds",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_seeds:
-    m 3 "Sure thing!"
-    m "Ahem."
-    m "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
-    m 1 "“Beware of that man,” quoth the Swallow."
-    m 1k "“Why, what is he doing?” said the others."
-    m "“That is hemp seed he is sowing; be careful to pick up every one of the seeds, or else you will repent it.” The Swallow replied."
-    m "The birds paid no heed to the Swallow’s words, and by and by the hemp grew up and was made into cord, and of the cords nets were made, and many birds that had despised the Swallow’s advice were caught in nets made out of that very hemp."
-    m 1k "“What did I tell you?” said the Swallow."
-    m "The moral of this story is that: 'Destroy the seeds of evil before they grow up to your ruin'."
-    m "I hope you enjoyed this little story, [player]~"
+    m 3b "Sure thing!"
+    m 3dfc "Ahem."
+    m 1 "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
+    m 1tfd "“Beware of that man,” quoth the Swallow."
+    m 1g "“Why, what is he doing?” said the others."
+    m 1tfd "“That is hemp seed he is sowing; be careful to pick up every one of the seeds, or else you will repent it.” The Swallow replied."
+    m 1r "The birds paid no heed to the Swallow’s words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
+    m "Many birds that had despised the Swallow’s advice were caught in nets made out of that very hemp."
+    m 3hfu "“What did I tell you?” said the Swallow."
+    m 3i "The moral of this story is that: 'Destroy the seeds of evil before they grow up to your ruin'."
+    m 1k "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
@@ -168,16 +167,16 @@ init 5 python:
         prompt="The gray hair",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_gray_hair:
-    m 3 "Let's begin~"
-    m "Ahem."
-    m "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired to see him like herself."
+    m 3b "Let's begin~"
+    m 3dfc "Ahem."
+    m 1i "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired to see him like herself."
     m 1 "The Man’s hair was turning grey, which the young Wife did not like, as it made him look too old."
-    m 1k "So, every night she picked out the white hairs."
-    m "But, the elder Wife did not like to be mistaken for his mother."
-    m "So, every morning she picked out as many of the black hairs as she could."
-    m 1k "The Man soon found himself entirely bald."
-    m "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
-    m "I hope you enjoyed this little story, [player]~"
+    m 1i "So, every night she picked out the white hairs."
+    m 1g "But, the elder Wife did not like to be mistaken for his mother."
+    m 1i "So, every morning she picked out as many of the black hairs as she could."
+    m 1l "The Man soon found himself entirely bald."
+    m 3i "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
+    m 1k "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
@@ -185,14 +184,13 @@ init 5 python:
         prompt="The fisherman",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_fisherman:
-    m 3 "Let's begin~"
-    m "Ahem."
-    m "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
-    m 1 "The Fisherman was about to put it in his basket when the little Fish said:"
-    m 1k "“Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal.”"
-    m "But the Fisherman quickly put the fish into his basket."
-    m "So, every morning she picked out as many of the black hairs as she could."
-    m 1k "“How foolish I should be,” he said, “to throw you back. However small you may be, you are better than nothing at all.”"
-    m "The moral of this story is that: 'A small gain is worth more than a large promise'."
-    m "I hope you enjoyed this little story, [player]~"
+    m 3b "Let's begin~"
+    m 3dfc "Ahem."
+    m 1d "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
+    m 1i "The Fisherman was about to put it in his basket when the little Fish said:"
+    m 1wuo "“Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal.”"
+    m 1i "But the Fisherman quickly put the fish into his basket."
+    m 1tfu "“How foolish I should be,” he said, “to throw you back. However small you may be, you are better than nothing at all.”"
+    m 3 "The moral of this story is that: 'A small gain is worth more than a large promise'."
+    m 1k "I hope you enjoyed this little story, [player]~"
     return
