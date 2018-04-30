@@ -636,6 +636,17 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
+            #unlock one story if there's still stories to unlock
+            stories = renpy.store.Event.filterEvents(
+                renpy.store.mas_stories.story_database,
+                unlocked=False
+            )
+
+            if len(stories) > 0:
+                # select one story randomly
+                stories[renpy.random.choice(stories.keys())].unlocked = True
+
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 

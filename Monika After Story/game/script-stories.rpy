@@ -1,4 +1,11 @@
 # Module for Monika story telling
+#
+# Stories will get unlocked one at by session
+# The unlocking logic has been added to script-ch30
+# The topic that triggers the Story menu is monika_short_stories
+# Topic is unlocked at the beginning of the game and is not
+# random
+
 
 # dict of tples containing the stories event data
 default persistent.story_database = dict()
@@ -8,10 +15,9 @@ default persistent.story_database = dict()
 init -1 python in mas_stories:
 
     # pane constants
-    # most of these are the same as the unseen area consants
     STORY_X = 680
     STORY_Y = 40
-    STORY_W = 560
+    STORY_W = 450
     STORY_H = 640
     STORY_XALIGN = -0.05
     STORY_AREA = (STORY_X, STORY_Y, STORY_W, STORY_H)
@@ -27,7 +33,7 @@ label mas_stories_start:
 
         # build menu list
         stories_menu_items = [
-            (mas_stories.story_database[k].prompt, k, False, False)
+            (mas_stories.story_database[k].prompt, k, not seen_event(k), False)
             for k in mas_stories.story_database
             if mas_stories.story_database[k].unlocked
         ]
@@ -70,7 +76,7 @@ init 5 python:
         prompt="The Fox",unlocked=True),eventdb=store.mas_stories.story_database)
 
 label story_despise:
-    m "Ready for story time?."
+    m "Ready for story time?"
     m "Ahem."
     m "One hot summer’s day a Fox was strolling through an orchard till he came to a bunch of Grapes just ripening on a vine which had been trained over a lofty branch."
     m 1r "“Just the thing to quench my thirst,” quoth he."
@@ -86,7 +92,7 @@ init 5 python:
         prompt="The Shepherd Boy and the wolf",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_lies:
-    m "Ready for another story?."
+    m "Ready to hear a story?"
     m "Ahem."
     m "There was a Shepherd Boy who tended his sheep at the foot of a mountain near a dark forest."
     m 1r "It was lonely for him, so he devised a plan to get a little company."
@@ -129,7 +135,7 @@ init 5 python:
         prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_wind_sun:
-    m 3 "Ready for story time?."
+    m 3 "Ready for story time?"
     m "Ahem."
     m "The Wind and the Sun were disputing which was the strongest."
     m 1 "Suddenly they saw a traveller coming down the road, and the Sun said: “I see a way to decide our dispute. Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.”"
@@ -142,10 +148,10 @@ label story_wind_sun:
 
 init 5 python:
     addEvent(Event(persistent.story_database,eventlabel="story_seeds",
-        prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The seeds",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label story_seeds:
-    m 3 "Ready for story time?."
+    m 3 "Sure thing!"
     m "Ahem."
     m "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
     m 1 "“Beware of that man,” quoth the Swallow."
