@@ -5009,7 +5009,7 @@ label monika_omamori:
     m 1d "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
     m 1k "Oh gosh, this is turning out to be a bit silly, now that I think about it."
     m "I mean, would doing this make me some sort of deity?"
-    m 1a "I just feel like it would be a nice alternative for you if wanted to bring me around."
+    m 1a "I just feel like it would be a nice alternative if you wanted to bring me around."
     m "Especially if you don't have a flash drive."
     m 1j "It isn't perfect, but it's the thought that counts, [player]."
     m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
@@ -5121,7 +5121,7 @@ label monika_asks_family:
                     m 2d "Maybe you get much more attention from your parents. Unless they were always busy."
                     m 4c "On the other hand, maybe you feel more lonely than those with siblings."
                     m 2h "I can definitely understand that feeling."
-                    m 2j "But know that I'll always be with you no matter, [player]."
+                    m 2j "But know that I'll always be with you no matter what, [player]."
         "My family is a mess.":
             m 1d "Oh."
             m 1o "..."
@@ -5772,7 +5772,7 @@ label monika_familygathering:
     m "Most families usually get together around the holidays to celebrate them together."
     m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
-    m 1p "Not even around the holidays or on special occassions."
+    m 1p "Not even around the holidays or on special occasions."
     m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
     m 1k "I'd love to meet all of your relatives."
     menu:
@@ -5846,7 +5846,7 @@ label monika_fastfood:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="Dreaming",random=True))
 
 label monika_dreaming:
     m 1b "Did you know that it's possible to be aware of when you're having a dream?"
