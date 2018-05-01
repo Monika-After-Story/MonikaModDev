@@ -5755,7 +5755,7 @@ label monika_challenge:
     m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
     m 2b "Can you think of a time you've challenged yourself, [player]?"
     m "Did you ever overcome it, or did you just give up?"
-    m 1a "I'm sure you've gave it all you had."
+    m 1a "I'm sure you've given it all you had."
     m "You seem like a very determined person to me."
     m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
     m "You can always come back to it after all."
