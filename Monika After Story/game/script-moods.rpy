@@ -215,7 +215,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="lonely",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
     
 label mas_mood_lonely:
-    m 1e "I'm here for you, [player], so there's no need for to feel lonely."
+    m 1e "I'm here for you, [player], so there's no need for you to feel lonely."
     m 3j "I know it's not exactly the same as if I were in the same room with you, but I'm sure you still enjoy my company, right?"
     m 1j "Remember that I'll always be by your side, [player]~"
     return
