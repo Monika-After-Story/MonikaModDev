@@ -1865,7 +1865,7 @@ define audio.page_turn = "sfx/pageflip.ogg"
 define audio.fall = "sfx/fall.ogg"
 
 # custom audio
-# NOTE: awaiting full vote
+# big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
 
 # Backgrounds
