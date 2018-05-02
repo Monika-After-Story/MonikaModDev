@@ -8,7 +8,7 @@
 
 
 # dict of tples containing the stories event data
-default persistent.story_database = dict()
+default persistent._mas_story_database = dict()
 
 
 # store containing stories-related things
@@ -27,7 +27,8 @@ init -1 python in mas_stories:
 
 # entry point for stories flow
 label mas_stories_start:
-    show monika at t21
+    m 1b "Sure thing!"
+
     python:
         import store.mas_stories as mas_stories
 
@@ -44,6 +45,18 @@ label mas_stories_start:
         # final quit item
         final_item = (mas_stories.STORY_RETURN, False, False, False, 20)
 
+    # if we have only one story
+    if len(stories_menu_items) == 1:
+
+        # we jump to it, since doing pushEvent looks weird
+        $ renpy.jump(stories_menu_items[0][1])
+        #return
+
+    m "What story would you like to hear?"
+
+    # move Monika to the left
+    show monika at t21
+
     # call scrollable pane
     call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item=final_item)
 
@@ -51,15 +64,16 @@ label mas_stories_start:
     if _return:
         $ pushEvent(_return)
 
+    # move her back to center
     show monika at t11
-    return _return
+    return
 
 # Stories start here
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_tyrant",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
         prompt="The cat and the cock",unlocked=True),eventdb=store.mas_stories.story_database)
 
-label story_tyrant:
+label mas_story_tyrant:
     m 4b "Alright let's start the story."
     m 3dfc "Ahem."
     m 1i "A Cat caught a Cock and thought about reasonable excuses for eating him."
@@ -72,10 +86,10 @@ label story_tyrant:
     return
 
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_despise",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_despise",
         prompt="The Fox",unlocked=False),eventdb=store.mas_stories.story_database)
 
-label story_despise:
+label mas_story_despise:
     m 3k "Ready for story time?"
     m 3dfc "Ahem."
     m 1i "One hot summer’s day a Fox was strolling through an orchard till he came to a bunch of Grapes just ripening on a vine which had been trained over a lofty branch."
@@ -88,10 +102,10 @@ label story_despise:
     return
 
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_lies",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_lies",
         prompt="The Shepherd Boy and the wolf",unlocked=False),eventdb=store.mas_stories.story_database)
 
-label story_lies:
+label mas_story_lies:
     m 3k "Ready to hear that story?"
     m 3dfc "Ahem."
     m 1d "There was a Shepherd Boy who tended his sheep at the foot of a mountain near a dark forest."
@@ -110,10 +124,10 @@ label story_lies:
     return
 
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_grasshoper",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshoper",
         prompt="The Grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
 
-label story_grasshoper:
+label mas_story_grasshoper:
     m 3b "Let's begin then~"
     m 3dfc "Ahem."
     m 3 "One summer’s day a Grasshopper was hopping about, chirping and singing to its heart’s content."
@@ -129,14 +143,15 @@ label story_grasshoper:
     return
 
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_wind_sun",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
         prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
 
-label story_wind_sun:
+label mas_story_wind_sun:
     m 3k "Ready for story time?"
     m 3dfc "Ahem."
     m 1 "The Wind and the Sun were disputing which was the strongest."
-    m 1i "Suddenly they saw a traveller coming down the road, and the Sun said: “I see a way to decide our dispute. Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.”"
+    m 1i "Suddenly they saw a traveller coming down the road, and the Sun said: “I see a way to decide our dispute.”"
+    m "“Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.”"
     m "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
     m 1g"But the harder he blew the more closely did the traveller wrap his cloak round him, till at last the Wind had to give up in despair."
     m 1i "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
@@ -145,10 +160,10 @@ label story_wind_sun:
     return
 
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_seeds",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_seeds",
         prompt="The seeds",unlocked=False),eventdb=store.mas_stories.story_database)
 
-label story_seeds:
+label mas_story_seeds:
     m 3b "Sure thing!"
     m 3dfc "Ahem."
     m 1 "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
@@ -163,10 +178,10 @@ label story_seeds:
     return
 
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_gray_hair",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_gray_hair",
         prompt="The gray hair",unlocked=False),eventdb=store.mas_stories.story_database)
 
-label story_gray_hair:
+label mas_story_gray_hair:
     m 3b "Let's begin~"
     m 3dfc "Ahem."
     m 1i "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired to see him like herself."
@@ -180,10 +195,10 @@ label story_gray_hair:
     return
 
 init 5 python:
-    addEvent(Event(persistent.story_database,eventlabel="story_fisherman",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
         prompt="The fisherman",unlocked=False),eventdb=store.mas_stories.story_database)
 
-label story_fisherman:
+label mas_story_fisherman:
     m 3b "Let's begin~"
     m 3dfc "Ahem."
     m 1d "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
