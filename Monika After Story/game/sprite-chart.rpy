@@ -203,10 +203,17 @@ init -1 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
+    ### [BLK001]
     # non leanable clothes / hair
     lean_blacklist = [
         "down",
         "bun"
+    ]
+
+    ### [BLK002]
+    # non leanable accessories
+    lean_acs_blacklist = [
+        "test"
     ]
 
 
@@ -1017,6 +1024,12 @@ init -2 python:
 
     # Monika character base
     class MASMonika(renpy.store.object):
+
+        # CONSTANTS
+        PRE_ACS = 0 # PRE ACCESSORY
+        MID_ACS = 1 # MID ACCESSORY
+        PST_ACS = 2 # post accessory
+
         def __init__(self):
             self.name="Monika"
             self.haircut="default"
@@ -1025,8 +1038,37 @@ init -2 python:
             self.lipstick="default" # i guess no lipstick
             self.clothes = "def" # default clothes is school outfit
             self.hair = "def" # default hair is the usual whtie ribbon
-            self.acs = [] # accesories
+
+            # accesories to be rendereed before the body
+            self.acs_pre = [] 
+
+            # accessories to be rendreed between body and face expressions
+            self.acs_mid = []
+
+            # accessories to be rendered last
+            self.acs_post - []
+
             self.hair_hue=0 # hair color?
+
+            # setup acs dict
+            self.acs = {
+                self.PRE_ACS: self.acs_pre,
+                self.MID_ACS: self.acs_mid,
+                self.PST_ACS: self.acs_post
+            }
+
+
+        def __get_acs(self, acs_type):
+            """
+            Returns the accessory list associated with the given type
+
+            IN:
+                acs_type - the accessory type to get
+
+            RETURNS:
+                accessory list, or None if the given acs_type is not valid
+            """
+            return self.acs.get(acs_type, None)
 
 
         def change_clothes(self, new_cloth):
@@ -1083,7 +1125,31 @@ init -2 python:
             RETURNS:
                 True if wearing accessory, false if not
             """
-            return accessory in self.acs
+            return (
+                self.is_wearing_acs_in(accessory, self.PST_ACS)
+                or self.is_wearing_acs_in(accessory, self.MID_ACS)
+                or self.is_wearing_acs_in(accessory, self.PRE_ACS)
+            )
+
+        
+        def is_wearing_acs_in(self, accessory, acs_type):
+            """
+            Checks if the currently wearing the given accessory as the given
+            accessory type
+
+            IN:
+                accessory - accessory to check
+                acs_type - accessory type to check
+
+            RETURNS:
+                True if wearing accessory, False if not
+            """
+            acs_list = self.__get_acs(acs_type)
+
+            if acs_list:
+                return accessory in acs_list
+
+            return False
 
 
         def reset_all(self):
@@ -1097,20 +1163,48 @@ init -2 python:
 
         def remove_acs(self, accessory):
             """
-            Removes the given accessory
+            Removes the given accessory from all the accessory lists
 
             IN:
                 accessory - accessory to remove
             """
-            if accessory in self.acs:
-                self.acs.remove(accessory)
+            self.remove_acs_in(accessory, self.PRE_ACS)
+            self.remove_acs_in(accessory, self.MID_ACS)
+            self.remove_acs_in(accessory, self.PST_ACS)
+
+
+        def remove_acs_in(self, accessory, acs_type):
+            """
+            Removes the given accessory from the given accessory list type
+
+            IN:
+                accessory - accessory to remove
+                acs_type - ACS type
+            """
+            acs_list = self.__get_acs(acs_type)
+
+            if acs_list and accessory in acs_list:
+                acs_list.remove(accessory)
 
 
         def remove_all_acs(self):
             """
-            Removes all accessories
+            Removes all accessories from all accessory lists
             """
-            self.acs = list()
+            self.remove_all_acs_in(self.PRE_ACS)
+            self.remove_all_acs_in(self.MID_ACS)
+            self.remove_all_acs_in(self.PST_ACS)
+
+
+        def remove_all_acs_in(self, acs_type):
+            """
+            Removes all accessories from the given accessory type
+
+            IN:
+                acs_type - ACS type to remove all
+            """
+            if acs_type in self.acs:
+                self.acs[acs_type] = list()
 
 
         def reset_clothes(self):
@@ -1135,63 +1229,83 @@ init -2 python:
             self.reset_hair()
 
 
-        def wear_acs(self, accessory):
+        def wear_acs_in(self, accessory, acs_type):
             """
             Wears the given accessory
 
             IN:
                 accessory - accessory to wear
+                acs_type - accessory type (location) to wear this accessory
             """
-            self.acs.wear(accessory)
+            acs_list = self.__get_acs(acs_type)
+
+            if acs_list:
+                acs_list.append(accessory)
 
 
     # hues, probably not going to use these
-    hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
-                        0, 1, 0, 0, 0,
-                        0, 0, 1, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    hair_hue2 = im.matrix([ 3.734, 0, 0, 0, 0,
-                        0, 3.531, 0, 0, 0,
-                        0, 0, 1.375, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    hair_hue3 = im.matrix([ 3.718, 0, 0, 0, 0,
-                        0, 3.703, 0, 0, 0,
-                        0, 0, 3.781, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    hair_hue4 = im.matrix([ 3.906, 0, 0, 0, 0,
-                        0, 3.671, 0, 0, 0,
-                        0, 0, 3.375, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    skin_hue1 = hair_hue1
-    skin_hue2 = im.matrix([ 0.925, 0, 0, 0, 0,
-                        0, 0.840, 0, 0, 0,
-                        0, 0, 0.806, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    skin_hue3 = im.matrix([ 0.851, 0, 0, 0, 0,
-                        0, 0.633, 0, 0, 0,
-                        0, 0, 0.542, 0, 0,
-                        0, 0, 0, 1, 0 ])
-
-    hair_huearray = [hair_hue1,hair_hue2,hair_hue3,hair_hue4]
-
-    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
+#    hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
+#                        0, 1, 0, 0, 0,
+#                        0, 0, 1, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    hair_hue2 = im.matrix([ 3.734, 0, 0, 0, 0,
+#                        0, 3.531, 0, 0, 0,
+#                        0, 0, 1.375, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    hair_hue3 = im.matrix([ 3.718, 0, 0, 0, 0,
+#                        0, 3.703, 0, 0, 0,
+#                        0, 0, 3.781, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    hair_hue4 = im.matrix([ 3.906, 0, 0, 0, 0,
+#                        0, 3.671, 0, 0, 0,
+#                        0, 0, 3.375, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    skin_hue1 = hair_hue1
+#    skin_hue2 = im.matrix([ 0.925, 0, 0, 0, 0,
+#                        0, 0.840, 0, 0, 0,
+#                        0, 0, 0.806, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    skin_hue3 = im.matrix([ 0.851, 0, 0, 0, 0,
+#                        0, 0.633, 0, 0, 0,
+#                        0, 0, 0.542, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#
+#    hair_huearray = [hair_hue1,hair_hue2,hair_hue3,hair_hue4]
+#
+#    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
 
 
     # instead of clothes, these are accessories
     class MASAccessory(renpy.store.object):
         def __init__(self,
                 name,
-                sit,
-                stand=None,
+                img_sit,
+                img_stand="",
+                rec_layer=MASMonika.PST_ACS,
                 priority=10,
                 can_strip=True
             ):
+            """
+            MASAccessory constructor
+
+            IN:
+                name - name of this accessory
+                img_sit - file name of the sitting image
+                img_stand - file name of the standing image
+                    IF this is not passed in, we assume the standing version
+                        has no accessory. 
+                    (Default: "")
+                rec_layer - recommended layer to place this accessory
+                    (Must be one the ACS types in MASMonika)
+                    (Default: MASMonika.PST_ACS)
+            """
             self.name=name
             self.sit = sit
             if stand is None:
                 stand = sit
             self.stand = stand
             self.priority=priority
+            self.rec_
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
