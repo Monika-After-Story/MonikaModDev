@@ -1277,13 +1277,24 @@ init -2 python:
 
     # instead of clothes, these are accessories
     class MASAccessory(renpy.store.object):
+        """
+        MASAccesory objects
+
+        PROPERTIES:
+            name - name of the accessory
+            img_sit - filename of the sitting version of the accessory
+            img_stand - filename of the standing version of the accessory
+            priority - render priority of the accessory. Lower is rendred
+                first
+        """
+
+
         def __init__(self,
                 name,
                 img_sit,
                 img_stand="",
                 rec_layer=MASMonika.PST_ACS,
-                priority=10,
-                can_strip=True
+                priority=10
             ):
             """
             MASAccessory constructor
@@ -1298,18 +1309,18 @@ init -2 python:
                 rec_layer - recommended layer to place this accessory
                     (Must be one the ACS types in MASMonika)
                     (Default: MASMonika.PST_ACS)
+                priority - render priority. Lower is rendered first
+                    (Default: 10)
             """
-            self.name=name
-            self.sit = sit
-            if stand is None:
-                stand = sit
-            self.stand = stand
+            self.name = name
+            self.img_sit = img_sit
+            self.img_stand = img_stand
+            self.__rec_layer = rec_layer
             self.priority=priority
-            self.rec_
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
-            self.can_strip=can_strip
+#            self.can_strip=can_strip
 
         @staticmethod
         def get_priority(acs):
@@ -1319,6 +1330,15 @@ init -2 python:
             This is for sorting
             """
             return acs.priority
+
+        def get_rec_layer(self):
+            """
+            Returns the recommended layer ofr this accessory
+
+            RETURNS:
+                recommend MASMOnika accessory type for this accessory
+            """
+            return self.__rec_layer
 
 
     # The main drawing function...
