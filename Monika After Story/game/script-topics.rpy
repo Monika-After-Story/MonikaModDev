@@ -5386,7 +5386,7 @@ label monika_timeconcern_day:
     if not persistent._mas_timeconernclose:
         if 6 <= persistent._mas_timeconern <=8:
             jump monika_timeconcern_disallow
-    if persistent._mas_timeconern == 6:
+    if persistent._mas_timeconcern == 6:
         jump monika_timeconcern_day_allow_6
     elif persistent._mas_timeconcern == 7:
         jump monika_timeconcern_day_allow_7
