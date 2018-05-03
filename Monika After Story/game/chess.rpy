@@ -1297,6 +1297,7 @@ label demo_minigame_chess:
         python:
             import StringIO # python 2 
             import chess.pgn
+            import os
 
             quicksaved_game = chess.pgn.read_game(
                 StringIO.StringIO(persistent._mas_chess_quicksave)
@@ -1376,7 +1377,7 @@ label demo_minigame_chess:
             ).replace("\\", "/")
 
             try:
-                if renpy.file(quicksaved_filename_clean):
+                if os.access(quicksaved_filename_clean, os.R_OK):
                     quicksaved_file = mas_chess.isInProgressGame(
                         quicksaved_filename,
                         mas_monika_twitter_handle
@@ -1391,7 +1392,6 @@ label demo_minigame_chess:
             $ ur_nice_today = False
             # save the filename of what the game should have been
             python:
-                import os
 
                 mas_chess.loaded_game_filename = quicksaved_filename_clean
 
@@ -1401,7 +1401,7 @@ label demo_minigame_chess:
             if _return == mas_chess.CHESS_GAME_CONT:
                 python:
                     try:
-                        if renpy.file(quicksaved_filename_clean):
+                        if os.access(quicksaved_filename_clean, os.R_OK):
                             quicksaved_file = mas_chess.isInProgressGame(
                                 quicksaved_filename,
                                 mas_monika_twitter_handle
@@ -2019,14 +2019,15 @@ label mas_chess_dlg_qf_lost_may_2_found:
 
 # maybe monika file checking parts
 label mas_chess_dlg_qf_lost_may_filechecker:
+    $ import os 
     $ import store.mas_chess as mas_chess
     $ game_file = mas_chess.loaded_game_filename
 
-    if renpy.exists(game_file):
+    if os.access(game_file, os.F_OK):
         jump mas_chess_dlg_qf_lost_may_gen_found
 
     m 1e "Can you put the save back so we can play?"
-    if renpy.exists(game_file):
+    if os.access(game_file, os.F_OK):
         jump mas_chess_dlg_qf_lost_may_gen_found
 
     show monika 1a
@@ -2037,7 +2038,7 @@ label mas_chess_dlg_qf_lost_may_filechecker:
         file_found = False
         seconds = 0
         while not file_found and seconds < 60:
-            if renpy.exists(game_file):
+            if os.access(game_file, os.F_OK):
                 file_found = True
             else:
                 renpy.pause(1.0, hard=True)

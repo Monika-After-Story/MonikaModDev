@@ -201,7 +201,7 @@ label splashscreen:
         basedir = config.basedir.replace("\\", "/")
 
     #Check for game updates before loading the game or the splash screen
-    call update_now from _call_update_now
+#    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
@@ -278,6 +278,13 @@ label autoload:
     if persistent._mas_chess_mangle_all:
         jump mas_chess_go_ham_and_delete_everything
 
+    # okay lets setup monika's clothes
+    python:
+        monika_chr.change_outfit(
+            persistent._mas_monika_clothes,
+            persistent._mas_monika_hair
+        )
+
     jump expression persistent.autoload
 
 label before_main_menu:
@@ -288,4 +295,7 @@ label quit:
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
 
+    if persistent._mas_hair_changed:
+        $ persistent._mas_monika_hair = monika_chr.hair
+        $ persistent._mas_monika_clothes = monika_chr.clothes
     return

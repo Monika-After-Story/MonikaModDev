@@ -965,8 +965,10 @@ screen preferences():
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
                     style_prefix "check"
-                    label _("Room Animation")
-                    textbutton _("Disable") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    label _("Graphics")
+                    textbutton _("Disable Animation") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
+
 
                 vbox:
                     style_prefix "check"
@@ -1047,7 +1049,7 @@ screen preferences():
 
             hbox:
                 textbutton _("Update Version"):
-                    action [SetVariable('check_wait',0), Jump('update_now')]
+                    action Function(renpy.call_in_new_context, 'forced_update_now')
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
@@ -1525,6 +1527,8 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
+            
+
 style confirm_frame is gui_frame
 style confirm_prompt is gui_prompt
 style confirm_prompt_text is gui_prompt_text
@@ -1553,7 +1557,7 @@ style confirm_button_text is navigation_button_text:
 
 ##Updating screen
 
-screen update_check(ok_action,cancel_action,update_link,check_interval):
+screen update_check(ok_action,cancel_action,mode):
 
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
@@ -1571,16 +1575,22 @@ screen update_check(ok_action,cancel_action,update_link,check_interval):
             yalign .5
             spacing 30
 
-            $latest_version = updater.UpdateVersion(update_link, check_interval=check_interval)
-            if latest_version != None:
+            if mode == 0:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
                     xalign 0.5
-            elif not timeout:
+
+            elif mode == 1:
+                label _("No update available."):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            elif mode == 2:
                 label _('Checking for updates...'):
                     style "confirm_prompt"
                     xalign 0.5
             else:
+                # otherwise, we assume a timeout
                 label _('Timeout occured while checking for updates. Try again later.'):
                     style "confirm_prompt"
                     xalign 0.5
@@ -1589,11 +1599,11 @@ screen update_check(ok_action,cancel_action,update_link,check_interval):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Install") action [ok_action, SensitiveIf(latest_version)]
+                textbutton _("Install") action [ok_action, SensitiveIf(mode == 0)]
 
                 textbutton _("Cancel") action cancel_action
 
-    timer 10.0 action [SetVariable("timeout",True), renpy.restart_interaction]
+    timer 1.0 action Return("None")
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -1630,10 +1640,11 @@ screen updater:
                     text _("An error has occured:")
                 elif u.state == u.CHECKING:
                     text _("Checking for updates.")
-                elif u.state == u.UPDATE_NOT_AVAILABLE:
-                    text _("Monika After Story is up to date.")
                 elif u.state == u.UPDATE_AVAILABLE:
                     text _("Version [u.version] is available. Do you want to install it?")
+
+                elif u.state == u.UPDATE_NOT_AVAILABLE:
+                    text _("Monika After Story is up to date.")
                 elif u.state == u.PREPARING:
                     text _("Preparing to download the updates.")
                 elif u.state == u.DOWNLOADING:
@@ -1666,6 +1677,7 @@ screen updater:
 
             if u.can_cancel:
                 textbutton _("Cancel") action Return()
+
 
 style updater_button_text is navigation_button_text
 style updater_button is confirm_button
@@ -2046,3 +2058,59 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
 #   timeout_label - label to jump to when timeout
 screen mas_background_timed_jump(timeout, timeout_label):
     timer timeout action Jump(timeout_label)
+
+# MAS restart monika screen
+screen mas_generic_restart:
+    # this will always return True
+    # this has like a be right back button
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "confirm"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+# TODO have a brb feature somehow
+# TODO: that would tie into the knowing how long player is out
+#            label _("Tell Monika that you'll be right back?"):
+            label _("Please restart Monika After Story."):
+                style "confirm_prompt"
+                xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("OK") action Return(True)
+
+# generic custom displayabels below:
+init python:
+    class PauseDisplayable(renpy.Displayable):
+        """
+        Pause until click variant of Pause
+        This is because normal pause until click is broken for some reason
+        """
+        import pygame
+
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+
+        def render(self, width, height, st, at):
+            # dont actually render anything
+            return renpy.Render(width, height)
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                return True
+
+            raise renpy.IgnoreEvent()

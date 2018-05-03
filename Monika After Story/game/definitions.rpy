@@ -85,6 +85,8 @@ python early:
     #       NOTE: refer to RULES documentation in event-rules
     #       NOTE: if you set this to None, you will break this forever
     #       (Default: empty dict)
+    #   last_seen - datetime of the last time this topic has been seen
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -103,7 +105,8 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-            "rules":14
+            "rules":14,
+            "last_seen":15
         }
 
         # name constants
@@ -137,7 +140,8 @@ python early:
                 end_date=None,
                 unlock_date=None,
                 diary_entry=None,
-                rules=dict()
+                rules=dict(),
+                last_seen=None
             ):
 
             # setting up defaults
@@ -186,7 +190,8 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                rules
+                rules,
+                last_seen
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -898,8 +903,8 @@ python early:
                 4 - scroll up
                 5 - scroll down
             _button_down - pygame mouse button event type to activate button
-                MOUSEBUTTONDOWN (Default)
-                MOUSEBUTTONUP
+                MOUSEBUTTONUP (Default)
+                MOUSEBUTTONDOWN 
         """
         import pygame
 
@@ -981,7 +986,7 @@ python early:
             self.disabled = False
             self.hovered = False
             self._button_click = 1
-            self._button_down = pygame.MOUSEBUTTONDOWN
+            self._button_down = pygame.MOUSEBUTTONUP
 
             # the states of a button
             self._button_states = {
@@ -1858,6 +1863,10 @@ define audio.closet_open = "sfx/closet-open.ogg"
 define audio.closet_close = "sfx/closet-close.ogg"
 define audio.page_turn = "sfx/pageflip.ogg"
 define audio.fall = "sfx/fall.ogg"
+
+# custom audio
+# NOTE: awaiting full vote
+define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
 
 # Backgrounds
 image black = "#000000"
@@ -3038,6 +3047,18 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
+
+# rain
+default persistent._mas_likes_rain = False
+define mas_is_raining = False
+
+# clothes
+default persistent._mas_monika_clothes = "def"
+default persistent._mas_monika_hair = "def"
+default persistent._mas_likes_hairdown = False
+default persistent._mas_hair_changed = False
+
+define mas_checked_update = False
 define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600

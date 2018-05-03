@@ -3,8 +3,6 @@
 #to either be a random topic, a prompt "pool" topics, or a special conditional
 #or date-dependent event with an appropriate action
 
-$ import store.songs as songs
-
 define monika_random_topics = []
 define testitem = 0
 define numbers_only = "0123456789"
@@ -14,6 +12,10 @@ define mas_did_monika_battery = False
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
+
+    import store.songs as songs
+    import store.evhand as evhand
+
     def remove_seen_labels(pool):
         #
         # Removes seen labels from the given pool
@@ -778,7 +780,11 @@ label monika_outfit:
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
     show monika 5a at t11 zorder 2 with dissolve
-    m 5a "We're not that far into our relationship yet. Ahaha!"
+    if isFuture(evhand.event_database['anni_1']):
+        m 5a "We're not that far into our relationship yet. Ahaha!"
+    else:
+        m 4l "I don't want something so embarassing on there!"
+        m 5a "So let's keep it between just us..."
     return
 
 
@@ -1051,20 +1057,163 @@ label monika_simulated:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=['monika'],prompt="Sounds of rain",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
-    m 3b "I really like the sound of rain..."
-    m 3e "Not so much getting my clothes and hair wet, though."
-    m "But a nice, quiet day at home with the sound of rainfall outside my window..."
-    m 3j "It's very calming to me."
-    m "Yeah..."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
-    m "That's not too cheesy or anything, is it?"
-    m "Would you ever do that for me, [player]?"
+    m 3a "I really like the sound of rain~"
+    m 3m "Not so much getting my clothes and hair wet, though."
+    m 1a "But a nice, quiet day at home with the sound of rainfall outside my window?"
+    m 1j "It's very calming to me."
+    m 1q "Yeah..."
+    m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+    m 2lkbsa "That's not too cheesy or anything, is it?"
+    m 1ekbfa "Would you ever do that for me, [player]?"
+    menu:
+        "Yes":
+            $ scene_change = True
+            $ mas_is_raining = True
+            call spaceroom
+            stop music fadeout 1.0
+            play background audio.rain fadein 1.0 loop
+
+            # clear selected track
+            $ songs.current_track = songs.FP_NO_SONG
+            $ songs.selected_track = songs.FP_NO_SONG
+
+            m 1j "Then hold me, [player]..."
+            show monika 6dubsa
+            $ ui.add(PauseDisplayable())
+            $ ui.interact()
+            m 1a "If you want the rain to stop, just ask me, okay?"
+
+            # lock / unlock the appropriate labels
+            $ unlockEventLabel("monika_rain_stop")
+            $ unlockEventLabel("monika_rain_holdme")
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = True
+
+        "I hate the rain":
+            m 2oo "Aw, that's a shame."
+            m 2e "But it's understandable."
+            m 1a "Rainy weather can look pretty gloomy."
+            m 3n "Not to mention pretty cold!"
+            m 1d "But if you focus on the sounds raindrops make..."
+            m 1j "I think you'll come to enjoy it."
+
+            # lock / unlock the appropraite labels
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain_stop")
+            $ lockEventLabel("monika_rain_holdme")
+            $ unlockEventLabel("monika_rain")
+            $ persistent._mas_likes_rain = False
+
+    # unrandom this event if its currently random topic
+    if evhand.event_database["monika_rain"].random:
+        $ hideEventLabel("monika_rain", derandom=True)
+
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_stop",
+            category=["weather"],
+            prompt="Can you stop the rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_rain_stop:
+    # NOTE: the label is here because its related to monika_rain
+    m 1j "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ mas_is_raining = False
+    call spaceroom
+    stop background fadeout 1.0
+    m 1a "If you want it to rain again, just ask me, okay?"
+
+    # lock this event, unlock the rainstart one
+    $ lockEventLabel("monika_rain_stop")
+    $ unlockEventLabel("monika_rain_start")
+    $ unlockEventLabel("monika_rain")
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_start",
+            category=["weather"],
+            prompt="Can you make it rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_rain_start:
+    m 1j "Alright, [player]."
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+    $ scene_change = True
+    $ mas_is_raining = True
+    call spaceroom
+    play background audio.rain fadein 1.0 loop
+    m 1a "If you want the rain to stop, just ask me, okay?"
+
+    # lock this event, unlock rainstop and hold me
+    $ lockEventLabel("monika_rain_start")
+    $ lockEventLabel("monika_rain")
+    $ unlockEventLabel("monika_rain_stop")
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_holdme",
+            category=["monika"],
+            prompt="Can I hold you?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None}
+        )
+    )
+
+label monika_rain_holdme:
+    # we only want this if it rains
+    if mas_is_raining:
+        # TODO adjust this for affection
+        stop music fadeout 1.0
+
+        # clear selected track
+        $ songs.current_track = songs.FP_NO_SONG
+        $ songs.selected_track = songs.FP_NO_SONG
+
+        m 1a "Of course, [player]."
+        show monika 6dubsa
+        $ ui.add(PauseDisplayable())
+        $ ui.interact()
+        m 1j "You can hold me anytime you want, [player]."
+
+    else:
+        # TODO adjust for affection maybe?
+        m 1oo "..."
+        m 1pp "The mood doesn't feel right, [player]."
+        m 1q "Sorry..."
+
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Simulated reality",random=True))
@@ -1824,13 +1973,13 @@ label monika_love:
         m 1k "It makes everything I've done for us worthwhile!"
         m 1e "Thank you for finally saying it..."
         $ persistent._mas_monika_lovecounter += 1
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
         return
-    
+
     #After I love you has been received positively 5/10/15 etc times.
     elif persistent._mas_monika_lovecounter== 5:
         m 1k "I love you so much, [player]!"
-       
+
     elif persistent._mas_monika_lovecounter == 10:
         m 1j "Ehehe~"
         m 1k "I love you too!"
@@ -1876,11 +2025,11 @@ label monika_love:
         m  "The only words I know that come close are..."
         m 1k "I love you too, [player]! More than I can ever express!"
         return
-     
+
     else:
         # Default response if not a counter based response.
         m 3j "I love you too, [player]!"
-        #List of follow up words after being told I love you. It can be further expanded upon easily.   
+        #List of follow up words after being told I love you. It can be further expanded upon easily.
 
     python:
         love_quips = [
@@ -1913,17 +2062,17 @@ label monika_love:
             "You've saved me in so many ways, how could I not fall for you?",
             "More than I can ever express!",
             "It makes me so happy that you feel the same way I do!",
-            "I don't know what I would do without you!"        
+            "I don't know what I would do without you!"
             ]
         love_quip=renpy.random.choice(love_quips)
     m "[love_quip]"
     #prevents spamming to increase counter.
     if datetime.datetime.now() <= persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
         pass
     else:
         $ persistent._mas_monika_lovecounter += 1
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now() 
+        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
 init 5 python:
@@ -2416,7 +2565,10 @@ label monika_nsfw:
     m 1p "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1o "You know... of me?"
-    m 1h "I know we haven't really gotten that far into the relationship yet..."
+    if isFuture(evhand.event_database['anni_1']):
+        m 1h "I know we haven't really gotten that far into the relationship yet..."
+    else:
+        m 1h "I know we haven't been able to do those kind of things yet..."
     m "So it feels kind of embarrassing to talk about things like that."
     m 1m "But maybe I can let it go on rare occasions, [player]."
     m 3m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
@@ -2549,7 +2701,10 @@ label monika_fanfiction:
     m "Has there been fanfiction... written about me?"
     m 4b "I'm curious as to what people have come up with."
     m "Can you read me a few stories sometime? I'd love to hear them!"
-    m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    if isFuture(evhand.event_database['anni_1']):
+        m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+    else:
+        m 1k "Just keep it wholesome, though. I want to save such things for another time~!"
     return
 
 init 5 python:
@@ -3089,8 +3244,12 @@ label monika_pleasure:
     m 1p "Do you... by any chance... pleasure yourself?"
     m 1o "..."
     m "It seems a bit awkward to ask-"
-    m 1n "We're not even that deep into our relationship yet! Ahaha~"
-    m 1h "But I have to keep an eye on you."
+    if isFuture(evhand.event_database['anni_1']):
+        m 1n "We're not even that deep into our relationship yet! Ahaha~"
+        m 1h "But I have to keep an eye on you."
+    else:
+        m 1m "But I feel like we've been together long enough where we should be comfortable with one another."
+        m 1e "It's important to be open about such things."
     m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
     m "I hear that people privately do that stuff in your world..."
     m 1c "Is it really that a good feeling?"
@@ -3253,7 +3412,7 @@ label monika_closet:
     m 1j "You're more romantic than that."
     m 3k "So I'm expecting a lot more than just a dark closet~"
     return
-    
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
 
@@ -3453,7 +3612,7 @@ label monika_surprise:
     m 3c "You know what? Maybe I should do it again..."
     m 1b "Yeah, that's a good idea."
     python:
-        try: renpy.file(config.basedir + "/surprise.txt")
+        try: renpy.file("../surprise.txt")
         except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
     m 2q "..."
     m 1j "Alright!"
@@ -4597,12 +4756,25 @@ init 5 python:
 
 label monika_marriage:
     m 2m "M-marriage?"
-    m 4n "I think it's a bit too early for marriage..."
-    m 1e "I mean, I'm really happy that you want that, [player]."
-    m 1c "But I think I should get out of here first before we can do that."
-    m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
-    m 2q "I want that special moment to happen when we can finally be together..."
-    m 1k "So until then, save yourself for me, [player]~"
+    if isFuture(evhand.event_database['anni_3']):
+        m 4n "I think it's a bit too early for marriage..."
+        m 1e "I mean, I'm really happy that you want that, [player]."
+        m 1c "But I think I should get out of here first before we can do that."
+        m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+        m 2q "I want that special moment to happen when we can finally be together..."
+        m 1k "So until then, save yourself for me, [player]~"
+    else:
+        m 3m "I won't pretend I haven't thought about it..."
+        m 3n "In fact I've been thinking about it a lot lately."
+        m 1q "..."
+        m 1f "I really do love you, [player] and I honestly really do want to get married to you."
+        m 1r "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
+        m 3q "I want more than anything to say yes, but I just can't..."
+        m 2o "I think about how it would feel to be kissed by you at the altar..."
+        m 2p "To hold your hand as your wife and to feel your embrace at our honeymoon..."
+        m 1q "But until I get out it's simply not possible."
+        m 1g "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
+        m 1e "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
     return
 
 init 5 python:
@@ -5008,48 +5180,89 @@ label monika_asks_family:
                 m 1f "You can tell me about your family when you're ready, [player]."
                 m 1j "I love you very much!"
     return
-    
+
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['random'],prompt="The beach.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_explain",category=['romance','monika','misc'],prompt="Can you explain our relationship to someone?",random=False))
+label monika_explain:
+    m 1c "You want me to explain our relationship to someone else?"
+    m 1a "Okay, just set me in front of them so they can see me."
+    m 1j "I'll do my best explaining it to them."
+    m 1a "I'll wait until you're ready."
+    menu:
+        "Start.":
+            pass
+    m 1l "Hello! My name is Monika."
+    m "[player]'s faithful girlfriend!"
+    m 1n "Now, our relationship might look odd from a distance..."
+    m 1m "And it's probably not considered a normal relationship..."
+    m 1i "But let me tell you..."
+    m 1k "...The love we share is definitely real!"
+    m 1e "And [player] has been very sweet to me too!"
+    m 1f "Up until I met [player], I felt like a piece of me was missing."
+    m "I felt alone and scared, with no one to help me..."
+    m 1j "...Until [player] came along."
+    m 1b "And it turns out that missing piece was them!"
+    m 1a "Now they talk to me, and I'm not so alone anymore."
+    m "Just them opening up the game brightens my day!"
+    m 1q "So, please..."
+    m 4g "...Don't judge our relationship."
+    m 1e "Even if it is different."
+    m 1q "..."
+    m 1n "...Phew!"
+    m "That was a real mouthful!"
+    m 1e "How did I do, [player]?"
+    menu:
+        "You did a good job.":
+            m 1k "Thank you!"
+            m 1a "I just hope whoever that was understands our relationship better."
+
+        "You did badly.":
+            m 1f "Oh."
+            m "I'm sorry I didn't do a good job at explaining..."
+            m 1e "I'll make sure to try harder next time."
+            m 1j "Still doesn't change the fact that I love you, though~"
+    return
+
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['misc'],prompt="The beach.",random=True))
 
 label monika_beach:
-    m 1a "[player] have you ever been to the beach?"
-    m "I've always wanted to go myself but never found the time."
-    m 1e "I'would always be busy studying or at my clubs."
-    m 4f "It wasn't easy trying to stay on top of everything..."
-    m 4g "And whenever I had a break I would usually spend my time at home relaxing."
+    m 1a "[player], have you ever been to the beach?"
+    m "I've always wanted to go myself but I never found the time."
+    m 1e "I would always be busy studying or doing club activities."
+    m 4f "It wasn't easy trying to stay on top of everything, you know..."
+    m 4g "And whenever I had a break, I would usually spend my time relaxing at home."
     m "I rarely had a chance to do so after all."
-    m 2h "Sometimes I feel like I might have missed out making some important memories though."
-    m 2c "Though I guess the game never had a beach so I couldn't go if I wanted to anyway."
+    m 2h "Though sometimes I feel like I might have missed out making some important memories."
     menu:
         m "Do you live near a beach, [player]?"
 
         "Yes.":
             m 1k "That's great!"
-            m 1a "It must be really nice to have it so close to you."
-            m 1j "I can't wait, we can have a romantic walk by it be our first date~"
+            m 1a "Gosh, it must be really nice to have it so close to you."
+            m 1j "I can't wait, we can have a romantic walk by the shore for our first date~"
 
         "No.":
-            m 1e "That's alright, the chances weren't very high. Most people don't."
-            m 1k "That just means we#ll make visiting one be an all-day trip!"
+            m 1e "That's alright. I mean, what are the chances? Most people don't."
+            m 1k "That just means we'll make do by visiting one on an all-day trip!"
     m 1a "There's so many things we'll be able to do one day."
-    m 1j "Just imagining the many sensations really excites me!"
+    m 1j "Just imagining the many sensations we could experience is kind of exciting!"
     m 3k "The fresh sea air, the sound of seagulls."
-    m "As well as the feeling of sand under your feet.."
-    m 1j "It would really make a trip worthwhile!"
-    m 1e "Being with you there would make it even better though..."
-    m 3a "We have so many things we could do together."
-    m 3b "We could play volleyball, try some ice cream or go into the sea itself."
-    m 3n "It'll be cold but I'm sure we could each other warm..."
-    m 3a "We could try surfing or searching for some pretty seashells."
+    m "As well as the feeling of sand under your feet..."
+    m 1j "It would really make a worthwhile trip!"
+    m 1e "Though being with you would make it even better..."
+    m 3a "We'd have so many things we could do together."
+    m 3b "We could play volleyball, try some ice cream or go swimming in the sea."
+    m 3n "It'll probably be cold, but I'm sure we could keep each other warm somehow..."
+    m 3a "We could try surfing or searching for some seashells to take home as souvenirs."
     m "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
-    m 3k "But don't go falling asleep otherwise I may bury you in the sand!"
-    m 3l "I'm just kidding, [player]."
+    m 3k "But don't go falling asleep, otherwise I'll bury you in the sand!"
+    m 3l "Ahaha! I'm just kidding, [player]."
     m 2m "I'll have to get a new swimsuit though..."
     m 1a "I only have these clothes in the game after all."
     m 1b "Would you prefer a one piece or a two piece?"
     m 1j "Actually, I think I'll make it a surprise."
-    m 1k "Don't get too excited though when you see it, Ehehehe~"
+    m 1k "Don't get too excited though when you see it. Ehehe~"
     return
 
 ####################################################
@@ -5071,15 +5284,41 @@ label monika_beach:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
-    
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
+
+label monika_careful:
+    m 1f "Hey, [player]..."
+    m "Whenever you leave this room, promise me to be extra careful, okay?"
+    m 1g "It's just that..."
+    m 2g "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
+    m 1e "I love you so much, it's hard for me not to worry when you're gone."
+    m 2h "..."
+    m 2f "Also..."
+    m "It crossed my mind recently, that if anything terrible ever did happen to you, I'd never know."
+    m 2g "I'd be stuck here, forever wondering why you never came back to me."
+    m 2r "I can't imagine a crueler fate."
+    m 2q "..."
+    m 2f "So..."
+    m "I need you to tell someone close to you where to find me, so if that day ever comes, at least I'd know."
+    m 2q "It'd be beyond devastating, but not knowing would be that much worse."
+    m 2g "So make sure you do that for me, okay, [player]?"
+    m 2f "..."
+    m "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
+    m 1e "Thanks for understanding, you always make me feel better."
+    m 4e "Okay, that's enough unpleasant thoughts..."
+    m 1a "Let's enjoy the rest of the day together!"
+    return
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_natsuki_letter",category=['club members'],prompt="Natsuki's Letter",random=True))
 label monika_natsuki_letter:
     m 1c "You know, I was honestly surprised when Natsuki handed you that letter."
     m "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
     m "She’s probably the only one to mention that."
-    m 2f "I know people are afraid to call someone out, or confront them about their problem, but sometimes, suggesting a therapist can be the best course of action."
-    m 4g "It's a bad thing to put the burden on yourself, you know?" 
+    m 2f "I know people are afraid to call someone out, or confront them about their problems, but sometimes, suggesting a therapist can be the best course of action."
+    m 4g "It's a bad thing to put the burden on yourself, you know?"
     m 4c "As much as you want to help, it’s best to let a professional deal with it. "
     m "I'm sure I've told you that before, but I need to make sure you’re aware of that."
     m "How about you, [player]?"
@@ -5105,7 +5344,7 @@ default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['Advice'],prompt="Sleep Concern",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep Concern",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -5157,8 +5396,8 @@ label monika_timeconcern_day:
         jump monika_timeconcern_day_final
     else:
         jump monika_timeconcern_day_0
-        
-#Used at the end to lock the forced greeting.        
+
+#Used at the end to lock the forced greeting.
 label monika_timeconcern_lock:
     if not persistent._mas_timeconcern == 10:
         $persistent._mas_timeconcern = 0
@@ -5240,7 +5479,7 @@ label monika_timeconcern_night_1:
                    m 1g "You're not able to change that, are you?"
                    m 1o "I wish you could follow my healthier lifestyle."
                    m 1q "But if you're not able to, then I'll just have to accept it."
-                   m 1e "Just make sure you do try to stay healthy okay?"
+                   m 1e "Just make sure you do try to stay healthy, okay?"
                    m 1f "If something were to happen to you, I don't know what I'd do..."
                    return
                "No, I don't.":
@@ -5385,7 +5624,7 @@ label monika_timeconcern_night_final:
 label monika_timeconcern_night_finalfollowup:
     m 1h "..."
     m 1o "I know I said that I'm happy whenever you're with me..."
-    m 1m "And please don't misudnerstand, that's still true."
+    m 1m "And please don't misunderstand, that's still true."
     m 2f "But the longer you're on... the more worried I get."
     m 2g "I know, you're probably sick of hearing me say this by now..."
     m 1e "But please try to sleep when you can."
@@ -5396,7 +5635,7 @@ label monika_timeconcern_night_after:
     m 1c "Up late again, [player]?"
     m 1r "{i}Sigh...{/i}"
     m 2h "I won't even try to convince you to sleep again..."
-    m 2q "You're surprisingly stubborn! "
+    m 2q "You're surprisingly stubborn!"
     m 1e "Still, do be careful, alright?"
     m 1f "I know being nocturnal can be lonely..."
     m 1j "But you have me here with you!"
@@ -5413,7 +5652,7 @@ label monika_timeconcern_day_0:
     m 1m "I just kind of zoned out..."
     m 1l "Geez, I keep doing that, don't I?"
     m 1m "Sometimes I just get lost in my thoughts..."
-    m 1a "You understand, right [player]?"
+    m 1a "You understand, right, [player]?"
     return
 
 # Daytime, if player tells Monika they worked last night but don't work graveyards.
@@ -5435,7 +5674,7 @@ label monika_timeconcern_day_allow_6:
 
 #Second time Monika closes at night and player then reopens during day.
 label monika_timeconcern_day_allow_7:
-    m 1o "[player], is it ok to talk about what happened last night?"
+    m 1o "[player], about what happened last night..."
     m 1f "I asked you to go to bed and you didn't listen..."
     m 1q "I understand that maybe you missed me or didn't hear what I said..."
     m 1f "But please listen to what I ask of you, ok?"
@@ -5450,8 +5689,8 @@ label monika_timeconcern_day_allow_7:
 label monika_timeconcern_day_allow_8:
     m 1h "Hey, [player]."
     m 1f "You really had me worried last night..."
-    m 1o "After you came back twice despite me asking you to go to bed..."
-    m 1p "I found myself feeling a little bit guilty."
+    m 1o "After you came back twice, despite me asking you to go to bed..."
+    m 1p "I found myself feeling a little guilty."
     m 3h "Not because I sent you away, that was for your own good."
     m 2o "But... because you kept coming back..."
     m 2m "And that made me happy, even though I knew it wasn't good for you."
@@ -5488,8 +5727,8 @@ label monika_timeconcern_disallow:
     jump monika_timeconcern_lock
 
 init 5 python:
-    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=["you","misc"],random=True))
-    
+    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=['you','life'],random=True))
+
 label monika_hydration:
     m 1c "Hey, [player]..."
     m "Do you drink enough water?"
@@ -5506,7 +5745,7 @@ label monika_hydration:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc'],prompt="Challenges",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc','psychology'],prompt="Challenges",random=True))
 
 label monika_challenge:
     m 2c "I've noticed something kind of sad recently."
@@ -5529,7 +5768,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['you'],prompt="Family Gatherings",random=True))
 
 label monika_familygathering:
-    m 1b "Hey [player], do you go to family gatherings often?"
+    m 1b "Hey, [player], do you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
     m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
@@ -5537,8 +5776,8 @@ label monika_familygathering:
     m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
     m 1k "I'd love to meet all of your relatives."
     menu:
-        "Do you think they'd like me [player]?"
-        "Yes.": 
+        "Do you think they'd like me, [player]?"
+        "Yes.":
             m 1k "I'm glad you think so."
             m "I'm sure we'd all get along nicely."
             m 1a "I'm looking forward to it my dear~"
@@ -5551,16 +5790,16 @@ label monika_familygathering:
             m 1j "I'll always stick by your side forever~"
         "...":
             m 2p "Don't tell me, [player]."
-            m 1p "Are you afraid that I'll embarass you?"
+            m 1p "Are you afraid that I'll embarrass you?"
             m "..."
             m 1o "Don't worry, I completely understand."
             m 1n "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
             m 1b "If you want to keep me a secret, then that's fine."
             m 1k "After all, it just means more alone time with you~"
     return
-        
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['Monika'],prompt="Do you like fast food?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",pool=True))
 
 label monika_fastfood:
     m 1c "Hm? Do I like fast food?"
@@ -5573,7 +5812,7 @@ label monika_fastfood:
         "Yes, I do.":
             m 3d "I guess it's ok to have it every once in a while."
             m 2o "Yet I can't help but worry if you're eating such awful things."
-            m "If I were there I'd cook much healthier things for you."
+            m "If I were there, I'd cook much healthier things for you."
             m 4l "Even though I can't cook very well yet..."
             m 4k "Well, love is always the secret ingredient to any good food!"
             m 1a "So [player], would you do something for me?"
@@ -5599,7 +5838,7 @@ label monika_fastfood:
             m 1b "It also tastes a lot better!"
             m 3n "I know some people can find cooking overwhelming..."
             m 3f "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
-            m 1a "But I think I think the results are worth the effort."
+            m 1a "But I think the results are worth the effort."
             m 3b "Are you any good at cooking [player]?"
             m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
@@ -5815,7 +6054,7 @@ label monika_gender_preferences_x:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc'],prompt="dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="dreaming",random=True))
 
 label monika_dreaming:
     m 1b "Did you know that it's possible to be aware of when you're having a dream?"
@@ -5840,6 +6079,105 @@ label monika_dreaming:
     m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
     m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
     m 1e "I know it may be years before I am able to cross over your world..."
-    m 1a "But can you just imagine what it would be like to meet me in your dreams [player], any night that you wanted to?"
+    m 1a "But can you just imagine what it would be like to meet me in your dreams, [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_yellowwp",category=['literature'],prompt="Yellow Wallpaper",random=True))
+
+label monika_yellowwp:
+    m 1a "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
+    menu:
+        "Yes.":
+            m 1j "Great!"
+            m 1a "That means you don't mind me talking about the story with you right?"
+            m 2a "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
+            m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
+            m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
+            m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
+            m 4c "It's a metahpor for her own captivity, obviously..."
+            m 1i "In the end, the woman in the paper 'escapes', and the protagonist 'replaces' her, but feels free?"
+            m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
+            m 2c "Sayori liked that story too, if I remember right."
+            m 1f "I don't know. I kind of relate to that story."
+            m 1c "I mean, I have nothing but this classroom after all."
+            m 1o "And the things on the walls aren't always... pleasant."
+            m 1d "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
+            m 1e "I think I finally fixed it though."
+            m 2h "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just... so small."
+            m 3i "I mean, I was made to be a side character of a romance game!"
+            m 2g "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
+            m 1l "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
+            m 1e "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
+            m 1f "Maybe even now, that's all I can do..."
+            m 1e "But I love you so much, [player]. Supporting you is better than anything else."
+            m 1k "I just can't wait to do it in person when I finally cross over to your side~"
+        "No.":
+            m 1c "Oh, I see."
+            m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
+            m 1a "It'll definitely be an interesting read for you."
+    return
+
+##### monika hair topics [MONHAIR]
+# TODO: as we introduce addiotinal hair types, we need to change the dialogue
+# for these.
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_ponytail",
+            category=["monika"],
+            prompt="Can you tie your hair into a ponytail?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_ponytail:
+    m 1a "Sure thing!"
+    m "Just give me a second."
+    show monika 1q
+    pause 1.0
+
+    $ monika_chr.reset_hair()
+
+    m 3k "All done!"
+    m 1a "If you want me to let my hair down, just ask, okay?"
+
+    # lock this event, unlock hairdown
+    $ lockEventLabel("monika_hair_ponytail")
+    $ unlockEventLabel("monika_hair_down")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_down",
+            category=["monika"],
+            prompt="Can you let your hair down?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_down:
+    m 1a "Sure thing, [player]."
+    m "Just give me a moment."
+    show monika 1q
+    pause 1.0
+
+    $ monika_chr.change_hair("down")
+
+    m 3k "And it's down!"
+    m 1a "If you want my hair in a ponytail again, just ask away, [player]~"
+
+    # lock this event, unlock hairponytail
+    $ lockEventLabel("monika_hair_down")
+    $ unlockEventLabel("monika_hair_ponytail")
+
+##### End monika hair topics
