@@ -1,6 +1,6 @@
 ##This file contains all of the variations of goodbye that monika can give.
 ## This also contains a store with a utility function to select an appropriate
-## farewell 
+## farewell
 
 init -1 python in mas_farewells:
 
@@ -78,7 +78,7 @@ label mas_farewell_start:
         python:
             # build a prompt list
             bye_prompt_list = [
-                (ev.prompt, ev, False, False) 
+                (ev.prompt, ev, False, False)
                 for k,ev in bye_pool_events.iteritems()
             ]
 
@@ -198,6 +198,7 @@ label bye_prompt_to_class:
     m 1j "Study hard, [player]!"
     m 1 "Nothing is more attractive than a [guy] with good grades."
     m 1j "See you later!"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
 init 5 python:
@@ -216,6 +217,7 @@ label bye_prompt_to_work:
     m 1j "Work hard, [player]!"
     m 1 "I'll be here for you when you get home from work."
     m 1j "Bye-bye!"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     return 'quit'
 
 init 5 python:
@@ -304,22 +306,23 @@ label bye_prompt_sleep:
 # tie this with affection later
 #            "No.":
 #                m 2r "..."
-#                m "Fine."  
+#                m "Fine."
     else:
         # otheerwise
         m "Alright, [player]."
         m 1j "Sweet dreams!"
 
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
-    
+
 init 5 python:
     addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
-    
+
 label bye_illseeyou:
     m 1b "I'll see you tomorrow, [player]."
     m 1k "Don't forget about me, okay?"
     return 'quit'
-    
+
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
@@ -337,10 +340,10 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
 label bye_haveagoodday:
     m 1b "Have a good day today, [player]."
     m 1b "I hope you accomplish everything you had planned for today."
-    m 1b "I'll be here waiting for you when you get back."  
+    m 1b "I'll be here waiting for you when you get back."
     return 'quit'
- 
-init 5 python: 
+
+init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(12,16)))
     addEvent(
@@ -375,7 +378,7 @@ init 5 python:
     )
     del rules
 
-label bye_goodevening:    
+label bye_goodevening:
     m 1k "I had fun today."
     m 1a "Thank you for spending so much time with me, [player]."
     m 1j "Until then, have a good evening."
@@ -394,7 +397,7 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
     del rules
-    
+
 label bye_goodnight:
     m 1a "Goodnight, [player]."
     m 1e "I'll see you tomorrow, okay?"
