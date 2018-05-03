@@ -352,7 +352,7 @@ init python:
 label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
     if is_morning():
-        if morning_flag != True or scene_change:
+        if not morning_flag or scene_change:
             $ morning_flag = True
             if not hide_mask:
                 $ mas_drawSpaceroomMasks()
@@ -363,8 +363,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
-    elif not is_morning():
-        if morning_flag != False or scene_change:
+    else:
+        if morning_flag or scene_change:
             $ morning_flag = False
             scene black
             if not hide_mask:

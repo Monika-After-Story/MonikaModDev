@@ -546,13 +546,15 @@ label call_next_event:
             $persistent.closed_self = True #Monika happily closes herself
             jump _quit
 
-        # only allow dialogue if the event list is empty
-        $ allow_dialogue = len(persistent.event_list) == 0
         show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
-    else:
-        return False
 
-    return event_label
+        # loop over until all events have been called
+        jump call_next_event
+
+    else:
+        $ allow_dialogue = True
+
+    return False
 
 # This either picks an event from the pool or events or, sometimes offers a set
 # of three topics to get an event from.

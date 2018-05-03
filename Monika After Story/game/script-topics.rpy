@@ -935,9 +935,9 @@ label monika_yuri:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip",category=['writing tips'],prompt="Writing Tip #1",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #1",pool=True))
 
-label monika_writingtip:
+label monika_writingtip1:
     m 1a "You know, it's been a while since we've done one of these..."
     m 1j "...so let's go for it!"
     m 3b "Here's Monika's Writing Tip of the Day!"
@@ -3414,9 +3414,9 @@ label monika_closet:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip2",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip1')",action=EV_ACT_POOL))
 
-label monika_writingtip1:
+label monika_writingtip2:
     m 3a "You know..."
     m "We really don't do enough of these, so here's another one!"
     m 3b "Here's Monika's Writing Tip of the Day!"
@@ -4545,9 +4545,9 @@ label monika_otaku:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip3",category=['writing tips'],prompt="Writing tip #3",conditional="seen_event('monika_writingtip2')",action=EV_ACT_POOL))
 
-label monika_write:
+label monika_writingtip3:
     m 1a "I'm having fun doing these, so..."
     m 3b "Here's Monika's Writing Tip of the Day!"
     m 1a "Make sure you always write down any ideas you think of."
@@ -4570,7 +4570,7 @@ label monika_write:
     return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",conditional="seen_event('monika_writingtip3')",action=EV_ACT_POOL))
 
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
@@ -4592,7 +4592,7 @@ label monika_writingtip4:
      return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
 
 label monika_writingtip5:
      m 3b "Here's Monika's Writing Tip of the Day!"
@@ -5009,7 +5009,7 @@ label monika_omamori:
     m 1d "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
     m 1k "Oh gosh, this is turning out to be a bit silly, now that I think about it."
     m "I mean, would doing this make me some sort of deity?"
-    m 1a "I just feel like it would be a nice alternative for you if wanted to bring me around."
+    m 1a "I just feel like it would be a nice alternative if you wanted to bring me around."
     m "Especially if you don't have a flash drive."
     m 1j "It isn't perfect, but it's the thought that counts, [player]."
     m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
@@ -5121,7 +5121,7 @@ label monika_asks_family:
                     m 2d "Maybe you get much more attention from your parents. Unless they were always busy."
                     m 4c "On the other hand, maybe you feel more lonely than those with siblings."
                     m 2h "I can definitely understand that feeling."
-                    m 2j "But know that I'll always be with you no matter, [player]."
+                    m 2j "But know that I'll always be with you no matter what, [player]."
         "My family is a mess.":
             m 1d "Oh."
             m 1o "..."
@@ -5755,7 +5755,7 @@ label monika_challenge:
     m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
     m 2b "Can you think of a time you've challenged yourself, [player]?"
     m "Did you ever overcome it, or did you just give up?"
-    m 1a "I'm sure you've gave it all you had."
+    m 1a "I'm sure you've given it all you had."
     m "You seem like a very determined person to me."
     m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
     m "You can always come back to it after all."
@@ -5772,7 +5772,7 @@ label monika_familygathering:
     m "Most families usually get together around the holidays to celebrate them together."
     m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
-    m 1p "Not even around the holidays or on special occassions."
+    m 1p "Not even around the holidays or on special occasions."
     m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
     m 1k "I'd love to meet all of your relatives."
     menu:
@@ -5846,7 +5846,7 @@ label monika_fastfood:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="Dreaming",random=True))
 
 label monika_dreaming:
     m 1b "Did you know that it's possible to be aware of when you're having a dream?"
