@@ -513,6 +513,28 @@ init python:
         return cleanlist
 
 
+    def mas_cleanJustSeenEV(ev_list):
+        """
+        Cleans the given event list (of events) of just seen items
+        (within the THRESHOLD). Returns not just seen items.
+        Basically the same as mas_cleanJustSeen, except for Event object lists
+
+        IN:
+            ev_list - list of event objects
+
+        RETURNS:
+            cleaned list of events (stuff not in the tiem THRESHOLD)
+        """
+        import datetime
+        now = datetime.datetime.now()
+        
+        return [
+            ev
+            for ev in ev_list
+            if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA
+        ]
+
+
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
