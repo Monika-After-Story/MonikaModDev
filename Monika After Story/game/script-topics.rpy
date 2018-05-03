@@ -5606,7 +5606,7 @@ label monika_fastfood:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_gender_preferences",category=['you'],prompt="Gender Preferences",conditional="seen_event('gender')",action=EV_ACT_RANDOM))
+    addEvent(Event(persistent.event_database,eventlabel="monika_gender_preferences",category=['you'],prompt="Gender Preferences",random=True,conditional="seen_event('gender')",action=EV_ACT_UNLOCK))
 
 label monika_gender_preferences:
     if persistent.gender == "F":
@@ -5619,14 +5619,14 @@ label monika_gender_preferences_f:
     m 1d "Hey, [player]?"
     m 1a "I know that I've already mentioned that the 'you' from the game isn't necessarily reflective of the real you."
     m 1b "Especially considering how the protagonist was scripted to be male."
-    m "When you added this mod, you did tell me that you're a girl - assuming you were being serious, of course!"
-    m 2j "Ahaha! I'm just teasing you, [player]. I know you would never lie to me about something like that!"
+    m "When you added this mod, you told me that you're a girl - assuming you were being serious, of course!"
+    m 2j "I'm just teasing you, [player]! I know you would never lie to me about something like that."
     if mcname.lower() == player.lower():
         m 3b "Even though you shared the same name, your mannerisms were completely different."
     else:
         m 3b "Anyways, back to the differences... you two had different names, and totally different mannerisms!"
     m "Let's not even mention the fact that you're miles away from the type of person that he was... denser than a brick, and about as sensitive."
-    m 3j "You're way more sensitive, and unbelievably sweet. So I always knew you were a good person."
+    m 3j "You're way more caring, and unbelievably sweet. So I always knew you were a good person."
     m 3k "I hope you know, [player], that I love you just the way you are, whether the game was reflective of you, or not!"
     m 2g "Sometimes, though, I can't help but wonder... well..."
     m 2o "..."
