@@ -210,6 +210,20 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.1
+label v0_8_1(version="v0_8_1"):
+    python:
+        import store.evhand as evhand
+
+        # change fast food topic values
+        # NOTE: this is for unstablers using 0.8.0
+        m_ff = evhand.event_database.get("monika_fastfood", None)
+        if m_ff:
+            hideEvent(m_ff, derandom=True)
+            m_ff.pool = True
+
+    return
+
 # 0.8.0
 label v0_8_0(version="v0_8_0"):
     python:
