@@ -527,12 +527,19 @@ init python:
         """
         import datetime
         now = datetime.datetime.now()
+        cleaned_list = list();
         
-        return [
-            ev
-            for ev in ev_list
-            if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA
-        ]
+        for ev in ev_list:
+            if ev.last_seen is not None:
+                # this topic has been seen before, must check time
+                if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA:
+                    cleaned_list.append(ev)
+
+            else:
+                # topic never seen before, its clean!
+                cleaned_list.append(ev)
+
+        return cleaned_list
 
 
 # This calls the next event in the list. It returns the name of the
