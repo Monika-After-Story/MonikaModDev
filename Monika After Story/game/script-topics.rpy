@@ -5379,14 +5379,14 @@ label monika_timeconcern:
 label monika_timeconcern_day:
     if persistent._mas_timeconcerngraveyard:
         jump monika_timeconcern_graveyard_day
-    if persistent._mas_timeconern == 0:
+    if persistent._mas_timeconcern == 0:
         jump monika_timeconcern_day_0
     elif persistent._mas_timeconcern == 2:
         jump monika_timeconcern_day_2
-    if not persistent._mas_timeconernclose:
-        if 6 <= persistent._mas_timeconern <=8:
+    if not persistent._mas_timeconcernclose:
+        if 6 <= persistent._mas_timeconcern <=8:
             jump monika_timeconcern_disallow
-    if persistent._mas_timeconern == 6:
+    if persistent._mas_timeconcern == 6:
         jump monika_timeconcern_day_allow_6
     elif persistent._mas_timeconcern == 7:
         jump monika_timeconcern_day_allow_7
@@ -5501,7 +5501,6 @@ label monika_timeconcern_night_1:
 
 #If player says they were working. Progress stops here.
 label monika_timeconcern_night_2:
-
     m 1a "How's your work coming along?"
     m "Hopefully pretty well, I don't want you up much longer."
     m 3l "I know, I know, you can't help being up so late."
