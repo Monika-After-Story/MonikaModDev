@@ -306,7 +306,10 @@ label v0_8_1(version="v0_8_1"):
         new_t = "monika_writingtip1"
         mas_transferTopicSeen(old_t, new_t)
         mas_transferTopic(old_t, new_t, persistent.event_database)
-       
+      
+        ## dropping repeats
+        persistent._mas_enable_random_repeats = None
+        persistent._mas_monika_repeated_herself = None
 
     return
 

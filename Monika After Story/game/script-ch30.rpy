@@ -721,55 +721,20 @@ label ch30_loop:
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
-            python:
-                if len(monika_random_topics) > 0:  # still have topics
+                # randomize selection
+                $ chance = renpy.random.randint(1, 100)
 
-                    if mas_monika_repeated:
-                        # monika has reaached the reepated flow
-                        if persistent._mas_enable_random_repeats:
-                            sel_ev = monika_random_topics.pop(0)
+                if chance <= store.mas_topics.UNSEEN:
+                    # unseen topic shoud be selected
+                    jump mas_ch30_select_unseen
 
-                        else:
-                            # otherwise we shouldnt be repeating
-                            monika_random_topics = list()
-                            mas_monika_repeated = False
-                            renpy.jump("post_pick_random_topic")
+                elif chance <= store.mas_topics.SEEN:
+                    # seen topic should be seelcted
+                    jump mas_ch30_select_seen
 
-                    else:
-                        sel_ev = renpy.random.choice(monika_random_topics)
-                        monika_random_topics.remove(sel_ev)
+                # most seen topic should be selected
+                jump mas_ch30_select_mostseen
 
-                    pushEvent(sel_ev)
-                    persistent.random_seen += 1
-
-                elif persistent._mas_enable_random_repeats:
-                    # user wishes for reptitive monika. We will oblige, but
-                    # a somewhat intelligently.
-                    # NOTE: these are ordered using the shown_count property
-                    # NOTE: These start off as list of event objects and then
-                    # sorted differently. WATCH OUT
-                    monika_random_topics = Event.filterEvents(
-                        evhand.event_database,
-                        random=True
-                    ).values()
-                    monika_random_topics.sort(key=Event.getSortShownCount)
-                    monika_random_topics = mas_cleanJustSeen(
-                        [ev.eventlabel for ev in monika_random_topics],
-                        evhand.event_database
-                    )
-                    # NOTE: now the monika random topics are back to being
-                    #   labels. Safe to do normal operation.
-
-                    persistent._mas_monika_repeated_herself = True
-                    mas_monika_repeated = True
-                    sel_ev = monika_random_topics.pop(0)
-                    pushEvent(sel_ev)
-                    persistent.random_seen += 1
-
-                elif not seen_random_limit: # no topics left
-#                    monika_random_topics = list(all_random_topics)
-#                    pushEvent(renpy.random.choice(monika_random_topics))
-                    pushEvent("random_limit_reached")
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
 
@@ -778,6 +743,40 @@ label post_pick_random_topic:
     $_return = None
 
     jump ch30_loop
+
+# topic selection labels
+label mas_ch30_select_unseen:
+    # unseen selection
+
+    if len(mas_rev_unseen) == 0:
+        jump mas_ch30_select_seen
+
+    $ mas_randomSelectAndPush(mas_rev_unseen)
+
+    jump post_pick_random_topic
+
+
+label mas_ch30_select_seen:
+    # seen selection
+
+    if len(mas_rev_seen) == 0:
+        # rebuild the event lists
+        $ mas_rev_seen, mas_rev_mostseen = mas_buildSeenEventLists()
+
+    $ mas_randomSelectAndPush(mas_rev_seen)
+
+    jump post_pick_random_topic
+
+
+label mas_ch30_select_mostseen:
+    # most seen selection
+    
+    if len(mas_rev_mostseen) == 0:
+        jump mas_ch30_select_seen
+
+    $ mas_randomSelectAndPush(mas_rev_mostseen)
+
+    jump post_pick_random_topic
 
 # adding this label so people get redirected to main
 # this probably occurs when people install the mod right after deleting
