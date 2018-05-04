@@ -209,3 +209,20 @@ label mas_story_fisherman:
     m 3 "The moral of this story is that: 'A small gain is worth more than a large promise'."
     m 1k "I hope you enjoyed this little story, [player]~"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
+    prompt="Old man's three wishes",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_ravel:
+    m 1d "Want to hear a short story?"
+    m 3 "Once, an elderly man was sitting alone on a dark path."
+    m "He had forgotten both where he was traveling to, and who he was."
+    m "Suddenly, he looked up to see an elderly woman before him."
+    m "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
+    m 3i "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
+    m "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish."
+    m "'That's why you remember nothing; because everything is the way it was before you made any wishes.'"
+    m "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
+    m 1 "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
+    return
