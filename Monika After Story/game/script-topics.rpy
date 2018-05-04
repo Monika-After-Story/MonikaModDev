@@ -135,6 +135,9 @@ init -1 python:
             [0] - seen list of events
             [1] - most seen list of events
         """
+        if len(sorted_seen) == 0:
+            return ([], [])
+
         # now calculate the most / top seen counts
         most_count = int(len(sorted_seen) * store.mas_topics.S_MOST_SEEN)
         top_count = store.mas_topics.topSeenEvents(
