@@ -173,7 +173,7 @@ label mas_story_seeds:
     m 1r "The birds paid no heed to the Swallow’s words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
     m "Many birds that had despised the Swallow’s advice were caught in nets made out of that very hemp."
     m 3hfu "“What did I tell you?” said the Swallow."
-    m 3i "The moral of this story is that: 'Destroy the seeds of evil before they grow up to your ruin'."
+    m 3i "The moral of this story is that: 'Destroy the seeds of evil before they grow up to be your ruin'."
     m 1k "I hope you enjoyed this little story, [player]~"
     return
 
@@ -184,7 +184,7 @@ init 5 python:
 label mas_story_gray_hair:
     m 3b "Let's begin~"
     m 3dfc "Ahem."
-    m 1i "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired to see him like herself."
+    m 1i "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
     m 1 "The Man’s hair was turning grey, which the young Wife did not like, as it made him look too old."
     m 1i "So, every night she picked out the white hairs."
     m 1g "But, the elder Wife did not like to be mistaken for his mother."
