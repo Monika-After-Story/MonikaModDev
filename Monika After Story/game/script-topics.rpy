@@ -4,10 +4,46 @@
 #or date-dependent event with an appropriate action
 
 define monika_random_topics = []
+define mas_rev_unseen = []
+define mas_rev_seen = []
+define mas_rev_mostseen = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
+
+init -2 python in mas_topics:
+  
+    # CONSTANTS
+    # most / top weights
+    S_MOST_SEEN = 0.1
+    S_TOP_SEEN = 0.2
+
+    # selection weights (out of 100)
+    UNSEEN = 50
+    SEEN = UNSEEN + 49
+    MOST_SEEN = SEEN + 1
+
+    def topSeenEvents(sorted_ev_list, shown_count):
+        """
+        counts the number of events with a > shown_count than the given
+        shown_count
+
+        IN:
+            sorted_ev_list - an event list sorted by shown_counts
+            shown_count - shown_count to compare to
+
+        RETURNS:
+            number of events with shown_counts that are higher than the given
+            shown_count
+        """
+        index = len(sorted_ev_list) - 1
+        ev_count = 0
+        while index >= 0 and sorted_ev_list[index].shown_count > shown_count:
+            ev_count += 1
+            index -= 1
+
+        return ev_count
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -29,6 +65,187 @@ init -1 python:
             if renpy.seen_label(pool[index]):
                 pool.pop(index)
 
+
+    def mas_randomSelectAndRemove(sel_list):
+        """
+        Randomly selects an element from the given list
+        This also removes the element from that list.
+
+        IN:
+            sel_list - list to select from
+
+        RETURNS:
+            selected element
+        """
+        endpoint = len(sel_list) - 1
+        
+        if endpoint < 0:
+            return None
+
+        # otherwise we have at least 1 element
+        return sel_list.pop(renpy.random.randint(0, endpoint))
+
+
+    def mas_randomSelectAndPush(sel_list):
+        """
+        Randomly selects an element from the the given list and pushes the event
+        This also removes the element from that list.
+
+        IN:
+            sel_list - list to select from
+
+        ASSUMES:
+            persistent.random_seen
+        """
+        sel_ev = mas_randomSelectAndRemove(sel_list)
+        if sel_ev:
+            pushEvent(sel_ev.eventlabel)
+            persistent.random_seen += 1
+
+
+    def mas_insertSort(sort_list, item, key):
+        """
+        Performs a round of insertion sort.
+        This does least to greatest sorting
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+            key - function to call using the given item to retrieve sort key
+
+        OUT:
+            sort_list - list with 1 additonal element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and key(sort_list[index]) > key(item):
+            index -= 1
+            
+        sort_list.insert(index + 1, item)
+
+
+    def mas_splitSeenEvents(sorted_seen):
+        """
+        Splits the seen_list into seena nd most seen
+
+        IN:
+            sorted_seen - list of seen events, sorted by shown_count
+
+        RETURNS:
+            tuple of thef ollowing format:
+            [0] - seen list of events
+            [1] - most seen list of events
+        """
+        if len(sorted_seen) == 0:
+            return ([], [])
+
+        # now calculate the most / top seen counts
+        most_count = int(len(sorted_seen) * store.mas_topics.S_MOST_SEEN)
+        top_count = store.mas_topics.topSeenEvents(
+            sorted_seen, 
+            int(
+                sorted_seen[len(sorted_seen) - 1].shown_count 
+                * store.mas_topics.S_TOP_SEEN
+            )
+        )
+
+        # now decide how to do the split
+        if most_count < top_count:
+            split_point = most_count * -1
+        else:
+            split_point = top_count * -1
+
+        # and then do the split
+        return (sorted_seen[:split_point], sorted_seen[split_point:])
+
+
+    def mas_splitRandomEvents(events_dict):
+        """
+        Splits the given random events dict into 2 lists of events
+        NOTE: cleans the seen list
+
+        RETURNS:
+            tuple of the following format:
+            [0] - unseen list of events
+            [1] - seen list of events, sorted by shown_count
+
+        """
+        # split these into 2 lists
+        unseen = list()
+        seen = list()
+        for k in events_dict:
+            ev = events_dict[k]
+
+            if renpy.seen_label(k):
+                # seen event
+                mas_insertSort(seen, ev, Event.getSortShownCount)
+
+            else:
+                # unseen event
+                unseen.append(ev)
+
+        # clean the seen_topics list
+        seen = mas_cleanJustSeenEV(seen)
+
+        return (unseen, seen)
+
+
+    def mas_buildEventLists():
+        """
+        Builds the unseen / most seen / seen event lists
+
+        RETURNS:
+            tuple of the following format:
+            [0] - unseen list of events
+            [1] - seen list of events
+            [2] - most seen list of events
+
+        ASSUMES:
+            evhand.event_database
+        """
+        # retrieve all randoms
+        all_random_topics = Event.filterEvents(
+            evhand.event_database,
+            random=True
+        )
+
+        # split randoms into unseen and sorted seen events
+        unseen, sorted_seen = mas_splitRandomEvents(all_random_topics)
+
+        # split seen into regular seen and the most seen events
+        seen, mostseen = mas_splitSeenEvents(sorted_seen)
+
+        return (unseen, seen, mostseen)
+
+
+    def mas_buildSeenEventLists():
+        """
+        Builds the seen / most seen event lists
+
+        RETURNS:
+            tuple of the following format:
+            [0] - seen list of events
+            [1] - most seen list of events
+
+        ASSUMES:
+            evhand.event_database
+        """
+        # retrieve all seen (values list)
+        all_seen_topics = Event.filterEvents(
+            evhand.event_database,
+            random=True,
+            seen=True
+        ).values()
+
+        # clean the seen topics from early repeats
+        cleaned_seen = mas_cleanJustSeenEV(all_seen_topics)
+
+        # sort the seen by shown_count
+        cleaned_seen.sort(key=Event.getSortShownCount)
+
+        # split the seen into regular seen and most seen
+        return mas_splitSeenEvents(cleaned_seen)
+
+
     # EXCEPTION CLass incase of bad labels
     class MASTopicLabelException(Exception):
         def __init__(self, msg):
@@ -37,15 +254,18 @@ init -1 python:
             return "MASTopicLabelException: " + self.msg
 
 init 11 python:
-    #List of all random topics
-    all_random_topics = Event.filterEvents(evhand.event_database,random=True,seen=False).keys()
+
+    # sort out the seen / most seen / unseen
+    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
 
     # for compatiblity purposes:
-    monika_random_topics = all_random_topics
+#    monika_random_topics = all_random_topics
 
-    if len(monika_random_topics) == 0:
+    if len(mas_rev_unseen) == 0:
         # you've seen everything?! here, higher session limit
-        random_seen_limit = 100
+        # NOTE: 1000 is arbitrary. Basically, endless monika topics
+        # I think we'll deal with this better once we hve a sleeping sprite
+        random_seen_limit = 1000
 
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
