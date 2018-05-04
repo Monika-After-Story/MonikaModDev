@@ -5845,7 +5845,7 @@ label monika_fastfood:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_gender_preferences",category=['you'],prompt="Gender Preferences",random=True,conditional="seen_event('gender')",action=EV_ACT_UNLOCK))
+    addEvent(Event(persistent.event_database,eventlabel="monika_gender_preferences",category=['you'],prompt="Gender Preferences",conditional="seen_event('gender')",action=EV_ACT_RANDOM))
 
 label monika_gender_preferences:
     if persistent.gender == "F":
