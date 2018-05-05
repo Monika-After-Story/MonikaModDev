@@ -970,10 +970,10 @@ screen preferences():
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 
-                vbox:
-                    style_prefix "check"
-                    label _("Gameplay")
-                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+#                vbox:
+#                    style_prefix "check"
+#                    label _("Gameplay")
+#                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.

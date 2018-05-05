@@ -360,6 +360,7 @@ init -3 python in mas_piano_keys:
     # noncharable keymaps and display text dict
     NONCHAR_TEXT = {
         pygame.K_LEFTBRACKET: "[[",
+        123: "{{", # { 
         pygame.K_BACKSPACE: "\\b",
         pygame.K_TAB: "\\t",
         pygame.K_CLEAR: "Cr",
