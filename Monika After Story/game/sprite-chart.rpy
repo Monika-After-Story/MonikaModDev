@@ -205,7 +205,7 @@ init -1 python in mas_sprites:
 
     # non leanable clothes / hair
     lean_blacklist = [
-#        "down",
+#        "down",  # Thanks to Trilasent for giving us leaning hair downs
         "bun"
     ]
 
