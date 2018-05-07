@@ -298,13 +298,15 @@ init python:
             and renpy.get_screen("preferences") is None):
 
             # music menu label
-            renpy.call_in_new_context("display_music_menu")
+            selected_track = renpy.call_in_new_context("display_music_menu")
+            if selected_track == songs.NO_SONG:
+                selected_track = songs.FP_NO_SONG
 
             # workaround to handle new context
-            if songs.selected_track != songs.current_track:
-                play_song(songs.selected_track)
-                songs.current_track = songs.selected_track
-                persistent.current_track = songs.current_track
+            if selected_track != songs.current_track:
+                play_song(selected_track)
+                songs.current_track = selected_track
+                persistent.current_track = selected_track
 
     dismiss_keys = config.keymap['dismiss']
 
