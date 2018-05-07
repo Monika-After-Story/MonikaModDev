@@ -349,9 +349,15 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             style "music_menu_return_button"
             action Return(songs.NO_SONG)
 
+        # logic to ensure Return works
+        if songs.current_track is None:
+            $ return_value = songs.NO_SONG
+        else:
+            $ return_value = songs.current_track
+
         textbutton _("Return"):
             style "music_menu_return_button"
-            action Return(songs.current_track)
+            action Return(return_value)
 
     label "Music Menu"
 
@@ -374,7 +380,7 @@ label display_music_menu:
             
         if music_page is None:
             # this should never happen. Immediately quit with None
-            return None
+            return songs.NO_SONG
 
         # otherwise, continue formatting args
         $ next_page = (curr_page + 1) in songs.music_pages
