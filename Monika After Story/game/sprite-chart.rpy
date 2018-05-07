@@ -733,7 +733,9 @@ init -1 python in mas_sprites:
             nose,
             mouth,
             isnight,
-            acs_list,
+            acs_pre_list,
+            acs_mid_list,
+            acs_pst_list,
             lean=None,
             arms="",
             eyebags=None,
@@ -753,7 +755,10 @@ init -1 python in mas_sprites:
             nose - type of nose
             mouth - type of mouth
             isnight - True will genreate night string, false will not
-            acs_list - list of MASAccessory objects to draw
+            acs_pre_list - sorted list of MASAccessories to draw prior to body
+            acs_mid_list - sorted list of MASAccessories to draw between body
+                and face
+            acs_pst_list - sorted list of MASAccessories to draw after face
             lean - type of lean
                 (Default: None)
             arms - type of arms
