@@ -836,7 +836,7 @@ init -5 python in mas_sprites:
             "(",
             loc_str,
             _ms_accessorylist(acs_pre_list, isnight, True, lean=lean),
-            ","
+            ",",
             LOC_Z,
             ",",
             _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
