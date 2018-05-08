@@ -1,5 +1,6 @@
 # Monika's sprites!
-# To add a new image, please scroll to the IMAGE section (IMG002)
+# To add a new image, please scroll to the IMAGE section (IMG003)
+# Accesories are in (IMG002)
 #
 ###### SPRITE CODE (IMG001)
 #
@@ -222,6 +223,8 @@ init -5 python in mas_sprites:
         "test"
     ]
 
+    ## Accessory dictionary
+    ACS_MAP = dict()
 
     def acs_lean_mode(lean):
         """
@@ -253,6 +256,22 @@ init -5 python in mas_sprites:
             return "".join([PREFIX_FACE_LEAN, lean, ART_DLM])
 
         return PREFIX_FACE
+
+
+    def init_acs(mas_acs):
+        """
+        Initlializes the given MAS accessory into a dictionary map setting
+
+        IN:
+            mas_acs - MASAccessory to initialize
+        """
+        if mas_acs.name in ACS_MAP:
+            raise Exception(
+                "MASAccessory name '{0}' already exists.".format(mas_acs.name)
+            )
+
+        # otherwise, unique name
+        ACS_MAP[mas_acs.name] = mas_acs
 
 
     def night_mode(isnight):
@@ -315,10 +334,10 @@ init -5 python in mas_sprites:
             accessory string
         """
         if issitting:
-            acs_str = acs.sit
+            acs_str = acs.img_sit
 
-        elif acs.stand:
-            acs_str = acs.stand
+        elif acs.img_stand:
+            acs_str = acs.img_stand
 
         else:
             # standing string is null or None
@@ -1088,7 +1107,13 @@ init -2 python:
         MID_ACS = 1 # MID ACCESSORY
         PST_ACS = 2 # post accessory
 
-        def __init__(self):
+        def __init__(self, pre_acs=[], mid_acs=[], pst_acs=[]):
+            """
+            IN:
+                pre_acs - list of pre accessories to load with
+                mid_acs - list of mid accessories to load with
+                pst_acs - list of pst accessories to load with
+            """
             self.name="Monika"
             self.haircut="default"
             self.haircolor="default"
@@ -1107,7 +1132,7 @@ init -2 python:
             self.acs_mid = []
 
             # accessories to be rendered last
-            self.acs_post - []
+            self.acs_post = []
 
             self.hair_hue=0 # hair color?
 
@@ -1207,7 +1232,7 @@ init -2 python:
             """
             acs_list = self.__get_acs(acs_type)
 
-            if acs_list:
+            if acs_list is not None:
                 return accessory in acs_list
 
             return False
@@ -1244,7 +1269,7 @@ init -2 python:
             """
             acs_list = self.__get_acs(acs_type)
 
-            if acs_list and accessory in acs_list:
+            if acs_list is not None and accessory in acs_list:
                 acs_list.remove(accessory)
 
             if accessory.name in self.lean_acs_blacklist:
@@ -1308,7 +1333,7 @@ init -2 python:
             """
             acs_list = self.__get_acs(acs_type)
 
-            if acs_list:
+            if acs_list is not None:
                 acs_list.append(accessory)
                 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
@@ -1556,7 +1581,34 @@ init -2 python:
 # Monika
 define monika_chr = MASMonika()
 
-#### IMAGE START (IMG002)
+init -1 python:
+    # ACCESSORIES (IMG002)
+    # Accessories are reprsentation of image objects with properties
+    # Pleaes refer to MASAccesory to understand all the properties
+    # 
+    # NAMING SCHEME:
+    # mas_acs_<accessory name>
+    #
+    # <accessory name> MUST BE UNIQUE
+    #
+    # NOTE: pleaes preface each accessory with the following commen template
+    # this is to ensure we hvae an accurate description of what each accessory
+    # is:
+    ### HUMAN UNDERSTANDABLE NAME OF ACCESSORY
+    ## accessoryidentifiername
+    # General description of what the object is, where it is located
+
+    ### COFFEE MUG
+    ## mug
+    # Coffee mug that sits on Monika's desk
+    mas_acs_mug = MASAccessory(
+        "mug",
+        "mug"
+    )
+    store.mas_sprites.init_acs(mas_acs_mug)
+    
+
+#### IMAGE START (IMG003)
 # Image are created using a DynamicDisplayable to allow for runtime changes
 # to sprites without having to remake everything. This saves us on image
 # costs.
