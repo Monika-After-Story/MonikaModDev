@@ -130,7 +130,7 @@ image monika g2:
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 
-init -1 python in mas_sprites:
+init -5 python in mas_sprites:
     # specific image generation functions
 
     # main art path
@@ -204,13 +204,19 @@ init -1 python in mas_sprites:
     FILE_EXT = ".png"
 
     ### [BLK001]
-    # non leanable clothes / hair
-    lean_blacklist = [
+    # non leanable clothes 
+    lean_clothes_blacklist = [
+        "test"
+    ]
+    
+    ### [BLK002]
+    # non leanable hair
+    lean_hair_blacklist = [
         "down",
         "bun"
     ]
 
-    ### [BLK002]
+    ### [BLK003]
     # non leanable accessories
     lean_acs_blacklist = [
         "test"
@@ -259,6 +265,38 @@ init -1 python in mas_sprites:
         return ""
 
 
+    def should_disable_lean(lean, character):
+        """
+        Figures out if we need to disable the lean or not based on current
+        character settings
+
+        IN:
+            lean - lean type we want to do
+            character - MASMonika object
+
+        RETURNS:
+            True if we should disable lean, False otherwise
+        """
+        if lean is None:
+            return False
+
+        # otherwise check blacklist elements
+        if len(character.lean_acs_blacklist) > 0:
+            # monika is wearing a blacklisted accessory
+            return True
+
+        if character.hair in mas_sprites.lean_hair_blacklist:
+            # blacklisted hair
+            return True
+
+        if character.clothes in mas_sprites.lean_clothes_blacklist:
+            # blacklisted clothes
+            return True
+
+        # otherwise, this is good
+        return False
+
+
     # sprite maker functions
 
 
@@ -279,8 +317,16 @@ init -1 python in mas_sprites:
         if issitting:
             acs_str = acs.sit
 
-        else:
+        elif acs.stand:
             acs_str = acs.stand
+
+        else:
+            # standing string is null or None
+            return ""
+
+        if acs.no_lean:
+            # the lean version is the same as regular
+            lean = None
 
         return "".join([
             LOC_Z,
@@ -789,10 +835,12 @@ init -1 python in mas_sprites:
             L_COMP,
             "(",
             loc_str,
-            ",",
+            _ms_accessorylist(acs_pre_list, isnight, True, lean=lean),
+            ","
             LOC_Z,
             ",",
             _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
+            _ms_accessorylist(acs_mid_list, isnight, True, lean=lean),
             ",",
             LOC_Z,
             ",",
@@ -809,7 +857,7 @@ init -1 python in mas_sprites:
                 tears=tears,
                 emote=emote
             ),
-            _ms_accessorylist(acs_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pst_list, isnight, True, lean=lean),
             "),",
             ZOOM,
             ")"
@@ -828,6 +876,8 @@ init -1 python in mas_sprites:
             left - type of left side
             right - type of right side
             acs_list - list of MASAccessory objects
+                NOTE: this should the combined list because we don't have 
+                    layering in standing mode
 
         RETURNS:
             custom standing sprite
@@ -860,6 +910,8 @@ init -1 python in mas_sprites:
             left - type of left side
             right - type of right side
             acs_list - list of MASAccessory objects
+                NOTE: this should be the combined list because we don't have
+                    layering in standing mode
             single - type of single standing picture.
                 (Defualt: None)
 
@@ -1029,6 +1081,7 @@ init -2 python:
 
     # Monika character base
     class MASMonika(renpy.store.object):
+        import store.mas_sprites as mas_sprites 
 
         # CONSTANTS
         PRE_ACS = 0 # PRE ACCESSORY
@@ -1043,6 +1096,9 @@ init -2 python:
             self.lipstick="default" # i guess no lipstick
             self.clothes = "def" # default clothes is school outfit
             self.hair = "def" # default hair is the usual whtie ribbon
+
+            # list of lean blacklisted accessory names currently equipped
+            self.lean_acs_blacklist = []
 
             # accesories to be rendereed before the body
             self.acs_pre = [] 
@@ -1191,6 +1247,9 @@ init -2 python:
             if acs_list and accessory in acs_list:
                 acs_list.remove(accessory)
 
+            if accessory.name in self.lean_acs_blacklist:
+                self.lean_acs_blacklist.remove(accessory.name)
+
 
         def remove_all_acs(self):
             """
@@ -1209,6 +1268,11 @@ init -2 python:
                 acs_type - ACS type to remove all
             """
             if acs_type in self.acs:
+                # need to clear blacklisted
+                for acs in self.acs[acs_type]:
+                    if acs.name in self.lean_acs_blacklist:
+                        self.lean_acs_blacklist.remove(acs.name)
+
                 self.acs[acs_type] = list()
 
 
@@ -1246,6 +1310,9 @@ init -2 python:
 
             if acs_list:
                 acs_list.append(accessory)
+                
+                if accessory.name in mas_sprites.lean_acs_blacklist:
+                    self.lean_acs_blacklist.append(accessory.name)
 
 
     # hues, probably not going to use these
@@ -1299,7 +1366,8 @@ init -2 python:
                 img_sit,
                 img_stand="",
                 rec_layer=MASMonika.PST_ACS,
-                priority=10
+                priority=10,
+                no_lean=False
             ):
             """
             MASAccessory constructor
@@ -1316,12 +1384,20 @@ init -2 python:
                     (Default: MASMonika.PST_ACS)
                 priority - render priority. Lower is rendered first
                     (Default: 10)
+                no_lean - True means the leaning versions are the same as the
+                    regular versions (which means we don't need lean variants)
+                    False means otherwise
+                    NOTE: This means that the non-lean version works for ALL
+                    LEANING VERSIONS. If at least one lean version doesn't 
+                    work, then you need separate versions, sorry.
+                    (Default: False)
             """
             self.name = name
             self.img_sit = img_sit
             self.img_stand = img_stand
             self.__rec_layer = rec_layer
             self.priority=priority
+            self.no_lean = no_lean
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1417,19 +1493,26 @@ init -2 python:
                 (Default: None)
         """
 
-        # accessories have a priority
-        acs_list=sorted(character.acs, key=MASAccessory.get_priority)
+        # gather accessories
+        unsort_pre = character.acs.get(MASMonika.PRE_ACS, [])
+        unsort_mid = character.acs.get(MASMonika.MID_ACS, [])
+        unsort_pst = character.acs.get(MASMonika.PST_ACS, [])
+
+        # and generate a big list
+        unsort_all = list(unsort_pre)
+        unsort_all.extend(unsort_mid)
+        unsort_all.extend(unsort_pst)
+
+        # sort the accessories
+        acs_pre_list = sorted(unsort_pre, key=MASAccessory.get_priority)
+        acs_mid_list = sorted(unsort_mid, key=MASAccessory.get_priority)
+        acs_pst_list = sorted(unsort_pst, key=MASAccessory.get_priority)
+        acs_all_list = sorted(unsort_all, key=MASAccessory.get_priority)
 
         # are we sitting or not
         if is_sitting:
 
-            if (
-                    lean
-                    and (
-                        character.clothes in store.mas_sprites.lean_blacklist
-                        or character.hair in store.mas_sprites.lean_blacklist
-                    )
-                ):
+            if store.mas_sprites.should_disable_lean(lean, character):
                 # set lean to None if its on the blacklist
                 lean = None
 
@@ -1441,7 +1524,9 @@ init -2 python:
                 nose,
                 mouth,
                 not morning_flag,
-                acs_list,
+                acs_pre_list,
+                acs_mid_list,
+                acs_pst_list,
                 lean=lean,
                 arms=arms,
                 eyebags=eyebags,
@@ -1459,7 +1544,7 @@ init -2 python:
                 head,
                 left,
                 right,
-                acs_list,
+                acs_all_list,
                 single=single
             )
 
