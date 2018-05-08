@@ -415,7 +415,7 @@ label pick_a_game:
             
             # chess has timed disabling
             if persistent._mas_chess_timed_disable is not None:
-                if persistent._mas_chess_timed_disable - _now >= _hour:
+                if _now - persistent._mas_chess_timed_disable >= _hour:
                     chess_disabled = False
                     persistent._mas_chess_timed_disable = None
 
