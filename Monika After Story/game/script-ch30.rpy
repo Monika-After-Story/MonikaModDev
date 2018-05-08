@@ -76,6 +76,8 @@ image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
 image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
 image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
+
+# big thanks to sebastianN01 for the rain art!
 image rain_mask_left = Movie(
     channel="window_5", 
     play="mod_assets/window_5.webm", 
