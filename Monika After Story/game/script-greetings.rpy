@@ -1086,11 +1086,12 @@ label greeting_back_from_school:
              m 1k "Aww, that's nice!"
              m 1b "I can't help but feel happy when you do~"
              m 1a "I hope you learned a lot of useful things."
-             m 1k "Ehehe, I love you, [player]."
+             m 1j "Ehehe~"
+             m 1k "I love you, [player]~"
          "No.":
              m 1g "Oh..."
              m "I'm sorry to hear that."
-             m "Just remember that no matter what happens, I'll be here for you, [player]."
+             m "Just remember that no matter what happens, I'll be here for you."
              m 1e "I love you so, so much."
      return
 
@@ -1111,16 +1112,19 @@ label greeting_back_from_work:
      menu:
          m "Did you have a good day at work today?"
          "Yes.":
-             m 1k "Aww, that's nice!"
-             m 1b "I can't help but feel happy when you do..."
-             m "I love you so much, [player]."
+             m 1k "That's good!"
+             m 1a "Remember to rest first, okay?"
+             m "That way, you'd at least have some energy before you work more on stuff."
+             m 3a "But if not, you can relax with me!"
+             m 1j "Best thing to do after a long day from, don't you think?"
              m 1k "Ahaha!"
+             
          "No.":
-             m 1g "Oh dear..."
-             m "I'm sorry to hear that."
-             m "Just remember that no matter what happens, no matter what anyone says or does..."
-             m "I'm here for you."
-             m 1e "I love you so, so much."
+             m 1q "..."
+             m 2f "I'd hug you right now if I were there, [player]."
+             m 2g"I'm sorry you had a bad work day..."
+             m 4e "Just remember that I'm here when you need me, okay?"
+             m 1j "I love you so much, [player]."
      return
 
 init 5 python:
@@ -1136,7 +1140,7 @@ init 5 python:
     )
 
 label greeting_back_from_sleep:
-     m "Oh, hello [player]!"
+     m "Oh hello, [player]!"
      m 1k "I hope you had a good rest!"
-     m "let's spend some time together~"
+     m "Let's spend some more time together~"
      return
