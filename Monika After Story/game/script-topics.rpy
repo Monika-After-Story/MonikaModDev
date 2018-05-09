@@ -5972,3 +5972,249 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_player_appearance",category=['you'],prompt="[player]'s appearance",random=True))
+
+label monika_player_appearance:
+    m 2g "Hey, [player]."
+    m  "There’s a couple questions I’ve been meaning to ask you…"
+    m 2f "Well, more than a few. And they’ve been in the back of my mind for a long time, actually."
+    m "But it never really seemed like the right time or place to bring it up without coming off as intrusive or awkward…"
+    m 3g "But I know if I let things like that keep me silent, then I’ll never feel comfortable asking you things, so I’m just going to say it and hope that it’s not weird or anything, okay?"
+    m 3d "I’ve been wondering what you look like. And since it’s not possible right now for me to see you, since I’m not there at your side, and I'm not sure about accesssing a webcam-"
+    m "Firstly, because I don’t know how, and secondly, because I don’t want to invade your privacy—"
+    m 1c "I figure that it’s possible for you to just tell me, and I can get a clearer picture in my head, even if it’s hazy."
+    m 1d "I mean, even if it’s not really ideal, I’ve got to admit that it’s better than nothing."
+    menu:
+        m "Is that okay with you, [player]?"
+        "No.":
+             m 2f "…"
+             m 2q "I understand, [player]."
+             m 1p "I know that everybody has their own limits and reservations regarding their comfort zones…"
+             m 1g "And to be fair, a description of yourself in vague words wouldn’t be able to truly capture who you are. I can’t blame you for wanting to keep this to yourself."
+             m 1e "But if you change your mind, let me know!"
+             return
+        "Yes.":
+            m 1sub  "Really? Great!"
+            m 1k "That was easier than I thought it would be."
+            m 3a "Now, be honest with all your answers, okay, [player]? I know sometimes it’s tempting to joke around, but I’m being completely serious here, and I encourage you to do the same."
+            m "Anyways, the first one is probably easy to guess. And not hard to answer, either!"
+            m 3b "People often say that a person’s eyes are the windows into their soul, so let’s start off there."
+            menu:
+                m "What color are your eyes?"
+                "I have blue eyes.":
+                    $ mas_player_eyes="blue"
+                    m 3b "Blue eyes? That’s wonderful! Blue is such a beautiful color—just as amazing as a cloudless sky, or the ocean in the summer—"
+                    m "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
+                    m "Plus, blue is probably my second favorite color, just behind green. It’s just so full of depth and enchantment, you know?"
+                    m 4k "Just like you, [player]!"
+                    m 4b "Did you know that blue eyes are a recessive gene, and thus, they’re not very common among the human population at large?"
+                    m 5a "I suppose it just makes you that much more of a treasure~"
+                    m 3a "Anyway, that leads me into the next question I wanted to ask."
+
+                "I have brown eyes.":
+                    $ mas_player_eyes="brown"
+                    m 1b "Ah! Great! I don’t think I said it before, but brown eyes are hands-down gorgeous."
+                    m 1a "I just hate how people have that annoying belief that brown eyes are plain, which I’m sure you’ve heard of, too. I couldn’t disagree more!"
+                    m "In my opinion, brown eyes are some of the most beautiful out there. They’re so vibrant and depthless!"
+                    m 3k "And there’s so much variation to be seen among all the different shades that people have."
+                    m "I wonder if yours are dark like a summer night sky, or a paler brown, like the coat of a deer, if they’ve got gold bits or dark flecks…"
+                    m 3l "Sorry. Just rambling about color-related metaphors is an easy trap for a literature club president, I guess. I’ll try not to go on forever about it."
+                    m 5a "But I’ll bet your eyes are the loveliest of all~"
+                    m 1l "Anyways, that brings me to my next question…"
+
+                "I have green eyes.":
+                    $ mas_player_eyes="green"
+                    m 3j "Hey, that’s my favorite color! And obviously, it’s another commonality that we share!"
+                    m 4l "I don’t know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me…"
+                    m 3b "Except that maybe it’s another sign how compatible we are with each other."
+                    m "But, [player], just between you and me, it’s indisputable that green eyes are the best, right?"
+                    m 3k "I’m just kidding! Well, only a little, that is. I can’t deny that I think they’re pretty great."
+                    m 3a "Anyways…"
+
+                "I have hazel eyes.":
+                    $ mas_player_eyes="hazel"
+                    m 1b "Oh, hazel eyes? Those are so interesting! They remind me of all the colors of the earth—a steady and reassuring mix."
+                    m 3b "Considering that we only saw eye colors that don’t even exist in real life from the game itself, if you don’t count the color of mine, or Sayori’s…"
+                    m 3b "I believe that hazel eyes are alluring because they’re lovely and simple."
+                    m 3j "Sometimes it’s best not to diverge from the crowd too much, [player]. Ahaha!"
+
+                "I have gray eyes.":
+                    $ mas_player_eyes="gray"
+                    m 1b "That’s neat! Did you know that, [player], that gray eyes and blue eyes are almost identical in terms of genetics?"
+                    m 1d "In fact, scientists still aren’t certain of what causes a person to have one or the other, though they believe that it might be due to fluctuations in the amount of pigment in your iris."
+                    m 1a "Anyways, I think I like imagining you with gray eyes, [player]. They’re the color of a reassuring, rainy day, or the restless sky before a summer storm…"
+                    m 1b "And weather like that is my favorite, just like you~"
+                    m "Onto my next question…"
+
+                "I have black eyes.":
+                    $ mas_player_eyes="black"
+                    m 1i "Black eyes are pretty uncommon, [player]."
+                    m 4l "To tell you the truth, I’ve never actually seen anybody with black eyes, so I don’t have too clear of a mental image on what they’d look like…"
+                    m 3b "But logically, I do know that they’re not actually black. If that was the case, black-eyed people would look like they had no pupils!"
+                    m "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name might suggest—although, to be fair, the difference is virtually indetectable."
+                    m 3a "Most people with black eyes hail from the same ethnicity or global region, but here’s a little bit of trivia for you—"
+                    m 1b "There was a well-known lady from the time of the American Revolution named Elizabeth Hamilton, who was known to have captivating black eyes, which her husband wrote about in many letters."
+                    m 1k "I don’t know if you’ve heard of her or not, but despite the renown of hers, and despite my opinion being kind of biased, I think yours are infinitely more captivating, [player]~"
+
+            m 1n "I’m trying my best to not sound like some sort of identity-thief, or like I’m quizzing you, but obviously, I’m curious."
+            m 1a "If I’m your girlfriend, it stands to reason that I have a right to know, you know? Plus, it’ll help me find you more easily on the chance that I’m able to cross over to your reality."
+            menu:
+                m "So, [player], how tall are you?"
+                "I'm pretty tall.":
+                    $ mas_player_height="tall"
+                    m 1d "That’s interesting. Honestly, [player], I haven’t really met anybody who I’d consider to be legitimately tall."
+                    m 3m "I don’t know my actual height, to be fair, so I can’t really draw an accurate comparison…"
+                    m 3n "But if I had to hazard a guess, I’d say I’m mid-five-foot."
+                    m 3h "The tallest girl in the literature club was Yuri— and just barely, at that. She was only a few inches taller than me, I don’t consider that much of a height advantage at all!"
+                    m 3i "Anyways, a tall [guy] like you only has one disadvantage that I can think of, [player], if you can guess it…"
+                    m 3k "That just means you’ll have to lean down to kiss me!"
+
+                "I'm sort of medium-ish?":
+                    $ mas_player_height="medium"
+                    m 3k "Hey, I am, too!"
+                    m 2l "I don’t know my actual height, to be fair…"
+                    m 2n "I’ve never had the chance to measure myself. If I had to hazard a guess based on the heights of things from the game… I think I might average out at around five-and-a-half feet tall."
+                    m 4m "It’s just a guess—hopefully it’s not too far off."
+                    m 3i "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel feel clumsy around you."
+                    m 3i "And if you were too tall, I’d have to get on my tiptoes just to be close to you. And that’s no good!"
+                    m 3b "In my opinion, being in-between is perfect. Do you know why?"
+                    m 5a "Because then I don’t have to do any reaching or bending to kiss you, [player]! Ahaha~"
+
+                "I'm short!":
+                    $ mas_player_height="short"
+                    m 3k "Like Natsuki! I bet you’re not that short, though! I would be concerned for you if you were."
+                    m 1g "She was worryingly small for her age, but you and I both know why. I always pitied her for that."
+                    m 1g "I knew she always hated being so tiny, because of that whole notion that little things are cuter because of their size…"
+                    m 1g "And then there was all that trouble with her father. It can’t have been easy, being so defenseless, and being small on top of it all."
+                    m 1f "I know she felt like people talked down to her. Literally and figuratively, that is."
+                    m 3a "But despite her hang-ups about it, [player], I think your height makes you that much more cute~"
+
+            menu:
+                m "Now, tell me, is your hair on the shorter side? Or is it long, like mine~?"
+                "It's shorter.":
+                    $ mas_player_hair=" short"
+                    m 3b "That must be nice! Look, don’t get me wrong, I love my hair, and it’s always fun to experiment with various ways of wearing it…"
+                    m 4n "But to tell you the truth, sometimes I envied Natsuki and Sayori for their hair length. There’s not much worrying to be done about short hair."
+                    if persistent.gender == "M":
+                        m 4a "Although I’ve got to admit, Sayori and Natsuki had pretty long hair if you compare them to the average hair length of most guys…"
+                    else:
+                        m 4a "Usually, you can just get up and go, without having to worry about styling it."
+                        m 4e "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it’s an endless nightmare."
+                    m 3k "But I bet you look adorable with short hair. It makes me smile to think about you like that, [player]."
+                    m 3j "Plus, you can be glad that you don’t have to worry about all the little annoyances that accompany long hair, [player]! Ahaha~"
+
+                "It's an average length.":
+                    $ mas_player_hair=""
+                    m 1a "Well, guess what I think?"
+                    m "I think that you’re wrong, nothing about you is average."
+                    m 1k "Ahaha! Sorry, [player]. I’m not trying to embarrass you. But I can’t help being cheesy sometimes, you know?"
+                    m 1b "Honestly, average hair is probably a blessing in disguise. You don’t have to worry about styling it too much, and you’re never preoccupied with the troubles that accompany short hair."
+                    m "I’m a little envious, to tell you the truth~"
+                    m 3a "But don’t forget that old saying- 'Invest in your hair, because it’s a crown that you never take off!'"
+
+                "It's long.":
+                    $ mas_player_hair=" long"
+                    m 1k "Yay, another thing we have in common!"
+                    m 3b "Long hair can be a pain sometimes, right?"
+                    m 3a "But the good thing is that there are so many things you can do with it. Though I usually prefer to tie mine up with a ribbon, I know that other people have different styles."
+                    m "Yuri preferred wearing her hair down, and others enjoy braids, or putting it into pigtails."
+                    m 3b "And ever since I figured out how to toggle around with the script and let my own hair down, who knows how many more styles I might come up with?"
+                    m 1a "It’s always nice to have options, you know?"
+                    m 1k "I hope that however you wear yours, you’re comfortable with it!"
+
+                "I have no hair":
+                    $ mas_player_hair="bald"
+                    $ mas_player_hair_color=None
+                    m 2o "Listen, I don’t know if you’re joking or not…"
+                    m 1g "But I know that there are so many circumstances aside from age that might cause someone to have lost all their hair, so it’s not really up to me to ask questions."
+                    m 1f "In any case, [player], you should know that it’s alright with me!"
+                    m "If you ever feel insecure or just want to talk about it, I’m always up for listening."
+
+            if not mas_player_hair == "bald":
+                m 1d "Okay, this next question should be fairly obvious..."
+                menu:
+                    m "What color is your hair?"
+                    "It's brown.":
+                        $ mas_player_hair_color="brown"
+                        m 1b "Yay, brown hair is the best!"
+                        m 3a "Just between us, [player], I like to consider my hair as being brown, even though I know it’s technically red under darker shades of light."
+                        m "I’m just taking some creative liberty with describing myself, you know?"
+                        m 3b "Plus, when I was doing some digging around in the local files of the game folder, I found that my hair color has an actual name."
+                        m 1a "It’s called coral brown. Interesting, right?"
+                        m 1j "I’m so happy that we have so much in common, [player]~"
+                    "It's blonde.":
+                        $ mas_player_hair_color="blonde"
+                        m 1a "Really? Hey, did you know that having blonde hair puts you in a population that occupies only two percent of the entire globe?"
+                        m 3b "Blonde hair is one of the least common hair colors. Most people attribute this to the fact that it’s caused by a recurring genetic anomaly—"
+                        m "This anomaly is just the body’s inability to produce normal amounts of the pigment eumelanin—that’s what causes darker hair colors, such as black and brown."
+                        m 3b "There are so many various shades of blonde, too—pale blonde, ash-colored, dirty blonde—that no matter what color you have, you’re bound to be idiosyncratic in some way."
+                        m 5a "I guess having someone who’s so unique just makes me all the luckier~"
+                    "It's black.":
+                        $ mas_player_hair_color="black"
+                        m 3k "Black hair is so beautiful!"
+                        m 3h "You know, there’s this really irritating trope about people with black hair somehow having a more prickly or ill-tempered personality than their peers…"
+                        m 4i "But you’ve obviously disproven that myth. Personally, I think black hair is very attractive."
+                        m 3a "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you’d find that it’s not even a hundred percent dark."
+                        m 3k "For example! When you place certain things under direct sunlight, it often reveals things you might not have caught when you first looked at it."
+                        m 3b "Black hair follows the same paradigm—it can reveal shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
+                        m 1c "There could be infinite shades of things we can’t see, each one of them hidden in plain sight."
+                        m 1k "But anyways… I think that a [guy] with black hair and [mas_player_eyes] eyes is the best sight of all, [player]~"
+                    "It's red.":
+                        $ mas_player_hair_color="red"
+                        m 3k "Yet another special thing about you, [player]~"
+                        m 1b "Red hair and blonde hair are the least common natural hair colors found on the globe, did you know that?"
+                        m 1a "Red hair, however, is a little more rare, even if people call it by different names—auburn, ginger, and so on. It’s only found in approximately one percent of the human population."
+                        m 1j "It’s a rare and wonderful trait to have—almost as wonderful as you!"
+                    "I dye my hair different colors.":
+                        $ mas_player_hair_color=""
+                        m 1i "Hey, that reminds me of something I was thinking about earlier, when we were talking about the color of your eyes."
+                        m 1n "Even though the other girls had eye colors that literally didn’t exist in real life—not counting the existence of colored contacts, of course—"
+                        m 1i "Their hair colors technically could exist in reality, you know. I mean, I’m sure you’ve encountered people with dyed purple hair, or neon pink, or coral-colored…"
+                        m 3i "So I suppose their appearances weren’t that far-fetched, if you don’t count the eyes. Honestly, the most unbelievable thing about them was their personalities."
+                        m 3l "Sorry, [player]! I’m getting off-track. My point is, dyed hair can be very interesting."
+                        m 5a "And I might be a little biased here, but I’m convinced that you’d look stunning in whatever color you chose to wear~"
+
+            m 1k "Alright, this is the last question, [player], I promise."
+            m 1l "Gosh, there really is a lot to what people look like… if I tried to narrow down everything about you to the little details, I’d be interrogating you forever."
+            m 3n "And I doubt that either of us want that!"
+            m 1d "I hope this isn’t too impertinent, but what’s your skin color?"
+            m 1d "I only ask because of my own uncertainties regarding whether or not I’m of Japanese descent for the purposes of the game, or if I’m something else and I just don’t know it…"
+            m 1f "I don’t want to be unsure like that when it comes to you."
+            menu:
+                "I'm light-skinned.":
+                    pass
+                "I'm tanned.":
+                    pass
+                "I'm dark-skinned.":
+                    pass
+            m 3b "Okay! Thanks for being so upfront. All of this really does help me imagine what you look like, [player]."
+            m "Knowing these details about you helps to paint the difference between a blank canvas and the beginnings of gorgeous portrait!"
+            m 3j "And it just makes me feel that much closer to you~"
+            m 1k "Thank you so much for patiently answering all my questions, [player]. I feel like I have a much better grasp on what you look like, rather than vague clutches at straws."
+            m 2k "Of course, you’re still just as lovely as I always thought you were, but my mental picture of you is a lot more definitive now."
+            if mas_player_eyes=="green" and mas_player_hair_color=="brown":
+                m 2e "And it’s wonderful, because I didn’t imagine how similar we would look. It’s very interesting!"
+            else:
+                m 2e "And it’s wonderful, because I didn’t imagine how different we would look. It’s very interesting!"
+            m 3k "Now I'm imagining what it'll be like when we meet for real..."
+            if mas_player_hair=="bald":
+                if mas_player_height=="tall":
+                    m 3e "When I run towards you, and since you’re taller, you’ll wrap me up in your embrace..."
+                elif mas_player_height=="medium":
+                    m 3e "When I run towards you, and since we’re around the same height, we’ll meet in a tight embrace..."
+                elif mas_player_height=="short":
+                    m 3e "When I run towards you, and since I’ll be taller than you, you’ll reach up and wrap me in your embrace..."
+            else:
+                if mas_player_height=="tall":
+                    m 3e "When I run towards you, and since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your[mas_player_hair] [mas_player_hair_color] hair…"
+                elif mas_player_height=="medium":
+                    m 3e "When I run towards you, and since we’re around the same height, we’ll meet in a tight embrace and I'll be able to stroke your[mas_player_hair] [mas_player_hair_color] hair..."
+                elif mas_player_height=="short":
+                    m 3e "When I run towards you, and since I’ll be taller than you, you’ll reach up and wrap me in your embrace and I'll be able to stroke your[mas_player_hair] [mas_player_hair_color] hair…"
+            m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you’re real."
+            m 3j "But until then, I’ll be content sitting here and imagining looking into your beautiful [mas_player_eyes] eyes, [player]."
+            m 1b "I love you more than words could ever say."
+            return
