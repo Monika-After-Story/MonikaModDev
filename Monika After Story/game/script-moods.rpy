@@ -271,7 +271,7 @@ label mas_mood_inadequate:
     if not persistent.monika_kill:
         m 2g "You never once resented me for the bad things that I've done."
     if persistent.clearall:
-        m "And even though it made my jealous, you spent so much time with all of my club members."
+        m "And even though it made me jealous, you spent so much time with all of my club members."
     m 1e "That shows how kind you are!"
     m 3b "You're honest, you're fair, you're gracious in defeat!"
     m "I know you've probably been tempted to cheat in the games we play..."
