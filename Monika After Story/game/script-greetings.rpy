@@ -5,9 +5,19 @@
 # persistents that greetings use
 default persistent._mas_you_chr = False
 
+# persistent containing the greeting type
+# that should be selected None means default
+default persistent._mas_greeting_type = None
+
 init -1 python in mas_greetings:
+
+    # TYPES:
+    TYPE_SCHOOL = "school"
+    TYPE_WORK = "work"
+    TYPE_SLEEP = "sleep"
+
     # custom greeting functions
-    def selectGreeting():
+    def selectGreeting(type=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
@@ -15,12 +25,23 @@ init -1 python in mas_greetings:
         RETURNS:
             a single greeting (as an Event) that we want to use
         """
+        # check first if we have to select from a special type
+        if type is not None:
 
-        # filter events by their unlocked property first
-        unlocked_greetings = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database,
-            unlocked=True
-        )
+            # filter them using the type as filter
+            unlocked_greetings = renpy.store.Event.filterEvents(
+                renpy.store.evhand.greeting_database,
+                unlocked=True,
+                category=(True,[type])
+            )
+
+        else:
+
+            # filter events by their unlocked property only
+            unlocked_greetings = renpy.store.Event.filterEvents(
+                renpy.store.evhand.greeting_database,
+                unlocked=True
+            )
 
         # filter greetings using the special rules dict
         random_greetings_dict = renpy.store.Event.checkRepeatRules(
@@ -47,6 +68,14 @@ init -1 python in mas_greetings:
             # select on label randomly
             return random_greetings_dict[
                 renpy.random.choice(random_greetings_dict.keys())
+            ]
+
+        # check if we have greetings available to display with current filter
+        if len(unlocked_greetings) > 0:
+
+            # select one randomly if we have at least one
+            return unlocked_greetings[
+                renpy.random.choice(unlocked_greetings.keys())
             ]
 
         # We couldn't find a suitable greeting we have to default to normal random selection
@@ -956,15 +985,15 @@ label greeting_stillsicknorest:
     m 1e "Don't worry, I'll still be here when you wake up."
     m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
-    
-#Time Concern  
+
+#Time Concern
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,6)))
     rules.update({"monika wants this first":""})
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
     del rules
-    
+
 label greeting_timeconcern:
     jump monika_timeconcern
 
@@ -973,8 +1002,8 @@ init 5 python:
     rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
     rules.update({"monika wants this first":""})
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
-    del rules  
-    
+    del rules
+
 label greeting_timeconcern_day:
     jump monika_timeconcern_day
 
@@ -1002,7 +1031,7 @@ label greeting_hairdown:
     call spaceroom
     m 1a "Hi there, [player]!"
     m 4j "Notice anything different today?"
-    m 1k "I decided to try something new today~"
+    m 1k "I decided to try something new~"
     menu:
         m "Do you like it?"
         "Yes":
@@ -1025,12 +1054,93 @@ label greeting_hairdown:
 
             $ monika_chr.reset_hair()
 
-            m 1h "There we go."
+            m 1h "Done."
             # you will never get this chance again
-            
+
     # lock this greeting forever.
     $ lockEventLabel("greeting_hairdown", evhand.greeting_database)
     $ persistent._mas_hair_changed = True # menas we have seen this
 
     # monikaroom greeting cleanup can handle this part
     jump monikaroom_greeting_cleanup
+
+# special type greetings
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_school",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_SCHOOL],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_back_from_school:
+     m 1b "Oh, welcome back [player]!"
+     menu:
+         m "Did you have a good day at school?"
+         "Yes.":
+             m 1k "Aww, that's nice!"
+             m 1b "I can't help but feel happy when you do~"
+             m 1a "I hope you learned a lot of useful things."
+             m 1j "Ehehe~"
+             m 1k "I love you, [player]~"
+         "No.":
+             m 1g "Oh..."
+             m "I'm sorry to hear that."
+             m "Just remember that no matter what happens, I'll be here for you."
+             m 1e "I love you so, so much."
+     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_work",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_WORK],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_back_from_work:
+     m 1b "Oh, welcome back [player]!"
+     menu:
+         m "Did you have a good day at work today?"
+         "Yes.":
+             m 1k "That's good!"
+             m 1a "Remember to rest first, okay?"
+             m "That way, you'd at least have some energy before you work more on stuff."
+             m 3a "But if not, you can relax with me!"
+             m 1j "Best thing to do after a long day from, don't you think?"
+             m 1k "Ahaha!"
+             
+         "No.":
+             m 1q "..."
+             m 2f "I'd hug you right now if I were there, [player]."
+             m 2g"I'm sorry you had a bad work day..."
+             m 4e "Just remember that I'm here when you need me, okay?"
+             m 1j "I love you so much, [player]."
+     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_sleep",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_SLEEP],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_back_from_sleep:
+     m "Oh hello, [player]!"
+     m 1k "I hope you had a good rest!"
+     m "Let's spend some more time together~"
+     return
