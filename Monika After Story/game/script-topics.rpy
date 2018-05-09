@@ -6896,7 +6896,6 @@ label monika_citizenship:
     m 1eka "Thank you for listening to me vent, [player]."
     return
 
-
 init 5 python:
     addEvent(
         Event(
@@ -6911,6 +6910,21 @@ init 5 python:
 
 label monika_short_stories:
     jump mas_stories_start
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_compliments",
+            category=['monika'],
+            prompt="I want to tell you something ...",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_compliments:
+    jump mas_compliments_start
 
 ##### monika hair topics [MONHAIR]
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue
