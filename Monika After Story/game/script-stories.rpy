@@ -69,13 +69,28 @@ label mas_stories_start:
     return
 
 # Stories start here
+
+label mas_story_begin:
+    python:
+        story_begin_quips = [
+            "Alright let's start the story.",
+            "Ready to hear that story?",
+            "Ready for story time?",
+            "Sure thing!",
+            "Let's begin~",
+            "Let's begin then~"
+        ]
+        story_begin_quip=renpy.random.choice(story_begin_quips)
+    m 3b "[story_begin_quip]"
+    m 3dfc "Ahem."
+    return
+
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
         prompt="The cat and the cock",unlocked=True),eventdb=store.mas_stories.story_database)
 
 label mas_story_tyrant:
-    m 4b "Alright let's start the story."
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 1i "A Cat caught a Cock and thought about reasonable excuses for eating him."
     m "He accused him of being a nuisance by crowing at night; not letting men sleep."
     m 1d "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
@@ -90,8 +105,7 @@ init 5 python:
         prompt="The Fox",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_despise:
-    m 3k "Ready for story time?"
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 1i "One hot summer’s day a Fox was strolling through an orchard till he came to a bunch of Grapes just ripening on a vine which had been trained over a lofty branch."
     m 1tfu "“Just the thing to quench my thirst,” quoth he."
     m 1i "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
@@ -106,8 +120,7 @@ init 5 python:
         prompt="The Shepherd Boy and the wolf",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_lies:
-    m 3k "Ready to hear that story?"
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 1d "There was a Shepherd Boy who tended his sheep at the foot of a mountain near a dark forest."
     m "It was lonely for him, so he devised a plan to get a little company."
     m 1hfw "He rushed down towards the village calling out “Wolf, Wolf,” and the villagers came out to meet him."
@@ -128,8 +141,7 @@ init 5 python:
         prompt="The Grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_grasshoper:
-    m 3b "Let's begin then~"
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 3 "One summer’s day a Grasshopper was hopping about, chirping and singing to its heart’s content."
     m 1 "An Ant passed by, bearing an ear of corn he was taking to the nest."
     m 1b "“Why not come and chat with me,” said the Grasshopper, “instead of toiling in that way?”"
@@ -147,8 +159,7 @@ init 5 python:
         prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_wind_sun:
-    m 3k "Ready for story time?"
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 1 "The Wind and the Sun were disputing which was the strongest."
     m 1i "Suddenly they saw a traveller coming down the road, and the Sun said: “I see a way to decide our dispute.”"
     m "“Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.”"
@@ -164,8 +175,7 @@ init 5 python:
         prompt="The seeds",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_seeds:
-    m 3b "Sure thing!"
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 1 "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
     m 1tfd "“Beware of that man,” quoth the Swallow."
     m 1g "“Why, what is he doing?” said the others."
@@ -182,8 +192,7 @@ init 5 python:
         prompt="The gray hair",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_gray_hair:
-    m 3b "Let's begin~"
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 1i "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
     m 1 "The Man’s hair was turning grey, which the young Wife did not like, as it made him look too old."
     m 1i "So, every night she picked out the white hairs."
@@ -199,8 +208,7 @@ init 5 python:
         prompt="The fisherman",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_fisherman:
-    m 3b "Let's begin~"
-    m 3dfc "Ahem."
+    call mas_story_begin
     m 1d "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
     m 1i "The Fisherman was about to put it in his basket when the little Fish said:"
     m 1wuo "“Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal.”"
@@ -215,14 +223,14 @@ init 5 python:
     prompt="Old man's three wishes",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_ravel:
-    m 1d "Want to hear a short story?"
+    call mas_story_begin
     m 3 "Once, an elderly man was sitting alone on a dark path."
     m "He had forgotten both where he was traveling to, and who he was."
     m "Suddenly, he looked up to see an elderly woman before him."
-    m "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
-    m 3i "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
-    m "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish."
-    m "'That's why you remember nothing; because everything is the way it was before you made any wishes.'"
-    m "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
-    m 1 "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
+    m "She grinned toothlessly and with a cackle, spoke: “Now your *third* wish. What will it be?”"
+    m 3i "“Third wish?” The man was baffled. “How can it be a third wish if I haven't had a first and second wish?”"
+    m "“You've had two wishes already,” the hag said, “but your second wish was for me to return everything to the way it was before you had made your first wish.”"
+    m "“That's why you remember nothing; because everything is the way it was before you made any wishes.”"
+    m "“All right,' said the man, “I don't believe this, but there's no harm in wishing. I wish to know who I am.”"
+    m 1 "“Funny,” said the old woman as she granted his wish and disappeared forever. “That was your first wish.”"
     return
