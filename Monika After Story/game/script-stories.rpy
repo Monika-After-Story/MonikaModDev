@@ -27,7 +27,6 @@ init -1 python in mas_stories:
 
 # entry point for stories flow
 label mas_stories_start:
-    m 1b "Sure thing!"
 
     python:
         import store.mas_stories as mas_stories
@@ -52,6 +51,7 @@ label mas_stories_start:
         $ renpy.jump(stories_menu_items[0][1])
         #return
 
+    m 1b "Sure thing!"
     m "What story would you like to hear?"
 
     # move Monika to the left
@@ -76,7 +76,6 @@ label mas_story_begin:
             "Alright let's start the story.",
             "Ready to hear that story?",
             "Ready for story time?",
-            "Sure thing!",
             "Let's begin~",
             "Let's begin then~"
         ]
