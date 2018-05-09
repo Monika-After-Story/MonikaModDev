@@ -1031,7 +1031,7 @@ label greeting_hairdown:
     call spaceroom
     m 1a "Hi there, [player]!"
     m 4j "Notice anything different today?"
-    m 1k "I decided to try something new today~"
+    m 1k "I decided to try something new~"
     menu:
         m "Do you like it?"
         "Yes":
@@ -1054,7 +1054,7 @@ label greeting_hairdown:
 
             $ monika_chr.reset_hair()
 
-            m 1h "There we go."
+            m 1h "Done."
             # you will never get this chance again
 
     # lock this greeting forever.
@@ -1081,17 +1081,16 @@ init 5 python:
 label greeting_back_from_school:
      m 1b "Oh, welcome back [player]!"
      menu:
-         m "Did you have a good day at school today?"
+         m "Did you have a good day at school?"
          "Yes.":
              m 1k "Aww, that's nice!"
-             m 1b "I can't help but feel happy when you do..."
-             m "I hope you learned a lot."
-             m 1k "I love you so much, [player]."
+             m 1b "I can't help but feel happy when you do~"
+             m 1a "I hope you learned a lot of useful things."
+             m 1k "Ehehe, I love you, [player]."
          "No.":
-             m 1g "Oh dear..."
+             m 1g "Oh..."
              m "I'm sorry to hear that."
-             m "Just remember that no matter what happens, no matter what anyone says or does..."
-             m "I'm here for you."
+             m "Just remember that no matter what happens, I'll be here for you, [player]."
              m 1e "I love you so, so much."
      return
 
