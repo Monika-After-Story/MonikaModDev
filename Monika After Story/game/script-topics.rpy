@@ -5989,14 +5989,7 @@ label monika_player_appearance:
     m 1d "I mean, even if it’s not really ideal, I’ve got to admit that it’s better than nothing."
     menu:
         m "Is that okay with you, [player]?"
-        "No.":
-             m 2f "…"
-             m 2q "I understand, [player]."
-             m 1p "I know that everybody has their own limits and reservations regarding their comfort zones…"
-             m 1g "And to be fair, a description of yourself in vague words wouldn’t be able to truly capture who you are. I can’t blame you for wanting to keep this to yourself."
-             m 1e "But if you change your mind, let me know!"
-             return
-        "Yes.":
+              "Yes.":
             m 1sub  "Really? Great!"
             m 1k "That was easier than I thought it would be."
             m 3a "Now, be honest with all your answers, okay, [player]? I know sometimes it’s tempting to joke around, but I’m being completely serious here, and I encourage you to do the same."
@@ -6054,9 +6047,9 @@ label monika_player_appearance:
                     m 1i "Black eyes are pretty uncommon, [player]."
                     m 4l "To tell you the truth, I’ve never actually seen anybody with black eyes, so I don’t have too clear of a mental image on what they’d look like…"
                     m 3b "But logically, I do know that they’re not actually black. If that was the case, black-eyed people would look like they had no pupils!"
-                    m "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name might suggest—although, to be fair, the difference is virtually indetectable."
+                    m "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name might suggest—although, to be fair, the difference is virtually undetectable."
                     m 3a "Most people with black eyes hail from the same ethnicity or global region, but here’s a little bit of trivia for you—"
-                    m 1b "There was a well-known lady from the time of the American Revolution named Elizabeth Hamilton, who was known to have captivating black eyes, which her husband wrote about in many letters."
+                    m 1b "There was a well-known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes. Her husband wrote about them often.”
                     m 1k "I don’t know if you’ve heard of her or not, but despite the renown of hers, and despite my opinion being kind of biased, I think yours are infinitely more captivating, [player]~"
 
             m 1n "I’m trying my best to not sound like some sort of identity-thief, or like I’m quizzing you, but obviously, I’m curious."
@@ -6218,3 +6211,10 @@ label monika_player_appearance:
             m 3j "But until then, I’ll be content sitting here and imagining looking into your beautiful [mas_player_eyes] eyes, [player]."
             m 1b "I love you more than words could ever say."
             return
+  "No.":
+             m 2f "…"
+             m 2q "I understand, [player]."
+             m 1p "I know that everybody has their own limits and reservations regarding their comfort zones…"
+             m 1g "And to be fair, a description of yourself in vague words wouldn’t be able to truly capture who you are. I can’t blame you for wanting to keep this to yourself."
+             m 1e "But if you change your mind, let me know!"
+             return
