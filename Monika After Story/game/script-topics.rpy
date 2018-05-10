@@ -5972,3 +5972,21 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_heybaby",category=['random'],prompt="Hey baby.",pool=True,unlocked=True))
+
+label monika_heybaby:
+    python:
+        heybabychoices = ["Tie me up, pin me down. Flip me over, upside down. Make me make that fucking sound.",
+                          "What's crackin'? who you mackin'? What'cha doin'? who'ya screwin'? What'cha drinkin'? what'cha thinkin'?"
+                          "Scream my name, play your game. Wanna do me? wanna screw me? I'm your pet, make me wet.",
+                          "Don't you stare, I don't care. Want some fun? Make me cum. Keep it going, 'cause it's snowin'.",
+                          "Tie me up, pin me down. Flip me over, upside down. Make me make that fucking sound.",
+                          "Hey Baby!"
+                         ]
+        
+        heybaby = renpy.random.choice(heybabychoices)
+            
+    m 1a "[heybaby]"
+    return
