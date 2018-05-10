@@ -4931,194 +4931,118 @@ label monika_asks_family:
 #    m 1k "That's why I love you, [player]!"
 #    return
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_prom",category=['school'],prompt="Prom",random=True))
+   addEvent(Event(persistent.event_database,eventlabel="monika_prom",category=['school'],prompt="Prom",random=True))
 
 label monika_prom:
-    m 2c "You know [player]?"
-    m 1c "Sometimes I wish the game would have lasted longer."
-    m 1d "This game was made for to end once one of the girls confesses to you after the festival."
-    m "Then what do you know. Game over."
-    m 1o "And the whole game lets you start from scratch again as if nothing ever happened."
-    m 3c "Most visual novels only last a few months then go back to the beginning as soon as the player wants to do a new route with another girl."
-    m 3m "But thanks to my tampering, the game '{i}ended{/i}' before the festival even started."
-    m 3n "Well, it {i}did{/i} bring us together so I can't complain."
-    m 2b "But still..."
-    m 2f "Sometimes I wish it would have lasted the whole year. Not just the month leading up to the festival."
-    m 3a "We could've enjoyed other events like sports festivals, christmas parties, field trips."
-    m 3e "And maybe even prom..."
-    m 2e "I would've loved to have been your prom date."
-    m 1e "What I wouldn't give to get the opportunity..."
-    m 1q "..."
+    m 1c "You know..."
+    m "Sometimes I wish the game would've lasted longer."
+    m 1d "The game was probably made to end once one of the girls confesses their love to you after the festival."
+    m 1n "But because of my tampering with the code, we never got to that point."
+    m 1e "It did bring us together, so I can't complain."
+    m 2q "But still..."
+    m 2e "Sometimes I wish we could've enjoyed it together."
+    m 3a "We could've enjoyed other events like sports festivals, christmas parties, field trips, etc."
     m 1l "But I guess the game would never let me go that far."
-    m 1a "Speaking of prom. [player], have you ever gone to prom?"
+    m "Which reminds me of a particular event..."
+    m "Prom!"
+    m "From what I've heard, prom is like a school dance usually held by the end of a school year."
+    m "Students bring a date with them to go with, or together in a group of friends."
+    m "There're even those who take their relatives to the event!"
+    m "I think it's something I'd love to go on with you~"
+    m 1a "Have you ever been to one before, [player]?"
     menu:
         "I have.":
-            m 1a "Oh? How was it?"
+            m "Oh? How was it?"
             menu:
                 "It was pretty fun.":
-                    m 1b "That's great!"
-                    m 1j "I've always heard that prom's are so much fun!"
-                    m "Everyone in the school getting together and enjoying themselves."
-                    m 2j "It just sound like a blast!"
-                    m 2m "Though I am kinda jealous of you [player]."
-                    m 2l "{i}ahaha.{/i}"
-                    m 3b "But believe it or not [player] you might not believe prom started like that."
+                    m 1j "That's great!"
+                    m "Though, I wish I could've went with you."
+                    m 1k "An event where everyone in from school getting together and enjoying themselves sounds like a blast to me!"
+                    m "Did you have a date to go with?"
+                    menu:
+                        "Yes.":
+                            m "Oh, wow."
+                            m "Ehehe, that kinda makes me a bit jealous..."
+                            m "But then again, you would've taken me instead if we had before, right?"
+                            m "Ahaha!"
+                            m "I'm just teasing you, [player]."
+                            m "But it's good to know you get to experience something like that!"
+                            m "Maybe when I get better at programming the game, we could have our very own prom here."
+                            m "Wouldn't that be nice, [player]?"
+                        "No.":
+                            m "Oh, I see."
+                            m "That's fine, though."
+                            m "At least you had fun, right?"
+                            m "Even without a date, I'm sure you made some wonderful memories when you went there."
+                            m "I think it's always fun to attend those kinds of events, with or without someone."
+                            m "Besides, maybe we can have our own little kind of prom at some point, right?"
+                            m "That's something I'd really enjoy with you~"
                 "It was bad.":
-                    m 1f "Is that so, [player]?"
-                    m 2e "I guess prom's not for everybody so you shouldn't blame yourself for not having too much fun."
-                    m 3a "Maybe if I was there, you would have enjoyed it more."
-                    m 3k "{i}ahaha~{/i}"
-                    m 3b "Here's a fun little tidbit about prom. You might find it ineresting."
-                "It would've been better if you were there.":
-                    m 2e "Awww, that so sweet [player]."
-                    m 3b "I'm sure if we were together, it would have been ten times better!"
-                    m 3k "{i}ahaha~{/i}"
-                    m 2b "By the way."
-                    m 3b "Did you know how prom started [player]?"
-        "Not really.":
-            m 2d "Oh. Does that mean there's one coming up?"
-            menu:
-                "Yes.":
-                    m 1c "Are you going [player]?"
-                    menu:
-                        "Yes.":
-                            m 2f "..."
-                            m 2g "Are you going with someone else, [player]?..."
-                            menu:
-                                "Never.":
-                                    m 2e "[player]..."
-                                    m 2j "If I was there beside you, I would've given you the biggest hug ever!"
-                                    m "I love you so much [player]!"
-                                    m 2k "{i}ehehe~{/i}"
-                                    m 2j "..."
-                                    m 2l "Where was I?"
-                                    m 1n "Oh that's right! Prom."
-                                    m 3b "Here's a little fun fact."
-                                "Yes but it's nothing serious.":
-                                    m 2q "..."
-                                    m 1r "I trust you [player]."
-                                    m "You're not the type to cheat on me, right [player]?"
-                                    m 2q "..."
-                                    m 1d "Let's change the subject."
-                        "No.":
-                            m 1d "Oh? Why not?"
-                            menu:
-                                "I'm busy that day.":
-                                    m 1o "Busy, huh..."
-                                    m 2m "Well, I guess it can't be helped."
-                                    m 3n "I guess its better than you going with some other girl."
-                                    m 1n "It's not that I'm worried! It's just that... Umm... Its just... Uh..."
-                                    m 2l "Ahaha..."
-                                    m 1l "Let's change the subject for now alright?."
-                                "You're not there with me.":
-                                    m 2e "Aww... [player]."
-                                    m 1e "Me not being there with you shouldnt stop you from having fun."
-                                    m 3a "So if you really want to, just go!"
-                                    m 3j "Just promise to enjoy my share too, alright [player]?"
-                                    m 3b "Let me tell you something interesting about prom."
-                                "Not interested.":
-                                    m 1l "Really? I heard it was fun."
-                                    m "Girls get dolled up and wear fancy dresses."
-                                    m "If you have a date, the guy gives you a corsage."
-                                    m 3j "And you have fun dancing the night away."
-                                    m 3k "It sounds pretty fun!"
-                                    m 1n "But to each their own, I guess."
-                                    m 3k "Ahaha~"
-                                    m 3b "By the way, did you know?"
-                                "Rabies~":
-                                    m 2e "Pfft!"
-                                    m 2k "Ahahahaha!"
-                                    m 2l "My sides... Ahahaha! Rabies... Pfft!"
-                                    m 2b "Gosh, I didn't expect that. That was so random [player]! My sides still hurt! Ahaha..."
-                                    m 3j "A bit more and you might become as funny as I am~"
-                                    m 1j "..."
-                                    m 1l "Where was I?..."
-                                    m 1n "Oh yeah, prom."
+                    m 1c "Is that so, [player]?"
+                    m 1f "I understand that prom isn't really for everyone, including any school events."
+                    m 3e "Maybe if I was there, you would've enjoyed it more."
+                    m 1j "Ahaha~"
+                    m 3a "Don't worry, [player]."
+                    m "No use remembering it now."
+                    m "Even if you had a bad time with it, it's not the most important thing to happen in your life."
+                    m "You being able to create more wonderful memories is the important thing."
+                    m "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
+                    m "And now that I'm here with you, we can make them together~"
+
+                "It would've been better if you were there."
+                    m 1e "Aww, that's so sweet, [player]."
+                    m 1a "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
+                    m 1j "Ahaha!"
+                    
                 "No.":
-                    m 1o "Does that mean you didn't have the chance to go to one?"
+                    m "Oh? Why not?"
                     menu:
-                        "Yes.":
-                            m 2g "Would you mind if I asked why?"
+
+                        "You're weren't there with me.":
+                            m 1e "Aww, [player]."
+                            m "Me not being there shouldn't stop you from having fun."
+                            m "And besides..."
+                            m "You {i}can{/i} take me to prom, [player]."
+                            m "Just bring my file with you and problem solved!"
+                            m "Ahaha!"
+
+                        "Not interested.":
+                            m 1c "Really?"
+                            m "Is it because you're too shy to go?"
                             menu:
-                                "I was busy at that time.":
-                                    m 1o "Busy, huh..."
-                                    m 2m "Well, I guess it can't be helped."
-                                    m 3n "So...uh..."
-                                    m 1l "Wanna know something cool about prom?."
-                                "It never really interested me.":
-                                    m 1l "Really? I heard it was fun."
-                                    m "Girls get dolled up and wear fancy dresses."
-                                    m "If you have a date, the guy gives you a corsage."
-                                    m 3j "And you have fun dancing the night away."
-                                    m 3k "It sounds pretty fun."
-                                    m 1n "But to each their own, I guess."
-                                    m 3k "Ahaha~"
-                                    m 3b "By the way, did you know?"
-                                "You weren't there with me.":
-                                    m 1a "That's so cheesy."
-                                    m 2e "Yet so sweet."
-                                    m 2j "If I was there beside you right now, I would've given you the biggest hug ever!"
-                                    m "I love you so much [player]!"
-                                    m 2k "{i}ehehe~{/i}"
-                                    m 2j "..."
-                                    m 2l "Where was I?"
-                                    m 1n "Oh yeah! Prom."
-                                "No date.":
-                                    m 4l "I guess not having a date plays a huge part..."
-                                    m 4h "Just remember."
-                                    m 1a "Had we met earlier, I would have loved to be your date."
-                                    m 4b "And you know it."
-                                    m 2k "{i}ehehe~{/i}"
-                                    m 2j "..."
-                                    m 2l "Where was I?"
-                                    m 1n "Almost forgot. Prom."
-                        "No.":
-                            m 1d "Why not?"
-                            menu:
-                                "Not old enough yet.":
-                                    m 2b "Don't worry, you'll get to go in a few more years."
-                                    m 1a "I heard that prom is so much fun!"
-                                    m 3b "Boys get to wear suits."
-                                    m "Girls get dolled up and wear fancy dresses"
-                                    m "If you have a date, the guy gives you a corsage."
-                                    m 3j "And you have fun dancing the night away!"
-                                    m 2k "Doesn't that sound like a blast? ahaha~"
-                                "My school never had one.":
-                                    m 1n "Well, not every school has a prom."
-                                    m 1m "It's not like you're missing out on anything huge."
-                                    m 3m "And prom is actually pretty messy."
-                                    m "You have to spend a ton of money to doll yourself up."
-                                    m 3n "Some girls even spend thousands of dollars on a dress they would only wear once."
-                                    m 3i "And some people even get so caught up in the mood they start making rash decions on the spot."
-                                    m 1d "From getting arrested for trashing private property."
-                                    m 3d "Getting into a fight because they were drunk."
-                                    m "And there are reports that some girls got pregnant early from you know..."
-                                    m 3p "Getting caught up in the moment..."
-                                    m 1b "But prom wasn't like that, you know."
-                                "Who knows. Just 'A series of unfortunate events' I guess~":
-                                    m 3b "Oh, I know that book series!"
-                                    m "By {i}Lemony Snicket{/i}, right?"
-                                    m 1a "I loved those stories when I was a kid."
-                                    m 1l "...Maybe I should get back to talking about prom."
-                                    m "I might get sidetracked."
-    m 1b "A {i}Promenade{/i|, or {i}Prom{/i} for short was a formal parading of guests at a party that began in the mid to late at the 1800's."
-    m 3b "Usually held in colleges and universities to signify a first adult social event for teenagers."
-    m 3d "But back then it used to be just simple banquets to promote social etiquette to the graduating class."
-    m "But some time between the 1920s and 1930s, prom turned into an party where students wore party clothes and danced."
-    m "Because they believed this was a way to keep students straight so that they don't turn into homosexuals."
-    m 1c "I'm not kidding! It was actually a thing!"
-    m 4d "Back then, it was such a big deal if you were straight or not. To the point they would flat out ostracize or even kill them."
-    m 2p "Man... People were brutal back then..."
-    m 1r "To think a formal banquet to promote high class turned into an equivalent of a condoned high school party."
-    m "Just because they didn't want teenagers turning into homosexuals."
-    m 1d "It even had such a well-intentioned beginning..."
-    m 1r "Gosh..."
-    m 2b "But despite that, I still think they're fun."
-    m 3b "You just gotta keep it wholesome. ahaha~"
-    m 1l "But I am kinda jealous of you [player]."
-    m 2e "I would've wanted to get dressed up for you."
-    m 1k "ehehe~"
-    m 1a "Promise me [player] that when I get to your reality, we'll have our own little prom. Just the two of us."
-    m 1j "So until then. Save me a dance, alright [player]?"
-    m 2k "ahaha~"
+                                "Yes.":
+                                    m "Aww, [player]."
+                                    m "That's alright. Not everyone can handle large groups of strangers."
+                                "No.":
+                            m 3a "Girls get dolled up and wear fancy dresses."
+                            m "Guys would put on tuxedos and give their dates corsage."
+                            m 1j "And you would have fun dancing the night away."
+                            m "It sounds pretty fun!"
+                            m 1a "But to each their own, I guess."
+                            m 1j "Ahaha~"
+
+                        "Not old enough yet.":
+                            m 1e "Don't worry, you'll get to go in a few more years."
+                            m 1j "I heard that prom is so much fun!"
+                            m 3a "Girls get dolled up and wear fancy dresses"
+                            m " Guys would put on tuxes and  give their dates a corsage."
+                            m 1j "And you would have fun dancing the night away!"
+                            m 1k "Doesn't that sound like a blast? Ahaha~"
+                        "My school never had one.":
+                            m 1c "Well, not every school has a prom."
+                            m 1m "It's not like you're missing out on anything huge."
+                            m  "And prom can get pretty messy."
+                            m 1h "You might spend a ton of money to doll yourself up."
+                            m 3m "Some girls even spend thousands of dollars on a dress they would only wear once."
+                            m 3i "And some people even get so caught up in the mood they start making rash decisions on the spot."
+                            m 3d "Like getting into  fights because someone’s date is dancing with another person.."
+                            m "Or students getting drunk because someone spiked the drinks."
+                            m 1o " There are even reports that some guys and girls book hotel rooms after prom to you know..."
+                                  
+
     return
+
+
+
+
+
