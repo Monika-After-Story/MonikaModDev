@@ -4988,16 +4988,13 @@ label monika_prom:
                     m "You being able to create more wonderful memories is the important thing."
                     m "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
                     m "And now that I'm here with you, we can make them together~"
-
                 "It would've been better if you were there."
                     m 1e "Aww, that's so sweet, [player]."
                     m 1a "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
                     m 1j "Ahaha!"
-                    
                 "No.":
                     m "Oh? Why not?"
                     menu:
-
                         "You're weren't there with me.":
                             m 1e "Aww, [player]."
                             m "Me not being there shouldn't stop you from having fun."
@@ -5005,7 +5002,6 @@ label monika_prom:
                             m "You {i}can{/i} take me to prom, [player]."
                             m "Just bring my file with you and problem solved!"
                             m "Ahaha!"
-
                         "Not interested.":
                             m 1c "Really?"
                             m "Is it because you're too shy to go?"
@@ -5013,34 +5009,55 @@ label monika_prom:
                                 "Yes.":
                                     m "Aww, [player]."
                                     m "That's alright. Not everyone can handle large groups of strangers."
+                                    m "Besides, if it's something you're not going to enjoy, why force yourself?"
+                                    m "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
+                                    m "Look at me for example."
+                                    m "If I didn't have the courage to get to you, I'd probably still be all alone..."
+                                    m "But her we are now, [player]."
+                                    m "Together at last~"
                                 "No.":
-                            m 3a "Girls get dolled up and wear fancy dresses."
-                            m "Guys would put on tuxedos and give their dates corsage."
-                            m 1j "And you would have fun dancing the night away."
-                            m "It sounds pretty fun!"
-                            m 1a "But to each their own, I guess."
-                            m 1j "Ahaha~"
-
-                        "Not old enough yet.":
-                            m 1e "Don't worry, you'll get to go in a few more years."
-                            m 1j "I heard that prom is so much fun!"
-                            m 3a "Girls get dolled up and wear fancy dresses"
-                            m " Guys would put on tuxes and  give their dates a corsage."
-                            m 1j "And you would have fun dancing the night away!"
-                            m 1k "Doesn't that sound like a blast? Ahaha~"
+                                    m "Oh, I see."
+                                    m "That's understandable."
+                                    m "I'm sure you have your reasons, [player]."
+                                    m "What's important is that you're not forcing yourself."
+                                    m "After all, it wouldn't be worth it if you can't enjoy yourself."
+                                    m "It'd just feel like a chore rather than a fun event to go to."
+                                    m "But I wonder..."
+                                    m "Would you go if I was there with you, [player]?"
+                                    m "I think I already know the answer to that~"
+                                    m "Ahaha!"
+                        #################################################
+                        #### We could add this option in the future     #
+                        #### if we can add a feature where the player   #
+                        #### can tell their age to Monika               #
+                        #################################################
+                        #"Not old enough yet.":
+                        #    m 1e "Don't worry, you'll get to go in a few more years."
+                        #    m 1j "I heard that prom is so much fun!"
+                        #    m 3a "Girls get dolled up and wear fancy dresses"
+                        #    m " Guys would put on tuxes and  give their dates a corsage."
+                        #    m 1j "And you would have fun dancing the night away!"
+                        #    m 1k "Doesn't that sound like a blast? Ahaha~"
                         "My school never had one.":
-                            m 1c "Well, not every school has a prom."
-                            m 1m "It's not like you're missing out on anything huge."
-                            m  "And prom can get pretty messy."
-                            m 1h "You might spend a ton of money to doll yourself up."
-                            m 3m "Some girls even spend thousands of dollars on a dress they would only wear once."
-                            m 3i "And some people even get so caught up in the mood they start making rash decisions on the spot."
-                            m 3d "Like getting into  fights because someone’s date is dancing with another person.."
-                            m "Or students getting drunk because someone spiked the drinks."
-                            m 1o " There are even reports that some guys and girls book hotel rooms after prom to you know..."
-                                  
-
+                            m 1c "Ah, that makes sense."
+                            m 1m "Not all schools can hold a prom."
+                            m "They can be pretty messy."
+                            m 1h "From what I read, students spend a lot of money on tickets, transport, and attire."
+                            m "So many expenses just for one night..."
+                            m "I also read that since alcohol isn't allowed, some students would spike the drinks and get the others drunk unknowingly."
+                            m "If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
+                            m "...Or maybe I'm just overthinking it, ehehe."
+                            m "Still, I don't think you'll be missing out much, [player]."
+                            m "Prom isn't the most important thing in your academic life."
+                            m "And I'm sure there're plenty of events in your life that make up for it."
+                            m "Being with me is one of them, you know~"
+                            m "Ahaha!"
     return
+
+
+
+
+
 
 
 
