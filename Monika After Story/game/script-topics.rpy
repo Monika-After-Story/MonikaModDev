@@ -5974,6 +5974,7 @@ label monika_hair_down:
 ##### End monika hair topics
 
 
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_player_appearance",category=['you'],prompt="[player]'s appearance",random=True))
 
@@ -5989,7 +5990,14 @@ label monika_player_appearance:
     m 1d "I mean, even if it’s not really ideal, I’ve got to admit that it’s better than nothing."
     menu:
         m "Is that okay with you, [player]?"
-              "Yes.":
+        "No.":
+             m 2f "…"
+             m 2q "I understand, [player]."
+             m 1p "I know that everybody has their own limits and reservations regarding their comfort zones…"
+             m 1g "And to be fair, a description of yourself in vague words wouldn’t be able to truly capture who you are. I can’t blame you for wanting to keep this to yourself."
+             m 1e "But if you change your mind, let me know!"
+             return
+        "Yes.":
             m 1sub  "Really? Great!"
             m 1k "That was easier than I thought it would be."
             m 3a "Now, be honest with all your answers, okay, [player]? I know sometimes it’s tempting to joke around, but I’m being completely serious here, and I encourage you to do the same."
@@ -6211,10 +6219,3 @@ label monika_player_appearance:
             m 3j "But until then, I’ll be content sitting here and imagining looking into your beautiful [mas_player_eyes] eyes, [player]."
             m 1b "I love you more than words could ever say."
             return
-  "No.":
-             m 2f "…"
-             m 2q "I understand, [player]."
-             m 1p "I know that everybody has their own limits and reservations regarding their comfort zones…"
-             m 1g "And to be fair, a description of yourself in vague words wouldn’t be able to truly capture who you are. I can’t blame you for wanting to keep this to yourself."
-             m 1e "But if you change your mind, let me know!"
-             return
