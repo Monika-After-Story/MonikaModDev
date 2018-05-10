@@ -6057,7 +6057,7 @@ label monika_player_appearance:
                     m 3b "But logically, I do know that they’re not actually black. If that was the case, black-eyed people would look like they had no pupils!"
                     m "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name might suggest—although, to be fair, the difference is virtually undetectable."
                     m 3a "Most people with black eyes hail from the same ethnicity or global region, but here’s a little bit of trivia for you—"
-                    m 1b "There was a well-known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes. Her husband wrote about them often.”
+                    m 1b "There was a well-known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes. Her husband wrote about them often."
                     m 1k "I don’t know if you’ve heard of her or not, but despite the renown of hers, and despite my opinion being kind of biased, I think yours are infinitely more captivating, [player]~"
 
             m 1n "I’m trying my best to not sound like some sort of identity-thief, or like I’m quizzing you, but obviously, I’m curious."
@@ -6219,3 +6219,4 @@ label monika_player_appearance:
             m 3j "But until then, I’ll be content sitting here and imagining looking into your beautiful [mas_player_eyes] eyes, [player]."
             m 1b "I love you more than words could ever say."
             return
+
