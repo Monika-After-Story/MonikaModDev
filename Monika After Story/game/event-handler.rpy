@@ -41,14 +41,16 @@ init -500 python:
         True, # unlock_date
         True, # shown_count
         False, # diary_entry
-        False # rules
+        False, # rules
+        True # last_seen
     )
 
     # set defaults
-    if persistent._mas_event_init_lockdb_template is None:
-        persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
-
-    elif len(persistent._mas_event_init_lockdb_template) != len(mas_init_lockdb_template):
+    if (
+            persistent._mas_event_init_lockdb_template is not None
+            and len(persistent._mas_event_init_lockdb_template)
+                != len(mas_init_lockdb_template)
+        ):
         # differing lengths mean we have new items to deal with
 
         for ev_key in persistent._mas_event_init_lockdb:
@@ -58,6 +60,9 @@ init -500 python:
             lock_row = list(mas_init_lockdb_template)
             lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
             persistent._mas_event_init_lockdb[ev_key] = tuple(lock_row)
+
+    # set the new template
+    persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
 
     # set db defaults
     if persistent._mas_event_init_lockdb is None:
@@ -112,6 +117,10 @@ init -1 python in evhand:
     UNSE_H = 640
     UNSE_XALIGN = -0.05
     UNSE_AREA = (UNSE_X, UNSE_Y, UNSE_W, UNSE_H)
+
+    # time stuff
+    import datetime
+    LAST_SEEN_DELTA = datetime.timedelta(hours=2)
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -205,9 +214,9 @@ init python:
         ev = eventdb.get(eventlabel, None)
 
         hideEvent(
-            ev, 
-            lock=lock, 
-            derandom=derandom, 
+            ev,
+            lock=lock,
+            derandom=derandom,
             depool=depool,
             decond=decond
         )
@@ -245,10 +254,31 @@ init python:
                 event.random = False
 
             if depool:
-                ev.pool = False
+                event.pool = False
 
             if decond:
                 event.conditional = None
+
+
+    def lockEvent(ev):
+        """
+        Locks the given event object
+
+        IN:
+            ev - the event object to lock
+        """
+        hideEvent(ev, lock=True)
+
+
+    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Locks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        hideEventLabel(evlabel, lock=True, eventdb=eventdb)
 
 
     def pushEvent(event_label):
@@ -278,6 +308,121 @@ init python:
 
         persistent.event_list.insert(0,event_label)
         return
+
+
+    def unlockEvent(ev):
+        """
+        Unlocks the given evnet object
+
+        IN:
+            ev - the event object to unlock
+        """
+        if ev:
+            ev.unlocked = True
+
+
+    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Unlocks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        unlockEvent(eventdb.get(evlabel, None))
+
+
+    def isFuture(ev, date=None):
+        """
+        Checks if the start_date of the given event happens after the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's start_date is in the future, False otherwise
+        """
+
+        # sanity check
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        start_date = ev.start_date
+
+        # if we don't have an end date we return false
+        if start_date is None:
+            return False
+
+        return date < start_date
+
+
+    def isPast(ev, date=None):
+        """
+        Checks if the end_date of the given event happens before the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's end_date is in the past, False otherwise
+        """
+
+        # if there's no event to check return False
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        end_date = ev.end_date
+
+        # if we don't have an end date we return false
+        if end_date is None:
+            return False
+
+        return end_date < date
+
+
+    def isPresent(ev):
+        """
+        Checks if current date falls within the given event's start/end date
+        range
+
+        IN:
+            ev - Event to check the start_time and end_time
+
+        RETURNS:
+            True if current time is inside the  Event's start_date/end_date
+            interval, False otherwise
+        """
+        # check we have an event
+        if ev is None:
+            return False
+
+        start_date = ev.start_date
+        end_date = ev.end_date
+
+        current = datetime.datetime.now()
+
+        # return false if either start or end is None
+        if start_date is None or end_date is None:
+            return False
+
+        return start_date <= current <= end_date
+
 
     def popEvent(remove=True):
         #
@@ -338,6 +483,35 @@ init python:
         return
 
 
+    def mas_cleanJustSeen(eventlist, db):
+        """
+        Cleans the given event list of just seen items (withitn the THRESHOLD)
+        retunrs not just seen items
+
+        IN:
+            eventlist - list of event labels to pick from
+            db - database these events are tied to
+
+        RETURNS:
+            cleaned list of events (stuff not in the time THREASHOLD)
+        """
+        import datetime
+        now = datetime.datetime.now()
+        cleanlist = list()
+
+        for evlabel in eventlist:
+            ev = db.get(evlabel, None)
+
+            if ev:
+                if ev.last_seen:
+                    if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA:
+                        cleanlist.append(evlabel)
+
+                else:
+                    cleanlist.append(evlabel)
+
+        return cleanlist
+
 
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
@@ -366,6 +540,7 @@ label call_next_event:
 
             # increment shown count
             $ ev.shown_count += 1
+            $ ev.last_seen = datetime.datetime.now()
 
         if _return == 'quit':
             $persistent.closed_self = True #Monika happily closes herself
@@ -383,12 +558,18 @@ label call_next_event:
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        pool_event_keys = Event.filterEvents(evhand.event_database,unlocked=False,pool=True).keys()
+        pool_events = Event.filterEvents(evhand.event_database,unlocked=False,pool=True)
+        pool_event_keys = [
+            evlabel
+            for evlabel in pool_events
+            if "no unlock" not in pool_events[evlabel].rules
+        ]
 
         if len(pool_event_keys)>0:
-            unlock_event = renpy.random.choice(pool_event_keys)
-            evhand.event_database[unlock_event].unlocked = True
-            evhand.event_database[unlock_event].unlock_date = datetime.datetime.now()
+            sel_evlabel = renpy.random.choice(pool_event_keys)
+
+            evhand.event_database[sel_evlabel].unlocked = True
+            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
 
     return
 
@@ -617,4 +798,3 @@ label prompts_categories(pool=True):
             $pushEvent(_return)
 
     return
-

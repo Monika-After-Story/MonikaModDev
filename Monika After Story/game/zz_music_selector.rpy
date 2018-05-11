@@ -11,23 +11,29 @@ init -1 python in songs:
     JUST_MONIKA = "Just Monika"
     YOURE_REAL = "Your Reality"
     STILL_LOVE = "I Still Love You"
+    MY_FEELS = "My Feelings"
+    MY_CONF = "My Confession"
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
-    NO_SONG = "None"
+    YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
+    NO_SONG = "No Music"
 
     # SONG FILEPATHS
     FP_PIANO_COVER = "mod_assets/bgm/runereality.ogg"
     FP_JUST_MONIKA = "bgm/m1.ogg"
     FP_YOURE_REAL = "bgm/credits.ogg"
     FP_STILL_LOVE = "bgm/monika-end.ogg"
+    FP_MY_FEELS = "<loop 3.172>bgm/9.ogg" 
+    FP_MY_CONF =  "<loop 5.861>bgm/10.ogg" 
     FP_OKAY_EV_MON = "<loop 4.444>bgm/5_monika.ogg"
     FP_DDLC_MT_80 = (
         "<loop 17.451 to 119.999>mod_assets/bgm/ddlc_maintheme_80s.ogg"
     )
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
     FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
+    FP_YR_EUROBEAT = "<loop 1.414>mod_assets/bgm/eurobeatreality.ogg"
     FP_NO_SONG = None
 
 
@@ -114,6 +120,7 @@ init -1 python in songs:
         #       allow Surprise in the player
 
         global music_choices
+        global music_pages
         music_choices = list()
         # SONGS:
         # if you want to add a song, add it to this list as a tuple, where:
@@ -126,7 +133,12 @@ init -1 python in songs:
             # Shoutout to Rune0n for this wonderful piano cover!
             music_choices.append((PIANO_COVER, FP_PIANO_COVER))
 
+            # Shoutout to TheAloofPotato for this wonderful eurobeat version!
+            music_choices.append((YR_EUROBEAT, FP_YR_EUROBEAT))
+
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
+            music_choices.append((MY_FEELS, FP_MY_FEELS))
+            music_choices.append((MY_CONF, FP_MY_CONF))
             music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
             music_choices.append((PLAYWITHME_VAR6, FP_PLAYWITHME_VAR6))
 
@@ -136,12 +148,53 @@ init -1 python in songs:
         # sayori only allows this
         music_choices.append((SAYO_NARA, FP_SAYO_NARA))
 
-        if not sayori:
-            # leave this one last, so we can stopplaying stuff
-            music_choices.append((NO_SONG, FP_NO_SONG))
+        # separte the music choices into pages
+        music_pages = __paginate(music_choices)
+
+
+    def __paginate(music_list):
+        """
+        Paginates the music list and returns a dict of the pages.
+
+        IN:
+            music_list - list of music choice tuples (see initMusicChoices)
+
+        RETURNS:
+            dict of music choices, paginated nicely:
+            [0]: first page of music
+            [1]: next page of music
+            ...
+            [n]: last page of music
+        """
+        pages_dict = dict()
+        page = 0
+        leftovers = music_list
+        while len(leftovers) > 0:
+            music_page, leftovers = __genPage(leftovers)
+            pages_dict[page] = music_page
+            page += 1
+
+        return pages_dict
+
+        
+    def __genPage(music_list):
+        """
+        Generates the a page of music choices
+
+        IN:
+            music_list - list of music choice tuples (see initMusicChoices)
+
+        RETURNS:
+            tuple of the following format:
+                [0] - page of the music choices
+                [1] - reamining items in the music_list
+        """
+        return (music_list[:PAGE_LIMIT], music_list[PAGE_LIMIT:])
 
 
     # defaults
+#    FIRST_PAGE_LIMIT = 10
+    PAGE_LIMIT = 10
     current_track = "bgm/m1.ogg"
     selected_track = current_track
     menu_open = False
@@ -150,6 +203,7 @@ init -1 python in songs:
 
     # contains the song list
     music_choices = list()
+    music_pages = dict() # song pages dict
 
 # some post screen init is setting volume to current settings
 init 10 python in songs:
@@ -192,6 +246,9 @@ init 10 python:
 
 #style music_menu_return_button is navigation_button
 style music_menu_return_button_text is navigation_button_text
+style music_menu_prev_button_text is navigation_button_text:
+    min_width 135
+    text_align 1.0
 
 style music_menu_outer_frame is game_menu_outer_frame
 style music_menu_navigation_frame is game_menu_navigation_frame
@@ -201,13 +258,30 @@ style music_menu_side is game_menu_side
 style music_menu_label is game_menu_label
 style music_menu_label_text is game_menu_label_text
 
-style music_menu_return_button is return_button
+style music_menu_return_button is return_button:
+    xminimum 0
+    xmaximum 200
+    xfill False
+
+style music_menu_prev_button is return_button:
+    xminimum 0
+    xmaximum 135
+    xfill False
 
 style music_menu_outer_frame:
     background "mod_assets/music_menu.png"
 
-screen music_menu():
+# Music menu 
+#
+# IN:
+#   music_page - current page of music
+#   page_num - current page number
+#   more_pages - true if there are more pages left
+#
+screen music_menu(music_page, page_num=0, more_pages=False):
     modal True
+
+    $ import store.songs as songs
 
     # allows the music menu to quit using hotkey
     key "noshift_M" action Return()
@@ -230,22 +304,60 @@ screen music_menu():
 
                 transclude
 
-    # this part copied from navigation menu
+        # this part copied from navigation menu
+        vbox:
+            style_prefix "navigation"
+
+            xpos gui.navigation_xpos
+    #        yalign 0.4
+            spacing gui.navigation_spacing
+
+            # wonderful loop so we can dynamically add songs
+            for name,song in music_page:
+                textbutton _(name) action Return(song)
+
     vbox:
-        style_prefix "navigation"
 
-        xpos gui.navigation_xpos
-        yalign 0.8
-        spacing gui.navigation_spacing
+        yalign 1.0
 
-        # wonderful loop so we can dynamically add songs
-        $ import store.songs as songs
-        for name,song in songs.music_choices:
-            textbutton _(name) action [SetField(songs,"selected_track",song), Return()]
+        hbox:
 
-    textbutton _("Return"):
-        style "music_menu_return_button"
-        action Return()
+            # dynamic prevous text, so we can keep button size alignments
+            if page_num > 0:
+                textbutton _("<<<< Prev"):
+                    style "music_menu_prev_button"
+                    action Return(page_num - 1)
+
+            else:
+                textbutton _( " "):
+                    style "music_menu_prev_button"
+                    sensitive False
+
+#                if more_pages:
+#                    textbutton _(" | "):
+#                        xsize 50
+#                        text_font "gui/font/Halogen.ttf" 
+#                        text_align 0.5
+#                        sensitive False
+
+            if more_pages:
+                textbutton _("Next >>>>"):
+                    style "music_menu_return_button"
+                    action Return(page_num + 1)
+
+        textbutton _(songs.NO_SONG): 
+            style "music_menu_return_button"
+            action Return(songs.NO_SONG)
+
+        # logic to ensure Return works
+        if songs.current_track is None:
+            $ return_value = songs.NO_SONG
+        else:
+            $ return_value = songs.current_track
+
+        textbutton _("Return"):
+            style "music_menu_return_button"
+            action Return(return_value)
 
     label "Music Menu"
 
@@ -257,9 +369,28 @@ label display_music_menu:
         songs.menu_open = True
         prev_dialogue = allow_dialogue
         allow_dialogue = False
+        song_selected = False
+        curr_page = 0
 
-    call screen music_menu
+    # loop until we've selected a song
+    while not song_selected:
+
+        # setup pages
+        $ music_page = songs.music_pages.get(curr_page, None)
+            
+        if music_page is None:
+            # this should never happen. Immediately quit with None
+            return songs.NO_SONG
+
+        # otherwise, continue formatting args
+        $ next_page = (curr_page + 1) in songs.music_pages
+
+        call screen music_menu(music_page, page_num=curr_page, more_pages=next_page)
+
+        # obtain result
+        $ curr_page = _return
+        $ song_selected = _return not in songs.music_pages
 
     $ songs.menu_open = False
     $ allow_dialogue = prev_dialogue
-    return
+    return _return

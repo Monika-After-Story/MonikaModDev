@@ -18,11 +18,28 @@ init python:
         #
         config.overlay_screens.append("hkb_overlay")
 
+        # function to hide buttons
+    def MovieOverlayHideButtons():
+        #
+        # Hides the movie buttons
+        #
+        if "movie_overlay" in config.overlay_screens:
+            config.overlay_screens.remove("movie_overlay")
+            renpy.hide_screen("movie_overlay")
+
+    # function to show buttons
+    def MovieOverlayShowButtons():
+        #
+        # Shows the movie buttons
+        #
+        config.overlay_screens.append("movie_overlay")
+
 init -1 python in hkb_button:
 
     # new property to disable buttons
     # set to False to disable buttons
     enabled = True
+    movie_buttons_enabled = False
 
 
 # HOTKEY BUTTON SCREEN ========================================================
@@ -100,6 +117,15 @@ screen hkb_overlay():
                 action NullAction()
                 style "hkbd_button"
 
+# NOTE: disabled until we have additoinal content
+#if allow_dialogue and store.hkb_button.enabled:
+#            textbutton _("Movies") action Jump("ch30_monikamovie")
+#        else:
+#            textbutton _("Movies"):
+#                action NullAction()
+#                style "hkbd_button"
+
+
         if store.hkb_button.enabled:
             textbutton _("Music") action Function(select_music)
         else:
@@ -114,6 +140,27 @@ screen hkb_overlay():
                 action NullAction()
                 style "hkbd_button"
 
+screen movie_overlay():
+
+    zorder 50
+
+    style_prefix "hkb"
+
+    vbox:
+        xalign 0.95
+        yalign 0.95
+
+        if watchingMovie:
+            textbutton _("Pause") action Jump("mm_movie_pausefilm")
+        else:
+            textbutton _("Pause") action NullAction() style "hkbd_button"
+
+        if watchingMovie:
+            textbutton _("Time") action Jump("mm_movie_settime")
+        else:
+            textbutton _("Time"):
+                action NullAction()
+                style "hkbd_button"
 
 init python:
     HKBShowButtons()

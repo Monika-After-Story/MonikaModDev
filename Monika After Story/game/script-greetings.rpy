@@ -492,6 +492,12 @@ label i_greeting_monikaroom:
 #    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
     $ has_listened = False
 
+    # reset monika's hair stuff since we dont have hair down for standing
+    if persistent._mas_likes_hairdown:
+        $ monika_chr.reset_outfit()
+        $ lockEventLabel("monika_hair_ponytail")
+        $ unlockEventLabel("monika_hair_down")
+
     # FALL THROUGH
 label monikaroom_greeting_choice:
     menu:
@@ -819,8 +825,7 @@ label greeting_youarereal:
     python:
         try:
             renpy.file(
-                config.basedir.replace("\\","/") +
-                "/characters/" + persistent.playername.lower() + ".chr"
+                "../characters/" + persistent.playername.lower() + ".chr"
             )
             persistent._mas_you_chr = True
         except:
@@ -951,3 +956,81 @@ label greeting_stillsicknorest:
     m 1e "Don't worry, I'll still be here when you wake up."
     m 3j "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
+    
+#Time Concern  
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,6)))
+    rules.update({"monika wants this first":""})
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    del rules
+    
+label greeting_timeconcern:
+    jump monika_timeconcern
+
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
+    rules.update({"monika wants this first":""})
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    del rules  
+    
+label greeting_timeconcern_day:
+    jump monika_timeconcern_day
+
+init 5 python:
+    rules = dict()
+    rules.update(MASGreetingRule.create_rule(skip_visual=True, random_chance=5))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_hairdown",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_hairdown:
+
+    # have monika's hair down
+    $ monika_chr.change_hair("down")
+
+    call spaceroom
+    m 1a "Hi there, [player]!"
+    m 4j "Notice anything different today?"
+    m 1k "I decided to try something new today~"
+    menu:
+        m "Do you like it?"
+        "Yes":
+            # make it possible to switch hair at will
+            $ unlockEventLabel("monika_hair_ponytail")
+            $ persistent._mas_likes_hairdown = True
+
+            # maybe 6sub is better?
+            # TODO: affection raise
+            m 1sub "Really?" # honto?!
+            m 1j "I'm so glad!" # yokatta.."
+            m 1a "Just ask me if you want to see my ponytail again, okay?"
+
+        "No":
+            # TODO: affection lowered?
+            m 1f "Oh..."
+            m 1o "..."
+            m 1p "I'll put it back up for you, then."
+            m 1q "..."
+
+            $ monika_chr.reset_hair()
+
+            m 1h "There we go."
+            # you will never get this chance again
+            
+    # lock this greeting forever.
+    $ lockEventLabel("greeting_hairdown", evhand.greeting_database)
+    $ persistent._mas_hair_changed = True # menas we have seen this
+
+    # monikaroom greeting cleanup can handle this part
+    jump monikaroom_greeting_cleanup

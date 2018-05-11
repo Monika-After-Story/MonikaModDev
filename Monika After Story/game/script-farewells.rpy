@@ -186,6 +186,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
+            eventlabel="bye_prompt_to_class",
+            unlocked=True,
+            prompt="I'm going to class.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_prompt_to_class:
+    m 1j "Study hard, [player]!"
+    m 1 "Nothing is more attractive than a [guy] with good grades."
+    m 1j "See you later!"
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_to_work",
+            unlocked=True,
+            prompt="I'm going to work.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_prompt_to_work:
+    m 1j "Work hard, [player]!"
+    m 1 "I'll be here for you when you get home from work."
+    m 1j "Bye-bye!"
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
             eventlabel="bye_prompt_sleep",
             unlocked=True,
             prompt="I'm going to sleep.",
@@ -274,4 +310,94 @@ label bye_prompt_sleep:
         m "Alright, [player]."
         m 1j "Sweet dreams!"
 
+    return 'quit'
+    
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
+    
+label bye_illseeyou:
+    m 1b "I'll see you tomorrow, [player]."
+    m 1k "Don't forget about me, okay?"
+    return 'quit'
+    
+init 5 python: ## Implementing Date/Time for added responses based on the time of day
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_haveagoodday",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
+label bye_haveagoodday:
+    m 1b "Have a good day today, [player]."
+    m 1b "I hope you accomplish everything you had planned for today."
+    m 1b "I'll be here waiting for you when you get back."  
+    return 'quit'
+ 
+init 5 python: 
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(12,16)))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_enjoyyourafternoon",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
+label bye_enjoyyourafternoon:
+    m 1f "I hate to see you go so early, [player]."
+    m 1e "I do understand that you're busy though."
+    m 1a "Promise me you'll enjoy your afternoon, okay?"
+    m 1j "Goodbye~"
+    return 'quit'
+
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(17,19)))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_goodevening",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
+label bye_goodevening:    
+    m 1k "I had fun today."
+    m 1a "Thank you for spending so much time with me, [player]."
+    m 1j "Until then, have a good evening."
+    return 'quit'
+
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(20,24)))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_goodnight",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+    
+label bye_goodnight:
+    m 1a "Goodnight, [player]."
+    m 1e "I'll see you tomorrow, okay?"
+    m 1j "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+    m 1k "I love you~"
     return 'quit'
