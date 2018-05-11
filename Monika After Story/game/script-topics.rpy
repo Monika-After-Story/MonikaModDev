@@ -5330,21 +5330,21 @@ label monika_prom:
                             m 1a "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
                             m 3j "Besides, maybe we can have our own kind of prom sometime, right?"
                             m 1a "That's something I'd really enjoy with you~"
-        "It was bad.":
-            m 1f "Is that so?"
-            m "I understand that prom isn't for everyone."
-            m 3e "Maybe if I was there, you would've enjoyed it more."
-            m 1j "Ahaha~"
-            m 3a "Don't worry, [player]."
-            m 1a "No use remembering it now."
-            m "Even if you had a bad time with it, it's not the most important thing to happen in your life."
-            m "You being able to create more wonderful memories is the important thing."
-            m 3e "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
-            m 1j "And now that I'm here with you, we can make them together~"
-        "It would've been better if you were there.":
-            m 1e "Aww, that's so sweet, [player]."
-            m 1j "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
-            m 1k "Ahaha!"
+                "It was bad.":
+                    m 1f "Is that so?"
+                    m "I understand that prom isn't for everyone."
+                    m 3e "Maybe if I was there, you would've enjoyed it more."
+                    m 1j "Ahaha~"
+                    m 3a "Don't worry, [player]."
+                    m 1a "No use remembering it now."
+                    m "Even if you had a bad time with it, it's not the most important thing to happen in your life."
+                    m "You being able to create more wonderful memories is the important thing."
+                    m 3e "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
+                    m 1j "And now that I'm here with you, we can make them together~"
+                "It would've been better if you were there.":
+                    m 1e "Aww, that's so sweet, [player]."
+                    m 1j "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
+                    m 1k "Ahaha!"
         "No.": 
             m "Oh? Why not?"
             menu:
