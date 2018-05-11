@@ -627,8 +627,8 @@ init -5 python in mas_sprites:
             subparts.append(LOC_REG)
 
         # now for the required parts
-        subparts.append(_ms_eyebrows(eyebrows, isnight, lean=lean))
         subparts.append(_ms_eyes(eyes, isnight, lean=lean))
+        subparts.append(_ms_eyebrows(eyebrows, isnight, lean=lean))
         subparts.append(_ms_nose(nose, isnight, lean=lean))
         subparts.append(_ms_mouth(mouth, isnight, lean=lean))
 
