@@ -5846,7 +5846,7 @@ label monika_fastfood:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="Dreaming",random=True))
 
 label monika_dreaming:
     m 1b "Did you know that it's possible to be aware of when you're having a dream?"
