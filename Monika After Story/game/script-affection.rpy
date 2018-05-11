@@ -335,22 +335,25 @@ label monika_affection_nickname:
                             m 3l "But since you came up with it, I'll accept it!"
                         else:
                             m 1k "Oh! That's a wonderful name!"
-                            # Stopping point #
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart~"
+                            m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
-                        m 2a "Okay then [player]!"
+                        m 2a "Okay, [player]!"
                         if m_name == "Monika":
-                            m 3b "I'll go back to being called 'Monika' again!"
+                            m 1j "I'll go back to my name, then."
                         else:
-                            m 3j "From now on, I'll be called {i}'[m_name]'{/i}, ehehe~"
+                            m 3j "From now on, you can call me {i}'[m_name]'{/i}."
+                            m 1k "Ehehe~"
                         $ done = True
                     else:
                         $ mas_loseAffection()
-                        m 1h "[player]! That's not nice at all!"
-                        m 2i "This was supposed to be something nice for both of us...why would you say such things?"
-                        m 1o "If you didn't want this you should have just said so."
-                        m 3q "...I don't like this idea any more..."
+                        m 4efd "[player]! That's not nice at all!"
+                        m 2efc "Why would you say such things?"
+                        m 2rfw "If you didn't want to do this, you should've just said so!"
+                        m 2dftdc "..."
+                        m 2lftsc "I don't like this idea anymore."
+                        m 2
+                        # Stopping point #
                         $ hideEventLabel("monika_affection_nickname",lock=False,depool=False)
                         $ done = True
 
