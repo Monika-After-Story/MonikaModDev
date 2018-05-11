@@ -286,38 +286,39 @@ label monika_affection_nickname:
         ]
 
 
-    m 1h "I've been thinking a bit lately [player]..."
-    m 1d "You know how there are potentially infinite Monikas right?"
+    m 1c "I've been thinking, [player]..."
+    m 3d "You know how there are potentially infinite Monikas right?"
     if renpy.seen_label('monika_clones'):
-        m 2m "We did discuss this before after all."
-    m 3a "Well I thought of a potential solution!"
-    m "Why not give me a nickname? It would make me the only Monika in the universe with that name."
-    m 3e "It would mean a lot to me if you were the one to choose it..."
-    m 3j "But I still get the final say!"
+        m 3a "We did discuss this before after all."
+    m 3a "Well, I thought of a solution!"
+    m "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
+    m 3e "And it would mean a lot if you choose one for me~"
+    m 3j "I'll still get the final say, though!"
     m "What do you say?"
     menu:
         "Yes":
             $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
             $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
             $ done = False
-            m 1a "Ok, just type 'Nevermind' if you change your mind, [player]."
+            m 1a "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 $ inputname = renpy.input("So what do you want to call me?",allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
                 $ lowername = inputname.lower()
                 #lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
-                    m 1f "Oh I see."
-                    m 1e "Well...that's a shame but it's okay. I like the name '[m_name]' anyway."
+                    m 1c "Oh, I see."
+                    m 1tkc "Well...that's a shame.
+                    m 3e "But that's okay. I like '[m_name]' anyway."
                     $ done = True
                 elif not lowername:
-                    m 1c "..."
+                    m 1m "..."
                     m 1l "You have to give me a name, [player]!"
-                    m 1m "I swear you're just so silly sometimes."
+                    m "I swear you're just so silly sometimes."
                     m 1e "Try again!"
                 elif lowername == player.lower():
                     m 1c "..."
-                    m 1m "That's your name [player]! Give me my own!"
-                    m 1a "Try again~"
+                    m 1n "That's your name, [player]! Give me my own!"
+                    m 1e "Try again~"
                 elif lowername == m_name.lower():
                     m 1c "..."
                     m 1l "I thought we were choosing a new name, silly."
@@ -327,13 +328,15 @@ label monika_affection_nickname:
                     if bad_nickname is None:
                         $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
-                            m "Ehehe~ Back to the classics?"
+                            m "Ehehe~ Back to the classics, I see."
                         elif good_nickname is None:
-                            m 1pp "...I can't say that I particularly like it..."
-                            m 2e "But since you came up with it I'll accept it!"
+                            m 1o "..."
+                            m 1p "I can't say that I particularly like it..."
+                            m 3l "But since you came up with it, I'll accept it!"
                         else:
-                            m 3b "Oh! That's a wonderful name!"
-                            m 3j "What a sweetheart you are."
+                            m 1k "Oh! That's a wonderful name!"
+                            # Stopping point #
+                            m 3ekbfa "Thank you, [player]. You're such a sweetheart~"
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
                         m 2a "Okay then [player]!"
