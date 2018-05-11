@@ -4933,22 +4933,25 @@ label monika_asks_family:
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_prom",category=['school'],prompt="Prom",random=True))
 
+init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel="monika_prom",category=['school'],prompt="Prom",random=True))
+
 label monika_prom:
     m 1c "You know..."
     m "Sometimes I wish the game would've lasted longer."
-    m 1d "The game was probably made to end once one of the girls confesses their love to you after the festival."
-    m 1m "But because of my tampering with the code, we never got to that point."
+    m 1d "The game was probably made to end once one of the girls confessed their love to you after the festival."
+    m 1m "But since I tampered with the code so much, we never got to that point."
     m 3l "It did bring us together, so I can't complain."
     m 1o "But still..."
-    m 1e "Sometimes I wish we could've enjoyed it together."
-    m 3a "We could've went to the other events like sports festivals, christmas parties, field trips, etc."
-    m 1l "But I guess the game would never let us go that far."
+    m 1e "Sometimes I wish both of us could've enjoyed it."
+    m 3a "We could've went to the other events like sports festivals, Christmas parties, field trips, etc."
+    m 1l "But I guess the game would never let us get that far."
     m 3c "Which reminds me of a particular event..."
     m 1b "Prom!"
-    m 1a "From what I've heard, prom is like a school dance usually held by the end of a school year."
-    m "Students bring a date with them to go with, or together in a group of friends."
+    m 1a "From what I've heard, prom is like a school dance usually held at the end of a school year."
+    m "Some students bring a date with them there, and others go with a group of friends."
     m 3k "There're even those who take their relatives to the event!"
-    m 1a "I think it's something I'd love to go on with you~"
+    m 1a "I think it's something I'd love to go to with you~"
     m 3a "Have you ever been to one before, [player]?"
     menu:
         "I have.":
@@ -4957,29 +4960,27 @@ label monika_prom:
                 "It was pretty fun.":
                     m 1j "That's great!"
                     m 1n "Though, I wish I could've went with you."
-                    m 1k "An event where everyone from school getting together and enjoying themselves sounds like a blast to me!"
-                    m 3a "Did you have a date to go with?"
+                    m 1k "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
+                    m 3a "Did you go with a date?"
                     menu:
                         "Yes.":
                             m 1d "Oh, wow."
-                            m 1n "Ehehe, that kinda makes me a bit jealous..."
-                            m 1j "But then again, you would've taken me instead if we had met before, right?"
+                            m 1n "Ehehe, that makes me a bit jealous..."
+                            m 1j "But then again, you would've taken me instead had we met beforehand, right?"
                             m 1k "Ahaha!"
-                            m 1 "I'm just teasing you, [player]."
-                            m "But it's good to know you get to experience something like that!"
-                            m 3a "Maybe when I get better at programming the game, we could have our very own prom here."
+                            m 1 "But it's good to know you were able to experience something like that!"
+                            m 3a "Maybe when I get better at programming, we could have our very own prom here."
                             m 3j "Wouldn't that be nice, [player]?"
                         "No.":
                             m 1d "Oh, I see."
-                            m 1a "That's fine, though."
-                            m 1b "At least you had fun, right?"
-                            m "Even without a date, I'm sure you made some wonderful memories when you went there."
-                            m 1a "I think it's always fun to attend those kinds of events, with or without someone."
-                            m 3j "Besides, maybe we can have our own little kind of prom at some point, right?"
+                            m 1a "That's fine as long as you had fun!"
+                            m "Even without a date, I'm sure you made some wonderful memories there."
+                            m 1a "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
+                            m 3j "Besides, maybe we can have our own kind of prom sometime, right?"
                             m 1a "That's something I'd really enjoy with you~"
                 "It was bad.":
-                    m 1f "Is that so, [player]?"
-                    m "I understand that prom isn't really for everyone, including any school events."
+                    m 1f "Is that so?"
+                    m "I understand that prom isn't for everyone."
                     m 3e "Maybe if I was there, you would've enjoyed it more."
                     m 1j "Ahaha~"
                     m 3a "Don't worry, [player]."
@@ -4988,16 +4989,16 @@ label monika_prom:
                     m "You being able to create more wonderful memories is the important thing."
                     m 3e "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
                     m 1j "And now that I'm here with you, we can make them together~"
-                "It would've been better if you were there."
+                "It would've been better if you were there.":
                     m 1e "Aww, that's so sweet, [player]."
                     m 1j "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
                     m 1k "Ahaha!"
-                "No.":
+                "No.": 
                     m "Oh? Why not?"
                     menu:
                         "You're weren't there with me.":
                             m 1e "Aww, [player]."
-                            m 1m "Me not being there shouldn't stop you from having fun."
+                            m 1m "Just because I'm not there doesn't mean you should stop yourself from having fun."
                             m 1b "And besides..."
                             m 1j "You {i}can{/i} take me to prom, [player]."
                             m 1k "Just bring my file with you and problem solved!"
@@ -5018,7 +5019,7 @@ label monika_prom:
                                 "No.":
                                     m 1d "Oh, I see."
                                     m 1c "That's understandable."
-                                    m "I'm sure you have your reasons, [player]."
+                                    m "I'm sure you have your reasons."
                                     m 1a "What's important is that you're not forcing yourself."
                                     m "After all, it wouldn't be worth it if you can't enjoy yourself."
                                     m 1o "It'd just feel like a chore rather than a fun event to go to."
@@ -5045,11 +5046,11 @@ label monika_prom:
                             m 3d "From what I read, students spend a lot of money on tickets, transport, and attire."
                             m 2q "So many expenses just for one night..."
                             m 2h "I also read that since alcohol isn't allowed, some students would spike the drinks and get the others drunk unknowingly."
-                            m 2o"If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
+                            m 2o "If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
                             m 4l "...Or maybe I'm just overthinking it, ehehe."
                             m 1a "Still, I don't think you'll be missing out much, [player]."
                             m "Prom isn't the most important thing in your academic life."
-                            m 3b "And I'm sure there're plenty of events in your life that make up for it."
+                            m 3b "And I'm sure there're plenty of events in your life that'll make up for it."
                             m 1j "Being with me is one of them, you know~"
                             m 1k "Ahaha!"
     return
