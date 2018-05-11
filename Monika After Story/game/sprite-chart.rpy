@@ -220,6 +220,7 @@ init -5 python in mas_sprites:
     ### [BLK003]
     # non leanable accessories
     lean_acs_blacklist = [
+#        "mug"
         "test"
     ]
 
@@ -304,11 +305,11 @@ init -5 python in mas_sprites:
             # monika is wearing a blacklisted accessory
             return True
 
-        if character.hair in mas_sprites.lean_hair_blacklist:
+        if character.hair in lean_hair_blacklist:
             # blacklisted hair
             return True
 
-        if character.clothes in mas_sprites.lean_clothes_blacklist:
+        if character.clothes in lean_clothes_blacklist:
             # blacklisted clothes
             return True
 
@@ -1603,7 +1604,8 @@ init -1 python:
     # Coffee mug that sits on Monika's desk
     mas_acs_mug = MASAccessory(
         "mug",
-        "mug"
+        "mug",
+        no_lean=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
     
