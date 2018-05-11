@@ -89,3 +89,147 @@ label mas_compliment_beautiful_3:
     m "Never forget that to me you're the most beautiful person"
     # TODO quip things could come in handy here
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_eyes",
+        prompt="... I love your eyes!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_eyes:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_awesome",
+        prompt="... you're awesome!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_awesome:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_intelligent",
+        prompt="... you're really intelligent!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_intelligent:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_smart",
+        prompt="... you're really smart!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_smart:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_hair",
+        prompt="... I love your hair!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_hair:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_fit",
+        prompt="... I love that you're fit!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_fit:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_thanks",
+        prompt="... Thanks for being here for me!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_thanks:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_smile",
+        prompt="... I love your smile!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_smile:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
