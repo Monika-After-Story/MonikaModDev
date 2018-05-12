@@ -298,4 +298,23 @@ label quit:
     if persistent._mas_hair_changed:
         $ persistent._mas_monika_hair = monika_chr.hair
         $ persistent._mas_monika_clothes = monika_chr.clothes
+
+    # accessory saving
+    python:
+        persistent._mas_acs_pre_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.PRE_ACS]
+            if acs.stay_on_start
+        ]
+        persistent._mas_acs_mid_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.MID_ACS]
+            if acs.stay_on_start
+        ]
+        persistent._mas_acs_pst_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.PST_ACS]
+            if acs.stay_on_start
+        ]
+
     return

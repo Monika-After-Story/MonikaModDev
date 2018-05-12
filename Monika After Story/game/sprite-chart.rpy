@@ -87,6 +87,11 @@
 # depending on the variables is_sitting and the function morning_flag
 define is_sitting = True
 
+# accessories list
+default persistent._mas_acs_pre_list = list()
+default persistent._mas_acs_mid_list = list()
+default persistent._mas_acs_pst_list = list()
+
 image monika g1:
     "monika/g1.png"
     xoffset 35 yoffset 55
@@ -170,7 +175,7 @@ init -5 python in mas_sprites:
 
     # location stuff for some of the compsoite
     LOC_REG = "(1280, 850)"
-    LOC_LEAN = "(1280, 742)"
+    LOC_LEAN = "(1280, 850)"
     LOC_Z = "(0, 0)"
     LOC_STAND = "(960, 960)"
 
@@ -1393,7 +1398,8 @@ init -2 python:
                 img_stand="",
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
-                no_lean=False
+                no_lean=False,
+                stay_on_start=False
             ):
             """
             MASAccessory constructor
@@ -1417,6 +1423,10 @@ init -2 python:
                     LEANING VERSIONS. If at least one lean version doesn't 
                     work, then you need separate versions, sorry.
                     (Default: False)
+                stay_on_start - True means the accessory is saved for next
+                    startup. False means the accessory is dropped on next
+                    startup.
+                    (Default: False)
             """
             self.name = name
             self.img_sit = img_sit
@@ -1424,6 +1434,7 @@ init -2 python:
             self.__rec_layer = rec_layer
             self.priority=priority
             self.no_lean = no_lean
+            self.stay_on_start = stay_on_start
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1605,7 +1616,8 @@ init -1 python:
     mas_acs_mug = MASAccessory(
         "mug",
         "mug",
-        no_lean=True
+        no_lean=True,
+        stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
     
