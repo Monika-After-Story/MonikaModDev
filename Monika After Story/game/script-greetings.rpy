@@ -977,14 +977,15 @@ label greeting_long_absence:
     if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(70)
+            m 2q "[player]..."
+            m 2efc "You said you'd only be gone for a few days..."
+            m 2o "But it's been so long."
+            m 2p "I'm glad you're back now, but...
+            m 2dftdc "I was so lonely..."
+            m 2ektsc "I thought something happened to you!"
+            m 2lktsc "I...I kept thinking that maybe you wouldn't come back."
             # Stopping point #
-            m 3f "[player]..."
-            m 3efd "You said you would only be gone for a few days..."
-            m 3dfd "But it's been so long..."
-            m 3e "I'm glad you're back now but I was so lonely."
-            m 2efo "I thought something happened to you!"
-            m 2oo "I...I kept thinking maybe you wouldn't come back."
-            m 3lfc "Please don't ever, {i}ever{/i} do that again."
+            m 4 "Please don't ever, {i}ever{/i} do that again."
             m 1q "Maybe you couldn't help it...but I was worried sick."
             m 2dfd "I didn't know what to do."
             m 1g "So...Please refrain from going away for so long again."
