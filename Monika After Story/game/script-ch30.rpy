@@ -856,4 +856,20 @@ label ch30_reset:
                 lockEventLabel(clothes_map[clothes])
             else:
                 unlockEventLabel(clothes_map[clothes])
+
+    # accessories rest
+    python:
+        for acs_name in persistent._mas_acs_pre_list:
+            monika_chr.acs[MASMonika.PRE_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_mid_list:
+            monika_chr.acs[MASMonika.MID_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_pst_list:
+            monika_chr.acs[MASMonika.PST_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+        )
+
     return

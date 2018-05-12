@@ -1,5 +1,6 @@
 # Monika's sprites!
-# To add a new image, please scroll to the IMAGE section (IMG002)
+# To add a new image, please scroll to the IMAGE section (IMG003)
+# Accesories are in (IMG002)
 #
 ###### SPRITE CODE (IMG001)
 #
@@ -86,6 +87,11 @@
 # depending on the variables is_sitting and the function morning_flag
 define is_sitting = True
 
+# accessories list
+default persistent._mas_acs_pre_list = list()
+default persistent._mas_acs_mid_list = list()
+default persistent._mas_acs_pst_list = list()
+
 image monika g1:
     "monika/g1.png"
     xoffset 35 yoffset 55
@@ -130,7 +136,7 @@ image monika g2:
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 
-init -1 python in mas_sprites:
+init -5 python in mas_sprites:
     # specific image generation functions
 
     # main art path
@@ -169,7 +175,7 @@ init -1 python in mas_sprites:
 
     # location stuff for some of the compsoite
     LOC_REG = "(1280, 850)"
-    LOC_LEAN = "(1280, 742)"
+    LOC_LEAN = "(1280, 850)"
     LOC_Z = "(0, 0)"
     LOC_STAND = "(960, 960)"
 
@@ -203,12 +209,28 @@ init -1 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
-    # non leanable clothes / hair
-    lean_blacklist = [
+    ### [BLK001]
+    # non leanable clothes 
+    lean_clothes_blacklist = [
+        "test"
+    ]
+    
+    ### [BLK002]
+    # non leanable hair
+    lean_hair_blacklist = [
         "down",
         "bun"
     ]
 
+    ### [BLK003]
+    # non leanable accessories
+    lean_acs_blacklist = [
+#        "mug"
+        "test"
+    ]
+
+    ## Accessory dictionary
+    ACS_MAP = dict()
 
     def acs_lean_mode(lean):
         """
@@ -242,6 +264,22 @@ init -1 python in mas_sprites:
         return PREFIX_FACE
 
 
+    def init_acs(mas_acs):
+        """
+        Initlializes the given MAS accessory into a dictionary map setting
+
+        IN:
+            mas_acs - MASAccessory to initialize
+        """
+        if mas_acs.name in ACS_MAP:
+            raise Exception(
+                "MASAccessory name '{0}' already exists.".format(mas_acs.name)
+            )
+
+        # otherwise, unique name
+        ACS_MAP[mas_acs.name] = mas_acs
+
+
     def night_mode(isnight):
         """
         Returns the appropriate night string
@@ -250,6 +288,38 @@ init -1 python in mas_sprites:
             return NIGHT_SUFFIX
 
         return ""
+
+
+    def should_disable_lean(lean, character):
+        """
+        Figures out if we need to disable the lean or not based on current
+        character settings
+
+        IN:
+            lean - lean type we want to do
+            character - MASMonika object
+
+        RETURNS:
+            True if we should disable lean, False otherwise
+        """
+        if lean is None:
+            return False
+
+        # otherwise check blacklist elements
+        if len(character.lean_acs_blacklist) > 0:
+            # monika is wearing a blacklisted accessory
+            return True
+
+        if character.hair in lean_hair_blacklist:
+            # blacklisted hair
+            return True
+
+        if character.clothes in lean_clothes_blacklist:
+            # blacklisted clothes
+            return True
+
+        # otherwise, this is good
+        return False
 
 
     # sprite maker functions
@@ -270,10 +340,18 @@ init -1 python in mas_sprites:
             accessory string
         """
         if issitting:
-            acs_str = acs.sit
+            acs_str = acs.img_sit
+
+        elif acs.img_stand:
+            acs_str = acs.img_stand
 
         else:
-            acs_str = acs.stand
+            # standing string is null or None
+            return ""
+
+        if acs.no_lean:
+            # the lean version is the same as regular
+            lean = None
 
         return "".join([
             LOC_Z,
@@ -555,8 +633,8 @@ init -1 python in mas_sprites:
             subparts.append(LOC_REG)
 
         # now for the required parts
-        subparts.append(_ms_eyebrows(eyebrows, isnight, lean=lean))
         subparts.append(_ms_eyes(eyes, isnight, lean=lean))
+        subparts.append(_ms_eyebrows(eyebrows, isnight, lean=lean))
         subparts.append(_ms_nose(nose, isnight, lean=lean))
         subparts.append(_ms_mouth(mouth, isnight, lean=lean))
 
@@ -726,7 +804,9 @@ init -1 python in mas_sprites:
             nose,
             mouth,
             isnight,
-            acs_list,
+            acs_pre_list,
+            acs_mid_list,
+            acs_pst_list,
             lean=None,
             arms="",
             eyebags=None,
@@ -746,7 +826,10 @@ init -1 python in mas_sprites:
             nose - type of nose
             mouth - type of mouth
             isnight - True will genreate night string, false will not
-            acs_list - list of MASAccessory objects to draw
+            acs_pre_list - sorted list of MASAccessories to draw prior to body
+            acs_mid_list - sorted list of MASAccessories to draw between body
+                and face
+            acs_pst_list - sorted list of MASAccessories to draw after face
             lean - type of lean
                 (Default: None)
             arms - type of arms
@@ -777,10 +860,12 @@ init -1 python in mas_sprites:
             L_COMP,
             "(",
             loc_str,
+            _ms_accessorylist(acs_pre_list, isnight, True, lean=lean),
             ",",
             LOC_Z,
             ",",
             _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
+            _ms_accessorylist(acs_mid_list, isnight, True, lean=lean),
             ",",
             LOC_Z,
             ",",
@@ -797,7 +882,7 @@ init -1 python in mas_sprites:
                 tears=tears,
                 emote=emote
             ),
-            _ms_accessorylist(acs_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pst_list, isnight, True, lean=lean),
             "),",
             ZOOM,
             ")"
@@ -816,6 +901,8 @@ init -1 python in mas_sprites:
             left - type of left side
             right - type of right side
             acs_list - list of MASAccessory objects
+                NOTE: this should the combined list because we don't have 
+                    layering in standing mode
 
         RETURNS:
             custom standing sprite
@@ -848,6 +935,8 @@ init -1 python in mas_sprites:
             left - type of left side
             right - type of right side
             acs_list - list of MASAccessory objects
+                NOTE: this should be the combined list because we don't have
+                    layering in standing mode
             single - type of single standing picture.
                 (Defualt: None)
 
@@ -1017,7 +1106,20 @@ init -2 python:
 
     # Monika character base
     class MASMonika(renpy.store.object):
-        def __init__(self):
+        import store.mas_sprites as mas_sprites 
+
+        # CONSTANTS
+        PRE_ACS = 0 # PRE ACCESSORY
+        MID_ACS = 1 # MID ACCESSORY
+        PST_ACS = 2 # post accessory
+
+        def __init__(self, pre_acs=[], mid_acs=[], pst_acs=[]):
+            """
+            IN:
+                pre_acs - list of pre accessories to load with
+                mid_acs - list of mid accessories to load with
+                pst_acs - list of pst accessories to load with
+            """
             self.name="Monika"
             self.haircut="default"
             self.haircolor="default"
@@ -1025,8 +1127,40 @@ init -2 python:
             self.lipstick="default" # i guess no lipstick
             self.clothes = "def" # default clothes is school outfit
             self.hair = "def" # default hair is the usual whtie ribbon
-            self.acs = [] # accesories
+
+            # list of lean blacklisted accessory names currently equipped
+            self.lean_acs_blacklist = []
+
+            # accesories to be rendereed before the body
+            self.acs_pre = [] 
+
+            # accessories to be rendreed between body and face expressions
+            self.acs_mid = []
+
+            # accessories to be rendered last
+            self.acs_post = []
+
             self.hair_hue=0 # hair color?
+
+            # setup acs dict
+            self.acs = {
+                self.PRE_ACS: self.acs_pre,
+                self.MID_ACS: self.acs_mid,
+                self.PST_ACS: self.acs_post
+            }
+
+
+        def __get_acs(self, acs_type):
+            """
+            Returns the accessory list associated with the given type
+
+            IN:
+                acs_type - the accessory type to get
+
+            RETURNS:
+                accessory list, or None if the given acs_type is not valid
+            """
+            return self.acs.get(acs_type, None)
 
 
         def change_clothes(self, new_cloth):
@@ -1083,7 +1217,31 @@ init -2 python:
             RETURNS:
                 True if wearing accessory, false if not
             """
-            return accessory in self.acs
+            return (
+                self.is_wearing_acs_in(accessory, self.PST_ACS)
+                or self.is_wearing_acs_in(accessory, self.MID_ACS)
+                or self.is_wearing_acs_in(accessory, self.PRE_ACS)
+            )
+
+        
+        def is_wearing_acs_in(self, accessory, acs_type):
+            """
+            Checks if the currently wearing the given accessory as the given
+            accessory type
+
+            IN:
+                accessory - accessory to check
+                acs_type - accessory type to check
+
+            RETURNS:
+                True if wearing accessory, False if not
+            """
+            acs_list = self.__get_acs(acs_type)
+
+            if acs_list is not None:
+                return accessory in acs_list
+
+            return False
 
 
         def reset_all(self):
@@ -1097,20 +1255,56 @@ init -2 python:
 
         def remove_acs(self, accessory):
             """
-            Removes the given accessory
+            Removes the given accessory from all the accessory lists
 
             IN:
                 accessory - accessory to remove
             """
-            if accessory in self.acs:
-                self.acs.remove(accessory)
+            self.remove_acs_in(accessory, self.PRE_ACS)
+            self.remove_acs_in(accessory, self.MID_ACS)
+            self.remove_acs_in(accessory, self.PST_ACS)
+
+
+        def remove_acs_in(self, accessory, acs_type):
+            """
+            Removes the given accessory from the given accessory list type
+
+            IN:
+                accessory - accessory to remove
+                acs_type - ACS type
+            """
+            acs_list = self.__get_acs(acs_type)
+
+            if acs_list is not None and accessory in acs_list:
+                acs_list.remove(accessory)
+
+            if accessory.name in self.lean_acs_blacklist:
+                self.lean_acs_blacklist.remove(accessory.name)
 
 
         def remove_all_acs(self):
             """
-            Removes all accessories
+            Removes all accessories from all accessory lists
             """
-            self.acs = list()
+            self.remove_all_acs_in(self.PRE_ACS)
+            self.remove_all_acs_in(self.MID_ACS)
+            self.remove_all_acs_in(self.PST_ACS)
+
+
+        def remove_all_acs_in(self, acs_type):
+            """
+            Removes all accessories from the given accessory type
+
+            IN:
+                acs_type - ACS type to remove all
+            """
+            if acs_type in self.acs:
+                # need to clear blacklisted
+                for acs in self.acs[acs_type]:
+                    if acs.name in self.lean_acs_blacklist:
+                        self.lean_acs_blacklist.remove(acs.name)
+
+                self.acs[acs_type] = list()
 
 
         def reset_clothes(self):
@@ -1135,67 +1329,146 @@ init -2 python:
             self.reset_hair()
 
 
-        def wear_acs(self, accessory):
+        def wear_acs_in(self, accessory, acs_type):
             """
             Wears the given accessory
 
             IN:
                 accessory - accessory to wear
+                acs_type - accessory type (location) to wear this accessory
             """
-            self.acs.wear(accessory)
+            acs_list = self.__get_acs(acs_type)
+
+            if acs_list is not None:
+                acs_list.append(accessory)
+                
+                if accessory.name in mas_sprites.lean_acs_blacklist:
+                    self.lean_acs_blacklist.append(accessory.name)
+
+
+        def wear_acs_pre(self, acs):
+            """
+            Wears the given accessory in the pre body accessory mode
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, self.PRE_ACS)
+
+
+        def wear_acs_mid(self, acs):
+            """
+            Wears the given accessory in the mid body acessory mode
+
+            IN:
+                acs - acessory to wear
+            """
+            self.wear_acs_in(acs, self.MID_ACS)
+
+
+        def wear_acs_pst(self, acs):
+            """
+            Wears the given accessory in the post body accessory mode
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, self.PST_ACS)
 
 
     # hues, probably not going to use these
-    hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
-                        0, 1, 0, 0, 0,
-                        0, 0, 1, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    hair_hue2 = im.matrix([ 3.734, 0, 0, 0, 0,
-                        0, 3.531, 0, 0, 0,
-                        0, 0, 1.375, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    hair_hue3 = im.matrix([ 3.718, 0, 0, 0, 0,
-                        0, 3.703, 0, 0, 0,
-                        0, 0, 3.781, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    hair_hue4 = im.matrix([ 3.906, 0, 0, 0, 0,
-                        0, 3.671, 0, 0, 0,
-                        0, 0, 3.375, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    skin_hue1 = hair_hue1
-    skin_hue2 = im.matrix([ 0.925, 0, 0, 0, 0,
-                        0, 0.840, 0, 0, 0,
-                        0, 0, 0.806, 0, 0,
-                        0, 0, 0, 1, 0 ])
-    skin_hue3 = im.matrix([ 0.851, 0, 0, 0, 0,
-                        0, 0.633, 0, 0, 0,
-                        0, 0, 0.542, 0, 0,
-                        0, 0, 0, 1, 0 ])
-
-    hair_huearray = [hair_hue1,hair_hue2,hair_hue3,hair_hue4]
-
-    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
+#    hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
+#                        0, 1, 0, 0, 0,
+#                        0, 0, 1, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    hair_hue2 = im.matrix([ 3.734, 0, 0, 0, 0,
+#                        0, 3.531, 0, 0, 0,
+#                        0, 0, 1.375, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    hair_hue3 = im.matrix([ 3.718, 0, 0, 0, 0,
+#                        0, 3.703, 0, 0, 0,
+#                        0, 0, 3.781, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    hair_hue4 = im.matrix([ 3.906, 0, 0, 0, 0,
+#                        0, 3.671, 0, 0, 0,
+#                        0, 0, 3.375, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    skin_hue1 = hair_hue1
+#    skin_hue2 = im.matrix([ 0.925, 0, 0, 0, 0,
+#                        0, 0.840, 0, 0, 0,
+#                        0, 0, 0.806, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#    skin_hue3 = im.matrix([ 0.851, 0, 0, 0, 0,
+#                        0, 0.633, 0, 0, 0,
+#                        0, 0, 0.542, 0, 0,
+#                        0, 0, 0, 1, 0 ])
+#
+#    hair_huearray = [hair_hue1,hair_hue2,hair_hue3,hair_hue4]
+#
+#    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
 
 
     # instead of clothes, these are accessories
     class MASAccessory(renpy.store.object):
+        """
+        MASAccesory objects
+
+        PROPERTIES:
+            name - name of the accessory
+            img_sit - filename of the sitting version of the accessory
+            img_stand - filename of the standing version of the accessory
+            priority - render priority of the accessory. Lower is rendred
+                first
+        """
+
+
         def __init__(self,
                 name,
-                sit,
-                stand=None,
+                img_sit,
+                img_stand="",
+                rec_layer=MASMonika.PST_ACS,
                 priority=10,
-                can_strip=True
+                no_lean=False,
+                stay_on_start=False
             ):
-            self.name=name
-            self.sit = sit
-            if stand is None:
-                stand = sit
-            self.stand = stand
+            """
+            MASAccessory constructor
+
+            IN:
+                name - name of this accessory
+                img_sit - file name of the sitting image
+                img_stand - file name of the standing image
+                    IF this is not passed in, we assume the standing version
+                        has no accessory. 
+                    (Default: "")
+                rec_layer - recommended layer to place this accessory
+                    (Must be one the ACS types in MASMonika)
+                    (Default: MASMonika.PST_ACS)
+                priority - render priority. Lower is rendered first
+                    (Default: 10)
+                no_lean - True means the leaning versions are the same as the
+                    regular versions (which means we don't need lean variants)
+                    False means otherwise
+                    NOTE: This means that the non-lean version works for ALL
+                    LEANING VERSIONS. If at least one lean version doesn't 
+                    work, then you need separate versions, sorry.
+                    (Default: False)
+                stay_on_start - True means the accessory is saved for next
+                    startup. False means the accessory is dropped on next
+                    startup.
+                    (Default: False)
+            """
+            self.name = name
+            self.img_sit = img_sit
+            self.img_stand = img_stand
+            self.__rec_layer = rec_layer
             self.priority=priority
+            self.no_lean = no_lean
+            self.stay_on_start = stay_on_start
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
-            self.can_strip=can_strip
+#            self.can_strip=can_strip
 
         @staticmethod
         def get_priority(acs):
@@ -1205,6 +1478,15 @@ init -2 python:
             This is for sorting
             """
             return acs.priority
+
+        def get_rec_layer(self):
+            """
+            Returns the recommended layer ofr this accessory
+
+            RETURNS:
+                recommend MASMOnika accessory type for this accessory
+            """
+            return self.__rec_layer
 
 
     # The main drawing function...
@@ -1278,19 +1560,26 @@ init -2 python:
                 (Default: None)
         """
 
-        # accessories have a priority
-        acs_list=sorted(character.acs, key=MASAccessory.get_priority)
+        # gather accessories
+        unsort_pre = character.acs.get(MASMonika.PRE_ACS, [])
+        unsort_mid = character.acs.get(MASMonika.MID_ACS, [])
+        unsort_pst = character.acs.get(MASMonika.PST_ACS, [])
+
+        # and generate a big list
+        unsort_all = list(unsort_pre)
+        unsort_all.extend(unsort_mid)
+        unsort_all.extend(unsort_pst)
+
+        # sort the accessories
+        acs_pre_list = sorted(unsort_pre, key=MASAccessory.get_priority)
+        acs_mid_list = sorted(unsort_mid, key=MASAccessory.get_priority)
+        acs_pst_list = sorted(unsort_pst, key=MASAccessory.get_priority)
+        acs_all_list = sorted(unsort_all, key=MASAccessory.get_priority)
 
         # are we sitting or not
         if is_sitting:
 
-            if (
-                    lean
-                    and (
-                        character.clothes in store.mas_sprites.lean_blacklist
-                        or character.hair in store.mas_sprites.lean_blacklist
-                    )
-                ):
+            if store.mas_sprites.should_disable_lean(lean, character):
                 # set lean to None if its on the blacklist
                 lean = None
 
@@ -1302,7 +1591,9 @@ init -2 python:
                 nose,
                 mouth,
                 not morning_flag,
-                acs_list,
+                acs_pre_list,
+                acs_mid_list,
+                acs_pst_list,
                 lean=lean,
                 arms=arms,
                 eyebags=eyebags,
@@ -1320,7 +1611,7 @@ init -2 python:
                 head,
                 left,
                 right,
-                acs_list,
+                acs_all_list,
                 single=single
             )
 
@@ -1332,7 +1623,36 @@ init -2 python:
 # Monika
 define monika_chr = MASMonika()
 
-#### IMAGE START (IMG002)
+init -1 python:
+    # ACCESSORIES (IMG002)
+    # Accessories are reprsentation of image objects with properties
+    # Pleaes refer to MASAccesory to understand all the properties
+    # 
+    # NAMING SCHEME:
+    # mas_acs_<accessory name>
+    #
+    # <accessory name> MUST BE UNIQUE
+    #
+    # NOTE: pleaes preface each accessory with the following commen template
+    # this is to ensure we hvae an accurate description of what each accessory
+    # is:
+    ### HUMAN UNDERSTANDABLE NAME OF ACCESSORY
+    ## accessoryidentifiername
+    # General description of what the object is, where it is located
+
+    ### COFFEE MUG
+    ## mug
+    # Coffee mug that sits on Monika's desk
+    mas_acs_mug = MASAccessory(
+        "mug",
+        "mug",
+        no_lean=True,
+        stay_on_start=True
+    )
+    store.mas_sprites.init_acs(mas_acs_mug)
+    
+
+#### IMAGE START (IMG003)
 # Image are created using a DynamicDisplayable to allow for runtime changes
 # to sprites without having to remake everything. This saves us on image
 # costs.
