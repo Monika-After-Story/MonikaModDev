@@ -79,8 +79,8 @@ image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mas
 
 # big thanks to sebastianN01 for the rain art!
 image rain_mask_left = Movie(
-    channel="window_5", 
-    play="mod_assets/window_5.webm", 
+    channel="window_5",
+    play="mod_assets/window_5.webm",
     mask=None,
     image="mod_assets/window_5_fallback.png"
 )
@@ -146,8 +146,8 @@ init python:
 
     # we need a new music channel for background audio (like rain!)
     renpy.music.register_channel(
-        "background", 
-        mixer="music", 
+        "background",
+        mixer="music",
         loop=True,
         stop_on_mute=True,
         tight=True
@@ -259,7 +259,7 @@ init python:
         game.
 
         ASSUMES:
-            morning_flag 
+            morning_flag
             mas_is_raining
         """
         if mas_is_raining:
@@ -414,7 +414,7 @@ label pick_a_game:
             import datetime
             _hour = datetime.timedelta(hours=1)
             _now = datetime.datetime.now()
-            
+
             # chess has timed disabling
             if persistent._mas_chess_timed_disable is not None:
                 if _now - persistent._mas_chess_timed_disable >= _hour:
@@ -579,7 +579,12 @@ label ch30_autoload:
         else:
             python:
 
-                sel_greeting_event = store.mas_greetings.selectGreeting()
+                # we select a greeting depending on the type that we should select
+                sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+
+                # reset the greeting type flag back to None
+                persistent._mas_greeting_type = None
+
                 selected_greeting = sel_greeting_event.eventlabel
 
                 # store if we have to skip visuals ( used to prevent visual bugs)
@@ -660,7 +665,7 @@ label ch30_loop:
 
     else:
         $ mas_skip_visuals = False
-    
+
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
@@ -795,7 +800,7 @@ label ch30_reset:
     # reset mas mood bday
     python:
         if (
-                persistent._mas_mood_bday_last 
+                persistent._mas_mood_bday_last
                 and persistent._mas_mood_bday_last < today
             ):
             persistent._mas_mood_bday_last = None
@@ -811,8 +816,8 @@ label ch30_reset:
             lockEventLabel("monika_rain_stop")
 #            lockEventLabel("monika_rain_holdme")
             unlockEventLabel("monika_rain")
-            
-       
+
+
     # reset hair / clothes
     python:
         # setup hair / clothes
@@ -834,7 +839,7 @@ label ch30_reset:
                 # "bun": "monika_hair_bun"
             }
 
-          
+
             for hair in hair_map:
                 # this is so we kind of automate the locking / unlocking prcoess
                 if hair == monika_chr.hair:
@@ -855,4 +860,20 @@ label ch30_reset:
                 lockEventLabel(clothes_map[clothes])
             else:
                 unlockEventLabel(clothes_map[clothes])
+
+    # accessories rest
+    python:
+        for acs_name in persistent._mas_acs_pre_list:
+            monika_chr.acs[MASMonika.PRE_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_mid_list:
+            monika_chr.acs[MASMonika.MID_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_pst_list:
+            monika_chr.acs[MASMonika.PST_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+        )
+
     return
