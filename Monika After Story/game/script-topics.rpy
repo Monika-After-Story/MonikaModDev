@@ -4,10 +4,46 @@
 #or date-dependent event with an appropriate action
 
 define monika_random_topics = []
+define mas_rev_unseen = []
+define mas_rev_seen = []
+define mas_rev_mostseen = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
+
+init -2 python in mas_topics:
+  
+    # CONSTANTS
+    # most / top weights
+    S_MOST_SEEN = 0.1
+    S_TOP_SEEN = 0.2
+
+    # selection weights (out of 100)
+    UNSEEN = 50
+    SEEN = UNSEEN + 49
+    MOST_SEEN = SEEN + 1
+
+    def topSeenEvents(sorted_ev_list, shown_count):
+        """
+        counts the number of events with a > shown_count than the given
+        shown_count
+
+        IN:
+            sorted_ev_list - an event list sorted by shown_counts
+            shown_count - shown_count to compare to
+
+        RETURNS:
+            number of events with shown_counts that are higher than the given
+            shown_count
+        """
+        index = len(sorted_ev_list) - 1
+        ev_count = 0
+        while index >= 0 and sorted_ev_list[index].shown_count > shown_count:
+            ev_count += 1
+            index -= 1
+
+        return ev_count
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -29,6 +65,187 @@ init -1 python:
             if renpy.seen_label(pool[index]):
                 pool.pop(index)
 
+
+    def mas_randomSelectAndRemove(sel_list):
+        """
+        Randomly selects an element from the given list
+        This also removes the element from that list.
+
+        IN:
+            sel_list - list to select from
+
+        RETURNS:
+            selected element
+        """
+        endpoint = len(sel_list) - 1
+        
+        if endpoint < 0:
+            return None
+
+        # otherwise we have at least 1 element
+        return sel_list.pop(renpy.random.randint(0, endpoint))
+
+
+    def mas_randomSelectAndPush(sel_list):
+        """
+        Randomly selects an element from the the given list and pushes the event
+        This also removes the element from that list.
+
+        IN:
+            sel_list - list to select from
+
+        ASSUMES:
+            persistent.random_seen
+        """
+        sel_ev = mas_randomSelectAndRemove(sel_list)
+        if sel_ev:
+            pushEvent(sel_ev.eventlabel)
+            persistent.random_seen += 1
+
+
+    def mas_insertSort(sort_list, item, key):
+        """
+        Performs a round of insertion sort.
+        This does least to greatest sorting
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+            key - function to call using the given item to retrieve sort key
+
+        OUT:
+            sort_list - list with 1 additonal element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and key(sort_list[index]) > key(item):
+            index -= 1
+            
+        sort_list.insert(index + 1, item)
+
+
+    def mas_splitSeenEvents(sorted_seen):
+        """
+        Splits the seen_list into seena nd most seen
+
+        IN:
+            sorted_seen - list of seen events, sorted by shown_count
+
+        RETURNS:
+            tuple of thef ollowing format:
+            [0] - seen list of events
+            [1] - most seen list of events
+        """
+        if len(sorted_seen) == 0:
+            return ([], [])
+
+        # now calculate the most / top seen counts
+        most_count = int(len(sorted_seen) * store.mas_topics.S_MOST_SEEN)
+        top_count = store.mas_topics.topSeenEvents(
+            sorted_seen, 
+            int(
+                sorted_seen[len(sorted_seen) - 1].shown_count 
+                * store.mas_topics.S_TOP_SEEN
+            )
+        )
+
+        # now decide how to do the split
+        if most_count < top_count:
+            split_point = most_count * -1
+        else:
+            split_point = top_count * -1
+
+        # and then do the split
+        return (sorted_seen[:split_point], sorted_seen[split_point:])
+
+
+    def mas_splitRandomEvents(events_dict):
+        """
+        Splits the given random events dict into 2 lists of events
+        NOTE: cleans the seen list
+
+        RETURNS:
+            tuple of the following format:
+            [0] - unseen list of events
+            [1] - seen list of events, sorted by shown_count
+
+        """
+        # split these into 2 lists
+        unseen = list()
+        seen = list()
+        for k in events_dict:
+            ev = events_dict[k]
+
+            if renpy.seen_label(k):
+                # seen event
+                mas_insertSort(seen, ev, Event.getSortShownCount)
+
+            else:
+                # unseen event
+                unseen.append(ev)
+
+        # clean the seen_topics list
+        seen = mas_cleanJustSeenEV(seen)
+
+        return (unseen, seen)
+
+
+    def mas_buildEventLists():
+        """
+        Builds the unseen / most seen / seen event lists
+
+        RETURNS:
+            tuple of the following format:
+            [0] - unseen list of events
+            [1] - seen list of events
+            [2] - most seen list of events
+
+        ASSUMES:
+            evhand.event_database
+        """
+        # retrieve all randoms
+        all_random_topics = Event.filterEvents(
+            evhand.event_database,
+            random=True
+        )
+
+        # split randoms into unseen and sorted seen events
+        unseen, sorted_seen = mas_splitRandomEvents(all_random_topics)
+
+        # split seen into regular seen and the most seen events
+        seen, mostseen = mas_splitSeenEvents(sorted_seen)
+
+        return (unseen, seen, mostseen)
+
+
+    def mas_buildSeenEventLists():
+        """
+        Builds the seen / most seen event lists
+
+        RETURNS:
+            tuple of the following format:
+            [0] - seen list of events
+            [1] - most seen list of events
+
+        ASSUMES:
+            evhand.event_database
+        """
+        # retrieve all seen (values list)
+        all_seen_topics = Event.filterEvents(
+            evhand.event_database,
+            random=True,
+            seen=True
+        ).values()
+
+        # clean the seen topics from early repeats
+        cleaned_seen = mas_cleanJustSeenEV(all_seen_topics)
+
+        # sort the seen by shown_count
+        cleaned_seen.sort(key=Event.getSortShownCount)
+
+        # split the seen into regular seen and most seen
+        return mas_splitSeenEvents(cleaned_seen)
+
+
     # EXCEPTION CLass incase of bad labels
     class MASTopicLabelException(Exception):
         def __init__(self, msg):
@@ -37,15 +254,18 @@ init -1 python:
             return "MASTopicLabelException: " + self.msg
 
 init 11 python:
-    #List of all random topics
-    all_random_topics = Event.filterEvents(evhand.event_database,random=True,seen=False).keys()
+
+    # sort out the seen / most seen / unseen
+    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
 
     # for compatiblity purposes:
-    monika_random_topics = all_random_topics
+#    monika_random_topics = all_random_topics
 
-    if len(monika_random_topics) == 0:
+    if len(mas_rev_unseen) == 0:
         # you've seen everything?! here, higher session limit
-        random_seen_limit = 100
+        # NOTE: 1000 is arbitrary. Basically, endless monika topics
+        # I think we'll deal with this better once we hve a sleeping sprite
+        random_seen_limit = 1000
 
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
@@ -935,9 +1155,9 @@ label monika_yuri:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip",category=['writing tips'],prompt="Writing Tip #1",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #1",pool=True))
 
-label monika_writingtip:
+label monika_writingtip1:
     m 1a "You know, it's been a while since we've done one of these..."
     m 1j "...so let's go for it!"
     m 3b "Here's Monika's Writing Tip of the Day!"
@@ -3414,9 +3634,9 @@ label monika_closet:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip2",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip1')",action=EV_ACT_POOL))
 
-label monika_writingtip1:
+label monika_writingtip2:
     m 3a "You know..."
     m "We really don't do enough of these, so here's another one!"
     m 3b "Here's Monika's Writing Tip of the Day!"
@@ -4545,9 +4765,9 @@ label monika_otaku:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip3",category=['writing tips'],prompt="Writing tip #3",conditional="seen_event('monika_writingtip2')",action=EV_ACT_POOL))
 
-label monika_write:
+label monika_writingtip3:
     m 1a "I'm having fun doing these, so..."
     m 3b "Here's Monika's Writing Tip of the Day!"
     m 1a "Make sure you always write down any ideas you think of."
@@ -4570,7 +4790,7 @@ label monika_write:
     return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",conditional="seen_event('monika_writingtip3')",action=EV_ACT_POOL))
 
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
@@ -4592,7 +4812,7 @@ label monika_writingtip4:
      return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
 
 label monika_writingtip5:
      m 3b "Here's Monika's Writing Tip of the Day!"
@@ -5009,7 +5229,7 @@ label monika_omamori:
     m 1d "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
     m 1k "Oh gosh, this is turning out to be a bit silly, now that I think about it."
     m "I mean, would doing this make me some sort of deity?"
-    m 1a "I just feel like it would be a nice alternative for you if wanted to bring me around."
+    m 1a "I just feel like it would be a nice alternative if you wanted to bring me around."
     m "Especially if you don't have a flash drive."
     m 1j "It isn't perfect, but it's the thought that counts, [player]."
     m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
@@ -5121,7 +5341,7 @@ label monika_asks_family:
                     m 2d "Maybe you get much more attention from your parents. Unless they were always busy."
                     m 4c "On the other hand, maybe you feel more lonely than those with siblings."
                     m 2h "I can definitely understand that feeling."
-                    m 2j "But know that I'll always be with you no matter, [player]."
+                    m 2j "But know that I'll always be with you no matter what, [player]."
         "My family is a mess.":
             m 1d "Oh."
             m 1o "..."
@@ -5755,7 +5975,7 @@ label monika_challenge:
     m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
     m 2b "Can you think of a time you've challenged yourself, [player]?"
     m "Did you ever overcome it, or did you just give up?"
-    m 1a "I'm sure you've gave it all you had."
+    m 1a "I'm sure you've given it all you had."
     m "You seem like a very determined person to me."
     m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
     m "You can always come back to it after all."
@@ -5772,7 +5992,7 @@ label monika_familygathering:
     m "Most families usually get together around the holidays to celebrate them together."
     m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
-    m 1p "Not even around the holidays or on special occassions."
+    m 1p "Not even around the holidays or on special occasions."
     m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
     m 1k "I'd love to meet all of your relatives."
     menu:
@@ -5846,7 +6066,7 @@ label monika_fastfood:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="Dreaming",random=True))
 
 label monika_dreaming:
     m 1b "Did you know that it's possible to be aware of when you're having a dream?"

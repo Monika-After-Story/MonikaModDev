@@ -94,6 +94,12 @@ label vv_updates_topics:
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
 
+        # 0.8.0 -> 0.8.1
+        updates.topics[vv0_8_1] = {
+            "monika_write": "monika_writingtip3",
+            "mas_random_ask": None
+        }
+
         # 0.7.4 -> 0.8.0
         updates.topics[vv0_8_0] = {
             "monika_love2": None

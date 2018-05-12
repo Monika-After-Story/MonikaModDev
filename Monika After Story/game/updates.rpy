@@ -61,6 +61,45 @@ init python:
             Event.INIT_LOCKDB.pop(topicID)
 
 
+    def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
+        """
+        Transfers a topic's data from the old topic ID to the new one int he
+        given database as well as the lock database.
+
+        NOTE: If the new topic ID already exists in the given databases,
+        the data is OVERWRITTEN
+
+        IN:
+            old_topicID - old topic ID to transfer
+            new_topicID - new topic ID to receieve
+            per_eventDB - persistent databse this topic is in
+        """
+        if old_topicID in per_eventDB:
+
+            # listify old data so we can replace the eventlabel attribute
+            # EVENTLABEL is piece 0. NOTE: PLEASE DO NOT CHANGE
+            old_data = list(per_eventDB.pop(old_topicID))
+            old_data[0] = new_topicID
+            per_eventDB[new_topicID] = tuple(old_data)
+
+        if old_topicID in Event.INIT_LOCKDB:
+            Event.INIT_LOCKDB[new_topicID] = Event.INIT_LOCKDB.pop(old_topicID)
+
+
+    def mas_transferTopicSeen(old_topicID, new_topicID):
+        """
+        Tranfers persistent seen ever data. This is separate because of complex
+        topic adjustments
+
+        IN:
+            old_topicID - old topic ID to tranfer
+            new_topicID - new topic ID to receieve
+        """
+        if old_topicID in persistent._seen_ever:
+            persistent._seen_ever.pop(old_topicID)
+            persistent._seen_ever[new_topicID] = True
+
+
     def adjustTopicIDs(changedIDs,updating_persistent=persistent):
         #
         # Changes labels in persistent._seen_ever
@@ -221,6 +260,56 @@ label v0_8_1(version="v0_8_1"):
         if m_ff:
             hideEvent(m_ff, derandom=True)
             m_ff.pool = True
+
+        # regular topic update
+        persistent = updateTopicIDs(version)
+
+        ## writing topic adjustments
+
+        # writing tip 5
+        writ_5 = evhand.event_database.get("monika_writingtip5", None)
+        if writ_5 and not renpy.seen_label(writ_5.eventlabel):
+            writ_5.pool = False
+            writ_5.conditional = "seen_event('monika_writingtip4')"
+            writ_5.action = EV_ACT_POOL
+
+        # writing tip 4
+        writ_4 = evhand.event_database.get("monika_writingtip4", None)
+        if writ_4 and not renpy.seen_label(writ_4.eventlabel):
+            writ_4.pool = False
+            writ_4.conditional = "seen_event('monika_writingtip3')"
+            writ_4.action = EV_ACT_POOL
+
+        # writing tip 3
+        mas_transferTopic(
+            "monika_write", 
+            "monika_writingtip3",
+            persistent.event_database
+        )
+        writ_3 = evhand.event_database.get("monika_writingtip3", None)
+        if writ_3 and not renpy.seen_label(writ_3.eventlabel):
+            writ_3.pool = False
+            writ_3.conditional = "seen_event('monika_writingtip2')"
+            writ_3.action = EV_ACT_POOL
+
+        # writing tip 2
+        old_t = "monika_writingtip1"
+        new_t = "monika_writingtip2"
+        mas_transferTopicSeen(old_t, new_t)
+        mas_transferTopic(old_t, new_t, persistent.event_database)
+        writ_2 = evhand.event_database.get(new_t, None)
+        if writ_2 and not renpy.seen_label(new_t):
+            writ_2.conditional = "seen_event('monika_writingtip1')"
+
+        # writing tip 1
+        old_t = "monika_writingtip"
+        new_t = "monika_writingtip1"
+        mas_transferTopicSeen(old_t, new_t)
+        mas_transferTopic(old_t, new_t, persistent.event_database)
+      
+        ## dropping repeats
+        persistent._mas_enable_random_repeats = None
+        persistent._mas_monika_repeated_herself = None
 
     return
 
