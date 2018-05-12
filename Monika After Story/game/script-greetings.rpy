@@ -977,6 +977,7 @@ label greeting_long_absence:
     if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(70)
+            # Stopping point #
             m 3f "[player]..."
             m 3efd "You said you would only be gone for a few days..."
             m 3dfd "But it's been so long..."
