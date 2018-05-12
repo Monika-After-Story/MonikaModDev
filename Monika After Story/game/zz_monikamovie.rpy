@@ -1,5 +1,19 @@
-label ch30_monikamovie:
+# Watch a movie module
+#
+
+label mas_monikamovie:
     init python:
+
+        # pane constants
+        MOVIE_X = 680
+        MOVIE_Y = 40
+        MOVIE_W = 450
+        MOVIE_H = 640
+        MOVIE_XALIGN = -0.05
+        MOVIE_AREA = (MOVIE_X, MOVIE_Y, MOVIE_W, MOVIE_H)
+        MOVIE_RETURN = "I changed my mind"
+
+
         gamedir = os.path.normpath(config.gamedir)
 
         ## CLASS DEFINITIONS ##
@@ -25,8 +39,8 @@ label ch30_monikamovie:
                         firstWord = partialSplittedSentence[0]
                         data = partialSplittedSentence[1]
                     if "movie" in firstWord:
-                        self.listOfMovies.append(data)
-            
+                        self.listOfMovies.append((data, data, False, False))
+
             def searchMovies(self, movieName):
                 foundMovies = []
                 for xName in self.listOfMovies:
@@ -192,64 +206,32 @@ label ch30_monikamovie:
         lastCountdownTime = 0 #Used as global variable, use with caution
         firstComment = False
         timer = MovieTimer()
-
-
-
+    # final quit item
+    $ final_item = (MOVIE_RETURN, False, False, False, 20)
 
     $ listMovies = AvaiableMovies()
 
     m 1b "You want to see a movie?"
+
     label mm_choose_movie:
-        menu:
-            "Can you tell me the name?"
-            "Yes":
-                python:
-                    player_dialogue = renpy.input('What is it? ',default='',pixel_width=720,length=50)
-                    allFilms = listMovies.searchMovies(player_dialogue)
-                    foundAnyFilm = len(allFilms) > 0
-                if foundAnyFilm:
-                    while(len(allFilms)>0):
-                        $ renpy.say(eval("m"), "I've found a film named %s" % (allFilms[0]) )
-                        menu:
-                            "You want to see this one?"
-                            "Yes":
-                                m 1b "Nice! I wanted to see this one with you."
-                                $ movieInformation = ParsedMovie(allFilms[0])
-                                jump mm_found_movie
-                            "No":
-                                $ allFilms.pop(0)
-                                m 1a "Let me search again."
-                    m 1l "Sorry, [player], I can't find any movies with that name."
-                    show monika 1a
-                else:
-                    m 1f "I didn't find any movie with that name, [player]. Sorry."
-                m "Maybe we should try with another one"
-                jump mm_choose_movie
 
-            "Which films can you see?":
-                m 1a "Let me see..."
-                python:
-                    LENGTH_RESTRICTION = 70
-                    movieBuffer = ""
-                    while(len(listMovies.listOfMovies) > 0):
-                        movieBuffer += listMovies.listOfMovies.pop(0)
-                        if len(movieBuffer) > LENGTH_RESTRICTION:
-                            renpy.say(eval("m"), movieBuffer + "...")
-                            movieBuffer = ""
-                        else:
-                            movieBuffer += ", "
-                    if len(movieBuffer) > 0:
-                        reemplacementBuffer = movieBuffer.rsplit(",",1)
-                        movieBuffer = reemplacementBuffer[0] + "..."
-                        renpy.say(eval("m"), movieBuffer)
-                m 1a "And that's all of them"
-                $ listMovies = AvaiableMovies()
-                jump mm_choose_movie
+        m "Which movie would you like to watch?"
 
-            "Nevermind":
-                m 1j "Alright! Maybe later, then."
-                jump mm_movie_loop_end
+        # move Monika to the left
+        show monika at t21
 
+        # call scrollable pane
+        call screen mas_gen_scrollable_menu(listMovies.listOfMovies, MOVIE_AREA, MOVIE_XALIGN, final_item=final_item)
+
+        # move her back to center
+        show monika at t11
+
+        # return value? then push
+        if _return:
+            $ movieInformation = ParsedMovie(_return)
+            jump mm_found_movie
+        else:
+            jump mm_movie_loop_end
 
     label mm_found_movie:
         $ MovieOverlayShowButtons()
@@ -271,7 +253,7 @@ label ch30_monikamovie:
                 label mm_movie_resume:
                 # TODO: update this
 #                    $ allow_dialogue = False
-                    m 1a "Three...{w=1}{nw}" 
+                    m 1a "Three...{w=1}{nw}"
                     m  "Two...{w=1}{nw}"
                     m  "One...{w=1}{nw}"
                     #Movie loop
@@ -282,7 +264,7 @@ label ch30_monikamovie:
                             if movieInformation.canReact(timer.seconds):
                                 emotion, when, what = movieInformation.popReaction()
                                 updateEmotionMonika(emotion)
-                                
+
                                 if not (what == "" or what is None):
                                     what += "{w=10}{nw}"
                                     renpy.say(eval("m"), what)
@@ -319,7 +301,7 @@ label ch30_monikamovie:
         $ timer.seconds = 0
         $ MovieOverlayHideButtons()
         $ play_song(store.songs.selected_track)
-        show monika 1a
+        show monika 1
         jump ch30_loop
 
     label mm_movie_pausefilm:
@@ -339,7 +321,7 @@ label ch30_monikamovie:
         m 1b "You want to synchronize the time?"
         label mm_movie_repeattime:
             m 1b "Tell me in the format HH:MM:SS, [player]."
-            python: 
+            python:
                 player_dialogue = renpy.input('What time should I set the movie to? ',default='',pixel_width=720,length=50)
                 splittedTime = player_dialogue.split(":",2)
                 bad_format = len(splittedTime) != 3
@@ -365,8 +347,3 @@ label ch30_monikamovie:
                 $ movieInformation.resynchronizeIndex(timer)
         m 1a "Done! Let's keep watching it!"
         jump mm_movie_resume
-
-
-
-
-
