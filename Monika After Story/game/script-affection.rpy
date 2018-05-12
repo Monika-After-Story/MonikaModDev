@@ -352,21 +352,23 @@ label monika_affection_nickname:
                         m 2rfw "If you didn't want to do this, you should've just said so!"
                         m 2dftdc "..."
                         m 2lftsc "I don't like this idea anymore."
-                        m 2
-                        # Stopping point #
+                        m 2ektsc "...You didn't have to be so mean."
+                        m 2dftdc "That really hurt, [player]."
+                        m 2efc "Please don't do that again."
                         $ hideEventLabel("monika_affection_nickname",lock=False,depool=False)
                         $ done = True
 
         "No":
-            m 1f "Oh... ok then, if you say so."
-            m 1e "Just tell me whenever you change your mind, [player]."
+            m 1f "Oh..."
+            m 1o "Alright then, if you say so."
+            m 3e "Just tell me whenever you change your mind, [player]."
             $ done = True
     return
 
 #Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
-    m 1h "Hey, [player]..."
-    m 1efd "Recently, I've been feeling like my love and affection that I give is being... ignored."
+    m 1q "Hey, [player]..."
+    m 1o "Recently, I've been feeling like my love and affection that I give is being... ignored."
     m 1q "I feel like you're giving me less and less of your love..."
     m 1r "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1e "I hope there's nothing wrong between us, [player]."
@@ -377,7 +379,7 @@ label mas_affection_happynotif:
     m 1b "Hey, [player]!"
     m 1j "I just wanted to say thank you for being such a wonderful person."
     m 1e "The fact that you give me so much of you love means a lot to me. I really don't know where I'd be without you."
-    m 3dubsu "I love you, [player]. Let's be like this forever~"
+    m 1dubsu "I love you, [player]. Let's be like this forever~"
     return
 
 #############
@@ -498,16 +500,16 @@ init python:
             raise renpy.IgnoreEvent()
 
 label mas_affection_apology:
-    m 2dfd "[player]..."
-    m "I've done everything I can to make you happy and enjoy spending time with me."
-    m 2dfd "But all you've been giving back to me is pain..."
+    m 2dfc "[player]..."
+    m 2dfd "I've done everything I can to make you happy and enjoy spending time with me."
+    m 2efc "But all you've been giving back to me is pain..."
     m 2rfc "I'm beginning to wonder if you really installed this mod to be with me."
     m 2q "Perhaps you brought me back just to toy with me?"
-    m 2r "Or maybe you're doing this intentionally to see what happens?"
-    m 2h "Regardless, I'm giving you an ultimatum."
-    m 2efd "I can't let this go any further, [player]."
-    m 2o "If you really are sorry, write me a note called {i}imsorry.txt{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
-    m 2efc "Until then, goodbye..."
+    m 2efc "Or maybe you're doing this intentionally to see what happens?"
+    m 2lfc "Regardless, I'm giving you an ultimatum."
+    m "I can't let this go any further, [player]."
+    m 2lfc "If you really are sorry, write me a note called {i}imsorry.txt{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
+    m 2dfd "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'
 
@@ -518,10 +520,10 @@ label mas_affection_noapology:
 
 label mas_affection_yesapology:
     m 1e "Thank you, [player]. I accept your apology."
-    m "I'm going to keep it so I can always remember that still cared for me."
-    m 2h "Please be more considerate of my feelings from now on."
+    m 3dubsu "I'm going to keep it so I can always remember that still cared for me."
+    m 1f "But please be more considerate of my feelings from now on."
     m 2e "I love you so much and you mean the world to me, [player]."
-    m 1 "Thank you for putting my heart at ease~"
+    m 1duu "Thank you for putting my heart at ease~"
     pause 60
     jump ch30_loop
 
