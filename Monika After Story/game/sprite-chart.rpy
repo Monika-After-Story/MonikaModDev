@@ -1346,6 +1346,36 @@ init -2 python:
                     self.lean_acs_blacklist.append(accessory.name)
 
 
+        def wear_acs_pre(self, acs):
+            """
+            Wears the given accessory in the pre body accessory mode
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, self.PRE_ACS)
+
+
+        def wear_acs_mid(self, acs):
+            """
+            Wears the given accessory in the mid body acessory mode
+
+            IN:
+                acs - acessory to wear
+            """
+            self.wear_acs_in(acs, self.MID_ACS)
+
+
+        def wear_acs_pst(self, acs):
+            """
+            Wears the given accessory in the post body accessory mode
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, self.PST_ACS)
+
+
     # hues, probably not going to use these
 #    hair_hue1 = im.matrix([ 1, 0, 0, 0, 0,
 #                        0, 1, 0, 0, 0,
