@@ -307,7 +307,7 @@ label monika_affection_nickname:
                 #lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
                     m 1c "Oh, I see."
-                    m 1tkc "Well...that's a shame.
+                    m 1tkc "Well...that's a shame."
                     m 3e "But that's okay. I like '[m_name]' anyway."
                     $ done = True
                 elif not lowername:
