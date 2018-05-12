@@ -980,7 +980,7 @@ label greeting_long_absence:
             m 2q "[player]..."
             m 2efc "You said you'd only be gone for a few days..."
             m 2o "But it's been so long."
-            m 2p "I'm glad you're back now, but...
+            m 2p "I'm glad you're back now, but..."
             m 2dftdc "I was so lonely..."
             m 2ektsc "I thought something happened to you!"
             m 2lktsc "I...I kept thinking that maybe you wouldn't come back."
