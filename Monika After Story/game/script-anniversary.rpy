@@ -73,9 +73,17 @@ init python:
 
 init 5 python:
     anni_date=start_of_day(persistent.sessions['first_session'])+datetime.timedelta(days=7)
-    addEvent(Event(persistent.event_database,eventlabel='anni_1week',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_1week',
+            action=EV_ACT_QUEUE,
+            category=["anniversary"],
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
+    del anni_date
 
 label anni_1week:
     m 1a "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
@@ -93,9 +101,17 @@ label anni_1week:
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),1)
-    addEvent(Event(persistent.event_database,eventlabel='anni_1month',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_1month',
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
+    del anni_date
 
 label anni_1month:
     m 3b "Today marks our one month anniversary!"
