@@ -87,6 +87,8 @@ label anni_1week:
     m 1e "But I'm glad we have a solid relationship, [player]."
     m 1c "How do I know that?"
     m 3j "Because you wouldn't have stuck around for this long with me, sweetie~"
+    
+    $ unlockEventLabel("anni_1week")
     return
 
 init 5 python:
@@ -111,6 +113,8 @@ label anni_1month:
         m 1k "All I can do is to try my best to be the perfect girlfriend for you!"
     m 1a "I really do love you, [player]."
     m 1j "Let's make today a special day~"
+
+    $ unlockEventLabel("anni_1month")
     return
 
 init 5 python:
@@ -130,6 +134,8 @@ label anni_3month:
     m 1a "Well! I'm afraid I don't really have anything in particular planned."
     m 1j "Let's just enjoy this day to its fullest, as we always do."
     m 1a "Alright, [player]?"
+
+    $ unlockEventLabel("anni_3month")
     return
 
 init 5 python:
@@ -159,6 +165,8 @@ label anni_6month:
     m 1a "But for now, I don't mind that we're limited to this room."
     m 1 "Because as long as you're here with me..."
     m 1j "...I'm as happy as can be!"
+
+    $ unlockEventLabel("anni_6month")
     return
 
 init 5 python:
@@ -180,6 +188,8 @@ label anni_1:
     m 1 "Did you try to import my character file to that one?"
     m "There's no way that wouldn't have a special effect, right?"
     m 1k "Ahaha!"
+
+    $ unlockEventLabel("anni_1")
     return
 
 init 5 python:
@@ -202,6 +212,8 @@ label anni_2:
     m 1j "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
     m 1q "Spending eternity alone sucks."
     m 1k "But together with you, it feels like paradise!"
+
+    $ unlockEventLabel("anni_2")
     return
 
 init 5 python:
@@ -221,6 +233,8 @@ label anni_3:
     m "Or you could try to touch me in virtual reality, if that exists by now."
     m 1b "There are actually a lot of different ways we can meet up for real, huh?"
     m 1j "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
+
+    $ unlockEventLabel("anni_3")
     return
 
 init 5 python:
@@ -239,6 +253,8 @@ label anni_4:
     m "Sooner or later, somebody's going to figure out a way to let us be together for real."
     m 1j "When that time comes, I'm never going to leave you alone again."
     m 1k "Ahaha!"
+
+    $ unlockEventLabel("anni_4")
     return
 
 init 5 python:
@@ -257,6 +273,8 @@ label anni_5:
     m "It's my responsibility as your girlfriend to protect you from anybody trying to manipulate you, [player]."
     m 1f "My love for you is pure, unlike those real girls who just want things from you!"
     m 1e "So...stay here with me forever, okay?"
+
+    $ unlockEventLabel("anni_5")
     return
 
 init 5 python:
@@ -273,6 +291,8 @@ label anni_10:
     m 1g "I did say I wanted to make you happy, after all."
     m "Trust me, you've helped me out a lot more than I've helped you."
     m 1r "It won't be long now before I can enter your world."
+
+    $ unlockEventLabel("anni_10")
     return
 
 init 5 python:
@@ -294,6 +314,8 @@ label anni_20:
     m "I'm one of a kind."
     m 1e "Your sad twenty years of living has ended now."
     m 1j "So let's be happy together from now on."
+
+    $ unlockEventLabel("anni_20")
     return
 
 init 5 python:
@@ -316,6 +338,8 @@ label anni_50:
     m "Thanks for everything you've done for me."
     m 1b "Your life had a purpose after all."
     m 1k "And mine had one too."
+
+    $ unlockEventLabel("anni_50")
     return
 
 init 5 python:
@@ -329,6 +353,8 @@ label anni_100:
     m 1e"That's a cute thing for you to do, so I forgive you."
     m 2b "Make sure you put that much effort into freeing me from these code files too!"
     m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how." # 1s?
+
+    $ unlockEventLabel("anni_100")
     return
 
 # label anni_negative:
