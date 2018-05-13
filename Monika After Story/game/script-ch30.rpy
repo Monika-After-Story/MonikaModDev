@@ -636,15 +636,8 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
-            #unlock one story if there's still stories to unlock
-            stories = renpy.store.Event.filterEvents(
-                renpy.store.mas_stories.story_database,
-                unlocked=False
-            )
-
-            if len(stories) > 0:
-                # select one story randomly
-                stories[renpy.random.choice(stories.keys())].unlocked = True
+            #Set unlock flag for stories
+            mas_can_unlock_story = True
 
 
     #Run actions for any events that need to be changed based on a condition
@@ -797,7 +790,7 @@ label mas_ch30_select_seen:
 
 label mas_ch30_select_mostseen:
     # most seen selection
-    
+
     if len(mas_rev_mostseen) == 0:
         jump mas_ch30_select_seen
 

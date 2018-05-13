@@ -9,6 +9,7 @@
 
 # dict of tples containing the stories event data
 default persistent._mas_story_database = dict()
+default mas_can_unlock_story = False
 
 
 # store containing stories-related things
@@ -33,10 +34,28 @@ label mas_stories_start:
 
         # build menu list
         stories_menu_items = [
-            (mas_stories.story_database[k].prompt, k, not seen_event(k), False)
+            (mas_stories.story_database[k].prompt, k, False, False)
             for k in mas_stories.story_database
-            if mas_stories.story_database[k].unlocked
+            if mas_stories.story_database[k].unlocked and seen_event(k)
         ]
+
+        # sanity check for first timers
+        if not stories_menu_items:
+            stories_menu_items = [
+                (mas_stories.story_database[k].prompt, k, False, False)
+                for k in mas_stories.story_database
+                if mas_stories.story_database[k].unlocked
+            ]
+
+            # set the mas_can_unlock_story flag to False since it
+            # shouldn't unlock anything at this time
+            mas_can_unlock_story = False
+
+        # check if we have a story available to be unlocked and we can unlock it
+        if len(stories_menu_items) < len(mas_stories.story_database) and mas_can_unlock_story:
+
+            # Add to the menu the new story option
+            stories_menu_items.append(("A new story", "mas_story_unlock_random", True, False))
 
         # also sort this list
         stories_menu_items.sort()
@@ -47,9 +66,21 @@ label mas_stories_start:
     # if we have only one story
     if len(stories_menu_items) == 1:
 
-        # we jump to it, since doing pushEvent looks weird
-        $ renpy.jump(stories_menu_items[0][1])
-        #return
+        # get the event label
+        $ story = stories_menu_items[0][1]
+
+        # check if we have seen it already
+        if seen_event(story):
+            m 1n "Sorry [player], that's the only story I can tell you right now"
+            m "I'll think of a story to tell you next time"
+            return
+
+        # increment event's shown count and update last seen
+        $ mas_stories.story_database[story].shown_count += 1
+        $ mas_stories.story_database[story].last_seen = datetime.datetime.now()
+
+        # and we jump to it, since doing pushEvent looks weird
+        $ renpy.jump(story)
 
     m 1b "Sure thing!"
     m "What story would you like to hear?"
@@ -69,12 +100,11 @@ label mas_stories_start:
     return
 
 # Stories start here
-
 label mas_story_begin:
     python:
         story_begin_quips = [
             "Alright let's start the story.",
-            "Ready to hear that story?",
+            "Ready to hear the story?",
             "Ready for story time?",
             "Let's begin~",
             "Let's begin then~"
@@ -83,6 +113,36 @@ label mas_story_begin:
     m 3b "[story_begin_quip]"
     m 3dfc "Ahem."
     return
+
+label mas_story_unlock_random:
+
+    python:
+
+        # reset flag so we don't unlock another one
+        mas_can_unlock_story = False
+
+        # get locked stories
+        stories = renpy.store.Event.filterEvents(
+            renpy.store.mas_stories.story_database,
+            unlocked=False
+        )
+
+        if len(stories) > 0:
+
+            # select one story randomly
+            story = stories[renpy.random.choice(stories.keys())]
+
+            # unlock the story
+            story.unlocked = True
+
+            # increment event's shown count and update last seen
+            story.shown_count += 1
+            story.last_seen = datetime.datetime.now()
+
+            # using renpy.jump again cause again trasition looks like she's stuck
+            renpy.jump(story.eventlabel)
+    return
+
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
@@ -101,7 +161,7 @@ label mas_story_tyrant:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_despise",
-        prompt="The Fox",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The fox",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_despise:
     call mas_story_begin
@@ -116,7 +176,7 @@ label mas_story_despise:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_lies",
-        prompt="The Shepherd Boy and the wolf",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The shepherd boy and the wolf",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_lies:
     call mas_story_begin
@@ -137,7 +197,7 @@ label mas_story_lies:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshoper",
-        prompt="The Grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_grasshoper:
     call mas_story_begin
@@ -155,7 +215,7 @@ label mas_story_grasshoper:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
-        prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The wind and the sun",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_wind_sun:
     call mas_story_begin
