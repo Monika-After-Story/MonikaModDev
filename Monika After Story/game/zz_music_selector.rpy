@@ -1,6 +1,12 @@
 # Module that handles the music selection screen
 # we start with zz to ensure this loads LAST
 #
+# NOTE: We added support for custom music.
+# To add custom music to your game:
+# 1. Ensure that the custom music is of "ogg" file format (with the extension)
+# 2. Add a directory "custom_bgm" in your DDLC/ directory.
+# 3. Drop your oggs into that directory.
+# 4. Start the game
 
 # music inits first, so the screen can be made well
 init -1 python in songs:
