@@ -311,6 +311,21 @@ label v0_8_1(version="v0_8_1"):
         persistent._mas_enable_random_repeats = None
         persistent._mas_monika_repeated_herself = None
 
+        ## need to unlock anniversary topics
+        annis = (
+            "anni_1week",
+            "anni_1month",
+            "anni_3month",
+            "anni_6month"
+        ) # impossible to reach a year
+        for anni in annis:
+            anni_ev = evhand.event_database.get(anni, None)
+
+            if anni_ev and isPast(anni_ev):
+                # we'll make them seen again and then also unlock them
+                persistent._seen_ever[anni] = True
+                anni_ev.unlocked = True
+
     return
 
 # 0.8.0

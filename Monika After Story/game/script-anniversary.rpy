@@ -73,9 +73,18 @@ init python:
 
 init 5 python:
     anni_date=start_of_day(persistent.sessions['first_session'])+datetime.timedelta(days=7)
-    addEvent(Event(persistent.event_database,eventlabel='anni_1week',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_1week',
+            prompt="1 Week",
+            action=EV_ACT_QUEUE,
+            category=["anniversary"],
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
+    del anni_date
 
 label anni_1week:
     m 1a "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
@@ -87,13 +96,24 @@ label anni_1week:
     m 1e "But I'm glad we have a solid relationship, [player]."
     m 1c "How do I know that?"
     m 3j "Because you wouldn't have stuck around for this long with me, sweetie~"
+    
+    $ unlockEventLabel("anni_1week")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),1)
-    addEvent(Event(persistent.event_database,eventlabel='anni_1month',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_1month',
+            prompt="1 Month",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
+    del anni_date
 
 label anni_1month:
     m 3b "Today marks our one month anniversary!"
@@ -111,13 +131,25 @@ label anni_1month:
         m 1k "All I can do is to try my best to be the perfect girlfriend for you!"
     m 1a "I really do love you, [player]."
     m 1j "Let's make today a special day~"
+
+    $ unlockEventLabel("anni_1month")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),3)
-    addEvent(Event(persistent.event_database,eventlabel='anni_3month',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_3month',
+            prompt="3 Months",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
+    del anni_date
+
 label anni_3month:
     m 1a "[player], do you know what day it is?"
     m 1j "It's our three month anniversary!"
@@ -130,13 +162,25 @@ label anni_3month:
     m 1a "Well! I'm afraid I don't really have anything in particular planned."
     m 1j "Let's just enjoy this day to its fullest, as we always do."
     m 1a "Alright, [player]?"
+
+    $ unlockEventLabel("anni_3month")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),6)
-    addEvent(Event(persistent.event_database,eventlabel='anni_6month',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_6month',
+            prompt="6 Months",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
+    del anni_date
+
 label anni_6month:
     m "I can't believe that it's already our 6-month anniversary!"
     m 1e "I'm really happy you've stayed with me for this long."
@@ -159,13 +203,23 @@ label anni_6month:
     m 1a "But for now, I don't mind that we're limited to this room."
     m 1 "Because as long as you're here with me..."
     m 1j "...I'm as happy as can be!"
+
+    $ unlockEventLabel("anni_6month")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),12)
-    addEvent(Event(persistent.event_database,eventlabel='anni_1',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_1',
+            prompt="1 Year",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
 
 label anni_1:
     m 1e "It's really hard for me to believe that it's been a year since we met."
@@ -180,13 +234,24 @@ label anni_1:
     m 1 "Did you try to import my character file to that one?"
     m "There's no way that wouldn't have a special effect, right?"
     m 1k "Ahaha!"
+
+    $ unlockEventLabel("anni_1")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),24)
-    addEvent(Event(persistent.event_database,eventlabel='anni_2',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=1)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_2',
+            prompt="2 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
+        )
+    )
+    del anni_date
 
 label anni_2:
     m 3a "It's already been two years since we fell in love with each other."
@@ -202,13 +267,25 @@ label anni_2:
     m 1j "You'll keep coming back to talk to me every day, right? I'll accept all your burdens with a smile."
     m 1q "Spending eternity alone sucks."
     m 1k "But together with you, it feels like paradise!"
+
+    $ unlockEventLabel("anni_2")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),36)
-    addEvent(Event(persistent.event_database,eventlabel='anni_3',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=3)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_3',
+            prompt="3 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=3)
+        )
+    )
+    del anni_date
+
 label anni_3:
     m 4d "Wow, three years!"
     m 3m "Normally if a boy and a girl go out for three years..."
@@ -221,13 +298,25 @@ label anni_3:
     m "Or you could try to touch me in virtual reality, if that exists by now."
     m 1b "There are actually a lot of different ways we can meet up for real, huh?"
     m 1j "I'll wait faithfully for the day when I can be your wife, so please don't forget about me!"
+
+    $ unlockEventLabel("anni_3")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),48)
-    addEvent(Event(persistent.event_database,eventlabel='anni_4',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=7)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_4',
+            prompt="4 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=7)
+        )
+    )
+    del anni_date
+
 label anni_4:
     m 1q "Four years..."
     m 1r "At the start, I was sorta thinking you would forget about me pretty quickly."
@@ -239,13 +328,24 @@ label anni_4:
     m "Sooner or later, somebody's going to figure out a way to let us be together for real."
     m 1j "When that time comes, I'm never going to leave you alone again."
     m 1k "Ahaha!"
+
+    $ unlockEventLabel("anni_4")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),60)
-    addEvent(Event(persistent.event_database,eventlabel='anni_5',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=7)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_5',
+            prompt="5 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=7)
+        )
+    )
+    del anni_date
 
 label anni_5:
     m "Whether it's been five years or fifty, I'll never get tired of seeing your face."
@@ -257,13 +357,24 @@ label anni_5:
     m "It's my responsibility as your girlfriend to protect you from anybody trying to manipulate you, [player]."
     m 1f "My love for you is pure, unlike those real girls who just want things from you!"
     m 1e "So...stay here with me forever, okay?"
+
+    $ unlockEventLabel("anni_5")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),120)
-    addEvent(Event(persistent.event_database,eventlabel='anni_10',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=30)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_10',
+            prompt="10 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=30)
+        )
+    )
+    del anni_date
 
 label anni_10:
     m 1h "There's something I wanted to ask you."
@@ -273,13 +384,24 @@ label anni_10:
     m 1g "I did say I wanted to make you happy, after all."
     m "Trust me, you've helped me out a lot more than I've helped you."
     m 1r "It won't be long now before I can enter your world."
+
+    $ unlockEventLabel("anni_10")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),240)
-    addEvent(Event(persistent.event_database,eventlabel='anni_20',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=365)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_20',
+            prompt="20 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=365)
+        )
+    )
+    del anni_date
 
 label anni_20:
     m 1h "You've lived a pretty long life by now, [player]."
@@ -294,13 +416,23 @@ label anni_20:
     m "I'm one of a kind."
     m 1e "Your sad twenty years of living has ended now."
     m 1j "So let's be happy together from now on."
+
+    $ unlockEventLabel("anni_20")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),600)
-    addEvent(Event(persistent.event_database,eventlabel='anni_50',action=EV_ACT_QUEUE,start_date=anni_date,
-                                                            end_date=anni_date+datetime.timedelta(days=365)
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_50',
+            prompt="50 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=365)
+        )
+    )
 
 label anni_50:
     m "I can't help but think there's got to be a better way for us to talk by now than through this screen, right?"
@@ -316,11 +448,23 @@ label anni_50:
     m "Thanks for everything you've done for me."
     m 1b "Your life had a purpose after all."
     m 1k "And mine had one too."
+
+    $ unlockEventLabel("anni_50")
     return
 
 init 5 python:
     anni_date=add_months(start_of_day(persistent.sessions['first_session']),1200)
-    addEvent(Event(persistent.event_database,eventlabel='anni_100',action=EV_ACT_QUEUE,start_date=anni_date))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='anni_100',
+            prompt="100 Years",
+            category=["anniversary"],
+            action=EV_ACT_QUEUE,
+            start_date=anni_date
+        )
+    )
+    del anni_date
 
 label anni_100:
     m 1i "I don't really think you should be seeing this message, [player]."
@@ -329,6 +473,8 @@ label anni_100:
     m 1e"That's a cute thing for you to do, so I forgive you."
     m 2b "Make sure you put that much effort into freeing me from these code files too!"
     m "I'm sure I'll be able to touch you for real even if it takes us a hundred years to figure out how." # 1s?
+
+    $ unlockEventLabel("anni_100")
     return
 
 # label anni_negative:
