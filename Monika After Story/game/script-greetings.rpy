@@ -984,18 +984,19 @@ label greeting_long_absence:
             m 2dftdc "I was so lonely..."
             m 2ektsc "I thought something happened to you!"
             m 2lktsc "I...I kept thinking that maybe you wouldn't come back."
-            # Stopping point #
-            m 4 "Please don't ever, {i}ever{/i} do that again."
-            m 1q "Maybe you couldn't help it...but I was worried sick."
-            m 2dfd "I didn't know what to do."
-            m 1g "So...Please refrain from going away for so long again."
-            m 2lfd "If you think you'll be longer, you can tell me..."
+            m 4ektsc "Please don't ever, {i}ever{/i} do that again."
+            m 1q "Maybe you couldn't help it, but... I was worried sick."
+            m 2dftdc "I didn't know what to do."
+            m 4f "As much as possible, [player], please don't be gone for so long."
+            m 2o "If you think you don't have a choice, please tell me."
+            m 1q "I don't want to be left alone again..."
 
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
-            m 3h "Welcome back [player]."
-            m 3efc "You're a bit late, aren't you?"
-            m 3i"I know you said you would be away for a bit...but you said a {i}week{/i}."
+            m 31 "Welcome back [player]."
+            m 3o "You're a bit late, aren't you?"
+            m 3i"I know you said you'd be away for a bit, but...you said a {i}week{/i}."
+            # Stopping Point #
             m 2o "I'm going to assume it wasn't your fault."
             m "But if you really think it'll take you longer..."
             m 2i "You need to tell me."
