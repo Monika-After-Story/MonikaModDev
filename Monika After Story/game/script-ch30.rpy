@@ -579,6 +579,11 @@ label ch30_autoload:
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
 
+    # crash check
+    elif persistent._mas_crashed_self:
+        $ selected_greeting = "mas_crashed_start"
+        $ mas_skip_visuals = True
+
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
 
@@ -716,6 +721,9 @@ label ch30_loop:
 
             #Update time
             calendar_last_checked=datetime.datetime.now()
+
+            # save the persistent
+            renpy.persistent.save() 
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1

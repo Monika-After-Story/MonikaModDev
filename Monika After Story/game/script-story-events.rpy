@@ -360,3 +360,34 @@ label mas_monikai_detected:
     m 1a "I'm the real one after all."
     return
         
+# if the game crashed
+# I have no idea if we will use this persistent ever
+default persistent._mas_crashed_before = False 
+
+# start of crash flow
+label mas_crashed_start:
+    $ persistent._mas_crashed_before = True
+
+
+label mas_crashed_long:
+    
+
+label mas_crashed_sort:
+    python:
+        # generate a quiplist
+        q_list = MASQuipList()
+
+        # labels
+        crash_labels = [
+            "mas_crashed_quip_takecare"
+        ]
+        for _label in crash_labels:
+            q_list.addLabelQuip(_label)
+
+
+### crash labels
+label mas_crashed_quip_takecare:
+    m 2f "Another crash, [player]?"
+    m "You should take better care of your computer."
+    m 4n "It's my home, after all..."
+    return
