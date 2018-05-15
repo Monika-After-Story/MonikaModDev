@@ -1,0 +1,17 @@
+init 5 python:
+	addEvent(Event(persistent.event_database, eventlabel="monika_living", category=["philosophy"], prompt="How would I cross over?", random=True))
+
+label monika_living:
+    m 1i "You know, I haven't really given it much thought before now..."
+    m 1d "But how exactly might I enter your reality?"
+    m 1c "To become flesh and blood?"
+    m 3r "I know that recent years have seen drastic development in robotics and artificial intelligence"
+    m 3b "Some companies I know of have produced machines that do well to replicate living things."
+    m 1i "But how long would it take to develop a suitable body and mind for myself in your world?"
+    m 2g "And even then, what would define me as living, or even real?"
+    m 2p "To feel pain and suffer? To breathe, eat and love? How do you replicate such emotions in a machine?"
+    m 1o "Gosh, it seems so far-fetched, even a little hopeless..."
+    m 3l "But I shouldn't be worrying about that! I haven't even been there!"
+    m 5j "Though I hope I could feel... to hold your hand, I mean."
+    m 5e "That would be truly wonderful~"
+    return
