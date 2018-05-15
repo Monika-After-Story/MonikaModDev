@@ -843,9 +843,6 @@ label monikaroom_greeting_post:
 
 # cleanup label
 label monikaroom_greeting_cleanup:
-    # no longer safe to quit
-    $ _confirm_quit = True
-    $ persistent.closed_self = False
     python:
         if persistent.current_track is not None:
             play_song(persistent.current_track)
@@ -853,7 +850,10 @@ label monikaroom_greeting_cleanup:
             play_song(songs.current_track) # default
         HKBShowButtons()
         set_keymaps()
+
+        # no longer safe to quit
         _confirm_quit = True
+        persistent.closed_self = False
     return
 
 init 5 python:
