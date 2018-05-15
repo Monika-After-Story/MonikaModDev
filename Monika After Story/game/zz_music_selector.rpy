@@ -1,6 +1,12 @@
 # Module that handles the music selection screen
 # we start with zz to ensure this loads LAST
 #
+# NOTE: We added support for custom music.
+# To add custom music to your game:
+# 1. Ensure that the custom music is of "ogg" file format (with the extension)
+# 2. Add a directory "custom_bgm" in your DDLC/ directory.
+# 3. Drop your oggs into that directory.
+# 4. Start the game
 
 # music inits first, so the screen can be made well
 init -1 python in songs:
@@ -148,6 +154,9 @@ init -1 python in songs:
         # sayori only allows this
         music_choices.append((SAYO_NARA, FP_SAYO_NARA))
 
+        # grab custom music
+        __scanCustomBGM(music_choices)
+
         # separte the music choices into pages
         music_pages = __paginate(music_choices)
 
@@ -192,6 +201,84 @@ init -1 python in songs:
         return (music_list[:PAGE_LIMIT], music_list[PAGE_LIMIT:])
 
 
+    def __scanCustomBGM(music_list):
+        """
+        Scans the custom music directory for custom musics and adds them to
+        the given music_list.
+
+        IN/OUT:
+            music_list - list of music tuples to append to
+        """
+        # TODO: make song names / other tags configurable
+        import os
+        ogg_ext = ".ogg"
+
+        # No custom directory? abort
+        if not os.access(custom_music_dir, os.F_OK):
+            return
+
+        # get the oggs
+        found_files = os.listdir(custom_music_dir)
+        found_oggs = [
+            ogg_file
+            for ogg_file in found_files
+            if (
+                ogg_file.endswith(ogg_ext) 
+                and os.access(custom_music_dir + ogg_file, os.R_OK)
+            )
+        ]
+
+        if len(found_oggs) == 0:
+            # no custom oggs found, please move on
+            return
+
+        # otherwise, we got some oggs to add
+        for ogg_file in found_oggs:
+            music_list.append((
+                cleanGUIText(ogg_file[:-(len(ogg_ext))]),
+                custom_music_reldir + ogg_file
+            ))
+
+
+    def cleanGUIText(unclean):
+        """
+        Cleans the given text so its applicable for gui usage
+
+        IN:
+            unclean - unclean text
+
+        RETURNS:
+            cleaned text
+        """
+        # bad text to be removed:
+        bad_text = ("{", "}", "[", "]")
+
+        # NOTE: for bad text, we just replace with empty
+        cleaned_text = unclean
+        for bt_el in bad_text:
+            cleaned_text = cleaned_text.replace(bt_el, "")
+
+        return cleaned_text
+
+
+    def isInMusicList(filepath):
+        """
+        Checks if the a song with the given filepath is in the music choices
+        list
+
+        IN:
+            filepath - filepath of song to check
+
+        RETURNS:
+            True if filepath is in the music_choices list, False otherwise
+        """
+        for name,fpath in music_choices:
+            if filepath == fpath:
+                return True
+
+        return False
+
+
     # defaults
 #    FIRST_PAGE_LIMIT = 10
     PAGE_LIMIT = 10
@@ -205,6 +292,10 @@ init -1 python in songs:
     music_choices = list()
     music_pages = dict() # song pages dict
 
+    # custom music directory
+    custom_music_dir = "custom_bgm"
+    custom_music_reldir = "../" + custom_music_dir + "/"
+
 # some post screen init is setting volume to current settings
 init 10 python in songs:
 
@@ -214,19 +305,38 @@ init 10 python in songs:
 # non store post inint stuff
 init 10 python:
 
-    # ensure proper current track is set
+    # setupthe custom music directory
+    store.songs.custom_music_dir = (
+        config.basedir + "/" + store.songs.custom_music_dir + "/"
+    ).replace("\\", "/")
+
     if persistent.playername.lower() == "sayori":
+        # sayori specific
+
+        # init choices
+        store.songs.initMusicChoices(True)
+
+        # setup start songs
         store.songs.current_track = store.songs.FP_SAYO_NARA
         store.songs.selected_track = store.songs.FP_SAYO_NARA
         persistent.current_track = store.songs.FP_SAYO_NARA
+
     else:
+        # non sayori stuff
+
+        # init choices
+        store.songs.initMusicChoices(False)
+
+        # double check track existence
+        if not store.songs.isInMusicList(persistent.current_track):
+            # non existence song becomes No Music
+            persistent.current_track = None
+
+        # setup start songs
         store.songs.current_track = persistent.current_track
         store.songs.selected_track = store.songs.current_track
 
-    # song choice generation
-    store.songs.initMusicChoices(
-        sayori=persistent.playername.lower() == "sayori"
-    )
+
 
 # MUSIC MENU ##################################################################
 # This is the music selection menu
