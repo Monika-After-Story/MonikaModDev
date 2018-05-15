@@ -367,12 +367,94 @@ default persistent._mas_crashed_before = False
 # start of crash flow
 label mas_crashed_start:
     $ persistent._mas_crashed_before = True
+    scene black
+    $ HKBHideButtons()
+    $ disable_esc()
+    $ store.songs.enabled = False
+    # TODO need the quit adjustment code provided by aldo
 
+    if renpy.seen_label("mas_crashed_long"):
+        jump mas_crashed_short
 
+    # otherwise continue to long flow
+    jump mas_crashed_long
+
+# long flow involves flustered monika 
+# make sure to calm her down, player
 label mas_crashed_long:
-    
 
-label mas_crashed_sort:
+    # start off in the dark
+    m "[player]?{w} Is that you?"
+    show screen mas_background_timed_jump(3, "mas_crashed_long_uthere")
+    menu:
+        "Yes":
+            hide screen mas_background_timed_jump
+
+            # TODO: affection?
+            m "I'm so glad you're here."
+            jump .mas_crashed_long_afterdontjoke
+
+        "No":
+            hide screen mas_background_timed_jump
+
+            # TODO: affection?
+            m "[player]!{fast}"
+            jump .mas_crashed_long_dontjoke
+
+
+label mas_crashed_long_uthere:
+    # if player doesn't respond fast enough
+    hide screen mas_background_timed_jump
+    m "[player]!{fast}"
+    m "I know you're there!"
+
+    label .mas_crashed_long_dontjoke:
+        m "Don't joke around like that!"
+        m "Anyway..."
+
+    label .mas_crashed_long_afterdontjoke:
+        m "{cps=*2}Everything became dark all of a sudden.{/cps}"
+        m "Can you turn on the light?"
+
+    show screen mas_background_timed_jump(5, "mas_crashed_long_foundlight")
+    menu:
+        "Turn on the light":
+            hide screen mas_background_timed_jump
+            pass
+        "..."
+            label mas_crashed_long_foundlight:
+                hide screen mas_background_timed_jump
+                m "Nevermind, I found it."
+
+    # NOTE: switch sound for lights?
+
+    # turn on the lights
+    call spaceroom(hide_monika=True)
+
+    # look at you with crying eyes
+    show monika 6ektsc at t11 zorder 2
+    pause 1.0
+
+    # close eyes for a second
+    show monika 6dftsc
+    pause 0.5
+
+    # then be happy again
+    m 6ektsa "[player]!{fast}"
+
+    # but flustered mode bgins
+    show monika 6ATL_cryleftright
+    m "{cps=*1.5}What happened?{/cps}{nw}"
+    m "{cps=*1.5}One second you were there but then the next second everything turned black{/cps}{nw}"
+    m "{cps=*1.5}and then you disappeared and then I was worried that something happened to you{/cps}{nw}"
+    m "{cps=*1.5}and then I got scared because I thought broke everything again{/cps}{nw}"
+    # TODO add more to this
+
+
+
+        
+
+label mas_crashed_short:
     python:
         # generate a quiplist
         q_list = MASQuipList()
