@@ -120,7 +120,7 @@ label mas_story_begin:
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     m 3b "[story_begin_quip]"
-    m 3dfc "Ahem."
+    m 1q "Ahem."
     return
 
 label mas_story_unlock_random:
@@ -155,77 +155,77 @@ label mas_story_unlock_random:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
-        prompt="The cat and the cock",unlocked=True),eventdb=store.mas_stories.story_database)
+        prompt="The Cat and the Cock",unlocked=True),eventdb=store.mas_stories.story_database)
 
 label mas_story_tyrant:
     call mas_story_begin
-    m 1i "A Cat caught a Cock and thought about reasonable excuses for eating him."
+    m 1a "A Cat caught a Cock and thought about reasonable excuses for eating him."
     m "He accused him of being a nuisance by crowing at night; not letting men sleep."
-    m 1d "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
-    m 1tfb "The Cat replied, “you abound in apologies, but it’s time for breakfast.”"
-    m 1l "At that he made a meal of the Cock."
-    m 4d "The moral of this story is that: 'Tyrants need no excuse'."
-    m 1k "I hope you enjoyed this little story, [player]~"
+    m 3d "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
+    m 1tfb "The Cat replied, 'you abound in apologies, but it's time for breakfast.'"
+    m 1ll "At that he made a meal of the Cock."
+    m 3a "The moral of this story is that: 'Tyrants need no excuse'."
+    m 1j "I hope you enjoyed this little story, [player]~"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_despise",
-        prompt="The fox",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The Fox",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_despise:
     call mas_story_begin
-    m 1i "One hot summer’s day a Fox was strolling through an orchard till he came to a bunch of Grapes just ripening on a vine which had been trained over a lofty branch."
-    m 1tfu "“Just the thing to quench my thirst,” quoth he."
-    m 1i "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
-    m 1l "Turning round again with a One, Two, Three, he jumped up, but with no greater success."
-    m 1tkx "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: “I am sure they are sour.”"
-    m 3j "The moral of this story is that: 'It is easy to despise what you cannot get'."
-    m 1k "I hope you enjoyed this little story, [player]~"
+    m 1d "One hot summer's day, a Fox was strolling through an orchard till he came to a bunch of grapes just ripening on a vine which had been trained over a lofty branch."
+    m 1tfu "'Just the thing to quench my thirst,' said the Fox."
+    m 1a "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
+    m 3b "Turning round again with a one,{w=1.0} two,{w=1.0} three,{w=1.0} he jumped up, but with no greater success."
+    m 3tkc "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: 'I am sure they are sour.'"
+    m 1ll "The moral of this story is that: 'It is easy to despise what you cannot get'."
+    m 1a "I hope you liked it, [player]~"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_lies",
-        prompt="The shepherd boy and the wolf",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The Shepherd Boy and the Wolf",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_lies:
     call mas_story_begin
-    m 1d "There was a Shepherd Boy who tended his sheep at the foot of a mountain near a dark forest."
-    m "It was lonely for him, so he devised a plan to get a little company."
-    m 1hfw "He rushed down towards the village calling out “Wolf, Wolf,” and the villagers came out to meet him."
-    m 1d "This pleased the boy so much that a few days after he tried the same trick, and again the villagers came to his help."
-    m 1p "Shortly after this a Wolf actually did come out from the forest."
-    m 1wfw "The boy cried out “Wolf, Wolf,” still louder than before."
+    m 1c "There was a Shepherd Boy who tended his sheep at the foot of a mountain near a dark forest."
+    m 1lsc "It was lonely for him, so he devised a plan to get a little company."
+    m 4hfw "He rushed down towards the village calling out 'Wolf! Wolf!' and the villagers came out to meet him."
+    m 1ll "This pleased the boy so much that a few days after he tried the same trick, and again the villagers came to his help."
+    m 3wud "Shortly after, a Wolf actually did come out from the forest."
+    m 1f "The boy cried out 'Wolf, Wolf!' still louder than before."
     m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
-    m 1q "So the Wolf made a good meal off the boy’s flock."
-    m "The moral of this story is that: 'Liars are not believed even when they speak the truth'."
-    m 1i "You shouldn't worry about it, [player]"
-    m 1efb "I know you would never lie to me"
-    m 1j "Ehehe~"
-    m 1k "I hope you enjoyed this little story, [player]~"
+    m 2q "So the Wolf made a good meal off the boy's flock."
+    m 2h "The moral of this story is that: 'Liars are not believed even when they speak the truth'."
+    m 1l "You shouldn't worry about it, [player]"
+    m 3j "You'd never lie to me, right?"
+    m 1k "Ehehe~"
+    m 1a "I hope you enjoyed the story, [player]!"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshoper",
-        prompt="The grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The Grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
 
 label mas_story_grasshoper:
     call mas_story_begin
-    m 3 "One summer’s day a Grasshopper was hopping about, chirping and singing to its heart’s content."
-    m 1 "An Ant passed by, bearing an ear of corn he was taking to the nest."
-    m 1b "“Why not come and chat with me,” said the Grasshopper, “instead of toiling in that way?”"
-    m 1efc "“I am helping to lay up food for the winter,” said the Ant, “and recommend you do the same.”"
-    m 1tku "“Why bother about winter?” said the Grasshopper; “we have plenty of food now.”"
-    m 1i "The Ant went on its way."
-    m 1q "When winter came the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
-    m 3r "The moral of this story is that: 'There’s a time for work and a time for play'."
-    m 1lkbsa "And there's also a time to spend with your cute girlfriend~"
-    m 1ekbfa "I love you so much, [player]!"
+    m 1a "One summer's day, a Grasshopper was hopping about, chirping and singing to its heart's content."
+    m "An Ant passed by, bearing an ear of corn he was taking to the nest."
+    m 3d "'Why not come and chat with me,' said the Grasshopper, 'instead of toiling in that way?'"
+    m 1efc "'I am helping to lay up food for the winter,' said the Ant, 'and recommend you do the same.'"
+    m 1hfb "'Why bother about winter?' said the Grasshopper; 'we have plenty of food now!'"
+    m 3a "The Ant went on its way."
+    m 1q "When winter came, the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
+    m 3j "The moral of this story is that: 'There's a time for work and a time for play'."
+    m 1dubsu "But there's always a time to spend with your cute girlfriend~"
+    m 1k "Ehehe, I love you so much, [player]!"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
-        prompt="The wind and the sun",unlocked=False),eventdb=store.mas_stories.story_database)
-
+        prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
+# Stopping point #
 label mas_story_wind_sun:
     call mas_story_begin
     m 1 "The Wind and the Sun were disputing which was the strongest."
