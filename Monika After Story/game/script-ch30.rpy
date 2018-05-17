@@ -338,7 +338,16 @@ init python:
             renpy.display.behavior.clear_keymap_cache()
     morning_flag = None
     def is_morning():
-        return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
+        # generate the times we need
+        sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
+        ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
+        sr_time = datetime.time(sr_hour, sr_min)
+        ss_time = datetime.time(ss_hour, ss_min)
+
+        now_time = datetime.datetime.now().time()
+
+        return sr_time <= now_time < ss_time
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for

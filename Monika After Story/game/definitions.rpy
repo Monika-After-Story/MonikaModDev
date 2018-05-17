@@ -1765,6 +1765,38 @@ init -1 python:
 
         return is_file
 
+
+    def mas_cvToHM(mins):
+        """
+        Converts the given minutes into hour / minutes
+
+        IN:
+            mins - number of minutes
+
+        RETURNS:
+            tuple of the following format:
+                [0] - hours
+                [1] - minutes
+        """
+        return (int(mins / 60), int(mins % 60))
+
+
+    def mas_cvToDHM(mins):
+        """
+        Converts the given minutes into a displayable hour / minutes
+        HH:MM
+        NOTE: 24 hour format only
+
+        IN:
+            mins - number of minutes
+
+        RETURNS:
+            string time perfect for displaying
+        """
+        s_hour, s_min = mas_cvToHM(mins)
+        return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos
@@ -3057,6 +3089,18 @@ default persistent._mas_monika_clothes = "def"
 default persistent._mas_monika_hair = "def"
 default persistent._mas_likes_hairdown = False
 default persistent._mas_hair_changed = False
+
+# times
+# they are stored in minutes so we can use bar nicely
+default persistent._mas_sunrise = 6 * 60
+default persistent._mas_sunset = 18 * 60
+define mas_max_suntime = (24 * 60) - 1# 24 hours x 60 minutes
+define mas_sunrise_prev = persistent._mas_sunrise
+define mas_sunset_prev = persistent._mas_sunset
+define mas_suntime.NO_CHANGE = 0
+define mas_suntime.RISE_CHANGE = 1
+define mas_suntime.SET_CHANGE = 2
+define mas_suntime.change_state = mas_suntime.NO_CHANGE
 
 define mas_checked_update = False
 #define mas_monika_repeated = False
