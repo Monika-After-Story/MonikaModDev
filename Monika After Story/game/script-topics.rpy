@@ -4251,8 +4251,8 @@ label monika_daydream:
     m 5a "Let's hope we can make that a reality one of these days, ehehe~"
     return
 
-init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
+# init 5 python:
+#     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
 
 label monika_music2:
     if songs.getVolume("music") == 0.0:
