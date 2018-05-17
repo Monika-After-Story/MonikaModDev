@@ -490,7 +490,7 @@ screen navigation():
             textbutton _("Help") action Help("README.html")
 
             ## The quit button is banned on iOS and unnecessary on Android.
-            textbutton _("Quit") action Quit(confirm=not main_menu)
+            textbutton _("Quit") action Quit(confirm=_confirm_quit)
 
 
 style navigation_button is gui_button
@@ -993,7 +993,7 @@ screen preferences():
                         textbutton _("Unstable"):
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
-                    
+
 
             null height (4 * gui.pref_spacing)
 
@@ -1527,7 +1527,7 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
-            
+
 
 style confirm_frame is gui_frame
 style confirm_prompt is gui_prompt
@@ -2052,7 +2052,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
-# 
+#
 # IN:
 #   timeout - number of seconds to time
 #   timeout_label - label to jump to when timeout
