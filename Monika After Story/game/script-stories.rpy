@@ -225,17 +225,16 @@ label mas_story_grasshoper:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
         prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
-# Stopping point #
 label mas_story_wind_sun:
     call mas_story_begin
-    m 1 "The Wind and the Sun were disputing which was the strongest."
-    m 1i "Suddenly they saw a traveller coming down the road, and the Sun said: “I see a way to decide our dispute.”"
-    m "“Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.”"
-    m "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
-    m 1g"But the harder he blew the more closely did the traveller wrap his cloak round him, till at last the Wind had to give up in despair."
-    m 1i "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
-    m 3 "The moral of this story is that: 'Gentleness and kind persuasion win where force and bluster fail'."
-    m 1k "I hope you enjoyed this little story, [player]~"
+    m 1q "The Wind and the Sun were disputing which was the strongest."
+    m 1c "Suddenly they saw a traveller coming down the road, and the Sun said: 'I see a way to decide our dispute.'"
+    m 3efd "'Whichever of us can cause that traveller to take off his cloak shall be regarded as the strongest. You begin.'"
+    m 3c "So the Sun retired behind a cloud, and the Wind began to blow as hard as it could upon the traveller."
+    m 1f "But the harder he blew the more closely did the traveller wrap his cloak around him, till at last the Wind had to give up in despair."
+    m 1c "Then the Sun came out and shone in all his glory upon the traveller, who soon found it too hot to walk with his cloak on."
+    m 3j "The moral of this story is that: 'Gentleness and kind persuasion win where force and bluster fail.'"
+    m 1k "Hope you had fun, [player]."
     return
 
 init 5 python:
@@ -244,15 +243,18 @@ init 5 python:
 
 label mas_story_seeds:
     call mas_story_begin
-    m 1 "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
-    m 1tfd "“Beware of that man,” quoth the Swallow."
-    m 1g "“Why, what is he doing?” said the others."
-    m 1tfd "“That is hemp seed he is sowing; be careful to pick up every one of the seeds, or else you will repent it.” The Swallow replied."
-    m 1r "The birds paid no heed to the Swallow’s words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
-    m "Many birds that had despised the Swallow’s advice were caught in nets made out of that very hemp."
-    m 3hfu "“What did I tell you?” said the Swallow."
-    m 3i "The moral of this story is that: 'Destroy the seeds of evil before they grow up to be your ruin'."
-    m 1k "I hope you enjoyed this little story, [player]~"
+    m c "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
+    m 1tfd "'Beware of that man,' quote the Swallow."
+    m 3d "'Why, what is he doing?' asked the others."
+    m 1tkd "'That is hemp seed he is sowing; be careful to pick up every one of the seeds, or else you will repent it.' The Swallow replied."
+    m 3p "The birds paid no heed to the Swallow's words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
+    m 1c "Many birds that had despised the Swallow's advice were caught in nets made out of that very hemp."
+    m 3hfu "'What did I tell you?' said the Swallow."
+    m 3j "The moral of this story is: 'Destroy the seeds of evil before they grow up to be your ruin.'"
+    m 1o "..."
+    m 2q "I wish I could've followed that moral."
+    m 2o "You wouldn't had to go through what you saw."
+    m 4l "Anyway, I hope you liked the story, [player]!"
     return
 
 init 5 python:
@@ -261,14 +263,16 @@ init 5 python:
 
 label mas_story_gray_hair:
     call mas_story_begin
-    m 1i "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
-    m 1 "The Man’s hair was turning grey, which the young Wife did not like, as it made him look too old."
-    m 1i "So, every night she picked out the white hairs."
-    m 1g "But, the elder Wife did not like to be mistaken for his mother."
-    m 1i "So, every morning she picked out as many of the black hairs as she could."
-    m 1l "The Man soon found himself entirely bald."
-    m 3i "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
-    m 1k "I hope you enjoyed this little story, [player]~"
+    m 1a "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
+    m 1c "The Man's hair was turning grey, which the young Wife did not like, as it made him look too old."
+    m 3m "So, every night she picked out the white hairs."
+    m 3c "But, the elder Wife did not like to be mistaken for his mother."
+    m 1d "So, every morning she picked out as many of the black hairs as she could."
+    m 3l "The Man soon found himself entirely bald."
+    m 1j "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
+    m 1k "So before you give everything, make sure you still have some for yourself!"
+    m 1m "...Not that being bald is bad, [player]."
+    m 1l "Ehehe, I love you~!"
     return
 
 init 5 python:
@@ -277,11 +281,11 @@ init 5 python:
 
 label mas_story_fisherman:
     call mas_story_begin
-    m 1d "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
-    m 1i "The Fisherman was about to put it in his basket when the little Fish said:"
-    m 1wuo "“Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal.”"
-    m 1i "But the Fisherman quickly put the fish into his basket."
-    m 1tfu "“How foolish I should be,” he said, “to throw you back. However small you may be, you are better than nothing at all.”"
+    m 1c "A poor Fisherman, who lived on the fish he caught, had bad luck one day and caught nothing but a very small fry."
+    m 1d "The Fisherman was about to put it in his basket when the little Fish spoke."
+    m 3g "“Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal!'"
+    m 1d "But the Fisherman quickly put the fish into his basket."
+    m 3tfu "'How foolish I should be,' he said, “to throw you back. However small you may be, you are better than nothing at all.'"
     m 3 "The moral of this story is that: 'A small gain is worth more than a large promise'."
     m 1k "I hope you enjoyed this little story, [player]~"
     return
@@ -289,7 +293,7 @@ label mas_story_fisherman:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
     prompt="Old man's three wishes",unlocked=False),eventdb=store.mas_stories.story_database)
-
+# Stopping point #
 label mas_story_ravel:
     call mas_story_begin
     m 3 "Once, an elderly man was sitting alone on a dark path."
