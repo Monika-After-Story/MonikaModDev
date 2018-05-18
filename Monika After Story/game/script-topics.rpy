@@ -3727,7 +3727,7 @@ label monika_penname:
                             m "I'd like to think we are on a first name basis with each other. We are dating, after all."
                             m "But I guess it's pretty special that you shared your pen name with me!"
                             $ penbool = True
-                        elif lowerpen =="sayori"
+                        elif lowerpen =="sayori":
                             m 2c "..."
                             m 1n "...I mean, I won't question your choice of pennames, but..."
                             m "If you want to name yourself after a character in this game, you should pick me!"
