@@ -263,7 +263,7 @@ init 5 python:
 
 label mas_story_seeds:
     call mas_story_begin
-    m c "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
+    m 1c "It happened that a Countryman was sowing some hemp seeds in a field where a Swallow and some other birds were hopping about picking up their food."
     m 1tfd "'Beware of that man,' quote the Swallow."
     m 3d "'Why, what is he doing?' asked the others."
     m 1tkd "'That is hemp seed he is sowing; be careful to pick up every one of the seeds, or else you will repent it.' The Swallow replied."
