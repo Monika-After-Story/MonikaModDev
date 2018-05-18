@@ -3747,7 +3747,7 @@ label monika_penname:
                                 m "It's something of a common name."
                                 m 1i "Of course, there's something else that name could refer too..."
                                 if persistent.gender =="F":
-                                m 5 "And well...I could get behind that, since it's you~"
+                                  m 5 "And well...I could get behind that, since it's you~"
                                 $ persistent._mas_penname = penname
                                 $ penbool = True                                
                             elif lowerpen =="monika":
@@ -3768,9 +3768,9 @@ label monika_penname:
                                 $ penbool = True
                     "I'd rather not; it's embarrassing.":
                         m 2e "Aww. Well, I hope you feel enough to comfortable to tell me someday."          
-        "No":
-            m 1j "All right!"
-            m "If you ever decide on one, you should tell me!"
+          "No":
+              m 1j "All right!"
+              m "If you ever decide on one, you should tell me!"
     else:
         m "Are you still going by [penname], [player]?"
         m "I can't wait to see your work with that name!"
