@@ -96,7 +96,7 @@ label mas_stories_start:
 
         #check if it's an actual story
         if _return in mas_stories.story_database:
-            
+
             # track show_count stats
             $ mas_stories.story_database[_return].shown_count += 1
             $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
@@ -136,20 +136,39 @@ label mas_story_unlock_random:
             unlocked=False
         )
 
-        if len(stories) > 0:
+        if len(stories) == 0:
 
-            # select one story randomly
-            story = stories[renpy.random.choice(stories.keys())]
+            # in case the player left the game mid unlocking
+            stories = renpy.store.Event.filterEvents(
+                renpy.store.mas_stories.story_database,
+                unlocked=True,
+                seen=False
+            )
 
-            # unlock the story
-            story.unlocked = True
+            if len(stories) == 0:
 
-            # increment event's shown count and update last seen
-            story.shown_count += 1
-            story.last_seen = datetime.datetime.now()
+                # There should be no way to get to this point but just in case
+                # let's fail 'nicely'
+                stories = renpy.store.Event.filterEvents(
+                    renpy.store.mas_stories.story_database,
+                    unlocked=True
+                )
 
-            # using renpy.jump again cause again trasition looks like she's stuck
-            renpy.jump(story.eventlabel)
+
+        # select one story randomly
+        story = stories[renpy.random.choice(stories.keys())]
+
+        # unlock the story
+        story.unlocked = True
+
+        # increment event's shown count and update last seen
+        story.shown_count += 1
+        story.last_seen = datetime.datetime.now()
+
+        # using renpy.jump again cause again trasition looks like she's stuck
+        renpy.jump(story.eventlabel)
+
+
     return
 
 
@@ -225,6 +244,7 @@ label mas_story_grasshoper:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
         prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
+
 label mas_story_wind_sun:
     call mas_story_begin
     m 1q "The Wind and the Sun were disputing which was the strongest."
@@ -293,7 +313,7 @@ label mas_story_fisherman:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
     prompt="Old man's three wishes",unlocked=False),eventdb=store.mas_stories.story_database)
-# Stopping point #
+
 label mas_story_ravel:
     call mas_story_begin
     m 3c "Once, an elderly man was sitting alone on a dark path."
