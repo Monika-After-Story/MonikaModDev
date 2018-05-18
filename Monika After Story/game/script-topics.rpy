@@ -3702,6 +3702,8 @@ label monika_japanese:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
 label monika_penname:
     m "You know what's really cool? Pen names."
@@ -3709,10 +3711,61 @@ label monika_penname:
     m 3c "They keep it hidden from everyone just so it won't affect their personal lives."
     m 3b "Pen names also help writers create something totally different from their usual style of writing."
     m 3d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
-    if mcname.lower() != player.lower():
-        m 2c "Is '[mcname]' a pseudonym that you're using?"
-        m "You're using two different names after all."
-        m 2d "'[mcname] and [player].'"
+    m "Do you have a pen name, [player]?"
+    menu:
+        "Yes":
+            m 1 su "Really? That's so cool!" 
+            m 1b "Do you care to tell me what it is?"
+            menu: 
+                "No, not at all.":
+                    $ penbool = False
+                    while not penbool:
+                    $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
+                    $ lowerpen = penname.lower()
+                    if lowerpen = player.lower():
+                        m 3d "Oh, so you're using your pen name?" 
+                        m "I'd like to think we are on a first name basis with each other. We are dating, after all."
+                        m "But I guess it's pretty special that you shared your pen name with me!"
+                        $ penbool = True
+                    elif lowerpen = "sayori"
+                        m 2c "..."
+                        m 1n "...I mean, I won't question your choice of pennames, but..."
+                        m "If you want to name yourself after a character in this game, you should pick me!"
+                        $ penbool = True
+                    elif lowerpen = "natsuki":
+                        m 2c "..."
+                        m 1n "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Natsuki."
+                        m "It's something of a common name." 
+                        m "You might make me jealous, though."
+                        $ penbool = True
+                    elif lowerpen = "yuri":
+                        m 2c "..."
+                        m 1n "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Yuri."
+                        m "It's something of a common name."
+                        m 1i "Of course, there's something else that name could refer too..."
+                        if persistent.gender = "F":
+                            m 5 "And well...I could get behind that, since it's you~"
+                        $ penbool = True                                 
+                    
+                    elif lowerpen = "monika":
+                        m "..."
+                        m 1 ebla "Aww, did you pick that for me?" 
+                        m "Even if you didn't, that's so sweet!"
+                        $ penbool = True
+                    
+                    else:
+                        m 1j "That's a lovely pen name!"
+                        m "I think if I saw a pen name like that on a cover, I'd be drawn to it immediately." 
+                        $ penbool = True
+                "I'd rather not; it's embarrassing.":
+                    m 2e "Aww. Well, I hope you feel enough to comfortable to tell me someday."
+                "I've told you before.":
+                    m 3n "Oh! Right! It's [penname], right?"
+                    m "Sorry. I had a moment there. But at least you know you can tell me if you change it."                    
+        "No":
+            m 1j "All right!"
+            m "If you ever decide on one, you should tell me!"
+    
     m 3a "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
