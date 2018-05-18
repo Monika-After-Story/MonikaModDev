@@ -3723,10 +3723,10 @@ label monika_penname:
                         $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
                         $ lowerpen = penname.lower()
                         if lowerpen == player.lower():
-                          m 3d "Oh, so you're using your pen name?" 
-                          m "I'd like to think we are on a first name basis with each other. We are dating, after all."
-                          m "But I guess it's pretty special that you shared your pen name with me!"
-                          $ penbool = True
+                            m 3d "Oh, so you're using your pen name?" 
+                            m "I'd like to think we are on a first name basis with each other. We are dating, after all."
+                            m "But I guess it's pretty special that you shared your pen name with me!"
+                            $ penbool = True
                         elif lowerpen =="sayori"
                             m 2c "..."
                             m 1n "...I mean, I won't question your choice of pennames, but..."
@@ -3752,7 +3752,7 @@ label monika_penname:
                             m "Even if you didn't, that's so sweet!"
                             $ penbool = True   
                         else:
-                           m 1j "That's a lovely pen name!"
+                            m 1j "That's a lovely pen name!"
                             m "I think if I saw a pen name like that on a cover, I'd be drawn to it immediately." 
                             $ penbool = True
                 "I'd rather not; it's embarrassing.":
