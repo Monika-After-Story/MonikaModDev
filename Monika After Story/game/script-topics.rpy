@@ -3702,8 +3702,6 @@ label monika_japanese:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
 label monika_penname:
     m "You know what's really cool? Pen names."
