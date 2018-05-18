@@ -3768,9 +3768,9 @@ label monika_penname:
                                 $ penbool = True
                     "I'd rather not; it's embarrassing.":
                         m 2e "Aww. Well, I hope you feel enough to comfortable to tell me someday."          
-          "No":
-              m 1j "All right!"
-              m "If you ever decide on one, you should tell me!"
+            "No":
+                m 1j "All right!"
+                m "If you ever decide on one, you should tell me!"
     else:
         m "Are you still going by [penname], [player]?"
         m "I can't wait to see your work with that name!"
