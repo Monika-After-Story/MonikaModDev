@@ -5288,7 +5288,7 @@ label monika_cartravel:
     m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
     m "I bet we'd have a really good time if we took a road trip, [player]."
     m 1j "It really doesn't matter where we go, as long as I'm with you."
-    m "Just the idea of travelling around the world makes so excited!"
+    m "Just the idea of travelling around the world makes me so excited!"
     m 1e "I really can't wait, [player]~"
     return
 
@@ -6230,7 +6230,7 @@ label monika_yellowwp:
             m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
             m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
             m 4c "It's a metahpor for her own captivity, obviously..."
-            m 1i "In the end, the woman in the paper 'escapes', and the protagonist 'replaces' her, but feels free?"
+            m 1i "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
             m 2c "Sayori liked that story too, if I remember right."
             m 1f "I don't know. I kind of relate to that story."
