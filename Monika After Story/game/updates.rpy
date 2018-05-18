@@ -326,6 +326,11 @@ label v0_8_1(version="v0_8_1"):
                 persistent._seen_ever[anni] = True
                 anni_ev.unlocked = True
 
+        ### temporarily disable music2 topic
+        music_ev = Event(persistent.event_database, eventlabel="monika_music2")
+        music_ev.unlocked = False
+        music_ev.random = False
+
     return
 
 # 0.8.0

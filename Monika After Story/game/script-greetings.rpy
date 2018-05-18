@@ -514,6 +514,11 @@ init 5 python:
     del rules
 
 label i_greeting_monikaroom:
+
+    # safe to quit if Monika is still on her room
+    $ _confirm_quit = False
+    $ persistent.closed_self = True
+
     scene black
     $ HKBHideButtons()
     # atm, making this a persistent makes it easier to test as well as allows
@@ -845,6 +850,10 @@ label monikaroom_greeting_cleanup:
             play_song(songs.current_track) # default
         HKBShowButtons()
         set_keymaps()
+
+        # no longer safe to quit
+        _confirm_quit = True
+        persistent.closed_self = False
     return
 
 init 5 python:
@@ -1118,7 +1127,7 @@ label greeting_back_from_work:
              m 3a "But if not, you can relax with me!"
              m 1j "Best thing to do after a long day from, don't you think?"
              m 1k "Ahaha!"
-             
+
          "No.":
              m 1q "..."
              m 2f "I'd hug you right now if I were there, [player]."
