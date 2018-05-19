@@ -24,7 +24,7 @@ label bye_st_patrick:
 
 init 5 python:
     ev = Event(persistent.farewell_database,eventlabel="bye_dev",unlocked=True)
-    MASFarewellRule.create_rule(random_chance=5,ev=ev)
+#    MASFarewellRule.create_rule(random_chance=5,ev=ev)
     addEvent(ev,eventdb=evhand.farewell_database)
     del ev
 
