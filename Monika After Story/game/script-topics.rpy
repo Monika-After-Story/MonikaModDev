@@ -5136,8 +5136,7 @@ label monika_wolf:
 
 label monika_battery:
     if mas_did_monika_battery:
-       
-       monika_close_game_battery
+       jump monika_close_game_battery
     else:
        jump monika_complain_battery
 
