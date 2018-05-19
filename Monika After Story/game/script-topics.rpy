@@ -3779,12 +3779,12 @@ label monika_penname:
             m "Is your pen name still [penname]?"
         else:
             m "Are you still going by [penname], [player]?"
-            menu:
-                "Yes":
-                    m 1j "I can't wait to see your work with that name!"
-                "No":
-                    m 1j "I see! Do you want to tell me your new pen name?"
-                    jump penname_loop              
+        menu:
+            "Yes":
+                m 1j "I can't wait to see your work with that name!"
+            "No":
+                m 1j "I see! Do you want to tell me your new pen name?"
+                jump penname_loop              
     m 3a "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
