@@ -97,7 +97,8 @@ label vv_updates_topics:
         # 0.8.0 -> 0.8.1
         updates.topics[vv0_8_1] = {
             "monika_write": "monika_writingtip3",
-            "mas_random_ask": None
+            "mas_random_ask": None,
+            "monika_ravel": "mas_story_ravel"
         }
 
         # 0.7.4 -> 0.8.0

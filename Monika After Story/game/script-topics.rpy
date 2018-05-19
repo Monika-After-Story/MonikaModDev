@@ -2571,22 +2571,6 @@ label monika_vnanalysis:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_ravel",category=['literature'],prompt="Old man's three wishes",random=True))
-
-label monika_ravel:
-    m 1d "Want to hear a short story?"
-    m 3 "Once, an elderly man was sitting alone on a dark path."
-    m "He had forgotten both where he was traveling to, and who he was."
-    m "Suddenly, he looked up to see an elderly woman before him."
-    m "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
-    m 3i "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
-    m "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish."
-    m "'That's why you remember nothing; because everything is the way it was before you made any wishes.'"
-    m "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
-    m 1 "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_torment",category=['literature'],prompt="Nature of man",random=True))
 
 label monika_torment:
@@ -5288,7 +5272,7 @@ label monika_cartravel:
     m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
     m "I bet we'd have a really good time if we took a road trip, [player]."
     m 1j "It really doesn't matter where we go, as long as I'm with you."
-    m "Just the idea of travelling around the world makes so excited!"
+    m "Just the idea of travelling around the world makes me so excited!"
     m 1e "I really can't wait, [player]~"
     return
 
@@ -6230,7 +6214,7 @@ label monika_yellowwp:
             m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
             m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
             m 4c "It's a metahpor for her own captivity, obviously..."
-            m 1i "In the end, the woman in the paper 'escapes', and the protagonist 'replaces' her, but feels free?"
+            m 1i "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
             m 2c "Sayori liked that story too, if I remember right."
             m 1f "I don't know. I kind of relate to that story."
@@ -6251,6 +6235,21 @@ label monika_yellowwp:
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1a "It'll definitely be an interesting read for you."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_short_stories",
+            category=['literature'],
+            prompt="Can you tell me a story?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_short_stories:
+    jump mas_stories_start
 
 ##### monika hair topics [MONHAIR]
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue

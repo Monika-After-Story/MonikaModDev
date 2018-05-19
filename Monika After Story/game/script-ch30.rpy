@@ -636,6 +636,10 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
+            #Set unlock flag for stories
+            mas_can_unlock_story = True
+
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
@@ -786,7 +790,7 @@ label mas_ch30_select_seen:
 
 label mas_ch30_select_mostseen:
     # most seen selection
-    
+
     if len(mas_rev_mostseen) == 0:
         jump mas_ch30_select_seen
 
