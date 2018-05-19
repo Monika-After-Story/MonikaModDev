@@ -294,19 +294,22 @@ label v0_8_1(version="v0_8_1"):
             writ_3.action = EV_ACT_POOL
 
         # writing tip 2
+        zero_t = "monika_writingtip"
         old_t = "monika_writingtip1"
         new_t = "monika_writingtip2"
-        mas_transferTopicSeen(old_t, new_t)
-        mas_transferTopic(old_t, new_t, persistent.event_database)
-        writ_2 = evhand.event_database.get(new_t, None)
-        if writ_2 and not renpy.seen_label(new_t):
-            writ_2.conditional = "seen_event('monika_writingtip1')"
+        if zero_t in persistent.event_database:
+            # if we have the original no number writing tip, then we
+            # are migrating
 
-        # writing tip 1
-        old_t = "monika_writingtip"
-        new_t = "monika_writingtip1"
-        mas_transferTopicSeen(old_t, new_t)
-        mas_transferTopic(old_t, new_t, persistent.event_database)
+            mas_transferTopicSeen(old_t, new_t)
+            mas_transferTopic(old_t, new_t, persistent.event_database)
+            writ_2 = evhand.event_database.get(new_t, None)
+            if writ_2 and not renpy.seen_label(new_t):
+                writ_2.conditional = "seen_event('monika_writingtip1')"
+
+            # writing tip 1
+            mas_transferTopicSeen(zero_t, old_t)
+            mas_transferTopic(zero_t, old_t, persistent.event_database)
 
         ## dropping repeats
         persistent._mas_enable_random_repeats = None
