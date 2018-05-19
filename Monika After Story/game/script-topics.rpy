@@ -2571,22 +2571,6 @@ label monika_vnanalysis:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_ravel",category=['literature'],prompt="Old man's three wishes",random=True))
-
-label monika_ravel:
-    m 1d "Want to hear a short story?"
-    m 3 "Once, an elderly man was sitting alone on a dark path."
-    m "He had forgotten both where he was traveling to, and who he was."
-    m "Suddenly, he looked up to see an elderly woman before him."
-    m "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
-    m 3i "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
-    m "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish."
-    m "'That's why you remember nothing; because everything is the way it was before you made any wishes.'"
-    m "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
-    m 1 "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_torment",category=['literature'],prompt="Nature of man",random=True))
 
 label monika_torment:
@@ -6251,6 +6235,21 @@ label monika_yellowwp:
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1a "It'll definitely be an interesting read for you."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_short_stories",
+            category=['literature'],
+            prompt="Can you tell me a story?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_short_stories:
+    jump mas_stories_start
 
 ##### monika hair topics [MONHAIR]
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue
