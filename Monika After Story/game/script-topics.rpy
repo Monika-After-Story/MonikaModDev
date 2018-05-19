@@ -3715,9 +3715,10 @@ label monika_penname:
         menu:
             "Yes":
                 m 1 su "Really? That's so cool!" 
-                m 1b "Do you care to tell me what it is?"
+                m 1b "Can you tell me what it is?"
+                label penname_loop:
                 menu: 
-                    "No, not at all.":
+                    "Absolutely.":
                         $ penbool = False
                         while not penbool:
                             $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
@@ -3772,8 +3773,18 @@ label monika_penname:
                 m 1j "All right!"
                 m "If you ever decide on one, you should tell me!"
     else:
-        m "Are you still going by [penname], [player]?"
-        m "I can't wait to see your work with that name!"
+        $ penname = persistent._mas_penname
+        $ lowerpen = penname.lower()
+        if lowerpen == player.lower():
+            m "Is your pen name still [penname]?"
+        else:
+            m "Are you still going by [penname], [player]?"
+            menu:
+                "Yes":
+                    m 1j "I can't wait to see your work with that name!"
+                "No":
+                    m 1j "I see! Do you want to tell me your new pen name?"
+                    jump penname_loop              
     m 3a "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
@@ -5125,7 +5136,8 @@ label monika_wolf:
 
 label monika_battery:
     if mas_did_monika_battery:
-       jump monika_close_game_battery
+       
+       monika_close_game_battery
     else:
        jump monika_complain_battery
 
