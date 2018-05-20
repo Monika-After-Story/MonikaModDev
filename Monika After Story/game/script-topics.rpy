@@ -13,7 +13,7 @@ define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
 
 init -2 python in mas_topics:
-  
+
     # CONSTANTS
     # most / top weights
     S_MOST_SEEN = 0.1
@@ -78,7 +78,7 @@ init -1 python:
             selected element
         """
         endpoint = len(sel_list) - 1
-        
+
         if endpoint < 0:
             return None
 
@@ -119,7 +119,7 @@ init -1 python:
         index = len(sort_list) - 1
         while index >= 0 and key(sort_list[index]) > key(item):
             index -= 1
-            
+
         sort_list.insert(index + 1, item)
 
 
@@ -141,9 +141,9 @@ init -1 python:
         # now calculate the most / top seen counts
         most_count = int(len(sorted_seen) * store.mas_topics.S_MOST_SEEN)
         top_count = store.mas_topics.topSeenEvents(
-            sorted_seen, 
+            sorted_seen,
             int(
-                sorted_seen[len(sorted_seen) - 1].shown_count 
+                sorted_seen[len(sorted_seen) - 1].shown_count
                 * store.mas_topics.S_TOP_SEEN
             )
         )
@@ -2686,6 +2686,10 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
+    if monika_chr.hair != "def":
+        m "Do you miss my ribbon, [player]?"
+        m "I can change my hairstyle whenever you want me to, ehehe~"
+        return
     m 1d "I noticed that you were staring at my ribbon, [player]."
     m 3 "It doesn't hold sentimental value to me or anything, in case you were wondering."
     m 3k"I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
@@ -5549,7 +5553,7 @@ label monika_prom:
                     m 1e "Aww, that's so sweet, [player]."
                     m 1j "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
                     m 1k "Ahaha!"
-        "No.": 
+        "No.":
             m "Oh? Why not?"
             menu:
                 "You're weren't there with me.":
