@@ -1090,37 +1090,6 @@ python early:
                 self._state = self._STATE_HOVER
 
 
-        def ground(self):
-            """
-            Grounds (unhovers) this button. This changes the internal state,
-            so its preferable to use this over setting the hovered property
-            directly
-
-            NOTE: If this button is disabled (and not enable_when_disabled),
-            this will do NOTHING
-            """
-            if not self.disabled or self.enable_when_disabled:
-                self.hovered = False
-
-                if self.disabled:
-                    self._state = self._STATE_DISABLED
-                else:
-                    self._state = self._STATE_IDLE
-
-
-        def hover(self):
-            """
-            Hovers this button. This changes the internal state, so its
-            preferable to use this over setting the hovered property directly
-
-            NOTE: IF this button is disabled (and not enable_when_disabled),
-            this will do NOTHING
-            """
-            if not self.disabled or self.enable_when_disabled:
-                self.hovered = True
-                self._state = self._STATE_HOVER
-
-
         def render(self, width, height, st, at):
 
             # pull out the current button back and text and render them
