@@ -6317,3 +6317,31 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_advice",category=['random'],prompt="Can I ask you a Yes/No Question?",pool=True,unlocked=True))
+
+label monika_advice:
+	$ question = renpy.input('What would you like to ask?',length=120).strip(' \t\n\r')
+	$ questiontemp = question.lower()
+    python:
+        8ball = ["Without a doubt!",
+						  "Yes definitely!",
+						  "As I see it, yes.",
+						  "Most likely.",
+						  "Yes!",
+						  "Absolutely!",
+						  "I'm not sure, give me a moment to think about it and ask again.",
+						  "Good question, I have to ponder that, ask again later.",
+						  "This might not be the best time to tell you.",
+						  "Don't count on it.",
+						  "I'd have to say, no.",
+						  "Very doubtful.",
+						  "I don't think so."
+                         ]
+        
+        advice = renpy.random.choice(8ball)
+            
+    m 1a "Your question was, [questiontemp]"
+	m "[advice]"
+    return
