@@ -3063,13 +3063,21 @@ default persistent._mas_hair_changed = False
 # they are stored in minutes so we can use bar nicely
 default persistent._mas_sunrise = 6 * 60
 default persistent._mas_sunset = 18 * 60
-define mas_max_suntime = (24 * 60) - 1# 24 hours x 60 minutes
+
+# 24 * 60 minutes, divided into chunks of 5
+define mas_max_suntime = int((24 * 60) / 5) - 1
 define mas_sunrise_prev = persistent._mas_sunrise
 define mas_sunset_prev = persistent._mas_sunset
 define mas_suntime.NO_CHANGE = 0
 define mas_suntime.RISE_CHANGE = 1
 define mas_suntime.SET_CHANGE = 2
 define mas_suntime.change_state = mas_suntime.NO_CHANGE
+define mas_suntime.modifier = 5 # modifier for chunking the time
+
+# these 2 are our internal represenations of the suntimes in 5 minute
+# chunks
+define mas_suntime.sunrise = int(persistent._mas_sunrise / 5)
+define mas_suntime.sunset = int(persistent._mas_sunset / 5)
 
 define mas_checked_update = False
 #define mas_monika_repeated = False

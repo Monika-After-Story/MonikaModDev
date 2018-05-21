@@ -1003,44 +1003,52 @@ screen preferences():
 
                 python:
                     # sunrise / sunset preprocessing
+
                     # figure out which value is changing (if any)
                     if mas_suntime.change_state == mas_suntime.RISE_CHANGE:
                         # we are modifying sunrise
 
-                        if persistent._mas_sunrise > persistent._mas_sunset:
+                        if mas_suntime.sunrise > mas_suntime.sunset:
                             # ensure sunset remains >= than sunrise
-                            persistent._mas_sunset = persistent._mas_sunrise
+                            mas_suntime.sunset = mas_suntime.sunrise
 
-                        if mas_sunrise_prev == persistent._mas_sunrise:
+                        if mas_sunrise_prev == mas_suntime.sunrise:
                             # if no change since previous, then switch state
                             mas_suntime.change_state = mas_suntime.NO_CHANGE
 
-                        mas_sunrise_prev = persistent._mas_sunrise
+                        mas_sunrise_prev = mas_suntime.sunrise
 
                     elif mas_suntime.change_state == mas_suntime.SET_CHANGE:
                         # we are modifying sunset
 
-                        if persistent._mas_sunset < persistent._mas_sunrise:
+                        if mas_suntime.sunset < mas_suntime.sunrise:
                             # ensure sunrise remains <= than sunset
-                            persistent._mas_sunrise = persistent._mas_sunset
+                            mas_suntime.sunrise = mas_suntime.sunset
 
-                        if mas_sunset_prev == persistent._mas_sunset:
+                        if mas_sunset_prev == mas_suntime.sunset:
                             # if no change since previous, then switch state
                             mas_suntime.change_state = mas_suntime.NO_CHANGE
 
-                        mas_sunset_prev = persistent._mas_sunset
+                        mas_sunset_prev = mas_suntime.sunset
                     else:
                         # decide if we are modifying sunrise or sunset
 
-                        if mas_sunrise_prev != persistent._mas_sunrise:
+                        if mas_sunrise_prev != mas_suntime.sunrise:
                             mas_suntime.change_state = mas_suntime.RISE_CHANGE
 
-                        elif mas_sunset_prev != persistent._mas_sunset:
+                        elif mas_sunset_prev != mas_suntime.sunset:
                             mas_suntime.change_state = mas_suntime.SET_CHANGE
 
                         # set previous values
-                        mas_sunrise_prev = persistent._mas_sunrise
-                        mas_sunset_prev = persistent._mas_sunset
+                        mas_sunrise_prev = mas_suntime.sunrise
+                        mas_sunset_prev = mas_suntime.sunset
+
+
+                    ## prepreocess display time
+                    persistent._mas_sunrise = mas_suntime.sunrise * 5
+                    persistent._mas_sunset = mas_suntime.sunset * 5
+                    sr_display = mas_cvToDHM(persistent._mas_sunrise)
+                    ss_display = mas_cvToDHM(persistent._mas_sunset)
 
                 vbox:
 
@@ -1048,10 +1056,9 @@ screen preferences():
                         label _("Sunrise   ")
 
                         # display time
-                        $ sr_display = mas_cvToDHM(persistent._mas_sunrise)
                         label _("[[ " + sr_display + " ]")
 
-                    bar value FieldValue(persistent, "_mas_sunrise", range=mas_max_suntime, style="slider")
+                    bar value FieldValue(mas_suntime, "sunrise", range=mas_max_suntime, style="slider")
 
 
                 vbox:
@@ -1060,10 +1067,9 @@ screen preferences():
                         label _("Sunset   ")
 
                         # display time
-                        $ ss_display = mas_cvToDHM(persistent._mas_sunset)
                         label _("[[ " + ss_display + " ]")
 
-                    bar value FieldValue(persistent, "_mas_sunset", range=mas_max_suntime, style="slider")
+                    bar value FieldValue(mas_suntime, "sunset", range=mas_max_suntime, style="slider")
 
                 vbox:
 
