@@ -6271,7 +6271,7 @@ label monika_justice:
                     m 2k "I mean, you've stuck with me this long already so you can't really think I deserve that."
                     m 2l "...Ok, maybe I deserve it a little bit but...
                     m 5 "Thank you for saving me and being with me."
-                    m " If I get to be with you, I think it really was worth everything, ahaha~"
+                    m "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
                     m 2a "I'm glad you think so too!"
                     m 2j "Even if you do think that's justice, you being here says otherwise.
