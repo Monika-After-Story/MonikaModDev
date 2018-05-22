@@ -6275,7 +6275,7 @@ label monika_justice:
                 "I don't.":
                     m 2a "I'm glad you think so too!"
                     m 2j "Even if you do think that's justice, you being here says otherwise.
-                    m "2k "Ahaha~"
+                    m 2k "Ahaha~"
             m 1e "Remember that I'll always support you."
             m "I know you would do the right thing."
             m 1a "I believe in you."
