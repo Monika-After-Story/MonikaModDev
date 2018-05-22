@@ -725,7 +725,14 @@ label ch30_loop:
     if not _return:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
-        $ waittime = renpy.random.randint(20, 45)
+
+        if mas_randchat.rand_low == 0:
+            # we are not repeating for now
+            # we'll wait 60 seconds inbetween loops
+            $ renpy.pause(60, hard=True)
+            jump post_pick_random_topic
+
+        $ waittime = renpy.random.randint(mas_randchat.rand_low, mas_randchat.rand_high)
         $ renpy.pause(waittime, hard=True)
         window auto
 
@@ -888,5 +895,8 @@ label ch30_reset:
             monika_chr.acs[MASMonika.PST_ACS].append(
                 store.mas_sprites.ACS_MAP[acs_name]
         )
+
+    ## random chatter frequency reset
+    $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
 
     return

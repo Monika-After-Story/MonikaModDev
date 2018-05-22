@@ -970,20 +970,9 @@ screen preferences():
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 
-#                vbox:
-#                    style_prefix "check"
-#                    label _("Gameplay")
-#                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
-
-                ## Additional vboxes of type "radio_pref" or "check_pref" can be
-                ## added here, to add additional creator-defined preferences.
-
-            hbox:
-                box_wrap True
-
                 vbox:
                     style_prefix "check"
-                    label _("Dev")
+                    label _("Gameplay")
                     if persistent._mas_unstable_mode:
                         textbutton _("Unstable"):
                             action SetField(persistent, "_mas_unstable_mode", False)
@@ -994,6 +983,14 @@ screen preferences():
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
 
+#                vbox:
+#                    style_prefix "check"
+#                    label _("Gameplay")
+#                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+
+                ## Additional vboxes of type "radio_pref" or "check_pref" can be
+                ## added here, to add additional creator-defined preferences.
+
 
             null height (4 * gui.pref_spacing)
 
@@ -1002,8 +999,23 @@ screen preferences():
                 box_wrap True
 
                 python:
-                    # sunrise / sunset preprocessing
+                    ### random chatter preprocessing
+                    if mas_randchat_prev != persistent._mas_randchat_freq:
+                        # adjust the randoms if it changed
+                        mas_randchat.adjustRandFreq(
+                            persistent._mas_randchat_freq
+                        )
 
+                    # setup the display string
+                    rc_display = mas_randchat.getRandChatDisp(
+                        persistent._mas_randchat_freq
+                    )
+
+                    # setup previous values
+                    mas_randchat_prev = persistent._mas_randchat_freq
+
+
+                    ### sunrise / sunset preprocessing
                     # figure out which value is changing (if any)
                     if mas_suntime.change_state == mas_suntime.RISE_CHANGE:
                         # we are modifying sunrise
@@ -1061,8 +1073,6 @@ screen preferences():
                     bar value FieldValue(mas_suntime, "sunrise", range=mas_max_suntime, style="slider")
 
 
-                vbox:
-
                     hbox:
                         label _("Sunset   ")
 
@@ -1070,6 +1080,19 @@ screen preferences():
                         label _("[[ " + ss_display + " ]")
 
                     bar value FieldValue(mas_suntime, "sunset", range=mas_max_suntime, style="slider")
+
+
+                vbox:
+                    
+                    hbox:
+                        label _("Random Chatter   ")
+
+                        # display str
+                        label _("[[ " + rc_display + " ]")
+
+                    bar value FieldValue(persistent, "_mas_randchat_freq",
+                    range=3, style="slider")
+
 
                 vbox:
 
