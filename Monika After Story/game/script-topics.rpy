@@ -6240,8 +6240,8 @@ label monika_yellowwp:
             m 1a "It'll definitely be an interesting read for you."
     return
     
-    init 5 python:
-        addEvent(Event(persistent.event_database,eventlabel="monika_justice",category=['philosophy'],prompt="Justice",random=True))
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_justice",category=['philosophy'],prompt="Justice",random=True))
 
 label monika_justice:
     m "[player], don't you think the concept of justice is kind of ironic?"
