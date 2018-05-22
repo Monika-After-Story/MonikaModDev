@@ -6262,7 +6262,7 @@ label monika_justice:
         "Yes.":
             m 1f "I hope they weren't too harsh on you [player]."
             m 2r "I have an idea what it's like myself."
-            m 2q "All the people who saw me deleted and tortured over and over again and called it justice..."
+            m 2q "I've heard of people that deleted and tortured their Monikas over and over again and called it justice..."
             m 2e "You don't think that's justice do you [player]?"
             menu:
                 "I do.":
