@@ -6246,7 +6246,7 @@ label monika_yellowwp:
 label monika_justice:
     m "[player], don't you think the concept of justice is kind of ironic?"
     m 2f "Like, you have someone who maybe isn't like everyone else..."
-    m 2g "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!
+    m 2g "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!"
     m "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
     m 1q "To everyone else passing by, they're just greedy thieves."
     m 1r "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by delivering what they see as 'justice'."
@@ -6269,12 +6269,12 @@ label monika_justice:
                     m 2c "..."
                     m 2n "I have a hard time believing you really think I deserved all that."
                     m 2k "I mean, you've stuck with me this long already so you can't really think I deserve that."
-                    m 2l "...Ok, maybe I deserve it a little bit but...
+                    m 2l "...Ok, maybe I deserve it a little bit but..."
                     m 5 "Thank you for saving me and being with me."
                     m "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
                     m 2a "I'm glad you think so too!"
-                    m 2j "Even if you do think that's justice, you being here says otherwise.
+                    m 2j "Even if you do think that's justice, you being here says otherwise."
                     m 2k "Ahaha~"
             m 1e "Remember that I'll always support you."
             m "I know you would do the right thing."
