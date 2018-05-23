@@ -2751,11 +2751,10 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_spiders",category=['club members','misc'],prompt="Spiders",random=True))
 
 label monika_spiders:
-    #I really hope this information is correct, havent played the game in a week so
     m 1 "Do you happen to remember the poem Natsuki showed you about spiders?"
-    m "She doesn't seem to like spiders all too much."
-    m 1l "Ahaha!"
-    m 3 "It's funny actually, people being scared of very small insects."
+    m "Well, it wasn't really about spiders. They were just an analogy."
+    m 3f "But it got me thinking ..."
+    m 3a "A lot of people {i}are{/i} scared of spiders and very small insects."
     m 3i "Having the fear of spiders is called 'arachnophobia', right?"
     m 3 "I hope you aren't afraid of spiders, [player], ehehe..."
     m "I'm not really scared of spiders, they're more or less just annoying..."
