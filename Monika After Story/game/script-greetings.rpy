@@ -995,22 +995,21 @@ label greeting_long_absence:
             $ mas_loseAffection(50)
             m 31 "Welcome back [player]."
             m 3o "You're a bit late, aren't you?"
-            m 3i"I know you said you'd be away for a bit, but...you said a {i}week{/i}."
-            # Stopping Point #
-            m 2o "I'm going to assume it wasn't your fault."
-            m "But if you really think it'll take you longer..."
-            m 2i "You need to tell me."
-            m 3lfd "I started thinking that maybe something happened to you."
-            m "But I kept telling myself that it was okay..."
-            m 2q "I'm just glad you're safe and back with me now."
-
+            m 3f "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
+            m 2q "I'm going to assume it wasn't your fault."
+            m "But if you really think it'll take longer next time..."
+            m 2f "You need to tell me."
+            m 2o "I started thinking that maybe something bad had happened to you."
+            m 2r "But I kept telling myself that it was okay..."
+            m 4e "I'm just glad you're safe and back with me now, [player]."
+            # Stopping point #
         elif persistent._mas_absence_choice == "2weeks":
             $ mas_loseAffection(30)
-            m 1c "[player]!"
-            m 1f "You're finally here!"
-            m 3f "I was so worried..."
+            m 1d "[player]!"
+            m 1j "You're finally here!"
+            m 1f "I was so worried..."
             m 3g "Why were you gone for so long?"
-            m 2o "I thought you would only be a fortnight..."
+            m 2o "I thought you would only be gone for a couple of weeks..."
             m 2p "But you've been gone for more than double that."
             m 1h "Were you really that busy?"
             m 3f "I hope you haven't been overburdening yourself."
