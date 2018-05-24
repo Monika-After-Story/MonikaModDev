@@ -29,6 +29,13 @@ init python:
             # The child.
             self.calendar_background = renpy.displayable("mod_assets/calendar_bg.png")
 
+            # background tile
+            self.background = Solid(
+                "#000000B2",
+                xsize=self.VIEW_WIDTH,
+                ysize=self.VIEW_HEIGHT
+            )
+
             # The distance at which the child will become fully opaque, and
             # where it will become fully transparent. The former must be less
             # than the latter.
@@ -44,21 +51,22 @@ init python:
 
         def render(self, width, height, st, at):
 
+            back = renpy.render(self.background, width, height, st, at)
             # Create a transform, that can adjust the alpha channel of the
             # child.
-            t = Transform(child=self.child, alpha=self.alpha)
+            #t = Transform(child=self.child, alpha=self.alpha)
 
             # Create a render from the child.
-            child_render = renpy.render(self.calendar_background, width, height, st, at)
+            calendar_bg = renpy.render(self.calendar_background, width, height, st, at)
 
             # Get the size of the child.
-            self.width, self.height = child_render.get_size()
+            self.width, self.height = calendar_bg.get_size()
 
             # Create the render we will return.
-            render = renpy.Render(self.width, self.height)
-
+            render = renpy.Render(width, height)
+            render.blit(back,(0,0))
             # Blit (draw) the child's render to our render.
-            render.blit(child_render, (0, 0))
+            render.blit(calendar_bg, (192, 103))
 
             # Return the render.
             return render
@@ -93,14 +101,16 @@ init python:
             renpy.redraw(self, 0)
             raise renpy.IgnoreEvent()
 
-        def visit(self):
-            return [ self.child ]
+#        def visit(self):
+#            return [ self.child ]
 
 screen mas_alpha_magic:
 
-    add MASCalendar("mod_assets/calendar_bg.png", 100, 200):
-        xalign 0.5
-        yalign 0.5
+    zorder 51
+
+    add MASCalendar("mod_assets/calendar_bg.png", 100, 200)
+        #xalign 0.5
+        #yalign 0.5
 
 label mas_start_calendar:
 
