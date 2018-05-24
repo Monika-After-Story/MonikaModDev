@@ -61,6 +61,45 @@ init python:
             Event.INIT_LOCKDB.pop(topicID)
 
 
+    def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
+        """
+        Transfers a topic's data from the old topic ID to the new one int he
+        given database as well as the lock database.
+
+        NOTE: If the new topic ID already exists in the given databases,
+        the data is OVERWRITTEN
+
+        IN:
+            old_topicID - old topic ID to transfer
+            new_topicID - new topic ID to receieve
+            per_eventDB - persistent databse this topic is in
+        """
+        if old_topicID in per_eventDB:
+
+            # listify old data so we can replace the eventlabel attribute
+            # EVENTLABEL is piece 0. NOTE: PLEASE DO NOT CHANGE
+            old_data = list(per_eventDB.pop(old_topicID))
+            old_data[0] = new_topicID
+            per_eventDB[new_topicID] = tuple(old_data)
+
+        if old_topicID in Event.INIT_LOCKDB:
+            Event.INIT_LOCKDB[new_topicID] = Event.INIT_LOCKDB.pop(old_topicID)
+
+
+    def mas_transferTopicSeen(old_topicID, new_topicID):
+        """
+        Tranfers persistent seen ever data. This is separate because of complex
+        topic adjustments
+
+        IN:
+            old_topicID - old topic ID to tranfer
+            new_topicID - new topic ID to receieve
+        """
+        if old_topicID in persistent._seen_ever:
+            persistent._seen_ever.pop(old_topicID)
+            persistent._seen_ever[new_topicID] = True
+
+
     def adjustTopicIDs(changedIDs,updating_persistent=persistent):
         #
         # Changes labels in persistent._seen_ever
@@ -214,6 +253,7 @@ label v0_3_1(version=version): # 0.3.1
 label v0_8_1(version="v0_8_1"):
     python:
         import store.evhand as evhand
+        import store.mas_stories as mas_stories
 
         # change fast food topic values
         # NOTE: this is for unstablers using 0.8.0
@@ -221,6 +261,111 @@ label v0_8_1(version="v0_8_1"):
         if m_ff:
             hideEvent(m_ff, derandom=True)
             m_ff.pool = True
+
+        # regular topic update
+        persistent = updateTopicIDs(version)
+
+        ## writing topic adjustments
+
+        # writing tip 5
+        writ_5 = evhand.event_database.get("monika_writingtip5", None)
+        if writ_5 and not renpy.seen_label(writ_5.eventlabel):
+            writ_5.pool = False
+            writ_5.conditional = "seen_event('monika_writingtip4')"
+            writ_5.action = EV_ACT_POOL
+
+        # writing tip 4
+        writ_4 = evhand.event_database.get("monika_writingtip4", None)
+        if writ_4 and not renpy.seen_label(writ_4.eventlabel):
+            writ_4.pool = False
+            writ_4.conditional = "seen_event('monika_writingtip3')"
+            writ_4.action = EV_ACT_POOL
+
+        # writing tip 3
+        mas_transferTopic(
+            "monika_write",
+            "monika_writingtip3",
+            persistent.event_database
+        )
+        writ_3 = evhand.event_database.get("monika_writingtip3", None)
+        if writ_3 and not renpy.seen_label(writ_3.eventlabel):
+            writ_3.pool = False
+            writ_3.conditional = "seen_event('monika_writingtip2')"
+            writ_3.action = EV_ACT_POOL
+
+        # writing tip 2
+        zero_t = "monika_writingtip"
+        old_t = "monika_writingtip1"
+        new_t = "monika_writingtip2"
+        if zero_t in persistent.event_database:
+            # if we have the original no number writing tip, then we
+            # are migrating
+
+            mas_transferTopicSeen(old_t, new_t)
+            mas_transferTopic(old_t, new_t, persistent.event_database)
+            writ_2 = evhand.event_database.get(new_t, None)
+            if writ_2 and not renpy.seen_label(new_t):
+                writ_2.conditional = "seen_event('monika_writingtip1')"
+
+            # writing tip 1
+            mas_transferTopicSeen(zero_t, old_t)
+            mas_transferTopic(zero_t, old_t, persistent.event_database)
+
+        ## dropping repeats
+        persistent._mas_enable_random_repeats = None
+        persistent._mas_monika_repeated_herself = None
+
+        ## need to unlock anniversary topics
+        annis = (
+            "anni_1week",
+            "anni_1month",
+            "anni_3month",
+            "anni_6month"
+        ) # impossible to reach a year
+        for anni in annis:
+            anni_ev = evhand.event_database.get(anni, None)
+
+            if anni_ev and isPast(anni_ev):
+                # we'll make them seen again and then also unlock them
+                persistent._seen_ever[anni] = True
+                anni_ev.unlocked = True
+
+        ### temporarily disable music2 topic
+        music_ev = Event(persistent.event_database, eventlabel="monika_music2")
+        music_ev.unlocked = False
+        music_ev.random = False
+
+        ## swap story label (well the label is already handled in topics)
+        # but we need to handle the database data (we are transfering only
+        # select properties)
+        # Props to transfer:
+        # shown_count
+        # last_seen
+        # seen has already been handled, so lets just send over some data
+        # need to recreate the event object so we can properly retrieve data
+        ravel_evlabel = "monika_ravel"
+        ravel_stlabel = "mas_story_ravel"
+        ravel_ev = Event(persistent.event_database, eventlabel=ravel_evlabel)
+        ravel_story = mas_stories.story_database.get(ravel_stlabel, None)
+        ravel_lockdata = None
+
+        # remove lock data
+        if ravel_evlabel in Event.INIT_LOCKDB:
+            ravel_lockdata = Event.INIT_LOCKDB.pop(ravel_evlabel)
+
+        if ravel_story:
+            # story exists, lets do some transfers
+            ravel_story.shown_count = ravel_ev.shown_count
+            ravel_story.last_seen = ravel_ev.last_seen
+
+            if ravel_lockdata:
+                # transfer lockdata
+                Event.INIT_LOCKDB[ravel_stlabel] = ravel_lockdata
+
+        # now remove old event data
+        if ravel_evlabel in persistent.event_database:
+            persistent.event_database.pop(ravel_evlabel)
+
 
     return
 
@@ -252,10 +397,10 @@ label v0_8_0(version="v0_8_0"):
         for k in updates.topics["v0_8_0"]:
             mas_eraseTopic(k, persistent.event_database)
 
-        # have to erase 074 because we didn't do this before. 
+        # have to erase 074 because we didn't do this before.
         # NOTE: we should never have to do this again
         for k in updates.topics["v0_7_4"]:
-            mas_eraseTopic(k, persistent.event_database)            
+            mas_eraseTopic(k, persistent.event_database)
 
         # change fast food topic values
         m_ff = evhand.event_database.get("monika_fastfood", None)
@@ -324,7 +469,7 @@ label v0_7_4(version="v0_7_4"):
         # NOTE: this is completel retroactive. Becuase this is a released
         # version, we must also make this change in 0.8.0 updates
         for k in updates.topics["v0_7_4"]:
-            mas_eraseTopic(k, persistent.event_database)            
+            mas_eraseTopic(k, persistent.event_database)
 
     return
 

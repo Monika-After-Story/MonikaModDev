@@ -76,9 +76,11 @@ image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
 image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
 image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
+
+# big thanks to sebastianN01 for the rain art!
 image rain_mask_left = Movie(
-    channel="window_5", 
-    play="mod_assets/window_5.webm", 
+    channel="window_5",
+    play="mod_assets/window_5.webm",
     mask=None,
     image="mod_assets/window_5_fallback.png"
 )
@@ -144,8 +146,8 @@ init python:
 
     # we need a new music channel for background audio (like rain!)
     renpy.music.register_channel(
-        "background", 
-        mixer="music", 
+        "background",
+        mixer="music",
         loop=True,
         stop_on_mute=True,
         tight=True
@@ -257,7 +259,7 @@ init python:
         game.
 
         ASSUMES:
-            morning_flag 
+            morning_flag
             mas_is_raining
         """
         if mas_is_raining:
@@ -298,13 +300,15 @@ init python:
             and renpy.get_screen("preferences") is None):
 
             # music menu label
-            renpy.call_in_new_context("display_music_menu")
+            selected_track = renpy.call_in_new_context("display_music_menu")
+            if selected_track == songs.NO_SONG:
+                selected_track = songs.FP_NO_SONG
 
             # workaround to handle new context
-            if songs.selected_track != songs.current_track:
-                play_song(songs.selected_track)
-                songs.current_track = songs.selected_track
-                persistent.current_track = songs.current_track
+            if selected_track != songs.current_track:
+                play_song(selected_track)
+                songs.current_track = selected_track
+                persistent.current_track = selected_track
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -334,7 +338,16 @@ init python:
             renpy.display.behavior.clear_keymap_cache()
     morning_flag = None
     def is_morning():
-        return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
+        # generate the times we need
+        sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
+        ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
+        sr_time = datetime.time(sr_hour, sr_min)
+        ss_time = datetime.time(ss_hour, ss_min)
+
+        now_time = datetime.datetime.now().time()
+
+        return sr_time <= now_time < ss_time
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -350,7 +363,7 @@ init python:
 label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
     if is_morning():
-        if morning_flag != True or scene_change:
+        if not morning_flag or scene_change:
             $ morning_flag = True
             if not hide_mask:
                 $ mas_drawSpaceroomMasks()
@@ -361,8 +374,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
-    elif not is_morning():
-        if morning_flag != False or scene_change:
+    else:
+        if morning_flag or scene_change:
             $ morning_flag = False
             scene black
             if not hide_mask:
@@ -410,10 +423,10 @@ label pick_a_game:
             import datetime
             _hour = datetime.timedelta(hours=1)
             _now = datetime.datetime.now()
-            
+
             # chess has timed disabling
             if persistent._mas_chess_timed_disable is not None:
-                if persistent._mas_chess_timed_disable - _now >= _hour:
+                if _now - persistent._mas_chess_timed_disable >= _hour:
                     chess_disabled = False
                     persistent._mas_chess_timed_disable = None
 
@@ -575,7 +588,12 @@ label ch30_autoload:
         else:
             python:
 
-                sel_greeting_event = store.mas_greetings.selectGreeting()
+                # we select a greeting depending on the type that we should select
+                sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+
+                # reset the greeting type flag back to None
+                persistent._mas_greeting_type = None
+
                 selected_greeting = sel_greeting_event.eventlabel
 
                 # store if we have to skip visuals ( used to prevent visual bugs)
@@ -618,6 +636,10 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
+            #Set unlock flag for stories
+            mas_can_unlock_story = True
+
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
@@ -656,7 +678,7 @@ label ch30_loop:
 
     else:
         $ mas_skip_visuals = False
-    
+
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
@@ -719,55 +741,20 @@ label ch30_loop:
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
-            python:
-                if len(monika_random_topics) > 0:  # still have topics
+                # randomize selection
+                $ chance = renpy.random.randint(1, 100)
 
-                    if mas_monika_repeated:
-                        # monika has reaached the reepated flow
-                        if persistent._mas_enable_random_repeats:
-                            sel_ev = monika_random_topics.pop(0)
+                if chance <= store.mas_topics.UNSEEN:
+                    # unseen topic shoud be selected
+                    jump mas_ch30_select_unseen
 
-                        else:
-                            # otherwise we shouldnt be repeating
-                            monika_random_topics = list()
-                            mas_monika_repeated = False
-                            renpy.jump("post_pick_random_topic")
+                elif chance <= store.mas_topics.SEEN:
+                    # seen topic should be seelcted
+                    jump mas_ch30_select_seen
 
-                    else:
-                        sel_ev = renpy.random.choice(monika_random_topics)
-                        monika_random_topics.remove(sel_ev)
+                # most seen topic should be selected
+                jump mas_ch30_select_mostseen
 
-                    pushEvent(sel_ev)
-                    persistent.random_seen += 1
-
-                elif persistent._mas_enable_random_repeats:
-                    # user wishes for reptitive monika. We will oblige, but
-                    # a somewhat intelligently.
-                    # NOTE: these are ordered using the shown_count property
-                    # NOTE: These start off as list of event objects and then
-                    # sorted differently. WATCH OUT
-                    monika_random_topics = Event.filterEvents(
-                        evhand.event_database,
-                        random=True
-                    ).values()
-                    monika_random_topics.sort(key=Event.getSortShownCount)
-                    monika_random_topics = mas_cleanJustSeen(
-                        [ev.eventlabel for ev in monika_random_topics],
-                        evhand.event_database
-                    )
-                    # NOTE: now the monika random topics are back to being
-                    #   labels. Safe to do normal operation.
-
-                    persistent._mas_monika_repeated_herself = True
-                    mas_monika_repeated = True
-                    sel_ev = monika_random_topics.pop(0)
-                    pushEvent(sel_ev)
-                    persistent.random_seen += 1
-
-                elif not seen_random_limit: # no topics left
-#                    monika_random_topics = list(all_random_topics)
-#                    pushEvent(renpy.random.choice(monika_random_topics))
-                    pushEvent("random_limit_reached")
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
 
@@ -776,6 +763,40 @@ label post_pick_random_topic:
     $_return = None
 
     jump ch30_loop
+
+# topic selection labels
+label mas_ch30_select_unseen:
+    # unseen selection
+
+    if len(mas_rev_unseen) == 0:
+        jump mas_ch30_select_seen
+
+    $ mas_randomSelectAndPush(mas_rev_unseen)
+
+    jump post_pick_random_topic
+
+
+label mas_ch30_select_seen:
+    # seen selection
+
+    if len(mas_rev_seen) == 0:
+        # rebuild the event lists
+        $ mas_rev_seen, mas_rev_mostseen = mas_buildSeenEventLists()
+
+    $ mas_randomSelectAndPush(mas_rev_seen)
+
+    jump post_pick_random_topic
+
+
+label mas_ch30_select_mostseen:
+    # most seen selection
+
+    if len(mas_rev_mostseen) == 0:
+        jump mas_ch30_select_seen
+
+    $ mas_randomSelectAndPush(mas_rev_mostseen)
+
+    jump post_pick_random_topic
 
 # adding this label so people get redirected to main
 # this probably occurs when people install the mod right after deleting
@@ -792,7 +813,7 @@ label ch30_reset:
     # reset mas mood bday
     python:
         if (
-                persistent._mas_mood_bday_last 
+                persistent._mas_mood_bday_last
                 and persistent._mas_mood_bday_last < today
             ):
             persistent._mas_mood_bday_last = None
@@ -808,8 +829,8 @@ label ch30_reset:
             lockEventLabel("monika_rain_stop")
 #            lockEventLabel("monika_rain_holdme")
             unlockEventLabel("monika_rain")
-            
-       
+
+
     # reset hair / clothes
     python:
         # setup hair / clothes
@@ -831,7 +852,7 @@ label ch30_reset:
                 # "bun": "monika_hair_bun"
             }
 
-          
+
             for hair in hair_map:
                 # this is so we kind of automate the locking / unlocking prcoess
                 if hair == monika_chr.hair:
@@ -852,4 +873,20 @@ label ch30_reset:
                 lockEventLabel(clothes_map[clothes])
             else:
                 unlockEventLabel(clothes_map[clothes])
+
+    # accessories rest
+    python:
+        for acs_name in persistent._mas_acs_pre_list:
+            monika_chr.acs[MASMonika.PRE_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_mid_list:
+            monika_chr.acs[MASMonika.MID_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_pst_list:
+            monika_chr.acs[MASMonika.PST_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+        )
+
     return

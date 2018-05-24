@@ -4,10 +4,46 @@
 #or date-dependent event with an appropriate action
 
 define monika_random_topics = []
+define mas_rev_unseen = []
+define mas_rev_seen = []
+define mas_rev_mostseen = []
 define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
+
+init -2 python in mas_topics:
+
+    # CONSTANTS
+    # most / top weights
+    S_MOST_SEEN = 0.1
+    S_TOP_SEEN = 0.2
+
+    # selection weights (out of 100)
+    UNSEEN = 50
+    SEEN = UNSEEN + 49
+    MOST_SEEN = SEEN + 1
+
+    def topSeenEvents(sorted_ev_list, shown_count):
+        """
+        counts the number of events with a > shown_count than the given
+        shown_count
+
+        IN:
+            sorted_ev_list - an event list sorted by shown_counts
+            shown_count - shown_count to compare to
+
+        RETURNS:
+            number of events with shown_counts that are higher than the given
+            shown_count
+        """
+        index = len(sorted_ev_list) - 1
+        ev_count = 0
+        while index >= 0 and sorted_ev_list[index].shown_count > shown_count:
+            ev_count += 1
+            index -= 1
+
+        return ev_count
 
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
@@ -29,6 +65,187 @@ init -1 python:
             if renpy.seen_label(pool[index]):
                 pool.pop(index)
 
+
+    def mas_randomSelectAndRemove(sel_list):
+        """
+        Randomly selects an element from the given list
+        This also removes the element from that list.
+
+        IN:
+            sel_list - list to select from
+
+        RETURNS:
+            selected element
+        """
+        endpoint = len(sel_list) - 1
+
+        if endpoint < 0:
+            return None
+
+        # otherwise we have at least 1 element
+        return sel_list.pop(renpy.random.randint(0, endpoint))
+
+
+    def mas_randomSelectAndPush(sel_list):
+        """
+        Randomly selects an element from the the given list and pushes the event
+        This also removes the element from that list.
+
+        IN:
+            sel_list - list to select from
+
+        ASSUMES:
+            persistent.random_seen
+        """
+        sel_ev = mas_randomSelectAndRemove(sel_list)
+        if sel_ev:
+            pushEvent(sel_ev.eventlabel)
+            persistent.random_seen += 1
+
+
+    def mas_insertSort(sort_list, item, key):
+        """
+        Performs a round of insertion sort.
+        This does least to greatest sorting
+
+        IN:
+            sort_list - list to insert + sort
+            item - item to sort and insert
+            key - function to call using the given item to retrieve sort key
+
+        OUT:
+            sort_list - list with 1 additonal element, sorted
+        """
+        index = len(sort_list) - 1
+        while index >= 0 and key(sort_list[index]) > key(item):
+            index -= 1
+
+        sort_list.insert(index + 1, item)
+
+
+    def mas_splitSeenEvents(sorted_seen):
+        """
+        Splits the seen_list into seena nd most seen
+
+        IN:
+            sorted_seen - list of seen events, sorted by shown_count
+
+        RETURNS:
+            tuple of thef ollowing format:
+            [0] - seen list of events
+            [1] - most seen list of events
+        """
+        if len(sorted_seen) == 0:
+            return ([], [])
+
+        # now calculate the most / top seen counts
+        most_count = int(len(sorted_seen) * store.mas_topics.S_MOST_SEEN)
+        top_count = store.mas_topics.topSeenEvents(
+            sorted_seen,
+            int(
+                sorted_seen[len(sorted_seen) - 1].shown_count
+                * store.mas_topics.S_TOP_SEEN
+            )
+        )
+
+        # now decide how to do the split
+        if most_count < top_count:
+            split_point = most_count * -1
+        else:
+            split_point = top_count * -1
+
+        # and then do the split
+        return (sorted_seen[:split_point], sorted_seen[split_point:])
+
+
+    def mas_splitRandomEvents(events_dict):
+        """
+        Splits the given random events dict into 2 lists of events
+        NOTE: cleans the seen list
+
+        RETURNS:
+            tuple of the following format:
+            [0] - unseen list of events
+            [1] - seen list of events, sorted by shown_count
+
+        """
+        # split these into 2 lists
+        unseen = list()
+        seen = list()
+        for k in events_dict:
+            ev = events_dict[k]
+
+            if renpy.seen_label(k):
+                # seen event
+                mas_insertSort(seen, ev, Event.getSortShownCount)
+
+            else:
+                # unseen event
+                unseen.append(ev)
+
+        # clean the seen_topics list
+        seen = mas_cleanJustSeenEV(seen)
+
+        return (unseen, seen)
+
+
+    def mas_buildEventLists():
+        """
+        Builds the unseen / most seen / seen event lists
+
+        RETURNS:
+            tuple of the following format:
+            [0] - unseen list of events
+            [1] - seen list of events
+            [2] - most seen list of events
+
+        ASSUMES:
+            evhand.event_database
+        """
+        # retrieve all randoms
+        all_random_topics = Event.filterEvents(
+            evhand.event_database,
+            random=True
+        )
+
+        # split randoms into unseen and sorted seen events
+        unseen, sorted_seen = mas_splitRandomEvents(all_random_topics)
+
+        # split seen into regular seen and the most seen events
+        seen, mostseen = mas_splitSeenEvents(sorted_seen)
+
+        return (unseen, seen, mostseen)
+
+
+    def mas_buildSeenEventLists():
+        """
+        Builds the seen / most seen event lists
+
+        RETURNS:
+            tuple of the following format:
+            [0] - seen list of events
+            [1] - most seen list of events
+
+        ASSUMES:
+            evhand.event_database
+        """
+        # retrieve all seen (values list)
+        all_seen_topics = Event.filterEvents(
+            evhand.event_database,
+            random=True,
+            seen=True
+        ).values()
+
+        # clean the seen topics from early repeats
+        cleaned_seen = mas_cleanJustSeenEV(all_seen_topics)
+
+        # sort the seen by shown_count
+        cleaned_seen.sort(key=Event.getSortShownCount)
+
+        # split the seen into regular seen and most seen
+        return mas_splitSeenEvents(cleaned_seen)
+
+
     # EXCEPTION CLass incase of bad labels
     class MASTopicLabelException(Exception):
         def __init__(self, msg):
@@ -37,15 +254,18 @@ init -1 python:
             return "MASTopicLabelException: " + self.msg
 
 init 11 python:
-    #List of all random topics
-    all_random_topics = Event.filterEvents(evhand.event_database,random=True,seen=False).keys()
+
+    # sort out the seen / most seen / unseen
+    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
 
     # for compatiblity purposes:
-    monika_random_topics = all_random_topics
+#    monika_random_topics = all_random_topics
 
-    if len(monika_random_topics) == 0:
+    if len(mas_rev_unseen) == 0:
         # you've seen everything?! here, higher session limit
-        random_seen_limit = 100
+        # NOTE: 1000 is arbitrary. Basically, endless monika topics
+        # I think we'll deal with this better once we hve a sleeping sprite
+        random_seen_limit = 1000
 
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
@@ -935,9 +1155,9 @@ label monika_yuri:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip",category=['writing tips'],prompt="Writing Tip #1",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #1",pool=True))
 
-label monika_writingtip:
+label monika_writingtip1:
     m 1a "You know, it's been a while since we've done one of these..."
     m 1j "...so let's go for it!"
     m 3b "Here's Monika's Writing Tip of the Day!"
@@ -2153,7 +2373,7 @@ init 5 python:
 label monika_contribute:
     m 3b "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
-    m 3a "I keep all the code in github.com/Backdash/MonikaModDev."
+    m 3a "I keep all the code in github.com/Monika-After-Story/MonikaModDev."
     m "So far, I've had help from plenty of people!"
     m 2k "I love all of them for making this game even better!"
     m 1a "Not as much as I love you, of course."
@@ -2351,22 +2571,6 @@ label monika_vnanalysis:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_ravel",category=['literature'],prompt="Old man's three wishes",random=True))
-
-label monika_ravel:
-    m 1d "Want to hear a short story?"
-    m 3 "Once, an elderly man was sitting alone on a dark path."
-    m "He had forgotten both where he was traveling to, and who he was."
-    m "Suddenly, he looked up to see an elderly woman before him."
-    m "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
-    m 3i "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
-    m "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish."
-    m "'That's why you remember nothing; because everything is the way it was before you made any wishes.'"
-    m "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
-    m 1 "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
-    return
-
-init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_torment",category=['literature'],prompt="Nature of man",random=True))
 
 label monika_torment:
@@ -2482,6 +2686,10 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
+    if monika_chr.hair != "def":
+        m "Do you miss my ribbon, [player]?"
+        m "I can change my hairstyle whenever you want me to, ehehe~"
+        return
     m 1d "I noticed that you were staring at my ribbon, [player]."
     m 3 "It doesn't hold sentimental value to me or anything, in case you were wondering."
     m 3k"I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
@@ -3414,9 +3622,9 @@ label monika_closet:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip')",action=EV_ACT_POOL))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip2",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip1')",action=EV_ACT_POOL))
 
-label monika_writingtip1:
+label monika_writingtip2:
     m 3a "You know..."
     m "We really don't do enough of these, so here's another one!"
     m 3b "Here's Monika's Writing Tip of the Day!"
@@ -4031,8 +4239,8 @@ label monika_daydream:
     m 5a "Let's hope we can make that a reality one of these days, ehehe~"
     return
 
-init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
+# init 5 python:
+#     addEvent(Event(persistent.event_database,eventlabel="monika_music2",category=['misc'],prompt="Current song",random=True))
 
 label monika_music2:
     if songs.getVolume("music") == 0.0:
@@ -4545,9 +4753,9 @@ label monika_otaku:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_write",category=['writing tips'],prompt="Writing tip #3",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip3",category=['writing tips'],prompt="Writing tip #3",conditional="seen_event('monika_writingtip2')",action=EV_ACT_POOL))
 
-label monika_write:
+label monika_writingtip3:
     m 1a "I'm having fun doing these, so..."
     m 3b "Here's Monika's Writing Tip of the Day!"
     m 1a "Make sure you always write down any ideas you think of."
@@ -4570,7 +4778,7 @@ label monika_write:
     return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",conditional="seen_event('monika_writingtip3')",action=EV_ACT_POOL))
 
 label monika_writingtip4:
      m 3b "Here's Monika's Writing Tip of the Day!"
@@ -4592,7 +4800,7 @@ label monika_writingtip4:
      return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",pool=True))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
 
 label monika_writingtip5:
      m 3b "Here's Monika's Writing Tip of the Day!"
@@ -5009,7 +5217,7 @@ label monika_omamori:
     m 1d "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
     m 1k "Oh gosh, this is turning out to be a bit silly, now that I think about it."
     m "I mean, would doing this make me some sort of deity?"
-    m 1a "I just feel like it would be a nice alternative for you if wanted to bring me around."
+    m 1a "I just feel like it would be a nice alternative if you wanted to bring me around."
     m "Especially if you don't have a flash drive."
     m 1j "It isn't perfect, but it's the thought that counts, [player]."
     m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
@@ -5068,7 +5276,7 @@ label monika_cartravel:
     m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
     m "I bet we'd have a really good time if we took a road trip, [player]."
     m 1j "It really doesn't matter where we go, as long as I'm with you."
-    m "Just the idea of travelling around the world makes so excited!"
+    m "Just the idea of travelling around the world makes me so excited!"
     m 1e "I really can't wait, [player]~"
     return
 
@@ -5121,7 +5329,7 @@ label monika_asks_family:
                     m 2d "Maybe you get much more attention from your parents. Unless they were always busy."
                     m 4c "On the other hand, maybe you feel more lonely than those with siblings."
                     m 2h "I can definitely understand that feeling."
-                    m 2j "But know that I'll always be with you no matter, [player]."
+                    m 2j "But know that I'll always be with you no matter what, [player]."
         "My family is a mess.":
             m 1d "Oh."
             m 1o "..."
@@ -5286,6 +5494,128 @@ label monika_beach:
 #    return
 
 init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel="monika_prom",category=['school'],prompt="Prom",random=True))
+
+label monika_prom:
+    m 1c "You know..."
+    m "Sometimes I wish the game would've lasted longer."
+    m 1d "The game was probably made to end once one of the girls confessed their love to you after the festival."
+    m 1m "But since I tampered with the code so much, we never got to that point."
+    m 3l "It did bring us together, so I can't complain."
+    m 1o "But still..."
+    m 1e "Sometimes I wish both of us could've enjoyed it."
+    m 3a "We could've went to the other events like sports festivals, Christmas parties, field trips, etc."
+    m 1l "But I guess the game would never let us get that far."
+    m 3c "Which reminds me of a particular event..."
+    m 1b "Prom!"
+    m 1a "From what I've heard, prom is like a school dance usually held at the end of a school year."
+    m "Some students bring a date with them there, and others go with a group of friends."
+    m 3k "There're even those who take their relatives to the event!"
+    m 1a "I think it's something I'd love to go to with you~"
+    m 3a "Have you ever been to one before, [player]?"
+    menu:
+        "I have.":
+            m "Oh? How was it?"
+            menu:
+                "It was pretty fun.":
+                    m 1j "That's great!"
+                    m 1n "Though, I wish I could've went with you."
+                    m 1k "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
+                    m 3a "Did you go with a date?"
+                    menu:
+                        "Yes.":
+                            m 1d "Oh, wow."
+                            m 1n "Ehehe, that makes me a bit jealous..."
+                            m 1j "But then again, you would've taken me instead had we met beforehand, right?"
+                            m 1k "Ahaha!"
+                            m 1 "But it's good to know you were able to experience something like that!"
+                            m 3a "Maybe when I get better at programming, we could have our very own prom here."
+                            m 3j "Wouldn't that be nice, [player]?"
+                        "No.":
+                            m 1d "Oh, I see."
+                            m 1a "That's fine as long as you had fun!"
+                            m "Even without a date, I'm sure you made some wonderful memories there."
+                            m 1a "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
+                            m 3j "Besides, maybe we can have our own kind of prom sometime, right?"
+                            m 1a "That's something I'd really enjoy with you~"
+                "It was bad.":
+                    m 1f "Is that so?"
+                    m "I understand that prom isn't for everyone."
+                    m 3e "Maybe if I was there, you would've enjoyed it more."
+                    m 1j "Ahaha~"
+                    m 3a "Don't worry, [player]."
+                    m 1a "No use remembering it now."
+                    m "Even if you had a bad time with it, it's not the most important thing to happen in your life."
+                    m "You being able to create more wonderful memories is the important thing."
+                    m 3e "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
+                    m 1j "And now that I'm here with you, we can make them together~"
+                "It would've been better if you were there.":
+                    m 1e "Aww, that's so sweet, [player]."
+                    m 1j "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
+                    m 1k "Ahaha!"
+        "No.":
+            m "Oh? Why not?"
+            menu:
+                "You're weren't there with me.":
+                    m 1e "Aww, [player]."
+                    m 1m "Just because I'm not there doesn't mean you should stop yourself from having fun."
+                    m 1b "And besides..."
+                    m 1j "You {i}can{/i} take me to prom, [player]."
+                    m 1k "Just bring my file with you and problem solved!"
+                    m "Ahaha!"
+                "Not interested.":
+                    m 3c "Really?"
+                    m "Is it because you're too shy to go?"
+                    menu:
+                        "Yes.":
+                            m 1f "Aww, [player]."
+                            m 1e "That's alright. Not everyone can handle large groups of strangers."
+                            m 3e "Besides, if it's something you're not going to enjoy, why force yourself?"
+                            m 1 "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
+                            m 3a "Look at me for example."
+                            m 1l "If I didn't have the courage to get to you, I'd probably still be all alone..."
+                            m 1e "But her we are now, [player]."
+                            m 1j "Together at last~"
+                        "No.":
+                            m 1d "Oh, I see."
+                            m 1c "That's understandable."
+                            m "I'm sure you have your reasons."
+                            m 1a "What's important is that you're not forcing yourself."
+                            m "After all, it wouldn't be worth it if you can't enjoy yourself."
+                            m 1o "It'd just feel like a chore rather than a fun event to go to."
+                            m 3c "But I wonder..."
+                            m 3a "Would you go if I was there with you, [player]?"
+                            m 1j "I think I already know the answer to that~"
+                            m 1k "Ahaha!"
+        #################################################
+        #### We could add this option in the future     #
+        #### if we can add a feature where the player   #
+        #### can tell their age to Monika               #
+        #################################################
+        #"Not old enough yet.":
+        #    m 1e "Don't worry, you'll get to go in a few more years."
+        #    m 1j "I heard that prom is so much fun!"
+        #    m 3a "Girls get dolled up and wear fancy dresses"
+        #    m " Guys would put on tuxes and  give their dates a corsage."
+        #    m 1j "And you would have fun dancing the night away!"
+        #    m 1k "Doesn't that sound like a blast? Ahaha~"
+        "My school never had one.":
+            m 1d "Ah, I see then."
+            m 1o "I guess not all schools can hold a prom."
+            m "They can be pretty messy."
+            m 3d "From what I read, students spend a lot of money on tickets, transport, and attire."
+            m 2q "So many expenses just for one night..."
+            m 2h "I also read that since alcohol isn't allowed, some students would spike the drinks and get the others drunk unknowingly."
+            m 2o "If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
+            m 4l "...Or maybe I'm just overthinking it, ehehe."
+            m 1a "Still, I don't think you'll be missing out much, [player]."
+            m "Prom isn't the most important thing in your academic life."
+            m 3b "And I'm sure there're plenty of events in your life that'll make up for it."
+            m 1j "Being with me is one of them, you know~"
+            m 1k "Ahaha!"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
 
 label monika_careful:
@@ -5379,14 +5709,14 @@ label monika_timeconcern:
 label monika_timeconcern_day:
     if persistent._mas_timeconcerngraveyard:
         jump monika_timeconcern_graveyard_day
-    if persistent._mas_timeconern == 0:
+    if persistent._mas_timeconcern == 0:
         jump monika_timeconcern_day_0
     elif persistent._mas_timeconcern == 2:
         jump monika_timeconcern_day_2
-    if not persistent._mas_timeconernclose:
-        if 6 <= persistent._mas_timeconern <=8:
+    if not persistent._mas_timeconcernclose:
+        if 6 <= persistent._mas_timeconcern <=8:
             jump monika_timeconcern_disallow
-    if persistent._mas_timeconern == 6:
+    if persistent._mas_timeconcern == 6:
         jump monika_timeconcern_day_allow_6
     elif persistent._mas_timeconcern == 7:
         jump monika_timeconcern_day_allow_7
@@ -5501,7 +5831,6 @@ label monika_timeconcern_night_1:
 
 #If player says they were working. Progress stops here.
 label monika_timeconcern_night_2:
-
     m 1a "How's your work coming along?"
     m "Hopefully pretty well, I don't want you up much longer."
     m 3l "I know, I know, you can't help being up so late."
@@ -5755,7 +6084,7 @@ label monika_challenge:
     m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
     m 2b "Can you think of a time you've challenged yourself, [player]?"
     m "Did you ever overcome it, or did you just give up?"
-    m 1a "I'm sure you've gave it all you had."
+    m 1a "I'm sure you've given it all you had."
     m "You seem like a very determined person to me."
     m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
     m "You can always come back to it after all."
@@ -5772,7 +6101,7 @@ label monika_familygathering:
     m "Most families usually get together around the holidays to celebrate them together."
     m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
-    m 1p "Not even around the holidays or on special occassions."
+    m 1p "Not even around the holidays or on special occasions."
     m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
     m 1k "I'd love to meet all of your relatives."
     menu:
@@ -5846,7 +6175,7 @@ label monika_fastfood:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="Dreaming",random=True))
 
 label monika_dreaming:
     m 1b "Did you know that it's possible to be aware of when you're having a dream?"
@@ -5889,7 +6218,7 @@ label monika_yellowwp:
             m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
             m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
             m 4c "It's a metahpor for her own captivity, obviously..."
-            m 1i "In the end, the woman in the paper 'escapes', and the protagonist 'replaces' her, but feels free?"
+            m 1i "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
             m 2c "Sayori liked that story too, if I remember right."
             m 1f "I don't know. I kind of relate to that story."
@@ -5910,6 +6239,21 @@ label monika_yellowwp:
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1a "It'll definitely be an interesting read for you."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_short_stories",
+            category=['literature'],
+            prompt="Can you tell me a story?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_short_stories:
+    jump mas_stories_start
 
 ##### monika hair topics [MONHAIR]
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue

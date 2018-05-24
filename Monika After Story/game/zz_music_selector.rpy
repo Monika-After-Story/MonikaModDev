@@ -1,6 +1,12 @@
 # Module that handles the music selection screen
 # we start with zz to ensure this loads LAST
 #
+# NOTE: We added support for custom music.
+# To add custom music to your game:
+# 1. Ensure that the custom music is of "ogg" file format (with the extension)
+# 2. Add a directory "custom_bgm" in your DDLC/ directory.
+# 3. Drop your oggs into that directory.
+# 4. Start the game
 
 # music inits first, so the screen can be made well
 init -1 python in songs:
@@ -11,18 +17,22 @@ init -1 python in songs:
     JUST_MONIKA = "Just Monika"
     YOURE_REAL = "Your Reality"
     STILL_LOVE = "I Still Love You"
+    MY_FEELS = "My Feelings"
+    MY_CONF = "My Confession"
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
-    NO_SONG = "None"
+    NO_SONG = "No Music"
 
     # SONG FILEPATHS
     FP_PIANO_COVER = "mod_assets/bgm/runereality.ogg"
     FP_JUST_MONIKA = "bgm/m1.ogg"
     FP_YOURE_REAL = "bgm/credits.ogg"
     FP_STILL_LOVE = "bgm/monika-end.ogg"
+    FP_MY_FEELS = "<loop 3.172>bgm/9.ogg" 
+    FP_MY_CONF =  "<loop 5.861>bgm/10.ogg" 
     FP_OKAY_EV_MON = "<loop 4.444>bgm/5_monika.ogg"
     FP_DDLC_MT_80 = (
         "<loop 17.451 to 119.999>mod_assets/bgm/ddlc_maintheme_80s.ogg"
@@ -116,6 +126,7 @@ init -1 python in songs:
         #       allow Surprise in the player
 
         global music_choices
+        global music_pages
         music_choices = list()
         # SONGS:
         # if you want to add a song, add it to this list as a tuple, where:
@@ -132,6 +143,8 @@ init -1 python in songs:
             music_choices.append((YR_EUROBEAT, FP_YR_EUROBEAT))
 
             music_choices.append((STILL_LOVE, FP_STILL_LOVE))
+            music_choices.append((MY_FEELS, FP_MY_FEELS))
+            music_choices.append((MY_CONF, FP_MY_CONF))
             music_choices.append((OKAY_EV_MON, FP_OKAY_EV_MON))
             music_choices.append((PLAYWITHME_VAR6, FP_PLAYWITHME_VAR6))
 
@@ -141,12 +154,134 @@ init -1 python in songs:
         # sayori only allows this
         music_choices.append((SAYO_NARA, FP_SAYO_NARA))
 
-        if not sayori:
-            # leave this one last, so we can stopplaying stuff
-            music_choices.append((NO_SONG, FP_NO_SONG))
+        # grab custom music
+        __scanCustomBGM(music_choices)
+
+        # separte the music choices into pages
+        music_pages = __paginate(music_choices)
+
+
+    def __paginate(music_list):
+        """
+        Paginates the music list and returns a dict of the pages.
+
+        IN:
+            music_list - list of music choice tuples (see initMusicChoices)
+
+        RETURNS:
+            dict of music choices, paginated nicely:
+            [0]: first page of music
+            [1]: next page of music
+            ...
+            [n]: last page of music
+        """
+        pages_dict = dict()
+        page = 0
+        leftovers = music_list
+        while len(leftovers) > 0:
+            music_page, leftovers = __genPage(leftovers)
+            pages_dict[page] = music_page
+            page += 1
+
+        return pages_dict
+
+        
+    def __genPage(music_list):
+        """
+        Generates the a page of music choices
+
+        IN:
+            music_list - list of music choice tuples (see initMusicChoices)
+
+        RETURNS:
+            tuple of the following format:
+                [0] - page of the music choices
+                [1] - reamining items in the music_list
+        """
+        return (music_list[:PAGE_LIMIT], music_list[PAGE_LIMIT:])
+
+
+    def __scanCustomBGM(music_list):
+        """
+        Scans the custom music directory for custom musics and adds them to
+        the given music_list.
+
+        IN/OUT:
+            music_list - list of music tuples to append to
+        """
+        # TODO: make song names / other tags configurable
+        import os
+        ogg_ext = ".ogg"
+
+        # No custom directory? abort
+        if not os.access(custom_music_dir, os.F_OK):
+            return
+
+        # get the oggs
+        found_files = os.listdir(custom_music_dir)
+        found_oggs = [
+            ogg_file
+            for ogg_file in found_files
+            if (
+                ogg_file.endswith(ogg_ext) 
+                and os.access(custom_music_dir + ogg_file, os.R_OK)
+            )
+        ]
+
+        if len(found_oggs) == 0:
+            # no custom oggs found, please move on
+            return
+
+        # otherwise, we got some oggs to add
+        for ogg_file in found_oggs:
+            music_list.append((
+                cleanGUIText(ogg_file[:-(len(ogg_ext))]),
+                custom_music_reldir + ogg_file
+            ))
+
+
+    def cleanGUIText(unclean):
+        """
+        Cleans the given text so its applicable for gui usage
+
+        IN:
+            unclean - unclean text
+
+        RETURNS:
+            cleaned text
+        """
+        # bad text to be removed:
+        bad_text = ("{", "}", "[", "]")
+
+        # NOTE: for bad text, we just replace with empty
+        cleaned_text = unclean
+        for bt_el in bad_text:
+            cleaned_text = cleaned_text.replace(bt_el, "")
+
+        return cleaned_text
+
+
+    def isInMusicList(filepath):
+        """
+        Checks if the a song with the given filepath is in the music choices
+        list
+
+        IN:
+            filepath - filepath of song to check
+
+        RETURNS:
+            True if filepath is in the music_choices list, False otherwise
+        """
+        for name,fpath in music_choices:
+            if filepath == fpath:
+                return True
+
+        return False
 
 
     # defaults
+#    FIRST_PAGE_LIMIT = 10
+    PAGE_LIMIT = 10
     current_track = "bgm/m1.ogg"
     selected_track = current_track
     menu_open = False
@@ -155,6 +290,11 @@ init -1 python in songs:
 
     # contains the song list
     music_choices = list()
+    music_pages = dict() # song pages dict
+
+    # custom music directory
+    custom_music_dir = "custom_bgm"
+    custom_music_reldir = "../" + custom_music_dir + "/"
 
 # some post screen init is setting volume to current settings
 init 10 python in songs:
@@ -165,19 +305,38 @@ init 10 python in songs:
 # non store post inint stuff
 init 10 python:
 
-    # ensure proper current track is set
+    # setupthe custom music directory
+    store.songs.custom_music_dir = (
+        config.basedir + "/" + store.songs.custom_music_dir + "/"
+    ).replace("\\", "/")
+
     if persistent.playername.lower() == "sayori":
+        # sayori specific
+
+        # init choices
+        store.songs.initMusicChoices(True)
+
+        # setup start songs
         store.songs.current_track = store.songs.FP_SAYO_NARA
         store.songs.selected_track = store.songs.FP_SAYO_NARA
         persistent.current_track = store.songs.FP_SAYO_NARA
+
     else:
+        # non sayori stuff
+
+        # init choices
+        store.songs.initMusicChoices(False)
+
+        # double check track existence
+        if not store.songs.isInMusicList(persistent.current_track):
+            # non existence song becomes No Music
+            persistent.current_track = None
+
+        # setup start songs
         store.songs.current_track = persistent.current_track
         store.songs.selected_track = store.songs.current_track
 
-    # song choice generation
-    store.songs.initMusicChoices(
-        sayori=persistent.playername.lower() == "sayori"
-    )
+
 
 # MUSIC MENU ##################################################################
 # This is the music selection menu
@@ -197,6 +356,9 @@ init 10 python:
 
 #style music_menu_return_button is navigation_button
 style music_menu_return_button_text is navigation_button_text
+style music_menu_prev_button_text is navigation_button_text:
+    min_width 135
+    text_align 1.0
 
 style music_menu_outer_frame is game_menu_outer_frame
 style music_menu_navigation_frame is game_menu_navigation_frame
@@ -206,13 +368,30 @@ style music_menu_side is game_menu_side
 style music_menu_label is game_menu_label
 style music_menu_label_text is game_menu_label_text
 
-style music_menu_return_button is return_button
+style music_menu_return_button is return_button:
+    xminimum 0
+    xmaximum 200
+    xfill False
+
+style music_menu_prev_button is return_button:
+    xminimum 0
+    xmaximum 135
+    xfill False
 
 style music_menu_outer_frame:
     background "mod_assets/music_menu.png"
 
-screen music_menu():
+# Music menu 
+#
+# IN:
+#   music_page - current page of music
+#   page_num - current page number
+#   more_pages - true if there are more pages left
+#
+screen music_menu(music_page, page_num=0, more_pages=False):
     modal True
+
+    $ import store.songs as songs
 
     # allows the music menu to quit using hotkey
     key "noshift_M" action Return()
@@ -235,22 +414,60 @@ screen music_menu():
 
                 transclude
 
-    # this part copied from navigation menu
+        # this part copied from navigation menu
+        vbox:
+            style_prefix "navigation"
+
+            xpos gui.navigation_xpos
+    #        yalign 0.4
+            spacing gui.navigation_spacing
+
+            # wonderful loop so we can dynamically add songs
+            for name,song in music_page:
+                textbutton _(name) action Return(song)
+
     vbox:
-        style_prefix "navigation"
 
-        xpos gui.navigation_xpos
-        yalign 0.4
-        spacing gui.navigation_spacing
+        yalign 1.0
 
-        # wonderful loop so we can dynamically add songs
-        $ import store.songs as songs
-        for name,song in songs.music_choices:
-            textbutton _(name) action [SetField(songs,"selected_track",song), Return()]
+        hbox:
 
-    textbutton _("Return"):
-        style "music_menu_return_button"
-        action Return()
+            # dynamic prevous text, so we can keep button size alignments
+            if page_num > 0:
+                textbutton _("<<<< Prev"):
+                    style "music_menu_prev_button"
+                    action Return(page_num - 1)
+
+            else:
+                textbutton _( " "):
+                    style "music_menu_prev_button"
+                    sensitive False
+
+#                if more_pages:
+#                    textbutton _(" | "):
+#                        xsize 50
+#                        text_font "gui/font/Halogen.ttf" 
+#                        text_align 0.5
+#                        sensitive False
+
+            if more_pages:
+                textbutton _("Next >>>>"):
+                    style "music_menu_return_button"
+                    action Return(page_num + 1)
+
+        textbutton _(songs.NO_SONG): 
+            style "music_menu_return_button"
+            action Return(songs.NO_SONG)
+
+        # logic to ensure Return works
+        if songs.current_track is None:
+            $ return_value = songs.NO_SONG
+        else:
+            $ return_value = songs.current_track
+
+        textbutton _("Return"):
+            style "music_menu_return_button"
+            action Return(return_value)
 
     label "Music Menu"
 
@@ -262,9 +479,28 @@ label display_music_menu:
         songs.menu_open = True
         prev_dialogue = allow_dialogue
         allow_dialogue = False
+        song_selected = False
+        curr_page = 0
 
-    call screen music_menu
+    # loop until we've selected a song
+    while not song_selected:
+
+        # setup pages
+        $ music_page = songs.music_pages.get(curr_page, None)
+            
+        if music_page is None:
+            # this should never happen. Immediately quit with None
+            return songs.NO_SONG
+
+        # otherwise, continue formatting args
+        $ next_page = (curr_page + 1) in songs.music_pages
+
+        call screen music_menu(music_page, page_num=curr_page, more_pages=next_page)
+
+        # obtain result
+        $ curr_page = _return
+        $ song_selected = _return not in songs.music_pages
 
     $ songs.menu_open = False
     $ allow_dialogue = prev_dialogue
-    return
+    return _return

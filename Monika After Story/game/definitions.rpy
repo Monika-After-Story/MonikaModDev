@@ -904,7 +904,7 @@ python early:
                 5 - scroll down
             _button_down - pygame mouse button event type to activate button
                 MOUSEBUTTONUP (Default)
-                MOUSEBUTTONDOWN 
+                MOUSEBUTTONDOWN
         """
         import pygame
 
@@ -1057,37 +1057,6 @@ python early:
                     [1]: height
             """
             return (self.width, self.height)
-
-
-        def ground(self):
-            """
-            Grounds (unhovers) this button. This changes the internal state,
-            so its preferable to use this over setting the hovered property
-            directly
-
-            NOTE: If this button is disabled (and not enable_when_disabled),
-            this will do NOTHING
-            """
-            if not self.disabled or self.enable_when_disabled:
-                self.hovered = False
-
-                if self.disabled:
-                    self._state = self._STATE_DISABLED
-                else:
-                    self._state = self._STATE_IDLE
-
-
-        def hover(self):
-            """
-            Hovers this button. This changes the internal state, so its
-            preferable to use this over setting the hovered property directly
-
-            NOTE: IF this button is disabled (and not enable_when_disabled),
-            this will do NOTHING
-            """
-            if not self.disabled or self.enable_when_disabled:
-                self.hovered = True
-                self._state = self._STATE_HOVER
 
 
         def ground(self):
@@ -1655,8 +1624,8 @@ init -1 python in _mas_root:
 
         # chess
         renpy.game.persistent._mas_chess_stats = {
-            "wins": 0, 
-            "losses": 0, 
+            "wins": 0,
+            "losses": 0,
             "draws": 0
         }
         renpy.game.persistent._mas_chess_quicksave = ""
@@ -1765,6 +1734,38 @@ init -1 python:
 
         return is_file
 
+
+    def mas_cvToHM(mins):
+        """
+        Converts the given minutes into hour / minutes
+
+        IN:
+            mins - number of minutes
+
+        RETURNS:
+            tuple of the following format:
+                [0] - hours
+                [1] - minutes
+        """
+        return (int(mins / 60), int(mins % 60))
+
+
+    def mas_cvToDHM(mins):
+        """
+        Converts the given minutes into a displayable hour / minutes
+        HH:MM
+        NOTE: 24 hour format only
+
+        IN:
+            mins - number of minutes
+
+        RETURNS:
+            string time perfect for displaying
+        """
+        s_hour, s_min = mas_cvToHM(mins)
+        return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos
@@ -1865,7 +1866,7 @@ define audio.page_turn = "sfx/pageflip.ogg"
 define audio.fall = "sfx/fall.ogg"
 
 # custom audio
-# NOTE: awaiting full vote
+# big thanks to sebastianN01 for the rain sounds
 define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
 
 # Backgrounds
@@ -3044,8 +3045,8 @@ default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default seen_random_limit = False
-default persistent._mas_enable_random_repeats = False
-default persistent._mas_monika_repeated_herself = False
+#default persistent._mas_enable_random_repeats = False
+#default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
 
 # rain
@@ -3058,8 +3059,20 @@ default persistent._mas_monika_hair = "def"
 default persistent._mas_likes_hairdown = False
 default persistent._mas_hair_changed = False
 
+# times
+# they are stored in minutes so we can use bar nicely
+default persistent._mas_sunrise = 6 * 60
+default persistent._mas_sunset = 18 * 60
+define mas_max_suntime = (24 * 60) - 1# 24 hours x 60 minutes
+define mas_sunrise_prev = persistent._mas_sunrise
+define mas_sunset_prev = persistent._mas_sunset
+define mas_suntime.NO_CHANGE = 0
+define mas_suntime.RISE_CHANGE = 1
+define mas_suntime.SET_CHANGE = 2
+define mas_suntime.change_state = mas_suntime.NO_CHANGE
+
 define mas_checked_update = False
-define mas_monika_repeated = False
+#define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600

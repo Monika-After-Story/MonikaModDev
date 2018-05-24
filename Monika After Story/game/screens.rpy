@@ -490,7 +490,7 @@ screen navigation():
             textbutton _("Help") action Help("README.html")
 
             ## The quit button is banned on iOS and unnecessary on Android.
-            textbutton _("Quit") action Quit(confirm=not main_menu)
+            textbutton _("Quit") action Quit(confirm=_confirm_quit)
 
 
 style navigation_button is gui_button
@@ -970,10 +970,10 @@ screen preferences():
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 
-                vbox:
-                    style_prefix "check"
-                    label _("Gameplay")
-                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+#                vbox:
+#                    style_prefix "check"
+#                    label _("Gameplay")
+#                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
@@ -993,13 +993,77 @@ screen preferences():
                         textbutton _("Unstable"):
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
-                    
+
 
             null height (4 * gui.pref_spacing)
 
             hbox:
                 style_prefix "slider"
                 box_wrap True
+
+                python:
+                    # sunrise / sunset preprocessing
+                    # figure out which value is changing (if any)
+                    if mas_suntime.change_state == mas_suntime.RISE_CHANGE:
+                        # we are modifying sunrise
+
+                        if persistent._mas_sunrise > persistent._mas_sunset:
+                            # ensure sunset remains >= than sunrise
+                            persistent._mas_sunset = persistent._mas_sunrise
+
+                        if mas_sunrise_prev == persistent._mas_sunrise:
+                            # if no change since previous, then switch state
+                            mas_suntime.change_state = mas_suntime.NO_CHANGE
+
+                        mas_sunrise_prev = persistent._mas_sunrise
+
+                    elif mas_suntime.change_state == mas_suntime.SET_CHANGE:
+                        # we are modifying sunset
+
+                        if persistent._mas_sunset < persistent._mas_sunrise:
+                            # ensure sunrise remains <= than sunset
+                            persistent._mas_sunrise = persistent._mas_sunset
+
+                        if mas_sunset_prev == persistent._mas_sunset:
+                            # if no change since previous, then switch state
+                            mas_suntime.change_state = mas_suntime.NO_CHANGE
+
+                        mas_sunset_prev = persistent._mas_sunset
+                    else:
+                        # decide if we are modifying sunrise or sunset
+
+                        if mas_sunrise_prev != persistent._mas_sunrise:
+                            mas_suntime.change_state = mas_suntime.RISE_CHANGE
+
+                        elif mas_sunset_prev != persistent._mas_sunset:
+                            mas_suntime.change_state = mas_suntime.SET_CHANGE
+
+                        # set previous values
+                        mas_sunrise_prev = persistent._mas_sunrise
+                        mas_sunset_prev = persistent._mas_sunset
+
+                vbox:
+
+                    hbox:
+                        label _("Sunrise   ")
+
+                        # display time
+                        $ sr_display = mas_cvToDHM(persistent._mas_sunrise)
+                        label _("[[ " + sr_display + " ]")
+
+                    bar value FieldValue(persistent, "_mas_sunrise", range=mas_max_suntime, style="slider")
+
+
+                vbox:
+
+                    hbox:
+                        label _("Sunset   ")
+
+                        # display time
+                        $ ss_display = mas_cvToDHM(persistent._mas_sunset)
+                        label _("[[ " + ss_display + " ]")
+
+                    bar value FieldValue(persistent, "_mas_sunset", range=mas_max_suntime, style="slider")
 
                 vbox:
 
@@ -1046,6 +1110,7 @@ screen preferences():
                         textbutton _("Mute All"):
                             action Preference("all mute", "toggle")
                             style "mute_all_button"
+
 
             hbox:
                 textbutton _("Update Version"):
@@ -1527,7 +1592,7 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
-            
+
 
 style confirm_frame is gui_frame
 style confirm_prompt is gui_prompt
@@ -2052,7 +2117,7 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
-# 
+#
 # IN:
 #   timeout - number of seconds to time
 #   timeout_label - label to jump to when timeout
