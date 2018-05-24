@@ -349,6 +349,7 @@ init python:
         return sr_time <= now_time < ss_time
 
 
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -749,7 +750,7 @@ label ch30_loop:
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
                 # randomize selection
-                $ chance = renpy.random.randint(1, 100)
+                $ chance = random.randint(1, 100)
 
                 if chance <= store.mas_topics.UNSEEN:
                     # unseen topic shoud be selected

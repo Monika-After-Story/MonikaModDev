@@ -120,7 +120,7 @@ init -1 python in evhand:
 
     # time stuff
     import datetime
-    LAST_SEEN_DELTA = datetime.timedelta(hours=2)
+    LAST_SEEN_DELTA = datetime.timedelta(hours=24)
 
     # as well as special functions
     def addIfNew(items, pool):
