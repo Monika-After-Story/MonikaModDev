@@ -667,14 +667,20 @@ init python in mas_updater:
         #Make sure the update folder is where it should be
         can_update = renpy.store.updater.can_update()
         if not can_update:
-            try: renpy.file("../update/current.json")
+
+            try:
+                os.rename(
+                    renpy.config.basedir + "/game/update", 
+                    renpy.config.basedir + "/update"
+                )
+                can_update = renpy.store.updater.can_update()
+
             except:
-                try:
-                    os.rename(
-                        renpy.config.basedir + "/game/update", 
-                        renpy.config.basedir + "/update"
-                    )
-                except: pass
+                # we cant write to the update folder?
+                # should we notify user?
+                # actually lets just dump some log
+                with open("cannotmoveupdatefolder", "w") as outfile:
+                    outfile.write("do it manually\n")
 
         if force:
             check_wait = 0
