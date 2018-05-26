@@ -1545,6 +1545,7 @@ init 1001 python:
         KEY_LIMIT = 100
 
         # filenames
+        # NOTE big thanks to multimokia for the longer / better piano sounds
         ZZFP_F4 =  "mod_assets/sounds/piano_keys/F4.ogg"
         ZZFP_F4SH = "mod_assets/sounds/piano_keys/F4sh.ogg"
         ZZFP_G4 = "mod_assets/sounds/piano_keys/G4.ogg"
