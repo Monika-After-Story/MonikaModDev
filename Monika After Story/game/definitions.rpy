@@ -3045,7 +3045,7 @@ default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
 default seen_random_limit = False
-#default persistent._mas_enable_random_repeats = False
+default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
 
@@ -3063,13 +3063,21 @@ default persistent._mas_hair_changed = False
 # they are stored in minutes so we can use bar nicely
 default persistent._mas_sunrise = 6 * 60
 default persistent._mas_sunset = 18 * 60
-define mas_max_suntime = (24 * 60) - 1# 24 hours x 60 minutes
+
+# 24 * 60 minutes, divided into chunks of 5
+define mas_max_suntime = int((24 * 60) / 5) - 1
 define mas_sunrise_prev = persistent._mas_sunrise
 define mas_sunset_prev = persistent._mas_sunset
 define mas_suntime.NO_CHANGE = 0
 define mas_suntime.RISE_CHANGE = 1
 define mas_suntime.SET_CHANGE = 2
 define mas_suntime.change_state = mas_suntime.NO_CHANGE
+define mas_suntime.modifier = 5 # modifier for chunking the time
+
+# these 2 are our internal represenations of the suntimes in 5 minute
+# chunks
+define mas_suntime.sunrise = int(persistent._mas_sunrise / 5)
+define mas_suntime.sunset = int(persistent._mas_sunset / 5)
 
 define mas_checked_update = False
 #define mas_monika_repeated = False
@@ -3107,6 +3115,90 @@ default boy = "boy"
 default guy = "guy"
 default him = "him"
 default himself = "himself"
+
+
+# default is NORMAL
+default persistent._mas_randchat_freq = 1
+define mas_randchat_prev = persistent._mas_randchat_freq
+init 1 python in mas_randchat:
+    ### random chatter frequencies
+
+    # these numbers are the low end of how many seconds to wait between 
+    # random topics
+    NORMAL = 20
+    OFTEN = 4
+    RARE = 36
+    NEVER = 0
+
+    # this is the added to the low end to get the upper end of seconds
+    SPAN = 24
+
+    ## to better work with the sliders, we will create a range from 0 to 3
+    # (inclusive)
+    # these values will be utilized in script-ch30 as well as screens
+    SLIDER_MAP = {
+        0: OFTEN,
+        1: NORMAL,
+        2: RARE,
+        3: NEVER
+    }
+
+    ## slider map for displaying
+    SLIDER_MAP_DISP = {
+        0: "Often",
+        1: "Normal",
+        2: "Less Often",
+        3: "Never"
+    }
+
+    # current frequency times
+    # also default to NORMAL, will get recaluated in reset
+    rand_low = NORMAL
+    rand_high = NORMAL + SPAN
+
+    def adjustRandFreq(slider_value):
+        """
+        Properly adjusts the random limits given the slider value
+
+        IN:
+            slider_value - slider value given from the slider
+                Should be between 0 - 3
+        """
+        slider_setting = SLIDER_MAP.get(slider_value, 1)
+
+        # otherwise set up the times
+        # globalize
+        global rand_low
+        global rand_high
+
+        rand_low = slider_setting
+        rand_high = slider_setting + SPAN
+        renpy.game.persistent._mas_randchat_freq = slider_value
+
+
+    def getRandChatDisp(slider_value):
+        """
+        Retrieves the random chatter display string using the given slider
+        value
+
+        IN:
+            slider_value - slider value given from the slider
+
+        RETURNS:
+            displayable string that reprsents the current random chatter
+            setting
+        """
+        randchat_disp = SLIDER_MAP_DISP.get(slider_value, None)
+
+        if slider_value is None:
+            return "Never"
+
+        return randchat_disp
+
+
+# stores that need to be globally available
+init 4 python:
+    import store.mas_randchat as mas_randchat
 
 return
 

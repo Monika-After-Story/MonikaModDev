@@ -725,7 +725,14 @@ label ch30_loop:
     if not _return:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
-        $ waittime = renpy.random.randint(20, 45)
+
+        if mas_randchat.rand_low == 0:
+            # we are not repeating for now
+            # we'll wait 60 seconds inbetween loops
+            $ renpy.pause(60, hard=True)
+            jump post_pick_random_topic
+
+        $ waittime = renpy.random.randint(mas_randchat.rand_low, mas_randchat.rand_high)
         $ renpy.pause(waittime, hard=True)
         window auto
 
@@ -741,6 +748,11 @@ label ch30_loop:
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
+
+                # check if we have repeats enabled
+                if not persistent._mas_enable_random_repeats:
+                    jump mas_ch30_select_unseen
+
                 # randomize selection
                 $ chance = renpy.random.randint(1, 100)
 
@@ -769,6 +781,16 @@ label mas_ch30_select_unseen:
     # unseen selection
 
     if len(mas_rev_unseen) == 0:
+        
+        if not persistent._mas_enable_random_repeats:
+            # no repeats means we should push randomlimit if appropriate,
+            # otherwise stay slient
+            if not seen_random_limit:
+                $ pushEvent("random_limit_reached")
+
+            jump post_pick_random_topic
+
+        # otherwise we can go to repeats as usual
         jump mas_ch30_select_seen
 
     $ mas_randomSelectAndPush(mas_rev_unseen)
@@ -888,5 +910,8 @@ label ch30_reset:
             monika_chr.acs[MASMonika.PST_ACS].append(
                 store.mas_sprites.ACS_MAP[acs_name]
         )
+
+    ## random chatter frequency reset
+    $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
 
     return
