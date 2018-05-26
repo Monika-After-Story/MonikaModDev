@@ -6,28 +6,43 @@ init python:
 
     class MASCalendar(renpy.Displayable):
         """
+        Calendar
         """
+
         import pygame
+        import datetime
 
         # CONSTANTS
         VIEW_WIDTH = 1280
         VIEW_HEIGHT = 720
 
+        EXIT_BUTTON_WIDTH = 74
+        EXIT_BUTTON_HEIGHT = 74
+        EXIT_BUTTON_X = 1040
+        EXIT_BUTTON_Y = 60
+
+        DAY_BUTTON_WIDTH = 127.24
+        DAY_NAME_BUTTON_HEIGHT = 35
+
+        INITIAL_POSITION_X = 195
+        INITIAL_POSITION_Y = 155
+
 
         MOUSE_EVENTS = (
+            pygame.MOUSEMOTION,
             pygame.MOUSEBUTTONUP,
             pygame.MOUSEBUTTONDOWN
         )
 
 
-        def __init__(self, child, opaque_distance, transparent_distance, **kwargs):
+        def __init__(self, select_date=False):
 
             # Pass additional properties on to the renpy.Displayable
             # constructor.
-            super(renpy.Displayable, self).__init__(**kwargs)
+            super(renpy.Displayable, self).__init__()
 
             # The child.
-            self.calendar_background = renpy.displayable("mod_assets/calendar_bg.png")
+            self.calendar_background = renpy.displayable("mod_assets/calendar/calendar_bg.png")
 
             # background tile
             self.background = Solid(
@@ -36,93 +51,195 @@ init python:
                 ysize=self.VIEW_HEIGHT
             )
 
-            # The distance at which the child will become fully opaque, and
-            # where it will become fully transparent. The former must be less
-            # than the latter.
-            self.opaque_distance = opaque_distance
-            self.transparent_distance = transparent_distance
+            self.today = datetime.date.today()
 
-            # The alpha channel of the child.
-            self.alpha = 0.0
+            self.selected_month = self.today.month
 
-            # The width and height of us, and our child.
-            self.width = 0
-            self.height = 0
+            # store all buttons for easy rendering
+            self.const_buttons = []
+            self.day_buttons = []
+
+            # button backs
+            button_close = Image(
+                "mod_assets/calendar/calendar_close.png"
+            )
+            button_day = Image(
+                "mod_assets/calendar/calendar_day_bg.png"
+            )
+            button_day_name = Image(
+                "mod_assets/calendar/calendar_day_name_bg.png"
+            )
+
+            # 440 110
+            if select_date:
+                self.text_title = Text(
+                    "Select a Date",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#ffffff",
+                    outlines=[]
+                )
+            else:
+                self.text_title = Text(
+                    "Calendar",
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#ffffff",
+                    outlines=[]
+                )
+
+            days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                "Friday", "Saturday"]
+
+            i = 0
+            for day in days:
+
+                button_day_text = Text(
+                    day,
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#ffb0ed",
+                    outlines=[]
+                )
+
+                button_day_button = MASButtonDisplayable(
+                    button_day_text,
+                    button_day_text,
+                    button_day_text,
+                    button_day_name,
+                    button_day_name,
+                    button_day_name,
+                    self.INITIAL_POSITION_X + (i * self.DAY_BUTTON_WIDTH),
+                    self.INITIAL_POSITION_Y + self.DAY_NAME_BUTTON_HEIGHT,
+                    self.DAY_BUTTON_WIDTH,
+                    self.DAY_NAME_BUTTON_HEIGHT,
+                    hover_sound=None,
+                    activate_sound=None,
+                    return_value="Close"
+                )
+                self.const_buttons.append(button_day_button)
+                i = i + 1
+
+
+            button_text_close = Text(
+                "X",
+                font=gui.default_font,
+                size=gui.text_size,
+                color="#ffb0ed",
+                outlines=[]
+            )
+
+            self.button_exit = MASButtonDisplayable(
+                button_text_close,
+                button_text_close,
+                button_text_close,
+                button_close,
+                button_close,
+                button_close,
+                self.EXIT_BUTTON_X,
+                self.EXIT_BUTTON_Y,
+                self.EXIT_BUTTON_WIDTH,
+                self.EXIT_BUTTON_HEIGHT,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound,
+                return_value=None
+            )
+
+            self.const_buttons.append(self.button_exit)
+
+
+        def _setup_day_buttons():
+            self.day_buttons = []
+
 
         def render(self, width, height, st, at):
 
+            # render mask
             back = renpy.render(self.background, width, height, st, at)
-            # Create a transform, that can adjust the alpha channel of the
-            # child.
-            #t = Transform(child=self.child, alpha=self.alpha)
 
-            # Create a render from the child.
+            # Create a render for the background.
             calendar_bg = renpy.render(self.calendar_background, width, height, st, at)
 
             # Get the size of the child.
             self.width, self.height = calendar_bg.get_size()
 
             # Create the render we will return.
-            render = renpy.Render(width, height)
-            render.blit(back,(0,0))
+            r = renpy.Render(width, height)
+
+            r.blit(back,(0,0))
+
             # Blit (draw) the child's render to our render.
-            render.blit(calendar_bg, (192, 103))
+            r.blit(calendar_bg, (192, 103))
+
+            # blit the constant buttons
+            c_r_buttons = [
+                (
+                    x.render(width, height, st, at),
+                    (x.xpos, x.ypos)
+                )
+                for x in self.const_buttons
+            ]
+
+            for vis_b, xy in c_r_buttons:
+                r.blit(vis_b, xy)
 
             # Return the render.
-            return render
+            return r
+
+        def _button_select(self, ev, x, y, st):
+            """
+            Goes through the list of buttons and return the first non-None
+            value returned
+
+            RETURNS:
+                first non-none value returned
+            """
+            for button in self.const_buttons:
+                ret_val = button.event(ev, x, y, st)
+                if ret_val:
+                    return ret_val
+
+            return None
+
 
         def event(self, ev, x, y, st):
 
-            # Compute the distance between the center of this displayable and
-            # the mouse pointer. The mouse pointer is supplied in x and y,
-            # relative to the upper-left corner of the displayable.
-            distance = math.hypot(x - (self.width / 2), y - (self.height / 2))
-
-            # Base on the distance, figure out an alpha.
-            if distance <= self.opaque_distance:
-                alpha = 1.0
-            elif distance >= self.transparent_distance:
-                alpha = 0.0
-            else:
-                alpha = 1.0 - 1.0 * (distance - self.opaque_distance) / (self.transparent_distance - self.opaque_distance)
-
-            # If the alpha has changed, trigger a redraw event.
-            if alpha != self.alpha:
-                self.alpha = alpha
-                renpy.redraw(self, 0)
-
-            # Pass the event to our child.
             if ev.type in self.MOUSE_EVENTS:
-                return "reeee"
+                # we only care about mousu
 
-            #return self.child.event(ev, x, y, st)
+                sel_action = self._button_select(ev, x, y, st)
+
+                if sel_action:
+                    # nonNone value returned
+
+                    if sel_action == "Close":
+                        # this means the user selected back
+
+                        return None
 
             # otherwise continue
             renpy.redraw(self, 0)
             raise renpy.IgnoreEvent()
 
-#        def visit(self):
-#            return [ self.child ]
 
-screen mas_alpha_magic:
+screen mas_calendar_screen(select_date=False):
 
     zorder 51
 
-    add MASCalendar("mod_assets/calendar_bg.png", 100, 200)
+    add MASCalendar(False)
         #xalign 0.5
         #yalign 0.5
 
-label mas_start_calendar:
+label mas_start_calendar(select_date=False):
 
-    call screen mas_alpha_magic
+    call screen mas_calendar_screen(select_date)
 
     # return value?
     if _return:
 
-        m "got a return value "
+        m "got a return value [_return]"
+        return _return
 
-
-
-    m "Can you find the logo?"
+    m "No returned value"
 
     return
