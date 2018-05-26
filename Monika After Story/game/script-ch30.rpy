@@ -783,7 +783,11 @@ label mas_ch30_select_unseen:
     if len(mas_rev_unseen) == 0:
         
         if not persistent._mas_enable_random_repeats:
-            # no repeats means we should just stay silent for now
+            # no repeats means we should push randomlimit if appropriate,
+            # otherwise stay slient
+            if not seen_random_limit:
+                $ pushEvent("random_limit_reached")
+
             jump post_pick_random_topic
 
         # otherwise we can go to repeats as usual
