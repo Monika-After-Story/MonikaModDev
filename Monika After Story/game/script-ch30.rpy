@@ -748,6 +748,11 @@ label ch30_loop:
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
+
+                # check if we have repeats enabled
+                if not persistent._mas_enable_random_repeats:
+                    jump mas_ch30_select_unseen
+
                 # randomize selection
                 $ chance = renpy.random.randint(1, 100)
 
@@ -776,6 +781,12 @@ label mas_ch30_select_unseen:
     # unseen selection
 
     if len(mas_rev_unseen) == 0:
+        
+        if not persistent._mas_enable_random_repeats:
+            # no repeats means we should just stay silent for now
+            jump post_pick_random_topic
+
+        # otherwise we can go to repeats as usual
         jump mas_ch30_select_seen
 
     $ mas_randomSelectAndPush(mas_rev_unseen)
