@@ -371,7 +371,7 @@ label mas_crashed_start:
     $ HKBHideButtons()
     $ disable_esc()
     $ store.songs.enabled = False
-    # TODO need the quit adjustment code provided by aldo
+    $ _confirm_quit = False
 
     if renpy.seen_label("mas_crashed_long"):
         jump mas_crashed_short
@@ -402,6 +402,17 @@ label mas_crashed_long:
             jump .mas_crashed_long_dontjoke
 
 
+### post crashed flow
+label mas_crashed_post:
+    # but this needs to do some things
+    $ enable_esc()
+    $ store.songs.enabled = True
+    $ persistent._mas_crashed_self = False
+
+    # this is like the catchall for all greeting cleanups
+    jump monikaroom_greeting_cleanup
+
+
 label mas_crashed_long_uthere:
     # if player doesn't respond fast enough
     hide screen mas_background_timed_jump
@@ -421,7 +432,7 @@ label mas_crashed_long_uthere:
         "Turn on the light":
             hide screen mas_background_timed_jump
             pass
-        "..."
+        "...":
             label mas_crashed_long_foundlight:
                 hide screen mas_background_timed_jump
                 m "Nevermind, I found it."
@@ -445,14 +456,35 @@ label mas_crashed_long_uthere:
     # but flustered mode bgins
     show monika 6ATL_cryleftright
     m "{cps=*1.5}What happened?{/cps}{nw}"
+
+    call mas_crashed_long_fluster
+
+    show screen mas_background_timed_jump(8, "mas_crashed_long_nofluster")
+    menu:
+        "Calm down, [m_name]":
+            hide screen mas_background_timed_jump
+            # TODO thank player with a smile
+            pass
+        "...":
+            label mas_crashed_long_nofluster:
+                hide screen mas_background_timed_jump
+                # TODO she calmed down herself
+
+
+    
+    
+            
+
+
+label mas_crashed_long_fluster:
     m "{cps=*1.5}One second you were there but then the next second everything turned black{/cps}{nw}"
     m "{cps=*1.5}and then you disappeared and then I was worried that something happened to you{/cps}{nw}"
     m "{cps=*1.5}and then I got scared because I thought broke everything again{/cps}{nw}"
-    # TODO add more to this
-
-
-
-        
+    m "{cps=*1.5}but I didn't mess with the game this time, I swear.{/cps}{nw}"
+    m "{cps=*1.5}At least, I don't think I did, but it's certainly possible{/cps}{nw}"
+    m "{cps=*1.5}because I'm not really sure what I'm doing sometimes,{/cps}{nw}"
+    m "{cps=*1.5}but I hope this time isn't my fault cause I really didn't touch anything...{/cps}{nw}"   
+    return
 
 label mas_crashed_short:
     python:
@@ -472,4 +504,5 @@ label mas_crashed_quip_takecare:
     m 2f "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4n "It's my home, after all..."
-    return
+
+
