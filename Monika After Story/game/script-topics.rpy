@@ -1091,7 +1091,7 @@ label monika_wine:
             m 1m "If that's still the case when I can finally be with you, maybe we could try a little anyway?"
             m 1n "Just a little."
             m 5 "I mean we'll have eachother to stop one another from having too much, right?"
-        "You can, but I can't."
+        "You can, but I can't.":
             m 2j "Maybe then I'll be able to have something you can't!"
             m "Just like how you can drink coffee in your world."
             m 2k "Ahaha~"
