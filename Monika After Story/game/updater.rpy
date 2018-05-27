@@ -1,5 +1,6 @@
 # enabling unstable mode
 default persistent._mas_unstable_mode = False
+default persistent._mas_can_update = True
 define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
 define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
 define mas_updater.force = False
@@ -667,14 +668,24 @@ init python in mas_updater:
         #Make sure the update folder is where it should be
         can_update = renpy.store.updater.can_update()
         if not can_update:
-            try: renpy.file("../update/current.json")
+
+            try:
+                os.rename(
+                    renpy.config.basedir + "/game/update", 
+                    renpy.config.basedir + "/update"
+                )
+                can_update = renpy.store.updater.can_update()
+
+                if not can_update:
+                    # still cant move the update folder. notify user
+                    renpy.game.persistent._mas_can_update = False
+
             except:
-                try:
-                    os.rename(
-                        renpy.config.basedir + "/game/update", 
-                        renpy.config.basedir + "/update"
-                    )
-                except: pass
+                # we cant move the update folder. We should notify user
+                renpy.game.persistent._mas_can_update = False
+
+        else:
+            renpy.game.persistent._mas_can_update = True
 
         if force:
             check_wait = 0
@@ -750,7 +761,17 @@ label update_now:
 
     $ update_link = store.mas_updater.checkUpdate()
 
-    if update_link:
+    if not persistent._mas_can_update:
+        # updates are currently disabled
+        python:
+            no_update_dialog = (
+                "Error: Failed to move 'update/' folder. Please manually " +
+                "move the update folder from 'game/' to the base 'ddlc/' " +
+                "directory and try again."
+            )
+        call screen dialog(message=no_update_dialog, ok_action=Return())
+
+    elif update_link:
 
         # call the updater displayable
         python:
@@ -768,3 +789,4 @@ label update_now:
             # just update the last checked, regardless of issue
             $ persistent._update_last_checked[update_link] = time.time()
     return
+
