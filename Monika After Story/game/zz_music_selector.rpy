@@ -211,7 +211,6 @@ init -1 python in songs:
         """
         # TODO: make song names / other tags configurable
         import os
-        ogg_ext = ".ogg"
 
         # No custom directory? abort
         if not os.access(custom_music_dir, os.F_OK):
@@ -221,24 +220,41 @@ init -1 python in songs:
         found_files = os.listdir(custom_music_dir)
         found_oggs = [
             ogg_file
-            for ogg_file in found_files
+            for ogg_file in found_files # these are not all just oggs.
             if (
-                ogg_file.endswith(ogg_ext) 
+                isValidExt(ogg_file)
                 and os.access(custom_music_dir + ogg_file, os.R_OK)
             )
         ]
 
         if len(found_oggs) == 0:
-            # no custom oggs found, please move on
+            # no custom songs found, please move on
             return
 
-        # otherwise, we got some oggs to add
+        # otherwise, we got some songs to add
         for ogg_file in found_oggs:
             music_list.append((
                 cleanGUIText(ogg_file[:-(len(ogg_ext))]),
                 custom_music_reldir + ogg_file
             ))
 
+
+    def isValidExt(filename):
+        """
+        Checks if the given filename has an appropriate extension
+
+        IN:
+            filename - filename to check
+
+        RETURNS:
+            True if valid extension, false otherwise
+        """
+        for ext in VALID_EXT:
+            if filename.endswith(ext):
+                return True
+
+        return False
+    
 
     def cleanGUIText(unclean):
         """
@@ -295,6 +311,16 @@ init -1 python in songs:
     # custom music directory
     custom_music_dir = "custom_bgm"
     custom_music_reldir = "../" + custom_music_dir + "/"
+
+    # valid extensions for music
+    # NOTE: Renpy also supports WAV, but only uncompressed PCM, so lets not
+    #   assume that the user knows how to change song formats.
+    VALID_EXT = [
+        ".opus",
+        ".ogg", # (vorbis, but opus works too).
+        ".mp3"
+    ]
+
 
 # some post screen init is setting volume to current settings
 init 10 python in songs:
