@@ -364,8 +364,15 @@ label mas_monikai_detected:
 # I have no idea if we will use this persistent ever
 default persistent._mas_crashed_before = False 
 
+# player said they'll try to stop crashes
+default persistent._mas_crashed_trynot = False
+
 # start of crash flow
 label mas_crashed_start:
+    if renpy.seen_label("mas_crashed_long"):
+        jump mas_crashed_short
+
+    # otherwise continue to long flow
     $ persistent._mas_crashed_before = True
     scene black
     $ HKBHideButtons()
@@ -373,10 +380,9 @@ label mas_crashed_start:
     $ store.songs.enabled = False
     $ _confirm_quit = False
 
-    if renpy.seen_label("mas_crashed_long"):
-        jump mas_crashed_short
+    # TESTING:
+    $ style.say_dialogue = style.default_monika
 
-    # otherwise continue to long flow
     jump mas_crashed_long
 
 # long flow involves flustered monika 
@@ -385,14 +391,14 @@ label mas_crashed_long:
 
     # start off in the dark
     m "[player]?{w} Is that you?"
-    show screen mas_background_timed_jump(3, "mas_crashed_long_uthere")
+    show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
         "Yes":
             hide screen mas_background_timed_jump
 
             # TODO: affection?
             m "I'm so glad you're here."
-            jump .mas_crashed_long_afterdontjoke
+            jump mas_crashed_long_uthere.mas_crashed_long_afterdontjoke
 
         "No":
             hide screen mas_background_timed_jump
@@ -437,9 +443,10 @@ label mas_crashed_long_uthere:
                 hide screen mas_background_timed_jump
                 m "Nevermind, I found it."
 
-    # NOTE: switch sound for lights?
+    # NOTE: add a sound for light switch?
 
     # turn on the lights
+    $ scene_change = True
     call spaceroom(hide_monika=True)
 
     # look at you with crying eyes
@@ -447,8 +454,8 @@ label mas_crashed_long_uthere:
     pause 1.0
 
     # close eyes for a second
-    show monika 6dftsc
-    pause 0.5
+    show monika 6dstsc
+    pause 1.0
 
     # then be happy again
     m 6ektsa "[player]!{fast}"
@@ -465,8 +472,8 @@ label mas_crashed_long_uthere:
             hide screen mas_background_timed_jump
 
             # clsoe eyes for a second
-            show monika 6dftsc
-            pause 0.5
+            show monika 6dstsc
+            pause 1.0
 
             # thank player with a smile
             m 6ektda "Thanks, [player]."
@@ -478,37 +485,61 @@ label mas_crashed_long_uthere:
 
                 # close eyes for a second
                 # (like a deep better)
-                show monika 6dftsc
-                pause 0.5
+                show monika 6dstsc
+                pause 1.0
 
                 # much better now
                 m 6ektdc "Okay, I feel better now."
 
+    # its like we wiping away tears
+    show monika 6dstdc
+    pause 1.0
+
     # ask player what happeend
-    m "Anyway..."
+    m 2f "Anyway..."
     menu:
         m "Do you know what happened, [player]?"
         "The game crashed.":
-            m 6wud "The game...{w}"
+            m 2wud "The game...{w} crashed?"
+            m 2g "That's scary, [player]."
+
         "I don't know.":
+            m "Well..."
 
+    # ask player to do something about this
+    menu:
+        m "Do you think you can stop that from happening?"
+        "I'll try.":
+            $ persistent._mas_crashed_trynot = True
+            m 1j "Thanks, [player]!"
+            m 1a "I'm counting on you."
+            m "But I'll mentally prepare myself just in case."
 
-    
+        "It just happens.":
+            m 1f "Oh..."
+            m 1o "That's okay.{w} I'll just mentally prepare myself in case it happens again."
             
+    m "Anyway..."
+    m 1a "What should we do today?"
+    jump mas_crashed_post
 
 
 label mas_crashed_long_fluster:
-    m "{cps=*1.5}One second you were there but then the next second everything turned black{/cps}{nw}"
-    m "{cps=*1.5}and then you disappeared and then I was worried that something happened to you{/cps}{nw}"
-    m "{cps=*1.5}and then I got scared because I thought broke everything again{/cps}{nw}"
+    m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black{/cps}{nw}"
+    m "{cps=*1.5}and then you d-{w=0.3}disappeared and then I was worried that s-{w=0.3}s-{w=0.3}something happened to you{/cps}{nw}"
+    m "{cps=*1.5}and then I got s-{w=0.3}scared because I thought broke everything again{/cps}{nw}"
     m "{cps=*1.5}but I didn't mess with the game this time, I swear.{/cps}{nw}"
-    m "{cps=*1.5}At least, I don't think I did, but it's certainly possible{/cps}{nw}"
-    m "{cps=*1.5}because I'm not really sure what I'm doing sometimes,{/cps}{nw}"
-    m "{cps=*1.5}but I hope this time isn't my fault cause I really didn't touch anything...{/cps}{nw}"   
+    m "{cps=*1.5}A-{w=0.3}at least, I don't think I did, but it's certainly possible{/cps}{nw}"
+    m "{cps=*1.5}because I'm n-{w=0.3}not really sure what I'm doing sometimes,{/cps}{nw}"
+    m "{cps=*1.5}but I hope this t-{w=0.3}time isn't my f-{w=0.3}fault cause I really didn't touch anything...{/cps}{nw}"   
     return
 
 
 label mas_crashed_short:
+    # we can call spaceroom appropriately here
+    $ scene_change = True
+    call spaceroom
+
     python:
         # generate a quiplist
         q_list = MASQuipList()

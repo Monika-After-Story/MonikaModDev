@@ -7189,10 +7189,10 @@ image monika 6rktsc = DynamicDisplayable(
     tears="streaming"
 )
 
-image monika 6dftsc = DynamicDisplayable(
+image monika 6dstsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
-    eyebrows="furrowed",
+    eyebrows="mid",
     eyes="closedsad",
     nose="def",
     mouth="smirk",
@@ -7202,6 +7202,21 @@ image monika 6dftsc = DynamicDisplayable(
     arms="down",
     tears="streaming"
 )
+
+image monika 6dstdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
 
 
 ### [IMG032]
@@ -7339,9 +7354,9 @@ image monika 6ATL_cryleftright:
             choice:
                 0.9
             choice:
-                1.0:
+                1.0
             choice:
-                0.5:
+                0.5
             choice:
                 0.7
             choice:
