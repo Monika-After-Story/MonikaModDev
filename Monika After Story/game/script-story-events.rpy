@@ -461,17 +461,38 @@ label mas_crashed_long_uthere:
 
     show screen mas_background_timed_jump(8, "mas_crashed_long_nofluster")
     menu:
-        "Calm down, [m_name]":
+        "Calm down, [m_name]. You're safe now.":
             hide screen mas_background_timed_jump
-            # TODO thank player with a smile
-            pass
+
+            # clsoe eyes for a second
+            show monika 6dftsc
+            pause 0.5
+
+            # thank player with a smile
+            m 6ektda "Thanks, [player]."
+            m "I feel better now that you're here with me."
+
         "...":
             label mas_crashed_long_nofluster:
                 hide screen mas_background_timed_jump
-                # TODO she calmed down herself
+
+                # close eyes for a second
+                # (like a deep better)
+                show monika 6dftsc
+                pause 0.5
+
+                # much better now
+                m 6ektdc "Okay, I feel better now."
+
+    # ask player what happeend
+    m "Anyway..."
+    menu:
+        m "Do you know what happened, [player]?"
+        "The game crashed.":
+            m 6wud "The game...{w}"
+        "I don't know.":
 
 
-    
     
             
 
@@ -485,6 +506,7 @@ label mas_crashed_long_fluster:
     m "{cps=*1.5}because I'm not really sure what I'm doing sometimes,{/cps}{nw}"
     m "{cps=*1.5}but I hope this time isn't my fault cause I really didn't touch anything...{/cps}{nw}"   
     return
+
 
 label mas_crashed_short:
     python:
@@ -504,5 +526,6 @@ label mas_crashed_quip_takecare:
     m 2f "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4n "It's my home, after all..."
+    jump mas_crashed_post
 
 
