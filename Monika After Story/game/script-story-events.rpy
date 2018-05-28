@@ -381,7 +381,7 @@ label mas_crashed_start:
     $ _confirm_quit = False
 
     # TESTING:
-    $ style.say_dialogue = style.default_monika
+#    $ style.say_dialogue = style.default_monika
 
     jump mas_crashed_long
 
