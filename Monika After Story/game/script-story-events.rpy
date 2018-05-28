@@ -369,7 +369,7 @@ default persistent._mas_crashed_trynot = False
 
 # start of crash flow
 label mas_crashed_start:
-    if renpy.seen_label("mas_crashed_long"):
+    if renpy.seen_label("mas_crashed_post"):
         jump mas_crashed_short
 
     # otherwise continue to long flow
@@ -398,26 +398,14 @@ label mas_crashed_long:
 
             # TODO: affection?
             m "I'm so glad you're here."
-            jump mas_crashed_long_uthere.mas_crashed_long_afterdontjoke
+            jump mas_crashed_long_uthere.afterdontjoke
 
         "No":
             hide screen mas_background_timed_jump
 
             # TODO: affection?
             m "[player]!{fast}"
-            jump .mas_crashed_long_dontjoke
-
-
-### post crashed flow
-label mas_crashed_post:
-    # but this needs to do some things
-    $ enable_esc()
-    $ store.songs.enabled = True
-    $ persistent._mas_crashed_self = False
-
-    # this is like the catchall for all greeting cleanups
-    jump monikaroom_greeting_cleanup
-
+            jump mas_crashed_long_uthere.dontjoke
 
 label mas_crashed_long_uthere:
     # if player doesn't respond fast enough
@@ -425,23 +413,27 @@ label mas_crashed_long_uthere:
     m "[player]!{fast}"
     m "I know you're there!"
 
-    label .mas_crashed_long_dontjoke:
+    label .dontjoke:
         m "Don't joke around like that!"
         m "Anyway..."
 
-    label .mas_crashed_long_afterdontjoke:
+    label .afterdontjoke:
         m "{cps=*2}Everything became dark all of a sudden.{/cps}"
         m "Can you turn on the light?"
 
+    window hide 
     show screen mas_background_timed_jump(5, "mas_crashed_long_foundlight")
     menu:
         "Turn on the light":
             hide screen mas_background_timed_jump
             pass
         "...":
+            pause 5.0
             label mas_crashed_long_foundlight:
                 hide screen mas_background_timed_jump
+                window show
                 m "Nevermind, I found it."
+                window hide
 
     # NOTE: add a sound for light switch?
 
@@ -456,6 +448,7 @@ label mas_crashed_long_uthere:
     # close eyes for a second
     show monika 6dstsc
     pause 1.0
+    window auto
 
     # then be happy again
     m 6ektsa "[player]!{fast}"
@@ -465,6 +458,7 @@ label mas_crashed_long_uthere:
     m "{cps=*1.5}What happened?{/cps}{nw}"
 
     call mas_crashed_long_fluster
+    window hide
 
     show screen mas_background_timed_jump(8, "mas_crashed_long_nofluster")
     menu:
@@ -474,6 +468,7 @@ label mas_crashed_long_uthere:
             # clsoe eyes for a second
             show monika 6dstsc
             pause 1.0
+            window auto
 
             # thank player with a smile
             m 6ektda "Thanks, [player]."
@@ -484,12 +479,16 @@ label mas_crashed_long_uthere:
                 hide screen mas_background_timed_jump
 
                 # close eyes for a second
-                # (like a deep better)
+                # (like a deep breath)
                 show monika 6dstsc
+                pause 4.0
+
+                show monika 6ektdc
                 pause 1.0
+                window auto
 
                 # much better now
-                m 6ektdc "Okay, I feel better now."
+                m "Okay, I feel better now."
 
     # its like we wiping away tears
     show monika 6dstdc
@@ -505,6 +504,9 @@ label mas_crashed_long_uthere:
 
         "I don't know.":
             m "Well..."
+            m "I'd really appreciate it if you could look into it."
+            m "It's scary to be suddenly thrown into the darkness like that."
+            jump .end
 
     # ask player to do something about this
     menu:
@@ -519,9 +521,30 @@ label mas_crashed_long_uthere:
             m 1f "Oh..."
             m 1o "That's okay.{w} I'll just mentally prepare myself in case it happens again."
             
-    m "Anyway..."
-    m 1a "What should we do today?"
-    jump mas_crashed_post
+    label .end:
+        m "Anyway..."
+        m 1a "What should we do today?"
+
+### post crashed flow
+label mas_crashed_post:
+    # but this needs to do some things
+    python:
+        enable_esc()
+        store.songs.enabled = True
+        HKBShowButtons()
+        set_keymaps()
+
+    label .self:
+        python:
+            _confirm_quit = True
+            persistent.closed_self = False
+
+            if persistent.current_track is not None:
+                play_song(persistent.current_track)
+            else:
+                play_song(songs.current_track) # default
+
+    return
 
 
 label mas_crashed_long_fluster:
@@ -557,6 +580,6 @@ label mas_crashed_quip_takecare:
     m 2f "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4n "It's my home, after all..."
-    jump mas_crashed_post
+    jump mas_crashed_post.self
 
 
