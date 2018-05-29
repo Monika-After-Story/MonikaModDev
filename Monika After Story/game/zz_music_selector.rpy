@@ -10,6 +10,10 @@
 
 # music inits first, so the screen can be made well
 init -1 python in songs:
+    import os
+    import mutagen.mp3 as muta3
+    import mutagen.oggopus as mutaopus
+    import mutagen.oggvorbis as mutaogg
 
     # MUSICAL CONSTANTS
     # SONG NAMES
@@ -210,7 +214,6 @@ init -1 python in songs:
             music_list - list of music tuples to append to
         """
         # TODO: make song names / other tags configurable
-        import os
 
         # No custom directory? abort
         if not os.access(custom_music_dir, os.F_OK):
@@ -233,10 +236,167 @@ init -1 python in songs:
 
         # otherwise, we got some songs to add
         for ogg_file in found_oggs:
-            music_list.append((
-                cleanGUIText(ogg_file[:-(len(ogg_ext))]),
-                custom_music_reldir + ogg_file
-            ))
+            # time to tag
+            filepath = custom_music_dir + ogg_file
+
+            _audio_file, _ext = _getAudioFile(filepath)
+
+            if _audio_file is not None:
+                # we only care if we even have an audio file
+
+                music_list.append((
+                    cleanGUIText(ogg_file[:-(len(ogg_ext))]),
+                    custom_music_reldir + ogg_file
+                ))
+
+
+    def _getDispName(_audio_file, _ext, _filename):
+        """
+        Attempts to retreive the display name for an audio file
+        If that fails, then it will use the _filename as song name, minus
+        extension.
+
+        IN:
+            _audio_file - audio object
+            _ext - extension of the audio file
+            _filename - filename of the audio file
+
+        RETURNS:
+            The name of this Song (probably)
+        """
+        if _ext == EXT_MP3:
+            # TODO
+            pass
+
+        elif _ext == EXT_OGG:
+            disp_name = _getOggName(_audio_file)
+
+        elif _ext == EXT_OPUS:
+            disp_name = _getOggName(_audio_file)
+
+        else:
+            disp_name = None
+
+        if not disp_name:
+            # let's just use filename minus extension at this point
+            return _filename[:-(len(_ext))]
+
+        return disp_name
+
+    
+    def _getMP3Name(_audio_file):
+        """
+        Attempts to retrieve song name from mp3 id3 tag
+
+        IN:
+            _audio_file - audio object
+
+        RETURNS:
+            The display name for this song, or None if not possible
+        """
+        # TODO
+
+
+    def _getOggName(_audio_file):
+        """
+        Attempts to retreive song name from Ogg tag
+
+        IN:
+            _audio_file - audio object
+
+        RETURNS:
+            The display name for this song, or None if not possible
+        """
+        song_names = _audio_file.tags.get(MT_TITLE, [])
+        song_artists = _audio_file.tags.get(MT_ARTIST, [])
+
+        if not song_names:
+            # we need the song name at the very least to do this
+            return None
+
+        # we will select the first item by default. No custommization here
+        sel_name = song_names[0]
+
+        # if we have an artist, we'll pair the two and ship it as display name
+        if song_artists:
+            sel_art = song_artists[0]
+            return sel_art + " - " + sel_name
+
+        # otherwise, just name is fine
+        return sel_name
+
+
+    def _getAudioFile(filepath);
+        """
+        Atteempts to retrive the correct audio object based on file extension
+
+        IN:
+            filepath - full filepath to the audio file we want
+
+        RETURNS:
+            tuple of the following format:
+            [0]: audio object we want (May be None if this failed to load)
+            [1]: extension of this audio object
+        """
+        if filepath.endswith(EXT_MP3):
+            return (_getMP3(filepath), EXT_MP3)
+
+        elif filepath.endswith(EXT_OGG):
+            return (_getOgg(filepath), EXT_OGG)
+
+        elif filepath.endswith(EXT_OPUS):
+            return (_getOpus(filepath), EXT_OPUS)
+
+        # otherwise, failure
+        return (None, None)
+    
+
+    def _getMP3(filepath):
+        """
+        Attempts to retrieve the MP3 object from the given audio file
+
+        IN:
+            filepath - full filepath to the mp3 file want tags from
+
+        RETURNS:
+            mutagen.mp3.MP3 object, or None if we coudlnt do it 
+        """
+        try:
+            return muta3.MP3(filepath)
+        except:
+            return None
+
+    
+    def _getOgg(filepath):
+        """
+        Attempts to retreive the Ogg object from the given audio file
+
+        IN:
+            filepath - full filepath to the ogg file
+
+        RETURNS:
+            mutagen.ogg.OggVorbis or None if we coudlnt get the info
+        """        
+        try:
+            return mutaogg.OggVorbis(filepath)
+        except:
+            return None
+
+
+    def _getOpus(filepath):
+        """
+        Attempts to retrieve the Opus object from the given audio file
+
+        IN:
+            filepath - full filepath to the opus file 
+
+        RETURNS:
+            mutagen.ogg.OggOpus or None if we couldnt get the info
+        """
+        try:
+            return mutaopus.OggOpus(filepath)
+        except:
+            return None
 
 
     def isValidExt(filename):
@@ -315,11 +475,18 @@ init -1 python in songs:
     # valid extensions for music
     # NOTE: Renpy also supports WAV, but only uncompressed PCM, so lets not
     #   assume that the user knows how to change song formats.
+    EXT_OPUS = ".opus"
+    EXT_OGG = ".ogg"
+    EXT_MP3 = ".mp3"
     VALID_EXT = [
-        ".opus",
-        ".ogg", # (vorbis, but opus works too).
-        ".mp3"
+        EXT_OPUS,
+        EXT_OGG,
+        EXT_MP3
     ]
+
+    # metadata tags
+    MT_TITLE = "title"
+    MT_ARTIST = "artist"
 
 
 # some post screen init is setting volume to current settings
