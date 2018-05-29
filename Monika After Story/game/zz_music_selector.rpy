@@ -255,7 +255,7 @@ init -1 python in songs:
                 ))
 
 
-    def _getAudioFile(filepath);
+    def _getAudioFile(filepath):
         """
         Atteempts to retrive the correct audio object based on file extension
 
@@ -408,7 +408,7 @@ init -1 python in songs:
         # if we have an artist, we'll pair the two and ship it as display name
         if song_artists:
             sel_art = song_artists[0]
-            return sel_art + " - " + sel_name
+            return sel_art + "  -  " + sel_name
 
         # otherwise, just name is fine
         return sel_name
@@ -678,6 +678,21 @@ style music_menu_prev_button is return_button:
 style music_menu_outer_frame:
     background "mod_assets/music_menu.png"
 
+style music_menu_button is navigation_button:
+    size_group "navigation"
+    properties gui.button_properties("navigation_button")
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style music_menu_button_text is navigation_button_text:
+    properties gui.button_text_properties("navigation_button")
+    font "mod_assets/font/mplus-2p-regular.ttf"
+    color "#fff"
+    outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
+    hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
+    insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
+
+
 # Music menu 
 #
 # IN:
@@ -713,7 +728,7 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
         # this part copied from navigation menu
         vbox:
-            style_prefix "navigation"
+            style_prefix "music_menu"
 
             xpos gui.navigation_xpos
     #        yalign 0.4
