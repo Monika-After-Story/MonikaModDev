@@ -588,7 +588,7 @@ init -1 python in songs:
 
     # renpy audio tags
     RPY_START = "<"
-    RPY_FROM = "from"
+    RPY_FROM = "loop"
     RPY_TO = "to"
     RPY_END = ">"
 
