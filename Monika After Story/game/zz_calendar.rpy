@@ -28,9 +28,14 @@ init python:
         INITIAL_POSITION_X = 193
         INITIAL_POSITION_Y = 155
 
+        TITLE_POSITION_Y = 115
+        TITLE_POSITION_X_1 = 600
+
         CALENDAR_DAY_TEXT_SIZE = 17
 
         CALENDAR_CLOSE_X_SIZE = 45
+
+        TEXT_DAY_COLOR = "#000000" # PINK: "#ffb0ed"
 
         MOUSE_EVENTS = (
             pygame.MOUSEMOTION,
@@ -80,7 +85,7 @@ init python:
                 self.text_title = Text(
                     "Select a Date",
                     font=gui.default_font,
-                    size=gui.text_size,
+                    size=33,
                     color="#ffffff",
                     outlines=[]
                 )
@@ -88,7 +93,7 @@ init python:
                 self.text_title = Text(
                     "Calendar",
                     font=gui.default_font,
-                    size=gui.text_size,
+                    size=33,
                     color="#ffffff",
                     outlines=[]
                 )
@@ -103,7 +108,7 @@ init python:
                     day,
                     font=gui.default_font,
                     size=self.CALENDAR_DAY_TEXT_SIZE,
-                    color="#ffb0ed",
+                    color=self.TEXT_DAY_COLOR,
                     outlines=[]
                 )
 
@@ -191,7 +196,7 @@ init python:
                         str(current_date.day),
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
-                        color="#ffb0ed",
+                        color=self.TEXT_DAY_COLOR,
                         outlines=[]
                     )
 
@@ -222,6 +227,9 @@ init python:
             # Create a render for the background.
             calendar_bg = renpy.render(self.calendar_background, width, height, st, at)
 
+            # Calendar title
+            calendar_title = renpy.render(self.text_title, width, height, st, at)
+
             # Get the size of the child.
             self.width, self.height = calendar_bg.get_size()
 
@@ -232,6 +240,9 @@ init python:
 
             # Blit (draw) the child's render to our render.
             r.blit(calendar_bg, (192, 103))
+
+            #
+            r.blit(calendar_title, (self.TITLE_POSITION_X_1, self.TITLE_POSITION_Y))
 
             # blit the constant buttons
             c_r_buttons = [
