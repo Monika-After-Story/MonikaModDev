@@ -243,11 +243,41 @@ init -1 python in songs:
 
             if _audio_file is not None:
                 # we only care if we even have an audio file
+                disp_name = _getDispName(_audio_file, _ext, ogg_file)
 
+                # loop prefix
+                loop_prefix = _getLoopData(_audio_file, _ext)
+
+                # add to the menu
                 music_list.append((
-                    cleanGUIText(ogg_file[:-(len(ogg_ext))]),
-                    custom_music_reldir + ogg_file
+                    cleanGUIText(disp_name),
+                    loop_prefix + custom_music_reldir + ogg_file
                 ))
+
+
+    def _getAudioFile(filepath);
+        """
+        Atteempts to retrive the correct audio object based on file extension
+
+        IN:
+            filepath - full filepath to the audio file we want
+
+        RETURNS:
+            tuple of the following format:
+            [0]: audio object we want (May be None if this failed to load)
+            [1]: extension of this audio object
+        """
+        if filepath.endswith(EXT_MP3):
+            return (_getMP3(filepath), EXT_MP3)
+
+        elif filepath.endswith(EXT_OGG):
+            return (_getOgg(filepath), EXT_OGG)
+
+        elif filepath.endswith(EXT_OPUS):
+            return (_getOpus(filepath), EXT_OPUS)
+
+        # otherwise, failure
+        return (None, None)
 
 
     def _getDispName(_audio_file, _ext, _filename):
@@ -265,8 +295,7 @@ init -1 python in songs:
             The name of this Song (probably)
         """
         if _ext == EXT_MP3:
-            # TODO
-            pass
+            disp_name = _getMP3Name(_audio_file)
 
         elif _ext == EXT_OGG:
             disp_name = _getOggName(_audio_file)
@@ -283,7 +312,48 @@ init -1 python in songs:
 
         return disp_name
 
+
+    def _getLoopData(_audio_file, _ext):
+        """
+        Attempts to retrieve loop data from the given audio file and
+        generates the appropraite string to put in front of the file name
+
+        IN:
+            _audio_file - audio object
+            _ext - extension of hte audio file
+
+        RETURNS:
+            loop string, or and empty string if no loop string available
+        """
+        if _ext == EXT_MP3:
+            # NOTE: we do not support mp3 looping atm
+            return ""
+
+        if _ext == EXT_OGG:
+            return _getOggLoop(_audio_file)
+
+        elif _ext == EXT_OPUS:
+            return _getOggLoop(_audio_file)
+
+        return ""
+
     
+    def _getMP3(filepath):
+        """
+        Attempts to retrieve the MP3 object from the given audio file
+
+        IN:
+            filepath - full filepath to the mp3 file want tags from
+
+        RETURNS:
+            mutagen.mp3.EasyMP3 object, or None if we coudlnt do it 
+        """
+        try:
+            return muta3.EasyMP3(filepath)
+        except:
+            return None
+
+
     def _getMP3Name(_audio_file):
         """
         Attempts to retrieve song name from mp3 id3 tag
@@ -294,7 +364,25 @@ init -1 python in songs:
         RETURNS:
             The display name for this song, or None if not possible
         """
-        # TODO
+        # NOTE: because we are using EasyID3, we can do the same thing Ogg
+        #   does
+        return _getOggName(_audio_file)
+
+    
+    def _getOgg(filepath):
+        """
+        Attempts to retreive the Ogg object from the given audio file
+
+        IN:
+            filepath - full filepath to the ogg file
+
+        RETURNS:
+            mutagen.ogg.OggVorbis or None if we coudlnt get the info
+        """        
+        try:
+            return mutaogg.OggVorbis(filepath)
+        except:
+            return None
 
 
     def _getOggName(_audio_file):
@@ -326,61 +414,64 @@ init -1 python in songs:
         return sel_name
 
 
-    def _getAudioFile(filepath);
+    def _getOggLoop(_audio_file):
         """
-        Atteempts to retrive the correct audio object based on file extension
+        Attempts to retreive loop data from Ogg tags
 
         IN:
-            filepath - full filepath to the audio file we want
+            _audio_file - audio object
 
         RETURNS:
-            tuple of the following format:
-            [0]: audio object we want (May be None if this failed to load)
-            [1]: extension of this audio object
+            the loop string we should use, or "" if no loop
         """
-        if filepath.endswith(EXT_MP3):
-            return (_getMP3(filepath), EXT_MP3)
+        loopstart = _audio_file.tags.get(MT_LSTART, [])
+        loopend = _audio_file.tags.get(MT_LEND, [])
 
-        elif filepath.endswith(EXT_OGG):
-            return (_getOgg(filepath), EXT_OGG)
+        # pre-check that we even have values
+        if not loopstart and not loopend:
+            return ""
 
-        elif filepath.endswith(EXT_OPUS):
-            return (_getOpus(filepath), EXT_OPUS)
-
-        # otherwise, failure
-        return (None, None)
-    
-
-    def _getMP3(filepath):
-        """
-        Attempts to retrieve the MP3 object from the given audio file
-
-        IN:
-            filepath - full filepath to the mp3 file want tags from
-
-        RETURNS:
-            mutagen.mp3.MP3 object, or None if we coudlnt do it 
-        """
+        # now try to float these values
         try:
-            return muta3.MP3(filepath)
+            if loopstart:
+                loopstart = float(loopstart[0])
+
+            else:
+                loopstart = None
+
+            if loopend:
+                loopend = float(loopend[0])
+
+            else:
+                loopend = None
+
         except:
-            return None
+            # error in parsing loop tags? just assume invalid all the way
+            return ""
 
-    
-    def _getOgg(filepath):
-        """
-        Attempts to retreive the Ogg object from the given audio file
+        # otherwise, we now have floats
+        # validate these values
+        if loopstart is not None and loopstart < 0:
+            loopstart = 0
 
-        IN:
-            filepath - full filepath to the ogg file
+        if loopend is not None and loopend > _audio_file.info.length:
+            loopend = _audio_file.info.length
 
-        RETURNS:
-            mutagen.ogg.OggVorbis or None if we coudlnt get the info
-        """        
-        try:
-            return mutaogg.OggVorbis(filepath)
-        except:
-            return None
+        # NOTE: we shoudl for sure have at least one of these tags by now
+        # now we can build the tag
+        _tag_elems = [RPY_START]
+
+        if loopstart is not None: 
+            _tag_elems.append(RPY_FROM)
+            _tag_elems.append(str(loopstart))
+
+        if loopend is not None:
+            _tag_elems.append(RPY_TO)
+            _tag_elems.append(str(loopend))
+
+        _tag_elems.append(RPY_END)
+
+        return " ".join(_tag_elems)
 
 
     def _getOpus(filepath):
@@ -487,6 +578,19 @@ init -1 python in songs:
     # metadata tags
     MT_TITLE = "title"
     MT_ARTIST = "artist"
+
+    # NOTE: we default looping, so think of this as loop start and loop end
+    # seconds to start playback
+    MT_LSTART = "loopstart"
+
+    # seconds to end playback
+    MT_LEND = "loopend"
+
+    # renpy audio tags
+    RPY_START = "<"
+    RPY_FROM = "from"
+    RPY_TO = "to"
+    RPY_END = ">"
 
 
 # some post screen init is setting volume to current settings
