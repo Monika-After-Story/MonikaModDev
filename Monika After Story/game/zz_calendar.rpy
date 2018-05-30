@@ -31,9 +31,18 @@ init python:
         TITLE_POSITION_Y = 115
         TITLE_POSITION_X_1 = 600
 
+        ARROW_BUTTON_SIZE = 36
+
         CALENDAR_DAY_TEXT_SIZE = 17
 
         CALENDAR_CLOSE_X_SIZE = 45
+
+        # Return values
+        CALENDAR_CLOSE = "CLOSE"
+        CALENDAR_MONTH_INCREASE = "MONTH_INCR"
+        CALENDAR_MONTH_DECREASE = "MONTH_DECR"
+        CALENDAR_YEAR_INCREASE = "YEAR_INCR"
+        CALENDAR_YEAR_DECREASE = "YEAR_DECR"
 
         TEXT_DAY_COLOR = "#000000" # PINK: "#ffb0ed"
 
@@ -78,6 +87,12 @@ init python:
             )
             button_day_name = Image(
                 "mod_assets/calendar/calendar_day_name_bg.png"
+            )
+            button_left_arrow = Image(
+                "mod_assets/calendar/calendar_left_arrow.png"
+            )
+            button_right_arrow = Image(
+                "mod_assets/calendar/calendar_right_arrow.png"
             )
 
             # 440 110
@@ -152,14 +167,91 @@ init python:
                 self.EXIT_BUTTON_HEIGHT,
                 hover_sound=gui.hover_sound,
                 activate_sound=gui.activate_sound,
-                return_value="Close"
+                return_value=self.CALENDAR_CLOSE
+            )
+
+            button_empty_text = Text(
+                str(self.selected_year) + " " + str(self.selected_month),
+                font=gui.default_font,
+                size=12,
+                color="#ffb0ed",
+                outlines=[]
+            )
+
+            self.button_month_decrease = MASButtonDisplayable(
+                button_empty_text,
+                button_empty_text,
+                button_empty_text,
+                button_left_arrow,
+                button_left_arrow,
+                button_left_arrow,
+                self.INITIAL_POSITION_X + 10,
+                self.INITIAL_POSITION_Y + 2,
+                self.ARROW_BUTTON_SIZE,
+                self.ARROW_BUTTON_SIZE,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound,
+                return_value=self.CALENDAR_MONTH_DECREASE
+            )
+
+            self.button_month_increase = MASButtonDisplayable(
+                button_empty_text,
+                button_empty_text,
+                button_empty_text,
+                button_right_arrow,
+                button_right_arrow,
+                button_right_arrow,
+                self.INITIAL_POSITION_X + 410,
+                self.INITIAL_POSITION_Y + 2,
+                self.ARROW_BUTTON_SIZE,
+                self.ARROW_BUTTON_SIZE,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound,
+                return_value=self.CALENDAR_MONTH_INCREASE
+            )
+
+            self.button_year_decrease = MASButtonDisplayable(
+                button_empty_text,
+                button_empty_text,
+                button_empty_text,
+                button_left_arrow,
+                button_left_arrow,
+                button_left_arrow,
+                self.INITIAL_POSITION_X + 455,
+                self.INITIAL_POSITION_Y + 2,
+                self.ARROW_BUTTON_SIZE,
+                self.ARROW_BUTTON_SIZE,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound,
+                return_value=self.CALENDAR_YEAR_DECREASE
+            )
+
+            self.button_year_increase = MASButtonDisplayable(
+                button_empty_text,
+                button_empty_text,
+                button_empty_text,
+                button_right_arrow,
+                button_right_arrow,
+                button_right_arrow,
+                self.INITIAL_POSITION_X + 850,
+                self.INITIAL_POSITION_Y + 2,
+                self.ARROW_BUTTON_SIZE,
+                self.ARROW_BUTTON_SIZE,
+                hover_sound=gui.hover_sound,
+                activate_sound=gui.activate_sound,
+                return_value=self.CALENDAR_YEAR_INCREASE
             )
 
             self.const_buttons.append(self.button_exit)
-            self._setup_day_buttons()
+
+            self.const_buttons.append(self.button_month_decrease)
+            self.const_buttons.append(self.button_month_increase)
+            self.const_buttons.append(self.button_year_decrease)
+            self.const_buttons.append(self.button_year_increase)
+            self._setupDayButtons()
 
 
-        def _setup_day_buttons(self):
+        def _setupDayButtons(self):
             self.day_buttons = []
             day = datetime.timedelta(days=1)
             first_day = datetime.datetime(self.selected_year, self.selected_month, 1)
@@ -193,7 +285,7 @@ init python:
                         activate_sound = gui.activate_sound
 
                     day_button_text = Text(
-                        str(current_date.day),
+                        str(current_date.day) + " " + str(current_date.month)+ " " + str(current_date.year),
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
                         color=self.TEXT_DAY_COLOR,
@@ -271,7 +363,8 @@ init python:
             # Return the render.
             return r
 
-        def _button_select(self, ev, x, y, st):
+
+        def _buttonSelect(self, ev, x, y, st):
             """
             Goes through the list of buttons and return the first non-None
             value returned
@@ -292,16 +385,38 @@ init python:
             return None
 
 
+        def _changeYear(self, ascend=True):
+            if ascend:
+                self.selected_year = self.selected_year + 1
+            else:
+                self.selected_year = self.selected_year - 1
+            self._setupDayButtons()
+
+
+        def _changeMonth(self, ascend=True):
+            if ascend:
+                self.selected_month = self.selected_month + 1
+                if self.selected_month >=13:
+                    self.selected_month = 1
+                    self.selected_year = self.selected_year + 1
+            else:
+                self.selected_month = self.selected_month - 1
+                if self.selected_month <=0:
+                    self.selected_month = 12
+                    self.selected_year = self.selected_year - 1
+            self._setupDayButtons()
+
+
         def event(self, ev, x, y, st):
 
             if ev.type in self.MOUSE_EVENTS:
                 # we only care about mouse
-                sel_action = self._button_select(ev, x, y, st)
+                sel_action = self._buttonSelect(ev, x, y, st)
 
                 if sel_action:
                     # nonNone value returned
 
-                    if sel_action == "Close":
+                    if sel_action == self.CALENDAR_CLOSE:
                         # this means the user selected close
 
                         return ""
@@ -309,6 +424,18 @@ init python:
                     if isinstance(sel_action, datetime.datetime):
 
                         return sel_action
+
+                    if sel_action == self.CALENDAR_YEAR_INCREASE:
+                        self._changeYear()
+
+                    if sel_action == self.CALENDAR_YEAR_DECREASE:
+                        self._changeYear(False)
+
+                    if sel_action == self.CALENDAR_MONTH_INCREASE:
+                        self._changeMonth()
+
+                    if sel_action == self.CALENDAR_MONTH_DECREASE:
+                        self._changeMonth(False)
 
             # otherwise continue
             renpy.redraw(self, 0)
