@@ -144,6 +144,31 @@ label mas_piano_result_none:
     m 1j "Promise to play for me next time?"
     return
 
+### HAPPY BIRTHDAY
+
+label mas_piano_hb_win:
+    m 1a "Wow! You almost got it!"
+    m 2b "Good job, [player]."
+    return
+
+label mas_piano_hb_fail:
+    m 1m "..."
+    m 1n "You did your best, [player]..."
+    m "Even a simple song takes time to learn."
+    return
+
+label mas_piano_hb_fc:
+    m 1a "Hehe, great job!"
+    m 2b "I know that's an easy one, but you did great."
+    m 1k "Are you going to play that for me on my Birthday?"
+    return
+
+label mas_piano_hb_prac:
+    m 1a "You're practing the Birthday Song?"
+    m "I know you can do it, [player]!"
+    return
+
+
 ### YOUR REALITY
 
 # shown if player completes the song but does not FC
@@ -807,6 +832,110 @@ init 1000 python in mas_piano_keys:
     # _pnm_<song name inital>_v#l#
     # v#l# -> verse #, line #
 
+
+###  HAPPY BIRTHDAY ###########################################################
+## full combo
+## w w e w t r
+## w w e w y t
+## w w o u t r e
+## i i u t y t
+
+    # happy birthday, piano note setup
+    _pnm_hb_v1l1 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Happy Birthday to you",
+            style="monika_credits_text"
+        ),
+        [
+            G4,
+            G4,
+            A4,
+            G4,
+            C5,
+            B4,
+        ],
+        postnotes=None,
+        express="1k",
+        postexpress="1a",
+        verse=0
+    )
+
+    _pnm_hb_v1l2 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Happy Birthday to you~",
+            style="monika_credits_text"
+        ),
+        [
+            G4,
+            G4,
+            A4,
+            G4,
+            D5,
+            C5,
+        ],
+        postnotes=None,
+        express="1k",
+        postexpress="1a",
+        verse=0
+    )
+    _pnm_hb_v1l3 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Happy Birthday Dear Friend",
+            style="monika_credits_text"
+        ),
+        [
+            G4,
+            G4,
+            G5,
+            E5,
+            C5,
+            B4,
+            A4,
+        ],
+        postnotes = None,
+        express="1k",
+        postexpress="1j",
+        verse=0
+    )
+
+    _pnm_hb_v1l4 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Happy Birthday to you!",
+            style="monika_credits_text"
+        ),
+        [
+            F5,
+            F5,
+            E5,
+            C5,
+            D5,
+            C5,
+        ],
+        postnotes = None,
+        express="1k",
+        postexpress="1j",
+        verse=0
+    )
+
+    # your reality, pnml
+    pnml_happybirthday = PianoNoteMatchList(
+        [
+            _pnm_hb_v1l1,
+            _pnm_hb_v1l2,
+            _pnm_hb_v1l3,
+            _pnm_hb_v1l4,
+        ],
+        [0],
+        "Happy Birthday",
+        "mas_piano_hb_win",
+        "mas_piano_hb_fc",
+        "mas_piano_hb_fail",
+        "mas_piano_hb_prac",
+        5.0,
+        launch_label = None
+    )
+
+
 ### YOUR REALITY ##############################################################
 
     # your reality, piano note setup
@@ -1281,6 +1410,7 @@ init 1000 python in mas_piano_keys:
 ## setup dict of pnmls: #------------------------------------------------------
 
     pnml_db = dict()
+    pnml_db[pnml_happybirthday.name] = pnml_happybirthday
     pnml_db[pnml_yourreality.name] = pnml_yourreality
 
     def getSongChoices():
