@@ -190,7 +190,7 @@ init python:
                 button_left_arrow,
                 button_left_arrow,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 20,
+                self.INITIAL_POSITION_X + 70,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -206,7 +206,7 @@ init python:
                 button_right_arrow,
                 button_right_arrow,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 400,
+                self.INITIAL_POSITION_X + 300,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -222,7 +222,7 @@ init python:
                 button_left_arrow,
                 button_left_arrow,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 465,
+                self.INITIAL_POSITION_X + 525,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -238,7 +238,7 @@ init python:
                 button_right_arrow,
                 button_right_arrow,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 840,
+                self.INITIAL_POSITION_X + 770,
                 self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
@@ -262,7 +262,7 @@ init python:
             self.text_current_month = Text(
                 self.MONTH_NAMES[self.selected_month],
                 font=gui.default_font,
-                size=gui.text_size,
+                size=21,
                 color=self.TEXT_DAY_COLOR,
                 outlines=[]
             )
@@ -270,7 +270,7 @@ init python:
             self.text_current_year = Text(
                 str(self.selected_year),
                 font=gui.default_font,
-                size=gui.text_size,
+                size=21,
                 color=self.TEXT_DAY_COLOR,
                 outlines=[]
             )
