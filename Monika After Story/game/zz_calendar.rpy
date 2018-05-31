@@ -31,7 +31,7 @@ init python:
         TITLE_POSITION_Y = 115
         TITLE_POSITION_X_1 = 600
 
-        ARROW_BUTTON_SIZE = 36
+        ARROW_BUTTON_SIZE = 20
 
         CALENDAR_DAY_TEXT_SIZE = 17
 
@@ -45,6 +45,11 @@ init python:
         CALENDAR_YEAR_DECREASE = "YEAR_DECR"
 
         TEXT_DAY_COLOR = "#000000" # PINK: "#ffb0ed"
+
+        MONTH_NAMES = ["Unknown", "January", "Febuary",
+            "March", "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"]
 
         MOUSE_EVENTS = (
             pygame.MOUSEMOTION,
@@ -171,7 +176,7 @@ init python:
             )
 
             button_empty_text = Text(
-                str(self.selected_year) + " " + str(self.selected_month),
+                "",
                 font=gui.default_font,
                 size=12,
                 color="#ffb0ed",
@@ -185,8 +190,8 @@ init python:
                 button_left_arrow,
                 button_left_arrow,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 10,
-                self.INITIAL_POSITION_Y + 2,
+                self.INITIAL_POSITION_X + 20,
+                self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
                 hover_sound=gui.hover_sound,
@@ -201,8 +206,8 @@ init python:
                 button_right_arrow,
                 button_right_arrow,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 410,
-                self.INITIAL_POSITION_Y + 2,
+                self.INITIAL_POSITION_X + 400,
+                self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
                 hover_sound=gui.hover_sound,
@@ -217,8 +222,8 @@ init python:
                 button_left_arrow,
                 button_left_arrow,
                 button_left_arrow,
-                self.INITIAL_POSITION_X + 455,
-                self.INITIAL_POSITION_Y + 2,
+                self.INITIAL_POSITION_X + 465,
+                self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
                 hover_sound=gui.hover_sound,
@@ -233,8 +238,8 @@ init python:
                 button_right_arrow,
                 button_right_arrow,
                 button_right_arrow,
-                self.INITIAL_POSITION_X + 850,
-                self.INITIAL_POSITION_Y + 2,
+                self.INITIAL_POSITION_X + 840,
+                self.INITIAL_POSITION_Y + 10,
                 self.ARROW_BUTTON_SIZE,
                 self.ARROW_BUTTON_SIZE,
                 hover_sound=gui.hover_sound,
@@ -252,6 +257,24 @@ init python:
 
 
         def _setupDayButtons(self):
+            # constant month and year text labels
+
+            self.text_current_month = Text(
+                self.MONTH_NAMES[self.selected_month],
+                font=gui.default_font,
+                size=gui.text_size,
+                color=self.TEXT_DAY_COLOR,
+                outlines=[]
+            )
+
+            self.text_current_year = Text(
+                str(self.selected_year),
+                font=gui.default_font,
+                size=gui.text_size,
+                color=self.TEXT_DAY_COLOR,
+                outlines=[]
+            )
+
             self.day_buttons = []
             day = datetime.timedelta(days=1)
             first_day = datetime.datetime(self.selected_year, self.selected_month, 1)
@@ -285,7 +308,7 @@ init python:
                         activate_sound = gui.activate_sound
 
                     day_button_text = Text(
-                        str(current_date.day) + " " + str(current_date.month)+ " " + str(current_date.year),
+                        str(current_date.day),
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
                         color=self.TEXT_DAY_COLOR,
@@ -311,6 +334,21 @@ init python:
                     self.day_buttons.append(day_button)
 
 
+        def _xcenter(self, v_width, width):
+            """
+            Returns the appropriate X location to center an object with the
+            given width
+
+            IN:
+                v_width - width of the view
+                width - width of the object to center
+
+            RETURNS:
+                appropiate X coord to center
+            """
+            return int((v_width - width) / 2)
+
+
         def render(self, width, height, st, at):
 
             # render mask
@@ -321,6 +359,18 @@ init python:
 
             # Calendar title
             calendar_title = renpy.render(self.text_title, width, height, st, at)
+
+            month_label = renpy.render(self.text_current_month, width, height, st, at)
+
+            year_label = renpy.render(self.text_current_year, width, height, st, at)
+
+            # now do some calcs
+            monw, monh = month_label.get_size()
+            yearw, yearh = year_label.get_size()
+
+            monthx = self._xcenter(380, monw)
+            yearx = self._xcenter(380, yearw) + 460
+
 
             # Get the size of the child.
             self.width, self.height = calendar_bg.get_size()
@@ -333,7 +383,11 @@ init python:
             # Blit (draw) the child's render to our render.
             r.blit(calendar_bg, (192, 103))
 
-            #
+            r.blit(month_label, (self.INITIAL_POSITION_X + monthx, self.INITIAL_POSITION_Y + 8))
+
+            r.blit(year_label, (self.INITIAL_POSITION_X + yearx, self.INITIAL_POSITION_Y + 8))
+
+            # title
             r.blit(calendar_title, (self.TITLE_POSITION_X_1, self.TITLE_POSITION_Y))
 
             # blit the constant buttons
