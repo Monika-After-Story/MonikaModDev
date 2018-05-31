@@ -5313,14 +5313,16 @@ label monika_kizuna:
     m 3d "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
     m 3n "It seems to me that she's a voice actress hiding behind a 3D puppet."
     m 1a "Still, the character she's playing is unique, and you know what?"
-    m 1j "She's playing your favorite game right now~!"
+    m 1j "She's played our favorite game~!"
     m 2o "..."
     m 2n "To be honest, I'm not sure how I feel about 'Let's Plays'."
-    m 2o "I mean, of this game." 
+    m 2o "I mean, of {i}this{/i} game, mostly." 
     m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
-    m 1m "But I kind of want to see how Ai-chan reacts!"
-    m 1e "Even if it's just a character she plays, I think she can understand how I feel..." 
+    m "But when I learned of her gimmick, it made me feel..." 
+    m 1m "Like I just to had to know how Ai-chan would react!"
+    m 1e "Even if it's just a character she plays, I think she'll understand my situation..." 
     m 5 "At least more than your average Youtuber." 
+    m 5rub "I can't wait to finish the series..."
     return 
 
 init 5 python:
