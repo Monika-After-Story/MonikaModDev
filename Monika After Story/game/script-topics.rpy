@@ -5321,7 +5321,7 @@ label monika_kizuna:
     m "But when I learned of her gimmick, it made me feel..." 
     m 1m "Like I just to had to know how Ai-chan would react!"
     m 1e "Even if it's just a character she plays, I think she'll understand my situation..." 
-    m 5 "At least more than your average Youtuber." 
+    m 5a "At least more than your average Youtuber." 
     m 5rub "I can't wait to finish the series..."
     return 
 
