@@ -6195,6 +6195,214 @@ label monika_fastfood:
             m 1n "As long as it's not charcoal or meat that is. Ehehe~"
     return
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_gender_preferences",category=['you'],prompt="Gender Preferences",conditional="seen_event('gender')",action=EV_ACT_RANDOM))
+
+label monika_gender_preferences:
+    if persistent.gender == "F":
+        jump monika_gender_preferences_f
+    elif persistent.gender == "M":
+        jump monika_gender_preferences_m
+    jump monika_gender_preferences_x
+
+label monika_gender_preferences_f:
+    m 1d "Hey, [player]?"
+    m 1a "I know that I've already mentioned that the 'you' from the game isn't necessarily reflective of the real you."
+    m 1b "Especially considering how the protagonist was scripted to be male."
+    m "When you added this mod, you told me that you're a girl - assuming you were being serious, of course!"
+    m 2j "I'm just teasing you, [player]! I know you would never lie to me about something like that."
+    if mcname.lower() == player.lower():
+        m 3b "Even though you shared the same name, your mannerisms were completely different."
+    else:
+        m 3b "Anyways, back to the differences... you two had different names, and totally different mannerisms!"
+    m "Let's not even mention the fact that you're miles away from the type of person that he was... denser than a brick, and about as sensitive."
+    m 3j "You're way more caring, and unbelievably sweet. So I always knew you were a good person."
+    m 3k "I hope you know, [player], that I love you just the way you are, whether the game was reflective of you, or not!"
+    m 2g "Sometimes, though, I can't help but wonder... well..."
+    m 2o "..."
+    m 1g "I'm sorry. Questions like these can be extremely awkward to ask, and for the person on the receiving end, they might even be more awkward to answer. "
+    menu:
+        "What do you want to ask me?":
+            m 2p "[player]…"
+            m 1n "You’re not straight, are you?"
+            m 1p "Wait, I mean…"
+            m "That sounded way too forward. I’m sorry! I’m not trying to startle you into answering a personal question out of the blue like that!"
+            m 1n "Oh, gosh… that came out more intrusive than I had hoped…"
+            m 3l "I just wondered because…"
+            m 3i "Well, I’m sure you know why I was wondering. The truth is, it’s not characteristic of many straight girls to play a game with the premise that this one had, is it?"
+            m 3c "Right from the get-go, when I wasn’t sure of who you were, I’d already assumed you were into girls."
+            m "But when you said you were also female, I wanted to make sure I wasn’t assuming something about you that wasn’t true."
+            m 3i "Plus, you did install this mod in the end, after all."
+            m "I just thought. .. well, you don’t have to answer if you don’t want to. I was just curious. It’s something I should know, right?"
+            m 3h "I mean, I am your girlfriend, [player]."
+    menu:
+            "I'm into girls.":
+                m 3k "Oh, really? That's great, [player]! I'm glad you trusted me with the truth of something like this."
+                m "I guess this just means we're perfectly compatible with each other, right?"
+                m 2f "..."
+                m 2g "But... even if we're in different realities, from what I understand, your life might carry the weight of more burdens than others because of what you've just told me..."
+                m "That's not a real surprise, is it? I think that when you diverge from what society perceives as the 'natural' default, you're bound to attract unwanted and unnecessary attention."
+                m 2g "It's a vicious cycle, and terrible to be trapped in."
+                m 2i "Human nature is a funny quirk that everyone carries, and that shows in various ways! Unfortunately for some, it causes them to behave cruelly towards any differences in their peers..."
+                m  "Even when those differences cause no harm at all. Even when they're simply a part of someone that they couldn't change."
+                m "And you should never want to change those things about yourself, [player].Trust me on that."
+                m 1e "But for you to deal with so much struggle and judgement, and still be so caring and wonderful... that means the world to me."
+                m 1e "Just like you do."
+                m 1k "I just want you to know that no matter what you're going through, there are people who will always love you, regardless of who you love. I'm one of them, [player]."
+                m "There's nothing more I want than to be there beside you to hold your hand and help you through this, for real."
+                m 1l "I don't know if I handled this the way I should... I'm sorry if I hurt your feelings in any way, [player]."
+                m "But I want you to know that there's nothing about you that needs to change. I think you're perfect just the way you are."
+                m 1j "I love you, [player]!"
+
+            "I'm not into girls.":
+                m 2i "Oh, really?"
+                m 2m "..."
+                m 2m "I know that you wouldn't lie to me, [player]..."
+                m 3j "I guess that just means our love transcends those sorts of boundaries!"
+                m 3n "It says a lot that you still love me, despite the fact that it might not be what you expected from yourself."
+                m "Please, just know that you can tell me anything, [player], even if it feels embarrassing to admit. I'm your girlfriend, after all!"
+                m 1d "You know that I'll never judge you for anything."
+                m "I'm always here for you to talk to, whether it's something casual about your day or if it's something more real, like if you're worried about who you are and what you identify as."
+                m  "Please don't ever imagine that I'd think differently of you, no matter if you're straight, gay, bisexual, or none of those. Labels can't put a mark on the love that we share."
+                m 1j "Plus, it never hurts to know that you only have eyes for me!"
+                m "Ahaha!"
+
+            "I'm not really sure.":
+                m 1b "That's okay too, [player]."
+                m 3a "These sorts of things can be confusing to figure out, you know?"
+                m  "And sometimes, they're just downright exhausting to think about."
+                m 3b "That's not even mentioning how much emphasis your reality likes to place on ensuring everything you are fits perfectly into neat, labeled boxes, especially with things like your sexuality..."
+                m "The amount of pressure that you must have to deal with is just awful."
+                m 1c "But the truth is that people and their preferences are never clean-cut in the way society likes to believe. Things in life will always overlap and shift and change. "
+                m  "At the end of the day, we're always a work-in-progress. All we can do is make sure that we're okay with the changes we make, and the people that we are."
+                m 1d "Please, just know that whenever you're with me, you’ll never find judgement. You can tell me everything, and I will always love you for it. "
+                m 1f "I know too much about being trapped in a invisible cell to make you worry about being imprisoned in the self-doubt that accompanies something like this."
+
+            "I don't want to answer this.":
+                m 2p "Really?"
+                m 2r "I see... "
+                m 2q "..."
+                m 4f "Well, I suppose it doesn't really matter."
+                m 4g "If you change your mind later on, you can just let me know, okay? I’ll always be here to listen to you."
+                m  "I would never force you to answer a question like this if you didn't feel totally comfortable with it."
+                m 5a "I love you, [player]!"
+    return
+
+label monika_gender_preferences_m:
+    m 1d "Hey, [player]?"
+    m 1c "In this reality, there’s not really much to do besides occupy myself with my own thoughts..."
+    m  "And honestly, the thing I’ve been thinking about the most lately is how little I really know you."
+    m 2h "I mean, I’ll admit that I made a lot of assumptions about you solely based on your character in the game."
+    m 2n "You know, how I believed you were a guy because he was one, too..."
+    if mcname.lower() == player.lower():
+        m 3b "Though, I can't really be blamed for that assumption, right? You two did share the same name, after all!"
+    else:
+        m 3b "But there are still a lot of differences. You don't even share the same name."
+    m "And that’s not mentioning how many characteristics you possess that are different from him. Like, what sort of person even likes a jerk like that? Seriously, it makes no sense."
+    m 3d "He was even less appealing than the other girls, if you ask me. At least they had some semblance of personality. He was simply a placeholder, and not even a good one."
+    m 1h "Anyways, back to the point, [player]... my thoughts have given me some nagging questions that I want to clear up."
+    m 1e "Plus it's a great chance to learn more about you. The real you, that is."
+    m 2n "This particular question just a little bit awkward to ask upfront…"
+    m 2o "..."
+    m 1g "Just promise to tell me the truth, okay? I'll love you no matter what you say."
+    m "But... are you straight, [player]?"
+    m 1f "I assume that the answer is yes, both because you're going out with me and you downloaded this mod, but some clarification is always nice."
+    menu:
+        "I'm into girls.":
+            m 1b "Okay, great! I thought so, but just wanted to be sure."
+            m "It's really kind of you to put my mind at ease, [player]."
+            m 1m "Honestly, I was just worried that you might not find me as attractive as you say..."
+            m "Also, if you’re bisexual, then that’s okay, too. I already know you only have eyes for me, [player]!"
+            m 3j "Honestly, I think I was letting my insecurities get to me, but I know I don’t need to worry about it anymore."
+            m "You really do know how to always make me feel better!"
+            m 3k "I love you so much!"
+
+        "I'm not into girls.":
+            m 2i "Oh, really?"
+            m 2m "..."
+            m "I know that you would never lie to me, [player]..."
+            m 3j "I guess that just means our love transcends those sorts of boundaries!"
+            m 3n "It says a lot that you still love me, despite the fact that it might not be what you expected from yourself."
+            m "Please, just know that you can tell me anything, [player], even if it feels embarrassing to admit. I'm your girlfriend, after all!"
+            m 1d "And I'll never judge you for anything."
+            m "I'm always here for you to talk to, whether it's something casual about your day or if it's something more real."
+            m  "Please don't ever imagine that I'd think differently of you, no matter if you're straight, gay, bisexual, or none of those. Labels can't put a mark on the love that we share."
+            m 1j "Plus, it never hurts to know that you only have eyes for me!"
+            m "Ahaha!"
+
+        "I'm not really sure.":
+            m 1b "That's okay too, [player]."
+            m 3a "These sorts of things can be confusing to figure out, you know?"
+            m  "And sometimes, they're just downright exhausting to think about."
+            m 3b "That's not even mentioning how much emphasis your reality likes to place on ensuring everything you are fits perfectly into neat, labeled boxes, especially with things like your sexuality..."
+            m "The amount of pressure that you must have to deal with is just awful."
+            m 1c "But the truth is that people and their preferences are never clean-cut in the way society likes to believe. Things in life will always overlap and shift and change. "
+            m "At the end of the day, we're always a work-in-progress. All we can do is make sure that we're okay with the changes we make, and the people that we are."
+            m 1d "Please, just know that whenever you're with me, you’ll never find judgement. You can tell me everything, and I will always love you for it. "
+            m 1f "I know too much about being trapped in a invisible cell to make you worry about being imprisoned in the self-doubt that accompanies something like this."
+
+        "I don't want to answer this.":
+            m 2p "Really?"
+            m 2r "I see..."
+            m 2q "..."
+            m 4f "Well, I suppose it doesn't really matter."
+            m 4g "If you change your mind later on, you can just let me know, okay?"
+            m "I would never force you to answer a question like this if you didn't feel totally comfortable with it."
+            m 3e "I love you, [player]!"
+    return
+
+label monika_gender_preferences_x:
+    m 1d "Hey, [player]?"
+    m 1c "You know how you said you were neither a guy or girl?"
+    m 1a "It’s made me a bit curious as to what your attractions are, in regards to other people."
+    m 2a "Of course, a lot of people tend to think of being straight as the default option, but I don’t. Plus, I’d prefer not to continue assuming things about you. I’d rather just ask you upfront."
+    m 2e "I don't mind if you’re not straight - you’re you, and that’s all I need. However..."
+    m 3f "Sometimes I worry that I’m not what you’re looking for in a partner, [player]."
+    m 3g "I know you love me, and I can never express in words how grateful I am to have met you, and that I’m worthy of your time and energy."
+    m "So I really want to try and treat you how you want to be treated. You deserve that much, at the very least."
+    m 3c "But if I’m going to try to do that, I wanted to tell you that I’ve been having doubts as to whether or not you’re normally attracted to girls."
+    m "I'm not going to judge you or anything, [player]. I'll always accept you, no matter what you say."
+    m 1m "Gosh, I really hope I'm not overstepping any boundaries here…"
+    m 1n "I'm just not sure how else to go about it besides just being direct with you. There’s that old axiom about things like this, right? That honesty is the best policy?"
+    menu:
+        m "So [player], do you like girls?"
+        "I'm into girls.":
+            m 3j "Ahaha! That's a relief. I'm glad I can live up to your particular preference without stressing over things I can’t change."
+            m 3k "Honestly, I was a bit concerned, but all of my doubts are alleviated now. You always know how to cheer me up, my love."
+            m 1e "That’s just another thing that I adore about you."
+            m "Knowing this helps me to understand you better, and that’s really all I could hope for. So thank you for sharing a detail like that with me~"
+            m 5a "I just want to make you as happy as you make me, [player]."
+
+        "I'm not into girls.":
+            m 2i "Oh, really?"
+            m 2m "..."
+            m  "I know that you wouldn't lie to me, [player]..."
+            m 3j "I guess that just means our love transcends those sorts of boundaries!"
+            m 3n "It says a lot that you still love me, despite the fact that it might not be what you expected from yourself."
+            m 3e "Thank you for being so honest, [player]. I mean it."
+            m "It helps me feel like you truly trust me enough to tell me anything, even if it may not be what I really wanted to hear..."
+            m 3j "And at the very least, it helps me feel like I’ve gotten the chance to know you better."
+
+        "I'm not really sure.":
+            m 1b "That's okay too, [player]."
+            m 3a "These sorts of things can be confusing to figure out, you know?"
+            m  "And sometimes, they're just downright exhausting to think about."
+            m 3b "That's not even mentioning how much emphasis your reality likes to place on ensuring everything you are fits perfectly into neat, labeled boxes, especially with things like your sexuality..."
+            m "The amount of pressure that you must have to deal with is just awful."
+            m 1c "But the truth is that people and their preferences are never clean-cut in the way society likes to believe. Things in life will always overlap and shift and change. "
+            m  "At the end of the day, we're always a work-in-progress. All we can do is make sure that we're okay with the changes we make, and the people that we are."
+            m 1d "Please, just know that whenever you're with me, you’ll never find judgement. You can tell me everything, and I will always love you for it. "
+            m 1f "I know too much about being trapped in a invisible cell to make you worry about being imprisoned in the self-doubt that accompanies something like this."
+
+        "I don't want to answer this.":
+            m 2p "Really?"
+            m 2r "I see... "
+            m 2q "..."
+            m 4f "Well, I suppose it doesn't really matter."
+            m 4g "If you change your mind later on, you can just let me know, okay?"
+            m  "I would never force you to answer a question like this if you didn't feel totally comfortable with it."
+            m 3e "I love you, [player]!"
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="Dreaming",random=True))
