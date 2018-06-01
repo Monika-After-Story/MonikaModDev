@@ -6244,29 +6244,29 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_chobits",category=['literature'],prompt="Chobits",random=True))
 
 label monika_chobits:
-    m 1a "Hey, [player], have you ever read a series of manga called {i}Chobits{/i}?"
+    m 1a "Hey, [player], have you ever read a manga series called {i}Chobits{/i}?"
     menu:
         "Yes.":
-            m 1j "I don't know about you, but it kind of reminds me of our relationship."
-            m 1m "People looked at the main character weird because he fell in love with Chi and some people were looked down upon for actually marrying their persocom."
-            m 1n "Despite knowing Chi was just a humanoid robot, he still loved her and took care of her and taught her how to live in the real world."
-            m "Chi's power and reset switches were in... private parts of her body..."
-            m 1o "The main character knew that he could never touch or tamper with those areas or Chi would lose all of her memories and leave him alone again."
-            m 1a "In the end, he did decide to love Chi even though he could never touch those areas."
+            m 1j "I don't know about you, but it reminds me of our relationship."
+            m 1m "People saw the main character as a weirdo because he fell in love with Chi, and others were looked down upon for actually marrying their persocom."
+            m 1n "Despite knowing Chi was just a humanoid robot, he still loved her, took care of her, and taught her how to live in the real world."
+            m "And since Chi's power and reset switches were in...{w} private areas of her body,"
+            m 1o "the main character knew that he could never touch or tamper with those areas or Chi would lose all of her memories and leave him alone again."
+            m 1a "In the end, he decided to love Chi even though he could never touch her sexually."
             m "Sometimes I wish somebody would love me that much."
             m 1j "..."
-            m 1k "But do have someone like that! Ahaha~"
-            m 5 "Or maybe that {i}is{/i} something you have in mind when you can."
+            m 1k "But I do have someone like that! Ahaha~"
+            m 5 "Or maybe that {i}is{/i} something you have in mind when you can." # what is this trying to say
             m "It might be too soon now, but by the time that becomes possible..."
             m "I guess you could say it could happen, ahaha~"
-            m 1b "We couldn't feel eachother if we tried right now but yet you still love me."
-            m 5 "Maybe someday we will be able to embrace eachother and I'm thankful for you sticking with me until then."
+            m 1b "We can't feel each other right now yet you still love me."
+            m 5 "Maybe someday we will be able to embrace each other and I'll be thankful if you'd stick with me until then."
             m 1e "And as for anyone who thinks our relationship is weird..."
             m 5 "We'll show them someday."
         "No.":
             m 1e "I think you might like it if you ever find the chance to read it."
             m 1n "I know it might sound a bit strange for me to recommend a manga to you but this one makes me think of our relationship."
-            m 1b "If you ever get tired of reading one of those famous, critically acclaimed books, you should try reading it."
+            m 1b "If you ever get tired of reading one of those famous, critically acclaimed books, you should try reading it." 
             m 3a "It's not too long either. You should be able to casually finish it in a couple days."
     return
 
