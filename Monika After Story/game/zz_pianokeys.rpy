@@ -855,7 +855,7 @@ init 1000 python in mas_piano_keys:
     )
     _pnm_yr_v1l2 = PianoNoteMatch(
         renpy.text.text.Text(
-            ("In my hands, is a pen that will write a poem of me" +
+            ("In my hand, is a pen that will write a poem of me" +
             " and you"),
             style="monika_credits_text"
         ),
