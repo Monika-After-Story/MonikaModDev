@@ -5307,7 +5307,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
     
 label monika_kizuna:
-    m 1d "Oh, right, I mentioned her to you, huh?"
+    m 1d "Oh right, I mentioned her to you, huh?"
     m 2b "Well, recently I had some YouTube videos tweeted to me."
     m "And among them was 'Virtual YouTuber Kizuna Ai'..."
     m 3d "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
