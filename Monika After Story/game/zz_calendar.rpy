@@ -283,6 +283,10 @@ init python:
                 "mod_assets/calendar/calendar_day_bg.png"
             )
 
+            button_day_bg_disabled = Image(
+                "mod_assets/calendar/calendar_day_disabled_bg.png"
+            )
+
             while first_day.weekday() != 6:
                 first_day = first_day - day
 
@@ -301,11 +305,15 @@ init python:
                     ret_val = None
                     hover_sound = None
                     activate_sound = None
+                    button_background = button_day_bg
+                    if current_date.month != self.selected_month:
+                        button_background = button_day_bg_disabled
 
                     if self.can_select_date and current_date.month == self.selected_month:
                         ret_val = date
                         hover_sound = gui.hover_sound
                         activate_sound = gui.activate_sound
+
 
                     day_button_text = Text(
                         str(current_date.day),
@@ -319,9 +327,9 @@ init python:
                         day_button_text,
                         day_button_text,
                         day_button_text,
-                        button_day_bg,
-                        button_day_bg,
-                        button_day_bg,
+                        button_background,
+                        button_background,
+                        button_background,
                         self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
                         initial_y + (i * self.DAY_BUTTON_HEIGHT),
                         self.DAY_BUTTON_WIDTH,
