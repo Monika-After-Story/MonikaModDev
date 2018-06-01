@@ -48,6 +48,8 @@ init -2 python in mas_topics:
 # we are going to define removing seen topics as a function,
 # as we need to call it dynamically upon import
 init -1 python:
+    import random
+    random.seed()
 
     import store.songs as songs
     import store.evhand as evhand
@@ -83,7 +85,7 @@ init -1 python:
             return None
 
         # otherwise we have at least 1 element
-        return sel_list.pop(renpy.random.randint(0, endpoint))
+        return sel_list.pop(random.randint(0, endpoint))
 
 
     def mas_randomSelectAndPush(sel_list):

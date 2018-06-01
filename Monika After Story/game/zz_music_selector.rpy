@@ -10,6 +10,10 @@
 
 # music inits first, so the screen can be made well
 init -1 python in songs:
+    import os
+    import mutagen.mp3 as muta3
+    import mutagen.oggopus as mutaopus
+    import mutagen.oggvorbis as mutaogg
 
     # MUSICAL CONSTANTS
     # SONG NAMES
@@ -213,8 +217,6 @@ init -1 python in songs:
             music_list - list of music tuples to append to
         """
         # TODO: make song names / other tags configurable
-        import os
-        ogg_ext = ".ogg"
 
         # No custom directory? abort
         if not os.access(custom_music_dir, os.F_OK):
@@ -224,24 +226,289 @@ init -1 python in songs:
         found_files = os.listdir(custom_music_dir)
         found_oggs = [
             ogg_file
-            for ogg_file in found_files
+            for ogg_file in found_files # these are not all just oggs.
             if (
-                ogg_file.endswith(ogg_ext) 
+                isValidExt(ogg_file)
                 and os.access(custom_music_dir + ogg_file, os.R_OK)
             )
         ]
 
         if len(found_oggs) == 0:
-            # no custom oggs found, please move on
+            # no custom songs found, please move on
             return
 
-        # otherwise, we got some oggs to add
+        # otherwise, we got some songs to add
         for ogg_file in found_oggs:
-            music_list.append((
-                cleanGUIText(ogg_file[:-(len(ogg_ext))]),
-                custom_music_reldir + ogg_file
-            ))
+            # time to tag
+            filepath = custom_music_dir + ogg_file
 
+            _audio_file, _ext = _getAudioFile(filepath)
+
+            if _audio_file is not None:
+                # we only care if we even have an audio file
+                disp_name = _getDispName(_audio_file, _ext, ogg_file)
+
+                # loop prefix
+                loop_prefix = _getLoopData(_audio_file, _ext)
+
+                # add to the menu
+                music_list.append((
+                    cleanGUIText(disp_name),
+                    loop_prefix + custom_music_reldir + ogg_file
+                ))
+
+
+    def _getAudioFile(filepath):
+        """
+        Atteempts to retrive the correct audio object based on file extension
+
+        IN:
+            filepath - full filepath to the audio file we want
+
+        RETURNS:
+            tuple of the following format:
+            [0]: audio object we want (May be None if this failed to load)
+            [1]: extension of this audio object
+        """
+        if filepath.endswith(EXT_MP3):
+            return (_getMP3(filepath), EXT_MP3)
+
+        elif filepath.endswith(EXT_OGG):
+            return (_getOgg(filepath), EXT_OGG)
+
+        elif filepath.endswith(EXT_OPUS):
+            return (_getOpus(filepath), EXT_OPUS)
+
+        # otherwise, failure
+        return (None, None)
+
+
+    def _getDispName(_audio_file, _ext, _filename):
+        """
+        Attempts to retreive the display name for an audio file
+        If that fails, then it will use the _filename as song name, minus
+        extension.
+
+        IN:
+            _audio_file - audio object
+            _ext - extension of the audio file
+            _filename - filename of the audio file
+
+        RETURNS:
+            The name of this Song (probably)
+        """
+        if _ext == EXT_MP3:
+            disp_name = _getMP3Name(_audio_file)
+
+        elif _ext == EXT_OGG:
+            disp_name = _getOggName(_audio_file)
+
+        elif _ext == EXT_OPUS:
+            disp_name = _getOggName(_audio_file)
+
+        else:
+            disp_name = None
+
+        if not disp_name:
+            # let's just use filename minus extension at this point
+            return _filename[:-(len(_ext))]
+
+        return disp_name
+
+
+    def _getLoopData(_audio_file, _ext):
+        """
+        Attempts to retrieve loop data from the given audio file and
+        generates the appropraite string to put in front of the file name
+
+        IN:
+            _audio_file - audio object
+            _ext - extension of hte audio file
+
+        RETURNS:
+            loop string, or and empty string if no loop string available
+        """
+        if _ext == EXT_MP3:
+            # NOTE: we do not support mp3 looping atm
+            return ""
+
+        if _ext == EXT_OGG:
+            return _getOggLoop(_audio_file)
+
+        elif _ext == EXT_OPUS:
+            return _getOggLoop(_audio_file)
+
+        return ""
+
+    
+    def _getMP3(filepath):
+        """
+        Attempts to retrieve the MP3 object from the given audio file
+
+        IN:
+            filepath - full filepath to the mp3 file want tags from
+
+        RETURNS:
+            mutagen.mp3.EasyMP3 object, or None if we coudlnt do it 
+        """
+        try:
+            return muta3.EasyMP3(filepath)
+        except:
+            return None
+
+
+    def _getMP3Name(_audio_file):
+        """
+        Attempts to retrieve song name from mp3 id3 tag
+
+        IN:
+            _audio_file - audio object
+
+        RETURNS:
+            The display name for this song, or None if not possible
+        """
+        # NOTE: because we are using EasyID3, we can do the same thing Ogg
+        #   does
+        return _getOggName(_audio_file)
+
+    
+    def _getOgg(filepath):
+        """
+        Attempts to retreive the Ogg object from the given audio file
+
+        IN:
+            filepath - full filepath to the ogg file
+
+        RETURNS:
+            mutagen.ogg.OggVorbis or None if we coudlnt get the info
+        """        
+        try:
+            return mutaogg.OggVorbis(filepath)
+        except:
+            return None
+
+
+    def _getOggName(_audio_file):
+        """
+        Attempts to retreive song name from Ogg tag
+
+        IN:
+            _audio_file - audio object
+
+        RETURNS:
+            The display name for this song, or None if not possible
+        """
+        song_names = _audio_file.tags.get(MT_TITLE, [])
+        song_artists = _audio_file.tags.get(MT_ARTIST, [])
+
+        if not song_names:
+            # we need the song name at the very least to do this
+            return None
+
+        # we will select the first item by default. No custommization here
+        sel_name = song_names[0]
+
+        # if we have an artist, we'll pair the two and ship it as display name
+        if song_artists:
+            sel_art = song_artists[0]
+            return sel_art + "  -  " + sel_name
+
+        # otherwise, just name is fine
+        return sel_name
+
+
+    def _getOggLoop(_audio_file):
+        """
+        Attempts to retreive loop data from Ogg tags
+
+        IN:
+            _audio_file - audio object
+
+        RETURNS:
+            the loop string we should use, or "" if no loop
+        """
+        loopstart = _audio_file.tags.get(MT_LSTART, [])
+        loopend = _audio_file.tags.get(MT_LEND, [])
+
+        # pre-check that we even have values
+        if not loopstart and not loopend:
+            return ""
+
+        # now try to float these values
+        try:
+            if loopstart:
+                loopstart = float(loopstart[0])
+
+            else:
+                loopstart = None
+
+            if loopend:
+                loopend = float(loopend[0])
+
+            else:
+                loopend = None
+
+        except:
+            # error in parsing loop tags? just assume invalid all the way
+            return ""
+
+        # otherwise, we now have floats
+        # validate these values
+        if loopstart is not None and loopstart < 0:
+            loopstart = 0
+
+        if loopend is not None and loopend > _audio_file.info.length:
+            loopend = _audio_file.info.length
+
+        # NOTE: we shoudl for sure have at least one of these tags by now
+        # now we can build the tag
+        _tag_elems = [RPY_START]
+
+        if loopstart is not None: 
+            _tag_elems.append(RPY_FROM)
+            _tag_elems.append(str(loopstart))
+
+        if loopend is not None:
+            _tag_elems.append(RPY_TO)
+            _tag_elems.append(str(loopend))
+
+        _tag_elems.append(RPY_END)
+
+        return " ".join(_tag_elems)
+
+
+    def _getOpus(filepath):
+        """
+        Attempts to retrieve the Opus object from the given audio file
+
+        IN:
+            filepath - full filepath to the opus file 
+
+        RETURNS:
+            mutagen.ogg.OggOpus or None if we couldnt get the info
+        """
+        try:
+            return mutaopus.OggOpus(filepath)
+        except:
+            return None
+
+
+    def isValidExt(filename):
+        """
+        Checks if the given filename has an appropriate extension
+
+        IN:
+            filename - filename to check
+
+        RETURNS:
+            True if valid extension, false otherwise
+        """
+        for ext in VALID_EXT:
+            if filename.endswith(ext):
+                return True
+
+        return False
+    
 
     def cleanGUIText(unclean):
         """
@@ -298,6 +565,36 @@ init -1 python in songs:
     # custom music directory
     custom_music_dir = "custom_bgm"
     custom_music_reldir = "../" + custom_music_dir + "/"
+
+    # valid extensions for music
+    # NOTE: Renpy also supports WAV, but only uncompressed PCM, so lets not
+    #   assume that the user knows how to change song formats.
+    EXT_OPUS = ".opus"
+    EXT_OGG = ".ogg"
+    EXT_MP3 = ".mp3"
+    VALID_EXT = [
+        EXT_OPUS,
+        EXT_OGG,
+        EXT_MP3
+    ]
+
+    # metadata tags
+    MT_TITLE = "title"
+    MT_ARTIST = "artist"
+
+    # NOTE: we default looping, so think of this as loop start and loop end
+    # seconds to start playback
+    MT_LSTART = "loopstart"
+
+    # seconds to end playback
+    MT_LEND = "loopend"
+
+    # renpy audio tags
+    RPY_START = "<"
+    RPY_FROM = "loop"
+    RPY_TO = "to"
+    RPY_END = ">"
+
 
 # some post screen init is setting volume to current settings
 init 10 python in songs:
@@ -384,6 +681,21 @@ style music_menu_prev_button is return_button:
 style music_menu_outer_frame:
     background "mod_assets/music_menu.png"
 
+style music_menu_button is navigation_button:
+    size_group "navigation"
+    properties gui.button_properties("navigation_button")
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style music_menu_button_text is navigation_button_text:
+    properties gui.button_text_properties("navigation_button")
+    font "mod_assets/font/mplus-2p-regular.ttf"
+    color "#fff"
+    outlines [(4, "#b59", 0, 0), (2, "#b59", 2, 2)]
+    hover_outlines [(4, "#fac", 0, 0), (2, "#fac", 2, 2)]
+    insensitive_outlines [(4, "#fce", 0, 0), (2, "#fce", 2, 2)]
+
+
 # Music menu 
 #
 # IN:
@@ -419,7 +731,7 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
         # this part copied from navigation menu
         vbox:
-            style_prefix "navigation"
+            style_prefix "music_menu"
 
             xpos gui.navigation_xpos
     #        yalign 0.4
