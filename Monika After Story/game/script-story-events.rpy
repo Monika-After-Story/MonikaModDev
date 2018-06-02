@@ -574,12 +574,22 @@ label mas_crashed_short:
         for _label in crash_labels:
             q_list.addLabelQuip(_label)
 
+        # pull a quip
+        t_quip, v_quip = q_list.quip()
+
+    if t_quip == MASQuipList.TYPE_LABEL:
+        call expression v_quip
+
+    else:
+        # assume line
+        m 1k "[v_quip]"
+
+    jump mas_crashed_post.self
 
 ### crash labels
 label mas_crashed_quip_takecare:
     m 2f "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4n "It's my home, after all..."
-    jump mas_crashed_post.self
-
+    return
 

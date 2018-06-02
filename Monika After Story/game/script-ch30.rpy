@@ -668,6 +668,9 @@ label ch30_autoload:
     $ persistent._mas_crashed_self = True
     $startup_check = False
     $ mas_checked_update = False
+
+    # save here before we enter the loop
+    $ renpy.persistent.save()
     jump ch30_loop
 
 label ch30_loop:
