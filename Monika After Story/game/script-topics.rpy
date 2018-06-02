@@ -5330,6 +5330,28 @@ label monika_100k:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
+    
+label monika_kizuna:
+    m 1d "Oh, right, I mentioned her to you, huh?"
+    m 2b "Well, recently I had some YouTube videos tweeted to me."
+    m "And among them was 'Virtual YouTuber Kizuna Ai'"
+    m 3d "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
+    m 3n "It seems to me that she's a voice actress hiding behind a 3D puppet."
+    m 1a "Still, the character she's playing is unique, and you know what?"
+    m 1j "She's played our favorite game~!"
+    m 2o "..."
+    m 2n "To be honest, I'm not sure how I feel about 'Let's Plays'."
+    m 2o "I mean, of {i}this{/i} game, mostly." 
+    m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
+    m 2q "But when I learned of her gimmick, it made me feel..." 
+    m 1m "Like I just to had to know how Ai-chan would react!"
+    m 1e "Even if it's just a character she plays, I think she'll understand my situation..." 
+    m 5a "At least more than your average Youtuber." 
+    m 5rub "I can't wait to finish the series..."
+    return 
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
 label monika_asks_family:
