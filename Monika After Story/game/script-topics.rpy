@@ -16,7 +16,12 @@ init -2 python in mas_topics:
 
     # CONSTANTS
     # most / top weights
+    # MOST seen is the percentage of seen topics 
+    # think of this as x % of the collection
     S_MOST_SEEN = 0.1
+
+    # TOP seen is the percentage of the most seen 
+    # Think of this as ilke the upper x percentile
     S_TOP_SEEN = 0.2
 
     # selection weights (out of 100)
@@ -146,7 +151,7 @@ init -1 python:
             sorted_seen,
             int(
                 sorted_seen[len(sorted_seen) - 1].shown_count
-                * store.mas_topics.S_TOP_SEEN
+                * (1 - store.mas_topics.S_TOP_SEEN)
             )
         )
 
