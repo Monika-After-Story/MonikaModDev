@@ -2038,7 +2038,7 @@ label monika_difficulty:
     m 1m "Well, it's not like this game was meant to be that hard in the first place."
     m 1i "If I hadn't decided to change things up, it would have just been a boring romance story."
     if persistent.monika_kill:
-        m "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I wanted, you know?"
+        m "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
     m 1a "So just take it easy sometimes. Not every game has to be a challenge to be fun."
     m 3j "Sometimes, love is all you need, [player]."
     return
