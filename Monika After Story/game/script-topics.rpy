@@ -4666,6 +4666,14 @@ label monika_orchestra:
                  m 5a "Maybe we could do a duet someday!"
                  m 1j "Ehehe~"
                  $ persistent.instrument = True
+            elif tempinstrument == "harmonika":
+                 m 1a "Wow, I've always wanted to try the harmonik--"
+                 m 1l "...Oh!"
+                 m 1m "[player], did you spell it like that for me?"
+                 m 3l "That's {i}sooo{/i} adorable!"
+                 m 5a "And just so you know, you can play with me anytime you like..."
+                 m 1j "Ehehe~"
+                 $ persistent.instrument = True  
             else:
                  m 1a "Wow, I've always wanted to try the [tempinstrument] out!"
                  m 3b "I would love to hear you play for me."
