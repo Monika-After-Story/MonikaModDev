@@ -2108,7 +2108,7 @@ label monika_dan:
     m 4j "And he's the reason we're together now, right?"
     m 2m "So even if he wrote a story that put me through a lot of pain..."
     m 1g "I really can't be too mad at him."
-return
+    return
 
     
 
