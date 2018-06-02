@@ -584,7 +584,7 @@ label mas_crashed_short:
         # assume line
         m 1k "[v_quip]"
 
-    jump mas_crashed_post.self
+    jump mas_crashed_post
 
 ### crash labels
 label mas_crashed_quip_takecare:

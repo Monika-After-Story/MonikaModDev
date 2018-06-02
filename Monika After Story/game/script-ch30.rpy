@@ -409,7 +409,8 @@ label ch30_main:
     call spaceroom from _call_spaceroom_4
     $pushEvent('introduction')
     call call_next_event from _call_call_next_event
-    jump ch30_loop
+    
+    jump ch30_preloop
 
 label continue_event:
     m "Now, where was I..."
@@ -583,6 +584,7 @@ label ch30_autoload:
     elif persistent._mas_crashed_self:
         $ selected_greeting = "mas_crashed_start"
         $ mas_skip_visuals = True
+        $ persistent.closed_self = True
 
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
@@ -663,6 +665,9 @@ label ch30_autoload:
 
     if not mas_skip_visuals:
         $ set_keymaps()
+
+label ch30_preloop:
+    # stuff that should happen right before we enter the loop
 
     $persistent.closed_self = False
     $ persistent._mas_crashed_self = True
