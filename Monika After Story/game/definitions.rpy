@@ -3123,7 +3123,7 @@ define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies
 
-    # these numbers are the low end of how many seconds to wait between 
+    # these numbers are the low end of how many seconds to wait between
     # random topics
     NORMAL = 20
     OFTEN = 4
@@ -3244,3 +3244,6 @@ label set_gender:
         $ him = "them"
         $ himself = "themselves"
     return
+
+style jpn_text:
+    font "mod_assets/font/mplus-2p-regular.ttf"
