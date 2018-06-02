@@ -330,10 +330,10 @@ init -1 python in songs:
             return ""
 
         if _ext == EXT_OGG:
-            return _getOggLoop(_audio_file)
+            return _getOggLoop(_audio_file, _ext)
 
         elif _ext == EXT_OPUS:
-            return _getOggLoop(_audio_file)
+            return _getOggLoop(_audio_file, _ext)
 
         return ""
 
@@ -414,13 +414,13 @@ init -1 python in songs:
         return sel_name
 
 
-    def _getOggLoop(_ext, _audio_file):
+    def _getOggLoop(_audio_file, _ext):
         """
         Attempts to retreive loop data from Ogg tags
 
         IN:
-            _ext - extension of the audio file
             _audio_file - audio object
+            _ext - extension of the audio file
 
         RETURNS:
             the loop string we should use, or "" if no loop
@@ -531,11 +531,11 @@ init -1 python in songs:
 
         # now we have ints
         # convert these into seconds
-        _sample_rate = float(_audio_file.info.sample_Rate)
+        _sample_rate = float(_audio_file.info.sample_rate)
         loopstart = loopstart / _sample_rate
 
         if looplen is not None:
-            looplen = loolen / _sample_rate
+            looplen = looplen / _sample_rate
 
         # validations
         if loopstart < 0:
