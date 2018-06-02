@@ -855,14 +855,14 @@ init 1000 python in mas_piano_keys:
             B4,
         ],
         postnotes=None,
-        express="1k",
+        express="1b",
         postexpress="1a",
         verse=0
     )
 
     _pnm_hb_v1l2 = PianoNoteMatch(
         renpy.text.text.Text(
-            "Happy Birthday to you~",
+            "Happy Birthday to you",
             style="monika_credits_text"
         ),
         [
@@ -880,7 +880,7 @@ init 1000 python in mas_piano_keys:
     )
     _pnm_hb_v1l3 = PianoNoteMatch(
         renpy.text.text.Text(
-            "Happy Birthday Dear Friend",
+            "Happy Birthday, Happy Birthday",
             style="monika_credits_text"
         ),
         [
