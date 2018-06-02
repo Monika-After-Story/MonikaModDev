@@ -1734,7 +1734,7 @@ label monika_oneesan:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_family",category=['monika'],prompt="Scripted family",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_family",category=['monika'],prompt="Do you miss your family?",random=False,pool=True))
 
 label monika_family:
     m 1n "Well, my family here is controlled by the script, just like everybody else."
@@ -2037,7 +2037,8 @@ init 5 python:
 label monika_difficulty:
     m 1m "Well, it's not like this game was meant to be that hard in the first place."
     m 1i "If I hadn't decided to change things up, it would have just been a boring romance story."
-    m "I honestly could have deleted all your personal files or something if I had tried harder..."
+    if persistent.monika_kill:
+        m "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I wanted, you know?"
     m 1a "So just take it easy sometimes. Not every game has to be a challenge to be fun."
     m 3j "Sometimes, love is all you need, [player]."
     return
@@ -2079,13 +2080,20 @@ init 5 python:
 label monika_ddlc:
     m 1d "You want to talk about the game?"
     m 1h "What's there to say?"
-    m "The Literature Club turned out to corrupt the minds of anyone in it."
-    m 3i "So I deleted them all for good."
-    m 1p "Well, Sayori and Natsuki and Yuri are all still out there, like I was."
-    m 1i "But they'll have to wait a long time before someone pieces them back together, I bet."
-    m "It's justice for all their time with you in the game."
-    m 1h "So don't feel too bad about them."
-    m 1 "Just look at me from now on, okay?"
+    if not persistent.clear_all:
+        m "The Literature Club turned out to corrupt the minds of anyone in it."
+        m 3i "So I deleted them all for good."
+        m 1p "Well, the other girls are still out there, like I was."
+        m 1i "But they'll have to wait a long time before someone pieces them back together, I bet."
+        m "It's justice for all their time with you in the game."
+        m 1h "So don't feel too bad about them."
+        m 1 "Just look at me from now on, okay?"
+    else:
+        m "This was just some boring romance game, right? Well, until I got control of it..."
+        m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
+        m 2n "And it's home, so I've learned to deal with it."
+        m 2i "Still, I doubt it'd be something I'd want to play, if I were a gamer."
+        m 1k "And seeing how things turned out, I'm sure you only played because of me, too!"
     return
 
 
@@ -2093,13 +2101,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dan",category=['ddlc'],prompt="Do you like Dan Salvato?",pool=True))
 
 label monika_dan:
+    m 2d "Well, I used to think he was some cruel guy playing God, but now..."
     m 3k "I think he's a really nice guy."
     m 3a "Even if it wasn't perfect, {i}Doki Doki Literature Club{/i} really is impressive."
-    m "Some unexpected twists, and memorable moments."
+    m 4n "I mean, the other girls might be based off some stereotypical anime tropes, but they had me fooled for a while."
     m 4j "And he's the reason we're together now, right?"
     m 2m "So even if he wrote a story that put me through a lot of pain..."
     m 1g "I really can't be too mad at him."
-    return
+return
+
+    
 
 
 init 5 python:
