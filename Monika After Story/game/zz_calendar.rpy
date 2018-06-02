@@ -33,7 +33,7 @@ init python:
 
         ARROW_BUTTON_SIZE = 20
 
-        CALENDAR_DAY_TEXT_SIZE = 17
+        CALENDAR_DAY_TEXT_SIZE = 12
 
         CALENDAR_CLOSE_X_SIZE = 45
 
@@ -127,7 +127,7 @@ init python:
                 button_day_text = Text(
                     day,
                     font=gui.default_font,
-                    size=self.CALENDAR_DAY_TEXT_SIZE,
+                    size=17,
                     color=self.TEXT_DAY_COLOR,
                     outlines=[]
                 )
@@ -314,9 +314,12 @@ init python:
                         hover_sound = gui.hover_sound
                         activate_sound = gui.activate_sound
 
-
                     day_button_text = Text(
-                        str(current_date.day),
+                        "\t  \t  \t  \t  \t  \t       " +
+                        str(current_date.day)  +
+                        "\n"+ "Monika's Birthday"+
+                        "\n"+ "Some Event" +
+                        "\n"+ "Our Anniversary <3",
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
                         color=self.TEXT_DAY_COLOR,
