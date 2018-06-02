@@ -2995,7 +2995,7 @@ image monika 1hksdrb = DynamicDisplayable(
     head="l",
     left="1l",
     right="1r",
-    arms="steepling"
+    arms="steepling",
     sweat="right"
 )
 
@@ -4252,7 +4252,8 @@ image monika 2hksdrb = DynamicDisplayable(
     head="l",
     left="1l",
     right="2r",
-    arms="crossed"
+    arms="crossed",
+    sweat="right"
 )
 
 image monika 2hubfb = DynamicDisplayable(
@@ -4283,7 +4284,7 @@ image monika 2ekbfa = DynamicDisplayable(
     blush="full"
 )
 
-image monika 3a = DynamicDisplayable(
+image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -4296,7 +4297,7 @@ image monika 3a = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3b = DynamicDisplayable(
+image monika 3eub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -4309,7 +4310,7 @@ image monika 3b = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3c = DynamicDisplayable(
+image monika 3euc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -4322,7 +4323,7 @@ image monika 3c = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3d = DynamicDisplayable(
+image monika 3eud = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -4335,7 +4336,7 @@ image monika 3d = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3e = DynamicDisplayable(
+image monika 3eka = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4348,7 +4349,7 @@ image monika 3e = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3f = DynamicDisplayable(
+image monika 3ekc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4361,7 +4362,7 @@ image monika 3f = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3g = DynamicDisplayable(
+image monika 3ekd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4374,7 +4375,7 @@ image monika 3g = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3h = DynamicDisplayable(
+image monika 3esc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -4387,7 +4388,7 @@ image monika 3h = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3i = DynamicDisplayable(
+image monika 3esd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -4400,7 +4401,7 @@ image monika 3i = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3j = DynamicDisplayable(
+image monika 3hua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -4413,7 +4414,7 @@ image monika 3j = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3k = DynamicDisplayable(
+image monika 3hub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -4426,7 +4427,7 @@ image monika 3k = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3l = DynamicDisplayable(
+image monika 3hksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4440,7 +4441,7 @@ image monika 3l = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3m = DynamicDisplayable(
+image monika 3lksdla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4454,7 +4455,7 @@ image monika 3m = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3n = DynamicDisplayable(
+image monika 3lksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4468,7 +4469,7 @@ image monika 3n = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3o = DynamicDisplayable(
+image monika 3lksdlc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4482,7 +4483,7 @@ image monika 3o = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3p = DynamicDisplayable(
+image monika 3lksdld = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -4496,7 +4497,7 @@ image monika 3p = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3q = DynamicDisplayable(
+image monika 3dsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -4509,7 +4510,7 @@ image monika 3q = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3r = DynamicDisplayable(
+image monika 3dsd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -5103,7 +5104,7 @@ image monika 3lssdrc = DynamicDisplayable(
     sweat="right"
 )
 
-image monika 3pp = DynamicDisplayable(
+image monika 3rksdld = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5117,7 +5118,7 @@ image monika 3pp = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3oo = DynamicDisplayable(
+image monika 3rksdlc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5131,7 +5132,7 @@ image monika 3oo = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3nn = DynamicDisplayable(
+image monika 3rksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5159,7 +5160,7 @@ image monika 3lksdlw = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 3mm = DynamicDisplayable(
+image monika 3rksdla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5498,7 +5499,7 @@ image monika 3hfw = DynamicDisplayable(
     arms="restleftpointright"
 )
 
-image monika 3ll = DynamicDisplayable(
+image monika 3hksdrb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5508,7 +5509,8 @@ image monika 3ll = DynamicDisplayable(
     head="l",
     left="2l",
     right="1r",
-    arms="restleftpointright"
+    arms="restleftpointright",
+    sweat="right"
 )
 
 image monika 3hubfb = DynamicDisplayable(
@@ -5539,7 +5541,7 @@ image monika 3ekbfa = DynamicDisplayable(
     blush="full"
 )
 
-image monika 4a = DynamicDisplayable(
+image monika 4eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -5552,7 +5554,7 @@ image monika 4a = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4b = DynamicDisplayable(
+image monika 4eub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -5565,7 +5567,7 @@ image monika 4b = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4c = DynamicDisplayable(
+image monika 4euc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -5578,7 +5580,7 @@ image monika 4c = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4d = DynamicDisplayable(
+image monika 4eud = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -5591,7 +5593,7 @@ image monika 4d = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4e = DynamicDisplayable(
+image monika 4eka = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5604,7 +5606,7 @@ image monika 4e = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4f = DynamicDisplayable(
+image monika 4ekc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5617,7 +5619,7 @@ image monika 4f = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4g = DynamicDisplayable(
+image monika 4ekd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5630,7 +5632,7 @@ image monika 4g = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4h = DynamicDisplayable(
+image monika 4esc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -5643,7 +5645,7 @@ image monika 4h = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4i = DynamicDisplayable(
+image monika 4esd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -5656,7 +5658,7 @@ image monika 4i = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4j = DynamicDisplayable(
+image monika 4hua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -5669,7 +5671,7 @@ image monika 4j = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4k = DynamicDisplayable(
+image monika 4hub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -5682,7 +5684,7 @@ image monika 4k = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4l = DynamicDisplayable(
+image monika 4hksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5696,7 +5698,7 @@ image monika 4l = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4m = DynamicDisplayable(
+image monika 4lksdla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5710,7 +5712,7 @@ image monika 4m = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4n = DynamicDisplayable(
+image monika 4lksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5724,7 +5726,7 @@ image monika 4n = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4o = DynamicDisplayable(
+image monika 4lksdlc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5738,7 +5740,7 @@ image monika 4o = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4p = DynamicDisplayable(
+image monika 4lksdld = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -5752,7 +5754,7 @@ image monika 4p = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4q = DynamicDisplayable(
+image monika 4dsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -5765,7 +5767,7 @@ image monika 4q = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4r = DynamicDisplayable(
+image monika 4dsd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -6359,7 +6361,7 @@ image monika 4lssdrc = DynamicDisplayable(
     sweat="right"
 )
 
-image monika 4pp = DynamicDisplayable(
+image monika 4rksdld = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -6373,7 +6375,7 @@ image monika 4pp = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4oo = DynamicDisplayable(
+image monika 4rksdlc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -6387,7 +6389,7 @@ image monika 4oo = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4nn = DynamicDisplayable(
+image monika 4rksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -6415,7 +6417,7 @@ image monika 4lksdlw = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 4mm = DynamicDisplayable(
+image monika 4rksdla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -6754,7 +6756,7 @@ image monika 4hfw = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 4ll = DynamicDisplayable(
+image monika 4hksdrb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -6764,7 +6766,8 @@ image monika 4ll = DynamicDisplayable(
     head="l",
     left="2l",
     right="2r",
-    arms="pointright"
+    arms="pointright",
+    sweat="right"
 )
 
 image monika 4hubfb = DynamicDisplayable(
@@ -6795,7 +6798,7 @@ image monika 4ekbfa = DynamicDisplayable(
     blush="full"
 )
 
-image monika 5a = DynamicDisplayable(
+image monika 5eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="up",
@@ -6809,7 +6812,7 @@ image monika 5a = DynamicDisplayable(
     single="3a"
 )
 
-image monika 5b = DynamicDisplayable(
+image monika 5euc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -6842,20 +6845,6 @@ image monika 5efa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="furrowed",
-    eyes="normal",
-    nose="def",
-    mouth="smile",
-    head="",
-    left="",
-    right="",
-    lean="def",
-    single="3b"
-)
-
-image monika 5eua = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="up",
     eyes="normal",
     nose="def",
     mouth="smile",
@@ -7171,8 +7160,59 @@ image monika 2pp = "monika 2rksdld"
 image monika 2q = "monika 2dsc"
 image monika 2r = "monika 2dsd"
 
+# pose 3
 image monika 3 = "monika 3esa"
+image monika 3a = "monika 3eua"
+image monika 3b = "monika 3eub"
+image monika 3c = "monika 3euc"
+image monika 3d = "monika 3eud"
+image monika 3e = "monika 3eka"
+image monika 3f = "monika 3ekc"
+image monika 3g = "monika 3ekd"
+image monika 3h = "monika 3esc"
+image monika 3i = "monika 3esd"
+image monika 3j = "monika 3hua"
+image monika 3k = "monika 3hub"
+image monika 3l = "monika 3hksdlb"
+image monika 3ll = "monika 3hksdrb"
+image monika 3m = "monika 3lksdla"
+image monika 3mm = "monika 3rksdla"
+image monika 3n = "monika 3lksdlb"
+image monika 3nn = "monika 3rksdlb"
+image monika 3o = "monika 3lksdlc"
+image monika 3oo = "monika 3rksdlc"
+image monika 3p = "monika 3lksdld"
+image monika 3pp = "monika 3rksdld"
+image monika 3q = "monika 3dsc"
+image monika 3r = "monika 3dsd"
 
+# pose 4
 image monika 4 = "monika 4esa"
+image monika 4a = "monika 4eua"
+image monika 4b = "monika 4eub"
+image monika 4c = "monika 4euc"
+image monika 4d = "monika 4eud"
+image monika 4e = "monika 4eka"
+image monika 4f = "monika 4ekc"
+image monika 4g = "monika 4ekd"
+image monika 4h = "monika 4esc"
+image monika 4i = "monika 4esd"
+image monika 4j = "monika 4hua"
+image monika 4k = "monika 4hub"
+image monika 4l = "monika 4hksdlb"
+image monika 4ll = "monika 4hksdrb"
+image monika 4m = "monika 4lksdla"
+image monika 4mm = "monika 4rksdla"
+image monika 4n = "monika 4lksdlb"
+image monika 4nn = "monika 4rksdlb"
+image monika 4o = "monika 4lksdlc"
+image monika 4oo = "monika 4rksdlc"
+image monika 4p = "monika 4lksdld"
+image monika 4pp = "monika 4rksdld"
+image monika 4q = "monika 4dsc"
+image monika 4r = "monika 4dsd"
 
+# pose 5
 image monika 5 = "monika 5eua"
+image monika 5a = "monika 5eua"
+image monika 5b = "monika 5euc"
