@@ -24,6 +24,9 @@ init -2 python in mas_topics:
     # Think of this as ilke the upper x percentile
     S_TOP_SEEN = 0.2
 
+    # limit to how many top seen until we move to most seen alg
+    S_TOP_LIMIT = 0.7
+
     # selection weights (out of 100)
     UNSEEN = 50
     SEEN = UNSEEN + 49
@@ -142,24 +145,29 @@ init -1 python:
             [0] - seen list of events
             [1] - most seen list of events
         """
-        if len(sorted_seen) == 0:
+        ss_len = len(sorted_seen)
+        if ss_len == 0:
             return ([], [])
 
         # now calculate the most / top seen counts
-        most_count = int(len(sorted_seen) * store.mas_topics.S_MOST_SEEN)
+        most_count = int(ss_len * store.mas_topics.S_MOST_SEEN)
         top_count = store.mas_topics.topSeenEvents(
             sorted_seen,
             int(
-                sorted_seen[len(sorted_seen) - 1].shown_count
+                sorted_seen[ss_len - 1].shown_count
                 * (1 - store.mas_topics.S_TOP_SEEN)
             )
         )
 
         # now decide how to do the split
-        if most_count < top_count:
-            split_point = most_count * -1
-        else:
+        if top_count < ss_len * store.mas_topics.S_TOP_LIMIT:
+            # we want to prioritize top count unless its over a certain
+            # percentage of the topics
             split_point = top_count * -1
+
+        else:
+            # otherwise, we use the most count, which is certainly smaller
+            split_point = most_count * -1
 
         # and then do the split
         return (sorted_seen[:split_point], sorted_seen[split_point:])
