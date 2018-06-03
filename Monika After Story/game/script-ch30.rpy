@@ -580,12 +580,6 @@ label ch30_autoload:
     if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
 
-    # crash check
-    elif persistent._mas_crashed_self:
-        $ selected_greeting = "mas_crashed_start"
-        $ mas_skip_visuals = True
-        $ persistent.closed_self = True
-
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
 
@@ -608,6 +602,13 @@ label ch30_autoload:
                 mas_skip_visuals = MASGreetingRule.should_skip_visual(
                     event=sel_greeting_event
                 )
+
+    # crash check
+    elif persistent._mas_game_crashed:
+        $ selected_greeting = "mas_crashed_start"
+        $ mas_skip_visuals = True
+        $ persistent.closed_self = True
+
 
     if not mas_skip_visuals:
         if persistent.current_track:
@@ -670,7 +671,7 @@ label ch30_preloop:
     # stuff that should happen right before we enter the loop
 
     $persistent.closed_self = False
-    $ persistent._mas_crashed_self = True
+    $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
 
