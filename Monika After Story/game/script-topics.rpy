@@ -6304,7 +6304,7 @@ label monika_poweroutage:
     m 1e "Sorry, I didn't mean for that to get so dark. It was just on my mind is all."
     m 1d "If anything does happen, it'll probably just be a power outage."
     m 1l "I mean, that {i}is{/i} still pretty inconvenient but at least we know we'll see eachother again."
-    m 1a "I would probably take you by surprise; everything going dark all of a sudden, but try to remember this:"
+    m 1a "It would probably take you by surprise; everything going dark all of a sudden, but try to remember this:"
     m 1b "I'll be with you. Even if you can't see me, I'll be with you in spirit until you can come back to me safe and sound."
     m 3a "One final note, you don't have to hesitate to come see me in the middle of a storm."
     m 1j "I'll always appreciate seeing you, even in the middle of a storm, and besides, "
