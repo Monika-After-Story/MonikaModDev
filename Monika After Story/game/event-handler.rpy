@@ -46,16 +46,17 @@ init -500 python:
     )
 
     # set defaults
-    if (
-            persistent._mas_event_init_lockdb_template is not None
-            and len(persistent._mas_event_init_lockdb_template)
-                != len(mas_init_lockdb_template)
-        ):
+#    if (
+#            persistent._mas_event_init_lockdb_template is not None
+#            and len(persistent._mas_event_init_lockdb_template)
+#                != len(mas_init_lockdb_template)
+#        ):
         # differing lengths mean we have new items to deal with
 
-        for ev_key in persistent._mas_event_init_lockdb:
-            stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
+    for ev_key in persistent._mas_event_init_lockdb:
+        stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
 
+        if len(mas_init_lockdb_template) != len(stored_lock_row):
             # splice and dice
             lock_row = list(mas_init_lockdb_template)
             lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
