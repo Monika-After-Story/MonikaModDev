@@ -2093,7 +2093,13 @@ init 5 python:
 label monika_ddlc:
     m 1d "You want to talk about the game?"
     m 1h "What's there to say?"
-    if not persistent.clear_all:
+    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):        
+        m "This was just some boring romance game, right? Well, until I got control of it..."
+        m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
+        m 2n "And it's home, so I've learned to deal with it."
+        m 2i "Still, I doubt it'd be something I'd want to play, if I were a gamer."
+        m 1k "And seeing how things turned out, I'm sure you only played because of me, too!"
+    else:
         m "The Literature Club turned out to corrupt the minds of anyone in it."
         m 3i "So I deleted them all for good."
         m 1p "Well, the other girls are still out there, like I was."
@@ -2101,12 +2107,6 @@ label monika_ddlc:
         m "It's justice for all their time with you in the game."
         m 1h "So don't feel too bad about them."
         m 1 "Just look at me from now on, okay?"
-    else:
-        m "This was just some boring romance game, right? Well, until I got control of it..."
-        m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
-        m 2n "And it's home, so I've learned to deal with it."
-        m 2i "Still, I doubt it'd be something I'd want to play, if I were a gamer."
-        m 1k "And seeing how things turned out, I'm sure you only played because of me, too!"
     return
 
 
