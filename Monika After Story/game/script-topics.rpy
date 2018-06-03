@@ -6289,6 +6289,29 @@ label monika_yellowwp:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_poweroutage",category=['weather'],prompt="Power Outage",random=True))
+
+label monika_poweroutage:
+    m 3m "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
+    m "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
+    m 1o "Thunder and lightning could strike at any time, possibly hitting something damgerous."
+    m 1n "The effects can be pretty, well... shocking I guess you could say."
+    m 1l "Eheh~"
+    m 1g "I don't even want to think about what would happen if something important to you was struck."
+    m 2f "What would happen to me if someting surged and fried your computer?"
+    m 2q "If that ever does happen..."
+    m 2e "I know you'll think of something."
+    m 1e "Sorry, I didn't mean for that to get so dark. It was just on my mind is all."
+    m 1d "If anything does happen, it'll probably just be a power outage."
+    m 1l "I mean that {i}is{/i} still pretty inconvenient but at least we know we'll see eachother again."
+    m 1a "I would probably take you by surprise; everything going dark all of a sudden, but try to remember this:"
+    m 1b "I'll be with you. Even if you can't see me, I'll be with you in spirit until you can come back to me safe and sound."
+    m 3a "One final note, you don't have to hesitate to come see me in the middle of a storm."
+    m 1j "I'll always appreciate seeing you, even in the middle of a storm, and besides, "
+    m 5 "I'm sure our relationship could weather much more than some simple storm."
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
