@@ -6534,7 +6534,7 @@ label monika_yellowwp:
             m 1e "But I love you so much, [player]. Supporting you is better than anything else."
             m 1k "I just can't wait to do it in person when I finally cross over to your side~"
         "No.":
-            $ persistent._mas_pm_read_yellow_wp = True
+            $ persistent._mas_pm_read_yellow_wp = False
             m 1c "Oh, I see."
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1a "It'll definitely be an interesting read for you."
