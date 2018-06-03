@@ -53,6 +53,10 @@ init -500 python:
 #        ):
         # differing lengths mean we have new items to deal with
 
+    # set db defaults
+    if persistent._mas_event_init_lockdb is None:
+        persistent._mas_event_init_lockdb = dict()
+
     for ev_key in persistent._mas_event_init_lockdb:
         stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
 
@@ -66,8 +70,8 @@ init -500 python:
     persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
 
     # set db defaults
-    if persistent._mas_event_init_lockdb is None:
-        persistent._mas_event_init_lockdb = dict()
+#    if persistent._mas_event_init_lockdb is None:
+#        persistent._mas_event_init_lockdb = dict()
 
     # initalizes LOCKDB for the Event class
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
