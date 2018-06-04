@@ -361,23 +361,17 @@ init python:
             for i in range(6):
 
                 for j in range(7):
+
                     # helper vars for day processing
                     current_date = self.dates[j + (i * 7)]
                     ret_val = None
-                    hover_sound = None
-                    activate_sound = None
-                    button_background = button_day_bg
 
                     # current day events display helpers
                     event_labels = list()
                     third_label = ""
-                    # if this day isn't on the current month
-                    if current_date.month != self.selected_month:
 
-                        # show the disabled background
-                        button_background = button_day_bg_disabled
-                    # otherwise process the events that it may have
-                    else:
+                    # if this day is on the current month process the events that it may have
+                    if current_date.month == self.selected_month:
                         # iterate through them
                         for e in events[current_date.day]:
 
@@ -386,8 +380,9 @@ init python:
                             if not e[2] or e[2] == self.selected_year:
 
                                 # add it to the event labels
-                                event_labels.append(e[2])
-                                # TODO maybe add here specifi processing depending on type
+                                if e[0] is Event:
+                                    event_labels.append(e[1])
+                                # add here specific processing depending on type
 
                         # if we have exactly 3 events
                         if len(event_labels) == 3:
@@ -409,8 +404,6 @@ init python:
                     # Add button behaviour to it
                     if self.can_select_date and current_date.month == self.selected_month:
                         ret_val = current_date
-                        hover_sound = gui.hover_sound
-                        activate_sound = gui.activate_sound
 
                     day_button_text = Text(
                         self.DATE_DISPLAY_FORMAT.format(str(current_date.day), event_labels[0], event_labels[1], third_label),
@@ -424,17 +417,23 @@ init python:
                         day_button_text,
                         day_button_text,
                         day_button_text,
-                        button_background,
-                        button_background,
-                        button_background,
+                        button_day_bg,
+                        button_day_bg,
+                        button_day_bg_disabled,
                         self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
                         initial_y + (i * self.DAY_BUTTON_HEIGHT),
                         self.DAY_BUTTON_WIDTH,
                         self.DAY_BUTTON_HEIGHT,
-                        hover_sound=hover_sound,
-                        activate_sound=activate_sound,
+                        hover_sound=gui.hover_sound,
+                        activate_sound=gui.activate_sound,
                         return_value=ret_val
                     )
+
+                    # if this day isn't on the current month
+                    if current_date.month != self.selected_month:
+                        # disable the button
+                        day_button.disable()
+
 
                     self.day_buttons.append(day_button)
 
