@@ -404,3 +404,19 @@ label bye_goodnight:
     m 1j "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
     m 1k "I love you~"
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_be_right_back",
+            unlocked=True,
+            prompt="I'll be right back."
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_be_right_back
+    m 1e "Hurry back, dear."
+    return 'quit'
