@@ -1,6 +1,13 @@
 # Calendar module
 # A custom made Calendar like UI to help managing date based events
 
+# TODO: add a calendar overlay and a calenar sprite to the background.
+# the background sprite is just attached to the spaceroom bg.
+#
+# the calendar overlay will have an empty idle image but a highlighted hover
+# image. It will only be enabled during idle modes (allow_dialgoue) and will
+# enable user to go straight to view mode of the calendar.
+
 init python:
 
 

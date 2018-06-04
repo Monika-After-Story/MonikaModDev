@@ -6619,3 +6619,48 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+
+## calendar-related pool event
+# DEPENDS ON CALENDAR
+
+# did we already change start date?
+default persistent._mas_changed_start_date = False
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dating_startdate",
+            category=["romance", "us"],
+            prompt="When did we start dating?",
+            pool=True,
+            unlocked=True # we will keep this unlocked by default
+        )
+    )
+
+label monika_dating_startdate:
+    # monika thinks, 
+    # Oh player, we started dating [persistent._first_session]
+    
+    if not persistent._mas_changed_start_date:
+        # we should double check with user if start date is correct
+        # monika says her memory might be off
+        # ask user if correct start date
+        menu:
+            # m "Is [start date] correct?"
+            "Yes.":
+                # monika says thats good and that she wont forget this time
+                # because she has a calendar now
+                pass
+            "No.":
+                # monika apologizes, asks player to select the correct start
+                # date.
+                # TODO: call calendar selection screen here
+                # NOTE: somehow let player know that they cannot change this
+                #   after selecting it
+                # monika wont forget this time
+                pass
+
+    return
+
+
