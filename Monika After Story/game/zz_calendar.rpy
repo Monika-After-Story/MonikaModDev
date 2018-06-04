@@ -7,7 +7,8 @@ init python:
 
     class MASCalendar(renpy.Displayable):
         """
-        Custom Calendar UI
+        Custom Calendar UI, can be used to display the events that are dependent
+        on dates or to allow user to pick a date
 
         """
 
@@ -37,7 +38,8 @@ init python:
 
         # position for the title
         TITLE_POSITION_Y = 115
-        TITLE_POSITION_X_1 = 600
+        TITLE_POSITION_X_1 = 560
+        TITLE_POSITION_X_2 = 530
 
         # size for the arrow like button selectors
         ARROW_BUTTON_SIZE = 20
@@ -67,6 +69,9 @@ init python:
         # Day names constant array
         DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday"]
+
+        # Format used for calendar display
+        DATE_DISPLAY_FORMAT = "\t  \t  \t  \t  \t  \t  \t  {0}\n{1}\n{2}\n{3}"
 
         # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
@@ -128,6 +133,7 @@ init python:
 
             # Change title depending on flag
             if select_date:
+                self.title_position_x = self.TITLE_POSITION_X_2
                 self.text_title = Text(
                     "Select a Date",
                     font=gui.default_font,
@@ -136,6 +142,7 @@ init python:
                     outlines=[]
                 )
             else:
+                self.title_position_x = self.TITLE_POSITION_X_1
                 self.text_title = Text(
                     "Calendar",
                     font=gui.default_font,
@@ -353,22 +360,22 @@ init python:
                     hover_sound = None
                     activate_sound = None
                     button_background = button_day_bg
+                    # TODO we need to use events of day dependant values, these are placeholders
+                    event_label1 = ""
+                    event_label2 = ""
+                    event_label3  = ""
                     if current_date.month != self.selected_month:
                         button_background = button_day_bg_disabled
                         # TODO we need to return something to force trigger the
-                        # scrollable pane with full event 
+                        # scrollable pane with full event
 
                     if self.can_select_date and current_date.month == self.selected_month:
-                        ret_val = date
+                        ret_val = current_date
                         hover_sound = gui.hover_sound
                         activate_sound = gui.activate_sound
 
                     day_button_text = Text(
-                        "\t  \t  \t  \t  \t  \t       " +
-                        str(current_date.day)  +
-                        "\n"+ "Monika's Birthday"+
-                        "\n"+ "Some Event" +
-                        "\n"+ "Our Anniversary <3",
+                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), event_label1, event_label2, event_label3),
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
                         color=self.TEXT_DAY_COLOR,
@@ -409,6 +416,73 @@ init python:
             return int((v_width - width) / 2)
 
 
+        def _buttonSelect(self, ev, x, y, st):
+            """
+            Goes through the list of buttons and return the first non-None
+            value returned
+
+            RETURNS:
+                first non-none value returned
+            """
+
+            #iterate over both lists
+            for button in self.const_buttons:
+                ret_val = button.event(ev, x, y, st)
+                if ret_val:
+                    return ret_val
+
+            for button in self.day_buttons:
+                ret_val = button.event(ev, x, y, st)
+                if ret_val:
+                    return ret_val
+
+            return None
+
+
+        def _changeYear(self, ascend=True):
+            """
+            Changes the currently selected year by incrementing or decrementing it by one
+            and refreshes the view
+
+            IN:
+                ascend - flag that indicates wheter increment or decrement
+                    (Defaults to True)
+            """
+            if ascend:
+                self.selected_year = self.selected_year + 1
+            else:
+                self.selected_year = self.selected_year - 1
+            self._setupDayButtons()
+
+
+        def _changeMonth(self, ascend=True):
+            """
+            Changes the currently selected month by incrementing or decrementing it by one
+            and refreshes the view
+
+            IN:
+                ascend - flag that indicates wheter increment or decrement
+                    (Defaults to True)
+            """
+            if ascend:
+
+                self.selected_month = self.selected_month + 1
+
+                # check if we need to increment the year
+                if self.selected_month >=13:
+                    self.selected_month = 1
+                    self.selected_year = self.selected_year + 1
+            else:
+
+                self.selected_month = self.selected_month - 1
+
+                # check if  we need to decrement the year
+                if self.selected_month <=0:
+                    self.selected_month = 12
+                    self.selected_year = self.selected_year - 1
+            self._setupDayButtons()
+
+
         def render(self, width, height, st, at):
 
             # render mask
@@ -420,6 +494,7 @@ init python:
             # Calendar title
             calendar_title = renpy.render(self.text_title, width, height, st, at)
 
+            # displayable month and year labels
             month_label = renpy.render(self.text_current_month, width, height, st, at)
 
             year_label = renpy.render(self.text_current_year, width, height, st, at)
@@ -431,24 +506,22 @@ init python:
             monthx = self._xcenter(380, monw)
             yearx = self._xcenter(380, yearw) + 460
 
-
             # Get the size of the child.
             self.width, self.height = calendar_bg.get_size()
 
             # Create the render we will return.
             r = renpy.Render(width, height)
 
+            # blit the constant elements that make this UI
             r.blit(back,(0,0))
 
-            # Blit (draw) the child's render to our render.
             r.blit(calendar_bg, (192, 103))
 
             r.blit(month_label, (self.INITIAL_POSITION_X + monthx, self.INITIAL_POSITION_Y + 8))
 
             r.blit(year_label, (self.INITIAL_POSITION_X + yearx, self.INITIAL_POSITION_Y + 8))
 
-            # title
-            r.blit(calendar_title, (self.TITLE_POSITION_X_1, self.TITLE_POSITION_Y))
+            r.blit(calendar_title, (self.title_position_x, self.TITLE_POSITION_Y))
 
             # blit the constant buttons
             c_r_buttons = [
@@ -478,67 +551,30 @@ init python:
             return r
 
 
-        def _buttonSelect(self, ev, x, y, st):
-            """
-            Goes through the list of buttons and return the first non-None
-            value returned
-
-            RETURNS:
-                first non-none value returned
-            """
-            for button in self.const_buttons:
-                ret_val = button.event(ev, x, y, st)
-                if ret_val:
-                    return ret_val
-
-            for button in self.day_buttons:
-                ret_val = button.event(ev, x, y, st)
-                if ret_val:
-                    return ret_val
-
-            return None
-
-
-        def _changeYear(self, ascend=True):
-            if ascend:
-                self.selected_year = self.selected_year + 1
-            else:
-                self.selected_year = self.selected_year - 1
-            self._setupDayButtons()
-
-
-        def _changeMonth(self, ascend=True):
-            if ascend:
-                self.selected_month = self.selected_month + 1
-                if self.selected_month >=13:
-                    self.selected_month = 1
-                    self.selected_year = self.selected_year + 1
-            else:
-                self.selected_month = self.selected_month - 1
-                if self.selected_month <=0:
-                    self.selected_month = 12
-                    self.selected_year = self.selected_year - 1
-            self._setupDayButtons()
-
-
         def event(self, ev, x, y, st):
 
+            # we only care about mouse
             if ev.type in self.MOUSE_EVENTS:
-                # we only care about mouse
+
+                # get the value from buttons
                 sel_action = self._buttonSelect(ev, x, y, st)
 
                 if sel_action:
+
                     # nonNone value returned
 
                     if sel_action == self.CALENDAR_CLOSE:
-                        # this means the user selected close
 
+                        # this means the user selected close
                         return ""
 
+                    #if we have a datetime
                     if isinstance(sel_action, datetime.datetime):
 
+                        # return it
                         return sel_action
 
+                    # check for month/year decrements and increments
                     if sel_action == self.CALENDAR_YEAR_INCREASE:
                         self._changeYear()
 
@@ -555,16 +591,31 @@ init python:
             renpy.redraw(self, 0)
             raise renpy.IgnoreEvent()
 
-
+# wrap it up in a screen
 screen mas_calendar_screen(select_date=False):
 
     zorder 51
 
-    add MASCalendar(False)
+    add MASCalendar(select_date)
         #xalign 0.5
         #yalign 0.5
 
+# labels for easy testing
 label mas_start_calendar(select_date=False):
+
+    call screen mas_calendar_screen(select_date)
+
+    # return value?
+    if _return:
+
+        m "got a return value [_return]"
+        return _return
+
+    m "No returned value"
+
+    return
+
+label mas_start_calendar_select(select_date=True):
 
     call screen mas_calendar_screen(select_date)
 
