@@ -333,10 +333,10 @@ init -1 python in songs:
             return ""
 
         if _ext == EXT_OGG:
-            return _getOggLoop(_audio_file)
+            return _getOggLoop(_audio_file, _ext)
 
         elif _ext == EXT_OPUS:
-            return _getOggLoop(_audio_file)
+            return _getOggLoop(_audio_file, _ext)
 
         return ""
 
@@ -417,23 +417,50 @@ init -1 python in songs:
         return sel_name
 
 
-    def _getOggLoop(_audio_file):
+    def _getOggLoop(_audio_file, _ext):
         """
         Attempts to retreive loop data from Ogg tags
 
         IN:
             _audio_file - audio object
+            _ext - extension of the audio file
 
         RETURNS:
             the loop string we should use, or "" if no loop
         """
+        # first, try MAS tags
         loopstart = _audio_file.tags.get(MT_LSTART, [])
         loopend = _audio_file.tags.get(MT_LEND, [])
 
-        # pre-check that we even have values
-        if not loopstart and not loopend:
+        if loopstart or loopend:
+            return _getOggLoopMAS(loopstart, loopend, _audio_file)
+
+        # if not found, double check that we are ogg before continuing
+        if _ext != EXT_OGG:
             return ""
 
+        # if ogg, we can try the RPGMaker sample tags
+        loopstart = _audio_file.tags.get(MT_LSSTART, [])
+        looplen = _audio_file.tags.get(MT_LSEND, [])
+
+        if loopstart:
+            return _getOggLoopRPG(loopstart, looplen, _audio_file)
+
+        return ""
+
+
+    def _getOggLoopMAS(loopstart, loopend, _audio_file):
+        """
+        Attempts to retrieve MAS-based loop data from Ogg tags
+
+        IN:
+            loopstart - list of loopstart tags
+            loopend - list of loopend tags
+            _audio_file - audio object
+
+        RETURNS:
+            the loop string we should use or "" if no loop
+        """
         # now try to float these values
         try:
             if loopstart:
@@ -458,7 +485,7 @@ init -1 python in songs:
             loopstart = 0
 
         if loopend is not None and loopend > _audio_file.info.length:
-            loopend = _audio_file.info.length
+            loopend = None
 
         # NOTE: we shoudl for sure have at least one of these tags by now
         # now we can build the tag
@@ -467,6 +494,71 @@ init -1 python in songs:
         if loopstart is not None: 
             _tag_elems.append(RPY_FROM)
             _tag_elems.append(str(loopstart))
+
+        if loopend is not None:
+            _tag_elems.append(RPY_TO)
+            _tag_elems.append(str(loopend))
+
+        _tag_elems.append(RPY_END)
+
+        return " ".join(_tag_elems)
+
+
+    def _getOggLoopRPG(loopstart, looplen, _audio_file):
+        """
+        Attempts to retrieve RPGMaker-based loop data form Ogg tags
+
+        NOTE: unlike the MAS tags, loopstart is REQUIRED
+
+        IN:
+            loopstart - list of loopstart tags
+            looplen - list of loop length tags
+            _audio_file - audio object
+
+        RETURNS:
+            the loop string we should use or "" if no loop
+        """
+        # int these values
+        try:
+            loopstart = int(loopstart[0])
+
+            if looplen:
+                looplen = int(looplen[0])
+
+            else:
+                looplen = None
+
+        except:
+            # error in parsing tags.
+            return ""
+
+        # now we have ints
+        # convert these into seconds
+        _sample_rate = float(_audio_file.info.sample_rate)
+        loopstart = loopstart / _sample_rate
+
+        if looplen is not None:
+            looplen = looplen / _sample_rate
+
+        # validations
+        if loopstart < 0:
+            loopstart = 0
+
+        loopend = None
+        if looplen is not None:
+
+            # calculate endpoint
+            loopend = loopstart + looplen
+
+            if loopend > _audio_file.info.length:
+                loopend = None
+
+        # now we can bulid the tag
+        _tag_elems = [
+            RPY_START,
+            RPY_FROM,
+            str(loopstart)
+        ]
 
         if loopend is not None:
             _tag_elems.append(RPY_TO)
@@ -584,10 +676,17 @@ init -1 python in songs:
 
     # NOTE: we default looping, so think of this as loop start and loop end
     # seconds to start playback
-    MT_LSTART = "loopstart"
+    MT_LSTART = "masloopstart"
 
     # seconds to end playback
-    MT_LEND = "loopend"
+    MT_LEND = "masloopend"
+
+    # for RPGMaker support
+    # samples to start playback
+    MT_LSSTART = "loopstart"
+
+    # length of loop
+    MT_LSEND = "looplength"
 
     # renpy audio tags
     RPY_START = "<"
