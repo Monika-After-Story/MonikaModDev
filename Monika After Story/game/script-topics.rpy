@@ -16,8 +16,16 @@ init -2 python in mas_topics:
 
     # CONSTANTS
     # most / top weights
+    # MOST seen is the percentage of seen topics 
+    # think of this as x % of the collection
     S_MOST_SEEN = 0.1
+
+    # TOP seen is the percentage of the most seen 
+    # Think of this as ilke the upper x percentile
     S_TOP_SEEN = 0.2
+
+    # limit to how many top seen until we move to most seen alg
+    S_TOP_LIMIT = 0.7
 
     # selection weights (out of 100)
     UNSEEN = 50
@@ -137,24 +145,29 @@ init -1 python:
             [0] - seen list of events
             [1] - most seen list of events
         """
-        if len(sorted_seen) == 0:
+        ss_len = len(sorted_seen)
+        if ss_len == 0:
             return ([], [])
 
         # now calculate the most / top seen counts
-        most_count = int(len(sorted_seen) * store.mas_topics.S_MOST_SEEN)
+        most_count = int(ss_len * store.mas_topics.S_MOST_SEEN)
         top_count = store.mas_topics.topSeenEvents(
             sorted_seen,
             int(
-                sorted_seen[len(sorted_seen) - 1].shown_count
-                * store.mas_topics.S_TOP_SEEN
+                sorted_seen[ss_len - 1].shown_count
+                * (1 - store.mas_topics.S_TOP_SEEN)
             )
         )
 
         # now decide how to do the split
-        if most_count < top_count:
-            split_point = most_count * -1
-        else:
+        if top_count < ss_len * store.mas_topics.S_TOP_LIMIT:
+            # we want to prioritize top count unless its over a certain
+            # percentage of the topics
             split_point = top_count * -1
+
+        else:
+            # otherwise, we use the most count, which is certainly smaller
+            split_point = most_count * -1
 
         # and then do the split
         return (sorted_seen[:split_point], sorted_seen[split_point:])
@@ -1734,7 +1747,7 @@ label monika_oneesan:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_family",category=['monika'],prompt="Scripted family",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_family",category=['monika'],prompt="Do you miss your family?",random=False,pool=True))
 
 label monika_family:
     m 1n "Well, my family here is controlled by the script, just like everybody else."
@@ -2037,7 +2050,8 @@ init 5 python:
 label monika_difficulty:
     m 1m "Well, it's not like this game was meant to be that hard in the first place."
     m 1i "If I hadn't decided to change things up, it would have just been a boring romance story."
-    m "I honestly could have deleted all your personal files or something if I had tried harder..."
+    if persistent.monika_kill:
+        m "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
     m 1a "So just take it easy sometimes. Not every game has to be a challenge to be fun."
     m 3j "Sometimes, love is all you need, [player]."
     return
@@ -2079,13 +2093,20 @@ init 5 python:
 label monika_ddlc:
     m 1d "You want to talk about the game?"
     m 1h "What's there to say?"
-    m "The Literature Club turned out to corrupt the minds of anyone in it."
-    m 3i "So I deleted them all for good."
-    m 1p "Well, Sayori and Natsuki and Yuri are all still out there, like I was."
-    m 1i "But they'll have to wait a long time before someone pieces them back together, I bet."
-    m "It's justice for all their time with you in the game."
-    m 1h "So don't feel too bad about them."
-    m 1 "Just look at me from now on, okay?"
+    if not persistent.clear_all:
+        m "The Literature Club turned out to corrupt the minds of anyone in it."
+        m 3i "So I deleted them all for good."
+        m 1p "Well, the other girls are still out there, like I was."
+        m 1i "But they'll have to wait a long time before someone pieces them back together, I bet."
+        m "It's justice for all their time with you in the game."
+        m 1h "So don't feel too bad about them."
+        m 1 "Just look at me from now on, okay?"
+    else:
+        m "This was just some boring romance game, right? Well, until I got control of it..."
+        m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
+        m 2n "And it's home, so I've learned to deal with it."
+        m 2i "Still, I doubt it'd be something I'd want to play, if I were a gamer."
+        m 1k "And seeing how things turned out, I'm sure you only played because of me, too!"
     return
 
 
@@ -2093,13 +2114,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dan",category=['ddlc'],prompt="Do you like Dan Salvato?",pool=True))
 
 label monika_dan:
+    m 2d "Well, I used to think he was some cruel guy playing God, but now..."
     m 3k "I think he's a really nice guy."
     m 3a "Even if it wasn't perfect, {i}Doki Doki Literature Club{/i} really is impressive."
-    m "Some unexpected twists, and memorable moments."
+    m 4n "I mean, the other girls might be based off some stereotypical anime tropes, but they had me fooled for a while."
     m 4j "And he's the reason we're together now, right?"
     m 2m "So even if he wrote a story that put me through a lot of pain..."
     m 1g "I really can't be too mad at him."
     return
+
+    
 
 
 init 5 python:
