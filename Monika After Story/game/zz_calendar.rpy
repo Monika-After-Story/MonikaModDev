@@ -1,4 +1,5 @@
-# Calendar
+# Calendar module
+# A custom made Calendar like UI to help managing date based events
 
 init python:
 
@@ -6,51 +7,68 @@ init python:
 
     class MASCalendar(renpy.Displayable):
         """
-        Calendar
+        Custom Calendar UI
+
         """
 
         import pygame
         import datetime
 
         # CONSTANTS
+
+        # view port size
         VIEW_WIDTH = 1280
         VIEW_HEIGHT = 720
 
+        # exit button position and size
         EXIT_BUTTON_WIDTH = 74
         EXIT_BUTTON_HEIGHT = 74
         EXIT_BUTTON_X = 1040
         EXIT_BUTTON_Y = 60
 
+        # day name related sizes
         DAY_BUTTON_WIDTH = 128
         DAY_BUTTON_HEIGHT = 65
         DAY_NAME_BUTTON_HEIGHT = 35
 
+        # initial position for displaying things inside the calendar
         INITIAL_POSITION_X = 193
         INITIAL_POSITION_Y = 155
 
+        # position for the title
         TITLE_POSITION_Y = 115
         TITLE_POSITION_X_1 = 600
 
+        # size for the arrow like button selectors
         ARROW_BUTTON_SIZE = 20
 
+        # Size of the day number and displayed data inside a day block
         CALENDAR_DAY_TEXT_SIZE = 12
 
+        # X inside the close button size
         CALENDAR_CLOSE_X_SIZE = 45
 
-        # Return values
-        CALENDAR_CLOSE = "CLOSE"
-        CALENDAR_MONTH_INCREASE = "MONTH_INCR"
-        CALENDAR_MONTH_DECREASE = "MONTH_DECR"
-        CALENDAR_YEAR_INCREASE = "YEAR_INCR"
-        CALENDAR_YEAR_DECREASE = "YEAR_DECR"
+        # Return values for constant buttons
+        CALENDAR_CLOSE = "CLOSE" # closes the calendar
+        CALENDAR_MONTH_INCREASE = "MONTH_INCR" # signals to increase the current selected month
+        CALENDAR_MONTH_DECREASE = "MONTH_DECR" # signals to decrease the current selected month
+        CALENDAR_YEAR_INCREASE = "YEAR_INCR" # signals to increase the current selected year
+        CALENDAR_YEAR_DECREASE = "YEAR_DECR" # signals to decrease the current selected month
 
+        # Color used for the day number
         TEXT_DAY_COLOR = "#000000" # PINK: "#ffb0ed"
 
+        # Month names constant array
         MONTH_NAMES = ["Unknown", "January", "Febuary",
             "March", "April", "May", "June", "July",
             "August", "September", "October",
             "November", "December"]
 
+        # Day names constant array
+        DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday"]
+
+        # Events to which Calendar buttons will check for
         MOUSE_EVENTS = (
             pygame.MOUSEMOTION,
             pygame.MOUSEBUTTONUP,
@@ -59,9 +77,15 @@ init python:
 
 
         def __init__(self, select_date=False):
+            """
+            Constructor for the custom calendar.
 
-            # Pass additional properties on to the renpy.Displayable
-            # constructor.
+            IN:
+                select_date - a boolean that indicates how this calendar is going to
+                    do, True indicates that it will select a day, False means that it
+                    will only be for displaying events.
+                    (Default: False)
+            """
             super(renpy.Displayable, self).__init__()
 
             # The calendar background
@@ -70,13 +94,15 @@ init python:
             # Can we select dates?
             self.can_select_date = select_date
 
-            # background tile
+            # background mask
             self.background = Solid(
                 "#000000B2",
                 xsize=self.VIEW_WIDTH,
                 ysize=self.VIEW_HEIGHT
             )
 
+            # default calendar view to current month
+            # keep reference to it in case it may need it later
             self.today = datetime.date.today()
 
             self.selected_month = self.today.month
@@ -100,7 +126,7 @@ init python:
                 "mod_assets/calendar/calendar_right_arrow.png"
             )
 
-            # 440 110
+            # Change title depending on flag
             if select_date:
                 self.text_title = Text(
                     "Select a Date",
@@ -118,11 +144,11 @@ init python:
                     outlines=[]
                 )
 
-            days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-                "Friday", "Saturday"]
-
+            # iterate over the days
             i = 0
-            for day in days:
+            for day in self.DAY_NAMES:
+
+                # Generate as buttons the day names
 
                 button_day_text = Text(
                     day,
@@ -147,10 +173,12 @@ init python:
                     activate_sound=None,
                     return_value=None
                 )
+
+                # add them to the const_buttons array
                 self.const_buttons.append(button_day_button)
                 i = i + 1
 
-
+            # close button
             button_text_close = Text(
                 "X",
                 font=gui.default_font,
@@ -175,6 +203,9 @@ init python:
                 return_value=self.CALENDAR_CLOSE
             )
 
+            # empty text label used for the buttons that require an image
+            # these aren't Image buttons mostly cause I find easier to keep
+            # it constant with the UI related buttons
             button_empty_text = Text(
                 "",
                 font=gui.default_font,
@@ -183,6 +214,7 @@ init python:
                 outlines=[]
             )
 
+            # actual buttons that decrease/ increase the month and year values
             self.button_month_decrease = MASButtonDisplayable(
                 button_empty_text,
                 button_empty_text,
@@ -247,18 +279,33 @@ init python:
                 return_value=self.CALENDAR_YEAR_INCREASE
             )
 
+            # add buttons to the const_buttons array
             self.const_buttons.append(self.button_exit)
-
             self.const_buttons.append(self.button_month_decrease)
             self.const_buttons.append(self.button_month_increase)
             self.const_buttons.append(self.button_year_decrease)
             self.const_buttons.append(self.button_year_increase)
+
+            # call set up day buttons to fill up the calendar
             self._setupDayButtons()
 
 
         def _setupDayButtons(self):
-            # constant month and year text labels
+            """
+            Sets up the day buttons used in the calendar
+            """
 
+            # button backgrounds
+            button_day_bg = Image(
+                "mod_assets/calendar/calendar_day_bg.png"
+            )
+
+            button_day_bg_disabled = Image(
+                "mod_assets/calendar/calendar_day_disabled_bg.png"
+            )
+
+
+            # constant month and year text labels
             self.text_current_month = Text(
                 self.MONTH_NAMES[self.selected_month],
                 font=gui.default_font,
@@ -275,28 +322,28 @@ init python:
                 outlines=[]
             )
 
+            # init day buttons array
             self.day_buttons = []
+
+            # get relevant date info
             day = datetime.timedelta(days=1)
             first_day = datetime.datetime(self.selected_year, self.selected_month, 1)
 
-            button_day_bg = Image(
-                "mod_assets/calendar/calendar_day_bg.png"
-            )
-
-            button_day_bg_disabled = Image(
-                "mod_assets/calendar/calendar_day_disabled_bg.png"
-            )
-
+            # get the first_day of the week that has the first day of current month
             while first_day.weekday() != 6:
                 first_day = first_day - day
 
+            # init the array that will hold the dates we're displaying
             self.dates = []
 
+            # get all the dates we'll be displaying  and store them on the array
             for i in range(42):
                 self.dates.append(first_day + datetime.timedelta(days=i))
 
+            # calculation to determine the initial y position
             initial_y = self.INITIAL_POSITION_Y + (self.DAY_NAME_BUTTON_HEIGHT * 2)
 
+            # iterate over rows and columns to create our calendar ui
             for i in range(6):
 
                 for j in range(7):
@@ -308,6 +355,8 @@ init python:
                     button_background = button_day_bg
                     if current_date.month != self.selected_month:
                         button_background = button_day_bg_disabled
+                        # TODO we need to return something to force trigger the
+                        # scrollable pane with full event 
 
                     if self.can_select_date and current_date.month == self.selected_month:
                         ret_val = date
