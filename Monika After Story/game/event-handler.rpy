@@ -83,6 +83,11 @@ init -1 python in evhand:
     event_database = dict()
     farewell_database = dict()
     greeting_database = dict()
+    calendar_database = dict()
+    for i in range(1,13):
+        calendar_database[i] = dict()
+        for j in range(1,32):
+            calendar_database[i][j] = list()
 
     # special namedtuple type we are using
     from collections import namedtuple
@@ -162,6 +167,7 @@ init -1 python in evhand:
 
 init python:
     import store.evhand as evhand
+    import datetime
 
     def addEvent(event, eventdb=evhand.event_database):
         #
@@ -187,7 +193,10 @@ init python:
 #                    pass
 #            except:
 #                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
-
+        # if event has a start_date
+        if type(event.start_date) is datetime.datetime:
+            # add it to the calendar database
+            evhand.calendar_database[event.start_date.month][event.start_date.day].append((type(event),event.label,event.start_date.year))
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
@@ -533,7 +542,7 @@ init python:
         import datetime
         now = datetime.datetime.now()
         cleaned_list = list();
-        
+
         for ev in ev_list:
             if ev.last_seen is not None:
                 # this topic has been seen before, must check time

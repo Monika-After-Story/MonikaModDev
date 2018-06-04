@@ -3,7 +3,7 @@
 
 init python:
 
-    import math
+
 
     class MASCalendar(renpy.Displayable):
         """
@@ -14,6 +14,7 @@ init python:
 
         import pygame
         import datetime
+        import store.evhand as evhand
 
         # CONSTANTS
 
@@ -98,6 +99,9 @@ init python:
 
             # Can we select dates?
             self.can_select_date = select_date
+
+            # database
+            self.database = evhand.calendar_database
 
             # background mask
             self.background = Solid(
@@ -347,6 +351,9 @@ init python:
             for i in range(42):
                 self.dates.append(first_day + datetime.timedelta(days=i))
 
+            # get this month's events
+            events = self.database[self.selected_month]
+
             # calculation to determine the initial y position
             initial_y = self.INITIAL_POSITION_Y + (self.DAY_NAME_BUTTON_HEIGHT * 2)
 
@@ -354,28 +361,59 @@ init python:
             for i in range(6):
 
                 for j in range(7):
-
+                    # helper vars for day processing
                     current_date = self.dates[j + (i * 7)]
                     ret_val = None
                     hover_sound = None
                     activate_sound = None
                     button_background = button_day_bg
-                    # TODO we need to use events of day dependant values, these are placeholders
-                    event_label1 = ""
-                    event_label2 = ""
-                    event_label3  = ""
-                    if current_date.month != self.selected_month:
-                        button_background = button_day_bg_disabled
-                        # TODO we need to return something to force trigger the
-                        # scrollable pane with full event
 
+                    # current day events display helpers
+                    event_labels = list()
+                    third_label = ""
+                    # if this day isn't on the current month
+                    if current_date.month != self.selected_month:
+
+                        # show the disabled background
+                        button_background = button_day_bg_disabled
+                    # otherwise process the events that it may have
+                    else:
+                        # iterate through them
+                        for e in events[current_date.day]:
+
+                            # if the year is None or it's equal
+                            # TODO maybe make it a list?
+                            if not e[2] or e[2] == self.selected_year:
+
+                                # add it to the event labels
+                                event_labels.append(e[2])
+                                # TODO maybe add here specifi processing depending on type
+
+                        # if we have exactly 3 events
+                        if len(event_labels) == 3:
+                            # third_label should hold the event text
+                            third_label = event_labels[2]
+                        if len(event_labels) > 3:
+                            # TODO we need to return something to force trigger the
+                            # scrollable pane with full event, either the events[current_date.day]
+                            # or event_labels
+                            third_label = "see more"
+
+                    # if we don't have any labels or less than 2
+                    if not event_labels or len(event_labels) < 2:
+
+                        # we can safely add 2 empty ones
+                        event_labels.append("")
+                        event_labels.append("")
+
+                    # Add button behaviour to it
                     if self.can_select_date and current_date.month == self.selected_month:
                         ret_val = current_date
                         hover_sound = gui.hover_sound
                         activate_sound = gui.activate_sound
 
                     day_button_text = Text(
-                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), event_label1, event_label2, event_label3),
+                        self.DATE_DISPLAY_FORMAT.format(str(current_date.day), event_labels[0], event_labels[1], third_label),
                         font=gui.default_font,
                         size=self.CALENDAR_DAY_TEXT_SIZE,
                         color=self.TEXT_DAY_COLOR,
