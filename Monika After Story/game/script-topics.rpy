@@ -6641,7 +6641,7 @@ init 5 python:
 
             # we'll pool this event after 30 days
             conditional=(
-                "datetime.datetime.now() - persistent.sessions[" +_
+                "datetime.datetime.now() - persistent.sessions[" +
                 "'first_session'] > datetime.timedelta(days=30)"
             ),
 
