@@ -6634,11 +6634,33 @@ init 5 python:
             category=["romance", "us"],
             prompt="When did we start dating?",
             pool=True,
-            unlocked=True # we will keep this unlocked by default
+            unlocked=False,
+
+            # this will be unlockable via the action
+            rules={"no unlock": None},
+
+            # we'll pool this event after 30 days
+            conditional=(
+                "datetime.datetime.now() - persistent.sessions[" +_
+                "'first_session'] > datetime.timedelta(days=30)"
+            ),
+
+            action=EV_ACT_UNLOCK
         )
     )
 
 label monika_dating_startdate:
+    python:
+        first_sesh = persistent.sessions.get(
+            "first_session", 
+            datetime.datetime(2017, 10, 25)
+        )
+#        first_sesh_disp = date
+
+    if not persistent._mas_changed_start_date:
+        m 1lsc "Hmmm..."
+        m 1eua "I think it was "
+
     # monika thinks, 
     # Oh player, we started dating [persistent._first_session]
     

@@ -635,6 +635,105 @@ init python:
             renpy.redraw(self, 0)
             raise renpy.IgnoreEvent()
 
+# calendar utils
+init -1 python in mas_calendar:
+    import datetime
+    
+    # st/nd/rd/th mapping
+    NUM_MAP = {
+        1: "st",
+        2: "nd",
+        3: "rd",
+        11: "th",
+        12: "th",
+        13: "th"
+    }
+
+    
+    def _formatYears(years):
+        """
+        Properly formats the given years var so it says a user friendly
+        way to show years.
+
+        Basically if years is:
+        0 - ""
+        1 - "last year"
+        2+ - "x years ago"
+
+        IN:
+            years - number of years to get a nice display string
+
+        RETURNS:
+            nice display string for the years
+        """
+        if years <= 0:
+            return ""
+
+        if years == 1:
+            return "last year"
+
+        return str(years) + " years ago"
+
+
+    def genFriendlyDispDate(_datetime):
+        """
+        Generates a display date using the given datetime
+        This creates a display date in the format:
+            Month Day, Year
+        However, this is somewhat variable. 
+
+        If it is the same as the current year, the year is not provided.
+        If the date is whithin a year of the current date, year is not
+        provided.
+        If the year is last year and greater than a year of the current date,
+        "last year on <month> <day>"
+        If the year is within 2-10 years ago, then "x years ago on <month>
+        <day>" is used.
+        Otherwise, the actual 4 digit year is used.
+
+        If the days / months are the same, then "x years ago to this date"
+        is used.
+
+        IN:
+            _datetime - datetime object to create good display date
+
+        RETURNS:
+            tuple of the following format:
+            [0]: nicely formatted display date, suitable for conversation
+            [1]: timedelta between today and the given _datetime
+        """
+        # the month is always fine to take out
+        disp_month = _datetime.strftime("%B")
+
+        # display day is easy
+        disp_day = str(_datetime.day) + NUM_MAP.get(_datetime.day, "th")
+
+        # to find out year, we need now
+        _today = datetime.date.today()
+        _date = _datetime.date()
+        _day_diff = _today - _date
+
+        if _today.month == _date.month and _today.day == _date.day:
+            # same day, just a diff year (probably)
+
+            if _today.year == _date.year:
+                # it's today!
+                return (
+                    "today?! You couldn't have triggered this event today. " +
+                    "I know you're messing around with the code.",
+                    _day_diff
+                )
+
+            # okay but srs, we know theres a year diff here
+            return (
+                _formatYears(_today.year - _date.year) + " on this date.",
+                _day_diff
+            )
+
+        # TODO the rest of these calcs
+        return (None, None)
+
+
 # wrap it up in a screen
 screen mas_calendar_screen(select_date=False):
 
