@@ -417,6 +417,6 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
 
-label bye_be_right_back
+label bye_be_right_back:
     m 1e "Hurry back, dear."
     return 'quit'
