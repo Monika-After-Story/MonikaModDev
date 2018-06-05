@@ -87,7 +87,7 @@ init -1 python in evhand:
     for i in range(1,13):
         calendar_database[i] = dict()
         for j in range(1,32):
-            calendar_database[i][j] = list()
+            calendar_database[i][j] = set()
 
     # special namedtuple type we are using
     from collections import namedtuple
@@ -196,7 +196,7 @@ init python:
         # if event has a start_date
         if type(event.start_date) is datetime.datetime:
             # add it to the calendar database
-            evhand.calendar_database[event.start_date.month][event.start_date.day].append((type(event),event.label,event.start_date.year))
+            evhand.calendar_database[event.start_date.month][event.start_date.day].add((CAL_TYPE_EV,event.label,event.start_date.year))
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 

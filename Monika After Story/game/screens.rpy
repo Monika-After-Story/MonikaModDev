@@ -1080,7 +1080,7 @@ screen preferences():
 
 
                 vbox:
-                    
+
                     hbox:
                         label _("Random Chatter   ")
 
@@ -2078,7 +2078,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
                     textbutton _(nvm_text) action Return(False)
 
-# more generali scrollable menu. This one takes the following params:
+# more general scrollable menu. This one takes the following params:
 # IN:
 #   items - list of items to display in the menu. Each item must be a tuple of
 #       the following format:
@@ -2183,6 +2183,67 @@ screen mas_generic_restart:
                 spacing 100
 
                 textbutton _("OK") action Return(True)
+
+# Scrollable labels with return. This one takes the following params:
+# IN:
+#   items - list of items to display in the menu. Each item must be a tuple of
+#       the following format:
+#           [0]: label text
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#   display_area - defines the display area of the menu. Tuple of the following
+#       format:
+#           [0]: x coordinate of menu
+#           [1]: y coordinate of menu
+#           [2]: width of menu
+#           [3]: height of menu
+#   scroll_align - alignment of vertical scrollbar
+#   final_item - represents the final (usually quit item) of the menu
+#       tuple of the following format:
+#           [0]: text of the button
+#           [1]: return value of the button
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#           [4]: integer spacing between this button and the regular buttons
+#               NOTE: must be >= 0
+#       (Default: None)
+screen mas_gen_scrollable_list(items, display_area, scroll_align, final_item=None):
+        style_prefix "scrollable_menu"
+
+        fixed:
+            area display_area
+
+            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+
+            viewport:
+                yadjustment prev_adj
+                mousewheel True
+
+                vbox:
+
+                    for item_prompt,is_italic,is_bold in items:
+                        text item_prompt:
+                            if is_italic and is_bold:
+                                style "scrollable_menu_crazy_button"
+                            elif is_italic:
+                                style "scrollable_menu_new_button"
+                            elif is_bold:
+                                style "scrollable_menu_special_button"
+
+                    if final_item:
+                        if final_item[4] > 0:
+                            null height final_item[4]
+
+                        textbutton _(final_item[0]):
+                            if final_item[2] and final_item[3]:
+                                style "scrollable_menu_crazy_button"
+                            elif final_item[2]:
+                                style "scrollable_menu_new_button"
+                            elif final_item[3]:
+                                style "scrollable_menu_special_button"
+                            action Return(final_item[1])
+
+
 
 # generic custom displayabels below:
 init python:

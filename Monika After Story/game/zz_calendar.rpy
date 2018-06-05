@@ -8,8 +8,38 @@
 # image. It will only be enabled during idle modes (allow_dialgoue) and will
 # enable user to go straight to view mode of the calendar.
 
-init python:
 
+init -999 python in calendar:
+
+    import json
+    import renpy
+
+
+    def saveCalendarDatabase(encoder, database):
+        with open(renpy.config.savedir + '/db.mcal', 'w') as fp:
+            json.dump(database, fp, cls=encoder)
+
+    def loadCalendarDatabase():
+        with open(config.savedir + '/db.mcal', 'r') as fp:
+            return json.load(fp)
+
+
+init -1 python:
+
+    import json
+
+    # special constants for Calendar Event types
+    CAL_TYPE_EV = 1
+    CAL_TYPE_REP = 2
+
+    class CustomEncoder(json.JSONEncoder):
+        """
+        Custom JSONEncoder used to process sets
+        """
+        def default(self, obj):
+            if isinstance(obj, set):
+                return list(obj)
+            return json.JSONEncoder.default(self, obj)
 
 
     class MASCalendar(renpy.Displayable):
@@ -22,6 +52,7 @@ init python:
         import pygame
         import datetime
         import store.evhand as evhand
+        import store.calendar as calendar
 
         # CONSTANTS
 
@@ -88,6 +119,14 @@ init python:
             pygame.MOUSEBUTTONDOWN
         )
 
+        # pane constants
+        EVENT_X = 800
+        EVENT_Y = 40
+        EVENT_W = 450
+        EVENT_H = 640
+        EVENT_XALIGN = -0.05
+        EVENT_AREA = (EVENT_X, EVENT_Y, EVENT_W, EVENT_H)
+        EVENT_RETURN = "Back"
 
         def __init__(self, select_date=False):
             """
@@ -106,6 +145,16 @@ init python:
 
             # Can we select dates?
             self.can_select_date = select_date
+            # testign 
+            # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
+            # testing
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
 
             # database
             self.database = evhand.calendar_database
@@ -387,7 +436,9 @@ init python:
                             if not e[2] or e[2] == self.selected_year:
 
                                 # add it to the event labels
-                                if e[0] is Event:
+                                if e[0] == CAL_TYPE_EV:
+                                    event_labels.append(e[1])
+                                if e[0] == CAL_TYPE_REP:
                                     event_labels.append(e[1])
                                 # add here specific processing depending on type
 
@@ -396,10 +447,11 @@ init python:
                             # third_label should hold the event text
                             third_label = event_labels[2]
                         if len(event_labels) > 3:
-                            # TODO we need to return something to force trigger the
-                            # scrollable pane with full event, either the events[current_date.day]
-                            # or event_labels
-                            third_label = "see more"
+                            if self.can_select_date:
+                                third_label = "and more events"
+                            else:
+                                third_label = "see more"
+                                ret_val = event_labels
 
                     # if we don't have any labels or less than 2
                     if not event_labels or len(event_labels) < 2:
@@ -443,6 +495,25 @@ init python:
 
 
                     self.day_buttons.append(day_button)
+
+
+        def _showScrollableEventList(self,events):
+            """
+            Displays the events contained in the events list
+            said list is a list of Strings to show
+            """
+
+            event_list = [("Events for the day:", True, True)]
+
+            # build list
+            event_list_items = [(e, False, False) for e in events]
+
+            event_list.extend( event_list_items)
+            # final quit item
+            final_item = (self.EVENT_RETURN, False, False, False, 20)
+
+            # call scrollable pane
+            renpy.call_in_new_context("mas_show_calendar_detail", event_list, self.EVENT_AREA, self.EVENT_XALIGN, final_item=final_item)
 
 
         def _xcenter(self, v_width, width):
@@ -618,6 +689,9 @@ init python:
                         # return it
                         return sel_action
 
+                    if isinstance(sel_action, type(list())):
+                        self._showScrollableEventList(sel_action)
+
                     # check for month/year decrements and increments
                     if sel_action == self.CALENDAR_YEAR_INCREASE:
                         self._changeYear()
@@ -638,7 +712,7 @@ init python:
 # calendar utils
 init -1 python in mas_calendar:
     import datetime
-    
+
     # st/nd/rd/th mapping
     NUM_MAP = {
         1: "st",
@@ -649,7 +723,7 @@ init -1 python in mas_calendar:
         13: "th"
     }
 
-    
+
     def _formatYears(years):
         """
         Properly formats the given years var so it says a user friendly
@@ -680,7 +754,7 @@ init -1 python in mas_calendar:
         Generates a display date using the given datetime
         This creates a display date in the format:
             Month Day, Year
-        However, this is somewhat variable. 
+        However, this is somewhat variable.
 
         If it is the same as the current year, the year is not provided.
         If the date is whithin a year of the current date, year is not
@@ -742,6 +816,10 @@ screen mas_calendar_screen(select_date=False):
     add MASCalendar(select_date)
         #xalign 0.5
         #yalign 0.5
+
+label mas_show_calendar_detail(items,area,align,final_item):
+    call screen mas_gen_scrollable_list(items, area, align, final_item=final_item)
+    return
 
 # labels for easy testing
 label mas_start_calendar(select_date=False):
