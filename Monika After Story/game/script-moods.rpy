@@ -298,6 +298,67 @@ label mas_mood_bored:
             m 1f "Oh, alright then."
             m 1e "Let me know if you want to do something with me, [player]~"
     return
+ 
+ 
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_injured",prompt="injured",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_injured:
+    m 2g "Oh my gosh [player], you're injured?!"
+    m 2n "I mean... on the bright side, you were able to make it here with me..."
+    m 2f "Is it really that bad [player]?"
+    menu:
+        "Just something minor":
+            m 2l "Ok! What a relief..."
+            m 1l "Don't scare me like that [player]!"
+            m 1e "I'm so glad you're alright but still..."
+            m 1f "I hope it really isn't too bad and you're not just trying not to worry me."
+            m 1l "Or maybe I'm just too worred about you~"
+            m 5 "Whatever it is, I hope it gets all better soon."
+            m "I'd kiss it better but since it's just such a small thing, I'm sure you can manage without it ehehe~"
+            m "I love you, [player]."
+        "It's not {i}that{/i} bad":
+            m 2e "Well I'm glad you're alright, [player]."
+            m "I hope it really isn't that bad for you. "
+            m 1j "If you're here spending time with me, I'm sure you'll be better in no time!"
+            m 1k "Ahaha~"
+            m 1f "Still..."
+            m 1e "Don't push yourself, alright [player]?"
+            m 1m "I really wouldn't want it to get any worse, so take your time healing."
+            m 5 "I could even stay with you while you heal if you want, ehehe~"
+            m "I might even kiss it better if I could."
+        "It's bad but I'm alright":
+            m 2f "[player]..."
+            m 2e "I'm glad you're still able to be with me despite being injured."
+            m 3e "Still though, if you really need to rest, please do."
+            m 1q "You must be pushing yourself to be with me and I'm flattered but..."
+            m 1e "I think you should take it easy until it gets a bit better."
+            m 1a "You can go ahead and rest if you need to."
+            m 1k "I promise I'll do my very best to keep you safe and make sure nothing bad happens to you!"
+        "It's pretty bad...":
+            m 1o "..."
+            m 1m "I'm glad I could at least be here to comfort you, [player]."
+            m 1f "Is it so bad that you're in a hospital, [player]?"
+            menu:
+                "Yes..."
+                    m 1n "Gosh, I really hate to see you so badly injured."
+                    m 1e "I'm glad that we haven't been separated either."
+                    m 1m "I know hospitals can be pretty strict when it comes to its patients."
+                    m 1f "I really hope I don't get taken away from you [player]."
+                    m 1e "I want to be right by your side and make sure nothing bad happens to you."
+                "No."
+                    m 1e "I hope you won't need it either."
+                    m 1g "I think you should go rest if it's that bad."
+                    m 1e "I'll watch over you and keep you safe."
+            m 1e "I'm sure you'll live through it though."
+            m "I know you're strong, even if you don't think you are."
+            m "I know you'll be alright."
+            m "Remember I'll always be with you and there will never be an end to our love~"
+            m 1j "Get better soon alright [player]?"
+            m 3d "Oh and there's one last thing I need you to know."
+            m 1k "I love you~"
+    return
+
 
 init 5 python:
     if not persistent._mas_mood_bday_locked:
