@@ -340,13 +340,13 @@ label mas_mood_injured:
             m 1m "I'm glad I could at least be here to comfort you, [player]."
             m 1f "Is it so bad that you're in a hospital, [player]?"
             menu:
-                "Yes..."
+                "Yes...":
                     m 1n "Gosh, I really hate to see you so badly injured."
                     m 1e "I'm glad that we haven't been separated either."
                     m 1m "I know hospitals can be pretty strict when it comes to its patients."
                     m 1f "I really hope I don't get taken away from you [player]."
                     m 1e "I want to be right by your side and make sure nothing bad happens to you."
-                "No."
+                "No.":
                     m 1e "I hope you won't need it either."
                     m 1g "I think you should go rest if it's that bad."
                     m 1e "I'll watch over you and keep you safe."
