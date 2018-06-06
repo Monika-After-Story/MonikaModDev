@@ -805,7 +805,7 @@ init -1 python in mas_calendar:
                 # okay but srs, we know theres a year diff here
                 _cout = [
                     _formatYears(_year_diff),
-                    "on this date."
+                    "on this date"
                 ]
 
 

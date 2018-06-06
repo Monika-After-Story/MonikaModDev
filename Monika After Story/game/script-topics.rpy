@@ -6650,21 +6650,37 @@ init 5 python:
     )
 
 label monika_dating_startdate:
+    $ import store.mas_calendar as mas_cal
     python:
-        first_sesh = persistent.sessions.get(
-            "first_session", 
-            datetime.datetime(2017, 10, 25)
+        first_sesh, _diff = mas_cal.genFriendlyDispDate(
+            persistent.sessions.get(
+                "first_session", 
+                datetime.datetime(2017, 10, 25)
+            )
         )
-#        first_sesh_disp = date
 
+    if _diff.days == 0:
+        # its today?!
+        # this should NEVER HAPPEN
+        m 1lsc "We started dating..."
+        m 1wud "We started dating{fast} today?!"
+        m 2wfw "You couldn't have possibly triggered this event today, [player]."
+        menu:
+            m "I know you're messing around with the code."
+            "I'm not!":
+                pass
+            "You got me.":
+                pass
+        m 2tku "Hmph,{w} you can't fool me."
+        return
+
+    # Otherwise, we should be displaying different dialogue depending on
+    # if we have done the changed date event or not
     if not persistent._mas_changed_start_date:
         m 1lsc "Hmmm..."
-        m 1eua "I think it was "
+        m "I think it was..."
+        m 1eua "I think it was{fast} [first_sesh]."
 
-    # monika thinks, 
-    # Oh player, we started dating [persistent._first_session]
-    
-    if not persistent._mas_changed_start_date:
         # we should double check with user if start date is correct
         # monika says her memory might be off
         # ask user if correct start date
@@ -6682,6 +6698,10 @@ label monika_dating_startdate:
                 #   after selecting it
                 # monika wont forget this time
                 pass
+
+    else:
+        m 1sc "Let me check..."
+        m 1eua "We started dating [first_sesh]."
 
     return
 
