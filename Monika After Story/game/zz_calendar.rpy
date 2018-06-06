@@ -136,13 +136,13 @@ init -1 python:
             # testign
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
 
             # database
             self.database = evhand.calendar_database
@@ -425,7 +425,7 @@ init -1 python:
 
                                 # add it to the event labels
                                 if e[0] == CAL_TYPE_EV:
-                                    event_labels.append(e[1])
+                                    event_labels.append(mas_getEVCL(e[1]))
                                 if e[0] == CAL_TYPE_REP:
                                     event_labels.append(e[1])
                                 # add here specific processing depending on type

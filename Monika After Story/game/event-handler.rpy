@@ -76,6 +76,51 @@ init -500 python:
     # initalizes LOCKDB for the Event class
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
+
+init 1000 python:
+    # mainly to create centralized database for calendar lookup
+    # (and possible general db lookups)
+    mas_all_ev_db = dict()
+    mas_all_ev_db.update(store.evhand.event_database)
+    mas_all_ev_db.update(store.evhand.farewell_database)
+    mas_all_ev_db.update(store.evhand.greeting_database)
+    mas_all_ev_db.update(store.mas_moods.mood_db)
+    mas_all_ev_db.update(store.mas_stories.story_database)
+
+    def mas_getEV(ev_label):
+        """
+        Global get function that retreives an event given the label
+
+        Designed to be used as a wrapper around the mas_all_ev_db dict
+
+        IN:
+            ev_label - eventlabel to find event for
+
+        RETURNS:
+            the event object you were looking for, or None if not found
+        """
+        return mas_all_ev_db.get(ev_label, None)
+
+
+    def mas_getEVCL(ev_label):
+        """
+        Global get function that retrieves the calendar label for an event
+        given the eventlabel. This is mainly to help with calendar.
+
+        IN:
+            ev_label - eventlabel to find calendar label for
+
+        RETURNS:
+            the calendar label you were looking for, or "Unknown Event" if 
+            not found.
+        """
+        ev = mas_getEV(ev_label)
+        if ev is None:
+            return "Unknown Event"
+        else:
+            return ev.label
+
+
 # special store to contain scrollable menu constants
 init -1 python in evhand:
 
@@ -196,7 +241,7 @@ init python:
         # if event has a start_date
         if type(event.start_date) is datetime.datetime:
             # add it to the calendar database
-            evhand.calendar_database[event.start_date.month][event.start_date.day].add((CAL_TYPE_EV,event.label,event.start_date.year))
+            evhand.calendar_database[event.start_date.month][event.start_date.day].add((CAL_TYPE_EV,event.eventlabel,event.start_date.year))
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
