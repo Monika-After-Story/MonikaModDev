@@ -350,6 +350,7 @@ label mas_mood_injured:
                     m 1e "I hope you won't need it either."
                     m 1g "I think you should go rest if it's that bad."
                     m 1e "I'll watch over you and keep you safe."
+                    m 1f "I really wish I could do more than just advise and watch, but I know that's not possible until I manage to get to your reality."
             m 1e "I'm sure you'll live through it though."
             m "I know you're strong, even if you don't think you are."
             m "I know you'll be alright."
