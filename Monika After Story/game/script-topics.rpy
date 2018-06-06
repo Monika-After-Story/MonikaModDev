@@ -6703,6 +6703,10 @@ label monika_dating_startdate:
         m 1sc "Let me check..."
         m 1eua "We started dating [first_sesh]."
 
+    # TODO:
+    # some dialogue about being together for x time
+    # NOTE: this is a maybe
+
     return
 
 
