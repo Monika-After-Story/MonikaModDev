@@ -786,26 +786,53 @@ init -1 python in mas_calendar:
         _today = datetime.date.today()
         _date = _datetime.date()
         _day_diff = _today - _date
+        _year_diff = _today.year - _date.year
+
+        # the list of strings to join
+        _cout = list()
 
         if _today.month == _date.month and _today.day == _date.day:
             # same day, just a diff year (probably)
 
-            if _today.year == _date.year:
+            if _year_diff == 0:
                 # it's today!
-                return (
-                    "today?! You couldn't have triggered this event today. " +
-                    "I know you're messing around with the code.",
-                    _day_diff
-                )
+                _cout = [
+                    "today?! You couldn't have triggered this event ",
+                    "today. I know you're messing around with the code."
+                ]
 
-            # okay but srs, we know theres a year diff here
-            return (
-                _formatYears(_today.year - _date.year) + " on this date.",
-                _day_diff
-            )
+            else:
+                # okay but srs, we know theres a year diff here
+                _cout = [
+                    _formatYears(_year_diff),
+                    "on this date."
+                ]
 
-        # TODO the rest of these calcs
-        return (None, None)
+
+        elif _day_diff.days < 365: # within a year
+            # same year, diff month
+            _cout = [disp_month, disp_day]
+
+        elif _year_diff <= 10:
+            # within 10 years
+            _cout = [
+                _formatYears(_year_diff),
+                "on",
+                disp_month,
+                disp_day
+            ]
+
+        else:
+            # more than 10? use the 4 digit year
+            _cout = [
+                disp_month,
+                disp_day,
+                ",",
+                str(_date.year)
+            ]
+
+        # now return the formatting string + diff
+        return (" ".join(_cout), day_diff)
 
 
 # wrap it up in a screen
