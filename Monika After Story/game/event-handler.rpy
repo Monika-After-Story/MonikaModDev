@@ -626,6 +626,12 @@ label call_next_event:
                     ev.unlocked=True
                     ev.unlock_date=datetime.datetime.now()
 
+        else:
+            # othrewise, pull an ev from the all event database
+            # so we can log some data
+            $ ev = mas_getEV(event_label)
+
+        if ev is not None:
             # increment shown count
             $ ev.shown_count += 1
             $ ev.last_seen = datetime.datetime.now()
