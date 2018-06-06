@@ -2207,11 +2207,18 @@ screen mas_generic_restart:
 #           [4]: integer spacing between this button and the regular buttons
 #               NOTE: must be >= 0
 #       (Default: None)
-screen mas_gen_scrollable_list(items, display_area, scroll_align, final_item=None):
+screen mas_gen_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, z_order=51, mask="#000000B2", frame="mod_assets/calendar/calendar_bg.png",):
         style_prefix "scrollable_menu"
+
+        if z_order:
+            zorder z_order
+        if mask:
+            add Solid(mask)
 
         fixed:
             area display_area
+            if frame:
+                add Frame(frame, 60, 60)
 
             bar adjustment prev_adj style "vscrollbar" xalign scroll_align
 
@@ -2221,26 +2228,41 @@ screen mas_gen_scrollable_list(items, display_area, scroll_align, final_item=Non
 
                 vbox:
 
+                    if first_item:
+
+                        text _(first_item[0]):
+                            if first_item[1]:
+                                italic True
+                            if first_item[2]:
+                                bold True
+                            xpos 0.2
+                            ypos 0.5
+
+                    null height 30
+
+
                     for item_prompt,is_italic,is_bold in items:
                         text item_prompt:
-                            if is_italic and is_bold:
-                                style "scrollable_menu_crazy_button"
-                            elif is_italic:
-                                style "scrollable_menu_new_button"
-                            elif is_bold:
-                                style "scrollable_menu_special_button"
+                            if is_italic:
+                                italic True
+                            if is_bold:
+                                bold True
+                            xpos 0.1
+
 
                     if final_item:
                         if final_item[4] > 0:
                             null height final_item[4]
 
                         textbutton _(final_item[0]):
-                            if final_item[2] and final_item[3]:
-                                style "scrollable_menu_crazy_button"
-                            elif final_item[2]:
-                                style "scrollable_menu_new_button"
-                            elif final_item[3]:
-                                style "scrollable_menu_special_button"
+                            if final_item[2]:
+                                text_italic True
+                            if final_item[3]:
+                                text_bold True
+                            background None
+                            hover_sound gui.hover_sound
+                            activate_sound gui.activate_sound
+
                             action Return(final_item[1])
 
 

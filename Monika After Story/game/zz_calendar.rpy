@@ -20,7 +20,7 @@ init -999 python in calendar:
             json.dump(database, fp, cls=encoder)
 
     def loadCalendarDatabase():
-        with open(config.savedir + '/db.mcal', 'r') as fp:
+        with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
             return json.load(fp)
 
 
@@ -124,9 +124,9 @@ init -1 python:
         EVENT_Y = 40
         EVENT_W = 450
         EVENT_H = 640
-        EVENT_XALIGN = -0.05
+        EVENT_XALIGN = 0.54
         EVENT_AREA = (EVENT_X, EVENT_Y, EVENT_W, EVENT_H)
-        EVENT_RETURN = "Back"
+        EVENT_RETURN = "< Go back"
 
         def __init__(self, select_date=False):
             """
@@ -145,16 +145,16 @@ init -1 python:
 
             # Can we select dates?
             self.can_select_date = select_date
-            # testign 
+            # testign
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
+            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
 
             # database
             self.database = evhand.calendar_database
@@ -503,17 +503,16 @@ init -1 python:
             said list is a list of Strings to show
             """
 
-            event_list = [("Events for the day:", True, True)]
+            event_list_title = ("Events for the day:", True, True)
 
             # build list
             event_list_items = [(e, False, False) for e in events]
 
-            event_list.extend( event_list_items)
             # final quit item
             final_item = (self.EVENT_RETURN, False, False, False, 20)
 
             # call scrollable pane
-            renpy.call_in_new_context("mas_show_calendar_detail", event_list, self.EVENT_AREA, self.EVENT_XALIGN, final_item=final_item)
+            renpy.call_in_new_context("mas_show_calendar_detail", event_list_items, self.EVENT_AREA, self.EVENT_XALIGN, first_item=event_list_title, final_item=final_item)
 
 
         def _xcenter(self, v_width, width):
@@ -844,8 +843,8 @@ screen mas_calendar_screen(select_date=False):
         #xalign 0.5
         #yalign 0.5
 
-label mas_show_calendar_detail(items,area,align,final_item):
-    call screen mas_gen_scrollable_list(items, area, align, final_item=final_item)
+label mas_show_calendar_detail(items,area,align,first_item,final_item):
+    call screen mas_gen_scrollable_list(items, area, align, first_item=first_item, final_item=final_item)
     return
 
 # labels for easy testing
