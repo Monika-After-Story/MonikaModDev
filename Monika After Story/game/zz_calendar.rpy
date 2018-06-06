@@ -8,20 +8,8 @@
 # image. It will only be enabled during idle modes (allow_dialgoue) and will
 # enable user to go straight to view mode of the calendar.
 
-
-init -999 python in calendar:
-
-    import json
-    import renpy
-
-
-    def saveCalendarDatabase(encoder, database):
-        with open(renpy.config.savedir + '/db.mcal', 'w') as fp:
-            json.dump(database, fp, cls=encoder)
-
-    def loadCalendarDatabase():
-        with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
-            return json.load(fp)
+# Do Calendar event logic here
+#init -999 python in mas_calendar:
 
 
 init -1 python:
@@ -52,7 +40,7 @@ init -1 python:
         import pygame
         import datetime
         import store.evhand as evhand
-        import store.calendar as calendar
+        import store.mas_calendar as calendar
 
         # CONSTANTS
 
@@ -148,13 +136,13 @@ init -1 python:
             # testign
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
 
             # database
             self.database = evhand.calendar_database
@@ -503,7 +491,7 @@ init -1 python:
             said list is a list of Strings to show
             """
 
-            event_list_title = ("Events for the day:", True, True)
+            event_list_title = ("Events for the day:", False, True)
 
             # build list
             event_list_items = [(e, False, False) for e in events]
@@ -711,6 +699,8 @@ init -1 python:
 # calendar utils
 init -1 python in mas_calendar:
     import datetime
+    import json
+    import renpy
 
     # st/nd/rd/th mapping
     NUM_MAP = {
@@ -834,6 +824,31 @@ init -1 python in mas_calendar:
         return (" ".join(_cout), day_diff)
 
 
+    def saveCalendarDatabase(encoder, database):
+        """
+        Saves the passed database as a json file named db.mcal
+
+        IN:
+            - encoder a json.JSONEncoder to be used for encoding
+                the database
+            - database a dict containing the events
+        """
+        with open(renpy.config.savedir + '/db.mcal', 'w') as fp:
+            json.dump(database, fp, cls=encoder)
+
+    def loadCalendarDatabase():
+        """
+        Returns the database read from the file renpy.config.savedir + '/db.mcal'
+        as a dict
+
+        RETURNS:
+            a dict containing the events for the calendar
+
+        """
+        with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
+            return json.load(fp)
+
+
 # wrap it up in a screen
 screen mas_calendar_screen(select_date=False):
 
@@ -844,12 +859,110 @@ screen mas_calendar_screen(select_date=False):
         #yalign 0.5
 
 label mas_show_calendar_detail(items,area,align,first_item,final_item):
-    call screen mas_gen_scrollable_list(items, area, align, first_item=first_item, final_item=final_item)
+    call screen mas_calendar_events_scrollable_list(items, area, align, first_item=first_item, final_item=final_item)
     return
+
+
+# Scrollable labels with return. This one takes the following params:
+# IN:
+#   items - list of items to display in the menu. Each item must be a tuple of
+#       the following format:
+#           [0]: label text
+#           [2]: True if we want the label italics, False if not
+#           [3]: True if we want the button bold, False if not
+#   display_area - defines the display area of the menu. Tuple of the following
+#       format:
+#           [0]: x coordinate of menu
+#           [1]: y coordinate of menu
+#           [2]: width of menu
+#           [3]: height of menu
+#   scroll_align - alignment of vertical scrollbar
+#   first_item - represents the first item(usually the title) of the list
+#       tuple of the following format:
+#           [0]: text of the button
+#           [1]: return value of the button
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#           [4]: integer spacing between this button and the regular buttons
+#               NOTE: must be >= 0
+#       (Default: None)
+#   final_item - represents the final (usually quit item) of the menu
+#       tuple of the following format:
+#           [0]: text of the button
+#           [1]: return value of the button
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#           [4]: integer spacing between this button and the regular buttons
+#               NOTE: must be >= 0
+#       (Default: None)
+#   mask - hex color that will be used for the mask that will cover the screen
+#       if None there won't be any mask
+#   frame - route to the image used as backround for the list
+screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame="mod_assets/calendar/calendar_bg.png"):
+        style_prefix "scrollable_menu"
+
+        zorder 51
+
+        if mask:
+            add Solid(mask)
+
+        fixed:
+            area display_area
+            if frame:
+                add Frame(frame, 60, 60)
+
+            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+
+            viewport:
+                yadjustment prev_adj
+                mousewheel True
+
+                vbox:
+
+                    if first_item:
+
+                        text _(first_item[0]):
+                            if first_item[1]:
+                                italic True
+                            if first_item[2]:
+                                bold True
+                            xpos 0.2
+                            ypos 0.5
+
+                    null height 30
+
+
+                    for item_prompt,is_italic,is_bold in items:
+                        text item_prompt:
+                            if is_italic:
+                                italic True
+                            if is_bold:
+                                bold True
+                            xpos 0.05
+
+
+                    if final_item:
+                        if final_item[4] > 0:
+                            null height final_item[4]
+
+                        textbutton _(final_item[0]):
+                            if final_item[2]:
+                                text_italic True
+                            if final_item[3]:
+                                text_bold True
+                            background None
+                            hover_sound gui.hover_sound
+                            activate_sound gui.activate_sound
+
+                            action Return(final_item[1])
+
 
 # labels for easy testing
 label mas_start_calendar(select_date=False):
 
+    python:
+        HKBHideButtons()
+
     call screen mas_calendar_screen(select_date)
 
     # return value?
@@ -859,11 +972,15 @@ label mas_start_calendar(select_date=False):
         return _return
 
     m "No returned value"
+
+    python:
+        HKBShowButtons()
 
     return
 
 label mas_start_calendar_select(select_date=True):
-
+    python:
+        HKBHideButtons()
     call screen mas_calendar_screen(select_date)
 
     # return value?
@@ -873,5 +990,7 @@ label mas_start_calendar_select(select_date=True):
         return _return
 
     m "No returned value"
+    python:
+        HKBShowButtons()
 
     return
