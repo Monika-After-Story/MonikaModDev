@@ -240,7 +240,7 @@ init python:
 #                    pass
 #            except:
 #                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
-        # if event has a start_date
+        # if should not skip calendar check and event has a start_date
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
             evhand.calendar_database[event.start_date.month][event.start_date.day].add((CAL_TYPE_EV,event.eventlabel,event.start_date.year))

@@ -958,39 +958,33 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 
 # labels for easy testing
-label mas_start_calendar(select_date=False):
+
+label _mas_start_calendar(select_date=True):
 
     python:
         HKBHideButtons()
 
     call screen mas_calendar_screen(select_date)
 
-    # return value?
-    if _return:
-
-        m "got a return value [_return]"
-        return _return
-
-    m "No returned value"
-
     python:
         HKBShowButtons()
 
-    return
+    return _return
 
-label mas_start_calendar_select(select_date=True):
-    python:
-        HKBHideButtons()
-    call screen mas_calendar_screen(select_date)
+label mas_start_calendar_read_only:
+    call _mas_start_calendar(select_date=False)
+    return _return
 
-    # return value?
-    if _return:
+label mas_start_calendar_select_date:
+    call _mas_start_calendar(select_date=True)
+    return _return
 
-        m "got a return value [_return]"
-        return _return
 
-    m "No returned value"
-    python:
-        HKBShowButtons()
-
-    return
+# label testing_calendar:
+#     m "I'm opening up the calendar"
+#     call mas_start_calendar_select_date
+#     if _return:
+#         m "I got the value [_return]"
+#     else:
+#         m "You closed without selecting a date"
+#     return
