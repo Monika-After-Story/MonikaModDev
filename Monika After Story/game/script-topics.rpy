@@ -6706,8 +6706,8 @@ label monika_dating_startdate:
                 $ selected_date = first_sesh_raw
 
                 while not date_confirmed:
-                    # TODO: call calendar selection screen here
-                    call mas_start_calendar_select 
+
+                    call mas_start_calendar_select_date
 
                     $ show_confirm_dialogue = True
                     $ selected_date = _return
