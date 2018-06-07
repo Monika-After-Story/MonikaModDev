@@ -8,8 +8,19 @@
 # image. It will only be enabled during idle modes (allow_dialgoue) and will
 # enable user to go straight to view mode of the calendar.
 
-# Do Calendar event logic here
-#init -999 python in mas_calendar:
+# Do Calendar repeatable event logic here
+# init -1000 python:
+#     import store.evhand as evhand
+#
+#     evhand.calendar_database[2][14].add((CAL_TYPE_REP,"Valentine",None))
+#     evhand.calendar_database[12][25].add((CAL_TYPE_REP,"Christmas",None))
+#     evhand.calendar_database[3][14].add((CAL_TYPE_REP,"White day",None))
+#     evhand.calendar_database[12][31].add((CAL_TYPE_REP,"New year's eve",None))
+#     evhand.calendar_database[12][24].add((CAL_TYPE_REP,"Christmas eve",None))
+#     evhand.calendar_database[9][22].add((CAL_TYPE_REP,"My birhday",None))
+#     evhand.calendar_database[10][31].add((CAL_TYPE_REP,"Hallowen",None))
+
+
 
 
 init -1 python:
@@ -136,13 +147,13 @@ init -1 python:
             # testign
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
 
             # database
             self.database = evhand.calendar_database
@@ -972,39 +983,33 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 
 # labels for easy testing
-label mas_start_calendar(select_date=False):
+
+label _mas_start_calendar(select_date=True):
 
     python:
         HKBHideButtons()
 
     call screen mas_calendar_screen(select_date)
 
-    # return value?
-    if _return:
-
-        m "got a return value [_return]"
-        return _return
-
-    m "No returned value"
-
     python:
         HKBShowButtons()
 
-    return
+    return _return
 
-label mas_start_calendar_select(select_date=True):
-    python:
-        HKBHideButtons()
-    call screen mas_calendar_screen(select_date)
+label mas_start_calendar_read_only:
+    call _mas_start_calendar(select_date=False)
+    return _return
 
-    # return value?
-    if _return:
+label mas_start_calendar_select_date:
+    call _mas_start_calendar(select_date=True)
+    return _return
 
-        m "got a return value [_return]"
-        return _return
 
-    m "No returned value"
-    python:
-        HKBShowButtons()
-
-    return
+# label testing_calendar:
+#     m "I'm opening up the calendar"
+#     call mas_start_calendar_select_date
+#     if _return:
+#         m "I got the value [_return]"
+#     else:
+#         m "You closed without selecting a date"
+#     return

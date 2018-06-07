@@ -111,7 +111,7 @@ init 1000 python:
             ev_label - eventlabel to find calendar label for
 
         RETURNS:
-            the calendar label you were looking for, or "Unknown Event" if 
+            the calendar label you were looking for, or "Unknown Event" if
             not found.
         """
         ev = mas_getEV(ev_label)
@@ -214,7 +214,7 @@ init python:
     import store.evhand as evhand
     import datetime
 
-    def addEvent(event, eventdb=evhand.event_database):
+    def addEvent(event, eventdb=evhand.event_database, skipCalendar=False):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
@@ -224,6 +224,8 @@ init python:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
         #       (Default: evhand.event_database)
+        #   skipCalendar - flag that marks wheter or not calendar check should
+        #       be skipped
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
@@ -238,8 +240,8 @@ init python:
 #                    pass
 #            except:
 #                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
-        # if event has a start_date
-        if type(event.start_date) is datetime.datetime:
+        # if should not skip calendar check and event has a start_date
+        if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
             evhand.calendar_database[event.start_date.month][event.start_date.day].add((CAL_TYPE_EV,event.eventlabel,event.start_date.year))
         # now this event has passsed checks, we can add it to the db
