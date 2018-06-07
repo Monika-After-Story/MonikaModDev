@@ -6652,12 +6652,22 @@ init 5 python:
 label monika_dating_startdate:
     $ import store.mas_calendar as mas_cal
     python:
-        first_sesh, _diff = mas_cal.genFriendlyDispDate(
-            persistent.sessions.get(
-                "first_session", 
-                datetime.datetime(2017, 10, 25)
-            )
+        # we might need the raw datetime
+        first_sesh_raw = persistent.sessions.get(
+            "first_session", 
+            datetime.datetime(2017, 10, 25)
         )
+
+        # but this to get the display plus diff
+        first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
+
+        # and this is the formal version of the datetime
+        first_sesh_formal = " ".join([
+            first_sesh_raw.stftime("%B"),
+            mas_cal._formatDay(first_sesh_raw.day) + ",",
+            str(first_sesh_raw.year)
+        ])
+
 
     if _diff.days == 0:
         # its today?!
@@ -6680,24 +6690,68 @@ label monika_dating_startdate:
         m 1lsc "Hmmm..."
         m "I think it was..."
         m 1eua "I think it was{fast} [first_sesh]."
+        m 1rksdlb "But my memory might be off."
 
-        # we should double check with user if start date is correct
-        # monika says her memory might be off
         # ask user if correct start date
+        show monika 1ekd
         menu:
-            # m "Is [start date] correct?"
+            m "Is [first_sesh] correct?"
             "Yes.":
-                # monika says thats good and that she wont forget this time
-                # because she has a calendar now
-                pass
+                m 1hua "Yay!{w} I remembered it."
+
             "No.":
-                # monika apologizes, asks player to select the correct start
-                # date.
-                # TODO: call calendar selection screen here
-                # NOTE: somehow let player know that they cannot change this
-                #   after selecting it
-                # monika wont forget this time
-                pass
+                m 1rkc "Oh,{w} sorry [player]."
+                m 1ekc "In that case,{w} when did we start dating?"
+                $ date_confirmed = False
+                $ selected_date = first_sesh_raw
+
+                while not date_confirmed:
+                    # TODO: call calendar selection screen here
+                    call mas_start_calendar_select 
+
+                    $ show_confirm_dialogue = True
+                    $ selected_date = _return
+
+                    if not selected_date:
+                        # no date selected, we assume user wanted to cancel
+                        m 2dsc "[player]..."
+                        m 2eka "I thought you said I was wrong."
+                        menu:
+                            m "Are you sure it's not [first_sesh_formal]?"
+                            "It's not that date.":
+                                # then select the correct date player!
+                                # HMPH
+                                $ show_confirm_dialogue = False
+
+                            "Actually that's the correct date. Sorry.":
+                                # that's okay. honest mistake
+
+                                pass
+
+                    if show_confirm_dialogue:
+                        python:
+                            new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
+                                selected_date
+                            )
+
+                        m 1eua "Alright, [player]."
+                        m "Just to double-check..."
+                        menu:
+                            m "We started dating [new_first_sesh]."
+                            "Yes.":
+                                show monika 1eka
+                                # TODO: one more confirmation because we 
+                                # WILL NOT fix anyone's dates after this.
+                                $ date_confirmed = True
+                            "No.":
+                                # oh what?! okay, please pick the correct date
+                                pass
+
+                # save the new date to persistent
+                $ persistent.sessions["first_session"] = selected_date
+                $ renpy.persistent.save()
+
+        m 1eua "Now that I have a calendar, I won't forget it this time."
 
     else:
         m 1sc "Let me check..."

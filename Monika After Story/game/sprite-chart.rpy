@@ -2604,6 +2604,19 @@ image monika 1rksdld = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1rkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1rksdlc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,

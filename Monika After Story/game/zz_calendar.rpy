@@ -713,6 +713,20 @@ init -1 python in mas_calendar:
     }
 
 
+    def _formatDay(day):
+        """
+        Properly formats the given day so it displays with the correct
+        suffixes.
+
+        IN:
+            day - day to get a nice display string
+
+        RETURNS:
+            nice display string for the day
+        """
+        return str(day) + NUM_MAP.get(day, "th")
+
+
     def _formatYears(years):
         """
         Properly formats the given years var so it says a user friendly
@@ -769,7 +783,7 @@ init -1 python in mas_calendar:
         disp_month = _datetime.strftime("%B")
 
         # display day is easy
-        disp_day = str(_datetime.day) + NUM_MAP.get(_datetime.day, "th")
+        disp_day = _formatDays(_datetime.day)
 
         # to find out year, we need now
         _today = datetime.date.today()
