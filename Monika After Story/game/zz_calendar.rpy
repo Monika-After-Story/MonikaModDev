@@ -8,8 +8,19 @@
 # image. It will only be enabled during idle modes (allow_dialgoue) and will
 # enable user to go straight to view mode of the calendar.
 
-# Do Calendar event logic here
-#init -999 python in mas_calendar:
+# Do Calendar repeatable event logic here
+# init -1000 python:
+#     import store.evhand as evhand
+#
+#     evhand.calendar_database[2][14].add((CAL_TYPE_REP,"Valentine",None))
+#     evhand.calendar_database[12][25].add((CAL_TYPE_REP,"Christmas",None))
+#     evhand.calendar_database[3][14].add((CAL_TYPE_REP,"White day",None))
+#     evhand.calendar_database[12][31].add((CAL_TYPE_REP,"New year's eve",None))
+#     evhand.calendar_database[12][24].add((CAL_TYPE_REP,"Christmas eve",None))
+#     evhand.calendar_database[9][22].add((CAL_TYPE_REP,"My birhday",None))
+#     evhand.calendar_database[10][31].add((CAL_TYPE_REP,"Hallowen",None))
+
+
 
 
 init -1 python:
@@ -136,13 +147,13 @@ init -1 python:
             # testign
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
-            evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
+            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
 
             # database
             self.database = evhand.calendar_database
