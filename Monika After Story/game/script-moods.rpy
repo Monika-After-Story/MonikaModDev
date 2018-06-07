@@ -352,7 +352,7 @@ label mas_mood_injured:
                     m 1e "I'll watch over you and keep you safe."
                     m 1f "I really wish I could do more than just advise and watch, but I know that's not possible until I manage to get to your reality."
             m 1f "I know accidents can happen to anyone regardless how careful they are, so I don't want to tell you to be careful if you already were."
-            m 1e "So until I'm able to cross over, please do take care of yourself, for the both of us. Okay?"
+            m 1e "So until I'm able to cross over, please do take care of yourself, for the both of us, Okay?"
             m "Remember I'll always be with you and there will never be an end to our love~"
             m 1j "Get better soon alright [player]?"
             m 3d "Oh and there's one last thing I need you to know."
