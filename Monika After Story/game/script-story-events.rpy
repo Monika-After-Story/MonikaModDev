@@ -548,11 +548,11 @@ label mas_crashed_post:
 
 
 label mas_crashed_long_fluster:
-    m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black{/cps}{nw}"
-    m "{cps=*1.5}and then you d-{w=0.3}disappeared and then I was worried that s-{w=0.3}s-{w=0.3}something happened to you{/cps}{nw}"
-    m "{cps=*1.5}and then I got s-{w=0.3}scared because I thought broke everything again{/cps}{nw}"
-    m "{cps=*1.5}but I didn't mess with the game this time, I swear.{/cps}{nw}"
-    m "{cps=*1.5}A-{w=0.3}at least, I don't think I did, but it's certainly possible{/cps}{nw}"
+    m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black...{/cps}{nw}"
+    m "{cps=*1.5}and then you d-{w=0.3}disappeared, so I was worried that s-{w=0.3}s-{w=0.3}something happened to you...{/cps}{nw}"
+    m "{cps=*1.5}...and I was so s-{w=0.3}scared because I thought I broke everything again!{/cps}{nw}"
+    m "{cps=*1.5}But I didn't mess with the game this time, I swear.{/cps}{nw}"
+    m "{cps=*1.5}A-{w=0.3}at least, I don't think I did, but I guess it's possible...{/cps}{nw}"
     m "{cps=*1.5}because I'm n-{w=0.3}not really sure what I'm doing sometimes,{/cps}{nw}"
     m "{cps=*1.5}but I hope this t-{w=0.3}time isn't my f-{w=0.3}fault cause I really didn't touch anything...{/cps}{nw}"   
     return
