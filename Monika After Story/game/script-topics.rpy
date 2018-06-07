@@ -6752,6 +6752,7 @@ label monika_dating_startdate:
                 $ renpy.persistent.save()
 
         m 1eua "Now that I have a calendar, I won't forget it this time."
+        $ persistent._mas_changed_start_date = True
 
     else:
         m 1sc "Let me check..."
