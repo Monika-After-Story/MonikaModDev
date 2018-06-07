@@ -340,7 +340,7 @@ label mas_mood_injured:
             m 1m "I'm glad I could at least be here to comfort you, [player]."
             m 1f "Is it so bad that you're in a hospital, [player]?"
             menu:
-                "Yes..."
+                "Yes...":
                     m 1g "... oh... my..."
                     m 1q"..............."
                     m 1m "Sorry to hear that, and again sorry for the silence just now, its just..."
@@ -353,7 +353,7 @@ label mas_mood_injured:
                     m 1m "But if being seperated for just a while means you getting better, I think it's worth it."
                     m 1a "Just spend more with me later on when you do get better, Alright?"
                     m 1j "Get well soon [player]!"
-                "No."
+                "No.":
                     m 1e "I hope that you won't need it either."
                     m 1g "I think you should go rest if it's that bad."
                     m 1e "I'll watch over you and keep you safe."
