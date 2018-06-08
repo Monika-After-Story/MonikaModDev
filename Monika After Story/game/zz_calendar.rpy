@@ -818,8 +818,7 @@ init -1 python in mas_calendar:
             if _year_diff == 0:
                 # it's today!
                 _cout = [
-                    "today?! You couldn't have triggered this event ",
-                    "today. I know you're messing around with the code."
+                    "today"
                 ]
 
             else:
@@ -830,7 +829,7 @@ init -1 python in mas_calendar:
                 ]
 
 
-        elif _day_diff.days < 365: # within a year
+        elif _day_diff.days <= 365: # within a year
             # same year, diff month
             _cout = [disp_month, disp_day]
 
@@ -900,7 +899,7 @@ init 100 python:
         # okay we have an event to work with
         _now = datetime.datetime.now()
 
-        ev.conditional = "",join([
+        ev.conditional = "".join([
             "datetime.datetime.now() - datetime.datetime(",
             str(_now.year),
             ",",

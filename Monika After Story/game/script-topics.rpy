@@ -6734,6 +6734,8 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         # setup some counts
         wrong_date_count = 0
         no_confirm_count = 0
+        today_date_count = 0
+        future_date_count = 0
 
     label .loopstart:
         pass
@@ -6749,25 +6751,71 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         menu:
             m "Are you sure it's not [first_sesh_formal]?"
             "It's not that date.":
-                if wrong_date_count >= 3:
-                    # monika has had enough of your shit
-                    m 2dsc "..."
-                    m 2lfc "We'll do this another time, then."
+                if wrong_date_count >= 2:
+                    label .had_enough:
+                        # monika has had enough of your shit
+                        m 2dsc "..."
+                        m 2lfc "We'll do this another time, then."
 
-                    # we're going to reset the conditional to wait
-                    # 30 more days
-                    $ mas_chgCalEVul(30)
-                                                
-                    return "NOPE"
+                        # we're going to reset the conditional to wait
+                        # 30 more days
+                        $ mas_chgCalEVul(30)
+                                                    
+                        return "NOPE"
 
                 # otherwise try again
                 m 2dsc "..."
-                m 2efc "Then pick the correct date!"
+                m 2tfc "Then pick the correct date!"
                 $ wrong_date_count += 1
                 jump .loopstart
 
             "Actually that's the correct date. Sorry.":
                 m 2eka "That's okay."
+                $ selected_date = first_sesh_raw
+
+    elif selected_date.date() == first_sesh_raw.date():
+        # today was chosen
+        if wrong_date_count >= 2:
+            jump .had_enough
+
+        m 2dsc "..."
+        m 2tfc "We did {b}not{/b} just start dating today."
+        m "Take this seriously, [player]."
+        $ wrong_date_count += 1
+        jump .loopstart
+
+    elif selcted_date > first_sesh_raw:
+        # you selected a future date?! why!
+        if future_date_count > 0:
+            # don't play around here
+            jump .had_enough
+        
+        $ future_date_count += 1
+        m 1wud "What..."
+        menu:
+            m "We haven't been dating this whole time?"
+            "That was a misclick!":
+                # relif expression
+                # TODO: expressions for this
+                m "{cps=*2}Oh, thank god{/cps}"
+                m "[player]!"
+                m "You had me worried there."
+                # try again okay
+                jump .loopstart
+                
+            "Nope.":
+                # WHAT
+                # that's okay
+                # monika understands and knows now that you were just friends
+                # the whole time. She will rememberthis even to the affection
+                # update.
+
+                # TODO:
+                #   lock this event forever (until something else happens
+                #   to rekindle the relationship)
+
+                return "NOPE"
+
 
     # post loop
     python:
@@ -6795,10 +6843,10 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                     m 1eka "Try again~"
 
         "No.":
-            if no_confirm_count >= 3:
+            if no_confirm_count >= 2:
                 # are you not feeling well or something?
                 m 1eka "Are you feeling okay, [player]?"
-                m "If you don't remember right now, then we can do this again tomorrow{w}, okay?"
+                m "If you don't remember right now, then we can do this again tomorrow, okay?"
 
                 # reset the conditional to tomorrow
                 $ mas_chgCalEVul(1)
