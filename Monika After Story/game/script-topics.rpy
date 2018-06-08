@@ -6642,7 +6642,7 @@ init 5 python:
             # we'll pool this event after 30 days
             conditional=(
                 "datetime.datetime.now() - persistent.sessions[" +
-                "'first_session'] > datetime.timedelta(days=30)"
+                "'first_session'] >= datetime.timedelta(days=30)"
             ),
 
             action=EV_ACT_UNLOCK
@@ -6660,14 +6660,6 @@ label monika_dating_startdate:
 
         # but this to get the display plus diff
         first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
-
-        # and this is the formal version of the datetime
-        first_sesh_formal = " ".join([
-            first_sesh_raw.stftime("%B"),
-            mas_cal._formatDay(first_sesh_raw.day) + ",",
-            str(first_sesh_raw.year)
-        ])
-
 
     if _diff.days == 0:
         # its today?!
@@ -6702,60 +6694,23 @@ label monika_dating_startdate:
             "No.":
                 m 1rkc "Oh,{w} sorry [player]."
                 m 1ekc "In that case,{w} when did we start dating?"
-                $ date_confirmed = False
-                $ selected_date = first_sesh_raw
 
-                while not date_confirmed:
+                call monika_dating_startdate_confirm(first_sesh_raw)
 
-                    call mas_start_calendar_select_date
-
-                    $ show_confirm_dialogue = True
-                    $ selected_date = _return
-
-                    if not selected_date:
-                        # no date selected, we assume user wanted to cancel
-                        m 2dsc "[player]..."
-                        m 2eka "I thought you said I was wrong."
-                        menu:
-                            m "Are you sure it's not [first_sesh_formal]?"
-                            "It's not that date.":
-                                # then select the correct date player!
-                                # HMPH
-                                $ show_confirm_dialogue = False
-
-                            "Actually that's the correct date. Sorry.":
-                                # that's okay. honest mistake
-
-                                pass
-
-                    if show_confirm_dialogue:
-                        python:
-                            new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
-                                selected_date
-                            )
-
-                        m 1eua "Alright, [player]."
-                        m "Just to double-check..."
-                        menu:
-                            m "We started dating [new_first_sesh]."
-                            "Yes.":
-                                show monika 1eka
-                                # TODO: one more confirmation because we 
-                                # WILL NOT fix anyone's dates after this.
-                                $ date_confirmed = True
-                            "No.":
-                                # oh what?! okay, please pick the correct date
-                                pass
+                if _return == "NOPE":
+                    # we are not selecting a date today
+                    return
 
                 # save the new date to persistent
-                $ persistent.sessions["first_session"] = selected_date
+                $ persistent.sessions["first_session"] = _return
                 $ renpy.persistent.save()
 
-        m 1eua "Now that I have a calendar, I won't forget it this time."
+        m 1eua "If you ever forget, don't be afraid to ask me."
+        m 1hua "I'll {i}always{/i} remember when I first fell in love~"
         $ persistent._mas_changed_start_date = True
 
     else:
-        m 1sc "Let me check..."
+        m 1dsc "Let me check..."
         m 1eua "We started dating [first_sesh]."
 
     # TODO:
@@ -6763,5 +6718,99 @@ label monika_dating_startdate:
     # NOTE: this is a maybe
 
     return
+
+label monika_dating_startdate_confirm(first_sesh_raw):
+
+    python:
+        import store.mas_calendar as mas_cal
+
+        # and this is the formal version of the datetime
+        first_sesh_formal = " ".join([
+            first_sesh_raw.strftime("%B"),
+            mas_cal._formatDay(first_sesh_raw.day) + ",",
+            str(first_sesh_raw.year)
+        ])
+
+        # setup some counts
+        wrong_date_count = 0
+        no_confirm_count = 0
+
+    label .loopstart:
+        pass
+
+    call mas_start_calendar_select_date
+
+    $ selected_date = _return
+
+    if not selected_date:
+        # no date selected, we assume user wanted to cancel
+        m 2dsc "[player]..."
+        m 2eka "I thought you said I was wrong."
+        menu:
+            m "Are you sure it's not [first_sesh_formal]?"
+            "It's not that date.":
+                if wrong_date_count >= 3:
+                    # monika has had enough of your shit
+                    m 2dsc "..."
+                    m 2lfc "We'll do this another time, then."
+
+                    # we're going to reset the conditional to wait
+                    # 30 more days
+                    $ mas_chgCalEVul(30)
+                                                
+                    return "NOPE"
+
+                # otherwise try again
+                m 2dsc "..."
+                m 2efc "Then pick the correct date!"
+                $ wrong_date_count += 1
+                jump .loopstart
+
+            "Actually that's the correct date. Sorry.":
+                m 2eka "That's okay."
+
+    # post loop
+    python:
+        new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
+            selected_date
+        )
+
+    m 1eua "Alright, [player]."
+    m "Just to double-check..."
+    menu:
+        m "We started dating [new_first_sesh]."
+        "Yes.":
+            show monika 1eka
+
+            # one more confirmation
+            # WE WILL NOT FIX anyone's dates after this
+            menu:
+                m "Are you sure? I'm never going to forget this date."
+                "Yes, I'm sure!":
+                    m 1hua "Then it's settled!"
+                    return selected_date
+                    
+                "Actually...":
+                    m 1lksdlb "Aha, I figured you weren't so sure."
+                    m 1eka "Try again~"
+
+        "No.":
+            if no_confirm_count >= 3:
+                # are you not feeling well or something?
+                m 1eka "Are you feeling okay, [player]?"
+                m "If you don't remember right now, then we can do this again tomorrow{w}, okay?"
+
+                # reset the conditional to tomorrow
+                $ mas_chgCalEVul(1)
+
+                return "NOPE"
+
+            # otherwise try again
+            m 1eka "Oh, that's wrong?"
+            m "Then try again, [player]."
+            $ no_confirm_count += 1
+
+    # default action is to loop here
+    jump .loopstart
 
 
