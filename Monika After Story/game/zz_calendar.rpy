@@ -420,6 +420,8 @@ init -1 python:
                     # helper vars for day processing
                     current_date = self.dates[j + (i * 7)]
                     ret_val = None
+                    many_events = False
+                    bg_disabled = button_day_bg_disabled
 
                     # current day events display helpers
                     event_labels = list()
@@ -446,6 +448,7 @@ init -1 python:
                             # third_label should hold the event text
                             third_label = event_labels[2]
                         if len(event_labels) > 3:
+                            many_events = True
                             if self.can_select_date:
                                 third_label = "and more events"
                             else:
@@ -460,8 +463,11 @@ init -1 python:
                         event_labels.append("")
 
                     # Add button behaviour to it
-                    if self.can_select_date and current_date.month == self.selected_month:
-                        ret_val = current_date
+                    if current_date.month == self.selected_month:
+                        bg_disabled = button_day_bg
+
+                        if self.can_select_date:
+                            ret_val = current_date
 
                     day_button_text = Text(
                         self.DATE_DISPLAY_FORMAT.format(str(current_date.day), event_labels[0], event_labels[1], third_label),
@@ -477,7 +483,7 @@ init -1 python:
                         day_button_text,
                         button_day_bg,
                         button_day_bg,
-                        button_day_bg_disabled,
+                        bg_disabled,
                         self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
                         initial_y + (i * self.DAY_BUTTON_HEIGHT),
                         self.DAY_BUTTON_WIDTH,
@@ -488,7 +494,7 @@ init -1 python:
                     )
 
                     # if this day isn't on the current month
-                    if current_date.month != self.selected_month:
+                    if current_date.month != self.selected_month or (not self.can_select_date and not self.can_select_date):
                         # disable the button
                         day_button.disable()
 
