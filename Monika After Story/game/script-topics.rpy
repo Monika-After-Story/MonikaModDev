@@ -6365,3 +6365,28 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="backpacking",category=['misc'],prompt="Backpacking",random=True))
+
+label backpacking:
+    m 1esa "You know what I've always wanted to do, [player]?"
+    m 3eub "I've always thought it would be so cool to go backpacking in the wilderness!"
+    m 1eub "Take like an entire week and leave it all behind."
+    m 1esa "No responsibilities, no worries, no phones, no distractions."
+    m 1hsa "Just imagine the two of us, all alone with nature..."
+    m 1hsa "The sounds of birds chirping and the wind blowing..."
+    m 1hsa "Watching deer graze in the morning dew..."
+    m 1eub "I can't think of anything more peaceful."
+    m 3esd "We can spend our days exploring mysterious forests, serene meadows, and rolling hills..."
+    m 3hua "Maybe even discover a secluded lake and go for a swim."
+    m 3rubssdla "We probably won't have any bathing suits with us, but there won't be anyone else around so we won't need them..."
+    m 1hubssdlb "Ehehe~"
+    m 1esbsa "..."
+    m 1eua "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
+    m 1eua "And then be greeted each morning by a glorious sunrise."
+    m 5sua "..."
+    m 5sua "Oh [player], doesn't that just sound like heaven?"
+    m 3sua "I can't wait until we can share this experience together."
+    
+    return
