@@ -290,6 +290,9 @@ init python:
         if allow_dialogue:
             renpy.call('pick_a_game')
 
+    def show_calendar():
+        renpy.call_in_new_context("mas_start_calendar_read_only")
+
     def select_music():
         # check for open menu
         if (songs.enabled
@@ -782,7 +785,7 @@ label mas_ch30_select_unseen:
     # unseen selection
 
     if len(mas_rev_unseen) == 0:
-        
+
         if not persistent._mas_enable_random_repeats:
             # no repeats means we should push randomlimit if appropriate,
             # otherwise stay slient
