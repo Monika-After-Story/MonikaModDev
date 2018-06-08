@@ -477,6 +477,7 @@ init -1 python:
                         outlines=[]
                     )
 
+                    # TODO: hover variants of the buttons
                     day_button = MASButtonDisplayable(
                         day_button_text,
                         day_button_text,
@@ -730,6 +731,20 @@ init -1 python in mas_calendar:
     }
 
 
+    def _formatDay(day):
+        """
+        Properly formats the given day so it displays with the correct
+        suffixes.
+
+        IN:
+            day - day to get a nice display string
+
+        RETURNS:
+            nice display string for the day
+        """
+        return str(day) + NUM_MAP.get(day, "th")
+
+
     def _formatYears(years):
         """
         Properly formats the given years var so it says a user friendly
@@ -786,7 +801,7 @@ init -1 python in mas_calendar:
         disp_month = _datetime.strftime("%B")
 
         # display day is easy
-        disp_day = str(_datetime.day) + NUM_MAP.get(_datetime.day, "th")
+        disp_day = _formatDay(_datetime.day)
 
         # to find out year, we need now
         _today = datetime.date.today()
@@ -838,7 +853,7 @@ init -1 python in mas_calendar:
             ]
 
         # now return the formatting string + diff
-        return (" ".join(_cout), day_diff)
+        return (" ".join(_cout), _day_diff)
 
 
     def saveCalendarDatabase(encoder, database):
@@ -864,6 +879,43 @@ init -1 python in mas_calendar:
         """
         with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
             return json.load(fp)
+
+
+init 100 python:
+    # calendar related but later
+
+    def mas_chgCalEVul(number_of_days):
+        """
+        Changes the conditionals / actions / and more of the monika start date
+        topic so it unlocks after the given number of days
+
+        IN:
+            number_of_days - number of days before unlocking the monika start
+                date topic
+        """
+        ev = store.evhand.event_database.get("monika_dating_startdate", None)
+        if ev is None:
+            return
+
+        # okay we have an event to work with
+        _now = datetime.datetime.now()
+
+        ev.conditional = "",join([
+            "datetime.datetime.now() - datetime.datetime(",
+            str(_now.year),
+            ",",
+            str(_now.month),
+            ",",
+            str(_now.day),
+            ") >= datetime.timedelta(days=",
+            str(number_of_days),
+            ")"
+        ])
+        ev.action = EV_ACT_UNLOCK
+        ev.unlocked = False
+
+        if "monika_dating_startdate" in persistent._seen_ever:
+            persistent._seen_ever.pop("monika_dating_startdate")
 
 
 # wrap it up in a screen
