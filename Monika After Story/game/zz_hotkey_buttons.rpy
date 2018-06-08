@@ -199,4 +199,4 @@ screen movie_overlay():
 
 init python:
     HKBShowButtons()
-    ShowCalendarOverlay()
+#    ShowCalendarOverlay()
