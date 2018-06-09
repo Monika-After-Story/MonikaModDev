@@ -6371,13 +6371,13 @@ init 5 python:
 
 label backpacking:
     m 1esa "You know what I've always wanted to do, [player]?"
-    m 3eub "I've always thought it would be so cool to go backpacking in the wilderness!"
-    m 3eub "Take like an entire week and leave it all behind."
+    m 3eub "I've always thought it would be so amazing to go backpacking in the wilderness!"
+    m 3eua "Take like an entire week and leave it all behind."
     m 1esa "No responsibilities, no worries, no phones, no distractions."
     m 1hua "Just imagine the two of us, all alone with nature..."
-    m 1hua "The sounds of birds chirping and the wind blowing..."
-    m 1hua "Watching deer graze in the morning dew..."
-    m 1eub "I can't think of anything more peaceful."
+    m 1hub "The sounds of birds chirping and the wind blowing..."
+    m 1hub "Watching deer graze in the morning dew..."
+    m 1esa "I can't think of anything more peaceful."
     m 3esa "We can spend our days exploring mysterious forests, serene meadows, and rolling hills..."
     m 3hua "Maybe even discover a secluded lake and go for a swim."
     m 1lsbssdrb "We probably won't have any bathing suits with us, but there won't be anyone else around so we won't need them..."
@@ -6387,6 +6387,5 @@ label backpacking:
     m 1eua "And then be greeted each morning by a glorious sunrise."
     m 5eua "..."
     m 5eua "Oh [player], doesn't that just sound like heaven?"
-    m 5eua "I can't wait until we can share this experience together."
-    
+    m 5eua "I can't wait until we can share this experience together."    
     return
