@@ -6677,6 +6677,9 @@ label monika_dating_startdate:
             "You got me.":
                 pass
         m 2tku "Hmph,{w} you can't fool me."
+
+        # wait 30 days
+        $ mas_chgCalEVul(30)
         return
 
     # Otherwise, we should be displaying different dialogue depending on
