@@ -291,7 +291,9 @@ init python:
             renpy.call('pick_a_game')
 
     def show_calendar():
+        store.hkb_button.enabled = False
         renpy.call_in_new_context("mas_start_calendar_read_only")
+        store.hkb_button.enabled = True
 
     def select_music():
         # check for open menu
@@ -375,6 +377,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_day_room zorder 1
+                show screen calendar_overlay(_layer="master")
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
@@ -388,6 +391,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_room zorder 1
+                show screen calendar_overlay(_layer="master")
                 #show monika_bg_highlight
             if not hide_monika:
                 show monika 1 at t11 zorder 2

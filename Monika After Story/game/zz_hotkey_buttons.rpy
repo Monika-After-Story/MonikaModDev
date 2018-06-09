@@ -33,21 +33,7 @@ init python:
         # Shows the movie buttons
         #
         config.overlay_screens.append("movie_overlay")
-
-    # function to hide Calendar button overlay
-    def HideCalendarOverlay():
-        #
-        # Hides the calendar button overlay
-        #
-        config.overlay_screens.remove("calendar_overlay")
-        renpy.hide_screen("calendar_overlay")
-
-    # function to show buttons
-    def ShowCalendarOverlay():
-        #
-        # Shows the calendar button overlay
-        #
-        config.overlay_screens.append("calendar_overlay")
+        
 
 init -1 python in hkb_button:
 
@@ -116,7 +102,7 @@ style hkbd_button_text is default:
     outlines []
 
 screen calendar_overlay:
-    zorder -1
+    zorder 1
 
     vbox:
         xalign 0.305
@@ -199,4 +185,3 @@ screen movie_overlay():
 
 init python:
     HKBShowButtons()
-#    ShowCalendarOverlay()
