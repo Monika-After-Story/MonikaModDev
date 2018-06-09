@@ -6289,6 +6289,114 @@ label monika_yellowwp:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_driving",category=['literature'],prompt=Can you drive?",random=True))
+
+label monika_driving:
+    m 1d "Hm? Can I drive?"
+    m 1c "I never really thought about getting a driver's licence."
+    m 3a "Public transportation is enough for me usually."
+    m "I'm not sure I would even have had time to learn to drive with school and all the activities I did."
+    m "Not to mention that I'm trying to reduce my carbon footprint anyway."
+    m 1a "I guess you could say I never really had the need to be able to drive."
+    m 1b "What about you, [player]?"
+    m 1a "Can you drive at all?"
+    menu:
+        "Yes.":
+            m 1j "Oh, really?"
+            m "That's great!"
+            m 1k "Gosh, you're amazing, you know that?"
+            m "I can just think of the things we could do together, ehehe~"
+            m 1e "Driving can also be dangerout too though."
+            m "Anybody could accidentally hit you at any time."
+            m 3e "No matter how prepared you are, accidents could happen to anyone."
+            m "I hope you've never had to experience that, [player]"
+            menu:
+                "I've been in an accident before.":
+                    m 2f "Oh..."
+                    m 2o "Sorry to bring that up, [player]..." 
+                    m 2p "I just..."
+                    m 2f "I hope it wasn't too bad."
+                    m 2n "I mean, here you are with me so it must have been alright."
+                    m 2q "..."
+                    m 2e "I'm... glad you survived, [player]..."
+                    m "I don't know what I would do without you."
+                    m "I love you, [player]. Please stay safe, ok?"
+                "I've seen car accidents before.":
+                    m 3d "Sometimes, seeing a car accident can be just as scary."
+                    m 3f "A lot of the time when people see car accidents, they just sigh and shake their head."
+                    m 1g "I think that's really insensitive!"
+                    m 1f "You have a potentially young driver who could have been scarred for a long, long time if not for life."
+                    m "It doesn't really help to have people walk by, staring at them in disappointment."
+                    m 1q "They might never drive again... Who knows?"
+                    m 1e "I hope you know I would never do that to you, [player]."
+                    m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you."
+                    m 1m "If I wasn't already by your side when it happens..."
+                    m 1q "In which case..."
+                    m 1e "It really wouldn't be as bad as it could be..."
+                "I haven't.":
+                    m 1a "I'm glad you haven't had to go through anything like that."
+                    m 1e "Even just seeing one can be pretty scary." 
+                    m "If you do witness anything scary like that, I'll be here to comfort you."
+        "I'm learning.":
+            m 1j "Wow! You're learning how to drive!"
+            m 1k "I'll be rooting for you all the way, [player]!"
+            m "You must be a {i}super{/i} safe driver then huh?"
+            menu:
+                "Yep! Super safe!":
+                    m 1a "I'm glad to know nothing bad has happened you while learning."
+                    m 1j "I'm even more glad that you're going to be a really safe driver!"
+                    m 1k "I can't wait to finally be able to go somewhere with you, [player]!"
+                    m 1l "I hope I'm not getting too excied, eheheh~"
+                    m 5 "I just can't stop thinking about it now."
+                "I got into an accident once actually...":
+                    m 1l "..."
+                    m 1n "........."
+                    m 2p "Oh..."
+                    m 2o "I'm... really sorry to hear that, [player]..."
+                    m 2q "And while you were only trying to learn too..."
+                    m 4g "Have you driven much since then, [player]?"
+                    menu:
+                        "Yes.":
+                            m 1e "I'm glad you didn't let it keep you down."
+                            m 1f "Car accidents are scary, {i}especially{/i} if you're just learning how to drive."
+                            m 1j "I'm so proud of you for getting up and trying again!"
+                            m 1l "Although the aftermath can still be a huge hassle with the costs and all the explaining you'd have to do."
+                            m 5 "I know you can get there."
+                            m "I'll be cheering for you all the way, so be safe!"
+                        "No.":
+                            m 2o "I see."
+                            m 2f "It might be a good idea to take a bit of a break to gather your bearings and let the whole thing simmer down."
+                            m 2q "Just promise me one thing, [player]."
+                            m 2e "Don't give up."
+                            m "Don't let this scar you for life, because I know you can overcome it and be an amazing driver."
+                            m "Remeber, a little grit adds alot to your legend, so next time, maybe you really will be well on your way."
+                            m 2l "It's still going to take lots and lots of practice..."
+                            m 2e "But you've survived something a lot of people never even experienced."
+                            m 3e "That really makes you unique and special, you know."
+                            m 1j "That's why I love you, [player]!"
+                            m "I hope everything goes well with your driving! Stay safe!"
+        "No.":
+            m 3a "That's perfecetly fine!"
+            m "I don't think driving is a completely necessary life skill anyway."
+            m 1l "I mean, I can't drive either so I'm with you."
+            m 5 "It also means your carbon footprint is smaller, and I think that's really sweet of you to do for me."
+            m 1l "Even if I'm not the reason why, I can't help but love you more for that."
+        "I'm not old enough yet.":
+            m 3a "You'll get there someday!"
+            m "Some places offer in class driving lessons that also come with some actual driving practice."
+            m "Their cars also have emergency controls for the instructor to use if needed, so you're really safe with them."
+            m 1e "Although it might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
+            m "It's better than getting into an accident and that just means you're getting experience without actually being in an accident."
+            m 1o "Better to make those mistakes when there's someone there to save you."
+            m 1k "Maybe you could put me in your board computer in your car and I could keep you safe while driving! Ahaha~"
+            m 1l "Just kidding, please don't do that because I can't drive either and I would hate to watch you crash while not being able to do anything."
+            m 1a "It would probably help a lot to take one of those classes and learn from a professional."
+            m 1l "But mostly because they have emergency controls."
+            m 1j "Anyway, when you do start learning to drive, I wish you the very best!"
+            m 1k "I love you~"
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
