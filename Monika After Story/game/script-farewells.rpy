@@ -179,7 +179,7 @@ init 5 python:
 
 label bye_going_to_sleep:
     m "Are you going to sleep, [player]?"
-    m 1e "I'll be seeing you in your dreams"
+    m 1e "I'll be seeing you in your dreams."
     return 'quit'
 
 init 5 python:
