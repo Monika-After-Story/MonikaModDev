@@ -71,6 +71,48 @@ init python:
         return new_date
 
 
+init 10 python in mas_anni:
+    import store.evhand as evhand
+
+    # we are going to store all anniversaries in antther db as well so we
+    # can easily reference them later.
+    ANNI_LIST = [
+        "anni_1week",
+        "anni_1month",
+        "anni_3month",
+        "anni_6month",
+        "anni_1",
+        "anni_2",
+        "anni_3",
+        "anni_4",
+        "anni_5",
+        "anni_10",
+        "anni_20",
+        "anni_50",
+        "anni_100"
+    ]
+
+    # anniversary database
+    anni_db = dict()
+    for anni in ANNI_LIST:
+        anni_db[anni] = evhand.event_database[anni]
+
+
+    ## functions that we need (runtime only)
+    def reset_annis(new_start_date):
+        """
+        Rest the anniversaries according to the new start date.
+
+        IN:
+            new_start_date - new start date to reset anniversaries
+        """
+        # TODO:
+        #   go through anniversary database and clean up start dates and
+        #   what not. probalby need to use the event handler future/past
+        #   functions
+
+
+
 init 5 python:
     anni_date=start_of_day(persistent.sessions['first_session'])+datetime.timedelta(days=7)
     addEvent(

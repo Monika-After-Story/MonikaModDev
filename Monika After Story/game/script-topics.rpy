@@ -6709,6 +6709,11 @@ label monika_dating_startdate:
 
                 # save the new date to persistent
                 $ persistent.sessions["first_session"] = _return
+
+                # TODO:
+                #   adjust anniversaries
+                #   adjust calendar db to reflect new date
+
                 $ renpy.persistent.save()
 
         m 1eua "If you ever forget, don't be afraid to ask me."
