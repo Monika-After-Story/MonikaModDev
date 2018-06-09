@@ -6626,6 +6626,9 @@ label monika_hair_down:
 # did we already change start date?
 default persistent._mas_changed_start_date = False
 
+# did you imply that you arent dating monika?
+default persistent._mas_just_friends = False
+
 init 5 python:
     addEvent(
         Event(
@@ -6736,6 +6739,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         no_confirm_count = 0
         today_date_count = 0
         future_date_count = 0
+        no_dating_joke = False
 
     label .loopstart:
         pass
@@ -6773,7 +6777,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                 m 2eka "That's okay."
                 $ selected_date = first_sesh_raw
 
-    elif selected_date.date() == first_sesh_raw.date():
+    elif selected_date.date() == datetime.date.today():
         # today was chosen
         if wrong_date_count >= 2:
             jump .had_enough
@@ -6784,7 +6788,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         $ wrong_date_count += 1
         jump .loopstart
 
-    elif selcted_date > first_sesh_raw:
+    elif selected_date > first_sesh_raw:
         # you selected a future date?! why!
         if future_date_count > 0:
             # don't play around here
@@ -6796,26 +6800,57 @@ label monika_dating_startdate_confirm(first_sesh_raw):
             m "We haven't been dating this whole time?"
             "That was a misclick!":
                 # relif expression
-                # TODO: expressions for this
-                m "{cps=*2}Oh, thank god{/cps}"
-                m "[player]!"
-                m "You had me worried there."
-                # try again okay
-                jump .loopstart
+                m 1duu "{cps=*2}Oh, thank god.{/cps}"
+
+                label .misclick:
+                    m 2tfc "[player]!"
+                    m 2eua "You had me worried there."
+                    m "Don't misclick this time!"
+                    jump .loopstart
                 
             "Nope.":
-                # WHAT
-                # that's okay
-                # monika understands and knows now that you were just friends
-                # the whole time. She will rememberthis even to the affection
-                # update.
+                m 1dsc "..."
+                
+                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm.tooslow")
 
-                # TODO:
-                #   lock this event forever (until something else happens
-                #   to rekindle the relationship)
+                menu:
+                    "I'm kidding.":
+                        hide screen mas_background_timed_jump
+                        # wow what a mean joke
 
+                        if no_dating_joke:
+                            # you only get this once per thru
+                            jump .had_enough
+
+                        # otherwise mention that this was mean
+                        m 2tfc "[player]!"
+                        m 2rksdlc "That joke was little mean."
+                        m 2eksdlc "You really had me worried there."
+                        m "Don't play around like that okay?"
+                        jump .loopstart
+
+                    "...":
+                        label .tooslow:
+                            hide screen mas_background_timed_jump
+
+                # lol why would you stay slient?
+                $ persistent._mas_just_friends = True
+
+                m 6lktdc "I see..."
+                m 6dsc "..."
+                m 1eka "In that case..."
+                m 1tku "{cps=*4}I've got some work to do.{/cps}{nw}"
+
+                menu:
+                    "What?":
+                        pass
+
+                m 1hua "Nothing!"
+
+                # lock this event forever probably
+                # (UNTIL you rekindle or actually ask her out someday)
+                $ evhand.event_database["monika_dating_startdate"].unlocked = False
                 return "NOPE"
-
 
     # post loop
     python:

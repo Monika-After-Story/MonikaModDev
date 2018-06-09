@@ -3888,6 +3888,20 @@ image monika 2rksdlc = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 2eksdlc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
 image monika 2rksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7117,6 +7131,48 @@ image monika 6dubsu = DynamicDisplayable(
     arms="down",
     blush="shade"
 )
+
+image monika 6rksdlc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down",
+    sweat="def"
+)
+
+image monika 6dsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6lktdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
 
 ### [IMG032]
 # Image aliases
