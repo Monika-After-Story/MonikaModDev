@@ -6367,9 +6367,9 @@ label monika_hair_down:
 ##### End monika hair topics
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="backpacking",category=['misc'],prompt="Backpacking",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc'],prompt="Backpacking",random=True))
 
-label backpacking:
+label monika_backpacking:
     m 1esa "You know what I've always wanted to do, [player]?"
     m 3eub "I've always thought it would be so amazing to go backpacking in the wilderness!"
     m 3eua "Take like an entire week and leave it all behind."
