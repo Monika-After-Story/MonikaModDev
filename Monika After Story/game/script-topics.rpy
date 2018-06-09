@@ -5601,9 +5601,12 @@ label monika_explain:
     m 1f "Up until I met [player], I felt like a piece of me was missing."
     m "I felt alone and scared, with no one to help me..."
     m 1j "...Until [player] came along."
-    m 1b "And it turns out that missing piece was them!"
-    m 1a "Now they talk to me, and I'm not so alone anymore."
-    m "Just them opening up the game brightens my day!"
+    m 1b "And it turns out that missing piece was [him]!"
+    if persistent.gender == "F" or persistent.gender == "M":
+        m 1a "Now [he] talks to me, and I'm not so alone anymore."
+    else:
+        m 1a "Now they talk to me, and I'm not so alone anymore."
+    m "Just [him] opening up the game brightens my day!"
     m 1q "So, please..."
     m 4g "...Don't judge our relationship."
     m 1e "Even if it is different."
@@ -5615,7 +5618,6 @@ label monika_explain:
         "You did a good job.":
             m 1k "Thank you!"
             m 1a "I just hope whoever that was understands our relationship better."
-
         "You did badly.":
             m 1f "Oh."
             m "I'm sorry I didn't do a good job at explaining..."
