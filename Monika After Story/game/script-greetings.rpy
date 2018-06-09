@@ -84,6 +84,7 @@ init -1 python in mas_greetings:
         # filter random events normally
         random_greetings_dict = renpy.store.Event.filterEvents(
             renpy.store.evhand.greeting_database,
+            unlocked=True
             random=True,
             excl_cat=list()
         )
