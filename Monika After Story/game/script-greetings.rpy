@@ -40,7 +40,8 @@ init -1 python in mas_greetings:
             # filter events by their unlocked property only
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
-                unlocked=True
+                unlocked=True,
+                excl_cat=list()
             )
 
         # filter greetings using the special rules dict
@@ -82,7 +83,8 @@ init -1 python in mas_greetings:
         # filter random events normally
         random_greetings_dict = renpy.store.Event.filterEvents(
             unlocked_greetings,
-            random=True
+            random=True,
+            excl_cat=list()
         )
 
         # select one randomly
