@@ -6748,7 +6748,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     $ selected_date = _return
 
-    if not selected_date:
+    if not selected_date or selected_date.date() == first_sesh_raw.date():
         # no date selected, we assume user wanted to cancel
         m 2dsc "[player]..."
         m 2eka "I thought you said I was wrong."
