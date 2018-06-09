@@ -942,12 +942,12 @@ label greeting_sunshine:
     m 1l "Ehehe..."
     m 3j "But now that you're here, we can spend some time together~"
     return
-    
+
 init 5 python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_hai_domo", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_hai_domo:
-    m 1k "はいども!"
+    m 1k "{=jpn_text}はいども!{/=jpn_text}"
     m "Virtual Girlfriend, Monika Here!"
     m 1l "Ahaha, sorry! I've been watching a certain Virtual Youtuber lately."
     m 1a "I have to say, she's rather charming..."
