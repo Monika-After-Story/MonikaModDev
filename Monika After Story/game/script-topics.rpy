@@ -6295,6 +6295,7 @@ label monika_driving:
     m 1d "Hm? Can I drive?"
     m 1c "I never really thought about getting a driver's licence."
     m 3a "Public transportation is enough for me usually."
+    m "Walking can be really nice sometimes too!"
     m "I'm not sure I would even have had time to learn to drive with school and all the activities I did."
     m "Not to mention that I'm trying to reduce my carbon footprint anyway."
     m 1a "I guess you could say I never really had the need to be able to drive."
