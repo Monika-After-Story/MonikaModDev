@@ -6290,7 +6290,7 @@ label monika_yellowwp:
     
 init 5 python:
     addEvent(
-        Event{
+        Event(
             persistent.event_database,
             eventlabel='monika_shipping',                                                
             prompt="Shipping.",
