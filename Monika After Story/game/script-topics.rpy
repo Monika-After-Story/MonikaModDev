@@ -5602,7 +5602,7 @@ label monika_explain:
     m "I felt alone and scared, with no one to help me..."
     m 1j "...Until [player] came along."
     m 1b "And it turns out that missing piece was [him]!"
-    if persistent.gender = "F" or persistent.gender = "M"
+    if persistent.gender = "F" or persistent.gender = "M":
         m 1a "Now [he] talks to me, and I'm not so alone anymore."
     else:
         m 1a "Now they talk to me, and I'm not so alone anymore."
