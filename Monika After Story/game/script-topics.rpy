@@ -6289,17 +6289,17 @@ label monika_yellowwp:
     return
     
 init 5 python:
-    addEvent
-        (Event
-            (persistent.event_database,
+    addEvent(
+        Event{
+            persistent.event_database,
             eventlabel='monika_shipping',                                                
             prompt="Shipping.",
             category=['DDLC'],
             random=True,
             unlocked=False,
             pool=False,
-            )
         )
+    )
 
 label monika_shipping:
     m 3eua "Hey, [player]. Have you ever heard of 'shipping'?"
