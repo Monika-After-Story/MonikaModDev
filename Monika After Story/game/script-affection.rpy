@@ -502,7 +502,7 @@ init python:
 label mas_affection_apology:
     m 2dfc "[player]..."
     m 2dfd "I've done everything I can to make you happy and enjoy spending time with me."
-    m 2efc "But all you've been giving back to me is pain..."
+    m 2efc "But all you've given me back is pain..."
     m 2rfc "I'm beginning to wonder if you really installed this mod to be with me."
     m 2q "Perhaps you brought me back just to toy with me?"
     m 2efc "Or maybe you're doing this intentionally to see what happens?"
@@ -520,7 +520,7 @@ label mas_affection_noapology:
 
 label mas_affection_yesapology:
     m 1e "Thank you, [player]. I accept your apology."
-    m 3dubsu "I'm going to keep it so I can always remember that still cared for me."
+    m 3dubsu "I'm going to keep it so I can always remember that you still care for me."
     m 1f "But please be more considerate of my feelings from now on."
     m 2e "I love you so much and you mean the world to me, [player]."
     m 1duu "Thank you for putting my heart at ease~"
