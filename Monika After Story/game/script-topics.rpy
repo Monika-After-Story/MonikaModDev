@@ -1099,6 +1099,14 @@ label monika_wine:
             m 2e "By all means, I'd happily wait for you if you were worried about feeling left out."
             m 3l "But if you {i}really{/i} wanted to try some, I guess I could give you one little sip."
             m "No more than that though!"
+        "I can, but you can't.":
+            m 1m "Oh... That only just makes me a little bit jealous."
+            m 1l "Knowing you can drink coffee {i}and{/i} wine without me."
+            m "Maybe you could let me try a sip sometime?"
+            m 1n "Just a little bit... Maybe..."
+            m 1j "Ahaha~ I'm only kidding, [player]."
+            m 5 "I really wouldn't want you to get in trouble."
+            m 1m "Ok, maybe I was only half kidding, but you don't have to share if it could get you in trouble."
         "I don't drink.":
             m 2g "Oh!"
             m 2p "Sorry, I didn't realize."
