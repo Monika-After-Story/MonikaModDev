@@ -6877,19 +6877,24 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                     return selected_date
                     
                 "Actually...":
+                    if no_confirm_count >= 2:
+                        jump .notwell
+
                     m 1lksdlb "Aha, I figured you weren't so sure."
                     m 1eka "Try again~"
+                    $ no_confirm_count += 1
 
         "No.":
             if no_confirm_count >= 2:
-                # are you not feeling well or something?
-                m 1eka "Are you feeling okay, [player]?"
-                m "If you don't remember right now, then we can do this again tomorrow, okay?"
+                label .notwell:
+                    # are you not feeling well or something?
+                    m 1eka "Are you feeling okay, [player]?"
+                    m "If you don't remember right now, then we can do this again tomorrow, okay?"
 
-                # reset the conditional to tomorrow
-                $ mas_chgCalEVul(1)
+                    # reset the conditional to tomorrow
+                    $ mas_chgCalEVul(1)
 
-                return "NOPE"
+                    return "NOPE"
 
             # otherwise try again
             m 1eka "Oh, that's wrong?"
