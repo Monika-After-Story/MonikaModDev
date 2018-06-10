@@ -144,7 +144,7 @@ init -1 python:
 
             # Can we select dates?
             self.can_select_date = select_date
-            # testign
+            # testing
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
             # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
@@ -370,6 +370,10 @@ init -1 python:
                 "mod_assets/calendar/calendar_day_disabled_bg.png"
             )
 
+            button_day_bg_hover = Image(
+                "mod_assets/calendar/calendar_day_hover_bg.png"
+            )
+
 
             # constant month and year text labels
             self.text_current_month = Text(
@@ -477,13 +481,12 @@ init -1 python:
                         outlines=[]
                     )
 
-                    # TODO: hover variants of the buttons
                     day_button = MASButtonDisplayable(
                         day_button_text,
                         day_button_text,
                         day_button_text,
                         button_day_bg,
-                        button_day_bg,
+                        button_day_bg_hover,
                         bg_disabled,
                         self.INITIAL_POSITION_X + (j * self.DAY_BUTTON_WIDTH),
                         initial_y + (i * self.DAY_BUTTON_HEIGHT),
