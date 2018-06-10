@@ -410,4 +410,5 @@ init 5 python:
 
 label bye_be_right_back:
     m 1e "Hurry back, dear."
+    $ farewell = store.mas_farewells.selectFarewell()
     return 'quit'
