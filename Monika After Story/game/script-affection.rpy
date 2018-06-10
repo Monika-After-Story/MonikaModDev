@@ -361,7 +361,7 @@ label monika_affection_nickname:
         "No":
             m 1f "Oh..."
             m 1o "Alright then, if you say so."
-            m 3e "Just tell me whenever you change your mind, [player]."
+            m 3e "Just tell me if you ever change your mind, [player]."
             $ done = True
     return
 
