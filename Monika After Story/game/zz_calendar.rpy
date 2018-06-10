@@ -934,7 +934,7 @@ init -1 python in mas_calendar:
             _date - datetime.date to add to
             year_param - data to put in the year part of the tuple
         """
-        _addEvent_md(ev_label, _date.month, ._date.day, year_param)
+        _addEvent_md(ev_label, _date.month, _date.day, year_param)
 
 
     def addEvent_evd(ev, _date, year_param):
