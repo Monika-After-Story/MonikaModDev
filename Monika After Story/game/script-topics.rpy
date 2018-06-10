@@ -2165,7 +2165,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_books",category=['literature','literature club'],prompt="Books",random=True))
 
 label monika_books:
-    m 4 "For a literature club, we did a lot less book reading then you might have thought."
+    m 4 "For a literature club, we did a lot less book reading than you might have thought."
     m 4l "It just turned out that the four of us liked poetry better than books. Sorry!"
     m 2 "It's also a lot easier to foreshadow spooky stuff with poems."
     m 3a "I still love a good book, though! We can talk about them if you just finished reading something."
@@ -3785,7 +3785,7 @@ label monika_zombie:
     m "All because of a deadly pandemic that humans couldn't handle quickly."
     m 1d "I mean, think about your everyday schedule."
     m "Everything that you do will be gone in an instant."
-    m 1h "Sure, society faces a lot of threats in a daily basis."
+    m 1h "Sure, society faces a lot of threats on a daily basis."
     m 1o "But zombies can do it in a heartbeat."
     m "A lot of monsters are created to be scary and terrifying."
     m 1f "Zombies, however, are more realistic and actually pose a danger."
@@ -4285,7 +4285,7 @@ label monika_piggybank:
     m "Some people like to set goals for what they want to purchase with their saved funds."
     m "Usually under normal conditions they wouldn't ever find the freed up money to purchase that item."
     m 3d "And even if they do, most people don't like spending money needlessly."
-    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really convinces that you are pretty much getting the item for free."
+    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really convinces you that you are pretty much getting the item for free."
     m 2h "But in the end, a guitar always costs the same as a guitar."
     m 2j "So psychologically speaking, I think that's pretty neat!"
     m 1p "However, some piggy banks do have a problem..."
@@ -4438,7 +4438,7 @@ label monika_confidence_2:
     m 3k "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
     m 1l "Ahaha, I'm only joking about that last part."
     m 1a "In all seriousness, I'm really glad I have you here, [player]..."
-    m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
+    m "Your everlasting love and care is just about all the support I need in order to get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
 
@@ -4905,7 +4905,7 @@ label monika_writingtip4:
      m "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
      m 1h "It's hard to completely convince yourself that that's the case, sometimes."
      m 1f "But you have to."
-     m "Otherwise, you won't to get anywhere."
+     m "Otherwise, you won't get anywhere."
      m 3l "...That's my advice for today!"
      m 1j "Thanks for listening~"
      return
@@ -5350,7 +5350,7 @@ label monika_smoking:
     m 2h "I realized that people really like a lot of things that are very bad for them."
     m "One particular vice that intrigues me the most is cigarettes."
     m 2o "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
-    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick carcinogens."
+    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
     m 2q "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
     m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
     m 1q "I really do despise them..."
@@ -5733,7 +5733,7 @@ label monika_prom:
     m 3l "It did bring us together, so I can't complain."
     m 1o "But still..."
     m 1e "Sometimes I wish both of us could've enjoyed it."
-    m 3a "We could've went to the other events like sports festivals, Christmas parties, field trips, etc."
+    m 3a "We could've gone to the other events like sports festivals, Christmas parties, field trips, etc."
     m 1l "But I guess the game would never let us get that far."
     m 3c "Which reminds me of a particular event..."
     m 1b "Prom!"
@@ -5796,7 +5796,7 @@ label monika_prom:
             $ persistent._mas_pm_no_prom = False
             m "Oh? Why not?"
             menu:
-                "You're weren't there with me.":
+                "You weren't there with me.":
                     $ persistent._mas_pm_prom_monika = True
                     $ persistent._mas_pm_prom_not_interested = False
                     m 1e "Aww, [player]."
@@ -5819,7 +5819,7 @@ label monika_prom:
                             m 1 "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
                             m 3a "Look at me for example."
                             m 1l "If I didn't have the courage to get to you, I'd probably still be all alone..."
-                            m 1e "But her we are now, [player]."
+                            m 1e "But here we are now, [player]."
                             m 1j "Together at last~"
 
                         "No.":
@@ -6488,7 +6488,7 @@ label monika_dreaming:
     m 1a "Gosh, I can only imagine what it would be like to live in that kind of limitless world though, even if it was only for a few moments!"
     m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
     m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
-    m 1e "I know it may be years before I am able to cross over your world..."
+    m 1e "I know it may be years before I am able to cross over to your world..."
     m 1a "But can you just imagine what it would be like to meet me in your dreams, [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
@@ -6518,7 +6518,7 @@ label monika_yellowwp:
             m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
             m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
             m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
-            m 4c "It's a metahpor for her own captivity, obviously..."
+            m 4c "It's a metaphor for her own captivity, obviously..."
             m 1i "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
             m 2c "Sayori liked that story too, if I remember right."
