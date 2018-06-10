@@ -99,6 +99,14 @@ init 10 python in mas_anni:
 
 
     ## functions that we need (runtime only)
+    def clean_cal_annis():
+        """
+        Goes through the calendar and cleans anniversary dates
+        """
+        # TODO:
+        #   loop over anni list and, using the dates, find the dates in
+        #   calendar and delete them
+
     def reset_annis(new_start_date):
         """
         Rest the anniversaries according to the new start date.

@@ -128,11 +128,6 @@ init -1 python in evhand:
     event_database = dict()
     farewell_database = dict()
     greeting_database = dict()
-    calendar_database = dict()
-    for i in range(1,13):
-        calendar_database[i] = dict()
-        for j in range(1,32):
-            calendar_database[i][j] = set()
 
     # special namedtuple type we are using
     from collections import namedtuple
@@ -243,7 +238,9 @@ init python:
         # if should not skip calendar check and event has a start_date
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
-            evhand.calendar_database[event.start_date.month][event.start_date.day].add((CAL_TYPE_EV,event.eventlabel,event.start_date.year))
+            store.mas_calendar.calendar_database[event.start_date.month][event.start_date.day].add(
+                (CAL_TYPE_EV,event.eventlabel,event.start_date.year)
+            )
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 

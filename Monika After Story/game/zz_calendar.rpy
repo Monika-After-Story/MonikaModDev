@@ -26,11 +26,8 @@
 init -1 python:
 
     import json
-
-    # special constants for Calendar Event types
-    CAL_TYPE_EV = 1
-    CAL_TYPE_REP = 2
-
+    from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
+    
     class CustomEncoder(json.JSONEncoder):
         """
         Custom JSONEncoder used to process sets
@@ -156,7 +153,7 @@ init -1 python:
             # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
 
             # database
-            self.database = evhand.calendar_database
+            self.database = calendar.calendar_database
 
             # background mask
             self.background = Solid(
@@ -718,10 +715,35 @@ init -1 python:
             raise renpy.IgnoreEvent()
 
 # calendar utils
+init -10 python in mas_calendar:
+    # special constants for Calendar Event types
+    CAL_TYPE_EV = 1
+    CAL_TYPE_REP = 2
+
+
 init -1 python in mas_calendar:
     import datetime
     import json
     import renpy
+
+    ### Calendar database stores events for repeating / processing and more.
+    #
+    # The first layer organizes the events by month.
+    # The second layer organizes the events by day.
+    # The third layer contains the events in sets, which effectively means
+    #   duplicates cannot be added.
+    # The fourth layer the event tuple, which consists of the following:
+    #   [0]: type of item this is (event or just a label)
+    #       (CAL_TYPE_EV, CAL_TYPE...)
+    #   [1]: key / identifier of this item (eventlabel if an event, some other
+    #       key for a label)
+    #   [2]: list of years this event exists in
+    #       IF None, this event repeats anually forever
+    calendar_database = dict()
+    for i in range(1,13):
+        calendar_database[i] = dict()
+        for j in range(1,32):
+            calendar_database[i][j] = set()
 
     # st/nd/rd/th mapping
     NUM_MAP = {
@@ -881,6 +903,296 @@ init -1 python in mas_calendar:
         """
         with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
             return json.load(fp)
+
+
+    ### ADD FUNCTIONS
+    def _addEvent_md(ev_label, month, day, year_param):
+        """
+        Adds an event to the calendar at a precise month / day
+
+        NOTE: no sanity checks are done for month / day
+
+        IN:
+            ev_label - eventlabel of the event to add
+            month - month to add to
+            day - day to add to
+            year_param - data to put in the year part of the tuple
+        """
+        calendar_database[month][day].add((
+            CAL_TYPE_EV,
+            ev_label,
+            year_param
+        ))
+
+
+    def addEvent_eld(ev_label, _date, year_param):
+        """
+        Adds an event to the calendar at a precise date.
+
+        IN:
+            ev_label - eventlabel of th event to add
+            _date - datetime.date to add to
+            year_param - data to put in the year part of the tuple
+        """
+        _addEvent_md(ev_label, _date.month, ._date.day, year_param)
+
+
+    def addEvent_evd(ev, _date, year_param):
+        """
+        Adds an event to the calendar at a preicse date.
+
+        IN:
+            ev - event to add
+            _date - datetime.date to add to
+            year_param - data to put in the year part of the tuple
+        """
+        addEvent_eld(ev.eventlabel, _date, year_param)
+
+
+    def addEvent_eldt(ev_label, _datetime, year_param):
+        """
+        Adds an event to the calendar at a precise datetime.
+
+        IN:
+            ev_label - eventlabel of the event to add
+            _datetime - datetime to add to
+            year_param - data to put in the year part of the tuple
+        """
+        addEvent_eld(ev_label, _datetime.date(), year_param)
+
+
+    def addEvent_evdt(ev, _datetime, year_param):
+        """
+        Adds an event to the calendar at a precise datetime.
+
+        IN:
+            ev - event to add
+            _datetime - datetime to add to
+            year_param - data to put in the year part of the tuple
+        """
+        addEvent_eldt(ev.eventlabel, _datetime, year_param)
+
+
+    def addEvent(ev, year_param):
+        """
+        Adds an event to the calendar accoridng to its start_date and end_date
+        properties. If start_date and end_date are not set in the given event,
+        this function will do nothing.
+
+        IN:
+            ev - event to add
+            year_param - data to put in the year part of the tuple
+        """
+        # TODO: range add an event
+
+
+    ### REMOVAL FUNCTIONS
+    def _findEvent_md(ev_label, month, day):
+        """
+        Finds the event tuple from the calendar at a precise month / day.
+
+        NOTE: no sanity checks are done for month / day
+
+        IN:
+            ev_label - eventlabel of the event to find
+            month - month we should look at for finding
+            day - day we should look at for finding
+
+        RETURNS:
+            the event tuple if it was found, None otherwise
+        """
+        _events = calendar_database[month][day]
+
+        for ev_tup in _events:
+            if ev_tup[0] == CAL_TYPE_EV and ev_tup[1] == ev_label:
+                return ev_tup
+
+        return None
+
+
+    def _removeEvent(ev_label, remove_all=False):
+        """
+        Removs an event from the calendar.
+
+        NOTE: O(n^2) efficieny, please avoid using this.
+
+        IN:
+            ev_label - eventlabel of the event to remove
+            remove_all - SEE removeEvent_el
+        """
+        for month in range(1,13):
+            _removeEvent_m(ev_label, month, remove_all=remove_all)
+
+
+    def _removeEvent_d(ev_label, day, remove_all=False):
+        """
+        Removes an event from the calendar on a particular day.
+
+        NOTE:
+            no sanity checks are done for day.
+
+        IN:
+            ev_label - eventlabel of the event to remove
+            day - day we should look at for removal
+            remove_all - SEE removeEvent_el
+        """
+        for month in range(1,13):
+            if not remove_all and _removeEvent_md(ev_label, month, day):
+                return
+
+    
+    def _removeEvent_m(ev_label, month, remove_all=False):
+        """
+        Removes an event from the calendar in a particular month.
+
+        NOTE:
+            no sanity checks are done for month
+
+        IN:
+            ev_label - eventlabel of the event to remove
+            month - month we should look at for removal
+            remove_all - SEE removeEvent_el
+        """
+        for day in range(1,32):
+            if not remove_all and _removeEvent_md(ev_label, month, day):
+                return
+
+
+    def _removeEvent_md(ev_label, month, day):
+        """
+        Removes an event from the calendar at a precise month / day.
+
+        NOTE: no sanity checks are done for month / day
+
+        IN:
+            ev_label - eventlabel of the event to remove
+            month - month we should look at for removal
+            day - day we should look at for removal
+
+        RETURNS:
+            True if we removed something, False otherwise
+        """
+        ev_tup = _findEvent_md(ev_label, month, day)
+
+        if ev_tup is not None:
+            calendar_database[month][day].discard(ev_tup)
+            return True
+
+        return False
+
+
+    def removeEvent_eld(ev_label, _date):
+        """
+        Removes an event from the calendar at a precise date.
+
+        IN:
+            ev_label - eventlabel of the event to remove
+            _date - datetime.date we should look at for event removal
+        """
+        _removeEvent_md(ev_label, _date.month, _date.day)
+
+
+    def removeEvent_evd(ev, _date):
+        """
+        Removes an event from the calendar at a precise date.
+
+        IN:
+            ev - event to remove
+            _date - datetime.date we should look at for event removal
+        """
+        removeEvent_eld(ev.eventlabel, _date)
+
+
+    def removeEvent_eldt(ev_label, _datetime):
+        """
+        Removes an event from the calendar at a precise datetime.
+
+        IN:
+            ev_label - eventlabel of the event to remove
+            _datetime - datetime we should look at for event removal
+        """
+        removeEvent_eld(ev_label, _datetime.date())
+
+
+    def removeEvent_evdt(ev, _datetime):
+        """
+        Removes and event from the calendar at a precise datetime.
+
+        IN:
+            ev - event to remove
+            _datetime - datetime.date we should look at for removal
+        """
+        removeEvent_eldt(ev.eventlabel, _datetime)
+
+
+    def removeEvent_el(ev_label, month=None, day=None, remove_all=False):
+        """
+        Removes an event from the calendar.
+
+        NOTE: The default params will check EVERY SINGLE calendar spot for the
+        event to remove. It is considered HIGHLY INEFFICIENT. Try to use the 
+        other removeEvent functions if possible, or narrow the search using
+        month and day.
+
+        NOTE:
+            Using both month and day will do the same check as removeEvent_eld
+
+        IN:
+            ev_label - eventlabel of the event to remove
+            month - If given (and a valid month), will only check the calendar
+                in the given month.
+                (Default: None)
+            day - If given (and a valid day), will only check the calendar
+                for the given day for each month
+                (Default: None)
+            remove_all - True means we remove every single occurence of the
+                given eventlabel. False means we only remove the first one we
+                find.
+                (Default: False)
+        """
+        # inital sanity checks
+        if month not in range(1,13):
+            month = None
+
+        if day not in range(1,32):
+            day = None
+
+        # now to see what operation we are doing
+        if month is not None and day is not None:
+            # ideally we want the user to pass in a month and day
+            _removeEvent_md(ev_label, month, day)
+
+        elif month is not None:
+            # probably common to clean a month of an event
+            _removeEvent_m(ev_label, month, remove_all=remove_all)
+
+        elif day is not None:
+            # less common to clean a particular day of each month
+            _removeEvent_d(ev_label, day, remove_all=remove_all)
+
+        else:
+            # full scan. hopefully no one does this
+            _removeEvent(ev_label, remove_all=remove_all)
+
+
+    def removeEvent_ev(ev, month=None, day=None, remove_all=False):
+        """
+        Removes an event from the calendar.
+
+        SEE removeEvent_el for important NOTES regarding this function.
+
+        IN:
+            ev - event to remove
+            month - SEE removeEvent_el
+            day - SEE removeEvent_el
+            remove_all - SEE removeEvent_el
+        """
+        removeEvent_el(
+            ev.eventlabel,
+            month=month,
+            day=day,
+            remove_all=remove_all
+        )
 
 
 init 100 python:
