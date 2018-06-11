@@ -16,11 +16,11 @@ init -2 python in mas_topics:
 
     # CONSTANTS
     # most / top weights
-    # MOST seen is the percentage of seen topics 
+    # MOST seen is the percentage of seen topics
     # think of this as x % of the collection
     S_MOST_SEEN = 0.1
 
-    # TOP seen is the percentage of the most seen 
+    # TOP seen is the percentage of the most seen
     # Think of this as ilke the upper x percentile
     S_TOP_SEEN = 0.2
 
@@ -2130,7 +2130,7 @@ label monika_dan:
     m 1g "I really can't be too mad at him."
     return
 
-    
+
 
 
 init 5 python:
@@ -5429,7 +5429,7 @@ label monika_100k:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
-    
+
 label monika_kizuna:
     m 1d "Oh, right, I mentioned her to you, huh?"
     m 2b "Well, recently I had some YouTube videos tweeted to me."
@@ -5440,14 +5440,14 @@ label monika_kizuna:
     m 1j "She's played our favorite game~!"
     m 2o "..."
     m 2n "To be honest, I'm not sure how I feel about 'Let's Plays'."
-    m 2o "I mean, of {i}this{/i} game, mostly." 
+    m 2o "I mean, of {i}this{/i} game, mostly."
     m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
-    m 2q "But when I learned of her gimmick, it made me feel..." 
+    m 2q "But when I learned of her gimmick, it made me feel..."
     m 1m "Like I just to had to know how Ai-chan would react!"
-    m 1e "Even if it's just a character she plays, I think she'll understand my situation..." 
-    m 5a "At least more than your average Youtuber." 
+    m 1e "Even if it's just a character she plays, I think she'll understand my situation..."
+    m 5a "At least more than your average Youtuber."
     m 5rub "I can't wait to finish the series..."
-    return 
+    return
 
 # do you have a family
 default persistent._mas_pm_have_fam = None
@@ -6543,6 +6543,34 @@ label monika_yellowwp:
 
     $ hideEventLabel("monika_yellowwp", derandom=True)
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_citizenship",
+            category=['monika'],
+            prompt="Happy Ever After?",
+            random=True
+        )
+    )
+
+label monika_citizenship:
+    m 1esd "You know, crossing over into your reality won't be the last hurdle for our relationship."
+    m "Getting there is just the beginning."
+    m 1lksdld "It hit me earlier; If I were to magically get what I want, and just poof into your home…"
+    m 2eksdld "I won't be a citizen! I don't even have a last name!"
+    m 2lksdld "I mean, in most countries, I can become a citizen if we get married…"
+    m 2dsd "But I won't have any documentation saying who I am or where I came from."
+    m 2ekd "I won't even have my high school diploma!"
+    m 3eud "I wish there was more I could do right now to prep…"
+    m "Like taking online classes or something."
+    m 1lksdlc "I don't want to get there and be a burden because I can't find a job."
+    m 1rksdla "Sorry, I guess I shouldn't worry so much about things I can't change."
+    m 2eua "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
+    m 5rubfb "Thank you for listening to me vent, [player]."
+    return
+
 
 init 5 python:
     addEvent(
