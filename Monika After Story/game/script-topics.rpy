@@ -6376,7 +6376,7 @@ label monika_backpacking:
     m 3esa "No responsibilities, no worries, no phones, no distractions."
     m 1esa "Just imagine the two of us, alone with nature..."
     m 1hua "The sounds of birds chirping and the wind blowing..."
-    m 1hua "Watching deer graze in the morning dew."
+    m 1hua "Watching deer graze in the morning dew..."
     m 1eka "I can't think of anything more peaceful."
     m 3esa "We can spend our days exploring mysterious forests, serene meadows, and rolling hills..."
     m 3hub "Maybe even discover a secluded lake and go for a swim."
