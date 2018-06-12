@@ -292,6 +292,10 @@ init python:
 
     def show_calendar():
         store.hkb_button.enabled = False
+
+        if not persistent._mas_first_calendar_check:
+            renpy.call('_first_time_calendar_use')
+
         renpy.call_in_new_context("mas_start_calendar_read_only")
         store.hkb_button.enabled = True
 

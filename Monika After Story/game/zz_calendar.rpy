@@ -1347,8 +1347,23 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
                             action Return(final_item[1])
 
-
-# labels for easy testing
+label _first_time_calendar_use:
+    m "Oh, I see you noticed that pretty calendar hanging in the wall, [player]"
+    m "It helps me to keep track of important events, ehehe~"
+    m "Feel free to check it whenever you want to."
+    m "Just click on it like you just did now~"
+    menu:
+        m "Wanna take a look at it now?"
+        "Yes!":
+            call mas_start_calendar_read_only
+            m "Finished checking it?"
+            m "Remember that you can always check it whenever you want."
+        "I'll pass":
+            m "It's okay, [player]"
+            m "Another time then, ehehe~"
+    $ store.hkb_button.enabled = True
+    $ persistent._mas_first_calendar_check = True
+    return
 
 label _mas_start_calendar(select_date=True):
 
@@ -1370,7 +1385,8 @@ label mas_start_calendar_select_date:
     call _mas_start_calendar(select_date=True)
     return _return
 
-
+# labels for easy testing
+#
 # label testing_calendar:
 #     m "I'm opening up the calendar"
 #     call mas_start_calendar_select_date
