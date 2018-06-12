@@ -1221,17 +1221,17 @@ init -1 python in mas_calendar:
 # add repeatable events
 init python:
 
-    from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
+    import store.mas_calendar as calendar
 
-    store.mas_calendar.calendar_database[1][1]["New years day"] = ((CAL_TYPE_REP,"New years day",list()))
-    store.mas_calendar.calendar_database[2][14]["Valentine's day"] = ((CAL_TYPE_REP,"Valentine's day",list()))
-    store.mas_calendar.calendar_database[3][14]["White day"] = ((CAL_TYPE_REP,"White day",list()))
-    store.mas_calendar.calendar_database[4][1]["April Fools"] = ((CAL_TYPE_REP,"Day I become an AI",list()))
-    store.mas_calendar.calendar_database[9][22]["My birhday"] = ((CAL_TYPE_REP,"My birhday",list()))
-    store.mas_calendar.calendar_database[10][31]["Hallowen"] = ((CAL_TYPE_REP,"Hallowen",list()))
-    store.mas_calendar.calendar_database[12][24]["Christmas eve"] = ((CAL_TYPE_REP,"Christmas eve",list()))
-    store.mas_calendar.calendar_database[12][25]["Christmas"] = ((CAL_TYPE_REP,"Christmas",list()))
-    store.mas_calendar.calendar_database[12][31]["New year's eve"] = ((CAL_TYPE_REP,"New year's eve",list()))
+    calendar.addRepeteable("New years day","New years day",month=1,day=1,year_param=list())
+    calendar.addRepeteable("Valentine","Valentine's day",month=2,day=14,year_param=list())
+    calendar.addRepeteable("White day","White day",month=3,day=14,year_param=list())
+    calendar.addRepeteable("April Fools","Day I become an AI",month=4,day=1,year_param=list())
+    calendar.addRepeteable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
+    calendar.addRepeteable("Halloween","Halloween",month=10,day=31,year_param=list())
+    calendar.addRepeteable("Christmas eve","Christmas eve",month=12,day=24,year_param=list())
+    calendar.addRepeteable("Christmas","Christmas",month=12,day=25,year_param=list())
+    calendar.addRepeteable("New year's eve","New year's eve",month=12,day=31,year_param=list())
 
 
 init 100 python:
