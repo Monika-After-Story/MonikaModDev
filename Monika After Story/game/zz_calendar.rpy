@@ -1,33 +1,13 @@
 # Calendar module
 # A custom made Calendar like UI to help managing date based events
-
-# TODO: add a calendar overlay and a calenar sprite to the background.
-# the background sprite is just attached to the spaceroom bg.
-#
-# the calendar overlay will have an empty idle image but a highlighted hover
-# image. It will only be enabled during idle modes (allow_dialgoue) and will
-# enable user to go straight to view mode of the calendar.
-
-# Do Calendar repeatable event logic here
-# init -1000 python:
-#     import store.evhand as evhand
-#
-#     evhand.calendar_database[2][14].add((CAL_TYPE_REP,"Valentine",None))
-#     evhand.calendar_database[12][25].add((CAL_TYPE_REP,"Christmas",None))
-#     evhand.calendar_database[3][14].add((CAL_TYPE_REP,"White day",None))
-#     evhand.calendar_database[12][31].add((CAL_TYPE_REP,"New year's eve",None))
-#     evhand.calendar_database[12][24].add((CAL_TYPE_REP,"Christmas eve",None))
-#     evhand.calendar_database[9][22].add((CAL_TYPE_REP,"My birhday",None))
-#     evhand.calendar_database[10][31].add((CAL_TYPE_REP,"Hallowen",None))
-
-
-
+# Contains also a store named mas_calendar which includes helper functions
+# to add Events to the calendar
 
 init -1 python:
 
     import json
     from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
-    
+
     class CustomEncoder(json.JSONEncoder):
         """
         Custom JSONEncoder used to process sets
@@ -48,7 +28,8 @@ init -1 python:
         import pygame
         import datetime
         import store.evhand as evhand
-        import store.mas_calendar as calendar
+        from store.mas_calendar import CAL_TYPE_REP
+        #import store.mas_calendar as calendar
 
         # CONSTANTS
 
@@ -144,16 +125,16 @@ init -1 python:
             # testing
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
+            # store.mas_calendar.calendar_database[6][6]["test"] = ((CAL_TYPE_REP,"test",list()))
+            # store.mas_calendar.calendar_database[6][6]["test2"] = ((CAL_TYPE_REP,"test2",list()))
+            # store.mas_calendar.calendar_database[6][6]["tes"] = ((CAL_TYPE_REP,"tes",list()))
+            # store.mas_calendar.calendar_database[6][6]["test3"] = ((CAL_TYPE_REP,"test3",list()))
+            # store.mas_calendar.calendar_database[6][6]["test5"] = ((CAL_TYPE_REP,"test5",list()))
+            # store.mas_calendar.calendar_database[6][6]["test6"] = ((CAL_TYPE_REP,"test6",list()))
+            # store.mas_calendar.calendar_database[6][6]["test7"] = ((CAL_TYPE_REP,"test7",list()))
 
             # database
-            self.database = calendar.calendar_database
+            self.database = store.mas_calendar.calendar_database
 
             # background mask
             self.background = Solid(
@@ -430,19 +411,26 @@ init -1 python:
 
                     # if this day is on the current month process the events that it may have
                     if current_date.month == self.selected_month:
+
                         # iterate through them
-                        for e in events[current_date.day]:
+                        for e in events[current_date.day].itervalues():
 
-                            # if the year is None or it's equal
-                            # TODO maybe make it a list?
-                            if not e[2] or e[2] == self.selected_year:
+                            # check for event type
+                            if e[0] == CAL_TYPE_EV:
+                                # retrieve the event
+                                ev = mas_getEV(e[1])
 
-                                # add it to the event labels
-                                if e[0] == CAL_TYPE_EV:
+                                # if the year is not None or it's contained in it's range
+                                if ev.years is not None and ( not ev.years or self.selected_year in ev.years):
+                                    # add it to the event labels
                                     event_labels.append(mas_getEVCL(e[1]))
-                                if e[0] == CAL_TYPE_REP:
+                            # non event type
+                            if e[0] == CAL_TYPE_REP:
+                                # if the year is not None or it's contained in it's range
+                                if e[2] is not None and ( not e[2] or self.selected_year in e[2]):
+                                    # add the non event
                                     event_labels.append(e[1])
-                                # add here specific processing depending on type
+
 
                         # if we have exactly 3 events
                         if len(event_labels) == 3:
@@ -495,7 +483,7 @@ init -1 python:
                     )
 
                     # if this day isn't on the current month
-                    if current_date.month != self.selected_month or (not self.can_select_date and not self.can_select_date):
+                    if current_date.month != self.selected_month or (not self.can_select_date and not many_events):
                         # disable the button
                         day_button.disable()
 
@@ -730,8 +718,8 @@ init -1 python in mas_calendar:
     #
     # The first layer organizes the events by month.
     # The second layer organizes the events by day.
-    # The third layer contains the events in sets, which effectively means
-    #   duplicates cannot be added.
+    # The third layer contains the events in dicts, key being the eventlabel
+    #   and the value the fourth layer element, this to prevent duplicates
     # The fourth layer the event tuple, which consists of the following:
     #   [0]: type of item this is (event or just a label)
     #       (CAL_TYPE_EV, CAL_TYPE...)
@@ -743,7 +731,7 @@ init -1 python in mas_calendar:
     for i in range(1,13):
         calendar_database[i] = dict()
         for j in range(1,32):
-            calendar_database[i][j] = set()
+            calendar_database[i][j] = dict()
 
     # st/nd/rd/th mapping
     NUM_MAP = {
@@ -918,9 +906,28 @@ init -1 python in mas_calendar:
             day - day to add to
             year_param - data to put in the year part of the tuple
         """
-        calendar_database[month][day].add((
+        calendar_database[month][day][ev_label] = ((
             CAL_TYPE_EV,
-            ev_label,
+            year_param
+        ))
+
+
+    def _addRepeteable_md(identifier, display_label, month, day, year_param):
+        """
+        Adds a repeatable to the calendar at a precise month / day
+
+        NOTE: no sanity checks are done for month / day
+
+        IN:
+            identifier - label of the event that it's unique
+            display_label - label that will be displayed
+            month - month to add to
+            day - day to add to
+            year_param - data to put in the year part of the tuple
+        """
+        calendar_database[month][day][identifier] = ((
+            CAL_TYPE_REP,
+            display_label,
             year_param
         ))
 
@@ -995,6 +1002,22 @@ init -1 python in mas_calendar:
         _delta = datetime.timedelta(days=1)
 
 
+    def addRepeteable(identifier, display_label, month, day, year_param):
+        """
+        Adds a repeatable to the calendar at a precise month / day
+        Sanity checks are done for month / day
+
+        IN:
+            identifier - label of the event that it's unique
+            display_label - label that will be displayed
+            month - month to add to
+            day - day to add to
+            year_param - data to put in the year part of the tuple
+        """
+        if month in range(1,13) and day in range(1,32):
+            _addRepeteable_md(identifier, display_label, month, day, year_param)
+
+
     ### REMOVAL FUNCTIONS
     def _findEvent_md(ev_label, month, day):
         """
@@ -1049,7 +1072,7 @@ init -1 python in mas_calendar:
             if not remove_all and _removeEvent_md(ev_label, month, day):
                 return
 
-    
+
     def _removeEvent_m(ev_label, month, remove_all=False):
         """
         Removes an event from the calendar in a particular month.
@@ -1139,7 +1162,7 @@ init -1 python in mas_calendar:
         Removes an event from the calendar.
 
         NOTE: The default params will check EVERY SINGLE calendar spot for the
-        event to remove. It is considered HIGHLY INEFFICIENT. Try to use the 
+        event to remove. It is considered HIGHLY INEFFICIENT. Try to use the
         other removeEvent functions if possible, or narrow the search using
         month and day.
 
@@ -1202,6 +1225,22 @@ init -1 python in mas_calendar:
             day=day,
             remove_all=remove_all
         )
+
+
+# add repeatable events
+init python:
+
+    import store.mas_calendar as calendar
+
+    calendar.addRepeteable("New years day","New years day",month=1,day=1,year_param=list())
+    calendar.addRepeteable("Valentine","Valentine's day",month=2,day=14,year_param=list())
+    calendar.addRepeteable("White day","White day",month=3,day=14,year_param=list())
+    calendar.addRepeteable("April Fools","Day I become an AI",month=4,day=1,year_param=list())
+    calendar.addRepeteable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
+    calendar.addRepeteable("Halloween","Halloween",month=10,day=31,year_param=list())
+    calendar.addRepeteable("Christmas eve","Christmas eve",month=12,day=24,year_param=list())
+    calendar.addRepeteable("Christmas","Christmas",month=12,day=25,year_param=list())
+    calendar.addRepeteable("New year's eve","New year's eve",month=12,day=31,year_param=list())
 
 
 init 100 python:
@@ -1349,7 +1388,23 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
                             action Return(final_item[1])
 
 
-# labels for easy testing
+label _first_time_calendar_use:
+    m 1eub "Oh, I see you noticed that pretty calendar hanging in the wall, [player]"
+    m "It helps me to keep track of important events, ehehe~"
+    m 1esd "Feel free to check it whenever you want to."
+    m 2hua "Just click on it like you just did now~"
+    menu:
+        m "Wanna take a look at it now?"
+        "Yes!":
+            call mas_start_calendar_read_only
+            m 2eua "Finished checking it?"
+            m 2eub "Remember that you can always check it whenever you want."
+        "I'll pass":
+            m 1eka "It's okay, [player]"
+            m 1hua "Another time then, ehehe~"
+    $ store.hkb_button.enabled = True
+    $ persistent._mas_first_calendar_check = True
+    return
 
 label _mas_start_calendar(select_date=True):
 
@@ -1371,7 +1426,8 @@ label mas_start_calendar_select_date:
     call _mas_start_calendar(select_date=True)
     return _return
 
-
+# labels for easy testing
+#
 # label testing_calendar:
 #     m "I'm opening up the calendar"
 #     call mas_start_calendar_select_date
