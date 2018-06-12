@@ -145,13 +145,13 @@ init -1 python:
             # testing
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            store.mas_calendar.calendar_database[6][6]["test"] = ((CAL_TYPE_REP,"test",list()))
-            store.mas_calendar.calendar_database[6][6]["test2"] = ((CAL_TYPE_REP,"test2",list()))
-            store.mas_calendar.calendar_database[6][6]["tes"] = ((CAL_TYPE_REP,"tes",list()))
-            store.mas_calendar.calendar_database[6][6]["test3"] = ((CAL_TYPE_REP,"test3",list()))
-            store.mas_calendar.calendar_database[6][6]["test5"] = ((CAL_TYPE_REP,"test5",list()))
-            store.mas_calendar.calendar_database[6][6]["test6"] = ((CAL_TYPE_REP,"test6",list()))
-            store.mas_calendar.calendar_database[6][6]["test7"] = ((CAL_TYPE_REP,"test7",list()))
+            # store.mas_calendar.calendar_database[6][6]["test"] = ((CAL_TYPE_REP,"test",list()))
+            # store.mas_calendar.calendar_database[6][6]["test2"] = ((CAL_TYPE_REP,"test2",list()))
+            # store.mas_calendar.calendar_database[6][6]["tes"] = ((CAL_TYPE_REP,"tes",list()))
+            # store.mas_calendar.calendar_database[6][6]["test3"] = ((CAL_TYPE_REP,"test3",list()))
+            # store.mas_calendar.calendar_database[6][6]["test5"] = ((CAL_TYPE_REP,"test5",list()))
+            # store.mas_calendar.calendar_database[6][6]["test6"] = ((CAL_TYPE_REP,"test6",list()))
+            # store.mas_calendar.calendar_database[6][6]["test7"] = ((CAL_TYPE_REP,"test7",list()))
 
             # database
             self.database = store.mas_calendar.calendar_database
@@ -503,7 +503,7 @@ init -1 python:
                     )
 
                     # if this day isn't on the current month
-                    if current_date.month != self.selected_month or (not self.can_select_date and not self.can_select_date):
+                    if current_date.month != self.selected_month or (not self.can_select_date and not many_events):
                         # disable the button
                         day_button.disable()
 
