@@ -42,7 +42,8 @@ init -500 python:
         True, # shown_count
         False, # diary_entry
         False, # rules
-        True # last_seen
+        True, # last_seen
+        False # years
     )
 
     # set defaults

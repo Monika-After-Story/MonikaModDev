@@ -106,7 +106,8 @@ python early:
             "shown_count":12,
             "diary_entry":13,
             "rules":14,
-            "last_seen":15
+            "last_seen":15,
+            "years":16
         }
 
         # name constants
@@ -141,7 +142,8 @@ python early:
                 unlock_date=None,
                 diary_entry=None,
                 rules=dict(),
-                last_seen=None
+                last_seen=None,
+                years=None
             ):
 
             # setting up defaults
@@ -191,7 +193,8 @@ python early:
                 0, # shown_count
                 diary_entry,
                 rules,
-                last_seen
+                last_seen,
+                years
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
