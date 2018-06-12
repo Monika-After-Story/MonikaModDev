@@ -1348,19 +1348,19 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
                             action Return(final_item[1])
 
 label _first_time_calendar_use:
-    m "Oh, I see you noticed that pretty calendar hanging in the wall, [player]"
+    m 1eub "Oh, I see you noticed that pretty calendar hanging in the wall, [player]"
     m "It helps me to keep track of important events, ehehe~"
-    m "Feel free to check it whenever you want to."
-    m "Just click on it like you just did now~"
+    m 1esd "Feel free to check it whenever you want to."
+    m 2hua "Just click on it like you just did now~"
     menu:
-        m "Wanna take a look at it now?"
+        m 2eub "Wanna take a look at it now?"
         "Yes!":
             call mas_start_calendar_read_only
-            m "Finished checking it?"
-            m "Remember that you can always check it whenever you want."
+            m 2eua "Finished checking it?"
+            m 2eub "Remember that you can always check it whenever you want."
         "I'll pass":
-            m "It's okay, [player]"
-            m "Another time then, ehehe~"
+            m 1eka "It's okay, [player]"
+            m 1hua "Another time then, ehehe~"
     $ store.hkb_button.enabled = True
     $ persistent._mas_first_calendar_check = True
     return
