@@ -1,27 +1,7 @@
 # Calendar module
 # A custom made Calendar like UI to help managing date based events
-
-# TODO: add a calendar overlay and a calenar sprite to the background.
-# the background sprite is just attached to the spaceroom bg.
-#
-# the calendar overlay will have an empty idle image but a highlighted hover
-# image. It will only be enabled during idle modes (allow_dialgoue) and will
-# enable user to go straight to view mode of the calendar.
-
-# Do Calendar repeatable event logic here
-# init -1000 python:
-#     import store.evhand as evhand
-#
-#     evhand.calendar_database[2][14].add((CAL_TYPE_REP,"Valentine",None))
-#     evhand.calendar_database[12][25].add((CAL_TYPE_REP,"Christmas",None))
-#     evhand.calendar_database[3][14].add((CAL_TYPE_REP,"White day",None))
-#     evhand.calendar_database[12][31].add((CAL_TYPE_REP,"New year's eve",None))
-#     evhand.calendar_database[12][24].add((CAL_TYPE_REP,"Christmas eve",None))
-#     evhand.calendar_database[9][22].add((CAL_TYPE_REP,"My birhday",None))
-#     evhand.calendar_database[10][31].add((CAL_TYPE_REP,"Hallowen",None))
-
-
-
+# Contains also a store named mas_calendar which includes helper functions
+# to add Events to the calendar
 
 init -1 python:
 
@@ -928,7 +908,26 @@ init -1 python in mas_calendar:
         """
         calendar_database[month][day][ev_label] = ((
             CAL_TYPE_EV,
-            ev_label,
+            year_param
+        ))
+
+
+    def _addRepeteable_md(identifier, display_label, month, day, year_param):
+        """
+        Adds a repeatable to the calendar at a precise month / day
+
+        NOTE: no sanity checks are done for month / day
+
+        IN:
+            identifier - label of the event that it's unique
+            display_label - label that will be displayed
+            month - month to add to
+            day - day to add to
+            year_param - data to put in the year part of the tuple
+        """
+        calendar_database[month][day][identifier] = ((
+            CAL_TYPE_REP,
+            display_label,
             year_param
         ))
 
@@ -992,6 +991,22 @@ init -1 python in mas_calendar:
             year_param - data to put in the year part of the tuple
         """
         # TODO: range add an event
+
+
+    def addRepeteable(identifier, display_label, month, day, year_param):
+        """
+        Adds a repeatable to the calendar at a precise month / day
+        Sanity checks are done for month / day
+
+        IN:
+            identifier - label of the event that it's unique
+            display_label - label that will be displayed
+            month - month to add to
+            day - day to add to
+            year_param - data to put in the year part of the tuple
+        """
+        if month in range(1,13) and day in range(1,32):
+            _addRepeteable_md(identifier, display_label, month, day, year_param)
 
 
     ### REMOVAL FUNCTIONS
@@ -1203,6 +1218,22 @@ init -1 python in mas_calendar:
         )
 
 
+# add repeatable events
+init python:
+
+    from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
+
+    store.mas_calendar.calendar_database[1][1]["New years day"] = ((CAL_TYPE_REP,"New years day",list()))
+    store.mas_calendar.calendar_database[2][14]["Valentine's day"] = ((CAL_TYPE_REP,"Valentine's day",list()))
+    store.mas_calendar.calendar_database[3][14]["White day"] = ((CAL_TYPE_REP,"White day",list()))
+    store.mas_calendar.calendar_database[4][1]["April Fools"] = ((CAL_TYPE_REP,"Day I become an AI",list()))
+    store.mas_calendar.calendar_database[9][22]["My birhday"] = ((CAL_TYPE_REP,"My birhday",list()))
+    store.mas_calendar.calendar_database[10][31]["Hallowen"] = ((CAL_TYPE_REP,"Hallowen",list()))
+    store.mas_calendar.calendar_database[12][24]["Christmas eve"] = ((CAL_TYPE_REP,"Christmas eve",list()))
+    store.mas_calendar.calendar_database[12][25]["Christmas"] = ((CAL_TYPE_REP,"Christmas",list()))
+    store.mas_calendar.calendar_database[12][31]["New year's eve"] = ((CAL_TYPE_REP,"New year's eve",list()))
+
+
 init 100 python:
     # calendar related but later
 
@@ -1347,13 +1378,14 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
                             action Return(final_item[1])
 
+
 label _first_time_calendar_use:
     m 1eub "Oh, I see you noticed that pretty calendar hanging in the wall, [player]"
     m "It helps me to keep track of important events, ehehe~"
     m 1esd "Feel free to check it whenever you want to."
     m 2hua "Just click on it like you just did now~"
     menu:
-        m 2eub "Wanna take a look at it now?"
+        m "Wanna take a look at it now?"
         "Yes!":
             call mas_start_calendar_read_only
             m 2eua "Finished checking it?"
