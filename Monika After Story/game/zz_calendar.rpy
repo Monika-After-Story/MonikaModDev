@@ -27,7 +27,7 @@ init -1 python:
 
     import json
     from store.mas_calendar import CAL_TYPE_EV,CAL_TYPE_REP
-    
+
     class CustomEncoder(json.JSONEncoder):
         """
         Custom JSONEncoder used to process sets
@@ -48,7 +48,8 @@ init -1 python:
         import pygame
         import datetime
         import store.evhand as evhand
-        import store.mas_calendar as calendar
+        from store.mas_calendar import CAL_TYPE_REP
+        #import store.mas_calendar as calendar
 
         # CONSTANTS
 
@@ -144,16 +145,16 @@ init -1 python:
             # testing
             # calendar.saveCalendarDatabase(CustomEncoder, evhand.calendar_database)
             # testing
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test2",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"tes",None))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test3",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test5",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test6",2018))
-            # evhand.calendar_database[6][6].add((CAL_TYPE_REP,"test7",2018))
+            store.mas_calendar.calendar_database[6][6]["test"] = ((CAL_TYPE_REP,"test",list()))
+            store.mas_calendar.calendar_database[6][6]["test2"] = ((CAL_TYPE_REP,"test2",list()))
+            store.mas_calendar.calendar_database[6][6]["tes"] = ((CAL_TYPE_REP,"tes",list()))
+            store.mas_calendar.calendar_database[6][6]["test3"] = ((CAL_TYPE_REP,"test3",list()))
+            store.mas_calendar.calendar_database[6][6]["test5"] = ((CAL_TYPE_REP,"test5",list()))
+            store.mas_calendar.calendar_database[6][6]["test6"] = ((CAL_TYPE_REP,"test6",list()))
+            store.mas_calendar.calendar_database[6][6]["test7"] = ((CAL_TYPE_REP,"test7",list()))
 
             # database
-            self.database = calendar.calendar_database
+            self.database = store.mas_calendar.calendar_database
 
             # background mask
             self.background = Solid(
@@ -430,19 +431,26 @@ init -1 python:
 
                     # if this day is on the current month process the events that it may have
                     if current_date.month == self.selected_month:
+
                         # iterate through them
-                        for e in events[current_date.day]:
+                        for e in events[current_date.day].itervalues():
 
-                            # if the year is None or it's equal
-                            # TODO maybe make it a list?
-                            if not e[2] or e[2] == self.selected_year:
+                            # check for event type
+                            if e[0] == CAL_TYPE_EV:
+                                # retrieve the event
+                                ev = mas_getEV(e[1])
 
-                                # add it to the event labels
-                                if e[0] == CAL_TYPE_EV:
+                                # if the year is not None or it's contained in it's range
+                                if ev.years is not None and ( not ev.years or self.selected_year in ev.years):
+                                    # add it to the event labels
                                     event_labels.append(mas_getEVCL(e[1]))
-                                if e[0] == CAL_TYPE_REP:
+                            # non event type
+                            if e[0] == CAL_TYPE_REP:
+                                # if the year is not None or it's contained in it's range
+                                if e[2] is not None and ( not e[2] or self.selected_year in e[2]):
+                                    # add the non event
                                     event_labels.append(e[1])
-                                # add here specific processing depending on type
+
 
                         # if we have exactly 3 events
                         if len(event_labels) == 3:
@@ -730,8 +738,8 @@ init -1 python in mas_calendar:
     #
     # The first layer organizes the events by month.
     # The second layer organizes the events by day.
-    # The third layer contains the events in sets, which effectively means
-    #   duplicates cannot be added.
+    # The third layer contains the events in dicts, key being the eventlabel
+    #   and the value the fourth layer element, this to prevent duplicates
     # The fourth layer the event tuple, which consists of the following:
     #   [0]: type of item this is (event or just a label)
     #       (CAL_TYPE_EV, CAL_TYPE...)
@@ -743,7 +751,7 @@ init -1 python in mas_calendar:
     for i in range(1,13):
         calendar_database[i] = dict()
         for j in range(1,32):
-            calendar_database[i][j] = set()
+            calendar_database[i][j] = dict()
 
     # st/nd/rd/th mapping
     NUM_MAP = {
@@ -918,7 +926,7 @@ init -1 python in mas_calendar:
             day - day to add to
             year_param - data to put in the year part of the tuple
         """
-        calendar_database[month][day].add((
+        calendar_database[month][day][ev_label] = ((
             CAL_TYPE_EV,
             ev_label,
             year_param
@@ -1040,7 +1048,7 @@ init -1 python in mas_calendar:
             if not remove_all and _removeEvent_md(ev_label, month, day):
                 return
 
-    
+
     def _removeEvent_m(ev_label, month, remove_all=False):
         """
         Removes an event from the calendar in a particular month.
@@ -1130,7 +1138,7 @@ init -1 python in mas_calendar:
         Removes an event from the calendar.
 
         NOTE: The default params will check EVERY SINGLE calendar spot for the
-        event to remove. It is considered HIGHLY INEFFICIENT. Try to use the 
+        event to remove. It is considered HIGHLY INEFFICIENT. Try to use the
         other removeEvent functions if possible, or narrow the search using
         month and day.
 

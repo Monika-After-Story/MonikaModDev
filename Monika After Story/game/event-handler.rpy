@@ -239,8 +239,8 @@ init python:
         # if should not skip calendar check and event has a start_date
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
-            store.mas_calendar.calendar_database[event.start_date.month][event.start_date.day].add(
-                (CAL_TYPE_EV,event.eventlabel,event.start_date.year)
+            store.mas_calendar.calendar_database[event.start_date.month][event.start_date.day][event.eventlabel] = (
+                (CAL_TYPE_EV,event.eventlabel)
             )
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
