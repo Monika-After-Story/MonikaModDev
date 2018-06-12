@@ -976,14 +976,23 @@ init -1 python in mas_calendar:
     def addEvent(ev, year_param):
         """
         Adds an event to the calendar accoridng to its start_date and end_date
-        properties. If start_date and end_date are not set in the given event,
+        properties. If start_date is not set in the given event,
         this function will do nothing.
 
         IN:
             ev - event to add
             year_param - data to put in the year part of the tuple
         """
-        # TODO: range add an event
+        start_date = ev.start_date
+
+        if start_date is None:
+            return
+
+        # TODO
+        # TODO
+        # TODO
+        end_date = ev.end_date
+        _delta = datetime.timedelta(days=1)
 
 
     ### REMOVAL FUNCTIONS

@@ -103,6 +103,8 @@ init 10 python in mas_anni:
         """
         Goes through the calendar and cleans anniversary dates
         """
+#        for anni in anni_db:
+#            ev = anni_db[anni]
         # TODO:
         #   loop over anni list and, using the dates, find the dates in
         #   calendar and delete them
