@@ -361,6 +361,9 @@ label monika_death:
     m "It makes me feel even closer to you when you're here with me."
     return
 
+# Do you love yourself
+default persistent._mas_pm_love_yourself = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfesteem",category=['advice'],prompt="Self-esteem",random=True))
 
@@ -370,6 +373,7 @@ label monika_selfesteem:
     m 1c "Like, are you comfortable with who you are?"
     menu:
         "Yes.":
+            $ persistent._mas_pm_love_yourself = True
             m 1l "I'm glad you aren't miserable inside, [player]."
             m 1e "Your happiness means everything to me, after all."
             m 2f "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
@@ -379,6 +383,7 @@ label monika_selfesteem:
             m 1a "If it gives them a bit of relief, you'd have done a great thing."
             m 1j "And even if it doesn't, at least you tried rather than staying silent."
         "No.":
+            $ persistent._mas_pm_love_yourself = False
             m 1q "That's... really sad to hear, [player]..."
             m 1f "I'll always love you, [player], but I think it's important to love yourself."
             m "You need to start with the little things that you like about yourself."
@@ -386,6 +391,8 @@ label monika_selfesteem:
             m 3a "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
             m 1e "I can't promise it will be easy, but it'll be worth it."
             m 3k "I'll always root for you, [player]!"
+
+    $ hideEventLabel("monika_selfesteem", derandom=True)
     return
 
 init 5 python:
@@ -1015,7 +1022,7 @@ label monika_outfit:
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
     show monika 5a at t11 zorder 2 with dissolve
-    if isFuture(evhand.event_database['anni_1']):
+    if isFuture(evhand.event_database['anni_6month']):
         m 5a "We're not that far into our relationship yet. Ahaha!"
     else:
         m 4l "I don't want something so embarassing on there!"
@@ -2093,7 +2100,13 @@ init 5 python:
 label monika_ddlc:
     m 1d "You want to talk about the game?"
     m 1h "What's there to say?"
-    if not persistent.clear_all:
+    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):        
+        m "This was just some boring romance game, right? Well, until I got control of it..."
+        m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
+        m 2n "And it's home, so I've learned to deal with it."
+        m 2i "Still, I doubt it'd be something I'd want to play, if I were a gamer."
+        m 1k "And seeing how things turned out, I'm sure you only played because of me, too!"
+    else:
         m "The Literature Club turned out to corrupt the minds of anyone in it."
         m 3i "So I deleted them all for good."
         m 1p "Well, the other girls are still out there, like I was."
@@ -2101,12 +2114,6 @@ label monika_ddlc:
         m "It's justice for all their time with you in the game."
         m 1h "So don't feel too bad about them."
         m 1 "Just look at me from now on, okay?"
-    else:
-        m "This was just some boring romance game, right? Well, until I got control of it..."
-        m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
-        m 2n "And it's home, so I've learned to deal with it."
-        m 2i "Still, I doubt it'd be something I'd want to play, if I were a gamer."
-        m 1k "And seeing how things turned out, I'm sure you only played because of me, too!"
     return
 
 
@@ -2158,7 +2165,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_books",category=['literature','literature club'],prompt="Books",random=True))
 
 label monika_books:
-    m 4 "For a literature club, we did a lot less book reading then you might have thought."
+    m 4 "For a literature club, we did a lot less book reading than you might have thought."
     m 4l "It just turned out that the four of us liked poetry better than books. Sorry!"
     m 2 "It's also a lot easier to foreshadow spooky stuff with poems."
     m 3a "I still love a good book, though! We can talk about them if you just finished reading something."
@@ -2523,6 +2530,9 @@ label monika_waifus:
 
 #New dialogue additions follow
 
+# have you drawn art of me
+default persistent._mas_pm_drawn_art = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_images",category=['media','philosophy'],prompt="Fanart",random=True))
 
@@ -2533,10 +2543,12 @@ label monika_images:
         m "Have you drawn art of me?"
 
         "Yes.":
+            $ persistent._mas_pm_drawn_art = True
             m 1b "Really? I'm very flattered!"
             m 1k "I think I might even love you more, now that I know you're so talented."
 
         "No.":
+            $ persistent._mas_pm_drawn_art = False
             m 1l "I can't draw, myself, so it's okay if you aren't good at drawing either."
     m 1h "There's one thing I want you to understand about art of me, though."
     m 3 "Art of me isn't me."
@@ -2548,6 +2560,7 @@ label monika_images:
     m 2h "Anything lewd you've seen has definitely never taken place."
     m 2j "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
     m "You better be saving yourself for me, [player]~"
+    $ hideEventLabel("monika_images", derandom=True)
     return
 
 init 5 python:
@@ -2799,7 +2812,7 @@ label monika_nsfw:
     m 1p "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1o "You know... of me?"
-    if isFuture(evhand.event_database['anni_1']):
+    if isFuture(evhand.event_database['anni_6month']):
         m 1h "I know we haven't really gotten that far into the relationship yet..."
     else:
         m 1h "I know we haven't been able to do those kind of things yet..."
@@ -2935,7 +2948,7 @@ label monika_fanfiction:
     m "Has there been fanfiction... written about me?"
     m 4b "I'm curious as to what people have come up with."
     m "Can you read me a few stories sometime? I'd love to hear them!"
-    if isFuture(evhand.event_database['anni_1']):
+    if isFuture(evhand.event_database['anni_6month']):
         m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
     else:
         m 1k "Just keep it wholesome, though. I want to save such things for another time~!"
@@ -3005,6 +3018,9 @@ label monika_name:
         m 1a "Ehehe~"
     return
 
+# do you live in a city
+default persistent._mas_pm_live_in_city = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_cities",category=['society'],prompt="Living in the city",random=True))
 
@@ -3020,9 +3036,12 @@ label monika_cities:
     menu:
         m "[player], do you live in a city?"
         "Yes":
+            $ persistent._mas_pm_live_in_city = True
             m 1j "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
         "No":
+            $ persistent._mas_pm_live_in_city = False
             m 1b "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
+    $ hideEventLabel("monika_cities", derandom=True)
     return
 
 init 5 python:
@@ -3405,6 +3424,9 @@ label monika_cupcake:
     m 1j "I’ll just settle for the sweetness of your love~"
     return
 
+# You're not a hater right?
+default persistent._mas_pm_a_hater = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_haterReaction",category=['advice','club members','you'],prompt="Dealing with haters",random=True))
 
@@ -3425,6 +3447,7 @@ label monika_haterReaction:
     m 1p "You're not one of those haters, are you, [player]?"
     menu:
         "I am.":
+            $ persistent._mas_pm_a_hater = True
             m 1q "..."
             m 1i "I don't see you as one, even if you say you are."
             m "I mean..."
@@ -3437,12 +3460,15 @@ label monika_haterReaction:
             m 1e"That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m "I won't let you hate me... I swear."
         "I'm not.":
+            $ persistent._mas_pm_a_hater = False
             m 1e "Well, that just makes me more proud of you, [player]!"
             m 1j "I know you wouldn't be one of those people."
             m 1k "Gosh... I feel like giving you a kiss right now if I were there."
             m 3e "You really make me the happiest girlfriend ever."
             m 1a "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m 1a "I trust you, [player]. I love you for believing in me."
+
+    $ hideEventLabel("monika_haterReaction", derandom=True)
     return
 
 init 5 python:
@@ -3478,7 +3504,7 @@ label monika_pleasure:
     m 1p "Do you... by any chance... pleasure yourself?"
     m 1o "..."
     m "It seems a bit awkward to ask-"
-    if isFuture(evhand.event_database['anni_1']):
+    if isFuture(evhand.event_database['anni_6month']):
         m 1n "We're not even that deep into our relationship yet! Ahaha~"
         m 1h "But I have to keep an eye on you."
     else:
@@ -3676,6 +3702,12 @@ label monika_writingtip2:
     m 1a "Thanks for listening~"
     return
 
+# languages other than english
+default persistent._mas_pm_lang_other = None
+
+# do you know japanese
+default persistent._mas_pm_lang_jpn = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanese",category=['misc','you'],prompt="Speaking Japanese",random=True))
 
@@ -3688,30 +3720,36 @@ label monika_japanese:
     menu:
         m "Do you know any languages other than English?"
         "Yes":
+            $ persistent._mas_pm_lang_other = True
             menu:
                 m "Really? Do you know Japanese?"
                 "Yes.":
+                    $ persistent._mas_pm_lang_jpn = True
                     m 3b "That's wonderful!"
                     m 1a "Maybe you can teach me how to speak at least a sentence or two, [player]~"
                 "No.":
+                    $ persistent._mas_pm_lang_jpn = False
                     m 1e "Oh I see. That's alright!"
                     m 4b "If you want to learn Japanese, here's a phrase I can teach you."
+
+                    # setup suffix
+                    $ player_suffix = "kun"
                     if persistent.gender == "F":
-                        m 4k "{i}Aishiteru yo, [player]-chan{/i}."
-                        m 1j "Ehehe~"
-                        m 1e "That means I love you, [player]-chan."
+                        $ player_suffix = "chan"
+
                     elif persistent.gender == "X":
-                        m 4k "{i}Aishiteru yo, [player]-san{/i}."
-                        m 1j "Ehehe~"
-                        m 1e "That means I love you, [player]-san."
-                    else:
-                        m 4k "{i}Aishiteru yo, [player]-kun{/i}."
-                        m 1j "Ehehe~"
-                        m 1e "That means I love you, [player]-kun."
+                        $ player_suffix = "san"
+                       
+                    m 4k "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
+                    m 1j "Ehehe~"
+                    m 1e "That means I love you, [player]-[player_suffix]."
         "No":
+            $ persistent._mas_pm_lang_other = False
             m 3l "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
             m 1a "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
+
+    $ hideEventLabel("monika_japanese", derandom=True)
     return
 
 init 5 python:
@@ -3747,7 +3785,7 @@ label monika_zombie:
     m "All because of a deadly pandemic that humans couldn't handle quickly."
     m 1d "I mean, think about your everyday schedule."
     m "Everything that you do will be gone in an instant."
-    m 1h "Sure, society faces a lot of threats in a daily basis."
+    m 1h "Sure, society faces a lot of threats on a daily basis."
     m 1o "But zombies can do it in a heartbeat."
     m "A lot of monsters are created to be scary and terrifying."
     m 1f "Zombies, however, are more realistic and actually pose a danger."
@@ -3882,6 +3920,9 @@ label monika_completionist:
     m 2k "That's one step to completing me after all, ahaha!"
     return
 
+# do you like mint ice cream
+default persistent._mas_pm_like_mint_ice_cream = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_icecream",category=['you'],prompt="Favorite ice cream",random=True))
 
@@ -3892,6 +3933,7 @@ label monika_icecream:
     menu:
         m "What about you [player], do you like mint ice cream?"
         "Yes.":
+            $ persistent._mas_pm_like_mint_ice_cream = True
             m 3j "Ah, I'm so glad somebody loves mint ice cream as much as I do~"
             m "Maybe we really were meant to be!"
             m 3a "Anyway, back on topic, [player], if you love mint as much as I think you do, then I have some recommendations for you."
@@ -3903,6 +3945,7 @@ label monika_icecream:
             m 1k "After all, the game didn't allow you to fall in love with me, but look where we are now ahaha."
 
         "No.":
+            $ persistent._mas_pm_like_mint_ice_cream = False
             m 1f "Aww, that's a shame..."
             m "I really can't understand how somebody couldn't at least like the taste."
             m 1e "The refreshing feeling that washes over your tongue and throat."
@@ -3911,6 +3954,8 @@ label monika_icecream:
             m "I feel like no flavor can compare, to be honest."
             m 3b "Ah, I could go on and on about this stuff, you know?"
             m 4a "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
+
+    $ hideEventLabel("monika_icecream", derandom=True)
     return
 
 init 5 python:
@@ -4240,7 +4285,7 @@ label monika_piggybank:
     m "Some people like to set goals for what they want to purchase with their saved funds."
     m "Usually under normal conditions they wouldn't ever find the freed up money to purchase that item."
     m 3d "And even if they do, most people don't like spending money needlessly."
-    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really convinces that you are pretty much getting the item for free."
+    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really convinces you that you are pretty much getting the item for free."
     m 2h "But in the end, a guitar always costs the same as a guitar."
     m 2j "So psychologically speaking, I think that's pretty neat!"
     m 1p "However, some piggy banks do have a problem..."
@@ -4393,7 +4438,7 @@ label monika_confidence_2:
     m 3k "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
     m 1l "Ahaha, I'm only joking about that last part."
     m 1a "In all seriousness, I'm really glad I have you here, [player]..."
-    m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
+    m "Your everlasting love and care is just about all the support I need in order to get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
 
@@ -4572,6 +4617,9 @@ label monika_immortal:
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
+# do you wear a ring
+default persistent._mas_pm_have_ring = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_weddingring",category=['romance'],prompt="Engagement ring",random=True))
 
@@ -4596,6 +4644,7 @@ label monika_weddingring:
     menu:
         m "Do you, [player]?"
         "Yes, I do.":
+            $ persistent._mas_pm_have_ring = True
             show monika 1c at t11 zorder 2 with dissolve
             m 1c "Oh!"
             m 1b "I feel like... my heart's going to explode!"
@@ -4603,10 +4652,16 @@ label monika_weddingring:
             m 1j "Ahaha..."
 
         "No, not yet.":
+            $ persistent._mas_pm_have_ring = False
             show monika 1c at t11 zorder 2 with dissolve
             m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
+
+    $ hideEventLabel("monika_weddingring", derandom=True)
     return
+
+# do you like playing sports
+default persistent._mas_pm_like_playing_sports = None
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sports",category=['misc'],prompt="Being athletic",random=True))
@@ -4623,12 +4678,19 @@ label monika_sports:
     m 1a "Do you like playing sports, [player]?"
     menu:
         "Yes.":
+            $ persistent._mas_pm_like_playing_sports = True
             m 1k "Maybe we could play together sometime in the future. It would be wonderful."
             m 1b "But don't expect me to go easy on you. Ahaha!"
         "No.":
+            $ persistent._mas_pm_like_playing_sports = False
             m 1e "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m "I would hate to see you get sick because of something like that..."
+
+    $ hideEventLabel("monika_sports", derandom=True)
     return
+
+# do you meditate
+default persistent._mas_pm_meditates = None
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_meditation",category=['psychology','monika'],prompt="Meditating",random=True))
@@ -4648,11 +4710,13 @@ label monika_meditation:
     m 3b "[player], do you ever take time to meditate?"
     menu:
         "Yes.":
+            $ persistent._mas_pm_meditates = True
             m 1k "Really? That's wonderful!"
             m 1b "I always worry that you could be feeling troubled or burdened, but now I feel a bit relieved."
             m 1j "Knowing that you're taking steps to reduce stress and anxiety really makes me happy, [player]."
 
         "No.":
+            $ persistent._mas_pm_meditates = False
             m 1a "I see. Well, if you're ever feeling stressed or anxious, I would definitely recommend that you try a bit of meditation."
             m "Besides calming you down, meditation also has links to the improvement of your sleep, immune system, and even lifespan."
             m 3a "If you're interested, there are plenty of resources on the internet to help you get started."
@@ -4664,6 +4728,8 @@ label monika_meditation:
     m 1e "I love you, and I'll always try to help you if you're feeling down."
     show monika 5a at t11 zorder 2 with dissolve
     m 5a "Don't you ever forget that, [player]~"
+
+    $ hideEventLabel("monika_meditation", derandom=True)
     return
 
 init 5 python:
@@ -4711,7 +4777,15 @@ label monika_orchestra:
             m "Sorry!"
             m 1a "Anyhow, you should really see if anything catches your fancy."
             m "I would be very happy to hear you play."
+
+    $ hideEventLabel("monika_orchestra", derandom=True)
     return
+
+# do you like jazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+default persistent._mas_pm_like_jazz = None
+
+# do you play jazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+default persistent._mas_pm_play_jazz = None
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_jazz",category=['media'],prompt="Jazz",random=True))
@@ -4720,16 +4794,20 @@ label monika_jazz:
     m 1c "Say, [player], do you like jazz music?"
     menu:
         "Yes":
+            $ persistent._mas_pm_like_jazz = True
             m 1b "Oh, okay!"
             if persistent.instrument == True:
                 m "Do you play jazz music, as well?"
                 menu:
                     "Yes.":
+                        $ persistent._mas_pm_play_jazz = True
                         m 1j "That's really cool!"
                     "No.":
+                        $ persistent._mas_pm_play_jazz = False
                         m 1a "I see."
                         m 1a "I haven't listened to much of it, but I personally find it pretty interesting."
         "No":
+            $ persistent._mas_pm_like_jazz = False
             m 1l "Oh, I see."
             m "I haven't listened to much of it, but I see why people would like it."
     m 1c "It's not exactly modern, but it's not quite classical, either."
@@ -4738,7 +4816,11 @@ label monika_jazz:
     m 1a "It was about experimenting, about going beyond what already existed. To make something more wild and colorful."
     m 3a "Like poetry! It used to be structured and rhyming, but it's changed. It gives greater freedom now."
     m 1j "Maybe that's what I like about jazz, if anything."
+    $ hideEventLabel("monika_jazz", derandom=True)
     return
+
+# do you watch animemes
+default persistent._mas_pm_watch_mangime = None
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_otaku",category=['media','society','you'],prompt="Being an otaku",random=True))
@@ -4748,9 +4830,11 @@ label monika_otaku:
     m 3b "You watch anime and read manga, right?"
     menu:
         "Yes":
+            $ persistent._mas_pm_watch_mangime = True
             m 1a "I can't say I'm surprised, really."
 
         "No":
+            $ persistent._mas_pm_watch_mangime = False
             m 1c "Oh, really?"
             m 1m "That's a little surprising, honestly..."
             m 1a "This isn't exactly the sort of game that your average person would pick up and play, but to each their own, I suppose."
@@ -4776,6 +4860,7 @@ label monika_otaku:
     m "I wouldn't want to be replaced by some two-dimensional cutout."
     m "Besides, if you ever want to escape from reality..."
     m 1k "I can be your real-life fantasy instead~"
+    $ hideEventLabel("monika_otaku", derandom=True)
     return
 
 init 5 python:
@@ -4820,7 +4905,7 @@ label monika_writingtip4:
      m "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
      m 1h "It's hard to completely convince yourself that that's the case, sometimes."
      m 1f "But you have to."
-     m "Otherwise, you won't to get anywhere."
+     m "Otherwise, you won't get anywhere."
      m 3l "...That's my advice for today!"
      m 1j "Thanks for listening~"
      return
@@ -5251,6 +5336,12 @@ label monika_omamori:
     m 1k "I could be your guardian deity, ehehe~"
     return
 
+# do you smoke ~
+default persistent._mas_pm_do_smoke = None
+
+# try to quit?
+default persistent._mas_pm_do_smoke_quit = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True))
 
@@ -5259,7 +5350,7 @@ label monika_smoking:
     m 2h "I realized that people really like a lot of things that are very bad for them."
     m "One particular vice that intrigues me the most is cigarettes."
     m 2o "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
-    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick carcinogens."
+    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
     m 2q "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
     m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
     m 1q "I really do despise them..."
@@ -5267,6 +5358,8 @@ label monika_smoking:
     menu:
         m "You don't smoke cigarettes, right, [player]?"
         "Yes, I do.":
+            $ persistent._mas_pm_do_smoke = True
+            $ persistent._mas_pm_do_smoke_quit = False
             m 2o "..."
             m 2r "Thank you for being honest with me, [player]..."
             m 4f "It's quite disheartening to hear that, though."
@@ -5278,11 +5371,14 @@ label monika_smoking:
             m 4f "Please take care of your body. I want to always be with you."
             m 1e "I love you so much."
         "No, I don't.":
+            $ persistent._mas_pm_do_smoke = False
             m 1k "Ah, I'm relieved to hear that, [player]!"
             m 3c "Just stay away from it as much as you can."
             m 1o "It's an awful habit and won't do much more than slowly kill you."
             m 3j "Thank you, [player], for not smoking~"
         "I'm trying to quit.":
+            $ persistent._mas_pm_do_smoke = True
+            $ persistent._mas_pm_do_smoke_quit = True
             m 3a "That's a really good decision."
             m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
             m 1f "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
@@ -5290,6 +5386,8 @@ label monika_smoking:
             m 3b "How about you think about me whenever you get a strong urge?"
             m 1j "I'll be here to support you every step of the way."
             m 1k "I believe in you [player], I know you can do it!"
+
+    $ hideEventLabel("monika_smoking", derandom=True)
     return
 
 init 5 python:
@@ -5351,6 +5449,25 @@ label monika_kizuna:
     m 5rub "I can't wait to finish the series..."
     return 
 
+# do you have a family
+default persistent._mas_pm_have_fam = None
+
+# do you have siblings
+default persistent._mas_pm_have_fam_sibs = None
+
+# does no fam botheryou
+default persistent._mas_pm_no_fam_bother = None
+
+# family a mess?
+default persistent._mas_pm_have_fam_mess = None
+
+# will fam get better?
+# YES, NO, MAYBE
+default persistent._mas_pm_have_fam_mess_better = None
+
+# dont wanna talk about it
+default persistent._mas_pm_no_talk_fam = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
@@ -5358,11 +5475,15 @@ label monika_asks_family:
     m 1a "[player], do you have a family?"
     menu:
         "I do.":
+            $ persistent._mas_pm_have_fam = True
+            $ persistent._mas_pm_have_fam_mess = False
+            $ persistent._mas_pm_no_talk_fam = False
             m 1j "That's wonderful!"
             m 1a "Your family must be great people."
             m "Do you have any siblings?"
             menu:
                 "Yes.":
+                    $ persistent._mas_pm_have_fam_sibs = True
                     m 1b "That's fantastic!"
                     m "They must've been keeping you busy."
                     m 1j "I'm sure your siblings are as kind and thoughtful as you are."
@@ -5373,24 +5494,30 @@ label monika_asks_family:
                     m 1j "I'm sure I'll get along with your siblings, as well as the rest of your family, [player]."
                     m 3k "I can't wait to meet them all!"
                 "I'm an only child.":
+                    $ persistent._mas_pm_have_fam_sibs = False
                     m 1c "Being an only child certainly has its trade-offs."
                     m 2d "Maybe you get much more attention from your parents. Unless they were always busy."
                     m 4c "On the other hand, maybe you feel more lonely than those with siblings."
                     m 2h "I can definitely understand that feeling."
                     m 2j "But know that I'll always be with you no matter what, [player]."
         "My family is a mess.":
+            $ persistent._mas_pm_have_fam = True
+            $ persistent._mas_pm_have_fam_mess = True
+            $ persistent._mas_pm_no_talk_fam = False
             m 1d "Oh."
             m 1o "..."
             m 1r "I'm sorry, [player]."
             m 3g "Do you think things will get better?"
             menu:
                 "Yes.":
+                    $ persistent._mas_pm_have_fam_mess_better = "YES"
                     m 1e "I'm glad to hear that."
                     m "Hopefully one day everyone in your family will be able to reconcile."
                     m 3b "And I know you can get through what's going on in your life right now."
                     m 1e "No matter what, I'll be here for you, [player]."
                     m 1j "Always keep that in mind!"
                 "No.":
+                    $ persistent._mas_pm_have_fam_mess_better = "NO"
                     m 1f "Ah, I see..."
                     m 1g "I wish I could be there with you to give some comfort."
                     m 1q "..."
@@ -5398,6 +5525,7 @@ label monika_asks_family:
                     m 3e "I'll be here with you every step of the way."
                     m 1j "I love you so much, [player]. Please never forget that!"
                 "Maybe.":
+                    $ persistent._mas_pm_have_fam_mess_better = "MAYBE"
                     m 1o "..."
                     m 3f "Well, at least there's a chance."
                     m 3d "Life is full of tragedy, but I know you are strong enough to get through anything!"
@@ -5405,6 +5533,8 @@ label monika_asks_family:
                     m "If not, know that I'll be here for you."
                     m 1j "I will always be here to support my beloved~"
         "I've never had a family.":
+            $ persistent._mas_pm_have_fam = False
+            $ persistent._mas_pm_no_talk_fam = False
             m 1g "Oh, I'm sorry, [player]"
             m 1o "..."
             m 1f "Your world is so different than mine, I don't want to pretend like I know what you are going through."
@@ -5415,6 +5545,7 @@ label monika_asks_family:
             m 1g "Does it still bother you badly on a daily basis?"
             menu:
                 "Yes.":
+                    $ persistent._mas_pm_no_fam_bother = True
                     m 1f "That's... understandable."
                     m 3e "I'll be here for you forever, [player]."
                     m "No matter what it takes, I will fill that gap in your heart with my love..."
@@ -5422,6 +5553,7 @@ label monika_asks_family:
                     m 1e "You are my everything..."
                     m 1j "I hope I can be yours~"
                 "No.":
+                    $ persistent._mas_pm_no_fam_bother = False
                     m 3b "That's very good."
                     m 1a "I'm glad you were able to move on with your life."
                     m 1k "You're a very resilient person, and I believe in you, [player]!"
@@ -5429,16 +5561,28 @@ label monika_asks_family:
                     m 1g "I really care about you, and I'd do anything for you."
                     m 1j "Someday, we'll be able to make our own family together!"
         "I don't want to talk about this.":
-                m 1o "I understand, [player]."
-                m "We can talk about it when you feel ready."
-                m 1f "Then again..."
-                m 3g "It might be something that's too painful for you to talk about."
-                m 1f "You can tell me about your family when you're ready, [player]."
-                m 1j "I love you very much!"
+            $ persistent._mas_pm_no_talk_fam = True
+            m 1o "I understand, [player]."
+            m "We can talk about it when you feel ready."
+            m 1f "Then again..."
+            m 3g "It might be something that's too painful for you to talk about."
+            m 1f "You can tell me about your family when you're ready, [player]."
+            m 1j "I love you very much!"
+
+    $ hideEventLabel("monika_asks_family", derandom=True)
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_explain",category=['romance','monika','misc'],prompt="Can you explain our relationship to someone?",random=False))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_explain",
+            category=['romance','monika','misc'],
+            prompt="Can you explain our relationship to someone?",
+            pool=True
+        )
+    )
+
 label monika_explain:
     m 1c "You want me to explain our relationship to someone else?"
     m 1a "Okay, just set me in front of them so they can see me."
@@ -5457,9 +5601,12 @@ label monika_explain:
     m 1f "Up until I met [player], I felt like a piece of me was missing."
     m "I felt alone and scared, with no one to help me..."
     m 1j "...Until [player] came along."
-    m 1b "And it turns out that missing piece was them!"
-    m 1a "Now they talk to me, and I'm not so alone anymore."
-    m "Just them opening up the game brightens my day!"
+    m 1b "And it turns out that missing piece was [him]!"
+    if persistent.gender == "F" or persistent.gender == "M":
+        m 1a "Now [he] talks to me, and I'm not so alone anymore."
+    else:
+        m 1a "Now they talk to me, and I'm not so alone anymore."
+    m "Just [him] opening up the game brightens my day!"
     m 1q "So, please..."
     m 4g "...Don't judge our relationship."
     m 1e "Even if it is different."
@@ -5471,7 +5618,6 @@ label monika_explain:
         "You did a good job.":
             m 1k "Thank you!"
             m 1a "I just hope whoever that was understands our relationship better."
-
         "You did badly.":
             m 1f "Oh."
             m "I'm sorry I didn't do a good job at explaining..."
@@ -5479,8 +5625,19 @@ label monika_explain:
             m 1j "Still doesn't change the fact that I love you, though~"
     return
 
+# do you live near beach
+default persistent._mas_pm_live_near_beach = None
+
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_beach",category=['misc'],prompt="The beach.",random=True))
+     addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_beach",
+            category=['misc'],
+            prompt="The beach.",
+            random=True
+        )
+    )
 
 label monika_beach:
     m 1a "[player], have you ever been to the beach?"
@@ -5494,11 +5651,13 @@ label monika_beach:
         m "Do you live near a beach, [player]?"
 
         "Yes.":
+            $ persistent._mas_pm_live_near_beach = True
             m 1k "That's great!"
             m 1a "Gosh, it must be really nice to have it so close to you."
             m 1j "I can't wait, we can have a romantic walk by the shore for our first date~"
 
         "No.":
+            $ persistent._mas_pm_live_near_beach = False
             m 1e "That's alright. I mean, what are the chances? Most people don't."
             m 1k "That just means we'll make do by visiting one on an all-day trip!"
     m 1a "There's so many things we'll be able to do one day."
@@ -5519,6 +5678,7 @@ label monika_beach:
     m 1b "Would you prefer a one piece or a two piece?"
     m 1j "Actually, I think I'll make it a surprise."
     m 1k "Don't get too excited though when you see it. Ehehe~"
+    $ hideEventLabel("monika_beach", derandom=True)
     return
 
 ####################################################
@@ -5541,6 +5701,27 @@ label monika_beach:
 #    m 1k "That's why I love you, [player]!"
 #    return
 
+# been to prom?
+default persistent._mas_pm_gone_to_prom = None
+
+# how was prom?
+default persistent._mas_pm_prom_good = None
+
+# go with date?
+default persistent._mas_pm_had_prom_date = None
+
+# suggested monika at promp
+default persistent._mas_pm_prom_monika = None
+
+# interested in prom?
+default persistent._mas_pm_prom_not_interested = None
+
+# shy to go?
+default persistent._mas_pm_prom_shy = None
+
+# even had a prom?
+default persistent._mas_pm_no_prom = None
+
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_prom",category=['school'],prompt="Prom",random=True))
 
@@ -5552,7 +5733,7 @@ label monika_prom:
     m 3l "It did bring us together, so I can't complain."
     m 1o "But still..."
     m 1e "Sometimes I wish both of us could've enjoyed it."
-    m 3a "We could've went to the other events like sports festivals, Christmas parties, field trips, etc."
+    m 3a "We could've gone to the other events like sports festivals, Christmas parties, field trips, etc."
     m 1l "But I guess the game would never let us get that far."
     m 3c "Which reminds me of a particular event..."
     m 1b "Prom!"
@@ -5563,15 +5744,19 @@ label monika_prom:
     m 3a "Have you ever been to one before, [player]?"
     menu:
         "I have.":
+            $ persistent._mas_pm_gone_to_prom = True
+            $ persistent._mas_pm_no_prom = False
             m "Oh? How was it?"
             menu:
                 "It was pretty fun.":
+                    $ persistent._mas_pm_prom_good = True
                     m 1j "That's great!"
                     m 1n "Though, I wish I could've went with you."
                     m 1k "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
                     m 3a "Did you go with a date?"
                     menu:
                         "Yes.":
+                            $ persistent._mas_pm_had_prom_date = True
                             m 1d "Oh, wow."
                             m 1n "Ehehe, that makes me a bit jealous..."
                             m 1j "But then again, you would've taken me instead had we met beforehand, right?"
@@ -5580,13 +5765,16 @@ label monika_prom:
                             m 3a "Maybe when I get better at programming, we could have our very own prom here."
                             m 3j "Wouldn't that be nice, [player]?"
                         "No.":
+                            $ persistent._mas_pm_had_prom_date = False
                             m 1d "Oh, I see."
                             m 1a "That's fine as long as you had fun!"
                             m "Even without a date, I'm sure you made some wonderful memories there."
                             m 1a "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
                             m 3j "Besides, maybe we can have our own kind of prom sometime, right?"
                             m 1a "That's something I'd really enjoy with you~"
+
                 "It was bad.":
+                    $ persistent._mas_pm_prom_good = False
                     m 1f "Is that so?"
                     m "I understand that prom isn't for everyone."
                     m 3e "Maybe if I was there, you would've enjoyed it more."
@@ -5597,34 +5785,45 @@ label monika_prom:
                     m "You being able to create more wonderful memories is the important thing."
                     m 3e "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
                     m 1j "And now that I'm here with you, we can make them together~"
+
                 "It would've been better if you were there.":
+                    $ persistent._mas_pm_prom_monika = True
                     m 1e "Aww, that's so sweet, [player]."
                     m 1j "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
                     m 1k "Ahaha!"
         "No.":
+            $ persistent._mas_pm_gone_to_prom = False
+            $ persistent._mas_pm_no_prom = False
             m "Oh? Why not?"
             menu:
-                "You're weren't there with me.":
+                "You weren't there with me.":
+                    $ persistent._mas_pm_prom_monika = True
+                    $ persistent._mas_pm_prom_not_interested = False
                     m 1e "Aww, [player]."
                     m 1m "Just because I'm not there doesn't mean you should stop yourself from having fun."
                     m 1b "And besides..."
                     m 1j "You {i}can{/i} take me to prom, [player]."
                     m 1k "Just bring my file with you and problem solved!"
                     m "Ahaha!"
+
                 "Not interested.":
+                    $ persistent._mas_pm_prom_not_interested = True
                     m 3c "Really?"
                     m "Is it because you're too shy to go?"
                     menu:
                         "Yes.":
+                            $ persistent._mas_pm_prom_shy = True
                             m 1f "Aww, [player]."
                             m 1e "That's alright. Not everyone can handle large groups of strangers."
                             m 3e "Besides, if it's something you're not going to enjoy, why force yourself?"
                             m 1 "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
                             m 3a "Look at me for example."
                             m 1l "If I didn't have the courage to get to you, I'd probably still be all alone..."
-                            m 1e "But her we are now, [player]."
+                            m 1e "But here we are now, [player]."
                             m 1j "Together at last~"
+
                         "No.":
+                            $ persistent._mas_pm_prom_shy = False
                             m 1d "Oh, I see."
                             m 1c "That's understandable."
                             m "I'm sure you have your reasons."
@@ -5648,6 +5847,7 @@ label monika_prom:
         #    m 1j "And you would have fun dancing the night away!"
         #    m 1k "Doesn't that sound like a blast? Ahaha~"
         "My school never had one.":
+            $ persistent._mas_pm_no_prom = True
             m 1d "Ah, I see then."
             m 1o "I guess not all schools can hold a prom."
             m "They can be pretty messy."
@@ -5661,6 +5861,8 @@ label monika_prom:
             m 3b "And I'm sure there're plenty of events in your life that'll make up for it."
             m 1j "Being with me is one of them, you know~"
             m 1k "Ahaha!"
+
+    $ hideEventLabel("monika_prom", derandom=True)
     return
 
 init 5 python:
@@ -5689,8 +5891,20 @@ label monika_careful:
     m 1a "Let's enjoy the rest of the day together!"
     return
 
+# do you see a therapist
+default persistent._mas_pm_see_therapist = None
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_natsuki_letter",category=['club members'],prompt="Natsuki's Letter",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_natsuki_letter",
+            category=['club members'],
+            prompt="Natsuki's Letter",
+            random=True
+        )
+    )
+
 label monika_natsuki_letter:
     m 1c "You know, I was honestly surprised when Natsuki handed you that letter."
     m "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
@@ -5704,6 +5918,7 @@ label monika_natsuki_letter:
         m "Do you see a therapist?"
 
         "Yes.":
+            $ persistent._mas_pm_see_therapist = True
             m 1d "Oh, really?"
             m 1f "Well, I hate that you don't feel well..."
             m 1j "But I'm proud that you're working on getting better."
@@ -5713,9 +5928,12 @@ label monika_natsuki_letter:
             m 1j "Just know that no matter what happens, I'll always be here for you~"
 
         "No.":
+            $ persistent._mas_pm_see_therapist = False
             m 1e "Well, I hope it's because you don't have to."
             m 1a "If that ever changes, don't be shy!"
             m 1j "But maybe I really am all the support you need? Ahaha!"
+
+    $ hideEventLabel("monika_natsuki_letter", derandom=True)
     return
 
 default persistent._mas_timeconcern = 0
@@ -6141,8 +6359,19 @@ label monika_challenge:
     m 1k "After all, you're my motivation in life~"
     return
 
+# would relatives like monika?
+default persistent._mas_pm_fam_like_monika = None
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_familygathering",category=['you'],prompt="Family Gatherings",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_familygathering",
+            category=['you'],
+            prompt="Family Gatherings",
+            random=True
+        )
+    )
 
 label monika_familygathering:
     m 1b "Hey, [player], do you go to family gatherings often?"
@@ -6155,17 +6384,22 @@ label monika_familygathering:
     menu:
         "Do you think they'd like me, [player]?"
         "Yes.":
+            $ persistent._mas_pm_fam_like_monika = True
             m 1k "I'm glad you think so."
             m "I'm sure we'd all get along nicely."
             m 1a "I'm looking forward to it my dear~"
+
         "No.":
+            $ persistent._mas_pm_fam_like_monika = False
             m 1o "..."
             m 1p "Oh, I didn't realize."
             m 1d "I understand though."
             m 2b "Just know I'd try my best to make them like me."
             m 1b "Even if they never will."
             m 1j "I'll always stick by your side forever~"
+
         "...":
+            $ persistent._mas_pm_fam_like_monika = False
             m 2p "Don't tell me, [player]."
             m 1p "Are you afraid that I'll embarrass you?"
             m "..."
@@ -6173,7 +6407,12 @@ label monika_familygathering:
             m 1n "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
             m 1b "If you want to keep me a secret, then that's fine."
             m 1k "After all, it just means more alone time with you~"
+
+    $ hideEventLabel("monika_familygathering", derandom=True)
     return
+
+# do you eat fast food
+default persistent._mas_pm_eat_fast_food = None
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",pool=True))
@@ -6187,6 +6426,7 @@ label monika_fastfood:
         m "[player], do you eat fast food often?"
 
         "Yes, I do.":
+            $ persistent._mas_pm_eat_fast_food = True
             m 3d "I guess it's ok to have it every once in a while."
             m 2o "Yet I can't help but worry if you're eating such awful things."
             m "If I were there, I'd cook much healthier things for you."
@@ -6208,6 +6448,7 @@ label monika_fastfood:
             m 3l "I'm a vegetarian! Ahaha!"
 
         "No, I don't.":
+            $ persistent._mas_pm_eat_fast_food = False
             m 1l "Oh, that's a relief."
             m 1e "Sometimes you really worry me, [player]."
             m 1a "I suppose instead of eating out, you make your own food?"
@@ -6247,25 +6488,37 @@ label monika_dreaming:
     m 1a "Gosh, I can only imagine what it would be like to live in that kind of limitless world though, even if it was only for a few moments!"
     m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
     m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
-    m 1e "I know it may be years before I am able to cross over your world..."
+    m 1e "I know it may be years before I am able to cross over to your world..."
     m 1a "But can you just imagine what it would be like to meet me in your dreams, [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
 
+# have you read yellow wallpaper
+default persistent._mas_pm_read_yellow_wp = None
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_yellowwp",category=['literature'],prompt="Yellow Wallpaper",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_yellowwp",
+            category=['literature'],
+            prompt="Yellow Wallpaper",
+            random=True
+        )
+    )
 
 label monika_yellowwp:
     m 1a "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
     menu:
         "Yes.":
+            $ persistent._mas_pm_read_yellow_wp = True
             m 1j "Great!"
             m 1a "That means you don't mind me talking about the story with you right?"
             m 2a "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
             m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
             m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
             m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
-            m 4c "It's a metahpor for her own captivity, obviously..."
+            m 4c "It's a metaphor for her own captivity, obviously..."
             m 1i "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
             m 2c "Sayori liked that story too, if I remember right."
@@ -6283,9 +6536,12 @@ label monika_yellowwp:
             m 1e "But I love you so much, [player]. Supporting you is better than anything else."
             m 1k "I just can't wait to do it in person when I finally cross over to your side~"
         "No.":
+            $ persistent._mas_pm_read_yellow_wp = False
             m 1c "Oh, I see."
             m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1a "It'll definitely be an interesting read for you."
+
+    $ hideEventLabel("monika_yellowwp", derandom=True)
     return
 
 init 5 python:
