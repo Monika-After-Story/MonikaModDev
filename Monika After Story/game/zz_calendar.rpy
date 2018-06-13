@@ -411,19 +411,20 @@ init -1 python:
 
                     # if this day is on the current month process the events that it may have
                     if current_date.month == self.selected_month:
+                        _todays_events = events[current_date.day]
 
                         # iterate through them
-                        for e in events[current_date.day].itervalues():
+                        for k in _todays_events:
+                            e = _todays_events[k]
 
                             # check for event type
                             if e[0] == CAL_TYPE_EV:
                                 # retrieve the event
-                                ev = mas_getEV(e[1])
+                                ev = mas_getEV(k)
 
-                                # if the year is not None or it's contained in it's range
-                                if ev.years is not None and ( not ev.years or self.selected_year in ev.years):
-                                    # add it to the event labels
-                                    event_labels.append(mas_getEVCL(e[1]))
+                                if self._isEvInYear(ev, self.selected_year):
+                                    event_labels.append(mas_getEVCL(k))
+
                             # non event type
                             if e[0] == CAL_TYPE_REP:
                                 # if the year is not None or it's contained in it's range
@@ -441,7 +442,7 @@ init -1 python:
                             if self.can_select_date:
                                 third_label = "and more events"
                             else:
-                                third_label = "see more"
+                                third_label = "(Click to see more)"
                                 ret_val = event_labels
 
                     # if we don't have any labels or less than 2
@@ -589,6 +590,26 @@ init -1 python:
                     self.selected_month = 12
                     self.selected_year = self.selected_year - 1
             self._setupDayButtons()
+
+
+        def _isEvInYear(self, ev, year):
+            """
+            Checks if the given event should appear in the given year.
+
+            IN:
+                ev - event to check
+                year - year to check
+
+            RETURNS: True if the given event belongs in the given year,
+                False otherwise
+            """
+            if ev.years is not None:
+                # empty list means we should always repeat this event
+                # otherwise we can just check if the given year is in the list
+                return len(ev.years) == 0 or year in ev.years
+
+            # otherwise, we check start date year
+            return ev.start_date is not None and ev.start_date.year == year
 
 
         def render(self, width, height, st, at):
@@ -894,7 +915,7 @@ init -1 python in mas_calendar:
 
 
     ### ADD FUNCTIONS
-    def _addEvent_md(ev_label, month, day, year_param):
+    def __addEvent_md(ev_label, month, day):
         """
         Adds an event to the calendar at a precise month / day
 
@@ -904,15 +925,13 @@ init -1 python in mas_calendar:
             ev_label - eventlabel of the event to add
             month - month to add to
             day - day to add to
-            year_param - data to put in the year part of the tuple
         """
         calendar_database[month][day][ev_label] = ((
             CAL_TYPE_EV,
-            year_param
         ))
 
 
-    def _addRepeteable_md(identifier, display_label, month, day, year_param):
+    def _addRepeatable_md(identifier, display_label, month, day, year_param):
         """
         Adds a repeatable to the calendar at a precise month / day
 
@@ -932,55 +951,32 @@ init -1 python in mas_calendar:
         ))
 
 
-    def addEvent_eld(ev_label, _date, year_param):
-        """
-        Adds an event to the calendar at a precise date.
-
-        IN:
-            ev_label - eventlabel of th event to add
-            _date - datetime.date to add to
-            year_param - data to put in the year part of the tuple
-        """
-        _addEvent_md(ev_label, _date.month, _date.day, year_param)
-
-
-    def addEvent_evd(ev, _date, year_param):
+    def addEvent_evd(ev, _date):
         """
         Adds an event to the calendar at a preicse date.
 
         IN:
             ev - event to add
             _date - datetime.date to add to
-            year_param - data to put in the year part of the tuple
         """
-        addEvent_eld(ev.eventlabel, _date, year_param)
+        __addEvent_md(
+            ev.eventlabel, 
+            _date.month,
+            _date.day
+        )
 
 
-    def addEvent_eldt(ev_label, _datetime, year_param):
-        """
-        Adds an event to the calendar at a precise datetime.
-
-        IN:
-            ev_label - eventlabel of the event to add
-            _datetime - datetime to add to
-            year_param - data to put in the year part of the tuple
-        """
-        addEvent_eld(ev_label, _datetime.date(), year_param)
-
-
-    def addEvent_evdt(ev, _datetime, year_param):
+    def addEvent_evdt(ev, _datetime):
         """
         Adds an event to the calendar at a precise datetime.
 
         IN:
             ev - event to add
-            _datetime - datetime to add to
-            year_param - data to put in the year part of the tuple
         """
-        addEvent_eldt(ev.eventlabel, _datetime, year_param)
+        addEvent_evd(ev, _datetime.date())
 
 
-    def addEvent(ev, year_param):
+    def addEvent(ev):
         """
         Adds an event to the calendar accoridng to its start_date and end_date
         properties. If start_date is not set in the given event,
@@ -988,21 +984,26 @@ init -1 python in mas_calendar:
 
         IN:
             ev - event to add
-            year_param - data to put in the year part of the tuple
         """
-        start_date = ev.start_date
-
-        if start_date is None:
+        if ev.start_date is None:
             return
 
-        # TODO
-        # TODO
-        # TODO
-        end_date = ev.end_date
-        _delta = datetime.timedelta(days=1)
+        if ev.end_date is None:
+            # if we don't have an end date, we assume that this is a single day
+            # event only.
+            addEvent_evdt(ev, ev.start_date)
+
+        else:
+            # otherwise, we need to iterate and add the appropriate days
+            _delta = datetime.timedelta(days=1)
+            curr_date = ev.start_date
+
+            while curr_date < ev.end_date:
+                addEvent_evdt(ev, curr_date)
+                curr_date += _delta
 
 
-    def addRepeteable(identifier, display_label, month, day, year_param):
+    def addRepeatable(identifier, display_label, month, day, year_param):
         """
         Adds a repeatable to the calendar at a precise month / day
         Sanity checks are done for month / day
@@ -1015,7 +1016,7 @@ init -1 python in mas_calendar:
             year_param - data to put in the year part of the tuple
         """
         if month in range(1,13) and day in range(1,32):
-            _addRepeteable_md(identifier, display_label, month, day, year_param)
+            _addRepeatable_md(identifier, display_label, month, day, year_param)
 
 
     ### REMOVAL FUNCTIONS
@@ -1035,9 +1036,14 @@ init -1 python in mas_calendar:
         """
         _events = calendar_database[month][day]
 
-        for ev_tup in _events:
-            if ev_tup[0] == CAL_TYPE_EV and ev_tup[1] == ev_label:
-                return ev_tup
+        if ev_label in _events:
+            _ev = _events[ev_label]
+            if _ev[0] == CAL_TYPE_EV:
+                # NOTE: we still check for event type in the case that a non
+                #   event was added to the _events dict and was given a key
+                #   that is also an eventlabel. We should avoid doing this, 
+                #   but it's certainly possible.
+                return _ev
 
         return None
 
@@ -1107,7 +1113,7 @@ init -1 python in mas_calendar:
         ev_tup = _findEvent_md(ev_label, month, day)
 
         if ev_tup is not None:
-            calendar_database[month][day].discard(ev_tup)
+            calendar_database[month][day].pop(ev_label)
             return True
 
         return False
@@ -1227,21 +1233,46 @@ init -1 python in mas_calendar:
         )
 
 
+    def removeEvent(ev):
+        """
+        Removes an event from the calendar using it's start_date and end_date
+        properties.
+
+        IN:
+            ev - event to remove
+        """
+        if ev.start_date is None:
+            return
+
+        if ev.end_date is None:
+            # no end date means we assume it's a single day to remove
+            removeEvent_evdt(ev, ev.start_date)
+
+        else:
+            # otherwise we iterate over a range
+            _delta = datetime.timedelta(days=1)
+            curr_date = ev.start_date
+
+            while curr_date < ev.end_date:
+                removeEvent_evdt(ev, curr_date)
+                curr_date += _delta
+
+
 # add repeatable events
 init python:
 
     import store.mas_calendar as calendar
 
-    calendar.addRepeteable("New years day","New years day",month=1,day=1,year_param=list())
-    calendar.addRepeteable("Valentine","Valentine's day",month=2,day=14,year_param=list())
-    calendar.addRepeteable("White day","White day",month=3,day=14,year_param=list())
-    calendar.addRepeteable("April Fools","Day I become an AI",month=4,day=1,year_param=list())
-    calendar.addRepeteable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
-    calendar.addRepeteable("Halloween","Halloween",month=10,day=31,year_param=list())
-    calendar.addRepeteable("Christmas eve","Christmas eve",month=12,day=24,year_param=list())
-    calendar.addRepeteable("Christmas","Christmas",month=12,day=25,year_param=list())
-    calendar.addRepeteable("New year's eve","New year's eve",month=12,day=31,year_param=list())
-
+    calendar.addRepeatable("New years day","New years day",month=1,day=1,year_param=list())
+    calendar.addRepeatable("Valentine","Valentine's day",month=2,day=14,year_param=list())
+    calendar.addRepeatable("White day","White day",month=3,day=14,year_param=list())
+    calendar.addRepeatable("April Fools","Day I become an AI",month=4,day=1,year_param=list())
+    calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
+    calendar.addRepeatable("Halloween","Halloween",month=10,day=31,year_param=list())
+    calendar.addRepeatable("Christmas eve","Christmas eve",month=12,day=24,year_param=list())
+    calendar.addRepeatable("Christmas","Christmas",month=12,day=25,year_param=list())
+    calendar.addRepeatable("New year's eve","New year's eve",month=12,day=31,year_param=list())
+    # TODO need to add the first_session in here
 
 init 100 python:
     # calendar related but later
