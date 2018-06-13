@@ -212,11 +212,11 @@ init -5 python in mas_sprites:
     FILE_EXT = ".png"
 
     ### [BLK001]
-    # non leanable clothes 
+    # non leanable clothes
     lean_clothes_blacklist = [
         "test"
     ]
-    
+
     ### [BLK002]
     # non leanable hair
     lean_hair_blacklist = [
@@ -903,7 +903,7 @@ init -5 python in mas_sprites:
             left - type of left side
             right - type of right side
             acs_list - list of MASAccessory objects
-                NOTE: this should the combined list because we don't have 
+                NOTE: this should the combined list because we don't have
                     layering in standing mode
 
         RETURNS:
@@ -1108,7 +1108,7 @@ init -2 python:
 
     # Monika character base
     class MASMonika(renpy.store.object):
-        import store.mas_sprites as mas_sprites 
+        import store.mas_sprites as mas_sprites
 
         # CONSTANTS
         PRE_ACS = 0 # PRE ACCESSORY
@@ -1134,7 +1134,7 @@ init -2 python:
             self.lean_acs_blacklist = []
 
             # accesories to be rendereed before the body
-            self.acs_pre = [] 
+            self.acs_pre = []
 
             # accessories to be rendreed between body and face expressions
             self.acs_mid = []
@@ -1225,7 +1225,7 @@ init -2 python:
                 or self.is_wearing_acs_in(accessory, self.PRE_ACS)
             )
 
-        
+
         def is_wearing_acs_in(self, accessory, acs_type):
             """
             Checks if the currently wearing the given accessory as the given
@@ -1343,7 +1343,7 @@ init -2 python:
 
             if acs_list is not None:
                 acs_list.append(accessory)
-                
+
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
 
@@ -1441,7 +1441,7 @@ init -2 python:
                 img_sit - file name of the sitting image
                 img_stand - file name of the standing image
                     IF this is not passed in, we assume the standing version
-                        has no accessory. 
+                        has no accessory.
                     (Default: "")
                 rec_layer - recommended layer to place this accessory
                     (Must be one the ACS types in MASMonika)
@@ -1452,7 +1452,7 @@ init -2 python:
                     regular versions (which means we don't need lean variants)
                     False means otherwise
                     NOTE: This means that the non-lean version works for ALL
-                    LEANING VERSIONS. If at least one lean version doesn't 
+                    LEANING VERSIONS. If at least one lean version doesn't
                     work, then you need separate versions, sorry.
                     (Default: False)
                 stay_on_start - True means the accessory is saved for next
@@ -1629,7 +1629,7 @@ init -1 python:
     # ACCESSORIES (IMG020)
     # Accessories are reprsentation of image objects with properties
     # Pleaes refer to MASAccesory to understand all the properties
-    # 
+    #
     # NAMING SCHEME:
     # mas_acs_<accessory name>
     #
@@ -1652,7 +1652,7 @@ init -1 python:
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
-    
+
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes
@@ -2112,6 +2112,20 @@ image monika 1eftsu = DynamicDisplayable(
     right="1r",
     arms="steepling",
     tears="streaming"
+)
+
+image monika 1eksdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
 )
 
 image monika 1wfx = DynamicDisplayable(
@@ -3371,6 +3385,20 @@ image monika 2eftsu = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 2eksdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
 image monika 2wfx = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -4628,6 +4656,20 @@ image monika 3eftsu = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 3eksdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
 image monika 3wfx = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5883,6 +5925,20 @@ image monika 4eftsu = DynamicDisplayable(
     right="2r",
     arms="pointright",
     tears="streaming"
+)
+
+image monika 4eksdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="def"
 )
 
 image monika 4wfx = DynamicDisplayable(
