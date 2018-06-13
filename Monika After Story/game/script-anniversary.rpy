@@ -32,8 +32,7 @@ init 10 python in mas_anni:
     ## functions that we need (runtime only)
     def _month_adjuster(ev, new_start_date, months, span):
         """
-        Adjusts the start_date / end_date / year properties of an anniversary
-        event.
+        Adjusts the start_date / end_date of an anniversary event.
 
         NOTE: do not use this for a non anniversary date
 
@@ -75,9 +74,19 @@ init 10 python in mas_anni:
         IN:
             new_start_date - new start date to reset anniversaries
         """
+        _firstsesh_id = "first_session"
+        _firstsesh_dt = renpy.game.persistent.sessions.get(
+            _firstsesh_id,
+            None
+        )
+
         # remove teh anniversaries off the calendar
         clean_cal_annis()
-        # TODO remove the first_session repeatable
+
+        # remove first session repeatable
+        if _firstsesh_dt:
+            # this exists! we can make this easy
+            mas_cal.removeRepeatable_dt(_firstsesh_id, _firstsesh_dt)
 
         # modify the anniversaries
         fullday = datetime.timedelta(days=1)
@@ -98,7 +107,14 @@ init 10 python in mas_anni:
 
         # re-add the events to the calendar db
         add_cal_annis()
-        # TODO re-add the first_session repeatable
+
+        # re-add the repeatable to the calendar db
+        mas_cal.addRepeatable_dt(
+            _firstsesh_id, 
+            "<3", 
+            new_start_date,
+            [new_start_date.year]
+        )
         
         
     def unlock_past_annis():

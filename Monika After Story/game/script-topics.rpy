@@ -6709,8 +6709,8 @@ label monika_dating_startdate:
                     return
 
                 # save the new date to persistent
-                $ persistent.sessions["first_session"] = _return
                 $ store.mas_anni.reset_annis(_return)
+                $ persistent.sessions["first_session"] = _return
                 $ renpy.persistent.save()
 
         m 1eua "If you ever forget, don't be afraid to ask me."

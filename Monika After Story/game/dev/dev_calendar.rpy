@@ -5,7 +5,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="dev_calendar_testing",
-            category=["dev",
+            category=["dev"],
             prompt="TEST CALENDAR",
             pool=True,
             random=True,

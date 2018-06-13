@@ -951,31 +951,6 @@ init -1 python in mas_calendar:
         ))
 
 
-    def addEvent_evd(ev, _date):
-        """
-        Adds an event to the calendar at a preicse date.
-
-        IN:
-            ev - event to add
-            _date - datetime.date to add to
-        """
-        __addEvent_md(
-            ev.eventlabel, 
-            _date.month,
-            _date.day
-        )
-
-
-    def addEvent_evdt(ev, _datetime):
-        """
-        Adds an event to the calendar at a precise datetime.
-
-        IN:
-            ev - event to add
-        """
-        addEvent_evd(ev, _datetime.date())
-
-
     def addEvent(ev):
         """
         Adds an event to the calendar accoridng to its start_date and end_date
@@ -1003,6 +978,31 @@ init -1 python in mas_calendar:
                 curr_date += _delta
 
 
+    def addEvent_evd(ev, _date):
+        """
+        Adds an event to the calendar at a preicse date.
+
+        IN:
+            ev - event to add
+            _date - datetime.date to add to
+        """
+        __addEvent_md(
+            ev.eventlabel, 
+            _date.month,
+            _date.day
+        )
+
+
+    def addEvent_evdt(ev, _datetime):
+        """
+        Adds an event to the calendar at a precise datetime.
+
+        IN:
+            ev - event to add
+        """
+        addEvent_evd(ev, _datetime.date())
+
+
     def addRepeatable(identifier, display_label, month, day, year_param):
         """
         Adds a repeatable to the calendar at a precise month / day
@@ -1017,6 +1017,43 @@ init -1 python in mas_calendar:
         """
         if month in range(1,13) and day in range(1,32):
             _addRepeatable_md(identifier, display_label, month, day, year_param)
+
+
+    def addRepeatable_d(identifier, display_label, _date, year_param):
+        """
+        Adds a repeatable to the calendar at precise datetime.date
+
+        IN:
+            identifier - identifier of the repeatable to add
+            display_label - label that will be displayed
+            _date - datetime.date to add to
+            year_param - data to put in the year part of the tuple
+        """
+        _addRepeatable_md(
+            identifier,
+            display_label,
+            _date.month,
+            _date.day,
+            year_param
+        )
+
+
+    def addRepeatable_dt(identifier, display_label, _datetime, year_param):
+        """
+        Adds a repeatable to the calendar at a precise datetime
+
+        IN:
+            identifier - identifier of the repeatable to add
+            display_label - label that will be displayed
+            _datetime - datetime to add to
+            year_param - data to put in the year part of the tuple
+        """
+        addRepeatable_d(
+            identifier,
+            display_label,
+            _datetime.date(),
+            year_param
+        )
 
 
     ### REMOVAL FUNCTIONS
@@ -1044,6 +1081,34 @@ init -1 python in mas_calendar:
                 #   that is also an eventlabel. We should avoid doing this, 
                 #   but it's certainly possible.
                 return _ev
+
+        return None
+
+
+    def _findRepeatable_md(identifier, month, day):
+        """
+        Finds the repeatable dtuple from the calendar at a precise month / day
+
+        NOTE: no sanity checks are done for month / day
+
+        IN:
+            identifier - the id of the repeatable to find
+            month - month we should look at for finding
+            day - day we should look at for finding
+
+        RETURNS:
+            the repeatable tuple if itw as found, None otherwise
+        """
+        _events = calendar_database[month][day]
+
+        if identifier in _events:
+            _rp = _events[identifier]
+            if _rp[0] == CAL_TYPE_REP:
+                # NOTE: we still check for repetable type in the case that an
+                #   event was added to the _events dict and was given a key
+                #   that is also an identifier. We should avoid doing this,
+                #   but it's certainly possible.
+                return _rp
 
         return None
 
@@ -1117,6 +1182,97 @@ init -1 python in mas_calendar:
             return True
 
         return False
+
+
+    def _removeRepeatable(identifier):
+        """
+        Removes a repeatable from teh calendar.
+
+        NOTE: O(n^2) efficiency, please avoid using this.
+
+        IN:
+            identifier - identifier of the repeatable to remove
+        """
+        for month in range(1,13):
+            _removeRepeatable_m(identifier, month)
+
+
+    def _removeRepeatable_d(identifier, day):
+        """
+        Removes a repeatable from teh calendar in a particular month.
+
+        NOTE: no sanity checks are done for day
+
+        IN:
+            identifier - identifier of the repeatable to remove
+            day - day we should look at for removal
+        """
+        for month in range(1,13):
+            if _removeRepeatable_md(identifier, month, day):
+                return
+
+
+    def _removeRepeatable_m(identifier, month):
+        """
+        Removes a repeatable from the calendar in a particular month.
+
+        NOTE: no sanity checks are done for month
+
+        IN:
+            identifier - identifier of the repeatable to remove
+            month - month we should look at for removal
+        """
+        for day in range(1,32):
+            if _removeRepeatable_md(identifier, month, day):
+                return
+
+
+    def _removeRepeatable_md(identifier, month, day):
+        """
+        Removes a repeatable from teh calendar at a precise month / day.
+
+        NOTE: no sanity checks are done for month / day
+
+        IN:
+            identifider - identifier of the repeatable to remove
+            month - month we should look at for removal
+            day - day we should look at for removal
+
+        RETURNS:
+            True if we removed somethign, False otherwise
+        """
+        rp_tup = _findRepeatable_md(identifier, month, day)
+
+        if rp_tup is not None:
+            calendar_database[month][day].pop(identifier)
+            return True
+
+        return False
+
+
+    def removeEvent(ev):
+        """
+        Removes an event from the calendar using it's start_date and end_date
+        properties.
+
+        IN:
+            ev - event to remove
+        """
+        if ev.start_date is None:
+            return
+
+        if ev.end_date is None:
+            # no end date means we assume it's a single day to remove
+            removeEvent_evdt(ev, ev.start_date)
+
+        else:
+            # otherwise we iterate over a range
+            _delta = datetime.timedelta(days=1)
+            curr_date = ev.start_date
+
+            while curr_date < ev.end_date:
+                removeEvent_evdt(ev, curr_date)
+                curr_date += _delta
 
 
     def removeEvent_eld(ev_label, _date):
@@ -1233,29 +1389,69 @@ init -1 python in mas_calendar:
         )
 
 
-    def removeEvent(ev):
+    def removeRepeatable(identifier, month=None, day=None):
         """
-        Removes an event from the calendar using it's start_date and end_date
-        properties.
+        Removes a repeatable from the calendar.
+
+        NOTE: The default params will check EVERY SINGLE calendar spot for the
+        repeatable to remove. It is considered HIGHLY INEFFICIENT. Try to use
+        the other removeRepeatable functions if possible, or narrow the search
+        using month and day.
 
         IN:
-            ev - event to remove
+            identifier - identifier of the repeatable to remove
+            month - If given (and a valid month), will only check the calendar
+                in the given month.
+                (Default: None)
+            day - If given (and a valid day), will only check the calendar for
+                the given day for reach month
+                (Default: None)
         """
-        if ev.start_date is None:
-            return
+        # inital sanity checks
+        if month not in range(1,13):
+            month = None
 
-        if ev.end_date is None:
-            # no end date means we assume it's a single day to remove
-            removeEvent_evdt(ev, ev.start_date)
+        if day not in range(1,32):
+            day = None
+
+        # now to see which operation we are doing
+        if month is not None and day is not None:
+            # ideally we want the user to pass in a month and day
+            _removeRepeatable_md(identifier, month, day)
+
+        elif month is not None:
+            # probably common to clean a month
+            _removeRepeatable_m(identifier, month)
+
+        elif day is not None:
+            # less common to clean a particular day of a month
+            _removeRepeatable_d(identifier, day)
 
         else:
-            # otherwise we iterate over a range
-            _delta = datetime.timedelta(days=1)
-            curr_date = ev.start_date
+            # full scan, hopefully no one does this
+            _removeRepeatable(identifier)
 
-            while curr_date < ev.end_date:
-                removeEvent_evdt(ev, curr_date)
-                curr_date += _delta
+
+    def removeRepeatable_d(identifier, _date):
+        """
+        Removes a repeatable from teh calendar at a precise datetime.date
+
+        IN:
+            identifier - identifier of the repeatable to remove
+            _date - datetime.date we should look at for removal
+        """
+        _removeRepeatable_md(identifier, _date.month, _date.day)
+
+    
+    def removeRepeatable_dt(identifier, _datetime):
+        """
+        Removes a repeatable from teh calendar at aprecise datetime
+
+        IN:
+            identifier - identifier of the repeatable to remove
+            _datetime - datetime we should look at for removal
+        """
+        removeRepeatable_d(identifier, _datetime.date())
 
 
 # add repeatable events
@@ -1272,7 +1468,20 @@ init python:
     calendar.addRepeatable("Christmas eve","Christmas eve",month=12,day=24,year_param=list())
     calendar.addRepeatable("Christmas","Christmas",month=12,day=25,year_param=list())
     calendar.addRepeatable("New year's eve","New year's eve",month=12,day=31,year_param=list())
-    # TODO need to add the first_session in here
+
+    # add inital session
+    if (
+        persistent.sessions is not None
+        and "first_session" in persistent.sessions
+        and persistent.sessions["first_session"] is not None
+    ):
+        calendar.addRepeatable_dt(
+            "first_session", 
+            "<3",
+            persistent.sessions["first_session"],
+            year_param=[persistent.sessions["first_session"].year]
+        )
+
 
 init 100 python:
     # calendar related but later
