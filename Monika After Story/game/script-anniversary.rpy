@@ -1,78 +1,9 @@
-init python:
-    import datetime
-
-    def add_years(initial_date, years):
-        """
-        ASSUMES:
-            initial_date as datetime
-            years as an int
-
-        IN:
-            initial_date: the date to add years to
-            years : the number of years to add
-
-        RETURNS:
-            the date with the years added, if it's feb 29th it goes to mar 1st,
-            if feb 29 doesn't exists in the new year
-        """
-        try:
-
-            # Simply add the years using replace
-            return initial_date.replace(year=initial_date.year + years)
-        except ValueError:
-
-            # We handle the only exception feb 29
-            return  initial_date + (datetime.date(initial_date.year + years, 1, 1)
-                                - datetime.date(initial_date.year, 1, 1))
-
-
-    #Takes a datetime object and add a number of months
-    #Handles the case where the new month doesn't have that day
-    def add_months(starting_date,months):
-        old_month=starting_date.month
-        old_year=starting_date.year
-        old_day=starting_date.day
-
-        # get the total of months
-        total_months = old_month + months
-
-        # get the new month based on date
-        new_month = total_months % 12
-
-        # handle december specially
-        new_month = 12 if new_month == 0 else new_month
-
-        # get the new year
-        new_year = old_year + int(total_months / 12)
-        if new_month == 12:
-            new_year -= 1
-
-        #Try adding a month, if that doesn't work (there aren't enough days in the month)
-        #keep subtracting days till it works.
-        date_worked=False
-        reduce_days=0
-        while reduce_days<=3 and not date_worked:
-            try:
-                new_date = starting_date.replace(year=new_year,month=new_month,day=old_day-reduce_days)
-                date_worked = True
-            except ValueError:
-                reduce_days+=1
-
-        if not date_worked:
-            raise ValueError('Adding months failed')
-
-        return new_date
-
-    #Takes a datetime object and returns a new datetime with the same date
-    #at 3 AM
-    def start_of_day(starting_date):
-        new_date = starting_date.replace(hour=3,minute=0,second=0,microsecond=0)
-
-        return new_date
-
 
 init 10 python in mas_anni:
     import store.evhand as evhand
+    import store.mas_calendar as mas_cal
+    import store.mas_utils as mas_utils
+    import datetime
 
     # we are going to store all anniversaries in antther db as well so we
     # can easily reference them later.
@@ -99,32 +30,95 @@ init 10 python in mas_anni:
 
 
     ## functions that we need (runtime only)
+    def _month_adjuster(ev, new_start_date, months, span):
+        """
+        Adjusts the start_date / end_date / year properties of an anniversary
+        event.
+
+        NOTE: do not use this for a non anniversary date
+
+        IN:
+            ev - event to adjust
+            new_start_date - new start date to calculate the event's dates
+            months - number of months to advance
+            span - the time from the event's new start_date to end_date
+        """
+        ev.start_date = mas_utils.add_months(
+            mas_utils.sod(new_start_date), 
+            months
+        )
+        ev.end_date = ev.start_date + span
+
+
+    def add_cal_annis():
+        """
+        Goes through the anniversary database and adds them to the calendar
+        """
+        for anni in anni_db:
+            ev = anni_db[anni]
+            mas_cal.addEvent(ev)
+
+
     def clean_cal_annis():
         """
         Goes through the calendar and cleans anniversary dates
         """
-#        for anni in anni_db:
-#            ev = anni_db[anni]
-        # TODO:
-        #   loop over anni list and, using the dates, find the dates in
-        #   calendar and delete them
+        for anni in anni_db:
+            ev = anni_db[anni]
+            mas_cal.removeEvent(ev)
+
 
     def reset_annis(new_start_date):
         """
-        Rest the anniversaries according to the new start date.
+        Reset the anniversaries according to the new start date.
 
         IN:
             new_start_date - new start date to reset anniversaries
         """
-        # TODO:
-        #   go through anniversary database and clean up start dates and
-        #   what not. probalby need to use the event handler future/past
-        #   functions
+        # remove teh anniversaries off the calendar
+        clean_cal_annis()
+        # TODO remove the first_session repeatable
 
+        # modify the anniversaries
+        fullday = datetime.timedelta(days=1)
+        _month_adjuster(anni_db["anni_1month"], new_start_date, 1, fullday)
+        _month_adjuster(anni_db["anni_3month"], new_start_date, 3, fullday)
+        _month_adjuster(anni_db["anni_6month"], new_start_date, 6, fullday)
+        _month_adjuster(anni_db["anni_1"], new_start_date, 12, fullday)
+        _month_adjuster(anni_db["anni_2"], new_start_date, 24, fullday)
+        _month_adjuster(anni_db["anni_3"], new_start_date, 36, fullday)
+        _month_adjuster(anni_db["anni_4"], new_start_date, 48, fullday)
+        _month_adjuster(anni_db["anni_5"], new_start_date, 60, fullday)
+        _month_adjuster(anni_db["anni_10"], new_start_date, 120, fullday)
+        _month_adjuster(anni_db["anni_20"], new_start_date, 240, fullday)
+        _month_adjuster(anni_db["anni_50"], new_start_date, 600, fullday)
+        _month_adjuster(anni_db["anni_100"], new_start_date, 1200, fullday)
+
+        unlock_past_annis()
+
+        # re-add the events to the calendar db
+        add_cal_annis()
+        # TODO re-add the first_session repeatable
+        
+        
+    def unlock_past_annis():
+        """
+        Goes through the anniversary database and unlocks the events that
+        already past.
+        """
+        for anni in anni_db:
+            ev = anni_db[anni]
+            
+            if evhand._isPast(ev):
+                renpy.game.persistent._seen_ever[anni] = True
+                ev.unlocked = True
 
 
 init 5 python:
-    anni_date=start_of_day(persistent.sessions['first_session'])+datetime.timedelta(days=7)
+    anni_date=(
+        store.mas_utils.sod(persistent.sessions['first_session']) +
+        datetime.timedelta(days=7)
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -153,7 +147,10 @@ label anni_1week:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),1)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        1
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -188,7 +185,10 @@ label anni_1month:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),3)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        3
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -219,7 +219,10 @@ label anni_3month:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),6)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        6
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -260,7 +263,10 @@ label anni_6month:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),12)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        12
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -291,7 +297,10 @@ label anni_1:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),24)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        24
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -324,7 +333,10 @@ label anni_2:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),36)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        36
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -333,7 +345,7 @@ init 5 python:
             category=["anniversary"],
             action=EV_ACT_QUEUE,
             start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=3)
+            end_date=anni_date+datetime.timedelta(days=1)
         )
     )
     del anni_date
@@ -355,7 +367,10 @@ label anni_3:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),48)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        48
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -364,7 +379,7 @@ init 5 python:
             category=["anniversary"],
             action=EV_ACT_QUEUE,
             start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=7)
+            end_date=anni_date+datetime.timedelta(days=1)
         )
     )
     del anni_date
@@ -385,7 +400,10 @@ label anni_4:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),60)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        60
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -394,7 +412,7 @@ init 5 python:
             category=["anniversary"],
             action=EV_ACT_QUEUE,
             start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=7)
+            end_date=anni_date+datetime.timedelta(days=1)
         )
     )
     del anni_date
@@ -414,7 +432,10 @@ label anni_5:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),120)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        120
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -423,7 +444,7 @@ init 5 python:
             category=["anniversary"],
             action=EV_ACT_QUEUE,
             start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=30)
+            end_date=anni_date+datetime.timedelta(days=1)
         )
     )
     del anni_date
@@ -441,7 +462,10 @@ label anni_10:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),240)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        240
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -450,7 +474,7 @@ init 5 python:
             category=["anniversary"],
             action=EV_ACT_QUEUE,
             start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=365)
+            end_date=anni_date+datetime.timedelta(days=1)
         )
     )
     del anni_date
@@ -473,7 +497,10 @@ label anni_20:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),600)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        600
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -482,7 +509,7 @@ init 5 python:
             category=["anniversary"],
             action=EV_ACT_QUEUE,
             start_date=anni_date,
-            end_date=anni_date+datetime.timedelta(days=365)
+            end_date=anni_date+datetime.timedelta(days=1)
         )
     )
 
@@ -505,7 +532,10 @@ label anni_50:
     return
 
 init 5 python:
-    anni_date=add_months(start_of_day(persistent.sessions['first_session']),1200)
+    anni_date=store.mas_utils.add_months(
+        store.mas_utils.sod(persistent.sessions['first_session']),
+        1200
+    )
     addEvent(
         Event(
             persistent.event_database,
@@ -513,7 +543,8 @@ init 5 python:
             prompt="100 Years",
             category=["anniversary"],
             action=EV_ACT_QUEUE,
-            start_date=anni_date
+            start_date=anni_date,
+            end_date=anni_date+datetime.timedelta(days=1)
         )
     )
     del anni_date
