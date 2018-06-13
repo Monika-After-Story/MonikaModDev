@@ -671,41 +671,72 @@ python early:
             current_time = datetime.datetime.now()
             # insertion sort
             for ev in ev_list:
-                event_time = True
+
+                e = events[ev]
 
                 #If the event has no time-dependence, don't check it
-                if (events[ev].start_date is None) and (events[ev].end_date is None):
-                    event_time = False
+                if (e.start_date is None) and (e.end_date is None):
+                    continue
 
                 #Calendar must be based on a date
-                if events[ev].start_date is not None:
-                    if events[ev].start_date > current_time:
-                        event_time = False
+                if e.start_date is not None:
+                    if e.start_date > current_time:
+                        continue
 
-                if events[ev].end_date is not None:
-                    if events[ev].end_date <= current_time:
-                        event_time = False
+                if e.end_date is not None:
+                    if e.end_date <= current_time:
+                        continue
 
-                if events[ev].conditional is not None:
-                    if not eval(events[ev].conditional):
-                        event_time = False
+                if e.conditional is not None:
+                    if not eval(e.conditional):
+                        continue
 
 
-                if event_time and events[ev].action is not None:
+                if e.action is not None:
                     #Perform the event's action
-                    if events[ev].action == EV_ACT_PUSH:
+                    if e.action == EV_ACT_PUSH:
                         pushEvent(ev)
                     elif events[ev].action == EV_ACT_QUEUE:
                         queueEvent(ev)
-                    elif events[ev].action == EV_ACT_UNLOCK:
-                        events[ev].unlocked = True
-                        events[ev].unlock_date = current_time
-                    elif events[ev].action == EV_ACT_RANDOM:
-                        events[ev].random = True
-                    elif events[ev].action == EV_ACT_POOL:
-                        events[ev].pool = True
+                    elif e.action == EV_ACT_UNLOCK:
+                        e.unlocked = True
+                        e.unlock_date = current_time
+                    elif e.action == EV_ACT_RANDOM:
+                        e.random = True
+                    elif e.action == EV_ACT_POOL:
+                        e.pool = True
 
-                    #Clear the conditional
+                    # Check if we have a years property
+                    if e.years is not None:
+                        
+                        # if it's an empty list
+                        if len(e.years) == 0:
+
+                            # get event ready for next year
+                            e.start_date = store.mas_utils.add_years(e.start_date, 1)
+                            e.end_date = store.mas_utils.add_years(e.end_date, 1)
+                            continue
+
+                        # if it's not empty, get all the years that are in the future
+                        new_years = [year for year in e.years if year > e.start_date.year]
+
+                        # if we have possible new years
+                        if len(new_years) > 0:
+                            # sort them to ensure we get the nearest one
+                            new_years.sort()
+
+                            # pick it
+                            new_year = new_years[0]
+
+                            # get the difference
+                            diff = new_year - e.start_date.year
+
+                            # update event for the year it should repeat
+                            e.start_date = store.mas_utils.add_years(e.start_date, diff)
+                            e.end_date = store.mas_utils.add_years(e.end_date, diff)
+                            continue
+
+                    # Clear the conditional since the event shouldn't repeat
                     events[ev].conditional = "False"
 
             return events
