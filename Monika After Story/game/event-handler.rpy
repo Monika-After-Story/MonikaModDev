@@ -206,6 +206,100 @@ init -1 python in evhand:
         #       [1]: eventlabel
         return [(db[x].prompt, x) for x in key_list]
 
+
+    def _isFuture(ev, date=None):
+        """INTERNAL
+        Checks if the start_date of the given event happens after the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's start_date is in the future, False otherwise
+        """
+
+        # sanity check
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        start_date = ev.start_date
+
+        # if we don't have an end date we return false
+        if start_date is None:
+            return False
+
+        return date < start_date
+
+
+    def _isPast(ev, date=None):
+        """INTERNAL
+        Checks if the end_date of the given event happens before the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's end_date is in the past, False otherwise
+        """
+
+        # if there's no event to check return False
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        end_date = ev.end_date
+
+        # if we don't have an end date we return false
+        if end_date is None:
+            return False
+
+        return end_date < date
+
+
+    def isPresent(ev):
+        """INTERNAL
+        Checks if current date falls within the given event's start/end date
+        range
+
+        IN:
+            ev - Event to check the start_time and end_time
+
+        RETURNS:
+            True if current time is inside the  Event's start_date/end_date
+            interval, False otherwise
+        """
+        # check we have an event
+        if ev is None:
+            return False
+
+        start_date = ev.start_date
+        end_date = ev.end_date
+
+        current = datetime.datetime.now()
+
+        # return false if either start or end is None
+        if start_date is None or end_date is None:
+            return False
+
+        return start_date <= current <= end_date
+
+
+
 init python:
     import store.evhand as evhand
     import datetime
@@ -239,9 +333,7 @@ init python:
         # if should not skip calendar check and event has a start_date
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
-            store.mas_calendar.calendar_database[event.start_date.month][event.start_date.day][event.eventlabel] = (
-                (CAL_TYPE_EV,event.eventlabel)
-            )
+            store.mas_calendar.addEvent(event)
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
@@ -405,22 +497,7 @@ init python:
         RETURNS:
             True if the Event's start_date is in the future, False otherwise
         """
-
-        # sanity check
-        if ev is None:
-            return False
-
-        # if no date is passed
-        if date is None:
-            date = datetime.datetime.now()
-
-        start_date = ev.start_date
-
-        # if we don't have an end date we return false
-        if start_date is None:
-            return False
-
-        return date < start_date
+        return evhand._isFuture(ev, date=date)
 
 
     def isPast(ev, date=None):
@@ -437,22 +514,7 @@ init python:
         RETURNS:
             True if the Event's end_date is in the past, False otherwise
         """
-
-        # if there's no event to check return False
-        if ev is None:
-            return False
-
-        # if no date is passed
-        if date is None:
-            date = datetime.datetime.now()
-
-        end_date = ev.end_date
-
-        # if we don't have an end date we return false
-        if end_date is None:
-            return False
-
-        return end_date < date
+        return evhand._isPast(ev, date=date)
 
 
     def isPresent(ev):
@@ -467,20 +529,7 @@ init python:
             True if current time is inside the  Event's start_date/end_date
             interval, False otherwise
         """
-        # check we have an event
-        if ev is None:
-            return False
-
-        start_date = ev.start_date
-        end_date = ev.end_date
-
-        current = datetime.datetime.now()
-
-        # return false if either start or end is None
-        if start_date is None or end_date is None:
-            return False
-
-        return start_date <= current <= end_date
+        return evhand._isPresent(ev)
 
 
     def popEvent(remove=True):
