@@ -736,8 +736,10 @@ init -1 python:
                     if sel_action == self.CALENDAR_MONTH_DECREASE:
                         self._changeMonth(False)
 
+                # only re-render if mouse action
+                renpy.redraw(self, 0)
+
             # otherwise continue
-            renpy.redraw(self, 0)
             raise renpy.IgnoreEvent()
 
 # calendar utils
