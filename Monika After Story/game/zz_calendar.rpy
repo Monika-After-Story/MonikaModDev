@@ -908,7 +908,7 @@ init -1 python in mas_calendar:
         return (" ".join(_cout), _day_diff)
 
 
-    def saveCalendarDatabase(encoder, database):
+    def saveCalendarDatabase(encoder):
         """
         Saves the passed database as a json file named db.mcal
 
@@ -918,7 +918,8 @@ init -1 python in mas_calendar:
             - database a dict containing the events
         """
         with open(renpy.config.savedir + '/db.mcal', 'w') as fp:
-            json.dump(database, fp, cls=encoder)
+            json.dump(calendar_database, fp, cls=encoder)
+
 
     def loadCalendarDatabase():
         """
@@ -929,8 +930,11 @@ init -1 python in mas_calendar:
             a dict containing the events for the calendar
 
         """
-        with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
-            return json.load(fp)
+        try:
+            with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
+                calendar_database = json.load(fp)
+        except IOError:
+            pass
 
 
     ### ADD FUNCTIONS
