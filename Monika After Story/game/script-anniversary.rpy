@@ -43,9 +43,24 @@ init 10 python in mas_anni:
             span - the time from the event's new start_date to end_date
         """
         ev.start_date = mas_utils.add_months(
-            mas_utils.sod(new_start_date), 
+            mas_utils.sod(new_start_date),
             months
         )
+        ev.end_date = ev.start_date + span
+
+    def _day_adjuster(ev, new_start_date, days, span):
+        """
+        Adjusts the start_date / end_date of an anniversary event.
+
+        NOTE: do not use this for a non anniversary date
+
+        IN:
+            ev - event to adjust
+            new_start_date - new start date to calculate the event's dates
+            days - number of months to advance
+            span - the time from the event's new start_date to end_date
+        """
+        ev.start_date = new_start_date + datetime.timedelta(days=days)
         ev.end_date = ev.start_date + span
 
 
@@ -90,6 +105,7 @@ init 10 python in mas_anni:
 
         # modify the anniversaries
         fullday = datetime.timedelta(days=1)
+        _day_adjuster(anni_db["anni_1week"],new_start_date,7,fullday)
         _month_adjuster(anni_db["anni_1month"], new_start_date, 1, fullday)
         _month_adjuster(anni_db["anni_3month"], new_start_date, 3, fullday)
         _month_adjuster(anni_db["anni_6month"], new_start_date, 6, fullday)
@@ -110,13 +126,13 @@ init 10 python in mas_anni:
 
         # re-add the repeatable to the calendar db
         mas_cal.addRepeatable_dt(
-            _firstsesh_id, 
-            "<3", 
+            _firstsesh_id,
+            "<3",
             new_start_date,
             [new_start_date.year]
         )
-        
-        
+
+
     def unlock_past_annis():
         """
         Goes through the anniversary database and unlocks the events that
@@ -124,7 +140,7 @@ init 10 python in mas_anni:
         """
         for anni in anni_db:
             ev = anni_db[anni]
-            
+
             if evhand._isPast(ev):
                 renpy.game.persistent._seen_ever[anni] = True
                 ev.unlocked = True
@@ -158,7 +174,7 @@ label anni_1week:
     m 1e "But I'm glad we have a solid relationship, [player]."
     m 1c "How do I know that?"
     m 3j "Because you wouldn't have stuck around for this long with me, sweetie~"
-    
+
     $ unlockEventLabel("anni_1week")
     return
 
