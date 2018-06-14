@@ -6752,6 +6752,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
     call mas_start_calendar_select_date
 
     $ selected_date = _return
+    $ _today = datetime.date.today()
 
     if not selected_date or selected_date.date() == first_sesh_raw.date():
         # no date selected, we assume user wanted to cancel
@@ -6782,7 +6783,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                 m 2eka "That's okay."
                 $ selected_date = first_sesh_raw
 
-    elif selected_date.date() == datetime.date.today():
+    elif selected_date.date() == _today:
         # today was chosen
         if wrong_date_count >= 2:
             jump .had_enough
@@ -6793,7 +6794,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         $ wrong_date_count += 1
         jump .loopstart
 
-    elif selected_date > first_sesh_raw:
+    elif selected_date.date() > _today:
         # you selected a future date?! why!
         if future_date_count > 0:
             # don't play around here
