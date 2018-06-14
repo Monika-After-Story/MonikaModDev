@@ -1482,7 +1482,7 @@ init python:
 
     import store.mas_calendar as calendar
 
-    calendar.addRepeatable("New years day","New Years Day",month=1,day=1,year_param=list())
+    calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
     calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
     calendar.addRepeatable("April Fools","Day I Become an AI",month=4,day=1,year_param=list())
