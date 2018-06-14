@@ -6753,6 +6753,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     $ selected_date = _return
     $ _today = datetime.date.today()
+    $ _ddlc_release = datetime.date(2017,9,22)
 
     if not selected_date or selected_date.date() == first_sesh_raw.date():
         # no date selected, we assume user wanted to cancel
@@ -6782,6 +6783,17 @@ label monika_dating_startdate_confirm(first_sesh_raw):
             "Actually that's the correct date. Sorry.":
                 m 2eka "That's okay."
                 $ selected_date = first_sesh_raw
+
+    elif selected_date.date() < _ddlc_release:
+        # today was chosen
+        if wrong_date_count >= 2:
+            jump .had_enough
+
+        m 2dsc "..."
+        m 2tfc "We did {b}not{/b} start dating that day."
+        m "Take this seriously, [player]."
+        $ wrong_date_count += 1
+        jump .loopstart
 
     elif selected_date.date() == _today:
         # today was chosen
