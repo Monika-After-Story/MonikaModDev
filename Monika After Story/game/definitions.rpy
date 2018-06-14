@@ -696,7 +696,7 @@ python early:
                     #Perform the event's action
                     if e.action == EV_ACT_PUSH:
                         pushEvent(ev)
-                    elif events[ev].action == EV_ACT_QUEUE:
+                    elif e.action == EV_ACT_QUEUE:
                         queueEvent(ev)
                     elif e.action == EV_ACT_UNLOCK:
                         e.unlocked = True
@@ -708,7 +708,7 @@ python early:
 
                     # Check if we have a years property
                     if e.years is not None:
-                        
+
                         # if it's an empty list
                         if len(e.years) == 0:
 
