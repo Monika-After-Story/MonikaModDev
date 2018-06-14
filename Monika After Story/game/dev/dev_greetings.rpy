@@ -14,7 +14,8 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        eventdb=evhand.greeting_database,
+        skipCalendar=True
     )
     del rules
 
