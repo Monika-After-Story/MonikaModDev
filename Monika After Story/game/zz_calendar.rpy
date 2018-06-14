@@ -158,6 +158,9 @@ init -1 python:
             button_close = Image(
                 "mod_assets/calendar/calendar_close.png"
             )
+            button_close_hover = Image(
+                "mod_assets/calendar/calendar_close_hover.png"
+            )
             button_day_name = Image(
                 "mod_assets/calendar/calendar_day_name_bg.png"
             )
@@ -166,6 +169,12 @@ init -1 python:
             )
             button_right_arrow = Image(
                 "mod_assets/calendar/calendar_right_arrow.png"
+            )
+            button_left_arrow_hover = Image(
+                "mod_assets/calendar/calendar_left_arrow_hover.png"
+            )
+            button_right_arrow_hover = Image(
+                "mod_assets/calendar/calendar_right_arrow_hover.png"
             )
 
             # Change title depending on flag
@@ -231,12 +240,20 @@ init -1 python:
                 outlines=[]
             )
 
+            button_text_close_hover = Text(
+                "X",
+                font=gui.default_font,
+                size=self.CALENDAR_CLOSE_X_SIZE,
+                color="#ffd3f4",
+                outlines=[]
+            )
+
             self.button_exit = MASButtonDisplayable(
                 button_text_close,
-                button_text_close,
+                button_text_close_hover,
                 button_text_close,
                 button_close,
-                button_close,
+                button_close_hover,
                 button_close,
                 self.EXIT_BUTTON_X,
                 self.EXIT_BUTTON_Y,
@@ -264,7 +281,7 @@ init -1 python:
                 button_empty_text,
                 button_empty_text,
                 button_left_arrow,
-                button_left_arrow,
+                button_left_arrow_hover,
                 button_left_arrow,
                 self.INITIAL_POSITION_X + 70,
                 self.INITIAL_POSITION_Y + 10,
@@ -280,7 +297,7 @@ init -1 python:
                 button_empty_text,
                 button_empty_text,
                 button_right_arrow,
-                button_right_arrow,
+                button_right_arrow_hover,
                 button_right_arrow,
                 self.INITIAL_POSITION_X + 300,
                 self.INITIAL_POSITION_Y + 10,
@@ -296,7 +313,7 @@ init -1 python:
                 button_empty_text,
                 button_empty_text,
                 button_left_arrow,
-                button_left_arrow,
+                button_left_arrow_hover,
                 button_left_arrow,
                 self.INITIAL_POSITION_X + 525,
                 self.INITIAL_POSITION_Y + 10,
@@ -312,7 +329,7 @@ init -1 python:
                 button_empty_text,
                 button_empty_text,
                 button_right_arrow,
-                button_right_arrow,
+                button_right_arrow_hover,
                 button_right_arrow,
                 self.INITIAL_POSITION_X + 770,
                 self.INITIAL_POSITION_Y + 10,
@@ -987,7 +1004,7 @@ init -1 python in mas_calendar:
             _date - datetime.date to add to
         """
         __addEvent_md(
-            ev.eventlabel, 
+            ev.eventlabel,
             _date.month,
             _date.day
         )
@@ -1078,7 +1095,7 @@ init -1 python in mas_calendar:
             if _ev[0] == CAL_TYPE_EV:
                 # NOTE: we still check for event type in the case that a non
                 #   event was added to the _events dict and was given a key
-                #   that is also an eventlabel. We should avoid doing this, 
+                #   that is also an eventlabel. We should avoid doing this,
                 #   but it's certainly possible.
                 return _ev
 
@@ -1442,7 +1459,7 @@ init -1 python in mas_calendar:
         """
         _removeRepeatable_md(identifier, _date.month, _date.day)
 
-    
+
     def removeRepeatable_dt(identifier, _datetime):
         """
         Removes a repeatable from teh calendar at aprecise datetime
@@ -1476,7 +1493,7 @@ init python:
         and persistent.sessions["first_session"] is not None
     ):
         calendar.addRepeatable_dt(
-            "first_session", 
+            "first_session",
             "<3",
             persistent.sessions["first_session"],
             year_param=[persistent.sessions["first_session"].year]
