@@ -77,7 +77,7 @@ init -1 python:
         TEXT_DAY_COLOR = "#000000" # PINK: "#ffb0ed"
 
         # Month names constant array
-        MONTH_NAMES = ["Unknown", "January", "Febuary",
+        MONTH_NAMES = ["Unknown", "January", "February",
             "March", "April", "May", "June", "July",
             "August", "September", "October",
             "November", "December"]
@@ -1478,15 +1478,15 @@ init python:
 
     import store.mas_calendar as calendar
 
-    calendar.addRepeatable("New years day","New years day",month=1,day=1,year_param=list())
-    calendar.addRepeatable("Valentine","Valentine's day",month=2,day=14,year_param=list())
-    calendar.addRepeatable("White day","White day",month=3,day=14,year_param=list())
-    calendar.addRepeatable("April Fools","Day I become an AI",month=4,day=1,year_param=list())
+    calendar.addRepeatable("New years day","New Years Day",month=1,day=1,year_param=list())
+    calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
+    calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
+    calendar.addRepeatable("April Fools","Day I Become an AI",month=4,day=1,year_param=list())
     calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
     calendar.addRepeatable("Halloween","Halloween",month=10,day=31,year_param=list())
-    calendar.addRepeatable("Christmas eve","Christmas eve",month=12,day=24,year_param=list())
+    calendar.addRepeatable("Christmas eve","Christmas Eve",month=12,day=24,year_param=list())
     calendar.addRepeatable("Christmas","Christmas",month=12,day=25,year_param=list())
-    calendar.addRepeatable("New year's eve","New year's eve",month=12,day=31,year_param=list())
+    calendar.addRepeatable("New year's eve","New Year's Eve",month=12,day=31,year_param=list())
 
     # add inital session
     if (
@@ -1648,8 +1648,8 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 
 label _first_time_calendar_use:
-    m 1eub "Oh, I see you noticed that pretty calendar hanging in the wall, [player]"
-    m "It helps me to keep track of important events, ehehe~"
+    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]"
+    m "It helps me keep track of important events, ehehe~"
     m 1hua "Here, let me show you."
     show monika 1a
 

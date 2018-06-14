@@ -6829,9 +6829,9 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
                         # otherwise mention that this was mean
                         m 2tfc "[player]!"
-                        m 2rksdlc "That joke was little mean."
+                        m 2rksdlc "That joke was a little mean."
                         m 2eksdlc "You really had me worried there."
-                        m "Don't play around like that okay?"
+                        m "Don't play around like that, okay?"
                         jump .loopstart
 
                     "...":
