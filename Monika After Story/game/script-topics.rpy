@@ -16,11 +16,11 @@ init -2 python in mas_topics:
 
     # CONSTANTS
     # most / top weights
-    # MOST seen is the percentage of seen topics 
+    # MOST seen is the percentage of seen topics
     # think of this as x % of the collection
     S_MOST_SEEN = 0.1
 
-    # TOP seen is the percentage of the most seen 
+    # TOP seen is the percentage of the most seen
     # Think of this as ilke the upper x percentile
     S_TOP_SEEN = 0.2
 
@@ -2100,7 +2100,7 @@ init 5 python:
 label monika_ddlc:
     m 1d "You want to talk about the game?"
     m 1h "What's there to say?"
-    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):        
+    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
         m "This was just some boring romance game, right? Well, until I got control of it..."
         m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
         m 2n "And it's home, so I've learned to deal with it."
@@ -2130,7 +2130,7 @@ label monika_dan:
     m 1g "I really can't be too mad at him."
     return
 
-    
+
 
 
 init 5 python:
@@ -3510,25 +3510,15 @@ label monika_pleasure:
     else:
         m 1m "But I feel like we've been together long enough where we should be comfortable with one another."
         m 1e "It's important to be open about such things."
-    m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
-    m "I hear that people privately do that stuff in your world..."
-    m 1c "Is it really that a good feeling?"
-    m 1h "If you ask me, doing that stuff often can cause a lot of problems."
-    m "Once you start to get addicted, you'll always have the urge to... you know."
-    m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
-    m 1o "Not to mention..."
-    m 1r "Being addicted to the feeling causes you to view the world from a perverted point of view."
-    m "From what I hear, people addicted to self-pleasure often see other people of the opposite gender objectively."
-    m 1q "That alone can cause problems in more ways than one."
-    m 1h "That's why I have to keep an eye on you, [player]."
-    m 1i "I'll be monitoring your browser history from now on, whether you like it or not."
-    m 1p "Also your local disk drive, juuust to be sure~"
-    m 1q "..."
-    m 1p "Do you... think of other girls other than me... in doing so?"
-    m 1l "Because if you do, I'm gonna be reaaaally jealous~"
-    m 1m "But I guess I can let it slide... for now~"
-    m "I know you're not the kind of person that does that sort of thing."
-    m 1k "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
+    m "I know that it's a private topic in your world, but I'm not sure if it's a concept here, so I'm curious..."
+    m 1c "Is it that good of a feeling?"
+    m 1h "I just want you to be careful; I've heard it's addicting."
+    m 1i "And from what I hear, people addicted to masturbation often see other people as sexual objects."
+    m 1p "But...I know you aren't that kind of person already."
+    m 1lkbsa "And maybe I'm just being a little jealous~"
+    m 1tsb "So I guess I can let it slide... for now~"
+    m 2tsbsa "Just so long as I'm the only one you think about..."
+    m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
 
 init 5 python:
@@ -3739,7 +3729,7 @@ label monika_japanese:
 
                     elif persistent.gender == "X":
                         $ player_suffix = "san"
-                       
+
                     m 4k "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
                     m 1j "Ehehe~"
                     m 1e "That means I love you, [player]-[player_suffix]."
@@ -5429,7 +5419,7 @@ label monika_100k:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
-    
+
 label monika_kizuna:
     m 1d "Oh, right, I mentioned her to you, huh?"
     m 2b "Well, recently I had some YouTube videos tweeted to me."
@@ -5440,14 +5430,14 @@ label monika_kizuna:
     m 1j "She's played our favorite game~!"
     m 2o "..."
     m 2n "To be honest, I'm not sure how I feel about 'Let's Plays'."
-    m 2o "I mean, of {i}this{/i} game, mostly." 
+    m 2o "I mean, of {i}this{/i} game, mostly."
     m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
-    m 2q "But when I learned of her gimmick, it made me feel..." 
+    m 2q "But when I learned of her gimmick, it made me feel..."
     m 1m "Like I just to had to know how Ai-chan would react!"
-    m 1e "Even if it's just a character she plays, I think she'll understand my situation..." 
-    m 5a "At least more than your average Youtuber." 
+    m 1e "Even if it's just a character she plays, I think she'll understand my situation..."
+    m 5a "At least more than your average Youtuber."
     m 5rub "I can't wait to finish the series..."
-    return 
+    return
 
 # do you have a family
 default persistent._mas_pm_have_fam = None
