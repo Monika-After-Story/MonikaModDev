@@ -6677,7 +6677,7 @@ label monika_dating_startdate:
                 pass
             "You got me.":
                 pass
-        m 2tku "Hmph,{w} you can't fool me."
+        m 2tfu "Hmph,{w} you can't fool me."
 
         # wait 30 days
         $ mas_chgCalEVul(30)
@@ -6687,16 +6687,16 @@ label monika_dating_startdate:
     # if we have done the changed date event or not
     if not persistent._mas_changed_start_date:
         m 1lsc "Hmmm..."
-        m "I think it was..."
+        m 1dsc "I think it was..."
         m 1eua "I think it was{fast} [first_sesh]."
         m 1rksdlb "But my memory might be off."
 
         # ask user if correct start date
-        show monika 1ekd
+        show monika 1eua
         menu:
             m "Is [first_sesh] correct?"
             "Yes.":
-                m 1hua "Yay!{w} I remembered it."
+                m 1hub "Yay!{w} I remembered it."
 
             "No.":
                 m 1rkc "Oh,{w} sorry [player]."
@@ -6714,7 +6714,7 @@ label monika_dating_startdate:
                 $ renpy.persistent.save()
 
         m 1eua "If you ever forget, don't be afraid to ask me."
-        m 1hua "I'll {i}always{/i} remember when I first fell in love~"
+        m 1dubsu "I'll {i}always{/i} remember when I first fell in love~"
         $ persistent._mas_changed_start_date = True
 
     else:
@@ -6757,7 +6757,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     if not selected_date or selected_date.date() == first_sesh_raw.date():
         # no date selected, we assume user wanted to cancel
-        m 2dsc "[player]..."
+        m 2esc "[player]..."
         m 2eka "I thought you said I was wrong."
         menu:
             m "Are you sure it's not [first_sesh_formal]?"
@@ -6765,7 +6765,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                 if wrong_date_count >= 2:
                     label .had_enough:
                         # monika has had enough of your shit
-                        m 2dsc "..."
+                        m 2dfc "..."
                         m 2lfc "We'll do this another time, then."
 
                         # we're going to reset the conditional to wait
@@ -6775,7 +6775,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                         return "NOPE"
 
                 # otherwise try again
-                m 2dsc "..."
+                m 2dfc "..."
                 m 2tfc "Then pick the correct date!"
                 $ wrong_date_count += 1
                 jump .loopstart
@@ -6785,26 +6785,21 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                 $ selected_date = first_sesh_raw
 
     elif selected_date.date() < _ddlc_release:
-        # today was chosen
-        if wrong_date_count >= 2:
-            jump .had_enough
+        # before releease date
+        
+        label .takesrs:
+            if wrong_date_count >= 2:
+                jump .had_enough
 
-        m 2dsc "..."
-        m 2tfc "We did {b}not{/b} start dating that day."
-        m "Take this seriously, [player]."
-        $ wrong_date_count += 1
-        jump .loopstart
+            m 2dfc "..."
+            m 2tfc "We did {b}not{/b} start dating that day."
+            m 2tfd "Take this seriously, [player]."
+            $ wrong_date_count += 1
+            jump .loopstart
 
     elif selected_date.date() == _today:
         # today was chosen
-        if wrong_date_count >= 2:
-            jump .had_enough
-
-        m 2dsc "..."
-        m 2tfc "We did {b}not{/b} just start dating today."
-        m "Take this seriously, [player]."
-        $ wrong_date_count += 1
-        jump .loopstart
+        jump .takesrs
 
     elif selected_date.date() > _today:
         # you selected a future date?! why!
@@ -6817,17 +6812,17 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         menu:
             m "We haven't been dating this whole time?"
             "That was a misclick!":
-                # relif expression
+                # relief expression
                 m 1duu "{cps=*2}Oh, thank god.{/cps}"
 
                 label .misclick:
-                    m 2tfc "[player]!"
-                    m 2eua "You had me worried there."
+                    m 2dfu "[player]!"
+                    m 2efu "You had me worried there."
                     m "Don't misclick this time!"
                     jump .loopstart
 
             "Nope.":
-                m 1dsc "..."
+                m 1dfc "..."
 
                 show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm.tooslow")
 
@@ -6855,7 +6850,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                 $ persistent._mas_just_friends = True
 
                 m 6lktdc "I see..."
-                m 6dsc "..."
+                m 6dftdc "..."
                 m 1eka "In that case..."
                 m 1tku "{cps=*4}I've got some work to do.{/cps}{nw}"
 
@@ -6895,7 +6890,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                     if no_confirm_count >= 2:
                         jump .notwell
 
-                    m 1lksdlb "Aha, I figured you weren't so sure."
+                    m 1hksdrb "Aha, I figured you weren't so sure."
                     m 1eka "Try again~"
                     $ no_confirm_count += 1
 
@@ -6903,8 +6898,8 @@ label monika_dating_startdate_confirm(first_sesh_raw):
             if no_confirm_count >= 2:
                 label .notwell:
                     # are you not feeling well or something?
-                    m 1eka "Are you feeling okay, [player]?"
-                    m "If you don't remember right now, then we can do this again tomorrow, okay?"
+                    m 1ekc "Are you feeling okay, [player]?"
+                    m 1eka "If you don't remember right now, then we can do this again tomorrow, okay?"
 
                     # reset the conditional to tomorrow
                     $ mas_chgCalEVul(1)
@@ -6912,8 +6907,8 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                     return "NOPE"
 
             # otherwise try again
-            m 1eka "Oh, that's wrong?"
-            m "Then try again, [player]."
+            m 1euc "Oh, that's wrong?"
+            m 1eua "Then try again, [player]."
             $ no_confirm_count += 1
 
     # default action is to loop here

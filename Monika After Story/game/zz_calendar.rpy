@@ -1655,13 +1655,13 @@ label _first_time_calendar_use:
     m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]"
     m "It helps me keep track of important events, ehehe~"
     m 1hua "Here, let me show you."
-    show monika 1a
+    show monika 1eua
 
     call mas_start_calendar_read_only
 
     m 1hua "Pretty cool, right?"
     m 1eua "Feel free to check the calendar whenever you want."
-    m 1rksdlb "Except for when I'm in the middle of talking, of course."
+    m 1lksdla "Except for when I'm in the middle of talking, of course."
 
     $ store.hkb_button.enabled = True
     $ persistent._mas_first_calendar_check = True
