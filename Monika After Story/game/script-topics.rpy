@@ -6545,6 +6545,32 @@ label monika_yellowwp:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water Conservation",random=True))
+
+label monika_savingwater:
+    m 1euc "[player], Have you ever stopped and wondered how much water people use everyday?"
+    m 3euc "Maybe you take a drink of water every now and then."
+    m 3dsc "You go to the washroom... Wash you hands... Bathe..."
+    m 1euc "And some parts of the world can't even get a single drop of water."
+    m 1dsc "Kind of makes you wonder how much water you could save if you tried."
+    m 4eua "You could try being more efficient when washing your hands."
+    m "Or when showering, you could turn off the water while you soap up and turn it back on when you're ready to rinse yourself down."
+    m "I hear some people even just turn on the water and leave it running to do other things, or get in and not actually bathe."
+    m 2lksdlc "Though, I'm not entirely sure why people do that."
+    m 2lksdla "They say the best ideas come to you in the shower so maybe some people find it to be a good time to think or be alone in one's mind."
+    m 2eka "Ultimately though..."
+    m "Most of the water that gets used is actually needed."
+    m "Things like power generation and farming need to use more water than we could ever really use on our own."
+    m 1hksdlb "So I guess it's debatable if you want to sacrifice some of your comfort to make such a small contribution."
+    m 1dsc "Some days, you might just need to take a long, relaxing bath after a long day."
+    m 2hksdlb "I've definitely been there before, so I know how nice it can be if you need it."
+    m 5eua "When I'm in your reality, maybe we can save water by bathing together~"
+    m "Eheheh~"
+    m "It would be nice of you to prepare a nice, relaxing bath for us to share when I cross over."
+    m 1hub "I can't wait! Ahaha~"
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
