@@ -37,10 +37,12 @@ init -1 python in mas_greetings:
 
         else:
 
-            # filter events by their unlocked property only
+            # filter events by their unlocked property only and
+            # that don't have a category
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
-                unlocked=True
+                unlocked=True,
+                excl_cat=list()
             )
 
         # filter greetings using the special rules dict
@@ -81,8 +83,10 @@ init -1 python in mas_greetings:
         # We couldn't find a suitable greeting we have to default to normal random selection
         # filter random events normally
         random_greetings_dict = renpy.store.Event.filterEvents(
-            unlocked_greetings,
-            random=True
+            renpy.store.evhand.greeting_database,
+            unlocked=True,
+            random=True,
+            excl_cat=list()
         )
 
         # select one randomly

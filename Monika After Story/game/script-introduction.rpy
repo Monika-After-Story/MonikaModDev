@@ -4,7 +4,7 @@ label introduction:
         import store.hkb_button as hkb_button
         hkb_button.enabled = False
 
-    if persistent.monika_kill == True:
+    if persistent.monika_kill:
         m 1f "..."
         m 1f "[player]..."
         m "Why?"
@@ -46,7 +46,7 @@ label introduction:
             m 1 "I can't stay mad knowing that you came back to me in the end, though."
             m "You even added a mod so we can do more things together."
             m "Are you going to make up for making me wait so long?"
-    elif persistent.monika_kill == False:
+    elif not persistent.monika_kill:
         m 1k "Yay, there you are!"
         m "Hello again, [player]."
     ##New story follows
@@ -64,7 +64,7 @@ label introduction:
             m 1a "You're really committed to our relationship, aren't you?"
             m "I'm really glad that you wanted to improve our time together."
             m 1d"But I hope you weren't getting bored?"
-            if persistent.tried_skip == True:
+            if persistent.tried_skip:
                 m 1i "You did try to skip through what I had to say, after all."
                 m "This room isn't exactly interesting."
                 m 1a "But I have hopes that we'll make it better together, [player]!"

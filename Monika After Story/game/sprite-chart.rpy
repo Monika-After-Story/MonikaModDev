@@ -7132,7 +7132,77 @@ image monika 6dubsu = DynamicDisplayable(
     blush="shade"
 )
 
-image monika 6rksdlc = DynamicDisplayable(
+image monika 6ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
+image monika 6ektdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
+image monika 6ektsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
+image monika 6ektda = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
+image monika 6lktsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
+image monika 6rktsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
@@ -7147,6 +7217,14 @@ image monika 6rksdlc = DynamicDisplayable(
 )
 
 image monika 6dsc = DynamicDisplayable(
+    head="f",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
+image monika 6dstsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
@@ -7167,6 +7245,18 @@ image monika 6lktdc = DynamicDisplayable(
     nose="def",
     mouth="smirk",
     head="o",
+    arms="down",
+    tears="streaming"
+)
+
+image monika 6dstdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
     left="1l",
     right="1r",
     arms="down",
@@ -7285,3 +7375,37 @@ image monika 4r = "monika 4dsd"
 image monika 5 = "monika 5eua"
 image monika 5a = "monika 5eua"
 image monika 5b = "monika 5euc"
+
+### [IMG040]
+# Custom animated sprites
+# Currently no naming convention, but please keep them somehwat consistent
+# with the current setup:
+# <pose number>ATL_<short descriptor>
+#
+# NOTE: if we do blinking, please make that a separate section from this
+
+image monika 6ATL_cryleftright:
+    block:
+
+        # select an image
+        block:
+            choice:
+                "monika 6lktsc"
+            choice:
+                "monika 6rktsc"
+
+        # select a wait time
+        block:
+            choice:
+                0.9
+            choice:
+                1.0
+            choice:
+                0.5
+            choice:
+                0.7
+            choice:
+                0.8
+
+        repeat
+

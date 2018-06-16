@@ -427,7 +427,8 @@ python early:
                 random=None,
                 pool=None,
                 action=None,
-                seen=None):
+                seen=None,
+                excl_cat=None):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -467,6 +468,15 @@ python early:
             if action is not None and event.action not in action:
                 return False
 
+            if excl_cat is not None:
+                # list is empty and event.category isn't
+                if not excl_cat and event.category:
+                    return False
+
+                # check if they have categories in common
+                if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
+                    return False
+
             # we've passed all the filtering rules somehow
             return True
 
@@ -479,7 +489,8 @@ python early:
                 random=None,
                 pool=None,
                 action=None,
-                seen=None):
+                seen=None,
+                excl_cat=None):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -511,6 +522,9 @@ python early:
             #   seen - boolean value to match renpy.seen_label
             #       (True means include seen, False means dont include seen)
             #       (Default: None)
+            #   excl_cat - list of categories to exclude, if given an empty
+            #       list it filters out events that have a non-None category
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -527,7 +541,8 @@ python early:
                     and random is None
                     and pool is None
                     and action is None
-                    and seen is None)):
+                    and seen is None
+                    and excl_cat is None)):
                 return events
 
             # copy check
@@ -550,7 +565,8 @@ python early:
             for k,v in events.iteritems():
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
-                        random=random, pool=pool, action=action, seen=seen):
+                        random=random, pool=pool, action=action, seen=seen,
+                        excl_cat=excl_cat):
 
                     filt_ev_dict[k] = v
 
@@ -3150,7 +3166,7 @@ default persistent.greeting_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
-default persistent._mas_crashed_self = True # always assume crash unless player clicks quit
+default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}

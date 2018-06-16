@@ -173,6 +173,11 @@ init -1 python in evhand:
     import datetime
     LAST_SEEN_DELTA = datetime.timedelta(hours=24)
 
+    # restart topic blacklist
+    RESTART_BLKLST = [
+        "mas_crashed_start"
+    ]
+
     # as well as special functions
     def addIfNew(items, pool):
         #
@@ -578,17 +583,42 @@ init python:
         #
         # IN:
         #
-        if persistent.current_monikatopic:
+        if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
-            if (not persistent.current_monikatopic.startswith('greeting_')
-                    and not persistent.current_monikatopic.startswith('i_greeting')
-                    and not persistent.current_monikatopic.startswith('bye')
-                    and not persistent.current_monikatopic.startswith('ch30_reload')
-                ):
-                pushEvent(persistent.current_monikatopic)
-                pushEvent('continue_event')
-                persistent.current_monikatopic = 0
+            pushEvent(persistent.current_monikatopic)
+            pushEvent('continue_event')
+            persistent.current_monikatopic = 0
         return
+
+
+    def mas_isRstBlk(topic_label):
+        """
+        Checks if the event with the current label is blacklistd from being
+        restarted
+
+        IN:
+            topic_label - label of the event we are trying to restart
+        """
+        if not topic_label:
+            return True
+
+        if topic_label.startswith("greeting_"):
+            return True
+
+        if topic_label.startswith("bye"):
+            return True
+
+        if topic_label.startswith("i_greeting"):
+            return True
+
+        if topic_label.startswith("ch30_reload"):
+            return True
+
+        # check the blacklist
+        if topic_label in evhand.RESTART_BLKLST:
+            return True
+
+        return False
 
 
     def mas_cleanJustSeen(eventlist, db):
