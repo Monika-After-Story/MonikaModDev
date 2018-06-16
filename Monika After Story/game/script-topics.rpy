@@ -6545,6 +6545,110 @@ label monika_yellowwp:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_vehicle",category=['monika'],prompt="What's your favorite car?",random=True))
+
+label monika_vehicle:
+    m 1euc "My favorite car?"
+    m 1lksdla "Well... I can't even drive for one..."
+    m "And usually, I would just walk or take the train if I had to go somewhere far."
+    m 1hksdlb "So I'm not too sure what to tell you [player]..."
+    m 1eua "What about you?"
+    m "Do you own a car?"
+    menu:
+        "No.":
+            m 1ekc "Oh, I see."
+            m 3eka "Well, buying a vehicle can be quite expensive after all."
+            m 1eua "It's alright [player], we can always rent one to travel."
+            m 1hua "I'm sure that when you do, we'll make a lot of great memories together."
+        "Yes.":
+            m 1hua "Oh wow, I can't believe that you actually own one!"
+            m 1hub "You're really lucky, you know that?"
+            m 1eub "I mean, just owning a vehicle is a status symbol itself."
+            m "Isn't it a luxury to own one?"
+            m 1euc "Unless..."
+            m 4eua "You live in a country where its necessary, like the United States?"
+            m "Or are there other places like that in your reality?"
+            m 1hksdlb "Actually, nevermind, ahaha!"
+            m 1eua "Either way, it's nice to know that you do own a vehicle."
+            m "Speaking of which..."
+            m "What exactly do you drive?"
+            menu:
+                "SUV/ATV/Pickup Truck.":
+                    m 1lksdla "Oh my, your car must be pretty big then."
+                    m 1eua "That means there's plenty of space inside right?"
+                    m "If that's the case..."
+                    m 1hua "Then we could go camping!"
+                    m 1eub "We'd drive all the way to the woods."
+                    m "You'd set up the tent, while I would prepare our picnic."
+                    m "While we're having our lunch, we'd enjoy the scenery and nature surrounding us."
+                    m 1eua "Then when night falls, we'd lie down on our sleeping bags, and go stargazing while holding hands."
+                    m "It's definitely a romantic adventure I'd envision with you [player]."
+                    m 1hub "ehehe~"
+                "Sports Car.":
+                    m 1hua "Oh, wow!"
+                    m 1eua "I didn't even know you were into those types of cars."
+                    m "It must be really fast, huh?"
+                    m "We should definitely take a road trip."
+                    m 1eub "Driving by the scenic route, cruising along the highway."
+                    m "It would be nice if it's possible to take down the roof of the car."
+                    m 3eua "That way, we can have the wind on our faces while driving fast."
+                    m 1esc "But..."
+                    m 1eka "It would also be nice to drive at a normal pace."
+                    m 1eua "Because, I want to enjoy every moment of the ride."
+                    m 1hua "Just beside you~"
+                "Sedan.":
+                    m 1eua "That's nice."
+                    m "I actually prefer that type of car, to be honest."
+                    m "From what I heard, they're lively and easy to drive."
+                    m 1eub "A car like that would be great for a drive around the city, don't you think, [player]?"
+                    m "You'd be surprised to know that there are actually plenty of things to do around town."
+                    m 3eua "Like visting museums, parks, malls and so on."
+                    m 1eua "You know what?"
+                    m "We should definitely drive to places that are usually to far to walk by foot."
+                    m "It's always exhilirating to discover and explore new places."
+                    m 1eub "We might even find new places for us to go back to."
+                    m "Even a place where the both of us can be together."
+                    m 1eua "Alone..."
+                    m 1hub "Ahaha!"
+                    m 1eua "Just so you know, I'm expecting more than just a simple drive around the city for our dates."
+                    m 1hua "I hope you'll surprise me, [player]~"
+                    m 1hub "But then again, I'd love anything as long as it's with you."
+                "Motorcycle.":
+                    m 1hksdlb "Eh?"
+                    m 1lksdlb "You drive a motorcycle?"
+                    m "I'm surprised, I never expected that to be your choice of vehicle."
+                    m 1lksdla "To be honest, I'm a little hesitant to ride on one."
+                    m "..."
+                    m 1hua "Ahaha!"
+                    m 1eua "Really, I shouldn't be scared."
+                    m 4eua "You're the one driving after all."
+                    m 1lksdla "That puts my mind at ease, just a little."
+                    m 1eua "Just take it nice and slow, ok?"
+                    m "After all, we aren't in a rush."
+                    m 1eka "Or was it your plan to drive fast, so that I would hang on to you tightly?"
+                    m 1hub "Ehehe~"
+                    m 1eua "That's pretty sneaky of you, [player]."
+                    m "There's no need to be shy, my love."
+                    m "I'll hug you, even if you don't ask for it."
+                    m 1hub "Because, I love you~"
+                "Limousine":
+                    m 1hksdlb "Huh?!"
+                    m "You have a limousine?!"
+                    m "Oh my gosh! I never would have imagined!"
+                    m 1hua "Now I can't stop thinking of all the romantic things we could do with it!"
+                    m 5eua "Of course, even if you didn't have one, I'd still love you just as much~"
+                    m 1dubsu "I can just imagine walking down a fancy red carpet with you..."
+                    m "Just about to go home after a romantic date..."
+                    m "Only to spend the rest of the night with you~"
+                    m 1lkbsa "Is that too much?"
+                    m "I hope you don't think that's too much, [player]."
+                    m 1eua "It was a really nice thing to imagine though."
+                    m 1lksdlb "Even if you don't actually have a limousine when I get there and none of those things happen..."
+                    m 1hua "It made my day just thinking about it."
+                    m 1hub "Thank you for making my day, [player]~"
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
