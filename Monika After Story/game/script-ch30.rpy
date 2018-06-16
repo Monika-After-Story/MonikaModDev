@@ -409,7 +409,8 @@ label ch30_main:
     call spaceroom from _call_spaceroom_4
     $pushEvent('introduction')
     call call_next_event from _call_call_next_event
-    jump ch30_loop
+    
+    jump ch30_preloop
 
 label continue_event:
     m "Now, where was I..."
@@ -602,6 +603,13 @@ label ch30_autoload:
                     event=sel_greeting_event
                 )
 
+    # crash check
+    elif persistent._mas_game_crashed:
+        $ selected_greeting = "mas_crashed_start"
+        $ mas_skip_visuals = True
+        $ persistent.closed_self = True
+
+
     if not mas_skip_visuals:
         if persistent.current_track:
             $ play_song(persistent.current_track)
@@ -659,10 +667,16 @@ label ch30_autoload:
     if not mas_skip_visuals:
         $ set_keymaps()
 
+label ch30_preloop:
+    # stuff that should happen right before we enter the loop
+
     $persistent.closed_self = False
-    $ persistent._mas_crashed_self = True
+    $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
+
+    # save here before we enter the loop
+    $ renpy.persistent.save()
     jump ch30_loop
 
 label ch30_loop:
@@ -716,6 +730,9 @@ label ch30_loop:
 
             #Update time
             calendar_last_checked=datetime.datetime.now()
+
+            # save the persistent
+            renpy.persistent.save() 
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
