@@ -1457,10 +1457,19 @@ label monika_rain_holdme:
         $ songs.current_track = songs.FP_NO_SONG
         $ songs.selected_track = songs.FP_NO_SONG
 
+        # hide ui and disable hotkeys
+        $ HKBHideButtons()
+        $ store.songs.enabled = False
+
         m 1a "Of course, [player]."
         show monika 6dubsa
         $ ui.add(PauseDisplayable())
         $ ui.interact()
+
+        # renable ui and hotkeys
+        $ store.songs.enabled = True
+        $ HKBShowButtons()
+
         m 1j "You can hold me anytime you want, [player]."
 
     else:
