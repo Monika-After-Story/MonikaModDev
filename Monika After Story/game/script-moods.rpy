@@ -196,8 +196,8 @@ label mas_mood_proud:
             m 2k "That's wonderful!"
             m 4a "It's very important to celebrate the small victories in life."
             m 2i "It can be very easy to become discouraged if you only focus on the bigger goals you have."
-            m 2rksdla "They can be challenging to reach on their own"
-            m 4b "But setting and celebrating small goals that eventually lead to a big goal can make your big goals feel much more attainable."
+            m 2rksdla "They can be challenging to reach on their own."
+            m 4b "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
             m 4k "So keep hitting those small goals, [player]!"
             m 5eub "And remember, I love you, and I'm always cheering you on!"
 return            
