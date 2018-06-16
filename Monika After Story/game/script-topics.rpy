@@ -1327,10 +1327,19 @@ label monika_rain:
             $ songs.current_track = songs.FP_NO_SONG
             $ songs.selected_track = songs.FP_NO_SONG
 
+            # hide ui and disable hotkeys
+            $ HKBHideButtons()
+            $ store.songs.enabled = False
+
             m 1j "Then hold me, [player]..."
             show monika 6dubsa
             $ ui.add(PauseDisplayable())
             $ ui.interact()
+
+            # renable ui and hotkeys
+            $ store.songs.enabled = True
+            $ HKBShowButtons()
+
             m 1a "If you want the rain to stop, just ask me, okay?"
 
             # lock / unlock the appropriate labels
