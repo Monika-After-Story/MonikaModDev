@@ -6555,11 +6555,6 @@ label monika_vehicle:
     m 1eua "What about you?"
     m "Do you own a car?"
     menu:
-        "No.":
-            m 1ekc "Oh, I see."
-            m 3eka "Well, buying a vehicle can be quite expensive after all."
-            m 1eua "It's alright [player], we can always rent one to travel."
-            m 1hua "I'm sure that when you do, we'll make a lot of great memories together."
         "Yes.":
             m 1hua "Oh wow, I can't believe that you actually own one!"
             m 1hub "You're really lucky, you know that?"
@@ -6646,6 +6641,12 @@ label monika_vehicle:
                     m 1lksdlb "Even if you don't actually have a limousine when I get there and none of those things happen..."
                     m 1hua "It made my day just thinking about it."
                     m 1hub "Thank you for making my day, [player]~"
+        "No.":
+            m 1ekc "Oh, I see."
+            m 3eka "Well, buying a vehicle can be quite expensive after all."
+            m 1eua "It's alright [player], we can always rent one to travel."
+            m 1hua "I'm sure that when you do, we'll make a lot of great memories together."
+            m 5eua "Then again, walks are far romantic anyway~"                    
     return
 
 init 5 python:
