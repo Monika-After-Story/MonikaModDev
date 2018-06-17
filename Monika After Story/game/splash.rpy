@@ -165,6 +165,7 @@ label splashscreen:
     python:
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
+        store.mas_calendar.loadCalendarDatabase()
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
@@ -292,6 +293,7 @@ label before_main_menu:
     return
 
 label quit:
+    $ store.mas_calendar.saveCalendarDatabase(CustomEncoder)
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
 

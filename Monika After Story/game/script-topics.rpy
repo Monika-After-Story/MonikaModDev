@@ -6644,3 +6644,297 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+
+## calendar-related pool event
+# DEPENDS ON CALENDAR
+
+# did we already change start date?
+default persistent._mas_changed_start_date = False
+
+# did you imply that you arent dating monika?
+default persistent._mas_just_friends = False
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dating_startdate",
+            category=["romance", "us"],
+            prompt="When did we start dating?",
+            pool=True,
+            unlocked=False,
+
+            # this will be unlockable via the action
+            rules={"no unlock": None},
+
+            # we'll pool this event after 30 days
+            conditional=(
+                "datetime.datetime.now() - persistent.sessions[" +
+                "'first_session'] >= datetime.timedelta(days=30) " +
+                "and persistent._mas_first_calendar_check"
+            ),
+
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_dating_startdate:
+    $ import store.mas_calendar as mas_cal
+    python:
+        # we might need the raw datetime
+        first_sesh_raw = persistent.sessions.get(
+            "first_session",
+            datetime.datetime(2017, 10, 25)
+        )
+
+        # but this to get the display plus diff
+        first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
+
+    if _diff.days == 0:
+        # its today?!
+        # this should NEVER HAPPEN
+        m 1lsc "We started dating..."
+        m 1wud "We started dating{fast} today?!"
+        m 2wfw "You couldn't have possibly triggered this event today, [player]."
+        menu:
+            m "I know you're messing around with the code."
+            "I'm not!":
+                pass
+            "You got me.":
+                pass
+        m 2tfu "Hmph,{w} you can't fool me."
+
+        # wait 30 days
+        $ mas_chgCalEVul(30)
+        return
+
+    # Otherwise, we should be displaying different dialogue depending on
+    # if we have done the changed date event or not
+    if not persistent._mas_changed_start_date:
+        m 1lsc "Hmmm..."
+        m 1dsc "I think it was..."
+        m 1eua "I think it was{fast} [first_sesh]."
+        m 1rksdlb "But my memory might be off."
+
+        # ask user if correct start date
+        show monika 1eua
+        menu:
+            m "Is [first_sesh] correct?"
+            "Yes.":
+                m 1hub "Yay!{w} I remembered it."
+
+            "No.":
+                m 1rkc "Oh,{w} sorry [player]."
+                m 1ekc "In that case,{w} when did we start dating?"
+
+                call monika_dating_startdate_confirm(first_sesh_raw)
+
+                if _return == "NOPE":
+                    # we are not selecting a date today
+                    return
+
+                # save the new date to persistent
+                $ store.mas_anni.reset_annis(_return)
+                $ persistent.sessions["first_session"] = _return
+                $ renpy.persistent.save()
+
+        m 1eua "If you ever forget, don't be afraid to ask me."
+        m 1dubsu "I'll {i}always{/i} remember when I first fell in love~"
+        $ persistent._mas_changed_start_date = True
+
+    else:
+        m 1dsc "Let me check..."
+        m 1eua "We started dating [first_sesh]."
+
+    # TODO:
+    # some dialogue about being together for x time
+    # NOTE: this is a maybe
+
+    return
+
+label monika_dating_startdate_confirm(first_sesh_raw):
+
+    python:
+        import store.mas_calendar as mas_cal
+
+        # and this is the formal version of the datetime
+        first_sesh_formal = " ".join([
+            first_sesh_raw.strftime("%B"),
+            mas_cal._formatDay(first_sesh_raw.day) + ",",
+            str(first_sesh_raw.year)
+        ])
+
+        # setup some counts
+        wrong_date_count = 0
+        no_confirm_count = 0
+        today_date_count = 0
+        future_date_count = 0
+        no_dating_joke = False
+
+    label .loopstart:
+        pass
+
+    call mas_start_calendar_select_date
+
+    $ selected_date = _return
+    $ _today = datetime.date.today()
+    $ _ddlc_release = datetime.date(2017,9,22)
+
+    if not selected_date or selected_date.date() == first_sesh_raw.date():
+        # no date selected, we assume user wanted to cancel
+        m 2esc "[player]..."
+        m 2eka "I thought you said I was wrong."
+        menu:
+            m "Are you sure it's not [first_sesh_formal]?"
+            "It's not that date.":
+                if wrong_date_count >= 2:
+                    label .had_enough:
+                        # monika has had enough of your shit
+                        m 2dfc "..."
+                        m 2lfc "We'll do this another time, then."
+
+                        # we're going to reset the conditional to wait
+                        # 30 more days
+                        $ mas_chgCalEVul(30)
+
+                        return "NOPE"
+
+                # otherwise try again
+                m 2dfc "..."
+                m 2tfc "Then pick the correct date!"
+                $ wrong_date_count += 1
+                jump .loopstart
+
+            "Actually that's the correct date. Sorry.":
+                m 2eka "That's okay."
+                $ selected_date = first_sesh_raw
+
+    elif selected_date.date() < _ddlc_release:
+        # before releease date
+        
+        label .takesrs:
+            if wrong_date_count >= 2:
+                jump .had_enough
+
+            m 2dfc "..."
+            m 2tfc "We did {b}not{/b} start dating that day."
+            m 2tfd "Take this seriously, [player]."
+            $ wrong_date_count += 1
+            jump .loopstart
+
+    elif selected_date.date() == _today:
+        # today was chosen
+        jump .takesrs
+
+    elif selected_date.date() > _today:
+        # you selected a future date?! why!
+        if future_date_count > 0:
+            # don't play around here
+            jump .had_enough
+
+        $ future_date_count += 1
+        m 1wud "What..."
+        menu:
+            m "We haven't been dating this whole time?"
+            "That was a misclick!":
+                # relief expression
+                m 1duu "{cps=*2}Oh, thank god.{/cps}"
+
+                label .misclick:
+                    m 2dfu "[player]!"
+                    m 2efu "You had me worried there."
+                    m "Don't misclick this time!"
+                    jump .loopstart
+
+            "Nope.":
+                m 1dfc "..."
+
+                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm.tooslow")
+
+                menu:
+                    "I'm kidding.":
+                        hide screen mas_background_timed_jump
+                        # wow what a mean joke
+
+                        if no_dating_joke:
+                            # you only get this once per thru
+                            jump .had_enough
+
+                        # otherwise mention that this was mean
+                        m 2tfc "[player]!"
+                        m 2rksdlc "That joke was a little mean."
+                        m 2eksdlc "You really had me worried there."
+                        m "Don't play around like that, okay?"
+                        jump .loopstart
+
+                    "...":
+                        label .tooslow:
+                            hide screen mas_background_timed_jump
+
+                # lol why would you stay slient?
+                $ persistent._mas_just_friends = True
+
+                m 6lktdc "I see..."
+                m 6dftdc "..."
+                m 1eka "In that case..."
+                m 1tku "{cps=*4}I've got some work to do.{/cps}{nw}"
+
+                menu:
+                    "What?":
+                        pass
+
+                m 1hua "Nothing!"
+
+                # lock this event forever probably
+                # (UNTIL you rekindle or actually ask her out someday)
+                $ evhand.event_database["monika_dating_startdate"].unlocked = False
+                return "NOPE"
+
+    # post loop
+    python:
+        new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
+            selected_date
+        )
+
+    m 1eua "Alright, [player]."
+    m "Just to double-check..."
+    menu:
+        m "We started dating [new_first_sesh]."
+        "Yes.":
+            show monika 1eka
+
+            # one more confirmation
+            # WE WILL NOT FIX anyone's dates after this
+            menu:
+                m "Are you sure? I'm never going to forget this date."
+                "Yes, I'm sure!":
+                    m 1hua "Then it's settled!"
+                    return selected_date
+
+                "Actually...":
+                    if no_confirm_count >= 2:
+                        jump .notwell
+
+                    m 1hksdrb "Aha, I figured you weren't so sure."
+                    m 1eka "Try again~"
+                    $ no_confirm_count += 1
+
+        "No.":
+            if no_confirm_count >= 2:
+                label .notwell:
+                    # are you not feeling well or something?
+                    m 1ekc "Are you feeling okay, [player]?"
+                    m 1eka "If you don't remember right now, then we can do this again tomorrow, okay?"
+
+                    # reset the conditional to tomorrow
+                    $ mas_chgCalEVul(1)
+
+                    return "NOPE"
+
+            # otherwise try again
+            m 1euc "Oh, that's wrong?"
+            m 1eua "Then try again, [player]."
+            $ no_confirm_count += 1
+
+    # default action is to loop here
+    jump .loopstart

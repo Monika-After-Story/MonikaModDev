@@ -1080,7 +1080,7 @@ screen preferences():
 
 
                 vbox:
-                    
+
                     hbox:
                         label _("Random Chatter   ")
 
@@ -1611,7 +1611,7 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action [SetField(persistent, "_mas_crashed_self", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
+                textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
                 textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
@@ -2078,7 +2078,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
                     textbutton _(nvm_text) action Return(False)
 
-# more generali scrollable menu. This one takes the following params:
+# more general scrollable menu. This one takes the following params:
 # IN:
 #   items - list of items to display in the menu. Each item must be a tuple of
 #       the following format:
@@ -2183,6 +2183,7 @@ screen mas_generic_restart:
                 spacing 100
 
                 textbutton _("OK") action Return(True)
+
 
 # generic custom displayabels below:
 init python:

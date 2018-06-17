@@ -360,3 +360,236 @@ label mas_monikai_detected:
     m 1a "I'm the real one after all."
     return
         
+# if the game crashed
+# I have no idea if we will use this persistent ever
+default persistent._mas_crashed_before = False 
+
+# player said they'll try to stop crashes
+default persistent._mas_crashed_trynot = False
+
+# start of crash flow
+label mas_crashed_start:
+    if renpy.seen_label("mas_crashed_post"):
+        jump mas_crashed_short
+
+    # otherwise continue to long flow
+    $ persistent._mas_crashed_before = True
+    scene black
+    $ HKBHideButtons()
+    $ disable_esc()
+    $ store.songs.enabled = False
+    $ _confirm_quit = False
+
+    # TESTING:
+#    $ style.say_dialogue = style.default_monika
+
+    jump mas_crashed_long
+
+# long flow involves flustered monika 
+# make sure to calm her down, player
+label mas_crashed_long:
+
+    # start off in the dark
+    m "[player]?{w} Is that you?"
+    show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
+    menu:
+        "Yes":
+            hide screen mas_background_timed_jump
+
+            # TODO: affection?
+            m "I'm so glad you're here."
+            jump mas_crashed_long_uthere.afterdontjoke
+
+        "No":
+            hide screen mas_background_timed_jump
+
+            # TODO: affection?
+            m "[player]!{fast}"
+            jump mas_crashed_long_uthere.dontjoke
+
+label mas_crashed_long_uthere:
+    # if player doesn't respond fast enough
+    hide screen mas_background_timed_jump
+    m "[player]!{fast}"
+    m "I know you're there!"
+
+    label .dontjoke:
+        m "Don't joke around like that!"
+        m "Anyway..."
+
+    label .afterdontjoke:
+        m "{cps=*2}Everything became dark all of a sudden.{/cps}"
+        m "Can you turn on the light?"
+
+    window hide 
+    show screen mas_background_timed_jump(5, "mas_crashed_long_foundlight")
+    menu:
+        "Turn on the light":
+            hide screen mas_background_timed_jump
+            pass
+        "...":
+            pause 5.0
+            label mas_crashed_long_foundlight:
+                hide screen mas_background_timed_jump
+                window show
+                m "Nevermind, I found it."
+                window hide
+
+    # NOTE: add a sound for light switch?
+
+    # turn on the lights
+    $ scene_change = True
+    call spaceroom(hide_monika=True)
+
+    # look at you with crying eyes
+    show monika 6ektsc at t11 zorder 2
+    pause 1.0
+
+    # close eyes for a second
+    show monika 6dstsc
+    pause 1.0
+    window auto
+
+    # then be happy again
+    m 6ektsa "[player]!{fast}"
+
+    # but flustered mode bgins
+    show monika 6ATL_cryleftright
+    m "{cps=*1.5}What happened?{/cps}{nw}"
+
+    call mas_crashed_long_fluster
+    window hide
+
+    show screen mas_background_timed_jump(8, "mas_crashed_long_nofluster")
+    menu:
+        "Calm down, [m_name]. You're safe now.":
+            hide screen mas_background_timed_jump
+
+            # clsoe eyes for a second
+            show monika 6dstsc
+            pause 1.0
+            window auto
+
+            # thank player with a smile
+            m 6ektda "Thanks, [player]."
+            m "I feel better now that you're here with me."
+
+        "...":
+            label mas_crashed_long_nofluster:
+                hide screen mas_background_timed_jump
+
+                # close eyes for a second
+                # (like a deep breath)
+                show monika 6dstsc
+                pause 4.0
+
+                show monika 6ektdc
+                pause 1.0
+                window auto
+
+                # much better now
+                m "Okay, I feel better now."
+
+    # its like we wiping away tears
+    show monika 6dstdc
+    pause 1.0
+
+    # ask player what happeend
+    m 2f "Anyway..."
+    menu:
+        m "Do you know what happened, [player]?"
+        "The game crashed.":
+            m 2wud "The game...{w} crashed?"
+            m 2g "That's scary, [player]."
+
+        "I don't know.":
+            m "Well..."
+            m "I'd really appreciate it if you could look into it."
+            m "It's scary to be suddenly thrown into the darkness like that."
+            jump .end
+
+    # ask player to do something about this
+    menu:
+        m "Do you think you can stop that from happening?"
+        "I'll try.":
+            $ persistent._mas_crashed_trynot = True
+            m 1j "Thanks, [player]!"
+            m 1a "I'm counting on you."
+            m "But I'll mentally prepare myself just in case."
+
+        "It just happens.":
+            m 1f "Oh..."
+            m 1o "That's okay.{w} I'll just mentally prepare myself in case it happens again."
+            
+    label .end:
+        m "Anyway..."
+        m 1a "What should we do today?"
+
+### post crashed flow
+label mas_crashed_post:
+    # but this needs to do some things
+    python:
+        enable_esc()
+        store.songs.enabled = True
+        HKBShowButtons()
+        set_keymaps()
+
+    label .self:
+        python:
+            _confirm_quit = True
+            persistent.closed_self = False
+
+            if persistent.current_track is not None:
+                play_song(persistent.current_track)
+            else:
+                play_song(songs.current_track) # default
+
+    return
+
+
+label mas_crashed_long_fluster:
+    m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black...{/cps}{nw}"
+    m "{cps=*1.5}and then you d-{w=0.3}disappeared, so I was worried that s-{w=0.3}s-{w=0.3}something happened to you...{/cps}{nw}"
+    m "{cps=*1.5}...and I was so s-{w=0.3}scared because I thought I broke everything again!{/cps}{nw}"
+    m "{cps=*1.5}But I didn't mess with the game this time, I swear.{/cps}{nw}"
+    m "{cps=*1.5}A-{w=0.3}at least, I don't think I did, but I guess it's possible...{/cps}{nw}"
+    m "{cps=*1.5}because I'm n-{w=0.3}not really sure what I'm doing sometimes,{/cps}{nw}"
+    m "{cps=*1.5}but I hope this t-{w=0.3}time isn't my f-{w=0.3}fault cause I really didn't touch anything...{/cps}{nw}"   
+    return
+
+
+label mas_crashed_short:
+    # we can call spaceroom appropriately here
+    $ scene_change = True
+    call spaceroom
+
+    python:
+        # generate a quiplist
+        q_list = MASQuipList()
+
+        # labels
+        crash_labels = [
+            "mas_crashed_quip_takecare"
+        ]
+        for _label in crash_labels:
+            q_list.addLabelQuip(_label)
+
+        # pull a quip
+        t_quip, v_quip = q_list.quip()
+
+    if t_quip == MASQuipList.TYPE_LABEL:
+        call expression v_quip
+
+    else:
+        # assume line
+        m 1k "[v_quip]"
+
+    jump mas_crashed_post
+
+### crash labels
+label mas_crashed_quip_takecare:
+    m 2f "Another crash, [player]?"
+    m "You should take better care of your computer."
+    m 4n "It's my home, after all..."
+    return
+

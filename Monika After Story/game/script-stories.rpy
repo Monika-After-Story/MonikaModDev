@@ -94,12 +94,13 @@ label mas_stories_start:
     # return value?
     if _return:
 
+        # NOTE: call_next_event now properly records shown_count and last_seen
         #check if it's an actual story
-        if _return in mas_stories.story_database:
+#        if _return in mas_stories.story_database:
 
             # track show_count stats
-            $ mas_stories.story_database[_return].shown_count += 1
-            $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
+#            $ mas_stories.story_database[_return].shown_count += 1
+#            $ mas_stories.story_database[_return].last_seen = datetime.datetime.now()
 
         # then push
         $ pushEvent(_return)
