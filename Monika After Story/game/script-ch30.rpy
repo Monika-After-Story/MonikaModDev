@@ -290,6 +290,15 @@ init python:
         if allow_dialogue:
             renpy.call('pick_a_game')
 
+    def show_calendar():
+        store.hkb_button.enabled = False
+
+        if not persistent._mas_first_calendar_check:
+            renpy.call('_first_time_calendar_use')
+
+        renpy.call_in_new_context("mas_start_calendar_read_only")
+        store.hkb_button.enabled = True
+
     def select_music():
         # check for open menu
         if (songs.enabled
@@ -372,6 +381,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_day_room zorder 1
+                show screen calendar_overlay(_layer="master")
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
@@ -385,6 +395,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_room zorder 1
+                show screen calendar_overlay(_layer="master")
                 #show monika_bg_highlight
             if not hide_monika:
                 show monika 1 at t11 zorder 2
@@ -409,7 +420,8 @@ label ch30_main:
     call spaceroom from _call_spaceroom_4
     $pushEvent('introduction')
     call call_next_event from _call_call_next_event
-    jump ch30_loop
+    
+    jump ch30_preloop
 
 label continue_event:
     m "Now, where was I..."
@@ -602,6 +614,13 @@ label ch30_autoload:
                     event=sel_greeting_event
                 )
 
+    # crash check
+    elif persistent._mas_game_crashed:
+        $ selected_greeting = "mas_crashed_start"
+        $ mas_skip_visuals = True
+        $ persistent.closed_self = True
+
+
     if not mas_skip_visuals:
         if persistent.current_track:
             $ play_song(persistent.current_track)
@@ -659,10 +678,16 @@ label ch30_autoload:
     if not mas_skip_visuals:
         $ set_keymaps()
 
+label ch30_preloop:
+    # stuff that should happen right before we enter the loop
+
     $persistent.closed_self = False
-    $ persistent._mas_crashed_self = True
+    $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
+
+    # save here before we enter the loop
+    $ renpy.persistent.save()
     jump ch30_loop
 
 label ch30_loop:
@@ -716,6 +741,9 @@ label ch30_loop:
 
             #Update time
             calendar_last_checked=datetime.datetime.now()
+
+            # save the persistent
+            renpy.persistent.save() 
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
@@ -782,7 +810,7 @@ label mas_ch30_select_unseen:
     # unseen selection
 
     if len(mas_rev_unseen) == 0:
-        
+
         if not persistent._mas_enable_random_repeats:
             # no repeats means we should push randomlimit if appropriate,
             # otherwise stay slient

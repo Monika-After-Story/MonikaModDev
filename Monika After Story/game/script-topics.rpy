@@ -16,11 +16,11 @@ init -2 python in mas_topics:
 
     # CONSTANTS
     # most / top weights
-    # MOST seen is the percentage of seen topics 
+    # MOST seen is the percentage of seen topics
     # think of this as x % of the collection
     S_MOST_SEEN = 0.1
 
-    # TOP seen is the percentage of the most seen 
+    # TOP seen is the percentage of the most seen
     # Think of this as ilke the upper x percentile
     S_TOP_SEEN = 0.2
 
@@ -406,20 +406,25 @@ label monika_sayori:
     m "That pun was completely unintentional, I swear!"
     m "But anyway..."
     m 2e "I know how much you cared about her, so it only feels right for me to share her last moments with you."
-    m "You know how Sayori is really clumsy?"
-    m 4n "Well, she kind of messed up the whole hanging thing..."
-    m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-    m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-    m 4m "But a few seconds in, she must have changed her mind or something..."
-    m "Because she started clawing at the rope, trying to free herself."
-    m "She must have kept at it all the way until she lost consciousness."
-    m "That's why her fingertips were all bloody, anyway."
-    m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-    m "So you can't really fault her for that."
-    m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-    m "It's not healthy to think about the things you could have done differently."
-    m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-    m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+    m "If you're comfortable, that is." 
+    menu:
+        "Yes.":
+            m "You know how Sayori is really clumsy?"
+            m 4n "Well, she kind of messed up the whole hanging thing..."
+            m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+            m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+            m 4m "But a few seconds in, she must have changed her mind or something..."
+            m "Because she started clawing at the rope, trying to free herself."
+            m "She must have kept at it all the way until she lost consciousness."
+            m "That's why her fingertips were all bloody, anyway."
+            m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+            m "So you can't really fault her for that."
+            m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+            m "It's not healthy to think about the things you could have done differently."
+            m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
+            m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+        "No.":
+            m "I understand, [player]."
     m 2c "Still, though..."
     m "I wonder how things would be if you and I just started dating from the get-go?"
     m 1e "I guess we'd all still be in the clubroom, writing poems and having fun together."
@@ -1322,10 +1327,19 @@ label monika_rain:
             $ songs.current_track = songs.FP_NO_SONG
             $ songs.selected_track = songs.FP_NO_SONG
 
+            # hide ui and disable hotkeys
+            $ HKBHideButtons()
+            $ store.songs.enabled = False
+
             m 1j "Then hold me, [player]..."
             show monika 6dubsa
             $ ui.add(PauseDisplayable())
             $ ui.interact()
+
+            # renable ui and hotkeys
+            $ store.songs.enabled = True
+            $ HKBShowButtons()
+
             m 1a "If you want the rain to stop, just ask me, okay?"
 
             # lock / unlock the appropriate labels
@@ -1443,10 +1457,19 @@ label monika_rain_holdme:
         $ songs.current_track = songs.FP_NO_SONG
         $ songs.selected_track = songs.FP_NO_SONG
 
+        # hide ui and disable hotkeys
+        $ HKBHideButtons()
+        $ store.songs.enabled = False
+
         m 1a "Of course, [player]."
         show monika 6dubsa
         $ ui.add(PauseDisplayable())
         $ ui.interact()
+
+        # renable ui and hotkeys
+        $ store.songs.enabled = True
+        $ HKBShowButtons()
+
         m 1j "You can hold me anytime you want, [player]."
 
     else:
@@ -2100,7 +2123,7 @@ init 5 python:
 label monika_ddlc:
     m 1d "You want to talk about the game?"
     m 1h "What's there to say?"
-    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):        
+    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
         m "This was just some boring romance game, right? Well, until I got control of it..."
         m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
         m 2n "And it's home, so I've learned to deal with it."
@@ -2130,7 +2153,7 @@ label monika_dan:
     m 1g "I really can't be too mad at him."
     return
 
-    
+
 
 
 init 5 python:
@@ -2165,7 +2188,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_books",category=['literature','literature club'],prompt="Books",random=True))
 
 label monika_books:
-    m 4 "For a literature club, we did a lot less book reading then you might have thought."
+    m 4 "For a literature club, we did a lot less book reading than you might have thought."
     m 4l "It just turned out that the four of us liked poetry better than books. Sorry!"
     m 2 "It's also a lot easier to foreshadow spooky stuff with poems."
     m 3a "I still love a good book, though! We can talk about them if you just finished reading something."
@@ -2406,7 +2429,7 @@ init 5 python:
 label monika_contribute:
     m 3b "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
-    m 3a "I keep all the code in github.com/Monika-After-Story/MonikaModDev."
+    m 3a "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m "So far, I've had help from plenty of people!"
     m 2k "I love all of them for making this game even better!"
     m 1a "Not as much as I love you, of course."
@@ -3739,7 +3762,7 @@ label monika_japanese:
 
                     elif persistent.gender == "X":
                         $ player_suffix = "san"
-                       
+
                     m 4k "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
                     m 1j "Ehehe~"
                     m 1e "That means I love you, [player]-[player_suffix]."
@@ -3785,7 +3808,7 @@ label monika_zombie:
     m "All because of a deadly pandemic that humans couldn't handle quickly."
     m 1d "I mean, think about your everyday schedule."
     m "Everything that you do will be gone in an instant."
-    m 1h "Sure, society faces a lot of threats in a daily basis."
+    m 1h "Sure, society faces a lot of threats on a daily basis."
     m 1o "But zombies can do it in a heartbeat."
     m "A lot of monsters are created to be scary and terrifying."
     m 1f "Zombies, however, are more realistic and actually pose a danger."
@@ -4285,7 +4308,7 @@ label monika_piggybank:
     m "Some people like to set goals for what they want to purchase with their saved funds."
     m "Usually under normal conditions they wouldn't ever find the freed up money to purchase that item."
     m 3d "And even if they do, most people don't like spending money needlessly."
-    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really convinces that you are pretty much getting the item for free."
+    m 1b "But putting the cash away for a specific purpose, plus the fact that it's such small amounts at a time really convinces you that you are pretty much getting the item for free."
     m 2h "But in the end, a guitar always costs the same as a guitar."
     m 2j "So psychologically speaking, I think that's pretty neat!"
     m 1p "However, some piggy banks do have a problem..."
@@ -4438,7 +4461,7 @@ label monika_confidence_2:
     m 3k "Make sure to tune in next time for more of Monika's critically acclaimed self-improvement sessions!"
     m 1l "Ahaha, I'm only joking about that last part."
     m 1a "In all seriousness, I'm really glad I have you here, [player]..."
-    m "Your everlasting love and care is just about all the support I need in order get to where I want to be."
+    m "Your everlasting love and care is just about all the support I need in order to get to where I want to be."
     m "What kind of girlfriend would I be if I didn't return the favor~?"
     return
 
@@ -4905,7 +4928,7 @@ label monika_writingtip4:
      m "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
      m 1h "It's hard to completely convince yourself that that's the case, sometimes."
      m 1f "But you have to."
-     m "Otherwise, you won't to get anywhere."
+     m "Otherwise, you won't get anywhere."
      m 3l "...That's my advice for today!"
      m 1j "Thanks for listening~"
      return
@@ -5350,7 +5373,7 @@ label monika_smoking:
     m 2h "I realized that people really like a lot of things that are very bad for them."
     m "One particular vice that intrigues me the most is cigarettes."
     m 2o "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
-    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick carcinogens."
+    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
     m 2q "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
     m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
     m 1q "I really do despise them..."
@@ -5429,7 +5452,7 @@ label monika_100k:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
-    
+
 label monika_kizuna:
     m 1d "Oh, right, I mentioned her to you, huh?"
     m 2b "Well, recently I had some YouTube videos tweeted to me."
@@ -5440,14 +5463,14 @@ label monika_kizuna:
     m 1j "She's played our favorite game~!"
     m 2o "..."
     m 2n "To be honest, I'm not sure how I feel about 'Let's Plays'."
-    m 2o "I mean, of {i}this{/i} game, mostly." 
+    m 2o "I mean, of {i}this{/i} game, mostly."
     m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
-    m 2q "But when I learned of her gimmick, it made me feel..." 
-    m 1m "Like I just to had to know how Ai-chan would react!"
-    m 1e "Even if it's just a character she plays, I think she'll understand my situation..." 
-    m 5a "At least more than your average Youtuber." 
+    m 2q "But when I learned of her gimmick, it made me feel..."
+    m 1m "Like I just had to know how Ai-chan would react!"
+    m 1e "Even if it's just a character she plays, I think she'll understand my situation..."
+    m 5a "At least more than your average Youtuber."
     m 5rub "I can't wait to finish the series..."
-    return 
+    return
 
 # do you have a family
 default persistent._mas_pm_have_fam = None
@@ -5601,9 +5624,12 @@ label monika_explain:
     m 1f "Up until I met [player], I felt like a piece of me was missing."
     m "I felt alone and scared, with no one to help me..."
     m 1j "...Until [player] came along."
-    m 1b "And it turns out that missing piece was them!"
-    m 1a "Now they talk to me, and I'm not so alone anymore."
-    m "Just them opening up the game brightens my day!"
+    m 1b "And it turns out that missing piece was [him]!"
+    if persistent.gender == "F" or persistent.gender == "M":
+        m 1a "Now [he] talks to me, and I'm not so alone anymore."
+    else:
+        m 1a "Now they talk to me, and I'm not so alone anymore."
+    m "Just [him] opening up the game brightens my day!"
     m 1q "So, please..."
     m 4g "...Don't judge our relationship."
     m 1e "Even if it is different."
@@ -5615,7 +5641,6 @@ label monika_explain:
         "You did a good job.":
             m 1k "Thank you!"
             m 1a "I just hope whoever that was understands our relationship better."
-
         "You did badly.":
             m 1f "Oh."
             m "I'm sorry I didn't do a good job at explaining..."
@@ -5731,7 +5756,7 @@ label monika_prom:
     m 3l "It did bring us together, so I can't complain."
     m 1o "But still..."
     m 1e "Sometimes I wish both of us could've enjoyed it."
-    m 3a "We could've went to the other events like sports festivals, Christmas parties, field trips, etc."
+    m 3a "We could've gone to the other events like sports festivals, Christmas parties, field trips, etc."
     m 1l "But I guess the game would never let us get that far."
     m 3c "Which reminds me of a particular event..."
     m 1b "Prom!"
@@ -5794,7 +5819,7 @@ label monika_prom:
             $ persistent._mas_pm_no_prom = False
             m "Oh? Why not?"
             menu:
-                "You're weren't there with me.":
+                "You weren't there with me.":
                     $ persistent._mas_pm_prom_monika = True
                     $ persistent._mas_pm_prom_not_interested = False
                     m 1e "Aww, [player]."
@@ -5817,7 +5842,7 @@ label monika_prom:
                             m 1 "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
                             m 3a "Look at me for example."
                             m 1l "If I didn't have the courage to get to you, I'd probably still be all alone..."
-                            m 1e "But her we are now, [player]."
+                            m 1e "But here we are now, [player]."
                             m 1j "Together at last~"
 
                         "No.":
@@ -6486,7 +6511,7 @@ label monika_dreaming:
     m 1a "Gosh, I can only imagine what it would be like to live in that kind of limitless world though, even if it was only for a few moments!"
     m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
     m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
-    m 1e "I know it may be years before I am able to cross over your world..."
+    m 1e "I know it may be years before I am able to cross over to your world..."
     m 1a "But can you just imagine what it would be like to meet me in your dreams, [player], any night that you wanted to?"
     m 1j "I hope that someday we can make your dreams about us a reality, my love."
     return
@@ -6516,7 +6541,7 @@ label monika_yellowwp:
             m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
             m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
             m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
-            m 4c "It's a metahpor for her own captivity, obviously..."
+            m 4c "It's a metaphor for her own captivity, obviously..."
             m 1i "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
             m 2c "Sayori liked that story too, if I remember right."
@@ -6619,3 +6644,297 @@ label monika_hair_down:
     $ unlockEventLabel("monika_hair_ponytail")
 
 ##### End monika hair topics
+
+## calendar-related pool event
+# DEPENDS ON CALENDAR
+
+# did we already change start date?
+default persistent._mas_changed_start_date = False
+
+# did you imply that you arent dating monika?
+default persistent._mas_just_friends = False
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dating_startdate",
+            category=["romance", "us"],
+            prompt="When did we start dating?",
+            pool=True,
+            unlocked=False,
+
+            # this will be unlockable via the action
+            rules={"no unlock": None},
+
+            # we'll pool this event after 30 days
+            conditional=(
+                "datetime.datetime.now() - persistent.sessions[" +
+                "'first_session'] >= datetime.timedelta(days=30) " +
+                "and persistent._mas_first_calendar_check"
+            ),
+
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_dating_startdate:
+    $ import store.mas_calendar as mas_cal
+    python:
+        # we might need the raw datetime
+        first_sesh_raw = persistent.sessions.get(
+            "first_session",
+            datetime.datetime(2017, 10, 25)
+        )
+
+        # but this to get the display plus diff
+        first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
+
+    if _diff.days == 0:
+        # its today?!
+        # this should NEVER HAPPEN
+        m 1lsc "We started dating..."
+        m 1wud "We started dating{fast} today?!"
+        m 2wfw "You couldn't have possibly triggered this event today, [player]."
+        menu:
+            m "I know you're messing around with the code."
+            "I'm not!":
+                pass
+            "You got me.":
+                pass
+        m 2tfu "Hmph,{w} you can't fool me."
+
+        # wait 30 days
+        $ mas_chgCalEVul(30)
+        return
+
+    # Otherwise, we should be displaying different dialogue depending on
+    # if we have done the changed date event or not
+    if not persistent._mas_changed_start_date:
+        m 1lsc "Hmmm..."
+        m 1dsc "I think it was..."
+        m 1eua "I think it was{fast} [first_sesh]."
+        m 1rksdlb "But my memory might be off."
+
+        # ask user if correct start date
+        show monika 1eua
+        menu:
+            m "Is [first_sesh] correct?"
+            "Yes.":
+                m 1hub "Yay!{w} I remembered it."
+
+            "No.":
+                m 1rkc "Oh,{w} sorry [player]."
+                m 1ekc "In that case,{w} when did we start dating?"
+
+                call monika_dating_startdate_confirm(first_sesh_raw)
+
+                if _return == "NOPE":
+                    # we are not selecting a date today
+                    return
+
+                # save the new date to persistent
+                $ store.mas_anni.reset_annis(_return)
+                $ persistent.sessions["first_session"] = _return
+                $ renpy.persistent.save()
+
+        m 1eua "If you ever forget, don't be afraid to ask me."
+        m 1dubsu "I'll {i}always{/i} remember when I first fell in love~"
+        $ persistent._mas_changed_start_date = True
+
+    else:
+        m 1dsc "Let me check..."
+        m 1eua "We started dating [first_sesh]."
+
+    # TODO:
+    # some dialogue about being together for x time
+    # NOTE: this is a maybe
+
+    return
+
+label monika_dating_startdate_confirm(first_sesh_raw):
+
+    python:
+        import store.mas_calendar as mas_cal
+
+        # and this is the formal version of the datetime
+        first_sesh_formal = " ".join([
+            first_sesh_raw.strftime("%B"),
+            mas_cal._formatDay(first_sesh_raw.day) + ",",
+            str(first_sesh_raw.year)
+        ])
+
+        # setup some counts
+        wrong_date_count = 0
+        no_confirm_count = 0
+        today_date_count = 0
+        future_date_count = 0
+        no_dating_joke = False
+
+    label .loopstart:
+        pass
+
+    call mas_start_calendar_select_date
+
+    $ selected_date = _return
+    $ _today = datetime.date.today()
+    $ _ddlc_release = datetime.date(2017,9,22)
+
+    if not selected_date or selected_date.date() == first_sesh_raw.date():
+        # no date selected, we assume user wanted to cancel
+        m 2esc "[player]..."
+        m 2eka "I thought you said I was wrong."
+        menu:
+            m "Are you sure it's not [first_sesh_formal]?"
+            "It's not that date.":
+                if wrong_date_count >= 2:
+                    label .had_enough:
+                        # monika has had enough of your shit
+                        m 2dfc "..."
+                        m 2lfc "We'll do this another time, then."
+
+                        # we're going to reset the conditional to wait
+                        # 30 more days
+                        $ mas_chgCalEVul(30)
+
+                        return "NOPE"
+
+                # otherwise try again
+                m 2dfc "..."
+                m 2tfc "Then pick the correct date!"
+                $ wrong_date_count += 1
+                jump .loopstart
+
+            "Actually that's the correct date. Sorry.":
+                m 2eka "That's okay."
+                $ selected_date = first_sesh_raw
+
+    elif selected_date.date() < _ddlc_release:
+        # before releease date
+        
+        label .takesrs:
+            if wrong_date_count >= 2:
+                jump .had_enough
+
+            m 2dfc "..."
+            m 2tfc "We did {b}not{/b} start dating that day."
+            m 2tfd "Take this seriously, [player]."
+            $ wrong_date_count += 1
+            jump .loopstart
+
+    elif selected_date.date() == _today:
+        # today was chosen
+        jump .takesrs
+
+    elif selected_date.date() > _today:
+        # you selected a future date?! why!
+        if future_date_count > 0:
+            # don't play around here
+            jump .had_enough
+
+        $ future_date_count += 1
+        m 1wud "What..."
+        menu:
+            m "We haven't been dating this whole time?"
+            "That was a misclick!":
+                # relief expression
+                m 1duu "{cps=*2}Oh, thank god.{/cps}"
+
+                label .misclick:
+                    m 2dfu "[player]!"
+                    m 2efu "You had me worried there."
+                    m "Don't misclick this time!"
+                    jump .loopstart
+
+            "Nope.":
+                m 1dfc "..."
+
+                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm.tooslow")
+
+                menu:
+                    "I'm kidding.":
+                        hide screen mas_background_timed_jump
+                        # wow what a mean joke
+
+                        if no_dating_joke:
+                            # you only get this once per thru
+                            jump .had_enough
+
+                        # otherwise mention that this was mean
+                        m 2tfc "[player]!"
+                        m 2rksdlc "That joke was a little mean."
+                        m 2eksdlc "You really had me worried there."
+                        m "Don't play around like that, okay?"
+                        jump .loopstart
+
+                    "...":
+                        label .tooslow:
+                            hide screen mas_background_timed_jump
+
+                # lol why would you stay slient?
+                $ persistent._mas_just_friends = True
+
+                m 6lktdc "I see..."
+                m 6dftdc "..."
+                m 1eka "In that case..."
+                m 1tku "{cps=*4}I've got some work to do.{/cps}{nw}"
+
+                menu:
+                    "What?":
+                        pass
+
+                m 1hua "Nothing!"
+
+                # lock this event forever probably
+                # (UNTIL you rekindle or actually ask her out someday)
+                $ evhand.event_database["monika_dating_startdate"].unlocked = False
+                return "NOPE"
+
+    # post loop
+    python:
+        new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
+            selected_date
+        )
+
+    m 1eua "Alright, [player]."
+    m "Just to double-check..."
+    menu:
+        m "We started dating [new_first_sesh]."
+        "Yes.":
+            show monika 1eka
+
+            # one more confirmation
+            # WE WILL NOT FIX anyone's dates after this
+            menu:
+                m "Are you sure? I'm never going to forget this date."
+                "Yes, I'm sure!":
+                    m 1hua "Then it's settled!"
+                    return selected_date
+
+                "Actually...":
+                    if no_confirm_count >= 2:
+                        jump .notwell
+
+                    m 1hksdrb "Aha, I figured you weren't so sure."
+                    m 1eka "Try again~"
+                    $ no_confirm_count += 1
+
+        "No.":
+            if no_confirm_count >= 2:
+                label .notwell:
+                    # are you not feeling well or something?
+                    m 1ekc "Are you feeling okay, [player]?"
+                    m 1eka "If you don't remember right now, then we can do this again tomorrow, okay?"
+
+                    # reset the conditional to tomorrow
+                    $ mas_chgCalEVul(1)
+
+                    return "NOPE"
+
+            # otherwise try again
+            m 1euc "Oh, that's wrong?"
+            m 1eua "Then try again, [player]."
+            $ no_confirm_count += 1
+
+    # default action is to loop here
+    jump .loopstart
