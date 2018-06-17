@@ -87,6 +87,11 @@ python early:
     #       (Default: empty dict)
     #   last_seen - datetime of the last time this topic has been seen
     #       (Default: None)
+    #   years - list of years that this event repeats in.
+    #       NOTE: requires start_date param to be not None
+    #       NOTE: If this is given, the year part of start_date and end_date
+    #           will be IGNORED
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -106,7 +111,8 @@ python early:
             "shown_count":12,
             "diary_entry":13,
             "rules":14,
-            "last_seen":15
+            "last_seen":15,
+            "years":16
         }
 
         # name constants
@@ -141,7 +147,8 @@ python early:
                 unlock_date=None,
                 diary_entry=None,
                 rules=dict(),
-                last_seen=None
+                last_seen=None,
+                years=None
             ):
 
             # setting up defaults
@@ -191,7 +198,8 @@ python early:
                 0, # shown_count
                 diary_entry,
                 rules,
-                last_seen
+                last_seen,
+                years
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -238,6 +246,7 @@ python early:
                     self.category = category
                     self.diary_entry = diary_entry
                     self.rules = rules
+                    self.years = years
 
             # new items are added appropriately
             else:
@@ -678,41 +687,72 @@ python early:
             current_time = datetime.datetime.now()
             # insertion sort
             for ev in ev_list:
-                event_time = True
+
+                e = events[ev]
 
                 #If the event has no time-dependence, don't check it
-                if (events[ev].start_date is None) and (events[ev].end_date is None):
-                    event_time = False
+                if (e.start_date is None) and (e.end_date is None):
+                    continue
 
                 #Calendar must be based on a date
-                if events[ev].start_date is not None:
-                    if events[ev].start_date > current_time:
-                        event_time = False
+                if e.start_date is not None:
+                    if e.start_date > current_time:
+                        continue
 
-                if events[ev].end_date is not None:
-                    if events[ev].end_date <= current_time:
-                        event_time = False
+                if e.end_date is not None:
+                    if e.end_date <= current_time:
+                        continue
 
-                if events[ev].conditional is not None:
-                    if not eval(events[ev].conditional):
-                        event_time = False
+                if e.conditional is not None:
+                    if not eval(e.conditional):
+                        continue
 
 
-                if event_time and events[ev].action is not None:
+                if e.action is not None:
                     #Perform the event's action
-                    if events[ev].action == EV_ACT_PUSH:
+                    if e.action == EV_ACT_PUSH:
                         pushEvent(ev)
-                    elif events[ev].action == EV_ACT_QUEUE:
+                    elif e.action == EV_ACT_QUEUE:
                         queueEvent(ev)
-                    elif events[ev].action == EV_ACT_UNLOCK:
-                        events[ev].unlocked = True
-                        events[ev].unlock_date = current_time
-                    elif events[ev].action == EV_ACT_RANDOM:
-                        events[ev].random = True
-                    elif events[ev].action == EV_ACT_POOL:
-                        events[ev].pool = True
+                    elif e.action == EV_ACT_UNLOCK:
+                        e.unlocked = True
+                        e.unlock_date = current_time
+                    elif e.action == EV_ACT_RANDOM:
+                        e.random = True
+                    elif e.action == EV_ACT_POOL:
+                        e.pool = True
 
-                    #Clear the conditional
+                    # Check if we have a years property
+                    if e.years is not None:
+
+                        # if it's an empty list
+                        if len(e.years) == 0:
+
+                            # get event ready for next year
+                            e.start_date = store.mas_utils.add_years(e.start_date, 1)
+                            e.end_date = store.mas_utils.add_years(e.end_date, 1)
+                            continue
+
+                        # if it's not empty, get all the years that are in the future
+                        new_years = [year for year in e.years if year > e.start_date.year]
+
+                        # if we have possible new years
+                        if len(new_years) > 0:
+                            # sort them to ensure we get the nearest one
+                            new_years.sort()
+
+                            # pick it
+                            new_year = new_years[0]
+
+                            # get the difference
+                            diff = new_year - e.start_date.year
+
+                            # update event for the year it should repeat
+                            e.start_date = store.mas_utils.add_years(e.start_date, diff)
+                            e.end_date = store.mas_utils.add_years(e.end_date, diff)
+                            continue
+
+                    # Clear the conditional since the event shouldn't repeat
                     events[ev].conditional = "False"
 
             return events
@@ -1664,8 +1704,9 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_piano_keymaps = dict()
 
 
-init -1 python in mas_utils:
+init -100 python in mas_utils:
     # utility functions for other stores.
+    import datetime
 
     def tryparseint(value, default=0):
         """
@@ -1684,6 +1725,79 @@ init -1 python in mas_utils:
             return int(value)
         except:
             return default
+
+
+    ### date adjusting functions
+    def add_years(initial_date, years):
+        """
+        ASSUMES:
+            initial_date as datetime
+            years as an int
+
+        IN:
+            initial_date: the date to add years to
+            years : the number of years to add
+
+        RETURNS:
+            the date with the years added, if it's feb 29th it goes to mar 1st,
+            if feb 29 doesn't exists in the new year
+        """
+        try:
+
+            # Simply add the years using replace
+            return initial_date.replace(year=initial_date.year + years)
+        except ValueError:
+
+            # We handle the only exception feb 29
+            return  initial_date + (datetime.date(initial_date.year + years, 1, 1)
+                                - datetime.date(initial_date.year, 1, 1))
+
+
+    #Takes a datetime object and add a number of months
+    #Handles the case where the new month doesn't have that day
+    def add_months(starting_date,months):
+        old_month=starting_date.month
+        old_year=starting_date.year
+        old_day=starting_date.day
+
+        # get the total of months
+        total_months = old_month + months
+
+        # get the new month based on date
+        new_month = total_months % 12
+
+        # handle december specially
+        new_month = 12 if new_month == 0 else new_month
+
+        # get the new year
+        new_year = old_year + int(total_months / 12)
+        if new_month == 12:
+            new_year -= 1
+
+        #Try adding a month, if that doesn't work (there aren't enough days in the month)
+        #keep subtracting days till it works.
+        date_worked=False
+        reduce_days=0
+        while reduce_days<=3 and not date_worked:
+            try:
+                new_date = starting_date.replace(year=new_year,month=new_month,day=old_day-reduce_days)
+                date_worked = True
+            except ValueError:
+                reduce_days+=1
+
+        if not date_worked:
+            raise ValueError('Adding months failed')
+
+        return new_date
+
+    #Takes a datetime object and returns a new datetime with the same date
+    #at 3 AM
+    # START-OF-DAY
+    def sod(starting_date):
+        new_date = starting_date.replace(hour=3,minute=0,second=0,microsecond=0)
+
+        return new_date
+
 
 
 
@@ -3064,6 +3178,7 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
+default persistent._mas_first_calendar_check = False
 
 # rain
 default persistent._mas_likes_rain = False

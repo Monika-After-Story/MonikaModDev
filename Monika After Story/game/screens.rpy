@@ -1080,7 +1080,7 @@ screen preferences():
 
 
                 vbox:
-                    
+
                     hbox:
                         label _("Random Chatter   ")
 
@@ -2078,7 +2078,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
                     textbutton _(nvm_text) action Return(False)
 
-# more generali scrollable menu. This one takes the following params:
+# more general scrollable menu. This one takes the following params:
 # IN:
 #   items - list of items to display in the menu. Each item must be a tuple of
 #       the following format:
@@ -2183,6 +2183,7 @@ screen mas_generic_restart:
                 spacing 100
 
                 textbutton _("OK") action Return(True)
+
 
 # generic custom displayabels below:
 init python:

@@ -33,6 +33,7 @@ init python:
         # Shows the movie buttons
         #
         config.overlay_screens.append("movie_overlay")
+        
 
 init -1 python in hkb_button:
 
@@ -99,6 +100,26 @@ style hkbd_button_text is default:
     idle_color "#000"
     hover_color "#000"
     outlines []
+
+screen calendar_overlay:
+    zorder 1
+
+    vbox:
+        xalign 0.305
+        yalign 0.4
+
+        if allow_dialogue and store.hkb_button.enabled:
+            imagebutton:
+                idle "mod_assets/calendar/calendar_button_normal.png"
+                hover "mod_assets/calendar/calendar_button_hover.png"
+                hover_sound gui.hover_sound
+                activate_sound gui.activate_sound
+                action Function(show_calendar)
+        else:
+            imagebutton:
+                action NullAction()
+                idle "mod_assets/calendar/calendar_button_normal.png"
+
 
 screen hkb_overlay():
 
