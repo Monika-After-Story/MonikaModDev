@@ -254,10 +254,6 @@ label v0_8_2(version="v0_8_2"):
     python:
         import store.mas_anni as mas_anni
 
-        # regular topic update
-        # TODO: check this
-#        persistent = updateTopicIDs(version)
-
         ## need to fix anniversaries for everyone again.
         mas_anni.reset_annis(persistent.sessions["first_session"])
 
