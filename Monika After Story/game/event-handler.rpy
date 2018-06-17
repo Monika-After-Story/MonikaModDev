@@ -276,7 +276,7 @@ init -1 python in evhand:
         return end_date < date
 
 
-    def isPresent(ev):
+    def _isPresent(ev):
         """INTERNAL
         Checks if current date falls within the given event's start/end date
         range
