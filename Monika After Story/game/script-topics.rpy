@@ -16,11 +16,11 @@ init -2 python in mas_topics:
 
     # CONSTANTS
     # most / top weights
-    # MOST seen is the percentage of seen topics 
+    # MOST seen is the percentage of seen topics
     # think of this as x % of the collection
     S_MOST_SEEN = 0.1
 
-    # TOP seen is the percentage of the most seen 
+    # TOP seen is the percentage of the most seen
     # Think of this as ilke the upper x percentile
     S_TOP_SEEN = 0.2
 
@@ -406,20 +406,25 @@ label monika_sayori:
     m "That pun was completely unintentional, I swear!"
     m "But anyway..."
     m 2e "I know how much you cared about her, so it only feels right for me to share her last moments with you."
-    m "You know how Sayori is really clumsy?"
-    m 4n "Well, she kind of messed up the whole hanging thing..."
-    m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-    m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-    m 4m "But a few seconds in, she must have changed her mind or something..."
-    m "Because she started clawing at the rope, trying to free herself."
-    m "She must have kept at it all the way until she lost consciousness."
-    m "That's why her fingertips were all bloody, anyway."
-    m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-    m "So you can't really fault her for that."
-    m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-    m "It's not healthy to think about the things you could have done differently."
-    m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-    m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+    m "If you're comfortable, that is." 
+    menu:
+        "Yes.":
+            m "You know how Sayori is really clumsy?"
+            m 4n "Well, she kind of messed up the whole hanging thing..."
+            m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+            m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+            m 4m "But a few seconds in, she must have changed her mind or something..."
+            m "Because she started clawing at the rope, trying to free herself."
+            m "She must have kept at it all the way until she lost consciousness."
+            m "That's why her fingertips were all bloody, anyway."
+            m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+            m "So you can't really fault her for that."
+            m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+            m "It's not healthy to think about the things you could have done differently."
+            m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
+            m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+        "No.":
+            m "I understand, [player]."
     m 2c "Still, though..."
     m "I wonder how things would be if you and I just started dating from the get-go?"
     m 1e "I guess we'd all still be in the clubroom, writing poems and having fun together."
@@ -1322,10 +1327,19 @@ label monika_rain:
             $ songs.current_track = songs.FP_NO_SONG
             $ songs.selected_track = songs.FP_NO_SONG
 
+            # hide ui and disable hotkeys
+            $ HKBHideButtons()
+            $ store.songs.enabled = False
+
             m 1j "Then hold me, [player]..."
             show monika 6dubsa
             $ ui.add(PauseDisplayable())
             $ ui.interact()
+
+            # renable ui and hotkeys
+            $ store.songs.enabled = True
+            $ HKBShowButtons()
+
             m 1a "If you want the rain to stop, just ask me, okay?"
 
             # lock / unlock the appropriate labels
@@ -1443,10 +1457,19 @@ label monika_rain_holdme:
         $ songs.current_track = songs.FP_NO_SONG
         $ songs.selected_track = songs.FP_NO_SONG
 
+        # hide ui and disable hotkeys
+        $ HKBHideButtons()
+        $ store.songs.enabled = False
+
         m 1a "Of course, [player]."
         show monika 6dubsa
         $ ui.add(PauseDisplayable())
         $ ui.interact()
+
+        # renable ui and hotkeys
+        $ store.songs.enabled = True
+        $ HKBShowButtons()
+
         m 1j "You can hold me anytime you want, [player]."
 
     else:
@@ -2100,7 +2123,7 @@ init 5 python:
 label monika_ddlc:
     m 1d "You want to talk about the game?"
     m 1h "What's there to say?"
-    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):        
+    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
         m "This was just some boring romance game, right? Well, until I got control of it..."
         m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
         m 2n "And it's home, so I've learned to deal with it."
@@ -2130,7 +2153,7 @@ label monika_dan:
     m 1g "I really can't be too mad at him."
     return
 
-    
+
 
 
 init 5 python:
@@ -2406,7 +2429,7 @@ init 5 python:
 label monika_contribute:
     m 3b "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
-    m 3a "I keep all the code in github.com/Monika-After-Story/MonikaModDev."
+    m 3a "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m "So far, I've had help from plenty of people!"
     m 2k "I love all of them for making this game even better!"
     m 1a "Not as much as I love you, of course."
@@ -3739,7 +3762,7 @@ label monika_japanese:
 
                     elif persistent.gender == "X":
                         $ player_suffix = "san"
-                       
+
                     m 4k "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
                     m 1j "Ehehe~"
                     m 1e "That means I love you, [player]-[player_suffix]."
@@ -5429,7 +5452,7 @@ label monika_100k:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
-    
+
 label monika_kizuna:
     m 1d "Oh, right, I mentioned her to you, huh?"
     m 2b "Well, recently I had some YouTube videos tweeted to me."
@@ -5440,14 +5463,14 @@ label monika_kizuna:
     m 1j "She's played our favorite game~!"
     m 2o "..."
     m 2n "To be honest, I'm not sure how I feel about 'Let's Plays'."
-    m 2o "I mean, of {i}this{/i} game, mostly." 
+    m 2o "I mean, of {i}this{/i} game, mostly."
     m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
-    m 2q "But when I learned of her gimmick, it made me feel..." 
-    m 1m "Like I just to had to know how Ai-chan would react!"
-    m 1e "Even if it's just a character she plays, I think she'll understand my situation..." 
-    m 5a "At least more than your average Youtuber." 
+    m 2q "But when I learned of her gimmick, it made me feel..."
+    m 1m "Like I just had to know how Ai-chan would react!"
+    m 1e "Even if it's just a character she plays, I think she'll understand my situation..."
+    m 5a "At least more than your average Youtuber."
     m 5rub "I can't wait to finish the series..."
-    return 
+    return
 
 # do you have a family
 default persistent._mas_pm_have_fam = None
