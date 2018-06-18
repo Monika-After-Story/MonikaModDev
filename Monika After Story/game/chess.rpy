@@ -1970,8 +1970,8 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     m 2dfc "..."
     m 2efc "[player],{w} I don't believe you."
     # TODO: we need an angry monika
-    m 2efd "If you're just going to throw away our chess games like that,"
-    m 6wfw "then I don't want to play chess with you anymore."
+    m 2efd "If you're just going to throw away our chess games like that..."
+    m 6wfw "Then I don't want to play chess with you anymore!"
     $ persistent.game_unlocks["chess"] = False
     # workaround to deal with peeople who havent seen the unlock chess label
     $ persistent._seen_ever["unlock_chess"] = True
