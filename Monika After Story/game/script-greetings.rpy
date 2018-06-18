@@ -479,9 +479,9 @@ init 5 python:
     del rules
 
 label greeting_monika_monday_morning:
-    m "Another monday morning, eh [player]?"
+    m "Another monday morning, eh, [player]?"
     m 1r "It surely sucks to wake up and start off the week ..."
-    m 1 "But seeing you makes all that laziness go away"
+    m 1 "But seeing you makes all that laziness go away."
     m 1k "You are the sunshine that wakes me up every morning!"
     m "I love you so much, [player]~"
     return
@@ -1131,7 +1131,7 @@ init 5 python:
     )
 
 label greeting_back_from_work:
-     m 1b "Oh, welcome back [player]!"
+     m 1b "Oh, welcome back, [player]!"
      menu:
          m "Did you have a good day at work today?"
          "Yes.":
@@ -1139,7 +1139,7 @@ label greeting_back_from_work:
              m 1a "Remember to rest first, okay?"
              m "That way, you'd at least have some energy before you work more on stuff."
              m 3a "But if not, you can relax with me!"
-             m 1j "Best thing to do after a long day from, don't you think?"
+             m 1j "Best thing to do after a long day of work, don't you think?"
              m 1k "Ahaha!"
 
          "No.":
