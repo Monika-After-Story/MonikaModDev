@@ -556,3 +556,72 @@ label mas_mood_yearolder_years:
 label mas_mood_yearolder_leap_today:
     # nothing special occurs here for now
     jump mas_mood_yearolder_bday_true
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="scared",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_scared:
+    m 1r "{i}There is nothing to fear, but fear itself.{/i}"
+    m 1k "Ahaha~ I'm kidding."
+    m 3a "Though the reason we become scared, is because we sense any form of danger."
+    m "This can be in a physical or psychological form."
+    m 1d "Fear is a survival instinct that we are born with, and this trait keeps us from harm."
+    m 1g "Though, this instinct can also restrict our actions that may be benefitial to us, instead of damaging."
+    m 1e "I hope your reasons behind being scared, is keeping you from harm [player]."
+    m 1f "I would never want to see my beloved sweetheart hurt."
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_guilty",prompt="guilty",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_guilty:
+
+    m 1f "Aw! You shouldn't feel guilty [player]."
+    m 2g "There is no way that you could know or do anything so bad to feel that way."
+    m 4p "I mean, doing what I did to my friends was something to feel guilty over."
+    m 3e "But if it will make you feel better, you can confess to me what's on your mind."
+    $ start_time = datetime.datetime.now()
+    m 3a "Whisper it or say it out loud to me. You can trust me."
+    m 1q "..."
+    $ end_time = datetime.datetime.now()
+    $ elapsed_time = end_time - start_time
+    $ time_threshold = datetime.timedelta(seconds=20)
+    if elapsed_time < time_threshold:
+        m 2f "I guess you don't have to tell me if you're too uncomfortable."
+        m "That's fine, you can always come back to tell me anytime."
+        m 2e "I hope you won't be afraid to tell me anything on your mind."
+        m 1k "You know I'll always love you [player]."
+    elif elapsed_time < time_threshold * 3:
+        m 2b "Thanks for confronting to me [player]."
+        m 3a "Even to your girlfriend, these things can be difficult to say."
+        m 3k "But there is no need to hide these kinds of issues, we can work through them together."
+        m 1a "I love you [player], and I don't want to see these problems bothering you."
+    elif elapsed_time < time_threshold * 6:
+        m 1j "I'm so glad that you trust me with knowing all of that."
+        m 1a "I get to learn so much more about my sweetheart, I'm always happy for that."
+        m 2d "But no matter what, I will never be ashamed of you for anything."
+        m 1k "I will always be here to support you my love."
+    else:
+        m 2k "I've always liked good stories. I do enjoy listening to stories about you."
+        m 2n "Even if you feel bad about it, You have every reason feel guilty over that story"
+        m 1r "but it's all in the past now."
+        m 1d "As long as nothing has come back to hurt for your actions, you will eventually overcome your feelings."
+        m 2d "But if anything has come back and hurt you."
+        m 4a "I will be here for you every step of the way to conquer any problems."
+        m 3k "I only want the best for my beloved [player]."
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_loved",prompt="scared",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_loved:
+    m 1k "I'm so glad you feel that way [player]."
+    m 1a "I feel that way everyday you're with me."
+    m 3l "Though I may not be the reason for you feeling this way."
+    m 1j "But that's why we value people close to us, like friends and family."
+    m 1a "They can make us so happy by feeling loved and cared about."
+    m 5a "I hope I make you feel loved too. I am your girlfriend after all."
+    m 2a "But if there is someone else who makes you feel loved as well."
+    m 2j "I would certainly like to meet them, they already seem very nice."
+    m 2k "Seeing you so happy always brightens my world."
+    return
