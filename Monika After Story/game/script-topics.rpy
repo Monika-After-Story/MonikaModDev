@@ -4598,7 +4598,7 @@ label monika_cats:
     m 1b "It's amazing how far people would take their love with their pets."
     m 1l "They {i}really{/i} loved cats, [player]."
     m 3b "And people still do today!"
-    m 1 "Felines are still one of the most common animals to have as pet."
+    m 1 "Felines are still one of the most common animals to have as pets."
     m 1j "Maybe we should get one when we're living together, [player]."
     return
 
@@ -6811,7 +6811,7 @@ label monika_dating_startdate:
                 $ renpy.persistent.save()
 
         m 1eua "If you ever forget, don't be afraid to ask me."
-        m 1dubsu "I'll {i}always{/i} remember when I first fell in love~"
+        m 1dubsu "I'll {i}always{/i} remember when I first fell in love with you~"
         $ persistent._mas_changed_start_date = True
 
     else:
