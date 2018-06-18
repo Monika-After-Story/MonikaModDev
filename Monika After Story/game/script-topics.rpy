@@ -7010,3 +7010,39 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # default action is to loop here
     jump .loopstart
+
+init 5 python:
+     addEvent(Event(persistent.event_database, eventlabel="monika_first_sight_love", category=["life", "romance"], prompt="Love at first sight", random=True))
+
+label monika_first_sight_love:
+    m 1d "Have you thought about the concept of 'love at first sight'?"
+    m 3d "Like, seeing someone for the first time, and instantly know they will be the love of life."
+    m 2q "I think it's one of the more ridiculous concepts to grasp."
+    m 2o "I mean, you can't just know who a person truly is, just by looking at them once."
+    m 2f "It's not like you talked to that person, had lunch or hung out together. "
+    m 2o "You don't even know what their interests and hobbies are. They could be really boring to you."
+    m 2p "Or they could be a mean and horrible person."
+    m 1g "We shouldn't {i}just{/i} use our eyes to tell if someone is the perfect partner for us."
+    m 1k "Ehehe, but then again. That's exactly how I fell in love with you."
+    m 1j "How could I ever resist someone as lovely as you [player]."
+    m 1a "I wonder if you fell in love with me at first sight too."
+    return
+
+init 5 python:
+       addEvent(Event(persistent.event_database, eventlabel="monika_anime_art", category=["misc"], prompt="Anime art style", random=True))
+
+label monika_anime_art:
+    m 1d "Have you thought about {i}anime{/i} art styles?"
+    m 3a "I'm sure Natsuki would be an expert at this."
+    m 1a "But there are so many interesting things about the art style."
+    m 3b "It's freeform, much like my poems."
+    m 3a "Which makes a lot of the art unique, even if they look similar."
+    m 3a "From the beautiful scenery, to the amazing characters."
+    m 4e "I mean, I was created through that very art style."
+    m 2r "But being a freefrom art style, can also make things look very unrealistic."
+    m 2i "Such as with how big characters eyes get, and how small their noses are. Or even their hair being in strange lengths, shapes and sizes."
+    m 3n "Like, if I looked realistic. I certainly wouldn't have those attributes."
+    m 1b "But the art style also opens up a lot of creativity, as you aren't restricted by realistic features."
+    m 3a "I guess that's where the true beauty of anime art styles come from."
+    m 1a "I hope you like the way I was drawn [player]."
+    return
