@@ -6715,6 +6715,8 @@ label monika_hair_down:
     $ lockEventLabel("monika_hair_down")
     $ unlockEventLabel("monika_hair_ponytail")
 
+    return
+
 ##### End monika hair topics
 
 ## calendar-related pool event
