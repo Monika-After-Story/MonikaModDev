@@ -1663,6 +1663,8 @@ label _first_time_calendar_use:
     m 1eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
+    show monika 1
+
     $ store.hkb_button.enabled = True
     $ persistent._mas_first_calendar_check = True
     return
