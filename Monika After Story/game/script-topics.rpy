@@ -6877,7 +6877,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                 m 2dfc "..."
                 m 2tfc "Then pick the correct date!"
                 $ wrong_date_count += 1
-                jump .loopstart
+                jump monika_dating_startdate_confirm.loopstart
 
             "Actually that's the correct date. Sorry.":
                 m 2eka "That's okay."
@@ -6888,13 +6888,13 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         
         label .takesrs:
             if wrong_date_count >= 2:
-                jump .had_enough
+                jump monika_dating_startdate_confirm.had_enough
 
             m 2dfc "..."
             m 2tfc "We did {b}not{/b} start dating that day."
             m 2tfd "Take this seriously, [player]."
             $ wrong_date_count += 1
-            jump .loopstart
+            jump monika_dating_startdate_confirm.loopstart
 
     elif selected_date.date() == _today:
         # today was chosen
@@ -6904,7 +6904,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         # you selected a future date?! why!
         if future_date_count > 0:
             # don't play around here
-            jump .had_enough
+            jump monika_dating_startdate_confirm.had_enough
 
         $ future_date_count += 1
         m 1wud "What..."
@@ -6918,7 +6918,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                     m 2dfu "[player]!"
                     m 2efu "You had me worried there."
                     m "Don't misclick this time!"
-                    jump .loopstart
+                    jump monika_dating_startdate_confirm.loopstart
 
             "Nope.":
                 m 1dfc "..."
@@ -6932,14 +6932,14 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
                         if no_dating_joke:
                             # you only get this once per thru
-                            jump .had_enough
+                            jump monika_dating_startdate_confirm.had_enough
 
                         # otherwise mention that this was mean
                         m 2tfc "[player]!"
                         m 2rksdlc "That joke was a little mean."
                         m 2eksdlc "You really had me worried there."
                         m "Don't play around like that, okay?"
-                        jump .loopstart
+                        jump monika_dating_startdate_confirm.loopstart
 
                     "...":
                         label .tooslow:
@@ -6987,7 +6987,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
                 "Actually...":
                     if no_confirm_count >= 2:
-                        jump .notwell
+                        jump monika_dating_startdate_confirm.notwell
 
                     m 1hksdrb "Aha, I figured you weren't so sure."
                     m 1eka "Try again~"
@@ -7011,4 +7011,4 @@ label monika_dating_startdate_confirm(first_sesh_raw):
             $ no_confirm_count += 1
 
     # default action is to loop here
-    jump .loopstart
+    jump monika_dating_startdate_confirm.loopstart
