@@ -9,7 +9,20 @@
 #
 # META: Python things to talk about:
 #   0 - what is python?
-#   1 - 
+#   1 - types 
+#   2 - Variables and assignment
+#   3 - If statement / elif and else
+#   4 - while loop
+#   5 - for loop
+#   6 - functions
+#   7 - functions continiued?
+#   8 - classes (might be too much)
+#   9 - modules (might be too much) / importing?
+#   10 - lists
+#   11 - dict
+#   12 - tuples
+#   13 - py2 vs py3
+#   
 
 ## We can assume evhand is already imported
 
@@ -64,13 +77,16 @@ label monika_ptod_tip001:
     # One last thing, Thre are currently 2 main versions of python:
     # py2 and py3. These versions are **incompatible** with each other 
     # because the changes added in py3 fixed many fundamental design flaws in
-    # py2. Even though this causes a split in the python community, it's
+    # py2. Even though this caused a split in the python community, it's
     # generally agreed that both versions of the language have their own
     # strengths and weaknesses.
     # 
     # The versions of RenPy that runs this game uses Python2, so I'll 
     # mainly teach you python2
-    # but i'll mention py3 at times
+    # but i'll mention py3 at times when it's appropriate.
+    # 
+    #  That's my lesson for today!
+    # Thanks for listening
     return 
 
 ###############################################################################
@@ -87,5 +103,5 @@ init 5 python:
     )
 
 label monika_ptod_tip002:
-    # 
+    # In 
     return
