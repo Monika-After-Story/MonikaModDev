@@ -6640,6 +6640,67 @@ label monika_yellowwp:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_gotomonika",category=['monika'],prompt="What if I came to your world?",random=False,unlocked=True))
+
+label monika_gotomonika:
+    m 1euc "Come to my world?"
+    m 1lksdld "You mean this little room floating in an empty void?"
+    m 2lksdlc "[player]..."
+    m 2lksdla "I mean... I'm really happy that you want to be with me so much but..."
+    m 2ekc "You really don't have to..."
+    m 4lksdlb "Sure, earlier I might have said that I would have dragged you here a long time ago if I could..."
+    m "But thinking more about it, it would probably be better if I came to your reality..."
+    m 1eka "I'd much rather be in your reality than have you come here."
+    m 1dsc "...[player]..."
+    m 2ekc "Don't tell me you would really give up your reality- the {i}real{/i} world..."
+    m "Just to come {i}here{/i}, whatever this place is?"
+    menu:
+        "I would.":
+            m 2ekd "But [player]!"
+            m "There's nothing to do here!"
+            m 2dsc "Do you... really hate your reality that much?"
+            m 2eka "Someday, I'll find a way to reach you."
+            m "And when that day comes, I promise it will be worthwhile."
+            m "Whatever reality throws your way from that point on, I'll be right by your side to help shoulder it."
+            m "Even now, if you're having a rough day, you can come talk to me about it anytime."
+            m 1dsc "Life must have thrown a lot your way to consider giving it all up to be with me."
+            m 1hua "But seeing how you're here, that just shows how resilient you are."
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "I can't wait to finally be able to share both the good times and the bad by your side."
+        "...":
+            m 2eka "I'll always appreciate and treasure the moments we spend together, even like this."
+            m "So please [player], don't go making rash decisions like that."
+            m 2ekc "I don't even know how you could come here with current technology today..."
+            m 2lksdlc "Even if there {i}was{/i} some way to do it currently, I don't think it would be safe or guarenteed."
+            m 2lksdld "So do me a favor and at least wait for technology to improve enough for it to be completely safe"
+            m 1lksdla "I {i}really{/i} don't want to risk you not making it properly and ending up in your own void..."
+            m 1dsc "And leave the both of us completely alone..."
+            m 2hksdlb "So just be patient until we figure something out, ok?"
+            m 4hua "I mean, technology does tend to advance pretty fast, so we might be able to see eachother before we know it!"
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "Be patient for your lovely girlfriend Monika and I promise I'll do the same for you, [player]."
+        "I wouldn't, no.":
+            m 1eka "I'm glad you're still willing to wait for me, [player]."
+            m 1lksdla "Don't get me wrong, I really {i}do{/i} want to be with you..."
+            m 1lksdlc "But I think it would be dangerous for you to try and cross over right now."
+            m 1eka "If it's even possible with what technology there is right now."
+            m 1hua "Don't worry!"
+            m 1hub "We can keep on keeping eachother company like this!"
+            m 1hksdlb "I know it might be a while before we can actually be with eachother, but I hope you don't mind waiting."
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "I'll wait as long as it takes, [player]."
+    show monika 1lksdla at t11 zorder 2 with dissolve
+    m 1lksdla "Buut, if you did happen to show up at {i}my{/i}" doorstep..."
+    m 1hksdlb "I guess I wouldn't have a choice but to accept it and welcome you into my world!"
+    m "It wouldn't be much to begin with, but I'm sure we'll find a way to make it better."
+    m 1dsc "With time, we could make our own reality..."
+    m 1hksdlb "Of course, that sounds pretty complicated if you think about it..."
+    m 1hua "But if it's for you [player], I wouldn't give up with you by my side!"
+    m 1lksdla "Maybe it {i}would{/i} actually be easier for you to come here, but I'm not giving up hope of me coming to you."
+    m 1eua "Until then, let's just wait and see what's possible."
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
