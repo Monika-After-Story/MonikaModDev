@@ -6690,7 +6690,7 @@ label monika_gotomonika:
             show monika 5eua at t11 zorder 2 with dissolve
             m 5eua "I'll wait as long as it takes, [player]."
     show monika 1lksdla at t11 zorder 2 with dissolve
-    m 1lksdla "Buut, if you did happen to show up at {i}my{/i}" doorstep..."
+    m 1lksdla "Buut, if you did happen to show up at {i}my{/i} doorstep..."
     m 1hksdlb "I guess I wouldn't have a choice but to accept it and welcome you into my world!"
     m "It wouldn't be much to begin with, but I'm sure we'll find a way to make it better."
     m 1dsc "With time, we could make our own reality..."
