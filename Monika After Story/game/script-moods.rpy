@@ -612,7 +612,7 @@ label mas_mood_guilty:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_loved",prompt="scared",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_loved",prompt="loved",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_loved:
     m 1k "I'm so glad you feel that way [player]."
