@@ -23,6 +23,8 @@
 #   12 - tuples
 #   13 - py2 vs py3
 #   
+#
+# Also what about Renpy?
 
 ## We can assume evhand is already imported
 
@@ -103,5 +105,19 @@ init 5 python:
     )
 
 label monika_ptod_tip002:
-    # In 
+    # In most programming languages, each piece of data that can be chnaged 
+    # or modified by a program has a _type_
+    # associated with it. If some data should be treated as a number, then
+    # it will have a numeric type. If some data should be treated as text,
+    # then it will have a string type.
+    #
+    # Python has two separate types to represent numbers: _integers_ and _floats_.
+    # Integers are used to represent whole numbers - Anything that isn't a
+    # decimal.
+    # -22, 0, -1234, 42 are all integers in python.
+    # Floats are used to represent decimals:
+    # 0.14, 9.3, -10.2 would all be floats in Python.
+    #
+    # Text in python is represented with string types. 
+    #
     return
