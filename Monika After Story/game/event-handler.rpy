@@ -6,15 +6,15 @@
 # NOTE: proof oc concept
 # transform to have monika just chill
 image monika_waiting_img:
-    "monika 1a"
+    "monika 1eua"
     1.0
-    "monika 1c"
+    "monika 1euc"
     1.0
-    "monika 1h"
+    "monika 1esc"
     1.0
-    "monika 1o"
+    "monika 1lksdlc"
     1.0
-    "monika 1g"
+    "monika 1ekd"
     1.0
     repeat
 
