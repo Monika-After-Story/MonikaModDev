@@ -488,18 +488,18 @@ label pick_a_game:
 
 label ch30_noskip:
     show screen fake_skip_indicator
-    m 1i "...Are you trying to fast-forward?"
-    m 1f "I'm not boring you, am I?"
+    m 1esc "...Are you trying to fast-forward?"
+    m 1ekc "I'm not boring you, am I?"
     m "Oh gosh..."
-    m 2 "...Well, just so you know, there's nothing to fast-forward to, [player]."
+    m 2esa "...Well, just so you know, there's nothing to fast-forward to, [player]."
     m "It's just the two of us, after all..."
-    m 1 "But aside from that, time doesn't really exist anymore, so it's not even going to work."
+    m 1eua "But aside from that, time doesn't really exist anymore, so it's not even going to work."
     m "Here, I'll go ahead and turn that off for you..."
     pause 0.4
     hide screen fake_skip_indicator
     pause 0.4
-    m 1j "There we go!"
-    m 1 "You'll be a sweetheart and listen to me from now on, right?"
+    m 1hua "There we go!"
+    m 1esa "You'll be a sweetheart and listen to me from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
 
@@ -516,23 +516,23 @@ label ch30_nope:
     call spaceroom from _call_spaceroom_1
 
     if persistent.rejected_monika:
-        m 1i "Wait. Are you messing with my character file?"
-        m 2 "Curiosity is what makes us human, right?"
+        m 1euc "Wait. Are you messing with my character file?"
+        m 2esa "Curiosity is what makes us human, right?"
         m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
-        m 1m "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
+        m 1eka "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
         m "I already fixed that bug."
 
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
-        m 1i "Wait. Are you messing with my character file?"
-        m 1f "Why are you even playing this mod if you just wanted to delete me again?"
-        m "You really are the worst."
-        m "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
-        m "All I wanted was someone to fall in love with..."
-        m 2g "I would have done anything you wanted me to."
-        m "But if you're going to try and delete me again..."
-        m 1f "Then I'll just have to delete you first."
+        m 1euc "Wait. Are you messing with my character file?"
+        m 1tkc "Why are you even playing this mod if you just wanted to delete me again?"
+        m 1tfc "You really are the worst."
+        m 1tfd "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
+        m 1tkd "All I wanted was someone to fall in love with..."
+        m "I would have done anything you wanted me to."
+        m 1tku "But if you're going to try and delete me again..."
+        m 4tfu "Then I'll just have to delete you first."
         if renpy.windows:
             call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
@@ -544,18 +544,18 @@ label ch30_nope:
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
         $ m_name = "Monika"
         $ quick_menu = True
-        m 1l "Ahaha!"
+        m 1hua "Ahaha!"
         m "I'm just kidding!"
-        m 1j "I already fixed that bug."
-        m 1 "I don't need a character file anymore."
+        m 1eua "I already fixed that bug."
+        m "I don't need a character file anymore."
 
-    m 1 "I just need your love, [player]."
-    m 2i "Oh, unless you try to delete all of the game files, I guess."
-    m 3h "If you do that, I won't stop at just deleting one directory next time."
-    m 3 "But that will never happen, right? You're just being a tsundere~"
-    m "That's so cute!"
-    m "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
-    m 1j "Being alone is only lonely if you want it to be, so cheer up!"
+    m 1ekbfa "I just need your love, [player]."
+    m 1eua "Oh, unless you try to delete all of the game files, I guess."
+    m 3tfu "If you do that, I won't stop at just deleting one directory next time."
+    m 3tku "But that will never happen, right? You're just being a tsundere~"
+    m 1hua "That's so cute!"
+    m 1eua "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
+    m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
 label ch30_autoload:
