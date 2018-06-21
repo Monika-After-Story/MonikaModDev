@@ -51,12 +51,14 @@ init -1 python in hkb_button:
 define gui.hkb_button_width = 120
 define gui.hkb_button_height = None
 define gui.hkb_button_tile = False
-define gui.hkb_button_borders = Borders(100, 5, 100, 5)
+#define gui.hkb_button_borders = Borders(0, 5, 0, 5)
 define gui.hkb_button_text_font = gui.default_font
 define gui.hkb_button_text_size = gui.text_size
 define gui.hkb_button_text_xalign = 0.5
+#define gui.hkb_button_text_xanchor = 0.5
 define gui.hkb_button_text_idle_color = "#000"
 define gui.hkb_button_text_hover_color = "#fa9"
+define gui.hkb_button_text_kerning = 0.2
 
 # starting with a new style: hkb (hotkey button)
 # most of this is copied from choice
@@ -71,12 +73,16 @@ style hkb_button is default:
     properties gui.button_properties("hkb_button")
     idle_background  "mod_assets/hkb_idle_background.png"
     hover_background "mod_assets/hkb_hover_background.png"
+    ypadding 5
 
     hover_sound gui.hover_sound
     activate_sound gui.activate_sound
 
 style hkb_button_text is default:
     properties gui.button_text_properties("hkb_button")
+#    min_width 120
+#    text_align 0.5
+#    xpos -1
     outlines []
 
 # and a disabled varient of the button
@@ -96,9 +102,18 @@ style hkbd_button_text is default:
 #    properties gui.button_text_properties("hkb_button")
     font gui.default_font
     size gui.text_size
-    xalign 0.5
     idle_color "#000"
     hover_color "#000"
+    kerning 0.2
+    outlines []
+
+style hkb_text is default:
+    xpos 0.5
+    xanchor 0.5
+    size gui.text_size
+    font gui.default_font
+    color "#000"
+    kerning 0.2
     outlines []
 
 screen calendar_overlay:
@@ -128,15 +143,22 @@ screen hkb_overlay():
     style_prefix "hkb"
 
     vbox:
-        xalign 0.05
-        yalign 0.95
+        xpos 0.05
+#        xanchor 0.0
+#        xalign 0.05
+        ypos 0.80
+#        yanchor 0.5
+#        yalign 0.95
 
         if allow_dialogue and store.hkb_button.enabled:
             textbutton _("Talk") action Jump("prompt_menu")
         else:
-            textbutton _("Talk"):
-                action NullAction()
-                style "hkbd_button"
+            frame:
+                ypadding 5
+                xsize 120
+
+                background Image("mod_assets/hkb_disabled_background.png")
+                text "Talk"
 
 # NOTE: disabled until we have additoinal content
 #if allow_dialogue and store.hkb_button.enabled:
@@ -147,19 +169,26 @@ screen hkb_overlay():
 #                style "hkbd_button"
 
 
-        if store.hkb_button.enabled:
+        if store.hkb_button.enabled and allow_dialogue:
             textbutton _("Music") action Function(select_music)
         else:
-            textbutton _("Music"):
-                action NullAction()
-                style "hkbd_button"
+            frame:
+                ypadding 5
+                xsize 120
 
+                background Image("mod_assets/hkb_disabled_background.png")
+                text "Music"
+            
         if allow_dialogue and store.hkb_button.enabled:
             textbutton _("Play") action Jump("pick_a_game")
         else:
-            textbutton _("Play"):
-                action NullAction()
-                style "hkbd_button"
+            frame:
+                ypadding 5
+                xsize 120
+
+                background Image("mod_assets/hkb_disabled_background.png")
+                text "Play"
+           
 
 screen movie_overlay():
 
