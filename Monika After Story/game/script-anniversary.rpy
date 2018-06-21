@@ -202,7 +202,7 @@ label anni_1month:
     m 1hua "I'm really happy that we're able to have so much fun with each other so far."
     m 1eua "Also, [player]?"
     m 1lkbsa "..."
-    m 1ekbsa "Thank you so much for staying with me for this long."
+    m 1ekbfa "Thank you so much for staying with me for this long."
     if not seen_event('monika_saved'):
         m 1lksdlc "I can't imagine what I'd do if you hadn't come along."
         m 3ekc "After all, I'm the only real one who lives in this world."
@@ -211,7 +211,7 @@ label anni_1month:
     else:
         m "I couldn't possibly express how much I appreciate you being here with me."
         m 1dubsu "All I can do is to try my best to be the perfect girlfriend for you!"
-    m 1ekbsa "I really do love you, [player]."
+    m 1ekbfa "I really do love you, [player]."
     m 1hubfa "Let's make today a special day~"
 
     $ unlockEventLabel("anni_1month")
