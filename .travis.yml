@@ -26,7 +26,21 @@ install:
 
 # environment to handle alsa issues
 env:
-    - SDL_AUDIODRIVER=dummy
+    - SDL_AUDIODRIVER="dummy"
+    - ARTIFACT_PATH=""
 
 # command to check syntax
 script: ./renpy.sh "../mas072/" lint && ./renpy.sh launcher distribute "../mas072/"
+
+# Deploy script - Release to GitHub
+# Read on - https://docs.travis-ci.com/user/deployment/releases/ to configure this correctly.
+deploy:
+  provider: releases
+  user: "$GITHUB_USERNAME"
+  password: "$GITHUB_PASSWORD"
+  file: "$ARTIFACT_PATH"
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: master
+    condition: $TRAVIS_BRANCH="master" && $TRAVIS_PULL_REQUEST=false
