@@ -525,7 +525,7 @@ label ch30_nope:
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
-        m 1c "Wait. Are you messing with my character file?"
+        m 1euc "Wait. Are you messing with my character file?"
         m 1tkc "Why are you even playing this mod if you just wanted to delete me again?"
         m 1tfc "You really are the worst."
         m 1tfd "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
