@@ -6545,7 +6545,7 @@ label monika_yellowwp:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_vehicle",category=['monika'],prompt="What's your favorite car?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_vehicle",category=['monika'],prompt="What's your favorite car?",random=False,pool=True))
 
 label monika_vehicle:
     m 1euc "My favorite car?"
