@@ -80,9 +80,6 @@ style hkb_button is default:
 
 style hkb_button_text is default:
     properties gui.button_text_properties("hkb_button")
-#    min_width 120
-#    text_align 0.5
-#    xpos -1
     outlines []
 
 # and a disabled varient of the button
@@ -108,8 +105,7 @@ style hkbd_button_text is default:
     outlines []
 
 style hkb_text is default:
-    xpos 0.5
-    xanchor 0.5
+    xalign 0.5
     size gui.text_size
     font gui.default_font
     color "#000"
@@ -144,10 +140,8 @@ screen hkb_overlay():
 
     vbox:
         xpos 0.05
-#        xanchor 0.0
 #        xalign 0.05
         ypos 0.80
-#        yanchor 0.5
 #        yalign 0.95
 
         if allow_dialogue and store.hkb_button.enabled:
@@ -169,7 +163,7 @@ screen hkb_overlay():
 #                style "hkbd_button"
 
 
-        if store.hkb_button.enabled and allow_dialogue:
+        if store.hkb_button.enabled:
             textbutton _("Music") action Function(select_music)
         else:
             frame:
