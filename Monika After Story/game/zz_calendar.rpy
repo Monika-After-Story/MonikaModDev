@@ -96,6 +96,10 @@ init -1 python:
             pygame.MOUSEBUTTONDOWN
         )
 
+        # Easter egg labels
+        EG_TEXTS_FUTURE = ["GO BACK!", "Don't go further", "..,.."]
+        EG_TEXTS_PAST = ["........", "|--||--|", "M was here"]
+
         # pane constants
         EVENT_X = 800
         EVENT_Y = 40
@@ -347,8 +351,13 @@ init -1 python:
             self.const_buttons.append(self.button_year_decrease)
             self.const_buttons.append(self.button_year_increase)
 
+            # set up some quips
+            self._setupEasterEG()
+
             # call set up day buttons to fill up the calendar
             self._setupDayButtons()
+
+
 
 
         def _setupDayButtons(self):
@@ -406,7 +415,14 @@ init -1 python:
                 self.dates.append(first_day + datetime.timedelta(days=i))
 
             # get this month's events
-            events = self.database[self.selected_month]
+            if 1999 < self.selected_year < 2030:
+
+                events = self.database[self.selected_month]
+
+            else:
+
+                events = self._getEGMonthEvents()
+
 
             # calculation to determine the initial y position
             initial_y = self.INITIAL_POSITION_Y + (self.DAY_NAME_BUTTON_HEIGHT * 2)
@@ -628,6 +644,45 @@ init -1 python:
             # otherwise, we check start date year
             return ev.start_date is not None and ev.start_date.year == year
 
+        def _setupEasterEG(self):
+            """
+            Fills the quip objects used to generate EG events
+            """
+            # quips for easter eggs
+            self._past_q_list = MASQuipList(allow_label=False)
+            self._future_q_list = MASQuipList(allow_label=False)
+
+            for _label in self.EG_TEXTS_PAST:
+                self._past_q_list.addLineQuip(_label)
+
+            for _label in self.EG_TEXTS_FUTURE:
+                self._future_q_list.addLineQuip(_label)
+
+            for i in range(5,10):
+                self._past_q_list.addGlitchQuip(i)
+                self._future_q_list.addGlitchQuip(i)
+
+
+        def _getEGMonthEvents(self):
+            """
+            Generates a dict of events to display in the calendar
+            when players go too far away
+
+            RETURNS: A dict with the proper structure [day][eventname]
+                which contains a repeatable event with a nice label :D
+            """
+            month_events = dict()
+
+            if self.selected_year > 2000:
+                type, label = self._future_q_list.quip()
+            else:
+                type, label = self._past_q_list.quip()
+
+            for i in range(1,32):
+                month_events[i] = dict()
+                month_events[i][label] = ((CAL_TYPE_REP,label,list()))
+
+            return month_events
 
         def render(self, width, height, st, at):
 
