@@ -72,12 +72,18 @@ init -1 python in mas_greetings:
                 renpy.random.choice(random_greetings_dict.keys())
             ]
 
+        # filter to get only random ones
+        random_unlocked_greetings = renpy.store.Event.filterEvents(
+            unlocked_greetings,
+            random=True
+        )
+
         # check if we have greetings available to display with current filter
-        if len(unlocked_greetings) > 0:
+        if len(random_unlocked_greetings) > 0:
 
             # select one randomly if we have at least one
-            return unlocked_greetings[
-                renpy.random.choice(unlocked_greetings.keys())
+            return random_unlocked_greetings[
+                renpy.random.choice(random_unlocked_greetings.keys())
             ]
 
         # We couldn't find a suitable greeting we have to default to normal random selection
