@@ -6640,11 +6640,15 @@ label monika_yellowwp:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_gotomonika",category=['monika'],prompt="What if I came to your world?",random=False,unlocked=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_gotomonika",category=['monika'],prompt="What if I came to your world?",random=False,pool=True))
 
 label monika_gotomonika:
     m 1euc "Come to my world?"
     m 1lksdld "You mean this little room floating in an empty void?"
+    if persistent._mas_you_chr:
+        m 2ekc "Well I mean... didn't you already try something like that?"
+        m 2lksdla "Even though it wasn't exactly {i}you...{/i}"
+        m 2ekc "If you're talking about crossing over from your reality to mine..."
     m 2lksdlc "[player]..."
     m 2lksdla "I mean... I'm really happy that you want to be with me so much but..."
     m 2ekc "You really don't have to..."
