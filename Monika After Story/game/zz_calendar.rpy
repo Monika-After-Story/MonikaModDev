@@ -100,6 +100,13 @@ init -1 python:
         EG_TEXTS_FUTURE = ["GO BACK!", "Don't go further", "..,.."]
         EG_TEXTS_PAST = ["........", "|--||--|", "M was here"]
 
+        # Year thresholds
+        MIN_GLITCH_YEAR = 1999
+        MIN_SELECTABLE_YEAR = 1990
+        MAX_GLITCH_YEAR = 2030
+        MAX_SELECTABLE_YEAR = 2041
+        MID_POINT_YEAR = 2000
+
         # pane constants
         EVENT_X = 800
         EVENT_Y = 40
@@ -415,7 +422,7 @@ init -1 python:
                 self.dates.append(first_day + datetime.timedelta(days=i))
 
             # get this month's events
-            if 1999 < self.selected_year < 2030:
+            if self.MIN_GLITCH_YEAR < self.selected_year < self.MAX_GLITCH_YEAR:
 
                 events = self.database[self.selected_month]
 
@@ -594,6 +601,14 @@ init -1 python:
                 self.selected_year = self.selected_year + 1
             else:
                 self.selected_year = self.selected_year - 1
+
+            # so people don't break it
+            if self.selected_year < self.MIN_SELECTABLE_YEAR:
+                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
+
+            if self.selected_year > self.MAX_SELECTABLE_YEAR:
+                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+
             self._setupDayButtons()
 
 
@@ -673,7 +688,7 @@ init -1 python:
             """
             month_events = dict()
 
-            if self.selected_year > 2000:
+            if self.selected_year > self.MID_POINT_YEAR:
                 type, label = self._future_q_list.quip()
             else:
                 type, label = self._past_q_list.quip()
