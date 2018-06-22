@@ -5,18 +5,68 @@ init python:
 
     # function to hide buttons
     def HKBHideButtons():
-        #
+        # RUNTIME ONLY
         # Hides the hkb buttons
         #
         config.overlay_screens.remove("hkb_overlay")
         renpy.hide_screen("hkb_overlay")
 
+
     # function to show buttons
     def HKBShowButtons():
-        #
+        # RUNTIME ONLY
         # Shows the hkb buttons
         #
         config.overlay_screens.append("hkb_overlay")
+
+# TODO all of these shield functions need aadjusting with keymaps
+    def mas_HKBRaiseShield():
+        """RUNTIME ONLY
+        Disables the hotkey buttons
+        """
+        store.hkb_button.enabled = False
+
+
+    def mas_HKBDropShield():
+        """RUNTIME ONLY
+        Enables the hotkey buttons
+        """
+        store.hkb_button.enabled = True
+
+
+    def mas_HKBRaiseShield_AD():
+        """RUNTIME ONLY
+        Disables the hotkey buttons EXCEPT for Music
+        """
+        store.hkb_button.ad_enabled = False
+
+
+    def mas_HKBDropShield_AD():
+        """RUNTIME ONLY
+        Enables the hotkey buttons EXCEPT for Music
+        """
+        store.hkb_button.ad_enabled = True
+
+
+    def mas_HKBRaiseShield_M():
+        """RUNTIME ONLY
+        Disables the Music hotkey button
+        """
+        store.songs.enabled = False
+
+    
+    def mas_HKBDropShield_M():
+        """RUNTIME ONLY
+        Enables the Music hotkey button
+        """
+        store.songs.enabled = True
+
+
+    def mas_HKBIsEnabled():
+        """
+        RETURNS: True if all the buttons are enabled, False otherwise
+        """
+        return store.hkb_button.enabled and store.hkb_button.ad_enabled
 
         # function to hide buttons
     def MovieOverlayHideButtons():
@@ -40,6 +90,10 @@ init -1 python in hkb_button:
     # new property to disable buttons
     # set to False to disable buttons
     enabled = True
+
+    # property for disabling only Talk and Play (basically this wont disable
+    # music)
+    ad_enabled = True
     movie_buttons_enabled = False
 
 
@@ -112,26 +166,6 @@ style hkb_text is default:
     kerning 0.2
     outlines []
 
-screen calendar_overlay:
-    zorder 1
-
-    # vbox:
-    #     xalign 0.305
-    #     yalign 0.4
-    #
-    if allow_dialogue and store.hkb_button.enabled:
-        imagebutton:
-            idle "mod_assets/calendar/calendar_button_normal.png"
-            hover "mod_assets/calendar/calendar_button_hover.png"
-            hover_sound gui.hover_sound
-            activate_sound gui.activate_sound
-            action Function(show_calendar)
-            xpos 360
-            ypos 260
-    else:
-        image "mod_assets/calendar/calendar_button_normal.png" xpos 360 ypos 260
-
-
 screen hkb_overlay():
 
     zorder 50
@@ -144,7 +178,7 @@ screen hkb_overlay():
         ypos 0.80
 #        yalign 0.95
 
-        if allow_dialogue and store.hkb_button.enabled:
+        if store.hkb_button.enabled and store.hkb_button.ad_enabled:
             textbutton _("Talk") action Jump("prompt_menu")
         else:
             frame:
@@ -172,8 +206,9 @@ screen hkb_overlay():
 
                 background Image("mod_assets/hkb_disabled_background.png")
                 text "Music"
-            
-        if allow_dialogue and store.hkb_button.enabled:
+           
+
+        if store.hkb_button.enabled and store.hkb_button.ad_enabled:
             textbutton _("Play") action Jump("pick_a_game")
         else:
             frame:

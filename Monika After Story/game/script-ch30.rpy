@@ -7,6 +7,22 @@ define allow_dialogue = True
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
 
+init -1 python in mas_globals:
+    # global that are not actually globals.
+
+    # Set to True to enable the hotkeys
+    hk_enabled = False
+
+    # Enables the Talk hotkey
+    hk_tk_enabled = True
+
+    # enables the music hotkey
+    hk_mu_enabled = True
+
+    # enables the play hotkey
+    hk_pl_enabled = True
+
+
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
@@ -108,6 +124,7 @@ init python:
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
+    import store.mas_globals as mas_globals
     therapist = eliza.eliza()
     process_list = []
     currentuser = None # start if with no currentuser
@@ -155,6 +172,54 @@ init python:
     renpy.music.set_volume(songs.getVolume("music"), channel="background")
 
     #Define new functions
+
+    def mas_HKDisable():
+        """RUNTIME ONLY
+        Disables the hotkeys
+        """
+        mas_globals.hk_enabled = False
+
+
+    def mas_HKDisable_tk():
+        """RUNTIME ONLY
+        Disables the Talk hotkey
+        """
+        mas_globals.hk_tk_enabled = False
+
+# TODO delete unecessary functions
+
+    def mas_HKEnable():
+        """RUNTIME ONLY
+        Enables the hotkeys
+        """
+        mas_globals.hk_enabled = True
+
+
+    def mas_HKEnable_tk():
+        """RUNTIME ONLY
+        Enables the Talk hotkey
+        """
+        mas_globals.hk_tk_enable = True
+
+
+    def mas_HKIsEnabled():
+        """
+        RETURNS: True if the hotkeys are enabled, False otherwise
+        """
+        return (
+            mas_globals.hk_enabled
+            and mas_globals.hk_tk_enabled
+            and mas_globals.hk_mu_enabled
+            and mas_globals.hk_pl_enabled
+        )
+
+
+    def mas_HKIsEnabled_tk():
+        """
+        RETURNS: True if the talk hotkey is enabled, False otherwise
+        """
+        return mas_globals.hk_enabled and mas_globals.hk_tk_enabled
+
 
     def enable_esc():
         #
@@ -283,21 +348,34 @@ init python:
 
 
     def show_dialogue_box():
-        if allow_dialogue:
+        """RUNTIME ONLY
+        Jumps to the topci prompt menu if we can
+        """
+        if store.hkb_button.ad_enabled:
             renpy.jump('prompt_menu')
 
+
     def pick_game():
-        if allow_dialogue:
+        """RUNTIME ONLY
+        Jumps to the pick a game workflow if we can
+        """
+        if store.hkb_button.ad_enabled:
             renpy.call('pick_a_game')
 
+
     def show_calendar():
-        store.hkb_button.enabled = False
+        """RUNTIME ONLY
+        Opens the calendar if we can
+        """
+        mas_HKBRaiseShield()
 
         if not persistent._mas_first_calendar_check:
             renpy.call('_first_time_calendar_use')
 
         renpy.call_in_new_context("mas_start_calendar_read_only")
-        store.hkb_button.enabled = True
+
+        mas_HKBDropShield()
+
 
     def select_music():
         # check for open menu
@@ -381,7 +459,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_day_room zorder 1
-                show screen calendar_overlay(_layer="master")
+                $ mas_calShowOverlay()
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
@@ -395,7 +473,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_room zorder 1
-                show screen calendar_overlay(_layer="master")
+                $ mas_calShowOverlay()
                 #show monika_bg_highlight
             if not hide_monika:
                 show monika 1 at t11 zorder 2
