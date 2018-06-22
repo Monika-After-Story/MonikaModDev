@@ -6289,7 +6289,7 @@ label monika_yellowwp:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_driving",category=['monika'],prompt="Can you drive?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_driving",category=['monika'],prompt="Can you drive?",random=False,pool=True))
 
 label monika_driving:
     m 1d "Hm? Can I drive?"
