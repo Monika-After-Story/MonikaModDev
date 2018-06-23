@@ -646,7 +646,7 @@ init -1 python in songs:
     menu_open = False
 
     # enables / disables the music menu
-    # UNUSED
+    # NOTE: not really used
     enabled = True
 
     vol_bump = 0.1 # how much to increase volume by
@@ -986,7 +986,7 @@ init python:
 
     def select_music():
         # check for open menu
-        if not songs.menu_open:
+        if enabled and not songs.menu_open:
 
             # disable unwanted interactions
             mas_RaiseShield_mumu()
@@ -1005,8 +1005,8 @@ init python:
             # unwanted interactions are no longer unwanted
             if store.mas_globals.dlg_workflow:
                 # the dialogue workflow means we should only enable
-                # the music button
-                store.hkb_button.music_enabled = True
+                # music menu interactions
+                mas_MUMUDropShield()
 
             else:
                 # otherwise we can enable interactions normally
