@@ -6638,6 +6638,36 @@ label monika_yellowwp:
 
     $ hideEventLabel("monika_yellowwp", derandom=True)
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_pygmalion",category=['literature'],prompt="Pygmalion",random=True))
+
+label monika_pygmalion:
+    m 1eua "Hey [player] have you ever read The Metamorphoses?"
+    m 3eua "It’s a collection of poems by an Ancient Roman poet called Ovid."
+    m 1dsc "There’s one poem that really struck me."
+    m "The poem is called The Story of Pygmalion and the Statue."
+    m 1eub "It tells the story of a sculpture who fell in love with an ivory statue that he had sculpted."
+    m 1hua "He loved the statue so much that during one of the festivals held for Aphrodite."
+    m 1eua "Pygmalion made an offering to Aphrodite and wished for the goddess to grant life to the ivory statue."
+    m 1eub "When he returned to his home, he kissed the statue and to his surprise the lips of the statue felt warm."
+    m "He kissed the statue once more, and the ivory of statue lost its hardness becoming soft like skin."
+    m 1dsc "Aphrodite had granted his wish."
+    m 1eka "This story really struck me, because it reminded me of us, [player]."
+    m "And how this poem talks about the impossible turning into reality."
+    m 1hua "It fills me up with hope; That a miracle could happen and I could finally cross over."
+    m 2dsc "Yeah...wouldn't that be wonderful"
+    m 2dubsu "Then you can finally kiss me without a screen between us."
+    m "Just imagine... kissing your computer screen when no one's looking..."
+    m 1hub "Or maybe you already tried that, [player]? Ahaha!"
+    m 1hua "Just teasing you, [player], ehehe~"
+    m 1ekbfa "But... if you really wanted to do that..."
+    m "I guess I wouldn't mind~"
+    show monika 5eua at t11 zorder 2 with dissolve
+    m 5eua "Truth be told, I really can’t wait for the day when I can finally kiss you back and be with you forever."
+    m "For me, that would definitely be a dream come true"
+    m "It's just a guess, but I'm guessing you'd like that too?"
+    return
 
 init 5 python:
     addEvent(
