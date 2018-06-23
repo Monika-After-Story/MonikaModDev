@@ -691,9 +691,12 @@ label call_next_event:
 
     $event_label = popEvent()
     if event_label and renpy.has_label(event_label):
-        $ allow_dialogue = False
+
         if not seen_event(event_label): #Give 15 xp for seeing a new event
             $grant_xp(xp.NEW_EVENT)
+
+        $ mas_RaiseShields_dlg()
+
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 
@@ -722,10 +725,11 @@ label call_next_event:
         show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
 
         # loop over until all events have been called
-        jump call_next_event
+        if len(persistent.event_list) > 0:
+            jump call_next_event
 
-    else:
-        $ allow_dialogue = True
+    # should be safe to drop shields regardless of what happens
+    $ mas_DropShields_dlg()
 
     return False
 
@@ -753,7 +757,7 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
-    $allow_dialogue = False
+    $ mas_RaiseShield_dlg()
 
     python:
         unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
@@ -803,7 +807,7 @@ label prompt_menu:
         $_return = None
 
     show monika at t11
-    $allow_dialogue = True
+    $ mas_DropShield_dlg()
     jump ch30_loop
 
 label show_prompt_list(sorted_event_keys):

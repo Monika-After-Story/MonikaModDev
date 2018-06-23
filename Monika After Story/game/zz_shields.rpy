@@ -6,11 +6,11 @@ init python:
     # please add descriptions of workflows and what needs to be
     # enabled / disabled
 
-    ######################### Full Disable ####################################
+    ######################### Core Disable ####################################
     # Not a workflow, just a specific set of shield functions that disable
     # and enable core interactions. Certain RenPy / DDLC-based interactions
     # may still work even when this shield is raised
-    def mas_DropShield_full():
+    def mas_DropShield_core():
         """
         Enables:
             - Talk button + hotkey
@@ -24,7 +24,7 @@ init python:
         enable_esc()
 
 
-    def mas_RaiseShield_full():
+    def mas_RaiseShield_core():
         """
         Disables:
             - Talk button + hotkey
