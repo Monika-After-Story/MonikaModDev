@@ -61,23 +61,23 @@ init python:
 
 
     def enable_esc():
-        #
-        # Enables the escape key so you can go to the game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" not in config.keymap["game_menu"]:
-            config.keymap["game_menu"].append("K_ESCAPE")
+        """
+        Enables the escape key so you can go to the game menu
+
+        NOTE: this also enables opening the game menu from other means
+        """
+        global quick_menu
+        quick_menu = True
 
 
     def disable_esc():
-        #
-        # disables the escape key so you cant go to game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" in config.keymap["game_menu"]:
-           config.keymap["game_menu"].remove("K_ESCAPE")
+        """
+        disables the escape key so you cant go to game menu
+
+        NOTE: this also disables opening the game menu from other means
+        """
+        global quick_menu
+        quick_menu = False
 
 
     def _mas_hk_mute_music():
