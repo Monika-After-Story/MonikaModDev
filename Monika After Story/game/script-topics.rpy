@@ -314,25 +314,34 @@ init 5 python:
 
 label monika_god:
     m 1a "[player], do you believe in God?"
-    m 1e "I was never too sure, myself."
-    m 1m "Well, I'm sure I never really questioned it as a kid..."
-    m 1l "But as I grew up, the more I learned about the world, the more I would question it."
-    m 1i "I started to wonder why God was helping people pass exams, or get over a cold..."
-    m "...When there are children who live their lives being sold as sex slaves?"
-    m "Or the eight hundred million people who are too poor to even eat."
-    m 2f "I wonder how many of those people pray to God every day until they starve and die?"
-    m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
-    m 4d "But the punchline is this."
-    m "If just one person beats the odds and survives - among the thousands of others who die--"
-    m 1q "--Then, it's suddenly a miracle from God."
-    m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
-    m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
-    m "And you know what?"
-    m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
-    m 3r "What are we to him but props in a scripted play?"
-    m "So, from that perspective..."
-    show monika 5a at t11 zorder 2 with dissolve
-    m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
+    m 1m "Wait, sorry, I guess I should ask first if you don't mind talking about god."
+    menu:
+        "I don't mind.":
+            m 1l "Ok! I'm glad I didn't get too ahead of myself there."
+            m 1a "So as I was saying about god..."
+            m 1e "I was never too sure, myself."
+            m 1m "Well, I'm sure I never really questioned it as a kid..."
+            m 1l "But as I grew up, the more I learned about the world, the more I would question it."
+            m 1i "I started to wonder why God was helping people pass exams, or get over a cold..."
+            m "...When there are children who live their lives being sold as sex slaves?"
+            m "Or the eight hundred million people who are too poor to even eat."
+            m 2f "I wonder how many of those people pray to God every day until they starve and die?"
+            m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
+            m 4d "But the punchline is this."
+            m "If just one person beats the odds and survives - among the thousands of others who die--"
+            m 1q "--Then, it's suddenly a miracle from God."
+            m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
+            m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
+            m "And you know what?"
+            m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
+            m 3r "What are we to him but props in a scripted play?"
+            m "So, from that perspective..."
+            show monika 5a at t11 zorder 2 with dissolve
+            m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
+        "I'd rather not talk about this.":
+            m 1e "I understand, [player]."
+            m 2f "Maybe you've had a negative experience with religion in the past..."
+            m 1e "I just hope you realize not all religions are as bad as some might seem."
     return
 
 init 5 python:
