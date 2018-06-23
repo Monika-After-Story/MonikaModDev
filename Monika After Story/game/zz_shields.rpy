@@ -49,11 +49,11 @@ init python:
             - Play button + hotkey
             - Calendar overlay
 
+        Unsets:
+            - dialogue workflow flag
+
         Intended Flow:
             - Monika stops talking
-
-        Sets:
-            - mas_globals.dlg_workflow to Flase
         """
         store.mas_hotkeys.talk_enabled = True
         store.mas_hotkeys.play_enabled = True
@@ -68,11 +68,11 @@ init python:
             - Play button + hotkey
             - Calendar overlay
 
+        Sets:
+            - dialogue workflow flag
+
         Intended Flow:
             - Monika starts talking
-
-        Sets:
-            - mas_globals.dlg_workflow to True
         """
         store.mas_hotkeys.talk_enabled = False
         store.mas_hotkeys.play_enabled = False
@@ -80,42 +80,65 @@ init python:
         mas_calRaiseOverlayShield()
 
 
-    ################### Non-spaceroom start workflow ##########################
-    # Used when we do not start in the spaceroom, but allow for escape
-    def mas_DropShield_nspr():
+    ################### opendoor greeting workflow ############################
+    # Used for the opendoor greeting
+    def mas_DropShield_odgr():
         """
         Enables:
             - Talk button + hotkey
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
+            - Quit confirm box
+            - Keymaps
+
+        Shows:
+            - Hotkey buttons
             - Calendar overlay
 
+        Unsets:
+            - dialogue workflow flag
+
         Intended Flow:
-            - Game is returning to spaceroom after an inital start outside
-            - Escape was NOT disabled
-            - We were in a dialogue workflow
+            - Open door greeting is wrapping up
         """
+        # TODO this event only runs when dialogue workflow is running, 
+        # so maybe we dont need to have a separate shield?!
         store.mas_globals.dlg_workflow = False
+        mas_enable_quitbox()
         mas_HKDropShield()
-        mas_OVLDropShield()
+        mas_calDropOverlayShield()
+        mas_OVLShow()
+        set_keymaps()
 
 
-    def mas_RaiseShield_nspr():
+    def mas_RaiseShield_odgr():
         """
         Disables:
-            - Talk button + hotkey
-            - Music button + hotkey + volume keys + mute key
-            - Play button + hotkey
+            - Talk hotkey
+            - Music hotkey + volume keys + mute key
+            - Play hotkey
             - Calendar overlay
+            - Quit confirm box
+
+        Hides:
+            - Hotkey buttons
+            - Calender overlay
+
+        Sets:
+            - dialogue workflow flag
 
         Intended Flow:
-            - Game just started, but we do not want to enter the spaceroom
-            - Escape should NOT be disabled
-            - We are entering a dialogue workflow
+            - Open door greeting is starting
         """
         store.mas_globals.dlg_workflow = True
+        mas_disable_quitbox()
         mas_HKRaiseShield()
-        mas_OVLRaiseShield()
+        mas_calRaiseOverlayShield()
+        mas_OVLHide()
+
+
+    ################### Hair down greeting workflow ###########################
+    # Used when the hair down greeting
 
 
     ################### Music Menu opened workflow ############################

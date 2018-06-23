@@ -518,18 +518,12 @@ init 5 python:
     del rules
 
 label i_greeting_monikaroom:
-    # TODO SHIELD
 
-    # safe to quit if Monika is still on her room
-    $ _confirm_quit = False
+    $ has_listened = False
     $ persistent.closed_self = True
+    $ mas_RaiseShield_odgr()
 
     scene black
-    $ HKBHideButtons()
-    # atm, making this a persistent makes it easier to test as well as allows
-    # users who didnt see the entire event a chance to see it again.
-#    $ seen_opendoor = seen_event("monikaroom_greeting_opendoor")
-    $ has_listened = False
 
     # reset monika's hair stuff since we dont have hair down for standing
     if persistent._mas_likes_hairdown:
@@ -849,16 +843,10 @@ label monikaroom_greeting_post:
 # cleanup label
 label monikaroom_greeting_cleanup:
     python:
-        if persistent.current_track is not None:
-            play_song(persistent.current_track)
-        else:
-            play_song(songs.current_track) # default
-        HKBShowButtons()
-        set_keymaps()
-
-        # no longer safe to quit
-        _confirm_quit = True
         persistent.closed_self = False
+        mas_DropShield_odgr()
+        mas_startup_song()
+
     return
 
 init 5 python:

@@ -177,6 +177,22 @@ init python:
         renpy.jump('pick_a_game')
 
 
+    def mas_enable_quitbox():
+        """
+        Enables Monika's quit dialogue warning
+        """
+        global _confirm_quit
+        _confirm_quit = True
+
+
+    def mas_disable_quitbox():
+        """
+        Disables Monika's quit dialogue warning
+        """
+        global _confirm_quit
+        _confirm_quit = False
+
+
     def mas_drawSpaceroomMasks():
         """
         Draws the appropriate masks according to the current state of the
@@ -524,10 +540,7 @@ label ch30_autoload:
 
 
     if not mas_skip_visuals:
-        if persistent.current_track:
-            $ play_song(persistent.current_track)
-        else:
-            $ play_song(songs.current_track) # default
+        $ mas_startup_song()
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -579,6 +592,8 @@ label ch30_autoload:
 
     if not mas_skip_visuals:
         $ set_keymaps()
+
+    # FALL THROUGH TO PRELOOP
 
 label ch30_preloop:
     # stuff that should happen right before we enter the loop

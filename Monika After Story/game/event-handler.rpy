@@ -683,9 +683,6 @@ init python:
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
-# ASSUMES:
-#   persistent.event_list
-#   persistent.current_monikatopic
 label call_next_event:
 
 
@@ -728,8 +725,10 @@ label call_next_event:
         if len(persistent.event_list) > 0:
             jump call_next_event
 
-    # should be safe to drop shields regardless of what happens
-    $ mas_DropShields_dlg()
+        $ mas_DropShields_dlg()
+
+    else:
+        $ mas_DropShields_dlg()
 
     return False
 

@@ -1757,6 +1757,7 @@ init python:
         """RUNTIME ONLY
         Shows the calendar overlay
         """
-        renpy.show_screen("calendar_overlay", _layer="master")
+        if not mas_calIsVisible_ovl():
+            renpy.show_screen("calendar_overlay", _layer="master")
 
 

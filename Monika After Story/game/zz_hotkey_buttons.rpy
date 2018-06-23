@@ -18,7 +18,8 @@ init python:
         # RUNTIME ONLY
         # Shows the hkb buttons
         #
-        config.overlay_screens.append("hkb_overlay")
+        if not mas_HKBIsVisible():
+            config.overlay_screens.append("hkb_overlay")
 
 
     def mas_HKBRaiseShield():
