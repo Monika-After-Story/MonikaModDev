@@ -1739,6 +1739,13 @@ init python:
         renpy.hide_screen("calendar_overlay")
 
 
+    def mas_calIsVisible_ovl():
+        """
+        RETURNS: True if the calendar ovelray is visible, False otherwise
+        """
+        return renpy.get_screen("calendar_overlay") is not None
+
+
     def mas_calRaiseOverlayShield():
         """RUNTIME ONLY
         Disables input for the calendar overlay

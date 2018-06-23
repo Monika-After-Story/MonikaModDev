@@ -644,7 +644,11 @@ init -1 python in songs:
     current_track = "bgm/m1.ogg"
     selected_track = current_track
     menu_open = False
+
+    # enables / disables the music menu
+    # UNUSED
     enabled = True
+
     vol_bump = 0.1 # how much to increase volume by
 
     # contains the song list
@@ -888,8 +892,6 @@ label display_music_menu:
     python:
         import store.songs as songs
         songs.menu_open = True
-        prev_dialogue = allow_dialogue
-        allow_dialogue = False
         song_selected = False
         curr_page = 0
 
@@ -913,5 +915,104 @@ label display_music_menu:
         $ song_selected = _return not in songs.music_pages
 
     $ songs.menu_open = False
-    $ allow_dialogue = prev_dialogue
     return _return
+
+
+init python:
+    $ import store.songs as songs
+    # important song-related things that need to be global
+
+
+    def dec_musicvol():
+        #
+        # decreases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        # ASSUMES:
+        #   persistent.playername
+
+        # sayori cannot make the volume quieter
+        if persistent.playername.lower() != "sayori":
+            songs.adjustVolume(up=False)
+
+
+    def inc_musicvol():
+        #
+        # increases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        songs.adjustVolume()
+
+
+    def mute_music(mute_enabled=True):
+        """
+        Mutes and unmutes the music channel
+
+        IN:
+            mute_enabled - True means we are allowed to mute.
+                False means we are not
+        """
+        curr_volume = songs.getVolume("music")
+        # sayori cannot mute
+        if (
+                curr_volume > 0.0 
+                and persistent.playername.lower() != "sayori"
+                and mute_enabled
+            ):
+            songs.music_volume = curr_volume
+            renpy.music.set_volume(0.0, channel="music")
+        else:
+            renpy.music.set_volume(songs.music_volume, channel="music")
+
+
+    def play_song(song, fadein=0.0):
+        #
+        # literally just plays a song onto the music channel
+        #
+        # IN:
+        #   song - song to play. If None, the channel is stopped
+        #   fadein - number of seconds to fade in the song
+        if song is None:
+            renpy.music.stop(channel="music")
+        else:
+            renpy.music.play(
+                song,
+                channel="music",
+                loop=True,
+                synchro_start=True,
+                fadein=fadein
+            )
+
+
+    def select_music():
+        # check for open menu
+        if (not songs.menu_open
+            and renpy.get_screen("history") is None
+            and renpy.get_screen("save") is None
+            and renpy.get_screen("load") is None
+            and renpy.get_screen("preferences") is None):
+
+            # disable unwanted interactions
+            mas_RaiseShield_mumu()
+
+            # music menu label
+            selected_track = renpy.call_in_new_context("display_music_menu")
+            if selected_track == songs.NO_SONG:
+                selected_track = songs.FP_NO_SONG
+
+            # workaround to handle new context
+            if selected_track != songs.current_track:
+                play_song(selected_track)
+                songs.current_track = selected_track
+                persistent.current_track = selected_track
+
+            # unwanted interactions are no longer unwanted
+            if store.mas_globals.dlg_workflow:
+                # the dialogue workflow means we should only enable
+                # the music button
+                store.hkb_button.music_enabled = True
+
+            else:
+                # otherwise we can enable interactions normally
+                mas_DropShield_mumu()
+

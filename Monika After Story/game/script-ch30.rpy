@@ -10,17 +10,9 @@ define mas_battery_supported = False
 init -1 python in mas_globals:
     # global that are not actually globals.
 
-    # Set to True to enable the hotkeys
-    hk_enabled = False
+    # True means we are in the dialogue workflow. False means not
+    dlg_workflow = False
 
-    # Enables the Talk hotkey
-    hk_tk_enabled = True
-
-    # enables the music hotkey
-    hk_mu_enabled = True
-
-    # enables the play hotkey
-    hk_pl_enabled = True
 
 
 image blue_sky = "mod_assets/blue_sky.jpg"
@@ -172,151 +164,19 @@ init python:
     renpy.music.set_volume(songs.getVolume("music"), channel="background")
 
     #Define new functions
-
-    def mas_HKDisable():
-        """RUNTIME ONLY
-        Disables the hotkeys
+    def show_dialogue_box():
         """
-        mas_globals.hk_enabled = False
-
-
-    def mas_HKDisable_tk():
-        """RUNTIME ONLY
-        Disables the Talk hotkey
+        Jumps to the topic promt menu
         """
-        mas_globals.hk_tk_enabled = False
+        renpy.jump('prompt_menu')
 
-# TODO delete unecessary functions
 
-    def mas_HKEnable():
-        """RUNTIME ONLY
-        Enables the hotkeys
+    def pick_game():
         """
-        mas_globals.hk_enabled = True
-
-
-    def mas_HKEnable_tk():
-        """RUNTIME ONLY
-        Enables the Talk hotkey
+        Jumps to the pick a game workflow
         """
-        mas_globals.hk_tk_enable = True
+        renpy.jump('pick_a_game')
 
-
-    def mas_HKIsEnabled():
-        """
-        RETURNS: True if the hotkeys are enabled, False otherwise
-        """
-        return (
-            mas_globals.hk_enabled
-            and mas_globals.hk_tk_enabled
-            and mas_globals.hk_mu_enabled
-            and mas_globals.hk_pl_enabled
-        )
-
-
-    def mas_HKIsEnabled_tk():
-        """
-        RETURNS: True if the talk hotkey is enabled, False otherwise
-        """
-        return mas_globals.hk_enabled and mas_globals.hk_tk_enabled
-
-
-    def enable_esc():
-        #
-        # Enables the escape key so you can go to the game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" not in config.keymap["game_menu"]:
-            config.keymap["game_menu"].append("K_ESCAPE")
-
-    def disable_esc():
-        #
-        # disables the escape key so you cant go to game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" in config.keymap["game_menu"]:
-           config.keymap["game_menu"].remove("K_ESCAPE")
-
-    def play_song(song, fadein=0.0):
-        #
-        # literally just plays a song onto the music channel
-        #
-        # IN:
-        #   song - song to play. If None, the channel is stopped
-        #   fadein - number of seconds to fade in the song
-        if song is None:
-            renpy.music.stop(channel="music")
-        else:
-            renpy.music.play(
-                song,
-                channel="music",
-                loop=True,
-                synchro_start=True,
-                fadein=fadein
-            )
-
-    def mute_music():
-        #
-        # mutes the music channel
-        #
-        # ASSUMES:
-        #   songs.music_volume
-        #   persistent.playername
-
-        curr_volume = songs.getVolume("music")
-        # sayori cannot mute
-        if curr_volume > 0.0 and persistent.playername.lower() != "sayori":
-            songs.music_volume = curr_volume
-            renpy.music.set_volume(0.0, channel="music")
-        else:
-            renpy.music.set_volume(songs.music_volume, channel="music")
-
-    def inc_musicvol():
-        #
-        # increases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        songs.adjustVolume()
-
-    def dec_musicvol():
-        #
-        # decreases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        # ASSUMES:
-        #   persistent.playername
-
-        # sayori cannot make the volume quieter
-        if persistent.playername.lower() != "sayori":
-            songs.adjustVolume(up=False)
-
-    def set_keymaps():
-        #
-        # Sets the keymaps
-        #
-        # ASSUMES:
-        #   config.keymap
-        #   config.underlay
-        #Add keys for new functions
-        config.keymap["open_dialogue"] = ["t","T"]
-        config.keymap["change_music"] = ["noshift_m","noshift_M"]
-        config.keymap["play_game"] = ["p","P"]
-        config.keymap["mute_music"] = ["shift_m","shift_M"]
-        config.keymap["inc_musicvol"] = [
-            "shift_K_PLUS","K_EQUALS","K_KP_PLUS"
-        ]
-        config.keymap["dec_musicvol"] = [
-            "K_MINUS","shift_K_UNDERSCORE","K_KP_MINUS"
-        ]
-        # Define what those actions call
-        config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-        config.underlay.append(renpy.Keymap(change_music=select_music))
-        config.underlay.append(renpy.Keymap(play_game=pick_game))
-        config.underlay.append(renpy.Keymap(mute_music=mute_music))
-        config.underlay.append(renpy.Keymap(inc_musicvol=inc_musicvol))
-        config.underlay.append(renpy.Keymap(dec_musicvol=dec_musicvol))
 
     def mas_drawSpaceroomMasks():
         """
@@ -347,22 +207,6 @@ init python:
         renpy.show(right_window, at_list=[spaceroom_window_right], tag="rm2")
 
 
-    def show_dialogue_box():
-        """RUNTIME ONLY
-        Jumps to the topci prompt menu if we can
-        """
-        if store.hkb_button.ad_enabled:
-            renpy.jump('prompt_menu')
-
-
-    def pick_game():
-        """RUNTIME ONLY
-        Jumps to the pick a game workflow if we can
-        """
-        if store.hkb_button.ad_enabled:
-            renpy.call('pick_a_game')
-
-
     def show_calendar():
         """RUNTIME ONLY
         Opens the calendar if we can
@@ -376,26 +220,6 @@ init python:
 
         mas_HKBDropShield()
 
-
-    def select_music():
-        # check for open menu
-        if (songs.enabled
-            and not songs.menu_open
-            and renpy.get_screen("history") is None
-            and renpy.get_screen("save") is None
-            and renpy.get_screen("load") is None
-            and renpy.get_screen("preferences") is None):
-
-            # music menu label
-            selected_track = renpy.call_in_new_context("display_music_menu")
-            if selected_track == songs.NO_SONG:
-                selected_track = songs.FP_NO_SONG
-
-            # workaround to handle new context
-            if selected_track != songs.current_track:
-                play_song(selected_track)
-                songs.current_track = selected_track
-                persistent.current_track = selected_track
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -423,6 +247,7 @@ init python:
         elif event == "slow_done":
             config.keymap['dismiss'] = dismiss_keys
             renpy.display.behavior.clear_keymap_cache()
+
     morning_flag = None
     def is_morning():
         # generate the times we need

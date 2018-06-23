@@ -10,31 +10,17 @@
 init 501 python:
     # EVERYTHING HERE SHOULD ONLY BE USED AT RUNTIME
 
-    def mas_dropShields(all_input=False):
+    def mas_OVLDropShield():
         """RUNTIME ONLY
         Enables all overlay screens. This is like "dropping a shield" because
         it allows user interactions with the overlays.
-
-        IN:
-            all_input - True will enable all input. False will only enable
-                overlays.
-                NOTE: if all input was previously disabled, this arg is treated
-                    as true.
         """
-        if all_input or store.mas_overlays.INPUT_DISABLED:
-            # enable mouse / keyboard interactions
-            # TODO
-            enable_esc()
-
         # put all enabling functions here
         mas_HKBDropShield()
         mas_calDropOverlayShield()
 
-        # unshackle the input disable
-        store.mas_overlays.INPUT_DISABLED = False
 
-
-    def mas_hideOverlays():
+    def mas_OVLHide():
         """RUNTIME ONLY
         Hides all overlay screens.
         """
@@ -43,27 +29,17 @@ init 501 python:
         mas_calHideOverlay()
 
 
-    def mas_raiseShields(all_input=False):
+    def mas_OVLRaiseShield():
         """RUNTIME ONLY
         Disables all overlay screens. This is like "raising a shield" because
         it prevents user interactions with the overlays.
-
-        IN:
-            all_input - True will disable all input. False will only disable
-                overlays
         """
-        store.mas_overlays.INPUT_DISABLED = all_input
-        if all_input:
-            # disable mouse / keyhboard interactions
-            # TODO
-            disable_esc()
-
         # put all disabling functions here
         mas_HKBRaiseShield() 
         mas_calRaiseOverlayShield()
 
 
-    def mas_showOverlays():
+    def mas_OVLShow():
         """RUNTIME ONLY
         Shows all overlay screens.
         """
@@ -71,9 +47,5 @@ init 501 python:
         HKBShowButtons()
         mas_calShowOverlay()
 
-
-init 500 python in mas_overlays:
-    # internalized functions
-    INPUT_DISABLED = False # when true, that means all input was disabled
 
 

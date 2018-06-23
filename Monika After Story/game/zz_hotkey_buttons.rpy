@@ -8,8 +8,9 @@ init python:
         # RUNTIME ONLY
         # Hides the hkb buttons
         #
-        config.overlay_screens.remove("hkb_overlay")
-        renpy.hide_screen("hkb_overlay")
+        if mas_HKBIsVisible():
+            config.overlay_screens.remove("hkb_overlay")
+            renpy.hide_screen("hkb_overlay")
 
 
     # function to show buttons
@@ -19,54 +20,42 @@ init python:
         #
         config.overlay_screens.append("hkb_overlay")
 
-# TODO all of these shield functions need aadjusting with keymaps
+
     def mas_HKBRaiseShield():
         """RUNTIME ONLY
         Disables the hotkey buttons
         """
-        store.hkb_button.enabled = False
+        store.hkb_button.talk_enabled = False
+        store.hkb_button.music_enabled = False
+        store.hkb_button.play_enabled = False
 
 
     def mas_HKBDropShield():
         """RUNTIME ONLY
         Enables the hotkey buttons
         """
-        store.hkb_button.enabled = True
-
-
-    def mas_HKBRaiseShield_AD():
-        """RUNTIME ONLY
-        Disables the hotkey buttons EXCEPT for Music
-        """
-        store.hkb_button.ad_enabled = False
-
-
-    def mas_HKBDropShield_AD():
-        """RUNTIME ONLY
-        Enables the hotkey buttons EXCEPT for Music
-        """
-        store.hkb_button.ad_enabled = True
-
-
-    def mas_HKBRaiseShield_M():
-        """RUNTIME ONLY
-        Disables the Music hotkey button
-        """
-        store.songs.enabled = False
-
-    
-    def mas_HKBDropShield_M():
-        """RUNTIME ONLY
-        Enables the Music hotkey button
-        """
-        store.songs.enabled = True
+        store.hkb_button.talk_enabled = True
+        store.hkb_button.music_enabled = True
+        store.hkb_button.play_enabled = True
 
 
     def mas_HKBIsEnabled():
         """
         RETURNS: True if all the buttons are enabled, False otherwise
         """
-        return store.hkb_button.enabled and store.hkb_button.ad_enabled
+        return (
+            store.hkb_button.talk_enabled
+            and store.hkb_button.music_enabled
+            and store.hkb_button.play_enabled
+        )
+
+
+    def mas_HKBIsVisible():
+        """
+        RETURNS: True if teh Hotkey buttons are visible, False otherwise
+        """
+        return "hkb_overlay" in config.overlay_screens
+
 
         # function to hide buttons
     def MovieOverlayHideButtons():
@@ -87,13 +76,16 @@ init python:
 
 init -1 python in hkb_button:
 
-    # new property to disable buttons
-    # set to False to disable buttons
-    enabled = True
+    # property for enabling the talk button
+    talk_enabled = True
 
-    # property for disabling only Talk and Play (basically this wont disable
-    # music)
-    ad_enabled = True
+    # property for enabling the music button
+    music_enabled = True
+
+    # proeprty for enabling the play button
+    play_enabled = True
+
+    # property for disabling the movie button (unused)
     movie_buttons_enabled = False
 
 
@@ -178,8 +170,8 @@ screen hkb_overlay():
         ypos 0.80
 #        yalign 0.95
 
-        if store.hkb_button.enabled and store.hkb_button.ad_enabled:
-            textbutton _("Talk") action Jump("prompt_menu")
+        if store.hkb_button.talk_enabled:
+            textbutton _("Talk") action Function(show_dialogue_box)
         else:
             frame:
                 ypadding 5
@@ -197,7 +189,7 @@ screen hkb_overlay():
 #                style "hkbd_button"
 
 
-        if store.hkb_button.enabled:
+        if store.hkb_button.music_enabled:
             textbutton _("Music") action Function(select_music)
         else:
             frame:
@@ -208,8 +200,8 @@ screen hkb_overlay():
                 text "Music"
            
 
-        if store.hkb_button.enabled and store.hkb_button.ad_enabled:
-            textbutton _("Play") action Jump("pick_a_game")
+        if store.hkb_button.play_enabled:
+            textbutton _("Play") action Function(pick_game)
         else:
             frame:
                 ypadding 5
