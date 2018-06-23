@@ -1152,7 +1152,7 @@ screen preferences():
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
-                    action [Jump('import_ddlc_persistent_in_settings')]
+                    action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
 

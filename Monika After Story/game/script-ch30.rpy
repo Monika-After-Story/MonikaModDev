@@ -3,7 +3,6 @@ default persistent.tried_skip = None
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
-define allow_dialogue = True
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
 
@@ -332,60 +331,60 @@ label continue_event:
     return
 
 label pick_a_game:
-    if allow_dialogue and not songs.menu_open:
-        python:
-            # preprocessing for games
+    # we can assume that getting here means we didnt cut off monika
 
-            import datetime
-            _hour = datetime.timedelta(hours=1)
-            _now = datetime.datetime.now()
+    $ mas_RaiseShield_dlg()
 
-            # chess has timed disabling
-            if persistent._mas_chess_timed_disable is not None:
-                if _now - persistent._mas_chess_timed_disable >= _hour:
-                    chess_disabled = False
-                    persistent._mas_chess_timed_disable = None
+    python:
+        # preprocessing for games
 
-                else:
-                    chess_disabled = True
+        import datetime
+        _hour = datetime.timedelta(hours=1)
+        _now = datetime.datetime.now()
+
+        # chess has timed disabling
+        if persistent._mas_chess_timed_disable is not None:
+            if _now - persistent._mas_chess_timed_disable >= _hour:
+                chess_disabled = False
+                persistent._mas_chess_timed_disable = None
 
             else:
-                chess_disabled = False
+                chess_disabled = True
 
-            # single var for readibility
-            chess_unlocked = (
-                is_platform_good_for_chess()
-                and persistent.game_unlocks["chess"]
-                and not chess_disabled
-            )
+        else:
+            chess_disabled = False
 
-        $previous_dialogue = allow_dialogue
-        $allow_dialogue = False
-        menu:
-            "What game would you like to play?"
-            "Pong" if persistent.game_unlocks['pong']:
-                if not renpy.seen_label('game_pong'):
-                    $grant_xp(xp.NEW_GAME)
-                call game_pong from _call_game_pong
-            "Chess" if chess_unlocked:
-                if not renpy.seen_label('game_chess'):
-                    $grant_xp(xp.NEW_GAME)
-                call game_chess from _call_game_chess
-            "Hangman" if persistent.game_unlocks['hangman']:
-                if not renpy.seen_label("game_hangman"):
-                    $ grant_xp(xp.NEW_GAME)
-                call game_hangman from _call_game_hangman
-            "Piano" if persistent.game_unlocks['piano']:
-                if not renpy.seen_label("mas_piano_start"):
-                    $ grant_xp(xp.NEW_GAME)
-                call mas_piano_start from _call_play_piano
-            "Nevermind":
-                m "Alright. Maybe later?"
+        # single var for readibility
+        chess_unlocked = (
+            is_platform_good_for_chess()
+            and persistent.game_unlocks["chess"]
+            and not chess_disabled
+        )
 
-        show monika 1 at tinstant zorder 2
-        $allow_dialogue = previous_dialogue
-        $ songs.enabled = True
-        $ hkb_button.enabled = True
+    menu:
+        "What game would you like to play?"
+        "Pong" if persistent.game_unlocks['pong']:
+            if not renpy.seen_label('game_pong'):
+                $grant_xp(xp.NEW_GAME)
+            call game_pong from _call_game_pong
+        "Chess" if chess_unlocked:
+            if not renpy.seen_label('game_chess'):
+                $grant_xp(xp.NEW_GAME)
+            call game_chess from _call_game_chess
+        "Hangman" if persistent.game_unlocks['hangman']:
+            if not renpy.seen_label("game_hangman"):
+                $ grant_xp(xp.NEW_GAME)
+            call game_hangman from _call_game_hangman
+        "Piano" if persistent.game_unlocks['piano']:
+            if not renpy.seen_label("mas_piano_start"):
+                $ grant_xp(xp.NEW_GAME)
+            call mas_piano_start from _call_play_piano
+        "Nevermind":
+            m "Alright. Maybe later?"
+
+    show monika 1 at tinstant zorder 2
+
+    $ mas_DropShield_dlg()
 
     jump ch30_loop
 
