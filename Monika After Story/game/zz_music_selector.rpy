@@ -986,11 +986,7 @@ init python:
 
     def select_music():
         # check for open menu
-        if (not songs.menu_open
-            and renpy.get_screen("history") is None
-            and renpy.get_screen("save") is None
-            and renpy.get_screen("load") is None
-            and renpy.get_screen("preferences") is None):
+        if not songs.menu_open:
 
             # disable unwanted interactions
             mas_RaiseShield_mumu()
