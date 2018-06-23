@@ -1,8 +1,10 @@
-# Module that contains all workflow-specific shield functions
+# Module that contains both work-flow specific shield functions and
+# generalized shield functions.
 #
-# Please avoid putting generalized shield functions in here
 
 init python:
+    # WORKFLOW-BASED
+
     # please add descriptions of workflows and what needs to be
     # enabled / disabled
 
@@ -148,4 +150,40 @@ init python:
         store.mas_hotkeys.talk_enabled = False
         store.mas_hotkeys.play_enabled = False
         mas_OVLRaiseShield()
+
+
+################################## GENERALIZED ################################
+    # NOTE: only generalized functions that are mult-module encompassing
+    # are allowed here. IF a generalized function is mostly related to 
+    # a specific store/module, make it there. NOT here.
+
+    ################## Enable / Disable Music Menu ############################
+    # specifically for enabling and disabling the music menu
+    def mas_MUMUDropShield():
+        """
+        Enables:
+            - Music button + hotkey
+            - Music Menu
+
+        Intended Flow:
+            - Whenever the music menu-based interactions need to be enabled
+        """
+        store.mas_hotkeys.music_enabled = True
+        store.hkb_button.music_enabled = True
+        store.songs.enabled = True
+
+
+    def mas_MUMURaiseShield():
+        """
+        Disables:
+            - Music button + hotkey
+            - Music Menu
+
+        Intended Flow:
+            - Whenever the music menu-based interactions need to be disabled
+        """
+        store.mas_hotkeys.music_enabled = False
+        store.hkb_button.music_enabled = False
+        store.songs.enabled = False
+
 
