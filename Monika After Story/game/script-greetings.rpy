@@ -518,6 +518,7 @@ init 5 python:
     del rules
 
 label i_greeting_monikaroom:
+    # TODO SHIELD
 
     # safe to quit if Monika is still on her room
     $ _confirm_quit = False
@@ -1047,6 +1048,7 @@ init 5 python:
     del rules
 
 label greeting_hairdown:
+    # TODO SHIELD
 
     # have monika's hair down
     $ monika_chr.change_hair("down")
