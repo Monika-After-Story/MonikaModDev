@@ -1026,14 +1026,14 @@ label monika_outfit:
     m 4a "You can share it with me on Twitter, actually!"
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
-    show monika 5a at t11 zorder 2 with dissolve
     if isFuture(evhand.event_database['anni_6month']):
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "We're not that far into our relationship yet. Ahaha!"
     else:
         m 4l "I don't want something so embarassing on there!"
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "So let's keep it between just us..."
     return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_horror",category=['media'],prompt="Horror genre",random=True))
