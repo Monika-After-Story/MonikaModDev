@@ -808,9 +808,16 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     $ import store.songs as songs
 
+    # logic to ensure Return works
+    if songs.current_track is None:
+        $ return_value = songs.NO_SONG
+    else:
+        $ return_value = songs.current_track
+
+
     # allows the music menu to quit using hotkey
-    key "noshift_M" action Return()
-    key "noshift_m" action Return()
+    key "noshift_M" action Return(return_value)
+    key "noshift_m" action Return(return_value)
 
     zorder 200
 
@@ -873,12 +880,6 @@ screen music_menu(music_page, page_num=0, more_pages=False):
         textbutton _(songs.NO_SONG): 
             style "music_menu_return_button"
             action Return(songs.NO_SONG)
-
-        # logic to ensure Return works
-        if songs.current_track is None:
-            $ return_value = songs.NO_SONG
-        else:
-            $ return_value = songs.current_track
 
         textbutton _("Return"):
             style "music_menu_return_button"
