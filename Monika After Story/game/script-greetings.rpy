@@ -1036,10 +1036,12 @@ init 5 python:
     del rules
 
 label greeting_hairdown:
-    # TODO SHIELD
 
     # have monika's hair down
     $ monika_chr.change_hair("down")
+
+    # we are going to treat this as a regular dialogue flow
+    $ mas_RaiseShield_dlg()
 
     call spaceroom
     m 1a "Hi there, [player]!"
@@ -1074,8 +1076,12 @@ label greeting_hairdown:
     $ lockEventLabel("greeting_hairdown", evhand.greeting_database)
     $ persistent._mas_hair_changed = True # menas we have seen this
 
-    # monikaroom greeting cleanup can handle this part
-    jump monikaroom_greeting_cleanup
+    # cleanup
+    $ mas_DropShield_odgr() # we are using opendoor's stuff so we have keymaps
+    $ mas_startup_song()
+
+    return
+
 
 # special type greetings
 
