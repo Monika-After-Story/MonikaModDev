@@ -1130,13 +1130,13 @@ label greeting_hairdown:
     $ mas_calDropOverlayShield()
     
     # 3 - set the keymaps
-    set_keymaps()
+    $ set_keymaps()
 
     # 4 - hotkey buttons should be shown
     $ HKBShowButtons()
 
     # 5 - restart music
-    mas_startup_song()
+    $ mas_startup_song()
     
 
     return

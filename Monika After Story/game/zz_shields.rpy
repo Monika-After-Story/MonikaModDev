@@ -57,6 +57,8 @@ init python:
         """
         store.mas_hotkeys.talk_enabled = True
         store.mas_hotkeys.play_enabled = True
+        store.hkb_button.talk_enabled = True
+        store.hkb_button.play_enabled = True
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
 
@@ -76,6 +78,8 @@ init python:
         """
         store.mas_hotkeys.talk_enabled = False
         store.mas_hotkeys.play_enabled = False
+        store.hkb_button.talk_enabled = False
+        store.hkb_button.play_enabled = False
         store.mas_globals.dlg_workflow = True
         mas_calRaiseOverlayShield()
 

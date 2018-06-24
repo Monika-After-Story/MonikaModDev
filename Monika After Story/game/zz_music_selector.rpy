@@ -919,7 +919,7 @@ label display_music_menu:
 
 
 init python:
-    $ import store.songs as songs
+    import store.songs as songs
     # important song-related things that need to be global
 
 
@@ -998,7 +998,7 @@ init python:
 
     def select_music():
         # check for open menu
-        if enabled and not songs.menu_open:
+        if songs.enabled and not songs.menu_open:
 
             # disable unwanted interactions
             mas_RaiseShield_mumu()

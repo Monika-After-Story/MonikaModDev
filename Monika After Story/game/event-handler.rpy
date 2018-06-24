@@ -692,7 +692,7 @@ label call_next_event:
         if not seen_event(event_label): #Give 15 xp for seeing a new event
             $grant_xp(xp.NEW_EVENT)
 
-        $ mas_RaiseShields_dlg()
+        $ mas_RaiseShield_dlg()
 
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
@@ -725,10 +725,10 @@ label call_next_event:
         if len(persistent.event_list) > 0:
             jump call_next_event
 
-        $ mas_DropShields_dlg()
+        $ mas_DropShield_dlg()
 
     else:
-        $ mas_DropShields_dlg()
+        $ mas_DropShield_dlg()
 
     return False
 
