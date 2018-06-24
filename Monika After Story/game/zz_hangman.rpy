@@ -161,7 +161,8 @@ init -1 python in mas_hangman:
         "squid","president","passion","vegetables","loneliness","symbol",
         "green","poem","route","literature","epiphany","despair","wretched","shore",
         "waves","beach","swimming","debate","leadership","festival","confidence",
-        "creativity","extrovert"
+        "creativity","extrovert","despair","ai","python","renpy","programming",
+        "lethargy"
     ]
 
     # hint
