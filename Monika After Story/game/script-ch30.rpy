@@ -351,9 +351,32 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # before we render visuals:
+    # 1 - all core interactions should be disabeld
+    $ mas_RaiseShield_core()
+
+    # 2 - hotkey buttons should be disabled
+    $ store.hkb_button.enabled = False
+
+    # 3 - keymaps are disabled (default)
+
     call spaceroom from _call_spaceroom_4
-    $pushEvent('introduction')
-    call call_next_event from _call_call_next_event
+
+    # lets just call the intro instead of pushing it as an event
+    # this is way simpler and prevents event loss and other weird inital
+    # startup issues
+    call introduction
+
+    # now we can do some cleanup
+    # 1 - renable core interactions
+    $ mas_DropShield_core()
+
+    # 2 - hotkey buttons enabled
+    $ store.hkb_button.enabled = True
+
+    # 3 - set keymaps
+    $ set_keymaps()
     
     jump ch30_preloop
 
