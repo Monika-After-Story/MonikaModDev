@@ -16,6 +16,7 @@ default persistent._mas_piano_keymaps = {}
 transform mas_piano_lyric_label:
     xalign 0.5 yalign 0.5
 
+
 # super xp for playing well
 define xp.ZZPK_FULLCOMBO = 40
 #define xp.ZZPK_WIN = 30
@@ -659,6 +660,13 @@ init -3 python in mas_piano_keys:
             return -1
 
 
+        def is_single(self):
+            """
+            RETURNS True if this notematch consists of a single note
+            """
+            return len(self.notes) == 1
+
+
         def reset(self):
             """
             Resets this piano note match to its default values.
@@ -1275,6 +1283,385 @@ init 1000 python in mas_piano_keys:
 #        "zz_piano_yr_launch"
     )
 
+### END =======================================================================
+
+# LINE 1
+#  y 6 r, 2 r 6 y u y 6 r e w y y
+#
+# Line 2
+# y e y e y e y u 6
+#
+# Line 3
+# y 6 r, 2 r 6 y u y 6 r e w y u
+#
+# Line 4
+# y e y e y e y u 6
+# y 6 
+#
+# Line 5, 6
+# r, 2 r 6 y 6 y 6 y 6 r
+#
+# Line 7
+# w r 6 y 6 y 6 y u e
+#
+# Line 8
+# eee e y 6 y 6 y u u 6
+#
+# Line 9, 10
+# r, 2 r 6 y 6 y 6 y 6 r
+#
+# Line 11
+# w r 6 y 6 y 6 y u e
+#
+# Line 12
+# eee e y 6 y 6 y u u 6
+#
+# D - p - co
+# y   6   r2
+#
+# 2222 rrrr rerw
+#
+##### I shouldnt' have ========================================================
+
+# labels:
+label mas_piano_dpco_win:
+    m 2dsc "I can't believe you've done this."
+    m 1eka "Not bad, though."
+    return
+
+label mas_piano_dpco_fc:
+    # TODO change this
+    jump mas_piano_dpco_win
+
+
+label mas_piano_dpco_fail:
+    m 1lksdla "I think it's okay to not learn this one..."
+    return
+
+
+label mas_piano_dpco_prac:
+    m 1eka "Do you really want to learn this?"
+    return
+
+
+init 1000 python in mas_piano_keys:
+    # d, piano note setup
+    # verse 1
+    # also checkpoint 1
+    _pnm_dpco_v1l1 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Sí, sabes que ya llevo un rato mirándote",
+            style="monika_credits_text"
+        ),
+        [
+            D5,
+            C5SH,
+            B4,
+            F4SH,
+            B4,
+            C5SH,
+            D5,
+            E5,
+            D5,
+            C5SH,
+            B4,
+            A4,
+            G4,
+            D5,
+            D5
+        ],
+        express="1eua",
+        postexpress="1eua",
+        verse=0
+    )
+    _pnm_dpco_v1l2 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Tengo que bailar contigo hoy",
+            style="monika_credits_text"
+        ),
+        [
+            D5,
+            A4,
+            D5,
+            A4,
+            D5,
+            A4,
+            D5,
+            E5,
+            C5SH
+        ],
+        express="1eua",
+        postexpress="1eua",
+        verse=0
+    )
+    _pnm_dpco_v1l3 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Vi que tu mirada ya estaba llamándome",
+            style="monika_credits_text"
+        ),
+        [
+            D5,
+            C5SH,
+            B4,
+            F4SH,
+            B4,
+            C5SH,
+            D5,
+            E5,
+            D5,
+            C5SH,
+            B4,
+            A4,
+            G4,
+            D5,
+            E5
+        ],
+        express="1eub",
+        postexpress="1eua",
+        verse=0
+    )
+    _pnm_dpco_v1l4 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Muéstrame el camino que yo voy",
+            style="monika_credits_text"
+        ),
+        _pnm_dpco_v1l2.notes,
+        postnotes=[
+            D5,
+            C5SH
+        ],
+        express="1eua",
+        postexpress="1eua",
+        verse=0,
+        copynotes=1
+    )
+
+    # checkpoint 2
+    _pnm_dpco_v2l1 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Tú",
+            style="monika_credits_text"
+        ),
+        [B4],
+        express="1eua",
+        postexpress="1eua",
+        verse=4,
+        vis_timeout=2.0,
+        posttext=True
+    )
+    _pnm_dpco_v2l2 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Tú eres el imán y yo soy el metal",
+            style="monika_credits_text"
+        ),
+        [
+            F4SH,
+            B4,
+            C5SH,
+            D5,
+            C5SH,
+            D5,
+            C5SH,
+            D5,
+            C5SH,
+            B4
+        ],
+        express="1eua",
+        postexpress="1eua",
+        verse=4,
+    )
+    _pnm_dpco_v2l3 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Me voy acercando y voy armando el plan",
+            style="monika_credits_text"
+        ),
+        [
+            G4,
+            B4,
+            C5SH,
+            D5,
+            C5SH,
+            D5,
+            C5SH,
+            D5,
+            E5,
+            A4
+        ],
+        express="1eua",
+        postexpress="1eua",
+        verse=4
+    )
+    _pnm_dpco_v2l4 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Solo con pensarlo se acelera el pulso",
+            style="monika_credits_text"
+        ),
+        [
+            A4,
+            A4,
+            A4,
+            A4,
+            D5,
+            C5SH,
+            D5,
+            C5SH,
+            D5,
+            E5,
+            E5,
+            C5SH
+        ],
+        express="1eua",
+        postexpress="1eka",
+        verse=4
+    )
+    
+    # checkpoint 3?
+    _pnm_dpco_v3l1 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Ya",
+            style="monika_credits_text"
+        ),
+        _pnm_dpco_v2l1.notes,
+        express="1eua",
+        postexpress="1eua",
+        copynotes=4,
+        verse=8,
+        ev_timeout=5.0,
+        vis_timeout=2.0,
+        posttext=True
+    )
+    _pnm_dpco_v3l2 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Ya me está gustando más de lo normal",
+            style="monika_credits_text"
+        ),
+        _pnm_dpco_v2l2.notes,
+        copynotes=5,
+        verse=8,
+        express="1eua",
+        postexpress="1eua"
+    )
+    _pnm_dpco_v3l3 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Todos mis sentidos van pidiendo más",
+            style="monika_credits_text"
+        ),
+        _pnm_dpco_v2l3.notes,
+        express="1eua",
+        postexpress="1eua",
+        copynotes=6,
+        verse=8
+    )
+    _pnm_dpco_v3l4 = PianoNoteMatch(
+        renpy.text.text.Text(
+            "Esto hay que tomarlo sin ningún apuro",
+            style="monika_credits_text"
+        ),
+        _pnm_dpco_v2l4.notes,
+        express="1eua",
+        postexpress="1eka",
+        copynotes=7,
+        verse=8
+    )
+
+    # CHORUS
+    # checkpoint 4
+    _pnm_dpco_v4l1 = PianoNoteMatch(
+         renpy.text.text.Text(
+            "Des-",
+            style="monika_credits_text"
+        ),
+        [D5],
+        express="1dsc",
+        postexpress="1dsc",
+        verse=12,
+        ev_timeout=3.0,
+        vis_timeout=2.0,
+        posttext=True
+    )
+    _pnm_dpco_v4l2 = PianoNoteMatch(
+         renpy.text.text.Text(
+            "-pa-",
+            style="monika_credits_text"
+        ),
+        [C5SH],
+        express="1dsc",
+        postexpress="1dsc",
+        ev_timeout=3.0,
+        vis_timeout=2.0,
+        posttext=True,
+        verse=12
+    )
+    _pnm_dpco_v4l3 = PianoNoteMatch(
+         renpy.text.text.Text(
+            "-cito",
+            style="monika_credits_text"
+        ),
+        [
+            B4,
+            F4SH
+        ],
+        express="1eub",
+        postexpress="1eub",
+        ev_timeout=3.0,
+        vis_timeout=2.0,
+        verse=12
+    )
+    _pnm_dpco_v4l4 = PianoNoteMatch(
+         renpy.text.text.Text(
+            "Quiero respirar tu cuello despacito",
+            style="monika_credits_text"
+        ),
+        [
+            F4SH,
+            F4SH,
+            F4SH,
+            F4SH,
+            B4,
+            B4,
+            B4,
+            B4,
+            B4,
+            A4,
+            B4,
+            G4
+        ],
+        express="1eub",
+        postexpress="1eub",
+        verse=12
+    )   
+
+    # dpco, pnml
+    pnml_dpco = PianoNoteMatchList(
+        [
+            _pnm_dpco_v1l1,
+            _pnm_dpco_v1l2,
+            _pnm_dpco_v1l3,
+            _pnm_dpco_v1l4,
+            _pnm_dpco_v2l1,
+            _pnm_dpco_v2l2,
+            _pnm_dpco_v2l3,
+            _pnm_dpco_v2l4,
+            _pnm_dpco_v3l1,
+            _pnm_dpco_v3l2,
+            _pnm_dpco_v3l3,
+            _pnm_dpco_v3l4,
+            _pnm_dpco_v4l1,
+            _pnm_dpco_v4l2,
+            _pnm_dpco_v4l3,
+            _pnm_dpco_v4l4
+        ],
+        [0, 4, 8, 12],
+        "D--p-c--o",
+        "mas_piano_dpco_win",
+        "mas_piano_dpco_fc",
+        "mas_piano_dpco_fail",
+        "mas_piano_dpco_prac",
+        5.0
+#        "zz_piano_yr_launch"
+    )
+
+
 
 ### END =======================================================================
 
@@ -1282,6 +1669,7 @@ init 1000 python in mas_piano_keys:
 
     pnml_db = dict()
     pnml_db[pnml_yourreality.name] = pnml_yourreality
+    pnml_db[pnml_dpco.name] = pnml_dpco
 
     def getSongChoices():
         """
@@ -1540,6 +1928,28 @@ init 1001 python:
             STATE_CONFIG_CHANGE,
             STATE_CONFIG_ENTRY
         )
+
+        # state map (to string variants)
+        STATE_TO_STRING = {
+            STATE_LISTEN: "Listening",
+            STATE_JMATCH: "Just matched",
+            STATE_MATCH: "In match",
+            STATE_MISS: "Missed",
+            STATE_FAIL: "Failed",
+            STATE_JPOST: "Just Post",
+            STATE_POST: "In Post",
+            STATE_VPOST: "Visual post",
+            STATE_CPOST: "Clean post",
+            STATE_WPOST: "Wait post",
+            STATE_CLEAN: "Cleaning",
+            STATE_DONE: "Done",
+            STATE_DJPOST: "Just doned",
+            STATE_DPOST: "Done Post",
+            STATE_WDONE: "Wait Done",
+            STATE_CONFIG_WAIT: "Config wait",
+            STATE_CONFIG_CHANGE: "Config change",
+            STATE_CONFIG_ENTRY: "Config entry"
+        }
 
         # key limit for matching
         KEY_LIMIT = 100
@@ -2314,6 +2724,21 @@ init 1001 python:
             return None
 
 
+        def _singleFlow(self, ev, key):
+            """
+            Special workflow for notematches that only have a single note
+
+            IN:
+                ev - pygame event
+                key - key that was pressed (post map)
+
+            ASSUMES: self.match.is_single is True
+            """
+            self.match.matchdex = 0
+            self.lyric = self.match.say
+            self.stateMatch(ev, key)
+
+
         def _timeoutFlow(self):
             """
             Runs flow for timeout cases.
@@ -2558,6 +2983,9 @@ init 1001 python:
 
                 if findex >= 0:
                     self.state = self.STATE_JMATCH
+                    
+                    if self.match.is_single():
+                        self._singleFlow(ev, key)
 
             # not in song mode, check for correct number of
             # notes
@@ -2569,6 +2997,9 @@ init 1001 python:
                 # check if match
                 if self.match:
                     self.state = self.STATE_JMATCH
+
+                    if self.match.is_single():
+                        self._singleFlow(ev, key)
 
 
         def stateMatch(self, ev, key):
@@ -2688,6 +3119,12 @@ init 1001 python:
                     if next_pnm.isNoteMatch(key, 0) >= 0:
                         # match found
                         self.state = self.STATE_JMATCH
+                        self.match = next_pnm
+                        self.played = [key]
+
+                        if self.match.is_single():
+                            # jump to match flow if only one note
+                            self._singleFlow(ev, key)
 
                     else:
                         # not a match, but move to next
@@ -2698,9 +3135,8 @@ init 1001 python:
                             ev_tout=next_pnm.ev_timeout,
                             vis_tout=self.match.vis_timeout
                         )
-
-                    self.match = next_pnm
-                    self.played = [key]
+                        self.match = next_pnm
+                        self.played = [key]
 
                 # completed this song
                 else:
@@ -2750,6 +3186,8 @@ init 1001 python:
 
             if findex > 0:
                 self.state = self.STATE_JMATCH
+                if self.match.is_single():
+                    self._singleFlow(ev, key)
 
             else:
                 # missed the note, so take us back to verse
@@ -3082,6 +3520,28 @@ init 1001 python:
                         int((height - ph) / 2) - self.ZZPK_LYR_BAR_YOFF
                     )
                 )
+
+            # debug mode shows state
+            if config.developer:
+                state_text = renpy.render(
+                    renpy.text.text.Text(
+                        self.STATE_TO_STRING.get(self.state, "No state")
+                    ),
+                    1280,
+                    720,
+                    st,
+                    at
+                )
+                stw, sth = state_text.get_size()
+                r.blit(
+                    state_text,
+                    (
+                        int((width - stw) / 2),
+                        680
+                    )
+                )
+                        
+                        
 
 #                    renpy.show(
 #                        "monika " + match.express,
