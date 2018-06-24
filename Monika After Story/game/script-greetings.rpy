@@ -519,9 +519,16 @@ init 5 python:
 
 label i_greeting_monikaroom:
 
-    $ has_listened = False
-    $ persistent.closed_self = True
-    $ mas_RaiseShield_odgr()
+    # couple of things:
+    # 1 - if you quit here, monika doesnt know u here
+    $ mas_enable_quit()
+
+    # 2 - music button + hotkeys should be disabled
+    $ store.mas_hotkeys.music_enabled = False
+
+    # 3 - keymaps not set (default)
+    # 4 - overlays hidden (skip visual)
+    # 5 - music is off (skip visual)
 
     scene black
 
@@ -530,6 +537,8 @@ label i_greeting_monikaroom:
         $ monika_chr.reset_outfit()
         $ lockEventLabel("monika_hair_ponytail")
         $ unlockEventLabel("monika_hair_down")
+
+    $ has_listened = False
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
@@ -560,6 +569,9 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_narration")
 
 label monikaroom_greeting_ear_narration:
+    # Monika knows you are here so
+    $ mas_disable_quit()
+
     m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
     m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
     call spaceroom from _call_spaceroom_enar
@@ -662,6 +674,9 @@ init 10 python:
 
 # locked door, because we are awaitng more content
 label monikaroom_greeting_opendoor_locked:
+    # monika knows you are here
+    $ mas_disable_quit()
+
     show paper_glitch2
     play sound "sfx/s_kill_glitch1.ogg"
     pause 0.2
@@ -710,6 +725,9 @@ label monikaroom_greeting_opendoor_seen:
 
 label monikaroom_greeting_opendoor_seen_partone:
     $ is_sitting = False
+    # monika knows you are here
+    $ mas_disable_quit()
+
 #    scene bg bedroom
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
     pause 0.2
@@ -789,6 +807,10 @@ label monikaroom_greeting_opendoor:
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32 zorder 2
+
+    # monika knows you are here now
+    $ mas_disable_quit()
+
     m 1d "E-Eh?! [player]!"
     m 3g "You surprised me, suddenly showing up like that!"
     show monika 1 at hf32
@@ -825,6 +847,9 @@ label monikaroom_greeting_knock:
     m "Who is it~?"
     menu:
         "It's me.":
+            # monika knows you are here now
+            $ mas_disable_quit()
+
             m 1b "[player]! I'm so happy that you're back!"
             if persistent.seen_monika_in_room:
                 m "And thank you for knocking first."
@@ -843,8 +868,20 @@ label monikaroom_greeting_post:
 # cleanup label
 label monikaroom_greeting_cleanup:
     python:
-        persistent.closed_self = False
-        mas_DropShield_odgr()
+        # couple of things:
+        # 1 - monika knows you are here now
+        mas_disable_quit() 
+
+        # 2 - music is renabled
+        store.mas_hotkeys.music_enabled = True
+
+        # 3 - keymaps should be set
+        set_keymaps()
+
+        # 4 - show the overlays
+        mas_OVLShow()
+
+        # 5 - the music can be restarted
         mas_startup_song()
 
     return
@@ -1037,11 +1074,20 @@ init 5 python:
 
 label greeting_hairdown:
 
+    # couple of things:
+    # 1 - music hotkeys should be disabled
+    $ store.mas_hotkeys.music_enabled = False
+    
+    # 2 - the calendar overlay will become visible, but we should keep it
+    # disabled
+    $ mas_calRaiseOverlayShield()
+
+    # 3 - keymaps not set (default)
+    # 4 - hotkey buttons are hidden (skip visual)
+    # 5 - music is off (skip visual)
+
     # have monika's hair down
     $ monika_chr.change_hair("down")
-
-    # we are going to treat this as a regular dialogue flow
-    $ mas_RaiseShield_dlg()
 
     call spaceroom
     m 1a "Hi there, [player]!"
@@ -1077,8 +1123,21 @@ label greeting_hairdown:
     $ persistent._mas_hair_changed = True # menas we have seen this
 
     # cleanup
-    $ mas_DropShield_odgr() # we are using opendoor's stuff so we have keymaps
-    $ mas_startup_song()
+    # 1 - music hotkeys should be enabled
+    $ store.mas_hotkeys.music_enabled = True
+
+    # 2 - calendarovrelay enabled
+    $ mas_calDropOverlayShield()
+    
+    # 3 - set the keymaps
+    set_keymaps()
+
+    # 4 - hotkey buttons should be shown
+    $ HKBShowButtons()
+
+    # 5 - restart music
+    mas_startup_song()
+    
 
     return
 

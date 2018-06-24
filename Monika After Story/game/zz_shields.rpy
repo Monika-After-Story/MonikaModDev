@@ -80,67 +80,6 @@ init python:
         mas_calRaiseOverlayShield()
 
 
-    ################### opendoor greeting workflow ############################
-    # Used for the opendoor greeting
-    def mas_DropShield_odgr():
-        """
-        Enables:
-            - Talk button + hotkey
-            - Music button + hotkey + volume keys + mute key
-            - Play button + hotkey
-            - Quit confirm box
-            - Keymaps
-
-        Shows:
-            - Hotkey buttons
-            - Calendar overlay
-
-        Unsets:
-            - dialogue workflow flag
-
-        Intended Flow:
-            - Open door greeting is wrapping up
-        """
-        # TODO this event only runs when dialogue workflow is running, 
-        # so maybe we dont need to have a separate shield?!
-        store.mas_globals.dlg_workflow = False
-        mas_enable_quitbox()
-        mas_HKDropShield()
-        mas_calDropOverlayShield()
-        mas_OVLShow()
-        set_keymaps()
-
-
-    def mas_RaiseShield_odgr():
-        """
-        Disables:
-            - Talk hotkey
-            - Music hotkey + volume keys + mute key
-            - Play hotkey
-            - Calendar overlay
-            - Quit confirm box
-
-        Hides:
-            - Hotkey buttons
-            - Calender overlay
-
-        Sets:
-            - dialogue workflow flag
-
-        Intended Flow:
-            - Open door greeting is starting
-        """
-        store.mas_globals.dlg_workflow = True
-        mas_disable_quitbox()
-        mas_HKRaiseShield()
-        mas_calRaiseOverlayShield()
-        mas_OVLHide()
-
-
-    ################### Hair down greeting workflow ###########################
-    # Used when the hair down greeting
-
-
     ################### Music Menu opened workflow ############################
     # Used when the music menu opens.
     def mas_DropShield_mumu():

@@ -193,6 +193,22 @@ init python:
         _confirm_quit = False
 
 
+    def mas_enable_quit():
+        """
+        Enables quitting without monika knowing
+        """
+        persistent.closed_self = True
+        mas_disable_quitbox()
+
+
+    def mas_disable_quit():
+        """
+        Disables quitting without monika knowing
+        """
+        persistent.closed_self = False
+        mas_enable_quitbox()
+
+
     def mas_drawSpaceroomMasks():
         """
         Draws the appropriate masks according to the current state of the
@@ -620,6 +636,7 @@ label ch30_loop:
             $ mas_checked_update = True
 
     else:
+        $ mas_OVLHide()
         $ mas_skip_visuals = False
 
 
