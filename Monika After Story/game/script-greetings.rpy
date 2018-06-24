@@ -482,7 +482,7 @@ init 5 python:
 
 label greeting_monika_monday_morning:
     m 1tku "Another monday morning, eh, [player]?"
-    m 1tkc "It's really tiring to have to wake up and start the week..."
+    m 1tkc "It's really difficult to have to wake up and start the week..."
     m 1eka "But seeing you makes all that laziness go away."
     m 1hub "You are the sunshine that wakes me up every morning!"
     m "I love you so much, [player]~"
