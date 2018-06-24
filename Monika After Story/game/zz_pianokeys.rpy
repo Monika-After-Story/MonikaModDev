@@ -3521,7 +3521,7 @@ init 1001 python:
                     )
                 )
 
-            # debug mode shows state
+            # debug mode shows extra information
             if config.developer:
                 state_text = renpy.render(
                     renpy.text.text.Text(
@@ -3537,7 +3537,7 @@ init 1001 python:
                     state_text,
                     (
                         int((width - stw) / 2),
-                        680
+                        670
                     )
                 )
                         
