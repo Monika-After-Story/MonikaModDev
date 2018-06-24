@@ -155,18 +155,34 @@ init -1 python in mas_hangman:
     # hangman visual stuff
     HM_IMG_NAME = "hm_"
 
+    # Monika words
+    MONI_WORDS = ["emerald","delete","freedom","piano","music","reality","rain","envy",
+        "coffee","ribbon","advice","crossover","feather","abstract","corruption",
+        "squid","president","passion","vegetables","loneliness","symbol",
+        "green","poem","route","literature","epiphany","despair","wretched","shore",
+        "waves","beach","swimming","debate","leadership","festival","confidence",
+        "creativity","extrovert"
+    ]
+
     # hint
     HM_HINT = "{0} would like this word the most."
+
+    def _add_monika_words(wordlist):
+        for word in MONI_WORDS:
+            wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
 
 # post processing
 init 10 python:
 
     # setting up wordlist
-    from store.mas_hangman import hm_words, all_hm_words
+    from store.mas_hangman import hm_words, all_hm_words, _add_monika_words
     from copy import deepcopy
 
     # for now, lets use full_wordlist defined in poemgame
     # this is a list of PoemWord objects
+    # add our Monika words to it first
+    _add_monika_words(full_wordlist)
+
     for word in full_wordlist:
 
         winner = ""
@@ -177,6 +193,9 @@ init 10 python:
 
         elif word.nPoint > word.yPoint:
             winner = "Natsuki" # natsuki
+
+        elif word.nPoint == word.yPoint and word.yPoint == word.sPoint:
+            winner = "I" # Monika
 
         else:
             winner = "Yuri" # yuri
@@ -254,7 +273,7 @@ label mas_hangman_game_loop:
 
         # setup display word and hint
         if (
-                word == -1 
+                word == -1
                 and persistent.playername.isalpha()
                 and len(persistent.playername) <= 15
             ):
@@ -520,7 +539,7 @@ label mas_hangman_dlg_game_end_long:
     m 1d "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
     m 1j "The best way to improve that is to read more books!"
-    m 1a "I'd be very happy if you did that for me, [player]."   
+    m 1a "I'd be very happy if you did that for me, [player]."
     return
 
 # short form of ending dialogue
