@@ -1669,7 +1669,8 @@ init 1000 python in mas_piano_keys:
 
     pnml_db = dict()
     pnml_db[pnml_yourreality.name] = pnml_yourreality
-    pnml_db[pnml_dpco.name] = pnml_dpco
+# TODO: need to finish dpco one day
+#    pnml_db[pnml_dpco.name] = pnml_dpco
 
     def getSongChoices():
         """
