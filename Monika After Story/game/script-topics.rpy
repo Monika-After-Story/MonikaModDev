@@ -5530,10 +5530,9 @@ init 5 python:
             category=['misc'],
             random=False,
             unlocked=False,
-            pool=True,
+            pool=False,
             action=EV_ACT_POOL,
-            conditional="seen_event('greeting_hai_domo')",
-            rules={"no unlock": None}
+            conditional="seen_event('greeting_hai_domo')"
         )
     )
 

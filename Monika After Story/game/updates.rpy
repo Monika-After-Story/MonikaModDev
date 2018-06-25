@@ -255,8 +255,17 @@ label v0_8_3(version="v0_8_3"):
 
         # need to unrandom the explain topic
         ex_ev = mas_getEV("monika_explain")
-        ex_ev.random = False
-        ex_ev.pool = True
+        if ex_ev is not None:
+            ex_ev.random = False
+            ex_ev.pool = True
+
+        # update Kizuna's topic action
+        kiz_ev = mas_getEV("monika_kizuna")
+        if kiz_ev is not None and not renpy.seen_label(kiz_ev.eventlabel):
+            kiz_ev.action = EV_ACT_POOL
+            kiz_ev.unlocked = False
+            kiz_ev.pool = False
+            kiz_ev.conditional = "seen_event('greeting_hai_domo')"
 
     return
 
