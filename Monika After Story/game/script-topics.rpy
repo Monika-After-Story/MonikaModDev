@@ -297,6 +297,10 @@ init 11 python:
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
+
+# are you religious
+default persistent._mas_pm_religious = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_god',
                                                             prompt="Thoughts on God.",
