@@ -209,6 +209,8 @@ label splashscreen:
     if persistent.autoload and not _restart:
         jump autoload
 
+    $ mas_enable_quit()
+
     # Start splash logic
     $ config.allow_skipping = False
 
