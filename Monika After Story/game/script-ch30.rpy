@@ -659,6 +659,10 @@ label ch30_autoload:
             #Set unlock flag for stories
             mas_can_unlock_story = True
 
+            # unlock extra pool topics if we can
+            while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
+                persistent._mas_pool_unlocks -= 1
+
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
