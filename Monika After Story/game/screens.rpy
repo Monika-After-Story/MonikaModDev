@@ -619,6 +619,14 @@ screen game_menu_m():
 
 screen game_menu(title, scroll=None):
 
+    # when teh game menu is open, we should disable the hotkeys
+    key "noshift_T" action NullAction()
+    key "noshift_t" action NullAction()
+    key "noshift_M" action NullAction()
+    key "noshift_m" action NullAction()
+    key "noshift_P" action NullAction()
+    key "noshift_p" action NullAction()
+
     # Add the backgrounds.
     if main_menu:
         add gui.main_menu_background
@@ -1144,7 +1152,7 @@ screen preferences():
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
-                    action [Jump('import_ddlc_persistent_in_settings')]
+                    action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
 

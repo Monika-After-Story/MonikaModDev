@@ -6,15 +6,15 @@
 # NOTE: proof oc concept
 # transform to have monika just chill
 image monika_waiting_img:
-    "monika 1a"
+    "monika 1eua"
     1.0
-    "monika 1c"
+    "monika 1euc"
     1.0
-    "monika 1h"
+    "monika 1esc"
     1.0
-    "monika 1o"
+    "monika 1lksdlc"
     1.0
-    "monika 1g"
+    "monika 1ekd"
     1.0
     repeat
 
@@ -302,7 +302,6 @@ init -1 python in evhand:
             return False
 
         return start_date <= current <= end_date
-
 
 
 init python:
@@ -680,20 +679,51 @@ init python:
         return cleaned_list
 
 
+    def mas_unlockPrompt():
+        """
+        Unlocks a pool event
+
+        RETURNS:
+            True if an event was unlocked. False otherwise
+        """
+        pool_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=False,
+            pool=True
+        )
+        pool_event_keys = [
+            evlabel
+            for evlabel in pool_events
+            if "no unlock" not in pool_events[evlabel].rules
+        ]
+
+        if len(pool_event_keys)>0:
+            sel_evlabel = renpy.random.choice(pool_event_keys)
+
+            evhand.event_database[sel_evlabel].unlocked = True
+            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
+
+            return True
+
+        # otherwise we didnt unlock anything because nothing available
+        return False
+
+
+
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
-# ASSUMES:
-#   persistent.event_list
-#   persistent.current_monikatopic
 label call_next_event:
 
 
     $event_label = popEvent()
     if event_label and renpy.has_label(event_label):
-        $ allow_dialogue = False
+
         if not seen_event(event_label): #Give 15 xp for seeing a new event
             $grant_xp(xp.NEW_EVENT)
+
+        $ mas_RaiseShield_dlg()
+
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 
@@ -722,29 +752,27 @@ label call_next_event:
         show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
 
         # loop over until all events have been called
-        jump call_next_event
+        if len(persistent.event_list) > 0:
+            jump call_next_event
+
+        $ mas_DropShield_dlg()
 
     else:
-        $ allow_dialogue = True
+        $ mas_DropShield_dlg()
 
     return False
+
+# keep track of number of pool unlocks
+define persistent._mas_pool_unlocks = 0
 
 # This either picks an event from the pool or events or, sometimes offers a set
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        pool_events = Event.filterEvents(evhand.event_database,unlocked=False,pool=True)
-        pool_event_keys = [
-            evlabel
-            for evlabel in pool_events
-            if "no unlock" not in pool_events[evlabel].rules
-        ]
-
-        if len(pool_event_keys)>0:
-            sel_evlabel = renpy.random.choice(pool_event_keys)
-
-            evhand.event_database[sel_evlabel].unlocked = True
-            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
+        if not mas_unlockPrompt():
+            # we dont have any unlockable pool topics?
+            # lets count this so we can use it later
+            persistent._mas_pool_unlocks += 1
 
     return
 
@@ -753,7 +781,7 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
-    $allow_dialogue = False
+    $ mas_RaiseShield_dlg()
 
     python:
         unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
@@ -803,7 +831,7 @@ label prompt_menu:
         $_return = None
 
     show monika at t11
-    $allow_dialogue = True
+    $ mas_DropShield_dlg()
     jump ch30_loop
 
 label show_prompt_list(sorted_event_keys):

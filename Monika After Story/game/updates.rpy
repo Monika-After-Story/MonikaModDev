@@ -249,6 +249,31 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.3
+label v0_8_3(version="v0_8_3"):
+    python:
+
+        # need to unrandom the explain topic
+        ex_ev = mas_getEV("monika_explain")
+        if ex_ev is not None:
+            ex_ev.random = False
+            ex_ev.pool = True
+
+        # update Kizuna's topic action
+        kiz_ev = mas_getEV("monika_kizuna")
+        if kiz_ev is not None and not renpy.seen_label(kiz_ev.eventlabel):
+            kiz_ev.action = EV_ACT_POOL
+            kiz_ev.unlocked = False
+            kiz_ev.pool = False
+            kiz_ev.conditional = "seen_event('greeting_hai_domo')"
+
+        # give players pool unlocks if they've been here for some time
+        curr_level = get_level()
+        if curr_level > 25:
+            persistent._mas_pool_unlocks = int(curr_level / 2)
+
+    return
+
 # 0.8.2
 label v0_8_2(version="v0_8_2"):
     python:
