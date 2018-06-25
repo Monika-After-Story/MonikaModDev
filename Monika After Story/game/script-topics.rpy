@@ -406,7 +406,7 @@ label monika_sayori:
     m "That pun was completely unintentional, I swear!"
     m "But anyway..."
     m 2e "I know how much you cared about her, so it only feels right for me to share her last moments with you."
-    m "If you're comfortable, that is." 
+    m "If you're comfortable, that is."
     menu:
         "Yes.":
             m "You know how Sayori is really clumsy?"
@@ -3789,17 +3789,17 @@ label monika_penname:
         m "Do you have a pen name, [player]?"
         menu:
             "Yes":
-                m 1sub "Really? That's so cool!" 
+                m 1sub "Really? That's so cool!"
                 m "Can you tell me what it is?"
                 label penname_loop:
-                menu: 
+                menu:
                     "Absolutely.":
                         $ penbool = False
                         while not penbool:
                             $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
                             $ lowerpen = penname.lower()
                             if lowerpen == player.lower():
-                                m 1eud "Oh, so you're using your pen name?" 
+                                m 1eud "Oh, so you're using your pen name?"
                                 m 4euc "I'd like to think we are on a first name basis with each other. We are dating, after all."
                                 m 1eka "But I guess it's pretty special that you shared your pen name with me!"
                                 $ persistent._mas_penname = penname
@@ -3813,7 +3813,7 @@ label monika_penname:
                             elif lowerpen =="natsuki":
                                 m 2euc "..."
                                 m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Natsuki."
-                                m 1eua "It's something of a common name." 
+                                m 1eua "It's something of a common name."
                                 m 1rksdla "You might make me jealous, though."
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
@@ -3825,10 +3825,10 @@ label monika_penname:
                                 if persistent.gender =="F":
                                   m 5eua "And well...I could get behind that, since it's you~"
                                 $ persistent._mas_penname = penname
-                                $ penbool = True                                
+                                $ penbool = True
                             elif lowerpen =="monika":
                                 m 1euc "..."
-                                m 1ekbfa "Aww, did you pick that for me?" 
+                                m 1ekbfa "Aww, did you pick that for me?"
                                 m "Even if you didn't, that's so sweet!"
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
@@ -3843,7 +3843,7 @@ label monika_penname:
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
                     "I'd rather not; it's embarrassing.":
-                        m 2eka "Aww. Well, I hope you feel enough to comfortable to tell me someday."          
+                        m 2eka "Aww. Well, I hope you feel enough to comfortable to tell me someday."
             "No":
                 m 1hua "All right!"
                 m "If you ever decide on one, you should tell me!"
@@ -3859,7 +3859,7 @@ label monika_penname:
                 m 1hua "I can't wait to see your work with that name!"
             "No":
                 m 1hua "I see! Do you want to tell me your new pen name?"
-                jump penname_loop              
+                jump penname_loop
     m 3eua "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
@@ -5523,7 +5523,19 @@ label monika_100k:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
+    addEvent(
+        Event(persistent.event_database,
+            eventlabel='monika_kizuna',
+            prompt="Virtual Youtuber?",
+            category=['misc'],
+            random=False,
+            unlocked=False,
+            pool=True,
+            action=EV_ACT_POOL,
+            conditional="seen_event('greeting_hai_domo')",
+            rules={"no unlock": None}
+        )
+    )
 
 label monika_kizuna:
     m 1d "Oh, right, I mentioned her to you, huh?"
@@ -6885,7 +6897,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     elif selected_date.date() < _ddlc_release:
         # before releease date
-        
+
         label .takesrs:
             if wrong_date_count >= 2:
                 jump .had_enough
