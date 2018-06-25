@@ -313,35 +313,46 @@ init 5 python:
                                                             ))
 
 label monika_god:
+    label monika_god:
     m 1a "[player], do you believe in God?"
-    m 1m "Wait, sorry, I guess I should ask first if you don't mind talking about god."
+    m 1e "I was never too sure, myself."
+    m 1m "Well, I'm sure I never really questioned it as a kid..."
+    m 1l "But as I grew up, the more I learned about the world, the more I would question it."
+    m 1i "I started to wonder why God was helping people pass exams, or get over a cold..."
+    m "...When there are children who live their lives being sold as sex slaves?"
+    m "Or the eight hundred million people who are too poor to even eat."
+    m 2f "I wonder how many of those people pray to God every day until they starve and die?"
+    m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
+    m 4d "But the punchline is this."
+    m "If just one person beats the odds and survives - among the thousands of others who die--"
+    m 1q "--Then, it's suddenly a miracle from God."
+    m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
+    m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
+    m "And you know what?"
+    m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
+    m 3r "What are we to him but props in a scripted play?"
+    m "So, from that perspective..."
+    show monika 5a at t11 zorder 2 with dissolve
+    m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
+    show monika 1a at t11 zorder 2 with dissolve
+    m 1a "Anyway, do you worship any god, [player]?"
     menu:
-        "I don't mind.":
-            m 1l "Ok! I'm glad I didn't get too ahead of myself there."
-            m 1a "So as I was saying about god..."
-            m 1e "I was never too sure, myself."
-            m 1m "Well, I'm sure I never really questioned it as a kid..."
-            m 1l "But as I grew up, the more I learned about the world, the more I would question it."
-            m 1i "I started to wonder why God was helping people pass exams, or get over a cold..."
-            m "...When there are children who live their lives being sold as sex slaves?"
-            m "Or the eight hundred million people who are too poor to even eat."
-            m 2f "I wonder how many of those people pray to God every day until they starve and die?"
-            m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
-            m 4d "But the punchline is this."
-            m "If just one person beats the odds and survives - among the thousands of others who die--"
-            m 1q "--Then, it's suddenly a miracle from God."
-            m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
-            m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
-            m "And you know what?"
-            m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
-            m 3r "What are we to him but props in a scripted play?"
-            m "So, from that perspective..."
+        "Yes.":
+            $ persistent._mas_pm_religious = True
+            m 1l "Oh... Well I hope I didn't offend you too much with my thoughts."
+            m 1e "Still, I think it's important to be able to share my opinion with you."
+            m 1m "I'm sure you understand why I'm not too fond of the idea."
+            m 1j "Maybe you could show me a better god when I cross over!"
+            m 1k "Ahaha~"
+        "No.":
+            $ persistent._mas_pm_religious = False
+            m 3e "I'm glad we're on the same page here, but I'm alright if that changes for you."
+            m 1j "I'm happy for you that you can lead a life on your own!"
             show monika 5a at t11 zorder 2 with dissolve
-            m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-        "I'd rather not talk about this.":
-            m 1e "I understand, [player]."
-            m 2f "Maybe you've had a negative experience with religion in the past..."
-            m 1e "I just hope you realize not all religions are as bad as some might seem."
+            m 5a "I just hope you're willing to accept me into your life when I can present myself."
+            m "Eheheh~"
+
+    $ hideEventLabel("monika_god", derandom=True)
     return
 
 init 5 python:
