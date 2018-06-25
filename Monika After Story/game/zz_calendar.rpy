@@ -1668,7 +1668,7 @@ label _first_time_calendar_use:
 
     show monika 1
 
-    $ store.hkb_button.enabled = True
+    $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
     return
 
@@ -1759,5 +1759,3 @@ init python:
         """
         if not mas_calIsVisible_ovl():
             renpy.show_screen("calendar_overlay", _layer="master")
-
-
