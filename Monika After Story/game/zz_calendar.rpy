@@ -800,9 +800,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 if ( random.randint(1, 70) > percentage and not percentage > 70):
                     continue
                 if (random.randint(1,50) < percentage):
-                    month_events[i][label] = ((CAL_TYPE_REP,self._less_glicthy_q_list.quip()[1],list()))
+                    month_events[i]["l"] = ((CAL_TYPE_REP,self._less_glicthy_q_list.quip()[1],list()))
                 else:
-                    month_events[i][label] = ((CAL_TYPE_REP,self._more_glicthy_q_list.quip()[1],list()))
+                    month_events[i]["l"] = ((CAL_TYPE_REP,self._more_glicthy_q_list.quip()[1],list()))
                 if (random.randint(1,60) < percentage):
                     month_events[i]["l1"] = ((CAL_TYPE_REP,self._more_glicthy_q_list.quip()[1],list()))
                 if (random.randint(1,70) < percentage):
