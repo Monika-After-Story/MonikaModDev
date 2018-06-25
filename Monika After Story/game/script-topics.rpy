@@ -313,7 +313,6 @@ init 5 python:
                                                             ))
 
 label monika_god:
-    label monika_god:
     m 1a "[player], do you believe in God?"
     m 1e "I was never too sure, myself."
     m 1m "Well, I'm sure I never really questioned it as a kid..."
