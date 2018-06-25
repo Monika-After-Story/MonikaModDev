@@ -1756,20 +1756,6 @@ image monika 4esa = DynamicDisplayable(
     arms="pointright"
 )
 
-image monika 5eua = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="up",
-    eyes="normal",
-    nose="def",
-    mouth="smile",
-    head="",
-    left="",
-    right="",
-    lean="def",
-    single="3a"
-)
-
 image monika 1eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
