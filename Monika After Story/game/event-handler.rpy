@@ -304,7 +304,6 @@ init -1 python in evhand:
         return start_date <= current <= end_date
 
 
-
 init python:
     import store.evhand as evhand
     import datetime
@@ -680,6 +679,37 @@ init python:
         return cleaned_list
 
 
+    def mas_unlockPrompt():
+        """
+        Unlocks a pool event
+
+        RETURNS:
+            True if an event was unlocked. False otherwise
+        """
+        pool_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=False,
+            pool=True
+        )
+        pool_event_keys = [
+            evlabel
+            for evlabel in pool_events
+            if "no unlock" not in pool_events[evlabel].rules
+        ]
+
+        if len(pool_event_keys)>0:
+            sel_evlabel = renpy.random.choice(pool_event_keys)
+
+            evhand.event_database[sel_evlabel].unlocked = True
+            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
+
+            return True
+
+        # otherwise we didnt unlock anything because nothing available
+        return False
+
+
+
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
@@ -729,22 +759,17 @@ label call_next_event:
 
     return False
 
+# keep track of number of pool unlocks
+define persistent._mas_pool_unlocks = 0
+
 # This either picks an event from the pool or events or, sometimes offers a set
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        pool_events = Event.filterEvents(evhand.event_database,unlocked=False,pool=True)
-        pool_event_keys = [
-            evlabel
-            for evlabel in pool_events
-            if "no unlock" not in pool_events[evlabel].rules
-        ]
-
-        if len(pool_event_keys)>0:
-            sel_evlabel = renpy.random.choice(pool_event_keys)
-
-            evhand.event_database[sel_evlabel].unlocked = True
-            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
+        if not mas_unlockPrompt():
+            # we dont have any unlockable pool topics?
+            # lets count this so we can use it later
+            persistent._mas_pool_unlocks += 1
 
     return
 

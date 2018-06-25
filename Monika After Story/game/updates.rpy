@@ -258,6 +258,11 @@ label v0_8_3(version="v0_8_3"):
         ex_ev.random = False
         ex_ev.pool = True
 
+        # give players pool unlocks if they've been here for some time
+        curr_level = get_level()
+        if curr_level > 25:
+            persistent._mas_pool_unlocks = int(curr_level / 2)
+
     return
 
 # 0.8.2
