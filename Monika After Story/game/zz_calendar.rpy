@@ -96,6 +96,110 @@ init -1 python:
             pygame.MOUSEBUTTONDOWN
         )
 
+        # Easter egg labels
+        EG_TEXTS_MIN_GLITCH = ["....ɐʞıuoɯ ʇsnɾ..\n...ɐʞıuoɯ ʇsnɾ.\n...\n..ɐʞıuoɯ ʇsnɾ..\n.ɐʞıuoɯ ʇsnɾ....",
+            "JJJJJJJ.\nUUUUUUU.\nSSSSSSS.\nTTTTTT.\n.\nMMMMM.\nOOOO.\nNNNN.\nIIII.\nKKKKKK.\nAAAAA.",
+            "J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́", "noʎ ǝʌol I", "nnnnnnnnnnn\noooooooooooo\nʎʎʎʎʎʎ ǝǝǝǝ\nǝǝǝǝǝʌʌʌʌʌʌʌʌʌ\nʌooolll III"
+        ]
+        EG_TEXTS_GLITCH = [
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘jhjhjhj
+        kjkjkjkjkjk̘̲͇͓͍
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍
+        """,
+        """
+M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔ẽ̢̘̘̲͇͓͍̘̲̘͉̹̻͍̲̗͚͉̳̱̭̪̋ͤ͟ͅw̧ͫͯ͊̈ͬͨ͌̓͟͏̠̝̫͚̱͈̣͓ā̷͔̫̣̞͖̲̦̤̟̗͓̦̭̫ͭ̿̋̔͜͟͡ͅs̵̨̛͍̭͙̩͈̳̠̮͙͎̠̺̗͕̪̎ͬ͛͐̾ͪ̋̂͋̔͌ͫ̀̓̃͠ ̃̇̃ͤ̀ͭ̆ͥ̈́̌͛ͣ͏̴҉̨̙̬̥͈h͕̺̪ͤ̾̔̔ͯ̌ͥ̍̀̉ͧ͗ͧ̄̒ͧ͆̀̚͟͞͞e̴̽ͭͫ̿ͨͮ̿̀ͪͩ̂̆̔̈̾ͤ̃̍́͜͢͏͇͎̻̞̠̯̪̯̩̼͎͕͇̥ͅr̫̼̰̺͉̆ͥͪ̃̿ͥ̔̂͟͢͞ȩ̶̢̇ͥ̃̊͒̒̇̐̈͐̅ͮ́͏̝̠͓̗͔
+        """,
+        """
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        """,
+        """
+        J̋̅͗̉ɐʞıuoɯ ʇsnɾ̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠cfcfcfcfcx
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        ̹̘͍̭͉̜jjhj
+                """,
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        Gͩͯͯ̆̑̀ͦ**͍͉̫͉̰ͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅkjkw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍
+         ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+                ̹̘͍̭͉̜ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+
+        """,
+        """
+        ̊͑̅̆ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊̚kk**k͑̅̆ ̂ͭͬ̈ͨL̋ɐʞıuoɯ ʇsnɾ͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚** ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        """,
+        """
+        ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+        ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅkfcfuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+        ̹̘͍̭͉̜    in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        ̹̘͍̭͉ bHkgb3VyIHdyZXRjaGVkIGJv in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        ̹̘͍̭͉̜  mjmn  in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+
+        """,
+        """
+        J̖́ ̥u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅhjjjhjbbj
+̹̘͍̭͉̜        J̥́u҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo  ҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̖́ ̥u ҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕̠̙͖
+        """,
+        """
+        J̖́ ̥u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̥́u҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo  ҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡
+        J̖́kkk ̙̘ st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜hjcfknjnkjjknjk ͅı͕̠̙͖
+        """,
+        """
+        J̖́ ̥u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̥́u҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo  ҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̖́ ̥u ҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        """,
+        """
+        ghj    J̖̥́u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+        ̹̘͍̭͉̜  J̖̥́u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+        n̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕̠̙͖        ̹̘͍̭͉̜    J̖̥́u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+        ̹̘͍̭͉̜
+        """,
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        ̹̘͍̭͉̜
+                """,
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍̫̺̮̘̻̜̥̬͍ͩͯͯ̆͜Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+                ̹̘͍̭͉̜
+        """,
+        """
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        """
+        ]
+
+        # Year thresholds
+        MIN_GLITCH_YEAR = 1700
+        MIN_SELECTABLE_YEAR = 200
+        MAX_GLITCH_YEAR = 2300
+        MAX_SELECTABLE_YEAR = 7000
+        MID_POINT_YEAR = 2000
+
         # pane constants
         EVENT_X = 800
         EVENT_Y = 40
@@ -347,8 +451,13 @@ init -1 python:
             self.const_buttons.append(self.button_year_decrease)
             self.const_buttons.append(self.button_year_increase)
 
+            # set up some quips
+            self._setupEasterEG()
+
             # call set up day buttons to fill up the calendar
             self._setupDayButtons()
+
+
 
 
         def _setupDayButtons(self):
@@ -406,7 +515,14 @@ init -1 python:
                 self.dates.append(first_day + datetime.timedelta(days=i))
 
             # get this month's events
-            events = self.database[self.selected_month]
+            if self.MIN_GLITCH_YEAR < self.selected_year < self.MAX_GLITCH_YEAR:
+
+                events = self.database[self.selected_month]
+
+            else:
+
+                events = self._getEGMonthEvents()
+
 
             # calculation to determine the initial y position
             initial_y = self.INITIAL_POSITION_Y + (self.DAY_NAME_BUTTON_HEIGHT * 2)
@@ -578,6 +694,14 @@ init -1 python:
                 self.selected_year = self.selected_year + 1
             else:
                 self.selected_year = self.selected_year - 1
+
+            # so people don't break it
+            if self.selected_year < self.MIN_SELECTABLE_YEAR:
+                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
+
+            if self.selected_year > self.MAX_SELECTABLE_YEAR:
+                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+
             self._setupDayButtons()
 
 
@@ -628,6 +752,63 @@ init -1 python:
             # otherwise, we check start date year
             return ev.start_date is not None and ev.start_date.year == year
 
+        def _setupEasterEG(self):
+            """
+            Fills the quip objects used to generate EG events
+            """
+            # quips for easter eggs
+            self._less_glicthy_q_list = MASQuipList(allow_label=False)
+            self._more_glicthy_q_list = MASQuipList(allow_label=False)
+
+            for _label in self.EG_TEXTS_GLITCH:
+                self._less_glicthy_q_list.addLineQuip(_label)
+
+            for _label in self.EG_TEXTS_MIN_GLITCH:
+                self._more_glicthy_q_list.addLineQuip(_label)
+
+            for i in range(15,30):
+                self._less_glicthy_q_list.addGlitchQuip(i)
+                self._more_glicthy_q_list.addGlitchQuip(i)
+
+
+        def _getEGMonthEvents(self):
+            """
+            Generates a dict of events to display in the calendar
+            when players go too far away
+
+            RETURNS: A dict with the proper structure [day][eventname]
+                which contains a repeatable event with a nice label :D
+            """
+            month_events = dict()
+
+            # get year distance
+            dist = abs(self.selected_year - self.MID_POINT_YEAR)
+            # the lower the distance is, the lower the glitching is
+            # the opposite also applies
+            if self.selected_year > self.MID_POINT_YEAR:
+                max_dist = self.MID_POINT_YEAR - self.MIN_SELECTABLE_YEAR
+
+            else:
+                max_dist = self.MAX_SELECTABLE_YEAR - (self.MID_POINT_YEAR * 2)
+
+            percentage = dist / float(max_dist)
+
+            percentage = int(round(percentage * 100))
+
+            for i in range(1,32):
+                month_events[i] = dict()
+                if ( random.randint(1, 70) > percentage and not percentage > 70):
+                    continue
+                if (random.randint(1,50) < percentage):
+                    month_events[i]["l"] = ((CAL_TYPE_REP,self._less_glicthy_q_list.quip()[1],list()))
+                else:
+                    month_events[i]["l"] = ((CAL_TYPE_REP,self._more_glicthy_q_list.quip()[1],list()))
+                if (random.randint(1,60) < percentage):
+                    month_events[i]["l1"] = ((CAL_TYPE_REP,self._more_glicthy_q_list.quip()[1],list()))
+                if (random.randint(1,70) < percentage):
+                    month_events[i]["l2"] = ((CAL_TYPE_REP,random.choice(self.EG_TEXTS_GLITCH),list()))
+
+            return month_events
 
         def render(self, width, height, st, at):
 
