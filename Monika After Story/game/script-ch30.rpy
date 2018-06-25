@@ -3,9 +3,16 @@ default persistent.tried_skip = None
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
-define allow_dialogue = True
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
+
+init -1 python in mas_globals:
+    # global that are not actually globals.
+
+    # True means we are in the dialogue workflow. False means not
+    dlg_workflow = False
+
+
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -108,6 +115,7 @@ init python:
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
+    import store.mas_globals as mas_globals
     therapist = eliza.eliza()
     process_list = []
     currentuser = None # start if with no currentuser
@@ -155,103 +163,51 @@ init python:
     renpy.music.set_volume(songs.getVolume("music"), channel="background")
 
     #Define new functions
+    def show_dialogue_box():
+        """
+        Jumps to the topic promt menu
+        """
+        renpy.jump('prompt_menu')
 
-    def enable_esc():
-        #
-        # Enables the escape key so you can go to the game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" not in config.keymap["game_menu"]:
-            config.keymap["game_menu"].append("K_ESCAPE")
 
-    def disable_esc():
-        #
-        # disables the escape key so you cant go to game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" in config.keymap["game_menu"]:
-           config.keymap["game_menu"].remove("K_ESCAPE")
+    def pick_game():
+        """
+        Jumps to the pick a game workflow
+        """
+        renpy.jump('pick_a_game')
 
-    def play_song(song, fadein=0.0):
-        #
-        # literally just plays a song onto the music channel
-        #
-        # IN:
-        #   song - song to play. If None, the channel is stopped
-        #   fadein - number of seconds to fade in the song
-        if song is None:
-            renpy.music.stop(channel="music")
-        else:
-            renpy.music.play(
-                song,
-                channel="music",
-                loop=True,
-                synchro_start=True,
-                fadein=fadein
-            )
 
-    def mute_music():
-        #
-        # mutes the music channel
-        #
-        # ASSUMES:
-        #   songs.music_volume
-        #   persistent.playername
+    def mas_enable_quitbox():
+        """
+        Enables Monika's quit dialogue warning
+        """
+        global _confirm_quit
+        _confirm_quit = True
 
-        curr_volume = songs.getVolume("music")
-        # sayori cannot mute
-        if curr_volume > 0.0 and persistent.playername.lower() != "sayori":
-            songs.music_volume = curr_volume
-            renpy.music.set_volume(0.0, channel="music")
-        else:
-            renpy.music.set_volume(songs.music_volume, channel="music")
 
-    def inc_musicvol():
-        #
-        # increases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        songs.adjustVolume()
+    def mas_disable_quitbox():
+        """
+        Disables Monika's quit dialogue warning
+        """
+        global _confirm_quit
+        _confirm_quit = False
 
-    def dec_musicvol():
-        #
-        # decreases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        # ASSUMES:
-        #   persistent.playername
 
-        # sayori cannot make the volume quieter
-        if persistent.playername.lower() != "sayori":
-            songs.adjustVolume(up=False)
+    def mas_enable_quit():
+        """
+        Enables quitting without monika knowing
+        """
+        persistent.closed_self = True
+        mas_disable_quitbox()
 
-    def set_keymaps():
-        #
-        # Sets the keymaps
-        #
-        # ASSUMES:
-        #   config.keymap
-        #   config.underlay
-        #Add keys for new functions
-        config.keymap["open_dialogue"] = ["t","T"]
-        config.keymap["change_music"] = ["noshift_m","noshift_M"]
-        config.keymap["play_game"] = ["p","P"]
-        config.keymap["mute_music"] = ["shift_m","shift_M"]
-        config.keymap["inc_musicvol"] = [
-            "shift_K_PLUS","K_EQUALS","K_KP_PLUS"
-        ]
-        config.keymap["dec_musicvol"] = [
-            "K_MINUS","shift_K_UNDERSCORE","K_KP_MINUS"
-        ]
-        # Define what those actions call
-        config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-        config.underlay.append(renpy.Keymap(change_music=select_music))
-        config.underlay.append(renpy.Keymap(play_game=pick_game))
-        config.underlay.append(renpy.Keymap(mute_music=mute_music))
-        config.underlay.append(renpy.Keymap(inc_musicvol=inc_musicvol))
-        config.underlay.append(renpy.Keymap(dec_musicvol=dec_musicvol))
+
+    def mas_disable_quit():
+        """
+        Disables quitting without monika knowing
+        """
+        persistent.closed_self = False
+        mas_enable_quitbox()
+
 
     def mas_drawSpaceroomMasks():
         """
@@ -282,42 +238,19 @@ init python:
         renpy.show(right_window, at_list=[spaceroom_window_right], tag="rm2")
 
 
-    def show_dialogue_box():
-        if allow_dialogue:
-            renpy.jump('prompt_menu')
-
-    def pick_game():
-        if allow_dialogue:
-            renpy.call('pick_a_game')
-
     def show_calendar():
-        store.hkb_button.enabled = False
+        """RUNTIME ONLY
+        Opens the calendar if we can
+        """
+        mas_HKBRaiseShield()
 
         if not persistent._mas_first_calendar_check:
             renpy.call('_first_time_calendar_use')
 
         renpy.call_in_new_context("mas_start_calendar_read_only")
-        store.hkb_button.enabled = True
 
-    def select_music():
-        # check for open menu
-        if (songs.enabled
-            and not songs.menu_open
-            and renpy.get_screen("history") is None
-            and renpy.get_screen("save") is None
-            and renpy.get_screen("load") is None
-            and renpy.get_screen("preferences") is None):
+        mas_HKBDropShield()
 
-            # music menu label
-            selected_track = renpy.call_in_new_context("display_music_menu")
-            if selected_track == songs.NO_SONG:
-                selected_track = songs.FP_NO_SONG
-
-            # workaround to handle new context
-            if selected_track != songs.current_track:
-                play_song(selected_track)
-                songs.current_track = selected_track
-                persistent.current_track = selected_track
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -345,6 +278,7 @@ init python:
         elif event == "slow_done":
             config.keymap['dismiss'] = dismiss_keys
             renpy.display.behavior.clear_keymap_cache()
+
     morning_flag = None
     def is_morning():
         # generate the times we need
@@ -381,7 +315,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_day_room zorder 1
-                show screen calendar_overlay(_layer="master")
+                $ mas_calShowOverlay()
             if not hide_monika:
                 show monika 1 at t11 zorder 2
                 with Dissolve(dissolve_time)
@@ -395,7 +329,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ renpy.show(start_bg, zorder=1)
             else:
                 show monika_room zorder 1
-                show screen calendar_overlay(_layer="master")
+                $ mas_calShowOverlay()
                 #show monika_bg_highlight
             if not hide_monika:
                 show monika 1 at t11 zorder 2
@@ -417,9 +351,32 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # before we render visuals:
+    # 1 - all core interactions should be disabeld
+    $ mas_RaiseShield_core()
+
+    # 2 - hotkey buttons should be disabled
+    $ store.hkb_button.enabled = False
+
+    # 3 - keymaps are disabled (default)
+
     call spaceroom from _call_spaceroom_4
-    $pushEvent('introduction')
-    call call_next_event from _call_call_next_event
+
+    # lets just call the intro instead of pushing it as an event
+    # this is way simpler and prevents event loss and other weird inital
+    # startup issues
+    call introduction
+
+    # now we can do some cleanup
+    # 1 - renable core interactions
+    $ mas_DropShield_core()
+
+    # 2 - hotkey buttons enabled
+    $ store.hkb_button.enabled = True
+
+    # 3 - set keymaps
+    $ set_keymaps()
     
     jump ch30_preloop
 
@@ -429,60 +386,60 @@ label continue_event:
     return
 
 label pick_a_game:
-    if allow_dialogue and not songs.menu_open:
-        python:
-            # preprocessing for games
+    # we can assume that getting here means we didnt cut off monika
 
-            import datetime
-            _hour = datetime.timedelta(hours=1)
-            _now = datetime.datetime.now()
+    $ mas_RaiseShield_dlg()
 
-            # chess has timed disabling
-            if persistent._mas_chess_timed_disable is not None:
-                if _now - persistent._mas_chess_timed_disable >= _hour:
-                    chess_disabled = False
-                    persistent._mas_chess_timed_disable = None
+    python:
+        # preprocessing for games
 
-                else:
-                    chess_disabled = True
+        import datetime
+        _hour = datetime.timedelta(hours=1)
+        _now = datetime.datetime.now()
+
+        # chess has timed disabling
+        if persistent._mas_chess_timed_disable is not None:
+            if _now - persistent._mas_chess_timed_disable >= _hour:
+                chess_disabled = False
+                persistent._mas_chess_timed_disable = None
 
             else:
-                chess_disabled = False
+                chess_disabled = True
 
-            # single var for readibility
-            chess_unlocked = (
-                is_platform_good_for_chess()
-                and persistent.game_unlocks["chess"]
-                and not chess_disabled
-            )
+        else:
+            chess_disabled = False
 
-        $previous_dialogue = allow_dialogue
-        $allow_dialogue = False
-        menu:
-            "What game would you like to play?"
-            "Pong" if persistent.game_unlocks['pong']:
-                if not renpy.seen_label('game_pong'):
-                    $grant_xp(xp.NEW_GAME)
-                call game_pong from _call_game_pong
-            "Chess" if chess_unlocked:
-                if not renpy.seen_label('game_chess'):
-                    $grant_xp(xp.NEW_GAME)
-                call game_chess from _call_game_chess
-            "Hangman" if persistent.game_unlocks['hangman']:
-                if not renpy.seen_label("game_hangman"):
-                    $ grant_xp(xp.NEW_GAME)
-                call game_hangman from _call_game_hangman
-            "Piano" if persistent.game_unlocks['piano']:
-                if not renpy.seen_label("mas_piano_start"):
-                    $ grant_xp(xp.NEW_GAME)
-                call mas_piano_start from _call_play_piano
-            "Nevermind":
-                m "Alright. Maybe later?"
+        # single var for readibility
+        chess_unlocked = (
+            is_platform_good_for_chess()
+            and persistent.game_unlocks["chess"]
+            and not chess_disabled
+        )
 
-        show monika 1 at tinstant zorder 2
-        $allow_dialogue = previous_dialogue
-        $ songs.enabled = True
-        $ hkb_button.enabled = True
+    menu:
+        "What game would you like to play?"
+        "Pong" if persistent.game_unlocks['pong']:
+            if not renpy.seen_label('game_pong'):
+                $grant_xp(xp.NEW_GAME)
+            call game_pong from _call_game_pong
+        "Chess" if chess_unlocked:
+            if not renpy.seen_label('game_chess'):
+                $grant_xp(xp.NEW_GAME)
+            call game_chess from _call_game_chess
+        "Hangman" if persistent.game_unlocks['hangman']:
+            if not renpy.seen_label("game_hangman"):
+                $ grant_xp(xp.NEW_GAME)
+            call game_hangman from _call_game_hangman
+        "Piano" if persistent.game_unlocks['piano']:
+            if not renpy.seen_label("mas_piano_start"):
+                $ grant_xp(xp.NEW_GAME)
+            call mas_piano_start from _call_play_piano
+        "Nevermind":
+            m "Alright. Maybe later?"
+
+    show monika 1 at tinstant zorder 2
+
+    $ mas_DropShield_dlg()
 
     jump ch30_loop
 
@@ -622,10 +579,7 @@ label ch30_autoload:
 
 
     if not mas_skip_visuals:
-        if persistent.current_track:
-            $ play_song(persistent.current_track)
-        else:
-            $ play_song(songs.current_track) # default
+        $ mas_startup_song()
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -682,6 +636,8 @@ label ch30_autoload:
     if not mas_skip_visuals:
         $ set_keymaps()
 
+    # FALL THROUGH TO PRELOOP
+
 label ch30_preloop:
     # stuff that should happen right before we enter the loop
 
@@ -707,6 +663,7 @@ label ch30_loop:
             $ mas_checked_update = True
 
     else:
+        $ mas_OVLHide()
         $ mas_skip_visuals = False
 
 

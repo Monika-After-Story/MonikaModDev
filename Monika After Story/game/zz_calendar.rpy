@@ -748,6 +748,9 @@ init -10 python in mas_calendar:
     CAL_TYPE_EV = 1
     CAL_TYPE_REP = 2
 
+    # enabled?
+    enabled = True
+
 
 init -1 python in mas_calendar:
     import datetime
@@ -1665,7 +1668,7 @@ label _first_time_calendar_use:
 
     show monika 1
 
-    $ store.hkb_button.enabled = True
+    $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
     return
 
@@ -1699,3 +1702,60 @@ label mas_start_calendar_select_date:
 #     else:
 #         m "You closed without selecting a date"
 #     return
+
+# clickable calendar overlay screen for idle mode
+screen calendar_overlay:
+    zorder 1
+
+    # vbox:
+    #     xalign 0.305
+    #     yalign 0.4
+    #
+    if store.mas_calendar.enabled:
+        imagebutton:
+            idle "mod_assets/calendar/calendar_button_normal.png"
+            hover "mod_assets/calendar/calendar_button_hover.png"
+            hover_sound gui.hover_sound
+            activate_sound gui.activate_sound
+            action Function(show_calendar)
+            xpos 360
+            ypos 260
+    else:
+        image "mod_assets/calendar/calendar_button_normal.png" xpos 360 ypos 260
+
+init python:
+
+    def mas_calDropOverlayShield():
+        """RUNTIME ONLY
+        Enables input for the calendar overlay
+        """
+        store.mas_calendar.enabled = True
+
+
+    def mas_calHideOverlay():
+        """RUNTIME ONLY
+        Hides the calendar overlay
+        """
+        renpy.hide_screen("calendar_overlay")
+
+
+    def mas_calIsVisible_ovl():
+        """
+        RETURNS: True if the calendar ovelray is visible, False otherwise
+        """
+        return renpy.get_screen("calendar_overlay") is not None
+
+
+    def mas_calRaiseOverlayShield():
+        """RUNTIME ONLY
+        Disables input for the calendar overlay
+        """
+        store.mas_calendar.enabled = False
+
+
+    def mas_calShowOverlay():
+        """RUNTIME ONLY
+        Shows the calendar overlay
+        """
+        if not mas_calIsVisible_ovl():
+            renpy.show_screen("calendar_overlay", _layer="master")
