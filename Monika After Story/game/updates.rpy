@@ -249,6 +249,17 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.3
+label v0_8_3(version="v0_8_3"):
+    python:
+
+        # need to unrandom the explain topic
+        ex_ev = mas_getEV("monika_explain")
+        ex_ev.random = False
+        ex_ev.pool = True
+
+    return
+
 # 0.8.2
 label v0_8_2(version="v0_8_2"):
     python:
