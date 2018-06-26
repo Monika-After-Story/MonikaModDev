@@ -133,8 +133,9 @@ label monika_ptod_tip002:
     # 0.14, 9.3, -10.2 would all be floats in Python.
     #
     # Text in python is represented with string types. 
-    # "short text", "a", "very super long text" are all strings in python.
-    # Strings can also 
+    # anything surrounded in single quotes (') or double quotes (") are strings.
+    #
+    # 
     #
     return
 
