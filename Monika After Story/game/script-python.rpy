@@ -78,6 +78,9 @@ label monika_ptod_tip001:
 
     # Python was created by Guido Van Rossum in the early 90s
     # -- the bit explaining that is interpreted is probably a bit too soon
+    # -> Yeah, save this part for later. This seciton should be an overview of
+    #   what python is used for, the fact that its a programming language,
+    #   and the 2 main versions. also how it relates to MAS via RenPy
     # its an interpreted language, which means it does not need to be compiled
     # before being executed. this makes it easier and faster to make quick
     # adjustments to code on the fly.
@@ -129,7 +132,9 @@ label monika_ptod_tip002:
     # Floats are used to represent decimals:
     # 0.14, 9.3, -10.2 would all be floats in Python.
     #
-    # Text in python is represented with string types.
+    # Text in python is represented with string types. 
+    # "short text", "a", "very super long text" are all strings in python.
+    # Strings can also 
     #
     return
 
