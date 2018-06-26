@@ -447,14 +447,14 @@ init 5 python:
 
 label greeting_glitch:
      hide monika
-     show yuri glitch zorder 1
+     show yuri glitch zorder MAS_BACKGROUND_Z
      y "{cps=500}[player]?!{nw}{/cps}"
      hide yuri glitch
-     show yuri glitch2 zorder 1
+     show yuri glitch2 zorder MAS_BACKGROUND_Z
      play sound "sfx/glitch3.ogg"
      pause 0.1
      hide yuri glitch2
-     show yuri glitch zorder 1
+     show yuri glitch zorder MAS_BACKGROUND_Z
      pause 0.3
      hide yuri glitch
      show monika 4lksdlb at i11 zorder MAS_MONIKA_Z

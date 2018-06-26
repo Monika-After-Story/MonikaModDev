@@ -312,7 +312,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             if not hide_mask:
                 $ mas_drawSpaceroomMasks()
             if start_bg:
-                $ renpy.show(start_bg, zorder=1)
+                $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
             else:
                 show monika_day_room zorder MAS_BACKGROUND_Z
                 $ mas_calShowOverlay()
@@ -326,7 +326,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             if not hide_mask:
                 $ mas_drawSpaceroomMasks()
             if start_bg:
-                $ renpy.show(start_bg, zorder=1)
+                $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
             else:
                 show monika_room zorder MAS_BACKGROUND_Z
                 $ mas_calShowOverlay()
