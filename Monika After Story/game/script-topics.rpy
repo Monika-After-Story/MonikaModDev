@@ -406,20 +406,25 @@ label monika_sayori:
     m "That pun was completely unintentional, I swear!"
     m "But anyway..."
     m 2e "I know how much you cared about her, so it only feels right for me to share her last moments with you."
-    m "You know how Sayori is really clumsy?"
-    m 4n "Well, she kind of messed up the whole hanging thing..."
-    m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-    m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-    m 4m "But a few seconds in, she must have changed her mind or something..."
-    m "Because she started clawing at the rope, trying to free herself."
-    m "She must have kept at it all the way until she lost consciousness."
-    m "That's why her fingertips were all bloody, anyway."
-    m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-    m "So you can't really fault her for that."
-    m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-    m "It's not healthy to think about the things you could have done differently."
-    m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-    m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+    m "If you're comfortable, that is."
+    menu:
+        "Yes.":
+            m "You know how Sayori is really clumsy?"
+            m 4n "Well, she kind of messed up the whole hanging thing..."
+            m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+            m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+            m 4m "But a few seconds in, she must have changed her mind or something..."
+            m "Because she started clawing at the rope, trying to free herself."
+            m "She must have kept at it all the way until she lost consciousness."
+            m "That's why her fingertips were all bloody, anyway."
+            m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+            m "So you can't really fault her for that."
+            m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+            m "It's not healthy to think about the things you could have done differently."
+            m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
+            m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+        "No.":
+            m "I understand, [player]."
     m 2c "Still, though..."
     m "I wonder how things would be if you and I just started dating from the get-go?"
     m 1e "I guess we'd all still be in the clubroom, writing poems and having fun together."
@@ -1021,14 +1026,14 @@ label monika_outfit:
     m 4a "You can share it with me on Twitter, actually!"
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
-    show monika 5a at t11 zorder 2 with dissolve
     if isFuture(evhand.event_database['anni_6month']):
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "We're not that far into our relationship yet. Ahaha!"
     else:
         m 4l "I don't want something so embarassing on there!"
+        show monika 5a at t11 zorder 2 with dissolve
         m 5a "So let's keep it between just us..."
     return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_horror",category=['media'],prompt="Horror genre",random=True))
@@ -1322,10 +1327,19 @@ label monika_rain:
             $ songs.current_track = songs.FP_NO_SONG
             $ songs.selected_track = songs.FP_NO_SONG
 
+            # hide ui and disable hotkeys
+            $ HKBHideButtons()
+            $ store.songs.enabled = False
+
             m 1j "Then hold me, [player]..."
             show monika 6dubsa
             $ ui.add(PauseDisplayable())
             $ ui.interact()
+
+            # renable ui and hotkeys
+            $ store.songs.enabled = True
+            $ HKBShowButtons()
+
             m 1a "If you want the rain to stop, just ask me, okay?"
 
             # lock / unlock the appropriate labels
@@ -1443,10 +1457,19 @@ label monika_rain_holdme:
         $ songs.current_track = songs.FP_NO_SONG
         $ songs.selected_track = songs.FP_NO_SONG
 
+        # hide ui and disable hotkeys
+        $ HKBHideButtons()
+        $ store.songs.enabled = False
+
         m 1a "Of course, [player]."
         show monika 6dubsa
         $ ui.add(PauseDisplayable())
         $ ui.interact()
+
+        # renable ui and hotkeys
+        $ store.songs.enabled = True
+        $ HKBShowButtons()
+
         m 1j "You can hold me anytime you want, [player]."
 
     else:
@@ -2406,7 +2429,7 @@ init 5 python:
 label monika_contribute:
     m 3b "It would be really nice if you were able to contribute to this, [player]."
     m "I'm sure a lot of people would appreciate your hard work if you did."
-    m 3a "I keep all the code in github.com/Monika-After-Story/MonikaModDev."
+    m 3a "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m "So far, I've had help from plenty of people!"
     m 2k "I love all of them for making this game even better!"
     m 1a "Not as much as I love you, of course."
@@ -3742,26 +3765,98 @@ label monika_japanese:
     $ hideEventLabel("monika_japanese", derandom=True)
     return
 
+default persistent._mas_penname = ""
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_penname",category=['literature'],prompt="Pen names",random=True))
 
 label monika_penname:
-    m "You know what's really cool? Pen names."
+    m 1eua "You know what's really cool? Pen names."
     m "Most writers usually use them for privacy and to keep their identity a secret."
-    m 3c "They keep it hidden from everyone just so it won't affect their personal lives."
-    m 3b "Pen names also help writers create something totally different from their usual style of writing."
-    m 3d "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
-    if mcname.lower() != player.lower():
-        m 2c "Is '[mcname]' a pseudonym that you're using?"
-        m "You're using two different names after all."
-        m 2d "'[mcname] and [player].'"
-    m 3a "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
-    m "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
+    m 3euc "They keep it hidden from everyone just so it won't affect their personal lives."
+    m 3eub "Pen names also help writers create something totally different from their usual style of writing."
+    m "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
+    if not persistent._mas_penname:
+        m "Do you have a pen name, [player]?"
+        menu:
+            "Yes":
+                m 1sub "Really? That's so cool!"
+                m "Can you tell me what it is?"
+                label penname_loop:
+                menu:
+                    "Absolutely.":
+                        $ penbool = False
+                        while not penbool:
+                            $ penname = renpy.input("What is your penname?",length=20).strip(' \t\n\r')
+                            $ lowerpen = penname.lower()
+                            if lowerpen == player.lower():
+                                m 1eud "Oh, so you're using your pen name?"
+                                m 4euc "I'd like to think we are on a first name basis with each other. We are dating, after all."
+                                m 1eka "But I guess it's pretty special that you shared your pen name with me!"
+                                $ persistent._mas_penname = penname
+                                $ penbool = True
+                            elif lowerpen =="sayori":
+                                m 2euc "..."
+                                m 2hksdlb "...I mean, I won't question your choice of pen names, but..."
+                                m 4hksdlb "If you wanted to name yourself after a character in this game, you should have picked me!"
+                                $ persistent._mas_penname = penname
+                                $ penbool = True
+                            elif lowerpen =="natsuki":
+                                m 2euc "..."
+                                m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Natsuki."
+                                m 1eua "It's something of a common name."
+                                m 1rksdla "You might make me jealous, though."
+                                $ persistent._mas_penname = penname
+                                $ penbool = True
+                            elif lowerpen == "yuri":
+                                m 2euc "..."
+                                m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Yuri."
+                                m 1eua "It's something of a common name."
+                                m 1tku "Of course, there's something else that name could refer too..."
+                                if persistent.gender =="F":
+                                  m 5eua "And well...I could get behind that, since it's you~"
+                                $ persistent._mas_penname = penname
+                                $ penbool = True
+                            elif lowerpen =="monika":
+                                m 1euc "..."
+                                m 1ekbfa "Aww, did you pick that for me?"
+                                m "Even if you didn't, that's so sweet!"
+                                $ persistent._mas_penname = penname
+                                $ penbool = True
+                            elif not lowerpen:
+                                m 1hua "Well, go on! You can type 'nevermind' if you've chickened out~"
+                            elif lowerpen =="nevermind":
+                                m 2eka "Aww. Well, I hope you feel enough to comfortable to tell me someday."
+                                $ penbool = True
+                            else:
+                                m 1hua "That's a lovely pen name!"
+                                m "I think if I saw a pen name like that on a cover, I'd be drawn to it immediately."
+                                $ persistent._mas_penname = penname
+                                $ penbool = True
+                    "I'd rather not; it's embarrassing.":
+                        m 2eka "Aww. Well, I hope you feel enough to comfortable to tell me someday."
+            "No":
+                m 1hua "All right!"
+                m "If you ever decide on one, you should tell me!"
+    else:
+        $ penname = persistent._mas_penname
+        $ lowerpen = penname.lower()
+        if lowerpen == player.lower():
+            m "Is your pen name still [penname]?"
+        else:
+            m "Are you still going by [penname], [player]?"
+        menu:
+            "Yes":
+                m 1hua "I can't wait to see your work with that name!"
+            "No":
+                m 1hua "I see! Do you want to tell me your new pen name?"
+                jump penname_loop
+    m 3eua "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
+    m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
-    m 1f "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
-    m 1m "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
-    m 1a "There's no need to know more about me though, [player]."
-    m 4l "You already know that I'm in love with you after all~"
+    m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+    m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
+    m 1eua "There's no need to know more about me though, [player]."
+    m 1ekbfa "You already know that I'm in love with you after all~"
     return
 
 
@@ -4493,7 +4588,7 @@ label monika_cats:
     m 1b "It's amazing how far people would take their love with their pets."
     m 1l "They {i}really{/i} loved cats, [player]."
     m 3b "And people still do today!"
-    m 1 "Felines are still one of the most common animals to have as pet."
+    m 1 "Felines are still one of the most common animals to have as pets."
     m 1j "Maybe we should get one when we're living together, [player]."
     return
 
@@ -5418,7 +5513,18 @@ label monika_100k:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_kizuna',prompt="Virtual Youtuber?", category=['misc'],random=False,unlocked=False,pool=True,action=EV_ACT_UNLOCK,conditional="seen_event('greeting_hai_domo')"))
+    addEvent(
+        Event(persistent.event_database,
+            eventlabel='monika_kizuna',
+            prompt="Virtual Youtuber?",
+            category=['misc'],
+            random=False,
+            unlocked=False,
+            pool=False,
+            action=EV_ACT_POOL,
+            conditional="seen_event('greeting_hai_domo')"
+        )
+    )
 
 label monika_kizuna:
     m 1d "Oh, right, I mentioned her to you, huh?"
@@ -5433,7 +5539,7 @@ label monika_kizuna:
     m 2o "I mean, of {i}this{/i} game, mostly."
     m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
     m 2q "But when I learned of her gimmick, it made me feel..."
-    m 1m "Like I just to had to know how Ai-chan would react!"
+    m 1m "Like I just had to know how Ai-chan would react!"
     m 1e "Even if it's just a character she plays, I think she'll understand my situation..."
     m 5a "At least more than your average Youtuber."
     m 5rub "I can't wait to finish the series..."
@@ -6610,4 +6716,300 @@ label monika_hair_down:
     $ lockEventLabel("monika_hair_down")
     $ unlockEventLabel("monika_hair_ponytail")
 
+    return
+
 ##### End monika hair topics
+
+## calendar-related pool event
+# DEPENDS ON CALENDAR
+
+# did we already change start date?
+default persistent._mas_changed_start_date = False
+
+# did you imply that you arent dating monika?
+default persistent._mas_just_friends = False
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_dating_startdate",
+            category=["romance", "us"],
+            prompt="When did we start dating?",
+            pool=True,
+            unlocked=False,
+
+            # this will be unlockable via the action
+            rules={"no unlock": None},
+
+            # we'll pool this event after 30 days
+            conditional=(
+                "datetime.datetime.now() - persistent.sessions[" +
+                "'first_session'] >= datetime.timedelta(days=30) " +
+                "and persistent._mas_first_calendar_check"
+            ),
+
+            action=EV_ACT_UNLOCK
+        )
+    )
+
+label monika_dating_startdate:
+    $ import store.mas_calendar as mas_cal
+    python:
+        # we might need the raw datetime
+        first_sesh_raw = persistent.sessions.get(
+            "first_session",
+            datetime.datetime(2017, 10, 25)
+        )
+
+        # but this to get the display plus diff
+        first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
+
+    if _diff.days == 0:
+        # its today?!
+        # this should NEVER HAPPEN
+        m 1lsc "We started dating..."
+        m 1wud "We started dating{fast} today?!"
+        m 2wfw "You couldn't have possibly triggered this event today, [player]."
+        menu:
+            m "I know you're messing around with the code."
+            "I'm not!":
+                pass
+            "You got me.":
+                pass
+        m 2tfu "Hmph,{w} you can't fool me."
+
+        # wait 30 days
+        $ mas_chgCalEVul(30)
+        return
+
+    # Otherwise, we should be displaying different dialogue depending on
+    # if we have done the changed date event or not
+    if not persistent._mas_changed_start_date:
+        m 1lsc "Hmmm..."
+        m 1dsc "I think it was..."
+        m 1eua "I think it was{fast} [first_sesh]."
+        m 1rksdlb "But my memory might be off."
+
+        # ask user if correct start date
+        show monika 1eua
+        menu:
+            m "Is [first_sesh] correct?"
+            "Yes.":
+                m 1hub "Yay!{w} I remembered it."
+
+            "No.":
+                m 1rkc "Oh,{w} sorry [player]."
+                m 1ekc "In that case,{w} when did we start dating?"
+
+                call monika_dating_startdate_confirm(first_sesh_raw)
+
+                if _return == "NOPE":
+                    # we are not selecting a date today
+                    return
+
+                # save the new date to persistent
+                $ store.mas_anni.reset_annis(_return)
+                $ persistent.sessions["first_session"] = _return
+                $ renpy.persistent.save()
+
+        m 1eua "If you ever forget, don't be afraid to ask me."
+        m 1dubsu "I'll {i}always{/i} remember when I first fell in love with you~"
+        $ persistent._mas_changed_start_date = True
+
+    else:
+        m 1dsc "Let me check..."
+        m 1eua "We started dating [first_sesh]."
+
+    # TODO:
+    # some dialogue about being together for x time
+    # NOTE: this is a maybe
+
+    return
+
+label monika_dating_startdate_confirm(first_sesh_raw):
+
+    python:
+        import store.mas_calendar as mas_cal
+
+        # and this is the formal version of the datetime
+        first_sesh_formal = " ".join([
+            first_sesh_raw.strftime("%B"),
+            mas_cal._formatDay(first_sesh_raw.day) + ",",
+            str(first_sesh_raw.year)
+        ])
+
+        # setup some counts
+        wrong_date_count = 0
+        no_confirm_count = 0
+        today_date_count = 0
+        future_date_count = 0
+        no_dating_joke = False
+
+    label .loopstart:
+        pass
+
+    call mas_start_calendar_select_date
+
+    $ selected_date = _return
+    $ _today = datetime.date.today()
+    $ _ddlc_release = datetime.date(2017,9,22)
+
+    if not selected_date or selected_date.date() == first_sesh_raw.date():
+        # no date selected, we assume user wanted to cancel
+        m 2esc "[player]..."
+        m 2eka "I thought you said I was wrong."
+        menu:
+            m "Are you sure it's not [first_sesh_formal]?"
+            "It's not that date.":
+                if wrong_date_count >= 2:
+                    label .had_enough:
+                        # monika has had enough of your shit
+                        m 2dfc "..."
+                        m 2lfc "We'll do this another time, then."
+
+                        # we're going to reset the conditional to wait
+                        # 30 more days
+                        $ mas_chgCalEVul(30)
+
+                        return "NOPE"
+
+                # otherwise try again
+                m 2dfc "..."
+                m 2tfc "Then pick the correct date!"
+                $ wrong_date_count += 1
+                jump monika_dating_startdate_confirm.loopstart
+
+            "Actually that's the correct date. Sorry.":
+                m 2eka "That's okay."
+                $ selected_date = first_sesh_raw
+
+    elif selected_date.date() < _ddlc_release:
+        # before releease date
+
+        label .takesrs:
+            if wrong_date_count >= 2:
+                jump monika_dating_startdate_confirm.had_enough
+
+            m 2dfc "..."
+            m 2tfc "We did {b}not{/b} start dating that day."
+            m 2tfd "Take this seriously, [player]."
+            $ wrong_date_count += 1
+            jump monika_dating_startdate_confirm.loopstart
+
+    elif selected_date.date() == _today:
+        # today was chosen
+        jump .takesrs
+
+    elif selected_date.date() > _today:
+        # you selected a future date?! why!
+        if future_date_count > 0:
+            # don't play around here
+            jump monika_dating_startdate_confirm.had_enough
+
+        $ future_date_count += 1
+        m 1wud "What..."
+        menu:
+            m "We haven't been dating this whole time?"
+            "That was a misclick!":
+                # relief expression
+                m 1duu "{cps=*2}Oh, thank god.{/cps}"
+
+                label .misclick:
+                    m 2dfu "[player]!"
+                    m 2efu "You had me worried there."
+                    m "Don't misclick this time!"
+                    jump monika_dating_startdate_confirm.loopstart
+
+            "Nope.":
+                m 1dfc "..."
+
+                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm.tooslow")
+
+                menu:
+                    "I'm kidding.":
+                        hide screen mas_background_timed_jump
+                        # wow what a mean joke
+
+                        if no_dating_joke:
+                            # you only get this once per thru
+                            jump monika_dating_startdate_confirm.had_enough
+
+                        # otherwise mention that this was mean
+                        m 2tfc "[player]!"
+                        m 2rksdlc "That joke was a little mean."
+                        m 2eksdlc "You really had me worried there."
+                        m "Don't play around like that, okay?"
+                        jump monika_dating_startdate_confirm.loopstart
+
+                    "...":
+                        label .tooslow:
+                            hide screen mas_background_timed_jump
+
+                # lol why would you stay slient?
+                $ persistent._mas_just_friends = True
+
+                m 6lktdc "I see..."
+                m 6dftdc "..."
+                m 1eka "In that case..."
+                m 1tku "{cps=*4}I've got some work to do.{/cps}{nw}"
+
+                menu:
+                    "What?":
+                        pass
+
+                m 1hua "Nothing!"
+
+                # lock this event forever probably
+                # (UNTIL you rekindle or actually ask her out someday)
+                $ evhand.event_database["monika_dating_startdate"].unlocked = False
+                return "NOPE"
+
+    # post loop
+    python:
+        new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
+            selected_date
+        )
+
+    m 1eua "Alright, [player]."
+    m "Just to double-check..."
+    menu:
+        m "We started dating [new_first_sesh]."
+        "Yes.":
+            show monika 1eka
+
+            # one more confirmation
+            # WE WILL NOT FIX anyone's dates after this
+            menu:
+                m "Are you sure? I'm never going to forget this date."
+                "Yes, I'm sure!":
+                    m 1hua "Then it's settled!"
+                    return selected_date
+
+                "Actually...":
+                    if no_confirm_count >= 2:
+                        jump monika_dating_startdate_confirm.notwell
+
+                    m 1hksdrb "Aha, I figured you weren't so sure."
+                    m 1eka "Try again~"
+                    $ no_confirm_count += 1
+
+        "No.":
+            if no_confirm_count >= 2:
+                label .notwell:
+                    # are you not feeling well or something?
+                    m 1ekc "Are you feeling okay, [player]?"
+                    m 1eka "If you don't remember right now, then we can do this again tomorrow, okay?"
+
+                    # reset the conditional to tomorrow
+                    $ mas_chgCalEVul(1)
+
+                    return "NOPE"
+
+            # otherwise try again
+            m 1euc "Oh, that's wrong?"
+            m 1eua "Then try again, [player]."
+            $ no_confirm_count += 1
+
+    # default action is to loop here
+    jump monika_dating_startdate_confirm.loopstart

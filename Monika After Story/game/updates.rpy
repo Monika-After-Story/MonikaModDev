@@ -249,6 +249,41 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.3
+label v0_8_3(version="v0_8_3"):
+    python:
+
+        # need to unrandom the explain topic
+        ex_ev = mas_getEV("monika_explain")
+        if ex_ev is not None:
+            ex_ev.random = False
+            ex_ev.pool = True
+
+        # update Kizuna's topic action
+        kiz_ev = mas_getEV("monika_kizuna")
+        if kiz_ev is not None and not renpy.seen_label(kiz_ev.eventlabel):
+            kiz_ev.action = EV_ACT_POOL
+            kiz_ev.unlocked = False
+            kiz_ev.pool = False
+            kiz_ev.conditional = "seen_event('greeting_hai_domo')"
+
+        # give players pool unlocks if they've been here for some time
+        curr_level = get_level()
+        if curr_level > 25:
+            persistent._mas_pool_unlocks = int(curr_level / 2)
+
+    return
+
+# 0.8.2
+label v0_8_2(version="v0_8_2"):
+    python:
+        import store.mas_anni as mas_anni
+
+        ## need to fix anniversaries for everyone again.
+        mas_anni.reset_annis(persistent.sessions["first_session"])
+
+    return
+
 # 0.8.1
 label v0_8_1(version="v0_8_1"):
     python:
@@ -428,6 +463,7 @@ label v0_7_4(version="v0_7_4"):
         # anniversary dates relying on add_months need to be tweaked
         # define a special function for this
         import store.evhand as evhand
+        import store.mas_utils as mas_utils
         import datetime
         fullday = datetime.timedelta(days=1)
         threeday = datetime.timedelta(days=3)
@@ -435,8 +471,8 @@ label v0_7_4(version="v0_7_4"):
         month = datetime.timedelta(days=30)
         year = datetime.timedelta(days=365)
         def _month_adjuster(key, months, span):
-            new_anni_date = add_months(
-                start_of_day(persistent.sessions["first_session"]),
+            new_anni_date = mas_utils.add_months(
+                mas_utils.sod(persistent.sessions["first_session"]),
                 months
             )
             evhand.event_database[key].start_date = new_anni_date
@@ -453,8 +489,8 @@ label v0_7_4(version="v0_7_4"):
         _month_adjuster("anni_5", 60, week)
         _month_adjuster("anni_10", 120, month)
         _month_adjuster("anni_20", 240, year)
-        evhand.event_database["anni_100"].start_date = add_months(
-            start_of_day(persistent.sessions["first_session"]),
+        evhand.event_database["anni_100"].start_date = mas_utils.add_months(
+            mas_utils.sod(persistent.sessions["first_session"]),
             1200
         )
 
