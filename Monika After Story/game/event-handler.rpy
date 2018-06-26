@@ -749,7 +749,7 @@ label call_next_event:
             $persistent.closed_self = True #Monika happily closes herself
             jump _quit
 
-        show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
+        show monika 1 at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:

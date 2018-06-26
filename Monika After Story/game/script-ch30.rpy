@@ -314,10 +314,10 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             if start_bg:
                 $ renpy.show(start_bg, zorder=1)
             else:
-                show monika_day_room zorder 1
+                show monika_day_room zorder MAS_BACKGROUND_Z
                 $ mas_calShowOverlay()
             if not hide_monika:
-                show monika 1 at t11 zorder 2
+                show monika 1 at t11 zorder MAS_MONIKA_Z
                 with Dissolve(dissolve_time)
     else:
         if morning_flag or scene_change:
@@ -328,11 +328,11 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             if start_bg:
                 $ renpy.show(start_bg, zorder=1)
             else:
-                show monika_room zorder 1
+                show monika_room zorder MAS_BACKGROUND_Z
                 $ mas_calShowOverlay()
                 #show monika_bg_highlight
             if not hide_monika:
-                show monika 1 at t11 zorder 2
+                show monika 1 at t11 zorder MAS_MONIKA_Z
                 with Dissolve(dissolve_time)
 
     $scene_change = False
@@ -377,7 +377,7 @@ label ch30_main:
 
     # 3 - set keymaps
     $ set_keymaps()
-    
+
     jump ch30_preloop
 
 label continue_event:
@@ -437,7 +437,7 @@ label pick_a_game:
         "Nevermind":
             m "Alright. Maybe later?"
 
-    show monika 1 at tinstant zorder 2
+    show monika 1 at tinstant zorder MAS_MONIKA_Z
 
     $ mas_DropShield_dlg()
 
@@ -704,7 +704,7 @@ label ch30_loop:
             calendar_last_checked=datetime.datetime.now()
 
             # save the persistent
-            renpy.persistent.save() 
+            renpy.persistent.save()
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
