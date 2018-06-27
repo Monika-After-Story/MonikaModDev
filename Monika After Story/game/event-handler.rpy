@@ -171,7 +171,7 @@ init -1 python in evhand:
 
     # time stuff
     import datetime
-    LAST_SEEN_DELTA = datetime.timedelta(hours=24)
+    LAST_SEEN_DELTA = datetime.timedelta(hours=6)
 
     # restart topic blacklist
     RESTART_BLKLST = [
