@@ -6644,6 +6644,34 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_citizenship",
+            category=['monika'],
+            prompt="Happy Ever After?",
+            random=True
+        )
+    )
+
+label monika_citizenship:
+    m 1esd "You know, crossing over into your reality won't be the last hurdle for our relationship."
+    m "Getting there is just the beginning."
+    m 1lksdld "It hit me earlier; If I were to magically get what I want, and just poof into your home…"
+    m 2eksdld "I won't be a citizen! I don't even have a last name!"
+    m 2lksdld "I mean, in most countries, I can become a citizen if we get married…"
+    m 2dsd "But I won't have any documentation saying who I am or where I came from."
+    m 2ekd "I won't even have my high school diploma!"
+    m 3eud "I wish there was more I could do right now to prep…"
+    m "Like taking online classes or something."
+    m 1lksdlc "I don't want to get there and be a burden because I can't find a job."
+    m 1rksdla "Sorry, I guess I shouldn't worry so much about things I can't change."
+    m 2eua "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
+    m 5rubfb "Thank you for listening to me vent, [player]."
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_short_stories",
             category=['literature'],
             prompt="Can you tell me a story?",
