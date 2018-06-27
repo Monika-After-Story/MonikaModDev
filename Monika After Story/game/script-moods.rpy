@@ -444,7 +444,7 @@ label mas_mood_yearolder_false:
             # TODO: puffy cheek monika please            
             show monika 2tfc
             pause 0.7
-            m 2h "You lied to me, [player]."
+            m 2lfp "You lied to me, [player]."
             $ persistent._mas_mood_bday_lies += 1
 
         # TODO: actually, this part should be tied to affection, basically
@@ -465,7 +465,7 @@ label mas_mood_yearolder_false:
 
                 "No":
                     $ persistent._mas_player_bday = None
-                    m 2q "..."
+                    m 2tfp "..."
                     m 2tkc "Alright, [player]."
                     m 2tfc "Don't lie to me next time."
                     jump mas_mood_yearolder_end
