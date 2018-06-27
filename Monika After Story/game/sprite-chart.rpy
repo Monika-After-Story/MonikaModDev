@@ -74,6 +74,8 @@
 #   u - smug (smug)
 #   w - wide / open mouth (wide)
 #   x - disgust / grit teeth (disgust)
+#   p - tsundere (pout, puffy cheek)
+#   t - triangle (triangle)
 #
 # For example, the expression code 1sub is:
 #   1 - resting on hands pose
