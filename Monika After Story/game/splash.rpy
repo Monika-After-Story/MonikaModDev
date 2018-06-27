@@ -165,6 +165,7 @@ label splashscreen:
     python:
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
+        store.mas_calendar.loadCalendarDatabase()
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
@@ -207,6 +208,8 @@ label splashscreen:
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
     if persistent.autoload and not _restart:
         jump autoload
+
+    $ mas_enable_quit()
 
     # Start splash logic
     $ config.allow_skipping = False
@@ -292,6 +295,7 @@ label before_main_menu:
     return
 
 label quit:
+    $ store.mas_calendar.saveCalendarDatabase(CustomEncoder)
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
 
