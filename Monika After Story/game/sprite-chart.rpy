@@ -25,6 +25,7 @@
 #   3 - resting on left arm, pointing to the right (restleftpointright)
 #   4 - pointing right (pointright)
 #   5 - leaning (def)
+#   6 - arms down (down)
 #
 # <eyes type> - type of eyes
 #   e - normal eyes (normal)
@@ -74,7 +75,7 @@
 #   u - smug (smug)
 #   w - wide / open mouth (wide)
 #   x - disgust / grit teeth (disgust)
-#   p - tsundere (pout, puffy cheek)
+#   p - tsundere/ puffy cheek (pout)
 #   t - triangle (triangle)
 #
 # For example, the expression code 1sub is:
@@ -7437,6 +7438,19 @@ image monika 6dftsc = DynamicDisplayable(
     right="1r",
     arms="down",
     tears="streaming"
+)
+
+image monika 6tst = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="triangle",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down"
 )
 
 ### [IMG032]
