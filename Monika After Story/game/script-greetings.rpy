@@ -832,9 +832,9 @@ label monikaroom_greeting_opendoor:
     show monika 1 at t33
     m 1eud "...and..."
     if is_morning():
-        show monika_day_room zorder MAS_MONIKA_Z with wipeleft
+        show monika_day_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
-        show monika_room zorder MAS_MONIKA_Z with wipeleft
+        show monika_room zorder MAS_BACKGROUND_Z with wipeleft
     show monika 1 at t32
     m 3eua "There we go!"
     menu:
