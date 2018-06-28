@@ -4328,6 +4328,32 @@ image monika 2ekbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 2tfp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="smug",
+    nose="def",
+    mouth="pout",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2lfp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="left",
+    nose="def",
+    mouth="pout",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
