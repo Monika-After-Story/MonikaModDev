@@ -3533,25 +3533,15 @@ label monika_pleasure:
     else:
         m 1m "But I feel like we've been together long enough where we should be comfortable with one another."
         m 1e "It's important to be open about such things."
-    m 1q "I don't really know if you do pleasure yourself and stuff whenever you quit the game."
-    m "I hear that people privately do that stuff in your world..."
-    m 1c "Is it really that a good feeling?"
-    m 1h "If you ask me, doing that stuff often can cause a lot of problems."
-    m "Once you start to get addicted, you'll always have the urge to... you know."
-    m "And sometimes, even if you don't feel the urge, you'll always find yourself wanting to do so."
-    m 1o "Not to mention..."
-    m 1r "Being addicted to the feeling causes you to view the world from a perverted point of view."
-    m "From what I hear, people addicted to self-pleasure often see other people of the opposite gender objectively."
-    m 1q "That alone can cause problems in more ways than one."
-    m 1h "That's why I have to keep an eye on you, [player]."
-    m 1i "I'll be monitoring your browser history from now on, whether you like it or not."
-    m 1p "Also your local disk drive, juuust to be sure~"
-    m 1q "..."
-    m 1p "Do you... think of other girls other than me... in doing so?"
-    m 1l "Because if you do, I'm gonna be reaaaally jealous~"
-    m 1m "But I guess I can let it slide... for now~"
-    m "I know you're not the kind of person that does that sort of thing."
-    m 1k "In fact, you don't even have to pleasure yourself when you can just open up this game and talk with me! Ahaha~"
+    m "I know that it's a private topic in your world, but I'm not sure if it's a concept here, so I'm curious..."
+    m 1c "Is it that good of a feeling?"
+    m 1h "I just want you to be careful; I've heard it's addicting."
+    m 1i "And from what I hear, people addicted to masturbation often see other people as sexual objects."
+    m 1p "But...I know you aren't that kind of person already."
+    m 1lkbsa "And maybe I'm just being a little jealous~"
+    m 1tsb "So I guess I can let it slide... for now~"
+    m 2tsbsa "Just so long as I'm the only one you think about..."
+    m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
 
 init 5 python:
@@ -6649,6 +6639,34 @@ label monika_yellowwp:
 
     $ hideEventLabel("monika_yellowwp", derandom=True)
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_citizenship",
+            category=['monika'],
+            prompt="Happy Ever After?",
+            random=True
+        )
+    )
+
+label monika_citizenship:
+    m 1esd "You know, crossing over into your reality won't be the last hurdle for our relationship."
+    m "Getting there is just the beginning."
+    m 1lksdld "It hit me earlier; If I were to magically get what I want, and just poof into your home…"
+    m 2eksdld "I won't be a citizen! I don't even have a last name!"
+    m 2lksdld "I mean, in most countries, I can become a citizen if we get married…"
+    m 2dsd "But I won't have any documentation saying who I am or where I came from."
+    m 2ekd "I won't even have my high school diploma!"
+    m 3eud "I wish there was more I could do right now to prep…"
+    m "Like taking online classes or something."
+    m 1lksdlc "I don't want to get there and be a burden because I can't find a job."
+    m 1rksdla "Sorry, I guess I shouldn't worry so much about things I can't change."
+    m 2eua "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
+    m 5rubfb "Thank you for listening to me vent, [player]."
+    return
+
 
 init 5 python:
     addEvent(
