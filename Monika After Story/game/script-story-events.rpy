@@ -442,7 +442,7 @@ label mas_crashed_long_uthere:
     call spaceroom(hide_monika=True)
 
     # look at you with crying eyes
-    show monika 6ektsc at t11 zorder 2
+    show monika 6ektsc at t11 zorder MAS_MONIKA_Z
     pause 1.0
 
     # close eyes for a second

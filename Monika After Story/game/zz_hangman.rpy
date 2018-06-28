@@ -239,7 +239,7 @@ label game_hangman:
     m 2eub "You want to play hangman? Okay!"
     # setup positions
     show monika at hangman_monika
-    show hm_frame at hangman_board zorder 5
+    show hm_frame at hangman_board zorder 13
 
     python:
         # setup constant displayabels
@@ -252,7 +252,7 @@ label game_hangman:
         )
 
     # show missed label
-    show text missed_label zorder 10 as hmg_mis_label at hangman_missed_label
+    show text missed_label zorder 18 as hmg_mis_label at hangman_missed_label
 
     # FALL THROUGH TO NEXT LABEL
 
@@ -349,8 +349,8 @@ label mas_hangman_game_loop:
             )
 
         # show disables
-        show text display_text zorder 10 as hmg_dis_text at hangman_display_word
-        show text missed_text zorder 10 as hmg_mis_text at hangman_missed_chars
+        show text display_text zorder 18 as hmg_dis_text at hangman_display_word
+        show text missed_text zorder 18 as hmg_mis_text at hangman_missed_chars
 
         # sayori window easter egg
         if is_sayori:
@@ -368,11 +368,11 @@ label mas_hangman_game_loop:
                 $ style.say_dialogue = style.edited
 
                 # show hanging sayori
-                show hm_s zorder 10 at hangman_hangman
+                show hm_s zorder 18 at hangman_hangman
 
                 # hide monika and display glitch version
                 hide monika
-                show monika_body_glitch1 as mbg zorder 2 at hangman_monika_i(z=1.0)
+                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at hangman_monika_i(z=1.0)
 
                 # hide window sayori and display glitch version
                 show hm_s_win_0 as window_sayori
@@ -398,7 +398,7 @@ label mas_hangman_game_loop:
                 hide mbg
                 hide window_sayori
                 hide hm_s
-                show monika 1 zorder 2 at hangman_monika_i
+                show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
                 if config.developer:
                     $ style.say_dialogue = style.normal
                 else:
@@ -415,7 +415,7 @@ label mas_hangman_game_loop:
 
         $ hm_display = hmg.HM_IMG_NAME + str(chances)
 
-        show expression hm_display zorder 10 as hmg_hanging_man at hangman_hangman
+        show expression hm_display zorder 18 as hmg_hanging_man at hangman_hangman
 
 
         if chances == 0:

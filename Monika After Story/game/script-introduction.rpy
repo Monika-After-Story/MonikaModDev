@@ -125,7 +125,7 @@ label chara_monika_scare:
 
     window hide
     hide monika
-    show monika_scare zorder 2
+    show monika_scare zorder MAS_MONIKA_Z
     play music "mod_assets/mus_zzz_c2.ogg"
     show layer master:
         zoom 1.0 xalign 0.5 yalign 0 subpixel True
@@ -228,7 +228,7 @@ init 5 python:
     evhand.event_database['ch30_reload_continuous'].conditional="startup_check and persistent.monika_reload >= 4 and not persistent.closed_self"
 
 label ch30_reload_continuous:
-    show monika 2rfc at t11 zorder 2
+    show monika 2rfc at t11 zorder MAS_MONIKA_Z
     pause 1
     python:
         reload_quips = [

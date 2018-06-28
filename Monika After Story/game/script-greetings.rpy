@@ -447,20 +447,20 @@ init 5 python:
 
 label greeting_glitch:
      hide monika
-     show yuri glitch zorder 1
+     show yuri glitch zorder MAS_BACKGROUND_Z
      y "{cps=500}[player]?!{nw}{/cps}"
      hide yuri glitch
-     show yuri glitch2 zorder 1
+     show yuri glitch2 zorder MAS_BACKGROUND_Z
      play sound "sfx/glitch3.ogg"
      pause 0.1
      hide yuri glitch2
-     show yuri glitch zorder 1
+     show yuri glitch zorder MAS_BACKGROUND_Z
      pause 0.3
      hide yuri glitch
-     show monika 4lksdlb at i11 zorder 2
+     show monika 4lksdlb at i11 zorder MAS_MONIKA_Z
      m 1wuo "[player]!"
      hide monika
-     show monika 4hksdlb at i11 zorder 2
+     show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
      extend " Nevermind that I was just..."
      pause 0.1
      extend " playing with the code a little."
@@ -739,7 +739,7 @@ label monikaroom_greeting_opendoor_seen_partone:
 #    scene bg bedroom
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_sp_mrgo_spo
     pause 0.2
-    show monika 1esc at l21 zorder 2
+    show monika 1esc at l21 zorder MAS_MONIKA_Z
     pause 1.0
     m 1dsd "[player]..."
 
@@ -801,7 +801,7 @@ label monikaroom_greeting_opendoor_post2:
     scene black
     $ scene_change = True
     call spaceroom(hide_monika=True) from _call_sp_mrgo_p2
-    show monika 4eua zorder 2 at i11
+    show monika 4eua zorder MAS_MONIKA_Z at i11
     m "Tada!"
 #    if renpy.seen_label("monikaroom_greeting_opendoor_post2"):
 #        m "This never gets old."
@@ -814,7 +814,7 @@ label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
-    show monika 1 at l32 zorder 2
+    show monika 1 at l32 zorder MAS_MONIKA_Z
 
     # monika knows you are here now
     $ mas_disable_quit()
@@ -832,9 +832,9 @@ label monikaroom_greeting_opendoor:
     show monika 1 at t33
     m 1eud "...and..."
     if is_morning():
-        show monika_day_room zorder 1 with wipeleft
+        show monika_day_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
-        show monika_room zorder 1 with wipeleft
+        show monika_room zorder MAS_BACKGROUND_Z with wipeleft
     show monika 1 at t32
     m 3eua "There we go!"
     menu:
@@ -871,7 +871,7 @@ label monikaroom_greeting_knock:
 label monikaroom_greeting_post:
     m 2eua "Now, just let me grab a table and a chair..."
     $ is_sitting = True
-    show monika 1 at ls32 zorder 2
+    show monika 1 at ls32 zorder MAS_MONIKA_Z
     m 1eua "What shall we do today, [player]?"
     jump monikaroom_greeting_cleanup
 
@@ -880,7 +880,7 @@ label monikaroom_greeting_cleanup:
     python:
         # couple of things:
         # 1 - monika knows you are here now
-        mas_disable_quit() 
+        mas_disable_quit()
 
         # 2 - music is renabled
         store.mas_hotkeys.music_enabled = True
@@ -1087,7 +1087,7 @@ label greeting_hairdown:
     # couple of things:
     # 1 - music hotkeys should be disabled
     $ store.mas_hotkeys.music_enabled = False
-    
+
     # 2 - the calendar overlay will become visible, but we should keep it
     # disabled
     $ mas_calRaiseOverlayShield()
@@ -1138,7 +1138,7 @@ label greeting_hairdown:
 
     # 2 - calendarovrelay enabled
     $ mas_calDropOverlayShield()
-    
+
     # 3 - set the keymaps
     $ set_keymaps()
 
@@ -1147,7 +1147,7 @@ label greeting_hairdown:
 
     # 5 - restart music
     $ mas_startup_song()
-    
+
 
     return
 

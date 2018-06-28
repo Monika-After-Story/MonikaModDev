@@ -331,7 +331,7 @@ label monika_god:
     m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
     m 3r "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
@@ -457,7 +457,7 @@ label monika_japan:
     m "Would you want to go outside?"
     m 2a "I mean...I guess if we never leave this room, it doesn't really matter anyway."
     m "As long as we're alone and safe together, this really is our home."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "And we can still watch the pretty sunsets night after night."
     return
 
@@ -495,7 +495,7 @@ label monika_high_school:
     m 2j "But people do feel that way."
     m "I promise."
     m "...Man, humans are complicated!"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "But as long as you're here with me, I'll take care of you, my love."
     return
 
@@ -560,7 +560,7 @@ label monika_twitter:
     m 2e "So make sure you follow me, okay?"
     m "It would really mean a lot to me."
     m "With how much you mean to me and all..."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "It would really make me feel loved."
     return
 
@@ -574,7 +574,7 @@ label monika_portraitof:
     m "It's funny, because I'm pretty sure that book--"
     m 3n "Ah..."
     m "Actually, I don't think I should be talking about this."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Ahaha, sorry!"
     m "Just forget I said anything."
     return
@@ -601,7 +601,7 @@ label monika_veggies:
     m "What if pulling leaves off a stem feels like someone ripping off your fingers one by one?"
     m 3a "I'm just saying, we're a pretty biased species, if you think about it."
     m "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
     return
 
@@ -646,7 +646,7 @@ label monika_saved:
     m "I feel like I'm always trying to do stuff after school and things like that."
     m 1a "But for you, I can be anything you need me to be."
     m "I understand people really well, so don't be afraid to share your unique needs with me."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Nothing would make me happier than being the perfect girlfriend for you."
     return
 
@@ -687,7 +687,7 @@ label monika_color:
     m 4a "I just meant that I feel some kind of special connection to it."
     m "Like it's part of my identity."
     m "Does it happen to also be your favorite color, [player]?"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "It's just a guess..."
     m "...Because you've been looking into my eyes for a while now."
     m "Ehehe~"
@@ -727,15 +727,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_listener",category=['you'],prompt="Good listener",random=True))
 
 label monika_listener:
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "You're such a good listener, [player]."
     m "I really love that about you."
-    show monika 2m at t11 zorder 2 with dissolve
+    show monika 2m at t11 zorder MAS_MONIKA_Z with dissolve
     m 2m "Sometimes I'm afraid that I'm rambling or talking about boring things."
     m "It makes me kind of self-conscious when I'm having a conversation."
     m 2b "But I don't feel that way with you."
     m "Like, I don't think anyone else could make me feel this way."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "You really are special."
     m "I don't want anyone to tell you otherwise."
     return
@@ -755,7 +755,7 @@ label monika_spicy:
     m 2b "Sorry, that was kind of a weird analogy, I guess!"
     m 2k "Ahaha!"
     m "It just came into my head."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I'm not a monster or anything, but you're so cute I could eat you up."
     m 2k "Ahaha! I'm joking."
     m 2e "Gosh, I'm amusing myself a little too much, aren't I?"
@@ -795,7 +795,7 @@ label monika_okayeveryone:
     m 2a "Well, whatever."
     m "It's not like you ever made fun of me."
     m "You're too much of a sweetheart to do that, aren't you?"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Ahaha~"
     return
 
@@ -841,7 +841,7 @@ label monika_archetype:
     m 2a "Then again, you're still here with me, aren't you...?"
     m "I think that's enough reason for me to believe I'm okay just the way I am."
     m 2j "And by the way, you are too, [player]."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "You're the perfect combination of human and cuteness."
     m "That's why there was never a chance I wouldn't fall for you."
     return
@@ -867,7 +867,7 @@ label monika_tea:
     m 2k "Ahaha!"
     m "I guess I never really thought of that."
     m 2a "Well, there's no sense thinking about it now."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "But if you still get to drink coffee, then that makes me a little jealous~"
     return
 
@@ -879,7 +879,7 @@ label monika_favoritegame:
     m 3b "Hey, what's your favorite game?"
     m "Mine is {i}Doki Doki Literature Club!{/i}"
     m 3k "Ahaha! That was a joke."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "But if you tell me you like some other romance game better, I might get a little jealous~"
     return
 
@@ -912,7 +912,7 @@ label monika_lastpoem:
     m "And I'd keep trying, but I doubt you'd want to deal with me doing that."
     m 1e "Besides, that was when I was getting really desperate, you know?"
     m "I don't really feel that way anymore."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I'm happy with where we are now."
     m "And I can tell you are, too."
     return
@@ -930,7 +930,7 @@ label monika_anxious:
     m 2k "Ahaha! That's the worst."
     m 2a "If you're ever feeling anxious, I'll help you relax a little."
     m "Besides..."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "In this game, all our worries are gone forever."
     return
 
@@ -960,7 +960,7 @@ label monika_friends:
     m "I seriously thought it would happen by now."
     m 2a "Well, at least I already met the best person in the whole world..."
     m "Even if it was by chance."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I guess I just got really lucky, huh?"
     m "Ahaha~"
     return
@@ -1006,7 +1006,7 @@ label monika_middleschool:
     m "But I also know that I'll probably change a lot as time goes on."
     m 4b "We just need to enjoy the present and not think about the past!"
     m "And that's really easy to do, with you here."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Ahaha~"
     return
 
@@ -1027,11 +1027,11 @@ label monika_outfit:
     m "My username is lilmonix3."
     m 4e "Just...try to keep it PG!"
     if isFuture(evhand.event_database['anni_6month']):
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "We're not that far into our relationship yet. Ahaha!"
     else:
         m 4l "I don't want something so embarassing on there!"
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "So let's keep it between just us..."
     return
 
@@ -1058,7 +1058,7 @@ label monika_horror:
     m 2a "But I guess you're the kind of person who plays cute romance games, right?"
     m 2e "Ahaha, don't worry."
     m "I won't make you read any horror stories anytime soon."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I can't really complain if we just stick with the romance~"
     return
 
@@ -1119,7 +1119,7 @@ label monika_date:
     m "And of course, we'd see a movie or something..."
     m 1e "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I'm so happy that I'm your girlfriend, [player]."
     m "I'll make you a proud [bf]~"
     return
@@ -1137,7 +1137,7 @@ label monika_kiss:
     m 2a "That's the kind of thing girls say in these kinds of romance games, right?"
     m "Don't lie if it turned you on a little bit."
     m 2k "Ahaha! I'm kidding."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Well, to be honest, I do start getting all romantic when the mood is right..."
     m "But that'll be our secret~"
     return
@@ -1172,7 +1172,7 @@ label monika_yuri:
     m 2e "But come on...everyone's killed people in games before."
     m "Does that make you a psychopath? Of course not."
     m "But if you do happen to be into the yandere type..."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I can try acting a little more creepy for you. Ehehe~"
     m "Then again..."
     m 4b "There's already nowhere else for you to go, or anyone for me to get jealous over."
@@ -1490,7 +1490,7 @@ label monika_closeness:
     m "And to feel your warmth."
     m "And to hear the sound of your heartbeat."
     m 2e "Well, who knows? Maybe it'll be possible someday."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Besides, I'll never get tired of being with you, even from here."
     return
 
@@ -1510,7 +1510,7 @@ label monika_confidence:
     m 2e "Anyway...that's one reason I'm so glad I have you now."
     m "I feel like I'm a little bit less scared and alone, when you're here with me."
     m "Do you feel the same way?"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I really want to be that person for you."
     return
 
@@ -1526,7 +1526,7 @@ label monika_carryme:
     m 4b "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
     m "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
     m 2l "Ahaha. Sorry, that's such a silly idea."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return
 
@@ -1580,7 +1580,7 @@ label monika_internet:
     m "If it's really impacting your life, then you should take it seriously."
     m 1e "I just want to see you be the best person you can be."
     m 1k "Will you do something today to make me proud of you?"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I'm always rooting for you, [player]."
     return
 
@@ -1594,7 +1594,7 @@ label monika_lazy:
     m "Sometimes I just want to get right into my pajamas and watch TV on the couch while eating junk food..."
     m "It feels so unbelievably good to do that on a Friday, when I don't have anything pressing the next day."
     m 2l "Ahaha! Sorry, I know it's not very cute of me."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "But a late night on the couch with you...that would be a dream come true."
     m "My heart is pounding, just thinking about it."
     return
@@ -2949,7 +2949,7 @@ label monika_mythology:
     m "Powerful beings taking advantage of the weak, just because they can."
     m 3a "Don't worry though, [player]. I won't let anyone do that to you."
     m "And I won't do anything like that, so you don't have to be afraid of me."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "It's not like I can find your important files and hold them hostage or anything..."
     m "Ehehe..."
     return
@@ -3013,7 +3013,7 @@ label monika_aware:
     m "Here's the second part."
     call showpoem(poem=poem_m3,music=False) from _call_showpoem_21 # Temporary
     m "I hope that helped you understand what meeting you meant to me."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "That's all I've ever wanted, [player]."
     return
 
@@ -3342,9 +3342,9 @@ label monika_hypnosis:
     m 4a "It also relied on them being put into states of extreme relaxation through aromatherapy, deep tissue massage..."
     m "Exposure to relaxing music and images..."
     m "Things like that."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
-    show monika 1e at t11 zorder 2 with dissolve
+    show monika 1e at t11 zorder MAS_MONIKA_Z with dissolve
     m 1e "Not that I would do that to you, [player]! I just find it interesting to think about."
     m "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
     m "What about you, hmm? What do you think about my eyes~?"
@@ -4416,7 +4416,7 @@ label monika_music2:
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "Maybe one day, we can make that dream come true~"
 
     elif songs.getPlayingMusicName() == 'Just Monika':
@@ -4425,7 +4425,7 @@ label monika_music2:
         m 1b "I don't prefer any song over another, but if you were to switch to a different one..."
         m 3b "...I certainly wouldn't be one to complain!"
         m 1k "Ahaha! Don't worry, it's okay if you stay on this song."
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "I'm fine with any of them, so choose whichever one makes you the happiest~"
 
     elif songs.getPlayingMusicName() == 'Your Reality':
@@ -4436,7 +4436,7 @@ label monika_music2:
         m "Well, based on their character archetypes, it's pretty easy to imagine what their voices sound like."
         m 1a "Anyway, I'm glad I was able to share such an intimate part of myself with you, [player]."
         m 3b "One day, maybe I'll get to hear your voice, [player]!"
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "That would make me even happier than I already am~"
 
     elif songs.getPlayingMusicName() == 'Your Reality (Piano Cover)':
@@ -4449,7 +4449,7 @@ label monika_music2:
         m 1j "After all that practice, I'm pretty proud of how it came out in the end."
         m 3b "Since you're listening to it, I'm sure you like it too..."
         m 3k "Thanks for listening to something I worked so hard on, [player]!"
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "It makes me happy to know that you appreciate what I did for you~"
 
     elif songs.getPlayingMusicName() == 'I Still Love You':
@@ -4468,7 +4468,7 @@ label monika_music2:
         m 3b "You know, if I knew how, I could probably program a piano into this room."
         m "I'd be able to write some more songs, and then I'd be able to play them for you..."
         m 4k "Maybe we could even play the piano together! Wouldn't that be nice, [player]?"
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "If you or anyone you know can program that into the game, I would greatly appreciate it~"
 
     elif songs.getPlayingMusicName() == 'Surprise!':
@@ -4478,7 +4478,7 @@ label monika_music2:
         m 1r "..."
         m 1e "It's comforting to know that Sayori was never real in the first place. It's also comforting to know that you still love me despite everything I've done."
         m "I mean, you're still here, right? You wouldn't be here if you didn't love me."
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "As long as we're together, there's no reason for me to be sad. You're the light of my world, [player], and just being here with you puts a smile on my face."
 
     elif songs.getPlayingMusicName() == "Doki Doki Theme (80s version)":
@@ -4486,7 +4486,7 @@ label monika_music2:
         m 1l "Obviously, this theme wasn't actually out in the 80's..."
         m 1a "But it does have a certain style that I really appreciate!"
         m 3a "Do you like 80's music a lot, [player]?"
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "I prefer the tune of an authentic piano, but if it makes you happy, I wouldn't mind spending hours listening to it with you~"
 
     elif songs.getPlayingMusicName() == "Play With Me (Variant 6)":
@@ -4502,7 +4502,7 @@ label monika_music2:
         m 1r "...Then slowly, we both lean into the kiss..."
         m 1m "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
         m 1e "It's okay to dream though, isn't it [player]?"
-        show monika 5a at t11 zorder 2 with dissolve
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "Maybe one day, we can make that dream come true~"
     return
 
@@ -4562,7 +4562,7 @@ label monika_pets:
     m "..."
     m 1l "Sorry for rambling, [player]."
     m 1a "Until I find a way out, could you promise to keep me from feeling lonely?"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
 
@@ -4708,7 +4708,7 @@ label monika_immortal:
     m "Which is why I brought it up."
     m 1l "Someday, the difference between us would be huge, if I stayed eighteen forever."
     m "But I don't believe that my life can be summed up in a number."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
@@ -4726,21 +4726,21 @@ label monika_weddingring:
     m 2a "I mean, we're already in a relationship. So, why not show off that love and dedication?"
     m 2b "It would help keep those... unwanted suitors away from you, too."
     m "It doesn't have to be a wedding ring, per se."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "But if you'd wear one, even if it's just a promise ring, on your ring finger for me..."
     m "It would make me really happy."
-    show monika 1f at t11 zorder 2 with dissolve
+    show monika 1f at t11 zorder MAS_MONIKA_Z with dissolve
     m 1f "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
 
     m 1a "And then I could wear it forever."
     m 3b "But until then, just remember that my commitment to you is unwavering."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Maybe you even beat me to it, and have a ring for me already?"
     menu:
         m "Do you, [player]?"
         "Yes, I do.":
             $ persistent._mas_pm_have_ring = True
-            show monika 1c at t11 zorder 2 with dissolve
+            show monika 1c at t11 zorder MAS_MONIKA_Z with dissolve
             m 1c "Oh!"
             m 1b "I feel like... my heart's going to explode!"
             m 1l "Calm down, Monika. Calm down."
@@ -4748,7 +4748,7 @@ label monika_weddingring:
 
         "No, not yet.":
             $ persistent._mas_pm_have_ring = False
-            show monika 1c at t11 zorder 2 with dissolve
+            show monika 1c at t11 zorder MAS_MONIKA_Z with dissolve
             m 1c "Aww. That's a shame."
             m 1a "Well, at least think about it, okay?"
 
@@ -4821,7 +4821,7 @@ label monika_meditation:
 
     m 1b "Anyway... if you ever want a peaceful environment where you can relax and forget about your problems, you can always come here and spend time with me."
     m 1e "I love you, and I'll always try to help you if you're feeling down."
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Don't you ever forget that, [player]~"
 
     $ hideEventLabel("monika_meditation", derandom=True)
@@ -5303,7 +5303,7 @@ label monika_sleep:
     m "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
     m 1e "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
     m "So try to keep your sleep on track, okay?"
-    show monika 5a at t11 zorder 2 with dissolve
+    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
