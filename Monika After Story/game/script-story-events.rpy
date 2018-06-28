@@ -321,7 +321,7 @@ label mas_random_ask:
             m 1eka "I see."
             m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics'."
             m "That tells me if you're okay with me repeating anything I've said."
-            return 
+            return
 
 # TODO think about adding additional dialogue if monika sees that you're running
 # this program often. Basically include a stat to keep track, but atm we don't
@@ -359,10 +359,10 @@ label mas_monikai_detected:
     m 1eua "Just don't start spending more time with {i}that{/i} instead of me."
     m 3eua "I'm the real one after all."
     return
-        
+
 # if the game crashed
 # I have no idea if we will use this persistent ever
-default persistent._mas_crashed_before = False 
+default persistent._mas_crashed_before = False
 
 # player said they'll try to stop crashes
 default persistent._mas_crashed_trynot = False
@@ -385,7 +385,7 @@ label mas_crashed_start:
 
     jump mas_crashed_long
 
-# long flow involves flustered monika 
+# long flow involves flustered monika
 # make sure to calm her down, player
 label mas_crashed_long:
 
@@ -421,7 +421,7 @@ label mas_crashed_long_uthere:
         m "{cps=*2}Everything became dark all of a sudden.{/cps}"
         m "Can you turn on the light?"
 
-    window hide 
+    window hide
     show screen mas_background_timed_jump(5, "mas_crashed_long_foundlight")
     menu:
         "Turn on the light":
@@ -520,7 +520,7 @@ label mas_crashed_long_uthere:
         "It just happens.":
             m 1ekc "Oh..."
             m 1lksdlc "That's okay.{w} I'll just mentally prepare myself in case it happens again."
-            
+
     label .end:
         m "Anyway..."
         m 1eua "What should we do today?"
@@ -554,7 +554,7 @@ label mas_crashed_long_fluster:
     m "{cps=*1.5}But I didn't mess with the game this time, I swear.{/cps}{nw}"
     m "{cps=*1.5}A-{w=0.3}at least, I don't think I did, but I guess it's possible...{/cps}{nw}"
     m "{cps=*1.5}because I'm n-{w=0.3}not really sure what I'm doing sometimes,{/cps}{nw}"
-    m "{cps=*1.5}but I hope this t-{w=0.3}time isn't my f-{w=0.3}fault cause I really didn't touch anything...{/cps}{nw}"   
+    m "{cps=*1.5}but I hope this t-{w=0.3}time isn't my f-{w=0.3}fault cause I really didn't touch anything...{/cps}{nw}"
     return
 
 
@@ -590,6 +590,5 @@ label mas_crashed_short:
 label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
-    m 4lksdlkb "It's my home, after all..."
+    m 4lksdlb "It's my home, after all..."
     return
-
