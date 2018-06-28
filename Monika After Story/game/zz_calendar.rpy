@@ -1885,8 +1885,8 @@ label mas_start_calendar_select_date:
 #     return
 
 # clickable calendar overlay screen for idle mode
-screen calendar_overlay:
-    zorder 1
+screen calendar_overlay():
+    zorder 6
 
     # vbox:
     #     xalign 0.305

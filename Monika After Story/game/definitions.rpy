@@ -5,6 +5,10 @@ define config.developer = False #This is the flag for Developer tools
 python early:
     import singleton
     me = singleton.SingleInstance()
+    # define the zorders
+    MAS_MONIKA_Z = 10
+    MAS_BACKGROUND_Z =5
+    
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:

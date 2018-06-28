@@ -31,7 +31,7 @@ label mas_piano_start:
     $ pnmlLoadTuples()
 
     # Intro to piano dialogue here
-    m 1j "You want to play the piano?"
+    m 1hua "You want to play the piano?"
 
 label mas_piano_loopstart:
 
@@ -44,7 +44,7 @@ label mas_piano_songchoice:
     $ pnml = None
 
     if len(song_list) > 1:
-        show monika 1a
+        show monika 1eua
 
         menu:
             m "Did you want to play a song or play on your own, [player]?"
@@ -56,7 +56,7 @@ label mas_piano_songchoice:
                 if pnml != "None":
 
                     # reaction in picking a song
-                    m 1j "I'm so excited to hear you play, [player]!"
+                    m 1hua "I'm so excited to hear you play, [player]!"
 
                     # launch label - if it exists, we can call this label to
                     # provide extra dialogue before playing this song
@@ -80,11 +80,11 @@ label mas_piano_songchoice:
                 jump mas_piano_loopend
 
     # otherwise, we default to freestyle mode
-    m 1a "Then play for me, [player]~"
+    m 1eua "Then play for me, [player]~"
 
 label mas_piano_setupstart:
 
-    show monika 1a at t22
+    show monika 1eua at t22
 
     # pre call setup
     python:
@@ -106,7 +106,7 @@ label mas_piano_setupstart:
     $ play_song(store.songs.selected_track)
     $ pnmlSaveTuples()
 
-    show monika 1j at t11
+    show monika 1hua at t11
 
     # granting XP:
     # you are good player
@@ -119,7 +119,7 @@ label mas_piano_setupstart:
 
     # No-hits dont get to try again
     if post_piano != "mas_piano_result_none":
-        show monika 1a
+        show monika 1eua
         menu:
             m "Would you like to play again?"
             "Yes":
@@ -134,46 +134,46 @@ label mas_piano_loopend:
 
 # default. post game, freestyle mode
 label mas_piano_result_default:
-    m 1a "All done, [player]?"
+    m 1eua "All done, [player]?"
     return
 
 # Shown if player does not hit any notes
 label mas_piano_result_none:
-    m 1m "Uhhh [player]..."
-    m 1l "I thought you wanted to play the piano?"
-    m 1e "I really enjoy hearing you play."
-    m 1j "Promise to play for me next time?"
+    m 1lksdla "Uhhh [player]..."
+    m 1hksdlb "I thought you wanted to play the piano?"
+    m 1eka "I really enjoy hearing you play."
+    m 1hua "Promise to play for me next time?"
     return
 
 ### YOUR REALITY
 
 # shown if player completes the song but does not FC
 label mas_piano_yr_win:
-    m 1m "That was nice, [player]."
+    m 1lksdla "That was nice, [player]."
     m "But..."
-    m 1n "You could do better with some more practice..."
-    m 1l "Ehehe~"
+    m 1lksdlb "You could do better with some more practice..."
+    m 1hksdlb "Ehehe~"
     return
 
 # shown if player FCs
 label mas_piano_yr_fc:
-    m 1b "That was wonderful, [player]!"
-    m 1j "I didn't know you can play the piano so well."
-    m 1a "Maybe we should play together sometime!"
+    m 1sub "That was wonderful, [player]!"
+    m 1eub "I didn't know you can play the piano so well."
+    m 1hub "Maybe we should play together sometime!"
     return
 
 # shown if player did not complete song and had more fails than passes
 label mas_piano_yr_fail:
-    m 1o "..."
-    m 1e "That's okay, [player]."
-    m 1j "At least you tried your best."
+    m 1lksdlc "..."
+    m 1eka "That's okay, [player]."
+    m 1hua "At least you tried your best."
     return
 
 # shown if player did not complete song but had more passes than fails
 label mas_piano_yr_prac:
-    m 1a "That was really cool, [player]!"
-    m 3b "With some more practice, you'll be able to play my song perfectly."
-    m 1j "Make sure to practice everyday for me, okay~?"
+    m 1hua "That was really cool, [player]!"
+    m 3eua "With some more practice, you'll be able to play my song perfectly."
+    m 1eka "Make sure to practice everyday for me, okay~?"
     return
 
 #abel zz_piano_yr_launch:
@@ -528,8 +528,8 @@ init -3 python in mas_piano_keys:
                 say,
                 notes=None,
                 postnotes=None,
-                express="1b",
-                postexpress="1a",
+                express="1eub",
+                postexpress="1eua",
                 ev_timeout=None,
                 vis_timeout=None,
                 verse=0,
@@ -544,9 +544,9 @@ init -3 python in mas_piano_keys:
             #       match
             #       (Default: None)
             #   express - the monika expression we want to show
-            #       (Default: 1b)
+            #       (Default: 1eub)
             #   postexpress - the monika expression to show during post
-            #       (Default: 1a)
+            #       (Default: 1eua)
             #   ev_timeout - number of seconds we wait for input
             #       NOTE: THIS means how long we wait BEFORE this note match
             #           before assuming event timeout
@@ -886,8 +886,8 @@ init 1000 python in mas_piano_keys:
             C5
         ],
         postnotes=_pnm_yr_v1l1.postnotes,
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         verse=0,
     )
     _pnm_yr_v1l3 = PianoNoteMatch(
@@ -907,8 +907,8 @@ init 1000 python in mas_piano_keys:
             E5,
             G5
         ],
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         verse=0
     )
     _pnm_yr_v1l4 = PianoNoteMatch(
@@ -929,8 +929,8 @@ init 1000 python in mas_piano_keys:
             D5,
             C5
         ],
-        express="1k",
-        postexpress="1j",
+        express="1hub",
+        postexpress="1hua",
         verse=0
     )
     _pnm_yr_v1l5 = PianoNoteMatch(
@@ -939,8 +939,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l3.notes,
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         verse=0
     )
     _pnm_yr_v1l6 = PianoNoteMatch(
@@ -949,8 +949,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l4.notes,
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         verse=0
     )
     _pnm_yr_v1l7 = PianoNoteMatch(
@@ -967,8 +967,8 @@ init 1000 python in mas_piano_keys:
             A4,
             C5
         ],
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         verse=0,
         posttext=True
     )
@@ -983,8 +983,8 @@ init 1000 python in mas_piano_keys:
             D5,
             C5
         ],
-        express="1k",
-        postexpress="1j",
+        express="1hub",
+        postexpress="1hua",
         verse=0,
         ev_timeout=5.0,
         vis_timeout=3.0,
@@ -999,8 +999,8 @@ init 1000 python in mas_piano_keys:
         ),
         _pnm_yr_v1l1.notes,
         postnotes=_pnm_yr_v1l1.postnotes,
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         verse=8,
         copynotes=0,
         ev_timeout=15.0
@@ -1013,8 +1013,8 @@ init 1000 python in mas_piano_keys:
         ),
         _pnm_yr_v1l2.notes,
         postnotes=_pnm_yr_v1l2.postnotes,
-        express="1k",
-        postexpress="1j",
+        express="1hub",
+        postexpress="1hua",
         verse=8,
         copynotes=1
     )
@@ -1024,8 +1024,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l3.notes,
-        express="1g",
-        postexpress="1f",
+        express="1ekd",
+        postexpress="1ekc",
         verse=8,
         copynotes=2
     )
@@ -1040,8 +1040,8 @@ init 1000 python in mas_piano_keys:
             E5,
             D5
         ],
-        express="1g",
-        postexpress="1f",
+        express="1ekd",
+        postexpress="1ekc",
         vis_timeout=2.0,
         verse=8,
         posttext=True
@@ -1060,8 +1060,8 @@ init 1000 python in mas_piano_keys:
             D5,
             C5
         ],
-        express="1k",
-        postexpress="1j",
+        express="1hub",
+        postexpress="1hua",
         vis_timeout=3.0,
         verse=8,
         posttext=True
@@ -1072,8 +1072,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l5.notes,
-        express="1g",
-        postexpress="1f",
+        express="1ekd",
+        postexpress="1ekc",
         verse=8,
         copynotes=4
     )
@@ -1083,8 +1083,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l6.notes,
-        express="1g",
-        postexpress="1e",
+        express="1ekd",
+        postexpress="1eka",
         vis_timeout=3.0,
         verse=8,
         copynotes=5,
@@ -1116,8 +1116,8 @@ init 1000 python in mas_piano_keys:
 #                    C5,
 #                    G4
 #                ],
-        express="1g",
-        postexpress="1e",
+        express="1ekd",
+        postexpress="1eka",
         verse=15,
         copynotes=0,
         ev_timeout=25.0,
@@ -1130,8 +1130,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l2.notes,
-        express="1g",
-        postexpress="1e",
+        express="1ekd",
+        postexpress="1eka",
         verse=15,
         copynotes=1,
         ev_timeout=7.0,
@@ -1140,8 +1140,8 @@ init 1000 python in mas_piano_keys:
     _pnm_yr_v3l3 = PianoNoteMatch(
         _pnm_yr_v1l3.say,
         _pnm_yr_v1l3.notes,
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         verse=15,
         copynotes=2,
         ev_timeout=10.0
@@ -1152,8 +1152,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l4.notes,
-        express="1g",
-        postexpress="1e",
+        express="1ekd",
+        postexpress="1eka",
         verse=15,
         copynotes=3
     )
@@ -1163,8 +1163,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l5.notes,
-        express="1p",
-        postexpress="1o",
+        express="1lksdld",
+        postexpress="1lksdlc",
         verse=15,
         copynotes=4
     )
@@ -1174,8 +1174,8 @@ init 1000 python in mas_piano_keys:
             style="monika_credits_text"
         ),
         _pnm_yr_v1l6.notes,
-        express="1g",
-        postexpress="1e",
+        express="1ekd",
+        postexpress="1eka",
         verse=15,
         copynotes=5
     )
@@ -1209,8 +1209,8 @@ init 1000 python in mas_piano_keys:
             A5,
             G5
         ],
-        express="1p",
-        postexpress="1m",
+        express="1lksdld",
+        postexpress="1lksdla",
         verse=15
     )
     _pnm_yr_v3l8 = PianoNoteMatch(
@@ -1239,8 +1239,8 @@ init 1000 python in mas_piano_keys:
             B5,
             G5
         ],
-        express="1b",
-        postexpress="1a",
+        express="1eub",
+        postexpress="1eua",
         ev_timeout=5.0,
         vis_timeout=5.0,
         posttext=True

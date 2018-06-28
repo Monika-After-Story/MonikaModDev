@@ -25,6 +25,7 @@
 #   3 - resting on left arm, pointing to the right (restleftpointright)
 #   4 - pointing right (pointright)
 #   5 - leaning (def)
+#   6 - arms down (down)
 #
 # <eyes type> - type of eyes
 #   e - normal eyes (normal)
@@ -74,6 +75,8 @@
 #   u - smug (smug)
 #   w - wide / open mouth (wide)
 #   x - disgust / grit teeth (disgust)
+#   p - tsundere/ puffy cheek (pout)
+#   t - triangle (triangle)
 #
 # For example, the expression code 1sub is:
 #   1 - resting on hands pose
@@ -4325,6 +4328,32 @@ image monika 2ekbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 2tfp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="smug",
+    nose="def",
+    mouth="pout",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2lfp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="left",
+    nose="def",
+    mouth="pout",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7369,6 +7398,86 @@ image monika 6dstdc = DynamicDisplayable(
     tears="dried"
 )
 
+image monika 6dfc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6dfd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6dftdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
+image monika 6lftsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
+image monika 6dftsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
+image monika 6tst = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="triangle",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down"
+)
 
 ### [IMG032]
 # Image aliases
