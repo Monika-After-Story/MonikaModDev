@@ -29,4 +29,4 @@ env:
 # command to check syntax
 script: 
     - python MonikaModDev/tools/travis.py
-    - renpy/renpy.sh "mas072/" lint && renpy/renpy.sh launcher distribute "mas072/"
+    - cd renpy && ./renpy.sh "../mas072/" lint && ./renpy.sh launcher distribute "../mas072/"
