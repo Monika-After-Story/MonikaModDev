@@ -4392,7 +4392,7 @@ image monika 2ektsc = DynamicDisplayable(
     head="f",
     left="1l",
     right="2r",
-    arms="crossed"
+    arms="crossed",
     tears="streaming"
 )
 
