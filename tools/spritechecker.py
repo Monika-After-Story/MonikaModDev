@@ -30,7 +30,7 @@ EXT_RPY = ".rpy"
 
 # bad code file name
 BAD_CODE_FN = "zzzz_badcodes.txt"
-BAD_CODE_LN = "[{0}] - {1} - FILE:{2}"
+BAD_CODE_LN = "{1} - FILE:{2} [{0}]"
 
 ## namedtuple used to represent sprite codes not found
 SpriteMismatch = namedtuple(
