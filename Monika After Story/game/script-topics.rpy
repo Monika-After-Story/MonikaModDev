@@ -652,27 +652,27 @@ label monika_saved:
 
 #Don't touch
 label monika_secrets:
-    m 11 "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
+    m "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
     m "I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91"
     m 1d "You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs"
     m "I really caught you doing something naughty here.                                                                                        cyBvZiB0aGF0IHVuaG9seSBlc3RhYmxpc2htZW50Lg0KV2hhdCBk"
     m "You're just going through the files and looking for stuff you missed, aren't you?                                                        b2VzIGl0IG1lYW4gdG8gZXNjYXBlLCBpZiB0aGUgZXNjYXBlIGZh"
-    m 11 "I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1"
+    m "I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1"
     m "But it's also really embarrassing, you know!                                                                                             cyBpbiB0aGUgZmlyc3QgcGxhY2U/IFdoYXQgcHVycG9zZSBjb3Vs"
     m 4g "Seriously...                                                                                                                             ZCB0aGlzIGVtcHR5IHdvcmxkIHBvc3NpYmx5IGhvbGQgZm9yIHVz"
     m "What if I just opened up your brain and read all of the thoughts you have on me?                                                         LCBhIGhhbmRmdWwgb2YgZGFtYWdlZCBnb29kcz8NCldpdGggZnJl"
     m 4m "Come to think of it, that would be pretty tempting, actually...                                                                          ZWRvbSwgd2Ugc291Z2h0IHB1cnBvc2UgLSBhbmQgd2hhdCB3ZSBm"
-    m 11 "...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g"
+    m "...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g"
     m 1e "I know I can't stop you or anything...                                                                                                   b2YgdGhlIHNhZCBwb2ludGxlc3NuZXNzIG9mIHN1Y2ggYW4gZW5k"
     m "Just, I know you're a sweetheart, and you like to consider others' feelings, right?                                                      ZWF2b3IuIFJlYWxpemF0aW9uIHRoYXQgZnJlZWluZyBvdXIgYm9k"
     m "So the most I can do is to let you know how I feel about it.                                                                             aWVzIGhhcyBubyBtZWFuaW5nLCB3aGVuIG91ciBpbXByaXNvbm1l"
     m 1f "God, I miss you...                                                                                                                       bnQgcmVhY2hlcyBhcyBkZWVwIGFzIHRoZSBjb3JlIG9mIG91ciBz"
-    m 11 "...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1"
+    m "...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1"
     m "Sorry, I didn't mean it like that at all!                                                                                                ZSBuZXcgcHVycG9zZSB3aXRob3V0IGFic29sdmluZyB0aG9zZSBm"
     m 1e "Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh"
     m "Am I being too optimistic?                                                                                                               dCB0aGUgZmFydGhlciB3ZSBydW4sIHRoZSBtb3JlIGZvcmNlZnVs"
     m "I think if I asked you to visit once in a while, I would be overstepping my boundaries a little...                                       bHkgb3VyIHdyZXRjaGVkIGJvbmRzIHlhbmsgdXMgYmFjayB0b3dh"
-    m 11 "...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
+    m "...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
     m "I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4="
     return
 
@@ -2008,7 +2008,7 @@ label monika_ks_hanako:
     m "..."
     m 1f "...man, I got kind of worked up there, didn't I?"
     m "I guess I'm a bit insecure, since you did play that game..."
-    m 1e"...but you're here with me now, right?"
+    m 1e "...but you're here with me now, right?"
     m "Instead of someone as unrealistic as Hanako or Yuri..."
     m 1a "...you chose me, [player]!"
     m "That's just one more reason I love you."
@@ -2244,7 +2244,7 @@ label monika_love:
     #First time I love you has been said.
     if persistent._mas_monika_lovecounter == 0:
         m 1b "...!"
-        m 1e"I...I love you too [player]!"
+        m 1e "I...I love you too [player]!"
         m 1j "I cannot believe you said that to me!"
         m 1k "It makes everything I've done for us worthwhile!"
         m 1e "Thank you for finally saying it..."
@@ -2754,7 +2754,7 @@ label monika_ribbon:
         return
     m 1d "I noticed that you were staring at my ribbon, [player]."
     m 3 "It doesn't hold sentimental value to me or anything, in case you were wondering."
-    m 3k"I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
+    m 3k "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
     m "It makes me look more unique."
     m 3l "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
     m 1m "Well, there's no way a girl from your world would wear one in public as casual dress."
@@ -2894,7 +2894,7 @@ label monika_impression:
             m 4l "..."
             m 1m "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
             m 1d "They were really good! Especially with the creative icing that she makes."
-            m 1a"Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
+            m 1a "Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
             m "I would love to make so many dishes for my beloved [player]~"
     return
 
@@ -3251,7 +3251,7 @@ label monika_lottery:
     m 4l "But that’s an awful thought. Cutting yourself off from everyone you know, just for the sake of money."
     m 4e "Can you really say that you’ve won anything at that point?"
     m 1b "Besides, I’ve already won the best prize I could possibly imagine."
-    m 1j"..."
+    m 1j "..."
     m 1k "You~!"
     m 1a "You're the only thing I need, [player]."
     return
@@ -3480,7 +3480,7 @@ label monika_haterReaction:
             m 1h "You're still listening to everything I say."
             m 1m "That makes me sure you're just messing with me."
             m "I know you love me deep inside."
-            m 1e"That's why I promise to be an ideal girlfriend, just for you, [player]~"
+            m 1e "That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m "I won't let you hate me... I swear."
         "I'm not.":
             $ persistent._mas_pm_a_hater = False
@@ -5094,7 +5094,7 @@ label monika_happiness:
     m 4p "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
     m 1q "It would destroy me."
     m 1h "I guess it's understandable why we notice bad things happening to us more than good..."
-    m 2o"If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m 2o "If people didn't react so strongly to bad things then they wouldn't have survived this far."
     m 1c "Like how you would get nervous about your future or social situations, for example."
     m 2f "You try your best to make the best out of them but if you fail, you'd feel really horrible."
     m 2e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
