@@ -6,7 +6,6 @@ python:
 
 # dependencies
 install:
-    - cd ..
 
       # renpy
     - wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
@@ -29,4 +28,4 @@ env:
 # command to check syntax
 script: 
     - python MonikaModDev/tools/travis.py
-    - renpy/renpy.sh "../mas072/" lint && renpy/renpy.sh launcher distribute "../mas072/"
+    - renpy/renpy.sh "mas072/" lint && renpy/renpy.sh launcher distribute "mas072/"
