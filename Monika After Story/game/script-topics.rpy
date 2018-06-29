@@ -6270,8 +6270,8 @@ label monika_timeconcern_night_5:
 label monika_timeconcern_night_6:
     $persistent._mas_timeconcern = 7
     m 2efc "[player], I told you to go to bed for your own good."
-    m 2efd"I'll miss you too, but don't you understand?"
-    m 2efc"How you feel and live means more to me than anything!"
+    m 2efd "I'll miss you too, but don't you understand?"
+    m 2efc "How you feel and live means more to me than anything!"
     m 2lfc "How can I let you stay if it means I'm hurting you?"
     m "So please sleep this time, otherwise I may get mad."
     m 1eka "...I love you."
