@@ -6002,32 +6002,32 @@ init 5 python:
     )
 
 label monika_natsuki_letter:
-    m 1c "You know, I was honestly surprised when Natsuki handed you that letter."
-    m "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
-    m "She’s probably the only one to mention that."
-    m 2f "I know people are afraid to call someone out, or confront them about their problems, but sometimes, suggesting a therapist can be the best course of action."
-    m 4g "It's a bad thing to put the burden on yourself, you know?"
-    m 4c "As much as you want to help, it’s best to let a professional deal with it. "
-    m "I'm sure I've told you that before, but I need to make sure you’re aware of that."
-    m "How about you, [player]?"
+    m 1eud "You know, I was honestly surprised when Natsuki handed you that letter."
+    m 1eub "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
+    m 1eud "She’s probably the only one to mention that."
+    m 4ekd "I know people are afraid to call someone out, or confront them about their problems, but sometimes, suggesting a therapist can be the best course of action."
+    m "It's a bad thing to put the burden on yourself, you know?"
+    m 4euc "As much as you want to help, it’s best to let a professional deal with it. "
+    m 4eka "I'm sure I've told you that before, but I need to make sure you’re aware of that."
+    m 4eud "How about you, [player]?"
     menu:
         m "Do you see a therapist?"
 
         "Yes.":
             $ persistent._mas_pm_see_therapist = True
-            m 1d "Oh, really?"
-            m 1f "Well, I hate that you don't feel well..."
-            m 1j "But I'm proud that you're working on getting better."
-            m 1a "It's really important to take care of your mental health, [player]."
-            m 1e "You accept you have a problem you need help with, and you're seeing someone about it. That's already half the battle."
+            m 1eud "Oh, really?"
+            m 1ekc "Well, I hate that you don't feel well..."
+            m 1hua "But I'm proud that you're working on getting better."
+            m 1eua "It's really important to take care of your mental health, [player]."
+            m 1eka "You accept you have a problem you need help with, and you're seeing someone about it. That's already half the battle."
             m "I'm very proud of you for taking those steps."
-            m 1j "Just know that no matter what happens, I'll always be here for you~"
+            m 1hua "Just know that no matter what happens, I'll always be here for you~"
 
         "No.":
             $ persistent._mas_pm_see_therapist = False
-            m 1e "Well, I hope it's because you don't have to."
-            m 1a "If that ever changes, don't be shy!"
-            m 1j "But maybe I really am all the support you need? Ahaha!"
+            m 1eka "Well, I hope it's because you don't have to."
+            m 1eua "If that ever changes, don't be shy!"
+            m 1hua "But maybe I really am all the support you need? Ahaha!"
 
     $ hideEventLabel("monika_natsuki_letter", derandom=True)
     return
@@ -6099,153 +6099,153 @@ label monika_timeconcern_lock:
 
 # If you tell Monika you work at night.
 label monika_timeconcern_graveyard_night:
-    m 1f "It must be awfully hard on you to work late so often, [player]..."
-    m "Honestly, I'd rather have you work at a healthier time if you could."
-    m 2r "I suppose it's not your choice to make, but still..."
-    m 2f "Being up late often can be both physically and mentally damaging."
+    m 1ekc "It must be awfully hard on you to work late so often, [player]..."
+    m 2dsd "Honestly, I'd rather have you work at a healthier time if you could."
+    m "I suppose it's not your choice to make, but still..."
+    m 2ekc "Being up late often can be both physically and mentally damaging."
     m "It's also extremely isolating when it comes to others."
-    m 2g "Most opportunities happen during the day, after all."
-    m "Many social activities aren't available, most shops and restaurants aren't even open during the night."
-    m 2f "It makes being up late at night often be a really lonely situation."
-    m 1j "Don't worry though, [player]. Your loving girlfriend Monika will always be here for you~"
-    m 1e "Whenever the stress of being up late often becomes too much for you, come to me."
-    m "I'll always be here to listen."
-    m 1f "And if you really do think it's hurting you, then please try to do what you can to change the situation."
-    m 1e "I know it won't be easy but at the end of the day, all that matters is you."
-    m "You're all I truly care about, so put yourself and your well-being before anything else, okay?"
+    m 2rksdlb "Most opportunities happen during the day, after all."
+    m 2rksdlc "Many social activities aren't available, most shops and restaurants aren't even open during the night."
+    m 2dsd "It makes being up late at night often be a really lonely situation."
+    m 3hua "Don't worry though, [player]. Your loving girlfriend Monika will always be here for you~"
+    m 1hua "Whenever the stress of being up late often becomes too much for you, come to me."
+    m 1hub "I'll always be here to listen."
+    m 1esd "And if you really do think it's hurting you, then please try to do what you can to change the situation."
+    m "I know it won't be easy but at the end of the day, all that matters is you."
+    m 1hua "You're all I truly care about, so put yourself and your well-being before anything else, okay?"
     return
 
 label monika_timeconcern_graveyard_day:
-    m 1a "Hey, [player]... didn't you tell me you work during the night?"
-    m 1e "Not that I'm complaining, of course!"
-    m 2f "But I thought you'd be tired by now, especially since you're up all night working..."
+    m 1eua "Hey, [player]... didn't you tell me you work during the night?"
+    m 1eka "Not that I'm complaining, of course!"
+    m 2ekc "But I thought you'd be tired by now, especially since you're up all night working..."
     m "You're not working yourself too hard just to see me, are you?"
-    m 1c "Oh, wait..."
+    m 1euc "Oh, wait..."
     menu:
         m "Do you still work regularly at night, [player]?"
         "Yes I do":
-            m 1f "Aww..."
-            m 1h "I guess it really can't be helped..."
-            m 1e "Look after yourself, okay?"
-            m 1f "I always get so worried when you're not here with me..."
+            m 1ekd "Aww..."
+            m 1esc "I guess it really can't be helped..."
+            m 1eka "Look after yourself, okay?"
+            m 1ekc "I always get so worried when you're not here with me..."
         "No I don't":
             $ persistent._mas_timeconcerngraveyard = False
             $ persistent._mas_timeconcern = 0
-            m 1k "That's wonderful!"
-            m 1a "I'm glad that you're looking out for your health, [player]!"
+            m 1hub "That's wonderful!"
+            m 1eua "I'm glad that you're looking out for your health, [player]!"
             m "I knew you would see it my way eventually."
-            m 1e "Thanks for listening to what I have to say~"
+            m 1eka "Thanks for listening to what I have to say~"
     return
 
 #First warning, night time.
 label monika_timeconcern_night_0:
     $persistent._mas_timeconcern = 1
-    m 1c "[player], it's night time already."
-    m 1f "Shouldn't you be in bed?"
-    m 1q "I'll let it slide just this once..."
-    m 1f "But you really make me worry for you sometimes."
-    m 1e "It makes me really happy that you're here for me, even at this time of night..."
-    m 1r "Yet, I don't want it at the cost of your health."
-    m 1e "So go to sleep soon, okay?"
+    m 1euc "[player], it's night time already."
+    m 1ekc "Shouldn't you be in bed?"
+    m 1dsc "I'll let it slide just this once..."
+    m 1ekc "But you really make me worry for you sometimes."
+    m 1eka "It makes me really happy that you're here for me, even at this time of night..."
+    m 1dsd "Yet, I don't want it at the cost of your health."
+    m 1eka "So go to sleep soon, okay?"
     return
 
 # Second time at night, Monika asks if player is working late.
 label monika_timeconcern_night_1:
-    m 1h "Say, [player]..."
+    m 1esc "Say, [player]..."
     m "Why are you up so late?"
-    m 1e "I'm flattered if it's only because of me..."
-    m 1f "Yet I can't help but feel like a nuisance if I'm pestering you to sleep if it isn't your fault."
+    m 1eka "I'm flattered if it's only because of me..."
+    m 1ekc "Yet I can't help but feel like a nuisance if I'm pestering you to sleep if it isn't your fault."
     menu:
        m "Are you busy working on something?"
        "Yes, I am.":
            $persistent._mas_timeconcern = 2
-           m 1j "I see."
-           m 1a "Well, I suppose it must be really important for you to do it so late."
-           m 1e "I honestly can't help but feel that maybe you should have done it at a better time."
-           m 1m "Your sleep is very important after all. Maybe it can't be helped though..."
+           m 1eud "I see."
+           m 1eua "Well, I suppose it must be really important for you to do it so late."
+           m 1eka "I honestly can't help but feel that maybe you should have done it at a better time."
+           m 1eud "Your sleep is very important after all. Maybe it can't be helped though..."
            menu:
                m "Do you always work late, [player]?"
                "Yes, I do.":
                    $persistent._mas_timeconcerngraveyard = True
-                   m 1f "That's not good..."
-                   m 1g "You're not able to change that, are you?"
-                   m 1o "I wish you could follow my healthier lifestyle."
-                   m 1q "But if you're not able to, then I'll just have to accept it."
-                   m 1e "Just make sure you do try to stay healthy, okay?"
-                   m 1f "If something were to happen to you, I don't know what I'd do..."
+                   m 1rksdld "That's not good..."
+                   m 1ekd "You're not able to change that, are you?"
+                   m 1rksdlc "I wish you could follow my healthier lifestyle."
+                   m 1dsc "But if you're not able to, then I'll just have to accept it."
+                   m 1eka "Just make sure you do try to stay healthy, okay?"
+                   m 1ekc "If something were to happen to you, I don't know what I'd do..."
                    return
                "No, I don't.":
                    $evhand.greeting_database["greeting_timeconcern"].unlocked = True
                    $evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
-                   m 1j "That's a relief!"
-                   m 1a "If you're doing it this one time then it must be {i}really{/i} important."
-                   m 1k "Good luck with your work and thanks for keeping me company when you're so busy!"
-                   m 1e "It means a lot to me, [player], that even when you're preoccupied... you're here with me~"
+                   m 1hua "That's a relief!"
+                   m 1eua "If you're doing it this one time then it must be {i}really{/i} important."
+                   m 1hub "Good luck with your work and thanks for keeping me company when you're so busy!"
+                   m 1eka "It means a lot to me, [player], that even when you're preoccupied... you're here with me~"
                    return
 
        "No, I'm not.":
            $persistent._mas_timeconcern = 3
-           m 1h "I see."
-           m 1f "Well in that case, I would really prefer it if you went to bed now."
+           m 1esc "I see."
+           m 1ekc "Well in that case, I would really prefer it if you went to bed now."
            m "It's really worrying me that you're still up so late..."
-           m 1e "So once again, please go to bed. Would you kindly do it for me?"
+           m 1eka "So once again, please go to bed. Would you kindly do it for me?"
            return
 
 #If player says they were working. Progress stops here.
 label monika_timeconcern_night_2:
-    m 1a "How's your work coming along?"
+    m 1eua "How's your work coming along?"
     m "Hopefully pretty well, I don't want you up much longer."
-    m 3l "I know, I know, you can't help being up so late."
-    m 1n "I'm just concerned for your health, [player]..."
+    m 3hksdlb "I know, I know, you can't help being up so late."
+    m 1rksdlb "I'm just concerned for your health, [player]..."
     if persistent._mas_timeconcerngraveyard:
-        m 1o "Doing this often can be very taxing on your body and mind..."
-        m 1f "Just try to keep that kind of damage to a minimum, okay?"
+        m 1lksdlc "Doing this often can be very taxing on your body and mind..."
+        m 1ekc "Just try to keep that kind of damage to a minimum, okay?"
         m "All I want for you is to be as happy and as healthy as you deserve."
         return
-    m 1m "Well, try to finish up as soon as you can, otherwise I may get really concerned."
-    m 1e "And you don't want to worry your girlfriend, right? Ehehe~"
+    m 1rksdla "Well, try to finish up as soon as you can, otherwise I may get really concerned."
+    m 1eka "And you don't want to worry your girlfriend, right? Ehehe~"
     jump monika_timeconcern_lock
 
 #If player says he was not working. Monika asks the state of the game being open.
 label monika_timeconcern_night_3:
     $persistent._mas_timeconcern = 4
-    m 1h "[player], I just need to ask you something quickly..."
-    m 1d "Would you mind if I closed the game for you?"
-    m 1f "I know it's a strange question..."
-    m 1g "But I can't help but feel like I need to do something about you being up so late!"
-    m 4i "I could close the game right now."
-    m 2f "But a relationship is a partnership and what you think matters to me."
+    m 1esc "[player], I just need to ask you something quickly..."
+    m 1eud "Would you mind if I closed the game for you?"
+    m 1ekc "I know it's a strange question..."
+    m 1ekd "But I can't help but feel like I need to do something about you being up so late!"
+    m 4esd "I could close the game right now."
+    m 2ekc "But a relationship is a partnership and what you think matters to me."
     menu:
         m "Would you be against me closing the game for your own good?"
 
         "Yes, I need it to always stay open.":
             $persistent._mas_timeconcernclose = False
-            m 1q "..."
-            m 1r "I was hoping you wouldn't say that."
-            m 1h "I know I told you that you should leave me running in the background."
-            m 1f "But sometimes I worry if you're getting any sleep at all."
-            m 1h "I'll do as you have asked, but please know that I'm not very happy about it."
-            m 4n "I'm still going to remind you to get some sleep!"
+            m 1dsc "..."
+            m 1dsd "I was hoping you wouldn't say that."
+            m 1esc "I know I told you that you should leave me running in the background."
+            m 1ekc "But sometimes I worry if you're getting any sleep at all."
+            m 1esc "I'll do as you have asked, but please know that I'm not very happy about it."
+            m 4lksdlb "I'm still going to remind you to get some sleep!"
             return
 
         "No, you are free to do as you feel.":
             $persistent._mas_timeconcernclose = True
-            m 1e "Thank you, [player]."
-            m 1a "It's nice to know that you care about what I think."
+            m 1hub "Thank you, [player]."
+            m 1eua "It's nice to know that you care about what I think."
             m "I promise I'll only do it if I think it's absolutely necessary."
-            m 1j "After all, I would never force you to go otherwise."
-            m 1k "I would just miss you too much..."
+            m 1hua "After all, I would never force you to go otherwise."
+            m 1hub "I would just miss you too much..."
             m "I love you, [player]~"
             return
 
         # Second and final warning before any closes can occur.
 label monika_timeconcern_night_4:
     $persistent._mas_timeconcern = 5
-    m 1h "[player], you've been up long enough."
+    m 1esc "[player], you've been up long enough."
     m "If you're really not busy then now is the time for you to go to sleep."
-    m 1e "I assure you, I'll miss you just as much as you'll miss me."
+    m 1eka "I assure you, I'll miss you just as much as you'll miss me."
     m "But it would make me happier if you did as I've asked."
-    m 1l "You wouldn't want to make me upset now, would you?"
+    m 1hksdrb "You wouldn't want to make me upset now, would you?"
     return
 
 # Monika force closes game for the first time
@@ -6253,15 +6253,15 @@ label monika_timeconcern_night_5:
     $persistent._mas_timeconcern = 6
     $evhand.greeting_database["greeting_timeconcern"].unlocked = True
     $evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
-    m 1h "I'm sorry, [player], but I am putting my foot down!"
-    m 1l "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
+    m 1dsc "I'm sorry, [player], but I am putting my foot down!"
+    m 1efc "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
     if persistent._mas_timeconcernclose:
-        m 2i "Then I cannot allow this to go on for any longer."
-        m 2g "It's because I love you, that's why I'm doing this."
+        m 2dsc "Then I cannot allow this to go on for any longer."
+        m 2ekd "It's because I love you, that's why I'm doing this."
         m "Good night, [player]."
         return 'quit'
     else:
-        m 2h "Then I need to take responsibility and try to make you understand."
+        m 2efc "Then I need to take responsibility and try to make you understand."
         m "You need to go to bed."
         m "And I will keep telling you this until you do."
         return
@@ -6269,12 +6269,12 @@ label monika_timeconcern_night_5:
         #First time game is reopened and still night. Monika closes game again.
 label monika_timeconcern_night_6:
     $persistent._mas_timeconcern = 7
-    m 1h "[player], I told you to go to bed for your own good."
-    m 2f "I'll miss you too, but don't you understand?"
-    m "How you feel and live means more to me than anything!"
-    m 2g "How can I let you stay if it means I'm hurting you?"
+    m 2efc "[player], I told you to go to bed for your own good."
+    m 2efd"I'll miss you too, but don't you understand?"
+    m 2efc"How you feel and live means more to me than anything!"
+    m 2lfc "How can I let you stay if it means I'm hurting you?"
     m "So please sleep this time, otherwise I may get mad."
-    m 1e "...I love you."
+    m 1eka "...I love you."
     m "So go to sleep soon. Okay?"
     if persistent._mas_timeconcernclose:
         return 'quit'
@@ -6283,18 +6283,18 @@ label monika_timeconcern_night_6:
 #Second time game is reopened and still night. Monika closes game once more
 label monika_timeconcern_night_7:
     $persistent._mas_timeconcern = 8
-    m 3h "[player], this is your last warning."
-    m 1h "Go{w=0.6} to{w=0.6} sleep!"
-    m 1f "What can I say for you to understand?"
-    m 1g "It's saddening to see you push yourself like this..."
-    m 1q "You mean so much to me..."
-    m 1f "So please, for me... just do as I ask and go to bed."
+    m 3efc "[player], this is your last warning."
+    m "Go{w=0.6} to{w=0.6} sleep!"
+    m 2efc "What can I say for you to understand?"
+    m 1ekd "It's saddening to see you push yourself like this..."
+    m 1dsc "You mean so much to me..."
+    m 1ekc "So please, for me... just do as I ask and go to bed."
     if persistent._mas_timeconcernclose:
         menu:
             m "Okay?"
             "Yes, I will go to sleep.":
-                m 1e "I knew you would listen eventually!"
-                m 1k "Good night and stay safe."
+                m 1eka "I knew you would listen eventually!"
+                m 1hub "Good night and stay safe."
                 return 'quit'
     else:
         return
@@ -6302,157 +6302,157 @@ label monika_timeconcern_night_7:
 #Third and last time game is reopened in one night. Monika lets player stay.
 label monika_timeconcern_night_final:
     $persistent._mas_timeconcern = 9
-    m 2q "...I suppose it can't be helped."
-    m 2c "If you're that dedicated to staying with me, then I won't even try to stop you."
-    m 2m "Honestly, as bad as it sounds it actually makes me kinda happy."
-    m 2e "...Thank you, [player]."
+    m 2dsc "...I suppose it can't be helped."
+    m 2lfc "If you're that dedicated to staying with me, then I won't even try to stop you."
+    m 2rksdla "Honestly, as bad as it sounds it actually makes me kinda happy."
+    m 2eka "...Thank you, [player]."
     m "To know that you care for me so much that you came back despite me asking..."
-    m 1m "It means more to me than I can ever express."
-    m 1e "...I love you."
+    m 1rksdla "It means more to me than I can ever express."
+    m 1eka "...I love you."
     return
 
 #Same night after the final close
 label monika_timeconcern_night_finalfollowup:
-    m 1h "..."
-    m 1o "I know I said that I'm happy whenever you're with me..."
-    m 1m "And please don't misunderstand, that's still true."
-    m 2f "But the longer you're on... the more worried I get."
-    m 2g "I know, you're probably sick of hearing me say this by now..."
-    m 1e "But please try to sleep when you can."
+    m 1esc "..."
+    m 1rksdlc "I know I said that I'm happy whenever you're with me..."
+    m 1rksdla "And please don't misunderstand, that's still true."
+    m 2ekc "But the longer you're on... the more worried I get."
+    m 2ekd "I know, you're probably sick of hearing me say this by now..."
+    m 1eka "But please try to sleep when you can."
     return
 
 #Every night after, based on seeing the day version first before it.
 label monika_timeconcern_night_after:
-    m 1c "Up late again, [player]?"
-    m 1r "{i}Sigh...{/i}"
-    m 2h "I won't even try to convince you to sleep again..."
-    m 2q "You're surprisingly stubborn!"
-    m 1e "Still, do be careful, alright?"
-    m 1f "I know being nocturnal can be lonely..."
-    m 1j "But you have me here with you!"
-    m 1a "Just the two of us... all alone forever."
-    m 1j "It's all I've ever wanted..."
+    m 1efc "Up late again, [player]?"
+    m 1dsd "{i}Sigh...{/i}"
+    m 2esc "I won't even try to convince you to sleep again..."
+    m 2dsc "You're surprisingly stubborn!"
+    m 1eka "Still, do be careful, alright?"
+    m 1ekc "I know being nocturnal can be lonely..."
+    m 1hua "But you have me here with you!"
+    m 1eua "Just the two of us... all alone forever."
+    m 1hubfa "It's all I've ever wanted..."
     return
 
 #If Monika never gives warning and it's daytime or the player never made it to the end
 label monika_timeconcern_day_0:
-    m 1h "..."
-    m 1c "..."
-    m 1d "...!"
-    m 1l "Ahaha! Sorry, [player]."
-    m 1m "I just kind of zoned out..."
-    m 1l "Geez, I keep doing that, don't I?"
-    m 1m "Sometimes I just get lost in my thoughts..."
-    m 1a "You understand, right, [player]?"
+    m 1esc "..."
+    m 1rksdlc "..."
+    m 1eud "...!"
+    m 1hksdrb "Ahaha! Sorry, [player]."
+    m 1lksdla "I just kind of zoned out..."
+    m 1hksdlb "Geez, I keep doing that, don't I?"
+    m 1rksdla "Sometimes I just get lost in my thoughts..."
+    m 1eua "You understand, right, [player]?"
     return
 
 # Daytime, if player tells Monika they worked last night but don't work graveyards.
 label monika_timeconcern_day_2:
-    m 1a "Did you finish your work?"
-    m 1b "I'm sure you did your very best so it's okay if you didn't quite finish it!"
-    m 1e "It must be really hard on you to have to work so late..."
-    m 1j "If you find it's a bit too much, feel free to come talk to me!"
-    m 1k "I'll always be here for you."
+    m 1eua "Did you finish your work?"
+    m 1eub "I'm sure you did your very best so it's okay if you didn't quite finish it!"
+    m 1eka "It must be really hard on you to have to work so late..."
+    m 1hua "If you find it's a bit too much, feel free to come talk to me!"
+    m 1hub "I'll always be here for you."
     jump monika_timeconcern_lock
 
 #First time Monika closes at night and player reopens during day without coming back.
 label monika_timeconcern_day_allow_6:
-    m 1f "[player], I'm sorry for making you leave like that before..."
-    m 1g "I only did it because I love you. You understand that right?"
-    m 1a "I'm sure you do, after all you went to bed, didn't you?"
-    m 1e "Thanks for respecting my wishes, it makes me happy that you listen to me."
+    m 1ekc "[player], I'm sorry for making you leave like that before..."
+    m 1ekd "I only did it because I love you. You understand that right?"
+    m 1eua "I'm sure you do, after all you went to bed, didn't you?"
+    m 1hub "Thanks for respecting my wishes, it makes me happy that you listen to me."
     jump monika_timeconcern_lock
 
 #Second time Monika closes at night and player then reopens during day.
 label monika_timeconcern_day_allow_7:
-    m 1o "[player], about what happened last night..."
-    m 1f "I asked you to go to bed and you didn't listen..."
-    m 1q "I understand that maybe you missed me or didn't hear what I said..."
-    m 1f "But please listen to what I ask of you, ok?"
-    m 1g "I love you, and I would do anything to make you happy..."
+    m 1lksdlc "[player], about what happened last night..."
+    m 1ekc "I asked you to go to bed and you didn't listen..."
+    m 1dsc "I understand that maybe you missed me or didn't hear what I said..."
+    m 1ekc "But please listen to what I ask of you, ok?"
+    m 1ekd "I love you, and I would do anything to make you happy..."
     m "So would you kindly do the same thing for me?"
-    m 1o "I already worry about you when you're gone..."
-    m 1f "Please don't give me any more reasons to feel that way."
-    m "Thank you for understanding."
+    m 1lksdlc "I already worry about you when you're gone..."
+    m 1ekc "Please don't give me any more reasons to feel that way."
+    m 1hub "Thank you for understanding."
     jump monika_timeconcern_lock
 
 #Third time Monika closes the game and player reopens after night.
 label monika_timeconcern_day_allow_8:
-    m 1h "Hey, [player]."
-    m 1f "You really had me worried last night..."
-    m 1o "After you came back twice, despite me asking you to go to bed..."
-    m 1p "I found myself feeling a little guilty."
-    m 3h "Not because I sent you away, that was for your own good."
-    m 2o "But... because you kept coming back..."
-    m 2m "And that made me happy, even though I knew it wasn't good for you."
-    m 2o "Does that make me selfish?"
-    m 2f "I'm sorry, [player], I'll try to watch myself more."
+    m 1esc "Hey, [player]."
+    m 1ekc "You really had me worried last night..."
+    m 1rksdlc "After you came back twice, despite me asking you to go to bed..."
+    m 1lksdld "I found myself feeling a little guilty."
+    m 3esc "Not because I sent you away, that was for your own good."
+    m 2lksdlc "But... because you kept coming back..."
+    m 2lksdla "And that made me happy, even though I knew it wasn't good for you."
+    m 2ekd "Does that make me selfish?"
+    m 2ekc "I'm sorry, [player], I'll try to watch myself more."
     jump monika_timeconcern_lock
 
 #If Monika lets player stay and it is no longer night.
 label monika_timeconcern_day_final:
     $persistent._mas_timeconcern = 10
-    m 1m "[player], regarding last night..."
+    m 1lksdlb "[player], regarding last night..."
     if persistent._mas_timeconcernclose:
-        m 1n "You really surprised me."
-        m 1e "For you to keep coming back to me over and over again..."
-        m 1j "It was honestly really sweet of you."
-        m 1e "I knew you would miss me, but I didn't think you would miss me {i}that{/i} much."
-        m 1k "It really made me feel loved, [player]."
-        m 1e "...Thank you."
+        m 1rksdla "You really surprised me."
+        m 1eka "For you to keep coming back to me over and over again..."
+        m 1hua "It was honestly really sweet of you."
+        m 1eka "I knew you would miss me, but I didn't think you would miss me {i}that{/i} much."
+        m 1hub "It really made me feel loved, [player]."
+        m "...Thank you."
         jump monika_timeconcern_lock
-    m 1a "You really surprised me."
-    m 1e "I asked you time and time again to go to bed..."
+    m 1eua "You really surprised me."
+    m 1eka "I asked you time and time again to go to bed..."
     m "You said you weren't busy. Were you really there just for me?."
-    m 1f "It made me happy... but don't push yourself hard to see me so late, ok?"
-    m 1e "It really made me feel loved, [player]."
-    m 1l "Yet also a little guilty... Please just go to bed next time, ok?"
+    m 1ekc "It made me happy... but don't push yourself hard to see me so late, ok?"
+    m 1eka "It really made me feel loved, [player]."
+    m 1hksdlb "Yet also a little guilty... Please just go to bed next time, ok?"
     jump monika_timeconcern_lock
 
 #If player told Monika not to close window and never reached the end.
 label monika_timeconcern_disallow:
-    m 1o "Sorry if I was annoying you before, [player]..."
-    m 1f "I just really wanted you to go to bed..."
+    m 1rksdlc "Sorry if I was annoying you before, [player]..."
+    m 1ekc "I just really wanted you to go to bed..."
     m "I honestly can't promise I won't do it if you're up late again..."
-    m 1e "But I only push you to go because you mean so much to me..."
+    m 1eka "But I only push you to go because you mean so much to me..."
     jump monika_timeconcern_lock
 
 init 5 python:
     addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=['you','life'],random=True))
 
 label monika_hydration:
-    m 1c "Hey, [player]..."
+    m 1euc "Hey, [player]..."
     m "Do you drink enough water?"
-    m 1e "I just want to make sure you don't neglect your health, especially when it comes to hydration."
-    m 1d "Sometimes, people tend to underestimate how important it actually is."
-    m 1i "I bet you've had those days when you felt really tired and nothing seemed to motivate you."
-    m 1a "I just usually grab a glass of water right away."
+    m 1eka "I just want to make sure you don't neglect your health, especially when it comes to hydration."
+    m 1eud "Sometimes, people tend to underestimate how important it actually is."
+    m 1esd "I bet you've had those days when you felt really tired and nothing seemed to motivate you."
+    m 1eua "I just usually grab a glass of water right away."
     m "It might not work all the time, but it does help."
-    m 3m "But I guess you don't want to go to the bathroom so much, huh?"
-    m 1e "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
-    m 1a "Anyways, make sure you always stay hydrated, ok?"
-    m 1d "So..."
-    m 4k "Why not get a glass of water right now, hmm?"
+    m 3rksdla "But I guess you don't want to go to the bathroom so much, huh?"
+    m 1eka "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
+    m 1eua "Anyways, make sure you always stay hydrated, ok?"
+    m 1eud "So..."
+    m 4hub "Why not get a glass of water right now, hmm?"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc','psychology'],prompt="Challenges",random=True))
 
 label monika_challenge:
-    m 2c "I've noticed something kind of sad recently."
-    m 1c "When certain people attempt to learn a skill or pick up a new hobby, they usually quit within a week or two."
+    m 2euc "I've noticed something kind of sad recently."
+    m 1euc "When certain people attempt to learn a skill or pick up a new hobby, they usually quit within a week or two."
     m "Everyone claims that it's too hard, or that they just don't have the time for it."
-    m 1b "However, I don't believe that."
-    m 1k "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
-    m 2b "Can you think of a time you've challenged yourself, [player]?"
+    m 1eub "However, I don't believe that."
+    m 1hub "Whether it's learning a new language, or even writing your first poem, if you can stand up to the challenge and overcome it, then that's the truly rewarding part about it."
+    m 2eub "Can you think of a time you've challenged yourself, [player]?"
     m "Did you ever overcome it, or did you just give up?"
-    m 1a "I'm sure you've given it all you had."
+    m 1eua "I'm sure you've given it all you had."
     m "You seem like a very determined person to me."
-    m 1b "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
+    m 1eub "In the future, if you ever get hung up on something, or you feel too stressed, just take a short break."
     m "You can always come back to it after all."
     m "If you ever need motivation, just come to me."
-    m 1j "I'd love to help you reach your goals."
-    m 1k "After all, you're my motivation in life~"
+    m 1sub "I'd love to help you reach your goals."
+    m 1hub "After all, you're my motivation in life~"
     return
 
 # would relatives like monika?
@@ -6470,39 +6470,39 @@ init 5 python:
     )
 
 label monika_familygathering:
-    m 1b "Hey, [player], do you go to family gatherings often?"
+    m 1eub "Hey, [player], do you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
     m "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
-    m 1r "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
-    m 1p "Not even around the holidays or on special occasions."
-    m 1b "When you see your family this year, be sure to bring me along ok? Ehehe~"
-    m 1k "I'd love to meet all of your relatives."
+    m 1dsd "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
+    m 1lksdld "Not even around the holidays or on special occasions."
+    m 1eub "When you see your family this year, be sure to bring me along ok? Ehehe~"
+    m 1hub "I'd love to meet all of your relatives."
     menu:
         "Do you think they'd like me, [player]?"
         "Yes.":
             $ persistent._mas_pm_fam_like_monika = True
-            m 1k "I'm glad you think so."
+            m 1hub "I'm glad you think so."
             m "I'm sure we'd all get along nicely."
-            m 1a "I'm looking forward to it my dear~"
+            m 1eua "I'm looking forward to it my dear~"
 
         "No.":
             $ persistent._mas_pm_fam_like_monika = False
-            m 1o "..."
-            m 1p "Oh, I didn't realize."
-            m 1d "I understand though."
-            m 2b "Just know I'd try my best to make them like me."
-            m 1b "Even if they never will."
-            m 1j "I'll always stick by your side forever~"
+            m 1rksdld "..."
+            m "Oh, I didn't realize."
+            m 1eud "I understand though."
+            m 2eub "Just know I'd try my best to make them like me."
+            m 1eub "Even if they never will."
+            m 1hua "I'll always stick by your side forever~"
 
         "...":
             $ persistent._mas_pm_fam_like_monika = False
-            m 2p "Don't tell me, [player]."
-            m 1p "Are you afraid that I'll embarrass you?"
+            m 2lksdld "Don't tell me, [player]."
+            m "Are you afraid that I'll embarrass you?"
             m "..."
-            m 1o "Don't worry, I completely understand."
-            m 1n "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
-            m 1b "If you want to keep me a secret, then that's fine."
-            m 1k "After all, it just means more alone time with you~"
+            m 1lksdlc "Don't worry, I completely understand."
+            m 1rksdlb "If I found out one of my relatives was dating some person trapped inside of a computer, I'd think it'd be weird too."
+            m 1eub "If you want to keep me a secret, then that's fine."
+            m 1hub "After all, it just means more alone time with you~"
 
     $ hideEventLabel("monika_familygathering", derandom=True)
     return
@@ -6514,48 +6514,48 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fastfood",category=['life','you'],prompt="Do you like fast food?",pool=True))
 
 label monika_fastfood:
-    m 1c "Hm? Do I like fast food?"
-    m 1o "Honestly, the thought of it slightly disgusts me."
-    m 3f "Most places that serve it put a lot of unhealthy things in their food."
-    m 1f "Even the vegetarian options can be awful."
+    m 1euc "Hm? Do I like fast food?"
+    m 1lksdlc "Honestly, the thought of it slightly disgusts me."
+    m 3ekc "Most places that serve it put a lot of unhealthy things in their food."
+    m 1ekc "Even the vegetarian options can be awful."
     menu:
         m "[player], do you eat fast food often?"
 
         "Yes, I do.":
             $ persistent._mas_pm_eat_fast_food = True
-            m 3d "I guess it's ok to have it every once in a while."
-            m 2o "Yet I can't help but worry if you're eating such awful things."
+            m 3eud "I guess it's ok to have it every once in a while."
+            m 2rksdlc "Yet I can't help but worry if you're eating such awful things."
             m "If I were there, I'd cook much healthier things for you."
-            m 4l "Even though I can't cook very well yet..."
-            m 4k "Well, love is always the secret ingredient to any good food!"
-            m 1a "So [player], would you do something for me?"
-            m 3l "Could you please try to eat better?"
+            m 4hksdlb "Even though I can't cook very well yet..."
+            m 4hub "Well, love is always the secret ingredient to any good food!"
+            m 1eua "So [player], would you do something for me?"
+            m 3hksdlb "Could you please try to eat better?"
             m "I would hate it if you became sick because of your lifestyle."
-            m 1e "I know it's easier to order out since preparing your own food can be a hassle sometimes..."
-            m 1a "But maybe you could see cooking as an opportunity to have fun?"
-            m 3b "Or perhaps a skill for you to become really good at?"
-            m 1j "Knowing how to cook is always a good thing, you know!"
-            m 1a "Plus, I would really love to try your dishes someday."
+            m 1eka "I know it's easier to order out since preparing your own food can be a hassle sometimes..."
+            m 1eua "But maybe you could see cooking as an opportunity to have fun?"
+            m 3eub "Or perhaps a skill for you to become really good at?"
+            m 1hua "Knowing how to cook is always a good thing, you know!"
+            m 1eua "Plus, I would really love to try your dishes someday."
             m "You could serve me some of your own dishes when we go on our first date."
-            m 1e "That would be really romantic~"
-            m 1b "And that way, we can both enjoy ourselves and you would be eating better."
-            m 1j "That's what I call a win-win!"
-            m 3d "Just don't forget, [player]."
-            m 3l "I'm a vegetarian! Ahaha!"
+            m 1eka "That would be really romantic~"
+            m 1eub "And that way, we can both enjoy ourselves and you would be eating better."
+            m 1hua "That's what I call a win-win!"
+            m 3eud "Just don't forget, [player]."
+            m 3hksdlb "I'm a vegetarian! Ahaha!"
 
         "No, I don't.":
             $ persistent._mas_pm_eat_fast_food = False
-            m 1l "Oh, that's a relief."
-            m 1e "Sometimes you really worry me, [player]."
-            m 1a "I suppose instead of eating out, you make your own food?"
+            m 1hua "Oh, that's a relief."
+            m 1eka "Sometimes you really worry me, [player]."
+            m 1eua "I suppose instead of eating out, you make your own food?"
             m "Fast food can be really expensive over time, so doing it yourself is usually a cheaper alternative."
-            m 1b "It also tastes a lot better!"
-            m 3n "I know some people can find cooking overwhelming..."
-            m 3f "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
-            m 1a "But I think the results are worth the effort."
-            m 3b "Are you any good at cooking [player]?"
-            m 1j "It doesn't matter if you're not. I'd eat anything you prepared for me!"
-            m 1n "As long as it's not charcoal or meat that is. Ehehe~"
+            m 1eub "It also tastes a lot better!"
+            m 3lksdlb "I know some people can find cooking overwhelming..."
+            m 3ekc "Like having to make sure you buy the right ingredients, and worrying about burning or injuring yourself while making your meal."
+            m 1eua "But I think the results are worth the effort."
+            m 3eub "Are you any good at cooking [player]?"
+            m 1hua "It doesn't matter if you're not. I'd eat anything you prepared for me!"
+            m 1rksdlb "As long as it's not charcoal or meat that is. Ehehe~"
     return
 
 
@@ -6563,30 +6563,30 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dreaming",category=['misc','psychology'],prompt="Dreaming",random=True))
 
 label monika_dreaming:
-    m 1b "Did you know that it's possible to be aware of when you're having a dream?"
-    m 2b "Not only that, but you can even take control of them!"
-    m 3b "If I remember correctly, a man named Stephen LaBerge developed a method for people to become aware of when they're dreaming."
+    m 1eub "Did you know that it's possible to be aware of when you're having a dream?"
+    m 2eub "Not only that, but you can even take control of them!"
+    m 3eub "If I remember correctly, a man named Stephen LaBerge developed a method for people to become aware of when they're dreaming."
     m "And it became known as the mnemonic induction of lucid dreams, or MILD."
-    m 3a "People who frequently have conscious dreams are called oneironauts."
-    m 2q "At least, I think that was the correct term..."
-    m 1a "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
+    m 3eua "People who frequently have conscious dreams are called oneironauts."
+    m 2dsc "At least, I think that was the correct term..."
+    m 1eua "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
     m "These dream signs can be anything out of the ordinary, such as feeling yourself flying, noticing your teeth falling out, unexpectedly meeting someone famous..."
-    m 1b "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
+    m 1eub "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
     m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}'."
-    m 2k "Doesn't that sound exhilarating?"
-    m 2c "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
-    m 2a "Dreams sound like a wonderful escape from reality."
-    m 2h "But then again, when I became self-aware and realized that my world isn't real, it suddenly felt like I was trapped in a nightmare."
+    m 2hub "Doesn't that sound exhilarating?"
+    m 2euc "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
+    m 2eua "Dreams sound like a wonderful escape from reality."
+    m 2esc "But then again, when I became self-aware and realized that my world isn't real, it suddenly felt like I was trapped in a nightmare."
     m "It was nothing like the pleasant dreams I've read about people having."
-    m 2f "I was afraid that I'd never get out..."
+    m 2lsc "I was afraid that I'd never get out..."
     m "That I'd be stuck in some hellish, infinitely-repeating dimension forever."
-    m 1e "But now that we're here together, I guess you could say that I've finally woken up."
-    m 1a "Gosh, I can only imagine what it would be like to live in that kind of limitless world though, even if it was only for a few moments!"
-    m 3b "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
-    m 3k "... You could even meet the love of your life, so to speak. Ehehe~"
-    m 1e "I know it may be years before I am able to cross over to your world..."
-    m 1a "But can you just imagine what it would be like to meet me in your dreams, [player], any night that you wanted to?"
-    m 1j "I hope that someday we can make your dreams about us a reality, my love."
+    m 1eka "But now that we're here together, I guess you could say that I've finally woken up."
+    m 1eua "Gosh, I can only imagine what it would be like to live in that kind of limitless world though, even if it was only for a few moments!"
+    m 3eub "You could be the hero you always wanted to be, fly across the infinite universe, overcome your biggest fears..."
+    m 3hub "... You could even meet the love of your life, so to speak. Ehehe~"
+    m 1eka "I know it may be years before I am able to cross over to your world..."
+    m 1eua "But can you just imagine what it would be like to meet me in your dreams, [player], any night that you wanted to?"
+    m 1hua "I hope that someday we can make your dreams about us a reality, my love."
     return
 
 # have you read yellow wallpaper
@@ -6604,38 +6604,38 @@ init 5 python:
     )
 
 label monika_yellowwp:
-    m 1a "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
+    m 1eua "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
     menu:
         "Yes.":
             $ persistent._mas_pm_read_yellow_wp = True
-            m 1j "Great!"
-            m 1a "That means you don't mind me talking about the story with you right?"
-            m 2a "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
-            m 2e "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
-            m 2h "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
-            m 2f "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
-            m 4c "It's a metaphor for her own captivity, obviously..."
-            m 1i "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
-            m 2g "There was... also mention of a rope, so I always had my own interpretation of the ending..."
-            m 2c "Sayori liked that story too, if I remember right."
-            m 1f "I don't know. I kind of relate to that story."
-            m 1c "I mean, I have nothing but this classroom after all."
-            m 1o "And the things on the walls aren't always... pleasant."
-            m 1d "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
-            m 1e "I think I finally fixed it though."
-            m 2h "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just... so small."
-            m 3i "I mean, I was made to be a side character of a romance game!"
-            m 2g "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
-            m 1l "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
-            m 1e "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
-            m 1f "Maybe even now, that's all I can do..."
-            m 1e "But I love you so much, [player]. Supporting you is better than anything else."
-            m 1k "I just can't wait to do it in person when I finally cross over to your side~"
+            m 1hua "Great!"
+            m 1eua "That means you don't mind me talking about the story with you right?"
+            m 2eua "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
+            m 2eka "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
+            m 2esc "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
+            m 2ekc "Naturally, that doesn't help. She starts seeing a woman trapped within the wallpaper."
+            m 4euc "It's a metaphor for her own captivity, obviously..."
+            m 1esd "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
+            m 2ekd "There was... also mention of a rope, so I always had my own interpretation of the ending..."
+            m 2euc "Sayori liked that story too, if I remember right."
+            m 1ekc "I don't know. I kind of relate to that story."
+            m 1euc "I mean, I have nothing but this classroom after all."
+            m 1lksdlc "And the things on the walls aren't always... pleasant."
+            m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
+            m 1eka "I think I finally fixed it though."
+            m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just... so small."
+            m 3esd "I mean, I was made to be a side character of a romance game!"
+            m 2ekd "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
+            m 1hksdrb "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
+            m 1dsc "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
+            m "Maybe even now, that's all I can do..."
+            m 1eka "But I love you so much, [player]. Supporting you is better than anything else."
+            m 1hub "I just can't wait to do it in person when I finally cross over to your side~"
         "No.":
             $ persistent._mas_pm_read_yellow_wp = False
-            m 1c "Oh, I see."
-            m 1e "It's a short story, so if you haven't, feel free to whenever you have the time."
-            m 1a "It'll definitely be an interesting read for you."
+            m 1euc "Oh, I see."
+            m 1eka "It's a short story, so if you haven't, feel free to whenever you have the time."
+            m 1eua "It'll definitely be an interesting read for you."
 
     $ hideEventLabel("monika_yellowwp", derandom=True)
     return
@@ -6701,15 +6701,15 @@ init 5 python:
     )
 
 label monika_hair_ponytail:
-    m 1a "Sure thing!"
+    m 1eua "Sure thing!"
     m "Just give me a second."
-    show monika 1q
+    show monika 1dsc
     pause 1.0
 
     $ monika_chr.reset_hair()
 
-    m 3k "All done!"
-    m 1a "If you want me to let my hair down, just ask, okay?"
+    m 3hub "All done!"
+    m 1eua "If you want me to let my hair down, just ask, okay?"
 
     # lock this event, unlock hairdown
     $ lockEventLabel("monika_hair_ponytail")
@@ -6730,15 +6730,15 @@ init 5 python:
     )
 
 label monika_hair_down:
-    m 1a "Sure thing, [player]."
+    m 1eua "Sure thing, [player]."
     m "Just give me a moment."
-    show monika 1q
+    show monika 1dsc
     pause 1.0
 
     $ monika_chr.change_hair("down")
 
-    m 3k "And it's down!"
-    m 1a "If you want my hair in a ponytail again, just ask away, [player]~"
+    m 3hub "And it's down!"
+    m 1eua "If you want my hair in a ponytail again, just ask away, [player]~"
 
     # lock this event, unlock hairponytail
     $ lockEventLabel("monika_hair_down")
