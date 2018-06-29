@@ -22,11 +22,11 @@ install:
     # copy over files from game/
     - cp -Rf MonikaModDev/Monika\ After\ Story/* mas072/
 
-    - cd renpy
-
 # environment to handle alsa issues
 env:
     - SDL_AUDIODRIVER=dummy
 
 # command to check syntax
-script: ./renpy.sh "../mas072/" lint && ./renpy.sh launcher distribute "../mas072/"
+script: 
+    - python MonikaModDev/tools/travis.py
+    - renpy/renpy.sh "../mas072/" lint && renpy/renpy.sh launcher distribute "../mas072/"
