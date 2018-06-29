@@ -439,7 +439,7 @@ init 5 python:
 label greeting_sweetpea:
      m 1hua "Look who's back."
      m 2hub "It's you, my sweetpea!"
-     m 1llkbsa "My goodness... That surely was embarassing to say, ehehe~"
+     m 1lkbsa "My goodness... That surely was embarassing to say, ehehe~"
      return
 
 init 5 python:
