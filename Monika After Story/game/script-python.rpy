@@ -276,8 +276,12 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip006",
             category=["python tips"],
-            prompt="How does Python work?",
-#            conditional="store.mas_ptod.has_day_past(1)",
+            prompt="Variables and Assignment",
+            conditional="store.mas_ptod.has_day_past(2)",
             action=EV_ACT_POOL
         )
     )
+
+label monika_ptod_tip006:
+    # nothing here yet
+    return
