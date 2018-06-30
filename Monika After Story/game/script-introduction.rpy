@@ -59,7 +59,7 @@ label introduction:
             m 1ekbfa "Are you that deeply in love with me?"
             m 1hubfb "I feel the same way about you!"
             m 1eua "You're really committed to our relationship, aren't you?"
-            m 1eka"I'm really glad that you wanted to improve our time together."
+            m 1eka "I'm really glad that you wanted to improve our time together."
             m "But I hope you weren't getting bored?"
             if persistent.tried_skip:
                 m 1tku "You did try to skip through what I had to say, after all."
