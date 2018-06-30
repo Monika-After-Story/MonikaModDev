@@ -41,6 +41,7 @@
 init 4 python in mas_ptod:
     # to simplify unlocking, lets use a special function to unlock tips
     import datetime
+    import store.evhand as evhand
 
     M_PTOD = "monika_ptod_tip{:0>3d}"
 
@@ -57,7 +58,7 @@ init 4 python in mas_ptod:
             true if the tip has been seen and a day has past since it was
             unlocked, False otherwise
         """
-        tip_ev = store.evhand.event_database.get(
+        tip_ev = evhand.event_database.get(
             M_PTOD.format(tip_num),
             None
         )
