@@ -4,6 +4,8 @@
 # this is kept separate from script-topics.
 #
 # NOTE: these are considered pool type events, similar to writing tips
+# NOTE: these are also NOT literally once a day. There is a day in between
+#   unlocking the next one, though
 #
 # And to keep the theme, these are 0-indexed
 #
@@ -34,8 +36,45 @@
 # we're just going to throw a lot of info that is going to be ignored or forgotten quickly
 # I think splitting something in more than one topic may be a good idea
 #
-
 ## We can assume evhand is already imported
+
+init 4 python in mas_ptod:
+    # to simplify unlocking, lets use a special function to unlock tips
+    import datetime
+
+    M_PTOD = "monika_ptod_tip{:0>3d}"
+
+    def has_day_past(tip_num):
+        """
+        Checks if the tip with the given number has already been seen and
+        a day has past since it was unlocked.
+        NOTE: by day, we mean date has changd, not 24 hours
+
+        IN:
+            tip_num - number of the tip to check
+
+        RETURNS:
+            true if the tip has been seen and a day has past since it was
+            unlocked, False otherwise
+        """
+        tip_ev = store.evhand.event_database.get(
+            M_PTOD.format(tip_num),
+            None
+        )
+
+        if tip_ev is None:
+            return False
+
+        # otherwise, unlocked date is our key
+        if tip_ev.unlock_date is None or tip_ev.shown_count == 0:
+            return False
+
+        # now check the actual day
+        return (
+            datetime.date.today() - tip_ev.unlock_date.date() 
+            > datetime.timedelta(days=1)
+        )
+
 
 # The initial event is getting Monika to talk about python
 # this must be hidden after it has been completed
@@ -113,7 +152,7 @@ init 5 python:
             eventlabel="monika_ptod_tip002",
             category=["python tips"],
             prompt="Types",
-            conditional="seen_event('monika_ptod_tip001')",
+            conditional="store.mas_ptod.has_day_past(1)",
             action=EV_ACT_POOL
         )
     )
@@ -147,7 +186,7 @@ init 5 python:
             eventlabel="monika_ptod_tip003", # may change order, you decide on this
             category=["python tips"],
             prompt="How does Python work?",
-            conditional="seen_event('monika_ptod_tip002')",
+            conditional="store.mas_ptod.has_day_past(1)",
             action=EV_ACT_POOL
         )
     )
@@ -169,7 +208,7 @@ init 5 python:
             eventlabel="monika_ptod_tip004",
             category=["python tips"],
             prompt="What does python code look like?",
-            conditional="seen_event('monika_ptod_tip001')",
+            conditional="store.mas_ptod.has_day_past(1)",
             action=EV_ACT_POOL
         )
     )
