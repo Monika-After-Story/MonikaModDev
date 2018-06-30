@@ -1718,7 +1718,7 @@ style update_check_button_text is confirm_button_text
 ##
 ## This is the screen called when the game needs to update versions
 ##
-screen updater():
+screen updater:
 
     modal True
 
