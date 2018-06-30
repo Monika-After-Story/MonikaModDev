@@ -1,11 +1,15 @@
 ## module with a function that pull sprites out of the sprite-chart
+#
+# VER: Python 2.7
 
 import os
+import gamedir as GDIR
+import menutils
 
-SPRITE_PATH = "../Monika After Story/game/sprite-chart.rpy"
+SPRITE_PATH = GDIR.REL_PATH_GAME + "sprite-chart.rpy"
 SAVE_PATH = "zzzz_spritelist"
 SAVE_PATH_D = "zzzz_spritedict"
-SAVE_PATH_IO = "../Monika After Story/game/zzzz_sprite_opt.rpy"
+SAVE_PATH_IO = GDIR.REL_PATH_GAME + "zzzz_sprite_opt.rpy"
 
 IMG_START = "image monika"
 IMG_OUT = '"monika {0}"'
@@ -27,6 +31,20 @@ def is_sprite_line(line):
     return line.startswith(IMG_START)
 
 
+def clean_sprite(code):
+    """
+    Cleans the given sprite (removes excess whitespace, colons)
+
+    IN:
+        code - sprite code to clean
+
+    RETURNS:
+        cleaned sprite code
+    """
+    code = code.strip()
+    return code.replace(":","")
+
+
 def pull_sprite_code(line):
     """
     Pulls the sprite code from the given line.
@@ -38,7 +56,7 @@ def pull_sprite_code(line):
     RETURNS: the sprite code we got, if not a sprite code, we return None
     """
     if is_sprite_line(line):
-        return line.split(" ")[2]
+        return clean_sprite(line.split(" ")[2])
 
     return None
 
@@ -128,6 +146,74 @@ def write_zz_sprite_opt(sprites):
         
         outfile.write(__ZZ_SP_OPT_FOOTER)
 
+
+####################### special run methods ##################################
+
+
+def run():
+    """
+    Runs this module (menu-related)
+    """
+    choice = menutils.menu(menu_main)
+
+    if choice is None:
+        return
+
+    # otherwise we have a choice
+    choice()
+
+
+def run_spl(quiet=False):
+    """
+    Generates the sprite code list and writes it to file
+
+    IN:
+        quiet - True will suppress output
+    """
+    if not quiet:
+        print("Generating sprite list....")
+
+    sp_list = pull_sprite_list()
+
+    if not quiet:
+        print("Writing sprite list to " + SAVE_PATH)
+
+    write_spritecodes(sp_list)
+
+    if not quiet:
+        print("\nDone")
+        menutils.e_pause()
+
+
+def run_rpy_all(quiet=False):
+    """
+    Generates optimized image rpy for ALL images
+
+    IN:
+        quiet - True will suppress output
+    """
+    if not quiet:
+        print("Generating sprite list....")
+
+    sp_list = pull_sprite_list()
+
+    if not quiet:
+        print("Writing optimized rpy to " + SAVE_PATH_IO)
+
+    write_zz_sprite_opt(sp_list)
+
+    if not quiet:
+        print("\nDone")
+        menutils.e_pause()
+
+
+################### menus #################
+
+menu_main = [
+    ("Sprite Puller", "Option: "),
+    ("Generate Sprite Code List", run_spl),
+    ("Generate Optimized RPY", run_rpy_all)
+]
 
 
 #### strings for formatting:

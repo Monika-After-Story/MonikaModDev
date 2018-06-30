@@ -1,15 +1,24 @@
 ## TODO
 ## we need a neato menu for everything
+#
+# VER: python 2.7
 
-import spritepuller
+import spritepuller as spp
+import spritechecker as spc
+import menutils
 
-sp_list = spritepuller.pull_sprite_list()
-
-sp_list = [
-    code
-    for code in sp_list
-    if ":" not in code
+menu_main = [
+    ("MAS Dev Tools", "Utility: "),
+    ("Sprite Puller", spp.run),
+    ("Check Sprites", spc.run)
 ]
 
-spritepuller.write_spritecodes(sp_list)
-spritepuller.write_zz_sprite_opt(sp_list)
+choice = True
+
+while choice is not None:
+
+    choice = menutils.menu(menu_main)
+
+    if choice is not None:
+        choice()
+
