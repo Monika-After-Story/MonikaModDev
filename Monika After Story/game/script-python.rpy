@@ -283,5 +283,58 @@ init 5 python:
     )
 
 label monika_ptod_tip006:
-    # nothing here yet
+    # [show this once]
+    # Now that you know about types, I can teach you about variables.
+    # [end]
+    #
+    # Variables represent the memory location that stores data. 
+    # To create a variable, TODO make a console
+    # When you create
+    # a variable, Python reserves some place in memory and links the name of
+    # that variable to the place in memory. The amount of memory reserved
+    # and the type of data being held in that location depends on the data
+    # type of what you want to store. 
+    #
+    # To create a variable, 
     return
+
+
+
+############################# [CONSOLE] #######################################
+# Unfortunately, it's not enough to have monika just talk. Having a working
+# python interpreter will make things easier for teaching
+#
+# NOTE: base the solids off of hangman. That should help us out
+
+image cn_frame = "mod_assets/console/cn_frame.png"
+
+# NOTE: Console text:
+# style console_text (for regular console text)
+# style console_text_console (for the actual typing text)
+#   this style has a slow_cps of 30
+#
+# console_Text font is gui/font/F25_BankPrinter.ttf
+style mas_py_console_text is console_text
+style mas_py_console_text_cn is console_text_console
+
+# images for console stuff
+# NOTE need to adjust these
+image mas_py_cn_sym = Text(">>>", style="mas_py_console_text", anchor=(0, 0), xpos=10, ypos=90)
+
+
+init -1 python in mas_ptod:
+
+    # console history is alist
+    cn_history = list()
+
+screen mas_py_console_teaching():
+    
+    frame:
+        xanchor 0
+        yanchor 0
+        xpos 5
+        ypos 100
+        background cn_frame
+
+        vbox:
+            
