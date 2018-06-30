@@ -14,6 +14,8 @@
 #   --- sugestion python compared to other languages/ how does it work
 #   --- suggestion mention syntax and probably how to get python maybe separate each part
 #   1 - types
+#       - numbers and strings, Nones are together (002)
+#     - comparisons (bools) (should be its own title
 #   2 - Variables and assignment
 #   3 - If statement / elif and else
 #   4 - while loop
@@ -58,6 +60,10 @@ init 4 python in mas_ptod:
             true if the tip has been seen and a day has past since it was
             unlocked, False otherwise
         """
+        # as a special thing for devs
+        if renpy.game.persistent._mas_dev_enable_ptods:
+            return True
+
         tip_ev = evhand.event_database.get(
             M_PTOD.format(tip_num),
             None
@@ -137,12 +143,14 @@ label monika_ptod_tip001:
     # generally agreed that both versions of the language have their own
     # strengths and weaknesses.
     #
+    # [show this once]
     # The versions of RenPy that runs this game uses Python2, so I'll
     # mainly teach you python2
     # but i'll mention py3 at times when it's appropriate. -- for saying that she doesn't know much she seems rather confident here
     #
     # That's my lesson for today!
     # Thanks for listening
+    # [end]
     return
 
 ###############################################################################
@@ -159,11 +167,13 @@ init 5 python:
     )
 
 label monika_ptod_tip002:
+    # [show this once]
     # In most programming languages, each piece of data that can be chnaged
     # or modified by a program has a _type_
     # associated with it. If some data should be treated as a number, then
     # it will have a numeric type. If some data should be treated as text,
     # then it will have a string type.
+    # [end]
     #
     # Python has two separate types to represent numbers: _integers_ and _floats_.
     # Integers are used to represent whole numbers - Anything that isn't a
@@ -174,9 +184,21 @@ label monika_ptod_tip002:
     #
     # Text in python is represented with string types. 
     # anything surrounded in single quotes (') or double quotes (") are strings.
+    # For example, 'this is a string in single quotes'
+    # And "this is a string in double quotes".
+    # Strings can also be created with three double quotes ("""), but these
+    # strings are treated specially in python. I'll talk about this another day.
     #
-    # 
+    # Python also has a special data type called a NoneType. This type 
+    # represents the absence of any data. If you're familiar with with other
+    # programming languages, this is akin to a null or undefined type.
+    # The keyword None represents NoneTypes in python.
     #
+    # [show this once]
+    # Python uses other data types, but I think the types we've covered is
+    # enough for today.
+    # Thanks for listening!
+    # [end]
     return
 
 ###############################################################################
@@ -223,3 +245,39 @@ label monika_ptod_tip004:
     # TODO unfinished and probably will split it in more than just one, also I know I should call it
     # python syntax but I'm making it non programmers friendly
     return
+
+###############################################################################
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ptod_tip005",
+            category=["python tips"],
+            prompt="Comparisons and booleans",
+#            conditional="store.mas_ptod.has_day_past(2)",
+#   actually, this should probably unlock after we talk about variable 
+#   assignment, since we can do an example like variable = a == b kind of thing
+            action=EV_ACT_POOL
+        )
+    )
+
+label monika_ptod_tip005:
+    # [show this once]
+    # So if you remember, a single = does assignment, the == does 
+    # compariosns
+    #
+    # The boolean type represents True / False values. 
+    return
+
+###############################################################################
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ptod_tip006",
+            category=["python tips"],
+            prompt="How does Python work?",
+#            conditional="store.mas_ptod.has_day_past(1)",
+            action=EV_ACT_POOL
+        )
+    )
