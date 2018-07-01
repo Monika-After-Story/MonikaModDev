@@ -1117,7 +1117,7 @@ init -1 python in mas_calendar:
         try:
             with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
                 calendar_database = json.load(fp)
-        except (IOError, ValueError), e:
+        except (IOError, ValueError):
             pass
 
 
