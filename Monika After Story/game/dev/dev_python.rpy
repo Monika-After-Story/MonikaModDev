@@ -45,7 +45,6 @@ label dev_ptod_console_testing:
     $ local_context = dict()
     $ store.mas_ptod.restart_console()
 
-
     m "Hi, I'm going to show the console right now"
     m "edit 'good_cmd' and 'bad_cmd' to change the commands"
     m "edit 'good_cmd_check' to change the 'good_cmd' verification command"
@@ -74,3 +73,91 @@ label dev_ptod_console_testing:
     hide screen mas_py_console_teaching
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_ptod_console_testing_lines",
+            category=["dev"],
+            prompt="TEST PTOD CONSOLE MAX",
+            pool=True,
+            random=True,
+            unlocked=True
+        )
+    )
+
+label dev_ptod_console_testing_lines:
+    python:
+        char_lim = list()
+        for i in range(1, store.mas_ptod.LINE_MAX-4+1):
+            char_lim.append(str(i % 10))
+
+        char_lim = "".join(char_lim)
+
+        local_context = dict()
+        store.mas_ptod.restart_console()
+        max_history = store.mas_ptod.H_SIZE + 1
+
+    m "hi, let me show the screen"
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    m "I am going to test for max lines that can fit and max number of charcters."
+
+    m "First, the max number of characters is [store.mas_ptod.LINE_MAX]"
+    $ store.mas_ptod.write_command(char_lim)
+    $ store.mas_ptod.exec_command(local_context)
+
+    m "and the max number of lines in history is [max_history]"
+    python:
+        for ln in range(0, store.mas_ptod.H_SIZE):
+            store.mas_ptod.write_command(char_lim)
+            store.mas_ptod.exec_command(local_context)
+
+    m "And that is the line dimensions for the console."
+    m " now i will hide the screen"
+    hide screen mas_py_console_teaching
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_ptod_console_testing_line_break",
+            category=["dev"],
+            prompt="TEST PTOD CONSOLE LINE BREAK",
+            pool=True,
+            random=True,
+            unlocked=True
+        )
+    )
+
+label dev_ptod_console_testing_line_break:
+    python:
+        char_lim = list()
+        for i in range(1, store.mas_ptod.LINE_MAX+1):
+            char_lim.append(str(i % 10))
+
+        char_lim = "".join(char_lim)
+
+        local_context = dict()
+        store.mas_ptod.restart_console()
+
+    m "hi, let me show the screen"
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    m "I am going to test for line breaks"
+
+    m "First, the max number of characters is [store.mas_ptod.LINE_MAX]"
+    $ store.mas_ptod.write_command(char_lim)
+    m "This command should be split on 2 lines"
+    $ store.mas_ptod.exec_command(local_context)
+    m "But the result should fit on one line"
+
+    m "good?"
+    m "okay i hide screen now"
+    hide screen mas_py_console_teaching
+    return

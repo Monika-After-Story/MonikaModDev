@@ -307,6 +307,7 @@ label monika_ptod_tip006:
 # NOTE: base the solids off of hangman. That should help us out
 
 image cn_frame = "mod_assets/console/cn_frame.png"
+define mas_ptod.font = "mod_assets/font/mplus-1mn-medium.ttf"
 
 # NOTE: Console text:
 # style console_text (for regular console text)
@@ -314,8 +315,10 @@ image cn_frame = "mod_assets/console/cn_frame.png"
 #   this style has a slow_cps of 30
 #
 # console_Text font is gui/font/F25_BankPrinter.ttf
-style mas_py_console_text is console_text
-style mas_py_console_text_cn is console_text_console
+style mas_py_console_text is console_text:
+    font mas_ptod.font
+style mas_py_console_text_cn is console_text_console:
+    font mas_ptod.font
 
 # images for console stuff
 #image mas_py_cn_sym = Text(">>>", style="mas_py_console_text", anchor=(0, 0), xpos=10, ypos=538)
@@ -332,17 +335,28 @@ init -1 python in mas_ptod:
     cn_history = list()
 
     # history lenghtr limit
-    H_SIZE = 10
+    H_SIZE = 20
 
     # current line
     cn_line = ""
 
-    # multi line commands
-    multi_cmd = list()
+    # current command, may not be what is shown
+    cn_cmd = ""
+
+    # block commands
+    blk_cmd = list()
+
+    # block commands stack level
+    # increment for each stack level, decrement when dropping out of a
+    # stack level
+    stack_level = 0
 
     # version text
     VER_TEXT_1 = "Python {0}"
     VER_TEXT_2 = "{0} in MAS"
+
+    # line length limit
+    LINE_MAX = 66
 
 
     def write_command(cmd):
@@ -358,6 +372,10 @@ init -1 python in mas_ptod:
         global cn_line
         cn_line = cmd
 
+        # TODO have the command be separte from teh currnet line
+        # this is because of a single command spread across multiple lines
+        
+
 
     def clear_console():
         """
@@ -365,7 +383,9 @@ init -1 python in mas_ptod:
         """
         global cn_history
         global cn_line
+        global cn_cmd
         cn_line = ""
+        cn_cmd = ""
         cn_history = []
 
 
@@ -416,16 +436,21 @@ init -1 python in mas_ptod:
     def exec_command(context):
         """
         Executes the command that is currently in the console.
+        This is basically pressing Enter
 
         IN:
             context - dict that represnts the current context. You should pass
                 locals here.
         """
+#        global cn_cmd
         global cn_line
+
+#        if multi_stack > 0 and 
+
         result = __exec_cmd(str(cn_line), context=context)
             
         # regardless, update the console
-        # TODO handle mult-line commands
+        # TODO handle block commands
         output = [SYM + cn_line]
 
         if len(result) > 0:
@@ -463,10 +488,39 @@ init -1 python in mas_ptod:
             new_items - list of new itme sto add to console history
         """
         global cn_history
-        cn_history.extend(new_items)
+
+        # make sure to break lines
+        for line in new_items:
+            broken_lines = _line_break(line)
+
+            # and clean them too
+            for b_line in broken_lines:
+                cn_history.append(mas_utils.clean_gui_text(b_line))
 
         if len(cn_history) > H_SIZE:
             cn_history = cn_history[-H_SIZE:]
+
+
+    def _line_break(line):
+        """
+        Lines cant be too large. This will line break entries.
+
+        IN:
+            line - the line to break
+
+        RETURNS:
+            list of strings, each item is a line.
+        """
+        if len(line) <= LINE_MAX:
+            return [line]
+
+        # otherwise, its TOO LONG
+        broken_lines = list()
+        while len(line) > LINE_MAX:
+            broken_lines.append(line[:LINE_MAX])
+            line = line[LINE_MAX:]
+
+        return broken_lines
 
 
 screen mas_py_console_teaching():
@@ -475,7 +529,7 @@ screen mas_py_console_teaching():
         xanchor 0
         yanchor 0
         xpos 5
-        ypos 100
+        ypos 5
         background "mod_assets/console/cn_frame.png"
 
         fixed:
@@ -488,21 +542,21 @@ screen mas_py_console_teaching():
                 text cn_line:
                     style "mas_py_console_text"
                     anchor (0, 1.0)
-                    xpos 10
+                    xpos 5
                     ypos cn_h_y
                 $ cn_h_y -= 20
 
             text ">>> ":
                 style "mas_py_console_text"
                 anchor (0, 1.0)
-                xpos 10
+                xpos 5
                 ypos 433
 
             if len(store.mas_ptod.cn_line) > 0:
                 text store.mas_ptod.cn_line:
                     style "mas_py_console_text_cn"
                     anchor (0, 1.0)
-                    xpos 58
+                    xpos 41
                     ypos 433
 
 
