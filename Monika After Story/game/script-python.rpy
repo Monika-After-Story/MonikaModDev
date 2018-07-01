@@ -330,6 +330,7 @@ init -1 python in mas_ptod:
 
     # symbol that we use
     SYM = ">>> "
+    M_SYM = "... "
 
     # console history is alist
     cn_history = list()
@@ -358,6 +359,22 @@ init -1 python in mas_ptod:
     # line length limit
     LINE_MAX = 66
 
+    # STATEs
+    # used when the current line is only 1 line
+    STATE_SINGLE = 0
+
+    # used when current line is multi line
+    STATE_MULTI = 1
+
+    # used when we are doing block statements
+    STATE_BLOCK = 2
+
+    # used when doing multi line in block statements
+    STATE_BLOCK_MULTI = 3
+
+    # current state
+    state = STATE_SINGLE
+
 
     def write_command(cmd):
         """
@@ -369,8 +386,49 @@ init -1 python in mas_ptod:
         IN:
             cmd - the command to write to the console
         """
-        global cn_line
-        cn_line = cmd
+        global cn_line, cn_cmd, state
+
+        # apply indents depending on stack level
+        _cmd = _indent_line(str(cmd))
+
+        # save the command separately
+        # TODO, handle block commands
+        cn_cmd = _cmd
+
+        # prepend the _cn_line with an appropriate symbol
+        if state == STATE_SINGLE:
+            _cn_line = SYM + cmd
+
+        elif state == STATE_BLOCK:
+            _cn_line = M_SYM + cmd
+
+        cn_lines = _line_break(_cn_line)
+
+        if len(cn_lines) == 1:
+            # dont need to split lines
+            cn_line = _cmd
+
+
+
+        #
+            # we need to split lines
+
+            if state == STATE_SINGLE:
+                # single lines just go to multi
+                state = STATE_MULTI
+
+            if state == STATE_BLOCK:
+                # blocks are different
+                state = STATE_BLOCK_MULTI
+
+            # otherwise, we must already be in a multi state, so dont change it
+
+        else:
+            # otherwise, dont need to split lines
+            
+
+            
+
 
         # TODO have the command be separte from teh currnet line
         # this is because of a single command spread across multiple lines
@@ -381,9 +439,7 @@ init -1 python in mas_ptod:
         """
         Cleares console hisotry and current line
         """
-        global cn_history
-        global cn_line
-        global cn_cmd
+        global cn_history, cn_line, cn_history
         cn_line = ""
         cn_cmd = ""
         cn_history = []
@@ -470,6 +526,20 @@ init -1 python in mas_ptod:
         return err_split[0] + ": " + str(exp)
 
 
+    def _indent_line(line):
+        """
+        Prepends the given line with an appropraite number of spaces, depending
+        on the current stack level
+
+        IN:
+            line - line to prepend
+
+        RETURNS:
+            line prepended with spaces
+        """
+        return (" " * (stack_level * 4)) + line
+
+
     def _update_console_history(*new_items):
         """
         Updates the console history with the list of new lines to add
@@ -536,7 +606,9 @@ screen mas_py_console_teaching():
             python:
                 starting_index = len(store.mas_ptod.cn_history) - 1
                 cn_h_y = 413
+                cn_l_x = 41
 
+            # console history
             for index in range(starting_index, -1, -1):
                 $ cn_line = store.mas_ptod.cn_history[index]
                 text cn_line:
@@ -546,18 +618,31 @@ screen mas_py_console_teaching():
                     ypos cn_h_y
                 $ cn_h_y -= 20
 
-            text ">>> ":
-                style "mas_py_console_text"
-                anchor (0, 1.0)
-                xpos 5
-                ypos 433
+            # cursor symbol
+            if store.mas_ptod.state == store.mas_ptod.STATE_SINGLE:
+                text ">>> ":
+                    style "mas_py_console_text"
+                    anchor (0, 1.0)
+                    xpos 5
+                    ypos 433
 
+            elif store.mas_ptod.state == store.mas_ptod.STATE_BLOCK:
+                text "... ":
+                    style "mas_py_console_text"
+                    anchor (0, 1.0)
+                    xpos 5
+                    ypos 433
+
+            else:
+                # multi line statement, dont have the sym at all
+                $ cn_l_x = 5
+            
+            # current line
             if len(store.mas_ptod.cn_line) > 0:
                 text store.mas_ptod.cn_line:
                     style "mas_py_console_text_cn"
                     anchor (0, 1.0)
-                    xpos 41
+                    xpos cn_l_x
                     ypos 433
-
 
 
