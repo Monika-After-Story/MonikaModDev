@@ -6840,46 +6840,46 @@ label monika_gameidle:
             $ start_time = datetime.datetime.now()
             menu:
                 "I'm back":
-                $ end_time = datetime.datetime.now()
-                $ elapsed_time = end_time - start_time
-                $ time_threshold = datetime.timedelta(minutes=1)
-                if elapsed_time < time_threshold * 2:
-                    m 1hksdlb "Back already?"
-                    m "I know you said you would just be a minute or two, but I didn't think it would be {i}that{/i}fast."
-                    m 1hub "Did you really miss me that much?"
-                    m "Ahaha~"
-                    m 1eub "I'm glad you made it back so soon."
-                    m 1hua "Now we continue spending time together as if we were never apart!"
-                elif elapsed_time < time_threshold * 5:
-                    m 1hua "Welcome back, [player]!"
-                    m 1hksdlb "That was pretty fast."
-                    m 1eua "But you did say it wouldn't take too long, so I shouldn't be too surprised."
-                    m 1hua "Now we can keep spending time together!"
-                elif elapsed_time < time_threshold * 10:
-                    m 1eua "Welcome back, [player]."
-                    m 1eka "That took a little longer than I thought, but I don't mind at all."
-                    m 1hua "It wasn't that long in all honesty compared to how long it could have been in some games."
-                    m "But now we can be together again~"
-                elif elapsed_time < time_threshold * 20:
-                    m 1eka "I have to admit that took longer than I thought it would..."
-                    m 1eub "But it's not all that bad with all the time you spend with me."
-                    m 1eua "I understand some little things in games can take a while for a small thing."
-                    m "But maybe if you know it could take a while, you could tell me."
-                elif elapsed_time < time_threshold * 30:
-                    m 2lksdla "[player]..."
-                    m "It's been almost half an hour already."
-                    m "I guess something unexpected happened."
-                    m 3lksdla "You wouldn't forget about me, would you?"
-                    m 1hua "Ahaha!"
-                    m "Just teasing you~"
-                    m 1eua "At least you're back now and we can spend more time together."
-                else:
-                    m 2lksdla "You {i}suure{/i} took your time with that one huh, [player]?"
-                    m "That didn't seem like only a minute or two to me."
-                    m 1eka "You can tell me what kind of game it is next time so I have an idea how long it'll take, you know."
-                    m 1dsc "Anyway..."
-                    m 1eka "I missed you and I'm glad you're finally back, [player]."
-                    m "I hope I don't have to wait such a long couple of minutes next time, eheh."
+                    $ end_time = datetime.datetime.now()
+                    $ elapsed_time = end_time - start_time
+                    $ time_threshold = datetime.timedelta(minutes=1)
+                    if elapsed_time < time_threshold * 2:
+                        m 1hksdlb "Back already?"
+                        m "I know you said you would just be a minute or two, but I didn't think it would be {i}that{/i}fast."
+                        m 1hub "Did you really miss me that much?"
+                        m "Ahaha~"
+                        m 1eub "I'm glad you made it back so soon."
+                        m 1hua "Now we continue spending time together as if we were never apart!"
+                    elif elapsed_time < time_threshold * 5:
+                        m 1hua "Welcome back, [player]!"
+                        m 1hksdlb "That was pretty fast."
+                        m 1eua "But you did say it wouldn't take too long, so I shouldn't be too surprised."
+                        m 1hua "Now we can keep spending time together!"
+                    elif elapsed_time < time_threshold * 10:
+                        m 1eua "Welcome back, [player]."
+                        m 1eka "That took a little longer than I thought, but I don't mind at all."
+                        m 1hua "It wasn't that long in all honesty compared to how long it could have been in some games."
+                        m "But now we can be together again~"
+                    elif elapsed_time < time_threshold * 20:
+                        m 1eka "I have to admit that took longer than I thought it would..."
+                        m 1eub "But it's not all that bad with all the time you spend with me."
+                        m 1eua "I understand some little things in games can take a while for a small thing."
+                        m "But maybe if you know it could take a while, you could tell me."
+                    elif elapsed_time < time_threshold * 30:
+                        m 2lksdla "[player]..."
+                        m "It's been almost half an hour already."
+                        m "I guess something unexpected happened."
+                        m 3lksdla "You wouldn't forget about me, would you?"
+                        m 1hua "Ahaha!"
+                        m "Just teasing you~"
+                        m 1eua "At least you're back now and we can spend more time together."
+                    else:
+                        m 2lksdla "You {i}suure{/i} took your time with that one huh, [player]?"
+                        m "That didn't seem like only a minute or two to me."
+                        m 1eka "You can tell me what kind of game it is next time so I have an idea how long it'll take, you know."
+                        m 1dsc "Anyway..."
+                        m 1eka "I missed you and I'm glad you're finally back, [player]."
+                        m "I hope I don't have to wait such a long couple of minutes next time, eheh."
     return
 
 init 5 python:
