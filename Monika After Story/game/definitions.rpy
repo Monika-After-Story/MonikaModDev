@@ -1712,6 +1712,28 @@ init -100 python in mas_utils:
     # utility functions for other stores.
     import datetime
 
+    # bad text dict
+    BAD_TEXT = {
+        "{": "{{",
+        "[": "[["
+    }
+
+    def clean_gui_text(text):
+        """
+        Cleans the given text so its suitable for GUI usage
+
+        IN:
+            text - text to clean
+
+        RETURNS:
+            cleaned text
+        """
+        for bad in BAD_TEXT:
+            text = text.replace(bad, BAD_TEXT[bad])
+
+        return text
+
+
     def tryparseint(value, default=0):
         """
         Attempts to parse the given value into an int. Returns the default if

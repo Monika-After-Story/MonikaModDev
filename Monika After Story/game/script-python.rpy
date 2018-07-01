@@ -318,14 +318,156 @@ style mas_py_console_text is console_text
 style mas_py_console_text_cn is console_text_console
 
 # images for console stuff
-# NOTE need to adjust these
-image mas_py_cn_sym = Text(">>>", style="mas_py_console_text", anchor=(0, 0), xpos=10, ypos=90)
-
+#image mas_py_cn_sym = Text(">>>", style="mas_py_console_text", anchor=(0, 0), xpos=10, ypos=538)
+#image mas_py_cn_txt = ParameterizedText(style="mas_py_console_text_cn", anchor=(0, 0), xpos=75, ypos=538)
+#image mas_py_cn_hist = ParameterizedText(style="mas_py_console_text", anchor(0, 1.0), xpos=10, ypos=538)
 
 init -1 python in mas_ptod:
+    import store.mas_utils as mas_utils
+
+    # symbol that we use
+    SYM = ">>> "
 
     # console history is alist
     cn_history = list()
+
+    # history lenghtr limit
+    H_SIZE = 10
+
+    # current line
+    cn_line = ""
+
+    # multi line commands
+    multi_cmd = list()
+
+    # version text
+    VER_TEXT_1 = "Python {0}"
+    VER_TEXT_2 = "{0} in MAS"
+
+
+    def write_command(cmd):
+        """
+        Writes a command to the console
+
+        NOTE: Does not EXECUTE
+        NOTE: remove previous command
+
+        IN:
+            cmd - the command to write to the console
+        """
+        global cn_line
+        cn_line = cmd
+
+
+    def clear_console():
+        """
+        Cleares console hisotry and current line
+        """
+        global cn_history
+        global cn_line
+        cn_line = ""
+        cn_history = []
+
+
+    def restart_console():
+        """
+        Cleares console history and current line, also sets up version text
+        """
+        import sys
+        version = sys.version
+
+        # first closing paren is where we need to split the version text
+        split_dex = version.find(")")
+        start_lines = [
+            mas_utils.clean_gui_text(VER_TEXT_1.format(version[:split_dex+1])),
+            mas_utils.clean_gui_text(VER_TEXT_2.format(version[split_dex+2:]))
+        ]
+
+        # clear the console and add the 2 new lines
+        clear_console()
+        _update_console_history_list(start_lines)
+
+
+    def __exec_cmd(line, context):
+        """
+        Tries to eval the line first, then executes.
+        Returns the result of the command
+
+        IN:
+            line - line to eval / exec
+            context - dict that represnts the current context. should be locals
+
+        RETURNS:
+            the result of the command, as a string
+        """
+        try:
+            result = str(eval(line, context))
+        except Exception as e:
+            # eval fails, try to exec
+            result = ""
+            try:
+                exec(line, context)
+            except Exception as e:
+                result = _exp_toString(e)
+
+        return result
+
+
+    def exec_command(context):
+        """
+        Executes the command that is currently in the console.
+
+        IN:
+            context - dict that represnts the current context. You should pass
+                locals here.
+        """
+        global cn_line
+        result = __exec_cmd(str(cn_line), context=context)
+            
+        # regardless, update the console
+        # TODO handle mult-line commands
+        output = [SYM + cn_line]
+
+        if len(result) > 0:
+            output.append(result)
+
+        cn_line = ""
+        _update_console_history_list(output)
+
+
+    def _exp_toString(exp):
+        """
+        Converts the given exception into a string that looks like
+        how python interpreter prints out exceptions
+        """
+        err = repr(exp)
+        err_split = err.partition("(")
+        return err_split[0] + ": " + str(exp)
+
+
+    def _update_console_history(*new_items):
+        """
+        Updates the console history with the list of new lines to add
+
+        IN:
+            new_items - the items to add to the console history
+        """
+        _update_console_history_list(new_items)
+
+
+    def _update_console_history_list(new_items):
+        """
+        Updates console history with list of new lines to add
+
+        IN:
+            new_items - list of new itme sto add to console history
+        """
+        global cn_history
+        cn_history.extend(new_items)
+
+        if len(cn_history) > H_SIZE:
+            cn_history = cn_history[-H_SIZE:]
+
 
 screen mas_py_console_teaching():
     
@@ -334,7 +476,34 @@ screen mas_py_console_teaching():
         yanchor 0
         xpos 5
         ypos 100
-        background cn_frame
+        background "mod_assets/console/cn_frame.png"
 
-        vbox:
-            
+        fixed:
+            python:
+                starting_index = len(store.mas_ptod.cn_history) - 1
+                cn_h_y = 413
+
+            for index in range(starting_index, -1, -1):
+                $ cn_line = store.mas_ptod.cn_history[index]
+                text cn_line:
+                    style "mas_py_console_text"
+                    anchor (0, 1.0)
+                    xpos 10
+                    ypos cn_h_y
+                $ cn_h_y -= 20
+
+            text ">>> ":
+                style "mas_py_console_text"
+                anchor (0, 1.0)
+                xpos 10
+                ypos 433
+
+            if len(store.mas_ptod.cn_line) > 0:
+                text store.mas_ptod.cn_line:
+                    style "mas_py_console_text_cn"
+                    anchor (0, 1.0)
+                    xpos 58
+                    ypos 433
+
+
+
