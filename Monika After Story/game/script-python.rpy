@@ -550,9 +550,10 @@ init -1 python in mas_ptod:
             context - dict that represnts the current context. You should pass
                 locals here.
         """
-        global cn_cmd, cn_line, state, stack_level
+        global cn_cmd, cn_line, state, stack_level, blk_cmd
 
-        ### setup some initial conditions
+        ################### setup some initial conditions ################
+
         # block mode just means we are in a block
         block_mode = state == STATE_BLOCK or state == STATE_BLOCK_MULTI
 
@@ -565,7 +566,10 @@ init -1 python in mas_ptod:
         # but a bad block can happen (no text except a single colon)
         bad_block = time_to_block and len(cn_cmd.strip()) == 1
 
-        ### begin parsing
+        # if this contains a value, then we executee
+        full_cmd = None
+
+        ################## pre-execution setup ###########################
 
         if empty_line:
             # like enter was pressed with no text
@@ -582,43 +586,42 @@ init -1 python in mas_ptod:
                 cn_cmd = ""
                 return
 
-        # TODO:
-        # so, a couple of things
-        # 1. if the current command ends with a colon, we enter block mode
-        #   -> if we started from single, we should still display the >>>
-        #       for this command
-        #   -> otherwise, ... is appropriate
-        #   NOTE: if the user only enterd a colon, we need to execute it
-        #       and showcase the syntax error
-        #       Also we need to reset stack levesl and clear the command
-        # 2. If we are in block mode and an empyt line was entered, then
-        #   we quit a stack level
-        #   -> at stack level 0, we should execute the command in full
-        # 3. In block mode:
-        #   -> we normally do nto execute commands, just save everything
-        #       and execute all at once
-        # 4. empty line in single mode just prints out the empty line
+        if bad_block:
+            # user entered a bad block
+            # we will execute it as a command
+            full_cmd = cmd
 
-        # setup the command to be entered
-        full_cmd = cn_cmd
+        elif time_to_block:
+            # we are going to enter a new block mode
+            blk_cmd.append(cn_cmd)
 
-        # block might change the command
-        if block_mode:
+        elif block_mode:
+            # in block mode already
             blk_cmd.append(cn_cmd)
 
             if stack_level == 0:
-                # this means we've cleared all stacks, time to execute block
-                # commands
+                # we've cleared all stacks, time to execute block commands
                 full_cmd = "\n".join(blk_cmd)
-
-                # clear the block command list
                 blk_cmd = list()
 
-        # execute command, if no stack
-        if stack_level == 0:
+        else:
+            # otherwise, we must be single mode or single multi
+
+            # setup the command to be entered
+            full_cmd = cn_cmd
+
+        ########################## execution ##############################
+
+        # execute command, if available
+        if full_cmd is not None:
             result = __exec_cmd(full_cmd, context, block_mode)
+
+        else:
+            result = ""
         
-        if empty_line:
+        ################### console history update #########################
+
+        if block_mode and empty_line:
             # we MUST be in block mode to reach here
             output = [M_SYM]
 
@@ -640,33 +643,28 @@ init -1 python in mas_ptod:
         if len(result) > 0:
             output.append(result)
 
-        # need to switch to block mode if need be
-        if cn_cmd.endswith(":"):
-            # we have a new block 
-            
-            if len(cn_cmd.strip()) == 1:
-                # all you entered was a colon?
-                # we must immediately abort block mode
-                stack_level = 0
-            
-            else:
-                # otherwise, we create a new block
-                stack_level += 1
-
-                if not block_mode:
-                    # in single / multi states, we didnt append the command
-                    # to the block list yet
-                    blk_cmd.append(cn_cmd)
-
-                state = STATE_BLOCK
-                block_mode = True
-
         # update console history and clear current lines / cmd
         cn_line = ""
         cn_cmd = ""
         _update_console_history_list(output)
 
-        # finally, update the states
+        ###################### Post-execution updates ####################
+
+        if bad_block:
+            # bad block, means we abort lots of things
+            stack_level = 0
+            state = STATE_SINGLE
+            block_mode = False
+            blk_cmd = list()
+
+        elif time_to_block:
+            # new block, incrmenet stack levels, change to block states
+            stack_level += 1
+            state = STATE_BLOCK
+            block_mode = True
+
+        ###################### final state updates ######################
+
         if (state == STATE_MULTI) or (block_mode and stack_level == 0):
             # no more stacks or in multi mode
             state = STATE_SINGLE
