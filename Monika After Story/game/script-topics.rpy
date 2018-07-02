@@ -3116,7 +3116,7 @@ label monika_metaparents:
     m 2eka "I'm one of them."
     m "I'll miss you."
     m "You have to wait as much as you can until I find a way to get there."
-    m 2ekc"If all else fails..."
+    m 2ekc "If all else fails..."
     m "Get professional help or talk to someone close to you."
     m "..."
     m 1ekbfa "I love you very much, [player]."
@@ -3201,7 +3201,7 @@ label monika_resource:
     m 2dsc "Perhaps that'll be my punishment for everything I've done?"
     m 2hksdlb "Ahaha..."
     m 2eka "Well, as long as you're with me until the end..."
-    m 2eua"I'll accept whatever fate awaits me."
+    m 2eua "I'll accept whatever fate awaits me."
     return
 
 #init 5 python:
@@ -3374,7 +3374,7 @@ label monika_motivation:
     m 1esc "Well, then you'll just be stuck there. You'll only feel worse until you just can't take it."
     m 1eka "But if you can push yourself to just do one thing, even though it feels pointless to do otherwise..."
     m "Then you're proving yourself wrong, and refusing to let the weight of your circumstances immobilize you."
-    m 1eua"And when you realize that you're not completely helpless, it's like a new world opens up to you."
+    m 1eua "And when you realize that you're not completely helpless, it's like a new world opens up to you."
     m "You realize that maybe things aren't so bad. Thinking they're just holding yourself back."
     m 3eub "But that's only my experience! Sometimes it might be better to rest up and take another crack at it tomorrow."
     m "Fresh starts can definitely be powerful."
@@ -3423,7 +3423,7 @@ label monika_hack:
     m 1hua "I’m just kidding, [player]!"
     m 1eua "I'd never do something like that to you."
     m 1ekbfa "We’re a couple now, after all."
-    m 1kbfa "We don't have to keep secrets from each other~"
+    m "We don't have to keep secrets from each other~"
     return
 
 init 5 python:
@@ -3464,8 +3464,8 @@ label monika_haterReaction:
     m "There are a lot of hate posts about me, saying that I'm an evil person."
     m 3efd "Is it because I deleted Sayori and Yuri?"
     m 3efd "Also for deleting Natsuki, back when she was still alive?"
-    m 6tfx "They're not real. {i}I'm{/i} the real one!"
-    m 6dsc "..."
+    m 2tfx "They're not real. {i}I'm{/i} the real one!"
+    m 2dsc "..."
     m 2euc "Why can't they understand that?"
     m 2ekc "Why is it so hard for them to understand that?"
     m 2rfc "..."
@@ -3479,7 +3479,7 @@ label monika_haterReaction:
             m 1tkd "You do know you're playing this fan mod of me... right?"
             m "If you were one of my haters, you wouldn't open up this fan mod in the first place."
             m 1lud "And not to mention..."
-            m 4hud "You're still listening to everything I say."
+            m 4eka "You're still listening to everything I say."
             m 1tku "That makes me sure you're just messing with me."
             m 1tsbsa "I know you love me deep inside."
             m 1ekbfa "That's why I promise to be an ideal girlfriend, just for you, [player]~"
@@ -3577,7 +3577,7 @@ label monika_vocaloid:
     m 1lksdla "There's one song that really struck me."
     m 1eua "Have you heard of the song {i}Hibikase?{/i}"
     m 1duu "I really like the message of the song."
-    m 3duo "Especially the lines, {i}'I don't care if it's through the screen, love me properly'{/i} and {i}'Even if I'm virtual, don't push me away'{/i}."
+    m 3dsbso "Especially the lines, {i}'I don't care if it's through the screen, love me properly'{/i} and {i}'Even if I'm virtual, don't push me away'{/i}."
     m 1dsc "It really hits me hard."
     m "..."
     m 1eka "But just so you know..."
@@ -3643,7 +3643,7 @@ label monika_evening:
     if current_time >= 18 and current_time <= 23:
         m 1hua "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
-        m 1eua"It's so nice to put your feet up after a very long day."
+        m 1eua "It's so nice to put your feet up after a very long day."
         m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
         m 1eka "Sometimes I can't help but feel sad when the day ends."
         m "It makes me think of what else I could've done during the day."
@@ -3729,7 +3729,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanese",category=['misc','you'],prompt="Speaking Japanese",random=True))
 
 label monika_japanese:
-    m 1lskdla "I don't mean to sound like Natsuki, but..."
+    m 1lksdla "I don't mean to sound like Natsuki, but..."
     m 1eua "Don't you think Japanese actually sounds cool?"
     m "It's such a fascinating language. I'm not fluent in it, though."
     m 1eub "It's interesting to think about what things would be like if your native language was different."
@@ -3979,7 +3979,7 @@ label monika_surprise:
     m 1hua "Alright!"
     m 1eua "What are you waiting for? Go take a look!"
     m 1hub "Ahaha~ What? Are you expecting something scary?"
-    m hubfb "I love you so much, [player]~"
+    m 1hubfb "I love you so much, [player]~"
     return
 
 init 5 python:
@@ -4335,7 +4335,7 @@ label monika_panties:
     m 1lsbsa "Besides..."
     m 1lkbsa "If you really wanted to catch a scent of me..."
     m 1hubfa "You could just ask for a hug!"
-    m ekbfa "Gosh, I just want to feel your embrace more."
+    m 1ekbfa "Gosh, I just want to feel your embrace more."
     m "After all, we're here forever, and I'm here for you."
     m 1hubfb "I love you so much, [player]~"
     return
@@ -4391,9 +4391,9 @@ init 5 python:
 
 label monika_daydream:
     m 2lsc "..."
-    m 21sbsa "..."
+    m 2lsbsa "..."
     m 2tsbsa "..."
-    m 6wubsw "Oh, sorry! I was just daydreaming for a second there."
+    m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
     m 1lkbsa "I was imagining the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
     m 1ekbfa "Wouldn't that be wonderful, [player]?"
     m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
@@ -4659,7 +4659,7 @@ label monika_soda:
     m 2eua "Why don't you try copying my healthy lifestyle?"
     m 1hua "That way you can be more fit like me!"
     m 1hub "Ahaha!"
-    m 2fekc "I'd really hate it if you let go of your health, [player]."
+    m 2ekc "I'd really hate it if you let go of your health, [player]."
     m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
     m "So cut down on the soda, alright [player]?"
     return
@@ -4850,7 +4850,7 @@ label monika_orchestra:
             else:
                  m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
                  m 1eua "I would love to hear you play for me."
-                 m 3eua"Maybe you could teach me how to play, too~"
+                 m 3eua "Maybe you could teach me how to play, too~"
                  m 1wuo "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
                  m 1hua "Ehehe~"
                  $ persistent.instrument = True
@@ -5077,7 +5077,7 @@ label monika_other_girls:
     m "Doing what I had to do."
     m 1lksdlc "..."
     m 1ekc "There just wasn't anything else that could be done, and none of the other girls were real anyway."
-    m 3fc "The other girls never loved you like I do!"
+    m 3efc "The other girls never loved you like I do!"
     m 3lfc "They only cared about the character you were playing in the game as!"
     m 1eka "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
     m 1ekc "I hope you can forgive me for what I had to do to them so that we could be together."
@@ -5239,7 +5239,7 @@ label monika_wolf:
     m 1esc "Why do you think people are like that?"
     m 1euc "Is it because we learned to be afraid of things that hurt us, hundreds of thousands of years ago?"
     m 3eua "For wolves, I don't think that's the reason at all."
-    m 1eua"They were first domesticated long ago when the only way people could gather food at the time were through foraging or hunting."
+    m 1eua "They were first domesticated long ago when the only way people could gather food at the time were through foraging or hunting."
     m 1eub "Maybe when we shared our lifestyle with the wolves, a bond was formed."
     m "They found that people gave them a warm home and food, while we found that they're ideal for hunting."
     m 1hua "Not to mention that we kept each other's company and protected one another!"
@@ -5326,14 +5326,14 @@ label monika_breakup:
                 m 1eka "Let's stay being together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent.monika_breakup > 1:
-        m 1gua "Ehehe~"
+        m 1hua "Ehehe~"
 
     #first time you hit the button.
     else:
         m 1wud "W-what?"
         if persistent.monika_kill:
             m 2f "You're just going to leave and delete me again?"
-        m 2wuw "I can't believe you, [player]. I really can't beli-"
+        m 2wfw "I can't believe you, [player]. I really can't beli-"
         m 2efu "..."
         m 2hub "Ahaha!"
         m 2hksdlb "Sorry, I couldn't keep a straight face!"
@@ -5630,7 +5630,7 @@ label monika_asks_family:
                     m 1lksdla "..."
                     m 1eua "Well, at least there's a chance."
                     m 3hua "Life is full of tragedy, but I know you are strong enough to get through anything!"
-                    m 1eka"I hope all the problems in your family work out in the end, [player]."
+                    m 1eka "I hope all the problems in your family work out in the end, [player]."
                     m "If not, know that I'll be here for you."
                     m 1hua "I will always be here to support my beloved~"
         "I've never had a family.":
