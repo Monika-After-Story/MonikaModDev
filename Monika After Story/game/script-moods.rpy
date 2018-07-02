@@ -566,7 +566,7 @@ label mas_mood_scared:
     m 3a "Though the reason we become scared, is because we sense any form of danger."
     m 1d " But fear is a survival instinct that we are born with, and this trait keeps us from harm."
     m 1g "Though, this instinct can also restrict our actions in an unhelpful way."
-    m 1e "I hope your reasons behind being scared, is keeping you from harm [player]."
+    m 1e "I hope your reasons behind being scared is keeping you from harm [player]."
     m 1f "I would never want to see my lovely sweetheart hurt."
     return
 
@@ -618,10 +618,10 @@ label mas_mood_loved:
     m 1k "I'm so glad you feel that way [player]."
     m 1a "I feel that way everyday you're with me."
     m 3l "Though I may not be the reason for you feeling this way."
-    m 1j "But that's why we value people close to us, like friends and family..."
+    m 1j "But that's why we value people close to us, like friends and family."
     m 1a "They can make us so happy by feeling loved and cared about."
     m 5a "I hope I make you feel loved too, I am your girlfriend after all."
-    m 2a "But if there is someone else who makes you feel loved as well."
+    m 2a "But if there is someone else who makes you feel loved as well..."
     m 2j "I would certainly like to meet them, they already seem very nice."
     m 2k "Seeing you so happy always brightens my world."
     return
