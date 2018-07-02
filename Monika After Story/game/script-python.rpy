@@ -382,67 +382,80 @@ init -1 python in mas_ptod:
 
         NOTE: Does not EXECUTE
         NOTE: remove previous command
+        NOTE: does NOT append to previously written command (unless that cmd
+            is in a block and was executed)
 
         IN:
             cmd - the command to write to the console
         """
-        global cn_line, cn_cmd, state
+        global cn_line, cn_cmd, state, stack_level
 
-        # apply indents depending on stack level
-        _cmd = _indent_line(str(cmd))
+        if state == STATE_MULTI:
+            # this is bad! You should execute the previous command first!
+            # in this case, we will clear your current command and reset 
+            # state back to SINGLE
+            cn_cmd = ""
+            cn_line = ""
+            state = STATE_SINGLE
 
-        # save the command separately
-        # TODO, handle block commands
-        cn_cmd = _cmd
+        elif state == STATE_BLOCK_MULTI:
+            # this is bad! you should execute the previous command first!
+            # we will do the same that as MULTI did, except a different state
+            cn_cmd = ""
+            cn_line = ""
+            state = STATE_BLOCK
 
-        # prepend the _cn_line with an appropriate symbol
+        # add appropriate indents to the command
+        cn_cmd = _indent_line(str(cmd))
+
+        # pick appropriate shell symbol
         if state == STATE_SINGLE:
-            _cn_line = SYM + cmd
+            # snigle mode
+            sym = SYM
 
-        elif state == STATE_BLOCK:
-            _cn_line = M_SYM + cmd
+        else:
+            # block mode
+            sym = M_SYM
 
-        cn_lines = _line_break(_cn_line)
+        # the prefixed command includes the shell symbol
+        prefixed_cmd = sym + cn_cmd
+
+        # break the lines accordingly
+        cn_lines = _line_break(prefixed_cmd)
 
         if len(cn_lines) == 1:
             # dont need to split lines
-            cn_line = _cmd
-
-
-
-        #
-            # we need to split lines
-
-            if state == STATE_SINGLE:
-                # single lines just go to multi
-                state = STATE_MULTI
-
-            if state == STATE_BLOCK:
-                # blocks are different
-                state = STATE_BLOCK_MULTI
-
-            # otherwise, we must already be in a multi state, so dont change it
+            cn_line = cn_cmd
 
         else:
-            # otherwise, dont need to split lines
-            
+            # we need to split lines
 
-            
+            # everything except the last line goes to the history
+            _update_console_history_list(cn_lines[:-1])
 
+            # last line becomes the current line
+            cn_line = cn_lines[-1:]
 
-        # TODO have the command be separte from teh currnet line
-        # this is because of a single command spread across multiple lines
-        
+            if state == STATE_SINGLE:
+                # single mode
+                state = STATE_MULTI
+
+            else:
+                # block mode
+                state = STATE_BLOCK_MULTI
 
 
     def clear_console():
         """
         Cleares console hisotry and current line
+
+        Also resets state to Single
         """
-        global cn_history, cn_line, cn_history
+        global cn_history, cn_line, cn_history, state
         cn_line = ""
         cn_cmd = ""
         cn_history = []
+        state = STATE_SINGLE
 
 
     def restart_console():
@@ -464,7 +477,7 @@ init -1 python in mas_ptod:
         _update_console_history_list(start_lines)
 
 
-    def __exec_cmd(line, context):
+    def __exec_cmd(line, context, block=False):
         """
         Tries to eval the line first, then executes.
         Returns the result of the command
@@ -472,19 +485,58 @@ init -1 python in mas_ptod:
         IN:
             line - line to eval / exec
             context - dict that represnts the current context. should be locals
+            block - True means we are executing a block command and should
+                skip eval
 
         RETURNS:
             the result of the command, as a string
         """
+        if block:
+            return __exec_exec(line, context)
+
+        # otherwise try eval first
+        return __exec_evalexec(line, context)
+
+
+    def __exec_exec(line, context):
+        """
+        Runs exec on the given line
+        Returns an empty string or a string with an error if it occured.
+
+        IN:
+            line - line to exec
+            context - dict that represents the current context
+
+        RETURNS:
+            empty string or string with error message
+        """
+        try:
+            exec(line, context)
+            result = ""
+
+        except Exception as e:
+            result = _exp_toString(e)
+
+        return result
+
+
+    def __exec_evalexec(line, context):
+        """
+        Tries to eval the line first, then executes.
+        Returns the result of the command
+
+        IN:
+            line - line to eval / exec
+            context - dict that represents the current context.
+
+        RETURNS:
+            the result of the command as a string
+        """
         try:
             result = str(eval(line, context))
-        except Exception as e:
+        except:
             # eval fails, try to exec
-            result = ""
-            try:
-                exec(line, context)
-            except Exception as e:
-                result = _exp_toString(e)
+            result __exec_exec(line, context)
 
         return result
 
@@ -498,22 +550,115 @@ init -1 python in mas_ptod:
             context - dict that represnts the current context. You should pass
                 locals here.
         """
-#        global cn_cmd
-        global cn_line
+        global cn_cmd, cn_line, state, stack_level
 
-#        if multi_stack > 0 and 
+        ### setup some initial conditions
+        # block mode just means we are in a block
+        block_mode = state == STATE_BLOCK or state == STATE_BLOCK_MULTI
 
-        result = __exec_cmd(str(cn_line), context=context)
-            
-        # regardless, update the console
-        # TODO handle block commands
-        output = [SYM + cn_line]
+        # empty line signals end of block (usually)
+        empty_line = len(cn_cmd.strip()) == 0
 
+        # ending with colon means its time to create new block
+        time_to_block = cn_cmd.endswith(":")
+
+        # but a bad block can happen (no text except a single colon)
+        bad_block = time_to_block and len(cn_cmd.strip()) == 1
+
+        ### begin parsing
+
+        if empty_line:
+            # like enter was pressed with no text
+
+            if block_mode:
+                # block mode means we clear a stack level
+                stack_level -= 1
+
+            else:
+                # otherwise, add an empty new line to history, and thats it
+                # dont need to execute since nothing will happen
+                _update_console_history(SYM)
+                cn_line = ""
+                cn_cmd = ""
+                return
+
+
+
+        # setup the command to be entered
+        full_cmd = cn_cmd
+
+        # block might change the command
+        if block_mode:
+            blk_cmd.append(cn_cmd)
+
+            if stack_level == 0:
+                # this means we've cleared all stacks, time to execute block
+                # commands
+                full_cmd = "\n".join(blk_cmd)
+
+                # clear the block command list
+                blk_cmd = list()
+
+        # execute command, if no stack
+        if stack_level == 0:
+            result = __exec_cmd(full_cmd, context, block_mode)
+        
+        if empty_line:
+            # we MUST be in block mode to reach here
+            output = [M_SYM]
+
+        else:
+            # otherwise, use the sym we need
+            if state == STATE_SINGLE:
+                sym = SYM
+
+            elif state == STATE_BLOCK:
+                sym = M_SYM
+
+            else:
+                # multi dont need symbols
+                sym = ""
+
+            output = [sym + _indent_line(cn_line)]
+
+        # if we have any results, we need to show them too
         if len(result) > 0:
             output.append(result)
 
+        # need to switch to block mode if need be
+        if cn_cmd.endswith(":"):
+            # we have a new block 
+            
+            if len(cn_cmd.strip()) == 1:
+                # all you entered was a colon?
+                # we must immediately abort block mode
+                stack_level = 0
+            
+            else:
+                # otherwise, we create a new block
+                stack_level += 1
+
+                if not block_mode:
+                    # in single / multi states, we didnt append the command
+                    # to the block list yet
+                    blk_cmd.append(cn_cmd)
+
+                state = STATE_BLOCK
+                block_mode = True
+
+        # update console history and clear current lines / cmd
         cn_line = ""
+        cn_cmd = ""
         _update_console_history_list(output)
+
+        # finally, update the states
+        if (state == STATE_MULTI) or (block_mode and stack_level == 0):
+            # no more stacks or in multi mode
+            state = STATE_SINGLE
+
+        elif state == STATE_BLOCK_MULTI:
+            # multi modes end here
+            state = STATE_BLOCK
 
 
     def _exp_toString(exp):
