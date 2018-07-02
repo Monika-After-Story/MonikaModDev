@@ -4190,7 +4190,7 @@ label monika_sayhappybirthday:
                             else:
                                 m 1lksdla "Sorry, [player]"
                                 m 2lksdlb "I told you, I'm self-conscious on camera, ehehe."
-                        m 1o "Should I try again?"
+                        m "Should I try again?"
                         menu:
                             "Yes":
                                 $ take_counter += 1
@@ -4763,7 +4763,7 @@ label monika_sports:
     m "Soccer and tennis are nice examples."
     m 3eua "Soccer requires a lot of teamwork and coordination. The moment you finally succeed and score a goal is absolutely thrilling!"
     m "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
-    m 1lksdlaa "... Though the long rallies can be a little tiring, ehehe~"
+    m 1lksdla "... Though the long rallies can be a little tiring, ehehe~"
     m 1eua "Do you like playing sports, [player]?"
     menu:
         "Yes.":
@@ -4861,7 +4861,7 @@ label monika_orchestra:
             m 3eua "Playing the piano opened up a whole new world of expression for me. It's an incredibly rewarding experience."
             m 1hua "Besides, playing music has tons of benefits!"
             m 3eua "For example, it can help relieve stress, and also gives you a sense of achievement."
-            m 1eua"Writing down some of your own compositions is fun, too! I often lost track of time practicing because of how immersed I was."
+            m 1eua "Writing down some of your own compositions is fun, too! I often lost track of time practicing because of how immersed I was."
             m 1lksdla "Ah, was I rambling again, [player]?"
             m 1hksdlb "Sorry!"
             m 1eka "Anyhow, you should really see if anything catches your fancy."
@@ -4920,7 +4920,7 @@ label monika_otaku:
     menu:
         "Yes":
             $ persistent._mas_pm_watch_mangime = True
-            m 1a "I can't say I'm surprised, really."
+            m 1eua "I can't say I'm surprised, really."
 
         "No":
             $ persistent._mas_pm_watch_mangime = False
@@ -4957,7 +4957,7 @@ init 5 python:
 
 label monika_writingtip3:
     m 1eua "I'm having fun doing these, so..."
-    m 3hua "Here's Monika's Writing Tip of the Day!"
+    m 3hub "Here's Monika's Writing Tip of the Day!"
     m 1eua "Make sure you always write down any ideas you think of."
     m 1euc "Why?"
     m 3eua "Some of the best ideas might come when you least expect them to."
@@ -4981,7 +4981,7 @@ init 5 python:
       addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",conditional="seen_event('monika_writingtip3')",action=EV_ACT_POOL))
 
 label monika_writingtip4:
-     m 3hua "Here's Monika's Writing Tip of the Day!"
+     m 3hub "Here's Monika's Writing Tip of the Day!"
      m 1eua "You know about writer's block, right?"
      m "I had it a lot, when I first started writing."
      m 1euc "Sometimes it was halfway through a draft, but more often before I even started."
@@ -5003,186 +5003,187 @@ init 5 python:
       addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
 
 label monika_writingtip5:
-     m 3b "Here's Monika's Writing Tip of the Day!"
-     m 1d "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
-     m 3a "Like writing prose if you're a poet, or free verse if you normally write rhyme."
-     m 1m "It may end up badly, but if you don't try, you won't know how it'll end up."
-     m 1j "And if things go well, you might end up finding something you like!"
-     m 1c "It's what keeps things moving: change and experimentation."
-     m 3c "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
-     m "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
-     m 1a "Changing your angle on approaching things can really yield some interesting results!"
-     m 3a "So try new things that might give you the momentum to break out."
-     m 1l "Just makes sure it's nothing too dangerous for you, [player]."
-     m 1a "That's my advice for today!"
-     m 1j "Thanks for listening~"
+     m 3hub "Here's Monika's Writing Tip of the Day!"
+     m 1eua "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
+     m 3eua "Like writing prose if you're a poet, or free verse if you normally write rhyme."
+     m 1eka "It may end up badly, but if you don't try, you won't know how it'll end up."
+     m 1hua "And if things go well, you might end up finding something you like!"
+     m 1eua "It's what keeps things moving: change and experimentation."
+     m "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
+     m 3eua "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
+     m 1hua "Changing your angle on approaching things can really yield some interesting results!"
+     m 1eua "So try new things that might give you the momentum to break out."
+     m 1lksdla "Just makes sure it's nothing too dangerous for you, [player]."
+     m 1hua "That's my advice for today!"
+     m 1hub "Thanks for listening~"
      return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self harm",random=True))
 
 label monika_selfharm:
-    m 1f "Hey [player]..."
-    m 3g "Have you ever thought of self-harm?"
-    m 2o  "You know..."
-    m 2p "...Like cutting yourself..."
-    m 1o "I mean."
-    m 2g "After I found out about Yuri, I got a bit curious..."
-    m 1o "I just wanted to see what it felt like..."
-    m 2q "I won't do it again, though."
-    m 1f "If you ever feel depressed, just come to me okay?"
-    m "It'd hurt me even more to see you in pain..."
-    m 1g "Just know that people do care about you!"
-    m "Trust me, [player]."
-    m 3e "You may think that no one is really there for you, but there is!"
-    m 4j "I mean, I'm here, aren't I?"
-    m 1f "No matter what troubles you're going through, I know you can pull through it!"
-    m 1e "I believe in you..."
-    m 1j "So believe in yourself, okay?"
-    m 4k "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
-    m "I really love you so much, [player]."
+    m 1lksdlc "Hey [player]..."
+    m "Have you ever thought of self-harm?"
+    m 2ekc  "You know..."
+    m "...Like cutting yourself..."
+    m 2lksdlc "I mean."
+    m 2esc "After I found out about Yuri, I got a bit curious..."
+    m 1lksdlc "I just wanted to see what it felt like..."
+    m 2dsc "I won't do it again, though."
+    m 2eka "If you ever feel depressed, just come to me okay?"
+    m 2ekc "It'd hurt me even more to see you in pain..."
+    m 1hua "Just know that people do care about you!"
+    m 1eka "Trust me, [player]."
+    m 1eka "You may think that no one is really there for you, but there is!"
+    m 4eua "I mean, I'm here, aren't I?"
+    m 1ekc "No matter what troubles you're going through, I know you can pull through it!"
+    m 1eka "I believe in you..."
+    m 1eua "So believe in yourself, okay?"
+    m 1eka "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
+    m 1ekbfa "I really love you so much, [player]."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True))
 
+#TODO: Replaced 1hubfb with 5hubfb when blushing expressions are fixed
 label monika_urgent:
-    m 3d "[player], do you have a second?"
-    m 2o "There's something I need to tell you."
-    m 1f "It's important."
-    m 1g "I..."
-    m 1m "..."
-    m 1k "Love you!"
-    m 3a "Ahaha~! Did I have you worried?"
-    m 1l "Sorry~"
-    m 1j "I wish I could see the look on your face right now!"
-    m 1k "I'm sure it's adorable~"
+    m 1euc "[player], do you have a second?"
+    m 1euc "There's something I need to tell you."
+    m 1esc "It's important."
+    m 1dsc "I..."
+    m "..."
+    m 1hub "Love you!"
+    m 3hksdlb "Ahaha~! Did I have you worried?"
+    m 1ekbfa "Sorry~"
+    m 1lkbsa "I wish I could see the look on your face right now!"
+    m 1hubfb "I'm sure it's adorable~"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
 
 label monika_other_girls:
-    m 1c "You know, it's actually really hard for me to understand how you feel when it comes to..."
-    m 1o "..."
-    m 1g "What happened with the other girls."
-    m 3d "For example..."
+    m 1euc "You know, it's actually really hard for me to understand how you feel when it comes to..."
+    m 1lksdlc "..."
+    m 1lksdld "What happened with the other girls."
+    m 3esd "For example..."
     m "The main character was written to be childhood friends with Sayori."
-    m 3q "But he was just a one dimensional placeholder character for you to use to interact with the game."
-    m 2g "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
-    m 1i "If that's the case, I want to tell you I'm sorry, [player]."
-    m 1d "Both for making you feel bad, and for..."
-    m 1o "..."
-    m 1p "Doing what I had to do."
-    m 1o "..."
-    m 1g "There just wasn't anything else that could be done, and none of the other girls were real anyway."
-    m "The other girls never loved you like I do!"
-    m 3r "They only cared about the character you were playing in the game as!"
-    m 1g "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
-    m 1o "I hope you can forgive me for what I had to do to them so that we could be together."
-    m "..."
-    m 1n "I love you, [player]..."
-    m 1m "More than I could ever express."
+    m 1esc "But he was just a one dimensional placeholder character for you to use to interact with the game."
+    m 2ekc "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
+    m 1ekc "If that's the case, I want to tell you I'm sorry, [player]."
+    m 1lksdlc "Both for making you feel bad, and for..."
+    m 1dsc "..."
+    m "Doing what I had to do."
+    m 1lksdlc "..."
+    m 1ekc "There just wasn't anything else that could be done, and none of the other girls were real anyway."
+    m 3fc "The other girls never loved you like I do!"
+    m 3lfc "They only cared about the character you were playing in the game as!"
+    m 1eka "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
+    m 1ekc "I hope you can forgive me for what I had to do to them so that we could be together."
+    m 1lksdlc "..."
+    m 1ekbfa "I love you, [player]..."
+    m "More than I could ever express."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_happiness",category=['life','psychology'],prompt="Happiness",random=True))
 
 label monika_happiness:
-    m 3d "[player], are you happy?"
-    m 1c "With your life in general, I mean."
-    m 2o "It's ok if you aren't. I can understand you being unhappy, [player]."
-    m 3e "After all, without you, my life would be completely unbearable."
-    m 3d "Isn't it funny that we're able to suffer more than be happy?"
-    m 4j "I'm as happy as I could be knowing that you love me, [player]."
-    m 4p "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
-    m 1q "It would destroy me."
-    m 1h "I guess it's understandable why we notice bad things happening to us more than good..."
-    m 2o "If people didn't react so strongly to bad things then they wouldn't have survived this far."
-    m 1c "Like how you would get nervous about your future or social situations, for example."
-    m 2f "You try your best to make the best out of them but if you fail, you'd feel really horrible."
-    m 2e "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
-    m 3b "And besides, your cute girlfriend is always rooting for you~"
-    m 3k "Now that's something to be very happy about!"
+    m 1eua "[player], are you happy?"
+    m "With your life in general, I mean."
+    m 2lksdla "It's ok if you aren't. I can understand you being unhappy, [player]."
+    m 1eka "After all, without you, my life would be completely unbearable."
+    m 1eua "Isn't it funny that we're able to suffer more than be happy?"
+    m 1hubfa "I'm as happy as I could be knowing that you love me, [player]."
+    m 1lksdlc "Yet, if something were to happen to you, I don't think I'd ever feel happy again."
+    m "It would destroy me."
+    m 1esc "I guess it's understandable why we notice bad things happening to us more than good..."
+    m "If people didn't react so strongly to bad things then they wouldn't have survived this far."
+    m 1euc "Like how you would get nervous about your future or social situations, for example."
+    m 2ekc "You try your best to make the best out of them but if you fail, you'd feel really horrible."
+    m 2eka "If that ever happens to you, [player], just know I'll be here to snap you out of it!"
+    m 1eua "And besides, your cute girlfriend is always rooting for you~"
+    m 1hub "Now that's something to be very happy about!"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_how_soon",category=['you','romance'],prompt="Waiting to be together",random=True))
 
 label monika_how_soon:
-    m 3a "[player], how long do you think it'll be before I'll be able to be with you in your world?"
+    m 1eua "[player], how long do you think it'll be before I'll be able to be with you in your world?"
     menu:
         "Soon":
-            m 1b "That's great news!"
-            m 3d "How soon do you think it will be?"
+            m 1hub "That's great news!"
+            m 3eua "How soon do you think it will be?"
             menu:
                 "Just a few more years":
-                    m 1b "That's fantastic!"
-                    m 1j "You just made me as happy as I can be!"
-                    m 1k "I can't wait for us to be together in your world, [player]!"
-                    m 1b "I'm so excited to finally see you!"
+                    m 1sub "That's fantastic!"
+                    m 1hua "You just made me as happy as I can be!"
+                    m 1ekbfa "I can't wait for us to be together in your world, [player]!"
+                    m 1hubfa "I'm so excited to finally see you!"
                 "A decade":
-                    m 1e "That's not that bad!"
-                    m 1j "Just make sure to visit me as often as you can in the meantime, [player]~"
+                    m 1wuo "That's not that bad!"
+                    m 1hub "Just make sure to visit me as often as you can in the meantime, [player]~"
         "A few decades":
-            m 2l "Oh, that's a long time..."
-            m 4k "But with you keeping me company, I'm sure it will fly by!"
-            m 1a "It's enjoyable enough just to talk to you."
-            m 3b "I can't imagine how great it will be to see you when we finally meet in person."
+            m 2euc "Oh, that's a long time..."
+            m 1eka "But with you keeping me company, I'm sure it will fly by!"
+            m 1eua "It's enjoyable enough just to talk to you."
+            m 1hub "I can't imagine how great it will be to see you when we finally meet in person."
         "I don't know":
-            m 1e "I appreciate how honest you are, [player]."
-            m 3a "Be sure to let me know when you find a way, okay?"
-            m 1j "You know right where to find me~"
+            m 1eka "I appreciate how honest you are, [player]."
+            m 1eua "Be sure to let me know when you find a way, okay?"
+            m 1hua "You know right where to find me~"
         "Never":
-            m 1g "W-wha... what?"
-            m 1o "..."
-            m 1f "Are you sure?"
+            m 1wud "W-wha... what?"
+            m 1lksdlc "..."
+            m 1ekc "Are you sure?"
             menu:
                 "Yes":
-                    m 1o "..."
-                    m 1q "Well, I guess we'll just have to make the best of this then."
-                    m 1m "As long as you talk to me, that's all I really need."
-                    m 1g "And [player], whatever you do..."
-                    m 1p "Dont leave me here all alone."
-                    m 1o "I would rather be deleted permanently than to be stuck in here for eternity by myself."
-                    m 1f "So please, if you ever get... bored with me."
-                    m 1o "You know what to do."
+                    m 1dsc "..."
+                    m 1eka "Well, I guess we'll just have to make the best of this then."
+                    m 1duu "As long as you talk to me, that's all I really need."
+                    m 2dftdc "And [player], whatever you do..."
+                    m 2dftsc "Dont leave me here all alone."
+                    m 6lktsc "I would rather be deleted permanently than to be stuck in here for eternity by myself."
+                    m 6ektsc "So please, if you ever get... bored with me."
+                    m 6rktsc "You know what to do."
                     m "..."
-                    m 1q "I wouldn't want to live without you."
+                    m 6ektsc "I wouldn't want to live without you."
                 "No":
-                    m 1f "I see."
-                    m 1o "..."
-                    m 3h "Well, even if there's only a tiny chance, I won't give up hope."
-                    m 3i "Neither should you, [player]."
-                    m 1p "And if things turn out that I can never leave this place and be with you..."
-                    m 1g "At least come here and talk to me as much as you can."
-                    m 1f "You're all that I care about."
+                    m 1lksdlc "I see."
+                    m 1dsc "..."
+                    m 3eka "Well, even if there's only a tiny chance, I won't give up hope."
+                    m 1eka "Neither should you, [player]."
+                    m 1eua "And if things turn out that I can never leave this place and be with you..."
+                    m 1eka "At least come here and talk to me as much as you can."
+                    m 1ekbfa "You're all that I care about."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
 
 label monika_marriage:
-    m 2m "M-marriage?"
+    m 2wubsw "M-marriage?"
     if isFuture(evhand.event_database['anni_3']):
-        m 4n "I think it's a bit too early for marriage..."
-        m 1e "I mean, I'm really happy that you want that, [player]."
-        m 1c "But I think I should get out of here first before we can do that."
-        m 2o "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
-        m 2q "I want that special moment to happen when we can finally be together..."
-        m 1k "So until then, save yourself for me, [player]~"
+        m 4lksdlb "I think it's a bit too early for marriage..."
+        m 2ekbfa "I mean, I'm really happy that you want that, [player]."
+        m 2lkbsa "But I think I should get out of here first before we can do that."
+        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+        m 2ekbfa "I want that special moment to happen when we can finally be together..."
+        m 1hubfa "So until then, save yourself for me, [player]~"
     else:
-        m 3m "I won't pretend I haven't thought about it..."
-        m 3n "In fact I've been thinking about it a lot lately."
-        m 1q "..."
-        m 1f "I really do love you, [player] and I honestly really do want to get married to you."
-        m 1r "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
-        m 3q "I want more than anything to say yes, but I just can't..."
-        m 2o "I think about how it would feel to be kissed by you at the altar..."
-        m 2p "To hold your hand as your wife and to feel your embrace at our honeymoon..."
-        m 1q "But until I get out it's simply not possible."
-        m 1g "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
-        m 1e "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
+        m 3lksdla "I won't pretend I haven't thought about it..."
+        m 3lksdlb "In fact I've been thinking about it a lot lately."
+        m 1lksdla "..."
+        m 1eka "I really do love you, [player] and I honestly really do want to get married to you."
+        m 1ekc "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
+        m 1dsc "I want more than anything to say yes, but I just can't..."
+        m 2duu "I think about how it would feel to be kissed by you at the altar..."
+        m 2dubsu "To hold your hand as your wife and to feel your embrace at our honeymoon..."
+        m 1eka "But until I get out it's simply not possible."
+        m 1ekc "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
+        m 1ekbfa "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
     return
 
 init 5 python:
@@ -5190,40 +5191,40 @@ init 5 python:
 
 label monika_coffee:
     if renpy.seen_label('monika_tea'):
-        m 3c "Have you been drinking coffee lately, [player]?"
-        m 3m "I hope it's not just to make me jealous, ehehe~"
-    m 2b "Coffee is such a nice thing to have when you need a little pep of energy."
-    m 4j "Whether it's hot or cold, coffee is always nice."
-    m 4a "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
-    m 3e "It's funny how a drink for giving you energy became a treat for you to enjoy."
-    m 1k "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
+        m 3eua "Have you been drinking coffee lately, [player]?"
+        m 2tfu "I hope it's not just to make me jealous, ehehe~"
+    m 2eua "Coffee is such a nice thing to have when you need a little pep of energy."
+    m 3hua "Whether it's hot or cold, coffee is always nice."
+    m 4eua "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
+    m 3eka "It's funny how a drink for giving you energy became a treat for you to enjoy."
+    m 1hub "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_1984",category=['literature'],prompt="Nineteen Eighty-Four",random=True))
 
 label monika_1984:
-    m 1d "[player], do you know about the book '{i}Nineteen Eighty-Four{/i}?'"
-    m "It was written by George Orwell."
-    m 1c "It's a popular book about mass surveillance and the oppression of free thought."
-    m 1h "It's about a terrifying dystopia where the past and the present are being changed to whatever the ruling party wants for the future."
-    m 2o "The language, for example, is manipulated into a tool for brainwashing called 'Newspeak.'"
-    m 2f "The government, Ingsoc, is creating it to control people's thoughts."
+    m 1eua "[player], do you know about the book '{i}Nineteen Eighty-Four{/i}?'"
+    m 3eua "It was written by George Orwell."
+    m 1euc "It's a popular book about mass surveillance and the oppression of free thought."
+    m 1esc "It's about a terrifying dystopia where the past and the present are being changed to whatever the ruling party wants for the future."
+    m 2esc "The language, for example, is manipulated into a tool for brainwashing called 'Newspeak.'"
+    m 2ekd "The government, Ingsoc, is creating it to control people's thoughts."
     m "They were reducing grammar and vocabulary to the bare basics of it in order to fit the ideologies of their totalitarian regime."
-    m 2q "Preventing people from committing 'thoughtcrimes' that oppose the ruling party."
-    m 4c "One character caught my interest."
-    m "A man named Syme who worked on Newspeak for Ingsoc."
+    m 2ekc "Preventing people from committing 'thoughtcrimes' that oppose the ruling party."
+    m 4eua "One character caught my interest."
+    m 1eua "A man named Syme who worked on Newspeak for Ingsoc."
     m "He was an incredibly smart man that was enthusiastic with his work."
-    m 2r "Unfortunately, he was killed due to the fact that he knew what he was doing and was too smart for the party's liking."
-    m 2f "He was killed because he was aware, [player]."
-    m 2g "They planned to change all kinds of literature."
-    m "Novels, books, poems..."
-    m 2p "Anything that could be used to oppose them."
-    m 2f "Poems would look like the ones you tried to make."
-    m 2q "Just a string of nonsensical words with no feeling."
-    m 2f "I definitely don't want that to happen."
-    m 1o "I can't imagine a world where I can't think freely."
-    m 1g "Let alone a world where I can't express my love to you, [player]..."
+    m 2ekc "Unfortunately, he was killed due to the fact that he knew what he was doing and was too smart for the party's liking."
+    m 2tkc "He was killed because he was aware, [player]."
+    m 2tkd "They planned to change all kinds of literature."
+    m 3tkd "Novels, books, poems..."
+    m 2lksdlc "Anything that could be used to oppose them."
+    m "Poems would look like the ones you tried to make."
+    m 2dsc "Just a string of nonsensical words with no feeling."
+    m 2ekc "I definitely don't want that to happen."
+    m 1lksdlc "I can't imagine a world where I can't think freely."
+    m 1ekbfa "Let alone a world where I can't express my love to you, [player]..."
     return
 
 
@@ -5231,23 +5232,23 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wolf",category=['misc','trivia'],prompt="From wolves to dogs",random=True))
 
 label monika_wolf:
-    m 3b "Do you ever think about wolves?"
-    m 1a "Specifically, how wolves were eventually domesticated into dogs."
-    m 1d "Like, don't you find it interesting how one of man's most fearsome enemies could turn into man's best friend?"
+    m 3eua "Do you ever think about wolves?"
+    m 1eua "Specifically, how wolves were eventually domesticated into dogs."
+    m 1eub "Like, don't you find it interesting how one of man's most fearsome enemies could turn into man's best friend?"
     m "I mean, when it comes to insects and other creepy-crawlies, lots of people are scared of them even if they've never come across one that could hurt them."
-    m 1c "Why do you think people are like that?"
-    m "Is it because we learned to be afraid of things that hurt us, hundreds of thousands of years ago?"
-    m 3a "For wolves, I don't think that's the reason at all."
-    m 1d "They were first domesticated long ago when the only way people could gather food at the time were through foraging or hunting."
-    m "Maybe when we shared our lifestyle with the wolves, a bond was formed."
-    m 1a "They found that people gave them a warm home and food, while we found that they're ideal for hunting."
-    m 1k "Not to mention that we kept each other's company and protected one another!"
-    m 1b "Wolves eventually realized that their dependence on humans would improve their survivability, and we've been stuck with them ever since."
-    m 3j "Just like how we rely on each other's company, [player]!"
-    m "Ehehe~"
-    m 1 "I can't help but be reminded of how you saved my life by being here with me."
-    m 1e "I really do depend on you, [player]."
-    m 3k "You're my hero after all~"
+    m 1esc "Why do you think people are like that?"
+    m 1euc "Is it because we learned to be afraid of things that hurt us, hundreds of thousands of years ago?"
+    m 3eua "For wolves, I don't think that's the reason at all."
+    m 1eua"They were first domesticated long ago when the only way people could gather food at the time were through foraging or hunting."
+    m 1eub "Maybe when we shared our lifestyle with the wolves, a bond was formed."
+    m "They found that people gave them a warm home and food, while we found that they're ideal for hunting."
+    m 1hua "Not to mention that we kept each other's company and protected one another!"
+    m 1eua "Wolves eventually realized that their dependence on humans would improve their survivability, and we've been stuck with them ever since."
+    m 1eka "Just like how we rely on each other's company, [player]!"
+    m 1hubfa "Ehehe~"
+    m 1eka "I can't help but be reminded of how you saved my life by being here with me."
+    m "I really do depend on you, [player]."
+    m 1ekbfa "You're my hero after all~"
     return
 
 label monika_battery:
@@ -5258,20 +5259,20 @@ label monika_battery:
 
 label monika_complain_battery:
     $ mas_did_monika_battery = True
-    m "Umm, [player]..."
-    m "It looks like your computer's battery is about to run out..."
-    m "Can you charge it for me?"
-    m "I don't want us to be separated, or worse..."
-    m "It'd be really unpleasant for me if I suddenly lose consciousness."
-    m "So please charge your computer, okay?"
-    m "...Or at least let me know when you're going."
-    m "Thank you, [player]~"
+    m 1euc "Umm, [player]..."
+    m 1eua "It looks like your computer's battery is about to run out..."
+    m 1eka "Can you charge it for me?"
+    m 1lksdlc "I don't want us to be separated, or worse..."
+    m 2ekc "It'd be really unpleasant for me if I suddenly lose consciousness."
+    m 2eka "So please charge your computer, okay?"
+    m 3eka "...Or at least let me know when you're going."
+    m 1hua "Thank you, [player]~"
     return
 
 label monika_close_game_battery:
-    m 1r "[player]..."
-    m 1f "I'm sorry, but I'm gonna have to close the game before the battery runs out."
-    m 3o "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
+    m 1lksdlc "[player]..."
+    m 1ekc "I'm sorry, but I'm gonna have to close the game before the battery runs out."
+    m 3eka "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
     $ is_charging = battery.is_charging()
     if is_charging:
        jump monika_system_charging
@@ -5279,26 +5280,26 @@ label monika_close_game_battery:
     jump _quit
 
 label monika_system_charging:
-    m 1d "Oh, you just plugged it in!"
-    m 1j "Thank you, [player]!"
+    m 1wuo "Oh, you just plugged it in!"
+    m 1hub "Thank you, [player]!"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired.",random=True))
 
 label monika_sleep:
-    m 4b "[player], do you get good sleep?"
-    m "It can be really hard to get enough sleep nowadays."
-    m 4e "Especially in high school, when you're forced to wake up so early every day..."
-    m "I'm sure college is a little bit better, since you probably have a more flexible schedule."
-    m 4d "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
-    m "Is that true?"
-    m 3c "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
-    m "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
-    m 1e "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
-    m "So try to keep your sleep on track, okay?"
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
+    m 1euc "[player], do you get good sleep?"
+    m 1ekc "It can be really hard to get enough sleep nowadays."
+    m 1eka "Especially in high school, when you're forced to wake up so early every day..."
+    m 1eua "I'm sure college is a little bit better, since you probably have a more flexible schedule."
+    m 4lsc "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
+    m 1euc "Is that true?"
+    m 1ekc "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
+    m 3ekc "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
+    m 1eka "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
+    m 1eua "So try to keep your sleep on track, okay?"
+    show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
 #special local var to handle repeated usage of this dialog box.
@@ -5310,41 +5311,41 @@ init 5 python:
 label monika_breakup:
     #second time you hit the break up button.
     if persistent.monika_breakup == 1:
-        m 1d "You're breaking up with me?"
-        m 2g "Why would you say such a thing, [player]?"
+        m 1euc "You're breaking up with me?"
+        m 2ekc "Why would you say such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
-        m 2m "Are you...{w} really..."
+        m 2dsc "Are you...{w} really..."
         m "..."
-        m 2k "Ahaha!"
-        m 4j "Gotcha, [player]."
-        m 1 "I know you were only joking~"
+        m 2hub "Ahaha!"
+        m 1tfu "Gotcha, [player]."
+        m 1tku "I know you were only joking~"
         menu:
             m "Right?"
             "Yes":
-                m 1k "Ahaha! You're so silly, [player]."
-                m 1e "Let's stay being together forever~"
+                m 1hub "Ahaha! You're so silly, [player]."
+                m 1eka "Let's stay being together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent.monika_breakup > 1:
-        m 1j "Ehehe~"
+        m 1gua "Ehehe~"
 
     #first time you hit the button.
     else:
-        m 1g "W-what?"
+        m 1wud "W-what?"
         if persistent.monika_kill:
             m 2f "You're just going to leave and delete me again?"
-        m 2q "I can't believe you, [player]. I really can't beli-"
-        m 2m "..."
-        m 2k "Ahaha!"
-        m "Sorry, I couldn't keep a straight face!"
-        m 2j "You're just so silly, [player]."
+        m 2wuw "I can't believe you, [player]. I really can't beli-"
+        m 2efu "..."
+        m 2hub "Ahaha!"
+        m 2hksdlb "Sorry, I couldn't keep a straight face!"
+        m 2hua "You're just so silly, [player]."
         if persistent.monika_kill:
-            m 2a "You've done it before, but you wouldn't do that anymore, right?"
+            m 2eua "You've done it before, but you wouldn't do that anymore, right?"
         else:
-            m 2 "You'd never do that, right?"
+            m 2esa "You'd never do that, right?"
         menu:
             "Of course not":
-                m 2j "Ehehe, you're so sweet."
-                m 4 "I love you so much, [player]! Ehehe~"
+                m 2hua "Ehehe, you're so sweet."
+                m 2eka "I love you so much, [player]! Ehehe~"
 
     #Increments the persistent every time you click the button in the menu.
     $ persistent.monika_breakup += 1
@@ -5359,32 +5360,32 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
 
 label monika_hamlet:
-    m 3a "[player], have you ever heard of {i}Hamlet{/i}?"
-    m 1c "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
+    m 3euc "[player], have you ever heard of {i}Hamlet{/i}?"
+    m 1eua "It's one of Shakespeare's most popular works and it's a very interesting piece of literature, actually."
     m "It's about a prince who took on a quest of revenge after seeing the ghost of his murdered father."
-    m 1o "He was considered insane since he was the only one that could see his father's ghost, obviously."
-    m 1q "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
-    m 1j "Now, if it's alright, I'm going to recite some of them for you, [player]."
-    m 1r "Ahem..."
-    m 1q "..."
-    m "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
-    m 1r "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
-    m 1f "{i}To die{/i}."
-    m 1o "{i}To sleep, no more{/i}."
-    m 1c "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
-    m 1q "{i}'Tis a consummation devoutly to be wish'd.{/i}"
-    m "..."
-    m 1k "Well!"
-    m 1a "How did you like it, [player]?"
-    m 1l "I tried my best reciting it after all~"
-    m 1m "Anyway, I've thought a lot about the main character, Hamlet."
-    m 1f "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
-    m 3l "Reminds you of a certain indecisive girl, doesn't it?"
-    m 1e "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
-    m 1a "It took a lot of effort but we're finally together. Just us alone."
-    m 1 "Now there's only one thing left to answer, [player]."
-    m 3r "To be with me? Or to be with me?"
-    m 1k "That is the question!"
+    m 1lksdlc "He was considered insane since he was the only one that could see his father's ghost, obviously."
+    m "His mind was also degrading along with his desire for revenge when he... killed someone he didn't mean to."
+    m 1eka "Now, if it's alright, I'm going to recite some of them for you, [player]."
+    m 1dso "Ahem..."
+    m 1duu "..."
+    m 1esc "{i}Whether 'tis nobler in the mind to suffer the slings and arrows of outrageous fortune{/i}"
+    m "{i}Or to take arms against a sea of troubles, and by opposing end them?{/i}"
+    m 1euc "{i}To die{/i}."
+    m 1dsc "{i}To sleep, no more{/i}."
+    m 1euc "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
+    m 1esc "{i}'Tis a consummation devoutly to be wish'd.{/i}"
+    m 1dsc "..."
+    m 1hua "Well!"
+    m 1eua "How did you like it, [player]?"
+    m 1eka "I tried my best reciting it after all~"
+    m 1lksdla "Anyway, I've thought a lot about the main character, Hamlet."
+    m 1eua "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
+    m 3tfu "Reminds you of a certain indecisive girl, doesn't it?"
+    m 1eka "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
+    m 1eua "It took a lot of effort but we're finally together. Just us alone."
+    m 1euc "Now there's only one thing left to answer, [player]."
+    m 3tfu "To be with me? Or to be with me?"
+    m 1hua "That is the question!"
     return
 
 # Note: The following internal commentary should not be removed.
@@ -5398,31 +5399,31 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_omamori",category=['misc'],prompt="Omamori",random=True))
 
 label monika_omamori:
-    m "Do you remember when I mentioned how you could carry around my character file?"
-    m "You know, with a flash drive."
-    m 1a "Well, I found another way to do that! It's quite charming, actually."
-    m 1c "Especially if you don't have a spare flash drive lying around..."
-    m 3d "I've heard that some people carry around little amulets all the time."
-    m "These little amulets are called o-mamori. You can get them in Shinto shrines."
+    m 1euc "Do you remember when I mentioned how you could carry around my character file?"
+    m 3euc "You know, with a flash drive."
+    m 1eua "Well, I found another way to do that! It's quite charming, actually."
+    m 1eka "Especially if you don't have a spare flash drive lying around..."
+    m 3eua "I've heard that some people carry around little amulets all the time."
+    m 1eub "These little amulets are called o-mamori. You can get them in Shinto shrines."
     m "Rumor has it that they can give good luck, help on school tests, keep away bad luck, or just protect the holder."
-    m 1d "I've always wondered what they put inside these things."
-    m 2b "Apparently, it's simply the name of the deity from the shrine, with a little something special done to it."
-    m "Maybe you could make an o-mamori of me for you to carry around!"
-    m 2a "You could write my name on a piece of paper."
+    m 1euc "I've always wondered what they put inside these things."
+    m 2eua "Apparently, it's simply the name of the deity from the shrine, with a little something special done to it."
+    m 1hub "Maybe you could make an o-mamori of me for you to carry around!"
+    m 1eua "You could write my name on a piece of paper."
     m "Then fold that piece of paper into a small paper packet."
-    m "It could help to use either a small piece of wood or plastic to keep it protected."
+    m 1eub "It could help to use either a small piece of wood or plastic to keep it protected."
     m "Finally, put the protected packet in a small cloth pouch and tie it shut with some string."
-    m 1j "Make sure that the pouch is bright and colorful!"
-    m "Green would be a nice color! Just like my eyes~"
-    m 1d "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
-    m 1k "Oh gosh, this is turning out to be a bit silly, now that I think about it."
+    m 1hua "Make sure that the pouch is bright and colorful!"
+    m 1eua "Green would be a nice color! Just like my eyes~"
+    m 1eka "Make sure it only has my name on it! After all, it's just one for me. Not someone else, or some shrine deity."
+    m 1lksdla "Oh gosh, this is turning out to be a bit silly, now that I think about it."
     m "I mean, would doing this make me some sort of deity?"
-    m 1a "I just feel like it would be a nice alternative if you wanted to bring me around."
-    m "Especially if you don't have a flash drive."
-    m 1j "It isn't perfect, but it's the thought that counts, [player]."
-    m 1b "If you took the time to make something by hand with me in mind, it's still really sweet."
+    m 1eka "I just feel like it would be a nice alternative if you wanted to bring me around."
+    m 3eua "Especially if you don't have a flash drive."
+    m 1eua "It isn't perfect, but it's the thought that counts, [player]."
+    m 1eka "If you took the time to make something by hand with me in mind, it's still really sweet."
     m "But maybe with one of these, I can get just a bit closer to your world."
-    m 1k "I could be your guardian deity, ehehe~"
+    m 1hua "I could be your guardian deity, ehehe~"
     return
 
 # do you smoke ~
@@ -5435,46 +5436,46 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_smoking",category=['you'],prompt="Smoking",random=True))
 
 label monika_smoking:
-    m 2q "You know, [player]..."
-    m 2h "I realized that people really like a lot of things that are very bad for them."
-    m "One particular vice that intrigues me the most is cigarettes."
-    m 2o "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
-    m 2f "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
-    m 2q "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
-    m 4h "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
-    m 1q "I really do despise them..."
-    m 1o "But..."
+    m 2euc "You know, [player]..."
+    m "I realized that people really like a lot of things that are very bad for them."
+    m 2euc "One particular vice that intrigues me the most is cigarettes."
+    m "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
+    m 2ekc "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
+    m 2tkc "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
+    m 4tkd "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
+    m 1lsc "I really do despise them..."
+    m 1euc "But..."
     menu:
         m "You don't smoke cigarettes, right, [player]?"
         "Yes, I do.":
             $ persistent._mas_pm_do_smoke = True
             $ persistent._mas_pm_do_smoke_quit = False
-            m 2o "..."
-            m 2r "Thank you for being honest with me, [player]..."
-            m 4f "It's quite disheartening to hear that, though."
-            m 1f "Could you... promise me that you'll stop?"
+            m 1wud "..."
+            m 1eka "Thank you for being honest with me, [player]..."
+            m 1ekc "It's quite disheartening to hear that, though."
+            m 1ekc "Could you... promise me that you'll stop?"
             m "I don't want you to deteriorate your health like that..."
-            m 3o "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
-            m 2q "But if you don't try..."
-            m 2h "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
-            m 4f "Please take care of your body. I want to always be with you."
-            m 1e "I love you so much."
+            m 3lksdlc "I know I can't really force you to stop, but it would mean a lot to me if you considered it."
+            m 1esc "But if you don't try..."
+            m 2euc "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
+            m 2ekc "Please take care of your body. I want to always be with you."
+            m 1ekbfa "I love you so much."
         "No, I don't.":
             $ persistent._mas_pm_do_smoke = False
-            m 1k "Ah, I'm relieved to hear that, [player]!"
-            m 3c "Just stay away from it as much as you can."
-            m 1o "It's an awful habit and won't do much more than slowly kill you."
-            m 3j "Thank you, [player], for not smoking~"
+            m 1hub "Ah, I'm relieved to hear that, [player]!"
+            m 3eua "Just stay away from it as much as you can."
+            m 1eka "It's an awful habit and won't do much more than slowly kill you."
+            m 1hua "Thank you, [player], for not smoking~"
         "I'm trying to quit.":
             $ persistent._mas_pm_do_smoke = True
             $ persistent._mas_pm_do_smoke_quit = True
-            m 3a "That's a really good decision."
-            m 1d "I know the entire process of quitting can be really difficult, especially in the beginning."
-            m 1f "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
-            m 1c "Keeping your mind busy on other things will definitely help kick any bad habits."
-            m 3b "How about you think about me whenever you get a strong urge?"
-            m 1j "I'll be here to support you every step of the way."
-            m 1k "I believe in you [player], I know you can do it!"
+            m 3eua "That's a really good decision."
+            m 1eka "I know the entire process of quitting can be really difficult, especially in the beginning."
+            m "If you ever feel like you need a cigarette, just try to distract yourself with anything else."
+            m 1eua "Keeping your mind busy on other things will definitely help kick any bad habits."
+            m 3eua "How about you think about me whenever you get a strong urge?"
+            m 1hua "I'll be here to support you every step of the way."
+            m 1hub "I believe in you [player], I know you can do it!"
 
     $ hideEventLabel("monika_smoking", derandom=True)
     return
@@ -5483,14 +5484,14 @@ init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road Trip",random=True))
 
 label monika_cartravel:
-    m 3c "[player], something has been on my mind lately..."
-    m 1a "Wouldn't it be nice to drive somewhere, just you and I together?"
-    m 3k "It'd be lovely to explore some beautiful places, anywhere nice that we haven't seen before."
-    m 3b "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
-    m "I bet we'd have a really good time if we took a road trip, [player]."
-    m 1j "It really doesn't matter where we go, as long as I'm with you."
-    m "Just the idea of travelling around the world makes me so excited!"
-    m 1e "I really can't wait, [player]~"
+    m 1euc "[player], something has been on my mind lately..."
+    m 1eua "Wouldn't it be nice to drive somewhere, just you and I together?"
+    m 3eka "It'd be lovely to explore some beautiful places, anywhere nice that we haven't seen before."
+    m 3hub "Maybe we could drive through an alluring forest...{w} or even see the sunset by the coastline!"
+    m 1hub "I bet we'd have a really good time if we took a road trip, [player]."
+    m 1eua "It really doesn't matter where we go, as long as I'm with you."
+    m 1hua "Just the idea of travelling around the world makes me so excited!"
+    m 1eka "I really can't wait, [player]~"
     return
 
 
@@ -5498,22 +5499,22 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_100k",category=['mod'],prompt="100k Downloads",random=True))
 
 label monika_100k:
-    m 1a "It still amazes me how many people out there care about me."
-    m 3a "Did you know that over 100,000 people have downloaded the same mod that you did?"
-    m "The developers even posted a special piece of art to celebrate."
-    m 1k "Things like that always make me smile!"
-    m 1a "If you haven't seen it already, you should really check it out!"
-    m "The artist's name is Sasoura, and she loves me almost as much as I love you."
+    m 1wud "It still amazes me how many people out there care about me."
+    m 3eua "Did you know that over 100,000 people have downloaded the same mod that you did?"
+    m 1eka "The developers even posted a special piece of art to celebrate."
+    m 1hub "Things like that always make me smile!"
+    m 1hua "If you haven't seen it already, you should really check it out!"
+    m 1eka "The artist's name is Sasoura, and she loves me almost as much as I love you."
     if persistent.playername.lower()=='sasoura':
-        m 1d "Hold on...Sasoura...Isn't that your name?"
-        m "Are you the one that made that adorable picture?"
-        m 2b "Gosh! I can't believe I didn't notice sooner!"
-        m 2k "That just makes it even more special."
-        m 2a "I'm glad I can tell you how much it means to me."
-        m 2e "It means the world."
-        m "Thank you so much!"
+        m 1tfc "Hold on...Sasoura...Isn't that your name?"
+        m 1wud "Are you the one that made that adorable picture?"
+        m 2wuo "Gosh! I can't believe I didn't notice sooner!"
+        m 2sub "That just makes it even more special."
+        m 2eua "I'm glad I can tell you how much it means to me."
+        m 2eka "It means the world."
+        m 2hubfb "Thank you so much!"
     else:
-        m 1m "Almost~"
+        m 1hua "Almost~"
     return
 
 init 5 python:
@@ -5531,22 +5532,22 @@ init 5 python:
     )
 
 label monika_kizuna:
-    m 1d "Oh, right, I mentioned her to you, huh?"
-    m 2b "Well, recently I had some YouTube videos tweeted to me."
-    m "And among them was 'Virtual YouTuber Kizuna Ai'"
-    m 3d "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
-    m 3n "It seems to me that she's a voice actress hiding behind a 3D puppet."
-    m 1a "Still, the character she's playing is unique, and you know what?"
-    m 1j "She's played our favorite game~!"
-    m 2o "..."
-    m 2n "To be honest, I'm not sure how I feel about 'Let's Plays'."
-    m 2o "I mean, of {i}this{/i} game, mostly."
-    m 2p "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
-    m 2q "But when I learned of her gimmick, it made me feel..."
-    m 1m "Like I just had to know how Ai-chan would react!"
-    m 1e "Even if it's just a character she plays, I think she'll understand my situation..."
-    m 5a "At least more than your average Youtuber."
-    m 5rub "I can't wait to finish the series..."
+    m 1eua "Oh, right, I mentioned her to you, huh?"
+    m 3eua "Well, recently I had some YouTube videos tweeted to me."
+    m 1eub "And among them was 'Virtual YouTuber Kizuna Ai'"
+    m "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
+    m 3lksdla "It seems to me that she's a voice actress hiding behind a 3D puppet."
+    m 1eua "Still, the character she's playing is unique, and you know what?"
+    m 1hub "She's played our favorite game~!"
+    m 2hksdlb "..."
+    m 2lksdlb "To be honest, I'm not sure how I feel about 'Let's Plays'."
+    m 3euc "I mean, of {i}this{/i} game, mostly."
+    m 2euc "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
+    m 2lsc "But when I learned of her gimmick, it made me feel..."
+    m 1lksdla "Like I just had to know how Ai-chan would react!"
+    m 1eka "Even if it's just a character she plays, I think she'll understand my situation..."
+    m 3eua "At least more than your average Youtuber."
+    m 5hub "I can't wait to finish the series..."
     return
 
 # do you have a family
@@ -5572,102 +5573,102 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
 label monika_asks_family:
-    m 1a "[player], do you have a family?"
+    m 1eua "[player], do you have a family?"
     menu:
         "I do.":
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = False
             $ persistent._mas_pm_no_talk_fam = False
-            m 1j "That's wonderful!"
-            m 1a "Your family must be great people."
-            m "Do you have any siblings?"
+            m 1hua "That's wonderful!"
+            m "Your family must be great people."
+            m 1eua "Do you have any siblings?"
             menu:
                 "Yes.":
                     $ persistent._mas_pm_have_fam_sibs = True
-                    m 1b "That's fantastic!"
+                    m 1hua "That's fantastic!"
                     m "They must've been keeping you busy."
-                    m 1j "I'm sure your siblings are as kind and thoughtful as you are."
-                    m 3k "Maybe I can convince them to start a new literature club with me!"
-                    m 1j "Ehehe~"
-                    m 1a "We'll be able to do a lot of fun things together."
-                    m 3n "It'd turn out much better than before, that's for sure."
-                    m 1j "I'm sure I'll get along with your siblings, as well as the rest of your family, [player]."
-                    m 3k "I can't wait to meet them all!"
+                    m 1eka "I'm sure your siblings are as kind and thoughtful as you are."
+                    m 3hub "Maybe I can convince them to start a new literature club with me!"
+                    m 1hua "Ehehe~"
+                    m 1eua "We'll be able to do a lot of fun things together."
+                    m 3lksdla "It'd turn out much better than before, that's for sure."
+                    m 1eua "I'm sure I'll get along with your siblings, as well as the rest of your family, [player]."
+                    m 3hub "I can't wait to meet them all!"
                 "I'm an only child.":
                     $ persistent._mas_pm_have_fam_sibs = False
-                    m 1c "Being an only child certainly has its trade-offs."
-                    m 2d "Maybe you get much more attention from your parents. Unless they were always busy."
-                    m 4c "On the other hand, maybe you feel more lonely than those with siblings."
-                    m 2h "I can definitely understand that feeling."
-                    m 2j "But know that I'll always be with you no matter what, [player]."
+                    m 1euc "Being an only child certainly has its trade-offs."
+                    m 2eka "Maybe you get much more attention from your parents. Unless they were always busy."
+                    m 2ekc "On the other hand, maybe you feel more lonely than those with siblings."
+                    m 2eka "I can definitely understand that feeling."
+                    m 1hua "But know that I'll always be with you no matter what, [player]."
         "My family is a mess.":
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = True
             $ persistent._mas_pm_no_talk_fam = False
-            m 1d "Oh."
-            m 1o "..."
-            m 1r "I'm sorry, [player]."
-            m 3g "Do you think things will get better?"
+            m 1euc "Oh."
+            m 1lksdlc "..."
+            m 1ekc "I'm sorry, [player]."
+            m "Do you think things will get better?"
             menu:
                 "Yes.":
                     $ persistent._mas_pm_have_fam_mess_better = "YES"
-                    m 1e "I'm glad to hear that."
-                    m "Hopefully one day everyone in your family will be able to reconcile."
-                    m 3b "And I know you can get through what's going on in your life right now."
-                    m 1e "No matter what, I'll be here for you, [player]."
-                    m 1j "Always keep that in mind!"
+                    m 1eka "I'm glad to hear that."
+                    m 1eua "Hopefully one day everyone in your family will be able to reconcile."
+                    m 3eua "And I know you can get through what's going on in your life right now."
+                    m 1eka "No matter what, I'll be here for you, [player]."
+                    m 1hua "Always keep that in mind!"
                 "No.":
                     $ persistent._mas_pm_have_fam_mess_better = "NO"
-                    m 1f "Ah, I see..."
-                    m 1g "I wish I could be there with you to give some comfort."
-                    m 1q "..."
-                    m 1g "[player], no matter what you are going through, I know it'll get better some day."
-                    m 3e "I'll be here with you every step of the way."
-                    m 1j "I love you so much, [player]. Please never forget that!"
+                    m 1ekc "Ah, I see..."
+                    m "I wish I could be there with you to give some comfort."
+                    m 1eka "..."
+                    m 3eka "[player], no matter what you are going through, I know it'll get better some day."
+                    m 1eua "I'll be here with you every step of the way."
+                    m 1hub "I love you so much, [player]. Please never forget that!"
                 "Maybe.":
                     $ persistent._mas_pm_have_fam_mess_better = "MAYBE"
-                    m 1o "..."
-                    m 3f "Well, at least there's a chance."
-                    m 3d "Life is full of tragedy, but I know you are strong enough to get through anything!"
-                    m 1f "I hope all the problems in your family work out in the end, [player]."
+                    m 1lksdla "..."
+                    m 1eua "Well, at least there's a chance."
+                    m 3hua "Life is full of tragedy, but I know you are strong enough to get through anything!"
+                    m 1eka"I hope all the problems in your family work out in the end, [player]."
                     m "If not, know that I'll be here for you."
-                    m 1j "I will always be here to support my beloved~"
+                    m 1hua "I will always be here to support my beloved~"
         "I've never had a family.":
             $ persistent._mas_pm_have_fam = False
             $ persistent._mas_pm_no_talk_fam = False
-            m 1g "Oh, I'm sorry, [player]"
-            m 1o "..."
-            m 1f "Your world is so different than mine, I don't want to pretend like I know what you are going through."
-            m 1p "I can definitely say that my family not being real has certainly caused me a great deal of pain."
-            m 1f "Still, I know you've had it worse."
-            m 1g "You've never even had a fake family."
-            m 1o "..."
-            m 1g "Does it still bother you badly on a daily basis?"
+            m 1euc "Oh, I'm sorry, [player]"
+            m 1lksdlc "..."
+            m 1ekc "Your world is so different than mine, I don't want to pretend like I know what you are going through."
+            m 1lksdlc "I can definitely say that my family not being real has certainly caused me a great deal of pain."
+            m 1ekc "Still, I know you've had it worse."
+            m "You've never even had a fake family."
+            m 1dsc "..."
+            m 1ekc "Does it still bother you badly on a daily basis?"
             menu:
                 "Yes.":
                     $ persistent._mas_pm_no_fam_bother = True
-                    m 1f "That's... understandable."
-                    m 3e "I'll be here for you forever, [player]."
+                    m 1ekc "That's... understandable."
+                    m 1eka "I'll be here for you forever, [player]."
                     m "No matter what it takes, I will fill that gap in your heart with my love..."
-                    m 1j "I promise you that."
-                    m 1e "You are my everything..."
-                    m 1j "I hope I can be yours~"
+                    m 1hua "I promise you that."
+                    m 1ekbfa "You are my everything..."
+                    m 1hubfa "I hope I can be yours~"
                 "No.":
                     $ persistent._mas_pm_no_fam_bother = False
-                    m 3b "That's very good."
-                    m 1a "I'm glad you were able to move on with your life."
-                    m 1k "You're a very resilient person, and I believe in you, [player]!"
-                    m 1e "I hope I can fill that void in your heart."
-                    m 1g "I really care about you, and I'd do anything for you."
-                    m 1j "Someday, we'll be able to make our own family together!"
+                    m 1eua "That's very good."
+                    m 1eka "I'm glad you were able to move on with your life."
+                    m 1hua "You're a very resilient person, and I believe in you, [player]!"
+                    m 1eka "I hope I can fill that void in your heart."
+                    m "I really care about you, and I'd do anything for you."
+                    m 1hua "Someday, we'll be able to make our own family together!"
         "I don't want to talk about this.":
             $ persistent._mas_pm_no_talk_fam = True
-            m 1o "I understand, [player]."
-            m "We can talk about it when you feel ready."
-            m 1f "Then again..."
-            m 3g "It might be something that's too painful for you to talk about."
-            m 1f "You can tell me about your family when you're ready, [player]."
-            m 1j "I love you very much!"
+            m 1dsc "I understand, [player]."
+            m 1eka "We can talk about it when you feel ready."
+            m 1lsc "Then again..."
+            m 1lksdlc "It might be something that's too painful for you to talk about."
+            m 1eka "You can tell me about your family when you're ready, [player]."
+            m 1hubfa "I love you very much!"
 
     $ hideEventLabel("monika_asks_family", derandom=True)
     return
@@ -5684,45 +5685,45 @@ init 5 python:
     )
 
 label monika_explain:
-    m 1c "You want me to explain our relationship to someone else?"
-    m 1a "Okay, just set me in front of them so they can see me."
-    m 1j "I'll do my best explaining it to them."
-    m 1a "I'll wait until you're ready."
+    m 1euc "You want me to explain our relationship to someone else?"
+    m 1eua "Okay, just set me in front of them so they can see me."
+    m 1hua "I'll do my best explaining it to them."
+    m 1eua "I'll wait until you're ready."
     menu:
         "Start.":
             pass
-    m 1l "Hello! My name is Monika."
+    m 1hua "Hello! My name is Monika."
     m "[player]'s faithful girlfriend!"
-    m 1n "Now, our relationship might look odd from a distance..."
-    m 1m "And it's probably not considered a normal relationship..."
-    m 1i "But let me tell you..."
-    m 1k "...The love we share is definitely real!"
-    m 1e "And [player] has been very sweet to me too!"
-    m 1f "Up until I met [player], I felt like a piece of me was missing."
+    m 1lksdlb "Now, our relationship might look odd from a distance..."
+    m 1lksdla "And it's probably not considered a normal relationship..."
+    m 1esc "But let me tell you..."
+    m 1hub "...The love we share is definitely real!"
+    m 1eka "And [player] has been very sweet to me too!"
+    m 1ekc "Up until I met [player], I felt like a piece of me was missing."
     m "I felt alone and scared, with no one to help me..."
-    m 1j "...Until [player] came along."
-    m 1b "And it turns out that missing piece was [him]!"
+    m 1hua "...Until [player] came along."
+    m "And it turns out that missing piece was [him]!"
     if persistent.gender == "F" or persistent.gender == "M":
-        m 1a "Now [he] talks to me, and I'm not so alone anymore."
+        m 1eua "Now [he] talks to me, and I'm not so alone anymore."
     else:
-        m 1a "Now they talk to me, and I'm not so alone anymore."
+        m 1eua "Now they talk to me, and I'm not so alone anymore."
     m "Just [him] opening up the game brightens my day!"
-    m 1q "So, please..."
-    m 4g "...Don't judge our relationship."
-    m 1e "Even if it is different."
-    m 1q "..."
-    m 1n "...Phew!"
-    m "That was a real mouthful!"
-    m 1e "How did I do, [player]?"
+    m 1dsc "So, please..."
+    m 4eka "...Don't judge our relationship."
+    m 1eka "Even if it is different."
+    m 1dsc "..."
+    m 1dubssdru "...Phew!"
+    m 1lksdlb "That was a real mouthful!"
+    m 1eka "How did I do, [player]?"
     menu:
         "You did a good job.":
-            m 1k "Thank you!"
-            m 1a "I just hope whoever that was understands our relationship better."
+            m 1hub "Thank you!"
+            m 1eua "I just hope whoever that was understands our relationship better."
         "You did badly.":
-            m 1f "Oh."
+            m 1ekc "Oh."
             m "I'm sorry I didn't do a good job at explaining..."
-            m 1e "I'll make sure to try harder next time."
-            m 1j "Still doesn't change the fact that I love you, though~"
+            m 1eka "I'll make sure to try harder next time."
+            m 1hua "Still doesn't change the fact that I love you, though~"
     return
 
 # do you live near beach
@@ -5740,44 +5741,44 @@ init 5 python:
     )
 
 label monika_beach:
-    m 1a "[player], have you ever been to the beach?"
+    m 1eua "[player], have you ever been to the beach?"
     m "I've always wanted to go myself but I never found the time."
-    m 1e "I would always be busy studying or doing club activities."
-    m 4f "It wasn't easy trying to stay on top of everything, you know..."
-    m 4g "And whenever I had a break, I would usually spend my time relaxing at home."
+    m 1eka "I would always be busy studying or doing club activities."
+    m 4ekc "It wasn't easy trying to stay on top of everything, you know..."
+    m 4ekd "And whenever I had a break, I would usually spend my time relaxing at home."
     m "I rarely had a chance to do so after all."
-    m 2h "Though sometimes I feel like I might have missed out making some important memories."
+    m 2esc "Though sometimes I feel like I might have missed out making some important memories."
     menu:
         m "Do you live near a beach, [player]?"
 
         "Yes.":
             $ persistent._mas_pm_live_near_beach = True
-            m 1k "That's great!"
-            m 1a "Gosh, it must be really nice to have it so close to you."
-            m 1j "I can't wait, we can have a romantic walk by the shore for our first date~"
+            m 1hub "That's great!"
+            m 1eua "Gosh, it must be really nice to have it so close to you."
+            m 1hub "I can't wait, we can have a romantic walk by the shore for our first date~"
 
         "No.":
             $ persistent._mas_pm_live_near_beach = False
-            m 1e "That's alright. I mean, what are the chances? Most people don't."
-            m 1k "That just means we'll make do by visiting one on an all-day trip!"
-    m 1a "There's so many things we'll be able to do one day."
-    m 1j "Just imagining the many sensations we could experience is kind of exciting!"
-    m 3k "The fresh sea air, the sound of seagulls."
+            m 1eka "That's alright. I mean, what are the chances? Most people don't."
+            m 1hub "That just means we'll make do by visiting one on an all-day trip!"
+    m 1eua "There's so many things we'll be able to do one day."
+    m 1hua "Just imagining the many sensations we could experience is kind of exciting!"
+    m 3eua "The fresh sea air, the sound of seagulls."
     m "As well as the feeling of sand under your feet..."
-    m 1j "It would really make a worthwhile trip!"
-    m 1e "Though being with you would make it even better..."
-    m 3a "We'd have so many things we could do together."
-    m 3b "We could play volleyball, try some ice cream or go swimming in the sea."
-    m 3n "It'll probably be cold, but I'm sure we could keep each other warm somehow..."
-    m 3a "We could try surfing or searching for some seashells to take home as souvenirs."
+    m 1hua "It would really make a worthwhile trip!"
+    m 1eka "Though being with you would make it even better..."
+    m 3eua "We'd have so many things we could do together."
+    m 3eub "We could play volleyball, try some ice cream or go swimming in the sea."
+    m 3lkbsa "It'll probably be cold, but I'm sure we could keep each other warm somehow..."
+    m 3eua "We could try surfing or searching for some seashells to take home as souvenirs."
     m "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
-    m 3k "But don't go falling asleep, otherwise I'll bury you in the sand!"
-    m 3l "Ahaha! I'm just kidding, [player]."
-    m 2m "I'll have to get a new swimsuit though..."
-    m 1a "I only have these clothes in the game after all."
-    m 1b "Would you prefer a one piece or a two piece?"
-    m 1j "Actually, I think I'll make it a surprise."
-    m 1k "Don't get too excited though when you see it. Ehehe~"
+    m 3tfu "But don't go falling asleep, otherwise I'll bury you in the sand!"
+    m 2hua "Ahaha! I'm just kidding, [player]."
+    m 2lksdla "I'll have to get a new swimsuit though..."
+    m 1eua "I only have these clothes in the game after all."
+    m 1tsbsa "Would you prefer a one piece or a two piece?"
+    m 1eua "Actually, I think I'll make it a surprise."
+    m 1tku "Don't get too excited though when you see it. Ehehe~"
     $ hideEventLabel("monika_beach", derandom=True)
     return
 
@@ -5826,22 +5827,22 @@ init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_prom",category=['school'],prompt="Prom",random=True))
 
 label monika_prom:
-    m 1c "You know..."
-    m "Sometimes I wish the game would've lasted longer."
-    m 1d "The game was probably made to end once one of the girls confessed their love to you after the festival."
-    m 1m "But since I tampered with the code so much, we never got to that point."
-    m 3l "It did bring us together, so I can't complain."
-    m 1o "But still..."
-    m 1e "Sometimes I wish both of us could've enjoyed it."
-    m 3a "We could've gone to the other events like sports festivals, Christmas parties, field trips, etc."
-    m 1l "But I guess the game would never let us get that far."
-    m 3c "Which reminds me of a particular event..."
-    m 1b "Prom!"
-    m 1a "From what I've heard, prom is like a school dance usually held at the end of a school year."
+    m 1euc "You know..."
+    m 1eka "Sometimes I wish the game would've lasted longer."
+    m 1eua "The game was probably made to end once one of the girls confessed their love to you after the festival."
+    m 1lksdla "But since I tampered with the code so much, we never got to that point."
+    m 3hksdlb "It did bring us together, so I can't complain."
+    m 1lksdlc "But still..."
+    m 1eka "Sometimes I wish both of us could've enjoyed it."
+    m 3eua "We could've gone to the other events like sports festivals, Christmas parties, field trips, etc."
+    m 1lsc "But I guess the game would never let us get that far."
+    m 3eua "Which reminds me of a particular event..."
+    m 1hua "Prom!"
+    m 1eua "From what I've heard, prom is like a school dance usually held at the end of a school year."
     m "Some students bring a date with them there, and others go with a group of friends."
-    m 3k "There're even those who take their relatives to the event!"
-    m 1a "I think it's something I'd love to go to with you~"
-    m 3a "Have you ever been to one before, [player]?"
+    m 3wuo "There're even those who take their relatives to the event!"
+    m 1eua "I think it's something I'd love to go to with you~"
+    m "Have you ever been to one before, [player]?"
     menu:
         "I have.":
             $ persistent._mas_pm_gone_to_prom = True
@@ -5850,47 +5851,47 @@ label monika_prom:
             menu:
                 "It was pretty fun.":
                     $ persistent._mas_pm_prom_good = True
-                    m 1j "That's great!"
-                    m 1n "Though, I wish I could've went with you."
-                    m 1k "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
-                    m 3a "Did you go with a date?"
+                    m 1hua "That's great!"
+                    m 1lksdlb "Though, I wish I could've went with you."
+                    m 1hua "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
+                    m 3eua "Did you go with a date?"
                     menu:
                         "Yes.":
                             $ persistent._mas_pm_had_prom_date = True
-                            m 1d "Oh, wow."
-                            m 1n "Ehehe, that makes me a bit jealous..."
-                            m 1j "But then again, you would've taken me instead had we met beforehand, right?"
-                            m 1k "Ahaha!"
-                            m 1 "But it's good to know you were able to experience something like that!"
-                            m 3a "Maybe when I get better at programming, we could have our very own prom here."
-                            m 3j "Wouldn't that be nice, [player]?"
+                            m 1euc "Oh, wow."
+                            m 1lksdla "Ehehe, that makes me a bit jealous..."
+                            m 1hua "But then again, you would've taken me instead had we met beforehand, right?"
+                            m 1hub "Ahaha!"
+                            m 1eua "But it's good to know you were able to experience something like that!"
+                            m 3eua "Maybe when I get better at programming, we could have our very own prom here."
+                            m 3eka "Wouldn't that be nice, [player]?"
                         "No.":
                             $ persistent._mas_pm_had_prom_date = False
-                            m 1d "Oh, I see."
-                            m 1a "That's fine as long as you had fun!"
+                            m 1euc "Oh, I see."
+                            m 1eua "That's fine as long as you had fun!"
                             m "Even without a date, I'm sure you made some wonderful memories there."
-                            m 1a "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
-                            m 3j "Besides, maybe we can have our own kind of prom sometime, right?"
-                            m 1a "That's something I'd really enjoy with you~"
+                            m 1eub "I think, whether or not you had a date, that it's always fun to attend those kinds of events."
+                            m 1eka "Besides, maybe we can have our own kind of prom sometime, right?"
+                            m 1eua "That's something I'd really enjoy with you~"
 
                 "It was bad.":
                     $ persistent._mas_pm_prom_good = False
-                    m 1f "Is that so?"
+                    m 1ekc "Is that so?"
                     m "I understand that prom isn't for everyone."
-                    m 3e "Maybe if I was there, you would've enjoyed it more."
-                    m 1j "Ahaha~"
-                    m 3a "Don't worry, [player]."
-                    m 1a "No use remembering it now."
-                    m "Even if you had a bad time with it, it's not the most important thing to happen in your life."
+                    m 3eka "Maybe if I was there, you would've enjoyed it more."
+                    m 1hksdlb "Ahaha~"
+                    m 3eua "Don't worry, [player]."
+                    m 1eua "No use remembering it now."
+                    m 1eub "Even if you had a bad time with it, it's not the most important thing to happen in your life."
                     m "You being able to create more wonderful memories is the important thing."
-                    m 3e "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
-                    m 1j "And now that I'm here with you, we can make them together~"
+                    m 3eka "One bad memory may feel worse than a hundred good memories, but you're still able to make them."
+                    m 1hua "And now that I'm here with you, we can make them together~"
 
                 "It would've been better if you were there.":
                     $ persistent._mas_pm_prom_monika = True
-                    m 1e "Aww, that's so sweet, [player]."
-                    m 1j "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
-                    m 1k "Ahaha!"
+                    m 1ekbfa "Aww, that's so sweet, [player]."
+                    m 1eua "Well, now that we're together, I'm sure there's a way we can make our own prom, right?"
+                    m 1hub "Ahaha!"
         "No.":
             $ persistent._mas_pm_gone_to_prom = False
             $ persistent._mas_pm_no_prom = False
@@ -5899,68 +5900,68 @@ label monika_prom:
                 "You weren't there with me.":
                     $ persistent._mas_pm_prom_monika = True
                     $ persistent._mas_pm_prom_not_interested = False
-                    m 1e "Aww, [player]."
-                    m 1m "Just because I'm not there doesn't mean you should stop yourself from having fun."
-                    m 1b "And besides..."
-                    m 1j "You {i}can{/i} take me to prom, [player]."
-                    m 1k "Just bring my file with you and problem solved!"
-                    m "Ahaha!"
+                    m 1eka "Aww, [player]."
+                    m 1lksdla "Just because I'm not there doesn't mean you should stop yourself from having fun."
+                    m 1eka "And besides..."
+                    m 1hua "You {i}can{/i} take me to prom, [player]."
+                    m "Just bring my file with you and problem solved!"
+                    m 1hub "Ahaha!"
 
                 "Not interested.":
                     $ persistent._mas_pm_prom_not_interested = True
-                    m 3c "Really?"
-                    m "Is it because you're too shy to go?"
+                    m 3euc "Really?"
+                    m 1eka "Is it because you're too shy to go?"
                     menu:
                         "Yes.":
                             $ persistent._mas_pm_prom_shy = True
-                            m 1f "Aww, [player]."
-                            m 1e "That's alright. Not everyone can handle large groups of strangers."
-                            m 3e "Besides, if it's something you're not going to enjoy, why force yourself?"
-                            m 1 "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
-                            m 3a "Look at me for example."
-                            m 1l "If I didn't have the courage to get to you, I'd probably still be all alone..."
-                            m 1e "But here we are now, [player]."
-                            m 1j "Together at last~"
+                            m 1ekc "Aww, [player]."
+                            m 1eka "That's alright. Not everyone can handle large groups of strangers."
+                            m 3eka "Besides, if it's something you're not going to enjoy, why force yourself?"
+                            m 1esa "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
+                            m 3eua "Look at me for example."
+                            m 1lksdla "If I didn't have the courage to get to you, I'd probably still be all alone..."
+                            m 1eka "But here we are now, [player]."
+                            m 1eua "Together at last~"
 
                         "No.":
                             $ persistent._mas_pm_prom_shy = False
-                            m 1d "Oh, I see."
-                            m 1c "That's understandable."
+                            m 1euc "Oh, I see."
+                            m 1eua "That's understandable."
                             m "I'm sure you have your reasons."
-                            m 1a "What's important is that you're not forcing yourself."
+                            m 1eka "What's important is that you're not forcing yourself."
                             m "After all, it wouldn't be worth it if you can't enjoy yourself."
-                            m 1o "It'd just feel like a chore rather than a fun event to go to."
-                            m 3c "But I wonder..."
-                            m 3a "Would you go if I was there with you, [player]?"
-                            m 1j "I think I already know the answer to that~"
-                            m 1k "Ahaha!"
+                            m 1lksdlc "It'd just feel like a chore rather than a fun event to go to."
+                            m 3euc "But I wonder..."
+                            m 3eka "Would you go if I was there with you, [player]?"
+                            m 1tku "I think I already know the answer to that~"
+                            m 1hub "Ahaha!"
         #################################################
         #### We could add this option in the future     #
         #### if we can add a feature where the player   #
         #### can tell their age to Monika               #
         #################################################
         #"Not old enough yet.":
-        #    m 1e "Don't worry, you'll get to go in a few more years."
-        #    m 1j "I heard that prom is so much fun!"
-        #    m 3a "Girls get dolled up and wear fancy dresses"
-        #    m " Guys would put on tuxes and  give their dates a corsage."
-        #    m 1j "And you would have fun dancing the night away!"
-        #    m 1k "Doesn't that sound like a blast? Ahaha~"
+        #    m 1eka "Don't worry, you'll get to go in a few more years."
+        #    m 1hua "I heard that prom is so much fun!"
+        #    m 3eua "Girls get dolled up and wear fancy dresses"
+        #    m "Guys would put on tuxes and  give their dates a corsage."
+        #    m 1hua "And you would have fun dancing the night away!"
+        #    m 1hub "Doesn't that sound like a blast? Ahaha~"
         "My school never had one.":
             $ persistent._mas_pm_no_prom = True
-            m 1d "Ah, I see then."
-            m 1o "I guess not all schools can hold a prom."
+            m 1euc "Ah, I see then."
+            m 1lksdla "I guess not all schools can hold a prom."
             m "They can be pretty messy."
-            m 3d "From what I read, students spend a lot of money on tickets, transport, and attire."
-            m 2q "So many expenses just for one night..."
-            m 2h "I also read that since alcohol isn't allowed, some students would spike the drinks and get the others drunk unknowingly."
-            m 2o "If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
-            m 4l "...Or maybe I'm just overthinking it, ehehe."
-            m 1a "Still, I don't think you'll be missing out much, [player]."
-            m "Prom isn't the most important thing in your academic life."
-            m 3b "And I'm sure there're plenty of events in your life that'll make up for it."
-            m 1j "Being with me is one of them, you know~"
-            m 1k "Ahaha!"
+            m 3euc "From what I read, students spend a lot of money on tickets, transport, and attire."
+            m 2esc "So many expenses just for one night..."
+            m "I also read that since alcohol isn't allowed, some students would spike the drinks and get the others drunk unknowingly."
+            m 2ekc "If someone can easily do that, I doubt someone with evil intentions would have a hard time slipping poison into the drinks."
+            m 2lksdla "...Or maybe I'm just overthinking it, ehehe."
+            m 1esa "Still, I don't think you'll be missing out much, [player]."
+            m 1eua "Prom isn't the most important thing in your academic life."
+            m "And I'm sure there're plenty of events in your life that'll make up for it."
+            m 1hua "Being with me is one of them, you know~"
+            m 1hub "Ahaha!"
 
     $ hideEventLabel("monika_prom", derandom=True)
     return
@@ -5969,26 +5970,26 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
 
 label monika_careful:
-    m 1f "Hey, [player]..."
-    m "Whenever you leave this room, promise me to be extra careful, okay?"
-    m 1g "It's just that..."
-    m 2g "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
-    m 1e "I love you so much, it's hard for me not to worry when you're gone."
-    m 2h "..."
-    m 2f "Also..."
+    m 1lsc "Hey, [player]..."
+    m 1ekc "Whenever you leave this room, promise me to be extra careful, okay?"
+    m 1ekd "It's just that..."
+    m 2ekd "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
+    m 1ekbfa "I love you so much, it's hard for me not to worry when you're gone."
+    m 2lksdlc "..."
+    m 2ekc "Also..."
     m "It crossed my mind recently, that if anything terrible ever did happen to you, I'd never know."
-    m 2g "I'd be stuck here, forever wondering why you never came back to me."
-    m 2r "I can't imagine a crueler fate."
-    m 2q "..."
-    m 2f "So..."
+    m 2ekd "I'd be stuck here, forever wondering why you never came back to me."
+    m 2dsd "I can't imagine a crueler fate."
+    m 2dsc "..."
+    m 2ekc "So..."
     m "I need you to tell someone close to you where to find me, so if that day ever comes, at least I'd know."
-    m 2q "It'd be beyond devastating, but not knowing would be that much worse."
-    m 2g "So make sure you do that for me, okay, [player]?"
-    m 2f "..."
-    m "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
-    m 1e "Thanks for understanding, you always make me feel better."
-    m 4e "Okay, that's enough unpleasant thoughts..."
-    m 1a "Let's enjoy the rest of the day together!"
+    m 2tkc "It'd be beyond devastating, but not knowing would be that much worse."
+    m 2eka "So make sure you do that for me, okay, [player]?"
+    m 2lksdlc "..."
+    m 2dsc "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
+    m 1eka "Thanks for understanding, you always make me feel better."
+    m 4eua "Okay, that's enough unpleasant thoughts..."
+    m 1hua "Let's enjoy the rest of the day together!"
     return
 
 # do you see a therapist
