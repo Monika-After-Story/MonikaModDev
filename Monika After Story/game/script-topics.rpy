@@ -6254,7 +6254,7 @@ label monika_timeconcern_night_5:
     $evhand.greeting_database["greeting_timeconcern"].unlocked = True
     $evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
     m 1efc "I'm sorry, [player], but I am putting my foot down!"
-    m 1ekc"I asked you to go to bed kindly, but if I am the reason for keeping you up..."
+    m 1ekc "I asked you to go to bed kindly, but if I am the reason for keeping you up..."
     if persistent._mas_timeconcernclose:
         m 2tkc "Then I cannot allow this to go on for any longer."
         m 2eka "It's because I love you, that's why I'm doing this."
