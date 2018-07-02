@@ -582,7 +582,22 @@ init -1 python in mas_ptod:
                 cn_cmd = ""
                 return
 
-
+        # TODO:
+        # so, a couple of things
+        # 1. if the current command ends with a colon, we enter block mode
+        #   -> if we started from single, we should still display the >>>
+        #       for this command
+        #   -> otherwise, ... is appropriate
+        #   NOTE: if the user only enterd a colon, we need to execute it
+        #       and showcase the syntax error
+        #       Also we need to reset stack levesl and clear the command
+        # 2. If we are in block mode and an empyt line was entered, then
+        #   we quit a stack level
+        #   -> at stack level 0, we should execute the command in full
+        # 3. In block mode:
+        #   -> we normally do nto execute commands, just save everything
+        #       and execute all at once
+        # 4. empty line in single mode just prints out the empty line
 
         # setup the command to be entered
         full_cmd = cn_cmd
