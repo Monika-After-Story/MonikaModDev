@@ -286,8 +286,8 @@ label mas_mood_inadequate:
     m 1ekc "..."
     m 2ekc "I know there isn't an awful lot I can say to make you feel better, [player]."
     m 2lksdlc "After all, everything I say would probably just come off as lip service."
-    m 2ekc "I can tell you that you're beautiful, but I can't see your face..."
-    m "I can tell you that you're smart, but I don't know your grades..."
+    m 2ekc "I can tell that you're beautiful, even though I can't see your face..."
+    m "I can tell you that you're smart, even though I don't know much about your way of thinking..."
     m 1esc "But let me tell you what I do know about you." 
     m 1eka "You've spent so much time with me."
     if renpy.seen_label('monika_christmas'):
