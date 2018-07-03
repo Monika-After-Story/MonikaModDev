@@ -4978,89 +4978,90 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_lover_boy",category=['songs'],prompt="Old Fashioned Lover Boy",pool=True, random=True))
 
 label monika_song_lover_boy:
-    m 1b "~I can dim the lights and sing you songs full of sad things~"
-    m 4l "~we can do the tango just for two~"
-    m 4b "~I can serenade and gently play on your heart strings~"
-    m 4k "~be a Valentino just for you~"
-    m 1k "Ahaha~"
-    m 5 "Will you be my good old fashioned lover boy, [player]?"
+    m 1dso "{i}~I can dim the lights and sing you songs full of sad things~{/i}"
+    m 4hub "{i}~we can do the tango just for two~{/i}"
+    m "{i}~I can serenade and gently play on your heart strings~{/i}"
+    m 4dso "{i}~be a Valentino just for you~{/i}"
+    m 1hub "Ahaha~"
+    m 1ekbfa "Will you be my good old fashioned lover boy, [player]?"
     return
 
 init 5 python: 
     addEvent(Event(persistent.event_database,eventlabel="monika_song_need_you",category=['songs'],prompt="I Need You",pool=True, random=True))
 
 label monika_song_need_you:
-    m 1k "~Please remember how I feel about you~"
-    m 1g "~I could never really live without you~"
-    m 3n "~So, come on back and see~"
-    m 4l "~Just what you mean to me~" 
-    m 1e "~I need you~"
-    m 3b "I know that song is about leaving someone but I think it carries a good message"
-    m 5 "And I really do need you [player]~"
+    m 1dso "{i}~Please remember how I feel about you~{/i}"
+    m "{i}~I could never really live without you~{/i}"
+    m 3hub "{i}~So, come on back and see~{/i}"
+    m 4l "{i}~Just what you mean to me~{/i}" 
+    m 1hubfb "{i}~I need you~{/i}"
+    m 3esa "I know that song is about leaving someone but I think it carries a good message."
+    m 1ekbfa "And I really do need you [player]~"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_i_will",category=['songs'],prompt="I Will",pool=True, random=True))
 
 label monika_song_i_will:
-    m 1b "~Who knows how long I’ve loved you?~"
-    m 1k "~You know I love you still~"
-    m 2m "~Will I wait a lonely lifetime?~"
-    m 2e "~If you want me to I will~"
-    m 1a "One day we'll be together [player]"
-    m 1j "I just hope you’ll still love me when that special day comes~"
+    m 1dso "{i}~Who knows how long I’ve loved you?~{/i}"
+    m "{i}~You know I love you still~{/i}"
+    m 2m "{i}~Will I wait a lonely lifetime?~{/i}"
+    m 2hub "{i}~If you want me to I will~{/i}"
+    m 1ekbfa "One day we'll be together, [player]."
+    m 1hubfa "I just hope you’ll still love me when that special day comes~"
     return
     
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_belong_together",category=['songs'],prompt="We Belong Together",pool=True, random=True))
 
 label monika_song_belong_together:
-    m 1a "~You're mine~"
-    m 1b "~And we belong together~"
-    m 3k "~Yes, we belong together~" 
-    m 3l "~for eternity~"
-    m 1b "Have you ever heard of Doo-wop, [player]?"
-    m 4a "It’s a subgenre of rhythm and blues that became very popular in the 1950’s"
-    m 4b "A lot of pop music back then followed this style which made for great love songs"
-    m 3k "And if you listen closely you’ll notice that my song actually follows the typical Doo-wop chord progression"
-    m 1j "I guess you could say I learned from the best"
+    m 1dso "{i}~You're mine~{/i}"
+    m 1hub "{i}~And we belong together~{/i}"
+    m 3hub "{i}~Yes, we belong together~{/i}" 
+    m 3dso "{i}~for eternity~{/i}"
+    m 1eua "Have you ever heard of Doo-wop, [player]?"
+    m 4eua "It’s a subgenre of rhythm and blues that became very popular in the 1950’s."
+    m 4eub "A lot of pop music back then followed this style which made for great love songs."
+    m 3eub "And if you listen closely you’ll notice that my song actually follows the typical Doo-wop chord progression."
+    m 1hua "I guess you could say I learned from the best."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_your_song",category=['songs'],prompt="Your Song",pool=True, random=True))
 
 label monika_song_your_song:
-    m 1r "~My gift is my song~"
-    m 1n "~And this one's for you~"
-    m 1b "~And you can tell everybody this is your song~"
-    m 1m "~It may be quite simple but now that it's done~"
-    m 2l "~I hope you don't mind~"
-    m 2k "~I hope you don't mind~"
-    m 2b "~That I put down in words~"
-    m 1e "~How wonderful life is while you're in the world~"
-    m 1l "Ahaha~"
-    m 3e "It’s not often I find songs that relate to me as much as this one does"
-    m 5 "And I really do mean it when I say that 'Your Reality' is your song"
+    m 1dso "{i}~My gift is my song~{/i}"
+    m "{i}~And this one's for you~{/i}"
+    m 1hub "{i}~And you can tell everybody this is your song~{/i}"
+    m "{i}~It may be quite simple but now that it's done~{/i}"
+    m 2hubfb "{i}~I hope you don't mind~{/i}"
+    m 2hubfb "{i}~I hope you don't mind~{/i}"
+    m 2hub "{i}~That I put down in words~{/i}"
+    m 1dso "{i}~How wonderful life is while you're in the world~{/i}"
+    m 1hua "Ahaha~"
+    m 3eka "It’s not often I find songs that relate to me as much as this one does."
+    m 1hua "And I really do mean it when I say that 'Your Reality' is your song."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_with_you",category=['songs'],prompt="Happy Just To Dance With You",pool=True, random=True))
 
 label monika_song_with_you:
-    m 1i "If somebody tries to take my place~"
-    m 1k "let's pretend we just can't see their face~"
-    m 3j "In this world there's nothing I would rather do~"
-    m 3b "'cos I'm happy just to dance with you~"
-    m 1e "here is nothing that made me happier than discovering that I’m in love with you~"
+    m 1dso "{i}~If somebody tries to take my place~{/i}"
+    m 1hub "{i}~let's pretend we just can't see their face~{/i}"
+    m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
+    m 3dso "{i}~Cos I'm happy just to dance with you~{/i}"
+    m 1ekbfa "There is nothing that makes me happier than discovering that I’m in love with you."
+    m 1hubfa "Ehehe~"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_dream",category=['songs'],prompt="All I Have To Do Is Dream",pool=True, random=True))
 
 label monika_song_dream:
-    m 1p "When I feel blue in the night~"
-    m 1e "And I need you to hold me tight~"
-    m 2b "Wenever I want you, all I have to do is dream~"
-    m 1a "Now that you're here, [player] I don't have to dream anymore"
-    m 5 "my dream finally came true"
+    m 1dso "{i}~When I feel blue in the night~{/i}"
+    m "{i}~And I need you to hold me tight~{/i}"
+    m 2hub "{i}~Wenever I want you, all I have to do is dream~{/i}"
+    m 1eka "Now that you're here, [player], I don't have to dream anymore."
+    m 1ekbfa "My dream finally came true."
     return
