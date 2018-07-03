@@ -1260,7 +1260,7 @@ label game_chess:
 
     hide screen keylistener
 
-    m 1b "You want to play chess? Alright~"
+    m 1eub "You want to play chess? Alright~"
 #   m 2a "Double click your king if you decide to surrender."
 #    m 1a "Get ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
@@ -1297,6 +1297,7 @@ label demo_minigame_chess:
         python:
             import StringIO # python 2 
             import chess.pgn
+            import os
 
             quicksaved_game = chess.pgn.read_game(
                 StringIO.StringIO(persistent._mas_chess_quicksave)
@@ -1376,7 +1377,7 @@ label demo_minigame_chess:
             ).replace("\\", "/")
 
             try:
-                if renpy.file(quicksaved_filename_clean):
+                if os.access(quicksaved_filename_clean, os.R_OK):
                     quicksaved_file = mas_chess.isInProgressGame(
                         quicksaved_filename,
                         mas_monika_twitter_handle
@@ -1391,7 +1392,6 @@ label demo_minigame_chess:
             $ ur_nice_today = False
             # save the filename of what the game should have been
             python:
-                import os
 
                 mas_chess.loaded_game_filename = quicksaved_filename_clean
 
@@ -1401,7 +1401,7 @@ label demo_minigame_chess:
             if _return == mas_chess.CHESS_GAME_CONT:
                 python:
                     try:
-                        if renpy.file(quicksaved_filename_clean):
+                        if os.access(quicksaved_filename_clean, os.R_OK):
                             quicksaved_file = mas_chess.isInProgressGame(
                                 quicksaved_filename,
                                 mas_monika_twitter_handle
@@ -1480,7 +1480,7 @@ label demo_minigame_chess:
             if ur_nice_today:
                 # we successfully loaded the unfinished game and player did not
                 # cheat
-                m 1a "We still have an unfinished game in progress."
+                m 1eua "We still have an unfinished game in progress."
             m "Get ready!"
 
 label mas_chess_game_load_check:
@@ -1510,10 +1510,10 @@ label mas_chess_new_game_start:
             $ choice = random.randint(0, 1) == 0
             if choice:
                 $ player_color = ChessDisplayable.COLOR_WHITE
-                m 2a "Oh look, I drew black! Let's begin!"
+                m 2eua "Oh look, I drew black! Let's begin!"
             else:
                 $ player_color = ChessDisplayable.COLOR_BLACK
-                m 2a "Oh look, I drew white! Let's begin!"
+                m 2eua "Oh look, I drew white! Let's begin!"
 
 label mas_chess_game_start:
     window hide None
@@ -1586,7 +1586,7 @@ label mas_chess_game_start:
         $ persistent.chess_strength += 1
 
     # transitional dialogue setup
-    m 1a "Anyway..."
+    m 1eua "Anyway..."
 
     # if you have a previous game, we are overwrititng it regardless
     if loaded_game:
@@ -1698,13 +1698,13 @@ label mas_chess_save_migration:
             show monika at t11
             if _return == mas_chess.CHESS_MENU_WAIT_VALUE:
                 # user backs out
-                m 2q "I see."
-                m 2a "In that case, please take your time."
-                m 1a "We'll play chess again once you've made your decision."
+                m 2dsc "I see."
+                m 2eua "In that case, please take your time."
+                m 1eua "We'll play chess again once you've made your decision."
                 return False
             else:
                 # user selected a game
-                m 1a "Alright." 
+                m 1eua "Alright." 
                 python:
                     sel_game = actual_pgn_games.pop(_return)
                     for pgn_game in actual_pgn_games:
@@ -1768,7 +1768,7 @@ label mas_chess_savegame:
 
         # check if this file exists already
         if is_file_exist:
-            m 1e "We already have a game named '[save_name]'."
+            m 1eka "We already have a game named '[save_name]'."
             menu:
                 m "Should I overwrite it?"
                 "Yes":
@@ -1790,21 +1790,21 @@ label mas_chess_savegame:
         # the file path to show is different
         display_file_path = mas_chess.REL_DIR + save_filename
 
-    m 1q ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
-    m 1j "I've saved our game in '[display_file_path]'!"
+    m 1dsc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+    m 1hua "I've saved our game in '[display_file_path]'!"
 
     if not renpy.seen_label("mas_chess_pgn_explain"):
 
         label mas_chess_pgn_explain:
-            m 1a "It's in a format called Portable Game Notation."
+            m 1eua "It's in a format called Portable Game Notation."
             m "You can open this file in PGN viewers."
 
             if game_result == "*": # ongoing game
-                m 1n "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
-                m 1e "Right, [player]?"
+                m 1lksdlb "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
+                m 1eka "Right, [player]?"
                 menu:
                     "Of course not":
-                        m 1j "Yay~"
+                        m 1hua "Yay~"
 
     if game_result == "*":
         jump mas_chess_end
@@ -1842,39 +1842,39 @@ label mas_chess_dlg_qs_lost:
 
 # quicksave lost start
 label mas_chess_dlg_qs_lost_start:
-    m 2n "Uh, [player]...{w} It seems I messed up in saving our last game,"
+    m 2lksdlb "Uh, [player]...{w} It seems I messed up in saving our last game,"
     m "and now I can't open it anymore."
     return
 
 # generic quicksave lost statement
 label mas_chess_dlg_qs_lost_gen:
-    m 1o "I'm sorry..."
+    m 1lksdlc "I'm sorry..."
     m "Let's start a new game instead."
     return
 
 # 2nd time quicksave lost statement
 label mas_chess_dlg_qs_lost_2:
-    m 1p "I'm really, really sorry, [player]."
+    m 1lksdld "I'm really, really sorry, [player]."
     m "I hope you can forgive me."
-    show monika 1f
+    show monika 1ekc
     pause 1.0
-    m 1q "I'll make it up to you..."
-    m 1a "by starting a new game!"
+    m 1dsc "I'll make it up to you..."
+    m 1eua "by starting a new game!"
     return
 
 # 3rd time quicksave lost statement
 label mas_chess_dlg_qs_lost_3:
-    m 1o "I'm so clumsy, [player]...{w} I'm sorry."
+    m 1lksdlc "I'm so clumsy, [player]...{w} I'm sorry."
     m "Let's start a new game instead."
     return
 
 # 5th time recurring quicksave lost statement
 label mas_chess_dlg_qs_lost_5r:
-    m 2h "This has happened [qs_gone_count] times now..."
+    m 2esc "This has happened [qs_gone_count] times now..."
     m "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
-    m 1i "Anyway..."   
+    m 1esd "Anyway..."   
     m "Let's start a new game."
-    show monika 1h
+    show monika 1esc
     return
 
 # 7th time recurring quicksave lost statement
@@ -1904,7 +1904,7 @@ label mas_chess_dlg_qf_lost:
 
 # intro to quickfile lost
 label mas_chess_dlg_qf_lost_start:
-    m 2m "Well,{w} this is embarrassing."
+    m 2lksdla "Well,{w} this is embarrassing."
     m "I could have sworn that we had an unfinished game, but I can't find the save file."
     return
 
@@ -1934,19 +1934,19 @@ label mas_chess_dlg_qf_lost_ofcn_start:
 
 # generic ofcnot monika
 label mas_chess_dlg_qf_lost_ofcn_gen:
-    m 1n "Ah, yeah. You wouldn't do that to me."
+    m 1lksdlb "Ah, yeah. You wouldn't do that to me."
     m "I must have misplaced the save files."
-    m 1o "Sorry, [player]."
+    m 1lksdlc "Sorry, [player]."
     m "I'll make it up to you..."
-    m 1a "by starting a new game!"
+    m 1eua "by starting a new game!"
     return
 
 # 3rd time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_3:
-    m 2h "..."
+    m 2esc "..."
     m "[player],{w} did you..."
-    m 2q "Nevermind."
-    m 1h "Let's play a new game."
+    m 2dsc "Nevermind."
+    m 1esc "Let's play a new game."
     return
 
 # 4th time you ofcn monika
@@ -1955,23 +1955,23 @@ label mas_chess_dlg_qf_lost_ofcn_4:
 
 # 5th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_5:
-    m 2h "..."
+    m 2esc "..."
     m "[player],{w} this is happening way too much."
-    m 2q "I really don't believe you this time."
+    m 2dsc "I really don't believe you this time."
     pause 2.0
-    m 2h "I hope you're not messing with me."
+    m 2esc "I hope you're not messing with me."
     m "..."
-    m 1h "Whatever.{w} Let's just play a new game."
+    m 1esc "Whatever.{w} Let's just play a new game."
     return 
 
 # 6th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_6:
     # disable chess forever!
-    m 2h "..."
-    m "[player],{w} I don't believe you."
+    m 2dfc "..."
+    m 2efc "[player],{w} I don't believe you."
     # TODO: we need an angry monika
-    m 2i "If you're just going to throw away our chess games like that,"
-    m "then I don't want to play chess with you anymore."
+    m 2efd "If you're just going to throw away our chess games like that..."
+    m 6wfw "Then I don't want to play chess with you anymore!"
     $ persistent.game_unlocks["chess"] = False
     # workaround to deal with peeople who havent seen the unlock chess label
     $ persistent._seen_ever["unlock_chess"] = True
@@ -1998,19 +1998,19 @@ label mas_chess_dlg_qf_lost_may_start:
 # generic maybe monika
 # NOTE: we do a check for the file every line
 label mas_chess_dlg_qf_lost_may_gen:
-    m 2g "[player]!{w} I should have known you were just messing with me!"
+    m 2ekd "[player]!{w} I should have known you were just messing with me!"
     jump mas_chess_dlg_qf_lost_may_filechecker
 
 # generic maybe monika, found file
 label mas_chess_dlg_qf_lost_may_gen_found:
-    m 2a "Oh!"
-    m 1j "There's the save.{w} Thanks for putting it back, [player]."
-    m 1a "Now we can continue our game."
+    m 2eua "Oh!"
+    m 1hua "There's the save.{w} Thanks for putting it back, [player]."
+    m 1eua "Now we can continue our game."
     return store.mas_chess.CHESS_GAME_CONT
 
 # 2nd time maybe monika
 label mas_chess_dlg_qf_lost_may_2:
-    m 2g "[player]!{w} Stop messing with me!"
+    m 2ekd "[player]!{w} Stop messing with me!"
     jump mas_chess_dlg_qf_lost_may_filechecker
 
 # 2nd time maybe monika, found file
@@ -2019,17 +2019,18 @@ label mas_chess_dlg_qf_lost_may_2_found:
 
 # maybe monika file checking parts
 label mas_chess_dlg_qf_lost_may_filechecker:
+    $ import os 
     $ import store.mas_chess as mas_chess
     $ game_file = mas_chess.loaded_game_filename
 
-    if renpy.exists(game_file):
+    if os.access(game_file, os.F_OK):
         jump mas_chess_dlg_qf_lost_may_gen_found
 
-    m 1e "Can you put the save back so we can play?"
-    if renpy.exists(game_file):
+    m 1eka "Can you put the save back so we can play?"
+    if os.access(game_file, os.F_OK):
         jump mas_chess_dlg_qf_lost_may_gen_found
 
-    show monika 1a
+    show monika 1eua
 
     # loop for about a minute and check for file xistence
     python:
@@ -2037,31 +2038,31 @@ label mas_chess_dlg_qf_lost_may_filechecker:
         file_found = False
         seconds = 0
         while not file_found and seconds < 60:
-            if renpy.exists(game_file):
+            if os.access(game_file, os.F_OK):
                 file_found = True
             else:
                 renpy.pause(1.0, hard=True)
                 seconds += 1
 
     if file_found:
-        m 1j "Yay!{w} Thanks for putting it back, [player]."
+        m 1hua "Yay!{w} Thanks for putting it back, [player]."
         m "Now we can continue our game."
-        show monika 1a
+        show monika 1eua
         return mas_chess.CHESS_GAME_CONT
 
     # else:
-    m 1g "[player]..."
-    m 1e "That's okay. Let's just play a new game."
+    m 1ekd "[player]..."
+    m 1eka "That's okay. Let's just play a new game."
     return
 
 # 3rd time maybe monika
 label mas_chess_dlg_qf_lost_may_3:
-    m 2g "[player]! That's-"
-    m 1 "Not a problem at all."
+    m 2ekd "[player]! That's-"
+    m 1esa "Not a problem at all."
     m "I knew you were going to do this again,"
-    m 1k "so I kept a backup of our save!"
+    m 1hub "so I kept a backup of our save!"
     # TODO: wink here please
-    m 1a "You can't trick me anymore, [player]."
+    m 1eua "You can't trick me anymore, [player]."
     m "Now let's continue our game."
     $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
@@ -2069,10 +2070,10 @@ label mas_chess_dlg_qf_lost_may_3:
 # maybe monika, but player removed the file again!
 label mas_chess_dlg_qf_lost_may_removed:
     # TODO; angery monika here
-    m 2h "[player]!"
-    m 2q "You removed the save again."
+    m 2wfw "[player]!"
+    m 2wfx "You removed the save again."
     pause 0.7
-    m "Let's just play chess at another time, then."
+    m 2rfc "Let's just play chess at another time, then."
     $ import datetime
     $ persistent._mas_chess_timed_disable = datetime.datetime.now()
     return True
@@ -2104,17 +2105,17 @@ label mas_chess_dlg_qf_lost_acdnt_gen:
 
 # 2nd accident monika
 label mas_chess_dlg_qf_lost_acdnt_2:
-    m 1e "Again? Don't be so clumsy, [player]."
-    m 1j "But that's okay."
+    m 1eka "Again? Don't be so clumsy, [player]."
+    m 1hua "But that's okay."
     m "We'll just play a new game instead."
-    show monika 1a
+    show monika 1eua
     return
 
 # 3rd accident monika
 label mas_chess_dlg_qf_lost_acdnt_3:
-    m 1e "I had a feeling this would happen again."
-    m 3k "So I kept a backup of our save!"
-    m 1a "Now we can continue our game."
+    m 1eka "I had a feeling this would happen again."
+    m 3hub "So I kept a backup of our save!"
+    m 1eua "Now we can continue our game."
     $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
 
@@ -2126,7 +2127,7 @@ label mas_chess_dlg_qf_edit:
 
     call mas_chess_dlg_qf_edit_start from _mas_chess_dlgqfeditstart
 
-    show monika 2f
+    show monika 2ekc
     menu:
         m "Did you edit the save file?"
         "Yes":
@@ -2138,7 +2139,7 @@ label mas_chess_dlg_qf_edit:
 
 # intro to quickfile edited
 label mas_chess_dlg_qf_edit_start:
-    m 2o "[player]..."
+    m 2lksdlc "[player]..."
     return
 
 ## Yes Edit flow
@@ -2161,28 +2162,28 @@ label mas_chess_dlg_qf_edit_y_start:
 
 # first time yes edit
 label mas_chess_dlg_qf_edit_y_1:
-    m 2q "I'm disappointed in you."
-    m 1c "But I'm glad that you were honest with me."
+    m 2dsc "I'm disappointed in you."
+    m 1euc "But I'm glad that you were honest with me."
 
     # we want a timed menu here. Let's give the player 5 seconds to say sorry
     show screen mas_background_timed_jump(5, "mas_chess_dlg_qf_edit_y_1n")
     menu:
         "I'm sorry":
             hide screen mas_background_timed_jump
-            m 1j "Apology accepted!"
-            m 1a "Luckily, I still remember a little bit of the last game, so we can continue it from there."
+            m 1hua "Apology accepted!"
+            m 1eua "Luckily, I still remember a little bit of the last game, so we can continue it from there."
             return store.mas_chess.CHESS_GAME_BACKUP
         "...":
             label mas_chess_dlg_qf_edit_y_1n:
                 hide screen mas_background_timed_jump
-                m "Since that game's been ruined, let's just play a new game."
+                m 1lfc "Since that game's been ruined, let's just play a new game."
             return
     return # just in case
 
 # 2nd time yes edit
 label mas_chess_dlg_qf_edit_y_2:
-    m 2q "I am incredibly disappointed in you."
-    m "I don't want to play chess right now."
+    m 2dfc "I am incredibly disappointed in you."
+    m 2rfc "I don't want to play chess right now."
     python:
         import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
@@ -2190,10 +2191,10 @@ label mas_chess_dlg_qf_edit_y_2:
 
 # 3rd time yes edit
 label mas_chess_dlg_qf_edit_y_3:
-    m 2q "I'm not surprised..."
-    m 2h "But I am prepared."
+    m 2dsc "I'm not surprised..."
+    m 2esc "But I am prepared."
     m "I kept a backup of our game just in case you did this again."
-    m 1 "Now let's finish this game."
+    m 1esa "Now let's finish this game."
     $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
     $ persistent.chess_strength = 20
     $ persistent._mas_chess_skip_file_checks = True
@@ -2219,16 +2220,16 @@ label mas_chess_dlg_qf_edit_n_start:
 
 # 1st time no edit
 label mas_chess_dlg_qf_edit_n_1:
-    m 1f "I see."
+    m 1ekc "I see."
     m "The save file looks different than how I last remembered it, but maybe that's just my memory failing me."
-    m 1a "Let's continue this game."
+    m 1eua "Let's continue this game."
     $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
     $ persistent.chess_strength = 20
     return store.mas_chess.CHESS_GAME_FILE
 
 # 2nd time no edit
 label mas_chess_dlg_qf_edit_n_2:
-    m 1f "I see."
+    m 1ekc "I see."
     m "..."
     m "Let's just continue this game."
     $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
@@ -2237,11 +2238,11 @@ label mas_chess_dlg_qf_edit_n_2:
 
 # 3rd time no edit
 label mas_chess_dlg_qf_edit_n_3:
-    m 2q "[player]..."
-    m 2h "I kept a backup of our game.{w} I know you edited the save file."
-    m "I just-"
-    m "I just{fast} can't believe you would cheat and {i}lie{/i} to me."
-    m 2o "..."
+    m 2dfc "[player]..."
+    m 2dftdc "I kept a backup of our game.{w} I know you edited the save file."
+    m 2dftsc "I just-"
+    m 6ektsc "I just{fast} can't believe you would cheat and {i}lie{/i} to me."
+    m 6rktsc "..."
     
     # THE ULTIMATE CHOICE
     show screen mas_background_timed_jump(3, "mas_chess_dlg_qf_edit_n_3n")
@@ -2259,12 +2260,12 @@ label mas_chess_dlg_qf_edit_n_3:
 
 # 3rd time no edit, sorry
 label mas_chess_dlg_qf_edit_n_3_s:
-    show monika 2h
+    show monika 6ektsc
     pause 1.0
-    show monika 2
+    show monika 2ektsc
     pause 1.0
     m "I forgive you, [player], but please don't do this to me again."
-    m "..."
+    m 2lktsc "..."
     $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
     $ persistent.chess_strength = 20   
     $ persistent._mas_chess_3_edit_sorry = True
@@ -2274,9 +2275,9 @@ label mas_chess_dlg_qf_edit_n_3_s:
 
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
-    m 2q "[player]..."
-    m 2h "I see you've edited my backup saves."
-    m "If you want to be like that right now, then we'll play chess some other time."
+    m 2dfc "[player]..."
+    m 2efc "I see you've edited my backup saves."
+    m 2lfc "If you want to be like that right now, then we'll play chess some other time."
     python:
         import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
@@ -2284,7 +2285,7 @@ label mas_chess_dlg_qf_edit_n_3_n_qs:
 
 # 3rd time no edit, no sorry
 label mas_chess_dlg_qf_edit_n_3_n:
-    m 2h "I can't trust you anymore."
+    m 6ektsc "I can't trust you anymore."
     m "Goodbye, [player].{nw}"
    
     # do some permanent stuff
@@ -2329,8 +2330,8 @@ label mas_chess_go_ham_and_delete_everything:
 ## general dialogue
 # if chess is locked
 label mas_chess_dlg_chess_locked:
-    m 1q "..."
-    m "I don't feel like playing chess right now."
+    m 1efc "..."
+    m 2lfc "I don't feel like playing chess right now."
     return
 
 ### endgame dialogue
@@ -2350,17 +2351,17 @@ label mas_chess_dlg_game_in_progress:
 # draw game
 label mas_chess_dlg_game_drawed:
     if persistent._mas_chess_3_edit_sorry:
-        m 2h "A draw?"
-        m 2q "Hmph."
-        m 2h "I'll beat you next time."
+        m 1wuo "A draw?"
+        m 2lfc "Hmph."
+        m 2tfu "I'll beat you next time."
     else:
-        m 3h "A draw? How boring..."
+        m 2tkc "A draw? How boring..."
     return
 
 ## monika wins
 # monika win pre dialogue
 label mas_chess_dlg_game_monika_win_pre:
-    m 1b "I win!"
+    m 1sub "I win!"
     return
 
 # main monika win label
@@ -2384,7 +2385,7 @@ label mas_chess_dlg_game_monika_win:
 
         else: # assume its a line
             # this is a line, call it using 1k expression
-            m 1k "[v_quip]"
+            m 1hub "[v_quip]"
 
     else:
         python:
@@ -2404,9 +2405,9 @@ label mas_chess_dlg_game_monika_win:
 
 ## monika wins quips
 label mas_chess_dlg_game_monika_win_rekt:
-    m 1k "Ahaha~"
-    m "Maybe you should stick to checkers."
-    m 1 "I doubt you'll ever beat me."
+    m 1hub "Ahaha~"
+    m 1tku "Maybe you should stick to checkers."
+    m 1tfu "I doubt you'll ever beat me."
     return
 
 # winning, chess strength 0
@@ -2419,7 +2420,7 @@ label mas_chess_dlg_game_monika_win_1:
 
 # winning, chess strength 2
 label mas_chess_dlg_game_monika_win_2:
-    m 1l "I really was going easy on you!"
+    m 1hksdlb "I really was going easy on you!"
     return
 
 # winning, chess strength 3
@@ -2492,13 +2493,13 @@ label mas_chess_dlg_game_monika_win_19:
 
 # winning, chess strength 20
 label mas_chess_dlg_game_monika_win_20:
-    m 1j "I'll go a little easier on you next time."
+    m 1tfu "I'll go a little easier on you next time."
     return      
 
 ## monika wins by early surrender
 # monika win by early surrender dialogue start
 label mas_chess_dlg_game_monika_win_surr_pre:
-    m 1e "Come on, don't give up so easily."
+    m 1eka "Come on, don't give up so easily."
     return
 
 # main monika win by earlt surrenders label
@@ -2519,7 +2520,7 @@ label mas_chess_dlg_game_monika_win_surr:
 
         else: # assume its a line
             # this is a line, call it using 1k expression
-            m 1k "[v_quip]"
+            m 1hub "[v_quip]"
 
     else:
         # only the non bad players get the encouragement from monika
@@ -2543,14 +2544,14 @@ label mas_chess_dlg_game_monika_win_surr:
 ## monika wins by early surrender quips
 # poor resolve
 label mas_chess_dlg_game_monika_win_surr_resolve:
-    m 1k "Giving up is a sign of poor resolve..."
-    m 1h "I don't want a [bf] who has poor resolve."
+    m 1tfc "Giving up is a sign of poor resolve..."
+    m 1lfc "I don't want a [bf] who has poor resolve."
     return
 
 # have you tried
 label mas_chess_dlg_game_monika_win_surr_trying:
-    m 1k "Have you considered {i}actually trying{/i}?"
-    m 1 "I hear it is beneficial to your mental health."
+    m 1tku "Have you considered {i}actually trying{/i}?"
+    m 1tfu "I hear it is beneficial to your mental health."
     return
 
 # winning by surrender, chess strength 0
@@ -2641,7 +2642,7 @@ label mas_chess_dlg_game_monika_win_surr_20:
 ## monika loses
 # monika lose label start dialogue
 label mas_chess_dlg_game_monika_lose_pre:
-    m 2a "You won! Congratulations."
+    m 2hua "You won! Congratulations."
     return
 
 # main monika lose label
@@ -2662,7 +2663,7 @@ label mas_chess_dlg_game_monika_lose:
 
         else: # assume its a line
             # this is a line, call it using 1q expression
-            m 1q "[v_quip]"
+            m 1dsc "[v_quip]"
 
     else:
         # only the non bad players get congrats
@@ -2687,8 +2688,8 @@ label mas_chess_dlg_game_monika_lose:
 # monika calls you silly
 # thanks syn
 label mas_chess_dlg_game_monika_lose_silly:
-    m 1q "Surely you don't expect me to believe that you beat me fairly, especially for someone at your skill level."
-    m 1 "Don't be so silly, [player]."
+    m 1tku "Surely you don't expect me to believe that you beat me fairly, especially for someone at your skill level."
+    m 1tfu "Don't be so silly, [player]."
     return
 
 # losing, chess strength 0
@@ -2701,18 +2702,18 @@ label mas_chess_dlg_game_monika_lose_1:
 
 # losing, chess strength 2
 label mas_chess_dlg_game_monika_lose_2:
-    m 1a "I have to admit, I put less pressure on you than I could have..."
-    m "I hope you don't mind! I'll be challenging you more as you get better."
+    m 1tku "I have to admit, I put less pressure on you than I could have..."
+    m 1tsb "I hope you don't mind! I'll be challenging you more as you get better."
     return
 
 # losing, chess strength 3
 label mas_chess_dlg_game_monika_lose_3:
-    m 1a "I'll get you next time for sure!"
+    m 1eua "I'll get you next time for sure!"
     return
 
 # losing, chess strength 4
 label mas_chess_dlg_game_monika_lose_4:
-    m 1a "You played pretty well this game."
+    m 1hua "You played pretty well this game."
     return
 
 # losing, chess strength 5
@@ -2721,12 +2722,12 @@ label mas_chess_dlg_game_monika_lose_5:
 
 # losing, chess strength 6
 label mas_chess_dlg_game_monika_lose_6:
-    m 1a "This game was quite stimulating!"
+    m 1hua "This game was quite stimulating!"
     return
 
 # losing, chess strength 7
 label mas_chess_dlg_game_monika_lose_7:
-    m 3a "Excellently played, [player]!"
+    m 3hua "Excellently played, [player]!"
     return      
 
 # losing, chess strength 8
@@ -2739,7 +2740,7 @@ label mas_chess_dlg_game_monika_lose_9:
 
 # losing, chess strength 10
 label mas_chess_dlg_game_monika_lose_10:
-    m 1b "You're quite a strong chess player!"
+    m 1wuo "You're quite a strong chess player!"
     return      
 
 # losing, chess strength 11
@@ -2748,7 +2749,7 @@ label mas_chess_dlg_game_monika_lose_11:
 
 # losing, chess strength 12
 label mas_chess_dlg_game_monika_lose_12:
-    m 1d "You're a very challenging opponent, [player]!"
+    m 1wuo "You're a very challenging opponent, [player]!"
     return      
 
 # losing, chess strength 13
@@ -2766,7 +2767,7 @@ label mas_chess_dlg_game_monika_lose_15:
 # losing, chess strength 16
 label mas_chess_dlg_game_monika_lose_16:
     # ee for good chess players
-    m 2n "I-{w=1}It's not like I let you win or anything, b-{w=1}baka!"
+    m 2lfx "I-{w=1}It's not like I let you win or anything, b-{w=1}baka!"
     return      
 
 # losing, chess strength 17
@@ -2779,34 +2780,34 @@ label mas_chess_dlg_game_monika_lose_18:
 
 # losing, chess strength 19
 label mas_chess_dlg_game_monika_lose_19:
-    m 3d "Wow! You're amazing at chess."
-    m "You could be a professional chess player!"
+    m 1wuo "Wow! You're amazing at chess."
+    m 1sub "You could be a professional chess player!"
     return      
 
 # losing, chess strength 20
 label mas_chess_dlg_game_monika_lose_20:
-    m 3d "Wow!"
-    m 1m "Are you sure you're not cheating?"
+    m 1wuo "Wow!"
+    m 1tku "Are you sure you're not cheating?"
     return      
 
 ### chess has ended dialogue
 # monika won
 label mas_chess_dlg_game_monika_win_end:
-    m 2d "Despite its simple rules, chess is a really intricate game."
-    m 1a "It's okay if you find yourself struggling at times."
-    m 1j "Remember, the important thing is to be able to learn from your mistakes."
+    m 2eua "Despite its simple rules, chess is a really intricate game."
+    m 1eua "It's okay if you find yourself struggling at times."
+    m 1hua "Remember, the important thing is to be able to learn from your mistakes."
     return
 
 # quick version of monika win
 label mas_chess_dlg_game_monika_win_end_quick:
-    m 1a "Okay, [player], let's play again soon."
+    m 1eua "Okay, [player], let's play again soon."
     return
 
 # monika lost
 label mas_chess_dlg_game_monika_lose_end:
-    m 2b "It's amazing how much more I have to learn even now."
-    m 2a "I really don't mind losing as long as I can learn something."
-    m 1j "After all, the company is good."
+    m 2eub "It's amazing how much more I have to learn even now."
+    m 2eua "I really don't mind losing as long as I can learn something."
+    m 1hua "After all, the company is good."
     return
 
 #quick version of monika lose
@@ -2821,7 +2822,7 @@ label mas_chess_dlg_game_in_progress_end:
 
 # quick version of game in progress
 label mas_chess_dlg_game_in_progress_end_quick:
-    m 1a "Okay, [player], let's continue this game soon."
+    m 1eua "Okay, [player], let's continue this game soon."
     return
 
 #### end dialogue blocks ######################################################
