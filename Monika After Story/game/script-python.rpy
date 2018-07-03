@@ -352,6 +352,11 @@ init -1 python in mas_ptod:
     # stack level
     stack_level = 0
 
+    # stack to handle indent levels
+    # this means indent levels that the opening : has
+    # first stack level should ALWAYS BE 0
+    indent_stack = list()
+
     # version text
     VER_TEXT_1 = "Python {0}"
     VER_TEXT_2 = "{0} in MAS"
@@ -374,6 +379,34 @@ init -1 python in mas_ptod:
 
     # current state
     state = STATE_SINGLE
+
+    # short variants of the comonly used commands:
+    def clr_cn():
+        """
+        SEE clear_console
+        """
+        clear_console()
+
+
+    def rst_cn():
+        """
+        SEE restart_console
+        """
+        restart_console()
+
+
+    def w_cmd(cmd):
+        """
+        SEE write_command
+        """
+        write_command(cmd)
+
+
+    def x_cmd(context):
+        """
+        SEE exec_command
+        """
+        exec_command(context)
 
 
     def write_command(cmd):
@@ -405,8 +438,9 @@ init -1 python in mas_ptod:
             cn_line = ""
             state = STATE_BLOCK
 
-        # add appropriate indents to the command
-        cn_cmd = _indent_line(str(cmd))
+        # we dont indent the command
+        # we also dont check for indents
+        cn_cmd = str(cmd)
 
         # pick appropriate shell symbol
         if state == STATE_SINGLE:
@@ -434,7 +468,7 @@ init -1 python in mas_ptod:
             _update_console_history_list(cn_lines[:-1])
 
             # last line becomes the current line
-            cn_line = cn_lines[-1:]
+            cn_line = cn_lines[len(cn_lines)-1]
 
             if state == STATE_SINGLE:
                 # single mode
@@ -468,8 +502,10 @@ init -1 python in mas_ptod:
         # first closing paren is where we need to split the version text
         split_dex = version.find(")")
         start_lines = [
-            mas_utils.clean_gui_text(VER_TEXT_1.format(version[:split_dex+1])),
-            mas_utils.clean_gui_text(VER_TEXT_2.format(version[split_dex+2:]))
+#            mas_utils.clean_gui_text(VER_TEXT_1.format(version[:split_dex+1])),
+#            mas_utils.clean_gui_text(VER_TEXT_2.format(version[split_dex+2:]))
+            VER_TEXT_1.format(version[:split_dex+1]),
+            VER_TEXT_2.format(version[split_dex+2:])
         ]
 
         # clear the console and add the 2 new lines
@@ -512,12 +548,10 @@ init -1 python in mas_ptod:
         """
         try:
             exec(line, context)
-            result = ""
+            return ""
 
         except Exception as e:
-            result = _exp_toString(e)
-
-        return result
+            return _exp_toString(e)
 
 
     def __exec_evalexec(line, context):
@@ -533,12 +567,11 @@ init -1 python in mas_ptod:
             the result of the command as a string
         """
         try:
-            result = str(eval(line, context))
+            return str(eval(line, context))
+
         except:
             # eval fails, try to exec
-            result __exec_exec(line, context)
-
-        return result
+            return __exec_exec(line, context)
 
 
     def exec_command(context):
@@ -560,7 +593,7 @@ init -1 python in mas_ptod:
         # empty line signals end of block (usually)
         empty_line = len(cn_cmd.strip()) == 0
 
-        # ending with colon means its time to create new block
+        # ends with colon is special case
         time_to_block = cn_cmd.endswith(":")
 
         # but a bad block can happen (no text except a single colon)
@@ -576,7 +609,7 @@ init -1 python in mas_ptod:
 
             if block_mode:
                 # block mode means we clear a stack level
-                stack_level -= 1
+                __popi()
 
             else:
                 # otherwise, add an empty new line to history, and thats it
@@ -589,11 +622,26 @@ init -1 python in mas_ptod:
         if bad_block:
             # user entered a bad block
             # we will execute it as a command
-            full_cmd = cmd
+            full_cmd = cn_cmd
+            stack_level = 0
+            blk_cmd = list()
 
         elif time_to_block:
             # we are going to enter a new block mode
             blk_cmd.append(cn_cmd)
+
+            if not block_mode:
+                # we didnt start in block mode
+                __pushi(0)
+
+            else:
+                # block mode
+                pre_spaces = _count_sp(cn_cmd)
+
+                if __peeki() != pre_spaces:
+                    # if this colon line does NOT match current indentaion
+                    # level then we need to push a new stack
+                    __pushi(pre_spaces)
 
         elif block_mode:
             # in block mode already
@@ -637,7 +685,7 @@ init -1 python in mas_ptod:
                 # multi dont need symbols
                 sym = ""
 
-            output = [sym + _indent_line(cn_line)]
+            output = [sym + cn_line]
 
         # if we have any results, we need to show them too
         if len(result) > 0:
@@ -652,14 +700,11 @@ init -1 python in mas_ptod:
 
         if bad_block:
             # bad block, means we abort lots of things
-            stack_level = 0
             state = STATE_SINGLE
             block_mode = False
-            blk_cmd = list()
 
         elif time_to_block:
             # new block, incrmenet stack levels, change to block states
-            stack_level += 1
             state = STATE_BLOCK
             block_mode = True
 
@@ -672,6 +717,45 @@ init -1 python in mas_ptod:
         elif state == STATE_BLOCK_MULTI:
             # multi modes end here
             state = STATE_BLOCK
+
+
+    def __pushi(indent_level):
+        """
+        Pushes a indent level into the stack
+
+        IN:
+            indent_level - indent to push into stack
+        """
+        global stack_level
+        stack_level += 1
+        indent_stack.append(indent_level)
+   
+
+    def __popi():
+        """
+        Pops indent level from stack
+
+        REUTRNS:
+            popped indent level
+        """
+        global stack_level
+        stack_level -= 1
+
+        if stack_level < 0:
+            stack_level = 0
+
+        if len(indent_stack) > 0:
+            indent_stack.pop()
+
+
+    def __peeki():
+        """
+        Returns value that would be popped from stack
+
+        RETURNS:
+            indent level that would be popped
+        """
+        return indent_stack[len(indent_stack)-1]
 
 
     def _exp_toString(exp):
@@ -696,6 +780,19 @@ init -1 python in mas_ptod:
             line prepended with spaces
         """
         return (" " * (stack_level * 4)) + line
+
+
+    def _count_sp(line):
+        """
+        Counts number of spaces that prefix this line
+
+        IN:
+            line - line to cound spaces
+
+        RETURNS:
+            number of spaces at start of line
+        """
+        return len(line) - len(line.lstrip(" "))
 
 
     def _update_console_history(*new_items):
@@ -723,7 +820,8 @@ init -1 python in mas_ptod:
 
             # and clean them too
             for b_line in broken_lines:
-                cn_history.append(mas_utils.clean_gui_text(b_line))
+#                cn_history.append(mas_utils.clean_gui_text(b_line))
+                cn_history.append(b_line)
 
         if len(cn_history) > H_SIZE:
             cn_history = cn_history[-H_SIZE:]
@@ -748,6 +846,8 @@ init -1 python in mas_ptod:
             broken_lines.append(line[:LINE_MAX])
             line = line[LINE_MAX:]
 
+        # add final line
+        broken_lines.append(line)
         return broken_lines
 
 
@@ -769,7 +869,7 @@ screen mas_py_console_teaching():
             # console history
             for index in range(starting_index, -1, -1):
                 $ cn_line = store.mas_ptod.cn_history[index]
-                text cn_line:
+                text "[cn_line]":
                     style "mas_py_console_text"
                     anchor (0, 1.0)
                     xpos 5
@@ -797,10 +897,28 @@ screen mas_py_console_teaching():
             
             # current line
             if len(store.mas_ptod.cn_line) > 0:
-                text store.mas_ptod.cn_line:
+                text "[store.mas_ptod.cn_line]":
                     style "mas_py_console_text_cn"
                     anchor (0, 1.0)
                     xpos cn_l_x
                     ypos 433
 
+# does a write command and waits 
+label mas_w_cmd(cmd, wait=0.7):
+    $ store.mas_ptod.w_cmd(cmd)
+    pause wait
+    return
 
+# does an execute and waits
+label mas_x_cmd(ctx, wait=0.7):
+    $ store.mas_ptod.x_cmd(ctx)
+    pause wait
+    return
+
+# does both writing and executing, with waits
+label mas_wx_cmd(cmd, ctx, w_wait=0.7, x_wait=0.7):
+    $ store.mas_ptod.w_cmd(cmd)
+    pause w_wait
+    $ store.mas_ptod.x_cmd(ctx)
+    pause x_wait
+    return

@@ -161,3 +161,113 @@ label dev_ptod_console_testing_line_break:
     m "okay i hide screen now"
     hide screen mas_py_console_teaching
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_ptod_console_testing_block",
+            category=["dev"],
+            prompt="TEST PTOD CONSOLE BLOCK",
+            pool=True,
+            random=True,
+            unlocked=True
+        )
+    )
+
+label dev_ptod_console_testing_block:
+    python:
+        char_lim = list()
+        for i in range(1, store.mas_ptod.LINE_MAX+1):
+            char_lim.append(str(i % 10))
+
+        char_lim = "".join(char_lim)
+
+        local_context = dict()
+        store.mas_ptod.restart_console()
+
+    m "hi, let me show the screen"
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    m "I am going to test block statements"
+
+    m "First, lets define two test values"
+    $ store.mas_ptod.write_command("test = 12")
+    pause 0.7
+    $ store.mas_ptod.exec_command(local_context)
+    pause 0.7
+    $ store.mas_ptod.w_cmd("result = 0")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+
+    m "Now lets run if statement tests"
+    $ store.mas_ptod.w_cmd("if test % 2 == 1:")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+    pause 0.7
+    $ store.mas_ptod.w_cmd("    result = 1")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+    pause 0.7
+    $ store.mas_ptod.w_cmd("elif test % 3 == 0:")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+    pause 0.7
+    $ store.mas_ptod.w_cmd("    result = 2")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+    pause 0.7
+    $ store.mas_ptod.w_cmd("else:")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+    pause 0.7
+    $ store.mas_ptod.w_cmd("    result = 3")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+    pause 0.7
+    $ store.mas_ptod.w_cmd("")
+    m "Hopefully no errors here"
+    $ store.mas_ptod.x_cmd(local_context)
+    m "Now result should be 2 I think"
+    $ store.mas_ptod.w_cmd("result")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+
+    m "Let me try a syntax error real quick"
+    $ store.mas_ptod.w_cmd(":")
+    pause 0.7
+    $ store.mas_ptod.x_cmd(local_context)
+
+    m "And now lets try a block error"
+    call mas_w_cmd("if True:")
+    call mas_x_cmd(local_context)
+    call mas_w_cmd(" result = 100")
+    call mas_x_cmd(local_context)
+    call mas_w_cmd("  result = 200")
+    call mas_x_cmd(local_context)
+    call mas_w_cmd("")
+    m "We should get an error now"
+    call mas_x_cmd(local_context)
+
+    m "But result should still be 2"
+    call mas_w_cmd("result")
+    call mas_x_cmd(local_context)
+
+    m "okay, lets try a loop"
+    call mas_wx_cmd("size = 11", local_context)
+    call mas_wx_cmd("a_list = list()", local_context)
+    call mas_wx_cmd("for i in range(0, size):", local_context)
+    call mas_wx_cmd("  a_list.append(i)", local_context)
+    call mas_w_cmd("")
+    m "lets try it!"
+    call mas_x_cmd(local_context)
+
+    m "and print out the list"
+    call mas_wx_cmd("a_list", local_context)
+
+    m "i think thats enough testing for today."
+    m "good?"
+    m "okay i hide screen now"
+    hide screen mas_py_console_teaching
+    return
