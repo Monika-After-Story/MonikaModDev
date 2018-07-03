@@ -8,13 +8,14 @@ init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
-            eventlabel="greeting_st_patrick", 
+            eventlabel="greeting_st_patrick",
             start_date=datetime.datetime(2017, 3, 17),
             end_date=datetime.datetime(2017, 3, 18),
-            unlocked=True, 
+            unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        eventdb=evhand.greeting_database,
+        skipCalendar=True
     )
     del rules
 
@@ -39,3 +40,22 @@ label greeting_st_patrick:
                     m 4j "Drink vodnika!"
     return
 
+# Dev Fast greeting
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+    rules.update({"monika wants this first":""})
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_fast",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_fast:
+    m "{fast}Hello!{nw}"
+    return

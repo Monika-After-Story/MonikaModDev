@@ -269,7 +269,8 @@ label ch30_monikamovie:
             "Ready?"
             "Yes":
                 label mm_movie_resume:
-                    $ allow_dialogue = False
+                # TODO: update this
+#                    $ allow_dialogue = False
                     m 1a "Three...{w=1}{nw}" 
                     m  "Two...{w=1}{nw}"
                     m  "One...{w=1}{nw}"
@@ -312,7 +313,8 @@ label ch30_monikamovie:
 
     label mm_movie_loop_end:
         hide countdown
-        $ allow_dialogue = True
+        # TODO update this
+#        $ allow_dialogue = True
         $ watchingMovie = False
         $ timer.seconds = 0
         $ MovieOverlayHideButtons()
