@@ -266,6 +266,9 @@ label dev_ptod_console_testing_block:
     m "and print out the list"
     call mas_wx_cmd("a_list", local_context)
 
+    m "time to disable the console"
+    $ store.mas_ptod.ex_cn()
+
     m "i think thats enough testing for today."
     m "good?"
     m "okay i hide screen now"

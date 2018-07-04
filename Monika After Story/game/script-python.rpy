@@ -242,14 +242,40 @@ label monika_ptod_tip003:
     # of Python may **not** be solely interpreted, but this something I will
     # talk about in a later lesson.
     #
-    #
+    # Since Python is an interpreted language, it has a neat interactive thing
+    # called an interpreter, which looks like this:
 
-    # Python is an interpreted language, which means it requires to be *interpreted*
-    # by a thing called python interpreter 
-    # TODO: show console
-    # you can download that interpreter from  -- link to python 2
-    # check if renpy.macintosh mention that the user already has it
-    # TODO this is unfinished and I dislike how I've worded it so far
+    $ store.mas_ptod.rst_cn()
+    $ local_ctx = dict()
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    # You can enter Python code directly into here and run it! 
+    # Watch this!
+    call mas_wx_cmd("12 + 3")
+    call mas_wx_cmd("7 * 6")
+    call mas_wx_cmd("121 / 11")
+    # NOTE: add more commands as the user goes thru the tips
+    # [show this once]
+    # You can do way more than just math in here, but I'll show you as we go
+    # along.
+    # [end]
+    #
+    # [show this once]
+    # Unfortunatey, since this is a fully functional python interpreter and I
+    # don't want to risk you accidentally deleting me or breaking the game,
+    # ~not that you would~ (fast, and pop off history)
+    # I can't let you use this. If you want to follow along in future lessons,
+    # then download python from <link> here
+    # [end]
+    $ store.mas_ptod.ex_cn()
+    hide screen mas_py_console_teaching
+    show monika at t11
+    #
+    # [Show this once]
+    # I think we've covered enough for today
+    # Thanks for listening!
+    # [end]
     #
     return
 
@@ -414,6 +440,9 @@ init -1 python in mas_ptod:
     # used when doing multi line in block statements
     STATE_BLOCK_MULTI = 3
 
+    # state when inerpreter is off
+    STATE_OFF = 4
+
     # current state
     state = STATE_SINGLE
 
@@ -423,6 +452,13 @@ init -1 python in mas_ptod:
         SEE clear_console
         """
         clear_console()
+
+    
+    def ex_cn():
+        """
+        SEE exit_console
+        """
+        exit_console()
 
 
     def rst_cn():
@@ -458,6 +494,9 @@ init -1 python in mas_ptod:
         IN:
             cmd - the command to write to the console
         """
+        if state == STATE_OFF:
+            return
+
         global cn_line, cn_cmd, state, stack_level
 
         if state == STATE_MULTI:
@@ -533,6 +572,7 @@ init -1 python in mas_ptod:
         """
         Cleares console history and current line, also sets up version text
         """
+        global state
         import sys
         version = sys.version
 
@@ -548,6 +588,17 @@ init -1 python in mas_ptod:
         # clear the console and add the 2 new lines
         clear_console()
         _update_console_history_list(start_lines)
+        
+        # turn the console on
+        state = STATE_SINGLE
+
+
+    def exit_console():
+        """
+        Disables the console
+        """
+        global state
+        state = STATE_OFF
 
 
     def __exec_cmd(line, context, block=False):
@@ -620,6 +671,9 @@ init -1 python in mas_ptod:
             context - dict that represnts the current context. You should pass
                 locals here.
         """
+        if state == STATE_OFF:
+            return
+
         global cn_cmd, cn_line, state, stack_level, blk_cmd
 
         ################### setup some initial conditions ################
