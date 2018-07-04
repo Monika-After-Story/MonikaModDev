@@ -228,10 +228,8 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="tired",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_tired:
-    python:
-        import datetime
-        current_time = datetime.datetime.now().hour
-     if 20 <= current_time < 24:
+    $ current_time = datetime.datetime.now().time().hour
+    if 20 <= current_time < 24:
         m 1eka "If you're tired now, it's not a bad time to go to bed."
         m "As fun as it was spending time with you today, I would hate to keep you up if you're tired."
         m 1hua "If you plan to go to sleep now, sweet dreams!"
