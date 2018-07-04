@@ -253,15 +253,16 @@ label v0_3_1(version=version): # 0.3.1
 label v0_8_3(version="v0_8_3"):
     python:
         import datetime
+        import store.evhand as evhand
 
         # need to unrandom the explain topic
-        ex_ev = mas_getEV("monika_explain")
+        ex_ev = evhand.event_database.get("monika_explain", None)
         if ex_ev is not None:
             ex_ev.random = False
             ex_ev.pool = True
 
         # update Kizuna's topic action
-        kiz_ev = mas_getEV("monika_kizuna")
+        kiz_ev = evhand.event_database.get("monika_kizuna", None)
         if kiz_ev is not None and not renpy.seen_label(kiz_ev.eventlabel):
             kiz_ev.action = EV_ACT_POOL
             kiz_ev.unlocked = False
@@ -297,7 +298,7 @@ label v0_8_3(version="v0_8_3"):
             "monika_familygathering"
         ]
         for topic in derandomable:
-            ev = mas_getEV(topic)
+            ev = evhand.event_database.get(topic, None)
             if renpy.seen_label(topic) and ev:
                 ev.unlocked = True
                 ev.unlock_date = datetime.datetime.now()
