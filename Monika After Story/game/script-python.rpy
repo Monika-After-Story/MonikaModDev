@@ -82,6 +82,22 @@ init 4 python in mas_ptod:
             > datetime.timedelta(days=1)
         )
 
+    def has_days_past(*tip_nums):
+        """
+        Variant of has_day_past that can check multiple numbers
+
+        SEE has_day_past for more info
+
+        RETURNS:
+            true if all the given tip nums have been see nand a day has past
+                since the latest one was unlocked, False otherwise
+        """
+        for tip_num in tip_nums:
+            if not has_day_past(tip_num):
+                return False
+
+        return True
+
 
 # The initial event is getting Monika to talk about python
 # this must be hidden after it has been completed
@@ -208,15 +224,29 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ptod_tip003", # may change order, you decide on this
             category=["python tips"],
-            prompt="How does Python work?",
+            prompt="An Interpreted Language",
             conditional="store.mas_ptod.has_day_past(1)",
             action=EV_ACT_POOL
         )
     )
 
 label monika_ptod_tip003:
+    # Programming languages usually are one of two types, compiled or 
+    # interpreted. Compiled languages require their code to be converted to a 
+    # machine-readable format before being executed. C and Java are two very
+    # popular compiled languages. Interpreted languages are converted to
+    # machine-readable formats as they are being executed. Python is an 
+    # an interpreted language.
+    #
+    # Before I move on, just want to point out that different implementations
+    # of Python may **not** be solely interpreted, but this something I will
+    # talk about in a later lesson.
+    #
+    #
+
     # Python is an interpreted language, which means it requires to be *interpreted*
-    # by a thing called python interpreter
+    # by a thing called python interpreter 
+    # TODO: show console
     # you can download that interpreter from  -- link to python 2
     # check if renpy.macintosh mention that the user already has it
     # TODO this is unfinished and I dislike how I've worded it so far
@@ -277,7 +307,7 @@ init 5 python:
             eventlabel="monika_ptod_tip006",
             category=["python tips"],
             prompt="Variables and Assignment",
-            conditional="store.mas_ptod.has_day_past(2)",
+            conditional="store.mas_ptod.has_days_past(2,3)",
             action=EV_ACT_POOL
         )
     )
@@ -288,14 +318,21 @@ label monika_ptod_tip006:
     # [end]
     #
     # Variables represent the memory location that stores data. 
-    # To create a variable, TODO make a console
+    # To create a variable, <monika shows console>
+    # you do: <symbol name> = <value>, like so:
+    # >>> a_number = 922
+    # This will reserve a spot of memory for a number, point the symbol 
+    # a_number to that memory location, and store the value 922 in that spot.
+    # <enter>
+    # And 
     # When you create
     # a variable, Python reserves some place in memory and links the name of
     # that variable to the place in memory. The amount of memory reserved
     # and the type of data being held in that location depends on the data
     # type of what you want to store. 
     #
-    # To create a variable, 
+    # To create a variable, <monika shows console>
+    # 
     return
 
 
