@@ -6802,6 +6802,7 @@ label monika_dating_startdate:
         # its today?!
         # this should NEVER HAPPEN
         m 1lsc "We started dating..."
+        $ _history_list.pop()
         m 1wud "We started dating{fast} today?!"
         m 2wfw "You couldn't have possibly triggered this event today, [player]."
         menu:
@@ -6821,6 +6822,7 @@ label monika_dating_startdate:
     if not persistent._mas_changed_start_date:
         m 1lsc "Hmmm..."
         m 1dsc "I think it was..."
+        $ _history_list.pop()
         m 1eua "I think it was{fast} [first_sesh]."
         m 1rksdlb "But my memory might be off."
 
@@ -6986,6 +6988,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                 m 6dftdc "..."
                 m 1eka "In that case..."
                 m 1tku "{cps=*4}I've got some work to do.{/cps}{nw}"
+                $ _history_list.pop()
 
                 menu:
                     "What?":
