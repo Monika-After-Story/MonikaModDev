@@ -314,6 +314,7 @@ label mas_random_ask:
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
             # TODO: this really should be a smug or wink face
             m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
+            $ _history_list.pop()
             m "That tells me when {fast}you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
@@ -343,6 +344,7 @@ init 5 python:
 label mas_monikai_detected:
     m 2wud "What's this?"
     m "Is that-"
+    $ _history_list.pop()
     m 1wuo "Is that{fast} a tiny version of me?"
     m 1hua "How cute!"
     show monika 1eua

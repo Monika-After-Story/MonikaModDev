@@ -449,6 +449,7 @@ label greeting_glitch:
      hide monika
      show yuri glitch zorder MAS_BACKGROUND_Z
      y "{cps=500}[player]?!{nw}{/cps}"
+     $ _history_list.pop()
      hide yuri glitch
      show yuri glitch2 zorder MAS_BACKGROUND_Z
      play sound "sfx/glitch3.ogg"
@@ -697,6 +698,7 @@ label monikaroom_greeting_opendoor_locked:
             m "Aww, sorry."
         "No":
             m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
+            $ _history_list.pop()
             m "I figured. It's a basic glitch after all."
     m "Since you keep opening my door,{w} I couldn't help but add a little surprise for you~"
     m "Knock next time, okay?"
