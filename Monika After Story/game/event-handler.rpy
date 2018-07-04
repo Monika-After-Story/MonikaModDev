@@ -745,9 +745,13 @@ label call_next_event:
             $ ev.shown_count += 1
             $ ev.last_seen = datetime.datetime.now()
 
-        if _return == 'quit':
-            $persistent.closed_self = True #Monika happily closes herself
-            jump _quit
+        if _return is not None:
+            if "derandom" in _return:
+                $ ev.random = False
+
+            if "quit" in _return:
+                $persistent.closed_self = True #Monika happily closes herself
+                jump _quit
 
         show monika 1 at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
 

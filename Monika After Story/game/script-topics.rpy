@@ -392,8 +392,7 @@ label monika_selfesteem:
             m 1e "I can't promise it will be easy, but it'll be worth it."
             m 3k "I'll always root for you, [player]!"
 
-    $ hideEventLabel("monika_selfesteem", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sayori",category=['club members'],prompt="Sayori regrets.",random=True))
@@ -1365,10 +1364,7 @@ label monika_rain:
             $ persistent._mas_likes_rain = False
 
     # unrandom this event if its currently random topic
-    if evhand.event_database["monika_rain"].random:
-        $ hideEventLabel("monika_rain", derandom=True)
-
-    return
+    return "derandom"
 
 
 init 5 python:
@@ -2583,8 +2579,7 @@ label monika_images:
     m 2h "Anything lewd you've seen has definitely never taken place."
     m 2j "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
     m "You better be saving yourself for me, [player]~"
-    $ hideEventLabel("monika_images", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself.",pool=True))
@@ -3064,8 +3059,7 @@ label monika_cities:
         "No":
             $ persistent._mas_pm_live_in_city = False
             m 1hua "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
-    $ hideEventLabel("monika_cities", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_chloroform",category=['trivia'],prompt="Chloroform",random=True))
@@ -3493,8 +3487,7 @@ label monika_haterReaction:
             m 1ekbfa "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m "I trust you, [player]. I love you for believing in me."
 
-    $ hideEventLabel("monika_haterReaction", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_swordsmanship",category=['monika','misc'],prompt="Swordsmanship",random=True))
@@ -3766,8 +3759,7 @@ label monika_japanese:
             m 1eua "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
             m 1ekbfa "Ahaha! It's okay [player]. It just means that I can say 'I love you' in more ways than one!"
 
-    $ hideEventLabel("monika_japanese", derandom=True)
-    return
+    return "derandom"
 
 default persistent._mas_penname = ""
 init 5 python:
@@ -4044,8 +4036,7 @@ label monika_icecream:
             m 3eua "Ah, I could go on and on about this stuff, you know?"
             m 4eua "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
 
-    $ hideEventLabel("monika_icecream", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sayhappybirthday",category=['misc'],prompt="Can you tell someone Happy Birthday for me?",pool=True))
@@ -4746,8 +4737,7 @@ label monika_weddingring:
             m 1ekc "Aww. That's a shame."
             m 1eka "Well, at least think about it, okay?"
 
-    $ hideEventLabel("monika_weddingring", derandom=True)
-    return
+    return "derandom"
 
 # do you like playing sports
 default persistent._mas_pm_like_playing_sports = None
@@ -4775,8 +4765,7 @@ label monika_sports:
             m 1eka "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m 1ekc "I would hate to see you get sick because of something like that..."
 
-    $ hideEventLabel("monika_sports", derandom=True)
-    return
+    return "derandom"
 
 # do you meditate
 default persistent._mas_pm_meditates = None
@@ -4818,8 +4807,7 @@ label monika_meditation:
     show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 1hubfa "Don't you ever forget that, [player]~"
 
-    $ hideEventLabel("monika_meditation", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_orchestra",category=['media','you'],prompt="Classical music",random=True))
@@ -4867,8 +4855,7 @@ label monika_orchestra:
             m 1eka "Anyhow, you should really see if anything catches your fancy."
             m 1hua "I would be very happy to hear you play."
 
-    $ hideEventLabel("monika_orchestra", derandom=True)
-    return
+    return "derandom"
 
 # do you like jazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
 default persistent._mas_pm_like_jazz = None
@@ -4905,8 +4892,7 @@ label monika_jazz:
     m 1eua "It was about experimenting, about going beyond what already existed. To make something more wild and colorful."
     m 1hua "Like poetry! It used to be structured and rhyming, but it's changed. It gives greater freedom now."
     m 1eua "Maybe that's what I like about jazz, if anything."
-    $ hideEventLabel("monika_jazz", derandom=True)
-    return
+    return "derandom"
 
 # do you watch animemes
 default persistent._mas_pm_watch_mangime = None
@@ -4949,8 +4935,7 @@ label monika_otaku:
     m 1lfu "I wouldn't want to be replaced by some two-dimensional cutout."
     m 1eua "Besides, if you ever want to escape from reality..."
     m 1hubfa "I can be your real-life fantasy instead~"
-    $ hideEventLabel("monika_otaku", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_writingtip3",category=['writing tips'],prompt="Writing tip #3",conditional="seen_event('monika_writingtip2')",action=EV_ACT_POOL))
@@ -5477,8 +5462,7 @@ label monika_smoking:
             m 1hua "I'll be here to support you every step of the way."
             m 1hub "I believe in you [player], I know you can do it!"
 
-    $ hideEventLabel("monika_smoking", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road Trip",random=True))
@@ -5670,8 +5654,7 @@ label monika_asks_family:
             m 1eka "You can tell me about your family when you're ready, [player]."
             m 1hubfa "I love you very much!"
 
-    $ hideEventLabel("monika_asks_family", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(
@@ -5779,8 +5762,7 @@ label monika_beach:
     m 1tsbsa "Would you prefer a one piece or a two piece?"
     m 1eua "Actually, I think I'll make it a surprise."
     m 1tku "Don't get too excited though when you see it. Ehehe~"
-    $ hideEventLabel("monika_beach", derandom=True)
-    return
+    return "derandom"
 
 ####################################################
 # Saving this for future use
@@ -5963,8 +5945,7 @@ label monika_prom:
             m 1hua "Being with me is one of them, you know~"
             m 1hub "Ahaha!"
 
-    $ hideEventLabel("monika_prom", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
@@ -6034,8 +6015,7 @@ label monika_natsuki_letter:
             m 1eua "If that ever changes, don't be shy!"
             m 1hua "But maybe I really am all the support you need? Ahaha!"
 
-    $ hideEventLabel("monika_natsuki_letter", derandom=True)
-    return
+    return "derandom"
 
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
@@ -6509,8 +6489,7 @@ label monika_familygathering:
             m 1eua "If you want to keep me a secret, then that's fine."
             m 1hub "After all, it just means more alone time with you~"
 
-    $ hideEventLabel("monika_familygathering", derandom=True)
-    return
+    return "derandom"
 
 # do you eat fast food
 default persistent._mas_pm_eat_fast_food = None
@@ -6642,8 +6621,7 @@ label monika_yellowwp:
             m 1eka "It's a short story, so if you haven't, feel free to whenever you have the time."
             m 1hua "It'll definitely be an interesting read for you."
 
-    $ hideEventLabel("monika_yellowwp", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(

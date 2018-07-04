@@ -252,6 +252,7 @@ label v0_3_1(version=version): # 0.3.1
 # 0.8.3
 label v0_8_3(version="v0_8_3"):
     python:
+        import datetime
 
         # need to unrandom the explain topic
         ex_ev = mas_getEV("monika_explain")
@@ -271,6 +272,35 @@ label v0_8_3(version="v0_8_3"):
         curr_level = get_level()
         if curr_level > 25:
             persistent._mas_pool_unlocks = int(curr_level / 2)
+
+        # fix all derandom topics that were not unlocked
+        derandomable = [
+            "monika_natsuki_letter",
+            "monika_prom",
+            "monika_beach",
+            "monika_asks_family",
+            "monika_smoking",
+            "monika_otaku",
+            "monika_jazz",
+            "monika_orchestra",
+            "monika_meditation",
+            "monika_sports",
+            "monika_weddingring",
+            "monika_icecream",
+            "monika_japanese",
+            "monika_haterReaction",
+            "monika_cities",
+            "monika_images",
+            "monika_rain",
+            "monika_selfesteem",
+            "monika_yellowwp",
+            "monika_familygathering"
+        ]
+        for topic in derandomable:
+            ev = mas_getEV(topic)
+            if renpy.seen_label(topic) and ev:
+                ev.unlocked = True
+                ev.unlock_date = datetime.datetime.now()
 
     return
 
