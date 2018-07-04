@@ -258,7 +258,7 @@ label mas_mood_tired:
         m "It's still a bit early in the morning, so you could go back and rest a bit more."
         m 1hua "Nothing wrong with waking up early and sleeping just a little bit more~"
         m 1hksdlb "Except for the fact that I can't be there to cuddle up to you, ahaha~"
-        m "I {i}guess{/i} could wait for you a little longer."
+        m "I {i}guess{/i} I could wait for you a little longer."
     elif 10 <= current_time < 12:
         m 1ekc "Still not ready to tackle the day, [player]?"
         m 1eka "I know sometimes, maybe you just couldn't sleep well or it's just one of those days."
