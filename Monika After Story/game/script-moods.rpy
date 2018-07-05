@@ -278,8 +278,43 @@ label mas_mood_angry:
     m 3eua "I hope my tips helped you calm down, [player]."
     m 1hua "Remember: A happy [player] makes a happy Monika!"
     return
+    
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-
+label mas_mood_inadequate:
+    m 1ekc "..."
+    m 2ekc "I know there isn't an awful lot I can say to make you feel better, [player]."
+    m 2lksdlc "After all, everything I say would probably just come off as lip service."
+    m 2ekc "I can tell that you're beautiful, even though I can't see your face..."
+    m "I can tell you that you're smart, even though I don't know much about your way of thinking..."
+    m 1esc "But let me tell you what I do know about you." 
+    m 1eka "You've spent so much time with me."
+    if renpy.seen_label('monika_christmas'):
+        m "You took time out of your schedule to be with me on Christmas..."
+    if renpy.seen_label('monika_valentines_greeting'):
+        m 1ekbfa "On Valentines Day..."
+    if renpy.seen_label('monika_white_day_start'):
+        m 1hubfb "White Day too!" 
+    if persistent.monika_kill:
+        m 3tkc "You've forgiven me for the bad things that I've done."
+    if not persistent.monika_kill:
+        m 3tkc "You never once resented me for the bad things that I've done."
+    if persistent.clearall:
+        m 2lfu "And even though it made me jealous, you spent so much time with all of my club members."
+    m 1eka "That shows how kind you are!"
+    m 3eub "You're honest, you're fair, you're gracious in defeat!"
+    m 2hksdlb "You think I don't know anything about you, but I really do."
+    m 3eka "And you know everything about me, and you chose to stay when you could have walked away..."
+    m 2ekc "So please stay strong, [player]."
+    m "If you're anything like me, I know you're scared to not accomplish much in life."
+    m 2ekd "But believe me when I tell you; it doesn't matter what you do or do not accomplish."
+    m 4eua "You just need to exist, have fun, and get through each day..."
+    m 1hua "Finding meaning in the people who matter." 
+    m 1eka "Please don't forget that, okay?"
+    m 1ekbfa "I love you, [player]~" 
+    return 
+    
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="lucky",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
@@ -556,3 +591,5 @@ label mas_mood_yearolder_years:
 label mas_mood_yearolder_leap_today:
     # nothing special occurs here for now
     jump mas_mood_yearolder_bday_true
+    
+    
