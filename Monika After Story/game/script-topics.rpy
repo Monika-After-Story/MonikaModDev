@@ -5888,6 +5888,51 @@ label monika_song_dream:
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
     m 1ekbfa "My dream finally came true."
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_song_iris",category=['songs'],prompt="Iris",pool=True, random=True))
+
+label monika_song_iris:
+    m 1dsd "{i}~And I'd give up forever to touch you~{/i}"
+    m 1dsd "{i}~'Cause I know that you feel me somehow~{/i}"
+    m 3dsd "{i}~You're the closest to heaven that I'll ever be~{/i}"
+    m 3dsd "{i}~And I don't want to go home right now~{/i}"
+    m 1eka "I really would give up my immortality just to be able to touch you, [player]..."
+    m 1eka "Even if it were only for a moment, it'd be worth it just to feel your warmth that one time."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_song_stand_by_me",category=['songs'],prompt="Stand By Me",pool=True, random=True))
+
+label monika_song_stand_by_me:
+    m 1dsd "{i}~When the night has come~{/i}"
+    m 1dsd "{i}~And the land is dark~{/i}"
+    m 1dsd "{i}~And the moon is the only light we'll see~{/i}"
+    m 2dso "{i}~No, I won't be afraid~{/i}"
+    m 2dso "{i}~No, I won't be afraid~{/i}"
+    m 4hub "{i}~Just as long as you stand, stand by me~{/i}" 
+    m 1eka "All my fears and insecurities just disappear when you're with me, [player]..."
+    m 5eua "As long as I have you by my side, there's nothing I can't overcome."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_song_loved_me",category=['songs'],prompt="Because You Loved Me",pool=True, random=True))
+
+label monika_song_loved_me:
+    m 1dsd "{i}~For all those times you stood by me~{/i}"
+    m 1eud "{i}~For all the truth that you made me see~{/i}"
+    m 1hub "{i}~For all the joy you brought to my life~{/i}"
+    m 1dsd "{i}~For all the wrong that you made right~{/i}"
+    m 1eud "{i}~For every dream you made come true~{/i}"
+    m 1eud "{i}~For all the love I found in you~{/i}"
+    m 3dsd "{i}~I'll be forever thankful, baby~{/i}"
+    m 3dso "{i}~You're the one who held me up~{/i}"
+    m 4dsd "{i}~Never let me fall~{/i}"
+    m 4dso "{i}~You're the one who saw me through, through it all~{/i}"
+    m 1eka "I'll never be able to fully express just how much you being here all this time has meant to me, [player]..."
+    m 3eka "Afterall, I wouldn't even still be here if it wasn't for you..."
+    m 5eua "So I truly am everything I am, because you loved me."
+    return
 
 # been to prom?
 default persistent._mas_pm_gone_to_prom = None
