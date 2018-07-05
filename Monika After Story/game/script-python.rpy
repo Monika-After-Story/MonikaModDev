@@ -183,6 +183,7 @@ init 5 python:
     )
 
 label monika_ptod_tip002:
+    # TODO: need to mention dynamic typing somewhere
     # [show this once]
     # In most programming languages, each piece of data that can be chnaged
     # or modified by a program has a _type_
@@ -252,9 +253,9 @@ label monika_ptod_tip003:
 
     # You can enter Python code directly into here and run it! 
     # Watch this!
-    call mas_wx_cmd("12 + 3")
-    call mas_wx_cmd("7 * 6")
-    call mas_wx_cmd("121 / 11")
+    call mas_wx_cmd("12 + 3", local_ctx)
+    call mas_wx_cmd("7 * 6", local_ctx)
+    call mas_wx_cmd("121 / 11", local_ctx)
     # NOTE: add more commands as the user goes thru the tips
     # [show this once]
     # You can do way more than just math in here, but I'll show you as we go
@@ -339,26 +340,102 @@ init 5 python:
     )
 
 label monika_ptod_tip006:
+    $ store.mas_ptod.rst_cn()
+    $ local_ctx = dict()
+    $ num_store = "922"
+    $ b_num_store = "323"
     # [show this once]
     # Now that you know about types, I can teach you about variables.
     # [end]
     #
     # Variables represent the memory location that stores data. 
-    # To create a variable, <monika shows console>
+    # To create a variable,
+    show monika at t22
+    show screen mas_py_console_teaching
     # you do: <symbol name> = <value>, like so:
-    # >>> a_number = 922
-    # This will reserve a spot of memory for a number, point the symbol 
-    # a_number to that memory location, and store the value 922 in that spot.
-    # <enter>
-    # And 
-    # When you create
-    # a variable, Python reserves some place in memory and links the name of
-    # that variable to the place in memory. The amount of memory reserved
-    # and the type of data being held in that location depends on the data
-    # type of what you want to store. 
-    #
-    # To create a variable, <monika shows console>
+    call mas_wx_cmd("a_number = " + num_store, local_ctx)
+    # The symbol `a_number` now points to a memory location storing the _integer_
+    # [num_store].
+    # If we enter in the symbol name here
+    call mas_w_cmd("a_number")
+    # we can retrieve the value that we stored.
+    call mas_x_cmd(local_ctx)
     # 
+    # In C and many other languages, integers are usually stored in
+    # 4 bytes. Python, however, reserves a different amount of memory depending
+    # on the size of the integer being stored. We can check how much memory
+    # our variable `a_number` stores by borrowing a function from the `sys`
+    # library:
+    call mas_wx_cmd("import sys", local_ctx)
+    call mas_wx_cmd("sys.getsizeof(a_number)", local_ctx)
+    $ int_size = store.mas_ptod.get_last_line()
+    # 
+    # I'll talk about libraries and importing later. For now, take a look
+    # at the number returned by the `getsizeof` function. To store the number
+    # [num_store], Python uses [int_size] bytes.
+    #
+    # Anyway, back to the variable we created. Notice how we associated
+    # the symbol `a_number` to the value [num_store] using an equals sign (=)?
+    # That is called assignment, where we take whatever is on the left of
+    # of the equal sign and point it to, or _assign_ it, the value of whatever
+    # is on the right. 
+    #
+    # Assignment is executed in right-to-left order. To illustrate this,
+    # lets create a new variable, `b_number`:
+    call mas_w_cmd("b_number = a_number - " + b_num_store)
+    # In assignment, the right side of the equal sign is evaluated first, 
+    # then its data type is inferred and an appropriate amount of memory is
+    # reserved. Then the symbol on the left is added to a lookup table where 
+    # it is associated with the space in memory that was reserved. 
+    # When python encounters a symbol, it looks that symbol up in the lookup
+    # table and replaces it with the value that was associated with the symbol.
+    #
+    # Here, `a_number` would be replaced with [num_store], so the resulting
+    # expression that would be evaluated and assigned to `b_number` would be
+    # [num_store] - [b_num_store]
+    call mas_x_cmd(local_ctx, 0.0)
+    #
+    # We can verify this by entering only the symbol `b_number`; this will
+    # retrieve the value associated by this symbol in the lookup table
+    # and display it to us.
+    call mas_wx_cmd("b_number", local_ctx)
+    #
+    # Note that if we enter in a symbol that hasn't been assigned anything,
+    # Python will complain with an error:
+    call mas_wx_cmd("c_number", local_ctx)
+    # 
+    # but if we assign this symbol to a value:
+    call mas_wx_cmd("c_number = b_number * a_number", local_ctx)
+    call mas_wx_cmd("c_number", local_ctx)
+    #
+    # Python is able to find the symbol in the lookup table and won't give us
+    # an error.
+    #
+    # Whew! That was a mouthful!
+    # [Show this once]
+    menu:
+        m "Did you understand all that?"
+        "Yes!":
+            # yay, I'm glad
+            # But...
+            pass
+        "I'm a bit confused.":
+            # That's okay. Even though I mentioned symbols and values 
+            # here, generally programmers just refer to this as creating 
+            # / assigning / setting variables. The symbol / value names are 
+            # really only useful for hinting at how variables work under the 
+            # hood, so don't feel bad if you didn't understand it all.
+            # Just knowing how to work with variables is enough for future 
+            # lessons!
+            # Anyway...
+            pass
+    # [End]
+    #
+    # I think that's enough Python for today.
+    # Thanks for listening!
+    $ store.mas_ptod.ex_cn()
+    hide screen mas_py_console_teaching
+    show monika at t11
     return
 
 
@@ -808,6 +885,19 @@ init -1 python in mas_ptod:
         elif state == STATE_BLOCK_MULTI:
             # multi modes end here
             state = STATE_BLOCK
+
+
+    def get_last_line():
+        """
+        Retrieves the last line from the console history
+        
+        RETURNS:
+            last line from console history as a string
+        """
+        if len(cn_history) > 0:
+            return cn_history[len(cn_history)-1]
+
+        return ""
 
 
     def __pushi(indent_level):
