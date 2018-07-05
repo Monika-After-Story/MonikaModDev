@@ -2241,6 +2241,7 @@ label mas_chess_dlg_qf_edit_n_3:
     m 2dfc "[player]..."
     m 2dftdc "I kept a backup of our game.{w} I know you edited the save file."
     m 2dftsc "I just-"
+    $ _history_list.pop()
     m 6ektsc "I just{fast} can't believe you would cheat and {i}lie{/i} to me."
     m 6rktsc "..."
     
