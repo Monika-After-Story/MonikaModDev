@@ -327,3 +327,50 @@ label mas_story_ravel:
     m 1dsd "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
     m 1tfb "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fivekeys",
+    prompt="The Five Keys",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_fivekeys:
+    call mas_story_begin
+    m 3euc "Now I will tell you a story about a young woman who was sealed in a small room."
+    m 1euc "In the room was a furnace, and five keys."
+    m "She was told that each of the five keys would unlock one of five doors outside her room."
+    m 1tfu "Inside each room was a child that she could take with her as she fled the building."
+    m 3eud "But she was only allowed to leave her own room with one key, not all five."
+    m 1tfd "Desperate to find a way to save all five children, the woman melted the five keys together in the furnace to create a single key..."
+    m 3tku "...hoping it would unlock all five doors."
+    m 1dsd "Of course, it did not work that way. Now her key opened none of the doors. "
+    m 1tfb "Rather than leaving there with the key to one life, she had taken with her the key to five deaths."
+    return
+    
+    init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fiveorphans",
+    prompt="The Five Orphans",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_fiveorphans:
+    call mas_story_begin
+    m 3euc "Now I will tell you a story about a kind man who would visit five orphans and bring them toys and gladness."
+    m 1euc "The man lived alone and lived in fear that someone might break into the house of one of the five children, so he adopted all five..."
+    m "...and brought them together in one place, in his own home."
+    m 1tfu "He promised them to never leave them and they promised to always come home and never stay out too late."
+    m 3eud "He left one day to buy food, his heart being filled with gladness but returns to find that the burglar had chosen his home and had killed all five of the children."
+    m 1tfd "The man could only afford one coffin so he stitched the five bodies together to make one and buried the child."
+    m 3tku "That night, there was a knock at the door..."
+    return
+    
+        init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_rattlesnake",
+    prompt="The Rattlesnake",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_rattlesnake:
+    call mas_story_begin
+    m 3euc "Now I will tell you a story about a little boy. He had a rattlesnake that he kept in a metal cage, whose hunger could not be satisfied."
+    m 1euc "One day, the boy found five baby kittens outside his house. He brought them inside and kept them in a shoe box."
+    m "...and brought them together in one place, in his own home."
+    m 1tfu "He knew that the snake might kill them but could not bring himself to get rid of the snake."
+    m 3eud "He knew that if he chose one kitten to feed to the snake he might be satisfied but he could not choose, so he went to bed leaving the cage open."
+    m 1tfd "The snake went to the shoe box, chose a kitten at random and ate it. After five nights had gone by, the boy was full of regret and cut snake open."
+    m 3tku "He'd paste the remains together and put the kitten back into the shoe box."
+    return
