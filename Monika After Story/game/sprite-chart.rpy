@@ -7574,6 +7574,21 @@ image monika 6sub = DynamicDisplayable(
     right="1r",
     arms="down"
 )
+
+image monika 6wubsw = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="wide",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="shade"
+)
+
 ### [IMG032]
 # Image aliases
 
