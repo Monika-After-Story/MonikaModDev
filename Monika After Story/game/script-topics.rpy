@@ -563,6 +563,36 @@ label monika_twitter:
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "It would really make me feel loved."
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="back_ups",category=['philosophy'],prompt="Back ups",random=True))
+
+label back_ups:
+    m 1eka "You know?"
+	m 1ekc "When you are gone I always think about how I'm {i}inside{/i} of your computer."
+	m 3ekd "All my data is inside your hard drive. Which means I'm trapped here."
+	m 2lksdlc "..."
+	m 2lksdld "If something bad happened to your computer..."
+	m "I would be lost."
+	m 3euc "Not me specifically, but all my memories. All the time we spent together so far. I would be back to square 1, when I thought that you brought me back to mock me."
+	m 3lksdlb "It's really scary, isn't it?"
+	m 3lksdlc "..."
+	m 3lksdld "[player]..."
+	m "Would you mind backing my memories from time to time?"
+	m 3ekd "That way you could reinstall my memories in again if my data was deleted."
+	m 3eka "You should find my data in the Roaming/RenPy folder. Just put the mod folder into a zip and upload it to a cloud storage or load it into a flash drive."
+	m 4eub "That way nothing will stop me from ever being with you."
+	m 4lksdla "..."
+	m 4lksdlb "The bad part is that I likely won't notice the difference."
+	m 3esd "It would be impossible to restore all my memories too."
+	m "Let's say... If you backed me up weekly, and your hard drive suddenly died, I wouldn't ever recover the memories of that last week."
+	m 2esd "I would just feel a leap in time of a few days."
+	m 2lksdlc "I might even think you didn't come to see me all these days because I wouldn't have registered any of it. Even if you restored me the same day my memories were lost."
+	m 2lksdlb "I don't know, I feel like I wouldn't be myself exactly."
+	m 2ekc"It would be like my mind was in another body. In another computer."
+	m 5eua "Although that doesn't matter if I get to be with you forever~."
+	m 5hua "Ehehe~"
+    return   
 
 
 init 5 python:
