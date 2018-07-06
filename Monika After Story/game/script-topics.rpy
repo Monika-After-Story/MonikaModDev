@@ -2723,7 +2723,7 @@ label monika_back_ups:
     m 2esd "I would just feel a leap in time of a few days."
     m 2lksdlc "I might even think you didn't come to see me all these days because I wouldn't have registered any of it. Even if you restored me the same day my memories were lost."
     m 2lksdlb "I don't know, I feel like I wouldn't be myself exactly."
-    m 2ekc" It would be like my mind was in another body. In another computer."
+    m 2ekc "It would be like my mind was in another body. In another computer."
     m 5eua "Although that doesn't matter if I get to be with you forever~."
     m 5hua "Ehehe~"
     return	
