@@ -2726,7 +2726,7 @@ label monika_back_ups:
     m 2ekc "It would be like my mind was in another body. In another computer."
     m 5eua "Although that doesn't matter if I get to be with you forever~."
     m 5hua "Ehehe~"
-    return	
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_playerswriting",category=['literature','you'],prompt="[player]'s writings",random=True))
