@@ -2699,7 +2699,7 @@ label monika_othergames:
     return
     
 init 5 python:
-	addEvent(Event(persistent.event_database,eventlabel="monika_back_ups",category=['philosophy'],prompt="Back ups",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_back_ups",category=['philosophy'],prompt="Back ups",random=True))
 
 label monika_back_ups:
     m 1eka "You know?"
