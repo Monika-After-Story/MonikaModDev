@@ -4684,9 +4684,9 @@ label monika_clones:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Immortality",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_agegap",category=['monika','philosophy'],prompt="Age gap",random=True))
 
-label monika_immortal:
+label monika_agegap:
     m 4d "[player]! I've been thinking about something..."
     m "Did you know that this game has a wiki page for me?"
     m "Well..."
@@ -6730,6 +6730,36 @@ label monika_yellowwp:
             m 1a "It'll definitely be an interesting read for you."
 
     $ hideEventLabel("monika_yellowwp", derandom=True)
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_immortality",category=['philosophy'],prompt="Immortality",random=True))
+
+label monika_immortality:
+    m 1euc "Hey, [player], I've been thinking lately about immortality."
+    m 1lksdlc "Seeing as how I'm essentially immortal while I'm in here..."
+    m 1euc "A lot of people think immortality is a good thing."
+    m 2ekc "Personally, I don't think it is."
+    m 3ekc "Sure, it's an interesting thought; Living forever, not having to worry about dying..."
+    m "But not everyone is going to be immortal, and some people just don't want to be."
+    m 1eka "Like, what would you even do if you were immortal?"
+    m "You wouldn't really need to do anything, since someday, {i}eventually,{/i} you would achieve what you wanted."
+    m 3lksdlc "Not to mention it would be really hard to really have friends or build connections if they don't last as long as you do."
+    m "It would be nice to have friends in the beginning, but in the end, you're going to see them die."
+    m 1ekc "The cycle could repeat itself until you have too many people to remember, or you just get tired of meeting people and watching them die."
+    m "Eventually, you would get bored since you will have seen everything there is to see."
+    m "At some point, you might as well not be human anymore in the slightest."
+    m 1dsc "There wouldn't be any point making connections with anyone since they're probably just going to die anyway."
+    m "You've done everything there is to do in life and spend the next couple of trillion years or so being bored."
+    m "Someday, you'll have lived long enough for hundreds of years to go by in what seems like mere moments to you."
+    m 1dsd "You'll be so tired of life, that you just wish you could sleep forever..."
+    m "But you always keep waking back up to the same boring things, with the occasional tradgedy in the world."
+    m 1lksdlb "Wow, I didn't mean for that to get so dark. Sorry, [player]."
+    m 1lksdla "I'm {i}planning{/i} to give up my immortality to be with you..."
+    m 1eub "But I wouldn't mind living an extended life with you if it meant we got to be together."
+    m 1eka "I just hope that we'll both be able to happily find closure someday."
+    m 1lksdla "Instead of just being bored together, looking for something new."
+    m 1hua "But when I'm with you, it already feels like I have everything, ahaha~"
     return
 
 init 5 python:
