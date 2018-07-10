@@ -303,6 +303,18 @@ label v0_8_3(version="v0_8_3"):
                 ev.unlocked = True
                 ev.unlock_date = datetime.datetime.now()
 
+        # lock theyearolder
+        yold_lbl = "mas_mood_yearolder"
+        if yold_lbl in store.mas_moods.mood_db:
+            store.mas_moods.mood_db.pop(yold_lbl)
+
+        if yold_lbl in Event.INIT_LOCKDB:
+            Event.INIT_LOCKDB.pop(yold_lbl)
+
+        if yold_lbl in persistent._mas_mood_database:
+            persistent._mas_mood_database.pop(yold_lbl)
+            
+
     return
 
 # 0.8.2

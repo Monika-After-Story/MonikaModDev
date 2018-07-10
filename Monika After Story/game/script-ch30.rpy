@@ -823,15 +823,15 @@ label ch30_reset:
         today = datetime.date.today()
 
     # reset mas mood bday
-    python:
-        if (
-                persistent._mas_mood_bday_last
-                and persistent._mas_mood_bday_last < today
-            ):
-            persistent._mas_mood_bday_last = None
-            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
-            if mood_ev:
-                mood_ev.unlocked = True
+#    python:
+#        if (
+#                persistent._mas_mood_bday_last
+#                and persistent._mas_mood_bday_last < today
+#            ):
+#            persistent._mas_mood_bday_last = None
+#            mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
+#            if mood_ev:
+#                mood_ev.unlocked = True
 
     # reset raining stuff
     python:

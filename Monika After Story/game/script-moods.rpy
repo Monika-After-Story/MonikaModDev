@@ -329,18 +329,18 @@ label mas_mood_bored:
             m 1eka "Let me know if you want to do something with me, [player]~"
     return
 
-init 5 python:
-    if not persistent._mas_mood_bday_locked:
-        addEvent(
-            Event(
-                persistent._mas_mood_database,
-                "mas_mood_yearolder",
-                prompt="like a year older",
-                category=[store.mas_moods.TYPE_NEUTRAL],
-                unlocked=True
-            ),
-            eventdb=store.mas_moods.mood_db
-        )
+#init 5 python:
+#    if not persistent._mas_mood_bday_locked:
+#        addEvent(
+#            Event(
+#                persistent._mas_mood_database,
+#                "mas_mood_yearolder",
+#                prompt="like a year older",
+#                category=[store.mas_moods.TYPE_NEUTRAL],
+#                unlocked=True
+#            ),
+#            eventdb=store.mas_moods.mood_db
+#        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns
