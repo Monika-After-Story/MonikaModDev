@@ -5,6 +5,8 @@
 #   persistent._seen_ever
 #   persistent.version_number
 
+define persistent._mas_zz_lupd_ex_v = []
+
 # preeverything stuff
 init -10 python:
     found_monika_ani = persistent.monika_anniversary is not None
@@ -252,15 +254,17 @@ label v0_3_1(version=version): # 0.3.1
 # 0.8.3
 label v0_8_3(version="v0_8_3"):
     python:
+        import datetime
+        import store.evhand as evhand
 
         # need to unrandom the explain topic
-        ex_ev = mas_getEV("monika_explain")
+        ex_ev = evhand.event_database.get("monika_explain", None)
         if ex_ev is not None:
             ex_ev.random = False
             ex_ev.pool = True
 
         # update Kizuna's topic action
-        kiz_ev = mas_getEV("monika_kizuna")
+        kiz_ev = evhand.event_database.get("monika_kizuna", None)
         if kiz_ev is not None and not renpy.seen_label(kiz_ev.eventlabel):
             kiz_ev.action = EV_ACT_POOL
             kiz_ev.unlocked = False
@@ -271,6 +275,39 @@ label v0_8_3(version="v0_8_3"):
         curr_level = get_level()
         if curr_level > 25:
             persistent._mas_pool_unlocks = int(curr_level / 2)
+
+        # fix all derandom topics that were not unlocked
+        derandomable = [
+            "monika_natsuki_letter",
+            "monika_prom",
+            "monika_beach",
+            "monika_asks_family",
+            "monika_smoking",
+            "monika_otaku",
+            "monika_jazz",
+            "monika_orchestra",
+            "monika_meditation",
+            "monika_sports",
+            "monika_weddingring",
+            "monika_icecream",
+            "monika_japanese",
+            "monika_haterReaction",
+            "monika_cities",
+            "monika_images",
+            "monika_rain",
+            "monika_selfesteem",
+            "monika_yellowwp",
+            "monika_familygathering"
+        ]
+        for topic in derandomable:
+            ev = evhand.event_database.get(topic, None)
+            if renpy.seen_label(topic) and ev:
+                ev.unlocked = True
+                ev.unlock_date = datetime.datetime.now()
+
+        # anniversaries need to be readjusted again!
+        # but we will use late update script this time
+        persistent._mas_zz_lupd_ex_v.append(version)
 
     return
 
@@ -637,3 +674,49 @@ label v0_3_0(version="v0_3_0"):
 #
 #        del _mas_events_unlocked_v073
 #        del ev_key
+
+
+###############################################################################
+### SUPER LATE scripts
+# these scripts are for doing python things really LATE in the pipeline
+#
+# USAGE:
+# 1. define a label called mas_lupd_v#_#_#
+# 2. Put your update code into there.
+# 3. Push the version number into `persistent._mas_zz_lupd_ex_v` to run it
+#
+# NOTE: none of this code will ever run more than once.
+# NOTE: this code will respect version update chaining, but these are chained
+#   post-version. This means that if a multipel version chain occurs,
+#   the regular labels are executed first, then this (the late-chain) executes.
+#   For example, lets say we have 3 versions: A, B, C
+#   and 2 of these versions have late scripts, B' and C'
+#   
+#   Update order:
+#   1. A
+#   2. B
+#   3. C
+#   4. B'
+#   5. C'
+#
+#   Please make sure your late update scripts are not required before a next
+#   version regular update script.
+
+label mas_lupd_v0_8_3:
+    python:
+        # readjust anniversaries
+        if persistent.sessions:
+            first_sesh = persistent.sessions.get("first_session", None)
+            if first_sesh:
+                store.mas_anni.reset_annis(first_sesh)
+
+    return
+
+
+init 5000 python:
+    for __temp_version in persistent._mas_zz_lupd_ex_v:
+        __lupd_v = "mas_lupd_" + __temp_version
+        if renpy.has_label(__lupd_v):
+            renpy.call_in_new_context(__lupd_v)
+
+    persistent._mas_zz_lupd_ex_v = list()
