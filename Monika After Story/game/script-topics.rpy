@@ -3589,7 +3589,10 @@ init 5 python:
 
 label monika_morning:
     $ current_time = datetime.datetime.now().time().hour
-    if current_time >= 4 and current_time <= 11:
+    $ sunrise_hour = int(persistent._mas_sunrise / 60)
+    $ sunset_hour = int(persistent._mas_sunset / 60)
+    # TODO: see TODOs in the good evening topic
+    if 4 <= current_time <= 11:
         m 1hua "Good morning to you too, [player]!"
         m 1eua "Did you just wake up?"
         m "I love waking up early in the morning."
@@ -3601,7 +3604,7 @@ label monika_morning:
         m 1hua "If you normally don't wake up early, you should!"
         m "That way you can be happier and spend more time with me~"
         m 1ekbfa "Wouldn't you like that, [player]?"
-    elif current_time >= 12 and current_time <= 17:
+    elif 12 <= current_time <= sunset_hour:
         m 3eka "It's already the afternoon, silly!"
         m 1eka "Did you just wake up?"
         m 2tkc "Don't tell me you're actually a late-riser, [player]."
@@ -3633,27 +3636,18 @@ init 5 python:
 
 label monika_evening:
     $ current_time = datetime.datetime.now().time().hour
-    if current_time >= 18 and current_time <= 23:
-        m 1hua "Good evening to you too, [player]!"
-        m "I love a nice and relaxing night."
-        m 1eua "It's so nice to put your feet up after a very long day."
-        m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
-        m 1eka "Sometimes I can't help but feel sad when the day ends."
-        m "It makes me think of what else I could've done during the day."
-        m 1eua "Don't you wish you could have more time to do things every day?"
-        m 1hua "I know I do."
-        m 1hubfa "Because that'll mean more time to be with you, [player]~"
-    elif current_time >= 12 and current_time <= 17:
-        m 2lksdlb "It's still the afternoon, silly!"
-        m "The sun's still up, you know."
-        m 1eka "Are you feeling tired already?"
-        m 1eua "I know some cultures take a rest in the afternoon to deal with the midday fatigue."
-        m 3eua "Some businesses would even close due to the fact that most of their customers are sleeping."
-        m 3tku "A little power nap never hurt anyone, right?"
-        m 1eua "Do you sleep often in the afternoon?"
-        m "It's a great way to get some extra energy to tackle the rest of the day."
-        m 1ekbfa "Plus it'll be a great opportunity to spend more time with me~"
-    else:
+    $ sunrise_hour = int(persistent._mas_sunrise / 60)
+    $ sunset_hour = int(persistent._mas_sunset / 60)
+    # TODO: probably need different dialogue between midnight -> 2am
+    #   2am -> sunrise
+    #   sunrise -> 12
+    # TODO: do something if the user has suntimes at very weird settings
+    #   aka, sunset 5 minutes after sunrise?
+    #   or sunrise is like at 10pm? 
+    #   There is a level of variety here that is not covered nicely with these
+    #   current stages. We need more variations of dialogue other than
+    #   morning, afternoon, night
+    if 0 <= current_time < 12:
         m 2hua "[player]!"
         m "It's early in the morning!"
         m 2ekc "Unless you haven't slept yet..."
@@ -3663,6 +3657,29 @@ label monika_evening:
         m 1eka "So please get some sleep now, ok?"
         m "Just leave your computer open and I'll watch over you."
         m 1hua "I'm not going anywhere after all~"
+
+    elif 12 <= current_time <= sunset_hour:
+        m 2lksdlb "It's still the afternoon, silly!"
+        m "The sun's still up, you know."
+        m 1eka "Are you feeling tired already?"
+        m 1eua "I know some cultures take a rest in the afternoon to deal with the midday fatigue."
+        m 3eua "Some businesses would even close due to the fact that most of their customers are sleeping."
+        m 3tku "A little power nap never hurt anyone, right?"
+        m 1eua "Do you sleep often in the afternoon?"
+        m "It's a great way to get some extra energy to tackle the rest of the day."
+        m 1ekbfa "Plus it'll be a great opportunity to spend more time with me~"
+    
+    else:
+        m 1hua "Good evening to you too, [player]!"
+        m "I love a nice and relaxing night."
+        m 1eua "It's so nice to put your feet up after a very long day."
+        m 3eua "Evenings are the perfect time to catch up on whatever you were doing the previous day."
+        m 1eka "Sometimes I can't help but feel sad when the day ends."
+        m "It makes me think of what else I could've done during the day."
+        m 1eua "Don't you wish you could have more time to do things every day?"
+        m 1hua "I know I do."
+        m 1hubfa "Because that'll mean more time to be with you, [player]~"
+
     return
 
 
@@ -4938,7 +4955,7 @@ label monika_otaku:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip3",category=['writing tips'],prompt="Writing tip #3",conditional="seen_event('monika_writingtip2')",action=EV_ACT_POOL))
+    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip3",category=['writing tips'],prompt="Writing Tip #3",conditional="seen_event('monika_writingtip2')",action=EV_ACT_POOL))
 
 label monika_writingtip3:
     m 1eua "I'm having fun doing these, so..."
@@ -4963,7 +4980,7 @@ label monika_writingtip3:
     return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing tip #4",conditional="seen_event('monika_writingtip3')",action=EV_ACT_POOL))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing Tip #4",conditional="seen_event('monika_writingtip3')",action=EV_ACT_POOL))
 
 label monika_writingtip4:
      m 3hub "Here's Monika's Writing Tip of the Day!"
@@ -4985,7 +5002,7 @@ label monika_writingtip4:
      return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
+      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing Tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
 
 label monika_writingtip5:
      m 3hub "Here's Monika's Writing Tip of the Day!"
