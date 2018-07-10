@@ -270,7 +270,7 @@ label mas_mood_tired:
         m 3eua "Eating a bit of chocolate in the morning helps put you in a better mood throughout the day."
         m 1hksdlb "I mean... I'm sure chocolate would put anyone in a better mood whenever they ate it, but trust me, it's even more effective in the morning."
         m "Gosh, I'm really making myself jealous here arent I?"
-        show monika 5eua at t11 zorder 2 with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "But if you gave me a nice cup of coffee along with some chocolate every morning..."
         m "You have no idea how much I'd love that, [player]~"
         m "I'd love to do the same for you after all~"
