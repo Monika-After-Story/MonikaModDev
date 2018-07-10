@@ -110,7 +110,7 @@ init 10 python in mas_anni:
             mas_utils.mdnt(new_start_date),
             months
         )
-        ev.end_date = ev.start_date + span
+        ev.end_date = mas_utils.mdnt(ev.start_date + span)
 
     def _day_adjuster(ev, new_start_date, days, span):
         """
@@ -124,8 +124,10 @@ init 10 python in mas_anni:
             days - number of months to advance
             span - the time from the event's new start_date to end_date
         """
-        ev.start_date = new_start_date + datetime.timedelta(days=days)
-        ev.end_date = ev.start_date + span
+        ev.start_date = mas_utils.mdnt(
+            new_start_date + datetime.timedelta(days=days)
+        )
+        ev.end_date = mas_utils.mdnt(ev.start_date + span)
 
 
     def add_cal_annis():
