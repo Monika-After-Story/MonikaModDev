@@ -714,9 +714,9 @@ label mas_lupd_v0_8_3:
 
 
 init 5000 python:
-    while len(persistent._mas_zz_lupd_ex_v) > 0:
-        lupd_v = "mas_lupd_" + persistent._mas_zz_lupd_ex_v.pop()
-        if renpy.has_label(lupd_v):
-            renpy.call_in_new_context(lupd_v)
+    for __temp_version in persistent._mas_zz_lupd_ex_v:
+        __lupd_v = "mas_lupd_" + __temp_version
+        if renpy.has_label(__lupd_v):
+            renpy.call_in_new_context(__lupd_v)
 
     persistent._mas_zz_lupd_ex_v = list()
