@@ -1798,10 +1798,45 @@ init -100 python in mas_utils:
     #at 3 AM
     # START-OF-DAY
     def sod(starting_date):
-        new_date = starting_date.replace(hour=3,minute=0,second=0,microsecond=0)
+        return am3(starting_date)
 
-        return new_date
 
+    def mdnt(starting_date):
+        """
+        Takes a datetime object and returns a new datetime with the same date
+        at midnight
+
+        IN:
+            starting_date - date to change
+
+        RETURNS:
+            starting_date but at midnight
+        """
+        return starting_date.replace(
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+
+
+    def am3(_datetime):
+        """
+        Takes a datetime object and returns a new datetime with the same date
+        at 3 am.
+
+        IN:
+            _datetime - datetime to change
+
+        RETURNS:
+            _datetime but at 3am
+        """
+        return _datetime.replace(
+            hour=3,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
 
 
 
