@@ -422,18 +422,19 @@ label mas_story_immortal_love:
 
 # Scary stories start here
 label mas_scary_story_setup:
+    show monika 1dsc
     $ scene_change = True
     $ mas_is_raining = True
     pause 1.0
     call spaceroom
-    stop music fadeout 1.0
+    #stop music fadeout 1.0
     play background audio.rain fadein 1.0 loop
 
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
     $ HKBHideButtons()
-    $ store.songs.enabled = False
+    #$ store.songs.enabled = False
     python:
         story_begin_quips = [
             "Alright let's start the story.",
@@ -448,13 +449,27 @@ label mas_scary_story_setup:
     return
 
 label mas_scary_story_cleanup:
+    python:
+        story_end_quips = [
+            "Scared, " + player + "?",
+            "Did I scare you, " + player + "?",
+            "How was it?"
+        ]
+        story_end_quip=renpy.random.choice(story_end_quips)
+
+    m 3eua "[story_end_quip]"
+    show monika 1dsc
     $ scene_change = True
     $ mas_is_raining = False
+    pause 1.0
     call spaceroom
     stop background fadeout 1.0
 
     $ HKBShowButtons()
     $ store.songs.enabled = True
+
+    $ HKBShowButtons()
+    m 1esa "I hope you liked it, [player]~"
     return
 
 # TODO Replace placeholders once the flow works
