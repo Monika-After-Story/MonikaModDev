@@ -963,7 +963,7 @@ label monika_tea:
     m 2eka "I wish she made coffee once in a while!"
     m 3eua "Coffee can be nice with books too, you know?"
     m 4rsc "Then again..."
-    
+
     if persistent._mas_acs_enable_coffee:
         m 1hua "I can just make coffee whenever I want to, thanks to you."
     else:
@@ -2558,7 +2558,7 @@ label monika_natsuki:
     m 1esa "I certainly don't."
     if mas_getEV("monika_natsuki").shown_count < mas_sensitive_limit:
         return
-    
+
     # otherwise, derandom
     return "derandom"
 
@@ -4010,7 +4010,7 @@ label monika_pleasure:
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
-    
+
 # do you like vocaloid
 default persistent._mas_pm_like_vocaloids = None
 
@@ -5207,17 +5207,17 @@ label monika_rock:
 
     show monika 3eua
     menu:
-        m "Do you listen to rock and roll, [player]?"    
+        m "Do you listen to rock and roll, [player]?"
         "Yes.":
             $ persistent._mas_pm_like_rock_n_roll = True
             m 3hub "Great!"
             m 1eua "Whenever you feel like blasting some good ol' rock 'n' roll, go ahead."
             m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
-            
+
         "No.":
             $ persistent._mas_pm_like_rock_n_roll = False
             m 1ekc "Oh...that's okay, everyone has their own taste in music."
-            m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."                
+            m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."
     return "derandom"
 
 init 5 python:
@@ -5392,7 +5392,7 @@ label monika_meditation:
     m 1hubfa "Don't you ever forget that, [player]~"
 
     return "derandom"
-    
+
 # do you like orchestral music
 default persistent._mas_pm_like_orchestral_music = None
 
@@ -5425,7 +5425,7 @@ label monika_orchestra:
         "No.":
             $ persistent._mas_pm_like_orchestral_music = False
             m 1ekc "I guess it {i}is{/i} a pretty niche genre and doesn't suit everyone's ear."
-            m 1esa "You have to admit though, with so many players, there must be a lot of effort that goes into practicing for shows." 
+            m 1esa "You have to admit though, with so many players, there must be a lot of effort that goes into practicing for shows."
 
     m 1eua "That reminds me, [player]."
     m "If you ever want me to play for you..."
@@ -6345,7 +6345,7 @@ label monika_asks_family:
             m 1hubfa "I love you very much!"
 
     return "derandom"
-    
+
 #do you like other music
 default persistent._mas_pm_like_other_music = None
 
@@ -6378,8 +6378,8 @@ label monika_concerts:
             and renpy.seen_label("monika_rap")
         ):
         m 1eud "You know how I like different forms of music?"
-        m 1hua "Well..." 
-    m 3eub "Why don't we go to a concert?"             
+        m 1hua "Well..."
+    m 3eub "Why don't we go to a concert?"
     m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
 
     show monika 1eua
@@ -6400,7 +6400,7 @@ label monika_concerts:
             # NOTE: should be think? maybe?
             m 1eua "Interesting..."
             m 3hub "I'd love to go to a [tempmusicgenre] concert with you!"
-            
+
         "No.":
             if (
                     not persistent._mas_pm_like_vocaloids
@@ -6433,10 +6433,10 @@ label monika_concerts:
 
     if persistent._mas_pm_like_vocaloids:
         m 1hua "Waving our glowsticks at Miku Expo..."
-        
+
     if persistent._mas_pm_like_other_music:
         m 1hua "Jamming along to your favorite [tempmusicgenre] artist..."
-        
+
     m 2hub "Doesn't that sound just amazing?"
     m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
     m 2lksdla "Although, ticket prices these days are kind of expensive..."
@@ -7610,6 +7610,23 @@ init 5 python:
 label monika_compliments:
     jump mas_compliments_start
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_scary_stories",
+            category=['literature'],
+            prompt="Can you tell me a horror story?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_scary_stories:
+    call mas_stories_start(scary=True)
+    return
+
 ##### monika hair topics [MONHAIR]
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue
 # for these.
@@ -8035,7 +8052,7 @@ label monika_whydoyouloveme:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -8115,26 +8132,26 @@ label monika_fun_facts_open:
 label monika_fun_facts_end:
     m 1hub "I hope you enjoyed another session of 'Learning with Monika!'"
     $ persistent._mas_funfactfun = True
-    return 
+    return
 
 label monika_bad_facts_end:
     m 1rkc "That fact wasn't very good..."
     m 4dkc "I'll try better next time, [player]."
-    $ persistent._mas_funfactfun = False   
+    $ persistent._mas_funfactfun = False
     return
 
 label monika_fun_facts_1:
-    m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"   
-    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance." 
-    m 3rksdld "It’s a real shame some words just never get used in general." 
-    m 3eud "But if you say that word, most people wouldn’t really know what you're talking about." 
-    m 3euc "You’d probably have to explain what it means, but that kind of defeats the point of using the word." 
-    m 2rkc "If only people read more and improved their vocabulary!" 
+    m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
+    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
+    m 3rksdld "It’s a real shame some words just never get used in general."
+    m 3eud "But if you say that word, most people wouldn’t really know what you're talking about."
+    m 3euc "You’d probably have to explain what it means, but that kind of defeats the point of using the word."
+    m 2rkc "If only people read more and improved their vocabulary!"
     m 2hksdlb "...Ehehe, sorry [player]. I didn't mean to get so bothered~"
     return
 
 label monika_fun_facts_2:
-    m 3euc "Supposedly, a lot of restaurants purposefully leave out any sign of currency on their menus." 
+    m 3euc "Supposedly, a lot of restaurants purposefully leave out any sign of currency on their menus."
     m 3eud "This is done to psychologically manipulate people into spending more money than they need to."
     m 2euc "It works because a currency sign, such as a dollar, is used to represent a cost."
     m "By removing it, you remove the association of that cost and only think about the food of your choosing."
@@ -8144,21 +8161,21 @@ label monika_fun_facts_2:
     return
 
 label monika_fun_facts_3:
-    m 1dkc "Hmm, I'm not sure if I should tell you {i}this{/i} fact." 
-    m 1ekc "It's not for the faint of heart after all." 
+    m 1dkc "Hmm, I'm not sure if I should tell you {i}this{/i} fact."
+    m 1ekc "It's not for the faint of heart after all."
     m 1rkc "The thing is..."
-    m 1dkc "..."  
-    m 3hub "...I love you, [player]!"  
+    m 1dkc "..."
+    m 3hub "...I love you, [player]!"
     m 1rksdlb "Ehehe, sorry, I just couldn't help myself."
     m 1hksdlb "I'll have a real fact next time, don't you worry~"
     $ persistent._mas_funfactfun = True
     return True
 
 label monika_fun_facts_4:
-    m 3wub "Oh! A language based fact. I always like these." 
-    m 1eua "The word 'morphine’ is based on the greek god Morpheus." 
-    m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense." 
-    m 3ekc "But then again… wasn't his father Hypnos the god of sleep?" 
+    m 3wub "Oh! A language based fact. I always like these."
+    m 1eua "The word 'morphine’ is based on the greek god Morpheus."
+    m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense."
+    m 3ekc "But then again… wasn't his father Hypnos the god of sleep?"
     m 2dsc "Morphine {i}does{/i} let a person dream, but it's really about making someone fall asleep."
     m 4ekc "...So wouldn't it make more sense to name it after Hypnos then?"
     m 4rksdlb "Too little, too late I guess."
@@ -8221,12 +8238,12 @@ label monika_fun_facts_8:
 label monika_fun_facts_9:
     m 1dsc "Ah, this one..."
     m 1ekd "It's a little disheartening, [player]..."
-    m 1ekc "Did you know that Vincent Van Gogh's last words were {i}'La tristesse durera toujours?'{/i}" 
-    m 1eud "If you translate it, it means {i}'The sadness will last forever.'{/i}" 
-    m 1rkc "..." 
-    m 2ekc "It's really sad to know that someone so renowned would say something so dark with his last breath." 
-    m 2ekd "I don't think it's true, however. No matter how bad things can get and how deep the sadness can go..." 
-    m 2dkc "There will come a time where it’ll no longer be there." 
+    m 1ekc "Did you know that Vincent Van Gogh's last words were {i}'La tristesse durera toujours?'{/i}"
+    m 1eud "If you translate it, it means {i}'The sadness will last forever.'{/i}"
+    m 1rkc "..."
+    m 2ekc "It's really sad to know that someone so renowned would say something so dark with his last breath."
+    m 2ekd "I don't think it's true, however. No matter how bad things can get and how deep the sadness can go..."
+    m 2dkc "There will come a time where it’ll no longer be there."
     m 2rkc "...Or at least noticeable."
     m 4eka "If you're ever sad, you know you can talk to me, right?"
     m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
@@ -8240,7 +8257,7 @@ label monika_fun_facts_10:
     m 1tfu "Does that mean if I eat you up, would I become Queen Monika?"
     m 1hksdlb "Ahaha, I'm just kidding, [player]."
     m 1hub "Sorry for being a little weird~"
-    return 
+    return
 
 label monika_fun_facts_11:
     m 1hub "This fact might motivate you a bit!"
@@ -8250,7 +8267,7 @@ label monika_fun_facts_11:
     m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"
     m 1hua "You!"
     m 1hub "Because you are the source of my strength, ehehe~"
-    return 
+    return
 
 label monika_fun_facts_12:
     m 3eua "Ready for this one?"
@@ -8356,13 +8373,13 @@ label monika_bad_facts_1:
     m 2efw "T-this isn't a true fact at all!"
     m 2dfc "'Humans only use 10 percent of their brain."
     m 2lfd "Ugh, such nonsense."
-    m 4tfc "People don't really believe this, do they?"   
+    m 4tfc "People don't really believe this, do they?"
     return
 
 label monika_bad_facts_2:
     m 2ekc "Hm? This doesn't sound right..."
-    m 2tkd "It says here that different areas of the tounge tastes different flavors."  
-    m 2tfd "One area for bitter tastes, another for sweet..." 
+    m 2tkd "It says here that different areas of the tounge tastes different flavors."
+    m 2tfd "One area for bitter tastes, another for sweet..."
     m 2dfd "{i}*sigh*{/i}{w} For the love of--"
     m 2rfd "...Only children would believe this."
     return
@@ -8370,22 +8387,22 @@ label monika_bad_facts_2:
 label monika_bad_facts_3:
     m 2dsc "{i}*inhales*{/i}"
     m 2dsd "{i}*exhales*{/i}"
-    m 2esc "'Vaccines cause austim...'" 
-    m "Just wow." 
+    m 2esc "'Vaccines cause austim...'"
+    m "Just wow."
     m "That's not even funny, and if they're serious, it's long since been disproven."
-    m 2dsc "I really don’t like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."  
-    m 2lksdlc "I hope no one actually believes this..." 
+    m 2dsc "I really don’t like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."
+    m 2lksdlc "I hope no one actually believes this..."
     return
 
 label monika_bad_facts_4:
-    m 2dkc "...Oh." 
-    m 2rkc "I'm not even sure it's worth telling you this one, [player]." 
+    m 2dkc "...Oh."
+    m 2rkc "I'm not even sure it's worth telling you this one, [player]."
     m 2dkc "It says here that moss only grows on the north side of trees, but I know that it's only a myth."
-    m 2ekd "A very popular one too!"  
-    m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there’ll be moss there too." 
-    m 2efd "But relying on that kind of logic is dangerous!" 
-    m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in." 
-    m "Plus even if it wasn't like that, the trick would only work in the northern hemisphere." 
+    m 2ekd "A very popular one too!"
+    m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there’ll be moss there too."
+    m 2efd "But relying on that kind of logic is dangerous!"
+    m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in."
+    m "Plus even if it wasn't like that, the trick would only work in the northern hemisphere."
     m 2wfc "Anyone within the southern hemisphere would have it growing facing south."
     m 2dfc "..."
     m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
