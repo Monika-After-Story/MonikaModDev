@@ -8,7 +8,7 @@ python early:
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z =5
-    
+
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
@@ -462,11 +462,11 @@ python early:
             if category is not None:
                 # USE OR LOGIC
                 if category[0]:
-                    if len(set(category[1]).intersection(set(event.category))) == 0:
+                    if not event.category or len(set(category[1]).intersection(set(event.category))) == 0:
                         return False
 
                 # USE AND logic
-                elif len(set(category[1]).intersection(set(event.category))) != len(category[1]):
+                elif not event.category or len(set(category[1]).intersection(set(event.category))) != len(category[1]):
                     return False
 
             if action is not None and event.action not in action:
