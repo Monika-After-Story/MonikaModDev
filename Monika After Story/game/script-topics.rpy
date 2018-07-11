@@ -6729,7 +6729,7 @@ label monika_gameidle:
                             m 3lksdlc "Games can get pretty boring after you've done everything or just don't know what to do or try next."
                             m 3eka "But bringing a friend along can really renew the whole experience!"
                             m 1hub "Maybe you should find a way to take me with you into your games so you won't be bored on your own!"
-                            show monika 5eua at t11 zorder 2 with dissolve
+                            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                             m 5eua "Or we could just stay here and keep eachother company."
                             m "I wouldn't mind that either, eheheh~"
         "A story driven game":
@@ -6737,12 +6737,12 @@ label monika_gameidle:
             m "That sounds really interesting!"
             m 1hksdlb "Gosh, I really wish I could be there with you to experience it together."
             m "Maybe I {i}can{/i} experience it with you if I really tried."
-            show monika 5eua at t11 zorder 2 with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I guess you could call it looking over your shoulder. Eheheh~"
             m "You can go ahead and start it now. I'll try not to break anything by trying to watch."
             menu:
                 "I'm finished":
-                    show monika 1b at t11 zorder 2 with dissolve
+                    show monika 1b at t11 zorder MAS_MONIKA_Z with dissolve
                     m 1eub "Welcome back, [player]!"
                     m 1hksdlb "I wasn't able to look over your shoulder, but I hope the story was nice so far."
                     m 1eua "Speaking of which, how was it, [player]?"
@@ -6763,7 +6763,7 @@ label monika_gameidle:
                             m "Maybe when I'm in your reality, you could take me through the game and let me see the story."
                             m 1eub "It's one thing to go through a great story yourself..."
                             m 1hub "But it's also amazing to see firsthand what someone else thinks of it!"
-                            show monika 5eua at t11 zorder 2 with dissolve
+                            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                             m 5eua "I'll be looking forward to that day too~"
                             m "You better have a nice, cozy place for us to cuddle up and play, eheheh~"
                         "It's sad":
@@ -6805,14 +6805,14 @@ label monika_gameidle:
                             m 1eua "Especially if you've spent some time in a slump or slipping even."
                             m 1hua "Maybe today isn't even the end of this sudden improvement."
                             m 1eub "Even if today was just a good day, I know you'll keep on getting better."
-                            show monika 5a at t11 zorder 2 with dissolve
+                            show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
                             m 5eua "I'll {i}always{/i} root for you, [player]. Don't you ever forget that!"
                         "I improved a bit":
                             m 3eua "That's really nice to hear, [player]!"
                             m 3eka "As long as you're improving, no matter how slowly, you'll really get up there someday."
                             m 1hub "But if you actually noticed yourself improve today, maybe you improved more than just a bit, ahaha~"
                             m 1hua "Keep honing your skills and I'll be proud to be the girlfriend of such a skilled player!"
-                            show monika 5a at t11 zorder 2 with dissolve
+                            show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
                             m 5eua "Who knows? Maybe you could teach me and we could both be a couple of experts, eheheh~"
                         "I stayed the same":
                             m 3eka "That's still alright!"
