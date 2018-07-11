@@ -10,6 +10,7 @@
 # dict of tples containing the stories event data
 default persistent._mas_story_database = dict()
 default mas_can_unlock_story = False
+default mas_can_unlock_scary_story = False
 
 
 # store containing stories-related things
@@ -35,34 +36,50 @@ label mas_stories_start(scary=False):
     python:
         import store.mas_stories as mas_stories
 
+        if scary:
+            stories = renpy.store.Event.filterEvents(
+                mas_stories.story_database,
+                category=(True,[mas_stories.TYPE_SCARY])
+            )
+        else:
+            stories = renpy.store.Event.filterEvents(
+                mas_stories.story_database,
+                excl_cat=list()
+            )
+
         # build menu list
         stories_menu_items = [
             (mas_stories.story_database[k].prompt, k, False, False)
-            for k in mas_stories.story_database
+            for k in stories
             if mas_stories.story_database[k].unlocked and seen_event(k)
-            and ((scary and mas_stories.story_database[k].category is not None)
-            or (not scary and not mas_stories.story_database[k].category) )
         ]
 
         # sanity check for first timers
         if not stories_menu_items:
             stories_menu_items = [
                 (mas_stories.story_database[k].prompt, k, False, False)
-                for k in mas_stories.story_database
+                for k in stories
                 if mas_stories.story_database[k].unlocked
-                and ((scary and mas_stories.story_database[k].category is not None)
-                or (not scary and not mas_stories.story_database[k].category) )
             ]
 
             # set the mas_can_unlock_story flag to False since it
             # shouldn't unlock anything at this time
-            mas_can_unlock_story = False
+            if scary:
+                mas_can_unlock_scary_story = False
+            else:
+                mas_can_unlock_story = False
 
         # check if we have a story available to be unlocked and we can unlock it
-        if len(stories_menu_items) < len(mas_stories.story_database) and mas_can_unlock_story:
+        if len(stories_menu_items) < len(stories) and ((not scary and mas_can_unlock_story)
+                or (scary and mas_can_unlock_scary_story)):
 
             # Add to the menu the new story option
-            stories_menu_items.append(("A new story", "mas_story_unlock_random", True, False))
+            if scary:
+                return_label = "mas_scary_story_unlock_random"
+            else:
+                return_label = "mas_story_unlock_random"
+
+            stories_menu_items.append(("A new story", return_label, True, False))
 
         # also sort this list
         stories_menu_items.sort()
@@ -133,36 +150,76 @@ label mas_story_begin:
     return
 
 label mas_story_unlock_random:
+   call mas_story_unlock_random_cat()
+   return
+
+label mas_scary_story_unlock_random:
+   call mas_story_unlock_random_cat(scary=True)
+   return
+
+label mas_story_unlock_random_cat(scary=False):
 
     python:
+        if scary:
+            # reset flag so we don't unlock another one
+            mas_can_unlock_scary_story = False
 
-        # reset flag so we don't unlock another one
-        mas_can_unlock_story = False
-
-        # get locked stories
-        stories = renpy.store.Event.filterEvents(
-            renpy.store.mas_stories.story_database,
-            unlocked=False
-        )
-
-        if len(stories) == 0:
-
-            # in case the player left the game mid unlocking
+            # get locked stories
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
-                unlocked=True,
-                seen=False
+                unlocked=False,
+                category=(True,[renpy.store.mas_stories.TYPE_SCARY])
             )
 
             if len(stories) == 0:
 
-                # There should be no way to get to this point but just in case
-                # let's fail 'nicely'
+                # in case the player left the game mid unlocking
                 stories = renpy.store.Event.filterEvents(
                     renpy.store.mas_stories.story_database,
-                    unlocked=True
+                    unlocked=True,
+                    seen=False,
+                    category=(True,[renpy.store.mas_stories.TYPE_SCARY])
                 )
 
+                if len(stories) == 0:
+
+                    # There should be no way to get to this point but just in case
+                    # let's fail 'nicely'
+                    stories = renpy.store.Event.filterEvents(
+                        renpy.store.mas_stories.story_database,
+                        unlocked=True,
+                        category=(True,[renpy.store.mas_stories.TYPE_SCARY])
+                    )
+        else:
+            # reset flag so we don't unlock another one
+            mas_can_unlock_story = False
+
+            # get locked stories
+            stories = renpy.store.Event.filterEvents(
+                renpy.store.mas_stories.story_database,
+                unlocked=False,
+                excl_cat=list()
+            )
+
+            if len(stories) == 0:
+
+                # in case the player left the game mid unlocking
+                stories = renpy.store.Event.filterEvents(
+                    renpy.store.mas_stories.story_database,
+                    unlocked=True,
+                    seen=False,
+                    excl_cat=list()
+                )
+
+                if len(stories) == 0:
+
+                    # There should be no way to get to this point but just in case
+                    # let's fail 'nicely'
+                    stories = renpy.store.Event.filterEvents(
+                        renpy.store.mas_stories.story_database,
+                        unlocked=True,
+                        excl_cat=list()
+                    )
 
         # select one story randomly
         story = stories[renpy.random.choice(stories.keys())]
@@ -176,7 +233,6 @@ label mas_story_unlock_random:
 
         # using renpy.jump again cause again trasition looks like she's stuck
         renpy.jump(story.eventlabel)
-
 
     return
 
@@ -368,6 +424,7 @@ label mas_story_immortal_love:
 label mas_scary_story_setup:
     $ scene_change = True
     $ mas_is_raining = True
+    pause 1.0
     call spaceroom
     stop music fadeout 1.0
     play background audio.rain fadein 1.0 loop

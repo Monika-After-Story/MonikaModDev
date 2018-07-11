@@ -794,6 +794,7 @@ label mas_ch30_post_retmoni_check:
 
             #Set unlock flag for stories
             mas_can_unlock_story = True
+            mas_can_unlock_scary_story = True
 
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
