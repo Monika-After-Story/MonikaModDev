@@ -426,7 +426,7 @@ label mas_scary_story_setup:
     $ scene_change = True
     $ mas_is_raining = True
     pause 1.0
-    call spaceroom
+    call spaceroom(start_bg="monika_gloomy_room")
     #stop music fadeout 1.0
     play background audio.rain fadein 1.0 loop
 
@@ -462,6 +462,7 @@ label mas_scary_story_cleanup:
     $ scene_change = True
     $ mas_is_raining = False
     pause 1.0
+    hide monika_gloomy_room
     call spaceroom
     stop background fadeout 1.0
 
