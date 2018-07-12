@@ -426,7 +426,9 @@ label mas_scary_story_setup:
     $ scene_change = True
     $ mas_is_raining = True
     pause 1.0
+    $ mas_temp_m_flag = morning_flag
     call spaceroom(start_bg="monika_gloomy_room")
+    $ morning_flag = True
     #stop music fadeout 1.0
     play background audio.rain fadein 1.0 loop
 
@@ -459,6 +461,7 @@ label mas_scary_story_cleanup:
 
     m 3eua "[story_end_quip]"
     show monika 1dsc
+    $ morning_flag = mas_temp_m_flag
     $ scene_change = True
     $ mas_is_raining = False
     pause 1.0
