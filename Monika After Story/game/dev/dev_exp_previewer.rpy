@@ -31,6 +31,7 @@ label dev_exp_previewer:
     $ morning_flag = prev_mflag
     $ HKBShowButtons()
 
+    show monika at i11
     window auto
     return
 
@@ -84,6 +85,111 @@ init 1000 python:
         TEXT_SIZE = 40
 
         ROWS = 13
+
+        SPR_FOUND = "#ffe6f4"
+        SPR_MISS = "#ff0000"
+
+        MONI_X = -240
+        MONI_Y = -107
+
+        # STATES for which monika to show
+
+        # use blit to render monika
+        STATE_MONI_BLIT = 0
+
+        # use show + interaction to render monika
+        STATE_MONI_SHOW = 1
+
+        ### image name maps
+        # for building the real deal sprites
+
+        # list of leaning poses so we know
+        LEAN_SMAP = {
+            5: "def"
+        }
+
+        ARMS_SMAP = {
+            1: "steepling",
+            2: "crossed",
+            3: "restleftpointright",
+            4: "pointright",
+            6: "down"
+        }
+
+        EYE_SMAP = {
+            "e": "normal",
+            "w": "wide",
+            "s": "sparkle",
+            "t": "smug",
+            "c": "crazy",
+            "r": "right",
+            "l": "left",
+            "h": "closedhappy",
+            "d": "closedsad"
+        }
+
+        EYEBROW_SMAP = {
+            "f": "furrowed",
+            "u": "up",
+            "k": "knit",
+            "s": "mid"
+        }
+
+        NOSE_SMAP = {
+            "nd": "def"
+        }
+
+        EYEBAG_SMAP = {
+            "ebd": "def"
+        }
+
+        BLUSH_SMAP = {
+            "bl": "lines",
+            "bs": "shade",
+            "bf": "full"
+        }
+
+        TEARS_SMAP = {
+            "ts": "streaming",
+            "td": "dried"
+        }
+
+        SWEAT_SMAP = {
+            "sdl": "def",
+            "sdr": "right"
+        }
+
+        EMOTE_SMAP = {
+            "ec": "confuse"
+        }
+
+        MOUTH_SMAP = {
+            "a": "smile",
+            "b": "big",
+            "c": "smirk",
+            "d": "small",
+            "o": "gasp",
+            "u": "smug",
+            "w": "wide",
+            "x": "disgust",
+            "p": "pout",
+            "t": "triangle"
+        }
+            
+        # image name map
+        IMG_NMAP = {
+            "arms": ARMS_SMAP,
+            "eyes": EYE_SMAP,
+            "eyebrows": EYEBROW_SMAP,
+            "nose": NOSE_SMAP,
+            "eyebags": EYEBAG_SMAP,
+            "blush": BLUSH_SMAP,
+            "tears": TEARS_SMAP,
+            "sweat": SWEAT_SMAP,
+            "emote": EMOTE_SMAP,
+            "mouth": MOUTH_SMAP
+        }
+
 
         ### sprite code maps
 
@@ -569,10 +675,6 @@ init 1000 python:
                 for lbl in self.LABELS
             ]
 
-            
-            # sprite code text is generated on the FLY 
-
-
             ### selection map
 
            # map of directional functions to sprite piece
@@ -620,6 +722,27 @@ init 1000 python:
             # did the sprite chnage?
             self.sprite_changed = True
 
+            # sprite as  atransform
+            self.spr_tran = self._create_sprite()
+
+            # does this sprite xist?
+            self.sprite_exist = (
+                getCharacterImage("monika", self.curr_spr_code) is not None
+            )
+
+            # need to check which render state we should be in
+            if self.spr_tran is None:
+               # dont need to change anything here
+                self.state = self.STATE_MONI_SHOW
+                
+
+            else:
+                # blit mode needs some adjustments
+                self.state = self.STATE_MONI_BLIT
+                renpy.hide("monika")
+                renpy.restart_interaction()
+
+
 
         def _adj_sel(self, direct, key):
             """
@@ -634,6 +757,48 @@ init 1000 python:
                 direct,
                 self.curr_sel[key]
             )
+
+
+        def _create_sprite(self):
+            """
+            Generates the sprite Transform using the sprite chart functions
+
+            RETURNS the created Transform, or None if that failed
+            """
+            _arms = self._get_spr_code("arms")
+            if _arms in self.LEAN_SMAP:
+                _lean = self.LEAN_SMAP[_arms]
+                _arms = None
+            else:
+                _lean = None
+                _arms = self._get_img_name("arms")
+
+            try:
+                trn, rfr = mas_drawmonika(0, 0, monika_chr,
+                    self._get_img_name("eyebrows"),
+                    self._get_img_name("eyes"),
+                    self._get_img_name("nose"),
+                    self._get_img_name("mouth"),
+                    head="",
+                    left="",
+                    right="",
+                    lean=_lean,
+                    arms=_arms,
+                    eyebags=self._get_img_name("eyebags"),
+                    sweat=self._get_img_name("sweat"),
+                    blush=self._get_img_name("blush"),
+                    tears=self._get_img_name("tears"),
+                    emote=self._get_img_name("emote")
+                )
+                # now we need to modify the transform a little bit
+                return Transform(trn, 
+                    zoom=0.80*1.00,
+                    alpha=1.00
+                )
+
+            except:
+                # the eval failed because we didnt have an image
+                return None
 
            
         def _xcenter(self, v_width, width):
@@ -951,6 +1116,24 @@ init 1000 python:
             self.curr_spr_code = self._build_spr_code()
 
 
+        ####################### image based functions ########################
+
+        def _get_img_name(self, key):
+            """
+            Gets the image name for a given sprite key
+
+            IN:
+                key - what image name do we need
+
+            RETURNS the image name we need
+            """
+            spr_code = self._get_spr_code(key, False)
+            if spr_code is None:
+                return None
+
+            return self.IMG_NMAP[key][spr_code]
+
+
         ####################### render / event ###############################
 
 
@@ -999,18 +1182,36 @@ init 1000 python:
 
 
             # sprite code 
+            if self.sprite_exist:
+                spr_clr = self.SPR_FOUND
+            else:
+                spr_clr = self.SPR_MISS
+
             spr_txt = Text(
                 "Sprite Code: " + self.curr_spr_code,
                 font=gui.default_font,
                 size=self.TEXT_SIZE,
-                color="#ffe6f4",
+                color=spr_clr,
                 outlines=[]
             )
             r_spr_code = renpy.render(spr_txt, width, height, st, at)
 
+            # sprite rendres could possibly happen depending on what we do
+            if self.state == self.STATE_MONI_BLIT:
+                try:
+                    r_spr_tran = renpy.render(
+                        self.spr_tran, width, height, st, at
+                    )
+                    self.sprite_changed = False
+                except:
+                    # this failed to render 
+                    self.state = self.STATE_MONI_SHOW
 
             # and blit
             r = renpy.Render(width, height)
+            if self.state == self.STATE_MONI_BLIT:
+                # blitting the monika is very very hard
+                r.blit(r_spr_tran, (self.MONI_X, self.MONI_Y))
             r.blit(back, (self.PANEL_X, self.PANEL_Y))
             r.blit(r_spr_code, (self.LBL_X, self.SC_Y))
             for vis_t, xy in r_texts:
@@ -1020,8 +1221,14 @@ init 1000 python:
             for vis_b, xy in r_buttons:
                 r.blit(vis_b, xy)
 
-            if self.sprite_changed:
-                renpy.show(str("monika " + self.curr_spr_code))
+            # if we got here, then we are rendering a sprite that couldnt be
+            # created
+            if self.state == self.STATE_MONI_SHOW and self.sprite_changed:
+                renpy.show(
+                    str("monika " + self.curr_spr_code),
+                    at_list=[i21],
+                    zorder=MAS_MONIKA_Z
+                )
                 renpy.restart_interaction()
                 self.sprite_changed = False
 
@@ -1041,6 +1248,25 @@ init 1000 python:
                 # othrewise, check left buttons
                 if not self._left_button_select(ev, x, y, st):
                     self._right_button_select(ev, x, y, st)
+
+                if self.sprite_changed:
+
+                    # if this is None, we just dont render it
+                    self.spr_tran = self._create_sprite()
+
+                    # check for sprite code existence
+                    self.sprite_exist = (
+                        getCharacterImage("monika", self.curr_spr_code) 
+                        is not None
+                    )
+
+                    if self.spr_tran is None:
+                        self.state = self.STATE_MONI_SHOW
+
+                    else:
+                        self.state = self.STATE_MONI_BLIT
+                        renpy.hide("monika")
+                        renpy.restart_interaction()
 
                 # rereender
                 renpy.redraw(self, 0)
