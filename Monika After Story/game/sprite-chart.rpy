@@ -2,7 +2,7 @@
 # To add a new image, please scroll to the IMAGE section (IMG002)
 #
 ###### SPRITE CODE (IMG001)
-# 
+#
 # The sprite code system is a way of picking an appropriate sprite without
 # having to look up what the sprite looks like.
 # All expressions use this code system, with the exception of the original
@@ -134,7 +134,7 @@ define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suff
 #image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
 image emptydesk = ConditionSwitch(
     "morning_flag", "mod_assets/emptydesk.png",
-    "not morning_flag", "mod_assets/emptydesk_n.png"
+    "not morning_flag", "mod_assets/emptydesk-n.png"
 )
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
@@ -1352,7 +1352,7 @@ define monika_chr = MASMonika()
 #
 # Optional parts for sitting is:
 #   sweat, tears, blush, emote, eyebags
-#   
+#
 # Non-leaning poses require an ARMS part.
 # leaning poses require a LEAN part.
 #
@@ -1370,8 +1370,8 @@ define monika_chr = MASMonika()
 # All leaning layers must have a non-leaning fallback
 #
 ## FACIAL EXPRESSIONS:
-# Non leaning filenames: 
-#   face-{face part type}-{face part name}{-n}.png 
+# Non leaning filenames:
+#   face-{face part type}-{face part name}{-n}.png
 #   (ie: face-mouth-big.png / face-mouth-big-n.png)
 # leaning filenames:
 #   face-leaning-{face part type}-{face part name}{-n}.png
@@ -1386,9 +1386,9 @@ define monika_chr = MASMonika()
 # Leaning filenames:
 #   torso-leaning-{hair type}-{lean name}{-n}.png
 #   (ie: torso-leaning-def-def.png / torso-leaning-def-def-n.png)
-#   
 #
-# 
+#
+#
 #
 
 
@@ -2713,6 +2713,20 @@ image monika 1hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="streaming"
+)
+
 image monika 2a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3966,6 +3980,20 @@ image monika 2hubfb = DynamicDisplayable(
     right="2r",
     arms="crossed",
     blush="full"
+)
+
+image monika 2ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="streaming"
 )
 
 image monika 3a = DynamicDisplayable(
@@ -5223,6 +5251,20 @@ image monika 3hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    tears="streaming"
+)
+
 image monika 4a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6478,6 +6520,20 @@ image monika 4hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 4ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    tears="streaming"
+)
+
 image monika 5a = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6770,4 +6826,3 @@ image monika 5rfc = DynamicDisplayable(
     lean="def",
     single="3b"
 )
->>>>>>> expression-overhaul
