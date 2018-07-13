@@ -141,6 +141,15 @@ image monika g2:
 
 define m = DynamicCharacter('m_name', image='monika', what_prefix='"', what_suffix='"', ctc="ctc", ctc_position="fixed")
 
+#empty desk image, used when Monika is no longer in the room.
+#image emptydesk = im.FactorScale("mod_assets/emptydesk.png", 0.75)
+image emptydesk = ConditionSwitch(
+    "morning_flag", "mod_assets/emptydesk.png",
+    "not morning_flag", "mod_assets/emptydesk-n.png"
+)
+
+image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
+
 init -5 python in mas_sprites:
     # specific image generation functions
 
@@ -3055,6 +3064,21 @@ image monika 1ekbfa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
+
+)
+
+image monika 1ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="streaming"
 )
 
 image monika 2eua = DynamicDisplayable(
@@ -4389,7 +4413,7 @@ image monika 2ektsc = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="smirk",
-    head="f",
+    head="r",
     left="1l",
     right="2r",
     arms="crossed",
@@ -5681,6 +5705,20 @@ image monika 3ekbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    tears="streaming"
+)
+
 image monika 4eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6964,6 +7002,20 @@ image monika 4ekbfa = DynamicDisplayable(
     right="2r",
     arms="pointright",
     blush="full"
+)
+
+image monika 4ektsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    tears="streaming"
 )
 
 image monika 5eua = DynamicDisplayable(

@@ -931,6 +931,58 @@ python early:
             # return the available events dict
             return available_events
 
+        @staticmethod
+        def _checkAffectionRule(ev):
+            """
+            Checks the given event against its own affection specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASAffectionRule.evaluate_rule(ev)
+
+
+        @staticmethod
+        def checkAffectionRules(events):
+            """
+            Checks the event dict against their own affection specific rules,
+            filters out those Events whose rule check return true. This rule
+            checks if current affection is inside the specified range contained
+            on the rule
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASAffectionRule and evaluate it
+                if Event._checkAffectionRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
 
 # init -1 python:
     # this should be in the EARLY block
@@ -3128,6 +3180,7 @@ default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
 default persistent.has_merged = False
+default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
 default anticheat = 0
@@ -3140,7 +3193,7 @@ default faint_effect = None
 
 
 default s_name = "Sayori"
-default m_name = "Monika"
+default m_name = persistent._mas_monika_nickname
 default n_name = "Natsuki"
 default y_name = "Yuri"
 
@@ -3213,6 +3266,7 @@ default persistent.sessions={'last_session_end':None,'current_session_start':Non
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
+default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":-1,"apologyflag":False}
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
