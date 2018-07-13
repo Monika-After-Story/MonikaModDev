@@ -15,8 +15,6 @@ init -1 python in songs:
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
-    KAZOO_COVER = "Your Reality (Kazoo Cover)"
-    YRROCK_COVER = "Your Reality (Rock Cover)"
     NO_SONG = "None"
 
     # SONG FILEPATHS
@@ -30,8 +28,6 @@ init -1 python in songs:
     )
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
     FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
-    FP_KAZOO_COVER = "mod_assets/bgm/kazoo.ogg"
-    FP_YRROCK_COVER = "mod_assets/bgm/yrrock.ogg"
     FP_NO_SONG = None
 
 
@@ -137,9 +133,6 @@ init -1 python in songs:
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
             
-            music_choices.append((KAZOO_COVER, FP_KAZOO_COVER))
-            
-            music_choices.append((YRROCK_COVER,FP_YRROCK_COVER))
 
         # sayori only allows this
         music_choices.append((SAYO_NARA, FP_SAYO_NARA))
