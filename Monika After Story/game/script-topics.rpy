@@ -4667,12 +4667,12 @@ label monika_orchestra:
                  m 1j "Ehehe~"
                  $ persistent.instrument = True
             elif tempinstrument == "harmonika":
-                 m 1a "Wow, I've always wanted to try the harmonik--"
-                 m 1l "...Oh!"
-                 m 1m "[player], did you spell it like that for me?"
-                 m 3l "That's {i}sooo{/i} adorable!"
-                 m 5a "And just so you know, you can play with me anytime you like..."
-                 m 1j "Ehehe~"
+                 m 1hub "Wow, I've always wanted to try the harmonik--"
+                 m 3eub "...Oh!"
+                 m 1eka "Aww [player], did you do that for me?"
+                 m 1hub "That's {i}sooo{/i} adorable!"
+                 m 5eubfu "And just so you know, you can {i}play{/i} with me anytime you like..."
+                 m 5eubfb "Ehehe~"
                  $ persistent.instrument = True  
             else:
                  m 1a "Wow, I've always wanted to try the [tempinstrument] out!"
