@@ -5,6 +5,8 @@
 #   persistent._seen_ever
 #   persistent.version_number
 
+define persistent._mas_zz_lupd_ex_v = []
+
 # preeverything stuff
 init -10 python:
     found_monika_ani = persistent.monika_anniversary is not None
@@ -41,6 +43,63 @@ init python:
 
         if renpy.seen_label(topicID):
             persistent._seen_ever.pop(topicID)
+
+
+    def mas_eraseTopic(topicID, per_eventDB):
+        """
+        Erases an event from both seen and Event database
+        This should also handle lockdb data as well.
+        TopicIDs that are not in the given eventDB are silently ignored.
+        (LockDB data will be erased if found)
+
+        IN:
+            topicID - topic ID / label
+            per_eventDB - persistent database this topic is in
+        """
+        if topicID in per_eventDB:
+            per_eventDB.pop(topicID)
+
+        if topicID in Event.INIT_LOCKDB:
+            Event.INIT_LOCKDB.pop(topicID)
+
+
+    def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
+        """
+        Transfers a topic's data from the old topic ID to the new one int he
+        given database as well as the lock database.
+
+        NOTE: If the new topic ID already exists in the given databases,
+        the data is OVERWRITTEN
+
+        IN:
+            old_topicID - old topic ID to transfer
+            new_topicID - new topic ID to receieve
+            per_eventDB - persistent databse this topic is in
+        """
+        if old_topicID in per_eventDB:
+
+            # listify old data so we can replace the eventlabel attribute
+            # EVENTLABEL is piece 0. NOTE: PLEASE DO NOT CHANGE
+            old_data = list(per_eventDB.pop(old_topicID))
+            old_data[0] = new_topicID
+            per_eventDB[new_topicID] = tuple(old_data)
+
+        if old_topicID in Event.INIT_LOCKDB:
+            Event.INIT_LOCKDB[new_topicID] = Event.INIT_LOCKDB.pop(old_topicID)
+
+
+    def mas_transferTopicSeen(old_topicID, new_topicID):
+        """
+        Tranfers persistent seen ever data. This is separate because of complex
+        topic adjustments
+
+        IN:
+            old_topicID - old topic ID to tranfer
+            new_topicID - new topic ID to receieve
+        """
+        if old_topicID in persistent._seen_ever:
+            persistent._seen_ever.pop(old_topicID)
+            persistent._seen_ever[new_topicID] = True
 
 
     def adjustTopicIDs(changedIDs,updating_persistent=persistent):
@@ -192,6 +251,237 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.3
+label v0_8_3(version="v0_8_3"):
+    python:
+        import datetime
+        import store.evhand as evhand
+
+        # need to unrandom the explain topic
+        ex_ev = evhand.event_database.get("monika_explain", None)
+        if ex_ev is not None:
+            ex_ev.random = False
+            ex_ev.pool = True
+
+        # update Kizuna's topic action
+        kiz_ev = evhand.event_database.get("monika_kizuna", None)
+        if kiz_ev is not None and not renpy.seen_label(kiz_ev.eventlabel):
+            kiz_ev.action = EV_ACT_POOL
+            kiz_ev.unlocked = False
+            kiz_ev.pool = False
+            kiz_ev.conditional = "seen_event('greeting_hai_domo')"
+
+        # give players pool unlocks if they've been here for some time
+        curr_level = get_level()
+        if curr_level > 25:
+            persistent._mas_pool_unlocks = int(curr_level / 2)
+
+        # fix all derandom topics that were not unlocked
+        derandomable = [
+            "monika_natsuki_letter",
+            "monika_prom",
+            "monika_beach",
+            "monika_asks_family",
+            "monika_smoking",
+            "monika_otaku",
+            "monika_jazz",
+            "monika_orchestra",
+            "monika_meditation",
+            "monika_sports",
+            "monika_weddingring",
+            "monika_icecream",
+            "monika_japanese",
+            "monika_haterReaction",
+            "monika_cities",
+            "monika_images",
+            "monika_rain",
+            "monika_selfesteem",
+            "monika_yellowwp",
+            "monika_familygathering"
+        ]
+        for topic in derandomable:
+            ev = evhand.event_database.get(topic, None)
+            if renpy.seen_label(topic) and ev:
+                ev.unlocked = True
+                ev.unlock_date = datetime.datetime.now()
+
+        # anniversaries need to be readjusted again!
+        # but we will use late update script this time
+        persistent._mas_zz_lupd_ex_v.append(version)
+
+    return
+
+# 0.8.2
+label v0_8_2(version="v0_8_2"):
+    python:
+        import store.mas_anni as mas_anni
+
+        ## need to fix anniversaries for everyone again.
+        mas_anni.reset_annis(persistent.sessions["first_session"])
+
+    return
+
+# 0.8.1
+label v0_8_1(version="v0_8_1"):
+    python:
+        import store.evhand as evhand
+        import store.mas_stories as mas_stories
+
+        # change fast food topic values
+        # NOTE: this is for unstablers using 0.8.0
+        m_ff = evhand.event_database.get("monika_fastfood", None)
+        if m_ff:
+            hideEvent(m_ff, derandom=True)
+            m_ff.pool = True
+
+        # regular topic update
+        persistent = updateTopicIDs(version)
+
+        ## writing topic adjustments
+
+        # writing tip 5
+        writ_5 = evhand.event_database.get("monika_writingtip5", None)
+        if writ_5 and not renpy.seen_label(writ_5.eventlabel):
+            writ_5.pool = False
+            writ_5.conditional = "seen_event('monika_writingtip4')"
+            writ_5.action = EV_ACT_POOL
+
+        # writing tip 4
+        writ_4 = evhand.event_database.get("monika_writingtip4", None)
+        if writ_4 and not renpy.seen_label(writ_4.eventlabel):
+            writ_4.pool = False
+            writ_4.conditional = "seen_event('monika_writingtip3')"
+            writ_4.action = EV_ACT_POOL
+
+        # writing tip 3
+        mas_transferTopic(
+            "monika_write",
+            "monika_writingtip3",
+            persistent.event_database
+        )
+        writ_3 = evhand.event_database.get("monika_writingtip3", None)
+        if writ_3 and not renpy.seen_label(writ_3.eventlabel):
+            writ_3.pool = False
+            writ_3.conditional = "seen_event('monika_writingtip2')"
+            writ_3.action = EV_ACT_POOL
+
+        # writing tip 2
+        zero_t = "monika_writingtip"
+        old_t = "monika_writingtip1"
+        new_t = "monika_writingtip2"
+        if zero_t in persistent.event_database:
+            # if we have the original no number writing tip, then we
+            # are migrating
+
+            mas_transferTopicSeen(old_t, new_t)
+            mas_transferTopic(old_t, new_t, persistent.event_database)
+            writ_2 = evhand.event_database.get(new_t, None)
+            if writ_2 and not renpy.seen_label(new_t):
+                writ_2.conditional = "seen_event('monika_writingtip1')"
+
+            # writing tip 1
+            mas_transferTopicSeen(zero_t, old_t)
+            mas_transferTopic(zero_t, old_t, persistent.event_database)
+
+        ## dropping repeats
+        persistent._mas_enable_random_repeats = None
+        persistent._mas_monika_repeated_herself = None
+
+        ## need to unlock anniversary topics
+        annis = (
+            "anni_1week",
+            "anni_1month",
+            "anni_3month",
+            "anni_6month"
+        ) # impossible to reach a year
+        for anni in annis:
+            anni_ev = evhand.event_database.get(anni, None)
+
+            if anni_ev and isPast(anni_ev):
+                # we'll make them seen again and then also unlock them
+                persistent._seen_ever[anni] = True
+                anni_ev.unlocked = True
+
+        ### temporarily disable music2 topic
+        music_ev = Event(persistent.event_database, eventlabel="monika_music2")
+        music_ev.unlocked = False
+        music_ev.random = False
+
+        ## swap story label (well the label is already handled in topics)
+        # but we need to handle the database data (we are transfering only
+        # select properties)
+        # Props to transfer:
+        # shown_count
+        # last_seen
+        # seen has already been handled, so lets just send over some data
+        # need to recreate the event object so we can properly retrieve data
+        ravel_evlabel = "monika_ravel"
+        ravel_stlabel = "mas_story_ravel"
+        ravel_ev = Event(persistent.event_database, eventlabel=ravel_evlabel)
+        ravel_story = mas_stories.story_database.get(ravel_stlabel, None)
+        ravel_lockdata = None
+
+        # remove lock data
+        if ravel_evlabel in Event.INIT_LOCKDB:
+            ravel_lockdata = Event.INIT_LOCKDB.pop(ravel_evlabel)
+
+        if ravel_story:
+            # story exists, lets do some transfers
+            ravel_story.shown_count = ravel_ev.shown_count
+            ravel_story.last_seen = ravel_ev.last_seen
+
+            if ravel_lockdata:
+                # transfer lockdata
+                Event.INIT_LOCKDB[ravel_stlabel] = ravel_lockdata
+
+        # now remove old event data
+        if ravel_evlabel in persistent.event_database:
+            persistent.event_database.pop(ravel_evlabel)
+
+
+    return
+
+# 0.8.0
+label v0_8_0(version="v0_8_0"):
+    python:
+        import store.evhand as evhand
+
+        # unlock change name if the name promtps hjave been seen
+        if (
+                renpy.seen_label("monika_changename")
+                or renpy.seen_label("preferredname")
+            ):
+            evhand.event_database["monika_changename"].unlocked = True
+
+        annis = (
+            "anni_1week",
+            "anni_1month",
+            "anni_3month",
+            "anni_6month"
+        ) # impossible to reach a year
+        for anni in annis:
+            if isPast(evhand.event_database[anni]):
+                persistent._seen_ever[anni] = True
+
+        persistent = updateTopicIDs(version)
+
+        # need to erase 080
+        for k in updates.topics["v0_8_0"]:
+            mas_eraseTopic(k, persistent.event_database)
+
+        # have to erase 074 because we didn't do this before.
+        # NOTE: we should never have to do this again
+        for k in updates.topics["v0_7_4"]:
+            mas_eraseTopic(k, persistent.event_database)
+
+        # change fast food topic values
+        m_ff = evhand.event_database.get("monika_fastfood", None)
+        if m_ff:
+            hideEvent(m_ff, derandom=True)
+            m_ff.pool = True
+
+    return
+
 # NOTE: well shit this wasnt ready and now it has to be done later
 # 0.7.4
 label v0_7_4(version="v0_7_4"):
@@ -210,6 +500,7 @@ label v0_7_4(version="v0_7_4"):
         # anniversary dates relying on add_months need to be tweaked
         # define a special function for this
         import store.evhand as evhand
+        import store.mas_utils as mas_utils
         import datetime
         fullday = datetime.timedelta(days=1)
         threeday = datetime.timedelta(days=3)
@@ -217,8 +508,8 @@ label v0_7_4(version="v0_7_4"):
         month = datetime.timedelta(days=30)
         year = datetime.timedelta(days=365)
         def _month_adjuster(key, months, span):
-            new_anni_date = add_months(
-                start_of_day(persistent.sessions["first_session"]),
+            new_anni_date = mas_utils.add_months(
+                mas_utils.sod(persistent.sessions["first_session"]),
                 months
             )
             evhand.event_database[key].start_date = new_anni_date
@@ -235,8 +526,8 @@ label v0_7_4(version="v0_7_4"):
         _month_adjuster("anni_5", 60, week)
         _month_adjuster("anni_10", 120, month)
         _month_adjuster("anni_20", 240, year)
-        evhand.event_database["anni_100"].start_date = add_months(
-            start_of_day(persistent.sessions["first_session"]),
+        evhand.event_database["anni_100"].start_date = mas_utils.add_months(
+            mas_utils.sod(persistent.sessions["first_session"]),
             1200
         )
 
@@ -247,6 +538,11 @@ label v0_7_4(version="v0_7_4"):
             evhand.farewell_database[k].unlocked = True
 
         persistent = updateTopicIDs(version)
+
+        # NOTE: this is completel retroactive. Becuase this is a released
+        # version, we must also make this change in 0.8.0 updates
+        for k in updates.topics["v0_7_4"]:
+            mas_eraseTopic(k, persistent.event_database)
 
     return
 
@@ -378,3 +674,49 @@ label v0_3_0(version="v0_3_0"):
 #
 #        del _mas_events_unlocked_v073
 #        del ev_key
+
+
+###############################################################################
+### SUPER LATE scripts
+# these scripts are for doing python things really LATE in the pipeline
+#
+# USAGE:
+# 1. define a label called mas_lupd_v#_#_#
+# 2. Put your update code into there.
+# 3. Push the version number into `persistent._mas_zz_lupd_ex_v` to run it
+#
+# NOTE: none of this code will ever run more than once.
+# NOTE: this code will respect version update chaining, but these are chained
+#   post-version. This means that if a multipel version chain occurs,
+#   the regular labels are executed first, then this (the late-chain) executes.
+#   For example, lets say we have 3 versions: A, B, C
+#   and 2 of these versions have late scripts, B' and C'
+#   
+#   Update order:
+#   1. A
+#   2. B
+#   3. C
+#   4. B'
+#   5. C'
+#
+#   Please make sure your late update scripts are not required before a next
+#   version regular update script.
+
+label mas_lupd_v0_8_3:
+    python:
+        # readjust anniversaries
+        if persistent.sessions:
+            first_sesh = persistent.sessions.get("first_session", None)
+            if first_sesh:
+                store.mas_anni.reset_annis(first_sesh)
+
+    return
+
+
+init 5000 python:
+    for __temp_version in persistent._mas_zz_lupd_ex_v:
+        __lupd_v = "mas_lupd_" + __temp_version
+        if renpy.has_label(__lupd_v):
+            renpy.call_in_new_context(__lupd_v)
+
+    persistent._mas_zz_lupd_ex_v = list()

@@ -490,7 +490,7 @@ screen navigation():
             textbutton _("Help") action Help("README.html")
 
             ## The quit button is banned on iOS and unnecessary on Android.
-            textbutton _("Quit") action Quit(confirm=not main_menu)
+            textbutton _("Quit") action Quit(confirm=_confirm_quit)
 
 
 style navigation_button is gui_button
@@ -618,6 +618,14 @@ screen game_menu_m():
     timer 0.3 action Hide("game_menu_m")
 
 screen game_menu(title, scroll=None):
+
+    # when teh game menu is open, we should disable the hotkeys
+    key "noshift_T" action NullAction()
+    key "noshift_t" action NullAction()
+    key "noshift_M" action NullAction()
+    key "noshift_m" action NullAction()
+    key "noshift_P" action NullAction()
+    key "noshift_p" action NullAction()
 
     # Add the backgrounds.
     if main_menu:
@@ -965,23 +973,14 @@ screen preferences():
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
                     style_prefix "check"
-                    label _("Room Animation")
-                    textbutton _("Disable") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    label _("Graphics")
+                    textbutton _("Disable Animation") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
+
 
                 vbox:
                     style_prefix "check"
                     label _("Gameplay")
-                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
-
-                ## Additional vboxes of type "radio_pref" or "check_pref" can be
-                ## added here, to add additional creator-defined preferences.
-
-            hbox:
-                box_wrap True
-
-                vbox:
-                    style_prefix "check"
-                    label _("Dev")
                     if persistent._mas_unstable_mode:
                         textbutton _("Unstable"):
                             action SetField(persistent, "_mas_unstable_mode", False)
@@ -991,13 +990,114 @@ screen preferences():
                         textbutton _("Unstable"):
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
-                    
+
+                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+
+                ## Additional vboxes of type "radio_pref" or "check_pref" can be
+                ## added here, to add additional creator-defined preferences.
+
 
             null height (4 * gui.pref_spacing)
 
             hbox:
                 style_prefix "slider"
                 box_wrap True
+
+                python:
+                    ### random chatter preprocessing
+                    if mas_randchat_prev != persistent._mas_randchat_freq:
+                        # adjust the randoms if it changed
+                        mas_randchat.adjustRandFreq(
+                            persistent._mas_randchat_freq
+                        )
+
+                    # setup the display string
+                    rc_display = mas_randchat.getRandChatDisp(
+                        persistent._mas_randchat_freq
+                    )
+
+                    # setup previous values
+                    mas_randchat_prev = persistent._mas_randchat_freq
+
+
+                    ### sunrise / sunset preprocessing
+                    # figure out which value is changing (if any)
+                    if mas_suntime.change_state == mas_suntime.RISE_CHANGE:
+                        # we are modifying sunrise
+
+                        if mas_suntime.sunrise > mas_suntime.sunset:
+                            # ensure sunset remains >= than sunrise
+                            mas_suntime.sunset = mas_suntime.sunrise
+
+                        if mas_sunrise_prev == mas_suntime.sunrise:
+                            # if no change since previous, then switch state
+                            mas_suntime.change_state = mas_suntime.NO_CHANGE
+
+                        mas_sunrise_prev = mas_suntime.sunrise
+
+                    elif mas_suntime.change_state == mas_suntime.SET_CHANGE:
+                        # we are modifying sunset
+
+                        if mas_suntime.sunset < mas_suntime.sunrise:
+                            # ensure sunrise remains <= than sunset
+                            mas_suntime.sunrise = mas_suntime.sunset
+
+                        if mas_sunset_prev == mas_suntime.sunset:
+                            # if no change since previous, then switch state
+                            mas_suntime.change_state = mas_suntime.NO_CHANGE
+
+                        mas_sunset_prev = mas_suntime.sunset
+                    else:
+                        # decide if we are modifying sunrise or sunset
+
+                        if mas_sunrise_prev != mas_suntime.sunrise:
+                            mas_suntime.change_state = mas_suntime.RISE_CHANGE
+
+                        elif mas_sunset_prev != mas_suntime.sunset:
+                            mas_suntime.change_state = mas_suntime.SET_CHANGE
+
+                        # set previous values
+                        mas_sunrise_prev = mas_suntime.sunrise
+                        mas_sunset_prev = mas_suntime.sunset
+
+
+                    ## prepreocess display time
+                    persistent._mas_sunrise = mas_suntime.sunrise * 5
+                    persistent._mas_sunset = mas_suntime.sunset * 5
+                    sr_display = mas_cvToDHM(persistent._mas_sunrise)
+                    ss_display = mas_cvToDHM(persistent._mas_sunset)
+
+                vbox:
+
+                    hbox:
+                        label _("Sunrise   ")
+
+                        # display time
+                        label _("[[ " + sr_display + " ]")
+
+                    bar value FieldValue(mas_suntime, "sunrise", range=mas_max_suntime, style="slider")
+
+
+                    hbox:
+                        label _("Sunset   ")
+
+                        # display time
+                        label _("[[ " + ss_display + " ]")
+
+                    bar value FieldValue(mas_suntime, "sunset", range=mas_max_suntime, style="slider")
+
+
+                vbox:
+
+                    hbox:
+                        label _("Random Chatter   ")
+
+                        # display str
+                        label _("[[ " + rc_display + " ]")
+
+                    bar value FieldValue(persistent, "_mas_randchat_freq",
+                    range=3, style="slider")
+
 
                 vbox:
 
@@ -1045,13 +1145,14 @@ screen preferences():
                             action Preference("all mute", "toggle")
                             style "mute_all_button"
 
+
             hbox:
                 textbutton _("Update Version"):
-                    action [SetVariable('check_wait',0), Jump('update_now')]
+                    action Function(renpy.call_in_new_context, 'forced_update_now')
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
-                    action [Jump('import_ddlc_persistent_in_settings')]
+                    action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
 
@@ -1522,11 +1623,13 @@ screen confirm(message, yes_action, no_action):
                     textbutton _("-") action yes_action
                     textbutton _("-") action yes_action
                 else:
-                    textbutton _("Yes") action [SetField(persistent, "_mas_crashed_self", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
+                    textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
                     textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
+
+
 
 
 style confirm_frame is gui_frame
@@ -1557,7 +1660,7 @@ style confirm_button_text is navigation_button_text:
 
 ##Updating screen
 
-screen update_check(ok_action,cancel_action,update_link,check_interval):
+screen update_check(ok_action,cancel_action,mode):
 
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
@@ -1575,16 +1678,22 @@ screen update_check(ok_action,cancel_action,update_link,check_interval):
             yalign .5
             spacing 30
 
-            $latest_version = updater.UpdateVersion(update_link, check_interval=check_interval)
-            if latest_version != None:
+            if mode == 0:
                 label _('An update is now avalable!'):
                     style "confirm_prompt"
                     xalign 0.5
-            elif not timeout:
+
+            elif mode == 1:
+                label _("No update available."):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            elif mode == 2:
                 label _('Checking for updates...'):
                     style "confirm_prompt"
                     xalign 0.5
             else:
+                # otherwise, we assume a timeout
                 label _('Timeout occured while checking for updates. Try again later.'):
                     style "confirm_prompt"
                     xalign 0.5
@@ -1593,11 +1702,11 @@ screen update_check(ok_action,cancel_action,update_link,check_interval):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Install") action [ok_action, SensitiveIf(latest_version)]
+                textbutton _("Install") action [ok_action, SensitiveIf(mode == 0)]
 
                 textbutton _("Cancel") action cancel_action
 
-    timer 10.0 action [SetVariable("timeout",True), renpy.restart_interaction]
+    timer 1.0 action Return("None")
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -1634,10 +1743,11 @@ screen updater:
                     text _("An error has occured:")
                 elif u.state == u.CHECKING:
                     text _("Checking for updates.")
-                elif u.state == u.UPDATE_NOT_AVAILABLE:
-                    text _("Monika After Story is up to date.")
                 elif u.state == u.UPDATE_AVAILABLE:
                     text _("Version [u.version] is available. Do you want to install it?")
+
+                elif u.state == u.UPDATE_NOT_AVAILABLE:
+                    text _("Monika After Story is up to date.")
                 elif u.state == u.PREPARING:
                     text _("Preparing to download the updates.")
                 elif u.state == u.DOWNLOADING:
@@ -1670,6 +1780,7 @@ screen updater:
 
             if u.can_cancel:
                 textbutton _("Cancel") action Return()
+
 
 style updater_button_text is navigation_button_text
 style updater_button is confirm_button
@@ -1979,7 +2090,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
                     textbutton _(nvm_text) action Return(False)
 
-# more generali scrollable menu. This one takes the following params:
+# more general scrollable menu. This one takes the following params:
 # IN:
 #   items - list of items to display in the menu. Each item must be a tuple of
 #       the following format:
@@ -2044,9 +2155,66 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
-# 
+#
 # IN:
 #   timeout - number of seconds to time
 #   timeout_label - label to jump to when timeout
 screen mas_background_timed_jump(timeout, timeout_label):
     timer timeout action Jump(timeout_label)
+
+# MAS restart monika screen
+screen mas_generic_restart:
+    # this will always return True
+    # this has like a be right back button
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "confirm"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+# TODO have a brb feature somehow
+# TODO: that would tie into the knowing how long player is out
+#            label _("Tell Monika that you'll be right back?"):
+            label _("Please restart Monika After Story."):
+                style "confirm_prompt"
+                xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("OK") action Return(True)
+
+
+# generic custom displayabels below:
+init python:
+    class PauseDisplayable(renpy.Displayable):
+        """
+        Pause until click variant of Pause
+        This is because normal pause until click is broken for some reason
+        """
+        import pygame
+
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+
+        def render(self, width, height, st, at):
+            # dont actually render anything
+            return renpy.Render(width, height)
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                return True
+
+            raise renpy.IgnoreEvent()

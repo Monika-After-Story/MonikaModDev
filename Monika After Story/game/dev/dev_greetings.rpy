@@ -14,7 +14,8 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        eventdb=evhand.greeting_database,
+        skipCalendar=True
     )
     del rules
 
@@ -52,6 +53,8 @@ init 5 python:
         eventdb=evhand.greeting_database
     )
     del rules
+
+
 
 label greeting_dev_no_hate:
     m "Oh, hello [player]!"
@@ -101,4 +104,25 @@ label greeting_dev_love:
     m 5a "I'm so happy to see you again."
     m 5a "I love you so much [player]!"
     m 5a "Thanks for all your efforts!"
+    return
+
+
+# Dev Fast greeting
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+    rules.update({"monika wants this first":""})
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_fast",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_fast:
+    m "{fast}Hello!{nw}"
     return

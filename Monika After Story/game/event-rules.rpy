@@ -5,6 +5,7 @@
 
 init -1 python:
     import datetime
+    import store.mas_utils as mas_utils
 
     # special constants for rule type identifiers for the rule dict on Event class
     EV_RULE_RP_SELECTIVE = "rp_selective"
@@ -151,13 +152,13 @@ init -1 python:
                 elif repeat == EV_NUM_RULE_MONTH:
 
                     # use the add_months function to add the required amount of months
-                    new_end_date = add_months(new_end_date,advance_by)
+                    new_end_date = mas_utils.add_months(new_end_date,advance_by)
 
                 # check if the rule is for years
                 elif repeat == EV_NUM_RULE_YEAR:
 
                     # use the add_year function to add the required amount of years
-                    new_end_date = add_years(new_end_date, advance_by)
+                    new_end_date = mas_utils.add_years(new_end_date, advance_by)
 
             # finally we determine the new_start_date by subtracting the delta
             new_start_date = new_end_date - delta

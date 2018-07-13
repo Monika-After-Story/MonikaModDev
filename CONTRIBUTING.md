@@ -119,7 +119,7 @@ Psychology, Society, School, Life, Media,Literature,Games Literature Club, Roman
 
 When writing dialogue always start with m **#X** " and end with".
 
-For **#X** refer to the [cheat sheet](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/MonikaCheatsheetupdate2.jpg) for the numbers and letters.
+For **#X** refer to the [cheat sheet](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/MonikaCheatsheetupdate3.png) for the numbers and letters.
 
 If you want to write more complicated dialogue, visit [Dialogue Coding](https://github.com/Monika-After-Story/MonikaModDev/wiki/Dialogue-Coding) 
 
