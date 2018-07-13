@@ -461,11 +461,11 @@ label mas_scary_story_cleanup:
 
     m 3eua "[story_end_quip]"
     show monika 1dsc
-    $ morning_flag = mas_temp_m_flag
     $ scene_change = True
     $ mas_is_raining = False
     pause 1.0
     hide monika_gloomy_room
+    $ morning_flag = mas_temp_m_flag
     call spaceroom
     stop background fadeout 1.0
 
