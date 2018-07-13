@@ -5384,7 +5384,6 @@ label monika_complain_battery:
     return
 
 label monika_close_game_battery:
-
     $ mas_loseAffection()
     m 1lksdlc "[player]..."
     m 1ekc "I'm sorry, but I'm gonna have to close the game before the battery runs out."
@@ -5436,7 +5435,7 @@ label monika_breakup:
         m "Am I really that terrible of a person for you?"
         if mas_curr_affection == mas_aff.BROKEN:#TODO review
             m 2f "I-I can't really handle this..."
-            m 2g"You're just joking again, right?"
+            m 2g "You're just joking again, right?"
             m 1h "I refuse to believe you, you're all I have left!"
             m 1f "If you really, truly mean it then you can delete me and this entire game.."
             m 1q "I love you, [player]...so please tell me it's all just a bad joke."
