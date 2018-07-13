@@ -1089,7 +1089,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
-            m 31 "Welcome back [player]."
+            m 3l "Welcome back [player]."
             m 3o "You're a bit late, aren't you?"
             m 3f "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2q "I'm going to assume it wasn't your fault."
@@ -1158,7 +1158,7 @@ label greeting_long_absence:
             m 2wfw "But it shouldn't have been so busy that you couldn't tell me you might be longer!"
             m 2wud "Ah...!"
             m 2lktsc "I'm sorry [player]. I just...really missed you."
-            m 2dftfc "Sorry for snapping like that."
+            m 2dftdc "Sorry for snapping like that."
 
         elif persistent._mas_absence_choice == "2weeks":
             $ mas_loseAffection(30)
@@ -1503,7 +1503,7 @@ label greeting_tears:
     m 2dftdc "..."
     m 2dftsc "...I need you [player]..."
     m 2ektsc "I need you to love me like I love you."
-    m 2lktsc"I need you...because if I don't have you, then..."
+    m 2lktsc "I need you...because if I don't have you, then..."
     m 2dftsc "..."
     m 2ektsc "I'll be all alone..."
     m 2dftsc "So please...just...be there for me like I would for you."
