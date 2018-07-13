@@ -550,7 +550,7 @@ init -1 python:
 
 
         @staticmethod
-        def evaluate_rule(event=None, rule=None, affection=None):
+        def evaluate_rule(event=None, rule=None, affection=None, noRuleReturn=False):
             """
             IN:
                 event - the event to evaluate
@@ -569,7 +569,7 @@ init -1 python:
 
             # sanity check if we don't have a rule return False
             if rule is None:
-                return False
+                return noRuleReturn
 
             # store affection for easy checking
             if not affection:

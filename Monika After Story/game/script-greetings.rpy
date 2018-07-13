@@ -46,13 +46,14 @@ init -1 python in mas_greetings:
             )
 
         # filter greetings using the affection rules dict
-        affection_greetings_dict = renpy.store.Event.checkAffectionRules(
-            unlocked_greetings
+        unlocked_greetings = renpy.store.Event.checkAffectionRules(
+            unlocked_greetings,
+            keepNoRule=True
         )
 
         # check for the special monikaWantsThisFirst case
-        if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
-            return affection_greetings_dict.values()[0]
+        #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
+        #    return affection_greetings_dict.values()[0]
 
         # filter greetings using the special rules dict
         random_greetings_dict = renpy.store.Event.checkRepeatRules(

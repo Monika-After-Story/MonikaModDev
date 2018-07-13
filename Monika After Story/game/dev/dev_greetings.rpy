@@ -55,7 +55,6 @@ init 5 python:
     del rules
 
 
-
 label greeting_dev_no_hate:
     m "Oh, hello [player]!"
     m "Don't worry, I know you're just testing my negative affection reactions"

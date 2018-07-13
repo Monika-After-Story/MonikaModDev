@@ -932,7 +932,7 @@ python early:
             return available_events
 
         @staticmethod
-        def _checkAffectionRule(ev):
+        def _checkAffectionRule(ev,keepNoRule=False):
             """
             Checks the given event against its own affection specific rule.
 
@@ -942,11 +942,11 @@ python early:
             RETURNS:
                 True if this event passes its repeat rule, False otherwise
             """
-            return MASAffectionRule.evaluate_rule(ev)
+            return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
 
 
         @staticmethod
-        def checkAffectionRules(events):
+        def checkAffectionRules(events,keepNoRule=False):
             """
             Checks the event dict against their own affection specific rules,
             filters out those Events whose rule check return true. This rule
@@ -956,6 +956,8 @@ python early:
             IN:
                 events - dict of events of the following format:
                     eventlabel: event object
+                keepNoRule - Boolean indicating wheter if it should keep
+                    events that don't have an affection rule defined
 
             RETURNS:
                 A filtered dict containing the events that passed their own rules
@@ -972,7 +974,7 @@ python early:
             for label, event in events.iteritems():
 
                 # check if the event contains a MASAffectionRule and evaluate it
-                if Event._checkAffectionRule(event):
+                if Event._checkAffectionRule(event,keepNoRule=keepNoRule):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
