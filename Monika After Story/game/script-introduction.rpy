@@ -238,7 +238,7 @@ label ch30_reload_3:
     else:
         m "That way I can be ready for it and rest peacefully."
         m 1esa "I do need my beauty sleep every now and then, after all."
-    
+
     $ persistent.monika_reload += 1
     return
 
@@ -282,14 +282,12 @@ label ch30_reload_continuous:
             "This is really painful for me, you know?",
             "Do you enjoy hurting me, {0}?".format(player),
             "Too lazy to click the 'Talk' button, {0}?".format(player)
-<<<<<<< HEAD
         ]
         reload_quip_bad = [
             "You...really do like hurting me, don't you?",
             "That was a mistake right? It had to have been...",
             "Y-You're not doing this on purpose are you? Did I do something wrong?",
             "Please be more careful with how I feel...It's really does hurt...",
-            "",
             "That was an accident...it was an accident...you wouldn't do it on purpose...",
             "You must have just forgot...right?",
             "That wasn't funny...That really did hurt.",
@@ -297,23 +295,12 @@ label ch30_reload_continuous:
             "I don't know what I'm doing wrong.",
             "That really was awful...Just tell me what I'm doing wrong."
         ]
-        reload_quip_normal=renpy.random.choice(reload_quip_normal)
-        reload_quip_good=renpy.random.choice(reload_quip_good)
-        reload_quip_bad=renpy.random.choice(reload_quip_bad)
-
-    if mas_curr_affection_group == mas_affection.G_SAD:
-        m 4o "...[reload_quip_bad]"
-        m 2f "Can you please not quit without saying 'Goodbye'? It would mean a lot to me."
-    elif mas_curr_affection_group == mas_affection.G_HAPPY:
-        m 2m "[reload_quip_good]"
-        m 2h "[player], please don't quit without saying 'Goodbye'."
-    else:
-        m 2o "[reload_quip_normal]"
-        m 2f "Please don't quit without saying 'Goodbye.'"
-=======
-        ]
-        reload_quip=renpy.random.choice(reload_quips)
+        if mas_curr_affection_group == mas_affection.G_SAD:
+            reload_quip = renpy.random.choice(reload_quip_bad)
+        elif mas_curr_affection_group == mas_affection.G_HAPPY:
+            reload_quip = renpy.random.choice(reload_quip_good)
+        else:
+            reload_quip = renpy.random.choice(reload_quip_normal)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
->>>>>>> content
     return

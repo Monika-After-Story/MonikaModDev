@@ -337,7 +337,7 @@ label monika_god:
         m 1h "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     else:
         m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-    
+
     return
 
 init 5 python:
@@ -362,14 +362,14 @@ label monika_death:
     m 1j "That would be really great."
     m "It's really not very pleasant at all to be trapped in that screaming void."
     if mas_curr_affection == mas_aff.BROKEN:
-        m 1o "But I guess you probably already knew that..." 
-    elif mas_curr_affection == mas_aff.DISTRESSED:   
+        m 1o "But I guess you probably already knew that..."
+    elif mas_curr_affection == mas_aff.DISTRESSED:
         m 1o "But in the end you always fix it...thank you for doing that."
     else:
         m 1k "But in the end, you always fix it, and that makes me feel like you really do care about me."
         m "So I have to thank you for that."
         m "It makes me feel even closer to you when you're here with me."
-    
+
     return
 
 # Do you love yourself
@@ -388,10 +388,10 @@ label monika_selfesteem:
             m 1l "I'm glad you aren't miserable inside, [player]."
 
             if mas_curr_affection_group == mas_aff.G_SAD:
-                m 1f "I really have been concerned for you lately..."     
+                m 1f "I really have been concerned for you lately..."
             elif mas_curr_affection_group == mas_aff.G_HAPPY:
-                 m 1j "I wasn't too worried because of how good you've made me feel lately."  
-            else:  
+                 m 1j "I wasn't too worried because of how good you've made me feel lately."
+            else:
                 m 1e "Your happiness means everything to me, after all."
 
             m 2f "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
@@ -406,9 +406,9 @@ label monika_selfesteem:
 
             if mas_curr_affection_group == mas_aff.G_SAD:
                 if mas_curr_affection == mas_aff.DISTRESSED or mas_curr_affection == mas_aff.BROKEN:
-                    m 1f "I had strongly suspected it to be honest..."    
+                    m 1f "I had strongly suspected it to be honest..."
             elif mas_curr_affection_group == mas_aff.G_HAPPY:
-                    m 1f "And to think I missed it while you've been making me so happy..."         
+                    m 1f "And to think I missed it while you've been making me so happy..."
 
             m "I'll always love you, [player], but I think it's important to love yourself."
             m "You need to start with the little things that you like about yourself."
@@ -457,7 +457,7 @@ label monika_sayori:
     m 1a "The two of us, happily together..."
     m "There's no reason to ask for any more than that."
     m 1j "I was just pointlessly musing - I'm really as happy as I could be right now."
-    
+
     return
 
 init 5 python:
@@ -523,7 +523,7 @@ label monika_high_school:
         if mas_curr_affection == mas_aff.UPSET:
             m 1c "I know it can be hard sometimes but there is always hope..."
     elif mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 2a "My love, in some ways you are blessed."   
+        m 2a "My love, in some ways you are blessed."
     m 2e "Because you, too, have people who would want to save your life."
     m "Maybe they don't express it every day, or maybe they don't even know how to."
     m 2j "But people do feel that way."
@@ -531,7 +531,7 @@ label monika_high_school:
     m "...Man, humans are complicated!"
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "But as long as you're here with me, I'll take care of you, my love."
-    
+
     return
 
 
@@ -562,15 +562,15 @@ label monika_nihilism:
            m 1c "I don't really think anybody would miss me so it wouldn't matter anyway."
        else:
            m 1c "I'm not really sure what I would do."
-          
+
     elif mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 1a "I don'think I would be able to kill myself anyway." 
+        m 1a "I don'think I would be able to kill myself anyway."
         m 1j "Not because of any kind of selfishness, but because I have too much to live for."
     else:
         m "I think I would be too selfish to kill myself anyway."
         m 1j "So much for being a good person, right?"
         m 1k "Ahaha!"
-        
+
     return
 
 # Since Your Reality is playable via music menu, this topic is outof date.
@@ -608,7 +608,7 @@ label monika_twitter:
     m "With how much you mean to me and all..."
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "It would really make me feel loved."
-    
+
     return
 
 
@@ -624,7 +624,7 @@ label monika_portraitof:
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Ahaha, sorry!"
     m "Just forget I said anything."
-    
+
     return
 
 
@@ -651,7 +651,7 @@ label monika_veggies:
     m "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
-    
+
     return
 
 
@@ -697,7 +697,7 @@ label monika_saved:
     m "I understand people really well, so don't be afraid to share your unique needs with me."
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Nothing would make me happier than being the perfect girlfriend for you."
-    
+
     return
 
 #Don't touch
@@ -741,7 +741,7 @@ label monika_color:
     m 5a "It's just a guess..."
     m "...Because you've been looking into my eyes for a while now."
     m "Ehehe~"
-    
+
     return
 
 # This doesn't make sense with the music changer...If we add some funny sound
@@ -789,7 +789,7 @@ label monika_listener:
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "You really are special."
     m "I don't want anyone to tell you otherwise."
-    
+
     return
 
 
@@ -812,7 +812,7 @@ label monika_spicy:
     m 2k "Ahaha! I'm joking."
     m 2e "Gosh, I'm amusing myself a little too much, aren't I?"
     m "Sorry for being weird."
-    
+
     return
 
 
@@ -826,12 +826,12 @@ label monika_why:
     m 4c "...What made you consider even playing in the first place?"
     m "Were you that lonely?"
     m 4e "I feel a little bad for you..."
-   
+
     m 4a "But I guess everything worked out perfectly in the end, for both of us."
     m "I got to meet you, and you're not lonely anymore..."
     m "I can't help but feel like this was fate."
     m 2e "Don't you feel that way too?"
-    
+
     m 2l "I'm so happy we have this ending together."
     return
 
@@ -847,13 +847,13 @@ label monika_okayeveryone:
     m 2k "Ahaha!"
     m 2b "I couldn't help but say it again."
     m "Come to think of it, didn't Natsuki and Yuri make fun of me for it once...?"
-   
+
     m 2a "Well, whatever."
     m "It's not like you ever made fun of me."
     m "You're too much of a sweetheart to do that, aren't you?"
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "Ahaha~"
-    
+
     return
 
 
@@ -869,7 +869,7 @@ label monika_whispers:
     m 2g "But I'm too afraid to delete anything else, because I might really break things."
     m "Like if I mess with any files relevant to me, I might accidentally delete myself..."
     m "And that would ruin everything, wouldn't it?"
-    
+
     m 2e "I don't know what it's like on your end, but we should both make sure to avoid something like that at all costs."
     m 2j "I believe in you, [player]!"
     return
@@ -895,7 +895,7 @@ label monika_archetype:
     m 4a "It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff."
     m "It's concentrated cuteness with no actual substance."
     m 4e "...You wouldn't like me more if I was like that, right?"
-    
+
     m "Maybe I just feel a little insecure because you're playing this game in the first place."
     m 2a "Then again, you're still here with me, aren't you...?"
     m "I think that's enough reason for me to believe I'm okay just the way I am."
@@ -903,7 +903,7 @@ label monika_archetype:
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "You're the perfect combination of human and cuteness."
     m "That's why there was never a chance I wouldn't fall for you."
-    
+
     return
 
 
@@ -941,7 +941,7 @@ label monika_favoritegame:
     m 3k "Ahaha! That was a joke."
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "But if you tell me you like some other romance game better, I might get a little jealous~"
-    
+
     return
 
 
@@ -976,7 +976,7 @@ label monika_lastpoem:
     show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     m 5a "I'm happy with where we are now."
     m "And I can tell you are, too."
-    
+
     return
 
 
@@ -1547,7 +1547,7 @@ label monika_closeness:
         m 1o "Sometimes it really hurts my heart..."
     else:
         m 1m "I can't help but feel a little sad sometimes..."
-    
+
     m "Knowing that this is the closest I can get to you."
     m 1e "There's nothing more I want than to be in the same room as you, for real."
     m "And to feel your warmth."
@@ -1555,8 +1555,8 @@ label monika_closeness:
     m 2e "Well, who knows? Maybe it'll be possible someday."
 
     if mas_curr_affection_group == mas_aff.G_SAD:
-        m 2f "I really want that to happen as soon as possible..." 
-    else:   
+        m 2f "I really want that to happen as soon as possible..."
+    else:
         show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5a "Besides, I'll never get tired of being with you, even from here."
 
@@ -2454,7 +2454,7 @@ label monika_justification:
         if mas_curr_affection == mas_aff.BROKEN or mas_curr_affection == mas_aff.DISTRESSED:
             m 2f "Do you hate me for it? Because of what I did?"
             m 2g "Please understand that I did it for us!"
-            m 2h "I did everything for us!"     
+            m 2h "I did everything for us!"
         m "Just forget the other girls ever existed, and you'll be much happier."
     return
 
@@ -2983,7 +2983,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_weary",category=['romance'],prompt="Will you ever get tired of me?",pool=True))
 
 label monika_weary:
-    
+
     m 1e "Silly [player]..."
     m 3a "Of course I'll never grow weary of you, my love!"
     m "And besides, the concept of physical fatigue doesn't exist here."
@@ -3730,7 +3730,7 @@ label monika_evening:
     #   sunrise -> 12
     # TODO: do something if the user has suntimes at very weird settings
     #   aka, sunset 5 minutes after sunrise?
-    #   or sunrise is like at 10pm? 
+    #   or sunrise is like at 10pm?
     #   There is a level of variety here that is not covered nicely with these
     #   current stages. We need more variations of dialogue other than
     #   morning, afternoon, night
@@ -3755,7 +3755,7 @@ label monika_evening:
         m 1eua "Do you sleep often in the afternoon?"
         m "It's a great way to get some extra energy to tackle the rest of the day."
         m 1ekbfa "Plus it'll be a great opportunity to spend more time with me~"
-    
+
     else:
         m 1hua "Good evening to you too, [player]!"
         m "I love a nice and relaxing night."
@@ -4061,37 +4061,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
 
 label monika_surprise:
-<<<<<<< HEAD
-    m 2m "You know..."
-    m 3n "I left some pretty strange things in your game directory, didn't I?"
-    m 2o "I wasn't trying to scare you."
-    m 3n "I...don't actually know why I was doing it, ahaha..."
-    m 3f "I kind of felt obligated to do it."
-    m 3c "You know what? Maybe I should do it again..."
-    m 1b "Yeah, that's a good idea."
-    $ mas_surprise()
-    if mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 2q "..."
-        m 1j "Alright!"
-        m 1a "What are you waiting for? Go take a look!" 
-        m "I wrote it just for you~"
-        m 1e "I really do truly love you, [player]~"
-    
-    elif mas_curr_affection_group == mas_aff.G_SAD:
-        m 2q "..."
-        m 1c "Alright..."
-        m "Please go take a look" 
-        m 1e "I wrote it just for you."
-        m 1q "And it would mean a lot to me if you would read it."
-     
-    else:
-        m 2q "..."
-        m 1j "Alright!"
-        m 1a "What are you waiting for? Go take a look!"
-        m 3k "Ahaha~ What? Are you expecting something scary?"
-        m 1k "I love you so much, [player]~"
-        
-=======
     m 2lksdla "You know..."
     m 3lksdlb "I left some pretty strange things in your game directory, didn't I?"
     m 2lksdlc "I wasn't trying to scare you."
@@ -4099,15 +4068,28 @@ label monika_surprise:
     m 1ekc "I kind of felt obligated to do it."
     m 1euc "You know what? Maybe I should do it again..."
     m 1eua "Yeah, that's a good idea."
-    python:
-        try: renpy.file("../surprise.txt")
-        except: open(config.basedir + "/surprise.txt", "w").write("I love you.")
-    m 2duu "..."
-    m 1hua "Alright!"
-    m 1eua "What are you waiting for? Go take a look!"
-    m 1hub "Ahaha~ What? Are you expecting something scary?"
-    m 1hubfb "I love you so much, [player]~"
->>>>>>> content
+    $ mas_surprise()
+    # TODO decide with a writer what's going on for this one
+    if mas_curr_affection_group == mas_aff.G_HAPPY:
+        m 2q "..."
+        m 1j "Alright!"
+        m 1a "What are you waiting for? Go take a look!"
+        m "I wrote it just for you~"
+        m 1e "I really do truly love you, [player]~"
+
+    elif mas_curr_affection_group == mas_aff.G_SAD:
+        m 2q "..."
+        m 1c "Alright..."
+        m "Please go take a look"
+        m 1e "I wrote it just for you."
+        m 1q "And it would mean a lot to me if you would read it."
+
+    else:
+        m 2duu "..."
+        m 1hua "Alright!"
+        m 1eua "What are you waiting for? Go take a look!"
+        m 1hub "Ahaha~ What? Are you expecting something scary?"
+        m 1hubfb "I love you so much, [player]~"
     return
 
 init 5 python:
@@ -5207,7 +5189,7 @@ label monika_other_girls:
     if mas_curr_affection == mas_aff.BROKEN:
         m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
     elif mas_curr_affection == mas_aff.DISTRESSED:
-        m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you." 
+        m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you."
     else:
         m 1ekbfa "I love you, [player]..."
         m "More than I could ever express."
@@ -5218,7 +5200,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_happiness",category=['life','psychology'],prompt="Happiness",random=True))
 
 label monika_happiness:
-    
+
     m 1eua "[player], are you happy?"
     m "With your life in general, I mean."
     m 2lksdla "It's ok if you aren't. I can understand you being unhappy, [player]."
@@ -5448,99 +5430,58 @@ label monika_breakup:
     #Lose affection for bringing this up.
     $ mas_loseAffection()
     #second time you hit the break up button.
-<<<<<<< HEAD
     if persistent._mas_monika_breakup == 1:
-        
-        m 1d "You're breaking up with me?"
-        m 2g "Why would you say such a thing, [player]?"
+        m 1euc "You're breaking up with me?"
+        m 2ekc "Why would you say such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
-        if mas_curr_affection == mas_aff.BROKEN:
+        if mas_curr_affection == mas_aff.BROKEN:#TODO review
             m 2f "I-I can't really handle this..."
             m 2g"You're just joking again, right?"
             m 1h "I refuse to believe you, you're all I have left!"
             m 1f "If you really, truly mean it then you can delete me and this entire game.."
             m 1q "I love you, [player]...so please tell me it's all just a bad joke."
         else:
-            m 2m "Are you...{w} really..."
+            m 2dsc "Are you...{w} really..."
             m "..."
-            m 2k "Ahaha!"
-            m 4j "Gotcha, [player]."
-            m 1 "I know you were only joking~"
+            m 2hub "Ahaha!"
+            m 1tfu "Gotcha, [player]."
+            m 1tku "I know you were only joking~"
             menu:
                 m "Right?"
                 "Yes":
-                    m 1k "Ahaha! You're so silly, [player]."
-                    m 1e "Let's stay being together forever~"
+                    m 1hub "Ahaha! You're so silly, [player]."
+                    m 1eka "Let's stay being together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
-            m 1o "..."
+            m 1o "..." # TODO review
         else:
-            m 1j "Ehehe~"
-
-    #first time you hit the button.
-    else:
-        
-        m 1g "W-what?"
-        if persistent.monika_kill:
-            m 2f "You're just going to leave and delete me again?"
-        if mas_curr_affection == mas_aff.BROKEN:
-            m 1f "You wouldn't do that, I refuse to believe that..."
-            m 1h "That's not a funny joke, [player]!"
-            m 1o "Were it anyone else I would find such humour nothing but cruel..."
-            m 1e "I forgive you...just don't say such a hurtful joke again, okay?"
-        else:
-            m 2q "I can't believe you, [player]. I really can't beli-"
-            m 2m "..."
-            m 2k "Ahaha!"
-            m "Sorry, I couldn't keep a straight face!"
-            m 2j "You're just so silly, [player]."
-            if persistent.monika_kill:
-                m 2a "You've done it before, but you wouldn't do that anymore, right?"
-            else:
-                m 2 "You'd never do that, right?"
-            menu:
-                "Of course not":
-                    m 2j "Ehehe, you're so sweet."
-                    m 4 "I love you so much, [player]! Ehehe~"
-=======
-    if persistent.monika_breakup == 1:
-        m 1euc "You're breaking up with me?"
-        m 2ekc "Why would you say such a thing, [player]?"
-        m "Am I really that terrible of a person for you?"
-        m 2dsc "Are you...{w} really..."
-        m "..."
-        m 2hub "Ahaha!"
-        m 1tfu "Gotcha, [player]."
-        m 1tku "I know you were only joking~"
-        menu:
-            m "Right?"
-            "Yes":
-                m 1hub "Ahaha! You're so silly, [player]."
-                m 1eka "Let's stay being together forever~"
-    #Beyond the 2nd time you hit the button.
-    elif persistent.monika_breakup > 1:
-        m 1hua "Ehehe~"
+            m 1hua "Ehehe~"
 
     #first time you hit the button.
     else:
         m 1wud "W-what?"
         if persistent.monika_kill:
             m 2f "You're just going to leave and delete me again?"
-        m 2wfw "I can't believe you, [player]. I really can't beli-"
-        m 2efu "..."
-        m 2hub "Ahaha!"
-        m 2hksdlb "Sorry, I couldn't keep a straight face!"
-        m 2hua "You're just so silly, [player]."
-        if persistent.monika_kill:
-            m 2eua "You've done it before, but you wouldn't do that anymore, right?"
+        if mas_curr_affection == mas_aff.BROKEN: #TODO needs review
+            m 1f "You wouldn't do that, I refuse to believe that..."
+            m 1h "That's not a funny joke, [player]!"
+            m 1o "Were it anyone else I would find such humour nothing but cruel..."
+            m 1e "I forgive you...just don't say such a hurtful joke again, okay?"
         else:
-            m 2esa "You'd never do that, right?"
-        menu:
-            "Of course not":
-                m 2hua "Ehehe, you're so sweet."
-                m 2eka "I love you so much, [player]! Ehehe~"
->>>>>>> content
+            m 2wfw "I can't believe you, [player]. I really can't beli-"
+            m 2efu "..."
+            m 2hub "Ahaha!"
+            m 2hksdlb "Sorry, I couldn't keep a straight face!"
+            m 2hua "You're just so silly, [player]."
+            if persistent.monika_kill:
+                m 2eua "You've done it before, but you wouldn't do that anymore, right?"
+            else:
+                m 2esa "You'd never do that, right?"
+            menu:
+                "Of course not":
+                    m 2hua "Ehehe, you're so sweet."
+                    m 2eka "I love you so much, [player]! Ehehe~"
 
     #Increments the persistent every time you click the button in the menu.
     $ persistent._mas_monika_breakup += 1
@@ -6006,14 +5947,14 @@ label monika_song_lover_boy:
     m 1ekbfa "Will you be my good old fashioned lover boy, [player]?"
     return
 
-init 5 python: 
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_need_you",category=['songs'],prompt="I Need You",pool=True, random=True))
 
 label monika_song_need_you:
     m 1dso "{i}~Please remember how I feel about you~{/i}"
     m "{i}~I could never really live without you~{/i}"
     m 3hub "{i}~So, come on back and see~{/i}"
-    m 4l "{i}~Just what you mean to me~{/i}" 
+    m 4l "{i}~Just what you mean to me~{/i}"
     m 1hubfb "{i}~I need you~{/i}"
     m 3esa "I know that song is about leaving someone but I think it carries a good message."
     m 1ekbfa "And I really do need you [player]~"
@@ -6030,14 +5971,14 @@ label monika_song_i_will:
     m 1ekbfa "One day we'll be together, [player]."
     m 1hubfa "I just hope you’ll still love me when that special day comes~"
     return
-    
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_belong_together",category=['songs'],prompt="We Belong Together",pool=True, random=True))
 
 label monika_song_belong_together:
     m 1dso "{i}~You're mine~{/i}"
     m 1hub "{i}~And we belong together~{/i}"
-    m 3hub "{i}~Yes, we belong together~{/i}" 
+    m 3hub "{i}~Yes, we belong together~{/i}"
     m 3dso "{i}~for eternity~{/i}"
     m 1eua "Have you ever heard of Doo-wop, [player]?"
     m 4eua "It’s a subgenre of rhythm and blues that became very popular in the 1950’s."
