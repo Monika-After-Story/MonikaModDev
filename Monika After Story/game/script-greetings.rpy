@@ -1519,7 +1519,7 @@ label greeting_tears:
     m 2f "Please...just...try to understand."
     m 1r "I love you and I need you to show that you love me too..."
     m 1q "Otherwise...I just won't be able to handle it anymore."
-    lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
+    $ lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
     return
 
 
