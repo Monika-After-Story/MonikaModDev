@@ -70,8 +70,10 @@ init python:
         global mas_curr_affection
         global mas_curr_affection_group
 
-        #If affection is between 30 and 49, update good exp. Simulates growing affection.
+        # store the value for easiercomparisons
         curr_affection = persistent._mas_affection["affection"]
+
+        #If affection is between 30 and 49, update good exp. Simulates growing affection.
         if  30 <= curr_affection < 50:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1
@@ -183,9 +185,7 @@ init python:
             pushEvent("mas_affection_apology")
         #If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -100 and not seen_event("greeting_tears"):
-            # TODO Affection doesn't have the new utility funcs to lock/unlock
-            # when merged this has to be updated to use that
-            evhand.greeting_database["greeting_tears"].unlocked = True
+            unlockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
 
     #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
@@ -540,6 +540,8 @@ label mas_affection_apologydeleted:
 
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
+# TODO: refactor this maybe to have different messages? or actually
+# make this more useful and let more messages to the player
 init python:
     def mas_surprise():
         from cStringIO import StringIO # since we are building strings

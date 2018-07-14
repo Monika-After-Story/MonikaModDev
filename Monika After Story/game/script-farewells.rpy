@@ -313,12 +313,11 @@ label bye_prompt_sleep:
             "Sorry, I'm really tired.":
                 m 1eka "Aww, that's okay."
                 m 1hua "Good night, [player]."
-
-# TODO: probably a shocked sprite and additonal dialgoue, also potentially
-# tie this with affection later
-#            "No.":
-#                m 2dsd "..."
-#                m "Fine."
+# TODO: now that is tied we may also add more dialogue?
+            "No.":
+                $ mas_loseAffection()
+                m 2dsd "..."
+                m "Fine."
     else:
         # otheerwise
         m 1eua "Alright, [player]."

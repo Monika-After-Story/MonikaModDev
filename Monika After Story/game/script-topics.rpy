@@ -5275,7 +5275,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
 
 label monika_marriage:
-
     $ mas_gainAffection()
     m 2wubsw "M-marriage?"
     if isFuture(evhand.event_database['anni_3']):

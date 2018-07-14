@@ -492,7 +492,6 @@ label greeting_surprised:
      m 1eua "How've you been?"
      return
 
-# TODO Monika Monday Morning, an idea we had, this one is just a placeholder, writers could do it 1000 times better
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12)))
@@ -1428,13 +1427,13 @@ label greeting_hairdown:
             $ persistent._mas_likes_hairdown = True
 
             # maybe 6sub is better?
-            # TODO: affection raise
+            $ mas_gainAffection()
             m 6sub "Really?" # honto?!
             m 2hua "I'm so glad!" # yokatta.."
             m 1eua "Just ask me if you want to see my ponytail again, okay?"
 
         "No":
-            # TODO: affection lowered?
+            # TODO: affection lowered? need to decide
             m 1ekc "Oh..."
             m 1lksdlc "..."
             m 1lksdld "I'll put it back up for you, then."
@@ -1520,9 +1519,7 @@ label greeting_tears:
     m 2f "Please...just...try to understand."
     m 1r "I love you and I need you to show that you love me too..."
     m 1q "Otherwise...I just won't be able to handle it anymore."
-    # TODO Affection doesn't have the new utility funcs to lock/unlock
-    # when merged this has to be updated to use that
-    $ evhand.greeting_database["greeting_tears"].unlocked = False
+    lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
     return
 
 
