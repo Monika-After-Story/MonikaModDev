@@ -4670,9 +4670,9 @@ label monika_orchestra:
                  m 1hub "Wow, I've always wanted to try the harmonik--"
                  m 3eub "...Oh!"
                  m 1eka "Aww [player], did you do that for me?"
-                 m 1hub "That's {i}sooo{/i} adorable!"
-                 m 5eubfu "And just so you know, you can {i}play{/i} with me anytime you like..."
-                 m 5eubfb "Ehehe~"
+                 m "That's {i}sooo{/i} adorable!"
+                 m 2rksdla "And just so you know, you can {i}play{/i} with me anytime you like..."
+                 m 2hubfa "Ehehe~"
                  $ persistent.instrument = True  
             else:
                  m 1a "Wow, I've always wanted to try the [tempinstrument] out!"
