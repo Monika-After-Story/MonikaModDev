@@ -183,7 +183,6 @@ init 5 python:
     )
 
 label monika_ptod_tip002:
-    # TODO: need to mention dynamic typing somewhere
     # [show this once]
     # In most programming languages, each piece of data that can be chnaged
     # or modified by a program has a _type_
@@ -275,8 +274,8 @@ label monika_ptod_tip003:
     #
     # [Show this once]
     # I think we've covered enough for today
-    # Thanks for listening!
     # [end]
+    # Thanks for listening!
     #
     return
 
@@ -288,12 +287,28 @@ init 5 python:
             eventlabel="monika_ptod_tip004",
             category=["python tips"],
             prompt="What does python code look like?",
-            conditional="store.mas_ptod.has_day_past(1)",
+            conditional="store.mas_ptod.has_day_past(3)",
             action=EV_ACT_POOL
         )
     )
 
 label monika_ptod_tip004:
+    # PYTHON SYNTAX
+    # TODO, actually ths should be a pre-req for block-based code,
+    # as this will talk about indentaiton. However, we could probably
+    # have this after the first wave of lessons
+    #
+    # Python code is incredibly simple to write. 
+
+    $ store.mas_ptod.rst_cn()
+    $ local_ctx = dict()
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    # [Show this once]
+    # Hopefully 
+    # [end]
+    #
     # Oh well this may be a bit hard to explain here but I'll do my best for you [player]
     # The first thing you need to know is that any line starting with a # is going to
     # be ignored and you can write anything on that line
@@ -301,6 +316,8 @@ label monika_ptod_tip004:
     # it's a good practice to comment your code so you don't forget later what it was supposed to do!
     # TODO unfinished and probably will split it in more than just one, also I know I should call it
     # python syntax but I'm making it non programmers friendly
+    #
+    # TODO: change the prompt to Python Syntax after this has been seen once
     return
 
 ###############################################################################
@@ -411,8 +428,17 @@ label monika_ptod_tip006:
     # Python is able to find the symbol in the lookup table and won't give us
     # an error.
     #
-    # Whew! That was a mouthful!
+    # The variables we created are all _integer_ types. We didn't have to 
+    # explicity say that those variables were integers because Python does
+    # dynamic typing. This means that the Python interpreter inferres the type
+    # of a variable based on the data that you are storing with it.
+    # This is unlike other languages like C / Java which require that types
+    # are defined with the variable. This also enables variables in python
+    # to change types during execution, although this generally isn't a good
+    # idea as it can make the resulting code confusing for others to read.
+    #
     # [Show this once]
+    # Whew! That was a mouthful!
     menu:
         m "Did you understand all that?"
         "Yes!":
@@ -431,7 +457,9 @@ label monika_ptod_tip006:
             pass
     # [End]
     #
+    # [Show this once]
     # I think that's enough Python for today.
+    # [End]
     # Thanks for listening!
     $ store.mas_ptod.ex_cn()
     hide screen mas_py_console_teaching
