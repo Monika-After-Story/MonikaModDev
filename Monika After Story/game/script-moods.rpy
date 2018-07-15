@@ -281,7 +281,8 @@ label mas_mood_angry:
     
 init 5 python:
  patch-2
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=
+    [store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_scared:
     m 1g "[player], are you alright?"
