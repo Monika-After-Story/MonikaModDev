@@ -338,7 +338,6 @@ label mas_mood_inadequate:
     m 1eka "Please don't forget that, okay?"
     m 1ekbfa "I love you, [player]~" 
     return 
-content
     
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="lucky",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
