@@ -342,7 +342,7 @@ label mas_mood_injured:
             menu:
                 "Yes...":
                     m 1g "... oh... my..."
-                    m 1q"..............."
+                    m 1q "..............."
                     m 1m "Sorry to hear that, and again sorry for the silence just now, its just..."
                     m 2o "I really hate knowing you're so badly hurt like that."
                     m 2e "At least you're recovering, right? I wish I could be right there by your side so I could nurse you back to health."
