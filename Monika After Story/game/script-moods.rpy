@@ -313,7 +313,7 @@ label mas_mood_injured:
             m 1l "Don't scare me like that [player]!"
             m 1e "I'm so glad you're alright but still..."
             m 1f "I hope it really isn't too bad and you're not just trying not to worry me."
-            m 1l "Or maybe I'm just too worred about you~"
+            m 1l "Or maybe I'm just too worried about you~"
             m 5 "Whatever it is, I hope it gets all better soon."
             m "I'd kiss it better but since it's just such a small thing, I'm sure you can manage without it ehehe~"
             m "I love you, [player]."
