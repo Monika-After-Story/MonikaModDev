@@ -137,6 +137,11 @@ init python:
         if not persistent._mas_affection_goodexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] += amount
+
+            # it can't get higher than 1 million
+            if persistent._mas_affection["affection"] > 1000000:
+                persistet.mas_affection["affection"] = 1000000
+
             #Updates the experience levels if necessary.
             mas_updateAffectionExp()
 
@@ -149,8 +154,14 @@ init python:
         if not persistent._mas_affection_badexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] -= amount
+
+            # it can't get lower than -1 million
+            if persistent._mas_affection["affection"] < -1000000:
+                persistet.mas_affection["affection"] = -1000000
+
             #Updates the experience levels if necessary.
             mas_updateAffectionExp()
+
 
     def mas_setAffection(
             amount=persistent._mas_affection["affection"]
