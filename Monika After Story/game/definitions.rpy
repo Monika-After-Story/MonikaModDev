@@ -5,6 +5,10 @@ define config.developer = False #This is the flag for Developer tools
 python early:
     import singleton
     me = singleton.SingleInstance()
+    # define the zorders
+    MAS_MONIKA_Z = 10
+    MAS_BACKGROUND_Z =5
+
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
@@ -85,6 +89,13 @@ python early:
     #       NOTE: refer to RULES documentation in event-rules
     #       NOTE: if you set this to None, you will break this forever
     #       (Default: empty dict)
+    #   last_seen - datetime of the last time this topic has been seen
+    #       (Default: None)
+    #   years - list of years that this event repeats in.
+    #       NOTE: requires start_date param to be not None
+    #       NOTE: If this is given, the year part of start_date and end_date
+    #           will be IGNORED
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -103,7 +114,9 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-            "rules":14
+            "rules":14,
+            "last_seen":15,
+            "years":16
         }
 
         # name constants
@@ -137,7 +150,9 @@ python early:
                 end_date=None,
                 unlock_date=None,
                 diary_entry=None,
-                rules=dict()
+                rules=dict(),
+                last_seen=None,
+                years=None
             ):
 
             # setting up defaults
@@ -186,7 +201,9 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                rules
+                rules,
+                last_seen,
+                years
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -233,6 +250,7 @@ python early:
                     self.category = category
                     self.diary_entry = diary_entry
                     self.rules = rules
+                    self.years = years
 
             # new items are added appropriately
             else:
@@ -413,7 +431,8 @@ python early:
                 random=None,
                 pool=None,
                 action=None,
-                seen=None):
+                seen=None,
+                excl_cat=None):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -443,15 +462,24 @@ python early:
             if category is not None:
                 # USE OR LOGIC
                 if category[0]:
-                    if len(set(category[1]).intersection(set(event.category))) == 0:
+                    if not event.category or len(set(category[1]).intersection(set(event.category))) == 0:
                         return False
 
                 # USE AND logic
-                elif len(set(category[1]).intersection(set(event.category))) != len(category[1]):
+                elif not event.category or len(set(category[1]).intersection(set(event.category))) != len(category[1]):
                     return False
 
             if action is not None and event.action not in action:
                 return False
+
+            if excl_cat is not None:
+                # list is empty and event.category isn't
+                if not excl_cat and event.category:
+                    return False
+
+                # check if they have categories in common
+                if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
+                    return False
 
             # we've passed all the filtering rules somehow
             return True
@@ -465,7 +493,8 @@ python early:
                 random=None,
                 pool=None,
                 action=None,
-                seen=None):
+                seen=None,
+                excl_cat=None):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -497,6 +526,9 @@ python early:
             #   seen - boolean value to match renpy.seen_label
             #       (True means include seen, False means dont include seen)
             #       (Default: None)
+            #   excl_cat - list of categories to exclude, if given an empty
+            #       list it filters out events that have a non-None category
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -513,7 +545,8 @@ python early:
                     and random is None
                     and pool is None
                     and action is None
-                    and seen is None)):
+                    and seen is None
+                    and excl_cat is None)):
                 return events
 
             # copy check
@@ -536,7 +569,8 @@ python early:
             for k,v in events.iteritems():
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
-                        random=random, pool=pool, action=action, seen=seen):
+                        random=random, pool=pool, action=action, seen=seen,
+                        excl_cat=excl_cat):
 
                     filt_ev_dict[k] = v
 
@@ -657,41 +691,72 @@ python early:
             current_time = datetime.datetime.now()
             # insertion sort
             for ev in ev_list:
-                event_time = True
+
+                e = events[ev]
 
                 #If the event has no time-dependence, don't check it
-                if (events[ev].start_date is None) and (events[ev].end_date is None):
-                    event_time = False
+                if (e.start_date is None) and (e.end_date is None):
+                    continue
 
                 #Calendar must be based on a date
-                if events[ev].start_date is not None:
-                    if events[ev].start_date > current_time:
-                        event_time = False
+                if e.start_date is not None:
+                    if e.start_date > current_time:
+                        continue
 
-                if events[ev].end_date is not None:
-                    if events[ev].end_date <= current_time:
-                        event_time = False
+                if e.end_date is not None:
+                    if e.end_date <= current_time:
+                        continue
 
-                if events[ev].conditional is not None:
-                    if not eval(events[ev].conditional):
-                        event_time = False
+                if e.conditional is not None:
+                    if not eval(e.conditional):
+                        continue
 
 
-                if event_time and events[ev].action is not None:
+                if e.action is not None:
                     #Perform the event's action
-                    if events[ev].action == EV_ACT_PUSH:
+                    if e.action == EV_ACT_PUSH:
                         pushEvent(ev)
-                    elif events[ev].action == EV_ACT_QUEUE:
+                    elif e.action == EV_ACT_QUEUE:
                         queueEvent(ev)
-                    elif events[ev].action == EV_ACT_UNLOCK:
-                        events[ev].unlocked = True
-                        events[ev].unlock_date = current_time
-                    elif events[ev].action == EV_ACT_RANDOM:
-                        events[ev].random = True
-                    elif events[ev].action == EV_ACT_POOL:
-                        events[ev].pool = True
+                    elif e.action == EV_ACT_UNLOCK:
+                        e.unlocked = True
+                        e.unlock_date = current_time
+                    elif e.action == EV_ACT_RANDOM:
+                        e.random = True
+                    elif e.action == EV_ACT_POOL:
+                        e.pool = True
 
-                    #Clear the conditional
+                    # Check if we have a years property
+                    if e.years is not None:
+
+                        # if it's an empty list
+                        if len(e.years) == 0:
+
+                            # get event ready for next year
+                            e.start_date = store.mas_utils.add_years(e.start_date, 1)
+                            e.end_date = store.mas_utils.add_years(e.end_date, 1)
+                            continue
+
+                        # if it's not empty, get all the years that are in the future
+                        new_years = [year for year in e.years if year > e.start_date.year]
+
+                        # if we have possible new years
+                        if len(new_years) > 0:
+                            # sort them to ensure we get the nearest one
+                            new_years.sort()
+
+                            # pick it
+                            new_year = new_years[0]
+
+                            # get the difference
+                            diff = new_year - e.start_date.year
+
+                            # update event for the year it should repeat
+                            e.start_date = store.mas_utils.add_years(e.start_date, diff)
+                            e.end_date = store.mas_utils.add_years(e.end_date, diff)
+                            continue
+
+                    # Clear the conditional since the event shouldn't repeat
                     events[ev].conditional = "False"
 
             return events
@@ -866,6 +931,60 @@ python early:
             # return the available events dict
             return available_events
 
+        @staticmethod
+        def _checkAffectionRule(ev,keepNoRule=False):
+            """
+            Checks the given event against its own affection specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
+
+
+        @staticmethod
+        def checkAffectionRules(events,keepNoRule=False):
+            """
+            Checks the event dict against their own affection specific rules,
+            filters out those Events whose rule check return true. This rule
+            checks if current affection is inside the specified range contained
+            on the rule
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                keepNoRule - Boolean indicating wheter if it should keep
+                    events that don't have an affection rule defined
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASAffectionRule and evaluate it
+                if Event._checkAffectionRule(event,keepNoRule=keepNoRule):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
 
 # init -1 python:
     # this should be in the EARLY block
@@ -898,8 +1017,8 @@ python early:
                 4 - scroll up
                 5 - scroll down
             _button_down - pygame mouse button event type to activate button
-                MOUSEBUTTONDOWN (Default)
-                MOUSEBUTTONUP
+                MOUSEBUTTONUP (Default)
+                MOUSEBUTTONDOWN
         """
         import pygame
 
@@ -981,7 +1100,7 @@ python early:
             self.disabled = False
             self.hovered = False
             self._button_click = 1
-            self._button_down = pygame.MOUSEBUTTONDOWN
+            self._button_down = pygame.MOUSEBUTTONUP
 
             # the states of a button
             self._button_states = {
@@ -1052,37 +1171,6 @@ python early:
                     [1]: height
             """
             return (self.width, self.height)
-
-
-        def ground(self):
-            """
-            Grounds (unhovers) this button. This changes the internal state,
-            so its preferable to use this over setting the hovered property
-            directly
-
-            NOTE: If this button is disabled (and not enable_when_disabled),
-            this will do NOTHING
-            """
-            if not self.disabled or self.enable_when_disabled:
-                self.hovered = False
-
-                if self.disabled:
-                    self._state = self._STATE_DISABLED
-                else:
-                    self._state = self._STATE_IDLE
-
-
-        def hover(self):
-            """
-            Hovers this button. This changes the internal state, so its
-            preferable to use this over setting the hovered property directly
-
-            NOTE: IF this button is disabled (and not enable_when_disabled),
-            this will do NOTHING
-            """
-            if not self.disabled or self.enable_when_disabled:
-                self.hovered = True
-                self._state = self._STATE_HOVER
 
 
         def ground(self):
@@ -1650,8 +1738,8 @@ init -1 python in _mas_root:
 
         # chess
         renpy.game.persistent._mas_chess_stats = {
-            "wins": 0, 
-            "losses": 0, 
+            "wins": 0,
+            "losses": 0,
             "draws": 0
         }
         renpy.game.persistent._mas_chess_quicksave = ""
@@ -1674,8 +1762,9 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_piano_keymaps = dict()
 
 
-init -1 python in mas_utils:
+init -100 python in mas_utils:
     # utility functions for other stores.
+    import datetime
 
     def tryparseint(value, default=0):
         """
@@ -1694,6 +1783,114 @@ init -1 python in mas_utils:
             return int(value)
         except:
             return default
+
+
+    ### date adjusting functions
+    def add_years(initial_date, years):
+        """
+        ASSUMES:
+            initial_date as datetime
+            years as an int
+
+        IN:
+            initial_date: the date to add years to
+            years : the number of years to add
+
+        RETURNS:
+            the date with the years added, if it's feb 29th it goes to mar 1st,
+            if feb 29 doesn't exists in the new year
+        """
+        try:
+
+            # Simply add the years using replace
+            return initial_date.replace(year=initial_date.year + years)
+        except ValueError:
+
+            # We handle the only exception feb 29
+            return  initial_date + (datetime.date(initial_date.year + years, 1, 1)
+                                - datetime.date(initial_date.year, 1, 1))
+
+
+    #Takes a datetime object and add a number of months
+    #Handles the case where the new month doesn't have that day
+    def add_months(starting_date,months):
+        old_month=starting_date.month
+        old_year=starting_date.year
+        old_day=starting_date.day
+
+        # get the total of months
+        total_months = old_month + months
+
+        # get the new month based on date
+        new_month = total_months % 12
+
+        # handle december specially
+        new_month = 12 if new_month == 0 else new_month
+
+        # get the new year
+        new_year = old_year + int(total_months / 12)
+        if new_month == 12:
+            new_year -= 1
+
+        #Try adding a month, if that doesn't work (there aren't enough days in the month)
+        #keep subtracting days till it works.
+        date_worked=False
+        reduce_days=0
+        while reduce_days<=3 and not date_worked:
+            try:
+                new_date = starting_date.replace(year=new_year,month=new_month,day=old_day-reduce_days)
+                date_worked = True
+            except ValueError:
+                reduce_days+=1
+
+        if not date_worked:
+            raise ValueError('Adding months failed')
+
+        return new_date
+
+    #Takes a datetime object and returns a new datetime with the same date
+    #at 3 AM
+    # START-OF-DAY
+    def sod(starting_date):
+        return am3(starting_date)
+
+
+    def mdnt(starting_date):
+        """
+        Takes a datetime object and returns a new datetime with the same date
+        at midnight
+
+        IN:
+            starting_date - date to change
+
+        RETURNS:
+            starting_date but at midnight
+        """
+        return starting_date.replace(
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+
+
+    def am3(_datetime):
+        """
+        Takes a datetime object and returns a new datetime with the same date
+        at 3 am.
+
+        IN:
+            _datetime - datetime to change
+
+        RETURNS:
+            _datetime but at 3am
+        """
+        return _datetime.replace(
+            hour=3,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
 
 
 
@@ -1759,6 +1956,38 @@ init -1 python:
             is_file = False
 
         return is_file
+
+
+    def mas_cvToHM(mins):
+        """
+        Converts the given minutes into hour / minutes
+
+        IN:
+            mins - number of minutes
+
+        RETURNS:
+            tuple of the following format:
+                [0] - hours
+                [1] - minutes
+        """
+        return (int(mins / 60), int(mins % 60))
+
+
+    def mas_cvToDHM(mins):
+        """
+        Converts the given minutes into a displayable hour / minutes
+        HH:MM
+        NOTE: 24 hour format only
+
+        IN:
+            mins - number of minutes
+
+        RETURNS:
+            string time perfect for displaying
+        """
+        s_hour, s_min = mas_cvToHM(mins)
+        return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
+
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
@@ -1858,6 +2087,10 @@ define audio.closet_open = "sfx/closet-open.ogg"
 define audio.closet_close = "sfx/closet-close.ogg"
 define audio.page_turn = "sfx/pageflip.ogg"
 define audio.fall = "sfx/fall.ogg"
+
+# custom audio
+# big thanks to sebastianN01 for the rain sounds
+define audio.rain = "mod_assets/sounds/amb/rain_2.ogg"
 
 # Backgrounds
 image black = "#000000"
@@ -2949,6 +3182,7 @@ default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
 default persistent.has_merged = False
+default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
 default anticheat = 0
@@ -2961,7 +3195,7 @@ default faint_effect = None
 
 
 default s_name = "Sayori"
-default m_name = "Monika"
+default m_name = persistent._mas_monika_nickname
 default n_name = "Natsuki"
 default y_name = "Yuri"
 
@@ -3026,7 +3260,7 @@ default persistent.greeting_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
-default persistent._mas_crashed_self = True # always assume crash unless player clicks quit
+default persistent._mas_game_crashed = False
 default persistent.seen_monika_in_room = False
 default persistent.ever_won = {'pong':False,'chess':False,'hangman':False,'piano':False}
 default persistent.game_unlocks = {'pong':True,'chess':False,'hangman':False,'piano':False}
@@ -3034,11 +3268,45 @@ default persistent.sessions={'last_session_end':None,'current_session_start':Non
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
+default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":-1,"apologyflag":False}
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
-default persistent._mas_monika_repeated_herself = False
+#default persistent._mas_monika_repeated_herself = False
 default persistent._mas_player_bday = None
-define mas_monika_repeated = False
+default persistent._mas_first_calendar_check = False
+
+# rain
+default persistent._mas_likes_rain = False
+define mas_is_raining = False
+
+# clothes
+default persistent._mas_monika_clothes = "def"
+default persistent._mas_monika_hair = "def"
+default persistent._mas_likes_hairdown = False
+default persistent._mas_hair_changed = False
+
+# times
+# they are stored in minutes so we can use bar nicely
+default persistent._mas_sunrise = 6 * 60
+default persistent._mas_sunset = 18 * 60
+
+# 24 * 60 minutes, divided into chunks of 5
+define mas_max_suntime = int((24 * 60) / 5) - 1
+define mas_sunrise_prev = persistent._mas_sunrise
+define mas_sunset_prev = persistent._mas_sunset
+define mas_suntime.NO_CHANGE = 0
+define mas_suntime.RISE_CHANGE = 1
+define mas_suntime.SET_CHANGE = 2
+define mas_suntime.change_state = mas_suntime.NO_CHANGE
+define mas_suntime.modifier = 5 # modifier for chunking the time
+
+# these 2 are our internal represenations of the suntimes in 5 minute
+# chunks
+define mas_suntime.sunrise = int(persistent._mas_sunrise / 5)
+define mas_suntime.sunset = int(persistent._mas_sunset / 5)
+
+define mas_checked_update = False
+#define mas_monika_repeated = False
 define random_seen_limit = 30
 define times.REST_TIME = 6*3600
 define times.FULL_XP_AWAY_TIME = 24*3600
@@ -3073,6 +3341,90 @@ default boy = "boy"
 default guy = "guy"
 default him = "him"
 default himself = "himself"
+
+
+# default is NORMAL
+default persistent._mas_randchat_freq = 1
+define mas_randchat_prev = persistent._mas_randchat_freq
+init 1 python in mas_randchat:
+    ### random chatter frequencies
+
+    # these numbers are the low end of how many seconds to wait between
+    # random topics
+    NORMAL = 20
+    OFTEN = 4
+    RARE = 36
+    NEVER = 0
+
+    # this is the added to the low end to get the upper end of seconds
+    SPAN = 24
+
+    ## to better work with the sliders, we will create a range from 0 to 3
+    # (inclusive)
+    # these values will be utilized in script-ch30 as well as screens
+    SLIDER_MAP = {
+        0: OFTEN,
+        1: NORMAL,
+        2: RARE,
+        3: NEVER
+    }
+
+    ## slider map for displaying
+    SLIDER_MAP_DISP = {
+        0: "Often",
+        1: "Normal",
+        2: "Less Often",
+        3: "Never"
+    }
+
+    # current frequency times
+    # also default to NORMAL, will get recaluated in reset
+    rand_low = NORMAL
+    rand_high = NORMAL + SPAN
+
+    def adjustRandFreq(slider_value):
+        """
+        Properly adjusts the random limits given the slider value
+
+        IN:
+            slider_value - slider value given from the slider
+                Should be between 0 - 3
+        """
+        slider_setting = SLIDER_MAP.get(slider_value, 1)
+
+        # otherwise set up the times
+        # globalize
+        global rand_low
+        global rand_high
+
+        rand_low = slider_setting
+        rand_high = slider_setting + SPAN
+        renpy.game.persistent._mas_randchat_freq = slider_value
+
+
+    def getRandChatDisp(slider_value):
+        """
+        Retrieves the random chatter display string using the given slider
+        value
+
+        IN:
+            slider_value - slider value given from the slider
+
+        RETURNS:
+            displayable string that reprsents the current random chatter
+            setting
+        """
+        randchat_disp = SLIDER_MAP_DISP.get(slider_value, None)
+
+        if slider_value is None:
+            return "Never"
+
+        return randchat_disp
+
+
+# stores that need to be globally available
+init 4 python:
+    import store.mas_randchat as mas_randchat
 
 return
 
@@ -3118,3 +3470,6 @@ label set_gender:
         $ him = "them"
         $ himself = "themselves"
     return
+
+style jpn_text:
+    font "mod_assets/font/mplus-2p-regular.ttf"

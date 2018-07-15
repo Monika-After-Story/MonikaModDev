@@ -235,8 +235,8 @@
 
 label game_pong:
     hide screen keylistener
-    m 1a "You wanna play a game of Pong? Okay!"
-#    m 1b "I'll beat you for sure this time!" # this line is useless
+    m 1eua "You wanna play a game of Pong? Okay!"
+#    m 1b "I'll beat you for sure this time!" # this line is useless #Why's the line here then blyat
     call demo_minigame_pong from _call_demo_minigame_pong
     return
 
@@ -332,17 +332,17 @@ init -1 python in mas_pong:
 
 # dialogue shown right when monika wins
 label mas_pong_dlg_winner:
-    m 1j "I win~!"
+    m 1hua "I win~!"
     return
 
 # end dialogue shown when monika is the pong winner
 label mas_pong_dlg_winner_end:
-    m 4e "I can't really get excited for a game this simple..."
-    m 1a "At least we can still hang out with each other."
-    m 1k "Ahaha!"
-    m 1b "Thanks for letting me win, [player]."
-    m 1a "Only elementary schoolers seriously lose at Pong, right?"
-    m 1j "Ehehe~"   
+    m 4tku "I can't really get excited for a game this simple..."
+    m 1eua "At least we can still hang out with each other."
+    m 1hub "Ahaha!"
+    m 1eua "Thanks for letting me win, [player]."
+    m 1tku "Only elementary schoolers seriously lose at Pong, right?"
+    m 1hua "Ehehe~"   
     return
 
 # quick dialogue shown when monika is the pong winner
@@ -352,18 +352,18 @@ label mas_pong_dlg_winner_fast:
 
 # dialogtue shown right when monika loses
 label mas_pong_dlg_loser:
-    m 1a "You won! Congratulations."
+    m 1hub "You won! Congratulations."
     return
 
 # end dialogue shown when monka is the pong loser
 label mas_pong_dlg_loser_end:
-    m 1d "Wow, I was actually trying that time."
-    m 1a "You must have really practiced at Pong to get so good."
-    m "Is that something for you to be proud of?"
-    m 1j "I guess you wanted to impress me, [player]~"   
+    m 1wuo "Wow, I was actually trying that time."
+    m 1eua "You must have really practiced at Pong to get so good."
+    m 1tku "Is that something for you to be proud of?"
+    m 1hua "I guess you wanted to impress me, [player]~"   
     return
 
 # quick dialogue shown when monika is the pong loser
 label mas_pong_dlg_loser_fast:
-    m 1e "I'll beat you next time, [player]."
+    m 1tfu "I'll beat you next time, [player]."
     return

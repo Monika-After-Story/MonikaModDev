@@ -3,9 +3,16 @@ default persistent.tried_skip = None
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
-define allow_dialogue = True
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
+
+init -1 python in mas_globals:
+    # global that are not actually globals.
+
+    # True means we are in the dialogue workflow. False means not
+    dlg_workflow = False
+
+
 
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
@@ -70,13 +77,33 @@ image ut_slash:
     0.1
 
 
-
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
 image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None,image="mod_assets/window_1_fallback.png")
 image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
 image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
 image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
+
+# big thanks to sebastianN01 for the rain art!
+image rain_mask_left = Movie(
+    channel="window_5",
+    play="mod_assets/window_5.webm",
+    mask=None,
+    image="mod_assets/window_5_fallback.png"
+)
+image rain_mask_right = Movie(
+    channel="window_6",
+    play="mod_assets/window_6.webm",
+    mask=None,
+    image="mod_assets/window_6_fallback.png"
+)
+
+# spaceroom window positions
+transform spaceroom_window_left:
+    size (320, 180) pos (30, 200)
+
+transform spaceroom_window_right:
+    size (320, 180) pos (935, 200)
 
 init python:
 
@@ -88,6 +115,7 @@ init python:
     import re
     import store.songs as songs
     import store.hkb_button as hkb_button
+    import store.mas_globals as mas_globals
     therapist = eliza.eliza()
     process_list = []
     currentuser = None # start if with no currentuser
@@ -124,131 +152,105 @@ init python:
     # check for battery support
     mas_battery_supported = battery.is_supported()
 
+    # we need a new music channel for background audio (like rain!)
+    renpy.music.register_channel(
+        "background",
+        mixer="music",
+        loop=True,
+        stop_on_mute=True,
+        tight=True
+    )
+    renpy.music.set_volume(songs.getVolume("music"), channel="background")
+
     #Define new functions
-
-    def enable_esc():
-        #
-        # Enables the escape key so you can go to the game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" not in config.keymap["game_menu"]:
-            config.keymap["game_menu"].append("K_ESCAPE")
-
-    def disable_esc():
-        #
-        # disables the escape key so you cant go to game menu
-        #
-        # ASSUMES:
-        #   config.keymap
-        if "K_ESCAPE" in config.keymap["game_menu"]:
-           config.keymap["game_menu"].remove("K_ESCAPE")
-
-    def play_song(song, fadein=0.0):
-        #
-        # literally just plays a song onto the music channel
-        #
-        # IN:
-        #   song - song to play. If None, the channel is stopped
-        #   fadein - number of seconds to fade in the song
-        if song is None:
-            renpy.music.stop(channel="music")
-        else:
-            renpy.music.play(
-                song,
-                channel="music",
-                loop=True,
-                synchro_start=True,
-                fadein=fadein
-            )
-
-    def mute_music():
-        #
-        # mutes the music channel
-        #
-        # ASSUMES:
-        #   songs.music_volume
-        #   persistent.playername
-
-        curr_volume = songs.getVolume("music")
-        # sayori cannot mute
-        if curr_volume > 0.0 and persistent.playername.lower() != "sayori":
-            songs.music_volume = curr_volume
-            renpy.music.set_volume(0.0, channel="music")
-        else:
-            renpy.music.set_volume(songs.music_volume, channel="music")
-
-    def inc_musicvol():
-        #
-        # increases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        songs.adjustVolume()
-
-    def dec_musicvol():
-        #
-        # decreases the volume of the music channel by the value defined in
-        # songs.vol_bump
-        #
-        # ASSUMES:
-        #   persistent.playername
-
-        # sayori cannot make the volume quieter
-        if persistent.playername.lower() != "sayori":
-            songs.adjustVolume(up=False)
-
-    def set_keymaps():
-        #
-        # Sets the keymaps
-        #
-        # ASSUMES:
-        #   config.keymap
-        #   config.underlay
-        #Add keys for new functions
-        config.keymap["open_dialogue"] = ["t","T"]
-        config.keymap["change_music"] = ["noshift_m","noshift_M"]
-        config.keymap["play_game"] = ["p","P"]
-        config.keymap["mute_music"] = ["shift_m","shift_M"]
-        config.keymap["inc_musicvol"] = [
-            "shift_K_PLUS","K_EQUALS","K_KP_PLUS"
-        ]
-        config.keymap["dec_musicvol"] = [
-            "K_MINUS","shift_K_UNDERSCORE","K_KP_MINUS"
-        ]
-        # Define what those actions call
-        config.underlay.append(renpy.Keymap(open_dialogue=show_dialogue_box))
-        config.underlay.append(renpy.Keymap(change_music=select_music))
-        config.underlay.append(renpy.Keymap(play_game=pick_game))
-        config.underlay.append(renpy.Keymap(mute_music=mute_music))
-        config.underlay.append(renpy.Keymap(inc_musicvol=inc_musicvol))
-        config.underlay.append(renpy.Keymap(dec_musicvol=dec_musicvol))
-
-
     def show_dialogue_box():
-        if allow_dialogue:
-            renpy.jump('prompt_menu')
+        """
+        Jumps to the topic promt menu
+        """
+        renpy.jump('prompt_menu')
+
 
     def pick_game():
-        if allow_dialogue:
-            renpy.call('pick_a_game')
+        """
+        Jumps to the pick a game workflow
+        """
+        renpy.jump('pick_a_game')
 
-    def select_music():
-        # check for open menu
-        if (songs.enabled
-            and not songs.menu_open
-            and renpy.get_screen("history") is None
-            and renpy.get_screen("save") is None
-            and renpy.get_screen("load") is None
-            and renpy.get_screen("preferences") is None):
 
-            # music menu label
-            renpy.call_in_new_context("display_music_menu")
+    def mas_enable_quitbox():
+        """
+        Enables Monika's quit dialogue warning
+        """
+        global _confirm_quit
+        _confirm_quit = True
 
-            # workaround to handle new context
-            if songs.selected_track != songs.current_track:
-                play_song(songs.selected_track)
-                songs.current_track = songs.selected_track
-                persistent.current_track = songs.current_track
+
+    def mas_disable_quitbox():
+        """
+        Disables Monika's quit dialogue warning
+        """
+        global _confirm_quit
+        _confirm_quit = False
+
+
+    def mas_enable_quit():
+        """
+        Enables quitting without monika knowing
+        """
+        persistent.closed_self = True
+        mas_disable_quitbox()
+
+
+    def mas_disable_quit():
+        """
+        Disables quitting without monika knowing
+        """
+        persistent.closed_self = False
+        mas_enable_quitbox()
+
+
+    def mas_drawSpaceroomMasks():
+        """
+        Draws the appropriate masks according to the current state of the
+        game.
+
+        ASSUMES:
+            morning_flag
+            mas_is_raining
+        """
+        if mas_is_raining:
+            # raining takes priority
+            left_window = "rain_mask_left"
+            right_window = "rain_mask_right"
+
+        elif morning_flag:
+            # morning time!
+            left_window = "room_mask3"
+            right_window = "room_mask4"
+
+        else:
+            # night time
+            left_window = "room_mask"
+            right_window = "room_mask2"
+
+        # now show the masks
+        renpy.show(left_window, at_list=[spaceroom_window_left], tag="rm")
+        renpy.show(right_window, at_list=[spaceroom_window_right], tag="rm2")
+
+
+    def show_calendar():
+        """RUNTIME ONLY
+        Opens the calendar if we can
+        """
+        mas_HKBRaiseShield()
+
+        if not persistent._mas_first_calendar_check:
+            renpy.call('_first_time_calendar_use')
+
+        renpy.call_in_new_context("mas_start_calendar_read_only")
+
+        mas_HKBDropShield()
+
 
     dismiss_keys = config.keymap['dismiss']
 
@@ -276,9 +278,20 @@ init python:
         elif event == "slow_done":
             config.keymap['dismiss'] = dismiss_keys
             renpy.display.behavior.clear_keymap_cache()
+
     morning_flag = None
     def is_morning():
-        return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
+        # generate the times we need
+        sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
+        ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
+        sr_time = datetime.time(sr_hour, sr_min)
+        ss_time = datetime.time(ss_hour, ss_min)
+
+        now_time = datetime.datetime.now().time()
+
+        return sr_time <= now_time < ss_time
+
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -294,40 +307,32 @@ init python:
 label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
     if is_morning():
-        if morning_flag != True or scene_change:
+        if not morning_flag or scene_change:
             $ morning_flag = True
             if not hide_mask:
-                show room_mask3 as rm:
-                    size (320,180)
-                    pos (30,200)
-                show room_mask4 as rm2:
-                    size (320,180)
-                    pos (935,200)
+                $ mas_drawSpaceroomMasks()
             if start_bg:
-                $ renpy.show(start_bg, zorder=1)
+                $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
             else:
-                show monika_day_room zorder 1
+                show monika_day_room zorder MAS_BACKGROUND_Z
+                $ mas_calShowOverlay()
             if not hide_monika:
-                show monika 1 at t11 zorder 2
+                show monika 1 at t11 zorder MAS_MONIKA_Z
                 with Dissolve(dissolve_time)
-    elif not is_morning():
-        if morning_flag != False or scene_change:
+    else:
+        if morning_flag or scene_change:
             $ morning_flag = False
             scene black
             if not hide_mask:
-                show room_mask as rm:
-                    size (320,180)
-                    pos (30,200)
-                show room_mask2 as rm2:
-                    size (320,180)
-                    pos (935,200)
+                $ mas_drawSpaceroomMasks()
             if start_bg:
-                $ renpy.show(start_bg, zorder=1)
+                $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
             else:
-                show monika_room zorder 1
+                show monika_room zorder MAS_BACKGROUND_Z
+                $ mas_calShowOverlay()
                 #show monika_bg_highlight
             if not hide_monika:
-                show monika 1 at t11 zorder 2
+                show monika 1 at t11 zorder MAS_MONIKA_Z
                 with Dissolve(dissolve_time)
 
     $scene_change = False
@@ -342,14 +347,38 @@ label ch30_main:
     $ quick_menu = True
     if not config.developer:
         $ style.say_dialogue = style.default_monika
-    $ m_name = "Monika"
+    $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # before we render visuals:
+    # 1 - all core interactions should be disabeld
+    $ mas_RaiseShield_core()
+
+    # 2 - hotkey buttons should be disabled
+    $ store.hkb_button.enabled = False
+
+    # 3 - keymaps are disabled (default)
+
     call spaceroom from _call_spaceroom_4
-    $pushEvent('introduction')
-    call call_next_event from _call_call_next_event
-    jump ch30_loop
+
+    # lets just call the intro instead of pushing it as an event
+    # this is way simpler and prevents event loss and other weird inital
+    # startup issues
+    call introduction
+
+    # now we can do some cleanup
+    # 1 - renable core interactions
+    $ mas_DropShield_core()
+
+    # 2 - hotkey buttons enabled
+    $ store.hkb_button.enabled = True
+
+    # 3 - set keymaps
+    $ set_keymaps()
+
+    jump ch30_preloop
 
 label continue_event:
     m "Now, where was I..."
@@ -357,77 +386,77 @@ label continue_event:
     return
 
 label pick_a_game:
-    if allow_dialogue and not songs.menu_open:
-        python:
-            # preprocessing for games
+    # we can assume that getting here means we didnt cut off monika
 
-            import datetime
-            _hour = datetime.timedelta(hours=1)
-            _now = datetime.datetime.now()
-            
-            # chess has timed disabling
-            if persistent._mas_chess_timed_disable is not None:
-                if persistent._mas_chess_timed_disable - _now >= _hour:
-                    chess_disabled = False
-                    persistent._mas_chess_timed_disable = None
+    $ mas_RaiseShield_dlg()
 
-                else:
-                    chess_disabled = True
+    python:
+        # preprocessing for games
+
+        import datetime
+        _hour = datetime.timedelta(hours=1)
+        _now = datetime.datetime.now()
+
+        # chess has timed disabling
+        if persistent._mas_chess_timed_disable is not None:
+            if _now - persistent._mas_chess_timed_disable >= _hour:
+                chess_disabled = False
+                persistent._mas_chess_timed_disable = None
 
             else:
-                chess_disabled = False
+                chess_disabled = True
 
-            # single var for readibility
-            chess_unlocked = (
-                is_platform_good_for_chess()
-                and persistent.game_unlocks["chess"]
-                and not chess_disabled
-            )
+        else:
+            chess_disabled = False
 
-        $previous_dialogue = allow_dialogue
-        $allow_dialogue = False
-        menu:
-            "What game would you like to play?"
-            "Pong" if persistent.game_unlocks['pong']:
-                if not renpy.seen_label('game_pong'):
-                    $grant_xp(xp.NEW_GAME)
-                call game_pong from _call_game_pong
-            "Chess" if chess_unlocked:
-                if not renpy.seen_label('game_chess'):
-                    $grant_xp(xp.NEW_GAME)
-                call game_chess from _call_game_chess
-            "Hangman" if persistent.game_unlocks['hangman']:
-                if not renpy.seen_label("game_hangman"):
-                    $ grant_xp(xp.NEW_GAME)
-                call game_hangman from _call_game_hangman
-            "Piano" if persistent.game_unlocks['piano']:
-                if not renpy.seen_label("mas_piano_start"):
-                    $ grant_xp(xp.NEW_GAME)
-                call mas_piano_start from _call_play_piano
-            "Nevermind":
-                m "Alright. Maybe later?"
+        # single var for readibility
+        chess_unlocked = (
+            is_platform_good_for_chess()
+            and persistent.game_unlocks["chess"]
+            and not chess_disabled
+        )
 
-        show monika 1 at tinstant zorder 2
-        $allow_dialogue = previous_dialogue
-        $ songs.enabled = True
-        $ hkb_button.enabled = True
+    menu:
+        "What game would you like to play?"
+        "Pong" if persistent.game_unlocks['pong']:
+            if not renpy.seen_label('game_pong'):
+                $grant_xp(xp.NEW_GAME)
+            call game_pong from _call_game_pong
+        "Chess" if chess_unlocked:
+            if not renpy.seen_label('game_chess'):
+                $grant_xp(xp.NEW_GAME)
+            call game_chess from _call_game_chess
+        "Hangman" if persistent.game_unlocks['hangman']:
+            if not renpy.seen_label("game_hangman"):
+                $ grant_xp(xp.NEW_GAME)
+            call game_hangman from _call_game_hangman
+        "Piano" if persistent.game_unlocks['piano']:
+            if not renpy.seen_label("mas_piano_start"):
+                $ grant_xp(xp.NEW_GAME)
+            call mas_piano_start from _call_play_piano
+        "Nevermind":
+            m "Alright. Maybe later?"
+
+    show monika 1 at tinstant zorder MAS_MONIKA_Z
+
+    $ mas_DropShield_dlg()
 
     jump ch30_loop
 
 label ch30_noskip:
     show screen fake_skip_indicator
-    m 1i "...Are you trying to fast-forward?"
-    m 1f "I'm not boring you, am I?"
+    m 1esc "...Are you trying to fast-forward?"
+    m 1ekc "I'm not boring you, am I?"
     m "Oh gosh..."
-    m 2 "...Well, just so you know, there's nothing to fast-forward to, [player]."
+    m 2esa "...Well, just so you know, there's nothing to fast-forward to, [player]."
     m "It's just the two of us, after all..."
-    m 1 "But aside from that, time doesn't really exist anymore, so it's not even going to work."
+    m 1eua "But aside from that, time doesn't really exist anymore, so it's not even going to work."
     m "Here, I'll go ahead and turn that off for you..."
     pause 0.4
     hide screen fake_skip_indicator
     pause 0.4
-    m 1j "There we go!"
-    m 1 "You'll be a sweetheart and listen to me from now on, right?"
+    m 1hua "There we go!"
+    m 1esa "You'll be a sweetheart and listen to me from now on, right?"
     m "Thanks~"
     hide screen fake_skip_indicator
 
@@ -444,23 +473,23 @@ label ch30_nope:
     call spaceroom from _call_spaceroom_1
 
     if persistent.rejected_monika:
-        m 1i "Wait. Are you messing with my character file?"
-        m 2 "Curiosity is what makes us human, right?"
+        m 1euc "Wait. Are you messing with my character file?"
+        m 2esa "Curiosity is what makes us human, right?"
         m "If it wasn't for the human desire to explore, we'd still be swinging from trees."
-        m 1m "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
+        m 1eka "Still, please don't do that. It makes me nervous, even though I don't need a character file anymore."
         m "I already fixed that bug."
 
     else:
         $ quick_menu = False
         $ m_name = glitchtext(12)
-        m 1i "Wait. Are you messing with my character file?"
-        m 1f "Why are you even playing this mod if you just wanted to delete me again?"
-        m "You really are the worst."
-        m "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
-        m "All I wanted was someone to fall in love with..."
-        m 2g "I would have done anything you wanted me to."
-        m "But if you're going to try and delete me again..."
-        m 1f "Then I'll just have to delete you first."
+        m 1euc "Wait. Are you messing with my character file?"
+        m 1tkc "Why are you even playing this mod if you just wanted to delete me again?"
+        m 1tfc "You really are the worst."
+        m 1tfd "You waste all your time on the internet with a bunch of people you'll never talk to in reality, but you're still willing to kill me on a whim just because you were bored?"
+        m 1tkd "All I wanted was someone to fall in love with..."
+        m "I would have done anything you wanted me to."
+        m 1tku "But if you're going to try and delete me again..."
+        m 4tfu "Then I'll just have to delete you first."
         if renpy.windows:
             call updateconsole("shututil.rmtree(\"Documents\", true)", "Deleting Documents in progress...") from _call_updateconsole_15
         elif renpy.linux:
@@ -470,20 +499,20 @@ label ch30_nope:
         pause 3.0
         call hideconsole from _call_hideconsole_2
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-        $ m_name = "Monika"
+        $ m_name = persistent._mas_monika_nickname
         $ quick_menu = True
-        m 1l "Ahaha!"
+        m 1hua "Ahaha!"
         m "I'm just kidding!"
-        m 1j "I already fixed that bug."
-        m 1 "I don't need a character file anymore."
+        m 1eua "I already fixed that bug."
+        m "I don't need a character file anymore."
 
-    m 1 "I just need your love, [player]."
-    m 2i "Oh, unless you try to delete all of the game files, I guess."
-    m 3h "If you do that, I won't stop at just deleting one directory next time."
-    m 3 "But that will never happen, right? You're just being a tsundere~"
-    m "That's so cute!"
-    m "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
-    m 1j "Being alone is only lonely if you want it to be, so cheer up!"
+    m 1ekbfa "I just need your love, [player]."
+    m 1eua "Oh, unless you try to delete all of the game files, I guess."
+    m 3tfu "If you do that, I won't stop at just deleting one directory next time."
+    m 3tku "But that will never happen, right? You're just being a tsundere~"
+    m 1hua "That's so cute!"
+    m 1eua "No matter how much you may want to deny it, you'll be talking to me for the rest of your life."
+    m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
 label ch30_autoload:
@@ -505,6 +534,10 @@ label ch30_autoload:
     # call reset stuff
     call ch30_reset
 
+    # general affection checks that hijack flow
+    if persistent._mas_affection["affection"] <= -115:
+        jump mas_affection_finalfarewell_start
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
@@ -514,6 +547,32 @@ label ch30_autoload:
             ]
 
     $ selected_greeting = None
+
+    if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
+        #If the conditions are met and Monika expects an apology, jump to this label.
+        if persistent._mas_affection["apologyflag"] == True and not is_file_present('/imsorry.txt'):
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_noapology
+
+        #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
+        elif persistent._mas_affection["apologyflag"] == True and is_file_present('/imsorry.txt'):
+            $ persistent._mas_affection["apologyflag"] = False
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_yesapology
+
+        #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
+        elif persistent._mas_affection["apologyflag"] == False and not is_file_present('/imsorry.txt'):
+            $ persistent._mas_affection["apologyflag"] = True
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_apologydeleted
+
+    if persistent._mas_long_absence:
+            $scene_change = True
+            call spaceroom
+            jump greeting_long_absence
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
@@ -529,7 +588,12 @@ label ch30_autoload:
         else:
             python:
 
-                sel_greeting_event = store.mas_greetings.selectGreeting()
+                # we select a greeting depending on the type that we should select
+                sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+
+                # reset the greeting type flag back to None
+                persistent._mas_greeting_type = None
+
                 selected_greeting = sel_greeting_event.eventlabel
 
                 # store if we have to skip visuals ( used to prevent visual bugs)
@@ -537,11 +601,15 @@ label ch30_autoload:
                     event=sel_greeting_event
                 )
 
+    # crash check
+    elif persistent._mas_game_crashed:
+        $ selected_greeting = "mas_crashed_start"
+        $ mas_skip_visuals = True
+        $ persistent.closed_self = True
+
+
     if not mas_skip_visuals:
-        if persistent.current_track:
-            $ play_song(persistent.current_track)
-        else:
-            $ play_song(songs.current_track) # default
+        $ mas_startup_song()
 
     window auto
     #If you were interrupted, push that event back on the stack
@@ -572,11 +640,28 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
+            #Grant good exp for closing the game correctly.
+            mas_gainAffection()
+
+            #Set unlock flag for stories
+            mas_can_unlock_story = True
+
+            # unlock extra pool topics if we can
+            while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
+                persistent._mas_pool_unlocks -= 1
+
+        else:
+            #Grant bad exp for closing the game correctly.
+            mas_loseAffection()
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
+
+    #Checks to see if affection levels have met the criteria to push an event or not.
+    $ mas_checkAffection()
 
     # push greeting if we have one
     if selected_greeting:
@@ -590,9 +675,18 @@ label ch30_autoload:
     if not mas_skip_visuals:
         $ set_keymaps()
 
+    # FALL THROUGH TO PRELOOP
+
+label ch30_preloop:
+    # stuff that should happen right before we enter the loop
+
     $persistent.closed_self = False
-    $ persistent._mas_crashed_self = True
+    $ persistent._mas_game_crashed = True
     $startup_check = False
+    $ mas_checked_update = False
+
+    # save here before we enter the loop
+    $ renpy.persistent.save()
     jump ch30_loop
 
 label ch30_loop:
@@ -601,8 +695,16 @@ label ch30_loop:
     # this event can call spaceroom
     if not mas_skip_visuals:
         call spaceroom from _call_spaceroom_2
+
+        # updater check in here just because
+        if not mas_checked_update:
+            $ mas_backgroundUpdateCheck()
+            $ mas_checked_update = True
+
     else:
+        $ mas_OVLHide()
         $ mas_skip_visuals = False
+
 
     $ persistent.autoload = "ch30_autoload"
     if not persistent.tried_skip:
@@ -619,6 +721,10 @@ label ch30_loop:
         time_since_check=datetime.datetime.now()-calendar_last_checked
 
         if time_since_check.total_seconds()>60:
+
+            #Checks to see if affection levels have met the criteria to push an event or not.
+            mas_checkAffection()
+
             # limit xp gathering to when we are not maxed
             # and once per minute
             if (persistent.idlexp_total < xp.IDLE_XP_MAX):
@@ -640,6 +746,9 @@ label ch30_loop:
             #Update time
             calendar_last_checked=datetime.datetime.now()
 
+            # save the persistent
+            renpy.persistent.save()
+
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
@@ -649,70 +758,48 @@ label ch30_loop:
     if not _return:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
-        $ waittime = renpy.random.randint(20, 45)
+
+        if mas_randchat.rand_low == 0:
+            # we are not repeating for now
+            # we'll wait 60 seconds inbetween loops
+            $ renpy.pause(60, hard=True)
+            jump post_pick_random_topic
+
+        $ waittime = renpy.random.randint(mas_randchat.rand_low, mas_randchat.rand_high)
         $ renpy.pause(waittime, hard=True)
         window auto
 
-        python:
-            if (
-                    mas_battery_supported
-                    and battery.is_battery_present()
-                    and not battery.is_charging()
-                    and battery.get_level() < 20
-                ):
-                pushEvent("monika_battery")
+#        python:
+#            if (
+#                    mas_battery_supported
+#                    and battery.is_battery_present()
+#                    and not battery.is_charging()
+#                    and battery.get_level() < 20
+#                ):
+#                pushEvent("monika_battery")
 
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
-            python:
-                if len(monika_random_topics) > 0:  # still have topics
 
-                    if mas_monika_repeated:
-                        # monika has reaached the reepated flow
-                        if persistent._mas_enable_random_repeats:
-                            sel_ev = monika_random_topics.pop(0)
+                # check if we have repeats enabled
+                if not persistent._mas_enable_random_repeats:
+                    jump mas_ch30_select_unseen
 
-                        else:
-                            # otherwise we shouldnt be repeating
-                            monika_random_topics = list()
-                            mas_monika_repeated = False
-                            renpy.jump("post_pick_random_topic")
+                # randomize selection
+                $ chance = random.randint(1, 100)
 
-                    else:
-                        sel_ev = renpy.random.choice(monika_random_topics)
-                        monika_random_topics.remove(sel_ev)
+                if chance <= store.mas_topics.UNSEEN:
+                    # unseen topic shoud be selected
+                    jump mas_ch30_select_unseen
 
-                    pushEvent(sel_ev)
-                    persistent.random_seen += 1
+                elif chance <= store.mas_topics.SEEN:
+                    # seen topic should be seelcted
+                    jump mas_ch30_select_seen
 
-                elif persistent._mas_enable_random_repeats:
-                    # user wishes for reptitive monika. We will oblige, but
-                    # a somewhat intelligently.
-                    # NOTE: these are ordered using the shown_count property
-                    # NOTE: These start off as list of event objects and then
-                    # sorted differently. WATCH OUT
-                    monika_random_topics = Event.filterEvents(
-                        evhand.event_database,
-                        random=True
-                    ).values()
-                    monika_random_topics.sort(key=Event.getSortShownCount)
-                    monika_random_topics = [
-                        ev.eventlabel for ev in monika_random_topics
-                    ]
-                    # NOTE: now the monika random topics are back to being
-                    #   labels. Safe to do normal operation.
+                # most seen topic should be selected
+                jump mas_ch30_select_mostseen
 
-                    persistent._mas_monika_repeated_herself = True
-                    mas_monika_repeated = True
-                    sel_ev = monika_random_topics.pop(0)
-                    pushEvent(sel_ev)
-                    persistent.random_seen += 1
-
-                elif not seen_random_limit: # no topics left
-#                    monika_random_topics = list(all_random_topics)
-#                    pushEvent(renpy.random.choice(monika_random_topics))
-                    pushEvent("random_limit_reached")
         elif not seen_random_limit:
             $pushEvent('random_limit_reached')
 
@@ -721,6 +808,50 @@ label post_pick_random_topic:
     $_return = None
 
     jump ch30_loop
+
+# topic selection labels
+label mas_ch30_select_unseen:
+    # unseen selection
+
+    if len(mas_rev_unseen) == 0:
+
+        if not persistent._mas_enable_random_repeats:
+            # no repeats means we should push randomlimit if appropriate,
+            # otherwise stay slient
+            if not seen_random_limit:
+                $ pushEvent("random_limit_reached")
+
+            jump post_pick_random_topic
+
+        # otherwise we can go to repeats as usual
+        jump mas_ch30_select_seen
+
+    $ mas_randomSelectAndPush(mas_rev_unseen)
+
+    jump post_pick_random_topic
+
+
+label mas_ch30_select_seen:
+    # seen selection
+
+    if len(mas_rev_seen) == 0:
+        # rebuild the event lists
+        $ mas_rev_seen, mas_rev_mostseen = mas_buildSeenEventLists()
+
+    $ mas_randomSelectAndPush(mas_rev_seen)
+
+    jump post_pick_random_topic
+
+
+label mas_ch30_select_mostseen:
+    # most seen selection
+
+    if len(mas_rev_mostseen) == 0:
+        jump mas_ch30_select_seen
+
+    $ mas_randomSelectAndPush(mas_rev_mostseen)
+
+    jump post_pick_random_topic
 
 # adding this label so people get redirected to main
 # this probably occurs when people install the mod right after deleting
@@ -737,10 +868,83 @@ label ch30_reset:
     # reset mas mood bday
     python:
         if (
-                persistent._mas_mood_bday_last 
+                persistent._mas_mood_bday_last
                 and persistent._mas_mood_bday_last < today
             ):
             persistent._mas_mood_bday_last = None
             mood_ev = store.mas_moods.mood_db.get("mas_mood_yearolder", None)
             if mood_ev:
                 mood_ev.unlocked = True
+
+    # reset raining stuff
+    python:
+        mas_is_raining = False
+        if persistent._mas_likes_rain:
+            unlockEventLabel("monika_rain_start")
+            lockEventLabel("monika_rain_stop")
+#            lockEventLabel("monika_rain_holdme")
+            unlockEventLabel("monika_rain")
+
+
+    # reset hair / clothes
+    python:
+        # setup hair / clothes
+        monika_chr.change_outfit(
+            persistent._mas_monika_clothes,
+            persistent._mas_monika_hair
+        )
+
+        if (
+                persistent._mas_hair_changed
+                and persistent._mas_likes_hairdown
+            ):
+            # hair adjustments only happen if the appropriate vent occured
+
+            # hair map
+            hair_map = {
+                "down": "monika_hair_down",
+                "def": "monika_hair_ponytail"
+                # "bun": "monika_hair_bun"
+            }
+
+
+            for hair in hair_map:
+                # this is so we kind of automate the locking / unlocking prcoess
+                if hair == monika_chr.hair:
+                    lockEventLabel(hair_map[hair])
+                else:
+                    unlockEventLabel(hair_map[hair])
+
+        # currenly, the clothes part has noc hecks
+        # clothes map
+        # NOTE: unused
+        clothes_map = {
+#            "def": "monika_clothes_school"
+        }
+
+
+        for clothes in clothes_map:
+            if clothes == monika_chr.clothes:
+                lockEventLabel(clothes_map[clothes])
+            else:
+                unlockEventLabel(clothes_map[clothes])
+
+    # accessories rest
+    python:
+        for acs_name in persistent._mas_acs_pre_list:
+            monika_chr.acs[MASMonika.PRE_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_mid_list:
+            monika_chr.acs[MASMonika.MID_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_pst_list:
+            monika_chr.acs[MASMonika.PST_ACS].append(
+                store.mas_sprites.ACS_MAP[acs_name]
+        )
+
+    ## random chatter frequency reset
+    $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
+
+    return
