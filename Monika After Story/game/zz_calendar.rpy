@@ -681,6 +681,20 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             return None
 
 
+        def _yearSanityChecks(self):
+            """
+            Checks that the current date is on the right interval, otherwise,
+            it will force it back
+            """
+            # so people don't break it
+            if self.selected_year < self.MIN_SELECTABLE_YEAR:
+                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
+
+            if self.selected_year > self.MAX_SELECTABLE_YEAR:
+                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+
+
+
         def _changeYear(self, ascend=True):
             """
             Changes the currently selected year by incrementing or decrementing it by one
@@ -695,12 +709,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             else:
                 self.selected_year = self.selected_year - 1
 
-            # so people don't break it
-            if self.selected_year < self.MIN_SELECTABLE_YEAR:
-                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
-
-            if self.selected_year > self.MAX_SELECTABLE_YEAR:
-                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+            self._yearSanityChecks()
 
             self._setupDayButtons()
 
@@ -730,6 +739,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 if self.selected_month <=0:
                     self.selected_month = 12
                     self.selected_year = self.selected_year - 1
+
+            self._yearSanityChecks()
+
             self._setupDayButtons()
 
 
