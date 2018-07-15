@@ -292,7 +292,7 @@ label mas_mood_scared:
     m 3b "Keeping up your appearance does help with faking your own confidence."
     m "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
     m "Maybe you could take things slowly, and do it one at a time."
-    m "You'd be surprised on how smooth you can be, if you let if you let the time flows on it's own."
+    m "You'd be surprised on how smooth you can be, if you let the time flows on it's own."
     m 4b "You can even spend a few minutes to meditate!"
     m 4n "It doesn't necessarily mean you have to cross your legs when sitting on the ground..."
     m 4k "Just by listening to your favourite music can be counted as meditating!"
