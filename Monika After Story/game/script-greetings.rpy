@@ -15,6 +15,7 @@ init -1 python in mas_greetings:
     TYPE_SCHOOL = "school"
     TYPE_WORK = "work"
     TYPE_SLEEP = "sleep"
+    TYPE_LONG_ABSENCE = "long_absence"
 
     # custom greeting functions
     def selectGreeting(type=None):
@@ -1067,6 +1068,18 @@ label greeting_stillsicknorest:
     m 3hua "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_long_absence",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_LONG_ABSENCE],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
 label greeting_long_absence:
     $ persistent._mas_long_absence = False
     if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
@@ -1258,7 +1271,6 @@ label greeting_long_absence:
             m 3nn "I would be worried otherwise!"
             m 1j "It really did help..."
             m 1a "So tell me, how has your day been treating you?"
-# Stopping Point #
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 1):
         if persistent._mas_absence_choice == "days":
             m 2b "Hello there, [player]."
@@ -1384,7 +1396,6 @@ label greeting_timeconcern_day:
 init 5 python:
     rules = dict()
     rules.update(MASGreetingRule.create_rule(skip_visual=True, random_chance=5))
-
     addEvent(
         Event(
             persistent.greeting_database,

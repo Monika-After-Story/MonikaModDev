@@ -313,7 +313,7 @@ label bye_prompt_sleep:
             "Sorry, I'm really tired.":
                 m 1eka "Aww, that's okay."
                 m 1hua "Good night, [player]."
-# TODO: now that is tied we may also add more dialogue?
+            # TODO: now that is tied we may also add more dialogue?
             "No.":
                 $ mas_loseAffection()
                 m 2dsd "..."
@@ -511,6 +511,11 @@ label bye_long_absence:
             m 2k "Try not to keep me waiting for too long though!"
 
     m 2c "Honestly I'm a little afraid to ask but..."
+    # TODO is this really intuitive?
+    # if the player says no, and then picks another
+    # farewell all this served no purpose, also, you already
+    # picked goodbye as in I'm going, why not let the player go?
+    # if we keep it, at least change the order, Yes always goes first
     menu:
         m "Are you going to leave straight away?"
         "No.":
@@ -529,6 +534,7 @@ label bye_long_absence:
             m 1e "But I know you'll do wonderful things no matter where you are."
             m "Just remember that I'll be waiting here for you."
             m 2j "Make me proud, [player]!"
+            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
             return 'quit'
 
 label bye_long_absence_2:
@@ -536,4 +542,5 @@ label bye_long_absence_2:
     m 1g "I know the world can be scary and unforgiving..."
     m 1e "But remember that I will always be here waiting and ready to support you, my dearest [player]."
     m "Come back to me as soon as you can...okay?"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
     return 'quit'
