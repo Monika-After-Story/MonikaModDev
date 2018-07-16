@@ -1509,7 +1509,6 @@ init 5 python:
 label monika_rain_holdme:
     # we only want this if it rains
     if mas_is_raining:
-        # TODO adjust this for affection
         stop music fadeout 1.0
 
         # clear selected track
@@ -1528,11 +1527,12 @@ label monika_rain_holdme:
         # renable ui and hotkeys
         $ store.songs.enabled = True
         $ HKBShowButtons()
-
+        $ mas_gainAffection()
         m 1j "You can hold me anytime you want, [player]."
 
     else:
-        # TODO adjust for affection maybe?
+        # asking for it on the "incorrect mood" slightly decreases affection
+        $ mas_loseAffection(modifier=0.25)
         m 1oo "..."
         m 1pp "The mood doesn't feel right, [player]."
         m 1q "Sorry..."
@@ -5919,6 +5919,9 @@ label monika_beach:
 # where where persistent.playthrough can be
 # checked and have a different response
 # depending on what the player did
+# TODO: affection is going to take this one
+# and actually she'll know the reason only last thing
+# the player did though
 ####################################################
 
 #init 5 python:
@@ -6258,6 +6261,8 @@ label monika_natsuki_letter:
 
     return "derandom"
 
+
+# TODO possible tie this with affection?
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
@@ -7083,6 +7088,7 @@ label monika_dating_startdate:
 
 label monika_dating_startdate_confirm_had_enough:
     # monika has had enough of your shit
+    # TODO: maybe decrease affection since you annoyed her enough?
     m 2dfc "..."
     m 2lfc "We'll do this another time, then."
 
@@ -7216,6 +7222,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                             hide screen mas_background_timed_jump
 
                 # lol why would you stay slient?
+                # TODO: Affection considerable decrease?
                 $ persistent._mas_just_friends = True
 
                 m 6lktdc "I see..."

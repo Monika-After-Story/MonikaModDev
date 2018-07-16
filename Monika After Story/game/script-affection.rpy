@@ -8,24 +8,10 @@
 # Sad - Is feeling down, not miserable or deep but certainly not her self-motivated self. Believes she'll get player. Has minor thoughts that player isn't faithful but doesn't take them seriously.
 # Upset - Feeling emotionally hurt, starting to have doubts about whether or not the player loves her and whether or not she she was right regarding what she did in the game.
 # Depressed - Convinced the player probably doesn't love her and that she may never escape to our reality.
-# Heartbroken - Belives that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
-################
+# Heartbroken - Believes that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
+#############
 
 init -1 python in mas_affection:
-    # string constants of affection levels
-#    BROKEN = "heartbroken"
-#    DISTRESSED = "distressed"
-#    UPSET = "upset"
-#    NORMAL = "normal"
-#    HAPPY = "happy"
-#    ENAMORED = "enamored"
-#    LOVE = "lovestruck"
-#    CONFUSED = "confused"
-
-    # string constants of affection groups
-#    G_SAD = "sad"
-#    G_HAPPY = "happy"
-#    G_NORMAL = "normal"
 
     # numerical constants of affection levels
     CONFUSED = 0
@@ -211,8 +197,8 @@ init python:
         if persistent.sessions["last_session_end"] is not None:
             persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
             time_difference = persistent._mas_absence_time
-            if time_difference >= datetime.timedelta(hours = 6) and time_difference <= datetime.timedelta(hours = 12):
-                #mas_gainAffection()
+            # we skip this for devs since we sometimes use older persistents
+            if config.developer:
                 pass
             elif time_difference >= datetime.timedelta(weeks = 4):
                 mas_setAffection(-115)
