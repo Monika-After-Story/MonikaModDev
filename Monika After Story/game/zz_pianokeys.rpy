@@ -40,7 +40,7 @@ label mas_piano_loopstart:
     $ play_mode = PianoDisplayable.MODE_FREE
 
 label mas_piano_songchoice:
-    
+
     $ pnml = None
 
     if len(song_list) > 1:
@@ -134,6 +134,7 @@ label mas_piano_loopend:
 
 # default. post game, freestyle mode
 label mas_piano_result_default:
+    # TODO: really small affection increase so this doesn't get abused
     m 1eua "All done, [player]?"
     return
 
@@ -148,6 +149,7 @@ label mas_piano_result_none:
 ### HAPPY BIRTHDAY
 
 label mas_piano_hb_win:
+    # TODO: increase affection a bit maybe?
     m 1a "Wow! You almost got it!"
     m 2b "Good job, [player]."
     return
@@ -159,6 +161,7 @@ label mas_piano_hb_fail:
     return
 
 label mas_piano_hb_fc:
+    # TODO: increase affection a bit maybe?
     m 1a "Hehe, great job!"
     m 2b "I know that's an easy one, but you did great."
     m 1k "Are you going to play that for me on my Birthday?"
@@ -174,6 +177,7 @@ label mas_piano_hb_prac:
 
 # shown if player completes the song but does not FC
 label mas_piano_yr_win:
+    # TODO: increase affection a bit maybe?
     m 1lksdla "That was nice, [player]."
     m "But..."
     m 1lksdlb "You could do better with some more practice..."
@@ -182,6 +186,7 @@ label mas_piano_yr_win:
 
 # shown if player FCs
 label mas_piano_yr_fc:
+    # TODO: increase affection a bit maybe?
     m 1sub "That was wonderful, [player]!"
     m 1eub "I didn't know you can play the piano so well."
     m 1hub "Maybe we should play together sometime!"
@@ -368,7 +373,7 @@ init -3 python in mas_piano_keys:
         B5: B5,
         C6: C6
     }
-        
+
     # blacklisted keys
     BLACKLIST = (
         ESC,
@@ -386,7 +391,7 @@ init -3 python in mas_piano_keys:
     # noncharable keymaps and display text dict
     NONCHAR_TEXT = {
         pygame.K_LEFTBRACKET: "[[",
-        123: "{{", # { 
+        123: "{{", # {
         pygame.K_BACKSPACE: "\\b",
         pygame.K_TAB: "\\t",
         pygame.K_CLEAR: "Cr",
@@ -496,7 +501,7 @@ init -3 python in mas_piano_keys:
         if old_key:
             # we have an old keymap, remove it
             renpy.game.persistent._mas_piano_keymaps.pop(old_key)
-           
+
         # only add a keymap if its different
         if key != new:
             renpy.game.persistent._mas_piano_keymaps[new] = key
@@ -1425,7 +1430,7 @@ init 1000 python in mas_piano_keys:
 #
 # Line 4
 # y e y e y e y u 6
-# y 6 
+# y 6
 #
 # Line 5, 6
 # r, 2 r 6 y 6 y 6 y 6 r
@@ -1643,7 +1648,7 @@ init 1000 python in mas_piano_keys:
         postexpress="1eka",
         verse=4
     )
-    
+
     # checkpoint 3?
     _pnm_dpco_v3l1 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -1758,7 +1763,7 @@ init 1000 python in mas_piano_keys:
         express="1eub",
         postexpress="1eub",
         verse=12
-    )   
+    )
 
     # dpco, pnml
     pnml_dpco = PianoNoteMatchList(
@@ -2162,7 +2167,7 @@ init 1001 python:
         # and which are default
         # x coords are same as black keys (which vary)
         # black ones
-        KMP_TXT_OVL_B_Y = ZZPK_IMG_BACK_Y 
+        KMP_TXT_OVL_B_Y = ZZPK_IMG_BACK_Y
         KMP_TXT_OVL_B_W = ZZPK_IMG_EKEY_WIDTH
         KMP_TXT_OVL_B_H = 47
         KMP_TXT_OVL_B_BGCLR = "#4D4154"
@@ -2302,7 +2307,7 @@ init 1001 python:
                 )) / 2) + self.ZZPK_IMG_BACK_X
             )
             cbutton_y_start = (
-                self.ZZPK_IMG_BACK_Y + 
+                self.ZZPK_IMG_BACK_Y +
                 self.PIANO_BACK_HEIGHT +
                 self.BUTTON_SPACING
             )
@@ -2481,7 +2486,7 @@ init 1001 python:
 
             # overlay setup
             mouse_w_ovl_idle = Solid(
-#                "#0005", 
+#                "#0005",
                 "#ffe6f4bb",
                 xsize=self.ZZPK_IMG_IKEY_WIDTH,
                 ysize=self.ZZPK_IMG_IKEY_HEIGHT - self.ZZPK_IMG_IKEY_YOFF
@@ -2522,7 +2527,7 @@ init 1001 python:
             mouse_b_ovl_hover = Solid(
                 "#ffaa99aa",
                 xsize=self.ZZPK_IMG_EKEY_WIDTH,
-                ysize=self.ZZPK_IMG_EKEY_HEIGHT            
+                ysize=self.ZZPK_IMG_EKEY_HEIGHT
             )
             b_plain = Image(self.ZZPK_B_OVL_PLAIN)
             blacks = [
@@ -2584,7 +2589,7 @@ init 1001 python:
                     mouse_w_ovl_idle,
                     top_left_x + self.ZZPK_IMG_BACK_X,
                     (
-                        self.ZZPK_IMG_KEYS_Y + 
+                        self.ZZPK_IMG_KEYS_Y +
                         self.ZZPK_IMG_IKEY_YOFF +
                         self.ZZPK_IMG_BACK_Y
                     ),
@@ -2824,13 +2829,13 @@ init 1001 python:
             # now apply adjustments
             for key,real_key in persistent._mas_piano_keymaps.iteritems():
                 if (
-                        real_key in self.live_keymap 
+                        real_key in self.live_keymap
                         and real_key == self.live_keymap[real_key]
                     ):
                     self.live_keymap.pop(real_key)
                 self.live_keymap[key] = real_key
 
-    
+
         def _sendEventsToOverlays(self, ev, x, y, st):
             """
             Sends event overlays to the list of config overlays.
@@ -2844,7 +2849,7 @@ init 1001 python:
                 st - same as st in event
 
             RETURNS:
-                the MASButtonDisplayable that returned a non None value, or 
+                the MASButtonDisplayable that returned a non None value, or
                 None if all of them returned None
             """
             for ovl in self._config_overlays_list:
@@ -3114,7 +3119,7 @@ init 1001 python:
 
                 if findex >= 0:
                     self.state = self.STATE_JMATCH
-                    
+
                     if self.match.is_single():
                         self._singleFlow(ev, key)
 
@@ -3394,7 +3399,7 @@ init 1001 python:
             # True if we need to do an interaction restart
             restart_int = False
 
-            if self.state in self.CONFIG_STATES: 
+            if self.state in self.CONFIG_STATES:
 
                 # reset monika
                 if self.state == self.STATE_CONFIG_ENTRY:
@@ -3405,9 +3410,9 @@ init 1001 python:
                     restart_int = True
                     self.state = self.STATE_CONFIG_WAIT
 
-                # piano overlays 
+                # piano overlays
                 # NOTE: ensure that this is after the key press overlay
-                # NOTE: this actually will be filled out differently 
+                # NOTE: this actually will be filled out differently
                 # dpending on state
                 visible_overlays = list()
 
@@ -3671,8 +3676,8 @@ init 1001 python:
                         670
                     )
                 )
-                        
-                        
+
+
 
 #                    renpy.show(
 #                        "monika " + match.express,
@@ -3708,7 +3713,7 @@ init 1001 python:
             # DONE state means you immediate quit
             if self.state in self.FINAL_DONE_STATES:
                 return self.quitflow()
-           
+
             # all mouse events
             if ev.type in self.MOUSE_EVENTS:
 
@@ -3750,7 +3755,7 @@ init 1001 python:
 
                 # config change
                 elif self.state == self.STATE_CONFIG_CHANGE:
-                    
+
                     # button handlers
                     clicked_cancel = self._button_cancel.event(ev, x, y, st)
                     clicked_reset = self._button_reset.event(ev, x, y, st)
@@ -3771,7 +3776,7 @@ init 1001 python:
                         old_key = mas_piano_keys._findKeymap(
                             self._sel_ovl.return_value
                         )
-                        
+
                         if old_key:
                             persistent._mas_piano_keymaps.pop(old_key)
                             self._keymap_overlays.pop(old_key)
@@ -3844,7 +3849,7 @@ init 1001 python:
                             )
 
                         renpy.play(
-                            self.pkeys[self._sel_ovl.return_value], 
+                            self.pkeys[self._sel_ovl.return_value],
                             channel="audio"
                         )
 
@@ -3928,4 +3933,3 @@ init 1001 python:
 
             # the default so we can keep going
             raise renpy.IgnoreEvent()
-

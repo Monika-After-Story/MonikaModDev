@@ -1395,6 +1395,7 @@ label monika_rain:
 
             m 1j "Then hold me, [player]..."
             show monika 6dubsa
+            $ mas_gainAffection()
             $ ui.add(PauseDisplayable())
             $ ui.interact()
 
@@ -1527,12 +1528,13 @@ label monika_rain_holdme:
         # renable ui and hotkeys
         $ store.songs.enabled = True
         $ HKBShowButtons()
-        $ mas_gainAffection()
+        # small affection increase so people don't farm affection with this one.
+        $ mas_gainAffection(modifier=0.25)
         m 1j "You can hold me anytime you want, [player]."
 
     else:
         # asking for it on the "incorrect mood" slightly decreases affection
-        $ mas_loseAffection(modifier=0.25)
+        $ mas_loseAffection(modifier=0.1)
         m 1oo "..."
         m 1pp "The mood doesn't feel right, [player]."
         m 1q "Sorry..."
@@ -2309,6 +2311,7 @@ init 5 python:
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
+    # TODO add mas_gainAffection with the logic it should have
     #First time I love you has been said.
     if persistent._mas_monika_lovecounter == 0:
         m 1b "...!"
@@ -2411,12 +2414,9 @@ label monika_love:
         love_quip=renpy.random.choice(love_quips)
     m "[love_quip]"
     #prevents spamming to increase counter.
-    if datetime.datetime.now() <= persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
-        pass
-    else:
+    if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
         $ persistent._mas_monika_lovecounter += 1
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
+    $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
 init 5 python:

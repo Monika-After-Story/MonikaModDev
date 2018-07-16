@@ -1753,6 +1753,7 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_you_chr = False
         renpy.game.persistent.opendoor_opencount = 0
         renpy.game.persistent.opendoor_knockyes = False
+        persistent._mas_greeting_type = None
 
         # hangman
         renpy.game.persistent._mas_hangman_playername = False
@@ -1760,6 +1761,9 @@ init -1 python in _mas_root:
         # piano
         renpy.game.persistent._mas_pnml_data = list()
         renpy.game.persistent._mas_piano_keymaps = dict()
+
+        # affection
+        persistent._mas_affection["affection"] = 0
 
 
 init -100 python in mas_utils:
