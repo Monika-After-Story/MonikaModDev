@@ -389,11 +389,12 @@ define mas_finalfarewell_mode = False
 # prepwork for the finalfarewell
 label mas_affection_finalfarewell_start:
     call spaceroom(hide_monika=True)
-    show emptydesk zorder 2 at i11
-    show mas_finalnote_idle zorder 3
+    show emptydesk zorder MAS_MONIKA_Z at i11
+    show mas_finalnote_idle zorder 11
 
     python:
-        HKBHideButtons()
+        mas_OVLHide()
+        mas_calRaiseOverlayShield()
         disable_esc()
         allow_dialogue = False
         store.songs.enabled = False
@@ -524,10 +525,12 @@ label mas_affection_yesapology:
     m 1f "But please be more considerate of my feelings from now on."
     m 2e "I love you so much and you mean the world to me, [player]."
     m 1duu "Thank you for putting my heart at ease~"
+    show monika 1esa
     pause 60
     jump ch30_loop
 
 label mas_affection_apologydeleted:
+    $ mas_loseAffection(modifier=3)
     m 1wud "..."
     m 2efd "[player], did you delete the apology note I wanted to keep?"
     m "Why would you do that? Are you not {i}really{/i} sorry?"

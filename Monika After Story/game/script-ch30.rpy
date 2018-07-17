@@ -548,6 +548,7 @@ label ch30_autoload:
 
     $ selected_greeting = None
 
+    # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
         #If the conditions are met and Monika expects an apology, jump to this label.
         if persistent._mas_affection["apologyflag"] == True and not is_file_present('/imsorry.txt'):
