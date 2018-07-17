@@ -301,7 +301,8 @@ label mas_mood_scared:
     m 1e "I love you so much I'm also worried when you're worried, [player]."
     m 1k "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1l "Ahaha! Sorry, I know that's not something you'd expect of me."
-    m 5a "Or you can just stay here with me. There's nothing to worry about when we're together~"
+    m 5a "Or you can just stay here with me."
+    m  "There's nothing to worry about when we're together~"
     return
 
     addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
