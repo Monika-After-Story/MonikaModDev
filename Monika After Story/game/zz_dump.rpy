@@ -200,6 +200,7 @@ init 2018 python:
         with open(_ev_stats_fp, "w") as _ev_stats_file:
 
             _ev_stats_file.write(config.version + "\n\n")
+            _ev_stats_file.write(mas_sessionDataDump())
 
             # gather data
             for ev in mas_all_ev_db.values():
@@ -230,6 +231,59 @@ init 2018 python:
         Thank you.
         """
         mas_eventDataDump()
+
+
+    def mas_sessionDataDump():
+        """
+        Dumps session data as a string
+        """
+        if persistent.sessions is None:
+            return "No session data found."
+
+        # grab each data element
+        first_sesh = persistent.sessions.get("first_session", "N/A")
+        total_sesh = persistent.sessions.get("total_sessions", None)
+        curr_sesh_st = persistent.sessions.get("current_session_start", "N/A")
+        total_playtime = persistent.sessions.get("total_playtime", None)
+        last_sesh_ed = persistent.sessions.get("last_session_end", "N/A")
+
+        if total_sesh is not None and total_playtime is not None:
+            avg_sesh = total_playtime / total_sesh
+
+        else:
+            avg_sesh = "N/A"
+
+        # which ones do we actually have
+        def cts(sesh):
+            if sesh is None:
+                return "N/A"
+
+            return sesh
+
+
+        # assemble output
+        output = [
+            first_sesh,
+            cts(total_sesh),
+            cts(total_playtime),
+            avg_sesh,
+            curr_sesh_st,
+            last_sesh_ed
+        ]
+
+        # NOTE: curr_sesh_st -> last session start because it gets updated
+        # during ch30
+        outstr = (
+            "First session: {0}\n" +
+            "Total sessions: {1}\n" +
+            "Total playtime: {2}\n" + 
+            "Avg playtime per session: {3}\n" +
+            "Last session start: {4}\n" +
+            "Last session end: {5}\n\n"
+        )
+
+        return outstr.format(*output)
+
 
 
     if persistent._mas_unstable_mode:
