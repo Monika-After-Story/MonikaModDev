@@ -1836,6 +1836,7 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 
 label _first_time_calendar_use:
+    $ mas_calRaiseOverlayShield()
     m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]"
     m "It helps me keep track of important events, ehehe~"
     m 1hua "Here, let me show you."
@@ -1851,6 +1852,7 @@ label _first_time_calendar_use:
 
     $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
+    $ mas_calDropOverlayShield()
     return
 
 label _mas_start_calendar(select_date=True):
