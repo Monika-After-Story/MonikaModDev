@@ -26,6 +26,21 @@ init -1 python in mas_greetings:
         RETURNS:
             a single greeting (as an Event) that we want to use
         """
+
+        # check if we have moni_wants greetings
+        moni_wants_greetings = renpy.store.Event.filterEvents(
+            renpy.store.evhand.greeting_database,
+            unlocked=True,
+            moni_wants=True
+        )
+        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
+
+            # select one label randomly
+            return moni_wants_greetings[
+                renpy.random.choice(moni_wants_greetings.keys())
+            ]
+
+
         # check first if we have to select from a special type
         if type is not None:
 

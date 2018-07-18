@@ -432,7 +432,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -481,6 +482,10 @@ python early:
                 if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
                     return False
 
+            # check if event contains the monika wants this rule
+            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
+                return False
+
             # we've passed all the filtering rules somehow
             return True
 
@@ -494,7 +499,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -529,6 +535,9 @@ python early:
             #   excl_cat - list of categories to exclude, if given an empty
             #       list it filters out events that have a non-None category
             #       (Default: None)
+            #   moni_wants - boolean value to match if the event has the monika
+            #       wants this first.
+            #       (Default: None )
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -546,7 +555,8 @@ python early:
                     and pool is None
                     and action is None
                     and seen is None
-                    and excl_cat is None)):
+                    and excl_cat is None
+                    and moni_wants is None)):
                 return events
 
             # copy check
@@ -570,7 +580,7 @@ python early:
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat):
+                        excl_cat=excl_cat,moni_wants=moni_wants):
 
                     filt_ev_dict[k] = v
 
