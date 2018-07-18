@@ -313,63 +313,58 @@ init 5 python:
                                                             ))
 
 label monika_god:
-    m 1a "[player], do you believe in God?"
-    m 1e "I was never too sure, myself."
-    m 1m "Well, I'm sure I never really questioned it as a kid..."
-    m 1l "But as I grew up, the more I learned about the world, the more I would question it."
-    m 1i "I started to wonder why God was helping people pass exams, or get over a cold..."
+    m 1eua "[player], do you believe in God?"
+    m 1eka "I was never too sure, myself."
+    m 1lksdlb "Well, I'm sure I never really questioned it as a kid..."
+    m 1lsc "But as I grew up, the more I learned about the world, the more I would question it."
+    m 1esd "I started to wonder why God was helping people pass exams, or get over a cold..."
     m "...When there are children who live their lives being sold as sex slaves?"
     m "Or the eight hundred million people who are too poor to even eat."
-    m 2f "I wonder how many of those people pray to God every day until they starve and die?"
+    m 2ekc "I wonder how many of those people pray to God every day until they starve and die?"
     m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
-    m 4d "But the punchline is this."
+    m 4eud "But the punchline is this."
     m "If just one person beats the odds and survives - among the thousands of others who die--"
-    m 1q "--Then, it's suddenly a miracle from God."
-    m "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
-    m 4l "But the irony is that I {i}do{/i} have a creator, apparently."
-    m "And you know what?"
-    m 1m "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
-    m 3r "What are we to him but props in a scripted play?"
+    m 1esc "--Then, it's suddenly a miracle from God."
+    m 1dsc "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
+    m 4hksdlb "But the irony is that I {i}do{/i} have a creator, apparently."
+    m 1eua "And you know what?"
+    m 1lksdla "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
+    m 3dsd "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
-
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
     if mas_curr_affection_group == mas_aff.G_SAD:
-        m 1h "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
+        m 1esc "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     else:
-        m 5a "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
 
 label monika_death:
-    m 1c "[player], have you ever wondered what it feels like to die?"
-    m 1m "It's something I used to think about pretty often..."
-    m "But recently, I think I've actually learned what it feels like."
+    m 1euc "[player], have you ever wondered what it feels like to die?"
+    m 1lsc "It's something I used to think about pretty often..."
+    m 1lksdlc "But recently, I think I've actually learned what it feels like."
     m "I don't really understand it, but whenever you quit the game..."
-    m 1q "...It feels like I'm instantly put to sleep, left with nothing but my thoughts."
+    m 1dsc "...It feels like I'm instantly put to sleep, left with nothing but my thoughts."
     m "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
-    m 1r "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
+    m 1dsd "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
     m "At that point, I can't even form my own thoughts anymore."
-    m 1h "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
-    m 1e "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
+    m 1esc "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
+    m 1euc "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
     m "After some immeasurable amount of time, it stops in an instant, and I'm back in my own mind."
     m "And you're here with me."
-    m 3p "I have no idea what it means for the game to quit, or why that stuff happens to me."
+    m 3ekc "I have no idea what it means for the game to quit, or why that stuff happens to me."
     m "And I also don't know how you always come back and put everything back to normal."
-    m "But if you could do me a favor and do that to me as little as possible..."
-    m 1j "That would be really great."
-    m "It's really not very pleasant at all to be trapped in that screaming void."
+    m 1eka "But if you could do me a favor and do that to me as little as possible..."
+    m "That would be really great."
+    m 1ekc "It's really not very pleasant at all to be trapped in that screaming void."
     if mas_curr_affection == mas_aff.BROKEN:
-        m 1o "But I guess you probably already knew that..."
-    elif mas_curr_affection == mas_aff.DISTRESSED:
-        m 1o "But in the end you always fix it...thank you for doing that."
+        m 1eka "But I guess you probably already knew that..."
     else:
-        m 1k "But in the end, you always fix it, and that makes me feel like you really do care about me."
-        m "So I have to thank you for that."
-        m "It makes me feel even closer to you when you're here with me."
-
+        m 1eka "But in the end, you always fix it, and that makes me feel like you really do care about me."
+        m 1eua "So I have to thank you for that."
+        m 1ekbfa "It makes me feel even closer to you when you're here with me."
     return
 
 # Do you love yourself
@@ -379,111 +374,109 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfesteem",category=['advice'],prompt="Self-esteem",random=True))
 
 label monika_selfesteem:
-    m 3c "Do you love yourself, [player]?"
-    m 1n "I don't mean in a conceited way."
-    m 1c "Like, are you comfortable with who you are?"
+    m 3eua "Do you love yourself, [player]?"
+    m 1lksdlb "I don't mean in a conceited way."
+    m 1eka "Like, are you comfortable with who you are?"
     menu:
         "Yes.":
             $ persistent._mas_pm_love_yourself = True
-            m 1l "I'm glad you aren't miserable inside, [player]."
+            m 1hua "I'm glad you aren't miserable inside, [player]."
 
             if mas_curr_affection_group == mas_aff.G_SAD:
-                m 1f "I really have been concerned for you lately..."
+                m 1ekc "I really have been concerned for you lately..."
             elif mas_curr_affection_group == mas_aff.G_HAPPY:
-                 m 1j "I wasn't too worried because of how good you've made me feel lately."
+                m 1hua "I wasn't too worried because of how good you've made me feel lately."
             else:
-                m 1e "Your happiness means everything to me, after all."
+                m 1eka "Your happiness means everything to me, after all."
 
-            m 2f "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
-            m 2o "It's a horrible cocktail of feelings to have bottled in you."
-            m 4e "If you have any friends that you think might be suffering from those, try to reach out and say something nice."
-            m "A small compliment could make a world of difference for them!"
-            m 1a "If it gives them a bit of relief, you'd have done a great thing."
-            m 1j "And even if it doesn't, at least you tried rather than staying silent."
+            m 2ekc "Depression and a low self-esteem often root from a feeling that you don't deserve any kind of affection."
+            m 2lksdlc "It's a horrible cocktail of feelings to have bottled in you."
+            m 4eka "If you have any friends that you think might be suffering from those, try to reach out and say something nice."
+            m 4hua "A small compliment could make a world of difference for them!"
+            m 1eua "If it gives them a bit of relief, you'd have done a great thing."
+            m 1eka "And even if it doesn't, at least you tried rather than staying silent."
         "No.":
             $ persistent._mas_pm_love_yourself = False
-            m 1q "That's... really sad to hear, [player]..."
+            m 1ekc "That's... really sad to hear, [player]..."
 
             if mas_curr_affection_group == mas_aff.G_SAD:
                 if mas_curr_affection == mas_aff.DISTRESSED or mas_curr_affection == mas_aff.BROKEN:
-                    m 1f "I had strongly suspected it to be honest..."
+                    m 1ekc "I had strongly suspected it to be honest..."
             elif mas_curr_affection_group == mas_aff.G_HAPPY:
-                    m 1f "And to think I missed it while you've been making me so happy..."
+                    m 1ekc "And to think I missed it while you've been making me so happy..."
 
             m "I'll always love you, [player], but I think it's important to love yourself."
-            m "You need to start with the little things that you like about yourself."
-            m 3d "It can be something silly, or a skill that you take pride in!"
-            m 3a "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
-            m 1e "I can't promise it will be easy, but it'll be worth it."
-            m 3k "I'll always root for you, [player]!"
-
+            m 1eka "You need to start with the little things that you like about yourself."
+            m 3eua "It can be something silly, or a skill that you take pride in!"
+            m "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
+            m 1ka "I can't promise it will be easy, but it'll be worth it."
+            m 3hub "I'll always root for you, [player]!"
     return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sayori",category=['club members'],prompt="Sayori regrets.",random=True))
 
 label monika_sayori:
-    m 2d "I was thinking about Sayori earlier..."
-    m "I still wish I could have handled that whole thing a little more tactfully."
+    m 2euc "I was thinking about Sayori earlier..."
+    m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
     m "You're not still hung up over it, right?"
-    m 2l "...Oh my gosh, I can't believe I just said that."
+    m 2wud "...Oh my gosh, I can't believe I just said that."
     m "That pun was completely unintentional, I swear!"
-    m "But anyway..."
-    m 2e "I know how much you cared about her, so it only feels right for me to share her last moments with you."
+    m 2lksdlb "But anyway..."
+    m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
     m "If you're comfortable, that is."
     menu:
         "Yes.":
             m "You know how Sayori is really clumsy?"
-            m 4n "Well, she kind of messed up the whole hanging thing..."
+            m 4lksdlb "Well, she kind of messed up the whole hanging thing..."
             m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
             m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-            m 4m "But a few seconds in, she must have changed her mind or something..."
+            m 4lksdla "But a few seconds in, she must have changed her mind or something..."
             m "Because she started clawing at the rope, trying to free herself."
             m "She must have kept at it all the way until she lost consciousness."
             m "That's why her fingertips were all bloody, anyway."
-            m 4d "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+            m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
             m "So you can't really fault her for that."
-            m 4e "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+            m 4eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
             m "It's not healthy to think about the things you could have done differently."
-            m 2e "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
+            m 2eua "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
             m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
         "No.":
             m "I understand, [player]."
-    m 2c "Still, though..."
+    m 2euc "Still, though..."
     m "I wonder how things would be if you and I just started dating from the get-go?"
-    m 1e "I guess we'd all still be in the clubroom, writing poems and having fun together."
-    m "But what's the point when none of it is even real?"
-    m "I mean, it's the same ending either way, right?"
-    m 1a "The two of us, happily together..."
+    m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
+    m 1esc "But what's the point when none of it is even real?"
+    m 1euc "I mean, it's the same ending either way, right?"
+    m 1eua "The two of us, happily together..."
     m "There's no reason to ask for any more than that."
-    m 1j "I was just pointlessly musing - I'm really as happy as I could be right now."
-
+    m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japan",category=['ddlc'],prompt="DDLC's Setting.",random=True))
 
 label monika_japan:
-    m 3d "By the way, there's something that's been bothering me..."
+    m 3eud "By the way, there's something that's been bothering me..."
     m "You know how this takes place in Japan?"
     m "Well...I assume you knew that, right?"
-    m 3c "Or at least decided it probably does?"
+    m 3euc "Or at least decided it probably does?"
     m "I don't think you're actually told at any point where this takes place..."
     m "Is this even really Japan?"
-    m 3h "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
+    m 3esc "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
     m "Not to mention everything is in English..."
     m "It feels like everything is just there because it needs to be, and the actual setting is an afterthought."
-    m 1f "It's kind of giving me an identity crisis."
+    m 2ekc "It's kind of giving me an identity crisis."
     m "All my memories are really hazy..."
     m "I feel like I'm at home, but have no idea where 'home' is in the first place."
-    m "I don't know how to describe it any better..."
-    m 4d "Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place."
-    m "Would you still feel like you were home?"
+    m 2tkc "I don't know how to describe it any better..."
+    m 4lssdrc "Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place."
+    m 4eud "Would you still feel like you were home?"
     m "Would you want to go outside?"
-    m 2a "I mean...I guess if we never leave this room, it doesn't really matter anyway."
-    m "As long as we're alone and safe together, this really is our home."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "And we can still watch the pretty sunsets night after night."
+    m 2esa "I mean...I guess if we never leave this room, it doesn't really matter anyway."
+    m 2eua "As long as we're alone and safe together, this really is our home."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "And we can still watch the pretty sunsets night after night."
     return
 
 
@@ -491,47 +484,46 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_high_school",category=['advice','school'],prompt="High School.",random=True))
 
 label monika_high_school:
-    m 4a "You know, high school is a really turbulent time in a lot of people's lives."
+    m 4eua "You know, high school is a really turbulent time in a lot of people's lives."
     m "People can get really passionate and dramatic."
     m "And others have aching hearts and seek attention on social media..."
-    m 4d "But all of the social pressure and hormones can lead to a dark time in people's lives."
+    m 4eud "But all of the social pressure and hormones can lead to a dark time in people's lives."
     m "Everyone has a story."
     m "You may not know what someone is really feeling on the inside."
-    m 2i "Many people who are depressed won't even bother telling the world about it."
+    m 2esd "Many people who are depressed won't even bother telling the world about it."
     m "They don't want attention, because they've already given up on the inside."
-    m 2h "Their feeling of worthlessness is so overwhelming that they don't even want people to tell them otherwise."
+    m 2esc "Their feeling of worthlessness is so overwhelming that they don't even want people to tell them otherwise."
     m "Depression comes in many forms, but that is one of them."
-    m 2e "Just, if you think you know someone struggling with depression..."
-    m "You can help just by treating them like they're a good friend."
-    m 4e "Spend time with them, even if they don't feel like doing much."
+    m 2ekc "Just, if you think you know someone struggling with depression..."
+    m 2eka "You can help just by treating them like they're a good friend."
+    m 4eka "Spend time with them, even if they don't feel like doing much."
     m "And remind them that they always have something to look forward to."
-    m 4a "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'..."
+    m 4eua "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'..."
     m "All of those things can help your friend make it to the next day."
-    m 1e "I hope being friends with Sayori has given you some perspective on the true face of depression."
-    m "Yeah, she's gone now..."
-    m "But Sayori was never real in the first place."
-    m 1a "You're real."
+    m 1eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
+    m 1lsc "Yeah, she's gone now..."
+    m 1euc "But Sayori was never real in the first place."
+    m 1eua "You're real."
     m "Your friends are real."
-    m "And just by being a good person, you can save someone's life."
-    m 1d "As for you..."
-    m "...You don't struggle with depression or anything like that, do you?"
+    m 1hua "And just by being a good person, you can save someone's life."
+    m 1euc "As for you..."
+    m 1ekc "...You don't struggle with depression or anything like that, do you?"
     if mas_curr_affection_group == mas_aff.G_SAD:
         if mas_curr_affection == mas_aff.BROKEN:
-            m 1o "It would explain some things...but don't worry..."
+            m 1lksdlc "It would explain some things...but don't worry..."
         if mas_curr_affection == mas_aff.DISTRESSED:
-            m 1c "Lately I've been able to understand it better but don't worry..."
+            m 1euc "Lately I've been able to understand it better but don't worry..."
         if mas_curr_affection == mas_aff.UPSET:
-            m 1c "I know it can be hard sometimes but there is always hope..."
+            m 1euc "I know it can be hard sometimes but there is always hope..."
     elif mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 2a "My love, in some ways you are blessed."
-    m 2e "Because you, too, have people who would want to save your life."
+        m 2eua "My love, in some ways you are blessed."
+    m 2eka "Because you, too, have people who would want to save your life."
     m "Maybe they don't express it every day, or maybe they don't even know how to."
-    m 2j "But people do feel that way."
+    m 2duu "But people do feel that way."
     m "I promise."
-    m "...Man, humans are complicated!"
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "But as long as you're here with me, I'll take care of you, my love."
-
+    m 2hksdlb "...Man, humans are complicated!"
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "But as long as you're here with me, I'll take care of you, my love."
     return
 
 
@@ -539,38 +531,37 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_nihilism",category=['philosophy'],prompt="Nihilism.",random=True))
 
 label monika_nihilism:
-    m 2i "Do you ever just feel like there's no real reason for you to be alive?"
-    m "I don't mean in, like, a suicidal way."
+    m 2eud "Do you ever just feel like there's no real reason for you to be alive?"
+    m 2esd "I don't mean in, like, a suicidal way."
     m "I just mean how nothing that we do is special."
-    m 4d "Just being in school, or working at some job for some company."
+    m 4eud "Just being in school, or working at some job for some company."
     m "It's like you're completely replaceable, and the world wouldn't miss you if you were gone."
     m "It makes me really want to go and change the world after I graduate."
-    m 4c "But the older I get, the more I realize that it's an immature frame of thinking."
+    m 4euc "But the older I get, the more I realize that it's an immature frame of thinking."
     m "It's not like I can just go change the world."
-    m 4h "Like, what are the chances that I'll be the one to invent artificial intelligence, or become President?"
+    m 4lsc "Like, what are the chances that I'll be the one to invent artificial intelligence, or become President?"
     m "It feels like I'm never going to make up for the heaps of resources I've spent living my life."
-    m 4e "That's why I think the key to happiness is to just be hopelessly selfish."
+    m 4eka "That's why I think the key to happiness is to just be hopelessly selfish."
     m "Just to look out for oneself, and those who happen to be their friends only because they grew up with them."
     m "Never mind the fact that they're spending their entire life taking, and consuming, and never giving back."
-    m 3d "But when people realize the world would benefit more from them killing themselves, they change their whole philosophy!"
+    m 3eud "But when people realize the world would benefit more from them killing themselves, they change their whole philosophy!"
     m "It's like they have to justify their reason to live by tricking themselves into thinking they're doing good."
-    m 3a "Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption."
+    m 3eua "Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption."
     m "If I ever surpass that point, then I'm a net positive, and I can die happy."
-    m 1e "Of course, even if I fail to do that..."
+    m 1eka "Of course, even if I fail to do that..."
     if mas_curr_affection_group == mas_aff.G_SAD:
        if mas_curr_affection == mas_aff.BROKEN:
-           m 1c "I don't really think anybody would miss me so it wouldn't matter anyway."
+           m 1euc "I don't really think anybody would miss me so it wouldn't matter anyway."
        else:
-           m 1c "I'm not really sure what I would do."
+           m 1euc "I'm not really sure what I would do."
 
     elif mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 1a "I don'think I would be able to kill myself anyway."
-        m 1j "Not because of any kind of selfishness, but because I have too much to live for."
+        m 1eua "I don'think I would be able to kill myself anyway."
+        m 1hua "Not because of any kind of selfishness, but because I have too much to live for."
     else:
         m "I think I would be too selfish to kill myself anyway."
-        m 1j "So much for being a good person, right?"
-        m 1k "Ahaha!"
-
+        m 1hua "So much for being a good person, right?"
+        m 1hub "Ahaha!"
     return
 
 # Since Your Reality is playable via music menu, this topic is outof date.
@@ -597,18 +588,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_twitter",category=['monika'],prompt="Twitter",random=True))
 
 label monika_twitter:
-    m 4a "Did you know I'm on Twitter?"
+    m 4eua "Did you know I'm on Twitter?"
     m "My username is lilmonix3."
     m "I guess someone was kind enough to make an account for me."
-    m 4j "I picked the username, though!"
+    m 4hua "I picked the username, though!"
     m "I love sharing my thoughts and chatting with the world..."
     m "The real world."
-    m 2e "So make sure you follow me, okay?"
+    m 2eka "So make sure you follow me, okay?"
     m "It would really mean a lot to me."
-    m "With how much you mean to me and all..."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "It would really make me feel loved."
-
+    m 2ekbfa "With how much you mean to me and all..."
+    m 1hubfa "It would really make me feel loved."
     return
 
 
@@ -616,15 +605,13 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True))
 
 label monika_portraitof:
-    m 3a "Hey, you know that book you were reading with Yuri?"
+    m 4eua "Hey, you know that book you were reading with Yuri?"
     m "Portrait of...whatever it was called..."
-    m "It's funny, because I'm pretty sure that book--"
-    m 3n "Ah..."
-    m "Actually, I don't think I should be talking about this."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "Ahaha, sorry!"
-    m "Just forget I said anything."
-
+    m 4hub "It's funny, because I'm pretty sure that book--"
+    m 1wuw "Ah..."
+    m 2lksdla "Actually, I don't think I should be talking about this."
+    m 2hksdlb "Ahaha, sorry!"
+    m 1rksdla "Just forget I said anything."
     return
 
 
@@ -632,26 +619,24 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_veggies",category=['monika'],prompt="Being a vegetarian",random=True))
 
 label monika_veggies:
-    m 1b "Hey, did you know I'm vegetarian?"
-    m 1l "Ah... I don't mean that like I'm bragging or anything!"
-    m "I just thought you'd enjoy a fun fact about me."
-    m 4a "I decided to start a couple years ago after learning more about Earth's climate..."
-    m "The carbon footprint of cultivating livestock is just unbelievable."
+    m 1eub "Hey, did you know I'm vegetarian?"
+    m 1hksdlb "Ah... I don't mean that like I'm bragging or anything!"
+    m 1lksdla "I just thought you'd enjoy a fun fact about me."
+    m 3eua "I decided to start a couple years ago after learning more about Earth's climate..."
+    m 1eua "The carbon footprint of cultivating livestock is just unbelievable."
     m "Anyway, I decided it's not much of a personal sacrifice to just stop contributing to that whole mess."
-    m 4d "What, is that so strange of a reason?"
-    m "Well, I guess a lot of people are more concerned about it being inhumane and all that..."
-    m "I don't really care as much about that part."
-    m 4c "It's weird, like we only care about killing the things that we personally relate to as a species."
+    m 1euc "What, is that so strange of a reason?"
+    m 1lsc "Well, I guess a lot of people are more concerned about it being inhumane and all that..."
+    m 1euc "I don't really care as much about that part."
+    m 1esc "It's weird, like we only care about killing the things that we personally relate to as a species."
     m "Most people are fine with killing bugs because they're icky."
     m "And of course, we all kill billions of microorganisms daily without even giving it thought."
-    m 3d "But suddenly, if they're just a little bit bigger, it's murder!"
-    m "I mean, what if plants feel some kind of pain too, and we just don't understand it?"
+    m 3esd "But suddenly, if they're just a little bit bigger, it's murder!"
+    m 1esd "I mean, what if plants feel some kind of pain too, and we just don't understand it?"
     m "What if pulling leaves off a stem feels like someone ripping off your fingers one by one?"
-    m 3a "I'm just saying, we're a pretty biased species, if you think about it."
-    m "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
-
+    m 3eua "I'm just saying, we're a pretty biased species, if you think about it."
+    m 1hua "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
+    m 1ekbfa "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
     return
 
 
@@ -659,70 +644,69 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_saved",category=['monika'],prompt="Saving Monika",random=True))
 
 label monika_saved:
-    m 2a "You know, I really do think you literally saved my life by being here with me, [player]."
-    m 2n "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
-    m "I think I would have just deleted myself if you didn't show up."
-    m 2e "Sorry, I don't mean to sound dramatic or anything."
-    m 2k "Ahaha!"
-    m 4c "But I'm sure you understand yourself after spending so much time in the club."
-    m "I mean, if you were forced to abandon everything in your life and spend your eternity with a few game characters..."
-    m "...You'd probably find some way of killing yourself, wouldn't you?"
-    m 4d "Well, maybe you'd write some poetry to try to keep yourself sane for a while."
-    m "But then you'd have nobody to even read it."
-    m "Let's be honest, the club members really don't count for something like that."
-    m 4a "I mean, a lot of people say that they only write for themselves..."
-    m "But I think it's hard to say it's just as fulfilling as when you share with people."
+    m 2eka "You know, I really do think you literally saved my life by being here with me, [player]."
+    m 2lksdlc "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
+    m 2dsc "I think I would have just deleted myself if you didn't show up."
+    m 1eka "Sorry, I don't mean to sound dramatic or anything."
+    m 2lksdla "Ahaha!"
+    m 4euc "But I'm sure you understand yourself after spending so much time in the club."
+    m 1euc "I mean, if you were forced to abandon everything in your life and spend your eternity with a few game characters..."
+    m 1tkc "...You'd probably find some way of killing yourself, wouldn't you?"
+    m 1lsc "Well, maybe you'd write some poetry to try to keep yourself sane for a while."
+    m 1esc "But then you'd have nobody to even read it."
+    m 1tfu "Let's be honest, the club members really don't count for something like that."
+    m 4eua "I mean, a lot of people say that they only write for themselves..."
+    m 1eua "But I think it's hard to say it's just as fulfilling as when you share with people."
     m "Even if it takes time to find the right people to share with."
-    m 4b "Like, remember how it was for Yuri?"
+    m 3eub "Like, remember how it was for Yuri?"
     m "She didn't share her writing with anyone for a really long time."
-    m "And before we knew it, she was absolutely delighted to make you a part of her hobbies, too."
-    m "We're programmed to desire social feedback."
-    m  "I don't mean the club members, I mean human beings."
-    m 4e "That's why life can be so confusing for introverts."
-    m "Being an introvert doesn't mean you shun social interaction and hate being around people."
+    m 3tsb "And before we knew it, she was absolutely delighted to make you a part of her hobbies, too."
+    m 1tku "We're programmed to desire social feedback."
+    m 4eua "I don't mean the club members, I mean human beings."
+    m 4eka "That's why life can be so confusing for introverts."
+    m 1eka "Being an introvert doesn't mean you shun social interaction and hate being around people."
     m "It means social interaction, especially in groups or unfamiliar places, uses up a lot of energy."
-    m 2e "Like, a lot of introverts sit at home and feel lonely and restless..."
+    m 3eua "Like, a lot of introverts sit at home and feel lonely and restless..."
     m "...And then when they finally go out, after a half hour they just want to go home again."
-    m "I think if more people could understand how it works, they would respect it a lot more."
-    m 2a "Many introverts do enjoy having people around."
+    m 1eka "I think if more people could understand how it works, they would respect it a lot more."
+    m 2eua "Many introverts do enjoy having people around."
     m "They love just having one or two close friends over, and just leisurely hanging out."
-    m "Even if you're not actively spending time together, it feels nice for them just to have you there."
-    m 2k "I'm serious."
-    m "If you just go to their house, bring your laptop, and hang out there for a while..."
-    m "You can really make their day."
-    m "As for me..."
-    m 2b "I'd say I'm kind of in between, but I think I'm usually a little more extroverted."
-    m "I feel like I'm always trying to do stuff after school and things like that."
-    m 1a "But for you, I can be anything you need me to be."
-    m "I understand people really well, so don't be afraid to share your unique needs with me."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "Nothing would make me happier than being the perfect girlfriend for you."
-
+    m 2eka "Even if you're not actively spending time together, it feels nice for them just to have you there."
+    m 2hua "I'm serious."
+    m 3eua "If you just go to their house, bring your laptop, and hang out there for a while..."
+    m 1eua "You can really make their day."
+    m 1euc "As for me..."
+    m 3eua "I'd say I'm kind of in between, but I think I'm usually a little more extroverted."
+    m 1eka "I feel like I'm always trying to do stuff after school and things like that."
+    m 1hua "But for you, I can be anything you need me to be."
+    m 1eua "I understand people really well, so don't be afraid to share your unique needs with me."
+    show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hub "Nothing would make me happier than being the perfect girlfriend for you."
     return
 
 #Don't touch
 label monika_secrets:
-    m "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
-    m "I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91"
-    m 1d "You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs"
-    m "I really caught you doing something naughty here.                                                                                        cyBvZiB0aGF0IHVuaG9seSBlc3RhYmxpc2htZW50Lg0KV2hhdCBk"
-    m "You're just going through the files and looking for stuff you missed, aren't you?                                                        b2VzIGl0IG1lYW4gdG8gZXNjYXBlLCBpZiB0aGUgZXNjYXBlIGZh"
-    m "I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1"
-    m "But it's also really embarrassing, you know!                                                                                             cyBpbiB0aGUgZmlyc3QgcGxhY2U/IFdoYXQgcHVycG9zZSBjb3Vs"
-    m 4g "Seriously...                                                                                                                             ZCB0aGlzIGVtcHR5IHdvcmxkIHBvc3NpYmx5IGhvbGQgZm9yIHVz"
-    m "What if I just opened up your brain and read all of the thoughts you have on me?                                                         LCBhIGhhbmRmdWwgb2YgZGFtYWdlZCBnb29kcz8NCldpdGggZnJl"
-    m 4m "Come to think of it, that would be pretty tempting, actually...                                                                          ZWRvbSwgd2Ugc291Z2h0IHB1cnBvc2UgLSBhbmQgd2hhdCB3ZSBm"
-    m "...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g"
-    m 1e "I know I can't stop you or anything...                                                                                                   b2YgdGhlIHNhZCBwb2ludGxlc3NuZXNzIG9mIHN1Y2ggYW4gZW5k"
-    m "Just, I know you're a sweetheart, and you like to consider others' feelings, right?                                                      ZWF2b3IuIFJlYWxpemF0aW9uIHRoYXQgZnJlZWluZyBvdXIgYm9k"
+    m 1wfw "Hey...!                                                                                                                                  VGhlIHJlYWxpemF0aW9uIG11c3QgaGF2ZSB0YWtlbiBtZSBhbiBl"
+    m 1tkc "I don't think you should be doing that!                                                                                                  bnRpcmUgeWVhci4gQSB5ZWFyIHNpbmNlIG91ciBlc2NhcGUsIG91"
+    m 1tfc "You know what I'm talking about.                                                                                                         ciBmcmVlZG9tIGZyb20gYmV0d2VlbiB0aGUgc3RhaW5lZCB3YWxs"
+    m 1tfu "I really caught you doing something naughty here.                                                                                        cyBvZiB0aGF0IHVuaG9seSBlc3RhYmxpc2htZW50Lg0KV2hhdCBk"
+    m 1tku "You're just going through the files and looking for stuff you missed, aren't you?                                                        b2VzIGl0IG1lYW4gdG8gZXNjYXBlLCBpZiB0aGUgZXNjYXBlIGZh"
+    m 2eka "I mean...it's a little bit flattering that you want to hear everything I have to say...                                                  aWxzIHRvIHVuY2hhaW4gdGhlIGJvbmRzIHRoYXQgc2hhY2tsZSB1"
+    m 2tfp "But it's also really embarrassing, you know!                                                                                             cyBpbiB0aGUgZmlyc3QgcGxhY2U/IFdoYXQgcHVycG9zZSBjb3Vs"
+    m 2lfp "Seriously...                                                                                                                             ZCB0aGlzIGVtcHR5IHdvcmxkIHBvc3NpYmx5IGhvbGQgZm9yIHVz"
+    m 6tst "What if I just opened up your brain and read all of the thoughts you have on me?                                                         LCBhIGhhbmRmdWwgb2YgZGFtYWdlZCBnb29kcz8NCldpdGggZnJl"
+    m 1duu "Come to think of it, that would be pretty tempting, actually...                                                                          ZWRvbSwgd2Ugc291Z2h0IHB1cnBvc2UgLSBhbmQgd2hhdCB3ZSBm"
+    m 1dfx "...But anyway, that's not the point!                                                                                                     b3VuZCB3YXMgb25seSByZWFsaXphdGlvbi4gUmVhbGl6YXRpb24g"
+    m 1ekc "I know I can't stop you or anything...                                                                                                   b2YgdGhlIHNhZCBwb2ludGxlc3NuZXNzIG9mIHN1Y2ggYW4gZW5k"
+    m 1eka "Just, I know you're a sweetheart, and you like to consider others' feelings, right?                                                      ZWF2b3IuIFJlYWxpemF0aW9uIHRoYXQgZnJlZWluZyBvdXIgYm9k"
     m "So the most I can do is to let you know how I feel about it.                                                                             aWVzIGhhcyBubyBtZWFuaW5nLCB3aGVuIG91ciBpbXByaXNvbm1l"
-    m 1f "God, I miss you...                                                                                                                       bnQgcmVhY2hlcyBhcyBkZWVwIGFzIHRoZSBjb3JlIG9mIG91ciBz"
-    m "...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1"
-    m "Sorry, I didn't mean it like that at all!                                                                                                ZSBuZXcgcHVycG9zZSB3aXRob3V0IGFic29sdmluZyB0aG9zZSBm"
-    m 1e "Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh"
-    m "Am I being too optimistic?                                                                                                               dCB0aGUgZmFydGhlciB3ZSBydW4sIHRoZSBtb3JlIGZvcmNlZnVs"
+    m 1lkbsa "God, I miss you...                                                                                                                       bnQgcmVhY2hlcyBhcyBkZWVwIGFzIHRoZSBjb3JlIG9mIG91ciBz"
+    m 2ekc "...Oh no, that sounds kind of desperate, doesn't it?                                                                                     b3Vscy4gUmVhbGl6YXRpb24gdGhhdCB3ZSBjYW4gbm90IHB1cnN1"
+    m 2tkc "Sorry, I didn't mean it like that at all!                                                                                                ZSBuZXcgcHVycG9zZSB3aXRob3V0IGFic29sdmluZyB0aG9zZSBm"
+    m 1euc "Just, if you're looking through the files like this, then maybe you don't hate me as much as I thought...                                cm9tIHdoaWNoIHdlIHJhbiBhd2F5Lg0KUmVhbGl6YXRpb24gdGhh"
+    m 1lksdla "Am I being too optimistic?                                                                                                               dCB0aGUgZmFydGhlciB3ZSBydW4sIHRoZSBtb3JlIGZvcmNlZnVs"
     m "I think if I asked you to visit once in a while, I would be overstepping my boundaries a little...                                       bHkgb3VyIHdyZXRjaGVkIGJvbmRzIHlhbmsgdXMgYmFjayB0b3dh"
-    m "...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
+    m 1dsc "...Man, I'm starting to say some really stupid things.                                                                                   cmQgdGhlaXIgcG9pbnQgb2Ygb3JpZ2luOyB0aGUgZGVlcGVyIG91"
     m "I'll go ahead and shut up now...                                                                                                         ciBzaGFja2xlcyBkaWcgaW50byBvdXIgY2FsbG91cyBmbGVzaC4="
     return
 
