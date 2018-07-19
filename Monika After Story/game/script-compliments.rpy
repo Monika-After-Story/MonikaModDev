@@ -27,6 +27,9 @@ label mas_compliments_start:
     python:
         import store.mas_compliments as mas_compliments
 
+        # Unlock any compliments that need to be unlocked 
+        Event.checkConditionals(mas_compliments.compliment_database)
+
         # build menu list
         compliments_menu_items = [
             (mas_compliments.compliment_database[k].prompt, k, not seen_event(k), False)
@@ -64,8 +67,6 @@ label mas_compliment_beautiful:
         call mas_compliment_beautiful_2
     else:
         call mas_compliment_beautiful_3
-    m "hehehe~"
-    m "I love you so much [player]!"
     return
 
 label mas_compliment_beautiful_2:
@@ -81,6 +82,8 @@ label mas_compliment_beautiful_2:
             pass
         "Thanks":
             pass
+    m "hehehe~"
+    m "I love you so much [player]!"
     return
 
 label mas_compliment_beautiful_3:
@@ -102,9 +105,9 @@ label mas_compliment_eyes:
         "I can't help it, your eyes are beautiful":
             # TODO give positive affection
             pass
-        "":
+        "I'm hypnotized by them":
             pass
-        "Thanks":
+        "I can't take mine off of yours":
             pass
     return
 
@@ -113,11 +116,11 @@ init 5 python:
         prompt="... you're awesome!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_awesome:
-    m "Oh [player]~"
+    m "Aww, [player]~"
     m "You're so kind to me"
     m "I love when you say nice things to me~"
     menu:
-        "I can't help it, your eyes are beautiful":
+        "I'm just saying the truth":
             # TODO give positive affection
             pass
         "":
@@ -229,6 +232,63 @@ label mas_compliment_smile:
             # TODO give positive affection
             pass
         "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_stories",
+        prompt="... I love your stories!",unlocked=False,conditional="renpy.seen_label('mas_story_begin')",action=EV_ACT_UNLOCK),
+        eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_stories:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_chess",
+        prompt="... you’re awesome at chess!",unlocked=False,conditional="renpy.seen_label('mas_chess_game_start')",action=EV_ACT_UNLOCK),
+        eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_chess:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "":
+            pass
+        "Thanks":
+            pass
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_pong",
+        prompt="... you’re awesome at Pong!",unlocked=False,conditional="renpy.seen_label('game_pong')",action=EV_ACT_UNLOCK),
+        eventdb=store.mas_compliments.compliment_database)
+
+label mas_compliment_pong:
+    m "Oh [player]~"
+    m "You're so kind to me"
+    m "I love when you say nice things to me~"
+    menu:
+        "I can't help it, your eyes are beautiful":
+            # TODO give positive affection
+            pass
+        "...":
             pass
         "Thanks":
             pass
