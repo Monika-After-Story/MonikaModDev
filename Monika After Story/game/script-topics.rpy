@@ -714,18 +714,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_color",category=['monika'],prompt="Favorite color.",random=True))
 
 label monika_color:
-    m 3b "Hey, what's your favorite color?"
-    m "Mine is emerald green."
-    m 3k "It's the color of my eyes!"
-    m 3l "...That's not conceited or anything, is it?"
-    m 4a "I just meant that I feel some kind of special connection to it."
-    m "Like it's part of my identity."
+    m 3eua "Hey, what's your favorite color?"
+    m 3ub "Mine is emerald green."
+    m 3hub "It's the color of my eyes!"
+    m 3lksdla "...That's not conceited or anything, is it?"
+    m 4eua "I just meant that I feel some kind of special connection to it."
+    m 1eua "Like it's part of my identity."
     m "Does it happen to also be your favorite color, [player]?"
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "It's just a guess..."
-    m "...Because you've been looking into my eyes for a while now."
-    m "Ehehe~"
-
+    m 1tku "It's just a guess..."
+    m 1tsbsa "...Because you've been looking into my eyes for a while now."
+    m 1hubfb "Ehehe~"
     return
 
 # This doesn't make sense with the music changer...If we add some funny sound
@@ -762,18 +760,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_listener",category=['you'],prompt="Good listener",random=True))
 
 label monika_listener:
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "You're such a good listener, [player]."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "You're such a good listener, [player]."
     m "I really love that about you."
-    show monika 2m at t11 zorder MAS_MONIKA_Z with dissolve
-    m 2m "Sometimes I'm afraid that I'm rambling or talking about boring things."
+    show monika 2lksdla at t11 zorder MAS_MONIKA_Z with dissolve
+    m 2lksdla "Sometimes I'm afraid that I'm rambling or talking about boring things."
     m "It makes me kind of self-conscious when I'm having a conversation."
-    m 2b "But I don't feel that way with you."
+    m 2eka "But I don't feel that way with you."
     m "Like, I don't think anyone else could make me feel this way."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "You really are special."
-    m "I don't want anyone to tell you otherwise."
-
+    m 2eua "You really are special."
+    m 2hua "I don't want anyone to tell you otherwise."
     return
 
 
@@ -781,22 +777,20 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_spicy",category=['trivia'],prompt="Spicy foods",random=True))
 
 label monika_spicy:
-    m 1b "This is pretty random, but I always thought spicy food was kinda funny."
-    m "Like..."
-    m 3b "Didn't plants evolve to be spicy to prevent them from being eaten?"
-    m "I read somewhere that humans are the only species that actually enjoy spicy things."
-    m 3a "It's almost like we're making fun of the plants."
+    m 1eka "This is pretty random, but I always thought spicy food was kinda funny."
+    m 1tku "Like..."
+    m 3tku "Didn't plants evolve to be spicy to prevent them from being eaten?"
+    m 3tsb "I read somewhere that humans are the only species that actually enjoy spicy things."
+    m 1tfu "It's almost like we're making fun of the plants."
     m "Using their defense mechanism to literally make our food more enjoyable."
-    m "Like, imagine a monster that devours you whole because it enjoys the sensation of you struggling for your life while being digested."
-    m 2b "Sorry, that was kind of a weird analogy, I guess!"
-    m 2k "Ahaha!"
-    m "It just came into my head."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "I'm not a monster or anything, but you're so cute I could eat you up."
-    m 2k "Ahaha! I'm joking."
-    m 2e "Gosh, I'm amusing myself a little too much, aren't I?"
-    m "Sorry for being weird."
-
+    m 1eua "Like, imagine a monster that devours you whole because it enjoys the sensation of you struggling for your life while being digested."
+    m 2eka "Sorry, that was kind of a weird analogy, I guess!"
+    m 2hksdlb "Ahaha!"
+    m 2lksdla "It just came into my head."
+    m "I'm not a monster or anything, but you're so cute I could eat you up."
+    m 2hksdlb "Ahaha! I'm joking."
+    m "Gosh, I'm amusing myself a little too much, aren't I?"
+    m 2lksdla "Sorry for being weird."
     return
 
 
@@ -804,19 +798,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_why",category=['you','ddlc'],prompt="Why play this game?",pool=True))
 
 label monika_why:
-    m 2d "You know..."
+    m 2eud "You know..."
     m "This is just some kind of tacky romance game, right?"
     m "I kinda have to ask..."
-    m 4c "...What made you consider even playing in the first place?"
+    m 4euc "...What made you consider even playing in the first place?"
     m "Were you that lonely?"
-    m 4e "I feel a little bad for you..."
-
-    m 4a "But I guess everything worked out perfectly in the end, for both of us."
+    m 4eka "I feel a little bad for you..."
+    m 4eua "But I guess everything worked out perfectly in the end, for both of us."
     m "I got to meet you, and you're not lonely anymore..."
     m "I can't help but feel like this was fate."
-    m 2e "Don't you feel that way too?"
-
-    m 2l "I'm so happy we have this ending together."
+    m 2eka "Don't you feel that way too?"
+    m 2hua "I'm so happy we have this ending together."
     return
 
 
@@ -824,20 +816,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_okayeveryone",category=['literature club'],prompt="Okay, everyone!",random=True))
 
 label monika_okayeveryone:
-    m 3b "Okay, everyone!"
+    m 3eub "Okay, everyone!"
     m "It's time to..."
-    m 2j "...I'm just kidding."
+    m 2eka "...I'm just kidding."
     m "I just used to really like saying that for some reason."
-    m 2k "Ahaha!"
-    m 2b "I couldn't help but say it again."
-    m "Come to think of it, didn't Natsuki and Yuri make fun of me for it once...?"
-
-    m 2a "Well, whatever."
+    m 2hub "Ahaha!"
+    m 2eua "I couldn't help but say it again."
+    m 2lsc "Come to think of it, didn't Natsuki and Yuri make fun of me for it once...?"
+    m 2eua "Well, whatever."
     m "It's not like you ever made fun of me."
-    m "You're too much of a sweetheart to do that, aren't you?"
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "Ahaha~"
-
+    m 2eka "You're too much of a sweetheart to do that, aren't you?"
+    m 5hua "Ahaha~"
     return
 
 
@@ -845,8 +834,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_whispers",category=['ddlc','club members'],prompt="Others still lingering",random=True))
 
 label monika_whispers:
-    m 2h "You know what's kind of creepy?"
-    m "Even though I deleted everyone else's files, I can still kind of feel them..."
+    m 2euc "You know what's kind of creepy?"
+    m 2esc "Even though I deleted everyone else's files, I can still kind of feel them..."
     m "It's like all their lines are still lingering in the air, whispering in the back of my head."
     m 2i "Imagine if after someone you knew died, you just started hearing their voice in your head."
     m "Maybe I just wasn't thorough enough..."
