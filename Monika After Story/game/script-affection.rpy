@@ -8,24 +8,10 @@
 # Sad - Is feeling down, not miserable or deep but certainly not her self-motivated self. Believes she'll get player. Has minor thoughts that player isn't faithful but doesn't take them seriously.
 # Upset - Feeling emotionally hurt, starting to have doubts about whether or not the player loves her and whether or not she she was right regarding what she did in the game.
 # Depressed - Convinced the player probably doesn't love her and that she may never escape to our reality.
-# Heartbroken - Belives that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
-################
+# Heartbroken - Believes that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
+#############
 
 init -1 python in mas_affection:
-    # string constants of affection levels
-#    BROKEN = "heartbroken"
-#    DISTRESSED = "distressed"
-#    UPSET = "upset"
-#    NORMAL = "normal"
-#    HAPPY = "happy"
-#    ENAMORED = "enamored"
-#    LOVE = "lovestruck"
-#    CONFUSED = "confused"
-
-    # string constants of affection groups
-#    G_SAD = "sad"
-#    G_HAPPY = "happy"
-#    G_NORMAL = "normal"
 
     # numerical constants of affection levels
     CONFUSED = 0
@@ -70,56 +56,59 @@ init python:
         global mas_curr_affection
         global mas_curr_affection_group
 
+        # store the value for easiercomparisons
+        curr_affection = persistent._mas_affection["affection"]
+
         #If affection is between 30 and 49, update good exp. Simulates growing affection.
-        if persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] < 50:
+        if  30 <= curr_affection < 50:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1
 
         #If affection is more than 50, update both exp types. Simulates increasing affection and it will now take longer to erode that affection.
-        elif persistent._mas_affection["affection"] >= 50:
+        elif curr_affection >= 50:
             persistent._mas_affection["goodexp"] = 5
             persistent._mas_affection["badexp"] = 0.5
 
         #If affection is between -30 and -49, update bad exp. Simulates erosion of affection.
-        elif persistent._mas_affection["affection"] <= -30 and persistent._mas_affection["affection"] > -50:
+        elif -50 < curr_affection <= -30:
             persistent._mas_affection["goodexp"] = 1
             persistent._mas_affection["badexp"] = 3
 
         #If affection is less than -50, update both exp types. Simulates increasing loss of affection and now harder to get it back.
-        elif persistent._mas_affection["affection"] <= -50:
+        elif curr_affection <= -50:
             persistent._mas_affection["goodexp"] = 0.5
             persistent._mas_affection["badexp"] = 5
 
         #Defines an easy current affection statement to refer to so points aren't relied upon.
-        if persistent._mas_affection["affection"] <= -100:
+        if curr_affection <= -100:
             mas_curr_affection = store.mas_affection.BROKEN
 
-        elif persistent._mas_affection["affection"] >= -99 and persistent._mas_affection["affection"] <= -50:
+        elif -99 <= curr_affection <= -50:
             mas_curr_affection = store.mas_affection.DISTRESSED
 
-        elif persistent._mas_affection["affection"] >= -49 and persistent._mas_affection["affection"] <= -30 :
+        elif -49 <= curr_affection<= -30:
             mas_curr_affection = store.mas_affection.UPSET
 
-        elif persistent._mas_affection["affection"] >= -29 and persistent._mas_affection["affection"] <= 29:
+        elif -29 <= curr_affection <= 29:
             mas_curr_affection = store.mas_affection.NORMAL
 
-        elif persistent._mas_affection["affection"] >= 30 and persistent._mas_affection["affection"] <= 49:
+        elif 30 <= curr_affection <= 49:
             mas_curr_affection = store.mas_affection.HAPPY
 
-        elif persistent._mas_affection["affection"] >= 50 and persistent._mas_affection["affection"] <= 99:
+        elif 50 <= curr_affection <= 99:
             mas_curr_affection = store.mas_affection.ENAMORED
 
-        elif persistent._mas_affection["affection"] >= 100:
+        elif curr_affection >= 100:
             mas_curr_affection = store.mas_affection.LOVE
 
         else:
             mas_curr_affection = store.mas_affection.CONFUSED
 
         #A group version for general sadness or happiness
-        if persistent._mas_affection["affection"] <= -30:
+        if curr_affection <= -30:
             mas_curr_affection_group = store.mas_affection.G_SAD
 
-        elif persistent._mas_affection["affection"] >=30:
+        elif curr_affection >=30:
             mas_curr_affection_group = store.mas_affection.G_HAPPY
 
         else:
@@ -134,6 +123,11 @@ init python:
         if not persistent._mas_affection_goodexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] += amount
+
+            # it can't get higher than 1 million
+            if persistent._mas_affection["affection"] > 1000000:
+                persistet.mas_affection["affection"] = 1000000
+
             #Updates the experience levels if necessary.
             mas_updateAffectionExp()
 
@@ -146,13 +140,19 @@ init python:
         if not persistent._mas_affection_badexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] -= amount
+
+            # it can't get lower than -1 million
+            if persistent._mas_affection["affection"] < -1000000:
+                persistet.mas_affection["affection"] = -1000000
+
             #Updates the experience levels if necessary.
             mas_updateAffectionExp()
+
 
     def mas_setAffection(
             amount=persistent._mas_affection["affection"]
         ):
-        if not persistent._mas_affection_badexp_freeze and not persistent_mas_affection_goodexp_freeze:
+        if not persistent._mas_affection_badexp_freeze and not persistent.mas_affection_goodexp_freeze:
             #Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] = amount
             #Updates the experience levels if necessary.
@@ -161,28 +161,28 @@ init python:
 
     #Used to check to see if affection level has reached the point where it should trigger an event while playing the game.
     def mas_checkAffection():
+
+        curr_affection = persistent._mas_affection["affection"]
         #If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         #This is an indicator you are heading in a negative direction.
-        if -20 <= persistent._mas_affection["affection"] <= -15 and not seen_event("mas_affection_upsetwarn"):
+        if -20 <= curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
             pushEvent("mas_affection_upsetwarn")
 
         #If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
         #This is an indicator you are heading in a positive direction.
-        elif persistent._mas_affection["affection"] >= 15 and persistent._mas_affection["affection"] <= 20 and not seen_event("mas_affection_happynotif"):
+        elif 15 <= curr_affection <= 20 and not seen_event("mas_affection_happynotif"):
             pushEvent("mas_affection_happynotif")
 
         #If affection level is greater than 50 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
-        elif persistent._mas_affection["affection"] >= 50 and not seen_event("monika_affection_nickname"):
+        elif curr_affection >= 50 and not seen_event("monika_affection_nickname"):
             pushEvent("monika_affection_nickname")
 
         #If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
-        elif persistent._mas_affection["affection"] <= -50 and not seen_event("mas_affection_apology"):
+        elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
             pushEvent("mas_affection_apology")
         #If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
-        elif persistent._mas_affection["affection"] <= -100 and not seen_event("greeting_tears"):
-            # TODO Affection doesn't have the new utility funcs to lock/unlock
-            # when merged this has to be updated to use that
-            evhand.greeting_database["greeting_tears"].unlocked = True
+        elif curr_affection <= -100 and not seen_event("greeting_tears"):
+            unlockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
 
     #Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     #Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
@@ -197,8 +197,8 @@ init python:
         if persistent.sessions["last_session_end"] is not None:
             persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
             time_difference = persistent._mas_absence_time
-            if time_difference >= datetime.timedelta(hours = 6) and time_difference <= datetime.timedelta(hours = 12):
-                #mas_gainAffection()
+            # we skip this for devs since we sometimes use older persistents
+            if config.developer:
                 pass
             elif time_difference >= datetime.timedelta(weeks = 4):
                 mas_setAffection(-115)
@@ -389,11 +389,12 @@ define mas_finalfarewell_mode = False
 # prepwork for the finalfarewell
 label mas_affection_finalfarewell_start:
     call spaceroom(hide_monika=True)
-    show emptydesk zorder 2 at i11
-    show mas_finalnote_idle zorder 3
+    show emptydesk zorder MAS_MONIKA_Z at i11
+    show mas_finalnote_idle zorder 11
 
     python:
-        HKBHideButtons()
+        mas_OVLHide()
+        mas_calRaiseOverlayShield()
         disable_esc()
         allow_dialogue = False
         store.songs.enabled = False
@@ -524,10 +525,12 @@ label mas_affection_yesapology:
     m 1f "But please be more considerate of my feelings from now on."
     m 2e "I love you so much and you mean the world to me, [player]."
     m 1duu "Thank you for putting my heart at ease~"
+    show monika 1esa
     pause 60
     jump ch30_loop
 
 label mas_affection_apologydeleted:
+    $ mas_loseAffection(modifier=3)
     m 1wud "..."
     m 2efd "[player], did you delete the apology note I wanted to keep?"
     m "Why would you do that? Are you not {i}really{/i} sorry?"
@@ -537,6 +540,8 @@ label mas_affection_apologydeleted:
 
 #Surprise function.
 # TODO: are there use cases for having this being a separate function
+# TODO: refactor this maybe to have different messages? or actually
+# make this more useful and let more messages to the player
 init python:
     def mas_surprise():
         from cStringIO import StringIO # since we are building strings

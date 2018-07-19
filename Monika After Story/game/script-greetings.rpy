@@ -15,6 +15,7 @@ init -1 python in mas_greetings:
     TYPE_SCHOOL = "school"
     TYPE_WORK = "work"
     TYPE_SLEEP = "sleep"
+    TYPE_LONG_ABSENCE = "long_absence"
 
     # custom greeting functions
     def selectGreeting(type=None):
@@ -25,6 +26,21 @@ init -1 python in mas_greetings:
         RETURNS:
             a single greeting (as an Event) that we want to use
         """
+
+        # check if we have moni_wants greetings
+        moni_wants_greetings = renpy.store.Event.filterEvents(
+            renpy.store.evhand.greeting_database,
+            unlocked=True,
+            moni_wants=True
+        )
+        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
+
+            # select one label randomly
+            return moni_wants_greetings[
+                renpy.random.choice(moni_wants_greetings.keys())
+            ]
+
+
         # check first if we have to select from a special type
         if type is not None:
 
@@ -492,7 +508,6 @@ label greeting_surprised:
      m 1eua "How've you been?"
      return
 
-# TODO Monika Monday Morning, an idea we had, this one is just a placeholder, writers could do it 1000 times better
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12)))
@@ -1068,6 +1083,18 @@ label greeting_stillsicknorest:
     m 3hua "Then we can have some more fun together without me worrying about you in the back of my mind."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_long_absence",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_LONG_ABSENCE],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
 label greeting_long_absence:
     $ persistent._mas_long_absence = False
     if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
@@ -1259,7 +1286,6 @@ label greeting_long_absence:
             m 3nn "I would be worried otherwise!"
             m 1j "It really did help..."
             m 1a "So tell me, how has your day been treating you?"
-# Stopping Point #
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 1):
         if persistent._mas_absence_choice == "days":
             m 2b "Hello there, [player]."
@@ -1385,7 +1411,6 @@ label greeting_timeconcern_day:
 init 5 python:
     rules = dict()
     rules.update(MASGreetingRule.create_rule(skip_visual=True, random_chance=5))
-
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1428,13 +1453,13 @@ label greeting_hairdown:
             $ persistent._mas_likes_hairdown = True
 
             # maybe 6sub is better?
-            # TODO: affection raise
+            $ mas_gainAffection()
             m 6sub "Really?" # honto?!
             m 2hua "I'm so glad!" # yokatta.."
             m 1eua "Just ask me if you want to see my ponytail again, okay?"
 
         "No":
-            # TODO: affection lowered?
+            # TODO: affection lowered? need to decide
             m 1ekc "Oh..."
             m 1lksdlc "..."
             m 1lksdld "I'll put it back up for you, then."
@@ -1520,9 +1545,7 @@ label greeting_tears:
     m 2f "Please...just...try to understand."
     m 1r "I love you and I need you to show that you love me too..."
     m 1q "Otherwise...I just won't be able to handle it anymore."
-    # TODO Affection doesn't have the new utility funcs to lock/unlock
-    # when merged this has to be updated to use that
-    $ evhand.greeting_database["greeting_tears"].unlocked = False
+    $ lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
     return
 
 

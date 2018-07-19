@@ -432,7 +432,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -481,6 +482,10 @@ python early:
                 if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
                     return False
 
+            # check if event contains the monika wants this rule
+            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
+                return False
+
             # we've passed all the filtering rules somehow
             return True
 
@@ -494,7 +499,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -529,6 +535,9 @@ python early:
             #   excl_cat - list of categories to exclude, if given an empty
             #       list it filters out events that have a non-None category
             #       (Default: None)
+            #   moni_wants - boolean value to match if the event has the monika
+            #       wants this first.
+            #       (Default: None )
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -546,7 +555,8 @@ python early:
                     and pool is None
                     and action is None
                     and seen is None
-                    and excl_cat is None)):
+                    and excl_cat is None
+                    and moni_wants is None)):
                 return events
 
             # copy check
@@ -570,7 +580,7 @@ python early:
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat):
+                        excl_cat=excl_cat,moni_wants=moni_wants):
 
                     filt_ev_dict[k] = v
 
@@ -1753,6 +1763,7 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_you_chr = False
         renpy.game.persistent.opendoor_opencount = 0
         renpy.game.persistent.opendoor_knockyes = False
+        persistent._mas_greeting_type = None
 
         # hangman
         renpy.game.persistent._mas_hangman_playername = False
@@ -1760,6 +1771,9 @@ init -1 python in _mas_root:
         # piano
         renpy.game.persistent._mas_pnml_data = list()
         renpy.game.persistent._mas_piano_keymaps = dict()
+
+        # affection
+        persistent._mas_affection["affection"] = 0
 
 
 init -100 python in mas_utils:
@@ -3278,6 +3292,9 @@ default persistent._mas_first_calendar_check = False
 # rain
 default persistent._mas_likes_rain = False
 define mas_is_raining = False
+
+# music
+default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 
 # clothes
 default persistent._mas_monika_clothes = "def"

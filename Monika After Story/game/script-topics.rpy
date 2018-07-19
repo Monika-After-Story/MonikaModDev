@@ -1395,6 +1395,7 @@ label monika_rain:
 
             m 1j "Then hold me, [player]..."
             show monika 6dubsa
+            $ mas_gainAffection()
             $ ui.add(PauseDisplayable())
             $ ui.interact()
 
@@ -1509,7 +1510,6 @@ init 5 python:
 label monika_rain_holdme:
     # we only want this if it rains
     if mas_is_raining:
-        # TODO adjust this for affection
         stop music fadeout 1.0
 
         # clear selected track
@@ -1528,11 +1528,13 @@ label monika_rain_holdme:
         # renable ui and hotkeys
         $ store.songs.enabled = True
         $ HKBShowButtons()
-
+        # small affection increase so people don't farm affection with this one.
+        $ mas_gainAffection(modifier=0.25)
         m 1j "You can hold me anytime you want, [player]."
 
     else:
-        # TODO adjust for affection maybe?
+        # asking for it on the "incorrect mood" slightly decreases affection
+        $ mas_loseAffection(modifier=0.1)
         m 1oo "..."
         m 1pp "The mood doesn't feel right, [player]."
         m 1q "Sorry..."
@@ -2309,6 +2311,7 @@ init 5 python:
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
+    # TODO add mas_gainAffection with the logic it should have
     #First time I love you has been said.
     if persistent._mas_monika_lovecounter == 0:
         m 1b "...!"
@@ -2411,12 +2414,9 @@ label monika_love:
         love_quip=renpy.random.choice(love_quips)
     m "[love_quip]"
     #prevents spamming to increase counter.
-    if datetime.datetime.now() <= persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
-        pass
-    else:
+    if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
         $ persistent._mas_monika_lovecounter += 1
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
+    $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
 init 5 python:
@@ -5275,7 +5275,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_marriage",category=['romance'],prompt="Will you marry me?",pool=True))
 
 label monika_marriage:
-
     $ mas_gainAffection()
     m 2wubsw "M-marriage?"
     if isFuture(evhand.event_database['anni_3']):
@@ -5920,6 +5919,9 @@ label monika_beach:
 # where where persistent.playthrough can be
 # checked and have a different response
 # depending on what the player did
+# TODO: affection is going to take this one
+# and actually she'll know the reason only last thing
+# the player did though
 ####################################################
 
 #init 5 python:
@@ -6259,6 +6261,8 @@ label monika_natsuki_letter:
 
     return "derandom"
 
+
+# TODO possible tie this with affection?
 default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
@@ -7084,6 +7088,7 @@ label monika_dating_startdate:
 
 label monika_dating_startdate_confirm_had_enough:
     # monika has had enough of your shit
+    # TODO: maybe decrease affection since you annoyed her enough?
     m 2dfc "..."
     m 2lfc "We'll do this another time, then."
 
@@ -7217,6 +7222,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                             hide screen mas_background_timed_jump
 
                 # lol why would you stay slient?
+                # TODO: Affection considerable decrease?
                 $ persistent._mas_just_friends = True
 
                 m 6lktdc "I see..."

@@ -548,6 +548,7 @@ label ch30_autoload:
 
     $ selected_greeting = None
 
+    # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
         #If the conditions are met and Monika expects an apology, jump to this label.
         if persistent._mas_affection["apologyflag"] == True and not is_file_present('/imsorry.txt'):
@@ -569,10 +570,6 @@ label ch30_autoload:
             call spaceroom
             jump mas_affection_apologydeleted
 
-    if persistent._mas_long_absence:
-            $scene_change = True
-            call spaceroom
-            jump greeting_long_absence
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
@@ -625,6 +622,10 @@ label ch30_autoload:
             if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
                 persistent.random_seen = 0
+
+                #Grant good exp for closing the game correctly.
+                mas_gainAffection()
+
             #Ignore anything beyond 3 days
             if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
                 away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
@@ -640,8 +641,6 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
-            #Grant good exp for closing the game correctly.
-            mas_gainAffection()
 
             #Set unlock flag for stories
             mas_can_unlock_story = True
@@ -651,8 +650,8 @@ label ch30_autoload:
                 persistent._mas_pool_unlocks -= 1
 
         else:
-            #Grant bad exp for closing the game correctly.
-            mas_loseAffection()
+            # Grant bad exp for closing the game correctly.
+            mas_loseAffection(modifier=2)
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)

@@ -112,7 +112,7 @@ label introduction:
     m 1eua "It's not like we're still keeping secrets from each other, right?"
     m 1hub "I can see everything on your computer now!"
     m "Ahaha!"
-
+    show monika 1esa
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox
