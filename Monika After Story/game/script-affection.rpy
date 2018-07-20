@@ -14,14 +14,14 @@
 init -1 python in mas_affection:
 
     # numerical constants of affection levels
-    CONFUSED = 0
     BROKEN = 1
     DISTRESSED = 2
     UPSET = 3
     NORMAL = 4
     HAPPY = 5
-    ENAMORED = 6
-    LOVE = 7
+    AFFECTIONATE = 6
+    ENAMORED = 7
+    LOVE = 8
 
     # numerical constants of affection groups
     G_SAD = -1
@@ -30,6 +30,9 @@ init -1 python in mas_affection:
 
 default persistent._mas_long_absence = False
 init python:
+
+    import datetime
+
     #Functions to freeze exp progression for story events, use wisely.
     def mas_FreezeGoodAffExp():
         persistent._mas_affection_goodexp_freeze = True
@@ -59,50 +62,48 @@ init python:
         # store the value for easiercomparisons
         curr_affection = persistent._mas_affection["affection"]
 
-        #If affection is between 30 and 49, update good exp. Simulates growing affection.
-        if  30 <= curr_affection < 50:
+        # If affection is between 30 and 99, update good exp. Simulates growing affection.
+        if  30 <= curr_affection < 100:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1
 
-        #If affection is more than 50, update both exp types. Simulates increasing affection and it will now take longer to erode that affection.
-        elif curr_affection >= 50:
-            persistent._mas_affection["goodexp"] = 5
-            persistent._mas_affection["badexp"] = 0.5
+        # If affection is more than 100, update good exp. Simulates increasing affection.
+        elif curr_affection >= 100:
+            persistent._mas_affection["goodexp"] = 3
 
-        #If affection is between -30 and -49, update bad exp. Simulates erosion of affection.
-        elif -50 < curr_affection <= -30:
-            persistent._mas_affection["goodexp"] = 1
+        # If affection is between -30 and -74, update both exps. Simulates erosion of affection.
+        elif -75 < curr_affection <= -30:
+            persistent._mas_affection["goodexp"] = 0.5
             persistent._mas_affection["badexp"] = 3
 
-        #If affection is less than -50, update both exp types. Simulates increasing loss of affection and now harder to get it back.
-        elif curr_affection <= -50:
-            persistent._mas_affection["goodexp"] = 0.5
+        # If affection is less than -75, update bad exp. Simulates increasing loss of affection.
+        elif curr_affection <= -75:
             persistent._mas_affection["badexp"] = 5
 
-        #Defines an easy current affection statement to refer to so points aren't relied upon.
+        # Defines an easy current affection statement to refer to so points aren't relied upon.
         if curr_affection <= -100:
             mas_curr_affection = store.mas_affection.BROKEN
 
-        elif -99 <= curr_affection <= -50:
+        elif -99 <= curr_affection <= -75:
             mas_curr_affection = store.mas_affection.DISTRESSED
 
-        elif -49 <= curr_affection<= -30:
+        elif -74 <= curr_affection<= -30:
             mas_curr_affection = store.mas_affection.UPSET
 
         elif -29 <= curr_affection <= 29:
             mas_curr_affection = store.mas_affection.NORMAL
 
-        elif 30 <= curr_affection <= 49:
+        elif 30 <= curr_affection <= 99:
             mas_curr_affection = store.mas_affection.HAPPY
 
-        elif 50 <= curr_affection <= 99:
+        elif 100 <= curr_affection <= 399:
+            mas_curr_affection = store.mas_affection.AFFECTIONATE
+
+        elif 400 <= curr_affection <= 999:
             mas_curr_affection = store.mas_affection.ENAMORED
 
-        elif curr_affection >= 100:
+        elif curr_affection >= 1000:
             mas_curr_affection = store.mas_affection.LOVE
-
-        else:
-            mas_curr_affection = store.mas_affection.CONFUSED
 
         #A group version for general sadness or happiness
         if curr_affection <= -30:
@@ -118,17 +119,32 @@ init python:
     #Used to increment affection whenever something positive happens.
     def mas_gainAffection(
             amount=persistent._mas_affection["goodexp"],
-            modifier=1
+            modifier=1,
+            bypass=False
         ):
-        if not persistent._mas_affection_goodexp_freeze:
-            #Otherwise, use the value passed in the argument.
+
+        # is it a new day?
+        if persistent._mas_affection.get("freeze_date") is None or datetime.date.today() > persistent._mas_affection["freeze_date"]:
+            persistent._mas_affection["freeze_date"] = datetime.date.today()
+            persistent._mas_affection["today_exp"] = 0
+            mas_UnfreezeGoodAffExp()
+
+        # if we're not freezed or if the bypass flag is True
+        if not persistent._mas_affection_goodexp_freeze or bypass:
+
+            # Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] += amount
 
             # it can't get higher than 1 million
             if persistent._mas_affection["affection"] > 1000000:
                 persistet.mas_affection["affection"] = 1000000
 
-            #Updates the experience levels if necessary.
+            if not bypass:
+                persistent._mas_affection["today_exp"] += amount
+                if persistent._mas_affection["today_exp"] >= 7:
+                    mas_FreezeGoodAffExp()
+
+            # Updates the experience levels if necessary.
             mas_updateAffectionExp()
 
 
