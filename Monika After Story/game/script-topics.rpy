@@ -5888,7 +5888,7 @@ init 5 python:
 label monika_song_dream:
     m 1dso "{i}~When I feel blue in the night~{/i}"
     m "{i}~And I need you to hold me tight~{/i}"
-    m 2hub "{i}~Wenever I want you, all I have to do is dream~{/i}"
+    m 2hub "{i}~Whenever I want you, all I have to do is dream~{/i}"
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
     m 1ekbfa "My dream finally came true."
     return
@@ -6949,6 +6949,30 @@ label monika_dating_startdate:
 
     return
 
+label monika_dating_startdate_confirm_had_enough:
+    # monika has had enough of your shit
+    m 2dfc "..."
+    m 2lfc "We'll do this another time, then."
+
+    # we're going to reset the conditional to wait
+    # 30 more days
+    $ mas_chgCalEVul(30)
+
+    return "NOPE"
+
+
+label monika_dating_startdate_confirm_notwell:
+    # are you not feeling well or something?
+    m 1ekc "Are you feeling okay, [player]?"
+    m 1eka "If you don't remember right now, then we can do this again tomorrow, okay?"
+
+    # reset the conditional to tomorrow
+    $ mas_chgCalEVul(1)
+
+    return "NOPE"
+
+
+
 label monika_dating_startdate_confirm(first_sesh_raw):
 
     python:
@@ -6985,16 +7009,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
             m "Are you sure it's not [first_sesh_formal]?"
             "It's not that date.":
                 if wrong_date_count >= 2:
-                    label .had_enough:
-                        # monika has had enough of your shit
-                        m 2dfc "..."
-                        m 2lfc "We'll do this another time, then."
-
-                        # we're going to reset the conditional to wait
-                        # 30 more days
-                        $ mas_chgCalEVul(30)
-
-                        return "NOPE"
+                    jump monika_dating_startdate_confirm_had_enough
 
                 # otherwise try again
                 m 2dfc "..."
@@ -7011,7 +7026,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
         label .takesrs:
             if wrong_date_count >= 2:
-                jump monika_dating_startdate_confirm.had_enough
+                jump monika_dating_startdate_confirm_had_enough
 
             m 2dfc "..."
             m 2tfc "We did {b}not{/b} start dating that day."
@@ -7027,7 +7042,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         # you selected a future date?! why!
         if future_date_count > 0:
             # don't play around here
-            jump monika_dating_startdate_confirm.had_enough
+            jump monika_dating_startdate_confirm_had_enough
 
         $ future_date_count += 1
         m 1wud "What..."
@@ -7055,7 +7070,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
                         if no_dating_joke:
                             # you only get this once per thru
-                            jump monika_dating_startdate_confirm.had_enough
+                            jump monika_dating_startdate_confirm_had_enough
 
                         # otherwise mention that this was mean
                         m 2tfc "[player]!"
@@ -7111,7 +7126,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
                 "Actually...":
                     if no_confirm_count >= 2:
-                        jump monika_dating_startdate_confirm.notwell
+                        jump monika_dating_startdate_confirm_notwell
 
                     m 1hksdrb "Aha, I figured you weren't so sure."
                     m 1eka "Try again~"
@@ -7119,15 +7134,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
         "No.":
             if no_confirm_count >= 2:
-                label .notwell:
-                    # are you not feeling well or something?
-                    m 1ekc "Are you feeling okay, [player]?"
-                    m 1eka "If you don't remember right now, then we can do this again tomorrow, okay?"
-
-                    # reset the conditional to tomorrow
-                    $ mas_chgCalEVul(1)
-
-                    return "NOPE"
+                jump monika_dating_startdate_confirm_notwell
 
             # otherwise try again
             m 1euc "Oh, that's wrong?"
