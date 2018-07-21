@@ -1629,3 +1629,23 @@ label greeting_back_from_sleep:
      m 1hub "I hope you had a good rest!"
      m "Let's spend some more time together~"
      return
+     
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_all_by_myself", unlocked=True, random=True),eventdb=evhand.greeting_database)
+
+label greeting_all_by_myself:
+     m 2dsd "{i}~All by myself~{/i}"
+     m "{i}~Don't wanna be~{/i}"
+     m 2dso "{i}~All by myself~{/i}"
+     m 4dso "{i}~Anymoooooooooooooooooore~{/i}"
+     m 2esc "..."
+     m 2dsbso "..."
+     m 4wubsw "[player]!"
+     m 4lksdld "W-when did you--?!"
+     m 2lksdla "Sorry, I guess I can get a little dramatic when you're not here..."
+     m 2hua "Ehehe~"
+     m 4eub "But it worked, you're here now!"
+     m 3eua "Maybe I should sing that song more often..."
+     m 3hub "Ahaha!"
+     m 1eua "It always makes my day when we can spend time together~" 
+     return
