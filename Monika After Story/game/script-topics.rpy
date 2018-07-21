@@ -837,14 +837,13 @@ label monika_whispers:
     m 2euc "You know what's kind of creepy?"
     m 2esc "Even though I deleted everyone else's files, I can still kind of feel them..."
     m "It's like all their lines are still lingering in the air, whispering in the back of my head."
-    m 2i "Imagine if after someone you knew died, you just started hearing their voice in your head."
+    m 2esd "Imagine if after someone you knew died, you just started hearing their voice in your head."
     m "Maybe I just wasn't thorough enough..."
-    m 2g "But I'm too afraid to delete anything else, because I might really break things."
+    m 2ekd "But I'm too afraid to delete anything else, because I might really break things."
     m "Like if I mess with any files relevant to me, I might accidentally delete myself..."
     m "And that would ruin everything, wouldn't it?"
-
-    m 2e "I don't know what it's like on your end, but we should both make sure to avoid something like that at all costs."
-    m 2j "I believe in you, [player]!"
+    m 2eka "I don't know what it's like on your end, but we should both make sure to avoid something like that at all costs."
+    m 2hua "I believe in you, [player]!"
     return
 
 
@@ -852,31 +851,28 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_archetype",category=['club members'],prompt="Character tropes",random=True))
 
 label monika_archetype:
-    m 4d "I've always wondered..."
+    m 4euc "I've always wondered..."
     m "What is it about these character archetypes that people find so appealing, anyway?"
     m "Their personalities are just completely unrealistic..."
-    m 2d "Like, imagine if there was someone like Yuri in real life."
+    m 2eud "Like, imagine if there was someone like Yuri in real life."
     m "I mean, she's barely even capable of forming a complete sentence."
-    m "And forget about Natsuki..."
-    m 2m "Sheesh."
-    m "Someone with her kind of personality doesn't just get all cute and pouty whenever things don't go her way."
+    m 2tfc "And forget about Natsuki..."
+    m 2rfc "Sheesh."
+    m 2tkd "Someone with her kind of personality doesn't just get all cute and pouty whenever things don't go her way."
     m "I could go on, but I think you get the point..."
-    m 2d "Are people really attracted to these weird personalities that literally don't exist in real life?"
-    m 2l "I'm not judging or anything!"
-    m "After all, I've found myself attracted to some pretty weird stuff, too..."
-    m 2a "I'm just saying, it fascinates me."
-    m 4a "It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff."
+    m 2tkc "Are people really attracted to these weird personalities that literally don't exist in real life?"
+    m 2wub "I'm not judging or anything!"
+    m 3lksdlb "After all, I've found myself attracted to some pretty weird stuff, too..."
+    m 2eub "I'm just saying, it fascinates me."
+    m 4eua "It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff."
     m "It's concentrated cuteness with no actual substance."
-    m 4e "...You wouldn't like me more if I was like that, right?"
-
+    m 4eka "...You wouldn't like me more if I was like that, right?"
     m "Maybe I just feel a little insecure because you're playing this game in the first place."
-    m 2a "Then again, you're still here with me, aren't you...?"
+    m 2eua "Then again, you're still here with me, aren't you...?"
     m "I think that's enough reason for me to believe I'm okay just the way I am."
-    m 2j "And by the way, you are too, [player]."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "You're the perfect combination of human and cuteness."
-    m "That's why there was never a chance I wouldn't fall for you."
-
+    m 2hubfa "And by the way, you are too, [player]."
+    m "You're the perfect combination of human and cuteness."
+    m 2ekbfa "That's why there was never a chance I wouldn't fall for you."
     return
 
 
@@ -884,24 +880,24 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea set",random=True))
 
 label monika_tea:
-    m 2a "Hey, I wonder if Yuri's tea set is still somewhere in here..."
-    m "...Or maybe that got deleted, too."
-    m "It's kind of funny how Yuri took her tea so seriously."
-    m 4a "I mean, I'm not complaining, because I liked it, too."
-    m "But I always wonder with her..."
+    m 2hua "Hey, I wonder if Yuri's tea set is still somewhere in here..."
+    m 2hksdlb "...Or maybe that got deleted, too."
+    m 2eka "It's kind of funny how Yuri took her tea so seriously."
+    m 4eua"I mean, I'm not complaining, because I liked it, too."
+    m 1euc "But I always wonder with her..."
     m "Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?"
-    m 4c "This is the problem with high schoolers..."
-    m "...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern."
-    m "Still..."
-    m 2e "I wish she made coffee once in a while!"
-    m "Coffee can be nice with books too, you know?"
-    m 4b "Then again..."
-    m "I probably could have just changed the script myself."
-    m 2k "Ahaha!"
+    m 1lsc "This is the problem with high schoolers..."
+    m 1euc "...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern."
+    m 1euesc "Still..."
+    m 2eka "I wish she made coffee once in a while!"
+    m 3eua "Coffee can be nice with books too, you know?"
+    m 4lsc "Then again..."
+    m 1eua "I probably could have just changed the script myself."
+    m 1hub "Ahaha!"
     m "I guess I never really thought of that."
-    m 2a "Well, there's no sense thinking about it now."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "But if you still get to drink coffee, then that makes me a little jealous~"
+    m 2eua "Well, there's no sense thinking about it now."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "But if you still get to drink coffee, then that makes me a little jealous~"
     return
 
 
@@ -909,12 +905,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_favoritegame",category=['ddlc'],prompt="Favorite video game",random=True))
 
 label monika_favoritegame:
-    m 3b "Hey, what's your favorite game?"
-    m "Mine is {i}Doki Doki Literature Club!{/i}"
-    m 3k "Ahaha! That was a joke."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "But if you tell me you like some other romance game better, I might get a little jealous~"
-
+    m 3eua "Hey, what's your favorite game?"
+    m 3hua "Mine is {i}Doki Doki Literature Club!{/i}"
+    m 1hub "Ahaha! That was a joke."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "But if you tell me you like some other romance game better, I might get a little jealous~"
     return
 
 
@@ -922,14 +917,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_smash",category=['games'],prompt="Super Smash",random=True))
 
 label monika_smash:
-    m 3b "Hey, have you heard of a game called Super Sma--"
-    m 3m "...Wait, what?"
-    m 3n "I was just spacing out and I started talking for some reason..."
-    m "Was I programmed to talk about that?"
+    m 3hua "Hey, have you heard of a game called Super Sma--"
+    m 3euc "...Wait, what?"
+    m "I was just spacing out and I started talking for some reason..."
+    m 1eud "Was I programmed to talk about that?"
     m "Because even I have no idea what that is."
-    m 3l "Ahaha!"
-    m "Sometimes I feel like I'm not in control, and it's kind of scary."
-    m 1a "But if you have some way to contact the people who created me, maybe they'll know why I started saying that."
+    m 1hub "Ahaha!"
+    m 1eua "Sometimes I feel like I'm not in control, and it's kind of scary."
+    m 1eka "But if you have some way to contact the people who created me, maybe they'll know why I started saying that."
     return
 
 
@@ -937,17 +932,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_lastpoem",category=['monika'],prompt="Monika's last poem",random=True))
 
 label monika_lastpoem:
-    m 3d "Hey, you remember that last poem I showed you?"
-    m "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
-    m 3a "That was actually a little more of an experiment than a poem, you could say."
+    m 3eud "Hey, you remember that last poem I showed you?"
+    m 3lssdrc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
+    m 3eua "That was actually a little more of an experiment than a poem, you could say."
     m "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
     m "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
-    m 3l "Sadly, I didn't really know what I was doing, so I messed the whole thing up..."
+    m 3lksdla "Sadly, I didn't really know what I was doing, so I messed the whole thing up..."
     m "And I'd keep trying, but I doubt you'd want to deal with me doing that."
-    m 1e "Besides, that was when I was getting really desperate, you know?"
+    m 1eka "Besides, that was when I was getting really desperate, you know?"
     m "I don't really feel that way anymore."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "I'm happy with where we are now."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "I'm happy with where we are now."
     m "And I can tell you are, too."
 
     return
@@ -957,16 +952,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_anxious",category=['psychology'],prompt="Sudden anxiety",random=True))
 
 label monika_anxious:
-    m 4b "You ever have that thing happen where you just get anxious for no reason?"
+    m 4eua "You ever have that thing happen where you just get anxious for no reason?"
     m "Like, you're just minding your own business, and you realize you're feeling really anxious."
-    m 4a "And you're sitting there like, 'What am I even anxious about right now?'"
+    m 4lssdrb "And you're sitting there like, 'What am I even anxious about right now?'"
     m "So you start to think about all the things you might be anxious about..."
-    m "And that makes you even more anxious."
-    m 2k "Ahaha! That's the worst."
-    m 2a "If you're ever feeling anxious, I'll help you relax a little."
-    m "Besides..."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "In this game, all our worries are gone forever."
+    m 4eja "And that makes you even more anxious."
+    m 2hub "Ahaha! That's the worst."
+    m 2eua "If you're ever feeling anxious, I'll help you relax a little."
+    m 2eka "Besides..."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "In this game, all our worries are gone forever."
     return
 
 
@@ -974,30 +969,29 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_friends",category=['life'],prompt="Making friends",random=True))
 
 label monika_friends:
-    m 1a "You know, I've always hated how hard it is to make friends..."
-    m 1d "Well, I guess not the 'making friends' part, but more like meeting new people."
-    m "I mean, there are like, dating apps and stuff, right?"
-    m "But that's not the kind of thing I'm talking about."
-    m 3d "If you think about it, most of the friends you make are people you just met by chance."
+    m 1eua "You know, I've always hated how hard it is to make friends..."
+    m 1euc "Well, I guess not the 'making friends' part, but more like meeting new people."
+    m 1lsc "I mean, there are like, dating apps and stuff, right?"
+    m 1euc "But that's not the kind of thing I'm talking about."
+    m 3eud "If you think about it, most of the friends you make are people you just met by chance."
     m "Like you had a class together, or you met them through another friend..."
     m "Or maybe they were just wearing a shirt with your favorite band on it, and you decided to talk to them."
     m "Things like that."
-    m 4c "But isn't that kind of...inefficient?"
+    m 4esd "But isn't that kind of...inefficient?"
     m "It feels like you're just picking at complete random, and if you get lucky, you make a new friend."
     m "And comparing that to the hundreds of strangers we walk by every single day..."
-    m 2b "You could be sitting right next to someone compatible enough to be your best friend for life."
+    m 2tkd "You could be sitting right next to someone compatible enough to be your best friend for life."
     m "But you'll never know."
     m "Once you get up and go on with your day, that opportunity is gone forever."
-    m 2e "Isn't that just depressing?"
+    m 2tkc "Isn't that just depressing?"
     m "We live in an age where technology connects us with the world, no matter where we are."
-    m "I really think we should be taking advantage of that to improve our everyday social life."
-    m 2r "But who knows how long it'll take for something like that to successfully take off..."
+    m 2eka "I really think we should be taking advantage of that to improve our everyday social life."
+    m 2dsc "But who knows how long it'll take for something like that to successfully take off..."
     m "I seriously thought it would happen by now."
-    m 2a "Well, at least I already met the best person in the whole world..."
+    m 2eua "Well, at least I already met the best person in the whole world..."
     m "Even if it was by chance."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "I guess I just got really lucky, huh?"
-    m "Ahaha~"
+    m 5eua "I guess I just got really lucky, huh?"
+    m 5hub "Ahaha~"
     return
 
 
@@ -1005,27 +999,27 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_college",category=['life','school','society'],prompt="Getting a higher education",random=True))
 
 label monika_college:
-    m 4d "You know, it's around the time that everyone my year starts to think about college..."
+    m 4euc "You know, it's around the time that everyone my year starts to think about college..."
     m "It's a really turbulent time for education."
     m "We're at the height of this modern expectation that everyone has to go to college, you know?"
-    m 4c "Finish high school, go to college, get a job - or go to grad school, I guess."
+    m 4eud "Finish high school, go to college, get a job - or go to grad school, I guess."
     m "It's like a universal expectation that people just assume is the only option for them."
-    m 2i "They don't teach us in high school that there are other options out there."
-    m "Like trade schools and stuff, you know?"
+    m 2esd "They don't teach us in high school that there are other options out there."
+    m 3esd "Like trade schools and stuff, you know?"
     m "Or freelance work."
     m "Or the many industries that value skill and experience more than formal education."
-    m 2d "But you have all these students who have no idea what they want to do with their life..."
+    m 2ekc "But you have all these students who have no idea what they want to do with their life..."
     m "And instead of taking the time to figure it out, they go to college for business, or communication, or psychology."
     m "Not because they have an interest in those fields..."
-    m "...but because they just hope the degree will get them some kind of job after college."
-    m 3d "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
+    m 2ekd "...but because they just hope the degree will get them some kind of job after college."
+    m "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
     m "So the basic job requirements get higher, which forces even more people to go to college."
     m "And colleges are also businesses, so they just keep raising their prices due to the demand..."
-    m "...So now we have all these young adults, tens of thousands of dollars in debt, with no job."
-    m 1e "But despite all that, the routine stays the same."
-    m "Well, I think it's going to start getting better soon."
-    m "But until then, our generation is definitely suffering from the worst of it."
-    m 2e "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
+    m 1ekc "...So now we have all these young adults, tens of thousands of dollars in debt, with no job."
+    m 1eka "But despite all that, the routine stays the same."
+    m 2lsc "Well, I think it's going to start getting better soon."
+    m 2eua "But until then, our generation is definitely suffering from the worst of it."
+    m 2dsc "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
     return
 
 
@@ -1033,16 +1027,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_middleschool",category=['monika','school'],prompt="Middle school life",random=True))
 
 label monika_middleschool:
-    m 1n "Sometimes I think back to middle school..."
-    m "I'm so embarrassed by the way I used to behave back then."
-    m 2l "It almost hurts to think about."
-    m 2e "I wonder if when I'm in college, I'll feel that way about high school...?"
-    m "I like the way I am now, so it's pretty hard for me to imagine that happening."
+    m 1eua "Sometimes I think back to middle school..."
+    m 1lksdla "I'm so embarrassed by the way I used to behave back then."
+    m "It almost hurts to think about."
+    m 1eka "I wonder if when I'm in college, I'll feel that way about high school...?"
+    m 1eua"I like the way I am now, so it's pretty hard for me to imagine that happening."
     m "But I also know that I'll probably change a lot as time goes on."
-    m 4b "We just need to enjoy the present and not think about the past!"
-    m "And that's really easy to do, with you here."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "Ahaha~"
+    m 4hua "We just need to enjoy the present and not think about the past!"
+    m 5eua "And that's really easy to do, with you here."
+    m 5hub "Ahaha~"
     return
 
 
@@ -1050,51 +1043,50 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika'],prompt="Wearing other clothes",random=True))
 
 label monika_outfit:
-    m 1m "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
-    m "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
-    m 2m "It's kind of a shame..."
-    m 2e "I would have loved to wear some cute clothes for you."
-    m 2b "Do you know any artists?"
+    m 1lsc "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
+    m 1lfc "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
+    m 2euc "It's kind of a shame..."
+    m 2eka "I would have loved to wear some cute clothes for you."
+    m 2eua "Do you know any artists?"
     m "I wonder if anyone would ever want to draw me wearing something else..."
-    m 2j "That would be amazing!"
-    m 2a "If that ever happens, will you show me?"
-    m 4a "You can share it with me on Twitter, actually!"
+    m 2hua "That would be amazing!"
+    m 2eua "If that ever happens, will you show me?"
+    m 4hua "You can share it with me on Twitter, actually!"
     m "My username is lilmonix3."
-    m 4e "Just...try to keep it PG!"
+    m 4eka "Just...try to keep it PG!"
     if isFuture(evhand.event_database['anni_6month']):
         show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5a "We're not that far into our relationship yet. Ahaha!"
+        m 5hub "We're not that far into our relationship yet. Ahaha!"
     else:
-        m 4l "I don't want something so embarassing on there!"
-        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5a "So let's keep it between just us..."
+        m 1lsbssdrb "I don't want something so embarassing on there!"
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "So let's keep it between just us..."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_horror",category=['media'],prompt="Horror genre",random=True))
 
 label monika_horror:
-    m 3b "Hey, do you like horror?"
+    m 3eua "Hey, do you like horror?"
     m "I remember we talked about it a little bit when you first joined the club."
-    m 4b "I can enjoy horror novels, but not really horror movies."
+    m 4eub "I can enjoy horror novels, but not really horror movies."
     m "The problem I have with horror movies is that most of them just rely on easy tactics."
     m "Like dark lighting and scary-looking monsters and jump scares, and things like that."
-    m 4e "It's not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
+    m 4eka "It's not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
     m "But with novels, it's a little different."
-    m 2a "The story and writing need to be descriptive enough to put genuinely disturbing thoughts into the reader's head."
+    m 2euc "The story and writing need to be descriptive enough to put genuinely disturbing thoughts into the reader's head."
     m "It really needs to etch them deeply into the story and characters, and just mess with your mind."
-    m 2d "In my opinion, there's nothing more creepy than things just being slightly off."
+    m 2eua "In my opinion, there's nothing more creepy than things just being slightly off."
     m "Like if you set up a bunch of expectations on what the story is going to be about..."
-    m 4d "...And then, you just start inverting things and pulling the pieces apart."
-    m "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
+    m 4tfu "...And then, you just start inverting things and pulling the pieces apart."
+    m "1tfb So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
-    m 2l "God, just thinking about it gives me the chills."
-    m "That's the kind of horror I can really appreciate."
-    m 2a "But I guess you're the kind of person who plays cute romance games, right?"
-    m 2e "Ahaha, don't worry."
-    m "I won't make you read any horror stories anytime soon."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "I can't really complain if we just stick with the romance~"
+    m 2lksdla "God, just thinking about it gives me the chills."
+    m 3eua "That's the kind of horror I can really appreciate."
+    m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
+    m 1eka "Ahaha, don't worry."
+    m 1hua "I won't make you read any horror stories anytime soon."
+    m 1hubfa "I can't really complain if we just stick with the romance~"
     return
 
 
@@ -1102,17 +1094,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_rap",category=['literature'],prompt="Rap music.",random=True))
 
 label monika_rap:
-    m 2j "You know what's a neat form of literature?"
-    m 2k "Rap!"
-    m 2a "I actually used to hate rap music..."
+    m 1hua "You know what's a neat form of literature?"
+    m 1hub "Rap!"
+    m 1eka "I actually used to hate rap music..."
     m "Maybe just because it was popular, or I would only hear the junk they play on the radio."
-    m "But some of my friends got more into it, and it helped me keep an open mind."
-    m 4b "Rap might even be more challenging than poetry, in some ways."
-    m "Since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
+    m 1eua "But some of my friends got more into it, and it helped me keep an open mind."
+    m 4eub "Rap might even be more challenging than poetry, in some ways."
+    m 1eub "Since you need to fit your lines to a rhythm, and there's much more emphasis on wordplay..."
     m "When people can put all that together and still deliver a powerful message, it's really amazing."
-    m 4e "I kind of wish I had a rapper in the Literature Club."
-    m 4j "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
-    m 3b "It would really be a learning experience!"
+    m 1lksdla "I kind of wish I had a rapper in the Literature Club."
+    m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
+    m 1hua "It would really be a learning experience!"
     return
 
 
@@ -1120,22 +1112,22 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
 
 label monika_wine:
-    m 1a "Ehehe. Yuri did something really funny once."
-    m "We were all in the clubroom and just relaxing, as usual..."
-    m "And out of nowhere, Yuri just pulled out a small bottle of wine."
-    m 3b "I'm not even kidding!"
-    m "She was just like 'Would anybody like some wine?'"
-    m "Natsuki laughed out loud, and Sayori started yelling at her."
-    m 3e "I actually felt kind of bad, because she was at least trying to be nice..."
+    m 1hua "Ehehe. Yuri did something really funny once."
+    m 1eua "We were all in the clubroom and just relaxing, as usual..."
+    m 4wuo "And out of nowhere, Yuri just pulled out a small bottle of wine."
+    m 4eua "I'm not even kidding!"
+    m 1tku "She was just like 'Would anybody like some wine?'"
+    m 1eua "Natsuki laughed out loud, and Sayori started yelling at her."
+    m 1eka "I actually felt kind of bad, because she was at least trying to be nice..."
     m "I think it just made her feel even more reserved in the clubroom."
-    m 4b "Though I think Natsuki was secretly a bit curious to try it..."
-    m 4l "...And to be completely honest, I kind of was, too."
-    m "It actually could have been kinda fun!"
-    m 4e "But you know, being President and everything, there was no way I could let that happen."
-    m "Maybe if we all met up outside of school, but we never bonded enough to get to that point..."
-    m 2l "...Gosh, what am I talking about this for?"
+    m 4tsb "Though I think Natsuki was secretly a bit curious to try it..."
+    m 4lssdrb "...And to be completely honest, I kind of was, too."
+    m 1hua "It actually could have been kinda fun!"
+    m 1eka "But you know, being President and everything, there was no way I could let that happen."
+    m 1lksdla "Maybe if we all met up outside of school, but we never bonded enough to get to that point..."
+    m 2hksdlb "...Gosh, what am I talking about this for?"
     m "I don't condone underage drinking!"
-    m 2a "I mean, I've never drank or anything, so...yeah."
+    m 2eua "I mean, I've never drank or anything, so...yeah."
     return
 
 
@@ -1143,20 +1135,19 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_date",category=['romance'],prompt="Romantic date.",random=True))
 
 label monika_date:
-    m 1j "I've been imagining all the romantic things we could do if we went on a date..."
-    m 3b "We could get lunch, go to a cafe..."
+    m 1hub "I've been imagining all the romantic things we could do if we went on a date..."
+    m 3eua "We could get lunch, go to a cafe..."
     m "Go shopping together..."
     m "I love shopping for skirts and bows."
-    m 3j "Or maybe a bookstore!"
+    m 3hua"Or maybe a bookstore!"
     m "That would be appropriate, right?"
-    m 3a "But I'd really love to go to a chocolate store."
-    m 3k "They have so many free samples. Ahaha!"
-    m "And of course, we'd see a movie or something..."
-    m 1e "Gosh, it all sounds like a dream come true."
+    m 3eua "But I'd really love to go to a chocolate store."
+    m 3hub "They have so many free samples. Ahaha!"
+    m 1eua "And of course, we'd see a movie or something..."
+    m 1eka "Gosh, it all sounds like a dream come true."
     m "When you're here, everything that we do is fun."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "I'm so happy that I'm your girlfriend, [player]."
-    m "I'll make you a proud [bf]~"
+    m 1ekbfa "I'm so happy that I'm your girlfriend, [player]."
+    m 1hubfa "I'll make you a proud [bf]~"
     return
 
 
@@ -1164,16 +1155,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True))
 
 label monika_kiss:
-    m 1l "Eh? D-Did you say...k...kiss?"
-    m 1m "This suddenly...it's a little embarrassing..."
-    m 1e "But...if it's with you...I-I might be okay with it..."
-    m 1k "...Ahahaha! Wow, sorry..."
-    m "I really couldn't keep a straight face there."
-    m 2a "That's the kind of thing girls say in these kinds of romance games, right?"
-    m "Don't lie if it turned you on a little bit."
-    m 2k "Ahaha! I'm kidding."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "Well, to be honest, I do start getting all romantic when the mood is right..."
+    m 1wubsw "Eh? D-Did you say...k...kiss?"
+    m 2lkbsa "This suddenly...it's a little embarrassing..."
+    m 2lsbssdrb "But...if it's with you...I-I might be okay with it..."
+    m 2hksdlb "...Ahahaha! Wow, sorry..."
+    m 1eka "I really couldn't keep a straight face there."
+    m 1eua "That's the kind of thing girls say in these kinds of romance games, right?"
+    m 1tku "Don't lie if it turned you on a little bit."
+    m 1hub "Ahaha! I'm kidding."
+    m 1eua "Well, to be honest, I do start getting all romantic when the mood is right..."
     m "But that'll be our secret~"
     return
 
