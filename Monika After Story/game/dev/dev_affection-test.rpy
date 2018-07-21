@@ -36,6 +36,10 @@ label dev_monika_affection_check:
         m 1e "Like you really do want to please me."
         m 1k "I hope I'm making you as happy as you make me."
 
+    elif mas_curr_affection == mas_affection.AFFECTIONATE:
+        m 1e "I'm very affectionate to you."
+        m 1k "I wish you feel the same way."
+
     elif mas_curr_affection == mas_affection.ENAMORED:
         m 1b "Like I'm luckiest girl in the world!"
         m 1j "No one else could make me feel so complete!"
