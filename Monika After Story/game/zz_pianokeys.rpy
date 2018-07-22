@@ -1,5 +1,81 @@
 # Module that lets you play the piano
 #
+# Adding custom Piano Songs:
+# Piano songs can be added by creating a json file in the piano_songs
+# folder. Stock piano songs (which are shipped in official release) should be
+# in mod_assets/piano/songs/
+#
+# NOTE: Errors in PianoNote JSONS are logged to "pnm.log"
+#  gameplay will not crash even if piano note matches are formatted
+# incorrectly
+#
+# Each piano song is reprsented using a JSON:
+# The first layer is an object representing a PianoNoteMatchList:
+#   pnm_list: (list) list of PianoNoteMatch objects. See below.
+#   verse_list: (list) list of verse indexes.
+#       - each verse index is an (int)
+#   name: (string) name of this song
+#       NOTE: this is displayed to user
+#   win_label: (string) label to call if we played the song well
+#       NOTE: optional
+#       (Default: mas_piano_def_win)
+#   fc_label: (string) label to call if we fc'd the song
+#       NOTE: optional
+#       (Default: mas_piano_def_fc)
+#   fail_label: (string) label to call if we failed the song
+#       NOTE: optional
+#       (Default: mas_piano_def_fail)
+#   prac_label: (string) label to call if we are practicing the song
+#       NOTE: optional
+#       (Default: mas_piano_def_prac)
+#   launch_label: (string) label to call before starting this song
+#       NOTE: optional
+#       (Default: mas_piano_def_launch)
+#   wait: (int) number of seconds to wait before actually quitting the song
+#       at the end.
+#       NOTE: optional
+#       (Default: 0)
+#   NOTE: all labels would need to be defined in rpy source, so atm, custom 
+#       songs  will ALWAYS use default labels
+#
+# PianoNoteMatch objects:
+#   text: (string) text this piano note match says
+#   style: (string) style the piano note match should be in
+#   notes: (list) list of notes
+#       - each note is a (string) like "G4"
+#   postnotes: (list) list of post match notes
+#       - each note is a (string) like "G4"
+#       NOTE: optional
+#       (Default: None)
+#   express: (string) monika expression code to use for singing
+#       - like "1eub"
+#       NOTE: optional
+#       (Default: 1eub)
+#   postexpress: (string) monika expression code to use for post match phase
+#       - like "1eua"
+#       NOTE: optional
+#       (Default: 1eua)
+#   evtout: (float) number of seconds to use as grace period for user to begin
+#       this note match.
+#       NOTE: optional
+#       (Default: None / actual default varies on hardcoded value)
+#   vistout: (float) number of seconds to wait after the match before cleaning
+#       visual expressions
+#       NOTE: optional
+#       (Default: None / actual default varies on hardcoded value)
+#   verse: (int) verse index this notematch belongs to
+#       NOTE: optional
+#       (Default: 0)
+#   copynotes: (int) index of the piano notematch this notematch has the same
+#       notes as
+#       NOTE: unused
+#       NOTE: optional
+#       (Default: None)
+#   posttext: (bool) True means text remains during post match, False means
+#       text is hidden
+#       NOTE: optional
+#       (Default: False)
+
 
 # we need one persistent for data saving
 # each list item is a tuple of the following format:
@@ -292,6 +368,24 @@ label mas_piano_yr_prac:
 # special store to contain a rdiciulous amount of constants
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
+    log = renpy.renpy.log.open("mas_piano")
+
+    from store.mas_utils import tryparseint, tryparsefloat
+
+    # Log constants
+    MISS_KEY = "key '{0}' is missing."
+    NOTE_BAD = "bad note list."
+    PNOTE_BAD = "bad post note list."
+    EXP_BAD = "expression '{0}' not found."
+    EVT_BAD = "ev timeout '{0}' is invalid."
+    VIST_BAD = "vis timeout '{0}' is invalid."
+    VERSE_BAD = "verse '{0}' is invalid."
+    PTEXT_BAD = "bad posttext value."
+
+    MSG_INFO = "[info]: {0}"
+    MSG_WARN = "[Warning!]: {0}"
+    MSG_ERR = "[!ERROR!]: {0}"
+
 
     # this is our threshold for determining how many notes the player needs to
     # play before we check for dialogue
@@ -449,6 +543,30 @@ init -3 python in mas_piano_keys:
         pygame.K_LSUPER: "LW"
     }
 
+    # stringified version for JSON
+    JSON_KEYMAP = {
+        "F4": F4,
+        "F4SH": F4SH,
+        "G4": G4,
+        "G4SH": G4SH,
+        "A4": A4,
+        "A4SH": A4SH,
+        "B4": B4,
+        "C5": C5,
+        "C5SH": C5SH,
+        "D5": D5,
+        "D5SH": D5SH,
+        "E5": E5,
+        "F5": F5,
+        "F5SH": F5SH,
+        "G5": G5,
+        "G5SH": G5SH,
+        "A5": A5,
+        "A5SH": A5SH,
+        "B5": B5,
+        "C6": C6
+    }
+
 
 # FUNCTIONS ===================================================================
 
@@ -505,6 +623,41 @@ init -3 python in mas_piano_keys:
         return (None, old_key)
 
 
+    def _strtoN(note):
+        """
+        Converts a stringified note to a regular note
+
+        IN:
+            note - note string to convert
+
+        RETURNS:
+            piano note version, or None if this wasnt a real ntoe
+        """
+        return JSON_KEYMAP.get(note, None)
+
+
+    def _strtoN_list(note_list):
+        """
+        Versin of strtoN that can handle a full list
+
+        IN:
+            note_list - list of notes to convert
+
+        RETURNS:
+            list of piano notes. or None if at least note wasnt real
+        """
+        real_note_list = []
+        for _note in note_list:
+            r_note = _strtoN(_note)
+            if r_note is None:
+                return None
+
+            # otherwise good note
+            real_note_list.append(r_note)
+
+        return real_note_list
+
+
 # CLASSES =====================================================================
 
     # Exception class for piano failures
@@ -549,6 +702,14 @@ init -3 python in mas_piano_keys:
     #       False if not
     #
     class PianoNoteMatch(object):
+        
+        # constants
+        REQ_ARG = [
+            "text",
+            "style",
+            "notes"
+        ]
+
         def __init__(self,
                 say,
                 notes=None,
@@ -583,6 +744,7 @@ init -3 python in mas_piano_keys:
             #   verse - the verse dex the phrase belongs to
             #       (Default: 0)
             #   copynotes - the index that this pnm note matches with
+            #       NOTE: currently unused
             #       (Default: None)
             #   posttext - True if we keep the text up during post, False
             #       otherwise
@@ -708,6 +870,106 @@ init -3 python in mas_piano_keys:
             self.fails = 0
             self.passes = 0
             self.matched = False
+
+        
+        @staticmethod
+        def fromJSON(jobj):
+            """
+            Creates a PianoNoteMatch from a given json object (which is just
+            a dict)
+
+            May add warnings to log file
+
+            IN:
+                jobj - JSON object (as a dict)
+
+            RETURNS:
+                Tuple of the following format:
+                [0]: PianoNoteMatch associated with the given json object
+                    Or NONE if the Json object is missing required information
+                [1]: List of warning strings
+                    Or error message string if fatal error occurs
+            """
+            # inital check to make sure the required items are in 
+            for required in PianoNoteMatch.REQ_ARG:
+                if required not in jobj:
+                    return (None, MISS_KEY.format(required))
+
+            # now lets grab each data point and prepare it for usage
+            _params = dict()
+            _warn = list()
+
+            # starting with the required data points, which should already
+            # exist because we looked for them
+            _params["say"] = renpy.text.text.Text(
+                jobj.pop("text"),
+                style=jobj.pop("style")
+            )
+
+            # parse notes
+            _notes = _strtoN_list(jobj.pop("notes"))
+            if _notes is None:
+                return (None, NOTE_BAD)
+            _params["notes"] = _notes
+
+            # optional params
+            if "postnotes" in jobj:
+                _postnotes = _strtoN_list(jobj.pop("postnotes")
+                if _postnotes is None:
+                    _warn.append(MSG_WARN.format(PNOTE_BAD))
+                else:
+                    _params["postnotes"] = _postnotes
+
+            if "express" in jobj:
+                _express = jobj.pop("express")
+                if not renpy.image_exists("monika " + _express):
+                    _warn.append(MSG_WARN.format(EXP_BAD.format(_express)))
+                else:
+                    _params["express"] = _express
+
+            if "postexpress" in jobj:
+                _postexpress = jobj.pop("postexpress")
+                if not renpy.image_exists("monika " + _postexpress):
+                    _warn.append(MSG_WARN.format(EXP_BAD.format(_postexpress)))
+                else:
+                    _params["postexpress"] = _postexpress
+
+            if "evtout" in jobj:
+                _evtout = tryparsefloat(jobj.pop("evtout"), -1.0)
+                if _evtout < 0:
+                    _warn.append(MSG_WARN.format(EVT_BAD.format(_evtout)))
+                else:
+                    _params["ev_timeout"] = _evtout
+
+            if "vistout" in jobj:
+                _vistout = tryparsefloat(jobj.pop("vistout"), -1.0)
+                if _vistout < 0:
+                    _warn.append(MSG_WARN.format(VIST_BAD.format(_vistout)))
+                else:
+                    _params["vis_timeout"] = _vistout
+
+            if "verse" in jobj:
+                _verse = tryparseint(jobj.pop("verse"), -1)
+                if _verse < 0:
+                    _warn.append(MSG_WARN.format(VERSE_BAD.format(_verse)))
+                else:
+                    _params["verse"] = _verse
+
+            if "copynotes" in jobj:
+                # NOTE: this is unused
+                jobj.pop("copynotes")
+
+            if "posttext" in jobj:
+                _posttext = jobj.pop("posttext")
+                if bool != type(_posttext):
+                    _warn.append(MSG_WARN.format(PTEXT_BAD.format(_posttext)))
+                else:
+                    _params["posttext"] = _posttext
+               
+            # TODO: if we have extras, please warn the user
+            # TODO: return the new piano note match
+                    
+
 
 
     class PianoNoteMatchList(object):
