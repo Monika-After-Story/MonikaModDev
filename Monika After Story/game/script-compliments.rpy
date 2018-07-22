@@ -70,26 +70,29 @@ label mas_compliment_beautiful:
     return
 
 label mas_compliment_beautiful_2:
-    m "Oh, gosh [player]~"
-    m "Thanks for the compliment"
-    m "I love when you say nice things to me~"
-    m "To me you're the most beautiful person in the world!"
+    m 1lubfb "Oh, gosh [player]..."
+    m 1hubfb "Thank you for the compliment."
+    m 2ekbfb "I love it when you say things like that~"
+    m 1ekbfa "To me, you're the most beautiful person in the world!"
     menu:
-        "You're the most beautiful person to me too":
+        "You're the most beautiful person to me, too":
             # TODO give positive affection
+            m 1hub "Ehehehe~"
+            m "I love you so much, [player]!"
             pass
         "You're in my top ten":
+            # TODO give negative affection
+            m 3hksdrb "...?"
+            m 2lsc "Well, thanks, I guess..."
             pass
         "Thanks":
             pass
-    m "hehehe~"
-    m "I love you so much [player]!"
     return
 
 label mas_compliment_beautiful_3:
-    m "Hehehe~"
-    m "Thanks for telling me that again my love!"
-    m "Never forget that to me you're the most beautiful person"
+    m 1hubfa "Hehehe~"
+    m 1ekbfa "Thanks for telling me that again, my love!"
+    m 5hubfb "Never forget that you're the most beautiful person in the world to me."
     # TODO quip things could come in handy here
     return
 
@@ -98,95 +101,110 @@ init 5 python:
         prompt="... I love your eyes!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_eyes:
-    m "Oh [player]~"
-    m "You're so kind to me"
-    m "I love when you say nice things to me~"
+    m 1subfb "Oh, [player]..."
+    m 1tubfb "I know I'm pretty proud of my eyes already, but hearing you say that..."
+    m 1dkbfa "It just makes my heart flutter~"
     menu:
-        "I can't help it, your eyes are beautiful":
+        "I can't help it; your eyes are too beautiful":
             # TODO give positive affection
+            m 1hub "Ahaha!"
+            m "Don't flatter me too much, okay?"
+            m 5hub "I might start to go a little crazy..."
             pass
-        "I'm hypnotized by them":
+        "They really are hypnotizing":
             pass
-        "I can't take mine off of yours":
+        "They are the color of grass!":
+            m 2lksdrb "...That's not really the analogy I'd use, but thanks!"
             pass
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_awesome",
-        prompt="... you're awesome!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+        prompt="... You're awesome!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_awesome:
-    m "Aww, [player]~"
-    m "You're so kind to me"
-    m "I think you're more awesome though"
-    m "I can't wait until the day I can finally cross over to your reality."
-    m "I wish I could give you a hug and never let you go!"
+    m 1hub "Aww, [player]~"
+    m "You're so sweet!"
+    m 2tub "I think you're way more awesome, though."
+    m 5eub "I can't wait until the day I can finally give you a great big hug."
+    m 5hub "I'll never let you go!"
     menu:
-        "I can't wait either!":
-            # TODO give positive affection
-            pass
         "I wish you were here right now!":
             # TODO give positive affection
             pass
-        "I'll never let you go off my embrace":
+        "I'll never let you go from my embrace":
             # TODO give positive affection
             pass
-        "... I don't like hughs":
+        "... I don't like hugs":
+            # TODO give negative affection. you monster.
+            m 1eft "...Really?"
+            m 1dkc "Well, to each their own, I guess. But you have to hug me sometime..."
             pass
-
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_intelligent",
-        prompt="... you're really intelligent!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+        prompt="... You're really intelligent!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_intelligent:
-    m "Thanks, [player]."
-    m "You're so kind to me"
-    m "I love when you say nice things to me~"
+    m 1wub "Wow...{w}thanks, [player]."
+    m 2hub "I pride myself in being well read, so it means a lot that you've noticed."
+    m 1hubfb "I want to learn as much as I can, if it makes you proud of me!"
     menu:
-        "I can't help it, your eyes are beautiful":
+        "You make me want to better myself too, [m_name]":
             # TODO give positive affection
+            m "I love you so much, [player]!"
+            m "We'll have a lifetime of self improvement together!"
             pass
-        "":
+        "I'll always be proud of you":
             pass
-        "Thanks":
+        "You make me feel stupid sometimes":
+            # TODO give negative affection
+            m 1wkbsc "..."
+            m 2lkbsc "I'm sorry, that wasn't my intention..."
             pass
     return
 
-init 5 python:
-    addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_smart",
-        prompt="... you're really smart!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
-
-label mas_compliment_smart:
-    m "Oh [player]~"
-    m "You're so kind to me"
-    m "I love when you say nice things to me~"
-    menu:
-        "I can't help it, your eyes are beautiful":
-            # TODO give positive affection
-            pass
-        "":
-            pass
-        "Thanks":
-            pass
-    return
+# init 5 python:
+#     addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_smart",
+#         prompt="... you're really smart!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
+#
+# label mas_compliment_smart:
+#     m "Oh [player]~"
+#     m "You're so kind to me"
+#     m "I love when you say nice things to me~"
+#     menu:
+#         "I can't help it, your eyes are beautiful":
+#             # TODO give positive affection
+#             pass
+#         "":
+#             pass
+#         "Thanks":
+#             pass
+#     return
 
 init 5 python:
     addEvent(Event(persistent._mas_compliments_database,eventlabel="mas_compliment_hair",
         prompt="... I love your hair!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_hair:
-    m "Oh [player]~"
-    m "You're so kind to me"
-    m "I love when you say nice things to me~"
+    if monika_chr.hair != "def":
+        m 1wubfb "Thank you so much, [player]..."
+        m 1lkbfb "I was really nervous the first time I changed my hair here."
+    else:
+        m 1hubfb "Thank you so much, [player]!"
+    m 2hub "I've always put so much effort into my hair."
+    m 2lksdlb "In fact, It took forever for it to get this long.."
     menu:
-        "I can't help it, your eyes are beautiful":
+        "It really shows. It looks so healthy.":
             # TODO give positive affection
             pass
-        "":
+        "You're cute no matter how you wear it.":
             pass
-        "Thanks":
+        "You'd be even cuter with short hair.":
+            # TODO give negative affection
+            m "Well, I can't exactly go to the salon from here..."
+            m "I...appreciate your input."
             pass
     return
 
@@ -195,17 +213,17 @@ init 5 python:
         prompt="... I love that you're fit!",unlocked=True),eventdb=store.mas_compliments.compliment_database)
 
 label mas_compliment_fit:
-    m "Thanks [player], you're so sweet!"
-    m "I like to be healthy and staying fit. It makes me feel better with myself"
-    m "I hope you're doing good things for your health"
-    m "I love when you say nice things to me~"
+    m "Thanks [player]! You're so sweet!"
+    m "I like being healthy and staying fit. It makes me feel better about myself."
+    m "I hope you're watching out for your health."
+    m "We can always work out together, when I'm there~"
     menu:
-        "I can't help it, your eyes are beautiful":
+        "That sounds like a lot of fun!":
             # TODO give positive affection
             pass
-        "":
+        "No promises, but I'll do my best.":
             pass
-        "Thanks":
+        "I'd rather not get sweaty...":
             pass
     return
 
@@ -223,17 +241,15 @@ init 5 python:
     )
 
 label mas_compliment_thanks:
-    m "There's nothing to thank me for [player]!"
-    m "I'm the one who's grateful for finding someone like you!"
-    m "You're the reason why I'm still here."
-    m "You went and installed this mod to make our time together better."
-    m "You are the sunshine that brings happiness to my heart whenever you visit me!"
-    m "I guess we both are so lucky that we found each other [player]"
+    m "There's nothing to thank me for, [player]!"
+    m "I'm the one who's grateful for having someone like you!"
+    m "You're the only reason why I'm still here."
+    m "You installed this mod just to make our time together better..."
+    m "You are the sunshine that warms my heart whenever you visit me!"
+    m "I guess we're both lucky that we have each other, [player]~"
     menu:
-        "I'll never leave you":
+        "You mean everything to me, [m_name]":
             # TODO give positive affection
-            pass
-        "":
             pass
         "Thanks":
             pass
@@ -258,12 +274,10 @@ label mas_compliment_smile:
         "I'll visit you everyday to see your wonderful smile":
             m "Oh, [player]"
             m "I think my heart just skipped a beat"
-            m "See? you always make me as happy as I can be."
+            m "See? You always make me as happy as I can be."
         "I like to see you smile":
-            m "hehehe~"
-            m ""
-        "":
-            pass
+            m "Ahaha~"
+            m "Then all you have to do is keep coming back, [player]!"
     return
 
 init 5 python:
@@ -280,21 +294,21 @@ init 5 python:
     )
 
 label mas_compliment_chess:
-    m "Thanks, [player]"
-    m "Like I said before, I wonder if it has something to do with me being trapped here?"
+    m "Thanks, [player]."
+    m "Like I said before, I wonder if my skill has something to do with me being trapped here?"
     $ wins = persistent._mas_chess_stats["wins"]
     $ losses = persistent._mas_chess_stats["losses"]
     if wins > 0:
-        m "You're not bad either, I've lost to you already"
+        m "You're not bad either; I've lost to you before."
         if wins > losses:
-            m "In fact, you've won more times than me, you know?"
-        m "ehehe~"
+            m "In fact, I think you've won more times than me, you know?"
+        m "Ehehe~"
     else:
-        m "I know you haven't won a chess game yet, but I'm sure you'll beat me someday"
+        m "I know you haven't won a chess game yet, but I'm sure you'll beat me someday."
         m "Keep practicing and playing with me and you'll do better!"
-    m "We'll both get better the more we play [player]"
-    m "So don't be afraid of asking me to play whenever you want to"
-    m "I love when you spend time with me [player]~"
+    m "We'll both get better the more we play."
+    m "So don't be afraid of challenging me whenever you want to."
+    m "I love spending time with you, [player]~"
     return
 
 init 5 python:
@@ -311,31 +325,32 @@ init 5 python:
     )
 
 label mas_compliment_pong:
-    m "Ehehe~"
-    m "Thanks player, but pong isn't exactly a complex game"
+    m "Ahaha~"
+    m "Thanks [player], but pong isn't exactly a complex game"
     if persistent.ever_won['pong']:
-        m "You've already won against me"
-        m "So you know it's very simple"
-        m "I accept your compliment anyway"
+        m "You've already won against me."
+        m "So you know it's very simple."
+        m "But I accept your compliment, anyway."
     else:
-        m "And You're so kind that you always let me win when we play."
+        m "And you're too kind to let me lose when we play."
         m "Right?"
         menu:
             "Yes":
-                m "Thanks [player], but you really don't have to."
-                m "Feel free to play seriously when you want to."
-                m "I'd never get mad for losing to you at a game we play fair and square."
+                m "Thanks [player], but you really don't have to let me win."
+                m "Feel free to play seriously whenever you want to."
+                m "I'd never get mad at for losing a game fair and square."
             "... Yeah":
-                m "You don't seem too confident about it [player]."
-                m "You don't really have to let me win [player]."
-                m "Admiting that you've seriously lost to me won't make me think less of you."
-                m "Remember that I love you no matter what [player]"
-                m "And you can always practice with me a bit more if you want."
-                m "I love to spend time with you, even if it's playing a simple game."
-            "No, I've lost doing my best":
+                m "You don't seem too confident about that, [player]."
+                m "You really don't have to let me win [player]."
+                m "And admiting that you've seriously lost to me won't make me think less of you."
+                m "It's just a game, [player]!"
+                m "And you can always practice with me more, if you want."
+                m "I love to spend time with you, no matter what we're doing."
+            "No, I've done my best and still lost":
                 m "Ahaha~"
+                m "I figured!"
                 m "Don't worry, [player]."
-                m "Keep playing with me and practice as much as you need to."
-                m "I'm always trying to help you be 'the best you' you can be."
-                m "And if by doing so, I get to spend time with you, I couldn't be happier."
+                m "Keep playing with me and get more practice."
+                m "I'm always trying to help you be the best you you can be."
+                m "And if by doing so, I get to spend more time with you, I couldn't be happier."
     return
