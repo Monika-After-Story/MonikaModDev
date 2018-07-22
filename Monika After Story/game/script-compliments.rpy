@@ -282,8 +282,8 @@ init 5 python:
 label mas_compliment_chess:
     m "Thanks, [player]"
     m "Like I said before, I wonder if it has something to do with me being trapped here?"
-    wins = persistent._mas_chess_stats["wins"]
-    losses = persistent._mas_chess_stats["losses"]
+    $ wins = persistent._mas_chess_stats["wins"]
+    $ losses = persistent._mas_chess_stats["losses"]
     if wins > 0:
         m "You're not bad either, I've lost to you already"
         if wins > losses:
