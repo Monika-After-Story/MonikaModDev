@@ -204,7 +204,7 @@ label mas_compliment_hair:
         "You'd be even cuter with short hair.":
             # TODO give negative affection
             m "Well, I can't exactly go to the salon from here..."
-            m "I...appreciate your input."
+            m 1lksdlc "I...appreciate your input."
             pass
     return
 
@@ -325,20 +325,20 @@ init 5 python:
     )
 
 label mas_compliment_pong:
-    m "Ahaha~"
-    m "Thanks [player], but pong isn't exactly a complex game"
+    m 1hub "Ahaha~"
+    m 2eub "Thanks [player], but pong isn't exactly a complex game"
     if persistent.ever_won['pong']:
-        m "You've already won against me."
+        m 1lksdla "You've already won against me."
         m "So you know it's very simple."
-        m "But I accept your compliment, anyway."
+        m 5hub "But I accept your compliment, anyway."
     else:
-        m "And you're too kind to let me lose when we play."
-        m "Right?"
+        m 3hksdrb "And you're too kind to let me lose when we play."
+        m 3eka "Right?"
         menu:
             "Yes":
-                m "Thanks [player], but you really don't have to let me win."
-                m "Feel free to play seriously whenever you want to."
-                m "I'd never get mad at for losing a game fair and square."
+                m 2lksdla "Thanks [player], but you really don't have to let me win."
+                m 1eub "Feel free to play seriously whenever you want to."
+                m 1hub "I'd never get mad at for losing a game fair and square."
             "... Yeah":
                 m "You don't seem too confident about that, [player]."
                 m "You really don't have to let me win [player]."
@@ -346,7 +346,7 @@ label mas_compliment_pong:
                 m "It's just a game, [player]!"
                 m "And you can always practice with me more, if you want."
                 m "I love to spend time with you, no matter what we're doing."
-            "No, I've done my best and still lost":
+            "No. I've tried my best and still lost":
                 m "Ahaha~"
                 m "I figured!"
                 m "Don't worry, [player]."
