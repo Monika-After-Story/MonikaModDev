@@ -256,38 +256,13 @@ label mas_compliment_smile:
     m "Because you make me very happy when you spend time with me~"
     menu:
         "I'll visit you everyday to see your wonderful smile":
-            # TODO give positive affection
-            pass
+            m "Oh, [player]"
+            m "I think my heart just skipped a beat"
+            m "See? you always make me as happy as I can be."
         "I like to see you smile":
-            pass
+            m "hehehe~"
+            m ""
         "":
-            pass
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_compliments_database,
-            eventlabel="mas_compliment_stories",
-            prompt="... I love your stories!",
-            unlocked=False,
-            conditional="renpy.seen_label('mas_story_begin')",
-            action=EV_ACT_UNLOCK
-        ),
-        eventdb=store.mas_compliments.compliment_database
-    )
-
-label mas_compliment_stories:
-    m "Oh [player]~"
-    m "You're so kind to me"
-    m "I love when you say nice things to me~"
-    menu:
-        "I can't help it, your eyes are beautiful":
-            # TODO give positive affection
-            pass
-        "":
-            pass
-        "Thanks":
             pass
     return
 
@@ -336,15 +311,31 @@ init 5 python:
     )
 
 label mas_compliment_pong:
-    m "Oh [player]~"
-    m "You're so kind to me"
-    m "I love when you say nice things to me~"
-    menu:
-        "I can't help it, your eyes are beautiful":
-            # TODO give positive affection
-            pass
-        "...":
-            pass
-        "Thanks":
-            pass
+    m "Ehehe~"
+    m "Thanks player, but pong isn't exactly a complex game"
+    if persistent.ever_won['pong']:
+        m "You've already won against me"
+        m "So you know it's very simple"
+        m "I accept your compliment anyway"
+    else:
+        m "And You're so kind that you always let me win when we play."
+        m "Right?"
+        menu:
+            "Yes":
+                m "Thanks [player], but you really don't have to."
+                m "Feel free to play seriously when you want to."
+                m "I'd never get mad for losing to you at a game we play fair and square."
+            "... Yeah":
+                m "You don't seem too confident about it [player]."
+                m "You don't really have to let me win [player]."
+                m "Admiting that you've seriously lost to me won't make me think less of you."
+                m "Remember that I love you no matter what [player]"
+                m "And you can always practice with me a bit more if you want."
+                m "I love to spend time with you, even if it's playing a simple game."
+            "No, I've lost doing my best":
+                m "Ahaha~"
+                m "Don't worry, [player]."
+                m "Keep playing with me and practice as much as you need to."
+                m "I'm always trying to help you be 'the best you' you can be."
+                m "And if by doing so, I get to spend time with you, I couldn't be happier."
     return
