@@ -1,0 +1,75 @@
+{
+    "_comment": [
+        "to full combo:",
+        "w w e w t r",
+        "w w e w y t",
+        "w w o u t r e",
+        "i i u t y t"
+    ],
+    "name": "Happy Birthday",
+    "win_label": "mas_piano_hb_win",
+    "fc_label": "mas_piano_hb_fc",
+    "fail_label": "mas_piano_hb_fail",
+    "prac_label": "mas_piano_hb_prac",
+    "end_wait": 5,
+    "verse_list": [0],
+    "pnm_list": [
+        {
+            "text": "Happy Birthday to you",
+            "style": "monika_credits_text",
+            "notes": [
+                "G4",
+                "G4",
+                "A4",
+                "G4",
+                "C5",
+                "B4"
+            ],
+            "express": "1b",
+            "postexpress": "1a"
+        },
+        {
+            "text": "Happy Birthday to you",
+            "style": "monika_credits_text",
+            "notes": [
+                "G4",
+                "G4",
+                "A4",
+                "G4",
+                "D5",
+                "C5"
+            ],
+            "express": "1adf",
+            "postexpress": "afdfd"
+        },
+        {
+            "text": "Happy Birthday, Happy Birthday",
+            "style": "monika_credits_text",
+            "notes": [
+                "G4",
+                "G4",
+                "G5",
+                "E5",
+                "C5",
+                "B4",
+                "A4"
+            ],
+            "express": "1k",
+            "postexpress": "1j"
+        },
+        {
+            "text": "Happy Birthday to you!",
+            "style": "monika_credits_text",
+            "notes": [
+                "F5",
+                "F5",
+                "E5",
+                "C5",
+                "D5",
+                "C5"
+            ],
+            "express": "1k",
+            "postexpress": "1j"
+        }
+    ]
+}

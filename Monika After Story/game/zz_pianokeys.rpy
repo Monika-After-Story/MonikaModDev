@@ -5,7 +5,7 @@
 # folder. Stock piano songs (which are shipped in official release) should be
 # in mod_assets/piano/songs/
 #
-# NOTE: Errors in PianoNote JSONS are logged to "pnm.log"
+# NOTE: Errors in PianoNote JSONS are logged to "pnm.txt"
 #  gameplay will not crash even if piano note matches are formatted
 # incorrectly
 #
@@ -221,6 +221,29 @@ label mas_piano_result_none:
     m 1hua "Promise to play for me next time?"
     return
 
+# TODO all of these default labels
+# default win
+label mas_piano_def_win:
+    m 1a "Wow! You almost got it!"
+    m 2b "Good job, [player]."
+    return
+
+# default fail
+label mas_piano_def_fail:
+    m 1m "..."
+    m 1n "You did your best, [player]..."
+    return
+
+# defualt fc
+label mas_piano_def_fc:
+    # TODO
+    m 1a "SUGOI"
+    return
+
+label mas_piano_def_prac:
+    m 1a "OKAY PRATICE EVERYONE"
+    return
+
 ### HAPPY BIRTHDAY
 
 label mas_piano_hb_win:
@@ -368,7 +391,7 @@ label mas_piano_yr_prac:
 # special store to contain a rdiciulous amount of constants
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
-    log = renpy.renpy.log.open("mas_piano")
+    log = renpy.renpy.log.open("pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 
@@ -1112,6 +1135,9 @@ init -3 python in mas_piano_keys:
                 # NOTE: this is unused
                 jobj.pop("copynotes")
 
+            if "_comment" in jobj:
+                jobj.pop("_comment")
+
             # if we have extras, warn the user
             if len(jobj) > 0:
                 for extra in jobj:
@@ -1144,8 +1170,8 @@ init -3 python in mas_piano_keys:
 
         # constatn
         REQ_ARG = [
-            "pnms",
-            "verses",
+            "pnm_list",
+            "verse_list",
             "name"
         ]
 
@@ -1262,6 +1288,7 @@ init -3 python in mas_piano_keys:
                 None if JSON object is missing required information
             """
             islogopen = log.open()
+            log.raw_write = True
 
             # inital check to make sure the required items are in 
             for required in PianoNoteMatchList.REQ_ARG:
@@ -1282,21 +1309,21 @@ init -3 python in mas_piano_keys:
             if len(_name) <= 0:
                 # name has to be something
                 if islogopen:
-                    log.write(MSG_ERR_ID.format(NAME_BAD.format(__name)))
+                    log.write(MSG_ERR_ID.format(NAME_BAD.format(_name)))
                     log.write(MSG_ERR.format(LOAD_FAILED))
                 return None
 
             if _name in pnml_db:
                 # name must be unique
                 if islogopen:
-                    log.write(MSG_ERR_ID.format(NAME_BAD.format(__name)))
+                    log.write(MSG_ERR_ID.format(NAME_BAD.format(_name)))
                     log.write(MSG_ERR.format(LOAD_FAILED))
                 return None
 
             _params["name"] = _name
 
             # lets do PNMS
-            __pnm_list = jobj.pop("pnms")
+            __pnm_list = jobj.pop("pnm_list")
 
             if len(__pnm_list) <= 0:
                 if islogopen:
@@ -1349,24 +1376,20 @@ init -3 python in mas_piano_keys:
             _params["pnm_list"] = _pnm_list
 
             # now verses
-            __verse_list = jobj.pop("verses")
+            _verse_list = jobj.pop("verse_list")
 
-            if len(__verse_list) <= 0:
+            if len(_verse_list) <= 0:
                 if islogopen:
                     log.write(MSG_ERR_ID.format(VERSES_BAD))
                     log.write(MSG_ERR.format(LOAD_FAILED))
                 return None
 
-            _verse_list = list()
-            for _verse in __verse_lit:
-
+            for _verse in _verse_list:
                 if _verse < 0 or _verse >= len(_pnm_list):
                     if islogopen:
                         log.write(MSG_ERR_ID.format(L_VERSE_BAD.format(_verse)))
                         log.write(MSG_ERR.format(LOAD_FAILED))
                     return None
-
-                _verse_list.append(_verse)
 
             # otherwise good verses
             _params["verse_list"] = _verse_list
@@ -1384,6 +1407,15 @@ init -3 python in mas_piano_keys:
             _labelCheck("prac_label", _params, jobj, islogopen)
             _labelCheck("launch_label", _params, jobj, islogopen)
             _intCheck_nl("end_wait", _params, jobj, WAIT_BAD, islogopen)
+
+            # ignore comments
+            if "_comment" in jobj:
+                jobj.pop("_comment")
+
+            # warn about extras
+            if len(jobj) > 0 and islogopen:
+                for extra in jobj:
+                    log.write(MSG_WARN_ID.format(EXTRA_BAD.format(extra)))
 
             # success!
             if islogopen:
@@ -1411,100 +1443,6 @@ init 1000 python in mas_piano_keys:
 ## w w o u t r e
 ## i i u t y t
 
-    # happy birthday, piano note setup
-    _pnm_hb_v1l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday to you",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            G4,
-            A4,
-            G4,
-            C5,
-            B4,
-        ],
-        postnotes=None,
-        express="1b",
-        postexpress="1a",
-        verse=0
-    )
-
-    _pnm_hb_v1l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday to you",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            G4,
-            A4,
-            G4,
-            D5,
-            C5,
-        ],
-        postnotes=None,
-        express="1k",
-        postexpress="1a",
-        verse=0
-    )
-    _pnm_hb_v1l3 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday, Happy Birthday",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            G4,
-            G5,
-            E5,
-            C5,
-            B4,
-            A4,
-        ],
-        postnotes = None,
-        express="1k",
-        postexpress="1j",
-        verse=0
-    )
-
-    _pnm_hb_v1l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday to you!",
-            style="monika_credits_text"
-        ),
-        [
-            F5,
-            F5,
-            E5,
-            C5,
-            D5,
-            C5,
-        ],
-        postnotes = None,
-        express="1k",
-        postexpress="1j",
-        verse=0
-    )
-
-    # your reality, pnml
-    pnml_happybirthday = PianoNoteMatchList(
-        [
-            _pnm_hb_v1l1,
-            _pnm_hb_v1l2,
-            _pnm_hb_v1l3,
-            _pnm_hb_v1l4,
-        ],
-        [0],
-        "Happy Birthday",
-        "mas_piano_hb_win",
-        "mas_piano_hb_fc",
-        "mas_piano_hb_fail",
-        "mas_piano_hb_prac",
-        5.0,
-        launch_label = None
-    )
 
 
 ### YOUR REALITY ##############################################################
@@ -2359,7 +2297,7 @@ init 1000 python in mas_piano_keys:
 
 ## setup dict of pnmls: #------------------------------------------------------
 
-    pnml_db[pnml_happybirthday.name] = pnml_happybirthday
+#    pnml_db[pnml_happybirthday.name] = pnml_happybirthday
     pnml_db[pnml_yourreality.name] = pnml_yourreality
 # TODO: need to finish dpco one day
 #    pnml_db[pnml_dpco.name] = pnml_dpco
