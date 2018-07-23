@@ -30,8 +30,8 @@
 #       (Default: mas_piano_def_prac)
 #   launch_label: (string) label to call before starting this song
 #       NOTE: optional
-#       (Default: mas_piano_def_launch)
-#   wait: (int) number of seconds to wait before actually quitting the song
+#       (Default: None)
+#   end_wait: (int) number of seconds to wait before actually quitting the song
 #       at the end.
 #       NOTE: optional
 #       (Default: 0)
@@ -55,12 +55,12 @@
 #       - like "1eua"
 #       NOTE: optional
 #       (Default: 1eua)
-#   evtout: (float) number of seconds to use as grace period for user to begin
-#       this note match.
+#   ev_timeout: (float) number of seconds to use as grace period for user to 
+#       begin this note match.
 #       NOTE: optional
 #       (Default: None / actual default varies on hardcoded value)
-#   vistout: (float) number of seconds to wait after the match before cleaning
-#       visual expressions
+#   vis_timeout: (float) number of seconds to wait after the match before 
+#       cleaning visual expressions
 #       NOTE: optional
 #       (Default: None / actual default varies on hardcoded value)
 #   verse: (int) verse index this notematch belongs to
@@ -381,11 +381,34 @@ init -3 python in mas_piano_keys:
     VIST_BAD = "vis timeout '{0}' is invalid."
     VERSE_BAD = "verse '{0}' is invalid."
     PTEXT_BAD = "bad posttext value."
+    EXTRA_BAD = "extra key '{0}' found."
 
-    MSG_INFO = "[info]: {0}"
-    MSG_WARN = "[Warning!]: {0}"
-    MSG_ERR = "[!ERROR!]: {0}"
+    NOTES_BAD = "pnm list cannot be empty."
+    VERSES_BAD = "verse list cannot be empty."
+    NAME_BAD = "name must be unique."
+    LABEL_BAD = "label '{0}' does not exist."
+    WAIT_BAD = "wait time '{0}' is invalid."
+    L_VERSE_BAD = "verse '{0}' out of bounds."
 
+    LOAD_TRY = "Attempting to load '{0}'..."
+    LOAD_SUCC = "'{0}' loaded successfully."
+    LOAD_FAILED = "Load failed."
+
+    PNM_LOAD_TRY = "Loading PNM '{0}'..."
+    PNM_LOAD_SUCC = "PNM '{0}' loaded successfully!"
+    PNM_LOAD_FAILED = "PNM '{0}' load failed."
+
+
+    MSG_INFO = "[info]: {0}\n"
+    MSG_WARN = "[Warning!]: {0}\n"
+    MSG_ERR = "[!ERROR!]: {0}\n"
+
+    MSG_INFO_ID = "    [info]: {0}\n"
+    MSG_WARN_ID = "    [Warning!]: {0}\n"
+    MSG_ERR_ID = "    [!ERROR!]: {0}\n"
+
+    # piano note match list database
+    pnml_db = dict()
 
     # this is our threshold for determining how many notes the player needs to
     # play before we check for dialogue
@@ -658,6 +681,170 @@ init -3 python in mas_piano_keys:
         return real_note_list
 
 
+    def _labelCheck(key, _params, jobj, islogopen):
+        """
+        specialized json label checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of label to check
+            _params - params dict, also using key
+            jobj - json object, also using key
+            islogopen - True if log is open, false othrewise
+        """
+        if key not in jobj:
+            return
+
+        # otherwise
+        _label = jobj.pop(key)
+        if not renpy.has_label(_label):
+            if islogopen:
+                log.write(MSG_WARN_ID.format(LABEL_BAD.format(_label)))
+            return
+
+        _params[key] = _label
+
+
+    def _intCheck_nl(key, _params, jobj, warn_msg, islogopen):
+        """
+        Specialized json int checking function
+        NOTE: only use this for optinal params
+        NOTE: non warning list varient of _intCheck
+
+        IN:
+            key - key of the integer to check
+            _params - params dict, also using key
+            jobj - json object, also using key
+            warn_msg - warning message
+            islogopen - True if log is open, otherwise false
+        """
+        _warns = list()
+        _intCheck(key, _params, _warns, jobj, warn_msg)
+        if len(_warns) > 0 and islogopen:
+            log.write(MSG_WARN_ID.format(_warns[0]))
+
+
+    def _noteCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json note list checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of notes to check
+            _params - params dict, also using key
+            _warns - warnings list
+            jobj - json object, also using key
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        _notes = strtoN_list(jobj.pop(key))
+        if _notes is None:
+            _warns.append(warn_msg)
+            return
+
+        # otherwise good
+        _params[key] = _notes
+
+
+    def _scCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json spritecode / expression checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of sprite code to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object, also using key
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        _exp = jobj.pop(key)
+        if not renpy.image_exists("monika " + _exp):
+            _warns.append(warn_msg.format(_exp))
+            return
+
+        # otherwise good
+        _params[key] = _exp
+
+
+    def _floatCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json float checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of the float to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object also using keuy
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        __num = jobj.pop(key)
+        _num = tryparsefloat(__num, -1.0)
+        if _num < 0:
+            _warns.append(warn_msg.format(__num))
+            return
+
+        # otherwise good
+        _params[key] = _num
+
+
+    def _intCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json int checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of the int to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object also using keuy
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        __num = jobj.pop(key)
+        _num = tryparseint(__num, -1)
+        if _num < 0:
+            _warns.append(warn_msg.format(__num))
+            return
+
+        # otherwise good
+        _params[key] = _num
+
+
+    def _boolCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json bool checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of the bool to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object also using keuy
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        _bool = jobj.pop(key)
+        if bool != type(_bool):
+            _warns.append(warn_msg.format(_bool))
+            return
+
+        # otherwise good
+        _params[key] = _bool
+
 # CLASSES =====================================================================
 
     # Exception class for piano failures
@@ -913,63 +1100,24 @@ init -3 python in mas_piano_keys:
             _params["notes"] = _notes
 
             # optional params
-            if "postnotes" in jobj:
-                _postnotes = _strtoN_list(jobj.pop("postnotes")
-                if _postnotes is None:
-                    _warn.append(MSG_WARN.format(PNOTE_BAD))
-                else:
-                    _params["postnotes"] = _postnotes
-
-            if "express" in jobj:
-                _express = jobj.pop("express")
-                if not renpy.image_exists("monika " + _express):
-                    _warn.append(MSG_WARN.format(EXP_BAD.format(_express)))
-                else:
-                    _params["express"] = _express
-
-            if "postexpress" in jobj:
-                _postexpress = jobj.pop("postexpress")
-                if not renpy.image_exists("monika " + _postexpress):
-                    _warn.append(MSG_WARN.format(EXP_BAD.format(_postexpress)))
-                else:
-                    _params["postexpress"] = _postexpress
-
-            if "evtout" in jobj:
-                _evtout = tryparsefloat(jobj.pop("evtout"), -1.0)
-                if _evtout < 0:
-                    _warn.append(MSG_WARN.format(EVT_BAD.format(_evtout)))
-                else:
-                    _params["ev_timeout"] = _evtout
-
-            if "vistout" in jobj:
-                _vistout = tryparsefloat(jobj.pop("vistout"), -1.0)
-                if _vistout < 0:
-                    _warn.append(MSG_WARN.format(VIST_BAD.format(_vistout)))
-                else:
-                    _params["vis_timeout"] = _vistout
-
-            if "verse" in jobj:
-                _verse = tryparseint(jobj.pop("verse"), -1)
-                if _verse < 0:
-                    _warn.append(MSG_WARN.format(VERSE_BAD.format(_verse)))
-                else:
-                    _params["verse"] = _verse
+            _noteCheck("postnotes", _params, _warn, jobj, PNOTE_BAD)
+            _scCheck("express", _params, _warn, jobj, EXP_BAD)
+            _scCheck("postexpress", _params, _warn, jobj, EXP_BAD)
+            _floatCheck("ev_timeout", _params, _warn, jobj, EVT_BAD)
+            _floatCheck("vis_timeout", _params, _warn, jobj, VIST_BAD)
+            _intCheck("verse", _params, _warn, jobj, VERSE_BAD)
+            _boolCheck("posttext", _params, _warn, jobj, PTEXT_BAD)
 
             if "copynotes" in jobj:
                 # NOTE: this is unused
                 jobj.pop("copynotes")
 
-            if "posttext" in jobj:
-                _posttext = jobj.pop("posttext")
-                if bool != type(_posttext):
-                    _warn.append(MSG_WARN.format(PTEXT_BAD.format(_posttext)))
-                else:
-                    _params["posttext"] = _posttext
-               
-            # TODO: if we have extras, please warn the user
-            # TODO: return the new piano note match
+            # if we have extras, warn the user
+            if len(jobj) > 0:
+                for extra in jobj:
+                    _warn.append(EXTRA_BAD.format(extra))
                     
-
+            return (PianoNoteMatch(**_params), _warn)
 
 
     class PianoNoteMatchList(object):
@@ -994,6 +1142,13 @@ init -3 python in mas_piano_keys:
             launch_label - label to call to prepare song launch
         """
 
+        # constatn
+        REQ_ARG = [
+            "pnms",
+            "verses",
+            "name"
+        ]
+
         def __init__(self,
                 pnm_list,
                 verse_list,
@@ -1003,7 +1158,7 @@ init -3 python in mas_piano_keys:
                 fail_label,
                 prac_label,
                 end_wait=0,
-                launch_label=None
+                launch_label=None,
                 ):
             """
             Creates a PianoNoteMatchList
@@ -1089,6 +1244,152 @@ init -3 python in mas_piano_keys:
                     See _loadTuple
             """
             return (self.name, self.full_combos, self.wins, self.losses)
+
+
+        @staticmethod
+        def fromJSON(jobj):
+            """
+            Creats a PianoNoteMatchList from a given JSON object (which is 
+            just a dict)
+
+            May add warnings to logg file
+
+            IN:
+                jobj - JSON object (As a dict)
+
+            RETURNS:
+                PianoNoteMatchList associated with given JSON object, or
+                None if JSON object is missing required information
+            """
+            islogopen = log.open()
+
+            # inital check to make sure the required items are in 
+            for required in PianoNoteMatchList.REQ_ARG:
+                if required not in jobj:
+                    if islogopen:
+                        log.write(MSG_ERR.format(MISS_KEY.format(required)))
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+            # setup params
+            _params = dict()
+
+            # name first since we use it for situational awareness
+            _name = jobj.pop("name")
+            if islogopen:
+                log.write(MSG_INFO.format(LOAD_TRY.format(_name)))
+
+            if len(_name) <= 0:
+                # name has to be something
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(NAME_BAD.format(__name)))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            if _name in pnml_db:
+                # name must be unique
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(NAME_BAD.format(__name)))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            _params["name"] = _name
+
+            # lets do PNMS
+            __pnm_list = jobj.pop("pnms")
+
+            if len(__pnm_list) <= 0:
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(NOTES_BAD))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            _pnm_list = list()
+            index = 0
+            for _pnm in __pnm_list:
+                if islogopen:
+                    log.write(MSG_INFO_ID.format(PNM_LOAD_TRY.format(index)))
+
+                real_pnm, _msg = PianoNoteMatch.fromJSON(_pnm)
+
+                if real_pnm is None:
+                    # failed to parse notematch
+                    if islogopen:
+                        log.write(MSG_ERR_ID.format(_msg))
+                        log.write(
+                            MSG_ERR_ID.format(PNM_LOAD_FAILED.format(index))
+                        )
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+                # add the pnm
+                _pnm_list.append(real_pnm)
+
+                # log warnings
+                if islogopen:
+                    for _warn in _msg:
+                        log.write(MSG_WARN_ID.format(_warn))
+
+                # verse check
+                if real_pnm.verse < 0 or real_pnm.verse >= len(_pnm_list):
+                    if islogopen:
+                        log.write(MSG_ERR_ID.format(
+                            L_VERSE_BAD.format(real_pnm.verse)
+                        ))
+                        log.write(
+                            MSG_ERR_ID.format(PNM_LOAD_FAILED.format(index))
+                        )
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+                # otherwise good pnm
+                if islogopen:
+                    log.write(MSG_INFO_ID.format(PNM_LOAD_SUCC.format(index)))
+                index += 1
+            _params["pnm_list"] = _pnm_list
+
+            # now verses
+            __verse_list = jobj.pop("verses")
+
+            if len(__verse_list) <= 0:
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(VERSES_BAD))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            _verse_list = list()
+            for _verse in __verse_lit:
+
+                if _verse < 0 or _verse >= len(_pnm_list):
+                    if islogopen:
+                        log.write(MSG_ERR_ID.format(L_VERSE_BAD.format(_verse)))
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+                _verse_list.append(_verse)
+
+            # otherwise good verses
+            _params["verse_list"] = _verse_list
+
+            # "optional" params setup
+            _params["win_label"] = "mas_piano_def_win"
+            _params["fc_label"] = "mas_piano_def_fc"
+            _params["fail_label"] = "mas_piano_def_fail"
+            _params["prac_label"] = "mas_piano_def_prac"
+
+            # optional params
+            _labelCheck("win_label", _params, jobj, islogopen)
+            _labelCheck("fc_label", _params, jobj, islogopen)
+            _labelCheck("fail_label", _params, jobj, islogopen)
+            _labelCheck("prac_label", _params, jobj, islogopen)
+            _labelCheck("launch_label", _params, jobj, islogopen)
+            _intCheck_nl("end_wait", _params, jobj, WAIT_BAD, islogopen)
+
+            # success!
+            if islogopen:
+                log.write(MSG_INFO.format(LOAD_SUCC.format(_name)))
+            return PianoNoteMatchList(**_params)
+
 
 # this containst the actual songs
 # we need it to be high init level so we have images
@@ -2058,7 +2359,6 @@ init 1000 python in mas_piano_keys:
 
 ## setup dict of pnmls: #------------------------------------------------------
 
-    pnml_db = dict()
     pnml_db[pnml_happybirthday.name] = pnml_happybirthday
     pnml_db[pnml_yourreality.name] = pnml_yourreality
 # TODO: need to finish dpco one day
