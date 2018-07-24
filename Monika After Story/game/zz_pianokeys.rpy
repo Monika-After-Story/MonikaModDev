@@ -391,9 +391,24 @@ label mas_piano_yr_prac:
 # special store to contain a rdiciulous amount of constants
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
+    import os
     log = renpy.renpy.log.open("pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
+
+    # directory setup
+    pnml_basedir = os.path.normcase(
+        renpy.config.basedir + "/pnm_basedir"
+    )
+    stock_pnml_basedir = os.path.normcase(
+        renpy.config.basedir + "/game/mod_assets/piano/songs/"
+    )
+    no_pnml_basedir = False
+    try:
+        if not os.access(pnml_basedir, os.F_OK):
+            os.mkdir(pnml_basedir)
+    except:
+        no_pnml_basedir = True
 
     # Log constants
     MISS_KEY = "key '{0}' is missing."
@@ -421,6 +436,9 @@ init -3 python in mas_piano_keys:
     PNM_LOAD_SUCC = "PNM '{0}' loaded successfully!"
     PNM_LOAD_FAILED = "PNM '{0}' load failed."
 
+    JSON_LOAD_FAILED = "Failed to load json at '{0}'."
+    FILE_LOAD_FAILED = "Failed to load file at '{0}'."
+
 
     MSG_INFO = "[info]: {0}\n"
     MSG_WARN = "[Warning!]: {0}\n"
@@ -432,6 +450,7 @@ init -3 python in mas_piano_keys:
 
     # piano note match list database
     pnml_db = dict()
+    pnml_bk_db = dict() # backup database
 
     # this is our threshold for determining how many notes the player needs to
     # play before we check for dialogue
@@ -1313,7 +1332,7 @@ init -3 python in mas_piano_keys:
                     log.write(MSG_ERR.format(LOAD_FAILED))
                 return None
 
-            if _name in pnml_db:
+            if _name in pnml_bk_db:
                 # name must be unique
                 if islogopen:
                     log.write(MSG_ERR_ID.format(NAME_BAD.format(_name)))
@@ -1423,26 +1442,63 @@ init -3 python in mas_piano_keys:
             return PianoNoteMatchList(**_params)
 
 
-# this containst the actual songs
-# we need it to be high init level so we have images
-# TODO: considre making this readable from TEXt files.
-# NOTE: if we do the above, we need to reconsider how we handle post game
-# labels. Storing them in text files would be better organized but bad
-# for finding errors
+# all songs are done in jsons now
 init 1000 python in mas_piano_keys:
+    import json
 
-    # all piano note matches should follow this layout:
-    # _pnm_<song name inital>_v#l#
-    # v#l# -> verse #, line #
+    # functions used for pnmls.
+    def addSong(filepath):
+        """
+        Adds a song to the pnml db, given its json filepath
+
+        NOTE: may raise exceptions
+
+        IN:
+            filepath - filepath to the JSON we want to load in
+                - Assumed to be clean and ready to go
+        """
+        islogopen = log.open()
+
+        # can we read file?
+        with open(filepath, "r") as jsonfile:
+
+            # load JSON
+            jobj = json.load(jsonfile)
+
+        # is file a JSON?
+        if jobj is None:
+            if islogopen:
+                log.write(
+                    MSG_ERR.format(JSON_LOAD_FAILED.format(filepath))
+                )
+            return
+
+        # is JSON a PianoNoteMatchList?
+        pnml = PianoNoteMatchList.fromJSON(jobj)
+        if pnml is None:
+            # logging here is handled by the fromJSON function
+            return
+
+        # alright we good, lets add this to the pnml_bk_db
+        pnml_bk_db[pnml.name] = pnml
 
 
-###  HAPPY BIRTHDAY ###########################################################
-## full combo
-## w w e w t r
-## w w e w y t
-## w w o u t r e
-## i i u t y t
+    def addStockSongs():
+        """
+        Adds the stock songs to the game
+        """
+        stock_songs = [
+            "happybirthday.json",
+            "yourreality.json",
+            "d__p_c__o.json"
+        ]
 
+        for song in stock_songs:
+            song_path = stock_pnml_basedir + song
+            try:
+                addSong(song_path)
+            except:
+                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(song_path)))
 
 
 ### YOUR REALITY ##############################################################
@@ -2297,7 +2353,7 @@ init 1000 python in mas_piano_keys:
 
 ## setup dict of pnmls: #------------------------------------------------------
 
-#    pnml_db[pnml_happybirthday.name] = pnml_happybirthday
+    pnml_db[pnml_happybirthday.name] = pnml_happybirthday
     pnml_db[pnml_yourreality.name] = pnml_yourreality
 # TODO: need to finish dpco one day
 #    pnml_db[pnml_dpco.name] = pnml_dpco
@@ -2336,10 +2392,10 @@ init 1001 python:
 
         ASSUMES:
             persistent._mas_pnml_data
-            mas_piano_keys.pnml_db
+            mas_piano_keys.pnml_bk_db
         """
         for data_row in persistent._mas_pnml_data:
-            db_data = mas_piano_keys.pnml_db.get(data_row[0], None)
+            db_data = mas_piano_keys.pnml_bk_db.get(data_row[0], None)
             if db_data:
                 db_data._loadTuple(data_row)
 
@@ -2349,10 +2405,11 @@ init 1001 python:
 
         ASSUMES:
             persistent._mas_pnml_data
-            mas_piano_keys.pnml_db
+            mas_piano_keys.pnml_bk_db
         """
         persistent._mas_pnml_data = [
-            mas_piano_keys.pnml_db[k]._saveTuple() for k in mas_piano_keys.pnml_db
+            mas_piano_keys.pnml_bk_db[k]._saveTuple() 
+            for k in mas_piano_keys.pnml_bk_db
         ]
 
     # the displayable
