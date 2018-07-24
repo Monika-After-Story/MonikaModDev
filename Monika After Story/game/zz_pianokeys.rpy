@@ -398,7 +398,7 @@ init -3 python in mas_piano_keys:
 
     # directory setup
     pnml_basedir = os.path.normcase(
-        renpy.config.basedir + "/pnm_basedir"
+        renpy.config.basedir + "/piano_songs"
     )
     stock_pnml_basedir = os.path.normcase(
         renpy.config.basedir + "/game/mod_assets/piano/songs/"
@@ -454,7 +454,9 @@ init -3 python in mas_piano_keys:
 
     # this is our threshold for determining how many notes the player needs to
     # play before we check for dialogue
-    NOTE_SIZE = 6
+    NOTE_SIZE = 5
+    # NOTE: please, dont add stock songs with a lower phrase detection
+    # any lower and we might start getting false positives
 
     # keys
     QUIT = pygame.K_z
@@ -2353,8 +2355,20 @@ init 1000 python in mas_piano_keys:
 
 ## setup dict of pnmls: #------------------------------------------------------
 
-    pnml_db[pnml_happybirthday.name] = pnml_happybirthday
-    pnml_db[pnml_yourreality.name] = pnml_yourreality
+    # adding the stock songs!
+    addStockSongs()
+
+    # and now we should only add certain songs to the main pnml_db
+    __stock_song_names = [
+        "Happy Birthday",
+        "Your Reality"
+#        "D--p-c--o"
+    ]
+    for _song in __stock_song_names:
+        if _song in pnml_bk_db:
+            pnml_db[_song] = pnml_bk_db[_song]
+
+
 # TODO: need to finish dpco one day
 #    pnml_db[pnml_dpco.name] = pnml_dpco
 
@@ -4211,9 +4225,13 @@ init 1001 python:
 
             # debug mode shows extra information
             if config.developer:
+                match_str = ""
+                if self.match is not None:
+                    match_str = str(self.match.matchdex)
                 state_text = renpy.render(
                     renpy.text.text.Text(
-                        self.STATE_TO_STRING.get(self.state, "No state")
+                        self.STATE_TO_STRING.get(self.state, "No state") +
+                        "| " + match_str
                     ),
                     1280,
                     720,
