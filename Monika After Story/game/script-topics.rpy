@@ -4779,7 +4779,7 @@ label monika_standup:
     m 1esa "Much like poetry, don't you think?"
     m 2lsc "A lot people won't try stand-up for themselves because they're in front of a crowd..."
     m 4eub "Did you know that the number one fear most people have, more than death, is public speaking?"
-    m 4wuo "Just imagine, there's more people who would prefer jumping off a bridge - then making a joke at open mic night!"
+    m 4wuo "Just imagine, there's more people who would prefer {i}jumping off a bridge{/i} than making a joke at open mic night!"
     m 4wuo "What's the deeal with that?!"
     m 1hub "...Ahaha! Sorry, I wanted to recite a line Jerry Seinfeld once wrote, for you."
     m 1esa "You've heard of him, right?"
