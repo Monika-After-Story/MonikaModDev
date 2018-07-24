@@ -1,0 +1,146 @@
+{
+    "_comment": [
+        "full combo"
+    ],
+    "name": "Your Reality",
+    "win_label": "mas_piano_yr_win",
+    "fc_label": "mas_piano_yr_fc",
+    "fail_label": "mas_piano_yr_fail",
+    "prac_label": "mas_piano_yr_prac",
+    "end_wait": 5,
+    "verse_list": [0, 8, 15, 23],
+    "pnm_list": [
+        {
+            "text": "Everyday, I imagine a future where I can be with you",
+            "style": "monika_credits_text",
+            "notes": [
+                "G5",
+                "G5",
+                "G5",
+                "G5",
+                "F5",
+                "E5",
+                "E5",
+                "F5",
+                "G5",
+                "E5",
+                "D5",
+                "C5",
+                "D5",
+                "E5",
+                "C5",
+                "G4"
+            ],
+            "postnotes": [
+                "G5",
+                "A5",
+                "G5",
+                "G5",
+                "A5",
+                "G5",
+                "C6",
+                "C6",
+                "A5",
+                "B5",
+                "G5",
+                "A5",
+                "B5",
+                "G5"
+            ],
+            "express": "1hub",
+            "postexpress": "1hua",
+            "verse": 0
+        },
+        {
+            "text": "In my hand, is a pen that will write a poem of me and you",
+            "style": "monika_credits_text",
+            "notes": [
+                "G5",
+                "A5",
+                "G5",
+                "E5",
+                "F5",
+                "G5",
+                "F5",
+                "E5",
+                "D5",
+                "A4",
+                "G4",
+                "F4",
+                "A4",
+                "G4",
+                "E5",
+                "C5"
+            ],
+            "postnotes": [
+                "G5",
+                "A5",
+                "G5",
+                "G5",
+                "A5",
+                "G5",
+                "C6",
+                "C6",
+                "A5",
+                "B5",
+                "G5",
+                "A5",
+                "B5",
+                "G5"
+            ],
+            "express": "1eub",
+            "postexpress": "1eua",
+            "verse": 0
+        },
+        {
+            "text": "The ink flows down into a dark puddle",
+            "style": "monika_credits_text",
+            "notes": [
+                "G5",
+                "G5",
+                "G5",
+                "F5",
+                "E5",
+                "C5",
+                "C5",
+                "D5",
+                "E5",
+                "G5"
+            ],
+            "express": "1hub",
+            "postexpress": "1hua",
+            "verse": 0
+        },
+        {
+            "text": "Just move your hand, write the way into his heart",
+            "style": "monika_credits_text",
+            "notes": [
+                "A5",
+                "G5",
+                "E5",
+                "D5",
+                "G4",
+                "A4",
+                "C5",
+                "A4",
+                "C5",
+                "D5",
+                "C5"
+            ],
+            "postnotes": [],
+            "express": "1hub",
+            "postexpress": "1hua",
+            "verse": 0
+        },
+        {
+            "text": "Everyday, I imagine a future where I can be with you",
+            "style": "monika_credits_text",
+            "notes": [],
+            "postnotes": [],
+            "express": "1hub",
+            "postexpress": "1hua",
+            "verse": 0
+        }
+
+    ]
+}
