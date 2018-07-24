@@ -783,7 +783,7 @@ init -3 python in mas_piano_keys:
         if key not in jobj:
             return
 
-        _notes = strtoN_list(jobj.pop(key))
+        _notes = _strtoN_list(jobj.pop(key))
         if _notes is None:
             _warns.append(warn_msg)
             return
@@ -1406,7 +1406,7 @@ init -3 python in mas_piano_keys:
                 return None
 
             for _verse in _verse_list:
-                if _verse < 0 or _verse >= len(_pnm_list):
+                if _verse < 0 or _verse > len(_pnm_list):
                     if islogopen:
                         log.write(MSG_ERR_ID.format(L_VERSE_BAD.format(_verse)))
                         log.write(MSG_ERR.format(LOAD_FAILED))
