@@ -112,21 +112,26 @@ label mas_piano_start:
 label mas_piano_loopstart:
 
     # get song list
-    $ song_list = mas_piano_keys.getSongChoices()
+    $ song_list,final_item = mas_piano_keys.getSongChoices()
+    $ song_list.sort()
     $ play_mode = PianoDisplayable.MODE_FREE
 
 label mas_piano_songchoice:
     
     $ pnml = None
 
-    if len(song_list) > 1:
+    if len(song_list) > 0:
         show monika 1eua
 
         menu:
             m "Did you want to play a song or play on your own, [player]?"
             "Play a song":
                 m "Which song?"
-                $ pnml = renpy.display_menu(song_list)
+                show monika at t21
+                call screen mas_gen_scrollable_menu(song_list, mas_piano_keys.MENU_AREA, mas_piano_keys.MENU_XALIGN, final_item)
+                show monika at t11
+
+                $ pnml = _return
 
                 # song selected
                 if pnml != "None":
@@ -236,12 +241,14 @@ label mas_piano_def_fail:
 
 # defualt fc
 label mas_piano_def_fc:
-    # TODO
-    m 1a "SUGOI"
+    m 1eua "Great job!"
+    m 1hub "Maybe we should play together sometime!"
     return
 
+# default practice
 label mas_piano_def_prac:
-    m 1a "OKAY PRATICE EVERYONE"
+    m 1eua "That was nice, [player]!."
+    m 1eka "Make sure to practice often!"
     return
 
 ### HAPPY BIRTHDAY
@@ -300,90 +307,6 @@ label mas_piano_yr_prac:
     m 1eka "Make sure to practice everyday for me, okay~?"
     return
 
-#abel zz_piano_yr_launch:
-#   m
-
-#### HOW TO FULL COMBO:
-# (Everday, I can imagine a future...)
-# o o o oiu uio u y t y u t w
-# opo opo ] ] p[ op [ o
-#
-# (In my hands, is a pen...)
-# o p o uio iuy e w q e w u t
-# opo opo ] ] p[ op [ o
-#
-# (The ink flows down...)
-# o o o i u t t y u o
-#
-# (Just move your hands ...)
-# p o u y  w e t  e t y t
-#
-# (but in this world..)
-# o o o i  u t t y u o
-#
-# (What will it take..)
-# p o u y   w e t   e t y t
-#
-# (What will it take)
-# p o u y  w e t
-#
-# (that special day)
-# e t y t
-#
-# [break]
-#
-# (Have i found, everybody....)
-# o o o oiu uio u y t y u t w
-# opo opo ] ] p[ op [ o
-#
-# (When you're here....)
-# o p o uio iuy e w q e w u t
-# opo opo ] ] p[ op [ o
-#
-# (when i cant even read...)
-# o o o i u t t y u o
-#
-# (What good are words)
-# p o u y
-#
-# (when a smile says it all)
-# w e t  e t y t
-#
-# (and if this world...)
-# o o o i  u t t y u o
-#
-# (what will it take, just for me...)
-# p o u y   w e t   e t y t
-#
-# [break]
-#
-# (does my pen, only write...)
-# o o o oiu uio u y t y u t w
-#
-# (is it love...)
-# o p o uio iuy e w q e w u t
-#
-# (The ink flows down...)
-# o o o i u t t y u o
-#
-# (how can i write...)
-# p o u y  w e t  e t y t
-#
-# (if i cant hear...)
-# o o o i  u t t y u o
-#
-# (what do you call...)
-# p o u y   w e t   e t y t
-#
-# (and in your reality, if i dont know how to love you
-# w e t  e t y t u i i u t e t o
-# o u i t p o
-#
-# (I'll leave you be)
-# w e t t
-#
-# Extra post:
-# o o o oiu iop [ o [ o (chord: t u o)
 
 # keep the above for reference
 # DISPLAYABLE:
@@ -409,6 +332,14 @@ init -3 python in mas_piano_keys:
             os.mkdir(pnml_basedir)
     except:
         no_pnml_basedir = True
+
+    # menu constants
+    MENU_X = 680
+    MENU_Y = 40
+    MENU_W = 450
+    MENU_H = 640
+    MENU_XALIGN = -0.05
+    MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
 
     # Log constants
     MISS_KEY = "key '{0}' is missing."
@@ -1503,474 +1434,6 @@ init 1000 python in mas_piano_keys:
                 log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(song_path)))
 
 
-### YOUR REALITY ##############################################################
-
-    # your reality, piano note setup
-    _pnm_yr_v1l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Everyday, I imagine a future where I can be with you",
-            style="monika_credits_text"
-        ),
-        [
-            G5,
-            G5,
-            G5,
-            G5,
-            F5,
-            E5,
-            E5,
-            F5,
-            G5,
-            E5,
-            D5,
-            C5,
-            D5,
-            E5,
-            C5,
-            G4
-        ],
-        postnotes=[
-            G5,
-            A5,
-            G5,
-            G5,
-            A5,
-            G5,
-            C6,
-            C6,
-            A5,
-            B5,
-            G5,
-            A5,
-            B5,
-            G5
-        ],
-        express="1k",
-        postexpress="1j",
-        verse=0
-    )
-    _pnm_yr_v1l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("In my hand, is a pen that will write a poem of me" +
-            " and you"),
-            style="monika_credits_text"
-        ),
-        [
-            G5,
-            A5,
-            G5,
-            E5,
-            F5,
-            G5,
-            F5,
-            E5,
-            D5,
-            A4,
-            G4,
-            F4,
-            A4,
-            G4,
-            E5,
-            C5
-        ],
-        postnotes=_pnm_yr_v1l1.postnotes,
-        express="1eub",
-        postexpress="1eua",
-        verse=0,
-    )
-    _pnm_yr_v1l3 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "The ink flows down into a dark puddle",
-            style="monika_credits_text"
-        ),
-        [
-            G5,
-            G5,
-            G5,
-            F5,
-            E5,
-            C5,
-            C5,
-            D5,
-            E5,
-            G5
-        ],
-        express="1eub",
-        postexpress="1eua",
-        verse=0
-    )
-    _pnm_yr_v1l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Just move your hand, write the way into his heart",
-            style="monika_credits_text"
-        ),
-        [
-            A5,
-            G5,
-            E5,
-            D5,
-            G4,
-            A4,
-            C5,
-            A4,
-            C5,
-            D5,
-            C5
-        ],
-        express="1hub",
-        postexpress="1hua",
-        verse=0
-    )
-    _pnm_yr_v1l5 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "But in this world of infinite choices",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l3.notes,
-        express="1eub",
-        postexpress="1eua",
-        verse=0
-    )
-    _pnm_yr_v1l6 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What will it take just to find that special day?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l4.notes,
-        express="1eub",
-        postexpress="1eua",
-        verse=0
-    )
-    _pnm_yr_v1l7 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What will it take just to find",
-            style="monika_credits_text"
-        ),
-        [
-            A5,
-            G5,
-            E5,
-            D5,
-            G4,
-            A4,
-            C5
-        ],
-        express="1eub",
-        postexpress="1eua",
-        verse=0,
-        posttext=True
-    )
-    _pnm_yr_v1l8 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "that special day",
-            style="monika_credits_text"
-        ),
-        [
-            A4,
-            C5,
-            D5,
-            C5
-        ],
-        express="1hub",
-        postexpress="1hua",
-        verse=0,
-        ev_timeout=5.0,
-        vis_timeout=3.0,
-        posttext=True
-    )
-
-    # verse 2
-    _pnm_yr_v2l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Have I found everybody a fun assignment to do today?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l1.notes,
-        postnotes=_pnm_yr_v1l1.postnotes,
-        express="1eub",
-        postexpress="1eua",
-        verse=8,
-        copynotes=0,
-        ev_timeout=15.0
-    )
-    _pnm_yr_v2l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("When you're here, everything that we do is fun for them"+
-            " anyway"),
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l2.notes,
-        postnotes=_pnm_yr_v1l2.postnotes,
-        express="1hub",
-        postexpress="1hua",
-        verse=8,
-        copynotes=1
-    )
-    _pnm_yr_v2l3 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "When I can't even read my own feelings",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l3.notes,
-        express="1ekd",
-        postexpress="1ekc",
-        verse=8,
-        copynotes=2
-    )
-    _pnm_yr_v2l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What good are words",
-            style="monika_credits_text"
-        ),
-        [
-            A5,
-            G5,
-            E5,
-            D5
-        ],
-        express="1ekd",
-        postexpress="1ekc",
-        vis_timeout=2.0,
-        verse=8,
-        posttext=True
-    )
-    _pnm_yr_v2l5 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "when a smile says it all?",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            A4,
-            C5,
-            A4,
-            C5,
-            D5,
-            C5
-        ],
-        express="1hub",
-        postexpress="1hua",
-        vis_timeout=3.0,
-        verse=8,
-        posttext=True
-    )
-    _pnm_yr_v2l6 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "And if this world won't write me an ending",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l5.notes,
-        express="1ekd",
-        postexpress="1ekc",
-        verse=8,
-        copynotes=4
-    )
-    _pnm_yr_v2l7 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What will it take just for me to have it all?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l6.notes,
-        express="1ekd",
-        postexpress="1eka",
-        vis_timeout=3.0,
-        verse=8,
-        copynotes=5,
-        posttext=True
-    )
-
-    # verse 3
-    _pnm_yr_v3l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("Does my pen only write bitter words for those who are "+
-            "dear to me?"),
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l1.notes,
-#                [
-#                    G5,
-#                    G5,
-#                    G5,
-#                    F5,
-#                    E5,
-#                    E5,
-#                    F5,
-#                    G5,
-#                    E5,
-#                    D5,
-#                    C5,
-#                    D5,
-#                    E5,
-#                    C5,
-#                    G4
-#                ],
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=0,
-        ev_timeout=25.0,
-        vis_timeout=2.0
-    )
-    _pnm_yr_v3l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("Is it love if I take you, or is it love if I set you " +
-            "free?"),
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l2.notes,
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=1,
-        ev_timeout=7.0,
-        vis_timeout=2.0
-    )
-    _pnm_yr_v3l3 = PianoNoteMatch(
-        _pnm_yr_v1l3.say,
-        _pnm_yr_v1l3.notes,
-        express="1eub",
-        postexpress="1eua",
-        verse=15,
-        copynotes=2,
-        ev_timeout=10.0
-    )
-    _pnm_yr_v3l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "How can I write love into reality?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l4.notes,
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=3
-    )
-    _pnm_yr_v3l5 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "If I can't hear the sound of your heartbeat",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l5.notes,
-        express="1lksdld",
-        postexpress="1lksdlc",
-        verse=15,
-        copynotes=4
-    )
-    _pnm_yr_v3l6 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What do you call love in your reality?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l6.notes,
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=5
-    )
-    _pnm_yr_v3l7 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "And in your reality, if I don't know how to love you",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            A4,
-            C5,
-            A4,
-            C5,
-            D5,
-            C5,
-            E5,
-            F5,
-            F5,
-            E5,
-            C5,
-            A4,
-            C5,
-            G5
-        ],
-        postnotes=[
-            G5,
-            E5,
-            F5,
-            C5,
-            A5,
-            G5
-        ],
-        express="1lksdld",
-        postexpress="1lksdla",
-        verse=15
-    )
-    _pnm_yr_v3l8 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "I'll leave you be",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            A4,
-            C5,
-            C5
-        ],
-        postnotes=[
-            G5,
-            G5,
-            G5,
-            G5,
-            F5,
-            E5,
-            F5,
-            G5,
-            A5,
-            B5,
-            G5,
-            B5,
-            G5
-        ],
-        express="1eub",
-        postexpress="1eua",
-        ev_timeout=5.0,
-        vis_timeout=5.0,
-        posttext=True
-    )
-
-    # your reality, pnml
-    pnml_yourreality = PianoNoteMatchList(
-        [
-            _pnm_yr_v1l1,
-            _pnm_yr_v1l2,
-            _pnm_yr_v1l3,
-            _pnm_yr_v1l4,
-            _pnm_yr_v1l5,
-            _pnm_yr_v1l6,
-            _pnm_yr_v1l7,
-            _pnm_yr_v1l8,
-            _pnm_yr_v2l1,
-            _pnm_yr_v2l2,
-            _pnm_yr_v2l3,
-            _pnm_yr_v2l4,
-            _pnm_yr_v2l5,
-            _pnm_yr_v2l6,
-            _pnm_yr_v2l7,
-            _pnm_yr_v3l1,
-            _pnm_yr_v3l2,
-            _pnm_yr_v3l3,
-            _pnm_yr_v3l4,
-            _pnm_yr_v3l5,
-            _pnm_yr_v3l6,
-            _pnm_yr_v3l7,
-            _pnm_yr_v3l8
-        ],
-        [0, 8, 15, 23],
-        "Your Reality",
-        "mas_piano_yr_win",
-        "mas_piano_yr_fc",
-        "mas_piano_yr_fail",
-        "mas_piano_yr_prac",
-        5.0
-#        "zz_piano_yr_launch"
-    )
-
 ### END =======================================================================
 
 # LINE 1
@@ -2378,8 +1841,9 @@ init 1000 python in mas_piano_keys:
         selection menu.
 
         RETURNS:
-            list of tuples for song selection. The returned list will for sure
-            have at least one item (the nevermind)
+            Tuple of the following format:
+            [0]: list of tuples for song selection. May be an empty list
+            [1]: Last item (the nvm) for the song selection
 
         ASSUMES:
             pnml_db
@@ -2389,10 +1853,9 @@ init 1000 python in mas_piano_keys:
         for k in pnml_db:
             pnml = pnml_db.get(k)
             if pnml.wins > 0:
-                song_list.append((pnml.name, pnml))
+                song_list.append((pnml.name, pnml, False, False))
 
-        song_list.append(("Nevermind", "None"))
-        return song_list
+        return song_list, ("Nevermind", "None", False, False, 10)
 
 # make this later than mas_piano_keys
 init 1001 python:
