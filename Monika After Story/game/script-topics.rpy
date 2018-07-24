@@ -4754,37 +4754,38 @@ label monika_rock:
     return
     
 init 5 python:
-addEvent(Event(persistent.event_database,eventlabel="monika_standup",category=['literature'],prompt="Stand-up Comedy",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_standup",category=['literature'],prompt="Stand-up Comedy",random=True))
 
-label monika_standup
-	m 2hua "You know what's a neat form of literature?"
-	m 2hub "Stand-up comedy!"
-	m 2hksdrb "...I've been saying lots of random things are literature haven't I?"
-	m 2hub "I'm starting to feel like Natsuki, or some fanatic post-modernist, ahaha!"
-	m 2esa But seriously, there's a real craft when it comes to writing bits for stand-up.
-	m 4esd It differs from making simple one-liner jokes, because it really needs to tell a story.
-	m 4dsd A story about one or two central topics,
-	m 4esd Developing your ideas as much as you can,
-	m 3dsc Maybe segue into something that relates to your topics, but ultimately, 
-	m 3esb You reach your final line which is the climax of the piece, hopefully getting the most laughs.
-	m 1esa In some ways, it's kind of like writing a short story, except you cut out the falling action.
-	m 1esc And yet, between the jokes you can find the soul of the writer, what his thoughts and feelings are towards any given subject.
-	m 1esd What his life experiences were, and who the person they are today.
-	m 1esb All that comes forth within the bits that they write for their act.
-	m 1esa I think the toughest part about doing stand-up is having to perform it.
-	m 3hub After all, how do you know if you bit is good if you never try it out on a crowd?
-	m 4esd Suddenly, this form of literature becomes much more complex.
-	m 4dsc How you say your lines, how you carry yourself on stage, your facial expressions,
-	m 3esd Now it's not just about what you wrote, it's how you say it.
-	m 1esa Much like poetry, don't you think?
-	m 2lsc Many people won't try stand-up themselves because you're in front of a crowd...
-	m 4eub Did you know that the number one fear most people have, more than death, is public speaking?
-	m 4wuo Imagine, there's more people who would prefer jumping off a building - then making a joke at open mic night!
-	m 4wuo What's the deal with that?!
-	m 1hub ...Ahaha! Sorry, I wanted to recite a line a famous comedian once wrote for you.
-	m 1esa You probably know who it is.
-	m 1eua So? Was it good? Did you laugh?
-	m 1lksdra ...Hmm, maybe I should just work on my own material...
+label monika_standup:
+    m 2hua "You know what's a neat form of literature?"
+    m 2hub "Stand-up comedy!"
+    m 2hksdrb "...I've been saying lots of random things are literature haven't I?"
+    m 2hub "I'm starting to feel like Natsuki, or some fanatic post-modernist, ahaha!"
+    m 2esa "But seriously, there's a real craft when it comes to writing bits for stand-up."
+    m 4esd "It differs from making simple one-liner jokes, because it really needs to tell a story."
+    m 4dsd "A story about one or two central topics,"
+    m 4esd "Developing your ideas as much as you can,"
+    m 3dsc "Maybe segue into something that relates to your topics, but ultimately," 
+    m 3esb "You reach your final line which is the climax of the piece, hopefully getting the most laughs."
+    m 1esa "In some ways, it's kind of like writing a short story, except you cut out the falling action."
+    m 1esc "And yet, between the jokes you can find the soul of the writer, what his thoughts and feelings are towards any given subject."
+    m 1esd "What his life experiences were, and who the person they are today."
+    m 1esb "All that comes forth within the bits that they write for their act."
+    m 1esa "I think the toughest part about doing stand-up is having to perform it."
+    m 3hub "After all, how do you know if you bit is good if you never try it out on a crowd?"
+    m 4esd "Suddenly, this form of literature becomes much more complex."
+    m 4dsc "How you say your lines, how you carry yourself on stage, your facial expressions,"
+    m 3esd "Now it's not just about what you wrote, it's how you say it."
+    m 1esa "Much like poetry, don't you think?"
+    m 2lsc "Many people won't try stand-up themselves because you're in front of a crowd..."
+    m 4eub "Did you know that the number one fear most people have, more than death, is public speaking?"
+    m 4wuo "Imagine, there's more people who would prefer jumping off a building - then making a joke at open mic night!"
+    m 4wuo "What's the deal with that?!"
+    m 1hub "...Ahaha! Sorry, I wanted to recite a line a famous comedian once wrote for you."
+    m 1esa "You probably know who it is."
+    m 1eua "So? Was it good? Did you laugh?"
+    m 1lksdra "...Hmm, maybe I should just work on my own material..."
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_soda",category=['life','misc'],prompt="Drinking soda",random=True))
