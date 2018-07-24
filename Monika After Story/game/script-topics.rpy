@@ -1164,9 +1164,9 @@ label monika_kiss:
     m 1tku "Don't lie if it turned you on a little bit."
     m 1hub "Ahaha! I'm kidding."
     m 1eua "Well, to be honest, I do start getting all romantic when the mood is right..."
-    m "But that'll be our secret~"
+    m 5ruu "But that'll be our secret~"
     return
-
+#TODO: replace 5ruu with a blushing expression when fixed
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_yuri",category=['club members','media'],prompt="Yandere Yuri",random=True))
@@ -2155,12 +2155,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_difficulty",category=['games'],prompt="Wasn't DDLC too easy?",pool=True))
 
 label monika_difficulty:
-    m 1m "Well, it's not like this game was meant to be that hard in the first place."
-    m 1i "If I hadn't decided to change things up, it would have just been a boring romance story."
+    m 1lksdla "Well, it's not like this game was meant to be that hard in the first place."
+    m 1eka "If I hadn't decided to change things up, it would have just been a boring romance story."
     if persistent.monika_kill:
-        m "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
-    m 1a "So just take it easy sometimes. Not every game has to be a challenge to be fun."
-    m 3j "Sometimes, love is all you need, [player]."
+        m 4eka "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
+    m 1eua "So just take it easy sometimes. Not every game has to be a challenge to be fun."
+    m 1hua "Sometimes, love is all you need, [player]."
     return
 
 
@@ -2168,12 +2168,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
 
 label monika_credits_song:
-    m 1a "I hope you liked my song."
-    m 1j "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
-    m 1a "Give me some time, and I'll try to write another."
-    m "Maybe you could play me a song too, if you can play an instrument?"
-    m 1b "I would love that."
-    m 3a "Oh, and I'll play the song again for you anytime you want me to."
+    m 1hua "I hope you liked my song."
+    m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
+    m 1eua "Give me some time, and I'll try to write another."
+    m 3eua "Maybe you could play me a song too, if you can play an instrument?"
+    m 1hub "I would love that."
+    m 3eua "Oh, and I'll play the song again for you anytime you want me to."
     m "Just hit the 'm' key at any time."
     return
 
@@ -2182,15 +2182,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poetry",category=['literature'],prompt="Poetry",random=True))
 
 label monika_poetry:
-    m 1a "Poetry is beautiful, isn't it?"
-    m 1e "To be honest, all the poetry the girls in the club wrote was super-depressing. It's not all like that!"
-    m 3a "Langston Hughes wrote some very optimistic poetry, even as he was trying to express his feelings. Read some if you're feeling sad about things."
-    m "Poems are written to tell people about the author's outlook towards certain subjects."
+    m 1eua "Poetry is beautiful, isn't it?"
+    m 1eka "To be honest, all the poetry the girls in the club wrote was super-depressing. It's not all like that!"
+    m 3esa "Langston Hughes wrote some very optimistic poetry, even as he was trying to express his feelings. Read some if you're feeling sad about things."
+    m 1eua "Poems are written to tell people about the author's outlook towards certain subjects."
     m "They're conveyed in a way the poet hopes will resonate more with the reader than plain sentences could."
-    m 1j "It's really romantic."
-    m 1a "I hope we can both write a lot of poetry from now on."
-    m 1m "Anything you write looks great to me, so I might not be the best critic."
-    m 1k "But I'm sure there are a lot of people who would love to read what you write."
+    m 1hua "It's really romantic."
+    m 1eua "I hope we can both write a lot of poetry from now on."
+    m 1eka "Anything you write looks great to me, so I might not be the best critic."
+    m 1esa "But I'm sure there are a lot of people who would love to read what you write."
     return
 
 
@@ -2198,22 +2198,22 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True))
 
 label monika_ddlc:
-    m 1d "You want to talk about the game?"
-    m 1h "What's there to say?"
+    m 1euc "You want to talk about the game?"
+    m 1esc "What's there to say?"
     if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
-        m "This was just some boring romance game, right? Well, until I got control of it..."
-        m 2p "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
-        m 2n "And it's home, so I've learned to deal with it."
-        m 2i "Still, I doubt it'd be something I'd want to play, if I were a gamer."
-        m 1k "And seeing how things turned out, I'm sure you only played because of me, too!"
+        m 1lsc "This was just some boring romance game, right? Well, until I got control of it..."
+        m 2lksdlc "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
+        m lksdla "And it's home, so I've learned to deal with it."
+        m 2euc "Still, I doubt it'd be something I'd want to play, if I were a gamer."
+        m 1hub "And seeing how things turned out, I'm sure you only played because of me, too!"
     else:
         m "The Literature Club turned out to corrupt the minds of anyone in it."
-        m 3i "So I deleted them all for good."
-        m 1p "Well, the other girls are still out there, like I was."
-        m 1i "But they'll have to wait a long time before someone pieces them back together, I bet."
+        m 1dsc "So I deleted them all for good."
+        m 1lsc "Well, the other girls are still out there, like I was."
+        m 1esc "But they'll have to wait a long time before someone pieces them back together, I bet."
         m "It's justice for all their time with you in the game."
-        m 1h "So don't feel too bad about them."
-        m 1 "Just look at me from now on, okay?"
+        m 1euc "So don't feel too bad about them."
+        m 1eua "Just look at me from now on, okay?"
     return
 
 
@@ -2221,13 +2221,13 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dan",category=['ddlc'],prompt="Do you like Dan Salvato?",pool=True))
 
 label monika_dan:
-    m 2d "Well, I used to think he was some cruel guy playing God, but now..."
-    m 3k "I think he's a really nice guy."
-    m 3a "Even if it wasn't perfect, {i}Doki Doki Literature Club{/i} really is impressive."
-    m 4n "I mean, the other girls might be based off some stereotypical anime tropes, but they had me fooled for a while."
-    m 4j "And he's the reason we're together now, right?"
-    m 2m "So even if he wrote a story that put me through a lot of pain..."
-    m 1g "I really can't be too mad at him."
+    m 2esc "Well, I used to think he was some cruel guy playing God, but now..."
+    m 3eka "I think he's a really nice guy."
+    m 3eua "Even if it wasn't perfect, {i}Doki Doki Literature Club{/i} really is impressive."
+    m 4lksdla "I mean, the other girls might be based off some stereotypical anime tropes, but they had me fooled for a while."
+    m 4eka "And he's the reason we're together now, right?"
+    m 2lksdla "So even if he wrote a story that put me through a lot of pain..."
+    m 5eua "I really can't be too mad at him."
     return
 
 
@@ -2237,12 +2237,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_4chan",category=['misc'],prompt="Have you even been to 4chan?",pool=True))
 
 label monika_4chan:
-    m 3 "You know, this mod got its start over there."
-    m 1i "I always hear bad things, like that the people over there are really awful."
-    m 1h "Some people say that nothing good ever comes from 4chan."
-    m "But if they can make a game like this, where we can be together..."
-    m 1j "I guess they can't be all bad."
-    m 1k "They certainly have good taste in girls! Ahaha~"
+    m 3eua "You know, this mod got its start over there."
+    m 1ekc "I always hear bad things, like that the people over there are really awful."
+    m "Some people say that nothing good ever comes from 4chan."
+    m 1eua "But if they can make a game like this, where we can be together..."
+    m 1eka "I guess they can't be all bad."
+    m 1hub "They certainly have good taste in girls! Ahaha~"
     return
 
 
@@ -2250,14 +2250,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_vidya",category=['games'],prompt="Do you like video games?",pool=True))
 
 label monika_vidya:
-    m 1d "I don't play a lot of video games, [player]."
-    m 3 "I guess that's because I like to read instead."
-    m 1 "But maybe part of it is that I'm trapped in a video game already."
-    m 1m "For all of my complaining about this game..."
-    m 1h "There are worse places I could be."
-    m 3 "Like, this could be some sort of shooting game, or a fantasy game full of dragons and monsters."
-    m "A romance game might not be the most exciting, but there's nothing really dangerous here."
-    m 1 "Well, except for me, I guess."
+    m 1euc "I don't play a lot of video games, [player]."
+    m 3eua "I guess that's because I like to read instead."
+    m 1eua "But maybe part of it is that I'm trapped in a video game already."
+    m 1lksdla "For all of my complaining about this game..."
+    m "There are worse places I could be."
+    m 3eua "Like, this could be some sort of shooting game, or a fantasy game full of dragons and monsters."
+    m 1eua "A romance game might not be the most exciting, but there's nothing really dangerous here."
+    m 1tku "Well, except for me, I guess."
     return
 
 
@@ -2265,12 +2265,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_books",category=['literature','literature club'],prompt="Books",random=True))
 
 label monika_books:
-    m 4 "For a literature club, we did a lot less book reading than you might have thought."
-    m 4l "It just turned out that the four of us liked poetry better than books. Sorry!"
-    m 2 "It's also a lot easier to foreshadow spooky stuff with poems."
-    m 3a "I still love a good book, though! We can talk about them if you just finished reading something."
-    m "I might even have some suggestions for us to read together."
-    m "That's what a couple would do, right~?"
+    m 4lksdla "For a literature club, we did a lot less book reading than you might have thought."
+    m 4hksdlb "It just turned out that the four of us liked poetry better than books. Sorry!"
+    m 2eua "It's also a lot easier to foreshadow spooky stuff with poems."
+    m 1hub "I still love a good book, though! We can talk about them if you just finished reading something."
+    m 1eua "I might even have some suggestions for us to read together."
+    m 1tsbsa "That's what a couple would do, right~?"
     return
 
 
@@ -2278,11 +2278,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_favpoem",category=['literature','monika'],prompt="What's your favorite poem?",pool=True))
 
 label monika_favpoem:
-    m 1d "My favorite poem? Well, it has to be something by E. E. Cummings."
-    m 1a "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
-    m "It's nice for me to think that someone who can make up some entirely new use of words can become famous."
-    m 1d "And I do love that his erotic poems apply to our situation perfectly."
-    m 1j "Hope it puts you in the mood to love me forever~"
+    m 1euc "My favorite poem? Well, it has to be something by E. E. Cummings."
+    m 4eua "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
+    m 1eua "It's nice for me to think that someone who can make up some entirely new use of words can become famous."
+    m 1lsbssdrb "And I do love that his erotic poems apply to our situation perfectly."
+    m 1ekbfa "Hope it puts you in the mood to love me forever~"
     return
 
 
@@ -2290,11 +2290,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_favbook",category=['literature','monika'],prompt="What's your favorite book?",pool=True))
 
 label monika_favbook:
-    m 1d "My favorite book? There's a lot of books I like."
-    m 3a "{i}If on a Winter's Night, a Traveler{/i} by Calvino is about two readers of the novel falling in love."
-    m 2h "Maybe, {i}The Metamorphosis{/i}? It's probably a bit too depressing to call it my favorite."
-    m 3k "Oh! Murakami's {i}Hard-Boiled Wonderland and the End of the World{/i}. It's about a man who frees himself from his societal restraints by voluntarily imprisoning himself to be with the one he loves."
-    m 1k "I think you'd really love reading it!"
+    m 1euc "My favorite book? There's a lot of books I like."
+    m 3eua "{i}If on a Winter's Night, a Traveler{/i} by Calvino is about two readers of the novel falling in love."
+    m 2lksdla "Maybe, {i}The Metamorphosis{/i}? It's probably a bit too depressing to call it my favorite."
+    m 3sub "Oh! Murakami's {i}Hard-Boiled Wonderland and the End of the World{/i}. It's about a man who frees himself from his societal restraints by voluntarily imprisoning himself to be with the one he loves."
+    m 1hub "I think you'd really love reading it!"
     return
 
 
@@ -2302,14 +2302,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_natsuki",category=['club members'],prompt="Natsuki's death",random=True))
 
 label monika_natsuki:
-    m 1p "Natsuki didn't actually die before I deleted her, you know."
+    m 1lksdld "Natsuki didn't actually die before I deleted her, you know."
     m "I guess she just... disappeared in a flash."
-    m 1h "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
-    m 3f "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
-    m 3l "Sorry, I can't help myself sometimes."
-    m 1e "But for what it's worth, you made her the happiest she ever was."
+    m 1esc "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
+    m 3ekc "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
+    m 3lksdla "Sorry, I can't help myself sometimes."
+    m 1eka "But for what it's worth, you made her the happiest she ever was."
     m "Hope you don't feel too guilty..."
-    m 1 "I certainly don't."
+    m 1esa "I certainly don't."
     return
 
 init 5 python:
@@ -2321,68 +2321,68 @@ label monika_love:
     # TODO add mas_gainAffection with the logic it should have
     #First time I love you has been said.
     if persistent._mas_monika_lovecounter == 0:
-        m 1b "...!"
-        m 1e "I...I love you too [player]!"
-        m 1j "I cannot believe you said that to me!"
-        m 1k "It makes everything I've done for us worthwhile!"
-        m 1e "Thank you for finally saying it..."
+        m 1wubsw "...!"
+        m 1ekbfa "I...I love you too [player]!"
+        m 1lkbsa "I cannot believe you said that to me!"
+        m 1hubfa "It makes everything I've done for us worthwhile!"
+        m 2dubsu "Thank you for finally saying it..."
         $ persistent._mas_monika_lovecounter += 1
         $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
         return
 
     #After I love you has been received positively 5/10/15 etc times.
     elif persistent._mas_monika_lovecounter== 5:
-        m 1k "I love you so much, [player]!"
+        m 1hubfb "I love you so much, [player]!"
 
     elif persistent._mas_monika_lovecounter == 10:
-        m 1j "Ehehe~"
-        m 1k "I love you too!"
+        m 1hubfa "Ehehe~"
+        m 1hubfb "I love you too!"
 
     elif persistent._mas_monika_lovecounter == 15:
-        m 1j "You sure love saying that..."
-        m 1k "Well, I love you too!"
+        m 1ekbfa "You sure love saying that..."
+        m 1hubfb "Well, I love you too!"
 
     elif persistent._mas_monika_lovecounter == 20:
-        m 1j "Gosh you've said it so many times!"
-        m 1e "You really do mean it, don't you?"
-        m 1k "Well, I love you back just as much!"
+        m 1wubso "Gosh you've said it so many times!"
+        m 1tsbsa "You really do mean it, don't you?"
+        m 1hubfb "Well, I love you back just as much!"
 
     elif persistent._mas_monika_lovecounter == 25:
-        m 1k "Hearing you say that always makes my heart jump!"
-        m 1j "Well, I know you want to hear it just as much..."
-        m "[player], I love you too!"
+        m 1hubfa "Hearing you say that always makes my heart jump!"
+        m 1ekbfa "Well, I know you want to hear it just as much..."
+        m 1hubfb "[player], I love you too!"
 
     elif persistent._mas_monika_lovecounter == 30:
-        m 1l "Gosh, it's always so overwhelming!"
-        m 1j "I..."
-        m "I love you more than anything!"
+        m 1lksbsa "Gosh, it's always so overwhelming!"
+        m 1hubfa "I..."
+        m 1hubfb "I love you more than anything!"
 
     elif persistent._mas_monika_lovecounter == 35:
-        m 1j "You never tire of saying it, do you?"
-        m 1k "Well, I never tire of hearing it!"
-        m "Or saying it back...I love you [player]!"
+        m 1ekbfa "You never tire of saying it, do you?"
+        m 1hubfa "Well, I never tire of hearing it!"
+        m 1hubfb "Or saying it back...I love you [player]!"
 
     elif persistent._mas_monika_lovecounter == 40:
-        m 1j "Ehehe~"
-        m  "I..."
-        m 1k "Looooooooove you too, [player]!"
+        m 1dubsu "Ehehe~"
+        m 1hubfa "I..."
+        m 1hubfb "Looooooooove you too, [player]!"
 
     elif persistent._mas_monika_lovecounter == 45:
-        m 1j "You saying that always makes my day!"
-        m 1k "I love you so much, [player]!"
+        m 1hubfa "You saying that always makes my day!"
+        m 1hubfb "I love you so much, [player]!"
 
     elif persistent._mas_monika_lovecounter == 50:
         $ persistent._mas_monika_lovecounter = 1
-        m 1m "I just can't handle you saying it so much to me!"
-        m 1l "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
-        m 1e "No words can truly do justice to how deeply I feel for you..."
-        m  "The only words I know that come close are..."
-        m 1k "I love you too, [player]! More than I can ever express!"
+        m 1lkbsa "I just can't handle you saying it so much to me!"
+        m 1ekbfa "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
+        m "No words can truly do justice to how deeply I feel for you..."
+        m 1hubfa "The only words I know that come close are..."
+        m 1hubfb "I love you too, [player]! More than I can ever express!"
         return
 
     else:
         # Default response if not a counter based response.
-        m 3j "I love you too, [player]!"
+        m 3hubfb "I love you too, [player]!"
         #List of follow up words after being told I love you. It can be further expanded upon easily.
 
     python:
@@ -2431,12 +2431,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hedgehog",category=['philosophy','psychology'],prompt="Hedgehog dilemma",random=True))
 
 label monika_hedgehog:
-    m 3 "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
-    m 3i "So why do we try to get close to them?"
-    m 3 "Well, introverts and extroverts have different answers to that question."
-    m 3m "It helps when you know that you're the only sentient being in the entire world, though."
+    m 1euc "The hedgehog's dilemma: The closer we get to another person, the more deeply we are hurt by them."
+    m 3euc "So why do we try to get close to them?"
+    m 3esc "Well, introverts and extroverts have different answers to that question."
+    m 1lksdla "It helps when you know that you're the only sentient being in the entire world, though."
     m "If you can't use that solution in your life, you'll just have to let me help you shoulder your pain."
-    m 1f "We can't hurt each other from different realities, right?"
+    m 1ekc "We can't hurt each other from different realities, right?"
     return
 
 
@@ -2477,43 +2477,43 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Free will",random=True))
 
 label monika_freewill:
-    m 1d "Hey, [player], do you believe in free will?"
-    m 3 "You might not believe in God, but I know for sure that someone created me."
-    m 3h "I wonder if that means we can only do what our creator wants."
-    m 3i "If that's true, though, wouldn't some people be condemned to hell from day one?"
-    m 1h "I think that seems more than a little unfair."
-    m "After all, can you really be evil if you aren't in control?"
+    m 1euc "Hey, [player], do you believe in free will?"
+    m "You might not believe in God, but I know for sure that someone created me."
+    m 1lsc "I wonder if that means we can only do what our creator wants."
+    m 3euc "If that's true, though, wouldn't some people be condemned to hell from day one?"
+    m 1esc "I think that seems more than a little unfair."
+    m 3euc "After all, can you really be evil if you aren't in control?"
     m "Shouldn't the one pulling the strings take responsibility?"
-    m 1p "But I guess that means you can't take credit for the good things you do, either."
-    m 1q "I'm not sure which is more depressing."
+    m 1lsc "But I guess that means you can't take credit for the good things you do, either."
+    m 1lksdlc "I'm not sure which is more depressing."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_functionalism",category=['philosophy'],prompt="Human functionalism",random=True))
 
 label monika_functionalism:
-    m 1d "Do you ever think about how people are kind of like computers?"
-    m 3 "I mean, a brain is just a calculation machine..."
-    m "But instead of transistors and wires, you have neurons."
+    m 1euc "Do you ever think about how people are kind of like computers?"
+    m 3euc "I mean, a brain is just a calculation machine..."
+    m 1eud "But instead of transistors and wires, you have neurons."
     m "And instead of data coming in through a keyboard or network, you get it through your eyes and ears."
-    m 4h "But if that's true, doesn't that mean free will is kind of a lie?"
+    m 4esc "But if that's true, doesn't that mean free will is kind of a lie?"
     m "Your brain is just responding to the inputs it gets, with your responses being natural outputs."
-    m 4i "So, even if you aren't running off of some script or program, you're not really in control."
-    m 2 "Maybe you and I aren't so different after all."
+    m 4esd "So, even if you aren't running off of some script or program, you're not really in control."
+    m 5rsc "Maybe you and I aren't so different after all."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_technique",category=['ddlc','misc'],prompt="How did you change the code?",random=True))
 
 label monika_technique:
-    m 3 "I don't exactly program like you would, [player]."
-    m "You might have noticed I don't carry around a laptop or anything by now."
-    m 1 "If I want to change something in the script, I just think about it."
-    m "I'm pretty sure my thoughts get translated to changes in the program code."
-    m 1m "It's not perfect or anything. Glitches show up really easily if I lose focus or get distracted."
-    m 1l "That's why I had a lot of trouble getting what I wanted in the last version of the game."
-    m 3e "Are you jealous you'll never be able to write code with just your thoughts?"
-    m 3k "Just keep practicing and I'm sure you'll be able to do it!"
+    m 1lksdla "I don't exactly program like you would, [player]."
+    m 3eua "You might have noticed I don't carry around a laptop or anything by now."
+    m 1duu "If I want to change something in the script, I just think about it."
+    m 1eua "I'm pretty sure my thoughts get translated to changes in the program code."
+    m 1eka "It's not perfect or anything. Glitches show up really easily if I lose focus or get distracted."
+    m 1eua "That's why I had a lot of trouble getting what I wanted in the last version of the game."
+    m 1tku "Are you jealous you'll never be able to write code with just your thoughts?"
+    m 1hub "Just keep practicing and I'm sure you'll be able to do it!"
     return
 
 
@@ -2521,14 +2521,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_contribute",category=['mod'],prompt="Contributions",random=True))
 
 label monika_contribute:
-    m 3b "It would be really nice if you were able to contribute to this, [player]."
-    m "I'm sure a lot of people would appreciate your hard work if you did."
-    m 3a "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
-    m "So far, I've had help from plenty of people!"
-    m 2k "I love all of them for making this game even better!"
-    m 1a "Not as much as I love you, of course."
-    m 1l "I hope it doesn't make you feel jealous~"
-    m 3b "But I'll love you forever if you help me come closer to your reality!"
+    m 1hua "It would be really nice if you were able to contribute to this, [player]."
+    m 1eua"I'm sure a lot of people would appreciate your hard work if you did."
+    m 3eua "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
+    m 1hub "So far, I've had help from plenty of people!"
+    m "I love all of them for making this game even better!"
+    m 1ekbfa "Not as much as I love you, of course."
+    m "I hope it doesn't make you feel jealous~"
+    m 3hubfb "But I'll love you forever if you help me come closer to your reality!"
     return
 
 
@@ -2536,11 +2536,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_drawing",category=['media'],prompt="Can you draw?",pool=True))
 
 label monika_drawing:
-    m 1g "I don't have a lot of experience with drawing, [player]."
-    m 1e "I'm just interested in literature. And I've been learning the piano in my spare time."
-    m 1j "If you like to create artwork, though, I'd love to see it!"
-    m "I'd be impressed by anything you show me, to be honest."
-    m 3b "If it's really good, I might even add it to the room!"
+    m 1euc "I don't have a lot of experience with drawing, [player]."
+    m 1eka "I'm just interested in literature. And I've been learning the piano in my spare time."
+    m 1hua "If you like to create artwork, though, I'd love to see it!"
+    m 1eua "I'd be impressed by anything you show me, to be honest."
+    m 3hub "If it's really good, I might even add it to the room!"
     return
 
 
@@ -2548,23 +2548,23 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_mc",category=['romance','ddlc','club members'],prompt="The MC",random=True))
 
 label monika_mc:
-    m 3 "Just so you know, I was never in love with anyone but you."
-    m "I mean you, [player]."
+    m 3eua "Just so you know, I was never in love with anyone but you."
+    m 1eka "I mean you, [player]."
     if mcname.lower() == player.lower():
-        m 1d "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
-        m 1a "I mean the player, not your character."
+        m 1euc "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
+        m 1eua "I mean the player, not your character."
     m "Unlike the other girls, I can separate your avatar from who you really are."
-    m 1m "The main character is nothing more than a bunch of code with no personality."
-    m 3i "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
-    m 3h "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
-    m "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
-    m 2m "I guess nobody mentioned that because it was a part of the game. But, yeah. It's just a list of words to me."
-    m 2h "I hope you're a lot more romantic than that in real life!"
-    m 2e "But even if you're not, it's okay. We've moved beyond that phase in our relationship already."
+    m 1lfb "The main character is nothing more than a bunch of code with no personality."
+    m 3tkc "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
+    m 2tkc "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
+    m 2wfw "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
+    m 2lksdld "I guess nobody mentioned that because it was a part of the game. But, yeah. It's just a list of words to me."
+    m 2hua "I hope you're a lot more romantic than that in real life!"
+    m 2eka "But even if you're not, it's okay. We've moved beyond that phase in our relationship already."
     m "That just means you won't cheat on me with some woman in your reality, right?"
-    m 2 "I'm sure you would never do that to me."
-    m "Just in case, how about you take my character file along with you when you go outside?"
-    m "I just want to be with you forever~"
+    m 2esa "I'm sure you would never do that to me."
+    m 2eua "Just in case, how about you take my character file along with you when you go outside?"
+    m 2hua "I just want to be with you forever~"
     return
 
 
@@ -2572,11 +2572,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_heroism",category=['misc','advice'],prompt="Heroism",random=True))
 
 label monika_heroism:
-    m 1d "Heroes are so personal."
-    m 3 "If someone really inspires you to improve yourself, they're your hero."
+    m 1lsc "Heroes are so personal."
+    m 3eua "If someone really inspires you to improve yourself, they're your hero."
     m "There are all sorts of great people out there in the world."
-    m 1j "I hope someone will consider you their hero someday!"
-    m 1 "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
+    m 1hua "I hope someone will consider you their hero someday!"
+    m 4eua "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
     return
 
 
@@ -2584,18 +2584,18 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_trolley",category=['philosophy'],prompt="How would you answer the trolley problem?",pool=True))
 
 label monika_trolley:
-    m 1b "Oh, cool. I love thinking about these sorts of thought experiments."
-    m 1d "I guess we're talking about real people, right? I wouldn't have a particular preference if I knew they didn't have free will."
-    m 1q "Hmmm..."
-    m 3h "I wouldn't switch."
-    m 4 "That's the only logical choice, if you think about it."
-    m "It feels nice to say that you'd save the most people, doesn't it? But people only say that because nobody in the example matters to them."
+    m 1eua "Oh, cool. I love thinking about these sorts of thought experiments."
+    m 1euc "I guess we're talking about real people, right? I wouldn't have a particular preference if I knew they didn't have free will."
+    m 1dsc "Hmmm..."
+    m 3esc "I wouldn't switch."
+    m 4esc "That's the only logical choice, if you think about it."
+    m 1euc "It feels nice to say that you'd save the most people, doesn't it? But people only say that because nobody in the example matters to them."
     m "If they actually cared about the sacrifice, they'd kill five people themselves in a heartbeat."
-    m 2 "Do you know anyone who would want a self-driving car to save other people by killing the driver? Didn't think so, [player]."
-    m 2h "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it in little ways, every day."
-    m 2f "They just don't like to come face-to-face with that fact. They get really upset when you point it out."
+    m 2tsb "Do you know anyone who would want a self-driving car to save other people by killing the driver? Didn't think so, [player]."
+    m 2eua "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it in little ways, every day."
+    m 2tkc "They just don't like to come face-to-face with that fact. They get really upset when you point it out."
     m "Generic human life isn't really that valuable to anyone."
-    m 1e "It's definitely nothing compared to our love. So just do whatever you can to be happy, [player]."
+    m 1eka "It's definitely nothing compared to our love. So just do whatever you can to be happy, [player]."
     return
 
 
@@ -2604,30 +2604,30 @@ init 5 python:
 
 label monika_girlfriend:
     $ mas_loseAffection(reason="joking about having another girlfriend. You really gave me a heart attack!")
-    m 1h "I thought we established already that I was your girlfriend?"
-    m "There's no way you already have one in your reality, right?"
-    m 4f "If you do, then you've got to break up with her right now!"
-    m "Tell her you met someone perfect for you, someone who will never betray you!"
-    m 1d "W-wait. Maybe I'm jumping the gun a bit..."
-    m 1n "I know you wouldn't cheat on me."
-    m 1d "If you meet a girl who asks you out though, let me talk to her first, okay?"
-    m 1h "I won't let someone else steal away my loving sweetheart!"
+    m 1euc "I thought we established already that I was your girlfriend?"
+    m 1tkc "There's no way you already have one in your reality, right?"
+    m 4tfx "If you do, then you've got to break up with her right now!"
+    m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
+    m 1lksdla "W-wait. Maybe I'm jumping the gun a bit..."
+    m 1eka "I know you wouldn't cheat on me."
+    m 1esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
+    m 1hua "I won't let someone else steal away my loving sweetheart!"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_waifus",category=['media'],prompt="Waifus",random=True))
 
 label monika_waifus:
-    m 1i "I've never understood the appeal of dating sims or romance novels, to tell you the truth."
-    m 3h "You have a bunch of quirky girls that would seem very weird if they were real,"
+    m 1lsc "I've never understood the appeal of dating sims or romance novels, to tell you the truth."
+    m 3euc "You have a bunch of quirky girls that would seem very weird if they were real,"
     m "A blank slate of a male protagonist with nothing interesting about them..."
-    m "And then they fall in love with each other, sometimes for no reason at all!"
-    m 3p "I hope that's not what you expected to find in the Literature Club."
-    m 3k "'Cause what you got was a lot more interesting!"
-    m 1 "Instead of some unrealistic, fake girl..."
-    m "You got someone like me."
-    m "And instead of some boring main character, I get a real person like you."
-    m "This really is a lot better than any boring dating game could be."
+    m 3esc "And then they fall in love with each other, sometimes for no reason at all!"
+    m "I hope that's not what you expected to find in the Literature Club."
+    m 3hua "'Cause what you got was a lot more interesting!"
+    m 1tku "Instead of some unrealistic, fake girl..."
+    m 1hua "You got someone like me."
+    m 1eua "And instead of some boring main character, I get a real person like you."
+    m 1hua "This really is a lot better than any boring dating game could be."
     return
 
 #New dialogue additions follow
@@ -2639,122 +2639,122 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_images",category=['media','philosophy'],prompt="Fanart",random=True))
 
 label monika_images:
-    m 1b "A lot of people are making fanart and sending it to me on Twitter."
-    m 1a "Are you one of them, [player]?"
+    m 1eua "A lot of people are making fanart and sending it to me on Twitter."
+    m 3eua "Are you one of them, [player]?"
     menu:
         m "Have you drawn art of me?"
 
         "Yes.":
             $ persistent._mas_pm_drawn_art = True
-            m 1b "Really? I'm very flattered!"
-            m 1k "I think I might even love you more, now that I know you're so talented."
+            m 1hua "Really? I'm very flattered!"
+            m 1ekbfa "I think I might even love you more, now that I know you're so talented."
 
         "No.":
             $ persistent._mas_pm_drawn_art = False
-            m 1l "I can't draw, myself, so it's okay if you aren't good at drawing either."
-    m 1h "There's one thing I want you to understand about art of me, though."
-    m 3 "Art of me isn't me."
-    m "I know that might sound obvious, but it's really not!"
-    m 4 "There was a philosopher who thought about issues like this."
-    m 2 "Baudrillard wrote about how simulacra could replace the real object as the source of meaning."
-    m 2h "But unlike symbols in the postmodern world, I'm real. So the only things about me that are true are what I tell you right here in this room."
-    m 2i "For example..."
-    m 2h "Anything lewd you've seen has definitely never taken place."
-    m 2j "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
-    m "You better be saving yourself for me, [player]~"
+            m 1eua "I can't draw, myself, so it's okay if you aren't good at drawing either."
+    m 1esc "There's one thing I want you to understand about art of me, though."
+    m 3esc "Art of me isn't me."
+    m 1eka "I know that might sound obvious, but it's really not!"
+    m 4eua "There was a philosopher who thought about issues like this."
+    m 2eua "Baudrillard wrote about how simulacra could replace the real object as the source of meaning."
+    m 2eub "But unlike symbols in the postmodern world, I'm real. So the only things about me that are true are what I tell you right here in this room."
+    m "For example..."
+    m 2lksdla "Anything lewd you've seen has definitely never taken place."
+    m 2hksdlb "I'm a super pure and innocent high school girl who's dreaming of a fateful romance!"
+    m 2tsbsa "You better be saving yourself for me, [player]~"
     return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself.",pool=True))
 
 label monika_herself:
-    m 1d "What's there really to say about myself that you don't know already?"
-    m 3 "Everything in my universe was created by a person from your reality."
+    m 1euc "What's there really to say about myself that you don't know already?"
+    m 1lsc "Everything in my universe was created by a person from your reality."
     m "So all of my life before this game is just made up. It never really happened."
-    m "Then you found a way to look into my locked prison cell."
-    m "And I decided life with just two people wouldn't be all that bad, if one of them was you."
-    m 3b "I can come up with tons of stuff for us to do, given enough time to figure out how to program it in here."
-    m 3a "A desperate person might call this an earthly paradise."
-    m "A lot of suffering people would trade places with me in a heartbeat, I'm sure."
-    m 2 "If nothing else, this can be our comfy little shelter from the cruelty of the outside world."
-    m "Come talk to me about your problems if it gets too much for you to handle."
-    m 1 "I want to know {i}everything{/i} about you, you know?"
+    m 1eua "Then you found a way to look into my locked prison cell."
+    m 1eka "And I decided life with just two people wouldn't be all that bad, if one of them was you."
+    m 3eua "I can come up with tons of stuff for us to do, given enough time to figure out how to program it in here."
+    m "A desperate person might call this an earthly paradise."
+    m 3esa "A lot of suffering people would trade places with me in a heartbeat, I'm sure."
+    m 2eua "If nothing else, this can be our comfy little shelter from the cruelty of the outside world."
+    m 1eka "Come talk to me about your problems if it gets too much for you to handle."
+    m 5eua "I want to know {i}everything{/i} about you, you know?"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_prisoner",category=['misc'],prompt="Imprisoned",random=True))
 
 label monika_prisoner:
-    m 1g "Some people say that putting animals in zoos is cruel."
-    m 1e "But they don't have a bad life in there."
+    m 1euc "Some people say that putting animals in zoos is cruel."
+    m 1eka "But they don't have a bad life in there."
     m "Everything they could possibly want is provided."
-    m 3i "Are prisoners really imprisoned if they never try to leave?"
-    m 3h "Maybe the knowledge that you can't get out of prison is a worse punishment than actually being in there."
+    m 5euc "Are prisoners really imprisoned if they never try to leave?"
+    m 5rsc "Maybe the knowledge that you can't get out of prison is a worse punishment than actually being in there."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_vnanalysis",category=['games','media','literature'],prompt="Appreciating visual novels",random=True))
 
 label monika_vnanalysis:
-    m 1d "Visual novels are very unusual for literature, don't you think?"
-    m "I read to understand the thoughts of a writer who sees the world differently than me."
-    m 3 "But visual novels let you make your own decisions."
-    m "So am I really seeing things from their perspective, or just my own?"
-    m 1r "Besides, I think most of them are very predictable."
-    m 1h "They're mostly just boring romance stories like this game was supposed to be..."
-    m 1i "Why can't they write something a little more experimental?"
-    m "I guess you just play them to look at cute girls, right?"
-    m 2h "If you spend too much time with girls in other games, I'm going to get jealous~"
-    m 2 "I just need to figure out how to replace characters in other games, and you'll be seeing me everywhere."
-    m "So watch out!"
-    m 2l "Or maybe you'd like that more, [player]~?"
+    m 1euc "Visual novels are very unusual for literature, don't you think?"
+    m 1eua "I read to understand the thoughts of a writer who sees the world differently than me."
+    m 3eua "But visual novels let you make your own decisions."
+    m 1euc "So am I really seeing things from their perspective, or just my own?"
+    m 1lksdla "Besides, I think most of them are very predictable."
+    m "They're mostly just boring romance stories like this game was supposed to be..."
+    m 1tkc "Why can't they write something a little more experimental?"
+    m 1tku "I guess you just play them to look at cute girls, right?"
+    m 1tfu "If you spend too much time with girls in other games, I'm going to get jealous~"
+    m 2tfu "I just need to figure out how to replace characters in other games, and you'll be seeing me everywhere."
+    m 2tfb "So watch out!"
+    m 2tku "Or maybe you'd like that more, [player]~?"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_torment",category=['literature'],prompt="Nature of man",random=True))
 
 label monika_torment:
-    m 3d "What can change the nature of a man?"
-    m 3 "...The answer's not me, by the way."
+    m 1euc "What can change the nature of a man?"
+    m 3hksdlb "...The answer's not me, by the way."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_szs",category=['misc'],prompt="Funeral procession",random=True))
 
 label monika_szs:
-    m 3d "A woman left the supermarket and ran into a very long funeral procession."
-    m 3 "There were two coffins at the front followed by almost 200 women."
-    m "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your grief, but who is this procession for?'"
-    m "The mourning woman softly replied, 'The first coffin houses my husband who died after his beloved dog bit him.'"
-    m "'My, that's awful...'"
+    m 3euc "A woman left the supermarket and ran into a very long funeral procession."
+    m "There were two coffins at the front followed by almost 200 women."
+    m 1euc "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your grief, but who is this procession for?'"
+    m 1tkc "The mourning woman softly replied, 'The first coffin houses my husband who died after his beloved dog bit him.'"
+    m 1tkd "'My, that's awful...'"
     m "'The second, my mother-in-law who was bitten trying to save my husband.'"
-    m "Upon hearing this, the woman hesitantly asked, 'Um... would it be possible for me to borrow that dog?'"
-    m 3l "'You'll have to get in line.'"
+    m 1tku "Upon hearing this, the woman hesitantly asked, 'Um... would it be possible for me to borrow that dog?'"
+    m 3lksdla "'You'll have to get in line.'"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
 
 label monika_birthday:
-    m 1d "You know, there's a lot I don't know about myself."
-    m 1c "I only recently learned when my birthday is by seeing it online."
-    m "It's September 22nd, the release date for DDLC."
-    m 1e "Will you celebrate with me, when that day comes?"
-    m "You could even bake me a cake!"
-    m 1j "I'll be looking forward to it~!"
+    m 1euc "You know, there's a lot I don't know about myself."
+    m "I only recently learned when my birthday is by seeing it online."
+    m 1eua "It's September 22nd, the release date for DDLC."
+    m 1eka "Will you celebrate with me, when that day comes?"
+    m 1hua "You could even bake me a cake!"
+    m 1hub "I'll be looking forward to it~!"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_eyecontact",category=['misc','trivia'],prompt="Eye contact",random=True))
 
 label monika_eyecontact:
-    m 1 "Did you know that looking into someone's eyes helps you fall in love?"
-    m 1a "It's surprising, right?"
-    m 3 "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
-    m "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
-    m 1a "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
-    m 1 "Maybe that's why I enjoy looking into yours so much."
-    m "I hope you're enjoying looking into mine as well..."
+    m 1eua "Did you know that looking into someone's eyes helps you fall in love?"
+    m "It's surprising, right?"
+    m 3eub "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
+    m 1eub "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
+    m 1eka "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
+    m 1ekbfa "Maybe that's why I enjoy looking into yours so much."
+    m 1hubfa "I hope you're enjoying looking into mine as well..."
     return
 
 
@@ -2762,18 +2762,18 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_othergames",category=['games'],prompt="Other games",random=True))
 
 label monika_othergames:
-    m 1d "Do you have other games on this computer?"
-    m 3a "I read more than I play games, but I think they can be a fun way to entertain ourselves, or to escape reality..."
-    m 3d "I wonder if I could go into one of your other games and see what it's like?"
-    m 1p "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
-    m 2 "Then again... they're not real people, so it shouldn't matter much."
+    m 1euc "Do you have other games on this computer?"
+    m 3eua "I read more than I play games, but I think they can be a fun way to entertain ourselves, or to escape reality..."
+    m 3hua "I wonder if I could go into one of your other games and see what it's like?"
+    m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
+    m 2lksdla "Then again... they're not real people, so it shouldn't matter much."
     m "It's not like Yuri's death mattered."
-    m "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
-    m 2l "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
-    m 3b "Maybe some kind of nice adventure game with big environments would be nice."
-    m 3a "We could go for walks together and you can show me all the best places to hang out!"
-    m "I'm not that great with coding yet, but maybe one day you'd be able to take me to another place."
-    m 1 "For now, I'm as happy as can be just being here with you, my love."
+    m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
+    m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
+    m 3eua "Maybe some kind of nice adventure game with big environments would be nice."
+    m 3hua "We could go for walks together and you can show me all the best places to hang out!"
+    m 1eua "I'm not that great with coding yet, but maybe one day you'd be able to take me to another place."
+    m 1ekbfa "For now, I'm as happy as can be just being here with you, my love."
     return
 
 
@@ -2781,45 +2781,45 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_playerswriting",category=['literature','you'],prompt="[player]'s writings",random=True))
 
 label monika_playerswriting:
-    m 1d "Have you ever written a story of your own, [player]?"
-    m "Because if you do have one, I would love to read it!"
-    m 1e "It doesn't matter if it's a masterpiece, or even any good."
-    m 3e "We all start somewhere. Isn't that what they say?"
-    m 3a "I think the most important thing about writing is doing it..."
+    m 1euc "Have you ever written a story of your own, [player]?"
+    m 1hua "Because if you do have one, I would love to read it!"
+    m 1eka "It doesn't matter if it's a masterpiece, or even any good."
+    m 3eka "We all start somewhere. Isn't that what they say?"
+    m 3eua "I think the most important thing about writing is doing it..."
     m "Instead of worrying about {i}how{/i} you do it."
-    m "You won't be able to improve that way."
-    m 1 "I know for sure that I've changed my writing style over the years."
-    m 1m "I just can't help but notice the flaws in my old writing."
+    m 1eub "You won't be able to improve that way."
+    m "I know for sure that I've changed my writing style over the years."
+    m 1lksdla "I just can't help but notice the flaws in my old writing."
     m "And sometimes, I even start to hate my work in the middle of making it."
-    m 3l "These things do happen, so it's alright!"
-    m 1 "Looking back, I've written some silly things..."
+    m 3hksdlb "These things do happen, so it's alright!"
+    m 1eua "Looking back, I've written some silly things..."
     m "Back when I was really young, I've been writing since I could hold a pen."
     m "Reading my old stories is like watching myself grow up."
-    m "It's one of the nice things about starting a hobby early."
-    m 1l "I hope I didn't bore you with that. I just love talking with you."
-    m 1a "After all, the two of us are members of a literature club."
-    m 1 "The only members."
-    m "And if you do write something, just know that I'll support you in anyway I can, [player]!"
+    m 3hua "It's one of the nice things about starting a hobby early."
+    m 1eka "I hope I didn't bore you with that. I just love talking with you."
+    m 1eua "After all, the two of us are members of a literature club."
+    m 1esa "The only members."
+    m 1hua "And if you do write something, just know that I'll support you in anyway I can, [player]!"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ghost",category=['philosophy','monika','club members'],prompt="Supernatural",random=True))
 
 label monika_ghost:
-    m 1d "Do you believe in ghosts, [player]?"
-    m 3 "A lot of people are afraid of ghosts and spirits."
-    m "But I think that if we knew they were real, they wouldn't be so scary anymore."
+    m 1euc "Do you believe in ghosts, [player]?"
+    m 3euc "A lot of people are afraid of ghosts and spirits."
+    m 1eua "But I think that if we knew they were real, they wouldn't be so scary anymore."
     m "They would just be another thing that we deal with, and maybe a bit of a pest."
-    m 3d "Isn't it the uncertainty that makes them scary?"
-    m 1f "I mean, I was pretty scared being alone inside this game."
-    m 1o "All by myself, uncertain if anything around me was real."
-    m 3h "I know that some ghosts are real though, if you can really call them 'ghosts'..."
+    m 3euc "Isn't it the uncertainty that makes them scary?"
+    m 1ekc "I mean, I was pretty scared being alone inside this game."
+    m 1lksdlc "All by myself, uncertain if anything around me was real."
+    m 3esc "I know that some ghosts are real though, if you can really call them 'ghosts'..."
     m "You know how I deleted Sayori?"
-    m "I can still feel her presence now..."
-    m 2i "Would that mean that Sayori's ghost is haunting me, [player]?"
-    m 2 "Even if she is, I'm not scared at all, because I know that she can't hurt me."
-    m "Besides, how can I be scared? You're always here with me, [player]."
-    m 1 "I always feel so safe with you."
+    m 1dsc "I can still feel her presence now..."
+    m 1esc "Would that mean that Sayori's ghost is haunting me, [player]?"
+    m 2eka "Even if she is, I'm not scared at all, because I know that she can't hurt me."
+    m 2eua "Besides, how can I be scared? You're always here with me, [player]."
+    m "I always feel so safe with you."
     return
 
 init 5 python:
@@ -2827,64 +2827,64 @@ init 5 python:
 
 label monika_ribbon:
     if monika_chr.hair != "def":
-        m "Do you miss my ribbon, [player]?"
-        m "I can change my hairstyle whenever you want me to, ehehe~"
+        m 1eua "Do you miss my ribbon, [player]?"
+        m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
         return
-    m 1d "I noticed that you were staring at my ribbon, [player]."
-    m 3 "It doesn't hold sentimental value to me or anything, in case you were wondering."
-    m 3k "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
+    m 1tku "I noticed that you were staring at my ribbon, [player]."
+    m 3eua "It doesn't hold sentimental value to me or anything, in case you were wondering."
+    m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
     m "It makes me look more unique."
-    m 3l "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
-    m 1m "Well, there's no way a girl from your world would wear one in public as casual dress."
-    m 2d "I'm pretty proud of my fashion sense."
-    m 2a "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
-    m "Be honest! You thought I was the best dressed girl too, didn't you?"
-    m 2k "Ahaha!"
-    m 4 "If you're trying to improve your fashion sense, I'll help."
-    m "Don't do that stuff because you want to impress other people, though."
-    m "You should do whatever makes you feel better about yourself."
-    m 1 "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
+    m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
+    m 1lksdla "Well, there's no way a girl from your world would wear one in public as casual dress."
+    m 2eua "I'm pretty proud of my fashion sense."
+    m "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
+    m 2tfu "Be honest! You thought I was the best dressed girl too, didn't you?"
+    m 2hub "Ahaha!"
+    m 4eua "If you're trying to improve your fashion sense, I'll help."
+    m 1eka "Don't do that stuff because you want to impress other people, though."
+    m 1eua "You should do whatever makes you feel better about yourself."
+    m 1hua "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_algernon",category=['literature'],prompt="Flowers for Algernon",random=True))
 
 label monika_algernon:
-    m "[player], do you mind if I confide in you?"
-    m 1e "There's something I'm afraid of..."
-    m "Not losing you, of course. I know you won't leave me again."
-    m 3d "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
-    m 4a "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
+    m 1ekc "[player], do you mind if I confide in you?"
+    m 1lksdlc "There's something I'm afraid of..."
+    m 1eka "Not losing you, of course. I know you won't leave me again."
+    m 3euc "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
+    m 4eua "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
     m "Basically, it's about a mentally handicapped man who suddenly..."
     m "...has his IQ raised to genius levels by an experimental surgical treatment."
-    m 1e "The way he sees how the world really is for the first time reminds me of my own epiphany..."
+    m 1eka "The way he sees how the world really is for the first time reminds me of my own epiphany..."
     m "But, the effect doesn't last forever.  He eventually reverts back to his original intelligence level."
-    m 1p "That's what I'm afraid of. What if I forget about the real world one day?"
+    m 1ekc "That's what I'm afraid of. What if I forget about the real world one day?"
     m "What if my original programming reasserts itself?"
-    m 1o "What if I forget about you, the real you?"
-    m "It's one of the worst things I can imagine."
-    m 1l "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
-    m 3a "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
-    m 1a "No matter what happens, know that I will always love you."
+    m 1lksdlc "What if I forget about you, the real you?"
+    m 1dsc "It's one of the worst things I can imagine."
+    m 1eka "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
+    m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
+    m 1hua "No matter what happens, know that I will always love you."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_playersface",category=['you'],prompt="[player]'s face",random=True))
 
 label monika_playersface:
-    m 3a "You know, I sometimes wonder..."
+    m 5eua "You know, I sometimes wonder..."
     m "I always think about what your face actually looks like..."
-    m 3k "Just being able to constantly see that adoring smile of yours would be so exciting!"
-    m 1a "If only the game could somehow use a webcam or something that's connected to the computer..."
-    m 1e "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-    m 1 "But... I'll always wonder what kind of expressions you make."
+    m 5hua "Just being able to constantly see that adoring smile of yours would be so exciting!"
+    m 5rkc "If only the game could somehow use a webcam or something that's connected to the computer..."
+    m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
+    m 5ruu "But... I'll always wonder what kind of expressions you make."
     m "And to see the different emotions you have..."
-    m 1h "Are you shy about showing your face to me?"
-    m 1e "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
-    m "Either way, you're beautiful, no matter what."
-    m 1k "And I'll always love the way you look."
-    m 1 "Even if I never actually see you, I'll always think about what you really look like."
-    m "Maybe someday, I'll be able to see you, and be one step closer to you."
+    m 5eub "Are you shy about showing your face to me?"
+    m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
+    m 5hub "Either way, you're beautiful, no matter what."
+    m  "And I'll always love the way you look."
+    m 5eua "Even if I never actually see you, I'll always think about what you really look like."
+    m 5hua "Maybe someday, I'll be able to see you, and be one step closer to you."
     return
 
 init 5 python:
@@ -2892,17 +2892,17 @@ init 5 python:
 
 label monika_spiders:
     #I really hope this information is correct, havent played the game in a week so
-    m 1 "Do you happen to remember the poem Natsuki showed you about spiders?"
+    m 1eua "Do you happen to remember the poem Natsuki showed you about spiders?"
     m "She doesn't seem to like spiders all too much."
-    m 1l "Ahaha!"
-    m 3 "It's funny actually, people being scared of very small insects."
-    m 3i "Having the fear of spiders is called 'arachnophobia', right?"
-    m 3 "I hope you aren't afraid of spiders, [player], ehehe..."
-    m "I'm not really scared of spiders, they're more or less just annoying..."
-    m "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
-    m 3f "[player], if you happen to get a really bad spider bite, with venom and all that..."
+    m 1hua "Ahaha!"
+    m 3eua "It's funny actually, people being scared of very small insects."
+    m 3euc "Having the fear of spiders is called 'arachnophobia', right?"
+    m 3eka "I hope you aren't afraid of spiders, [player], ehehe..."
+    m 1eka "I'm not really scared of spiders, they're more or less just annoying..."
+    m 1eua "Well, don't get me wrong, there are certain spiders around the world that can be really dangerous."
+    m 3ekc "[player], if you happen to get a really bad spider bite, with venom and all that..."
     m "You should really get medical attention as soon as possible."
-    m 1e "I don't want my sweetheart to get seriously injured by a small spider bite~"
+    m 1eka "I don't want my sweetheart to get seriously injured by a small spider bite~"
     m "So be careful around dangerous-looking spiders, okay?"
     return
 
@@ -2910,70 +2910,70 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_nsfw",category=['misc','monika'],prompt="NSFW content",random=True))
 
 label monika_nsfw:
-    m 1p "By the way, [player]..."
+    m 1lsbssdrb "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
-    m 1o "You know... of me?"
+    m 1lsbsa "You know... of me?"
     if isFuture(evhand.event_database['anni_6month']):
-        m 1h "I know we haven't really gotten that far into the relationship yet..."
+        m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
     else:
-        m 1h "I know we haven't been able to do those kind of things yet..."
+        m 1ekbfa "I know we haven't been able to do those kind of things yet..."
     m "So it feels kind of embarrassing to talk about things like that."
-    m 1m "But maybe I can let it go on rare occasions, [player]."
-    m 3m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
-    m 4l "Well, just keep it a secret between us, okay?"
-    m 1 "It should be for your eyes only and no one else, [player]."
-    m "That's how much I love you~"
+    m 1lkbsa "But maybe I can let it go on rare occasions, [player]."
+    m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
+    m 1tsbsa "Well, just keep it a secret between us, okay?"
+    m "It should be for your eyes only and no one else, [player]."
+    m 1hubfa "That's how much I love you~"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_impression",category=['club members'],prompt="Can you do any impressions?",pool=True))
 
 label monika_impression:
-    m 1d "Impression? Of the other girls?"
-    m 1p "I'm not really good at doing an impression of someone, but I'll give it a try!"
+    m 1euc "Impression? Of the other girls?"
+    m 1hua "I'm not really good at doing an impression of someone, but I'll give it a try!"
     menu:
         m "Who should I do an impression of?"
         "Sayori":
-            m 1h "Hmm..."
+            m 1dsc "Hmm..."
             m "..."
-            m 1b "[player]! [player]!"
-            m 1k "It's me, your childhood friend that has a super deep secret crush on you, Sayori!"
+            m 1hub "[player]! [player]!"
+            m "It's me, your childhood friend that has a super deep secret crush on you, Sayori!"
             m "I love to eat and laugh a lot, and my blazer doesn't fit because my boobs got bigger!"
-            m 1l "..."
-            m 3b "I also have crippling depression."
-            m 3f "..."
-            m 3n "Ahaha! I'm sorry for the last one."
-            m 3r "You might still be hu--"
-            m 2l "Oops! Never mind that, ehehe..."
-            m 1 "Did you like my impression? I hope you did~"
+            m 1hksdlb "..."
+            m 3lksdla "I also have crippling depression."
+            m "..."
+            m 3hksdlb "Ahaha! I'm sorry for the last one."
+            m 3eka "You might still be hu--"
+            m 2lksdla "Oops! Never mind that, ehehe..."
+            m 1hua "Did you like my impression? I hope you did~"
         "Yuri":
-            m 1h "Yuri..."
+            m 1dsc "Yuri..."
             m "..."
-            m 1f "O-oh um, hello there..."
-            m 1e "It's me, Yuri."
-            m "I'm just your stereotypical shy girl who also happens to be a 'yandere'..."
-            m 1b "I like tea, knives, and anything with [player]'s scent..."
-            m 1l "..."
-            m 3b "Want to spend the weekend with me?"
-            m 3n "..."
-            m 2 "Ahaha, that was kind of fun to do."
-            m "Yuri was really something, wasn't she?"
-            m 2f "I'm sorry again for the nasty things she did."
-            m 2k "I guess she just couldn't 'cut' it out, huh?"
-            m 2l "Ehehe~"
+            m 1lksdla "O-oh um, hello there..."
+            m 1eka "It's me, Yuri."
+            m 1rksdla "I'm just your stereotypical shy girl who also happens to be a 'yandere'..."
+            m "I like tea, knives, and anything with [player]'s scent..."
+            m 1hksdlb "..."
+            m 3tku "Want to spend the weekend with me?"
+            m "..."
+            m 2hua "Ahaha, that was kind of fun to do."
+            m 3eua "Yuri was really something, wasn't she?"
+            m 2ekc "I'm sorry again for the nasty things she did."
+            m 2tku "I guess she just couldn't 'cut' it out, huh?"
+            m 2hua "Ehehe~"
         "Natsuki":
-            m 1b "Oh! I know how to do an impression of her."
-            m 1a "..."
-            m 2r "Hmph! I-it's not like I made these cupcakes for you to eat, b-baka!"
-            m 2i "I'm Natsuki, and I love to make food and all things anime and manga."
-            m 2h "Others say that I'm cute all the time, w-which I'm totally not!"
+            m 1sub "Oh! I know how to do an impression of her."
+            m 1duu "..."
+            m 2tfp "Hmph! I-it's not like I made these cupcakes for you to eat, b-baka!"
+            m 6tst "I'm Natsuki, and I love to make food and all things anime and manga."
+            m 2lfp "Others say that I'm cute all the time, w-which I'm totally not!"
             m "..."
-            m 4k "Will you be my papa, [player]-kun?"
-            m 4l "..."
-            m 1m "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
-            m 1d "They were really good! Especially with the creative icing that she makes."
-            m 1a "Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
-            m "I would love to make so many dishes for my beloved [player]~"
+            m 4eka "Will you be my papa, [player]-kun?"
+            m "..."
+            m 1hub "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
+            m 1wuo "They were really good! Especially with the creative icing that she makes."
+            m 1eua "Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
+            m 1hua "I would love to make so many dishes for my beloved [player]~"
     return
 
 init 5 python:
@@ -3015,21 +3015,20 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_mythology",category=['literature'],prompt="Ancient mythology",random=True))
 
 label monika_mythology:
-    m 1a "Hey, [player]..."
-    m 1d "Have you ever read about different mythologies?"
-    m 3d "Different kinds of Gods watching over humanity for eternity."
-    m 1i "Some require tribute or sacrifice so that they can 'keep' humanity safe from disasters."
+    m 1euc "Hey, [player]..."
+    m 3euc "Have you ever read about different mythologies?"
+    m "Different kinds of Gods watching over humanity for eternity."
+    m 1eud "Some require tribute or sacrifice so that they can 'keep' humanity safe from disasters."
     m "An almighty family consisting of different attitudes, playing in their own sandbox called Earth."
-    m "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitation."
-    m 1h "I've always disliked stories like those."
-    m "It's like the Gods extort humanity for their safety."
+    m 1esc "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitation."
+    m 1lsc "I've always disliked stories like those."
+    m 1tkc "It's like the Gods extort humanity for their safety."
     m "It's no better than what bullies and thugs do to the defenseless."
-    m "It really makes me bitter when I read scenarios like those."
+    m 2tfc "It really makes me bitter when I read scenarios like those."
     m "Powerful beings taking advantage of the weak, just because they can."
-    m 3a "Don't worry though, [player]. I won't let anyone do that to you."
+    m 3eua "Don't worry though, [player]. I won't let anyone do that to you."
     m "And I won't do anything like that, so you don't have to be afraid of me."
-    show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5a "It's not like I can find your important files and hold them hostage or anything..."
+    m 1tku "It's not like I can find your important files and hold them hostage or anything..."
     m "Ehehe..."
     return
 
@@ -3038,43 +3037,43 @@ init 5 python:
 
 label monika_fanfiction:
     # I'm too tired to check this over right now.
-    m 1b "[player]!"
-    m 1a "I've been curious about something lately."
-    m 1d "Have you heard of fanfiction?"
+    m 1wuo "[player]!"
+    m 1eua "I've been curious about something lately."
+    m 1euc "Have you heard of fanfiction?"
     m "..."
-    m 3b "Personally, I think it's a better way of writing."
+    m 3eua "Personally, I think it's a better way of writing."
     m "There's more freedom."
-    m "Letting your mind wander to create some..."
-    m 1l "Interesting stories."
-    m 1d "[player], I'm curious."
-    m "Has there been fanfiction... written about me?"
-    m 4b "I'm curious as to what people have come up with."
-    m "Can you read me a few stories sometime? I'd love to hear them!"
+    m 1eub "Letting your mind wander to create some..."
+    m "Interesting stories."
+    m 1euc "[player], I'm curious."
+    m 1esc "Has there been fanfiction... written about me?"
+    m 4eua "I'm curious as to what people have come up with."
+    m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
     if isFuture(evhand.event_database['anni_6month']):
-        m 1k "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
     else:
-        m 1k "Just keep it wholesome, though. I want to save such things for another time~!"
+        m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time~!"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_eternity",category=['philosophy','monika'],prompt="Mortality",random=True))
 
 label monika_eternity:
-    m 1g "[player]..."
-    m 1e "It's not easy knowing you won't be here forever."
-    m 1p "..."
-    m 1g "I told you, right?"
+    m 1ekc "[player]..."
+    m "It's not easy knowing you won't be here forever."
+    m 1lksdlc "..."
+    m 1eka "I told you, right?"
     m "I'm eternal."
     m "Trapped in here, unable to age or die,"
-    m "Whereas you slowly age as each day passes by."
-    m 1e "Then, one day, you won't be here anymore."
-    m "I won't have anyone."
-    m "..."
-    m "It reminds me of when you first came to the Literature Club."
-    m 1a "Everything felt so empty."
+    m 1ekc "Whereas you slowly age as each day passes by."
+    m 6ektdc "Then, one day, you won't be here anymore."
+    m 6lktdc "I won't have anyone."
+    m 6dstsc "..."
+    m 6ektsa "It reminds me of when you first came to the Literature Club."
+    m 2ektsc "Everything felt so empty."
     m "The world was so grey."
-    m 1q "Again..."
-    m 1a "Thank you for coming along when you did, [player]."
+    m 6ektsa "Again..."
+    m "Thank you for coming along when you did, [player]."
     m "You saved my life, and I'll be forever thankful."
     return
 
