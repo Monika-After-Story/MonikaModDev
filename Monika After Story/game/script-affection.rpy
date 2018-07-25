@@ -71,7 +71,7 @@ init python:
         persistent._mas_affection_badexp_freeze = False
 
     def mas_UnfreezeGoodAffExp():
-        persistent._mas_affection_badexp_freeze = False
+        persistent._mas_affection_goodexp_freeze = False
 
     def mas_UnfreezeBothExp():
         mas_UnfreezeBadAffExp()
@@ -156,14 +156,14 @@ init python:
         if not persistent._mas_affection_goodexp_freeze or bypass:
 
             # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] += amount
+            persistent._mas_affection["affection"] += (amount * modifier)
 
             # it can't get higher than 1 million
             if persistent._mas_affection["affection"] > 1000000:
                 persistet.mas_affection["affection"] = 1000000
 
             if not bypass:
-                persistent._mas_affection["today_exp"] += amount
+                persistent._mas_affection["today_exp"] += (amount * modifier)
                 if persistent._mas_affection["today_exp"] >= 7:
                     mas_FreezeGoodAffExp()
 
@@ -178,7 +178,7 @@ init python:
         ):
         if not persistent._mas_affection_badexp_freeze:
             # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] -= amount
+            persistent._mas_affection["affection"] -= (amount * modifier)
 
             # it can't get lower than -1 million
             if persistent._mas_affection["affection"] < -1000000:
