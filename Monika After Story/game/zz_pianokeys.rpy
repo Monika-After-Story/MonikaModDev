@@ -134,7 +134,7 @@ label mas_piano_loopend:
 
 # default. post game, freestyle mode
 label mas_piano_result_default:
-    # TODO: really small affection increase so this doesn't get abused
+    $ mas_gainAffection(modifier=0.2)
     m 1eua "All done, [player]?"
     return
 
@@ -149,7 +149,7 @@ label mas_piano_result_none:
 ### HAPPY BIRTHDAY
 
 label mas_piano_hb_win:
-    # TODO: increase affection a bit maybe?
+    $ mas_gainAffection()
     m 1a "Wow! You almost got it!"
     m 2b "Good job, [player]."
     return
@@ -161,7 +161,7 @@ label mas_piano_hb_fail:
     return
 
 label mas_piano_hb_fc:
-    # TODO: increase affection a bit maybe?
+    $ mas_gainAffection(modifier=1.5)
     m 1a "Hehe, great job!"
     m 2b "I know that's an easy one, but you did great."
     m 1k "Are you going to play that for me on my Birthday?"
@@ -177,7 +177,7 @@ label mas_piano_hb_prac:
 
 # shown if player completes the song but does not FC
 label mas_piano_yr_win:
-    # TODO: increase affection a bit maybe?
+    $ mas_gainAffection()
     m 1lksdla "That was nice, [player]."
     m "But..."
     m 1lksdlb "You could do better with some more practice..."
@@ -186,7 +186,7 @@ label mas_piano_yr_win:
 
 # shown if player FCs
 label mas_piano_yr_fc:
-    # TODO: increase affection a bit maybe?
+    $ mas_gainAffection(modifier=1.5)
     m 1sub "That was wonderful, [player]!"
     m 1eub "I didn't know you can play the piano so well."
     m 1hub "Maybe we should play together sometime!"

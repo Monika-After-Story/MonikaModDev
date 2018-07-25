@@ -120,7 +120,7 @@ label mas_story_begin:
             "Let's begin then~"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
-    # TODO maybe add a super tiny affection gain here for spending time with her
+    $ mas_gainAffection(modifier=0.2)
     m 3eua "[story_begin_quip]"
     m 1duu "Ahem."
     return

@@ -566,13 +566,22 @@ label mas_affection_apologydeleted:
     m 2efc "Write me a new one, [player]."
     jump _quit
 
-#Surprise function.
-# TODO: are there use cases for having this being a separate function
-# TODO: refactor this maybe to have different messages? or actually
-# make this more useful and let more messages to the player
+#Surprise txt functions.
 init python:
 
     def _write_txt(path,text,update=False):
+        """
+        Writes the text file in the specified path using basedir as starting path
+
+        IN:
+            path - String path to the file this function will write
+                it will always start at basedir
+            text - actual text for the txt file
+            update - if it should override the file if it exists
+                defaults to False
+        ASSUMES:
+            basedir
+        """
         filepath = basedir + path
         if update or not renpy.exists(filepath):
             with open(filepath, "w") as note:
@@ -585,6 +594,12 @@ init python:
 
 
     def mas_surprise():
+        """
+        Leaves a "surprise" to the player in a txt file
+
+        ASSUMES:
+            mas_curr_affection
+        """
         if mas_curr_affection == store.mas_affection.BROKEN:
             filepath = "/forgive me.txt"
             message = "I'm sorry if I'm not good enough for you...please don't leave me."

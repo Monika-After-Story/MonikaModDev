@@ -398,14 +398,14 @@ label mas_crashed_long:
         "Yes":
             hide screen mas_background_timed_jump
 
-            # TODO: affection?
+            $ mas_gainAffection(modifier=0.2)
             m "I'm so glad you're here."
             jump mas_crashed_long_uthere.afterdontjoke
 
         "No":
             hide screen mas_background_timed_jump
 
-            # TODO: affection?
+            $ mas_loseAffection(modifier=0.1)
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
 

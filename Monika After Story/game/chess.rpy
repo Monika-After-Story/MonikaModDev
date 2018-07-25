@@ -1612,8 +1612,7 @@ label mas_chess_playagain:
             pass
 
 label mas_chess_end:
-    #TODO minor affection gain for playing with her
-
+    $ mas_gainAffection(modifier=0.5)
     # monika wins
     if is_monika_winner:
         if renpy.seen_label("mas_chess_dlg_game_monika_win_end"):
@@ -1956,7 +1955,7 @@ label mas_chess_dlg_qf_lost_ofcn_4:
 
 # 5th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_5:
-    # TODO decrease affection
+    $ mas_loseAffection()
     m 2esc "..."
     m "[player],{w} this is happening way too much."
     m 2dsc "I really don't believe you this time."
@@ -1969,7 +1968,7 @@ label mas_chess_dlg_qf_lost_ofcn_5:
 # 6th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_6:
     # disable chess forever!
-    # TODO: heavy affection decrease
+    $ mas_loseAffection(modifier=10)
     m 2dfc "..."
     m 2efc "[player],{w} I don't believe you."
     # TODO: we need an angry monika
@@ -2072,7 +2071,7 @@ label mas_chess_dlg_qf_lost_may_3:
 
 # maybe monika, but player removed the file again!
 label mas_chess_dlg_qf_lost_may_removed:
-    # TODO: decrease affection
+    $ mas_loseAffection(modifier=0.5)
     # TODO; angery monika here
     m 2wfw "[player]!"
     m 2wfx "You removed the save again."
@@ -2186,7 +2185,7 @@ label mas_chess_dlg_qf_edit_y_1:
 
 # 2nd time yes edit
 label mas_chess_dlg_qf_edit_y_2:
-    # TODO: decrease affection
+    $ mas_loseAffection(modifier=0.5)
     m 2dfc "I am incredibly disappointed in you."
     m 2rfc "I don't want to play chess right now."
     python:
@@ -2196,7 +2195,7 @@ label mas_chess_dlg_qf_edit_y_2:
 
 # 3rd time yes edit
 label mas_chess_dlg_qf_edit_y_3:
-    # TODO decrease affection
+    $ mas_loseAffection()
     m 2dsc "I'm not surprised..."
     m 2esc "But I am prepared."
     m "I kept a backup of our game just in case you did this again."
@@ -2226,7 +2225,7 @@ label mas_chess_dlg_qf_edit_n_start:
 
 # 1st time no edit
 label mas_chess_dlg_qf_edit_n_1:
-    # TODO: decrease affection
+    $ mas_loseAffection()
     m 1ekc "I see."
     m "The save file looks different than how I last remembered it, but maybe that's just my memory failing me."
     m 1eua "Let's continue this game."
@@ -2236,7 +2235,7 @@ label mas_chess_dlg_qf_edit_n_1:
 
 # 2nd time no edit
 label mas_chess_dlg_qf_edit_n_2:
-    # TODO: decrease affection even more
+    $ mas_loseAffection(modifier=2)
     m 1ekc "I see."
     m "..."
     m "Let's just continue this game."
@@ -2246,7 +2245,7 @@ label mas_chess_dlg_qf_edit_n_2:
 
 # 3rd time no edit
 label mas_chess_dlg_qf_edit_n_3:
-    # TODO: decrease affection a lot more
+    $ mas_loseAffection(modifier=3)
     m 2dfc "[player]..."
     m 2dftdc "I kept a backup of our game.{w} I know you edited the save file."
     m 2dftsc "I just-"
@@ -2285,7 +2284,7 @@ label mas_chess_dlg_qf_edit_n_3_s:
 
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
-    # TODO: heavy affection decrease
+    $ mas_loseAffection()
     m 2dfc "[player]..."
     m 2efc "I see you've edited my backup saves."
     m 2lfc "If you want to be like that right now, then we'll play chess some other time."
@@ -2341,7 +2340,7 @@ label mas_chess_go_ham_and_delete_everything:
 ## general dialogue
 # if chess is locked
 label mas_chess_dlg_chess_locked:
-    # TODO: maybe decrease affection a bit?
+    $ mas_loseAffection(modifier=0.2)
     m 1efc "..."
     m 2lfc "I don't feel like playing chess right now."
     return
