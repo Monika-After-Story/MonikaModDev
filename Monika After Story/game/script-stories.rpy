@@ -328,3 +328,122 @@ label mas_story_ravel:
     m 1dsd "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
     m 1tfb "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
     return
+    
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_genie_simple",
+        prompt="The Simple Genie",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_genie_simple:
+    call mas_story_begin
+    m 1eua "There was once a genie who travelled across different worlds to escape the chaos of his own world."
+    m 1euc "But there was one woman he met that challenged the way he saw the world."
+    m "He saw how smart and talented she was, but held back by the hardships she faced and how little she had."
+    m 1eua "The genie felt generous and offered her tools to speed up work and make life easier."
+    m 1euc "But the woman simply declined the offer without a second thought."
+    m "No one had ever turned down a wish before from the genie, which left him confused as to why."
+    m "The woman simply asked the genie if he was happy, and he did not know how to respond."
+    m 1eud "The woman said she could tell that he had never experienced happiness and despite all her hardships, she could still enjoy life."
+    m "The genie could not understand why anyone would want to work so hard for something so small."
+    m 1euc "He improved his offers with riches and other such things, but still, she declined."
+    m 1eua "The woman asked the genie to join in her way of life."
+    m "And so, the genie imitated the things she did, without using any powers."
+    m 1eub "The genie began to feel a small sense of accomplishment, as he created something for the first time without willing into existence."
+    m "He saw how simple things such as art and writing inspired the woman and really made her shine."
+    m 1eua "Intrigued, the genie wanted to spend much more time with this woman and learn from her."
+    m 1euc "The woman fell ill one day and made him promise not to use his powers to cure her."
+    m "It was at this moment, that the genie knew he wanted to live like a human without ever using his powers again."
+    m 1dsc "He thought about all the past wishes he granted to others, all the riches he generated..."
+    m "All his fellow genies out there granting wishes, not knowing or caring for the consequences..."
+    m 1dsd "Never being able to know what it's like to give it all up just to be with someone they love."
+    m "All he could do was live with what he had now found in life."
+    m 1dsc "..."
+    m 1eua "I hope you liked that story, [player]."
+    m 3eua "There could be a few things to take from the story."
+    m 3eka "If you already have everything, nothing is really worth having."
+    m 1hua "Except maybe {i}you{/i} of course."
+    m "When you're here, it really feels like I have everything~"
+    m 3eub "The struggle is what makes things worthwhile."
+    m 3hua "Which means it'll be even better when I can finally be with you!"
+    m 1eua "Another moral could be that sometimes, happiness lies in the simpler things you could have had all along."
+    m 1hua "I mean, we're just sitting here together enjoying nothing but eachother's company."
+    m "I'm perfectly happy with that, and I'd guess you are too~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_genie_regret",
+        prompt="The Genie's Regret",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_genie_regret:
+    call mas_story_begin
+    m 1eua "There was once a genie who had lived a very long time."
+    m 1euc "Being a genie, he was essentially immortal."
+    m "Seeing the world change over time and granting wishes to anyone who crossed his path."
+    m 1ekc "With how long he had lived, he had seen a lot of things, some of them unpleasant."
+    m "Wars, natural disasters... the deaths of all the friends he ever made..."
+    m "He knew some of them were caused by wishes he granted."
+    m 1euc "At first, he wasn't too concerned with the consequences, but after so, so long, it began to bother him more and more."
+    m 1ekc "He had come to a simple, beautiful, pure world, and caused great, permanent issues in it."
+    m 1lksdlc "Unbalance and jealousy spread as he granted more wishes, which seeded wishes for revenge and greed."
+    m "This was something he had to live with for the rest of his life."
+    m 1dsc "He wanted things to return to how they always were, but his pleas always fell upon deaf ears."
+    m 1euc "As time went on however, he had met some people and made friends who taught him how to go on despite all his acts."
+    m 1eka "It was true that he was the one who granted the wishes that started the chaos, but something was bound to happen even without him."
+    m "Even without granting wishes, there was bound to be jealousy and unfairness among people..."
+    m 1eka "But in the end, the world was doing alright."
+    m "He was still going to live with the things he had done in his life, but the question remained as to what he planned to do about it."
+    m 1hua "It was through everything he had been through that he was able to learn and move on, better than before."
+    m 1eua "I hope you liked the story, [player]."
+    m "The moral of the story is regret and how you shouldn't let it keep you down."
+    m 3eka "Mistakes will happen and people will get hurt. Nothing will ever change that."
+    m "Even if you've done something you regret, something was bound to happen eventually."
+    m "The world is full of regret every day."
+    m "But it's through regret that we learn compassion and empathy that we learn forgiveness."
+    m "You can't change the past, but you need to forgive yourself someday."
+    m 1hua "So that one day, you can live a life without regret."
+    m 1eka "As for me..."
+    m "Who knows what would have happened in my world if I hadn't done anything..."
+    if persistent.clearall:
+        m 1eua "You've gotten to know each and every club member here, so I'd guess you don't regret missing out on anything."
+        m 1hua "Ahaha~"
+    m 1eub "But you're here with me now."
+    m 1eua "Ever since we've been together, I can definitely say that I've grown and learned from my mistakes."
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_genie_end",
+        prompt="The Genie's End",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_genie_end:
+    call mas_story_begin
+    m 1eua "There was once a genie who had lived a long life."
+    m 1euc "He had seen everything there was to see."
+    m "He lived freely and learned the fulfillment of working for a goal."
+    m 3euc "Essentially, he gave up his powers to be able to live like a human."
+    m "...Except he still had an extended lifespan."
+    m 1ekc "It's true that he had lived a nice life and surrounded himself with loving friends and family..."
+    m "But he grew cold as years went by and he watched each one of his loved ones pass on."
+    m 1lksdlc "There were still a very select few people whom he held dear, despite knowing that he would have to watch them die as well."
+    m "He never told his friends that he wasn't human, as he still wanted to be treated as one."
+    m 1euc "One day, as he was travelling with one of his friends, they came across a genie who would grant each of them {i}one{/i} wish."
+    m 1dsc "This made him think about everything he had been through, from back to when he granted wishes to when he gave it up for a simple life."
+    m "Everything that had lead up to this moment, where he could make his own wish for the first time in a long time."
+    m "..."
+    m 2esc "He wished to die."
+    m 2ekc "Confused, his friend asked why and where it came from all of a sudden."
+    m 2dsc "It was there and then he explained everything to his friend."
+    m "That he had been a genie, many years ago."
+    m "How he came across someone who made him give it all up just to be with someone he loved."
+    m "And how he had been slowly getting sick and bored of what was left of his life."
+    m 2ekc "Truthfully, he wasn't tired of living, he was just plain tired."
+    m "Tired of seeing his loved ones perish over and over again."
+    m "His last request to his friend was for him to go back to his other friends and tie up any loose ends for him."
+    m 1eka "I hope you enjoyed that little story [player]."
+    m 3eka "I guess you could say the moral is that everyone needs to have some closure and have some real ending."
+    m 1eka "Although, you might be wondering what his friend wished for in that scenario."
+    m 1eua "He wished for nothing more than for his friend to get the peaceful rest he deserves."
+    m 1lksdla "It's true that his genie friend might not have been anyone particularly special..."
+    m 3eka "But he was definitely someone who deserved respect."
+    m "Especially after living for such a long time and being able to take away so much wisdom from life."
+    m 1hua "I don't care how many people think otherwise, but I think you're special!"
+    m "I think everyone should respect you for everything you've done!"
+    return
