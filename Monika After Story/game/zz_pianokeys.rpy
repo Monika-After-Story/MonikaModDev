@@ -321,7 +321,7 @@ init -3 python in mas_piano_keys:
 
     # directory setup
     pnml_basedir = os.path.normcase(
-        renpy.config.basedir + "/piano_songs"
+        renpy.config.basedir + "/piano_songs/"
     )
     stock_pnml_basedir = os.path.normcase(
         renpy.config.basedir + "/game/mod_assets/piano/songs/"
@@ -1380,7 +1380,7 @@ init 1000 python in mas_piano_keys:
     import json
 
     # functions used for pnmls.
-    def addSong(filepath):
+    def addSong(filepath, add_main=False):
         """
         Adds a song to the pnml db, given its json filepath
 
@@ -1389,6 +1389,8 @@ init 1000 python in mas_piano_keys:
         IN:
             filepath - filepath to the JSON we want to load in
                 - Assumed to be clean and ready to go
+            add_main - True means we should add this to the main pnml db too
+                (Default: False)
         """
         islogopen = log.open()
 
@@ -1414,6 +1416,36 @@ init 1000 python in mas_piano_keys:
 
         # alright we good, lets add this to the pnml_bk_db
         pnml_bk_db[pnml.name] = pnml
+
+        # should we add it to the main list as well?
+        if add_main:
+            pnml_db[pnml.name] = pnml
+
+
+    def addCustomSongs():
+        """
+        Adds the custom songs (if we find any) to the game
+        """
+        if no_pnml_basedir:
+            return
+
+        # otherwise we need to check for files
+        json_files = [
+            j_file 
+            for j_file in os.listdir(pnml_basedir)
+            if j_file.endswith(".json")
+        ]
+
+        if len(json_files) < 1:
+            return
+
+        # otherwise we have jsons!
+        for j_song in json_files:
+            j_path = pnml_basedir + j_song
+            try:
+                addSong(j_path, True)
+            except:
+                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(j_path)))
 
 
     def addStockSongs():
@@ -1834,6 +1866,10 @@ init 1000 python in mas_piano_keys:
 
 # TODO: need to finish dpco one day
 #    pnml_db[pnml_dpco.name] = pnml_dpco
+
+    # now for custom songs
+    addCustomSongs()
+
 
     def getSongChoices():
         """
