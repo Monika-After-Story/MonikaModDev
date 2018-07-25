@@ -5,7 +5,7 @@
     "fail_label": "mas_piano_yr_fail",
     "prac_label": "mas_piano_yr_prac",
     "end_wait": 5,
-    "verse_list": [0, 8, 15, 23],
+    "verse_list": [0, 8, 15],
     "pnm_list": [
         {
             "_comment": "VERSE ONE",

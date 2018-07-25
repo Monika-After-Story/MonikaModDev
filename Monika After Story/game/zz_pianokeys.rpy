@@ -1337,7 +1337,7 @@ init -3 python in mas_piano_keys:
                 return None
 
             for _verse in _verse_list:
-                if _verse < 0 or _verse > len(_pnm_list):
+                if _verse < 0 or _verse >= len(_pnm_list):
                     if islogopen:
                         log.write(MSG_ERR_ID.format(L_VERSE_BAD.format(_verse)))
                         log.write(MSG_ERR.format(LOAD_FAILED))
