@@ -1861,8 +1861,10 @@ init -100 python in mas_utils:
 
 init -1 python:
     import datetime # for mac issues i guess.
-    config.keymap['game_menu'].remove('mouseup_3')
-    config.keymap['hide_windows'].append('mouseup_3')
+    if "mouseup_3" in config.keymap['game_menu']:
+        config.keymap['game_menu'].remove('mouseup_3')
+    if "mouseup_3" not in config.keymap["hide_windows"]:
+        config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
     config.keymap['clipboard_voicing'] = []
     config.keymap['toggle_skip'] = []
