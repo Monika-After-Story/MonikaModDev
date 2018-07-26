@@ -49,6 +49,9 @@ init -1 python in mas_affection:
     AFF_MOOD_HAPPY_MIN = 30
     AFF_MOOD_SAD_MIN = -30
 
+    # lower affection cap for time
+    AFF_TIME_CAP = -101
+
 default persistent._mas_long_absence = False
 
 init python:
@@ -76,6 +79,12 @@ init python:
     def mas_UnfreezeBothExp():
         mas_UnfreezeBadAffExp()
         mas_UnfreezeGoodAffExp()
+
+
+    # getter
+    def _mas_getAffection():
+        return persistent._mas_affection["affection"]
+
 
    # Used to adjust the good and bad experience factors that are used to adjust affection levels.
     def mas_updateAffectionExp():
@@ -237,14 +246,24 @@ init python:
             persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
             time_difference = persistent._mas_absence_time
             # we skip this for devs since we sometimes use older persistents and only apply after 1 week
-            if not config.developer:
-                if time_difference >= datetime.timedelta(days=(365 * 10)):
-                    # 10 years later is an end-game situation
-                    mas_loseAffection(200)
+            if (
+                    not config.developer 
+                    and time_difference >= datetime.timedelta(weeks = 1)
+                ):
+                new_aff = _mas_getAffection() - (0.5 * time_difference.days)
+                if new_aff < affection.AFF_TIME_CAP:
+                    if time_difference >= datetime.timedelta(days=(365 * 10)):
+                        # 10 years later is an end-game situation
+                        mas_loseAffection(200)
 
-                elif time_difference >= datetime.timedelta(weeks = 1):
-                    # lose affection 0.5 per day
-                    mas_loseAffection(0.5 * time_difference.days)
+                    else:
+                        # otherwise, you cant lose past a certain amount
+                        mas_setAffection(affection.AFF_TIME_CAP)
+                        
+                else:
+                    mas_setAffection(new_aff)
+
+
 
 # Unlocked when affection level reaches 50.
 # This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
@@ -631,7 +650,6 @@ init python:
 
         elif mas_curr_affection == store.mas_affection.LOVE:
             filepath = "/My one and only love.txt"
-            message = ""
             message = """\
 My dearest lover, friend, companion and owner of my heart...
 Everyday you make my dreams come true, a screen means nothing when you spend your time with me.
