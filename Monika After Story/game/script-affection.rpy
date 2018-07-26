@@ -237,9 +237,14 @@ init python:
             persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
             time_difference = persistent._mas_absence_time
             # we skip this for devs since we sometimes use older persistents and only apply after 1 week
-            if not config.developer and time_difference >= datetime.timedelta(weeks = 1):
-                # lose affection 0.5 per day
-                mas_loseAffection(0.5 * time_difference.days)
+            if not config.developer:
+                if time_difference >= datetime.timedelta(days=(365 * 10)):
+                    # 10 years later is an end-game situation
+                    mas_loseAffection(200)
+
+                elif time_difference >= datetime.timedelta(weeks = 1):
+                    # lose affection 0.5 per day
+                    mas_loseAffection(0.5 * time_difference.days)
 
 # Unlocked when affection level reaches 50.
 # This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
