@@ -708,8 +708,6 @@ init python:
         # otherwise we didnt unlock anything because nothing available
         return False
 
-
-
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
