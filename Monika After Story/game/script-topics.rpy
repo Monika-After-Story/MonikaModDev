@@ -5896,28 +5896,31 @@ label monika_beach:
     m 1tku "Don't get too excited though when you see it. Ehehe~"
     return "derandom"
 
-####################################################
-# Saving this for future use
-# Could be expanded to something better
-# where where persistent.playthrough can be
-# checked and have a different response
-# depending on what the player did
-# TODO: affection is going to take this one
-# and actually she'll know the reason only last thing
-# the player did though
-####################################################
+init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you'],pool=True,unlocked=True))
 
-#init 5 python:
-#    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
-
-#label monika_playerapologizes:
-#    m 1g "Did something happen?"
-#    m 2f "I can't remember what you'd be sorry about."
-#    m 1q "..."
-#    m 1b "Anyway, thank you for the apology."
-#    m 1a "I know you're doing your best to make things right."
-#    m 1k "That's why I love you, [player]!"
-#    return
+label monika_playerapologizes:
+    # if there's no reason to apologize
+    if mas_apology_reason is None:
+        m 1g "Did something happen?"
+        m 2f "I can't remember what you'd be sorry about."
+        m 1q "..."
+        m 1b "Anyway, thank you for the apology."
+        m 1a "I know you're doing your best to make things right."
+        m 1k "That's why I love you, [player]!"
+    # She knows why you are apologizing for
+    elif mas_apology_reason:
+        $ mas_gainAffection(modifier=0.2) # recover a bit of affection
+        m "I know you're apologizing because [mas_apology_reason]"
+        m "I accept your apology [player], thanks"
+    # She knows there's a reason for your apology but won't comment on it
+    else:
+        $ mas_gainAffection(modifier=0.1) # recover a bit of affection
+        m "What you did wasn't funny [player]"
+        m "Please be more considerate about my feelings in the future"
+    # reset the reason
+    $ mas_apology_reason = None
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_lover_boy",category=['songs'],prompt="Old Fashioned Lover Boy",pool=True, random=True))

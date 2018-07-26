@@ -180,11 +180,18 @@ init python:
             mas_updateAffectionExp()
 
 
-    #U sed to subtract affection whenever something negative happens.
+    # Used to subtract affection whenever something negative happens.
     def mas_loseAffection(
             amount=persistent._mas_affection["badexp"],
-            modifier=1
+            modifier=1,
+            reason=""
         ):
+
+        global mas_apology_reason
+        
+        mas_apology_reason = reason
+
+
         if not persistent._mas_affection_badexp_freeze:
             # Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] -= (amount * modifier)
@@ -239,6 +246,9 @@ init python:
 
     # Makes the game update affection on start-up so the global variables are defined at all times.
     mas_updateAffectionExp()
+
+    # Nothing to apologize for now
+    mas_apology_reason = None
 
     # Monika's initial affection based on start-up.
     if not persistent._mas_long_absence:
