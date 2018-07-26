@@ -1731,6 +1731,25 @@ init -100 python in mas_utils:
             return default
 
 
+    def tryparsefloat(value, default=0):
+        """
+        Attempts to parse the given value into a float. Returns the default if
+        that parse failed.
+
+        IN:
+            value - value to parse
+            default - value to return if parse fails
+            (Default: 0)
+
+        RETURNS: a float representation of the given value, or default if
+            the given value could not be parsed into an float
+        """
+        try:
+            return float(value)
+        except:
+            return default
+
+
     ### date adjusting functions
     def add_years(initial_date, years):
         """
@@ -1842,8 +1861,10 @@ init -100 python in mas_utils:
 
 init -1 python:
     import datetime # for mac issues i guess.
-    config.keymap['game_menu'].remove('mouseup_3')
-    config.keymap['hide_windows'].append('mouseup_3')
+    if "mouseup_3" in config.keymap['game_menu']:
+        config.keymap['game_menu'].remove('mouseup_3')
+    if "mouseup_3" not in config.keymap["hide_windows"]:
+        config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
     config.keymap['clipboard_voicing'] = []
     config.keymap['toggle_skip'] = []
