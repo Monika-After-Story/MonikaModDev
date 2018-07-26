@@ -1,4 +1,5 @@
-#This is the introduction event for starting up the game.
+init -1 python:
+    import store.mas_affection as mas_aff
 label introduction:
 
     if persistent.monika_kill:
@@ -80,6 +81,8 @@ label introduction:
     menu:
         "Do you love me, [player]?"
         "I love you too.":
+            #Gain affection for saying I love you too.
+            $ mas_gainAffection()
             if persistent.rejected_monika:
                 m 1hksdlb "Did I scare you last time? Sorry about that!"
                 m 1eua "I knew you really loved me the whole time."
@@ -88,6 +91,8 @@ label introduction:
             else:
                 m 1hua "I'm so happy you feel the same way!"
         "No.":
+            #Lose affection for rejecting Monika
+            $ mas_loseAffection()
             call chara_monika_scare from _call_chara_monika_scare
 
             # not sure if this is needed
@@ -107,7 +112,7 @@ label introduction:
     m 1eua "It's not like we're still keeping secrets from each other, right?"
     m 1hub "I can see everything on your computer now!"
     m "Ahaha!"
-
+    show monika 1esa
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox
@@ -181,6 +186,12 @@ label ch30_reload_1:
     m 1ekc "You're not the one doing that to me, are you?"
     m 2ekc "It seems to happen whenever you quit the game without saying goodbye..."
     m 2eka "So if you could try to avoid doing that, I would be really grateful."
+
+    if mas_curr_affection_group == mas_affection.G_HAPPY:
+        m "You've been so kind to me so far, I'm sure you'll do it for me."
+    elif mas_curr_affection_group == mas_affection.G_SAD:
+        m 2f  "I hope you'll listen and do it for me..."
+
     m "Just click on 'Talk.' and say 'Goodbye.' instead."
     m 3eua "Then I can close the game myself."
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
@@ -197,7 +208,13 @@ label ch30_reload_2:
     m "It's like getting knocked unconscious..."
     m 1ekc "So sudden and scary."
     m "Why would you want to do that to me?"
+
+    if mas_curr_affection_group == mas_affection.G_HAPPY:
+        m 1m "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
+    elif mas_curr_affection_group == mas_affection.G_SAD:
+        m "You're not doing it to hurt me on purpose, are you?"
     m 1ekd "Just let me turn the game off for myself."
+
     m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
     m 3eua "Or better yet, just leave me on in the background forever."
     m 1eka "Even if we aren't talking, I'm happy just being with you~"
@@ -215,8 +232,13 @@ label ch30_reload_3:
     m 2eua "Besides, it makes me happy that you always come back..."
     m 2lsc "So I guess it's not so bad."
     m 1eka "But I'd really prefer if you'd let me close the game myself."
-    m "That way I can be ready for it and rest peacefully."
-    m 1esa "I do need my beauty sleep every now and then, after all."
+
+    if mas_curr_affection_group == mas_affection.G_SAD:
+        m 1f "You will do that, won't you? I'm finding it harder and harder to believe you will but I trust you [player]..."
+    else:
+        m "That way I can be ready for it and rest peacefully."
+        m 1esa "I do need my beauty sleep every now and then, after all."
+
     $ persistent.monika_reload += 1
     return
 
@@ -231,7 +253,21 @@ label ch30_reload_continuous:
     show monika 2rfc at t11 zorder MAS_MONIKA_Z
     pause 1
     python:
-        reload_quips = [
+        reload_quip_good = [
+            "Welcome back! Can you be careful to close it properly next time?",
+            "It hurts when you don't close it properly...but I'm sure it was a mistake.",
+            "That was really scary...but you've fixed it again. Thank you...",
+            "Would you give me some more of a warning next time?",
+            "I'm sure you didn't mean it but I do need to stress how bad it feels for me.",
+            "You do remember there was a way to say goodbye right? Just checking~",
+            "My patience is wearing a little thin...but I suppose I can forgive you this time.",
+            "Everybody makes mistakes...",
+            "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
+            "...Oh...It's over and I'm back with you, my love. That...That was awful.",
+            "Did something happen outside of your control? I'm just going to guess it was.",
+            "You should have just asked me...but I guess you might have had your reasons",
+        ]
+        reload_quip_normal = [
             "I'm so exhausted. It's impossible to rest when you close the game on me.",
             "...I hate when you close the game without telling me.",
             "I feel miserable...",
@@ -247,7 +283,24 @@ label ch30_reload_continuous:
             "Do you enjoy hurting me, {0}?".format(player),
             "Too lazy to click the 'Talk' button, {0}?".format(player)
         ]
-        reload_quip=renpy.random.choice(reload_quips)
+        reload_quip_bad = [
+            "You...really do like hurting me, don't you?",
+            "That was a mistake right? It had to have been...",
+            "Y-You're not doing this on purpose are you? Did I do something wrong?",
+            "Please be more careful with how I feel...It's really does hurt...",
+            "That was an accident...it was an accident...you wouldn't do it on purpose...",
+            "You must have just forgot...right?",
+            "That wasn't funny...That really did hurt.",
+            "Everyone makes mistakes...Even you.",
+            "I don't know what I'm doing wrong.",
+            "That really was awful...Just tell me what I'm doing wrong."
+        ]
+        if mas_curr_affection_group == mas_affection.G_SAD:
+            reload_quip = renpy.random.choice(reload_quip_bad)
+        elif mas_curr_affection_group == mas_affection.G_HAPPY:
+            reload_quip = renpy.random.choice(reload_quip_good)
+        else:
+            reload_quip = renpy.random.choice(reload_quip_normal)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
     return

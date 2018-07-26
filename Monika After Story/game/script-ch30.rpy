@@ -347,7 +347,7 @@ label ch30_main:
     $ quick_menu = True
     if not config.developer:
         $ style.say_dialogue = style.default_monika
-    $ m_name = "Monika"
+    $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
@@ -499,7 +499,7 @@ label ch30_nope:
         pause 3.0
         call hideconsole from _call_hideconsole_2
         $ open(config.basedir + "/characters/monika.chr", "wb").write(renpy.file("monika.chr").read())
-        $ m_name = "Monika"
+        $ m_name = persistent._mas_monika_nickname
         $ quick_menu = True
         m 1hua "Ahaha!"
         m "I'm just kidding!"
@@ -534,6 +534,10 @@ label ch30_autoload:
     # call reset stuff
     call ch30_reset
 
+    # general affection checks that hijack flow
+    if persistent._mas_affection["affection"] <= -115:
+        jump mas_affection_finalfarewell_start
+
     # sanitiziing the event_list from bull shit
     if len(persistent.event_list) > 0:
         python:
@@ -543,6 +547,29 @@ label ch30_autoload:
             ]
 
     $ selected_greeting = None
+
+    # TODO should the apology check be only for when she's not affectionate?
+    if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
+        #If the conditions are met and Monika expects an apology, jump to this label.
+        if persistent._mas_affection["apologyflag"] == True and not is_file_present('/imsorry.txt'):
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_noapology
+
+        #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
+        elif persistent._mas_affection["apologyflag"] == True and is_file_present('/imsorry.txt'):
+            $ persistent._mas_affection["apologyflag"] = False
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_yesapology
+
+        #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
+        elif persistent._mas_affection["apologyflag"] == False and not is_file_present('/imsorry.txt'):
+            $ persistent._mas_affection["apologyflag"] = True
+            $scene_change = True
+            call spaceroom
+            jump mas_affection_apologydeleted
+
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if persistent.playername.lower() == "yuri":
@@ -595,6 +622,10 @@ label ch30_autoload:
             if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
                 persistent.random_seen = 0
+
+                #Grant good exp for closing the game correctly.
+                mas_gainAffection()
+
             #Ignore anything beyond 3 days
             if away_experience_time.total_seconds() > times.HALF_XP_AWAY_TIME:
                 away_experience_time=datetime.timedelta(seconds=times.HALF_XP_AWAY_TIME)
@@ -610,6 +641,7 @@ label ch30_autoload:
             #Grant the away XP
             grant_xp(away_xp)
 
+
             #Set unlock flag for stories
             mas_can_unlock_story = True
 
@@ -617,12 +649,18 @@ label ch30_autoload:
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
                 persistent._mas_pool_unlocks -= 1
 
+        else:
+            # Grant bad exp for closing the game correctly.
+            mas_loseAffection(modifier=2)
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
     #Run actions for any events that are based on the clock
     $ evhand.event_database=Event.checkCalendar(evhand.event_database)
+
+    #Checks to see if affection levels have met the criteria to push an event or not.
+    $ mas_checkAffection()
 
     # push greeting if we have one
     if selected_greeting:
@@ -682,6 +720,10 @@ label ch30_loop:
         time_since_check=datetime.datetime.now()-calendar_last_checked
 
         if time_since_check.total_seconds()>60:
+
+            #Checks to see if affection levels have met the criteria to push an event or not.
+            mas_checkAffection()
+
             # limit xp gathering to when we are not maxed
             # and once per minute
             if (persistent.idlexp_total < xp.IDLE_XP_MAX):

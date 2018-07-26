@@ -12,6 +12,7 @@ init -1 python:
     EV_RULE_RP_NUMERICAL = "rp_numerical"
     EV_RULE_GREET_RANDOM = "greet_random"
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
+    EV_RULE_AFF_RANGE = "affection_range"
 
 
     # special constants for numerical repeat rules
@@ -508,3 +509,75 @@ init -1 python:
 
             # Evaluate randint with a chance of 1 in random_chance
             return renpy.random.randint(1,random_chance) == 1
+
+    class MASAffectionRule(object):
+        """
+        Static Class used to create affection specific rules in tuple form.
+        That tuple is then stored in a dict containing this rule name constant.
+        Each rule is defined by a min and a max determining a range of affection
+        to check against.
+        """
+
+        @staticmethod
+        def create_rule(min, max, ev=None):
+            """
+            IN:
+                min - An int representing the minimal(inclusive) affection required
+                    for the event to be available, if None is passed is assumed
+                    that there's no minimal affection
+                max - An int representing the maximum(inclusive) affection required
+                    for the event to be available, if None is passed is assumed
+                    that there's no maximum affection
+                ev - Event to create rule for, if passed in
+                    (Default: None)
+
+            RETURNS:
+                a dict containing the specified rules
+            """
+
+            # both min and max can't be None at the same time, since that means
+            # that this is not affection dependent
+            if not min and not max:
+                raise Exception("at least min or max must not be None")
+
+            # return the rule inside a dict
+            rule = {EV_RULE_AFF_RANGE : (min, max)}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
+
+        @staticmethod
+        def evaluate_rule(event=None, rule=None, affection=None, noRuleReturn=False):
+            """
+            IN:
+                event - the event to evaluate
+                rule - the MASAffectionRule to check against
+                affection - the affection to check the rule against
+
+            RETURNS:
+                True if the current affection is inside the rule range
+            """
+
+            # check if we have an event that contains the rule we need
+            # event rule takes priority so it's checked here
+
+            if event and EV_RULE_AFF_RANGE in event.rules:
+                rule = event.rules[EV_RULE_AFF_RANGE]
+
+            # sanity check if we don't have a rule return False
+            if rule is None:
+                return noRuleReturn
+
+            # store affection for easy checking
+            if not affection:
+                affection = persistent._mas_affection["affection"]
+
+            # unpack the rule for easy access
+            min, max = rule
+
+            # Evaluate if affection is inside the rule range, in case both are None
+            # will return true (however that case should be catched on create_rule)
+            return  (affection >= min and not max) or (min <= affection <= max)

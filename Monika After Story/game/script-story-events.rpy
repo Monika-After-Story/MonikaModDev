@@ -398,14 +398,14 @@ label mas_crashed_long:
         "Yes":
             hide screen mas_background_timed_jump
 
-            # TODO: affection?
+            # light affection boost for not joking around
+            $ mas_gainAffection(modifier=0.1)
             m "I'm so glad you're here."
             jump mas_crashed_long_uthere.afterdontjoke
 
         "No":
             hide screen mas_background_timed_jump
 
-            # TODO: affection?
             m "[player]!{fast}"
             jump mas_crashed_long_uthere.dontjoke
 
@@ -428,7 +428,10 @@ label mas_crashed_long_uthere:
     menu:
         "Turn on the light":
             hide screen mas_background_timed_jump
-            pass
+
+            # light affection boost for being like a hero
+            $ mas_gainAffection(modifier=0.1)
+
         "...":
             pause 5.0
             label mas_crashed_long_foundlight:
@@ -466,6 +469,9 @@ label mas_crashed_long_uthere:
     menu:
         "Calm down, [m_name]. You're safe now.":
             hide screen mas_background_timed_jump
+
+            # light affection boost for calming her down
+            $ mas_gainAffection(modifier=0.2)
 
             # clsoe eyes for a second
             show monika 6dstsc
@@ -514,6 +520,8 @@ label mas_crashed_long_uthere:
     menu:
         m "Do you think you can stop that from happening?"
         "I'll try.":
+            # light affection boost because you will try do something for her
+            $ mas_gainAffection(modifier=0.1)
             $ persistent._mas_crashed_trynot = True
             m 1hua "Thanks, [player]!"
             m 1eua "I'm counting on you."

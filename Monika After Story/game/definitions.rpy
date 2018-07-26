@@ -432,7 +432,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -481,6 +482,10 @@ python early:
                 if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
                     return False
 
+            # check if event contains the monika wants this rule
+            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
+                return False
+
             # we've passed all the filtering rules somehow
             return True
 
@@ -494,7 +499,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -529,6 +535,9 @@ python early:
             #   excl_cat - list of categories to exclude, if given an empty
             #       list it filters out events that have a non-None category
             #       (Default: None)
+            #   moni_wants - boolean value to match if the event has the monika
+            #       wants this first.
+            #       (Default: None )
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -546,7 +555,8 @@ python early:
                     and pool is None
                     and action is None
                     and seen is None
-                    and excl_cat is None)):
+                    and excl_cat is None
+                    and moni_wants is None)):
                 return events
 
             # copy check
@@ -570,7 +580,7 @@ python early:
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat):
+                        excl_cat=excl_cat,moni_wants=moni_wants):
 
                     filt_ev_dict[k] = v
 
@@ -921,6 +931,60 @@ python early:
 
                 # check if the event contains a MASFarewellRule and evaluate it
                 if Event._checkFarewellRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+        @staticmethod
+        def _checkAffectionRule(ev,keepNoRule=False):
+            """
+            Checks the given event against its own affection specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
+
+
+        @staticmethod
+        def checkAffectionRules(events,keepNoRule=False):
+            """
+            Checks the event dict against their own affection specific rules,
+            filters out those Events whose rule check return true. This rule
+            checks if current affection is inside the specified range contained
+            on the rule
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                keepNoRule - Boolean indicating wheter if it should keep
+                    events that don't have an affection rule defined
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASAffectionRule and evaluate it
+                if Event._checkAffectionRule(event,keepNoRule=keepNoRule):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
@@ -1699,6 +1763,7 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_you_chr = False
         renpy.game.persistent.opendoor_opencount = 0
         renpy.game.persistent.opendoor_knockyes = False
+        persistent._mas_greeting_type = None
 
         # hangman
         renpy.game.persistent._mas_hangman_playername = False
@@ -1706,6 +1771,9 @@ init -1 python in _mas_root:
         # piano
         renpy.game.persistent._mas_pnml_data = list()
         renpy.game.persistent._mas_piano_keymaps = dict()
+
+        # affection
+        persistent._mas_affection["affection"] = 0
 
 
 init -100 python in mas_utils:
@@ -3149,6 +3217,7 @@ default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
 default persistent.has_merged = False
+default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
 default anticheat = 0
@@ -3161,7 +3230,7 @@ default faint_effect = None
 
 
 default s_name = "Sayori"
-default m_name = "Monika"
+default m_name = persistent._mas_monika_nickname
 default n_name = "Natsuki"
 default y_name = "Yuri"
 
@@ -3234,6 +3303,7 @@ default persistent.sessions={'last_session_end':None,'current_session_start':Non
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
+default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
@@ -3243,6 +3313,9 @@ default persistent._mas_first_calendar_check = False
 # rain
 default persistent._mas_likes_rain = False
 define mas_is_raining = False
+
+# music
+default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 
 # clothes
 default persistent._mas_monika_clothes = "def"
