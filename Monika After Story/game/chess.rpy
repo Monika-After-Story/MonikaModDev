@@ -2309,6 +2309,10 @@ label mas_chess_dlg_qf_edit_n_3_n:
     # amount then you get the bad end, otherwise we jump to the 
     # 3rd time no edit, sorry label.
     # TODO: actually i'm not 100% sure on this, lets leave it up to debate rn
+    # TODO: actaully, we should change some of this dialogue to make it more
+    # obvious that the player violated trust
+    # TODO: also we should like do something here where if the player 
+    #  qutis during this time, we delete or jump into some other flow
     m 6ektsc "I can't trust you anymore."
     m "Goodbye, [player].{nw}"
 
