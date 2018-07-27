@@ -184,7 +184,7 @@ label mas_piano_setupstart:
     $ store.songs.enabled = True
     $ store.hkb_button.enabled = True
     $ enable_esc()
-    $ play_song(store.songs.selected_track)
+    $ mas_startup_song()
     $ pnmlSaveTuples()
 
     show monika 1hua at t11

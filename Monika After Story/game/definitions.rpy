@@ -3315,7 +3315,7 @@ default persistent._mas_likes_rain = False
 define mas_is_raining = False
 
 # music
-default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
+#default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 
 # clothes
 default persistent._mas_monika_clothes = "def"
