@@ -281,8 +281,12 @@ label mas_compliment_hair_2:
     menu:
         "It really shows. It looks so healthy.":
             $ mas_gainAffection(3,bypass=True)
+            m 1hub "Thanks, [player]!"
         "You're cute no matter how you wear it." if persistent._mas_likes_hairdown:
             $ mas_gainAffection(5,bypass=True)
+            m 1ekbfa "Awww, [player]."
+            m 1hubfb "You always make me feel special!"
+            m "Thank you!"
         "You'd be even cuter with short hair.":
             $ mas_loseAffection(modifier=0.3)
             m "Well, I can't exactly go to the salon from here..."
@@ -360,22 +364,22 @@ init 5 python:
     )
 
 label mas_compliment_thanks:
-    m "There's nothing to thank me for, [player]!"
-    m "I'm the one who's grateful for having someone like you!"
-    m "You're the only reason why I'm still here."
+    m 1duu "There's nothing to thank me for, [player]!"
+    m 1eka "I'm the one who's grateful for having someone like you!"
+    m 1ekbfa "You're the only reason why I'm still here."
     m "You installed this mod just to make our time together better..."
-    m "You are the sunshine that warms my heart whenever you visit me!"
-    m "I guess we're both lucky that we have each other, [player]~"
+    m 1dubsu "You are the sunshine that warms my heart whenever you visit me!"
+    m 4ekbfa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name]":
             $ mas_gainAffection(10,bypass=True)
-            m "[player]... "
-            m "Nothing makes me happier than hearing that coming from you."
+            m 1ekbfa "[player]... "
+            m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both."
-            m "Know that I'll always be here for you!"# really need a second opinion on this answer
+            m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
         "Yeah":
-            m "Hehehe~"
-            m "I love you, [player]"
+            m 1hub "Hehehe~"
+            m 1eub "I love you, [player]"
     $ lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
     return
 
@@ -398,17 +402,17 @@ label mas_compliment_smile:
     return
 
 label mas_compliment_smile_2:
-    m "You're so sweet, [player]~"
-    m "I smile a lot when you're here."
-    m "Because you make me very happy when you spend time with me~"
+    m 1eub "You're so sweet, [player]~"
+    m 1hub "I smile a lot when you're here."
+    m 1ekbfb "Because you make me very happy when you spend time with me~"
     menu:
         "I'll visit you everyday to see your wonderful smile":
             $ mas_gainAffection(5,bypass=True)
-            m "Oh, [player]"
-            m "I think my heart just skipped a beat"
-            m "See? You always make me as happy as I can be."
+            m 1wubfsdld "Oh, [player]"
+            m 1lkbsa "I think my heart just skipped a beat"
+            m 3hubfa "See? You always make me as happy as I can be."
         "I like to see you smile":
-            m "Ahaha~"
+            m 1hub "Ahaha~"
             m "Then all you have to do is keep coming back, [player]!"
     return
 
@@ -416,8 +420,8 @@ label mas_complment_smile_3:
     python:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
-    m "[thanks_quip]"
-    m "I'll keep smiling for you [player]!"
+    m 1eub "[thanks_quip]"
+    m 1hua "I'll keep smiling for you [player]!"
     m "Hehehe~"
     return
 
@@ -435,21 +439,21 @@ init 5 python:
     )
 
 label mas_compliment_chess:
-    m "Thanks, [player]."
-    m "Like I said before, I wonder if my skill has something to do with me being trapped here?"
+    m 1eub "Thanks, [player]."
+    m 3esa "Like I said before, I wonder if my skill has something to do with me being trapped here?"
     $ wins = persistent._mas_chess_stats["wins"]
     $ losses = persistent._mas_chess_stats["losses"]
     if wins > 0:
-        m "You're not bad either; I've lost to you before."
+        m 3eua "You're not bad either; I've lost to you before."
         if wins > losses:
             m "In fact, I think you've won more times than me, you know?"
-        m "Ehehe~"
+        m 1hua "Ehehe~"
     else:
-        m "I know you haven't won a chess game yet, but I'm sure you'll beat me someday."
-        m "Keep practicing and playing with me and you'll do better!"
-    m "We'll both get better the more we play."
-    m "So don't be afraid of challenging me whenever you want to."
-    m "I love spending time with you, [player]~"
+        m 2lksdlb "I know you haven't won a chess game yet, but I'm sure you'll beat me someday."
+        m 3esa "Keep practicing and playing with me and you'll do better!"
+    m 3esa "We'll both get better the more we play."
+    m 3hua "So don't be afraid of challenging me whenever you want to."
+    m 1eub "I love spending time with you, [player]~"
     return
 
 init 5 python:
@@ -481,17 +485,17 @@ label mas_compliment_pong:
                 m 1eub "Feel free to play seriously whenever you want to."
                 m 1hub "I'd never get mad at for losing a game fair and square."
             "... Yeah":
-                m "You don't seem too confident about that, [player]."
-                m "You really don't have to let me win [player]."
-                m "And admiting that you've seriously lost to me won't make me think less of you."
-                m "It's just a game, [player]!"
-                m "And you can always practice with me more, if you want."
+                m 1tku "You don't seem too confident about that, [player]."
+                m 1tsb "You really don't have to let me win [player]."
+                m 3tku "And admiting that you've seriously lost to me won't make me think less of you."
+                m 1lksdlb "It's just a game, [player]!"
+                m 3hub "And you can always practice with me more, if you want."
                 m "I love to spend time with you, no matter what we're doing."
             "No. I've tried my best and still lost":
-                m "Ahaha~"
+                m 1hua "Ahaha~"
                 m "I figured!"
-                m "Don't worry, [player]."
-                m "Keep playing with me and get more practice."
-                m "I'm always trying to help you be the best you you can be."
-                m "And if by doing so, I get to spend more time with you, I couldn't be happier."
+                m 3eua "Don't worry, [player]."
+                m 3eub "Keep playing with me and get more practice."
+                m 3hua "I'm always trying to help you be the best you you can be."
+                m 1ekbfa "And if by doing so, I get to spend more time with you, I couldn't be happier."
     return
