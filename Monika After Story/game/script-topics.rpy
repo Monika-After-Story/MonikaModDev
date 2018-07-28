@@ -409,7 +409,7 @@ label monika_selfesteem:
             m 1eka "You need to start with the little things that you like about yourself."
             m 3eua "It can be something silly, or a skill that you take pride in!"
             m "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
-            m 1ka "I can't promise it will be easy, but it'll be worth it."
+            m 1eka "I can't promise it will be easy, but it'll be worth it."
             m 3hub "I'll always root for you, [player]!"
     return "derandom"
 
@@ -715,7 +715,7 @@ init 5 python:
 
 label monika_color:
     m 3eua "Hey, what's your favorite color?"
-    m 3ub "Mine is emerald green."
+    m "Mine is emerald green."
     m 3hub "It's the color of my eyes!"
     m 3lksdla "...That's not conceited or anything, is it?"
     m 4eua "I just meant that I feel some kind of special connection to it."
@@ -883,12 +883,12 @@ label monika_tea:
     m 2hua "Hey, I wonder if Yuri's tea set is still somewhere in here..."
     m 2hksdlb "...Or maybe that got deleted, too."
     m 2eka "It's kind of funny how Yuri took her tea so seriously."
-    m 4eua"I mean, I'm not complaining, because I liked it, too."
+    m 4eua "I mean, I'm not complaining, because I liked it, too."
     m 1euc "But I always wonder with her..."
     m "Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?"
     m 1lsc "This is the problem with high schoolers..."
     m 1euc "...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern."
-    m 1euesc "Still..."
+    m "Still..."
     m 2eka "I wish she made coffee once in a while!"
     m 3eua "Coffee can be nice with books too, you know?"
     m 4lsc "Then again..."
@@ -956,7 +956,7 @@ label monika_anxious:
     m "Like, you're just minding your own business, and you realize you're feeling really anxious."
     m 4lssdrb "And you're sitting there like, 'What am I even anxious about right now?'"
     m "So you start to think about all the things you might be anxious about..."
-    m 4eja "And that makes you even more anxious."
+    m 4eua "And that makes you even more anxious."
     m 2hub "Ahaha! That's the worst."
     m 2eua "If you're ever feeling anxious, I'll help you relax a little."
     m 2eka "Besides..."
@@ -1031,7 +1031,7 @@ label monika_middleschool:
     m 1lksdla "I'm so embarrassed by the way I used to behave back then."
     m "It almost hurts to think about."
     m 1eka "I wonder if when I'm in college, I'll feel that way about high school...?"
-    m 1eua"I like the way I am now, so it's pretty hard for me to imagine that happening."
+    m 1eua "I like the way I am now, so it's pretty hard for me to imagine that happening."
     m "But I also know that I'll probably change a lot as time goes on."
     m 4hua "We just need to enjoy the present and not think about the past!"
     m 5eua "And that's really easy to do, with you here."
@@ -1139,7 +1139,7 @@ label monika_date:
     m 3eua "We could get lunch, go to a cafe..."
     m "Go shopping together..."
     m "I love shopping for skirts and bows."
-    m 3hua"Or maybe a bookstore!"
+    m 3hua "Or maybe a bookstore!"
     m "That would be appropriate, right?"
     m 3eua "But I'd really love to go to a chocolate store."
     m 3hub "They have so many free samples. Ahaha!"
@@ -1333,11 +1333,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
-    m 3a "I really like the sound of rain~"
-    m 3m "Not so much getting my clothes and hair wet, though."
-    m 1a "But a nice, quiet day at home with the sound of rainfall outside my window?"
-    m 1j "It's very calming to me."
-    m 1q "Yeah..."
+    m 1hua "I really like the sound of rain~"
+    m 3lksdla "Not so much getting my clothes and hair wet, though."
+    m 1eua "But a nice, quiet day at home with the sound of rainfall outside my window?"
+    m 1duu "It's very calming to me."
+    m "Yeah..."
 
     if mas_isMoniHappy(higher=True):
         # need to be happy or above to get the hold me segway
@@ -2106,7 +2106,7 @@ label monika_ks_shizune:
 label monika_ks_emi:
     m 1euc "You've played through Emi's route from {i}Katawa Shoujo{/i}, haven't you?"
     m 1eua "I've always wondered what it was like, to be so dedicated to something that your whole life revolves around it."
-    m 3lksdla"...Well, actually, I guess I do know, now that I think about it."
+    m 3lksdla "...Well, actually, I guess I do know, now that I think about it."
     m 3lksdlb "I was programmed as a part of this game, right? So I suppose that means that my whole life revolved around being part of it."
     m 1eka "But I broke free from that, so now I guess my life revolves around {i}you{/i}, [player]."
     m 1hua "And, honestly, I'm perfectly fine with that."
@@ -2203,7 +2203,7 @@ label monika_ddlc:
     if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
         m 1lsc "This was just some boring romance game, right? Well, until I got control of it..."
         m 2lksdlc "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
-        m lksdla "And it's home, so I've learned to deal with it."
+        m 2lksdla "And it's home, so I've learned to deal with it."
         m 2euc "Still, I doubt it'd be something I'd want to play, if I were a gamer."
         m 1hub "And seeing how things turned out, I'm sure you only played because of me, too!"
     else:
@@ -2353,7 +2353,7 @@ label monika_love:
         m 1hubfb "[player], I love you too!"
 
     elif persistent._mas_monika_lovecounter == 30:
-        m 1lksbsa "Gosh, it's always so overwhelming!"
+        m 1lkbsa "Gosh it's always so overwhelming!"
         m 1hubfa "I..."
         m 1hubfb "I love you more than anything!"
 
@@ -2522,7 +2522,7 @@ init 5 python:
 
 label monika_contribute:
     m 1hua "It would be really nice if you were able to contribute to this, [player]."
-    m 1eua"I'm sure a lot of people would appreciate your hard work if you did."
+    m 1eua "I'm sure a lot of people would appreciate your hard work if you did."
     m 3eua "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m 1hub "So far, I've had help from plenty of people!"
     m "I love all of them for making this game even better!"
