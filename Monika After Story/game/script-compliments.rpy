@@ -190,10 +190,10 @@ label mas_compliment_awesome_2:
             $ mas_gainAffection(5,bypass=True)
             show monika 6dubsa
             pause 2.0
-            show monika 1wubfsdld # TODO actually a surprised one should be here
+            show monika 1wubfsdld
             m 1wubfsdld "Oh, sorry [player]."
             m 2lksdla "I was trying to feel your embrace from here."
-            m 2hub "Ahaha~" # TODO happy moni
+            m 2hub "Ahaha~"
         "... I don't like hugs":
             $ mas_loseAffection() # you monster.
             m 1eft "...Really?"
@@ -281,7 +281,7 @@ label mas_compliment_hair_2:
     menu:
         "It really shows. It looks so healthy.":
             $ mas_gainAffection(3,bypass=True)
-        "You're cute no matter how you wear it.": #TODO lock this for players who are locked out of her hairstyles
+        "You're cute no matter how you wear it." if persistent._mas_likes_hairdown:
             $ mas_gainAffection(5,bypass=True)
         "You'd be even cuter with short hair.":
             $ mas_loseAffection(modifier=0.3)
@@ -309,6 +309,7 @@ init 5 python:
         ),
         eventdb=store.mas_compliments.compliment_database
     )
+
 label mas_compliment_fit:
     if not renpy.seen_label("mas_compliment_fit_2"):
         call mas_compliment_fit_2
@@ -316,7 +317,6 @@ label mas_compliment_fit:
         call mas_compliment_fit_3
     return
 
-#TODO, second time
 label mas_compliment_fit_2:
     m 1hub "Thanks [player]! You're so sweet!"
     m 3eub "I love keeping fit and eating healthy. It keeps me feeling energetic and confident."
@@ -324,13 +324,15 @@ label mas_compliment_fit_2:
     m 1lubfb "We can always work out together when I'm there..."
     menu:
         "That sounds like a lot of fun!":
+            $ mas_gainAffection(2,bypass=True)
             m 1hubfb "Ahaha! I'm glad you think so, too!"
             m 3eka "Don't worry. Even if you can't keep up with me, I know we'll have fun..."
             m 5eua "So long as we're together."
         "No promises, but I'll do my best.":
+            $ mas_gainAffection(1,bypass=True)
             m 1tfb "You better!"
             m 2tub "Don't think I plan on letting you off easy if you're out of shape."
-        "I'd rather not get sweaty...": #TODO, probably not a penalty but no bonus
+        "I'd rather not get sweaty...":
             m 1eka "I understand if it's not your thing, but you should give it a little try..."
             m 1lksdla "It'd make me really happy if you shared my interests, you know?"
     return
@@ -374,6 +376,7 @@ label mas_compliment_thanks:
         "Yeah":
             m "Hehehe~"
             m "I love you, [player]"
+    $ lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
     return
 
 init 5 python:
