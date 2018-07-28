@@ -1534,7 +1534,7 @@ label monika_rain_holdme:
 
     else:
         # asking for it on the "incorrect mood" slightly decreases affection
-        $ mas_loseAffection(modifier=0.1)
+        $ mas_loseAffection(modifier=0.1, reason=None)
         m 1oo "..."
         m 1pp "The mood doesn't feel right, [player]."
         m 1q "Sorry..."
@@ -2437,7 +2437,7 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason="you called me a murderer")
     if mas_curr_affection == mas_aff.LOVE:
         m 1euc "..."
         m 1hua "Ahaha! Very funny [player]!"
@@ -2597,7 +2597,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason="you made that not funny joke about having another girlfriend")
     m 1h "I thought we established already that I was your girlfriend?"
     m "There's no way you already have one in your reality, right?"
     m 4f "If you do, then you've got to break up with her right now!"
@@ -5375,7 +5375,7 @@ label monika_complain_battery:
     return
 
 label monika_close_game_battery:
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason=None)
     m 1lksdlc "[player]..."
     m 1ekc "I'm sorry, but I'm gonna have to close the game before the battery runs out."
     m 3eka "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
@@ -5418,7 +5418,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason="you did a bad joke about breaking up with me")
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         m 1euc "You're breaking up with me?"

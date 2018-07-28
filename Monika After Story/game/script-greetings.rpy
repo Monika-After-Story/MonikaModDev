@@ -582,16 +582,16 @@ label monikaroom_greeting_choice:
     menu:
         "... Gently open the door" if not persistent.seen_monika_in_room:
             #Lose affection for not knocking before entering.
-            $ mas_loseAffection()
+            $ mas_loseAffection(reason="you didn't knock first before entering my room")
             jump monikaroom_greeting_opendoor
         "Open the door" if persistent.seen_monika_in_room:
             if persistent.opendoor_opencount > 0:
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection()
+                $ mas_loseAffection(reason="you didn't knock first before entering my room")
                 jump monikaroom_greeting_opendoor_locked
             else:
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection()
+                $ mas_loseAffection(reason="you didn't knock first before entering my room")
                 jump monikaroom_greeting_opendoor_seen
 #        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
 #            jump opendoor_game

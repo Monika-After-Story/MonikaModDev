@@ -188,7 +188,7 @@ init python:
         ):
 
         global mas_apology_reason
-        
+
         mas_apology_reason = reason
 
 
@@ -257,7 +257,7 @@ init python:
             time_difference = persistent._mas_absence_time
             # we skip this for devs since we sometimes use older persistents and only apply after 1 week
             if (
-                    not config.developer 
+                    not config.developer
                     and time_difference >= datetime.timedelta(weeks = 1)
                 ):
                 new_aff = _mas_getAffection() - (0.5 * time_difference.days)
@@ -269,7 +269,7 @@ init python:
                     else:
                         # otherwise, you cant lose past a certain amount
                         mas_setAffection(affection.AFF_TIME_CAP)
-                        
+
                 else:
                     mas_setAffection(new_aff)
 
@@ -411,7 +411,7 @@ label monika_affection_nickname:
                             m 1k "Ehehe~"
                         $ done = True
                     else:
-                        $ mas_loseAffection()
+                        $ mas_loseAffection(reason="of the bad nickname")
                         m 4efd "[player]! That's not nice at all!"
                         m 2efc "Why would you say such things?"
                         m 2rfw "If you didn't want to do this, you should've just said so!"
