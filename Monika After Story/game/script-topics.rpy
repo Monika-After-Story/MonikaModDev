@@ -5902,22 +5902,22 @@ init 5 python:
 label monika_playerapologizes:
     # if there's no reason to apologize
     if mas_apology_reason is None:
-        m 1g "Did something happen?"
-        m 2f "I can't remember what you'd be sorry about."
-        m 1q "..."
-        m 1b "Anyway, thank you for the apology."
-        m 1a "I know you're doing your best to make things right."
-        m 1k "That's why I love you, [player]!"
+        m 1ekd "Did something happen?"
+        m 2ekc "I see no reason for you to be sorry."
+        m 1dsc "..."
+        m 1eub "Anyway, thank you for the apology."
+        m 1eua "Whatever it is, I know you're doing your best to make things right."
+        m 1hub "That's why I love you, [player]!"
     # She knows why you are apologizing for
     elif mas_apology_reason:
         $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-        m "I know you're apologizing because [mas_apology_reason]"
-        m "I accept your apology [player], thanks"
+        m 1eka"I know you're apologizing because [mas_apology_reason]."
+        m "I accept your apology [player]. Thank you."
     # She knows there's a reason for your apology but won't comment on it
     else:
         $ mas_gainAffection(modifier=0.1) # recover a bit of affection
-        m "What you did wasn't funny [player]"
-        m "Please be more considerate about my feelings in the future"
+        m 2tkd "What you did wasn't funny, [player]."
+        m 2dkd "Please be more considerate about my feelings in the future."
     # reset the reason
     $ mas_apology_reason = None
     return
