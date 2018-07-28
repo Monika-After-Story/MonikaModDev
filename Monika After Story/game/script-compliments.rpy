@@ -237,6 +237,7 @@ label mas_compliment_intelligent_2:
             m "I love you so much, [player]!"
             m "We'll have a lifetime of self improvement together!"
         "I'll always be proud of you":
+            $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]... "
         "You make me feel stupid sometimes":
             $ mas_loseAffection(modifier=0.5)
@@ -280,7 +281,7 @@ label mas_compliment_hair_2:
     menu:
         "It really shows. It looks so healthy.":
             $ mas_gainAffection(3,bypass=True)
-        "You're cute no matter how you wear it.":
+        "You're cute no matter how you wear it.": #TODO lock this for players who are locked out of her hairstyles
             $ mas_gainAffection(5,bypass=True)
         "You'd be even cuter with short hair.":
             $ mas_loseAffection(modifier=0.3)
@@ -308,7 +309,7 @@ init 5 python:
         ),
         eventdb=store.mas_compliments.compliment_database
     )
-
+label mas_compliment_fit:
     if not renpy.seen_label("mas_compliment_fit_2"):
         call mas_compliment_fit_2
     else:
@@ -320,7 +321,7 @@ label mas_compliment_fit_2:
     m 1hub "Thanks [player]! You're so sweet!"
     m 3eub "I love keeping fit and eating healthy. It keeps me feeling energetic and confident."
     m 1efb "I hope you're watching out for your health."
-    m 1lubfb "We can always work out together, when I'm there~"
+    m 1lubfb "We can always work out together when I'm there..."
     menu:
         "That sounds like a lot of fun!":
             m 1hubfb "Ahaha! I'm glad you think so, too!"
@@ -328,7 +329,7 @@ label mas_compliment_fit_2:
             m 5eua "So long as we're together."
         "No promises, but I'll do my best.":
             m 1tfb "You better!"
-            m 2tub "Don't think I plan on holding back on you if you're out of shape."
+            m 2tub "Don't think I plan on letting you off easy if you're out of shape."
         "I'd rather not get sweaty...": #TODO, probably not a penalty but no bonus
             m 1eka "I understand if it's not your thing, but you should give it a little try..."
             m 1lksdla "It'd make me really happy if you shared my interests, you know?"
@@ -338,9 +339,10 @@ label mas_compliment_fit_3:
     python:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
-    m 1ekbfa "[thanks_quip]"
-    m "I hope you embark on a journey of fitness with me!"
-    
+    m 2eka "[thanks_quip]"
+    m 1hub "I hope you embark on a fitness journey with me!"
+    return
+
 
 init 5 python:
     addEvent(
