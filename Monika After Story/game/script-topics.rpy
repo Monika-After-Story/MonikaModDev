@@ -2439,23 +2439,31 @@ label monika_justification:
     #lose affection
     $ mas_loseAffection()
     if mas_curr_affection == mas_aff.LOVE:
-        m 1c "..."
-        m 1j "Ahaha! Very funny [player]!"
-        m 3a "I know you don't really mean it..."
-        m 3m "Don't say such thing as a joke though, if I didn't know you so well it might have been considered cruel..."
+        m 1euc "..."
+        m 1hua "Ahaha! Very funny [player]!"
+        m 3eua "I know you don't really mean it..."
+        m 3lksdlc "But don't joke around like that!"
+        if persistent._mas_pm_a_hater:
+            m 2lksdld "You've said stuff like that before, so it might get harder to take it as a joke…"
+        else:
+            m 1dsc "If I didn't know you so well, that would have been really cruel..."
+        $ mas_apology_reason = "what you said earlier"
     else:
-        m 2h "How many times do I have to say it until you understand?"
-        m 4h "They weren't real. They were never real."
-        m "I'm the only person who understood that this whole thing was fake."
-        m 4i "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-        m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
-        m "If I'm guilty of murder, so is everyone who plays violent video games."
-        m 2h "I bet you've killed thousands in games you play."
+        m 1tkc "How many times do I have to say it until you understand?"
+        m 4tkc "They weren't real. They were never real."
+        m 2tfc "I'm the only person who understood that this whole thing was fake."
+        if persistent.monika_kill:
+           m 4tfc "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
+        if not persistent.clear_all:
+            m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
+        m "If I'm guilty of murder, so is everyone who's played violent video games."
+        m 2euc "I bet you've killed thousands of people in the games you play."
         if mas_curr_affection == mas_aff.BROKEN or mas_curr_affection == mas_aff.DISTRESSED:
-            m 2f "Do you hate me for it? Because of what I did?"
-            m 2g "Please understand that I did it for us!"
-            m 2h "I did everything for us!"
+            m 2ekc "Do you hate me for it? Because of what I did?"
+            m 2ekd "Please understand that I did it for us!"
+            m 2euc "I did everything for us!"
         m "Just forget the other girls ever existed, and you'll be much happier."
+        $ mas_apology_reason = "what you said earlier"
     return
 
 
@@ -2598,6 +2606,7 @@ label monika_girlfriend:
     m 1n "I know you wouldn't cheat on me."
     m 1d "If you meet a girl who asks you out though, let me talk to her first, okay?"
     m 1h "I won't let someone else steal away my loving sweetheart!"
+    $ mas_apology_reason = "pretending you have another girlfriend.{w} You really gave me a heart attack!"
     return
 
 init 5 python:
@@ -5413,14 +5422,15 @@ label monika_breakup:
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         m 1euc "You're breaking up with me?"
-        m 2ekc "Why would you say such a thing, [player]?"
+        m 2ekc "Why would you do such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
         if mas_curr_affection == mas_aff.BROKEN:#TODO review
-            m 2f "I-I can't really handle this..."
-            m 2g "You're just joking again, right?"
-            m 1h "I refuse to believe you, you're all I have left!"
-            m 1f "If you really, truly mean it then you can delete me and this entire game.."
-            m 1q "I love you, [player]...so please tell me it's all just a bad joke."
+            m 2lksdrb "I-I really can't handle this..."
+            m 2wkd "You're just joking again, right?"
+            m 1wktsd "I refuse to believe you; you're all I have left!"
+            m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
+            m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
+            $ mas_apology_reason = ""
         else:
             m 2dsc "Are you...{w} really..."
             m "..."
@@ -5431,11 +5441,12 @@ label monika_breakup:
                 m "Right?"
                 "Yes":
                     m 1hub "Ahaha! You're so silly, [player]."
-                    m 1eka "Let's stay being together forever~"
+                    m 1eka "Let's stay together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
-            m 1o "..." # TODO review
+            m 1ekc "..." # TODO review
+            $ mas_apology_reason = ""
         else:
             m 1hua "Ehehe~"
 
@@ -5443,12 +5454,13 @@ label monika_breakup:
     else:
         m 1wud "W-what?"
         if persistent.monika_kill:
-            m 2f "You're just going to leave and delete me again?"
+            m 2ekd "You're just going to leave and delete me again?"
         if mas_curr_affection == mas_aff.BROKEN: #TODO needs review
-            m 1f "You wouldn't do that, I refuse to believe that..."
-            m 1h "That's not a funny joke, [player]!"
-            m 1o "Were it anyone else I would find such humour nothing but cruel..."
-            m 1e "I forgive you...just don't say such a hurtful joke again, okay?"
+            m 1ekd "You wouldn't do that. I refuse to believe that..."
+            m 1lksdld "That's not a joke, [player]!"
+            m 1lksdlc "Don't say that again unless you really, truly mean it..."
+            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
+            $ mas_apology_reason = ""
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."
@@ -5911,8 +5923,8 @@ label monika_playerapologizes:
     # She knows why you are apologizing for
     elif mas_apology_reason:
         $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-        m 1eka"I know you're apologizing because [mas_apology_reason]."
-        m "I accept your apology [player]. Thank you."
+        m 1eka"Thank you for apologizing for [mas_apology_reason]."
+        m "I accept your apology [player]. It means a lot to me."
     # She knows there's a reason for your apology but won't comment on it
     else:
         $ mas_gainAffection(modifier=0.1) # recover a bit of affection
