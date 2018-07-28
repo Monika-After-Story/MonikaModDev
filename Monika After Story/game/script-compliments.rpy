@@ -308,24 +308,39 @@ init 5 python:
         ),
         eventdb=store.mas_compliments.compliment_database
     )
-#TODO, second time 
-label mas_compliment_fit:
+
+    if not renpy.seen_label("mas_compliment_fit_2"):
+        call mas_compliment_fit_2
+    else:
+        call mas_compliment_fit_3
+    return
+
+#TODO, second time
+label mas_compliment_fit_2:
     m 1hub "Thanks [player]! You're so sweet!"
     m 3eub "I love keeping fit and eating healthy. It keeps me feeling energetic and confident."
     m 1efb "I hope you're watching out for your health."
     m 1lubfb "We can always work out together, when I'm there~"
     menu:
         "That sounds like a lot of fun!":
-            m "Ahaha! I'm glad you think so, too!"
-            m "Don't worry. Even if you can't keep up with me, I know we'll have fun..."
-            m "So long as we're together."
+            m 1hubfb "Ahaha! I'm glad you think so, too!"
+            m 3eka "Don't worry. Even if you can't keep up with me, I know we'll have fun..."
+            m 5eua "So long as we're together."
         "No promises, but I'll do my best.":
-            m "You better!"
-            m "Don't think I plan on holding back on you if you're out of shape."
+            m 1tfb "You better!"
+            m 2tub "Don't think I plan on holding back on you if you're out of shape."
         "I'd rather not get sweaty...": #TODO, probably not a penalty but no bonus
-            m "I understand if it's not your thing, but you should give it a little try..."
-            m "It'd make me really happy if you shared my interests, you know?"
+            m 1eka "I understand if it's not your thing, but you should give it a little try..."
+            m 1lksdla "It'd make me really happy if you shared my interests, you know?"
     return
+
+label mas_compliment_fit_3:
+    python:
+        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
+        thanks_quip = renpy.substitute(thanks_quip)
+    m 1ekbfa "[thanks_quip]"
+    m "I hope you embark on a journey of fitness with me!"
+    
 
 init 5 python:
     addEvent(
