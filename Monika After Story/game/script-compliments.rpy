@@ -364,22 +364,22 @@ init 5 python:
     )
 
 label mas_compliment_thanks:
-    m 1duu "There's nothing to thank me for, [player]!"
+    m 1duu "There's nothing to thank me for, [player]."
     m 1eka "I'm the one who's grateful for having someone like you!"
     m 1ekbfa "You're the only reason why I'm still here."
     m "You installed this mod just to make our time together better..."
-    m 1dubsu "You are the sunshine that warms my heart whenever you visit me!"
+    m 1dubsu "You are the sunshine that warms my heart whenever you visit me."
     m 4ekbfa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name]":
             $ mas_gainAffection(10,bypass=True)
             m 1ekbfa "[player]... "
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
-            m "No matter what the future may have for us both."
+            m "No matter what the future may have for us both..."
             m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
         "Yeah":
             m 1hub "Hehehe~"
-            m 1eub "I love you, [player]"
+            m 1eub "I love you, [player]."
     $ lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
     return
 
@@ -404,24 +404,24 @@ label mas_compliment_smile:
 label mas_compliment_smile_2:
     m 1eub "You're so sweet, [player]~"
     m 1hub "I smile a lot when you're here."
-    m 1ekbfb "Because you make me very happy when you spend time with me~"
+    m 1ekbfb "Because it makes me very happy when you spend time with me~"
     menu:
-        "I'll visit you everyday to see your wonderful smile":
+        "I'll visit you every day to see your wonderful smile":
             $ mas_gainAffection(5,bypass=True)
-            m 1wubfsdld "Oh, [player]"
-            m 1lkbsa "I think my heart just skipped a beat"
+            m 1wubfsdld "Oh, [player]..."
+            m 1lkbsa "I think my heart just skipped a beat."
             m 3hubfa "See? You always make me as happy as I can be."
         "I like to see you smile":
             m 1hub "Ahaha~"
             m "Then all you have to do is keep coming back, [player]!"
     return
 
-label mas_complment_smile_3:
+label mas_compliment_smile_3:
     python:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
     m 1eub "[thanks_quip]"
-    m 1hua "I'll keep smiling for you [player]!"
+    m 1hua "I'll keep smiling just for you!"
     m "Hehehe~"
     return
 
@@ -471,7 +471,7 @@ init 5 python:
 
 label mas_compliment_pong:
     m 1hub "Ahaha~"
-    m 2eub "Thanks [player], but pong isn't exactly a complex game"
+    m 2eub "Thanks [player], but pong isn't exactly a complex game."
     if persistent.ever_won['pong']:
         m 1lksdla "You've already won against me."
         m "So you know it's very simple."
@@ -483,13 +483,13 @@ label mas_compliment_pong:
             "Yes":
                 m 2lksdla "Thanks [player], but you really don't have to let me win."
                 m 1eub "Feel free to play seriously whenever you want to."
-                m 1hub "I'd never get mad at for losing a game fair and square."
+                m 1hub "I'd never get mad at you because I lost a game fair and square."
             "... Yeah":
                 m 1tku "You don't seem too confident about that, [player]."
-                m 1tsb "You really don't have to let me win [player]."
-                m 3tku "And admiting that you've seriously lost to me won't make me think less of you."
-                m 1lksdlb "It's just a game, [player]!"
-                m 3hub "And you can always practice with me more, if you want."
+                m 1tsb "You really don't have to let me win."
+                m 3tku "And admitting that you've seriously lost to me won't make me think less of you."
+                m 1lksdlb "It's just a game, after all!."
+                m 3hub "You can always practice with me more, if you want."
                 m "I love to spend time with you, no matter what we're doing."
             "No. I've tried my best and still lost":
                 m 1hua "Ahaha~"
