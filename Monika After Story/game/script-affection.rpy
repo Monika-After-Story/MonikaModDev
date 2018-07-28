@@ -23,10 +23,68 @@ init -1 python in mas_affection:
     ENAMORED = 7
     LOVE = 8
 
+    # natural order of affection levels
+    _aff_order = [
+        BROKEN,
+        DISTRESSED,
+        UPSET,
+        NORMAL,
+        HAPPY,
+        AFFECTIONATE,
+        ENAMORED,
+        LOVE
+    ]
+
     # numerical constants of affection groups
     G_SAD = -1
     G_HAPPY = -2
     G_NORMAL = -3
+
+    # natural order of affection groups
+    _affg_order = [
+        G_SAD,
+        G_NORMAL,
+        G_HAPPY
+    ]
+
+    # compare functions for affection / group
+    def _compareAff(aff_1, aff_2):
+        """
+        See mas_compareAff for explanation
+        """
+        # it's pretty easy to tell if we have been given the same items
+        if aff_1 == aff_2:
+            return 0
+
+        # otherwise, need to check for aff existence to get index
+        if aff_1 not in _aff_order or aff_2 not in _aff_order:
+            return 0
+
+        # otherwise both proivded affections exist, lets index
+        if _aff_order.index(aff_1) < _aff_order.index(aff_2):
+            return -1
+
+        return 1
+
+
+    def _compareAffG(affg_1, affg_2):
+        """
+        See mas_compareAffG for explanation
+        """
+        # same stuff?
+        if affg_1 == affg_2:
+            return 0
+
+        # check for aff group exist
+        if affg_1 not in _affg_order or affg_2 not in _affg_order:
+            return 0
+
+        # otherwise, both groups exist, index
+        if _affg_order.index(affg_1) < _affg_order.index(affg_2):
+            return -1
+
+        return 1
+
 
     # thresholds values
 
@@ -52,9 +110,338 @@ init -1 python in mas_affection:
     # lower affection cap for time
     AFF_TIME_CAP = -101
 
+# need these utility functiosn post event_handler 
+init 15 python in mas_affection:
+    import store # global
+    import store.evhand as evhand
+    persistent = renpy.game.persistent
+
+    # programming point order:
+    # 1. affection state transition code is run
+    # 2. Affection state is set
+    # 3. affection group transition code is run
+    # 4. Affection group is set
+    #
+    # if affection jumps over multiple states, we run the transition code
+    # in order
+
+    # programming points
+    def _brokenToDis():
+        """
+        Runs when transitioning from broken to distressed
+        """
+        return
+
+
+    def _disToBroken():
+        """
+        Runs when transitioning from distressed to broken
+        """
+        return
+
+
+    def _disToUpset():
+        """
+        Runs when transitioning from distressed to upset
+        """
+        return
+
+
+    def _upsetToDis():
+        """
+        Runs when transitioning from upset to distressed
+        """
+        return
+
+
+    def _upsetToNormal():
+        """
+        Runs when transitioning from upset to normal
+        """
+        # access global vars
+        mas_is_raining = store.mas_is_raining
+
+        # unlock events
+        if mas_is_raining:
+            if persistent._mas_likes_rain:
+                evhand._unlockEventLabel("monika_rain_stop")
+
+        else:
+            if persistent._mas_like_rain:
+                evhand._unlockEventLabel("monika_rain_start")
+            evhand._unlockEventLabel("monika_rain")
+
+        evhand._unlockEventLabel(
+            "i_greeting_monikaroom",
+            eventdb=evhand.greeting_database
+        )
+
+        if not persistent._mas_hair_changed:
+            evhand._unlockEventLabel(
+                "greeting_hairdown",
+                eventdb=evhand.greeting_database
+            )           
+
+
+    def _normalToUpset():
+        """
+        Runs when transitioning from normal to upset
+        """
+        # lock events
+        evhand._lockEventLabel("monika_rain_start")
+        evhand._lockEventLabel("monika_rain_stop")
+        evhand._lockEventLabel("monika_rain")
+        # TODO; actually, the opendoor greeting shuld be changd so bad affection
+        # will make her angry during the greeting
+        evhand._lockEventLabel(
+            "i_greeting_monikaroom",
+            eventdb=evhand.greeting_database
+        )
+        evhand._lockEventLabel(
+            "greeting_hairdown",
+            eventdb=evhand.greeting_database
+        )
+
+
+    def _normalToHappy():
+        """
+        Runs when transitioning from noraml to happy
+        """
+        # unlock events
+        if persistent._mas_likes_rain:
+            evhand._unlockEventLabel("monika_rain_holdme")
+
+
+    def _happyToNormal():
+        """
+        Runs when transitinong from happy to normal
+        """
+        # lock events
+        evhand._lockEventLabel("monika_rain_holdme")
+
+
+    def _happyToAff():
+        """
+        Runs when transitioning from happy to affectionate
+        """
+        return
+
+
+    def _affToHappy():
+        """
+        Runs when transitioning from affectionate to happy
+        """
+        return
+
+
+    def _affToEnamored():
+        """
+        Runs when transitioning from affectionate to enamored
+        """
+        return
+
+
+    def _enamoredToAff():
+        """
+        Runs when transitioning from enamored to affectionate
+        """
+        return
+
+
+    def _enamoredToLove():
+        """
+        Runs when transitioning from enamored to love
+        """
+        return
+
+
+    def _loveToEnamored():
+        """
+        Runs when transitioning from love to enamored
+        """
+        return
+
+
+    def _gSadToNormal():
+        """
+        Runs when transitioning from sad group to normal group
+        """
+        return
+
+
+    def _gNormalToSad():
+        """
+        Runs when transitioning from normal group to sad group
+        """
+        return
+
+
+    def _gNormalToHappy():
+        """
+        Runs when transitioning from normal group to happy group
+        """
+        return
+
+
+    def _gHappyToNormal():
+        """
+        Runs when transitioning from happy group to normal group
+        """
+        return
+
+
+    # transition programing point dict
+    # each item has a tuple value:
+    #   [0] - going up transition pp 
+    #   [1] - going down transition pp
+    # if a tuple value is None, it doesn't have that pp
+    #
+    # The key should be the affection state you are COMING FROM
+    _trans_pps = {
+        BROKEN: (_brokenToDis, None),
+        DISTRESSED: (_disToUpset, _disToBroken),
+        UPSET: (_upsetToNormal, _upsetToDis),
+        NORMAL: (_normalToHappy, _normalToUpset),
+        HAPPY: (_happyToAff, _happyToNormal),
+        AFFECTIONATE: (_affToEnamored, _affToHappy),
+        ENAMORED: (_enamoredToLove, _enamoredToAff),
+        LOVE: (None, _loveToEnamored)
+    }
+
+    # same as above, except for groups
+    _transg_pps = {
+        G_SAD: (_gSadToNormal, None),
+        G_NORMAL: (_gNormalToHappy, _gNormalToSad),
+        G_HAPPY: (None, _gHappyToNormal)
+    }
+
+
+    def runAffPPs(start_aff, end_aff):
+        """
+        Runs programming points to transition from the starting affection
+        to the ending affection 
+
+        IN:
+            start_aff - starting affection
+            end_aff - ending affection
+        """
+        comparison = _compareAff(start_aff, end_aff)
+        if comparison == 0:
+            # dont do anything if same
+            return
+
+        # otherwise, now we need to do things
+        start_index = _aff_order.index(start_aff)
+        end_index = _aff_order.index(end_aff)
+        if comparison < 0:
+            for index in range(start_index, end_index+1):
+                to_up, to_down = _trans_pps[_aff_order[index]]
+                if to_up is not None:
+                    to_up()
+
+        else:
+            for index in range(start_index, end_index-1, -1):
+                to_up, to_down = _trans_pps[_aff_order[index]]
+                if to_down is not None:
+                    to_down()
+
+
+    def runAffGPPs(start_affg, end_affg):
+        """
+        Runs programming points to transition from the starting affection group
+        to the ending affection group
+
+        IN:
+            start_affg - starting affection group
+            end_affg - ending affection group
+        """
+        comparison = _compareAffG(start_affg, end_affg)
+        if comparison == 0:
+            # dont do anything if same
+            return
+
+        # otherwise, now we need to do things
+        start_index = _affg_order.index(start_affg)
+        end_index = _affg_order.index(end_affg)
+        if comparison < 0:
+            for index in range(start_index, end_index+1):
+                to_up, to_down = _transg_pps[_affg_order[index]]
+                if to_up is not None:
+                    to_up()
+
+        else:
+            for index in range(start_index, end_index-1, -1):
+                to_up, to_down = _transg_pps[_affg_order[index]]
+                if to_down is not None:
+                    to_down()
+
+
+    def _isMoniState(aff_1, aff_2, lower=False, higher=False):
+        """
+        Compares the given affection values according to the affection
+        state system
+
+        By default, this will check if aff_1 == aff_2
+
+        IN:
+            aff_1 - affection to compare
+            aff_2 - affection to compare
+            lower - True means we want to check aff_1 <= aff_2
+            higher - True means we want to check aff_1 >= aff_2
+
+        RETURNS:
+            True if the given affections pass the test we want to do.
+            False otherwise
+        """
+        comparison = _compareAff(aff_1, aff_2)
+
+        if comparison == 0:
+            return True
+
+        if lower:
+            return comparison <= 0
+
+        if higher:
+            return comparison >= 0
+
+        return False
+
+
+    def _isMoniStateG(affg_1, affg_2, lower=False, higher=False):
+        """
+        Compares the given affection groups according to the affection group
+        system
+
+        By default, this will check if affg_1 == affg_2
+
+        IN:
+            affg_1 - affection group to compare
+            affg_2 - affection group to compare
+            lower - True means we want to check affg_1 <= affg_2
+            higher - True means we want to check affg_1 >= affg_2
+
+        RETURNS:
+            true if the given affections pass the test we want to do.
+            False otherwise
+        """
+        comparison = _compareAffG(affg_1, affg_2)
+
+        if comparison == 0:
+            return True
+
+        if lower:
+            return comparison <= 0
+
+        if higher:
+            return comparison >= 0
+
+        return False
+
+
 default persistent._mas_long_absence = False
 
-init python:
+# need to have affection initlaized post event_handler
+init 20 python:
 
     import datetime
     import store.mas_affection as affection
@@ -86,8 +473,294 @@ init python:
         return persistent._mas_affection["affection"]
 
 
+    ## affection comparison
+    def mas_compareAff(aff_1, aff_2):
+        """
+        Runs compareTo logic on the given affection states
+
+        IN:
+            aff_1 - an affection state to compare
+            aff_2 - an affection state to compare
+
+        RETURNS:
+            negative number if aff_1 < aff_2
+            0 if aff_1 == aff_2
+            postitive number if aff_1 > aff_2
+            Returns 0 if a non affection state was provided
+        """
+        return affection._compareAff(aff_1, aff_2)
+
+
+    def mas_compareAffG(affg_1, affg_2):
+        """
+        Runs compareTo logic on the given affection groups
+
+        IN:
+            affg_1 - an affection group to compare
+            affg_2 - an affection group to compare
+
+        RETURNS:
+            negative number if affg_1 < affg_2
+            0 if affg_1 == affg_2
+            positive numbre if affg_1 > affg_2
+            Returns 0 if a non affection group was provided
+        """
+        return affection._compareAffG(affg_1, affg_2)
+
+
+    ## afffection state functions
+    def mas_isMoniBroken(lower=False, higher=False):
+        """
+        Checks if monika is broken
+
+        IN:
+            lower - True means we include everything below this affection state
+                as broken as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                state as broken as well
+                (Default: False)
+
+        RETURNS:
+            True if monika is broke, False otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection, 
+            store.mas_affection.BROKEN,
+            higher=higher
+        )
+
+
+    def mas_isMoniDis(lower=False, higher=False):
+        """
+        Checks if monika is distressed
+
+        IN:
+            lower - True means we cinlude everything below this affection state
+                as distressed as well
+                NOTE: takes precedence over higher
+                (Default: False)
+            higher - True means we include everything above this affection
+                state as distressed as well
+                (Default: FAlse)
+
+        RETURNS:
+            True if monika is distressed, false otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection,
+            store.mas_affection.DISTRESSED,
+            lower=lower,
+            higher=higher
+        )
+
+
+    def mas_isMoniUpset(lower=False, higher=False):
+        """
+        Checks if monika is upset
+
+        IN:
+            lower - True means we include everything below this affection 
+                state as upset as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                state as upset as well
+                (Default: False)
+
+        RETURNS:
+            True if monika is upset, false otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection,
+            store.mas_affection.UPSET,
+            lower=lower,
+            higher=higher
+        )
+    
+
+    def mas_isMoniNormal(lower=False, higher=False):
+        """
+        Checks if monika is normal
+        
+        IN:
+            lower - True means we include everything below this affection state
+                as normal as well
+                (Default: False)
+            higher - True means we include evreything above this affection
+                state as normal as well
+                (Default: False)
+
+        RETURNS:
+            True if monika is normal, false otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection,
+            store.mas_affection.NORMAL,
+            lower=lower,
+            higher=higher
+        )
+
+
+    def mas_isMoniHappy(lower=False, higher=False):
+        """
+        Checks if monika is happy
+
+        IN:
+            lower - True means we include everything below this affection
+                state as happy as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                state as happy as well
+                (Default: False)
+
+        RETURNS:
+            True if monika is happy, false otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection,
+            store.mas_affection.HAPPY,
+            lower=lower,
+            higher=higher
+        )
+
+
+    def mas_isMoniAff(lower=False, higher=False):
+        """
+        Checks if monika is affectionate
+
+        IN:
+            lower - True means we include everything below this affection
+                state as affectionate as well
+                (Default: FAlse)
+            higher - True means we include everything above this affection
+                state as affectionate as well
+                (Default: False)
+
+        RETURNS:
+            True if monika is affectionate, false otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection,
+            store.mas_affection.AFFECTIONATE,
+            lower=lower,
+            higher=higher
+        )
+
+
+    def mas_isMoniEnamored(lower=False, higher=False):
+        """
+        Checks if monika is enamored
+
+        IN:
+            lower - True means we include everything below this affection
+                state as enamored as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                state as enamored as well
+                (Default: False)
+
+        RETURNS:
+            True if monika is enamored, false otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection,
+            store.mas_affection.ENAMORED,
+            lower=lower,
+            higher=higher
+        )
+
+    
+    def mas_isMoniLove(lower=False, higher=False):
+        """
+        Checks if monika is in love
+
+        IN:
+            lower - True means we include everything below this affectionate
+                state as love as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                state as love as well
+                (Default: False)
+
+        RETURNS:
+            True if monika in love, false otherwise
+        """
+        return affection._isMoniState(
+            mas_curr_affection,
+            store.mas_affection.LOVE,
+            lower=lower
+        )
+
+
+    def mas_isMoniGSad(lower=False, higher=False):
+        """
+        Checks if monika is in sad affection group
+
+        IN:
+            lower - True means we include everything below this affection
+                group as sad as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                group as sad as well
+                (Default: False)
+
+        RETURNS:
+            True if monika in sad group, false otherwise
+        """
+        return affection._isMoniStateG(
+            mas_curr_affection_group,
+            store.mas_affection.G_SAD,
+            higher=higher
+        )
+
+
+    def mas_isMoniGNormal(lower=False, higher=False):
+        """
+        Checks if monika is in normal affection group
+
+        IN:
+            lower - True means we include everything below this affection 
+                group as normal as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                group as normal as well
+                (Default: False)
+
+        RETURNS:
+            True if monika is in normal group, false otherwise
+        """
+        return affection._isMoniStateG(
+            mas_curr_affection_group,
+            store.mas_affection.G_NORMAL,
+            lower=lower,
+            higher=higher
+        )
+
+
+    def mas_isMoniGHappy(lower=False, higher=False):
+        """
+        Checks if monika is in happy affection group
+
+        IN:
+            lower - True means we include everything below this affection
+                group as happy as well
+                (Default: False)
+            higher - True means we include everything above this affection
+                group as happy as well
+                (Default: FAlse)
+
+        RETURNS:
+            True if monika is in happy group, false otherwise
+        """
+        return affection._isMoniStateG(
+            mas_curr_affection_group,
+            store.mas_affection.G_HAPPY,
+            lower=lower
+        )
+
+
    # Used to adjust the good and bad experience factors that are used to adjust affection levels.
-    def mas_updateAffectionExp():
+    def mas_updateAffectionExp(skipPP=False):
         global mas_curr_affection
         global mas_curr_affection_group
 
@@ -113,39 +786,52 @@ init python:
             persistent._mas_affection["badexp"] = 5
 
         # Defines an easy current affection statement to refer to so points aren't relied upon.
+        new_aff = mas_curr_affection
         if curr_affection <= affection.AFF_BROKEN_MIN:
-            mas_curr_affection = affection.BROKEN
+            new_aff = affection.BROKEN
 
         elif affection.AFF_BROKEN_MIN < curr_affection <= affection.AFF_DISTRESSED_MIN:
-            mas_curr_affection = affection.DISTRESSED
+            new_aff = affection.DISTRESSED
 
         elif affection.AFF_DISTRESSED_MIN < curr_affection <= affection.AFF_UPSET_MIN:
-            mas_curr_affection = affection.UPSET
+            new_aff = affection.UPSET
 
         elif affection.AFF_UPSET_MIN < curr_affection < affection.AFF_HAPPY_MIN:
-            mas_curr_affection = affection.NORMAL
+            new_aff = affection.NORMAL
 
         elif affection.AFF_HAPPY_MIN <= curr_affection < affection.AFF_AFFECTIONATE_MIN:
-            mas_curr_affection = store.mas_affection.HAPPY
+            new_aff = store.mas_affection.HAPPY
 
         elif affection.AFF_AFFECTIONATE_MIN <= curr_affection < affection.AFF_ENAMORED_MIN:
-            mas_curr_affection = affection.AFFECTIONATE
+            new_aff = affection.AFFECTIONATE
 
         elif affection.AFF_ENAMORED_MIN <= curr_affection < affection.AFF_LOVE_MIN:
-            mas_curr_affection = affection.ENAMORED
+            new_aff = affection.ENAMORED
 
         elif curr_affection >= affection.AFF_LOVE_MIN:
-            mas_curr_affection = affection.LOVE
+            new_aff = affection.LOVE
+
+        # run affection programming points
+        if new_aff != mas_curr_affection:
+            if not skipPP:
+                affection.runAffPPs(mas_curr_affection, new_aff)
+            mas_curr_affection = new_aff
 
         # A group version for general sadness or happiness
+        new_affg = mas_curr_affection_group
         if curr_affection <= affection.AFF_MOOD_SAD_MIN:
-            mas_curr_affection_group = affection.G_SAD
+            new_affg = affection.G_SAD
 
         elif curr_affection >= affection.AFF_MOOD_HAPPY_MIN:
-            mas_curr_affection_group = affection.G_HAPPY
+            new_affg = affection.G_HAPPY
 
         else:
-            mas_curr_affection_group = affection.G_NORMAL
+            new_affg = affection.G_NORMAL
+
+        if new_affg != mas_curr_affection_group:
+            if not skipPP:
+                affection.runAffGPPs(mas_curr_affection_group, new_affg)
+            mas_curr_affection_group = new_affg
 
 
     # Used to increment affection whenever something positive happens.
@@ -238,7 +924,9 @@ init python:
     # is equal to the amount of points it's added or removed in minutes.
 
     # Makes the game update affection on start-up so the global variables are defined at all times.
-    mas_updateAffectionExp()
+    mas_curr_affection = affection.NORMAL
+    mas_curr_affection_group = affection.G_NORMAL
+    mas_updateAffectionExp(skipPP=True)
 
     # Monika's initial affection based on start-up.
     if not persistent._mas_long_absence:
@@ -578,8 +1266,9 @@ label mas_affection_yesapology:
     m 2e "I love you so much and you mean the world to me, [player]."
     m 1duu "Thank you for putting my heart at ease~"
     show monika 1esa
-    pause 60
-    jump ch30_loop
+    $ mas_DropShield_core()
+    $ set_keymaps()
+    jump ch30_preloop
 
 label mas_affection_apologydeleted:
     $ mas_loseAffection(modifier=3)
