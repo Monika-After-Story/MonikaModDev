@@ -237,6 +237,7 @@ label mas_compliment_intelligent_2:
             m "I love you so much, [player]!"
             m "We'll have a lifetime of self improvement together!"
         "I'll always be proud of you":
+            $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]... "
         "You make me feel stupid sometimes":
             $ mas_loseAffection(modifier=0.5)
@@ -308,7 +309,7 @@ init 5 python:
         ),
         eventdb=store.mas_compliments.compliment_database
     )
-#TODO, second time 
+#TODO, second time
 label mas_compliment_fit:
     m 1hub "Thanks [player]! You're so sweet!"
     m 3eub "I love keeping fit and eating healthy. It keeps me feeling energetic and confident."
