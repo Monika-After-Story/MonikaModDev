@@ -146,9 +146,7 @@ init python:
 
 
             if changedIDs is not None:
-                updating_persistent = adjustTopicIDs(
-                    changedIDs, updating_persistent
-                )
+                adjustTopicIDs(changedIDs, updating_persistent)
 
         return updating_persistent
 
@@ -245,7 +243,7 @@ label v0_3_2(version=version): # 0.3.2
 label v0_3_1(version=version): # 0.3.1
     python:
         # update !
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
     return
 
@@ -257,6 +255,9 @@ label v0_8_4(version="v0_8_4"):
 
         import store.evhand as evhand
         import store.mas_stories as mas_stories
+
+        # update seen status
+        updateTopicIDs(version)
 
         ## swap compliment label (well the label is already handled in topics)
         # but we need to handle the database data (we are transfering only
@@ -288,6 +289,7 @@ label v0_8_4(version="v0_8_4"):
         # now remove old event data
         if best_evlabel in persistent.event_database:
             persistent.event_database.pop(best_evlabel)
+
 
     return
 
@@ -375,7 +377,7 @@ label v0_8_1(version="v0_8_1"):
             m_ff.pool = True
 
         # regular topic update
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         ## writing topic adjustments
 
@@ -577,7 +579,7 @@ label v0_7_4(version="v0_7_4"):
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True
 
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         # NOTE: this is completel retroactive. Becuase this is a released
         # version, we must also make this change in 0.8.0 updates
@@ -629,7 +631,7 @@ label v0_7_0(version="v0_7_0"):
         except: pass
 
         # update !
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         temp_event_list = list(persistent.event_list)
         # now properly set all seen events as unlocked
@@ -680,7 +682,7 @@ label v0_3_0(version="v0_3_0"):
         removeTopicID("monika_college")
 
         # update!
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
     return
 
 
