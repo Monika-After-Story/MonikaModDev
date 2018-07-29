@@ -3314,6 +3314,11 @@ default persistent._mas_first_calendar_check = False
 default persistent._mas_likes_rain = False
 define mas_is_raining = False
 
+# rain chances
+define MAS_RAIN_UPSET = 25
+define MAS_RAIN_DIS = 40
+define MAS_RAIN_BROKEN = 70
+
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 

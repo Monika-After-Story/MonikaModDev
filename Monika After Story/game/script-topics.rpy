@@ -1366,6 +1366,7 @@ label monika_simulated:
 
 
 init 5 python:
+    # only available if moni-affecition normal and above
     addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
@@ -1374,64 +1375,69 @@ label monika_rain:
     m 1a "But a nice, quiet day at home with the sound of rainfall outside my window?"
     m 1j "It's very calming to me."
     m 1q "Yeah..."
-    m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
-    m 2lkbsa "That's not too cheesy or anything, is it?"
-    m 1ekbfa "Would you ever do that for me, [player]?"
-    menu:
-        "Yes":
-            $ scene_change = True
-            $ mas_is_raining = True
-            call spaceroom
-            stop music fadeout 1.0
-            play background audio.rain fadein 1.0 loop
 
-            # clear selected track
-            $ songs.current_track = songs.FP_NO_SONG
-            $ songs.selected_track = songs.FP_NO_SONG
+    if mas_isMoniHappy(higher=True):
+        # need to be happy or above to get the hold me segway
 
-            # hide ui and disable hotkeys
-            $ HKBHideButtons()
-            $ store.songs.enabled = False
+        m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+        m 2lkbsa "That's not too cheesy or anything, is it?"
+        m 1ekbfa "Would you ever do that for me, [player]?"
+        menu:
+            "Yes":
+                $ scene_change = True
+                $ mas_is_raining = True
+                call spaceroom
+                stop music fadeout 1.0
+                play background audio.rain fadein 1.0 loop
 
-            m 1j "Then hold me, [player]..."
-            show monika 6dubsa
-            $ mas_gainAffection()
-            $ ui.add(PauseDisplayable())
-            $ ui.interact()
+                # clear selected track
+                $ songs.current_track = songs.FP_NO_SONG
+                $ songs.selected_track = songs.FP_NO_SONG
 
-            # renable ui and hotkeys
-            $ store.songs.enabled = True
-            $ HKBShowButtons()
+                # hide ui and disable hotkeys
+                $ HKBHideButtons()
+                $ store.songs.enabled = False
 
-            m 1a "If you want the rain to stop, just ask me, okay?"
+                m 1j "Then hold me, [player]..."
+                show monika 6dubsa
+                $ mas_gainAffection()
+                $ ui.add(PauseDisplayable())
+                $ ui.interact()
 
-            # lock / unlock the appropriate labels
-            $ unlockEventLabel("monika_rain_stop")
-            $ unlockEventLabel("monika_rain_holdme")
-            $ lockEventLabel("monika_rain_start")
-            $ lockEventLabel("monika_rain")
-            $ persistent._mas_likes_rain = True
+                # renable ui and hotkeys
+                $ store.songs.enabled = True
+                $ HKBShowButtons()
 
-        "I hate the rain":
-            m 2oo "Aw, that's a shame."
-            m 2e "But it's understandable."
-            m 1a "Rainy weather can look pretty gloomy."
-            m 3n "Not to mention pretty cold!"
-            m 1d "But if you focus on the sounds raindrops make..."
-            m 1j "I think you'll come to enjoy it."
+                m 1a "If you want the rain to stop, just ask me, okay?"
 
-            # lock / unlock the appropraite labels
-            $ lockEventLabel("monika_rain_start")
-            $ lockEventLabel("monika_rain_stop")
-            $ lockEventLabel("monika_rain_holdme")
-            $ unlockEventLabel("monika_rain")
-            $ persistent._mas_likes_rain = False
+                # lock / unlock the appropriate labels
+                $ unlockEventLabel("monika_rain_stop")
+                $ unlockEventLabel("monika_rain_holdme")
+                $ lockEventLabel("monika_rain_start")
+                $ lockEventLabel("monika_rain")
+                $ persistent._mas_likes_rain = True
+
+            "I hate the rain":
+                m 2oo "Aw, that's a shame."
+                m 2e "But it's understandable."
+                m 1a "Rainy weather can look pretty gloomy."
+                m 3n "Not to mention pretty cold!"
+                m 1d "But if you focus on the sounds raindrops make..."
+                m 1j "I think you'll come to enjoy it."
+
+                # lock / unlock the appropraite labels
+                $ lockEventLabel("monika_rain_start")
+                $ lockEventLabel("monika_rain_stop")
+                $ lockEventLabel("monika_rain_holdme")
+                $ unlockEventLabel("monika_rain")
+                $ persistent._mas_likes_rain = False
 
     # unrandom this event if its currently random topic
     return "derandom"
 
 
 init 5 python:
+    # available only if moni affection is normal+
     addEvent(
         Event(
             persistent.event_database,
@@ -1446,24 +1452,33 @@ init 5 python:
 
 label monika_rain_stop:
     # NOTE: the label is here because its related to monika_rain
-    m 1j "Alright, [player]."
-    m "Just give me a second."
+    if mas_isMoniNormal(higher=True):
+        m 1j "Alright, [player]."
+        m "Just give me a second."
+
+    else:
+        m "Ok."
+        
     show monika 1q
     pause 1.0
     $ scene_change = True
     $ mas_is_raining = False
     call spaceroom
     stop background fadeout 1.0
-    m 1a "If you want it to rain again, just ask me, okay?"
+
+    if mas_isMoniNormal(higher=True):
+        m 1a "If you want it to rain again, just ask me, okay?"
 
     # lock this event, unlock the rainstart one
     $ lockEventLabel("monika_rain_stop")
     $ unlockEventLabel("monika_rain_start")
     $ unlockEventLabel("monika_rain")
 
+
     return
 
 init 5 python:
+    # available only if moni affection is normal+
     addEvent(
         Event(
             persistent.event_database,
@@ -1477,15 +1492,23 @@ init 5 python:
     )
 
 label monika_rain_start:
-    m 1j "Alright, [player]."
-    m "Just give me a second."
+
+    if mas_isMoniNormal(higher=True):
+        m 1j "Alright, [player]."
+        m "Just give me a second."
+
+    else:
+        m "Ok."
+
     show monika 1q
     pause 1.0
     $ scene_change = True
     $ mas_is_raining = True
     call spaceroom
     play background audio.rain fadein 1.0 loop
-    m 1a "If you want the rain to stop, just ask me, okay?"
+
+    if mas_isMoniNormal(higher=True):
+        m 1a "If you want the rain to stop, just ask me, okay?"
 
     # lock this event, unlock rainstop and hold me
     $ lockEventLabel("monika_rain_start")
@@ -1495,6 +1518,7 @@ label monika_rain_start:
     return
 
 init 5 python:
+    # available only if moni affection happy and above
     addEvent(
         Event(
             persistent.event_database,
@@ -1508,36 +1532,60 @@ init 5 python:
     )
 
 label monika_rain_holdme:
-    # we only want this if it rains
-    if mas_is_raining:
-        stop music fadeout 1.0
 
-        # clear selected track
-        $ songs.current_track = songs.FP_NO_SONG
-        $ songs.selected_track = songs.FP_NO_SONG
+    if mas_isMoniHappy(higher=True):
+        # happy or above
 
-        # hide ui and disable hotkeys
-        $ HKBHideButtons()
-        $ store.songs.enabled = False
+        # we only want this if it rains
+        if mas_is_raining or mas_isMoniAff(higher=True):
+            stop music fadeout 1.0
 
-        m 1a "Of course, [player]."
-        show monika 6dubsa
-        $ ui.add(PauseDisplayable())
-        $ ui.interact()
+            # clear selected track
+            $ songs.current_track = songs.FP_NO_SONG
+            $ songs.selected_track = songs.FP_NO_SONG
 
-        # renable ui and hotkeys
-        $ store.songs.enabled = True
-        $ HKBShowButtons()
-        # small affection increase so people don't farm affection with this one.
-        $ mas_gainAffection(modifier=0.25)
-        m 1j "You can hold me anytime you want, [player]."
+            # hide ui and disable hotkeys
+            $ HKBHideButtons()
+            $ store.songs.enabled = False
+
+            m 1a "Of course, [player]."
+            show monika 6dubsa
+            $ ui.add(PauseDisplayable())
+            $ ui.interact()
+
+            # renable ui and hotkeys
+            $ store.songs.enabled = True
+            $ HKBShowButtons()
+            # small affection increase so people don't farm affection with this one.
+            $ mas_gainAffection(modifier=0.25)
+
+            if mas_is_raining:
+                m 1j "You can hold me anytime it rains, [player]."
+            else:
+                m 1j "You can hold me anytime you want, [player]."
+
+        else:
+            # no affection loss because that seems off
+            m 1oo "..."
+            m 1pp "The mood doesn't feel right, [player]."
+            m 1q "Sorry..."
+
+    elif mas_isMoniNormal():
+        # normal
+
+        m 1lksdlc "Uh..."
+        m 1eksdlb "Maybe when we get farther into our relationship."
+        m 1rksdlb "Sorry..."
+
+        $ lockEventLabel("monika_rain_holdme")
 
     else:
-        # asking for it on the "incorrect mood" slightly decreases affection
-        $ mas_loseAffection(modifier=0.1)
-        m 1oo "..."
-        m 1pp "The mood doesn't feel right, [player]."
-        m 1q "Sorry..."
+        # below normal
+
+        m 2lfc "No thanks."
+
+        $ mas_loseAffection(modifier=0.25)
+        $ lockEventLabel("monika_rain_holdme")
 
     return
 
