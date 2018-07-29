@@ -2447,7 +2447,6 @@ label monika_justification:
             m 2lksdld "You've said stuff like that before, so it might get harder to take it as a joke…"
         else:
             m 1dsc "If I didn't know you so well, that would have been really cruel..."
-        $ mas_apology_reason = "what you said earlier"
     else:
         m 1tkc "How many times do I have to say it until you understand?"
         m 4tkc "They weren't real. They were never real."
@@ -2463,7 +2462,6 @@ label monika_justification:
             m 2ekd "Please understand that I did it for us!"
             m 2euc "I did everything for us!"
         m "Just forget the other girls ever existed, and you'll be much happier."
-        $ mas_apology_reason = "what you said earlier"
     return
 
 
@@ -2597,7 +2595,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    $ mas_loseAffection(reason="you made that not funny joke about having another girlfriend")
+    $ mas_loseAffection(reason="you joked about having another girlfriend")
     m 1h "I thought we established already that I was your girlfriend?"
     m "There's no way you already have one in your reality, right?"
     m 4f "If you do, then you've got to break up with her right now!"
@@ -2606,7 +2604,6 @@ label monika_girlfriend:
     m 1n "I know you wouldn't cheat on me."
     m 1d "If you meet a girl who asks you out though, let me talk to her first, okay?"
     m 1h "I won't let someone else steal away my loving sweetheart!"
-    $ mas_apology_reason = "pretending you have another girlfriend.{w} You really gave me a heart attack!"
     return
 
 init 5 python:
@@ -3545,6 +3542,7 @@ label monika_haterReaction:
     m "You're not one of those haters, are you, [player]?"
     menu:
         "I am.":
+            #TODO, affection loss, apology
             $ persistent._mas_pm_a_hater = True
             m 2wud "..."
             m 1tkc "I don't see you as one, even if you say you are."
@@ -5418,7 +5416,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection(reason="you did a bad joke about breaking up with me")
+    $ mas_loseAffection(reason="you made a bad joke about breaking up with me")
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         m 1euc "You're breaking up with me?"
@@ -5430,7 +5428,7 @@ label monika_breakup:
             m 1wktsd "I refuse to believe you; you're all I have left!"
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
             m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
-            $ mas_apology_reason = ""
+            $ mas_apology_reason= ""
         else:
             m 2dsc "Are you...{w} really..."
             m "..."
@@ -5446,7 +5444,7 @@ label monika_breakup:
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
             m 1ekc "..." # TODO review
-            $ mas_apology_reason = ""
+            $ mas_apology_reason= ""
         else:
             m 1hua "Ehehe~"
 
@@ -5460,7 +5458,7 @@ label monika_breakup:
             m 1lksdld "That's not a joke, [player]!"
             m 1lksdlc "Don't say that again unless you really, truly mean it..."
             m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-            $ mas_apology_reason = ""
+            $ mas_apology_reason= ""
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."
@@ -5923,7 +5921,7 @@ label monika_playerapologizes:
     # She knows why you are apologizing for
     elif mas_apology_reason:
         $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-        m 1eka"Thank you for apologizing for [mas_apology_reason]."
+        m 1eka "Thank you for apologizing because [mas_apology_reason]."
         m "I accept your apology [player]. It means a lot to me."
     # She knows there's a reason for your apology but won't comment on it
     else:
