@@ -114,7 +114,9 @@ init -1 python in mas_affection:
 init 15 python in mas_affection:
     import store # global
     import store.evhand as evhand
+    import store.mas_layout as mas_layout
     persistent = renpy.game.persistent
+    layout = store.layout
 
     # programming point order:
     # 1. affection state transition code is run
@@ -126,32 +128,42 @@ init 15 python in mas_affection:
     # in order
 
     # programming points
+##### [AFF010] AFFECTION PROGRAMMING POINTS ###################################
+    # use these to do spoecial code stuffs
     def _brokenToDis():
         """
         Runs when transitioning from broken to distressed
         """
-        return
+        # change quit message
+        layout.QUIT_YES = mas_layout.QUIT_YES_DIS
+        layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
+        layout.QUIT = mas_layout.QUIT
 
 
     def _disToBroken():
         """
         Runs when transitioning from distressed to broken
         """
-        return
+        # change quit message
+        layout.QUIT_YES = mas_layout.QUIT_YES_BROKEN
+        layout.QUIT_NO = mas_layout.QUIT_NO_BROKEN
+        layout.QUIT = mas_layout.QUIT_BROKEN
 
 
     def _disToUpset():
         """
         Runs when transitioning from distressed to upset
         """
-        return
+        # change quit message
+        layout.QUIT_YES = mas_layout.QUIT_YES
 
 
     def _upsetToDis():
         """
         Runs when transitioning from upset to distressed
         """
-        return
+        # change quit message
+        layout.QUIT_YES = mas_layout.QUIT_YES_DIS
 
 
     def _upsetToNormal():
@@ -182,6 +194,9 @@ init 15 python in mas_affection:
                 eventdb=evhand.greeting_database
             )           
 
+        # change quit message
+        layout.QUIT_NO = mas_layout.QUIT_NO
+
 
     def _normalToUpset():
         """
@@ -202,6 +217,9 @@ init 15 python in mas_affection:
             eventdb=evhand.greeting_database
         )
 
+        # change quit message
+        layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
+
 
     def _normalToHappy():
         """
@@ -211,6 +229,9 @@ init 15 python in mas_affection:
         if persistent._mas_likes_rain:
             evhand._unlockEventLabel("monika_rain_holdme")
 
+        # change quit messages
+        layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
+
 
     def _happyToNormal():
         """
@@ -219,19 +240,31 @@ init 15 python in mas_affection:
         # lock events
         evhand._lockEventLabel("monika_rain_holdme")
 
+        # change quit messages
+        layout.QUIT_NO = mas_layout.QUIT_NO
+
 
     def _happyToAff():
         """
         Runs when transitioning from happy to affectionate
         """
-        return
+        # change quit messages
+        layout.QUIT_YES = mas_layout.QUIT_YES_AFF
+        if persistent.gender == "M" or persistent.gender == "F":
+            layout.QUIT_NO = mas_layout.QUIT_NO_AFF_G
+        else:
+            layout.QUIT_NO = mas_layout.QUIT_NO_AFF_GL
+        layout.QUIT = mas_layout.QUIT_AFF
 
 
     def _affToHappy():
         """
         Runs when transitioning from affectionate to happy
         """
-        return
+        # change quit messages
+        layout.QUIT_YES = mas_layout.QUIT_YES
+        layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
+        layout.QUIT = mas_layout.QUIT
 
 
     def _affToEnamored():
@@ -252,7 +285,8 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from enamored to love
         """
-        return
+        # change quit message
+        layout.QUIT_NO = mas_layout.QUIT_NO_LOVE
 
 
     def _loveToEnamored():
@@ -289,6 +323,7 @@ init 15 python in mas_affection:
         """
         return
 
+###############################################################################
 
     # transition programing point dict
     # each item has a tuple value:
@@ -334,13 +369,13 @@ init 15 python in mas_affection:
         start_index = _aff_order.index(start_aff)
         end_index = _aff_order.index(end_aff)
         if comparison < 0:
-            for index in range(start_index, end_index+1):
+            for index in range(start_index, end_index):
                 to_up, to_down = _trans_pps[_aff_order[index]]
                 if to_up is not None:
                     to_up()
 
         else:
-            for index in range(start_index, end_index-1, -1):
+            for index in range(start_index, end_index, -1):
                 to_up, to_down = _trans_pps[_aff_order[index]]
                 if to_down is not None:
                     to_down()
@@ -364,13 +399,13 @@ init 15 python in mas_affection:
         start_index = _affg_order.index(start_affg)
         end_index = _affg_order.index(end_affg)
         if comparison < 0:
-            for index in range(start_index, end_index+1):
+            for index in range(start_index, end_index):
                 to_up, to_down = _transg_pps[_affg_order[index]]
                 if to_up is not None:
                     to_up()
 
         else:
-            for index in range(start_index, end_index-1, -1):
+            for index in range(start_index, end_index, -1):
                 to_up, to_down = _transg_pps[_affg_order[index]]
                 if to_down is not None:
                     to_down()

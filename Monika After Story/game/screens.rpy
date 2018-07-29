@@ -1,11 +1,45 @@
 init 100 python:
-    layout.QUIT = "Leaving without saying goodbye, [player]?"
-    layout.UNSTABLE = (
+    layout.QUIT = store.mas_layout.QUIT
+    layout.UNSTABLE = store.mas_layout.UNSTABLE
+
+init -1 python:
+    layout.QUIT_YES = "Please don't close the game on me!"
+    layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
+
+
+init python in mas_layout:
+    import store
+
+    QUIT_YES = store.layout.QUIT_YES
+    QUIT_NO = store.layout.QUIT_NO
+    QUIT = "Leaving without saying goodbye, [player]?"
+    UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
         "experimental unstable branch. It is HIGHLY recommended to make a " +
         "backup of your persistent before enabling this mode. Please report " +
         "issues found here with an [[UNSTABLE] tag."
     )
+
+    # quit yes messages affection scaled
+    QUIT_YES_BROKEN = "You could at least pretend that you care."
+    QUIT_YES_DIS = ":("
+    QUIT_YES_AFF = "T_T [player]..."
+
+    # quit no messages affection scaled
+    QUIT_NO_BROKEN = "{i}Now{/i} you listen?"
+    QUIT_NO_UPSET = "Thanks for being considerate, [player]."
+    QUIT_NO_HAPPY = ":)"
+    QUIT_NO_AFF_G = "Good [boy]."
+    QUIT_NO_AFF_GL = "Good. :)"
+    QUIT_NO_LOVE = "<3 u"
+
+    # quit messages affection scaled
+    QUIT_BROKEN = "Just go."
+    QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
+
+
+
+
 ## Initialization
 ################################################################################
 
@@ -1623,8 +1657,8 @@ screen confirm(message, yes_action, no_action):
                     textbutton _("-") action yes_action
                     textbutton _("-") action yes_action
                 else:
-                    textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
-                    textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
+                    textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message=layout.QUIT_YES, ok_action=yes_action)]
+                    textbutton _("No") action no_action, Show(screen="dialog", message=layout.QUIT_NO, ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
