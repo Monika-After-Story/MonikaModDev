@@ -84,7 +84,7 @@ init python:
         """
         hotkey specific muting / unmuting music channel
         """
-        if store.mas_hotkeys.music_enabled:
+        if store.mas_hotkeys.music_enabled and not _windows_hidden:
             mute_music(store.mas_hotkeys.mu_stop_enabled)
 
 
@@ -92,7 +92,7 @@ init python:
         """
         hotkey specific music volume increasing
         """
-        if store.mas_hotkeys.music_enabled:
+        if store.mas_hotkeys.music_enabled and not _windows_hidden:
             inc_musicvol()
     
 
@@ -100,7 +100,7 @@ init python:
         """
         hotkey specific music volume decreasing
         """
-        if mas_HKCanQuietMusic():
+        if mas_HKCanQuietMusic() and not _windows_hidden:
             dec_musicvol()
 
 
@@ -108,7 +108,7 @@ init python:
         """
         hotkey specific show dialgoue box
         """
-        if store.mas_hotkeys.talk_enabled:
+        if store.mas_hotkeys.talk_enabled and not _windows_hidden:
             show_dialogue_box()
 
 
@@ -116,7 +116,7 @@ init python:
         """
         hotkey specific pick game
         """
-        if store.mas_hotkeys.play_enabled:
+        if store.mas_hotkeys.play_enabled and not _windows_hidden:
             pick_game()
 
 
@@ -125,9 +125,17 @@ init python:
         Runs the select music function if we are allowed to.
         INTENDED FOR HOTKEY USAGE ONLY
         """
-        if store.mas_hotkeys.music_enabled:
+        if store.mas_hotkeys.music_enabled and not _windows_hidden:
             select_music()
     
+
+    def _mas_game_menu():
+        """
+        Wrapper aound _invoke_game_menu that follows additional ui rules
+        """
+        if not _windows_hidden:
+            _invoke_game_menu()
+
 
     def set_keymaps():
         #
@@ -148,6 +156,11 @@ init python:
             "K_MINUS","shift_K_UNDERSCORE","K_KP_MINUS"
         ]
 
+        # get replace the game menu with our version (to block certain
+        # workflows correctly)
+        config.keymap["mas_game_menu"] = list(config.keymap["game_menu"])
+        config.keymap["game_menu"] = []
+
         # Define what those actions call
         config.underlay.append(
             renpy.Keymap(open_dialogue=_mas_hk_show_dialogue_box)
@@ -157,6 +170,7 @@ init python:
         config.underlay.append(renpy.Keymap(mute_music=_mas_hk_mute_music))
         config.underlay.append(renpy.Keymap(inc_musicvol=_mas_hk_inc_musicvol))
         config.underlay.append(renpy.Keymap(dec_musicvol=_mas_hk_dec_musicvol))
+        config.underlay.append(renpy.Keymap(mas_game_menu=_mas_game_menu))
 
         # finally enable those buttons
         mas_HKDropShield()

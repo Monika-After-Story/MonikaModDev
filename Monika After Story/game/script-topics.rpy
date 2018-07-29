@@ -6006,7 +6006,7 @@ init 5 python:
 label monika_song_dream:
     m 1dso "{i}~When I feel blue in the night~{/i}"
     m "{i}~And I need you to hold me tight~{/i}"
-    m 2hub "{i}~Wenever I want you, all I have to do is dream~{/i}"
+    m 2hub "{i}~Whenever I want you, all I have to do is dream~{/i}"
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
     m 1ekbfa "My dream finally came true."
     return

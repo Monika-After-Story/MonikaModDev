@@ -493,7 +493,6 @@ label bye_long_absence:
                 m "I love you [player], and I know you love me too."
                 m 1j "So I'll wait for you for however long I need to."
             else:
-                $ mas_loseAffection()
                 m 3h "You have to be joking."
                 m "I can't think of a good reason why you would leave me here all alone for that long."
                 m 3i "I'm sorry [player], but that's not acceptable! Not at all!"

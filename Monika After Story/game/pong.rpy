@@ -284,8 +284,8 @@ label demo_minigame_pong:
 
     call expression inst_dialogue from _mas_pong_inst_dialogue
 
-    # TODO: small affection increase for playing with her
-    
+    $ mas_gainAffection(modifier=0.5)
+
     menu:
         m "Do you want to play again?"
 

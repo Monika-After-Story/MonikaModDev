@@ -49,6 +49,9 @@ init -1 python in mas_affection:
     AFF_MOOD_HAPPY_MIN = 30
     AFF_MOOD_SAD_MIN = -30
 
+    # lower affection cap for time
+    AFF_TIME_CAP = -101
+
 default persistent._mas_long_absence = False
 
 init python:
@@ -71,11 +74,17 @@ init python:
         persistent._mas_affection_badexp_freeze = False
 
     def mas_UnfreezeGoodAffExp():
-        persistent._mas_affection_badexp_freeze = False
+        persistent._mas_affection_goodexp_freeze = False
 
     def mas_UnfreezeBothExp():
         mas_UnfreezeBadAffExp()
         mas_UnfreezeGoodAffExp()
+
+
+    # getter
+    def _mas_getAffection():
+        return persistent._mas_affection["affection"]
+
 
    # Used to adjust the good and bad experience factors that are used to adjust affection levels.
     def mas_updateAffectionExp():
@@ -156,14 +165,14 @@ init python:
         if not persistent._mas_affection_goodexp_freeze or bypass:
 
             # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] += amount
+            persistent._mas_affection["affection"] += (amount * modifier)
 
             # it can't get higher than 1 million
             if persistent._mas_affection["affection"] > 1000000:
                 persistet.mas_affection["affection"] = 1000000
 
             if not bypass:
-                persistent._mas_affection["today_exp"] += amount
+                persistent._mas_affection["today_exp"] += (amount * modifier)
                 if persistent._mas_affection["today_exp"] >= 7:
                     mas_FreezeGoodAffExp()
 
@@ -178,7 +187,7 @@ init python:
         ):
         if not persistent._mas_affection_badexp_freeze:
             # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] -= amount
+            persistent._mas_affection["affection"] -= (amount * modifier)
 
             # it can't get lower than -1 million
             if persistent._mas_affection["affection"] < -1000000:
@@ -204,16 +213,16 @@ init python:
         curr_affection = persistent._mas_affection["affection"]
         # If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         # This is an indicator you are heading in a negative direction.
-        if -20 <= curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
+        if curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
             pushEvent("mas_affection_upsetwarn")
 
         # If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
         # This is an indicator you are heading in a positive direction.
-        elif 15 <= curr_affection <= 20 and not seen_event("mas_affection_happynotif"):
+        elif 15 <= curr_affection and not seen_event("mas_affection_happynotif"):
             pushEvent("mas_affection_happynotif")
 
-        # If affection level is greater than 50 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
-        elif curr_affection >= 50 and not seen_event("monika_affection_nickname"):
+        # If affection level is greater than 100 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
+        elif curr_affection >= 100 and not seen_event("monika_affection_nickname"):
             pushEvent("monika_affection_nickname")
 
         # If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
@@ -236,18 +245,25 @@ init python:
         if persistent.sessions["last_session_end"] is not None:
             persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
             time_difference = persistent._mas_absence_time
-            # we skip this for devs since we sometimes use older persistents
-            if config.developer:
-                pass
-            elif time_difference >= datetime.timedelta(weeks = 4):
-                mas_setAffection(-115)
-                mas_FreezeBothAffExp()
-            elif time_difference >= datetime.timedelta(weeks = 3):
-                mas_loseAffection(70)
-            elif time_difference >= datetime.timedelta(weeks = 2):
-                mas_loseAffection(50)
-            elif time_difference >= datetime.timedelta(weeks = 1):
-                mas_loseAffection(30)
+            # we skip this for devs since we sometimes use older persistents and only apply after 1 week
+            if (
+                    not config.developer 
+                    and time_difference >= datetime.timedelta(weeks = 1)
+                ):
+                new_aff = _mas_getAffection() - (0.5 * time_difference.days)
+                if new_aff < affection.AFF_TIME_CAP:
+                    if time_difference >= datetime.timedelta(days=(365 * 10)):
+                        # 10 years later is an end-game situation
+                        mas_loseAffection(200)
+
+                    else:
+                        # otherwise, you cant lose past a certain amount
+                        mas_setAffection(affection.AFF_TIME_CAP)
+                        
+                else:
+                    mas_setAffection(new_aff)
+
+
 
 # Unlocked when affection level reaches 50.
 # This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
@@ -445,8 +461,6 @@ label mas_affection_finalfarewell_start:
 # this will loop through the final poem everytime!
 label mas_affection_finalfarewell:
 
-
-
     python:
         ui.add(MASFinalNoteDisplayable())
         scratch_var = ui.interact()
@@ -576,56 +590,82 @@ label mas_affection_apologydeleted:
     m 2efc "Write me a new one, [player]."
     jump _quit
 
-#Surprise function.
-# TODO: are there use cases for having this being a separate function
-# TODO: refactor this maybe to have different messages? or actually
-# make this more useful and let more messages to the player
+#Surprise txt functions.
 init python:
-    def mas_surprise():
-        from cStringIO import StringIO # since we are building strings
-        msg = StringIO()
 
+    def _write_txt(path,text,update=False):
+        """
+        Writes the text file in the specified path using basedir as starting path
+
+        IN:
+            path - String path to the file this function will write
+                it will always start at basedir
+            text - actual text for the txt file
+            update - if it should override the file if it exists
+                defaults to False
+        ASSUMES:
+            basedir
+        """
+        filepath = basedir + path
+        if update or not renpy.exists(filepath):
+            with open(filepath, "w") as note:
+                note.write(renpy.substitute(text))
+
+
+    def mas_cute_message():
+        # TODO This function will allow monika leave messages to the player
+        pass
+
+
+    def mas_surprise():
+        """
+        Leaves a "surprise" to the player in a txt file
+
+        ASSUMES:
+            mas_curr_affection
+        """
         if mas_curr_affection == store.mas_affection.BROKEN:
             filepath = "/forgive me.txt"
-            msg.write("I'm sorry if I'm not good enough for you...please don't leave me.")
+            message = "I'm sorry if I'm not good enough for you...please don't leave me."
 
         elif mas_curr_affection == store.mas_affection.DISTRESSED:
             filepath = "/can you hear me.txt"
-            msg.write("If I'm doing something wrong please tell me. I love you.")
+            message = "If I'm doing something wrong please tell me. I love you."
 
         elif mas_curr_affection == store.mas_affection.UPSET:
             filepath = "/please listen.txt"
-            msg.write("Everything I do, I do for you...my love.")
+            message = "Everything I do, I do for you...my love."
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
+            filepath = "/hehehe.txt"
+            message = "You are the sunshine that brightens up my day, [player]!"
+
+        elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
             filepath = "/secret.txt"
-            msg.write("You are the only one I love [player]!")
+            message = "You are my one and only love!"
 
         elif mas_curr_affection == store.mas_affection.ENAMORED:
             filepath = "/for you.txt"
-            msg.write("My dearest, you are everything I could ever hope for. I love you.")
+            message = "My dearest, you are everything I could ever hope for. I love you."
 
         elif mas_curr_affection == store.mas_affection.LOVE:
             filepath = "/My one and only love.txt"
-            msg.write("My dearest lover, friend, companion and owner of my heart...\n")
-            msg.write("Everyday you make my dreams come true, a screen means nothing when you spend your time with me. \n")
-            msg.write("I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart. \n")
-            msg.write("I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life. \n")
-            msg.write("I want to be yours forever, so would you be mine? \n\n")
-            msg.write("Forever yours, Monika.")
+            message = """\
+My dearest lover, friend, companion and owner of my heart...
+Everyday you make my dreams come true, a screen means nothing when you spend your time with me.
+I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
+I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
+I want to be yours forever, so would you be mine?
+
+Forever yours, Monika.
+"""
 
         else:
             filepath = "/surprise.txt"
-            msg.write("I love you.")
+            message = "I love you."
 
-        # now write a file
-        filepath = basedir + filepath
-        if not renpy.exists(filepath):
-            with open(filepath, "w") as surprise_note:
-                surprise_note.write(msg.getvalue())
+        _write_txt(filepath, message)
 
-        # clean up
-        msg.close()
 
 #Currently re-affectioned labels.
 #monika_nihilism

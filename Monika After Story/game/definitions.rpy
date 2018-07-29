@@ -1799,6 +1799,25 @@ init -100 python in mas_utils:
             return default
 
 
+    def tryparsefloat(value, default=0):
+        """
+        Attempts to parse the given value into a float. Returns the default if
+        that parse failed.
+
+        IN:
+            value - value to parse
+            default - value to return if parse fails
+            (Default: 0)
+
+        RETURNS: a float representation of the given value, or default if
+            the given value could not be parsed into an float
+        """
+        try:
+            return float(value)
+        except:
+            return default
+
+
     ### date adjusting functions
     def add_years(initial_date, years):
         """
@@ -1910,8 +1929,10 @@ init -100 python in mas_utils:
 
 init -1 python:
     import datetime # for mac issues i guess.
-    config.keymap['game_menu'].remove('mouseup_3')
-    config.keymap['hide_windows'].append('mouseup_3')
+    if "mouseup_3" in config.keymap['game_menu']:
+        config.keymap['game_menu'].remove('mouseup_3')
+    if "mouseup_3" not in config.keymap["hide_windows"]:
+        config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
     config.keymap['clipboard_voicing'] = []
     config.keymap['toggle_skip'] = []
@@ -3282,7 +3303,7 @@ default persistent.sessions={'last_session_end':None,'current_session_start':Non
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
-default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":-1,"apologyflag":False, "freeze_date": None, "today_exp":0}
+default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False

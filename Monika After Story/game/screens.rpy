@@ -1751,7 +1751,7 @@ screen updater:
                 elif u.state == u.PREPARING:
                     text _("Preparing to download the updates.")
                 elif u.state == u.DOWNLOADING:
-                    text _("Downloading the updates.")
+                    text _("Downloading the updates. (Progress bar may not advance during download)")
                 elif u.state == u.UNPACKING:
                     text _("Unpacking the updates.")
                 elif u.state == u.FINISHING:
