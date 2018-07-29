@@ -201,6 +201,11 @@ label splashscreen:
     python:
         basedir = config.basedir.replace("\\", "/")
 
+        # dump verseion to a firstrun-style file
+        with open(basedir + "/game/masrun", "w") as versfile:
+            versfile.write(config.name + "|" + config.version + "\n")
+
+
     #Check for game updates before loading the game or the splash screen
 #    call update_now from _call_update_now
 
