@@ -35,6 +35,19 @@ init -1 python in mas_affection:
         LOVE
     ]
 
+    # cascade map of affection levels
+    # basically, given a level, which is the next level closet to NORMAL
+    _aff_cascade_map = {
+        BROKEN: DISTRESSED,
+        DISTRESSED: UPSET,
+        UPSET: NORMAL,
+        HAPPY: NORMAL,
+        AFFECTIONATE: HAPPY,
+        ENAMORED: AFFECTIONATE,
+        LOVE: ENAMORED
+    }
+
+
     # numerical constants of affection groups
     G_SAD = -1
     G_HAPPY = -2
@@ -46,6 +59,13 @@ init -1 python in mas_affection:
         G_NORMAL,
         G_HAPPY
     ]
+
+    # cascade map of affection groups
+    # basically, given a group , which is the next group closet to Normal
+    _affg_cascade_map = {
+        G_SAD: G_NORMAL,
+        G_HAPPY: G_NORMAL
+    }
 
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):

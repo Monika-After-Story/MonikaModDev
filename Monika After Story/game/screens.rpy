@@ -9,6 +9,8 @@ init -1 python:
 
 init python in mas_layout:
     import store
+    import store.mas_affection as aff
+    gender = renpy.game.persistent.gender 
 
     QUIT_YES = store.layout.QUIT_YES
     QUIT_NO = store.layout.QUIT_NO
@@ -37,7 +39,75 @@ init python in mas_layout:
     QUIT_BROKEN = "Just go."
     QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
 
+    if gender == "M" or gender == "F":
+        _usage_quit_aff = QUIT_NO_AFF_G
+    else:
+        _usage_quit_aff = QUIT_NO_AFF_GL
 
+    # quit message dicts
+    # tuple:
+    #   [0]: quit message
+    #   [1]: quit yes message
+    #   [2]: quit no message
+    # if something is None we go to the state closest to normal
+    QUIT_MAP = {
+        aff.BROKEN: (QUIT_BROKEN, QUIT_YES_BROKEN, QUIT_NO_BROKEN),
+        aff.DISTRESSED: (None, QUIT_YES_DIS, None),
+        aff.UPSET: (None, None, QUIT_NO_UPSET),
+        aff.NORMAL: (QUIT, QUIT_YES, QUIT_NO),
+        aff.HAPPY: (None, None, QUIT_NO_HAPPY),
+        aff.AFFECTIONATE: (QUIT_AFF, QUIT_YES_AFF, _usage_quit_aff),
+        aff.ENAMORED: (None, None, None),
+        aff.LOVE: (None, None, QUIT_NO_LOVE)
+    }
+
+
+    def findMsg(start_aff, index):
+        """
+        Finds first non-None quit message we need
+
+        This uses the cascade map from affection
+
+        IN:
+            start_aff - starting affection
+            index - index of the tuple we need to look at
+
+        RETURNS:
+            first non-None quit message found.
+        """
+        msg = QUIT_MAP[start_aff][index]
+        while msg is None:
+            start_aff = aff._aff_cascade_map[start_aff]
+            msg = QUIT_MAP[start_aff][index]
+
+        return msg
+
+
+    def setupQuits():
+        """
+        Sets up quit message based on the current affection state
+        """
+        curr_aff_state = store.mas_curr_affection
+
+        quit_msg, quit_yes, quit_no = QUIT_MAP[curr_aff_state]
+
+        if quit_msg is None:
+            quit_msg = findMsg(curr_aff_state, 0)
+
+        if quit_yes is None:
+            quit_yes = findMsg(curr_aff_state, 1)
+
+        if quit_no is None:
+            quit_no = findMsg(curr_aff_state, 2)
+
+        store.layout.QUIT = quit_msg
+        store.layout.QUIT_YES = quit_yes
+        store.layout.QUIT_NO = quit_no
+
+
+init 3000 python:
+    import store.mas_layout
+    store.mas_layout.setupQuits()
 
 
 ## Initialization
