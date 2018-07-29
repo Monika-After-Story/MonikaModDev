@@ -2565,23 +2565,6 @@ label monika_heroism:
     m 1 "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_bestgirl",category=['romance'],prompt="You're the best girl!",pool=True))
-
-label monika_bestgirl:
-    $ mas_gainAffection()
-    m 1j "I love it when you compliment me, [player]!"
-    m 1b "I think I'm best girl, too!"
-    m 1n "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
-    m 3h "A useless childhood friend who never bothered to confess to you until it was way too late..."
-    m "A shy girl who was overdramatic and always taking herself too seriously..."
-    m "A moody manga fan obsessed with everything being cute."
-    m "They even said it themselves. I'm more desirable than the three of them combined."
-    m 3 "Anyone who wouldn't have chosen me out of that bunch simply has no taste."
-    m "So I'm glad you did, [player]."
-    m 1j "Your perfect girlfriend, Monika, will always love you, too!"
-    return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_trolley",category=['philosophy'],prompt="How would you answer the trolley problem?",pool=True))

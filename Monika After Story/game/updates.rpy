@@ -251,6 +251,46 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.4
+label v0_8_4(version="v0_8_4"):
+    python:
+
+        import store.evhand as evhand
+        import store.mas_stories as mas_stories
+
+        ## swap compliment label (well the label is already handled in topics)
+        # but we need to handle the database data (we are transfering only
+        # select properties)
+        # Properties to transfer:
+        # shown_count
+        # last_seen
+        # seen has already been handled, so lets just send over some data
+        # need to recreate the event object so we can properly retrieve data
+        best_evlabel = "monika_bestgirl"
+        best_comlabel = "mas_compliment_bestgirl"
+        best_ev = Event(persistent.event_database, eventlabel=best_evlabel)
+        best_compliment = mas_compliments.compliment_database.get(best_comlabel, None)
+        best_lockdata = None
+
+        # remove lock data
+        if best_evlabel in Event.INIT_LOCKDB:
+            best_lockdata = Event.INIT_LOCKDB.pop(best_evlabel)
+
+        if best_compliment:
+            # compliment exists, lets do some transfers
+            best_compliment.shown_count = best_ev.shown_count
+            best_compliment.last_seen = best_ev.last_seen
+
+            if best_lockdata:
+                # transfer lockdata
+                Event.INIT_LOCKDB[best_comlabel] = best_lockdata
+
+        # now remove old event data
+        if best_evlabel in persistent.event_database:
+            persistent.event_database.pop(best_evlabel)
+
+    return
+
 # 0.8.3
 label v0_8_3(version="v0_8_3"):
     python:
@@ -691,7 +731,7 @@ label v0_3_0(version="v0_3_0"):
 #   the regular labels are executed first, then this (the late-chain) executes.
 #   For example, lets say we have 3 versions: A, B, C
 #   and 2 of these versions have late scripts, B' and C'
-#   
+#
 #   Update order:
 #   1. A
 #   2. B

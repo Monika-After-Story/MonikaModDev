@@ -499,3 +499,27 @@ label mas_compliment_pong:
                 m 3hua "I'm always trying to help you be the best you you can be."
                 m 1ekbfa "And if by doing so, I get to spend more time with you, I couldn't be happier."
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_bestgirl",
+            prompt="... you're the best girl!",
+            unlocked=True
+        ),
+        eventdb=store.mas_compliments.compliment_database
+    )
+
+label mas_compliment_bestgirl:
+    m 1hua "I love it when you compliment me, [player]!"
+    m 1eua "I think I'm best girl, too!"
+    m 1lfu "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
+    m 3tsb "A useless childhood friend who never bothered to confess to you until it was way too late..."
+    m "A shy girl who was overdramatic and always taking herself too seriously..."
+    m "A moody manga fan obsessed with everything being cute."
+    m 1tku "They even said it themselves. I'm more desirable than the three of them combined."
+    m 3tfu "Anyone who wouldn't have chosen me out of that bunch simply has no taste."
+    m 1hua "So I'm glad you did, [player]."
+    m 1hub "Your perfect girlfriend, Monika, will always love you, too!"
+    return
