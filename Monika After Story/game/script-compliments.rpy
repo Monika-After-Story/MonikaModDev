@@ -1,6 +1,11 @@
 # Module for complimenting Monika
 #
-# Compliment logic TBD
+# Compliments work by using the "unlocked" logic.
+# That means that only those compliments that have their
+# unlocked property set to True
+# At the beginning, when creating the menu, the compliments
+# database checks the conditionals of the compliments
+# and unlocks them.
 
 
 # dict of tples containing the stories event data
