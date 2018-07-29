@@ -181,6 +181,10 @@ init python:
 
 
     # Used to subtract affection whenever something negative happens.
+    # A reason can be specified and used for the apology dialogue
+    # if the default value is used Monika won't comment on the reason,
+    # and slightly will recover affection
+    # if None is passed she won't acknowledge that there was need for an apology
     def mas_loseAffection(
             amount=persistent._mas_affection["badexp"],
             modifier=1,
