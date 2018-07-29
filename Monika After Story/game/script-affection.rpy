@@ -507,8 +507,9 @@ init 20 python:
     def _mas_getAffection():
         return persistent._mas_affection["affection"]
 
-
+    
     ## affection comparison
+    # [AFF020] Affection comparTos
     def mas_compareAff(aff_1, aff_2):
         """
         Runs compareTo logic on the given affection states
@@ -544,6 +545,7 @@ init 20 python:
 
 
     ## afffection state functions
+    # [AFF021] Affection state comparisons
     def mas_isMoniBroken(lower=False, higher=False):
         """
         Checks if monika is broken
@@ -726,7 +728,8 @@ init 20 python:
             lower=lower
         )
 
-
+    
+    # [AFF023] Group state checkers
     def mas_isMoniGSad(lower=False, higher=False):
         """
         Checks if monika is in sad affection group
