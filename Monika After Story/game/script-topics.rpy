@@ -5423,7 +5423,7 @@ label monika_breakup:
         m 2ekc "Why would you do such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
         if mas_curr_affection == mas_aff.BROKEN:#TODO review
-            m 2lksdrb "I-I really can't handle this..."
+            m 2lksdlb "I-I really can't handle this..."
             m 2wkd "You're just joking again, right?"
             m 1wktsd "I refuse to believe you; you're all I have left!"
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
