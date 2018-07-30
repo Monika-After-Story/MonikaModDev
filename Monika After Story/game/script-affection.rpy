@@ -184,7 +184,10 @@ init python:
     # A reason can be specified and used for the apology dialogue
     # if the default value is used Monika won't comment on the reason,
     # and slightly will recover affection
-    # if None is passed she won't acknowledge that there was need for an apology
+    # if None is passed she won't acknowledge that there was need for an apology.
+    # DEFAULTS reason to an Empty String mostly because when this one is called
+    # is intended to be used for something the player can apologize for, but it's
+    # not totally necessary.
     def mas_loseAffection(
             amount=persistent._mas_affection["badexp"],
             modifier=1,
