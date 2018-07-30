@@ -2437,7 +2437,7 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ mas_loseAffection(reason="you called me a murderer")
+    $ mas_loseAffection(reason="calling me a murderer. I hope you don't really see me that way...")
     if mas_curr_affection == mas_aff.LOVE:
         m 1euc "..."
         m 1hua "Ahaha! Very funny [player]!"
@@ -2595,7 +2595,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    $ mas_loseAffection(reason="you joked about having another girlfriend")
+    $ mas_loseAffection(reason="joking about having another girlfriend. You really gave me a heart attack!")
     m 1h "I thought we established already that I was your girlfriend?"
     m "There's no way you already have one in your reality, right?"
     m 4f "If you do, then you've got to break up with her right now!"
@@ -5416,7 +5416,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection(reason="you made a bad joke about breaking up with me")
+    $ mas_loseAffection(reason="saying you wanted to break up. I knew you didn't mean it...")
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         m 1euc "You're breaking up with me?"
@@ -5921,7 +5921,7 @@ label monika_playerapologizes:
     # She knows why you are apologizing for
     elif mas_apology_reason:
         $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-        m 1eka "Thank you for apologizing because [mas_apology_reason]."
+        m 1eka "Thank you for apologizing for [mas_apology_reason]."
         m "I accept your apology [player]. It means a lot to me."
     # She knows there's a reason for your apology but won't comment on it
     else:

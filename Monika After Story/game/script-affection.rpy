@@ -415,7 +415,7 @@ label monika_affection_nickname:
                             m 1k "Ehehe~"
                         $ done = True
                     else:
-                        $ mas_loseAffection(reason="of the bad nickname")
+                        $ mas_loseAffection(reason="calling me a bad name")
                         m 4efd "[player]! That's not nice at all!"
                         m 2efc "Why would you say such things?"
                         m 2rfw "If you didn't want to do this, you should've just said so!"

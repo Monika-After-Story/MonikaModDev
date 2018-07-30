@@ -651,7 +651,7 @@ label ch30_autoload:
 
         else:
             # Grant bad exp for closing the game incorrectly.
-            mas_loseAffection(modifier=2, reason="you didn't close the game correctly")
+            mas_loseAffection(modifier=2, reason="closing the game on me")
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
