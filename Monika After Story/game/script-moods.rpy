@@ -558,19 +558,6 @@ label mas_mood_yearolder_leap_today:
     jump mas_mood_yearolder_bday_true
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="scared",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
-
-label mas_mood_scared:
-    m 1r "{i}There is nothing to fear, but fear itself.{/i}"
-    m 1k "Ahaha~ I'm kidding."
-    m 3a "Though the reason we become scared, is because we sense any form of danger."
-    m 1d " But fear is a survival instinct that we are born with, and this trait keeps us from harm."
-    m 1g "Though, this instinct can also restrict our actions in an unhelpful way."
-    m 1e "I hope your reasons behind being scared is keeping you from harm [player]."
-    m 1f "I would never want to see my lovely sweetheart hurt."
-    return
-
-init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_guilty",prompt="guilty",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_guilty:
@@ -584,18 +571,18 @@ label mas_mood_guilty:
     m 1q "..."
     $ end_time = datetime.datetime.now()
     $ elapsed_time = end_time - start_time
-    $ time_threshold = datetime.timedelta(seconds=20)
-    if elapsed_time < time_threshold:
+    $ time_threshold = datetime.timedelta(seconds=10)
+    if elapsed_time < time_threshold * 2:
         m 2f "I guess you don't have to tell me if you're too uncomfortable."
         m "That's fine, you can always come back to tell me anytime."
         m 2e "I hope you won't be afraid to tell me anything on your mind."
         m 1k "You know I'll always love you [player]."
-    elif elapsed_time < time_threshold * 3:
+    elif elapsed_time < time_threshold * 4:
         m 2b "Thank you for confessing to me, [player]."
         m 3a "Even to your girlfriend, these things can be difficult to say."
         m 3k "But there is no need to hide these kinds of issues, we can work through them together."
         m 1a "I love you [player], and I don't want to see these problems bothering you."
-    elif elapsed_time < time_threshold * 6:
+    elif elapsed_time < time_threshold * 9:
         m 1j "I'm so glad that you trust me with knowing all of that."
         m 1a "I get to learn so much more about my sweetheart, I'm always happy for that."
         m 2d "But no matter what, I will never be ashamed of you for anything."
