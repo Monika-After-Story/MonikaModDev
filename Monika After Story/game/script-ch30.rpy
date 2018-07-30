@@ -676,8 +676,8 @@ label ch30_autoload:
                 persistent._mas_pool_unlocks -= 1
 
         else:
-            # Grant bad exp for closing the game correctly.
-            mas_loseAffection(modifier=2)
+            # Grant bad exp for closing the game incorrectly.
+            mas_loseAffection(modifier=2, reason="closing the game on me")
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)

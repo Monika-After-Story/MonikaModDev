@@ -146,9 +146,7 @@ init python:
 
 
             if changedIDs is not None:
-                updating_persistent = adjustTopicIDs(
-                    changedIDs, updating_persistent
-                )
+                adjustTopicIDs(changedIDs, updating_persistent)
 
         return updating_persistent
 
@@ -245,11 +243,55 @@ label v0_3_2(version=version): # 0.3.2
 label v0_3_1(version=version): # 0.3.1
     python:
         # update !
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
     return
 
 # non generic updates go here
+
+# 0.8.4
+label v0_8_4(version="v0_8_4"):
+    python:
+
+        import store.evhand as evhand
+        import store.mas_stories as mas_stories
+
+        # update seen status
+        updateTopicIDs(version)
+
+        ## swap compliment label (well the label is already handled in topics)
+        # but we need to handle the database data (we are transfering only
+        # select properties)
+        # Properties to transfer:
+        # shown_count
+        # last_seen
+        # seen has already been handled, so lets just send over some data
+        # need to recreate the event object so we can properly retrieve data
+        best_evlabel = "monika_bestgirl"
+        best_comlabel = "mas_compliment_bestgirl"
+        best_ev = Event(persistent.event_database, eventlabel=best_evlabel)
+        best_compliment = mas_compliments.compliment_database.get(best_comlabel, None)
+        best_lockdata = None
+
+        # remove lock data
+        if best_evlabel in Event.INIT_LOCKDB:
+            best_lockdata = Event.INIT_LOCKDB.pop(best_evlabel)
+
+        if best_compliment:
+            # compliment exists, lets do some transfers
+            best_compliment.shown_count = best_ev.shown_count
+            best_compliment.last_seen = best_ev.last_seen
+
+            if best_lockdata:
+                # transfer lockdata
+                Event.INIT_LOCKDB[best_comlabel] = best_lockdata
+
+        # now remove old event data
+        if best_evlabel in persistent.event_database:
+            persistent.event_database.pop(best_evlabel)
+
+
+    return
 
 # 0.8.3
 label v0_8_3(version="v0_8_3"):
@@ -335,7 +377,7 @@ label v0_8_1(version="v0_8_1"):
             m_ff.pool = True
 
         # regular topic update
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         ## writing topic adjustments
 
@@ -537,7 +579,7 @@ label v0_7_4(version="v0_7_4"):
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True
 
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         # NOTE: this is completel retroactive. Becuase this is a released
         # version, we must also make this change in 0.8.0 updates
@@ -589,7 +631,7 @@ label v0_7_0(version="v0_7_0"):
         except: pass
 
         # update !
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         temp_event_list = list(persistent.event_list)
         # now properly set all seen events as unlocked
@@ -640,7 +682,7 @@ label v0_3_0(version="v0_3_0"):
         removeTopicID("monika_college")
 
         # update!
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
     return
 
 
@@ -691,7 +733,7 @@ label v0_3_0(version="v0_3_0"):
 #   the regular labels are executed first, then this (the late-chain) executes.
 #   For example, lets say we have 3 versions: A, B, C
 #   and 2 of these versions have late scripts, B' and C'
-#   
+#
 #   Update order:
 #   1. A
 #   2. B

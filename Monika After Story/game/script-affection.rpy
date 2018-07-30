@@ -924,11 +924,25 @@ init 20 python:
             mas_updateAffectionExp()
 
 
-    #U sed to subtract affection whenever something negative happens.
+    # Used to subtract affection whenever something negative happens.
+    # A reason can be specified and used for the apology dialogue
+    # if the default value is used Monika won't comment on the reason,
+    # and slightly will recover affection
+    # if None is passed she won't acknowledge that there was need for an apology.
+    # DEFAULTS reason to an Empty String mostly because when this one is called
+    # is intended to be used for something the player can apologize for, but it's
+    # not totally necessary.
     def mas_loseAffection(
             amount=persistent._mas_affection["badexp"],
-            modifier=1
+            modifier=1,
+            reason=""
         ):
+
+        global mas_apology_reason
+
+        mas_apology_reason = reason
+
+
         if not persistent._mas_affection_badexp_freeze:
             # Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] -= (amount * modifier)
@@ -986,6 +1000,9 @@ init 20 python:
     mas_curr_affection_group = affection.G_NORMAL
     mas_updateAffectionExp(skipPP=True)
 
+    # Nothing to apologize for now
+    mas_apology_reason = None
+
     # Monika's initial affection based on start-up.
     if not persistent._mas_long_absence:
         if persistent.sessions["last_session_end"] is not None:
@@ -993,7 +1010,7 @@ init 20 python:
             time_difference = persistent._mas_absence_time
             # we skip this for devs since we sometimes use older persistents and only apply after 1 week
             if (
-                    not config.developer 
+                    not config.developer
                     and time_difference >= datetime.timedelta(weeks = 1)
                 ):
                 new_aff = _mas_getAffection() - (0.5 * time_difference.days)
@@ -1005,7 +1022,7 @@ init 20 python:
                     else:
                         # otherwise, you cant lose past a certain amount
                         mas_setAffection(affection.AFF_TIME_CAP)
-                        
+
                 else:
                     mas_setAffection(new_aff)
 
@@ -1147,7 +1164,7 @@ label monika_affection_nickname:
                             m 1k "Ehehe~"
                         $ done = True
                     else:
-                        $ mas_loseAffection()
+                        $ mas_loseAffection(reason="calling me a bad name")
                         m 4efd "[player]! That's not nice at all!"
                         m 2efc "Why would you say such things?"
                         m 2rfw "If you didn't want to do this, you should've just said so!"
