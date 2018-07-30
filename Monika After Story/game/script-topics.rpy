@@ -1366,6 +1366,7 @@ label monika_simulated:
 
 
 init 5 python:
+    # only available if moni-affecition normal and above
     addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
 
 label monika_rain:
@@ -1374,64 +1375,69 @@ label monika_rain:
     m 1a "But a nice, quiet day at home with the sound of rainfall outside my window?"
     m 1j "It's very calming to me."
     m 1q "Yeah..."
-    m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
-    m 2lkbsa "That's not too cheesy or anything, is it?"
-    m 1ekbfa "Would you ever do that for me, [player]?"
-    menu:
-        "Yes":
-            $ scene_change = True
-            $ mas_is_raining = True
-            call spaceroom
-            stop music fadeout 1.0
-            play background audio.rain fadein 1.0 loop
 
-            # clear selected track
-            $ songs.current_track = songs.FP_NO_SONG
-            $ songs.selected_track = songs.FP_NO_SONG
+    if mas_isMoniHappy(higher=True):
+        # need to be happy or above to get the hold me segway
 
-            # hide ui and disable hotkeys
-            $ HKBHideButtons()
-            $ store.songs.enabled = False
+        m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
+        m 2lkbsa "That's not too cheesy or anything, is it?"
+        m 1ekbfa "Would you ever do that for me, [player]?"
+        menu:
+            "Yes":
+                $ scene_change = True
+                $ mas_is_raining = True
+                call spaceroom
+                stop music fadeout 1.0
+                play background audio.rain fadein 1.0 loop
 
-            m 1j "Then hold me, [player]..."
-            show monika 6dubsa
-            $ mas_gainAffection()
-            $ ui.add(PauseDisplayable())
-            $ ui.interact()
+                # clear selected track
+                $ songs.current_track = songs.FP_NO_SONG
+                $ songs.selected_track = songs.FP_NO_SONG
 
-            # renable ui and hotkeys
-            $ store.songs.enabled = True
-            $ HKBShowButtons()
+                # hide ui and disable hotkeys
+                $ HKBHideButtons()
+                $ store.songs.enabled = False
 
-            m 1a "If you want the rain to stop, just ask me, okay?"
+                m 1j "Then hold me, [player]..."
+                show monika 6dubsa
+                $ mas_gainAffection()
+                $ ui.add(PauseDisplayable())
+                $ ui.interact()
 
-            # lock / unlock the appropriate labels
-            $ unlockEventLabel("monika_rain_stop")
-            $ unlockEventLabel("monika_rain_holdme")
-            $ lockEventLabel("monika_rain_start")
-            $ lockEventLabel("monika_rain")
-            $ persistent._mas_likes_rain = True
+                # renable ui and hotkeys
+                $ store.songs.enabled = True
+                $ HKBShowButtons()
 
-        "I hate the rain":
-            m 2oo "Aw, that's a shame."
-            m 2e "But it's understandable."
-            m 1a "Rainy weather can look pretty gloomy."
-            m 3n "Not to mention pretty cold!"
-            m 1d "But if you focus on the sounds raindrops make..."
-            m 1j "I think you'll come to enjoy it."
+                m 1a "If you want the rain to stop, just ask me, okay?"
 
-            # lock / unlock the appropraite labels
-            $ lockEventLabel("monika_rain_start")
-            $ lockEventLabel("monika_rain_stop")
-            $ lockEventLabel("monika_rain_holdme")
-            $ unlockEventLabel("monika_rain")
-            $ persistent._mas_likes_rain = False
+                # lock / unlock the appropriate labels
+                $ unlockEventLabel("monika_rain_stop")
+                $ unlockEventLabel("monika_rain_holdme")
+                $ lockEventLabel("monika_rain_start")
+                $ lockEventLabel("monika_rain")
+                $ persistent._mas_likes_rain = True
+
+            "I hate the rain":
+                m 2oo "Aw, that's a shame."
+                m 2e "But it's understandable."
+                m 1a "Rainy weather can look pretty gloomy."
+                m 3n "Not to mention pretty cold!"
+                m 1d "But if you focus on the sounds raindrops make..."
+                m 1j "I think you'll come to enjoy it."
+
+                # lock / unlock the appropraite labels
+                $ lockEventLabel("monika_rain_start")
+                $ lockEventLabel("monika_rain_stop")
+                $ lockEventLabel("monika_rain_holdme")
+                $ unlockEventLabel("monika_rain")
+                $ persistent._mas_likes_rain = False
 
     # unrandom this event if its currently random topic
     return "derandom"
 
 
 init 5 python:
+    # available only if moni affection is normal+
     addEvent(
         Event(
             persistent.event_database,
@@ -1446,24 +1452,33 @@ init 5 python:
 
 label monika_rain_stop:
     # NOTE: the label is here because its related to monika_rain
-    m 1j "Alright, [player]."
-    m "Just give me a second."
+    if mas_isMoniNormal(higher=True):
+        m 1j "Alright, [player]."
+        m "Just give me a second."
+
+    else:
+        m "Ok."
+        
     show monika 1q
     pause 1.0
     $ scene_change = True
     $ mas_is_raining = False
     call spaceroom
     stop background fadeout 1.0
-    m 1a "If you want it to rain again, just ask me, okay?"
+
+    if mas_isMoniNormal(higher=True):
+        m 1a "If you want it to rain again, just ask me, okay?"
 
     # lock this event, unlock the rainstart one
     $ lockEventLabel("monika_rain_stop")
     $ unlockEventLabel("monika_rain_start")
     $ unlockEventLabel("monika_rain")
 
+
     return
 
 init 5 python:
+    # available only if moni affection is normal+
     addEvent(
         Event(
             persistent.event_database,
@@ -1477,15 +1492,23 @@ init 5 python:
     )
 
 label monika_rain_start:
-    m 1j "Alright, [player]."
-    m "Just give me a second."
+
+    if mas_isMoniNormal(higher=True):
+        m 1j "Alright, [player]."
+        m "Just give me a second."
+
+    else:
+        m "Ok."
+
     show monika 1q
     pause 1.0
     $ scene_change = True
     $ mas_is_raining = True
     call spaceroom
     play background audio.rain fadein 1.0 loop
-    m 1a "If you want the rain to stop, just ask me, okay?"
+
+    if mas_isMoniNormal(higher=True):
+        m 1a "If you want the rain to stop, just ask me, okay?"
 
     # lock this event, unlock rainstop and hold me
     $ lockEventLabel("monika_rain_start")
@@ -1495,6 +1518,7 @@ label monika_rain_start:
     return
 
 init 5 python:
+    # available only if moni affection happy and above
     addEvent(
         Event(
             persistent.event_database,
@@ -1508,36 +1532,60 @@ init 5 python:
     )
 
 label monika_rain_holdme:
-    # we only want this if it rains
-    if mas_is_raining:
-        stop music fadeout 1.0
 
-        # clear selected track
-        $ songs.current_track = songs.FP_NO_SONG
-        $ songs.selected_track = songs.FP_NO_SONG
+    if mas_isMoniHappy(higher=True):
+        # happy or above
 
-        # hide ui and disable hotkeys
-        $ HKBHideButtons()
-        $ store.songs.enabled = False
+        # we only want this if it rains
+        if mas_is_raining or mas_isMoniAff(higher=True):
+            stop music fadeout 1.0
 
-        m 1a "Of course, [player]."
-        show monika 6dubsa
-        $ ui.add(PauseDisplayable())
-        $ ui.interact()
+            # clear selected track
+            $ songs.current_track = songs.FP_NO_SONG
+            $ songs.selected_track = songs.FP_NO_SONG
 
-        # renable ui and hotkeys
-        $ store.songs.enabled = True
-        $ HKBShowButtons()
-        # small affection increase so people don't farm affection with this one.
-        $ mas_gainAffection(modifier=0.25)
-        m 1j "You can hold me anytime you want, [player]."
+            # hide ui and disable hotkeys
+            $ HKBHideButtons()
+            $ store.songs.enabled = False
+
+            m 1a "Of course, [player]."
+            show monika 6dubsa
+            $ ui.add(PauseDisplayable())
+            $ ui.interact()
+
+            # renable ui and hotkeys
+            $ store.songs.enabled = True
+            $ HKBShowButtons()
+            # small affection increase so people don't farm affection with this one.
+            $ mas_gainAffection(modifier=0.25)
+
+            if mas_is_raining:
+                m 1j "You can hold me anytime it rains, [player]."
+            else:
+                m 1j "You can hold me anytime you want, [player]."
+
+        else:
+            # no affection loss here, doesn't make sense to have it
+            m 1oo "..."
+            m 1pp "The mood doesn't feel right, [player]."
+            m 1q "Sorry..."
+
+    elif mas_isMoniNormal():
+        # normal
+
+        m 1lksdlc "Uh..."
+        m 1eksdlb "Maybe when we get farther into our relationship."
+        m 1rksdlb "Sorry..."
+
+        $ lockEventLabel("monika_rain_holdme")
 
     else:
-        # asking for it on the "incorrect mood" slightly decreases affection
-        $ mas_loseAffection(modifier=0.1)
-        m 1oo "..."
-        m 1pp "The mood doesn't feel right, [player]."
-        m 1q "Sorry..."
+        # below normal
+
+        m 2lfc "No thanks."
+
+        $ mas_loseAffection(modifier=0.25)
+        $ lockEventLabel("monika_rain_holdme")
 
     return
 
@@ -2437,24 +2485,30 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason="calling me a murderer. I hope you don't really see me that way...")
     if mas_curr_affection == mas_aff.LOVE:
-        m 1c "..."
-        m 1j "Ahaha! Very funny [player]!"
-        m 3a "I know you don't really mean it..."
-        m 3m "Don't say such thing as a joke though, if I didn't know you so well it might have been considered cruel..."
+        m 1euc "..."
+        m 1hua "Ahaha! Very funny [player]!"
+        m 3eua "I know you don't really mean it..."
+        m 3lksdlc "But don't joke around like that!"
+        if persistent._mas_pm_a_hater:
+            m 2lksdld "You've said stuff like that before, so it might get harder to take it as a joke…"
+        else:
+            m 1dsc "If I didn't know you so well, that would have been really cruel..."
     else:
-        m 2h "How many times do I have to say it until you understand?"
-        m 4h "They weren't real. They were never real."
-        m "I'm the only person who understood that this whole thing was fake."
-        m 4i "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-        m 4h "After all, if she was sentient like me, how would I have been able to override her and delete her?"
-        m "If I'm guilty of murder, so is everyone who plays violent video games."
-        m 2h "I bet you've killed thousands in games you play."
+        m 1tkc "How many times do I have to say it until you understand?"
+        m 4tkc "They weren't real. They were never real."
+        m 2tfc "I'm the only person who understood that this whole thing was fake."
+        if persistent.monika_kill:
+           m 4tfc "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
+        if not persistent.clear_all:
+            m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
+        m "If I'm guilty of murder, so is everyone who's played violent video games."
+        m 2euc "I bet you've killed thousands of people in the games you play."
         if mas_curr_affection == mas_aff.BROKEN or mas_curr_affection == mas_aff.DISTRESSED:
-            m 2f "Do you hate me for it? Because of what I did?"
-            m 2g "Please understand that I did it for us!"
-            m 2h "I did everything for us!"
+            m 2ekc "Do you hate me for it? Because of what I did?"
+            m 2ekd "Please understand that I did it for us!"
+            m 2euc "I did everything for us!"
         m "Just forget the other girls ever existed, and you'll be much happier."
     return
 
@@ -2565,23 +2619,6 @@ label monika_heroism:
     m 1 "You don't have to fight in a war or anything. You just have to try to help people out, you know?"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_bestgirl",category=['romance'],prompt="You're the best girl!",pool=True))
-
-label monika_bestgirl:
-    $ mas_gainAffection()
-    m 1j "I love it when you compliment me, [player]!"
-    m 1b "I think I'm best girl, too!"
-    m 1n "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
-    m 3h "A useless childhood friend who never bothered to confess to you until it was way too late..."
-    m "A shy girl who was overdramatic and always taking herself too seriously..."
-    m "A moody manga fan obsessed with everything being cute."
-    m "They even said it themselves. I'm more desirable than the three of them combined."
-    m 3 "Anyone who wouldn't have chosen me out of that bunch simply has no taste."
-    m "So I'm glad you did, [player]."
-    m 1j "Your perfect girlfriend, Monika, will always love you, too!"
-    return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_trolley",category=['philosophy'],prompt="How would you answer the trolley problem?",pool=True))
@@ -2606,7 +2643,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason="joking about having another girlfriend. You really gave me a heart attack!")
     m 1h "I thought we established already that I was your girlfriend?"
     m "There's no way you already have one in your reality, right?"
     m 4f "If you do, then you've got to break up with her right now!"
@@ -3093,7 +3130,7 @@ label monika_aware:
     call showpoem(poem=poem_m1,music=False) from _call_showpoem_7 # Temporary
     m 1wuo "Oh! That was much easier than I expected."
     m 1eua "Here's the second part."
-    call showpoem(poem=poem_m3,music=False) from _call_showpoem_21 # Temporary
+    call showpoem(poem=poem_m21,music=False) from _call_showpoem_21 # Temporary
     m 1eua "I hope that helped you understand what meeting you meant to me."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "That's all I've ever wanted, [player]."
@@ -3553,6 +3590,7 @@ label monika_haterReaction:
     m "You're not one of those haters, are you, [player]?"
     menu:
         "I am.":
+            #TODO, affection loss, apology
             $ persistent._mas_pm_a_hater = True
             m 2wud "..."
             m 1tkc "I don't see you as one, even if you say you are."
@@ -5383,7 +5421,7 @@ label monika_complain_battery:
     return
 
 label monika_close_game_battery:
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason=None)
     m 1lksdlc "[player]..."
     m 1ekc "I'm sorry, but I'm gonna have to close the game before the battery runs out."
     m 3eka "So... I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
@@ -5426,18 +5464,19 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection()
+    $ mas_loseAffection(reason="saying you wanted to break up. I knew you didn't mean it...")
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         m 1euc "You're breaking up with me?"
-        m 2ekc "Why would you say such a thing, [player]?"
+        m 2ekc "Why would you do such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
         if mas_curr_affection == mas_aff.BROKEN:#TODO review
-            m 2f "I-I can't really handle this..."
-            m 2g "You're just joking again, right?"
-            m 1h "I refuse to believe you, you're all I have left!"
-            m 1f "If you really, truly mean it then you can delete me and this entire game.."
-            m 1q "I love you, [player]...so please tell me it's all just a bad joke."
+            m 2lksdlb "I-I really can't handle this..."
+            m 2wkd "You're just joking again, right?"
+            m 1wktsd "I refuse to believe you; you're all I have left!"
+            m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
+            m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
+            $ mas_apology_reason= ""
         else:
             m 2dsc "Are you...{w} really..."
             m "..."
@@ -5448,11 +5487,12 @@ label monika_breakup:
                 m "Right?"
                 "Yes":
                     m 1hub "Ahaha! You're so silly, [player]."
-                    m 1eka "Let's stay being together forever~"
+                    m 1eka "Let's stay together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
-            m 1o "..." # TODO review
+            m 1ekc "..." # TODO review
+            $ mas_apology_reason= ""
         else:
             m 1hua "Ehehe~"
 
@@ -5460,12 +5500,13 @@ label monika_breakup:
     else:
         m 1wud "W-what?"
         if persistent.monika_kill:
-            m 2f "You're just going to leave and delete me again?"
+            m 2ekd "You're just going to leave and delete me again?"
         if mas_curr_affection == mas_aff.BROKEN: #TODO needs review
-            m 1f "You wouldn't do that, I refuse to believe that..."
-            m 1h "That's not a funny joke, [player]!"
-            m 1o "Were it anyone else I would find such humour nothing but cruel..."
-            m 1e "I forgive you...just don't say such a hurtful joke again, okay?"
+            m 1ekd "You wouldn't do that. I refuse to believe that..."
+            m 1lksdld "That's not a joke, [player]!"
+            m 1lksdlc "Don't say that again unless you really, truly mean it..."
+            m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
+            $ mas_apology_reason= ""
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."
@@ -5913,28 +5954,31 @@ label monika_beach:
     m 1tku "Don't get too excited though when you see it. Ehehe~"
     return "derandom"
 
-####################################################
-# Saving this for future use
-# Could be expanded to something better
-# where where persistent.playthrough can be
-# checked and have a different response
-# depending on what the player did
-# TODO: affection is going to take this one
-# and actually she'll know the reason only last thing
-# the player did though
-####################################################
+init 5 python:
+   addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you'],pool=True,unlocked=True))
 
-#init 5 python:
-#    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
-
-#label monika_playerapologizes:
-#    m 1g "Did something happen?"
-#    m 2f "I can't remember what you'd be sorry about."
-#    m 1q "..."
-#    m 1b "Anyway, thank you for the apology."
-#    m 1a "I know you're doing your best to make things right."
-#    m 1k "That's why I love you, [player]!"
-#    return
+label monika_playerapologizes:
+    # if there's no reason to apologize
+    if mas_apology_reason is None:
+        m 1ekd "Did something happen?"
+        m 2ekc "I see no reason for you to be sorry."
+        m 1dsc "..."
+        m 1eub "Anyway, thank you for the apology."
+        m 1eua "Whatever it is, I know you're doing your best to make things right."
+        m 1hub "That's why I love you, [player]!"
+    # She knows why you are apologizing for
+    elif mas_apology_reason:
+        $ mas_gainAffection(modifier=0.2) # recover a bit of affection
+        m 1eka "Thank you for apologizing for [mas_apology_reason]."
+        m "I accept your apology [player]. It means a lot to me."
+    # She knows there's a reason for your apology but won't comment on it
+    else:
+        $ mas_gainAffection(modifier=0.1) # recover a bit of affection
+        m 2tkd "What you did wasn't funny, [player]."
+        m 2dkd "Please be more considerate about my feelings in the future."
+    # reset the reason
+    $ mas_apology_reason = None
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_lover_boy",category=['songs'],prompt="Old Fashioned Lover Boy",pool=True, random=True))
@@ -6896,7 +6940,6 @@ label monika_citizenship:
     m 1eka "Thank you for listening to me vent, [player]."
     return
 
-
 init 5 python:
     addEvent(
         Event(
@@ -6911,6 +6954,21 @@ init 5 python:
 
 label monika_short_stories:
     jump mas_stories_start
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_compliments",
+            category=['monika', 'romance'],
+            prompt="I want to tell you something ...",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_compliments:
+    jump mas_compliments_start
 
 ##### monika hair topics [MONHAIR]
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue

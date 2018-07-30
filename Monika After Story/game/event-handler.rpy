@@ -304,6 +304,82 @@ init -1 python in evhand:
         return start_date <= current <= end_date
 
 
+    def _hideEvent(
+            event,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Internalized hideEvent
+        """
+        if event:
+
+            if lock:
+                event.unlocked = False
+
+            if derandom:
+                event.random = False
+
+            if depool:
+                event.pool = False
+
+            if decond:
+                event.conditional = None
+
+
+    def _hideEventLabel(
+            eventlabel,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=event_database
+        ):
+        """
+        Internalized hideEventLabel
+        """
+        ev = eventdb.get(eventlabel, None)
+
+        _hideEvent(
+            ev,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
+
+
+    def _lockEvent(ev):
+        """
+        Internalized lockEvent
+        """
+        _hideEvent(ev, lock=True)
+
+
+    def _lockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized lockEventLabel
+        """
+        _hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+
+
+    def _unlockEvent(ev):
+        """
+        Internalized unlockEvent
+        """
+        if ev:
+            ev.unlocked = True
+
+
+    def _unlockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized unlockEventLabel
+        """
+        _unlockEvent(eventdb.get(evlabel, None))
+
+
 init python:
     import store.evhand as evhand
     import datetime
@@ -366,14 +442,13 @@ init python:
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: evhand.event_database)
-        ev = eventdb.get(eventlabel, None)
-
-        hideEvent(
-            ev,
+        evhand._hideEventLabel(
+            eventlabel,
             lock=lock,
             derandom=derandom,
             depool=depool,
-            decond=decond
+            decond=decond,
+            eventdb=eventdb
         )
 
 
@@ -399,20 +474,13 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
-
-        if event:
-
-            if lock:
-                event.unlocked = False
-
-            if derandom:
-                event.random = False
-
-            if depool:
-                event.pool = False
-
-            if decond:
-                event.conditional = None
+        evhand._hideEvent(
+            event,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
 
 
     def lockEvent(ev):
@@ -422,7 +490,7 @@ init python:
         IN:
             ev - the event object to lock
         """
-        hideEvent(ev, lock=True)
+        evhand._lockEvent(ev)
 
 
     def lockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -433,7 +501,7 @@ init python:
             evlabel - event label of the event to lock
             eventdb - Event database to find this label
         """
-        hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+        evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
     def pushEvent(event_label):
@@ -472,8 +540,7 @@ init python:
         IN:
             ev - the event object to unlock
         """
-        if ev:
-            ev.unlocked = True
+        evhand._unlockEvent(ev)
 
 
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -484,7 +551,7 @@ init python:
             evlabel - event label of the event to lock
             eventdb - Event database to find this label
         """
-        unlockEvent(eventdb.get(evlabel, None))
+        evhand._unlockEventLabel(evlabel, eventdb=eventdb)
 
 
     def isFuture(ev, date=None):

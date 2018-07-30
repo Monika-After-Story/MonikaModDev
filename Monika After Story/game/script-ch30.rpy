@@ -292,6 +292,29 @@ init python:
         return sr_time <= now_time < ss_time
 
 
+    def mas_shouldRain():
+        """
+        Rolls some chances to see if we should make it rain
+
+        RETURNS:
+            True if it should rain now, false otherwise
+        """
+        if mas_isMoniNormal(higher=True):
+            return False
+
+        # Upset and lower means we need to roll
+        chance = random.randint(1,100)
+        if mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
+            return True
+
+        elif mas_isMoniDis() and chance <= MAS_RAIN_DIS:
+            return True
+
+        elif mas_isMoniBroken() and chance <= MAS_RAIN_BROKEN:
+            return True
+
+        return False
+
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -553,6 +576,7 @@ label ch30_autoload:
         #If the conditions are met and Monika expects an apology, jump to this label.
         if persistent._mas_affection["apologyflag"] == True and not is_file_present('/imsorry.txt'):
             $scene_change = True
+            $ mas_RaiseShield_core()
             call spaceroom
             jump mas_affection_noapology
 
@@ -560,6 +584,7 @@ label ch30_autoload:
         elif persistent._mas_affection["apologyflag"] == True and is_file_present('/imsorry.txt'):
             $ persistent._mas_affection["apologyflag"] = False
             $scene_change = True
+            $ mas_RaiseShield_core()
             call spaceroom
             jump mas_affection_yesapology
 
@@ -567,6 +592,7 @@ label ch30_autoload:
         elif persistent._mas_affection["apologyflag"] == False and not is_file_present('/imsorry.txt'):
             $ persistent._mas_affection["apologyflag"] = True
             $scene_change = True
+            $ mas_RaiseShield_core()
             call spaceroom
             jump mas_affection_apologydeleted
 
@@ -650,8 +676,8 @@ label ch30_autoload:
                 persistent._mas_pool_unlocks -= 1
 
         else:
-            # Grant bad exp for closing the game correctly.
-            mas_loseAffection(modifier=2)
+            # Grant bad exp for closing the game incorrectly.
+            mas_loseAffection(modifier=2, reason="closing the game on me")
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
@@ -673,6 +699,15 @@ label ch30_autoload:
 
     if not mas_skip_visuals:
         $ set_keymaps()
+
+        # rain check
+        if mas_shouldRain():
+            $ scene_change = True
+            $ mas_is_raining = True
+            play background audio.rain fadein 1.0 loop
+            $ lockEventLabel("monika_rain_start")
+            $ lockEventLabel("monika_rain_stop")
+            $ lockEventLabel("monika_rain")
 
     # FALL THROUGH TO PRELOOP
 
@@ -882,6 +917,9 @@ label ch30_reset:
             unlockEventLabel("monika_rain_start")
             lockEventLabel("monika_rain_stop")
 #            lockEventLabel("monika_rain_holdme")
+
+        if mas_isMoniNormal(higher=True):
+            # monika affection above normal?
             unlockEventLabel("monika_rain")
 
 
