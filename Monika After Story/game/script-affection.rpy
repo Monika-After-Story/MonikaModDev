@@ -11,6 +11,11 @@
 # Heartbroken - Believes that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
 #############
 
+init python:
+    # need to initially define this so it can be used in topic / event creation
+    mas_curr_affection = store.mas_affection.NORMAL
+    mas_curr_affection_group = store.mas_affection.G_NORMAL
+
 init -1 python in mas_affection:
 
     # numerical constants of affection levels
@@ -996,8 +1001,6 @@ init 20 python:
     # is equal to the amount of points it's added or removed in minutes.
 
     # Makes the game update affection on start-up so the global variables are defined at all times.
-    mas_curr_affection = affection.NORMAL
-    mas_curr_affection_group = affection.G_NORMAL
     mas_updateAffectionExp(skipPP=True)
 
     # Nothing to apologize for now
