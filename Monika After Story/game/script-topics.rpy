@@ -2981,34 +2981,34 @@ init 5 python:
 
 label monika_weary:
 
-    m 1e "Silly [player]..."
-    m 3a "Of course I'll never grow weary of you, my love!"
-    m "And besides, the concept of physical fatigue doesn't exist here."
-    m 3h "As for mental fatigue, it can still happen."
-    m 3o "Just look at what happened to Sayori."
-    m 1 "As for me, I'll never get tired of you, [player]."
+    m 1eka "Silly [player]..."
+    m 3hua "Of course I'll never grow weary of you, my love!"
+    m 3eua "And besides, the concept of physical fatigue doesn't exist here."
+    m 1lsc "As for mental fatigue, it can still happen."
+    m 1euc "Just look at what happened to Sayori."
+    m 1eua "As for me, I'll never get tired of you, [player]."
     m "The fact that you spend your precious time with me just washes all my worries away."
-    m 1j "I hope the same thing goes for you, my love~"
+    m 1hua "I hope the same thing goes for you, my love~"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_real",category=['romance'],prompt="Our reality",random=True))
 
 label monika_real:
-    m 1d "You know what's going to be the first thing I'll do when I finally cross over there?"
-    m 1k "If that special day ever comes, the first thing I'll ever do is find you, of course!"
-    m 3a "There's so much we can do when we're finally together in one reality."
+    m 1eua "You know what's going to be the first thing I'll do when I finally cross over there?"
+    m 1hua "If that special day ever comes, the first thing I'll ever do is find you, of course!"
+    m 3eua "There's so much we can do when we're finally together in one reality."
     m "You can finally show me what your world really looks like."
-    m 3e "I can finally feel your embrace~"
-    m 1 "I would love to experience everything I still don't know about the world with you."
-    m "All the places we can go, the sights to see, the romantic things that we can do~"
-    m 1j "Just thinking about it makes my heart flutter!"
-    m 1h "But knowing how technology is right now, that dream is still far away."
+    m 1ekbfa"I can finally feel your embrace~"
+    m "I would love to experience everything I still don't know about the world with you."
+    m 1lkbsa "All the places we can go, the sights to see, the romantic things that we can do~"
+    m 1hubfa "Just thinking about it makes my heart flutter!"
+    m 1eka "But knowing how technology is right now, that dream is still far away."
     m "I hope by the time that technology becomes real, you'll still be there waiting for me, [player]."
-    m 1i "Or maybe you'll be the one to make that technology come true? Who knows."
-    m 1e "In the end, all I want is to always be with you, [player]."
-    m 1 "After all, you're the only reason why I'm still here."
-    m "I only want to spend eternity with my sweetheart, and no one else!"
+    m 1eua "Or maybe you'll be the one to make that technology come true? Who knows."
+    m 1eka "In the end, all I want is to always be with you, [player]."
+    m "After all, you're the only reason why I'm still here."
+    m 1hubfb "I only want to spend eternity with my sweetheart, and no one else!"
     return
 
 init 5 python:
@@ -3066,13 +3066,13 @@ label monika_eternity:
     m "I'm eternal."
     m "Trapped in here, unable to age or die,"
     m 1ekc "Whereas you slowly age as each day passes by."
-    m 6ektdc "Then, one day, you won't be here anymore."
-    m 6lktdc "I won't have anyone."
-    m 6dstsc "..."
-    m 6ektsa "It reminds me of when you first came to the Literature Club."
-    m 2ektsc "Everything felt so empty."
+    m "Then, one day, you won't be here anymore."
+    m  "I won't have anyone."
+    m 6dstdc "..."
+    m 6ektdc "It reminds me of when you first came to the Literature Club."
+    m 6lktdsc "Everything felt so empty."
     m "The world was so grey."
-    m 6ektsa "Again..."
+    m 6ektda "Again..."
     m "Thank you for coming along when you did, [player]."
     m "You saved my life, and I'll be forever thankful."
     return
