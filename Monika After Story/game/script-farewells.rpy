@@ -462,7 +462,7 @@ label bye_long_absence:
         "A couple of weeks.":
             $ persistent._mas_absence_choice = "2weeks"
             m 1h "Oh..."
-            m 1q "I...I can wait that long."
+            m 1q "I... I can wait that long."
             m 3o "You do know that you're all I have...right?"
             m 3n "M-Maybe it's outside of your control though..."
             m 2e "Try to come back as soon as possible... I'll be waiting for you."
