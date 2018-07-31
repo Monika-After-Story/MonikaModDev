@@ -279,8 +279,6 @@ label v0_8_4(version="v0_8_4"):
         if moni_love is not None:
             aff_to_grant += (moni_love.shown_count * 7) / 100
 
-        evhand.event_database.get("monika_love", None)
-
         aff_to_grant += (datetime.datetime.now() - persistent.sessions["first_session"]).days / 3
 
         if aff_to_grant > 200:
