@@ -309,6 +309,9 @@ init 15 python in mas_affection:
             layout.QUIT_NO = mas_layout.QUIT_NO_AFF_GL
         layout.QUIT = mas_layout.QUIT_AFF
 
+        # Unlock nickname event
+        store.unlockEventLabel("monika_affection_nickname")
+
 
     def _affToHappy():
         """
@@ -318,6 +321,13 @@ init 15 python in mas_affection:
         layout.QUIT_YES = mas_layout.QUIT_YES
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
         layout.QUIT = mas_layout.QUIT
+
+        # lock nickname event
+        store.lockEventLabel("monika_affection_nickname")
+
+        # revert nickname
+        persistent._mas_monika_nickname = "Monika"
+        m_name = persistent._mas_monika_nickname
 
 
     def _affToEnamored():
@@ -1062,6 +1072,19 @@ init 20 python:
 # Unlocked when affection level reaches 50.
 # This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 # There is a character limit of 10 characters.
+init 5 python:
+    addEvent(
+        Event(persistent.event_database,
+            eventlabel='monika_affection_nickname',
+            prompt="Infinite Monikas",
+            category=['monika'],
+            random=False,
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
 label monika_affection_nickname:
     python:
         import re
@@ -1204,7 +1227,7 @@ label monika_affection_nickname:
                         m 2ektsc "...You didn't have to be so mean."
                         m 2dftdc "That really hurt, [player]."
                         m 2efc "Please don't do that again."
-                        $ hideEventLabel("monika_affection_nickname",lock=False,depool=False)
+                        $ hideEventLabel("monika_affection_nickname")
                         $ done = True
 
         "No":
