@@ -80,7 +80,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_beautiful",
-            prompt="... You're beautiful!",
+            prompt="... You're Beautiful!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database)
@@ -124,7 +124,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_eyes",
-            prompt="... I love your eyes!",
+            prompt="... I love your Eyes!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database
@@ -168,7 +168,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_awesome",
-            prompt="... You're awesome!",
+            prompt="... You're Awesome!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database
@@ -219,7 +219,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_intelligent",
-            prompt="... You're really intelligent!",
+            prompt="... You're really Intelligent!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database
@@ -263,7 +263,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_hair",
-            prompt="... I love your hair!",
+            prompt="... I love your Hair!",
             unlocked=True
         ),eventdb=store.mas_compliments.compliment_database
     )
@@ -313,7 +313,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_fit",
-            prompt="... I love your dedication to fitness!",
+            prompt="... I love your dedication to Fitness!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database
@@ -360,7 +360,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thanks",
-            prompt="... Thanks for being there for me!",
+            prompt="... Thanks for being there for Me!",
             unlocked=False,
             conditional="mas_curr_affection == store.mas_affection.ENAMORED",
             action=EV_ACT_UNLOCK
@@ -393,7 +393,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_smile",
-            prompt="... I love your smile!",
+            prompt="... I love your Smile!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database
@@ -435,7 +435,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_chess",
-            prompt="... you’re awesome at chess!",
+            prompt="... You’re awesome at Chess!",
             unlocked=False,
             conditional="renpy.seen_label('mas_chess_game_start')",
             action=EV_ACT_UNLOCK
@@ -466,7 +466,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_pong",
-            prompt="... you’re awesome at Pong!",
+            prompt="... You’re awesome at Pong!",
             unlocked=False,
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK
@@ -510,7 +510,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_bestgirl",
-            prompt="... you're the best girl!",
+            prompt="... You're the best Girl!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database
