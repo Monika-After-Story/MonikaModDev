@@ -482,7 +482,7 @@ label mas_compliment_pong:
         m "So you know it's very simple."
         m 5hub "But I accept your compliment, anyway."
     else:
-        m 3hksdrb "And you're too kind to let me lose when we play."
+        m 3hksdrb "And you always let me win when we play."
         m 3eka "Right?"
         menu:
             "Yes":
