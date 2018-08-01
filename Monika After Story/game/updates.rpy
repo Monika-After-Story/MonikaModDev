@@ -255,36 +255,9 @@ label v0_8_4(version="v0_8_4"):
 
         import store.evhand as evhand
         import store.mas_stories as mas_stories
-        import datetime
 
         # update seen status
         updateTopicIDs(version)
-
-        aff_to_grant = 0
-
-        if renpy.seen_label('monika_christmas'):
-            aff_to_grant += 10
-
-        if renpy.seen_label('monika_newyear1'):
-            aff_to_grant += 5
-
-        if renpy.seen_label('monika_valentines_chocolates'):
-            aff_to_grant += 15
-
-        if renpy.seen_label('monika_found'):
-            aff_to_grant += 10
-
-        moni_love = evhand.event_database.get("monika_love", None)
-
-        if moni_love is not None:
-            aff_to_grant += (moni_love.shown_count * 7) / 100
-
-        aff_to_grant += (datetime.datetime.now() - persistent.sessions["first_session"]).days / 3
-
-        if aff_to_grant > 200:
-            aff_to_grant = 200
-
-        persistent._mas_affection["affection"] = aff_to_grant + persistent._mas_affection.get("affection",0)
 
         ## swap compliment label (well the label is already handled in topics)
         # but we need to handle the database data (we are transfering only
@@ -770,6 +743,43 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+
+label mas_lupd_v0_8_4:
+    python:
+        # grant affection to old players
+        import store.evhand as evhand
+        import datetime
+
+        aff_to_grant = 0
+
+        if renpy.seen_label('monika_christmas'):
+            aff_to_grant += 10
+
+        if renpy.seen_label('monika_newyear1'):
+            aff_to_grant += 5
+
+        if renpy.seen_label('monika_valentines_chocolates'):
+            aff_to_grant += 15
+
+        if renpy.seen_label('monika_found'):
+            aff_to_grant += 10
+
+        moni_love = evhand.event_database.get("monika_love", None)
+
+        if moni_love is not None:
+            aff_to_grant += (moni_love.shown_count * 7) / 100
+
+        aff_to_grant += (datetime.datetime.now() - persistent.sessions["first_session"]).days / 3
+
+        if aff_to_grant > 200:
+            aff_to_grant = 200
+
+
+        store.mas_gainAffection(aff_to_grant + 23,bypass=True)
+
+        _mas_AffSave()
+
+    return
 
 label mas_lupd_v0_8_3:
     python:
