@@ -2049,6 +2049,22 @@ init -100 python in mas_utils:
         return fval
 
 
+    def _splitfloat(num):
+        """
+        Splits a float into integer parts:
+
+        [0]: integer
+        [1]: numerator
+        [2]: denominator
+        """
+        ival = int(num)
+        cleanival = ival
+        if num < 0:
+            num *= -1
+            cleanival *= -1
+        return (ival, int((num - cleanival) * __FLIMIT), __FLIMIT)
+
+
 init -1 python:
     import datetime # for mac issues i guess.
     if "mouseup_3" in config.keymap['game_menu']:

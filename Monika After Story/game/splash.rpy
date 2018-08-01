@@ -329,8 +329,9 @@ label quit:
         ]
 
     python:
-        persistent._mas_pctaeibe = bytearray(
-            mas_utils._ftoFS(_mas_getAffection())
-        )
+        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection()) 
+        persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
+        persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
+        persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
 
     return

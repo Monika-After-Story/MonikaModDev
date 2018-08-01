@@ -499,7 +499,9 @@ init 15 python in mas_affection:
 
 
 default persistent._mas_long_absence = False
-default persistent._mas_pctaeibe = None
+default persistent._mas_pctaieibe = None
+default persistent._mas_pctaneibe = None
+default persistent._mas_pctadeibe = None
 
 # need to have affection initlaized post event_handler
 init 20 python:
@@ -1008,10 +1010,27 @@ init 20 python:
     def _mas_AffStartup():
         # need to load affection values from beyond the grave
         # failure to load means we reset to 0. No excuses
-        if persistent._mas_pctaeibe is not None:
+        if (
+                persistent._mas_pctaieibe is not None
+                and persistent._mas_pctaneibe is not None
+                and persistent._mas_pctadeibe is not None
+            ):
             try:
-                pnum = mas_utils.FSCRAM.from_buffer(persistent._mas_pctaeibe)
-                persistent._mas_affection["affection"] = mas_utils._FStof(pnum)
+                inum = mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
+                )
+                nnum = mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
+                )
+                dnum = float(mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
+                ))
+                if inum < 0:
+                    actual_value = inum - (nnum / dnum)
+                else:
+                    actual_value = inum + (nnum / dnum)
+                    
+                persistent._mas_affection["affection"] = actual_value
             except:
                 # dont break me yo
                 persistent._mas_affection["affection"] = 0
