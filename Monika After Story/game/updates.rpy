@@ -290,6 +290,9 @@ label v0_8_4(version="v0_8_4"):
         if best_evlabel in persistent.event_database:
             persistent.event_database.pop(best_evlabel)
 
+        # Enable late update for this one
+        persistent._mas_zz_lupd_ex_v.append(version)
+
 
     return
 
