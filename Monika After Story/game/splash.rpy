@@ -163,6 +163,8 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     python:
+        _mas_AffStartup()
+
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
         store.mas_calendar.loadCalendarDatabase()
@@ -325,5 +327,10 @@ label quit:
             for acs in monika_chr.acs[MASMonika.PST_ACS]
             if acs.stay_on_start
         ]
+
+    python:
+        persistent._mas_pctaeibe = bytearray(
+            mas_utils._ftoFS(_mas_getAffection())
+        )
 
     return
