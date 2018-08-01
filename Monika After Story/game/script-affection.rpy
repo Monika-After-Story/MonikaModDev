@@ -499,12 +499,16 @@ init 15 python in mas_affection:
 
 
 default persistent._mas_long_absence = False
+default persistent._mas_pctaieibe = None
+default persistent._mas_pctaneibe = None
+default persistent._mas_pctadeibe = None
 
 # need to have affection initlaized post event_handler
 init 20 python:
 
     import datetime
     import store.mas_affection as affection
+    import store.mas_utils as mas_utils
 
     # Functions to freeze exp progression for story events, use wisely.
     def mas_FreezeGoodAffExp():
@@ -1000,35 +1004,81 @@ init 20 python:
     # Internal cooldown to avoid topic spam and Monika affection swings, the amount of time to wait before a function is effective
     # is equal to the amount of points it's added or removed in minutes.
 
-    # Makes the game update affection on start-up so the global variables are defined at all times.
-    mas_updateAffectionExp(skipPP=True)
-
     # Nothing to apologize for now
     mas_apology_reason = None
 
-    # Monika's initial affection based on start-up.
-    if not persistent._mas_long_absence:
-        if persistent.sessions["last_session_end"] is not None:
-            persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
-            time_difference = persistent._mas_absence_time
-            # we skip this for devs since we sometimes use older persistents and only apply after 1 week
-            if (
-                    not config.developer
-                    and time_difference >= datetime.timedelta(weeks = 1)
-                ):
-                new_aff = _mas_getAffection() - (0.5 * time_difference.days)
-                if new_aff < affection.AFF_TIME_CAP:
-                    if time_difference >= datetime.timedelta(days=(365 * 10)):
-                        # 10 years later is an end-game situation
-                        mas_loseAffection(200)
+
+    def _mas_AffSave():
+        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection()) 
+        persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
+        persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
+        persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
+    
+
+    def _mas_AffStartup():
+        # need to load affection values from beyond the grave
+        # failure to load means we reset to 0. No excuses
+        if (
+                persistent._mas_pctaieibe is not None
+                and persistent._mas_pctaneibe is not None
+                and persistent._mas_pctadeibe is not None
+            ):
+            try:
+                inum = mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
+                )
+                nnum = mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
+                )
+                dnum = float(mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
+                ))
+                if inum < 0:
+                    actual_value = inum - (nnum / dnum)
+                else:
+                    actual_value = inum + (nnum / dnum)
+                    
+                persistent._mas_affection["affection"] = actual_value
+            except:
+                # dont break me yo
+                persistent._mas_affection["affection"] = 0
+
+        # Makes the game update affection on start-up so the global variables
+        # are defined at all times.
+        mas_updateAffectionExp(skipPP=True)
+
+        # Monika's initial affection based on start-up.
+        if not persistent._mas_long_absence:
+            if persistent.sessions["last_session_end"] is not None:
+                persistent._mas_absence_time = (
+                    datetime.datetime.now() - 
+                    persistent.sessions["last_session_end"]
+                )
+                time_difference = persistent._mas_absence_time
+                # we skip this for devs since we sometimes use older 
+                # persistents and only apply after 1 week
+                if (
+                        not config.developer
+                        and time_difference >= datetime.timedelta(weeks = 1)
+                    ):
+                    new_aff = _mas_getAffection() - (
+                        0.5 * time_difference.days
+                    )
+                    if new_aff < affection.AFF_TIME_CAP:
+                        if (
+                                time_difference >= datetime.timedelta(
+                                    days=(365 * 10)
+                                )
+                            ):
+                            # 10 years later is an end-game situation
+                            mas_loseAffection(200)
+
+                        else:
+                            # otherwise, you cant lose past a certain amount
+                            mas_setAffection(affection.AFF_TIME_CAP)
 
                     else:
-                        # otherwise, you cant lose past a certain amount
-                        mas_setAffection(affection.AFF_TIME_CAP)
-
-                else:
-                    mas_setAffection(new_aff)
-
+                        mas_setAffection(new_aff)
 
 
 # Unlocked when affection level reaches 50.
