@@ -1007,6 +1007,14 @@ init 20 python:
     # Nothing to apologize for now
     mas_apology_reason = None
 
+
+    def _mas_AffSave():
+        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection()) 
+        persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
+        persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
+        persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
+    
+
     def _mas_AffStartup():
         # need to load affection values from beyond the grave
         # failure to load means we reset to 0. No excuses

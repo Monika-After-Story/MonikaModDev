@@ -780,6 +780,9 @@ label ch30_loop:
             #Update time
             calendar_last_checked=datetime.datetime.now()
 
+            # split affection values prior to saving
+            _mas_AffSave()
+
             # save the persistent
             renpy.persistent.save()
 
