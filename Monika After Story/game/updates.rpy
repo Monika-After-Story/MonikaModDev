@@ -775,7 +775,7 @@ label mas_lupd_v0_8_4:
             aff_to_grant = 200
 
 
-        store.mas_gainAffection(aff_to_grant + 23,bypass=True)
+        store.mas_gainAffection(aff_to_grant,bypass=True)
 
         _mas_AffSave()
 
