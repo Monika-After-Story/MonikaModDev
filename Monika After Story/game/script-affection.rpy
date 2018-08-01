@@ -1016,22 +1016,33 @@ init 20 python:
                 # dont break me yo
                 persistent._mas_affection["affection"] = 0
 
-        # Makes the game update affection on start-up so the global variables are defined at all times.
+        # Makes the game update affection on start-up so the global variables
+        # are defined at all times.
         mas_updateAffectionExp(skipPP=True)
 
         # Monika's initial affection based on start-up.
         if not persistent._mas_long_absence:
             if persistent.sessions["last_session_end"] is not None:
-                persistent._mas_absence_time = datetime.datetime.now() - persistent.sessions["last_session_end"]
+                persistent._mas_absence_time = (
+                    datetime.datetime.now() - 
+                    persistent.sessions["last_session_end"]
+                )
                 time_difference = persistent._mas_absence_time
-                # we skip this for devs since we sometimes use older persistents and only apply after 1 week
+                # we skip this for devs since we sometimes use older 
+                # persistents and only apply after 1 week
                 if (
                         not config.developer
                         and time_difference >= datetime.timedelta(weeks = 1)
                     ):
-                    new_aff = _mas_getAffection() - (0.5 * time_difference.days)
+                    new_aff = _mas_getAffection() - (
+                        0.5 * time_difference.days
+                    )
                     if new_aff < affection.AFF_TIME_CAP:
-                        if time_difference >= datetime.timedelta(days=(365 * 10)):
+                        if (
+                                time_difference >= datetime.timedelta(
+                                    days=(365 * 10)
+                                )
+                            ):
                             # 10 years later is an end-game situation
                             mas_loseAffection(200)
 
