@@ -1779,6 +1779,9 @@ init -1 python in _mas_root:
 init -100 python in mas_utils:
     # utility functions for other stores.
     import datetime
+    import ctypes
+
+    __FLIMIT = 1000000
 
     def tryparseint(value, default=0):
         """
@@ -1925,6 +1928,125 @@ init -100 python in mas_utils:
             microsecond=0
         )
 
+
+    class ISCRAM(ctypes.BigEndianStructure):
+        _iscramfieldbuilder = [
+            3, 3, 2, 1, 3, 2, 2, 1, 3, 3, 1, 3, 1
+        ] # free candy
+        _iscramfieldorder = [
+            12, 11, 0, 4, 2, 9, 5, 3, 8, 7, 6, 1, 10
+        ] # r.org
+        _iscramfieldlist = [
+            ("sign", ctypes.c_ubyte, 1)
+        ]
+        for x in range(0, len(_iscramfieldorder)):
+            _iscramfieldlist.append((
+                "b" + str(x),
+                ctypes.c_ubyte,
+                _iscramfieldbuilder[_iscramfieldorder.index(x)]
+            ))
+        _pack_ = 1
+        _fields_ = list(_iscramfieldlist)
+
+
+    class FSCRAM(ctypes.BigEndianStructure):
+        _pack_ = 1
+        _fields_ = [
+            ("sign", ctypes.c_ubyte, 1),
+            ("inum", ISCRAM),
+            ("fnum", ISCRAM),
+            ("dnum", ISCRAM)
+        ]
+
+
+    def _ntoub(num, bsize):
+        """
+        Partial packing.
+        """
+        st = 1
+        val = 0
+        for i in range(0,bsize):
+            if (num & st) > 0:
+                val += st
+            st *= 2
+
+        return val
+
+
+    def _itoIS(num):
+        """
+        integer packing
+        """
+        packednum = ISCRAM()
+        if num < 0:
+            packednum.sign = 1
+            num *= -1
+
+        for i in range(0, len(ISCRAM._iscramfieldbuilder)):
+            bsize = ISCRAM._iscramfieldbuilder[i]
+            savepoint = _ntoub(num, bsize)
+            exec("".join([
+                "packednum.b",
+                str(ISCRAM._iscramfieldorder[i]),
+                " = ",
+                str(savepoint)
+            ]))
+            num = num >> bsize
+#            if num <= 0:
+#                return packednum
+
+        return packednum
+
+
+    def _IStoi(packednum):
+        """
+        integer unpacking
+        """
+        num = 0
+        for i in range(len(ISCRAM._iscramfieldbuilder)-1, -1, -1):
+            num = num << ISCRAM._iscramfieldbuilder[i]
+            num = num | eval("".join([
+                "packednum.b",
+                str(ISCRAM._iscramfieldorder[i])
+            ]))
+
+        if packednum.sign > 0:
+            return num * -1
+
+        return num
+
+
+    def _ftoFS(num):
+        """
+        Float packing
+        """
+        packednum = FSCRAM()
+        if num < 0:
+            packednum.sign = 1
+            num *= -1
+
+        ival = int(num)
+        packednum.inum = _itoIS(ival)
+        packednum.fnum = _itoIS(int((num - ival) * __FLIMIT))
+        packednum.dnum = _itoIS(__FLIMIT)
+
+        return packednum
+
+
+    def _FStof(packednum):
+        """
+        Float unpacking
+        """
+        ival = _IStoi(packednum.inum)
+        fnum = _IStoi(packednum.fnum)
+        dnum = float(_IStoi(packednum.dnum))
+
+        fval = ival + (fnum / dnum)
+
+        if packednum.sign > 0:
+            return fval * -1
+
+        return fval
 
 
 init -1 python:
