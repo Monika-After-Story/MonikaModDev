@@ -328,4 +328,6 @@ label quit:
             if acs.stay_on_start
         ]
 
+    $ _mas_AffSave()
+
     return
