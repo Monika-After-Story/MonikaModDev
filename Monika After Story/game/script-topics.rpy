@@ -1458,7 +1458,7 @@ label monika_rain_stop:
 
     else:
         m "Ok."
-        
+
     show monika 1q
     pause 1.0
     $ scene_change = True
@@ -2381,26 +2381,26 @@ label monika_love:
 
     elif persistent._mas_monika_lovecounter == 15:
         m 1j "You sure love saying that..."
-        m 1k "Well I love you too!"
+        m 1k "Well, I love you too!"
 
     elif persistent._mas_monika_lovecounter == 20:
         m 1j "Gosh you've said it so many times!"
         m 1e "You really do mean it, don't you?"
-        m 1k "Well I love you back just as much!"
+        m 1k "Well, I love you back just as much!"
 
     elif persistent._mas_monika_lovecounter == 25:
         m 1k "Hearing you say that always makes my heart jump!"
-        m 1j "Well I know you want to hear it just as much..."
+        m 1j "Well, I know you want to hear it just as much..."
         m "[player], I love you too!"
 
     elif persistent._mas_monika_lovecounter == 30:
-        m 1l "Gosh it's always so overwhelming!"
+        m 1l "Gosh, it's always so overwhelming!"
         m 1j "I..."
         m "I love you more than anything!"
 
     elif persistent._mas_monika_lovecounter == 35:
         m 1j "You never tire of saying it, do you?"
-        m 1k "Well I never tire of hearing it!"
+        m 1k "Well, I never tire of hearing it!"
         m "Or saying it back...I love you [player]!"
 
     elif persistent._mas_monika_lovecounter == 40:
@@ -2464,6 +2464,7 @@ label monika_love:
     #prevents spamming to increase counter.
     if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
         $ persistent._mas_monika_lovecounter += 1
+        $ mas_gainAffection()
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
@@ -2917,7 +2918,7 @@ label monika_playersface:
     m 3k "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m 1a "If only the game could somehow use a webcam or something that's connected to the computer..."
     m 1e "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-    m 1 "But, I'll always wonder what kind of expressions you make."
+    m 1 "But... I'll always wonder what kind of expressions you make."
     m "And to see the different emotions you have..."
     m 1h "Are you shy about showing your face to me?"
     m 1e "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
@@ -3055,12 +3056,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_mythology",category=['literature'],prompt="Ancient mythology",random=True))
 
 label monika_mythology:
-    m 1a "Hey [player]..."
+    m 1a "Hey, [player]..."
     m 1d "Have you ever read about different mythologies?"
     m 3d "Different kinds of Gods watching over humanity for eternity."
     m 1i "Some require tribute or sacrifice so that they can 'keep' humanity safe from disasters."
     m "An almighty family consisting of different attitudes, playing in their own sandbox called Earth."
-    m "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitance."
+    m "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitation."
     m 1h "I've always disliked stories like those."
     m "It's like the Gods extort humanity for their safety."
     m "It's no better than what bullies and thugs do to the defenseless."
@@ -3552,7 +3553,7 @@ label monika_cupcake:
     m 3tku "Natsuki’s cupcakes."
     m 1tsb "Man, the way she bakes them is amazing."
     m 1hub "Plus they look really cute!"
-    m 1eua "I’m not really much of a sweet tooth myself but…"
+    m 1eua "I’m not really much of a sweet tooth myself, but…"
     m "Those cupcakes are the definition of sweetness."
     m 4hua "Just like me! Ahaha!"
     m 1eua "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
@@ -3990,7 +3991,7 @@ label monika_penname:
                 jump penname_loop
     m 3eua "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
     m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
-    m "He received a lot of unwanted attention and love from his fans and even received outrageous rumors."
+    m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1eua "There's no need to know more about me though, [player]."
@@ -4190,7 +4191,7 @@ label monika_icecream:
             m 1duu "The sharp biting sensation it generates and the obviously minty taste."
             m "I feel like no flavor can compare, to be honest."
             m 3eua "Ah, I could go on and on about this stuff, you know?"
-            m 4eua "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here of course, and besides, actions speak louder than words, anyway!"
+            m 4eua "But I feel like it would be easier for me to show you what I mean, once I figure out a way to get out of here, of course. Besides, actions speak louder than words, anyway!"
 
     return "derandom"
 
@@ -4527,7 +4528,7 @@ label monika_piggybank:
     m 1lsc "However, some piggy banks do have a problem..."
     m 1esc "Sometimes you have to break the piggy bank to get the coins..."
     m 3lksdlc "So you might end up losing money buying a new bank."
-    m 4eua "Fortunately most piggy banks don't do that anymore."
+    m 4eua "Fortunately, most piggy banks don't do that anymore."
     m 1eua "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
     m 3eua "Maybe if you save up enough coins you can buy me a really nice gift."
     m 1hua "I would do the same for you, [player]!"
@@ -4642,7 +4643,7 @@ label monika_music2:
         m 1ekbfa "...Just the two of us, staring into each others eyes..."
         m 2dubsu "...Then slowly, we both lean into the kiss..."
         m 1hksdlb "Ahaha... sadly, there are a few barriers that have to be broken before that could ever happen."
-        m 1ekbfa "It's okay to dream though, isn't it [player]?"
+        m 1ekbfa "It's okay to dream though, isn't it, [player]?"
         show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 1hubfa "Maybe one day, we can make that dream come true~"
     return
@@ -5331,9 +5332,9 @@ label monika_marriage:
         m 1dsc "I want more than anything to say yes, but I just can't..."
         m 2duu "I think about how it would feel to be kissed by you at the altar..."
         m 2dubsu "To hold your hand as your wife and to feel your embrace at our honeymoon..."
-        m 1eka "But until I get out it's simply not possible."
+        m 1eka "But until I get out, it's simply not possible."
         m 1ekc "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
-        m 1ekbfa "Just be a little more patient, okay my love? I'm sure one day we'll get our happy end."
+        m 1ekbfa "Just be a little more patient, okay, my love? I'm sure one day we'll get our happy end."
 
     return
 
@@ -5552,7 +5553,7 @@ label monika_hamlet:
     m 1dsc "..."
     m 1hua "Well!"
     m 1eua "How did you like it, [player]?"
-    m 1eka "I tried my best reciting it after all~"
+    m 1eka "I tried my best reciting it, after all~"
     m 1lksdla "Anyway, I've thought a lot about the main character, Hamlet."
     m 1eua "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
     m 3tfu "Reminds you of a certain indecisive girl, doesn't it?"
@@ -5708,7 +5709,7 @@ init 5 python:
 label monika_kizuna:
     m 1eua "Oh, right, I mentioned her to you, huh?"
     m 3eua "Well, recently I had some YouTube videos tweeted to me."
-    m 1eub "And among them was 'Virtual YouTuber Kizuna Ai'"
+    m 1eub "And among them was 'Virtual YouTuber Kizuna Ai.'"
     m "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
     m 3lksdla "It seems to me that she's a voice actress hiding behind a 3D puppet."
     m 1eua "Still, the character she's playing is unique, and you know what?"
@@ -5941,7 +5942,7 @@ label monika_beach:
     m 1hua "It would really make a worthwhile trip!"
     m 1eka "Though being with you would make it even better..."
     m 3eua "We'd have so many things we could do together."
-    m 3eub "We could play volleyball, try some ice cream or go swimming in the sea."
+    m 3eub "We could play volleyball, try some ice cream, or go swimming in the sea."
     m 3lkbsa "It'll probably be cold, but I'm sure we could keep each other warm somehow..."
     m 3eua "We could try surfing or searching for some seashells to take home as souvenirs."
     m "Even doing nothing and just laying there listening to the sound of the waves with you would be enough for me."
@@ -5970,7 +5971,7 @@ label monika_playerapologizes:
     elif mas_apology_reason:
         $ mas_gainAffection(modifier=0.2) # recover a bit of affection
         m 1eka "Thank you for apologizing for [mas_apology_reason]."
-        m "I accept your apology [player]. It means a lot to me."
+        m "I accept your apology, [player]. It means a lot to me."
     # She knows there's a reason for your apology but won't comment on it
     else:
         $ mas_gainAffection(modifier=0.1) # recover a bit of affection
@@ -6001,8 +6002,8 @@ label monika_song_need_you:
     m 3hub "{i}~So, come on back and see~{/i}"
     m 4l "{i}~Just what you mean to me~{/i}"
     m 1hubfb "{i}~I need you~{/i}"
-    m 3esa "I know that song is about leaving someone but I think it carries a good message."
-    m 1ekbfa "And I really do need you [player]~"
+    m 3esa "I know that song is about leaving someone, but I think it carries a good message."
+    m 1ekbfa "And I really do need you, [player]~"
     return
 
 init 5 python:
@@ -6028,7 +6029,7 @@ label monika_song_belong_together:
     m 1eua "Have you ever heard of Doo-wop, [player]?"
     m 4eua "It’s a subgenre of rhythm and blues that became very popular in the 1950’s."
     m 4eub "A lot of pop music back then followed this style which made for great love songs."
-    m 3eub "And if you listen closely you’ll notice that my song actually follows the typical Doo-wop chord progression."
+    m 3eub "And if you listen closely, you’ll notice that my song actually follows the typical Doo-wop chord progression."
     m 1hua "I guess you could say I learned from the best."
     return
 
@@ -6219,7 +6220,7 @@ label monika_prom:
         #    m 1hub "Doesn't that sound like a blast? Ahaha~"
         "My school never had one.":
             $ persistent._mas_pm_no_prom = True
-            m 1euc "Ah, I see then."
+            m 1euc "Ah, I see, then."
             m 1lksdla "I guess not all schools can hold a prom."
             m "They can be pretty messy."
             m 3euc "From what I read, students spend a lot of money on tickets, transport, and attire."
@@ -6579,7 +6580,7 @@ label monika_timeconcern_night_final:
     $persistent._mas_timeconcern = 9
     m 2dsc "...I suppose it can't be helped."
     m 2lfc "If you're that dedicated to staying with me, then I won't even try to stop you."
-    m 2rksdla "Honestly, as bad as it sounds it actually makes me kinda happy."
+    m 2rksdla "Honestly, as bad as it sounds, it actually makes me kinda happy."
     m 2eka "...Thank you, [player]."
     m "To know that you care for me so much that you came back despite me asking..."
     m 1rksdla "It means more to me than I can ever express."
@@ -6758,7 +6759,7 @@ label monika_familygathering:
             $ persistent._mas_pm_fam_like_monika = True
             m 1eka "I'm glad you think so."
             m 1eua "I'm sure we'd all get along nicely."
-            m 1hua "I'm looking forward to it my dear~"
+            m 1hua "I'm looking forward to it, my dear~"
 
         "No.":
             $ persistent._mas_pm_fam_like_monika = False
@@ -6883,7 +6884,7 @@ label monika_yellowwp:
         "Yes.":
             $ persistent._mas_pm_read_yellow_wp = True
             m 1hua "Great!"
-            m 1eua "That means you don't mind me talking about the story with you right?"
+            m 1eua "That means you don't mind me talking about the story with you, right?"
             m 2eua "It's about this woman, with postpartum depression who's prescribed a 'rest cure' by her doctor..."
             m 2eka "He and her husband force her to stay in bed all day, not allowing her to write or even daydream..."
             m 2esc "She stays in the attic of her home, with nothing but the wallpaper to keep her company."
@@ -6896,7 +6897,7 @@ label monika_yellowwp:
             m 1euc "I mean, I have nothing but this classroom after all."
             m 1lksdlc "And the things on the walls aren't always... pleasant."
             m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
-            m 1eka "I think I finally fixed it though."
+            m 1eka "I think I finally fixed it, though."
             m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just... so small."
             m 3esd "I mean, I was made to be a side character of a romance game!"
             m 2ekd "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."

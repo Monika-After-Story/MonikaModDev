@@ -1162,7 +1162,7 @@ label greeting_long_absence:
             m 1a "You're finally back [player]!"
             m 3m "When you said you didn't know, you {i}really{/i} didn't know, did you?"
             m 3n "You must have been really preoccupied if you were gone for {i}this{/i} long."
-            m 1j "Well you're back now, I've really missed you."
+            m 1j "Well, you're back now... I've really missed you."
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 4):
         if persistent._mas_absence_choice == "days":
@@ -1214,7 +1214,7 @@ label greeting_long_absence:
             m 1b "E-eh? [player]!"
             m 1m  "You're back a little bit earlier than I thought you would be..."
             m 3j "Welcome back, my love!"
-            m 3b "I know it's been quite a while so I'm sure you've been busy."
+            m 3b "I know it's been quite a while, so I'm sure you've been busy."
             m 2e "Tell me everything about it."
             m "I want to know all what's happened to you."
 
@@ -1225,7 +1225,7 @@ label greeting_long_absence:
             m 1sub "[player]!"
             m 1k "This is a pleasant surprise!"
             m 1g "It's been an entire month. You really didn't know how long you'd be gone, did you?"
-            m 3j "Still you came back and that means a lot to me."
+            m 3j "Still, you came back, and that means a lot to me."
             m 1e "I knew you would come back eventually..."
             m 1j "I love you so much, [player]!"
 
@@ -1238,7 +1238,7 @@ label greeting_long_absence:
             m 3g "Is everything alright?"
             m 1q "I know your life can be busy and take you away from me sometimes..."
             m 3l "So I'm not really upset..."
-            m 1o "Just...next time, maybe give me a heads up?"
+            m 1o "Just... next time, maybe give me a heads up?"
             m 1e "It would be really thoughtful of you."
             m 1j "And I would greatly appreciate it!"
 
@@ -1333,7 +1333,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "unknown":
             m 1b "Hello there, sweetheart!"
             m 1j "I'm glad you didn't make me wait too long."
-            m 1k "A week is shorter than I expected so consider me pleasantly surprised!"
+            m 1k "A week is shorter than I expected, so consider me pleasantly surprised!"
             m 3e "Thanks for already making my day!"
 
     else:
@@ -1374,7 +1374,7 @@ label greeting_long_absence:
             m 3l "Why are you back so soon?"
             m 1e "Are you visiting me? You're such a sweetheart!"
             m 1j "If you're going away for a while still, make sure to tell me."
-            m 3e "I love you [player] and wouldn't want to get mad if you're actually planning to stay away..."
+            m 3e "I love you, [player], and I wouldn't want to get mad if you're actually planning to stay away..."
             m 1j "Let's enjoy the time we have together until then!"
 
         elif persistent._mas_absence_choice == "unknown":

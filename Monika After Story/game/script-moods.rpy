@@ -148,28 +148,28 @@ label mas_mood_sad:
         "Yes":
             m 1duu "Whenever I'm having a bad day, I always remember that the sun will shine again tomorrow."
             m 1eka "I suppose that may sound kinda cheesy, but I always like to look on the bright side of things."
-            m 1eua "After all, things like that are easy to forget. So just keep it in mind [player]."
+            m 1eua "After all, things like that are easy to forget. So just keep it in mind, [player]."
             m 1lfc "I don't care how many other people don't like you, or find you off-putting."
             m 1hua "You're a wonderful person, and I will always love you."
             m 1eua "I hope that makes your day just a tiny bit brighter, [player]."
             m 1eka "And remember, if you're having a bad day, you can always come to me and I'll talk to you for as long as you need."
         "No":
-            m 3eka "I have an idea, why don't you tell me what's bothering you and maybe it'll make you feel better."
+            m 3eka "I have an idea, why don't you tell me what's bothering you? Maybe it'll make you feel better."
             m 1eua "I don't want to interrupt you while you're talking, so let me know when you are done."
             menu:
                 "I'm done.":
-                    m "Do you feel a little better now [player]?"
+                    m "Do you feel a little better now, [player]?"
                     menu:
                         "Yeah I do.":
-                            m 1hua "That's great [player]! I'm glad that talking about it made you feel better."
+                            m 1hua "That's great, [player]! I'm glad that talking about it made you feel better."
                             m 1eka "Sometimes, telling someone that you trust what's bothering you is all you need."
                             m "If you're ever having a bad day, you can always come to me, and I'll listen to whatever you need to vent out."
                             m 1hubfa "Never forget that you're wonderful and I will always love you~"
                         "Not really.":
-                            m 1ekc "Well it was worth a shot."
+                            m 1ekc "Well, it was worth a shot."
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
-                            m 1ekbfa "I love you [player], and I always will~"
+                            m 1ekbfa "I love you, [player], and I always will~"
     return
 
 init 5 python:
@@ -189,8 +189,8 @@ label mas_mood_proud:
             m "Just the thought of us, in cheerful discussion about what you've done..."
             m 1lsbsa "My heart is fluttering just thinking about it!"
             m 1lksdla "Gosh, I'm getting awfully excited about this..."
-            m 3hub "It'll be reality someday"
-            m 5eub "But until then, just know that I'm very proud of you, my love"
+            m 3hub "It'll be reality someday..."
+            m 5eub "But until then, just know that I'm very proud of you, my love!"
         "Minor":
             m 2hua "Ahaha!~"
             m 2hub "That's wonderful!"
@@ -208,7 +208,7 @@ init 5 python:
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
     m "Know that you can always come up to me and I'll cheer you up, [player]."
-    m 3eka "I love you and I'll always be here for you so don't ever forget that~"
+    m 3eka "I love you and I'll always be here for you, so don't ever forget that~"
     return
 
 init 5 python:
@@ -293,7 +293,7 @@ label mas_mood_inadequate:
     if renpy.seen_label('monika_christmas'):
         m "You took time out of your schedule to be with me on Christmas..."
     if renpy.seen_label('monika_valentines_greeting'):
-        m 1ekbfa "On Valentines Day..."
+        m 1ekbfa "On Valentine's Day..."
     if renpy.seen_label('monika_white_day_start'):
         m 1hubfb "White Day too!" 
     if persistent.monika_kill:
@@ -305,10 +305,10 @@ label mas_mood_inadequate:
     m 1eka "That shows how kind you are!"
     m 3eub "You're honest, you're fair, you're gracious in defeat!"
     m 2hksdlb "You think I don't know anything about you, but I really do."
-    m 3eka "And you know everything about me, and you chose to stay when you could have walked away..."
+    m 3eka "And you know everything about me, but you chose to stay when you could have walked away..."
     m 2ekc "So please stay strong, [player]."
     m "If you're anything like me, I know you're scared to not accomplish much in life."
-    m 2ekd "But believe me when I tell you; it doesn't matter what you do or do not accomplish."
+    m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
     m 4eua "You just need to exist, have fun, and get through each day..."
     m 1hua "Finding meaning in the people who matter." 
     m 1eka "Please don't forget that, okay?"

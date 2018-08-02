@@ -22,7 +22,7 @@ init -1 python in mas_compliments:
     COMPLIMENT_H = 640
     COMPLIMENT_XALIGN = -0.15
     COMPLIMENT_AREA = (COMPLIMENT_X, COMPLIMENT_Y, COMPLIMENT_W, COMPLIMENT_H)
-    COMPLIMENT_RETURN = "oh nevermind"
+    COMPLIMENT_RETURN = "Oh nevermind"
     compliment_database = dict()
 
     thanking_quips = [
@@ -435,7 +435,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_chess",
-            prompt="... you’re awesome at chess!",
+            prompt="... You’re awesome at chess!",
             unlocked=False,
             conditional="renpy.seen_label('mas_chess_game_start')",
             action=EV_ACT_UNLOCK
@@ -466,7 +466,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_pong",
-            prompt="... you’re awesome at Pong!",
+            prompt="... You’re awesome at pong!",
             unlocked=False,
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK
@@ -482,7 +482,7 @@ label mas_compliment_pong:
         m "So you know it's very simple."
         m 5hub "But I accept your compliment, anyway."
     else:
-        m 3hksdrb "And you're too kind to let me lose when we play."
+        m 3hksdrb "And you always let me win when we play."
         m 3eka "Right?"
         menu:
             "Yes":
@@ -510,7 +510,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_bestgirl",
-            prompt="... you're the best girl!",
+            prompt="... You're the best girl!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database

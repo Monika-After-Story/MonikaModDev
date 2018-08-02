@@ -113,7 +113,7 @@ label mas_stories_start:
 label mas_story_begin:
     python:
         story_begin_quips = [
-            "Alright let's start the story.",
+            "Alright, let's start the story.",
             "Ready to hear the story?",
             "Ready for story time?",
             "Let's begin~",
@@ -217,9 +217,9 @@ label mas_story_lies:
     m 3wud "Shortly after, a Wolf actually did come out from the forest."
     m 1ekc "The boy cried out 'Wolf, Wolf!' still louder than before."
     m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
-    m 2dsc "So the Wolf made a good meal off the boy's flock."
+    m 2dsc "So the Wolf made a good meal of the boy's flock."
     m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth'."
-    m 1hksdlb "You shouldn't worry about it, [player]"
+    m 1hksdlb "You shouldn't worry about it, [player]..."
     m 3hua "You'd never lie to me, right?"
     m 1hub "Ehehe~"
     m 1eua "I hope you enjoyed the story, [player]!"
@@ -324,7 +324,7 @@ label mas_story_ravel:
     m 1tfu "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
     m 3eud "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
     m 1tfd "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish.'"
-    m 3tku "'That's why you remember nothing; because everything is the way it was before you made any wishes.'"
+    m 3tku "'That's why you remember nothing: because everything is the way it was before you made any wishes.'"
     m 1dsd "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
     m 1tfb "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
     return
