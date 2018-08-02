@@ -1193,6 +1193,7 @@ label monika_affection_nickname:
             "lesbian",
             "lezbo",
             "lezbian",
+            "loser",
             "milf",
             "Murder",
             "nasty",
