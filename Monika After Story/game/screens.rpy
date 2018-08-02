@@ -1,11 +1,115 @@
 init 100 python:
-    layout.QUIT = "Leaving without saying goodbye, [player]?"
-    layout.UNSTABLE = (
+    layout.QUIT = store.mas_layout.QUIT
+    layout.UNSTABLE = store.mas_layout.UNSTABLE
+
+init -1 python:
+    layout.QUIT_YES = "Please don't close the game on me!"
+    layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
+
+
+init python in mas_layout:
+    import store
+    import store.mas_affection as aff
+    gender = renpy.game.persistent.gender 
+
+    QUIT_YES = store.layout.QUIT_YES
+    QUIT_NO = store.layout.QUIT_NO
+    QUIT = "Leaving without saying goodbye, [player]?"
+    UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
         "experimental unstable branch. It is HIGHLY recommended to make a " +
         "backup of your persistent before enabling this mode. Please report " +
         "issues found here with an [[UNSTABLE] tag."
     )
+
+    # quit yes messages affection scaled
+    QUIT_YES_BROKEN = "You could at least pretend that you care."
+    QUIT_YES_DIS = ":("
+    QUIT_YES_AFF = "T_T [player]..."
+
+    # quit no messages affection scaled
+    QUIT_NO_BROKEN = "{i}Now{/i} you listen?"
+    QUIT_NO_UPSET = "Thanks for being considerate, [player]."
+    QUIT_NO_HAPPY = ":)"
+    QUIT_NO_AFF_G = "Good [boy]."
+    QUIT_NO_AFF_GL = "Good. :)"
+    QUIT_NO_LOVE = "<3 u"
+
+    # quit messages affection scaled
+    QUIT_BROKEN = "Just go."
+    QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
+
+    if gender == "M" or gender == "F":
+        _usage_quit_aff = QUIT_NO_AFF_G
+    else:
+        _usage_quit_aff = QUIT_NO_AFF_GL
+
+    # quit message dicts
+    # tuple:
+    #   [0]: quit message
+    #   [1]: quit yes message
+    #   [2]: quit no message
+    # if something is None we go to the state closest to normal
+    QUIT_MAP = {
+        aff.BROKEN: (QUIT_BROKEN, QUIT_YES_BROKEN, QUIT_NO_BROKEN),
+        aff.DISTRESSED: (None, QUIT_YES_DIS, None),
+        aff.UPSET: (None, None, QUIT_NO_UPSET),
+        aff.NORMAL: (QUIT, QUIT_YES, QUIT_NO),
+        aff.HAPPY: (None, None, QUIT_NO_HAPPY),
+        aff.AFFECTIONATE: (QUIT_AFF, QUIT_YES_AFF, _usage_quit_aff),
+        aff.ENAMORED: (None, None, None),
+        aff.LOVE: (None, None, QUIT_NO_LOVE)
+    }
+
+
+    def findMsg(start_aff, index):
+        """
+        Finds first non-None quit message we need
+
+        This uses the cascade map from affection
+
+        IN:
+            start_aff - starting affection
+            index - index of the tuple we need to look at
+
+        RETURNS:
+            first non-None quit message found.
+        """
+        msg = QUIT_MAP[start_aff][index]
+        while msg is None:
+            start_aff = aff._aff_cascade_map[start_aff]
+            msg = QUIT_MAP[start_aff][index]
+
+        return msg
+
+
+    def setupQuits():
+        """
+        Sets up quit message based on the current affection state
+        """
+        curr_aff_state = store.mas_curr_affection
+
+        quit_msg, quit_yes, quit_no = QUIT_MAP[curr_aff_state]
+
+        if quit_msg is None:
+            quit_msg = findMsg(curr_aff_state, 0)
+
+        if quit_yes is None:
+            quit_yes = findMsg(curr_aff_state, 1)
+
+        if quit_no is None:
+            quit_no = findMsg(curr_aff_state, 2)
+
+        store.layout.QUIT = quit_msg
+        store.layout.QUIT_YES = quit_yes
+        store.layout.QUIT_NO = quit_no
+
+
+init 3000 python:
+    import store.mas_layout
+    store.mas_layout.setupQuits()
+
+
 ## Initialization
 ################################################################################
 
@@ -619,6 +723,14 @@ screen game_menu_m():
 
 screen game_menu(title, scroll=None):
 
+    # when teh game menu is open, we should disable the hotkeys
+    key "noshift_T" action NullAction()
+    key "noshift_t" action NullAction()
+    key "noshift_M" action NullAction()
+    key "noshift_m" action NullAction()
+    key "noshift_P" action NullAction()
+    key "noshift_p" action NullAction()
+
     # Add the backgrounds.
     if main_menu:
         add gui.main_menu_background
@@ -970,20 +1082,9 @@ screen preferences():
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 
-#                vbox:
-#                    style_prefix "check"
-#                    label _("Gameplay")
-#                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
-
-                ## Additional vboxes of type "radio_pref" or "check_pref" can be
-                ## added here, to add additional creator-defined preferences.
-
-            hbox:
-                box_wrap True
-
                 vbox:
                     style_prefix "check"
-                    label _("Dev")
+                    label _("Gameplay")
                     if persistent._mas_unstable_mode:
                         textbutton _("Unstable"):
                             action SetField(persistent, "_mas_unstable_mode", False)
@@ -994,6 +1095,11 @@ screen preferences():
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
 
+                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+
+                ## Additional vboxes of type "radio_pref" or "check_pref" can be
+                ## added here, to add additional creator-defined preferences.
+
 
             null height (4 * gui.pref_spacing)
 
@@ -1002,45 +1108,68 @@ screen preferences():
                 box_wrap True
 
                 python:
-                    # sunrise / sunset preprocessing
+                    ### random chatter preprocessing
+                    if mas_randchat_prev != persistent._mas_randchat_freq:
+                        # adjust the randoms if it changed
+                        mas_randchat.adjustRandFreq(
+                            persistent._mas_randchat_freq
+                        )
+
+                    # setup the display string
+                    rc_display = mas_randchat.getRandChatDisp(
+                        persistent._mas_randchat_freq
+                    )
+
+                    # setup previous values
+                    mas_randchat_prev = persistent._mas_randchat_freq
+
+
+                    ### sunrise / sunset preprocessing
                     # figure out which value is changing (if any)
                     if mas_suntime.change_state == mas_suntime.RISE_CHANGE:
                         # we are modifying sunrise
 
-                        if persistent._mas_sunrise > persistent._mas_sunset:
+                        if mas_suntime.sunrise > mas_suntime.sunset:
                             # ensure sunset remains >= than sunrise
-                            persistent._mas_sunset = persistent._mas_sunrise
+                            mas_suntime.sunset = mas_suntime.sunrise
 
-                        if mas_sunrise_prev == persistent._mas_sunrise:
+                        if mas_sunrise_prev == mas_suntime.sunrise:
                             # if no change since previous, then switch state
                             mas_suntime.change_state = mas_suntime.NO_CHANGE
 
-                        mas_sunrise_prev = persistent._mas_sunrise
+                        mas_sunrise_prev = mas_suntime.sunrise
 
                     elif mas_suntime.change_state == mas_suntime.SET_CHANGE:
                         # we are modifying sunset
 
-                        if persistent._mas_sunset < persistent._mas_sunrise:
+                        if mas_suntime.sunset < mas_suntime.sunrise:
                             # ensure sunrise remains <= than sunset
-                            persistent._mas_sunrise = persistent._mas_sunset
+                            mas_suntime.sunrise = mas_suntime.sunset
 
-                        if mas_sunset_prev == persistent._mas_sunset:
+                        if mas_sunset_prev == mas_suntime.sunset:
                             # if no change since previous, then switch state
                             mas_suntime.change_state = mas_suntime.NO_CHANGE
 
-                        mas_sunset_prev = persistent._mas_sunset
+                        mas_sunset_prev = mas_suntime.sunset
                     else:
                         # decide if we are modifying sunrise or sunset
 
-                        if mas_sunrise_prev != persistent._mas_sunrise:
+                        if mas_sunrise_prev != mas_suntime.sunrise:
                             mas_suntime.change_state = mas_suntime.RISE_CHANGE
 
-                        elif mas_sunset_prev != persistent._mas_sunset:
+                        elif mas_sunset_prev != mas_suntime.sunset:
                             mas_suntime.change_state = mas_suntime.SET_CHANGE
 
                         # set previous values
-                        mas_sunrise_prev = persistent._mas_sunrise
-                        mas_sunset_prev = persistent._mas_sunset
+                        mas_sunrise_prev = mas_suntime.sunrise
+                        mas_sunset_prev = mas_suntime.sunset
+
+
+                    ## prepreocess display time
+                    persistent._mas_sunrise = mas_suntime.sunrise * 5
+                    persistent._mas_sunset = mas_suntime.sunset * 5
+                    sr_display = mas_cvToDHM(persistent._mas_sunrise)
+                    ss_display = mas_cvToDHM(persistent._mas_sunset)
 
                 vbox:
 
@@ -1048,22 +1177,31 @@ screen preferences():
                         label _("Sunrise   ")
 
                         # display time
-                        $ sr_display = mas_cvToDHM(persistent._mas_sunrise)
                         label _("[[ " + sr_display + " ]")
 
-                    bar value FieldValue(persistent, "_mas_sunrise", range=mas_max_suntime, style="slider")
+                    bar value FieldValue(mas_suntime, "sunrise", range=mas_max_suntime, style="slider")
 
-
-                vbox:
 
                     hbox:
                         label _("Sunset   ")
 
                         # display time
-                        $ ss_display = mas_cvToDHM(persistent._mas_sunset)
                         label _("[[ " + ss_display + " ]")
 
-                    bar value FieldValue(persistent, "_mas_sunset", range=mas_max_suntime, style="slider")
+                    bar value FieldValue(mas_suntime, "sunset", range=mas_max_suntime, style="slider")
+
+
+                vbox:
+
+                    hbox:
+                        label _("Random Chatter   ")
+
+                        # display str
+                        label _("[[ " + rc_display + " ]")
+
+                    bar value FieldValue(persistent, "_mas_randchat_freq",
+                    range=3, style="slider")
+
 
                 vbox:
 
@@ -1118,7 +1256,7 @@ screen preferences():
                     style "navigation_button"
 
                 textbutton _("Import DDLC Save Data"):
-                    action [Jump('import_ddlc_persistent_in_settings')]
+                    action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
 
@@ -1585,8 +1723,12 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action [SetField(persistent, "_mas_crashed_self", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
-                textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
+                if mas_finalfarewell_mode:
+                    textbutton _("-") action yes_action
+                    textbutton _("-") action yes_action
+                else:
+                    textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message=layout.QUIT_YES, ok_action=yes_action)]
+                    textbutton _("No") action no_action, Show(screen="dialog", message=layout.QUIT_NO, ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -1713,7 +1855,7 @@ screen updater:
                 elif u.state == u.PREPARING:
                     text _("Preparing to download the updates.")
                 elif u.state == u.DOWNLOADING:
-                    text _("Downloading the updates.")
+                    text _("Downloading the updates. (Progress bar may not advance during download)")
                 elif u.state == u.UNPACKING:
                     text _("Unpacking the updates.")
                 elif u.state == u.FINISHING:
@@ -2052,7 +2194,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
                     textbutton _(nvm_text) action Return(False)
 
-# more generali scrollable menu. This one takes the following params:
+# more general scrollable menu. This one takes the following params:
 # IN:
 #   items - list of items to display in the menu. Each item must be a tuple of
 #       the following format:
@@ -2157,6 +2299,7 @@ screen mas_generic_restart:
                 spacing 100
 
                 textbutton _("OK") action Return(True)
+
 
 # generic custom displayabels below:
 init python:
