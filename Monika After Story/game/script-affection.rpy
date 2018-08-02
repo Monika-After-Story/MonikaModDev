@@ -1251,6 +1251,7 @@ label monika_affection_nickname:
             "angel",
             "beautiful",
             "best",
+            "cuddl",
             "cute",
             "可愛い",
             "cutie",
