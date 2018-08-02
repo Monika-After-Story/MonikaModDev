@@ -1172,6 +1172,7 @@ label monika_affection_nickname:
             "douche",
             "dumb",
             "evil",
+            "fake",
             "fetus",
             "foul",
             "fuck",
@@ -1245,6 +1246,7 @@ label monika_affection_nickname:
             "beautiful",
             "best",
             "cute",
+            "可愛い",
             "cutie",
             "darling",
             "great"
