@@ -175,7 +175,8 @@ init -1 python in evhand:
 
     # restart topic blacklist
     RESTART_BLKLST = [
-        "mas_crashed_start"
+        "mas_crashed_start",
+        "monika_affection_nickname"
     ]
 
     # as well as special functions

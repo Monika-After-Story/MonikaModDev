@@ -1264,6 +1264,18 @@ label monika_affection_nickname:
             "sweet",
         ]
 
+        # mom list
+        mom_nickname_list = [
+            "mom",
+            "momma",
+            "mother",
+            "momika",
+            "mama",
+            "mommy",
+            "okasa"
+        ]
+            
+
     if not persistent._mas_offered_nickname:
         m 1c "I've been thinking, [player]..."
         m 3d "You know how there are potentially infinite Monikas right?"
@@ -1314,6 +1326,15 @@ label monika_affection_nickname:
                     m 1c "..."
                     m 1l "I thought we were choosing a new name, silly."
                     m 1e "Try again~"
+                elif lowername in mom_nickname_list:
+                    # mother flow
+                    m 1eub "Oh, you're a momma's boy, huh?"
+                    $ persistent._mas_monika_nickname = inputname
+                    $ m_name = inputname
+
+                    m 2tfu "I'll be your mommy."
+                    $ done = True
+
                 else:
                     $ bad_nickname = bad_nickname_search.search(inputname)
                     if bad_nickname is None:
