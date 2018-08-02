@@ -7069,7 +7069,7 @@ label monika_beingevil:
             m 1hua "If I were there, I'd feel like giving you a big hug!"
             m 1tsbsa "Maybe I'll even trap you in my arms forever and never let you go..."
             m 1hubfa "Just kidding!"
-            m tsbsa "But no promises, [player], eheheh~"
+            m 1tsbsa "But no promises, [player], eheheh~"
         "I still love you anyway.":
             m 1lksdlc "..."
             m 1lkbsa "[player]..."
