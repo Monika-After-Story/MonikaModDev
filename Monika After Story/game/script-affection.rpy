@@ -1241,6 +1241,11 @@ label monika_affection_nickname:
             "Yuri",
         ]
 
+        # TODO: potential special responses for:
+        # okasa (OKASA MONIKA)
+        # imouto
+        # nee-chan
+        # maybe more?
         good_nickname_list = [
             "angel",
             "beautiful",
