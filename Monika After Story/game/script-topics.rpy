@@ -7046,6 +7046,50 @@ label monika_yellowwp:
     return "derandom"
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_beingevil",category=['monika'],prompt="Being Evil.",random=True))
+
+label monika_beingevil:
+    m 1euc "Say, [player]..."
+    m 1lksdlc "I was just thinking..."
+    m "You probably know I have a wiki page about me."
+    m 3lksdlc "If you look closely, it says I'm the main antagonist."
+    m "Originally, it did bother me a bit, but not so much anymore with you here."
+    m 1lksdla "I'm sure we got past that, seeing as you're still here with me now."
+    m "I actually didn't think the whole thing about me being evil would spread too much."
+    m 1lksdlc "It turns out though, that I have my own spot on the villain's wiki..."
+    m 2lksdlb "I never really thought I'd be labeled as a villain so much..."
+    m 2lksdlc "No matter what I say or tell people, I'm sure it's not going to help much."
+    m 1eka "I know you don't {i}really{/i} think I'm evil, [player]."
+    m 1lksdlb "At least, not in a bad way."
+    m 1hksdlb "I just hope nobody starts thinking you're evil by being here with me."
+    menu:
+        "I don't think you're evil.":
+            m 1eka "I'm glad you understand, [player]."
+            m 1eub "I wish I could tell you how happy it makes me to know that!"
+            m 1hua "If I were there, I'd feel like giving you a big hug!"
+            m 1tsbsa "Maybe I'll even trap you in my arms forever and never let you go..."
+            m 1hubfa "Just kidding!"
+            m tsbsa "But no promises, [player], eheheh~"
+        "I still love you anyway.":
+            m 1lksdlc "..."
+            m 1lkbsa "[player]..."
+            m 1ekbfa "Even if it's debatable whether I'm evil or not..."
+            m 1hubfa "I'm really glad you still love me and stay here with me..."
+            m 1hubfb "Thank you, [player]!"
+            m 1tsbsa "Either way..."
+            m "If the villainess in me can get what she wants, I guess it's not so bad..."
+            m "Eheheheh"
+        "People think I'm evil too.":
+            m 2eud "Oh?"
+            m 2eka "I mean, I don't see you as evil one bit."
+            m 2lksdla "If it really is true though, I hope it doesn't cause you any trouble."
+            m 1hua "Either way, I wouldn't love you any less~"
+            m 1hub "Maybe we could even conquer the world together or something, ahaha~"
+            m 1ekbfa "But evil or not, I'm glad to have you by my side."
+            m 1hubfa "I'm guessing it's the same for you too~"
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
