@@ -1,14 +1,42 @@
-
-# For anyone wanting to write using the affection system the general thought process for Monika in each affection is as followed...
-# Lovestruck - Monika is the happiest she could ever be and filled with a sense of euphoria because of it, completely enamoured and could die happy. She has no doubts the player loves her and that everything was worth it.
-# Overjoyed - Exceptionally happy, the happiest she has ever been in her life to that point. Completely trusts the player and wants to make him/her as happy as she is.
-# Happy - Glad that the relationship is working out and has high hopes and at this point has no doubts about whether or not it was worth it.
-# Content - Happy with how it is, could be happier but not sad at all.
-# Normal - Has mild doubts as to whether or not her sacrifices were worth it but trusts the player to treat her right. Isn't strongly happy or sad
-# Sad - Is feeling down, not miserable or deep but certainly not her self-motivated self. Believes she'll get player. Has minor thoughts that player isn't faithful but doesn't take them seriously.
-# Upset - Feeling emotionally hurt, starting to have doubts about whether or not the player loves her and whether or not she she was right regarding what she did in the game.
-# Depressed - Convinced the player probably doesn't love her and that she may never escape to our reality.
-# Heartbroken - Believes that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
+# Affection module:
+#
+# General:
+#
+# This module is aimed to keep track and determine Monika's affection
+# towards the player. Said affection level will be used to trigger
+# specific events.
+#
+# Affection mechanics:
+#
+# - Affection gain has a 7 points cap per day
+# - Affection lose doesn't have a cap
+# - Max and Min possible values for affection are 1000000 and -1000000 respectively
+# - Player lose affection every time it takes longer than 1 week to visit Monika
+#     the reduction is measured by the formula number_of_days_absent * 0.5
+#     if by doing that reduction affection were to be higher than -101 it will be
+#     be set to -101. If absent time were higher than 10 years she'll go to -200
+# - Affection is given or lost by specific actions the player can do or decisions
+#     the player makes
+#
+# Affection level determine some "states" in which Monika is. Said states are the
+# following:
+#
+# LOVE (1000 and up)
+#     Monika is the happiest she could ever be and filled with a sense of euphoria because of it, completely enamoured and could die happy. She has no doubts the player loves her and that everything was worth it.
+# ENAMORED (400 up to 999)
+#     Exceptionally happy, the happiest she has ever been in her life to that point. Completely trusts the player and wants to make him/her as happy as she is.
+# AFFECTIONATE (100 up to 399)
+#     Glad that the relationship is working out and has high hopes and at this point has no doubts about whether or not it was worth it.
+# HAPPY (030 up to 99)
+#     Happy with how it is, could be happier but not sad at all.
+# NORMAL (-29 up to 29)
+#     Has mild doubts as to whether or not her sacrifices were worth it but trusts the player to treat her right. Isn't strongly happy or sad
+# UPSET (-74 up to -30)
+#     Feeling emotionally hurt, starting to have doubts about whether or not the player loves her and whether or not she she was right regarding what she did in the game.
+# DISTRESSED (-99 up to -75)
+#     Convinced the player probably doesn't love her and that she may never escape to our reality.
+# BROKEN  (-100 and lower)
+#     Believes that not only does the player not love her but that s/he probably hates her too because of she did and is trying to punish her. Scared of being alone in her own reality, as well as for her future.
 #############
 
 init python:
@@ -135,7 +163,7 @@ init -1 python in mas_affection:
     # lower affection cap for time
     AFF_TIME_CAP = -101
 
-# need these utility functiosn post event_handler 
+# need these utility functiosn post event_handler
 init 15 python in mas_affection:
     import store # global
     import store.evhand as evhand
@@ -217,7 +245,7 @@ init 15 python in mas_affection:
             evhand._unlockEventLabel(
                 "greeting_hairdown",
                 eventdb=evhand.greeting_database
-            )           
+            )
 
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO
@@ -281,6 +309,10 @@ init 15 python in mas_affection:
             layout.QUIT_NO = mas_layout.QUIT_NO_AFF_GL
         layout.QUIT = mas_layout.QUIT_AFF
 
+        # Unlock nickname event
+        if not persistent._mas_called_moni_a_bad_name:
+            store.unlockEventLabel("monika_affection_nickname")
+
 
     def _affToHappy():
         """
@@ -290,6 +322,19 @@ init 15 python in mas_affection:
         layout.QUIT_YES = mas_layout.QUIT_YES
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
         layout.QUIT = mas_layout.QUIT
+
+        # lock nickname event
+        store.lockEventLabel("monika_affection_nickname")
+
+        # revert nickname
+        # TODO: we should actually push an event where monika asks player not
+        # to call them a certain nickname. Also this change should probaly
+        # happen from normal to upset instead since thats more indicative of
+        # growing animosity toward someone
+        # NOTE: maybe instead of pushing an event, we could also add a pool
+        # event so player can ask what happened to the nickname
+        persistent._mas_monika_nickname = "Monika"
+        m_name = persistent._mas_monika_nickname
 
 
     def _affToEnamored():
@@ -352,7 +397,7 @@ init 15 python in mas_affection:
 
     # transition programing point dict
     # each item has a tuple value:
-    #   [0] - going up transition pp 
+    #   [0] - going up transition pp
     #   [1] - going down transition pp
     # if a tuple value is None, it doesn't have that pp
     #
@@ -379,7 +424,7 @@ init 15 python in mas_affection:
     def runAffPPs(start_aff, end_aff):
         """
         Runs programming points to transition from the starting affection
-        to the ending affection 
+        to the ending affection
 
         IN:
             start_aff - starting affection
@@ -536,7 +581,7 @@ init 20 python:
     def _mas_getAffection():
         return persistent._mas_affection["affection"]
 
-    
+
     ## affection comparison
     # [AFF020] Affection comparTos
     def mas_compareAff(aff_1, aff_2):
@@ -591,7 +636,7 @@ init 20 python:
             True if monika is broke, False otherwise
         """
         return affection._isMoniState(
-            mas_curr_affection, 
+            mas_curr_affection,
             store.mas_affection.BROKEN,
             higher=higher
         )
@@ -626,7 +671,7 @@ init 20 python:
         Checks if monika is upset
 
         IN:
-            lower - True means we include everything below this affection 
+            lower - True means we include everything below this affection
                 state as upset as well
                 (Default: False)
             higher - True means we include everything above this affection
@@ -642,12 +687,12 @@ init 20 python:
             lower=lower,
             higher=higher
         )
-    
+
 
     def mas_isMoniNormal(lower=False, higher=False):
         """
         Checks if monika is normal
-        
+
         IN:
             lower - True means we include everything below this affection state
                 as normal as well
@@ -735,7 +780,7 @@ init 20 python:
             higher=higher
         )
 
-    
+
     def mas_isMoniLove(lower=False, higher=False):
         """
         Checks if monika is in love
@@ -757,7 +802,7 @@ init 20 python:
             lower=lower
         )
 
-    
+
     # [AFF023] Group state checkers
     def mas_isMoniGSad(lower=False, higher=False):
         """
@@ -786,7 +831,7 @@ init 20 python:
         Checks if monika is in normal affection group
 
         IN:
-            lower - True means we include everything below this affection 
+            lower - True means we include everything below this affection
                 group as normal as well
                 (Default: False)
             higher - True means we include everything above this affection
@@ -922,7 +967,7 @@ init 20 python:
 
             # it can't get higher than 1 million
             if persistent._mas_affection["affection"] > 1000000:
-                persistet.mas_affection["affection"] = 1000000
+                persistent.mas_affection["affection"] = 1000000
 
             if not bypass:
                 persistent._mas_affection["today_exp"] += (amount * modifier)
@@ -958,7 +1003,7 @@ init 20 python:
 
             # it can't get lower than -1 million
             if persistent._mas_affection["affection"] < -1000000:
-                persistet.mas_affection["affection"] = -1000000
+                persistent.mas_affection["affection"] = -1000000
 
             # Updates the experience levels if necessary.
             mas_updateAffectionExp()
@@ -1084,6 +1129,22 @@ init 20 python:
 # Unlocked when affection level reaches 50.
 # This allows the player to choose a nick name for Monika that will be displayed on the label where Monika's name usually is.
 # There is a character limit of 10 characters.
+init 5 python:
+    addEvent(
+        Event(persistent.event_database,
+            eventlabel='monika_affection_nickname',
+            prompt="Infinite Monikas",
+            category=['monika'],
+            random=False,
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+default persistent._mas_called_moni_a_bad_name = False
+default persistent._mas_offered_nickname = False
+
 label monika_affection_nickname:
     python:
         import re
@@ -1156,18 +1217,30 @@ label monika_affection_nickname:
             "sweet",
         ]
 
+    if not persistent._mas_offered_nickname:
+        m 1c "I've been thinking, [player]..."
+        m 3d "You know how there are potentially infinite Monikas right?"
+        if renpy.seen_label('monika_clones'):
+            m 3a "We did discuss this before after all."
+        m 3a "Well, I thought of a solution!"
+        m "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
+        m 3e "And it would mean a lot if you choose one for me~"
+        m 3j "I'll still get the final say, though!"
+        m "What do you say?"
+        python:
+            # change the prompt for this event
+            aff_nickname_ev = mas_getEV("monika_affection_nickname")
+            aff_nickname_ev.prompt = "Can I call you a different name?"
+            Event.lockInit("prompt", ev=aff_nickname_ev)
+            persistent._mas_offered_nickname = True
 
-    m 1c "I've been thinking, [player]..."
-    m 3d "You know how there are potentially infinite Monikas right?"
-    if renpy.seen_label('monika_clones'):
-        m 3a "We did discuss this before after all."
-    m 3a "Well, I thought of a solution!"
-    m "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
-    m 3e "And it would mean a lot if you choose one for me~"
-    m 3j "I'll still get the final say, though!"
-    m "What do you say?"
+    else:
+        jump monika_affection_nickname_yes
+
     menu:
         "Yes":
+            label monika_affection_nickname_yes:
+                pass
             $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
             $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
             $ done = False
@@ -1226,7 +1299,8 @@ label monika_affection_nickname:
                         m 2ektsc "...You didn't have to be so mean."
                         m 2dftdc "That really hurt, [player]."
                         m 2efc "Please don't do that again."
-                        $ hideEventLabel("monika_affection_nickname",lock=False,depool=False)
+                        $ persistent._mas_called_moni_a_bad_name = True
+                        $ hideEventLabel("monika_affection_nickname")
                         $ done = True
 
         "No":

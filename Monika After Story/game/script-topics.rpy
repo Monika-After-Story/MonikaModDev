@@ -1458,7 +1458,7 @@ label monika_rain_stop:
 
     else:
         m "Ok."
-        
+
     show monika 1q
     pause 1.0
     $ scene_change = True
@@ -2464,6 +2464,7 @@ label monika_love:
     #prevents spamming to increase counter.
     if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
         $ persistent._mas_monika_lovecounter += 1
+        $ mas_gainAffection()
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
