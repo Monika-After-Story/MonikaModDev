@@ -66,7 +66,7 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
-#        updates.version_updates[vv0_8_3] = vv0_8_4
+        updates.version_updates[vv0_8_3] = vv0_8_4
         updates.version_updates[vv0_8_2] = vv0_8_3
         updates.version_updates[vv0_8_1] = vv0_8_2
         updates.version_updates[vv0_8_0] = vv0_8_1
