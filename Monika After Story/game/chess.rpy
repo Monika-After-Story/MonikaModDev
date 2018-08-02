@@ -1974,13 +1974,14 @@ label mas_chess_dlg_qf_lost_ofcn_6:
     # its just throwing away stuff instead of cheating
     # disable chess forever!
     $ mas_loseAffection(modifier=10)
+    $ persistent.game_unlocks["chess"] = False
+    # workaround to deal with peeople who havent seen the unlock chess label
+    $ persistent._seen_ever["unlock_chess"] = True
+
     m 2dfc "..."
     m 2efc "[player],{w} I don't believe you."
     m 2efd "If you're just going to throw away our chess games like that..."
     m 6wfw "Then I don't want to play chess with you anymore!"
-    $ persistent.game_unlocks["chess"] = False
-    # workaround to deal with peeople who havent seen the unlock chess label
-    $ persistent._seen_ever["unlock_chess"] = True
     return True
 
 ## maybe monika flow
@@ -2063,6 +2064,8 @@ label mas_chess_dlg_qf_lost_may_filechecker:
 
 # 3rd time maybe monika
 label mas_chess_dlg_qf_lost_may_3:
+    $ persistent._mas_chess_skip_file_checks = True
+
     m 2ekd "[player]! That's-"
     m 1esa "Not a problem at all."
     m "I knew you were going to do this again,"
@@ -2070,18 +2073,18 @@ label mas_chess_dlg_qf_lost_may_3:
     # TODO: wink here please
     m 1eua "You can't trick me anymore, [player]."
     m "Now let's continue our game."
-    $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
 
 # maybe monika, but player removed the file again!
 label mas_chess_dlg_qf_lost_may_removed:
+    $ import datetime
+    $ persistent._mas_chess_timed_disable = datetime.datetime.now()
     $ mas_loseAffection(modifier=0.5)
+
     m 2wfw "[player]!"
     m 2wfx "You removed the save again."
     pause 0.7
     m 2rfc "Let's just play chess at another time, then."
-    $ import datetime
-    $ persistent._mas_chess_timed_disable = datetime.datetime.now()
     return True
 
 ## Accident monika flow
@@ -2119,10 +2122,11 @@ label mas_chess_dlg_qf_lost_acdnt_2:
 
 # 3rd accident monika
 label mas_chess_dlg_qf_lost_acdnt_3:
+    $ persistent._mas_chess_skip_file_checks = True
+
     m 1eka "I had a feeling this would happen again."
     m 3hub "So I kept a backup of our save!"
     m 1eua "Now we can continue our game."
-    $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
 
 ### quickfile edited
@@ -2190,24 +2194,26 @@ label mas_chess_dlg_qf_edit_y_1:
 
 # 2nd time yes edit
 label mas_chess_dlg_qf_edit_y_2:
-    $ mas_loseAffection(modifier=0.5)
-    m 2dfc "I am incredibly disappointed in you."
-    m 2rfc "I don't want to play chess right now."
     python:
         import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
+        mas_loseAffection(modifier=0.5)
+
+    m 2dfc "I am incredibly disappointed in you."
+    m 2rfc "I don't want to play chess right now."
     return True
 
 # 3rd time yes edit
 label mas_chess_dlg_qf_edit_y_3:
     $ mas_loseAffection()
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20
+    $ persistent._mas_chess_skip_file_checks = True
+
     m 2dsc "I'm not surprised..."
     m 2esc "But I am prepared."
     m "I kept a backup of our game just in case you did this again."
     m 1esa "Now let's finish this game."
-    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
-    $ persistent.chess_strength = 20
-    $ persistent._mas_chess_skip_file_checks = True
     return store.mas_chess.CHESS_GAME_BACKUP
 
 ## No Edit flow
@@ -2231,21 +2237,23 @@ label mas_chess_dlg_qf_edit_n_start:
 # 1st time no edit
 label mas_chess_dlg_qf_edit_n_1:
     $ mas_loseAffection()
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20
+
     m 1ekc "I see."
     m "The save file looks different than how I last remembered it, but maybe that's just my memory failing me."
     m 1eua "Let's continue this game."
-    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
-    $ persistent.chess_strength = 20
     return store.mas_chess.CHESS_GAME_FILE
 
 # 2nd time no edit
 label mas_chess_dlg_qf_edit_n_2:
     $ mas_loseAffection(modifier=2)
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20
+
     m 1ekc "I see."
     m "..."
     m "Let's just continue this game."
-    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
-    $ persistent.chess_strength = 20
     return store.mas_chess.CHESS_GAME_FILE
 
 # 3rd time no edit
@@ -2276,32 +2284,39 @@ label mas_chess_dlg_qf_edit_n_3:
 
 # 3rd time no edit, sorry
 label mas_chess_dlg_qf_edit_n_3_s:
+    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
+    $ persistent.chess_strength = 20
+    $ persistent._mas_chess_3_edit_sorry = True
+    $ persistent._mas_chess_skip_file_checks = True
+    $ store.mas_chess._initQuipLists(MASQuipList)
+
     show monika 6ektsc
     pause 1.0
     show monika 2ektsc
     pause 1.0
     m "I forgive you, [player], but please don't do this to me again."
     m 2lktsc "..."
-    $ store.mas_chess.chess_strength = (True, persistent.chess_strength)
-    $ persistent.chess_strength = 20
-    $ persistent._mas_chess_3_edit_sorry = True
-    $ persistent._mas_chess_skip_file_checks = True
-    $ store.mas_chess._initQuipLists(MASQuipList)
     return store.mas_chess.CHESS_GAME_BACKUP
 
 # 3rd time no edit, sorry, edit qs
 label mas_chess_dlg_qf_edit_n_3_n_qs:
-    $ mas_loseAffection()
-    m 2dfc "[player]..."
-    m 2efc "I see you've edited my backup saves."
-    m 2lfc "If you want to be like that right now, then we'll play chess some other time."
     python:
         import datetime
         persistent._mas_chess_timed_disable = datetime.datetime.now()
+        mas_loseAffection()
+
+    m 2dfc "[player]..."
+    m 2efc "I see you've edited my backup saves."
+    m 2lfc "If you want to be like that right now, then we'll play chess some other time."
     return True
 
 # 3rd time no edit, no sorry
 label mas_chess_dlg_qf_edit_n_3_n:
+    python:
+        # forever remember
+        persistent._mas_chess_mangle_all = True
+        persistent.autoload = "mas_chess_go_ham_and_delete_everything"
+
     # TODO: similar to chess disable, we need 2 versions of this. With a certain
     # amount of affection, you really should get a 2nd chance. 
     # i think what we can do here is do a large subtract off affection 
@@ -2348,10 +2363,6 @@ label mas_chess_go_ham_and_delete_everything:
         # delete persistent values
         # TODO: SUPER DANGEROUS, make backups before testing
         mas_root.resetPlayerData()
-
-        # forever remember
-        persistent._mas_chess_mangle_all = True
-        persistent.autoload = "mas_chess_go_ham_and_delete_everything"
 
     jump _quit
 
