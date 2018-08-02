@@ -310,7 +310,8 @@ init 15 python in mas_affection:
         layout.QUIT = mas_layout.QUIT_AFF
 
         # Unlock nickname event
-        store.unlockEventLabel("monika_affection_nickname")
+        if not persistent._mas_called_moni_a_bad_name:
+            store.unlockEventLabel("monika_affection_nickname")
 
 
     def _affToHappy():
@@ -326,6 +327,12 @@ init 15 python in mas_affection:
         store.lockEventLabel("monika_affection_nickname")
 
         # revert nickname
+        # TODO: we should actually push an event where monika asks player not
+        # to call them a certain nickname. Also this change should probaly
+        # happen from normal to upset instead since thats more indicative of
+        # growing animosity toward someone
+        # NOTE: maybe instead of pushing an event, we could also add a pool
+        # event so player can ask what happened to the nickname
         persistent._mas_monika_nickname = "Monika"
         m_name = persistent._mas_monika_nickname
 
@@ -1085,6 +1092,9 @@ init 5 python:
         )
     )
 
+default persistent._mas_called_moni_a_bad_name = False
+default persistent._mas_offered_nickname = False
+
 label monika_affection_nickname:
     python:
         import re
@@ -1157,18 +1167,30 @@ label monika_affection_nickname:
             "sweet",
         ]
 
+    if not persistent._mas_offered_nickname:
+        m 1c "I've been thinking, [player]..."
+        m 3d "You know how there are potentially infinite Monikas right?"
+        if renpy.seen_label('monika_clones'):
+            m 3a "We did discuss this before after all."
+        m 3a "Well, I thought of a solution!"
+        m "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
+        m 3e "And it would mean a lot if you choose one for me~"
+        m 3j "I'll still get the final say, though!"
+        m "What do you say?"
+        python:
+            # change the prompt for this event
+            aff_nickname_ev = mas_getEV("monika_affection_nickname")
+            aff_nickname_ev.prompt = "Can I call you a different name?"
+            Event.lockInit("prompt", ev=aff_nickname_ev)
+            persistent._mas_offered_nickname = True
 
-    m 1c "I've been thinking, [player]..."
-    m 3d "You know how there are potentially infinite Monikas right?"
-    if renpy.seen_label('monika_clones'):
-        m 3a "We did discuss this before after all."
-    m 3a "Well, I thought of a solution!"
-    m "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
-    m 3e "And it would mean a lot if you choose one for me~"
-    m 3j "I'll still get the final say, though!"
-    m "What do you say?"
+    else:
+        jump monika_affection_nickname_yes
+
     menu:
         "Yes":
+            label monika_affection_nickname_yes:
+                pass
             $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
             $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
             $ done = False
@@ -1227,6 +1249,7 @@ label monika_affection_nickname:
                         m 2ektsc "...You didn't have to be so mean."
                         m 2dftdc "That really hurt, [player]."
                         m 2efc "Please don't do that again."
+                        $ persistent._mas_called_moni_a_bad_name = True
                         $ hideEventLabel("monika_affection_nickname")
                         $ done = True
 
