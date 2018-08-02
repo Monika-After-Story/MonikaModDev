@@ -328,3 +328,31 @@ label mas_story_ravel:
     m 1dsd "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
     m 1tfb "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
+        prompt="Love Never Ends",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_immortal_love:
+    call mas_story_begin
+    m 3eua "There was a married couple who lived happily for many years."
+    m "Every valentine's day, the husband would have a beautiful bouquet of flowers sent to his wife."
+    m 1eka "With each one of these bouquets, was a note with a few simple words on it."
+    m 3dsc "{i}My love for you only grows.{/i}"
+    m 1eud "This continued for the rest of the husband's life until he passed away."
+    m 1c "All the wife had left were the memories of all the previous valentine's days with him and the notes he gave her."
+    m 1eka "She had to spend her next valentine's day alone, but at least there were the memories of him."
+    m 1dsc "..."
+    m 2euc "However..."
+    m "On that first valentine's day without her husband around, she was delivered a bouquet addressed to her."
+    m 2eud "It was from her husband."
+    m 2efd "Heartbroken and angry, she went to complain that there was a mistake."
+    m 2euc "After she was finished explaining, she was told that there was no mistake."
+    m "It turns out her husband had prepared far in advance and asked to ensure that his beloved wife continue to recieve flower for many years to come."
+    m "Speechless and left alone with her thoughts, she read the note attatched to the bouquet."
+    m "{i}My love for you is eternal.{/i}"
+    m 1dubsu "..."
+    m 1ekbfa "[player]..."
+    m 1hubfb "I think you know what's going through my head~"
+    m 1hubfa "Eheheh~"
+    return
