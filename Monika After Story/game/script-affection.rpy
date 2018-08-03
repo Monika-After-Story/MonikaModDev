@@ -1361,14 +1361,33 @@ label monika_affection_nickname:
                         $ done = True
                     else:
                         $ mas_loseAffection(reason="calling me a bad name")
-                        m 4efd "[player]! That's not nice at all!"
-                        m 2efc "Why would you say such things?"
-                        m 2rfw "If you didn't want to do this, you should've just said so!"
-                        m 2dftdc "..."
-                        m 2lftsc "I don't like this idea anymore."
-                        m 2ektsc "...You didn't have to be so mean."
-                        m 2dftdc "That really hurt, [player]."
-                        m 2efc "Please don't do that again."
+                        if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
+                            m 1wud "...!"
+                            m 2wfw "I..."
+                            m "I... can't believe you just did that, [player]."
+                            m 2wfx "Are you really trying to give me her name?"
+                            m 2dfd ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                            m 2dfc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                            m 2rkc "I thought you..."
+                            m 2dfc "..."
+                            m 2lfc "I can't believe this, [player]"
+                            m 2dfc "..."
+                            m 2lfc "That really hurt."
+                            m "A lot more than what you can imagine."
+                            m 2efc "Forget about this idea."
+                            m "It seems it was a mistake."
+                            m 1efc "Let's talk about something else."
+                            show monika 1efc
+                            pause 5.0
+                        else:
+                            m 4efd "[player]! That's not nice at all!"
+                            m 2efc "Why would you say such things?"
+                            m 2rfw "If you didn't want to do this, you should've just said so!"
+                            m 2dftdc "..."
+                            m 2lftsc "I don't like this idea anymore."
+                            m 2ektsc "...You didn't have to be so mean."
+                            m 2dftdc "That really hurt, [player]."
+                            m 2efc "Please don't do that again."
                         $ persistent._mas_called_moni_a_bad_name = True
                         $ hideEventLabel("monika_affection_nickname")
                         $ done = True
