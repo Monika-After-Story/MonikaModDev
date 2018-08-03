@@ -1054,11 +1054,11 @@ init 20 python:
 
 
     def _mas_AffSave():
-        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection()) 
+        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection())
         persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
         persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
         persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
-    
+
 
     def _mas_AffStartup():
         # need to load affection values from beyond the grave
@@ -1082,7 +1082,7 @@ init 20 python:
                     actual_value = inum - (nnum / dnum)
                 else:
                     actual_value = inum + (nnum / dnum)
-                    
+
                 persistent._mas_affection["affection"] = actual_value
             except:
                 # dont break me yo
@@ -1096,11 +1096,11 @@ init 20 python:
         if not persistent._mas_long_absence:
             if persistent.sessions["last_session_end"] is not None:
                 persistent._mas_absence_time = (
-                    datetime.datetime.now() - 
+                    datetime.datetime.now() -
                     persistent.sessions["last_session_end"]
                 )
                 time_difference = persistent._mas_absence_time
-                # we skip this for devs since we sometimes use older 
+                # we skip this for devs since we sometimes use older
                 # persistents and only apply after 1 week
                 if (
                         not config.developer
@@ -1276,7 +1276,7 @@ label monika_affection_nickname:
             "mommy",
             "okasa"
         ]
-            
+
 
     if not persistent._mas_offered_nickname:
         m 1c "I've been thinking, [player]..."
@@ -1344,9 +1344,9 @@ label monika_affection_nickname:
                         if inputname == "Monika":
                             m "Ehehe~ Back to the classics, I see."
                         elif good_nickname is None:
-                            m 1o "..."
-                            m 1p "I can't say that I particularly like it..."
-                            m 3l "But since you came up with it, I'll accept it!"
+                            m 1eud "Well, it's not exactly my favorite."
+                            m 1eua "But I don't dislike it either."
+                            m 1rfu "[inputname]... yeah, I'm starting to like it a bit more."
                         else:
                             m 1k "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
