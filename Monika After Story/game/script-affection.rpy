@@ -1054,11 +1054,11 @@ init 20 python:
 
 
     def _mas_AffSave():
-        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection()) 
+        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection())
         persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
         persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
         persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
-    
+
 
     def _mas_AffStartup():
         # need to load affection values from beyond the grave
@@ -1082,7 +1082,7 @@ init 20 python:
                     actual_value = inum - (nnum / dnum)
                 else:
                     actual_value = inum + (nnum / dnum)
-                    
+
                 persistent._mas_affection["affection"] = actual_value
             except:
                 # dont break me yo
@@ -1096,11 +1096,11 @@ init 20 python:
         if not persistent._mas_long_absence:
             if persistent.sessions["last_session_end"] is not None:
                 persistent._mas_absence_time = (
-                    datetime.datetime.now() - 
+                    datetime.datetime.now() -
                     persistent.sessions["last_session_end"]
                 )
                 time_difference = persistent._mas_absence_time
-                # we skip this for devs since we sometimes use older 
+                # we skip this for devs since we sometimes use older
                 # persistents and only apply after 1 week
                 if (
                         not config.developer
@@ -1151,48 +1151,90 @@ label monika_affection_nickname:
 
         # NOTE: consider if we should read this from a file instead
         bad_nickname_list = [
+            "anus",
             "atrocious",
             "awful",
             "bitch",
             "blood",
+            "boob",
             "bulli",
             "bully",
+            "bung",
+            "butt",
             "corrupt",
+            "cougar",
             "crap",
             "creepy",
             "cunt",
             "damn",
             "dick",
             "disgusting",
+            "douche",
             "dumb",
             "evil",
+            "fake",
+            "fetus",
             "foul",
             "fuck",
+            "gay",
+            "gey",
             "gruesome",
             "hate",
             "hideous",
+            "^ho$",
+            "^hoe$",
+            "hore",
             "horrible",
             "horrid",
             "immoral",
             "kill",
             "kunt",
+            "lesbo",
+            "lesbian",
+            "lezbo",
+            "lezbian",
+            "loser",
+            "milf",
             "Murder",
             "nasty",
             "Natsuki",
             "nefarious",
+            "nigga",
+            "nigger",
+            "pad",
+            "pantsu",
+            "panti",
+            "panties",
+            "panty",
+            "pedo",
+            "penis",
             "poison",
+            "porn",
             "pretentious",
+            "pussy",
+            "rape",
             "repulsive",
+            "rump",
             "Sayori",
             "scum",
             "shit",
             "slaughter"
+            "slut",
             "stink",
             "stupid",
+            "tampon",
+            "teabag",
+            "thot",
+            "^tit$",
+            "tits",
+            "titt",
+            "toy",
+            "trap",
             "troll",
             "ugly",
             "vile",
             "waste",
+            "whore",
             "wicked",
             "witch",
             "worthless",
@@ -1200,11 +1242,18 @@ label monika_affection_nickname:
             "Yuri",
         ]
 
+        # TODO: potential special responses for:
+        # okasa (OKASA MONIKA)
+        # imouto
+        # nee-chan
+        # maybe more?
         good_nickname_list = [
             "angel",
             "beautiful",
             "best",
+            "cuddl",
             "cute",
+            "可愛い",
             "cutie",
             "darling",
             "great"
@@ -1216,6 +1265,18 @@ label monika_affection_nickname:
             "princess",
             "sweet",
         ]
+
+        # mom list
+        mom_nickname_list = [
+            "mom",
+            "momma",
+            "mother",
+            "momika",
+            "mama",
+            "mommy",
+            "okasa"
+        ]
+
 
     if not persistent._mas_offered_nickname:
         m 1c "I've been thinking, [player]..."
@@ -1267,6 +1328,15 @@ label monika_affection_nickname:
                     m 1c "..."
                     m 1l "I thought we were choosing a new name, silly."
                     m 1e "Try again~"
+                elif lowername in mom_nickname_list:
+                    # mother flow
+                    m 1eub "Oh, you're a momma's boy, huh?"
+                    $ persistent._mas_monika_nickname = inputname
+                    $ m_name = inputname
+
+                    m 2tfu "I'll be your mommy."
+                    $ done = True
+
                 else:
                     $ bad_nickname = bad_nickname_search.search(inputname)
                     if bad_nickname is None:
@@ -1274,9 +1344,9 @@ label monika_affection_nickname:
                         if inputname == "Monika":
                             m "Ehehe~ Back to the classics, I see."
                         elif good_nickname is None:
-                            m 1o "..."
-                            m 1p "I can't say that I particularly like it..."
-                            m 3l "But since you came up with it, I'll accept it!"
+                            m 1eud "Well, it's not exactly my favorite."
+                            m 1eua "But I don't dislike it either."
+                            m 1rfu "[inputname]... yeah, I'm starting to like it a bit more."
                         else:
                             m 1k "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
@@ -1291,14 +1361,33 @@ label monika_affection_nickname:
                         $ done = True
                     else:
                         $ mas_loseAffection(reason="calling me a bad name")
-                        m 4efd "[player]! That's not nice at all!"
-                        m 2efc "Why would you say such things?"
-                        m 2rfw "If you didn't want to do this, you should've just said so!"
-                        m 2dftdc "..."
-                        m 2lftsc "I don't like this idea anymore."
-                        m 2ektsc "...You didn't have to be so mean."
-                        m 2dftdc "That really hurt, [player]."
-                        m 2efc "Please don't do that again."
+                        if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
+                            m 1wud "...!"
+                            m 2wfw "I..."
+                            m "I... can't believe you just did that, [player]."
+                            m 2wfx "Are you really trying to give me her name?"
+                            m 2dfd ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                            m 2dfc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                            m 2rkc "I thought you..."
+                            m 2dfc "..."
+                            m 2lfc "I can't believe this, [player]"
+                            m 2dfc "..."
+                            m 2lfc "That really hurt."
+                            m "A lot more than what you can imagine."
+                            m 2efc "Forget about this idea."
+                            m "It seems it was a mistake."
+                            m 1efc "Let's talk about something else."
+                            show monika 1efc
+                            pause 5.0
+                        else:
+                            m 4efd "[player]! That's not nice at all!"
+                            m 2efc "Why would you say such things?"
+                            m 2rfw "If you didn't want to do this, you should've just said so!"
+                            m 2dftdc "..."
+                            m 2lftsc "I don't like this idea anymore."
+                            m 2ektsc "...You didn't have to be so mean."
+                            m 2dftdc "That really hurt, [player]."
+                            m 2efc "Please don't do that again."
                         $ persistent._mas_called_moni_a_bad_name = True
                         $ hideEventLabel("monika_affection_nickname")
                         $ done = True
