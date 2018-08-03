@@ -26,6 +26,25 @@ init 4 python:
         # clearing this to prevent crash
         persistent.monika_topic = None
 
+default persistent._mas_084_hotfix_farewellbug = None
+
+# post many things, but not late update script appropriate
+# init-based update scripts
+# TODO: remove this when we reach 085
+init 600 python:
+    if (
+            persistent._mas_084_hotfix_farewellbug is None
+            and renpy.seen_label("bye_long_absence")
+        ):
+        # reset affection to 0 to help people that got screwed with
+        # the farewell bug
+        _mas_AffLoad()
+        if persistent._mas_affection["affection"] < 0:
+            mas_setAffection(0)
+            _mas_AffSave()
+    persistent._mas_084_hotfix_farewellbug = True
+
+
 # create some functions
 init python:
 
@@ -777,9 +796,8 @@ label mas_lupd_v0_8_4:
         if aff_to_grant > 200:
             aff_to_grant = 200
 
-
+        _mas_AffLoad()
         store.mas_gainAffection(aff_to_grant,bypass=True)
-
         _mas_AffSave()
 
     return
