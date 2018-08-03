@@ -1349,16 +1349,6 @@ label monika_affection_nickname:
                             m 2dfc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
                             m 2rkc "I thought you..."
                             m 2dfc "..."
-                            # She's so upset that closes the game?
-                            # if yes uncomment the following
-                            # maybe even a have special greeting?
-                            # m "I need to think about some things, [player]."
-                            # m "Please give me some time alone."
-                            # m "Bye.{nw}"
-                            # $ persistent._mas_called_moni_a_bad_name = True
-                            # $ hideEventLabel("monika_affection_nickname")
-                            # $ mas_loseAffection(30)
-                            # return 'quit'
                             m 2lfc "I can't believe this, [player]"
                             m 2dfc "..."
                             m 2lfc "That really hurt."
@@ -1366,10 +1356,8 @@ label monika_affection_nickname:
                             m 2efc "Forget about this idea."
                             m "It seems it was a mistake."
                             m 1efc "Let's talk about something else."
-                            # Transition looks weird since she's mad then happy(?)
-                            # so maybe this 5 seconds pause help give more emphasis
-                            # show monika 1efc
-                            # pause 5.0
+                            show monika 1efc
+                            pause 5.0
                         else:
                             m 4efd "[player]! That's not nice at all!"
                             m 2efc "Why would you say such things?"
