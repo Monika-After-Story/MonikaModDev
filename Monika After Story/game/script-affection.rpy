@@ -548,6 +548,41 @@ default persistent._mas_pctaieibe = None
 default persistent._mas_pctaneibe = None
 default persistent._mas_pctadeibe = None
 
+init -10 python:
+    def _mas_AffSave():
+        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection())
+        persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
+        persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
+        persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
+
+    
+    def _mas_AffLoad():
+        if (
+                persistent._mas_pctaieibe is not None
+                and persistent._mas_pctaneibe is not None
+                and persistent._mas_pctadeibe is not None
+            ):
+            try:
+                inum = mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
+                )
+                nnum = mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
+                )
+                dnum = float(mas_utils._IStoi(
+                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
+                ))
+                if inum < 0:
+                    actual_value = inum - (nnum / dnum)
+                else:
+                    actual_value = inum + (nnum / dnum)
+
+                persistent._mas_affection["affection"] = actual_value
+            except:
+                # dont break me yo
+                persistent._mas_affection["affection"] = 0
+
+
 # need to have affection initlaized post event_handler
 init 20 python:
 
@@ -1052,41 +1087,10 @@ init 20 python:
     # Nothing to apologize for now
     mas_apology_reason = None
 
-
-    def _mas_AffSave():
-        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection())
-        persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
-        persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
-        persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
-
-
     def _mas_AffStartup():
         # need to load affection values from beyond the grave
         # failure to load means we reset to 0. No excuses
-        if (
-                persistent._mas_pctaieibe is not None
-                and persistent._mas_pctaneibe is not None
-                and persistent._mas_pctadeibe is not None
-            ):
-            try:
-                inum = mas_utils._IStoi(
-                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
-                )
-                nnum = mas_utils._IStoi(
-                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
-                )
-                dnum = float(mas_utils._IStoi(
-                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
-                ))
-                if inum < 0:
-                    actual_value = inum - (nnum / dnum)
-                else:
-                    actual_value = inum + (nnum / dnum)
-
-                persistent._mas_affection["affection"] = actual_value
-            except:
-                # dont break me yo
-                persistent._mas_affection["affection"] = 0
+        _mas_AffLoad()
 
         # Makes the game update affection on start-up so the global variables
         # are defined at all times.
