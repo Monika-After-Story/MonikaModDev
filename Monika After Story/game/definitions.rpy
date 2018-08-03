@@ -1780,6 +1780,9 @@ init -100 python in mas_utils:
     # utility functions for other stores.
     import datetime
     import ctypes
+    mas_log = renpy.renpy.log.open("mas_log")
+    mas_log_open = mas_log.open()
+    mas_log.raw_write = True
 
     __FLIMIT = 1000000
 
@@ -1927,6 +1930,17 @@ init -100 python in mas_utils:
             second=0,
             microsecond=0
         )
+
+
+    def writelog(msg):
+        """
+        Writes to the mas log if it is open
+
+        IN:
+            msg - message to write to log
+        """
+        if mas_log_open:
+            mas_log.write(msg)
 
 
     class ISCRAM(ctypes.BigEndianStructure):
