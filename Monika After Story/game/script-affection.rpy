@@ -1284,6 +1284,9 @@ label monika_affection_nickname:
             "okasa"
         ]
 
+        # unlock this event
+        aff_nickname_ev = mas_getEV("monika_affection_nickname")
+        unlockEvent(aff_nickname_ev)
 
     if not persistent._mas_offered_nickname:
         m 1c "I've been thinking, [player]..."
@@ -1297,7 +1300,6 @@ label monika_affection_nickname:
         m "What do you say?"
         python:
             # change the prompt for this event
-            aff_nickname_ev = mas_getEV("monika_affection_nickname")
             aff_nickname_ev.prompt = "Can I call you a different name?"
             Event.lockInit("prompt", ev=aff_nickname_ev)
             persistent._mas_offered_nickname = True
