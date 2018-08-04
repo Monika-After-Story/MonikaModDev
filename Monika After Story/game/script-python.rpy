@@ -178,7 +178,8 @@ label monika_ptod_tip002:
     $ tip_ev = mas_getEV("monika_ptod_tip002")
     if tip_ev.last_seen is None:
         m 1eua "In most programming languages, data that can be changed or modified by the program has a {i}type{/i} associated with it."
-        m "If some data should be treated as a number, then it will have a numeric type. If some data should be treated as text, then it will have a string type."
+        m 3eua "For example, if some data should be treated as a number, then it will have a numeric type. If some data should be treated as text, then it will have a string type."
+        m "There are many types in Python, but today we'll talk about the more basic, or primitive ones."
 
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
@@ -214,6 +215,13 @@ label monika_ptod_tip002:
 
     m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
 
+    ### booleans
+    m "Booleans are special types that represent {b}True{/b} and {b}False{/b} values."
+    call mas_wx_cmd("type(True)", local_ctx)
+    call mas_wx_cmd("type(False)", local_ctx)
+
+    m 1rksdlb "I'll go into more detail about what booleans are in another lesson."
+
     ### Nones
     m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w} This type represents the absence of any data."
     m "If you're familiar with other programing languages, this is like a {i}null{/i} or {i}undefined{/i} type."
@@ -221,11 +229,10 @@ label monika_ptod_tip002:
 
     call mas_wx_cmd("type(None)", local_ctx)
 
-    ### TODO booleans
+    m 1eua "All the types I mentioned here are known as {i}primitive{/i} data types."
 
-    ### TODO these are primivtive types
     if tip_ev.last_seen is None:
-        m 1eua "Python uses other data types as well, but I think the types we've covered is enough for today."
+        m "Python uses a variety of other types as well, but I think these ones are enough for today."
 
     $ store.mas_ptod.ex_cn()
     hide screen mas_py_console_teaching
@@ -359,7 +366,6 @@ label monika_ptod_tip005:
     # So if you remember, a single = does assignment, the == does 
     # compariosns
     #
-    # The boolean type represents True / False values. 
     return
 
 ###############################################################################
