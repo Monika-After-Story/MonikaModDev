@@ -145,7 +145,7 @@ label monika_ptod_tip001:
     show monika 5eua with dissolve
     m "Wouldn't that be great, [player]?"
     
-    m 4eub "Anyway, I need to mention that there are currently 2 main versions of Python:"
+    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:"
     m 1eua "Python2 and Python3."
     m 3eua "These versions are {b}incompatible{/b} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
     m "Even though this introduced a split in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
@@ -167,47 +167,71 @@ init 5 python:
             eventlabel="monika_ptod_tip002",
             category=["python tips"],
             prompt="Types",
-            conditional="store.mas_ptod.has_day_past(1)",
+            conditional="store.mas_ptod.has_day_past(3)",
             action=EV_ACT_POOL
         )
     )
 
+# PREREQS:
+#   interpreted language (tip 3)
 label monika_ptod_tip002:
     $ tip_ev = mas_getEV("monika_ptod_tip002")
     if tip_ev.last_seen is None:
-        pass
-    # [show this once]
-    # In most programming languages, each piece of data that can be chnaged
-    # or modified by a program has a _type_
-    # associated with it. If some data should be treated as a number, then
-    # it will have a numeric type. If some data should be treated as text,
-    # then it will have a string type.
-    # [end]
-    #
-    # Python has two separate types to represent numbers: _integers_ and _floats_.
-    # Integers are used to represent whole numbers - Anything that isn't a
-    # decimal.
-    # -22, 0, -1234, 42 are all integers in python.
-    # Floats are used to represent decimals:
-    # 0.14, 9.3, -10.2 would all be floats in Python.
-    #
-    # Text in python is represented with string types. 
-    # anything surrounded in single quotes (') or double quotes (") are strings.
-    # For example, 'this is a string in single quotes'
-    # And "this is a string in double quotes".
-    # Strings can also be created with three double quotes ("""), but these
-    # strings are treated specially in python. I'll talk about this another day.
-    #
-    # Python also has a special data type called a NoneType. This type 
-    # represents the absence of any data. If you're familiar with with other
-    # programming languages, this is akin to a null or undefined type.
-    # The keyword None represents NoneTypes in python.
-    #
-    # [show this once]
-    # Python uses other data types, but I think the types we've covered is
-    # enough for today.
-    # Thanks for listening!
-    # [end]
+        m 1eua "In most programming languages, data that can be changed or modified by the program has a {i}type{/i} associated with it."
+        m "If some data should be treated as a number, then it will have a numeric type. If some data should be treated as text, then it will have a string type."
+
+    $ store.mas_ptod.rst_cn()
+    $ local_ctx = dict()
+    show monika at t22
+    show screen mas_py_console_teaching
+
+    ### numbers
+    m 1eua "Python has two types to represent numbers:"
+    m 3eub "{i}integers{/i}, or {b}ints{/b},{w} and {i}floats{/i}."
+
+    ## integers
+    m 1eua "Integers are used to represent whole numbers; basically anything that isn't a decimal."
+
+    call mas_wx_cmd("type(-22)", local_ctx)
+    call mas_wx_cmd("type(0)", local_ctx)
+    call mas_wx_cmd("type(-1234)", local_ctx)
+    call mas_wx_cmd("type(42)", local_ctx)
+
+    ## floats
+    m 1eub "Floats are used to represent decimals:"
+
+    call mas_wx_cmd("type(0.14)", local_ctx)
+    call mas_wx_cmd("type(9.3)", local_ctx)
+    call mas_wx_cmd("type(-10.2)", local_ctx)
+
+    ### strings
+    m 1eua "Text is represented with {i}string{/i} types."
+    m "Anything surrounded in single quotes (') or double quotes (\") are strings."
+    m 3eub "For example:"
+    
+    call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
+    call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
+
+    m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
+
+    ### Nones
+    m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w} This type represents the absence of any data."
+    m "If you're familiar with other programing languages, this is like a {i}null{/i} or {i}undefined{/i} type."
+    m "The keyword {i}None{/i} represents NoneTypes in Python:"
+
+    call mas_wx_cmd("type(None)", local_ctx)
+
+    ### TODO booleans
+
+    ### TODO these are primivtive types
+    if tip_ev.last_seen is None:
+        m 1eua "Python uses other data types as well, but I think the types we've covered is enough for today."
+
+    $ store.mas_ptod.ex_cn()
+    hide screen mas_py_console_teaching
+    show monika at t11
+
+    m 1hua "Thanks for listening!"
     return
 
 ###############################################################################
@@ -223,6 +247,8 @@ init 5 python:
         )
     )
 
+# PREREQS:
+#   What is python (tip 1)
 label monika_ptod_tip003:
     # Programming languages usually are one of two types, compiled or 
     # interpreted. Compiled languages require their code to be converted to a 
@@ -578,6 +604,14 @@ init -1 python in mas_ptod:
         SEE exec_command
         """
         exec_command(context)
+
+
+    def wx_cmd(cmd, context):
+        """
+        Does both write_command and exec_command
+        """
+        w_cmd(cmd)
+        x_cmd(context)
 
 
     def write_command(cmd):
@@ -1124,3 +1158,7 @@ label mas_wx_cmd(cmd, ctx, w_wait=0.7, x_wait=0.7):
     $ store.mas_ptod.x_cmd(ctx)
     pause x_wait
     return
+
+# does both writing and executing, no x wait
+label mas_wx_cmd_noxwait(cmd, ctx):
+    jump mas_wx_cmd(cmd, ctx, x_wait=0.0)
