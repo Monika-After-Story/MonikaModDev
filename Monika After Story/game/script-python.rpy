@@ -113,13 +113,11 @@ init 5 python:
     )
 
 label monika_ptod_tip000:
-    # You want to learn about Python?
-    # Aha yokatta
-    # I dont know that much about programming, I'm still learning
-    # but i will try my best
-    # lets start with whaat python is
+    m 3eub "You want to learn about Python?"
+    m 3hub "I'm glad!"
+    m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best!"
+    m 1esa "Let's start with what Python even is."
 
-    # hide this label since we dont need it anymore
     $ hideEventLabel("monika_ptod_tip000", depool=True)
     jump monika_ptod_tip001
 
@@ -136,37 +134,29 @@ init 5 python:
 
 label monika_ptod_tip001:
     # first enable this event
-    $ evhand.event_database["monika_ptod_tip001"].pool = True
+    $ tip_ev = mas_getEV("monika_ptod_tip001")
+    $ tip_ev.pool = True
 
-    # Python was created by Guido Van Rossum in the early 90s
-    # -- the bit explaining that is interpreted is probably a bit too soon
-    # -> Yeah, save this part for later. This seciton should be an overview of
-    #   what python is used for, the fact that its a programming language,
-    #   and the 2 main versions. also how it relates to MAS via RenPy
-    # its an interpreted language, which means it does not need to be compiled
-    # before being executed. this makes it easier and faster to make quick
-    # adjustments to code on the fly.
-    # --
-    # Python is used in many places, including web apps, embedded stuff,
-    # rasberry pi, x, y, z, and ofc, This game!
-    # DDLC, in particular uses a game engine called RenPy, which is built off
-    # of Python. If you learn python, you can learn how to mod this?
-    #
-    # One last thing, Thre are currently 2 main versions of python:
-    # py2 and py3. These versions are **incompatible** with each other
-    # because the changes added in py3 fixed many fundamental design flaws in
-    # py2. Even though this caused a split in the python community, it's
-    # generally agreed that both versions of the language have their own
-    # strengths and weaknesses.
-    #
-    # [show this once]
-    # The versions of RenPy that runs this game uses Python2, so I'll
-    # mainly teach you python2
-    # but i'll mention py3 at times when it's appropriate. -- for saying that she doesn't know much she seems rather confident here
-    #
-    # That's my lesson for today!
-    # Thanks for listening
-    # [end]
+    m 1esa "Python was created by Guido Van Rossum in the early 90s."
+    m "It is used in many places, including web apps, embedded systems, the rasberry pi, Linux, and of course..."
+    m 1hua "This mod!"
+    m 1eua "DDLC in particular uses a game engine called RenPy,{w} which is built off of Python."
+    m 3eub "That means if you learn a bit of Python, you can add content to my world!"
+    show monika 5eua with dissolve
+    m "Wouldn't that be great, [player]?"
+    
+    m 4eub "Anyway, I need to mention that there are currently 2 main versions of Python:"
+    m 1eua "Python2 and Python3."
+    m 3eua "These versions are {b}incompatible{/b} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
+    m "Even though this introduced a split in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
+    m 3eub "I'll tell you about those differences in another lesson."
+
+    if tip_ev.last_seen is None:
+        m 1eua "The RenPy versions that this mod runs on use Python2, so I won't be talking about Python3 too often."
+        m 1hua "But I'll mention it when it's appropriate."
+
+    m 3eua "That's my lesson for today."
+    m 1hua "Thanks for listening!"
     return
 
 ###############################################################################
@@ -183,6 +173,9 @@ init 5 python:
     )
 
 label monika_ptod_tip002:
+    $ tip_ev = mas_getEV("monika_ptod_tip002")
+    if tip_ev.last_seen is None:
+        pass
     # [show this once]
     # In most programming languages, each piece of data that can be chnaged
     # or modified by a program has a _type_
