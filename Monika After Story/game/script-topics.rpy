@@ -7064,6 +7064,7 @@ label monika_beingevil:
     m 1hksdlb "I just hope nobody starts thinking you're evil by being here with me."
     menu:
         "I don't think you're evil.":
+            $ mas_gainAffection()
             m 1eka "I'm glad you understand, [player]."
             m 1eub "I wish I could tell you how happy it makes me to know that!"
             m 1hua "If I were there, I'd feel like giving you a big hug!"
@@ -7071,6 +7072,7 @@ label monika_beingevil:
             m 1hubfa "Just kidding!"
             m 1tsbsa "But no promises, [player], eheheh~"
         "I still love you anyway.":
+            $ mas_gainAffection()
             m 1lksdlc "..."
             m 1lkbsa "[player]..."
             m 1ekbfa "Even if it's debatable whether I'm evil or not..."
@@ -7080,6 +7082,7 @@ label monika_beingevil:
             m "If the villainess in me can get what she wants, I guess it's not so bad..."
             m "Eheheheh"
         "People think I'm evil too.":
+            $ mas_gainAffection()
             m 2eud "Oh?"
             m 2eka "I mean, I don't see you as evil one bit."
             m 2lksdla "If it really is true though, I hope it doesn't cause you any trouble."
@@ -7087,6 +7090,33 @@ label monika_beingevil:
             m 1hub "Maybe we could even conquer the world together or something, ahaha~"
             m 1ekbfa "But evil or not, I'm glad to have you by my side."
             m 1hubfa "I'm guessing it's the same for you too~"
+        "You kind of are evil...":
+            m 2ekd "W-wait, [player]!"
+            m 2lksdlc "Y-you don't {i}really{/i} think that, do you?"
+            menu:
+                "I still love you":
+                    $ mas_gainAffection()
+                    m 1lksdla "[player]..."
+                    m 1hksdlb "You had me worried for a second there."
+                    m 1eka "I'm glad you don't hate me for the things I did."
+                    m 1hub "I love you too, [player]! No matter what people say about you!"
+                "You deserve forgiveness":
+                    $ mas_gainAffection()
+                    m 1lksdla "[player]..."
+                    m 1eub "I think you're right, [player]."
+                    m 1lksdla "It's true that I've done some bad things in the past..."
+                    m 1eka "But I've learned from them and grown as a person since."
+                    m 1hua "I'm really glad you're willing to forgive me, [player]."
+                    m 1hub "I promise I'll be the best I can be, just for you!"
+                "You really are evil.":
+                    $ mas_loseAffection(reason="")
+                    m 2dkc "..."
+                    if mas_curr_affection == mas_aff.BROKEN:
+                        m 2dkd "..."
+                        m 2dktsd "I know..."
+                        $ _history_list.pop()
+                    else:
+                        m 2dktsd "I'm sorry, [player]."
     return
 
 init 5 python:
