@@ -10,25 +10,29 @@ init -10 python:
     except:
         ddmm_online = False
 
+    def ddmm_make_request(payload):
+        if ddmm_online:
+            request = urllib2.Request(ddmm_rpc_url, json.dumps(payload))
+            urllib2.urlopen(request).read()
+
+    def ddmm_register_achievement(id, name, description):
+        ddmm_make_request({"method": "register achievement", "payload": {"id": id, "name": name, "description": description}})
+
+    def ddmm_earn_achievement(id):
+        ddmm_make_request({"method": "earn achievement", "payload": {"id": id}})
 
 # Register an achievement with Doki Doki Mod Manager
 # id = the unique ID of the achievement, can be any string
 # name = the user-facing name of the achievement
 # description = the user-facing description of the achievement
 label ddmm_register_achievement(id, name, description):
-    python:
-        if ddmm_online:
-                request = urllib2.Request(ddmm_rpc_url, json.dumps({"method": "register achievement", "payload": {"id": id, "name": name, "description": description}}))
-                urllib2.urlopen(request).read()
+    $ ddmm_register_achievement(id, name, description)    
     return
 
 # Earn an achievement
 # id = the unique ID of the achievement
 label ddmm_earn_achievement(id):
-    python:
-        if ddmm_online:
-            request = urllib2.Request(ddmm_rpc_url, json.dumps({"method": "earn achievement", "payload": {"id": id}}))
-            urllib2.urlopen(request).read()
+    $ ddmm_earn_achievement(id)        
     return
 
 # Test SDK functions
