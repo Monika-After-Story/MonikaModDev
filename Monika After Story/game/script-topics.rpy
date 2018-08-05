@@ -1163,6 +1163,47 @@ label monika_wine:
     m 2l "...Gosh, what am I talking about this for?"
     m "I don't condone underage drinking!"
     m 2a "I mean, I've never drank or anything, so...yeah."
+    m 3a "Speaking of which, I hear different parts of the world have different minimum drinking ages."
+    m "Would we both be able to have a drink where you're from?"
+    menu:
+        "Yes.":
+            m 1j "That's great!"
+            m 1k "Another thing to look forward to when we can finally be together!"
+            m 1l "I mean..."
+            m "Don't worry [player]. I'm not planning to become addicted to the stuff. I'm just excited is all."
+            m 5 "I wouldn't want you to be addicted either."
+            m "So do me a favor and wait for me a bit before really treating yourself."
+            m 1j "You better have a good bottle to share!"
+            m 1k "Ahaha~"
+        "No.":
+            m 1a "At least I don't have to be jealous about you being able to drink while I'm stuck here."
+            m 1m "If that's still the case when I can finally be with you, maybe we could try a little anyway?"
+            m 1n "Just a little."
+            m 5 "I mean we'll have eachother to stop one another from having too much, right?"
+        "You can, but I can't.":
+            m 2j "Maybe then I'll be able to have something you can't!"
+            m "Just like how you can drink coffee in your world."
+            m 2k "Ahaha~"
+            m 2m "Of course, you know I'm only kidding."
+            m 2e "By all means, I'd happily wait for you if you were worried about feeling left out."
+            m 3l "But if you {i}really{/i} wanted to try some, I guess I could give you one little sip."
+            m "No more than that though!"
+        "I can, but you can't.":
+            m 1m "Oh... That only just makes me a little bit jealous."
+            m 1l "Knowing you can drink coffee {i}and{/i} wine without me."
+            m "Maybe you could let me try a sip sometime?"
+            m 1n "Just a little bit... Maybe..."
+            m 1j "Ahaha~ I'm only kidding, [player]."
+            m 5 "I really wouldn't want you to get in trouble."
+            m 1m "Ok, maybe I was only half kidding, but you don't have to share if it could get you in trouble."
+        "I don't drink.":
+            m 2g "Oh!"
+            m 2p "Sorry, I didn't realize."
+            m 2m "But I guess knowing that can put me at ease."
+            m 2a "I don't have to worry about you having too much!"
+            m 3a "I respect your decision so I won't have any if you won't either."
+            m 1j "At least there'll always be coffee we can share."
+            m 1k "Ahaha!"
     return
 
 
