@@ -1,5 +1,81 @@
 # Module that lets you play the piano
 #
+# Adding custom Piano Songs:
+# Piano songs can be added by creating a json file in the piano_songs
+# folder. Stock piano songs (which are shipped in official release) should be
+# in mod_assets/piano/songs/
+#
+# NOTE: Errors in PianoNote JSONS are logged to "pnm.txt"
+#  gameplay will not crash even if piano note matches are formatted
+# incorrectly
+#
+# Each piano song is reprsented using a JSON:
+# The first layer is an object representing a PianoNoteMatchList:
+#   pnm_list: (list) list of PianoNoteMatch objects. See below.
+#   verse_list: (list) list of verse indexes.
+#       - each verse index is an (int)
+#   name: (string) name of this song
+#       NOTE: this is displayed to user
+#   win_label: (string) label to call if we played the song well
+#       NOTE: optional
+#       (Default: mas_piano_def_win)
+#   fc_label: (string) label to call if we fc'd the song
+#       NOTE: optional
+#       (Default: mas_piano_def_fc)
+#   fail_label: (string) label to call if we failed the song
+#       NOTE: optional
+#       (Default: mas_piano_def_fail)
+#   prac_label: (string) label to call if we are practicing the song
+#       NOTE: optional
+#       (Default: mas_piano_def_prac)
+#   launch_label: (string) label to call before starting this song
+#       NOTE: optional
+#       (Default: None)
+#   end_wait: (int) number of seconds to wait before actually quitting the song
+#       at the end.
+#       NOTE: optional
+#       (Default: 0)
+#   NOTE: all labels would need to be defined in rpy source, so atm, custom 
+#       songs  will ALWAYS use default labels
+#
+# PianoNoteMatch objects:
+#   text: (string) text this piano note match says
+#   style: (string) style the piano note match should be in
+#   notes: (list) list of notes
+#       - each note is a (string) like "G4"
+#   postnotes: (list) list of post match notes
+#       - each note is a (string) like "G4"
+#       NOTE: optional
+#       (Default: None)
+#   express: (string) monika expression code to use for singing
+#       - like "1eub"
+#       NOTE: optional
+#       (Default: 1eub)
+#   postexpress: (string) monika expression code to use for post match phase
+#       - like "1eua"
+#       NOTE: optional
+#       (Default: 1eua)
+#   ev_timeout: (float) number of seconds to use as grace period for user to 
+#       begin this note match.
+#       NOTE: optional
+#       (Default: None / actual default varies on hardcoded value)
+#   vis_timeout: (float) number of seconds to wait after the match before 
+#       cleaning visual expressions
+#       NOTE: optional
+#       (Default: None / actual default varies on hardcoded value)
+#   verse: (int) verse index this notematch belongs to
+#       NOTE: optional
+#       (Default: 0)
+#   copynotes: (int) index of the piano notematch this notematch has the same
+#       notes as
+#       NOTE: unused
+#       NOTE: optional
+#       (Default: None)
+#   posttext: (bool) True means text remains during post match, False means
+#       text is hidden
+#       NOTE: optional
+#       (Default: False)
+
 
 # we need one persistent for data saving
 # each list item is a tuple of the following format:
@@ -36,21 +112,26 @@ label mas_piano_start:
 label mas_piano_loopstart:
 
     # get song list
-    $ song_list = mas_piano_keys.getSongChoices()
+    $ song_list,final_item = mas_piano_keys.getSongChoices()
+    $ song_list.sort()
     $ play_mode = PianoDisplayable.MODE_FREE
 
 label mas_piano_songchoice:
-    
+
     $ pnml = None
 
-    if len(song_list) > 1:
+    if len(song_list) > 0:
         show monika 1eua
 
         menu:
             m "Did you want to play a song or play on your own, [player]?"
             "Play a song":
                 m "Which song?"
-                $ pnml = renpy.display_menu(song_list)
+                show monika at t21
+                call screen mas_gen_scrollable_menu(song_list, mas_piano_keys.MENU_AREA, mas_piano_keys.MENU_XALIGN, final_item)
+                show monika at t11
+
+                $ pnml = _return
 
                 # song selected
                 if pnml != "None":
@@ -103,7 +184,7 @@ label mas_piano_setupstart:
     $ store.songs.enabled = True
     $ store.hkb_button.enabled = True
     $ enable_esc()
-    $ play_song(store.songs.selected_track)
+    $ mas_startup_song()
     $ pnmlSaveTuples()
 
     show monika 1hua at t11
@@ -134,6 +215,7 @@ label mas_piano_loopend:
 
 # default. post game, freestyle mode
 label mas_piano_result_default:
+    $ mas_gainAffection(modifier=0.2)
     m 1eua "All done, [player]?"
     return
 
@@ -145,9 +227,35 @@ label mas_piano_result_none:
     m 1hua "Promise to play for me next time?"
     return
 
+# TODO all of these default labels
+# default win
+label mas_piano_def_win:
+    m 1a "Wow! You almost got it!"
+    m 2b "Good job, [player]."
+    return
+
+# default fail
+label mas_piano_def_fail:
+    m 1m "..."
+    m 1n "You did your best, [player]..."
+    return
+
+# defualt fc
+label mas_piano_def_fc:
+    m 1eua "Great job!"
+    m 1hub "Maybe we should play together sometime!"
+    return
+
+# default practice
+label mas_piano_def_prac:
+    m 1eua "That was nice, [player]!."
+    m 1eka "Make sure to practice often!"
+    return
+
 ### HAPPY BIRTHDAY
 
 label mas_piano_hb_win:
+    $ mas_gainAffection()
     m 1a "Wow! You almost got it!"
     m 2b "Good job, [player]."
     return
@@ -159,6 +267,7 @@ label mas_piano_hb_fail:
     return
 
 label mas_piano_hb_fc:
+    $ mas_gainAffection(modifier=1.5)
     m 1a "Hehe, great job!"
     m 2b "I know that's an easy one, but you did great."
     m 1k "Are you going to play that for me on my Birthday?"
@@ -174,6 +283,7 @@ label mas_piano_hb_prac:
 
 # shown if player completes the song but does not FC
 label mas_piano_yr_win:
+    $ mas_gainAffection()
     m 1lksdla "That was nice, [player]."
     m "But..."
     m 1lksdlb "You could do better with some more practice..."
@@ -182,6 +292,7 @@ label mas_piano_yr_win:
 
 # shown if player FCs
 label mas_piano_yr_fc:
+    $ mas_gainAffection(modifier=1.5)
     m 1sub "That was wonderful, [player]!"
     m 1eub "I didn't know you can play the piano so well."
     m 1hub "Maybe we should play together sometime!"
@@ -201,90 +312,6 @@ label mas_piano_yr_prac:
     m 1eka "Make sure to practice everyday for me, okay~?"
     return
 
-#abel zz_piano_yr_launch:
-#   m
-
-#### HOW TO FULL COMBO:
-# (Everday, I can imagine a future...)
-# o o o oiu uio u y t y u t w
-# opo opo ] ] p[ op [ o
-#
-# (In my hands, is a pen...)
-# o p o uio iuy e w q e w u t
-# opo opo ] ] p[ op [ o
-#
-# (The ink flows down...)
-# o o o i u t t y u o
-#
-# (Just move your hands ...)
-# p o u y  w e t  e t y t
-#
-# (but in this world..)
-# o o o i  u t t y u o
-#
-# (What will it take..)
-# p o u y   w e t   e t y t
-#
-# (What will it take)
-# p o u y  w e t
-#
-# (that special day)
-# e t y t
-#
-# [break]
-#
-# (Have i found, everybody....)
-# o o o oiu uio u y t y u t w
-# opo opo ] ] p[ op [ o
-#
-# (When you're here....)
-# o p o uio iuy e w q e w u t
-# opo opo ] ] p[ op [ o
-#
-# (when i cant even read...)
-# o o o i u t t y u o
-#
-# (What good are words)
-# p o u y
-#
-# (when a smile says it all)
-# w e t  e t y t
-#
-# (and if this world...)
-# o o o i  u t t y u o
-#
-# (what will it take, just for me...)
-# p o u y   w e t   e t y t
-#
-# [break]
-#
-# (does my pen, only write...)
-# o o o oiu uio u y t y u t w
-#
-# (is it love...)
-# o p o uio iuy e w q e w u t
-#
-# (The ink flows down...)
-# o o o i u t t y u o
-#
-# (how can i write...)
-# p o u y  w e t  e t y t
-#
-# (if i cant hear...)
-# o o o i  u t t y u o
-#
-# (what do you call...)
-# p o u y   w e t   e t y t
-#
-# (and in your reality, if i dont know how to love you
-# w e t  e t y t u i i u t e t o
-# o u i t p o
-#
-# (I'll leave you be)
-# w e t t
-#
-# Extra post:
-# o o o oiu iop [ o [ o (chord: t u o)
 
 # keep the above for reference
 # DISPLAYABLE:
@@ -292,10 +319,80 @@ label mas_piano_yr_prac:
 # special store to contain a rdiciulous amount of constants
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
+    import os
+    log = renpy.renpy.log.open("pnm")
+
+    from store.mas_utils import tryparseint, tryparsefloat
+
+    # directory setup
+    pnml_basedir = os.path.normcase(
+        renpy.config.basedir + "/piano_songs/"
+    )
+    stock_pnml_basedir = os.path.normcase(
+        renpy.config.basedir + "/game/mod_assets/piano/songs/"
+    )
+    no_pnml_basedir = False
+    try:
+        if not os.access(pnml_basedir, os.F_OK):
+            os.mkdir(pnml_basedir)
+    except:
+        no_pnml_basedir = True
+
+    # menu constants
+    MENU_X = 680
+    MENU_Y = 40
+    MENU_W = 450
+    MENU_H = 640
+    MENU_XALIGN = -0.05
+    MENU_AREA = (MENU_X, MENU_Y, MENU_W, MENU_H)
+
+    # Log constants
+    MISS_KEY = "key '{0}' is missing."
+    NOTE_BAD = "bad note list."
+    PNOTE_BAD = "bad post note list."
+    EXP_BAD = "expression '{0}' not found."
+    EVT_BAD = "ev timeout '{0}' is invalid."
+    VIST_BAD = "vis timeout '{0}' is invalid."
+    VERSE_BAD = "verse '{0}' is invalid."
+    PTEXT_BAD = "bad posttext value."
+    EXTRA_BAD = "extra key '{0}' found."
+
+    NOTES_BAD = "pnm list cannot be empty."
+    VERSES_BAD = "verse list cannot be empty."
+    NAME_BAD = "name must be unique."
+    LABEL_BAD = "label '{0}' does not exist."
+    WAIT_BAD = "wait time '{0}' is invalid."
+    L_VERSE_BAD = "verse '{0}' out of bounds."
+
+    LOAD_TRY = "Attempting to load '{0}'..."
+    LOAD_SUCC = "'{0}' loaded successfully."
+    LOAD_FAILED = "Load failed."
+
+    PNM_LOAD_TRY = "Loading PNM '{0}'..."
+    PNM_LOAD_SUCC = "PNM '{0}' loaded successfully!"
+    PNM_LOAD_FAILED = "PNM '{0}' load failed."
+
+    JSON_LOAD_FAILED = "Failed to load json at '{0}'."
+    FILE_LOAD_FAILED = "Failed to load file at '{0}'."
+
+
+    MSG_INFO = "[info]: {0}\n"
+    MSG_WARN = "[Warning!]: {0}\n"
+    MSG_ERR = "[!ERROR!]: {0}\n"
+
+    MSG_INFO_ID = "    [info]: {0}\n"
+    MSG_WARN_ID = "    [Warning!]: {0}\n"
+    MSG_ERR_ID = "    [!ERROR!]: {0}\n"
+
+    # piano note match list database
+    pnml_db = dict()
+    pnml_bk_db = dict() # backup database
 
     # this is our threshold for determining how many notes the player needs to
     # play before we check for dialogue
-    NOTE_SIZE = 6
+    NOTE_SIZE = 5
+    # NOTE: please, dont add stock songs with a lower phrase detection
+    # any lower and we might start getting false positives
 
     # keys
     QUIT = pygame.K_z
@@ -368,7 +465,7 @@ init -3 python in mas_piano_keys:
         B5: B5,
         C6: C6
     }
-        
+
     # blacklisted keys
     BLACKLIST = (
         ESC,
@@ -386,7 +483,7 @@ init -3 python in mas_piano_keys:
     # noncharable keymaps and display text dict
     NONCHAR_TEXT = {
         pygame.K_LEFTBRACKET: "[[",
-        123: "{{", # { 
+        123: "{{", # {
         pygame.K_BACKSPACE: "\\b",
         pygame.K_TAB: "\\t",
         pygame.K_CLEAR: "Cr",
@@ -449,6 +546,30 @@ init -3 python in mas_piano_keys:
         pygame.K_LSUPER: "LW"
     }
 
+    # stringified version for JSON
+    JSON_KEYMAP = {
+        "F4": F4,
+        "F4SH": F4SH,
+        "G4": G4,
+        "G4SH": G4SH,
+        "A4": A4,
+        "A4SH": A4SH,
+        "B4": B4,
+        "C5": C5,
+        "C5SH": C5SH,
+        "D5": D5,
+        "D5SH": D5SH,
+        "E5": E5,
+        "F5": F5,
+        "F5SH": F5SH,
+        "G5": G5,
+        "G5SH": G5SH,
+        "A5": A5,
+        "A5SH": A5SH,
+        "B5": B5,
+        "C6": C6
+    }
+
 
 # FUNCTIONS ===================================================================
 
@@ -496,7 +617,7 @@ init -3 python in mas_piano_keys:
         if old_key:
             # we have an old keymap, remove it
             renpy.game.persistent._mas_piano_keymaps.pop(old_key)
-           
+
         # only add a keymap if its different
         if key != new:
             renpy.game.persistent._mas_piano_keymaps[new] = key
@@ -504,6 +625,205 @@ init -3 python in mas_piano_keys:
 
         return (None, old_key)
 
+
+    def _strtoN(note):
+        """
+        Converts a stringified note to a regular note
+
+        IN:
+            note - note string to convert
+
+        RETURNS:
+            piano note version, or None if this wasnt a real ntoe
+        """
+        return JSON_KEYMAP.get(note, None)
+
+
+    def _strtoN_list(note_list):
+        """
+        Versin of strtoN that can handle a full list
+
+        IN:
+            note_list - list of notes to convert
+
+        RETURNS:
+            list of piano notes. or None if at least note wasnt real
+        """
+        real_note_list = []
+        for _note in note_list:
+            r_note = _strtoN(_note)
+            if r_note is None:
+                return None
+
+            # otherwise good note
+            real_note_list.append(r_note)
+
+        return real_note_list
+
+
+    def _labelCheck(key, _params, jobj, islogopen):
+        """
+        specialized json label checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of label to check
+            _params - params dict, also using key
+            jobj - json object, also using key
+            islogopen - True if log is open, false othrewise
+        """
+        if key not in jobj:
+            return
+
+        # otherwise
+        _label = jobj.pop(key)
+        if not renpy.has_label(_label):
+            if islogopen:
+                log.write(MSG_WARN_ID.format(LABEL_BAD.format(_label)))
+            return
+
+        _params[key] = _label
+
+
+    def _intCheck_nl(key, _params, jobj, warn_msg, islogopen):
+        """
+        Specialized json int checking function
+        NOTE: only use this for optinal params
+        NOTE: non warning list varient of _intCheck
+
+        IN:
+            key - key of the integer to check
+            _params - params dict, also using key
+            jobj - json object, also using key
+            warn_msg - warning message
+            islogopen - True if log is open, otherwise false
+        """
+        _warns = list()
+        _intCheck(key, _params, _warns, jobj, warn_msg)
+        if len(_warns) > 0 and islogopen:
+            log.write(MSG_WARN_ID.format(_warns[0]))
+
+
+    def _noteCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json note list checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of notes to check
+            _params - params dict, also using key
+            _warns - warnings list
+            jobj - json object, also using key
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        _notes = _strtoN_list(jobj.pop(key))
+        if _notes is None:
+            _warns.append(warn_msg)
+            return
+
+        # otherwise good
+        _params[key] = _notes
+
+
+    def _scCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json spritecode / expression checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of sprite code to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object, also using key
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        _exp = jobj.pop(key)
+        if not renpy.image_exists("monika " + _exp):
+            _warns.append(warn_msg.format(_exp))
+            return
+
+        # otherwise good
+        _params[key] = _exp
+
+
+    def _floatCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json float checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of the float to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object also using keuy
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        __num = jobj.pop(key)
+        _num = tryparsefloat(__num, -1.0)
+        if _num < 0:
+            _warns.append(warn_msg.format(__num))
+            return
+
+        # otherwise good
+        _params[key] = _num
+
+
+    def _intCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json int checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of the int to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object also using keuy
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        __num = jobj.pop(key)
+        _num = tryparseint(__num, -1)
+        if _num < 0:
+            _warns.append(warn_msg.format(__num))
+            return
+
+        # otherwise good
+        _params[key] = _num
+
+
+    def _boolCheck(key, _params, _warns, jobj, warn_msg):
+        """
+        Specialized json bool checking function
+        NOTE: only use this for optional params
+
+        IN:
+            key - key of the bool to check
+            _params - params dict, also using key
+            _warns - warning list
+            jobj - json object also using keuy
+            warn_msg - message to use for warning
+        """
+        if key not in jobj:
+            return
+
+        _bool = jobj.pop(key)
+        if bool != type(_bool):
+            _warns.append(warn_msg.format(_bool))
+            return
+
+        # otherwise good
+        _params[key] = _bool
 
 # CLASSES =====================================================================
 
@@ -549,6 +869,14 @@ init -3 python in mas_piano_keys:
     #       False if not
     #
     class PianoNoteMatch(object):
+        
+        # constants
+        REQ_ARG = [
+            "text",
+            "style",
+            "notes"
+        ]
+
         def __init__(self,
                 say,
                 notes=None,
@@ -583,6 +911,7 @@ init -3 python in mas_piano_keys:
             #   verse - the verse dex the phrase belongs to
             #       (Default: 0)
             #   copynotes - the index that this pnm note matches with
+            #       NOTE: currently unused
             #       (Default: None)
             #   posttext - True if we keep the text up during post, False
             #       otherwise
@@ -709,6 +1038,70 @@ init -3 python in mas_piano_keys:
             self.passes = 0
             self.matched = False
 
+        
+        @staticmethod
+        def fromJSON(jobj):
+            """
+            Creates a PianoNoteMatch from a given json object (which is just
+            a dict)
+
+            May add warnings to log file
+
+            IN:
+                jobj - JSON object (as a dict)
+
+            RETURNS:
+                Tuple of the following format:
+                [0]: PianoNoteMatch associated with the given json object
+                    Or NONE if the Json object is missing required information
+                [1]: List of warning strings
+                    Or error message string if fatal error occurs
+            """
+            # inital check to make sure the required items are in 
+            for required in PianoNoteMatch.REQ_ARG:
+                if required not in jobj:
+                    return (None, MISS_KEY.format(required))
+
+            # now lets grab each data point and prepare it for usage
+            _params = dict()
+            _warn = list()
+
+            # starting with the required data points, which should already
+            # exist because we looked for them
+            _params["say"] = renpy.text.text.Text(
+                jobj.pop("text"),
+                style=jobj.pop("style")
+            )
+
+            # parse notes
+            _notes = _strtoN_list(jobj.pop("notes"))
+            if _notes is None:
+                return (None, NOTE_BAD)
+            _params["notes"] = _notes
+
+            # optional params
+            _noteCheck("postnotes", _params, _warn, jobj, PNOTE_BAD)
+            _scCheck("express", _params, _warn, jobj, EXP_BAD)
+            _scCheck("postexpress", _params, _warn, jobj, EXP_BAD)
+            _floatCheck("ev_timeout", _params, _warn, jobj, EVT_BAD)
+            _floatCheck("vis_timeout", _params, _warn, jobj, VIST_BAD)
+            _intCheck("verse", _params, _warn, jobj, VERSE_BAD)
+            _boolCheck("posttext", _params, _warn, jobj, PTEXT_BAD)
+
+            if "copynotes" in jobj:
+                # NOTE: this is unused
+                jobj.pop("copynotes")
+
+            if "_comment" in jobj:
+                jobj.pop("_comment")
+
+            # if we have extras, warn the user
+            if len(jobj) > 0:
+                for extra in jobj:
+                    _warn.append(EXTRA_BAD.format(extra))
+                    
+            return (PianoNoteMatch(**_params), _warn)
+
 
     class PianoNoteMatchList(object):
         """
@@ -732,6 +1125,13 @@ init -3 python in mas_piano_keys:
             launch_label - label to call to prepare song launch
         """
 
+        # constatn
+        REQ_ARG = [
+            "pnm_list",
+            "verse_list",
+            "name"
+        ]
+
         def __init__(self,
                 pnm_list,
                 verse_list,
@@ -741,7 +1141,7 @@ init -3 python in mas_piano_keys:
                 fail_label,
                 prac_label,
                 end_wait=0,
-                launch_label=None
+                launch_label=None,
                 ):
             """
             Creates a PianoNoteMatchList
@@ -828,589 +1228,248 @@ init -3 python in mas_piano_keys:
             """
             return (self.name, self.full_combos, self.wins, self.losses)
 
-# this containst the actual songs
-# we need it to be high init level so we have images
-# TODO: considre making this readable from TEXt files.
-# NOTE: if we do the above, we need to reconsider how we handle post game
-# labels. Storing them in text files would be better organized but bad
-# for finding errors
+
+        @staticmethod
+        def fromJSON(jobj):
+            """
+            Creats a PianoNoteMatchList from a given JSON object (which is 
+            just a dict)
+
+            May add warnings to logg file
+
+            IN:
+                jobj - JSON object (As a dict)
+
+            RETURNS:
+                PianoNoteMatchList associated with given JSON object, or
+                None if JSON object is missing required information
+            """
+            islogopen = log.open()
+            log.raw_write = True
+
+            # inital check to make sure the required items are in 
+            for required in PianoNoteMatchList.REQ_ARG:
+                if required not in jobj:
+                    if islogopen:
+                        log.write(MSG_ERR.format(MISS_KEY.format(required)))
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+            # setup params
+            _params = dict()
+
+            # name first since we use it for situational awareness
+            _name = jobj.pop("name")
+            if islogopen:
+                log.write(MSG_INFO.format(LOAD_TRY.format(_name)))
+
+            if len(_name) <= 0:
+                # name has to be something
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(NAME_BAD.format(_name)))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            if _name in pnml_bk_db:
+                # name must be unique
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(NAME_BAD.format(_name)))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            _params["name"] = _name
+
+            # lets do PNMS
+            __pnm_list = jobj.pop("pnm_list")
+
+            if len(__pnm_list) <= 0:
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(NOTES_BAD))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            _pnm_list = list()
+            index = 0
+            for _pnm in __pnm_list:
+                if islogopen:
+                    log.write(MSG_INFO_ID.format(PNM_LOAD_TRY.format(index)))
+
+                real_pnm, _msg = PianoNoteMatch.fromJSON(_pnm)
+
+                if real_pnm is None:
+                    # failed to parse notematch
+                    if islogopen:
+                        log.write(MSG_ERR_ID.format(_msg))
+                        log.write(
+                            MSG_ERR_ID.format(PNM_LOAD_FAILED.format(index))
+                        )
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+                # add the pnm
+                _pnm_list.append(real_pnm)
+
+                # log warnings
+                if islogopen:
+                    for _warn in _msg:
+                        log.write(MSG_WARN_ID.format(_warn))
+
+                # verse check
+                if real_pnm.verse < 0 or real_pnm.verse >= len(_pnm_list):
+                    if islogopen:
+                        log.write(MSG_ERR_ID.format(
+                            L_VERSE_BAD.format(real_pnm.verse)
+                        ))
+                        log.write(
+                            MSG_ERR_ID.format(PNM_LOAD_FAILED.format(index))
+                        )
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+                # otherwise good pnm
+                if islogopen:
+                    log.write(MSG_INFO_ID.format(PNM_LOAD_SUCC.format(index)))
+                index += 1
+            _params["pnm_list"] = _pnm_list
+
+            # now verses
+            _verse_list = jobj.pop("verse_list")
+
+            if len(_verse_list) <= 0:
+                if islogopen:
+                    log.write(MSG_ERR_ID.format(VERSES_BAD))
+                    log.write(MSG_ERR.format(LOAD_FAILED))
+                return None
+
+            for _verse in _verse_list:
+                if _verse < 0 or _verse >= len(_pnm_list):
+                    if islogopen:
+                        log.write(MSG_ERR_ID.format(L_VERSE_BAD.format(_verse)))
+                        log.write(MSG_ERR.format(LOAD_FAILED))
+                    return None
+
+            # otherwise good verses
+            _params["verse_list"] = _verse_list
+
+            # "optional" params setup
+            _params["win_label"] = "mas_piano_def_win"
+            _params["fc_label"] = "mas_piano_def_fc"
+            _params["fail_label"] = "mas_piano_def_fail"
+            _params["prac_label"] = "mas_piano_def_prac"
+
+            # optional params
+            _labelCheck("win_label", _params, jobj, islogopen)
+            _labelCheck("fc_label", _params, jobj, islogopen)
+            _labelCheck("fail_label", _params, jobj, islogopen)
+            _labelCheck("prac_label", _params, jobj, islogopen)
+            _labelCheck("launch_label", _params, jobj, islogopen)
+            _intCheck_nl("end_wait", _params, jobj, WAIT_BAD, islogopen)
+
+            # ignore comments
+            if "_comment" in jobj:
+                jobj.pop("_comment")
+
+            # warn about extras
+            if len(jobj) > 0 and islogopen:
+                for extra in jobj:
+                    log.write(MSG_WARN_ID.format(EXTRA_BAD.format(extra)))
+
+            # success!
+            if islogopen:
+                log.write(MSG_INFO.format(LOAD_SUCC.format(_name)))
+            return PianoNoteMatchList(**_params)
+
+
+# all songs are done in jsons now
 init 1000 python in mas_piano_keys:
+    import json
 
-    # all piano note matches should follow this layout:
-    # _pnm_<song name inital>_v#l#
-    # v#l# -> verse #, line #
+    # functions used for pnmls.
+    def addSong(filepath, add_main=False):
+        """
+        Adds a song to the pnml db, given its json filepath
 
+        NOTE: may raise exceptions
 
-###  HAPPY BIRTHDAY ###########################################################
-## full combo
-## w w e w t r
-## w w e w y t
-## w w o u t r e
-## i i u t y t
+        IN:
+            filepath - filepath to the JSON we want to load in
+                - Assumed to be clean and ready to go
+            add_main - True means we should add this to the main pnml db too
+                (Default: False)
+        """
+        islogopen = log.open()
 
-    # happy birthday, piano note setup
-    _pnm_hb_v1l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday to you",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            G4,
-            A4,
-            G4,
-            C5,
-            B4,
-        ],
-        postnotes=None,
-        express="1b",
-        postexpress="1a",
-        verse=0
-    )
+        # can we read file?
+        with open(filepath, "r") as jsonfile:
 
-    _pnm_hb_v1l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday to you",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            G4,
-            A4,
-            G4,
-            D5,
-            C5,
-        ],
-        postnotes=None,
-        express="1k",
-        postexpress="1a",
-        verse=0
-    )
-    _pnm_hb_v1l3 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday, Happy Birthday",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            G4,
-            G5,
-            E5,
-            C5,
-            B4,
-            A4,
-        ],
-        postnotes = None,
-        express="1k",
-        postexpress="1j",
-        verse=0
-    )
+            # load JSON
+            jobj = json.load(jsonfile)
 
-    _pnm_hb_v1l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Happy Birthday to you!",
-            style="monika_credits_text"
-        ),
-        [
-            F5,
-            F5,
-            E5,
-            C5,
-            D5,
-            C5,
-        ],
-        postnotes = None,
-        express="1k",
-        postexpress="1j",
-        verse=0
-    )
+        # is file a JSON?
+        if jobj is None:
+            if islogopen:
+                log.write(
+                    MSG_ERR.format(JSON_LOAD_FAILED.format(filepath))
+                )
+            return
 
-    # your reality, pnml
-    pnml_happybirthday = PianoNoteMatchList(
-        [
-            _pnm_hb_v1l1,
-            _pnm_hb_v1l2,
-            _pnm_hb_v1l3,
-            _pnm_hb_v1l4,
-        ],
-        [0],
-        "Happy Birthday",
-        "mas_piano_hb_win",
-        "mas_piano_hb_fc",
-        "mas_piano_hb_fail",
-        "mas_piano_hb_prac",
-        5.0,
-        launch_label = None
-    )
+        # is JSON a PianoNoteMatchList?
+        pnml = PianoNoteMatchList.fromJSON(jobj)
+        if pnml is None:
+            # logging here is handled by the fromJSON function
+            return
+
+        # alright we good, lets add this to the pnml_bk_db
+        pnml_bk_db[pnml.name] = pnml
+
+        # should we add it to the main list as well?
+        if add_main:
+            pnml_db[pnml.name] = pnml
 
 
-### YOUR REALITY ##############################################################
+    def addCustomSongs():
+        """
+        Adds the custom songs (if we find any) to the game
+        """
+        if no_pnml_basedir:
+            return
 
-    # your reality, piano note setup
-    _pnm_yr_v1l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Everyday, I imagine a future where I can be with you",
-            style="monika_credits_text"
-        ),
-        [
-            G5,
-            G5,
-            G5,
-            G5,
-            F5,
-            E5,
-            E5,
-            F5,
-            G5,
-            E5,
-            D5,
-            C5,
-            D5,
-            E5,
-            C5,
-            G4
-        ],
-        postnotes=[
-            G5,
-            A5,
-            G5,
-            G5,
-            A5,
-            G5,
-            C6,
-            C6,
-            A5,
-            B5,
-            G5,
-            A5,
-            B5,
-            G5
-        ],
-        express="1k",
-        postexpress="1j",
-        verse=0
-    )
-    _pnm_yr_v1l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("In my hand, is a pen that will write a poem of me" +
-            " and you"),
-            style="monika_credits_text"
-        ),
-        [
-            G5,
-            A5,
-            G5,
-            E5,
-            F5,
-            G5,
-            F5,
-            E5,
-            D5,
-            A4,
-            G4,
-            F4,
-            A4,
-            G4,
-            E5,
-            C5
-        ],
-        postnotes=_pnm_yr_v1l1.postnotes,
-        express="1eub",
-        postexpress="1eua",
-        verse=0,
-    )
-    _pnm_yr_v1l3 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "The ink flows down into a dark puddle",
-            style="monika_credits_text"
-        ),
-        [
-            G5,
-            G5,
-            G5,
-            F5,
-            E5,
-            C5,
-            C5,
-            D5,
-            E5,
-            G5
-        ],
-        express="1eub",
-        postexpress="1eua",
-        verse=0
-    )
-    _pnm_yr_v1l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Just move your hand, write the way into his heart",
-            style="monika_credits_text"
-        ),
-        [
-            A5,
-            G5,
-            E5,
-            D5,
-            G4,
-            A4,
-            C5,
-            A4,
-            C5,
-            D5,
-            C5
-        ],
-        express="1hub",
-        postexpress="1hua",
-        verse=0
-    )
-    _pnm_yr_v1l5 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "But in this world of infinite choices",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l3.notes,
-        express="1eub",
-        postexpress="1eua",
-        verse=0
-    )
-    _pnm_yr_v1l6 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What will it take just to find that special day?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l4.notes,
-        express="1eub",
-        postexpress="1eua",
-        verse=0
-    )
-    _pnm_yr_v1l7 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What will it take just to find",
-            style="monika_credits_text"
-        ),
-        [
-            A5,
-            G5,
-            E5,
-            D5,
-            G4,
-            A4,
-            C5
-        ],
-        express="1eub",
-        postexpress="1eua",
-        verse=0,
-        posttext=True
-    )
-    _pnm_yr_v1l8 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "that special day",
-            style="monika_credits_text"
-        ),
-        [
-            A4,
-            C5,
-            D5,
-            C5
-        ],
-        express="1hub",
-        postexpress="1hua",
-        verse=0,
-        ev_timeout=5.0,
-        vis_timeout=3.0,
-        posttext=True
-    )
+        # otherwise we need to check for files
+        json_files = [
+            j_file 
+            for j_file in os.listdir(pnml_basedir)
+            if j_file.endswith(".json")
+        ]
 
-    # verse 2
-    _pnm_yr_v2l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "Have I found everybody a fun assignment to do today?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l1.notes,
-        postnotes=_pnm_yr_v1l1.postnotes,
-        express="1eub",
-        postexpress="1eua",
-        verse=8,
-        copynotes=0,
-        ev_timeout=15.0
-    )
-    _pnm_yr_v2l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("When you're here, everything that we do is fun for them"+
-            " anyway"),
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l2.notes,
-        postnotes=_pnm_yr_v1l2.postnotes,
-        express="1hub",
-        postexpress="1hua",
-        verse=8,
-        copynotes=1
-    )
-    _pnm_yr_v2l3 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "When I can't even read my own feelings",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l3.notes,
-        express="1ekd",
-        postexpress="1ekc",
-        verse=8,
-        copynotes=2
-    )
-    _pnm_yr_v2l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What good are words",
-            style="monika_credits_text"
-        ),
-        [
-            A5,
-            G5,
-            E5,
-            D5
-        ],
-        express="1ekd",
-        postexpress="1ekc",
-        vis_timeout=2.0,
-        verse=8,
-        posttext=True
-    )
-    _pnm_yr_v2l5 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "when a smile says it all?",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            A4,
-            C5,
-            A4,
-            C5,
-            D5,
-            C5
-        ],
-        express="1hub",
-        postexpress="1hua",
-        vis_timeout=3.0,
-        verse=8,
-        posttext=True
-    )
-    _pnm_yr_v2l6 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "And if this world won't write me an ending",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l5.notes,
-        express="1ekd",
-        postexpress="1ekc",
-        verse=8,
-        copynotes=4
-    )
-    _pnm_yr_v2l7 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What will it take just for me to have it all?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l6.notes,
-        express="1ekd",
-        postexpress="1eka",
-        vis_timeout=3.0,
-        verse=8,
-        copynotes=5,
-        posttext=True
-    )
+        if len(json_files) < 1:
+            return
 
-    # verse 3
-    _pnm_yr_v3l1 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("Does my pen only write bitter words for those who are "+
-            "dear to me?"),
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l1.notes,
-#                [
-#                    G5,
-#                    G5,
-#                    G5,
-#                    F5,
-#                    E5,
-#                    E5,
-#                    F5,
-#                    G5,
-#                    E5,
-#                    D5,
-#                    C5,
-#                    D5,
-#                    E5,
-#                    C5,
-#                    G4
-#                ],
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=0,
-        ev_timeout=25.0,
-        vis_timeout=2.0
-    )
-    _pnm_yr_v3l2 = PianoNoteMatch(
-        renpy.text.text.Text(
-            ("Is it love if I take you, or is it love if I set you " +
-            "free?"),
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l2.notes,
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=1,
-        ev_timeout=7.0,
-        vis_timeout=2.0
-    )
-    _pnm_yr_v3l3 = PianoNoteMatch(
-        _pnm_yr_v1l3.say,
-        _pnm_yr_v1l3.notes,
-        express="1eub",
-        postexpress="1eua",
-        verse=15,
-        copynotes=2,
-        ev_timeout=10.0
-    )
-    _pnm_yr_v3l4 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "How can I write love into reality?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l4.notes,
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=3
-    )
-    _pnm_yr_v3l5 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "If I can't hear the sound of your heartbeat",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l5.notes,
-        express="1lksdld",
-        postexpress="1lksdlc",
-        verse=15,
-        copynotes=4
-    )
-    _pnm_yr_v3l6 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "What do you call love in your reality?",
-            style="monika_credits_text"
-        ),
-        _pnm_yr_v1l6.notes,
-        express="1ekd",
-        postexpress="1eka",
-        verse=15,
-        copynotes=5
-    )
-    _pnm_yr_v3l7 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "And in your reality, if I don't know how to love you",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            A4,
-            C5,
-            A4,
-            C5,
-            D5,
-            C5,
-            E5,
-            F5,
-            F5,
-            E5,
-            C5,
-            A4,
-            C5,
-            G5
-        ],
-        postnotes=[
-            G5,
-            E5,
-            F5,
-            C5,
-            A5,
-            G5
-        ],
-        express="1lksdld",
-        postexpress="1lksdla",
-        verse=15
-    )
-    _pnm_yr_v3l8 = PianoNoteMatch(
-        renpy.text.text.Text(
-            "I'll leave you be",
-            style="monika_credits_text"
-        ),
-        [
-            G4,
-            A4,
-            C5,
-            C5
-        ],
-        postnotes=[
-            G5,
-            G5,
-            G5,
-            G5,
-            F5,
-            E5,
-            F5,
-            G5,
-            A5,
-            B5,
-            G5,
-            B5,
-            G5
-        ],
-        express="1eub",
-        postexpress="1eua",
-        ev_timeout=5.0,
-        vis_timeout=5.0,
-        posttext=True
-    )
+        # otherwise we have jsons!
+        for j_song in json_files:
+            j_path = pnml_basedir + j_song
+            try:
+                addSong(j_path, True)
+            except:
+                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(j_path)))
 
-    # your reality, pnml
-    pnml_yourreality = PianoNoteMatchList(
-        [
-            _pnm_yr_v1l1,
-            _pnm_yr_v1l2,
-            _pnm_yr_v1l3,
-            _pnm_yr_v1l4,
-            _pnm_yr_v1l5,
-            _pnm_yr_v1l6,
-            _pnm_yr_v1l7,
-            _pnm_yr_v1l8,
-            _pnm_yr_v2l1,
-            _pnm_yr_v2l2,
-            _pnm_yr_v2l3,
-            _pnm_yr_v2l4,
-            _pnm_yr_v2l5,
-            _pnm_yr_v2l6,
-            _pnm_yr_v2l7,
-            _pnm_yr_v3l1,
-            _pnm_yr_v3l2,
-            _pnm_yr_v3l3,
-            _pnm_yr_v3l4,
-            _pnm_yr_v3l5,
-            _pnm_yr_v3l6,
-            _pnm_yr_v3l7,
-            _pnm_yr_v3l8
-        ],
-        [0, 8, 15, 23],
-        "Your Reality",
-        "mas_piano_yr_win",
-        "mas_piano_yr_fc",
-        "mas_piano_yr_fail",
-        "mas_piano_yr_prac",
-        5.0
-#        "zz_piano_yr_launch"
-    )
+
+    def addStockSongs():
+        """
+        Adds the stock songs to the game
+        """
+        stock_songs = [
+            "happybirthday.json",
+            "yourreality.json",
+            "d__p_c__o.json"
+        ]
+
+        for song in stock_songs:
+            song_path = stock_pnml_basedir + song
+            try:
+                addSong(song_path)
+            except:
+                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(song_path)))
+
 
 ### END =======================================================================
 
@@ -1425,7 +1484,7 @@ init 1000 python in mas_piano_keys:
 #
 # Line 4
 # y e y e y e y u 6
-# y 6 
+# y 6
 #
 # Line 5, 6
 # r, 2 r 6 y 6 y 6 y 6 r
@@ -1643,7 +1702,7 @@ init 1000 python in mas_piano_keys:
         postexpress="1eka",
         verse=4
     )
-    
+
     # checkpoint 3?
     _pnm_dpco_v3l1 = PianoNoteMatch(
         renpy.text.text.Text(
@@ -1758,7 +1817,7 @@ init 1000 python in mas_piano_keys:
         express="1eub",
         postexpress="1eub",
         verse=12
-    )   
+    )
 
     # dpco, pnml
     pnml_dpco = PianoNoteMatchList(
@@ -1796,11 +1855,26 @@ init 1000 python in mas_piano_keys:
 
 ## setup dict of pnmls: #------------------------------------------------------
 
-    pnml_db = dict()
-    pnml_db[pnml_happybirthday.name] = pnml_happybirthday
-    pnml_db[pnml_yourreality.name] = pnml_yourreality
+    # adding the stock songs!
+    addStockSongs()
+
+    # and now we should only add certain songs to the main pnml_db
+    __stock_song_names = [
+        "Happy Birthday",
+        "Your Reality"
+#        "D--p-c--o"
+    ]
+    for _song in __stock_song_names:
+        if _song in pnml_bk_db:
+            pnml_db[_song] = pnml_bk_db[_song]
+
+
 # TODO: need to finish dpco one day
 #    pnml_db[pnml_dpco.name] = pnml_dpco
+
+    # now for custom songs
+    addCustomSongs()
+
 
     def getSongChoices():
         """
@@ -1808,8 +1882,9 @@ init 1000 python in mas_piano_keys:
         selection menu.
 
         RETURNS:
-            list of tuples for song selection. The returned list will for sure
-            have at least one item (the nevermind)
+            Tuple of the following format:
+            [0]: list of tuples for song selection. May be an empty list
+            [1]: Last item (the nvm) for the song selection
 
         ASSUMES:
             pnml_db
@@ -1819,10 +1894,9 @@ init 1000 python in mas_piano_keys:
         for k in pnml_db:
             pnml = pnml_db.get(k)
             if pnml.wins > 0:
-                song_list.append((pnml.name, pnml))
+                song_list.append((pnml.name, pnml, False, False))
 
-        song_list.append(("Nevermind", "None"))
-        return song_list
+        return song_list, ("Nevermind", "None", False, False, 10)
 
 # make this later than mas_piano_keys
 init 1001 python:
@@ -1836,10 +1910,10 @@ init 1001 python:
 
         ASSUMES:
             persistent._mas_pnml_data
-            mas_piano_keys.pnml_db
+            mas_piano_keys.pnml_bk_db
         """
         for data_row in persistent._mas_pnml_data:
-            db_data = mas_piano_keys.pnml_db.get(data_row[0], None)
+            db_data = mas_piano_keys.pnml_bk_db.get(data_row[0], None)
             if db_data:
                 db_data._loadTuple(data_row)
 
@@ -1849,10 +1923,11 @@ init 1001 python:
 
         ASSUMES:
             persistent._mas_pnml_data
-            mas_piano_keys.pnml_db
+            mas_piano_keys.pnml_bk_db
         """
         persistent._mas_pnml_data = [
-            mas_piano_keys.pnml_db[k]._saveTuple() for k in mas_piano_keys.pnml_db
+            mas_piano_keys.pnml_bk_db[k]._saveTuple() 
+            for k in mas_piano_keys.pnml_bk_db
         ]
 
     # the displayable
@@ -2162,7 +2237,7 @@ init 1001 python:
         # and which are default
         # x coords are same as black keys (which vary)
         # black ones
-        KMP_TXT_OVL_B_Y = ZZPK_IMG_BACK_Y 
+        KMP_TXT_OVL_B_Y = ZZPK_IMG_BACK_Y
         KMP_TXT_OVL_B_W = ZZPK_IMG_EKEY_WIDTH
         KMP_TXT_OVL_B_H = 47
         KMP_TXT_OVL_B_BGCLR = "#4D4154"
@@ -2302,7 +2377,7 @@ init 1001 python:
                 )) / 2) + self.ZZPK_IMG_BACK_X
             )
             cbutton_y_start = (
-                self.ZZPK_IMG_BACK_Y + 
+                self.ZZPK_IMG_BACK_Y +
                 self.PIANO_BACK_HEIGHT +
                 self.BUTTON_SPACING
             )
@@ -2481,7 +2556,7 @@ init 1001 python:
 
             # overlay setup
             mouse_w_ovl_idle = Solid(
-#                "#0005", 
+#                "#0005",
                 "#ffe6f4bb",
                 xsize=self.ZZPK_IMG_IKEY_WIDTH,
                 ysize=self.ZZPK_IMG_IKEY_HEIGHT - self.ZZPK_IMG_IKEY_YOFF
@@ -2522,7 +2597,7 @@ init 1001 python:
             mouse_b_ovl_hover = Solid(
                 "#ffaa99aa",
                 xsize=self.ZZPK_IMG_EKEY_WIDTH,
-                ysize=self.ZZPK_IMG_EKEY_HEIGHT            
+                ysize=self.ZZPK_IMG_EKEY_HEIGHT
             )
             b_plain = Image(self.ZZPK_B_OVL_PLAIN)
             blacks = [
@@ -2584,7 +2659,7 @@ init 1001 python:
                     mouse_w_ovl_idle,
                     top_left_x + self.ZZPK_IMG_BACK_X,
                     (
-                        self.ZZPK_IMG_KEYS_Y + 
+                        self.ZZPK_IMG_KEYS_Y +
                         self.ZZPK_IMG_IKEY_YOFF +
                         self.ZZPK_IMG_BACK_Y
                     ),
@@ -2824,13 +2899,13 @@ init 1001 python:
             # now apply adjustments
             for key,real_key in persistent._mas_piano_keymaps.iteritems():
                 if (
-                        real_key in self.live_keymap 
+                        real_key in self.live_keymap
                         and real_key == self.live_keymap[real_key]
                     ):
                     self.live_keymap.pop(real_key)
                 self.live_keymap[key] = real_key
 
-    
+
         def _sendEventsToOverlays(self, ev, x, y, st):
             """
             Sends event overlays to the list of config overlays.
@@ -2844,7 +2919,7 @@ init 1001 python:
                 st - same as st in event
 
             RETURNS:
-                the MASButtonDisplayable that returned a non None value, or 
+                the MASButtonDisplayable that returned a non None value, or
                 None if all of them returned None
             """
             for ovl in self._config_overlays_list:
@@ -3114,7 +3189,7 @@ init 1001 python:
 
                 if findex >= 0:
                     self.state = self.STATE_JMATCH
-                    
+
                     if self.match.is_single():
                         self._singleFlow(ev, key)
 
@@ -3394,7 +3469,7 @@ init 1001 python:
             # True if we need to do an interaction restart
             restart_int = False
 
-            if self.state in self.CONFIG_STATES: 
+            if self.state in self.CONFIG_STATES:
 
                 # reset monika
                 if self.state == self.STATE_CONFIG_ENTRY:
@@ -3405,9 +3480,9 @@ init 1001 python:
                     restart_int = True
                     self.state = self.STATE_CONFIG_WAIT
 
-                # piano overlays 
+                # piano overlays
                 # NOTE: ensure that this is after the key press overlay
-                # NOTE: this actually will be filled out differently 
+                # NOTE: this actually will be filled out differently
                 # dpending on state
                 visible_overlays = list()
 
@@ -3654,9 +3729,13 @@ init 1001 python:
 
             # debug mode shows extra information
             if config.developer:
+                match_str = ""
+                if self.match is not None:
+                    match_str = str(self.match.matchdex)
                 state_text = renpy.render(
                     renpy.text.text.Text(
-                        self.STATE_TO_STRING.get(self.state, "No state")
+                        self.STATE_TO_STRING.get(self.state, "No state") +
+                        "| " + match_str
                     ),
                     1280,
                     720,
@@ -3671,8 +3750,8 @@ init 1001 python:
                         670
                     )
                 )
-                        
-                        
+
+
 
 #                    renpy.show(
 #                        "monika " + match.express,
@@ -3708,7 +3787,7 @@ init 1001 python:
             # DONE state means you immediate quit
             if self.state in self.FINAL_DONE_STATES:
                 return self.quitflow()
-           
+
             # all mouse events
             if ev.type in self.MOUSE_EVENTS:
 
@@ -3750,7 +3829,7 @@ init 1001 python:
 
                 # config change
                 elif self.state == self.STATE_CONFIG_CHANGE:
-                    
+
                     # button handlers
                     clicked_cancel = self._button_cancel.event(ev, x, y, st)
                     clicked_reset = self._button_reset.event(ev, x, y, st)
@@ -3771,7 +3850,7 @@ init 1001 python:
                         old_key = mas_piano_keys._findKeymap(
                             self._sel_ovl.return_value
                         )
-                        
+
                         if old_key:
                             persistent._mas_piano_keymaps.pop(old_key)
                             self._keymap_overlays.pop(old_key)
@@ -3844,7 +3923,7 @@ init 1001 python:
                             )
 
                         renpy.play(
-                            self.pkeys[self._sel_ovl.return_value], 
+                            self.pkeys[self._sel_ovl.return_value],
                             channel="audio"
                         )
 
@@ -3928,4 +4007,3 @@ init 1001 python:
 
             # the default so we can keep going
             raise renpy.IgnoreEvent()
-

@@ -8,7 +8,7 @@ python early:
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z =5
-    
+
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
@@ -432,7 +432,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -462,11 +463,11 @@ python early:
             if category is not None:
                 # USE OR LOGIC
                 if category[0]:
-                    if len(set(category[1]).intersection(set(event.category))) == 0:
+                    if not event.category or len(set(category[1]).intersection(set(event.category))) == 0:
                         return False
 
                 # USE AND logic
-                elif len(set(category[1]).intersection(set(event.category))) != len(category[1]):
+                elif not event.category or len(set(category[1]).intersection(set(event.category))) != len(category[1]):
                     return False
 
             if action is not None and event.action not in action:
@@ -481,6 +482,10 @@ python early:
                 if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
                     return False
 
+            # check if event contains the monika wants this rule
+            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
+                return False
+
             # we've passed all the filtering rules somehow
             return True
 
@@ -494,7 +499,8 @@ python early:
                 pool=None,
                 action=None,
                 seen=None,
-                excl_cat=None):
+                excl_cat=None,
+                moni_wants=None):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -529,6 +535,9 @@ python early:
             #   excl_cat - list of categories to exclude, if given an empty
             #       list it filters out events that have a non-None category
             #       (Default: None)
+            #   moni_wants - boolean value to match if the event has the monika
+            #       wants this first.
+            #       (Default: None )
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -546,7 +555,8 @@ python early:
                     and pool is None
                     and action is None
                     and seen is None
-                    and excl_cat is None)):
+                    and excl_cat is None
+                    and moni_wants is None)):
                 return events
 
             # copy check
@@ -570,7 +580,7 @@ python early:
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat):
+                        excl_cat=excl_cat,moni_wants=moni_wants):
 
                     filt_ev_dict[k] = v
 
@@ -921,6 +931,60 @@ python early:
 
                 # check if the event contains a MASFarewellRule and evaluate it
                 if Event._checkFarewellRule(event):
+
+                    if event.monikaWantsThisFirst():
+                        return {event.eventlabel: event}
+
+                    # add the event to our available events dict
+                    available_events[label] = event
+
+            # return the available events dict
+            return available_events
+
+        @staticmethod
+        def _checkAffectionRule(ev,keepNoRule=False):
+            """
+            Checks the given event against its own affection specific rule.
+
+            IN:
+                ev - event to check
+
+            RETURNS:
+                True if this event passes its repeat rule, False otherwise
+            """
+            return MASAffectionRule.evaluate_rule(ev,noRuleReturn=keepNoRule)
+
+
+        @staticmethod
+        def checkAffectionRules(events,keepNoRule=False):
+            """
+            Checks the event dict against their own affection specific rules,
+            filters out those Events whose rule check return true. This rule
+            checks if current affection is inside the specified range contained
+            on the rule
+
+            IN:
+                events - dict of events of the following format:
+                    eventlabel: event object
+                keepNoRule - Boolean indicating wheter if it should keep
+                    events that don't have an affection rule defined
+
+            RETURNS:
+                A filtered dict containing the events that passed their own rules
+
+            """
+            # sanity check
+            if not events or len(events) == 0:
+                return None
+
+            # prepare empty dict to store events that pass their own rules
+            available_events = dict()
+
+            # iterate over each event in the given events dict
+            for label, event in events.iteritems():
+
+                # check if the event contains a MASAffectionRule and evaluate it
+                if Event._checkAffectionRule(event,keepNoRule=keepNoRule):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
@@ -1699,6 +1763,7 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_you_chr = False
         renpy.game.persistent.opendoor_opencount = 0
         renpy.game.persistent.opendoor_knockyes = False
+        persistent._mas_greeting_type = None
 
         # hangman
         renpy.game.persistent._mas_hangman_playername = False
@@ -1707,10 +1772,19 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_pnml_data = list()
         renpy.game.persistent._mas_piano_keymaps = dict()
 
+        # affection
+        persistent._mas_affection["affection"] = 0
+
 
 init -100 python in mas_utils:
     # utility functions for other stores.
     import datetime
+    import ctypes
+    mas_log = renpy.renpy.log.open("mas_log")
+    mas_log_open = mas_log.open()
+    mas_log.raw_write = True
+
+    __FLIMIT = 1000000
 
     # bad text dict
     BAD_TEXT = {
@@ -1749,6 +1823,25 @@ init -100 python in mas_utils:
         """
         try:
             return int(value)
+        except:
+            return default
+
+
+    def tryparsefloat(value, default=0):
+        """
+        Attempts to parse the given value into a float. Returns the default if
+        that parse failed.
+
+        IN:
+            value - value to parse
+            default - value to return if parse fails
+            (Default: 0)
+
+        RETURNS: a float representation of the given value, or default if
+            the given value could not be parsed into an float
+        """
+        try:
+            return float(value)
         except:
             return default
 
@@ -1820,17 +1913,200 @@ init -100 python in mas_utils:
     #at 3 AM
     # START-OF-DAY
     def sod(starting_date):
-        new_date = starting_date.replace(hour=3,minute=0,second=0,microsecond=0)
-
-        return new_date
+        return am3(starting_date)
 
 
+    def mdnt(starting_date):
+        """
+        Takes a datetime object and returns a new datetime with the same date
+        at midnight
+
+        IN:
+            starting_date - date to change
+
+        RETURNS:
+            starting_date but at midnight
+        """
+        return starting_date.replace(
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+
+
+    def am3(_datetime):
+        """
+        Takes a datetime object and returns a new datetime with the same date
+        at 3 am.
+
+        IN:
+            _datetime - datetime to change
+
+        RETURNS:
+            _datetime but at 3am
+        """
+        return _datetime.replace(
+            hour=3,
+            minute=0,
+            second=0,
+            microsecond=0
+        )
+
+
+    def writelog(msg):
+        """
+        Writes to the mas log if it is open
+
+        IN:
+            msg - message to write to log
+        """
+        if mas_log_open:
+            mas_log.write(msg)
+
+
+    class ISCRAM(ctypes.BigEndianStructure):
+        _iscramfieldbuilder = [
+            3, 3, 2, 1, 3, 2, 2, 1, 3, 3, 1, 3, 1
+        ] # free candy
+        _iscramfieldorder = [
+            12, 11, 0, 4, 2, 9, 5, 3, 8, 7, 6, 1, 10
+        ] # r.org
+        _iscramfieldlist = [
+            ("sign", ctypes.c_ubyte, 1)
+        ]
+        for x in range(0, len(_iscramfieldorder)):
+            _iscramfieldlist.append((
+                "b" + str(x),
+                ctypes.c_ubyte,
+                _iscramfieldbuilder[_iscramfieldorder.index(x)]
+            ))
+        _pack_ = 1
+        _fields_ = list(_iscramfieldlist)
+
+
+    class FSCRAM(ctypes.BigEndianStructure):
+        _pack_ = 1
+        _fields_ = [
+            ("sign", ctypes.c_ubyte, 1),
+            ("inum", ISCRAM),
+            ("fnum", ISCRAM),
+            ("dnum", ISCRAM)
+        ]
+
+
+    def _ntoub(num, bsize):
+        """
+        Partial packing.
+        """
+        st = 1
+        val = 0
+        for i in range(0,bsize):
+            if (num & st) > 0:
+                val += st
+            st *= 2
+
+        return val
+
+
+    def _itoIS(num):
+        """
+        integer packing
+        """
+        packednum = ISCRAM()
+        if num < 0:
+            packednum.sign = 1
+            num *= -1
+
+        for i in range(0, len(ISCRAM._iscramfieldbuilder)):
+            bsize = ISCRAM._iscramfieldbuilder[i]
+            savepoint = _ntoub(num, bsize)
+            exec("".join([
+                "packednum.b",
+                str(ISCRAM._iscramfieldorder[i]),
+                " = ",
+                str(savepoint)
+            ]))
+            num = num >> bsize
+#            if num <= 0:
+#                return packednum
+
+        return packednum
+
+
+    def _IStoi(packednum):
+        """
+        integer unpacking
+        """
+        num = 0
+        for i in range(len(ISCRAM._iscramfieldbuilder)-1, -1, -1):
+            num = num << ISCRAM._iscramfieldbuilder[i]
+            num = num | eval("".join([
+                "packednum.b",
+                str(ISCRAM._iscramfieldorder[i])
+            ]))
+
+        if packednum.sign > 0:
+            return num * -1
+
+        return num
+
+
+    def _ftoFS(num):
+        """
+        Float packing
+        """
+        packednum = FSCRAM()
+        if num < 0:
+            packednum.sign = 1
+            num *= -1
+
+        ival = int(num)
+        packednum.inum = _itoIS(ival)
+        packednum.fnum = _itoIS(int((num - ival) * __FLIMIT))
+        packednum.dnum = _itoIS(__FLIMIT)
+
+        return packednum
+
+
+    def _FStof(packednum):
+        """
+        Float unpacking
+        """
+        ival = _IStoi(packednum.inum)
+        fnum = _IStoi(packednum.fnum)
+        dnum = float(_IStoi(packednum.dnum))
+
+        fval = ival + (fnum / dnum)
+
+        if packednum.sign > 0:
+            return fval * -1
+
+        return fval
+
+
+    def _splitfloat(num):
+        """
+        Splits a float into integer parts:
+
+        [0]: integer
+        [1]: numerator
+        [2]: denominator
+        """
+        ival = int(num)
+        cleanival = ival
+        if num < 0:
+            num *= -1
+            cleanival *= -1
+        return (ival, int((num - cleanival) * __FLIMIT), __FLIMIT)
 
 
 init -1 python:
     import datetime # for mac issues i guess.
-    config.keymap['game_menu'].remove('mouseup_3')
-    config.keymap['hide_windows'].append('mouseup_3')
+    if "mouseup_3" in config.keymap['game_menu']:
+        config.keymap['game_menu'].remove('mouseup_3')
+    if "mouseup_3" not in config.keymap["hide_windows"]:
+        config.keymap['hide_windows'].append('mouseup_3')
     config.keymap['self_voicing'] = []
     config.keymap['clipboard_voicing'] = []
     config.keymap['toggle_skip'] = []
@@ -3115,6 +3391,7 @@ default persistent.clearall = None
 default persistent.menu_bg_m = None
 default persistent.first_load = None
 default persistent.has_merged = False
+default persistent._mas_monika_nickname = "Monika"
 default in_sayori_kill = None
 default in_yuri_kill = None
 default anticheat = 0
@@ -3127,7 +3404,7 @@ default faint_effect = None
 
 
 default s_name = "Sayori"
-default m_name = "Monika"
+default m_name = persistent._mas_monika_nickname
 default n_name = "Natsuki"
 default y_name = "Yuri"
 
@@ -3200,6 +3477,7 @@ default persistent.sessions={'last_session_end':None,'current_session_start':Non
 default persistent.playerxp = 0
 default persistent.idlexp_total = 0
 default persistent.random_seen = 0
+default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apologyflag":False, "freeze_date": None, "today_exp":0}
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
@@ -3209,6 +3487,14 @@ default persistent._mas_first_calendar_check = False
 # rain
 default persistent._mas_likes_rain = False
 define mas_is_raining = False
+
+# rain chances
+define MAS_RAIN_UPSET = 25
+define MAS_RAIN_DIS = 40
+define MAS_RAIN_BROKEN = 70
+
+# music
+#default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 
 # clothes
 default persistent._mas_monika_clothes = "def"

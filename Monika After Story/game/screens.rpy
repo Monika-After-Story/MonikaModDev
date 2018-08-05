@@ -1,11 +1,115 @@
 init 100 python:
-    layout.QUIT = "Leaving without saying goodbye, [player]?"
-    layout.UNSTABLE = (
+    layout.QUIT = store.mas_layout.QUIT
+    layout.UNSTABLE = store.mas_layout.UNSTABLE
+
+init -1 python:
+    layout.QUIT_YES = "Please don't close the game on me!"
+    layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
+
+
+init python in mas_layout:
+    import store
+    import store.mas_affection as aff
+    gender = renpy.game.persistent.gender 
+
+    QUIT_YES = store.layout.QUIT_YES
+    QUIT_NO = store.layout.QUIT_NO
+    QUIT = "Leaving without saying goodbye, [player]?"
+    UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
         "experimental unstable branch. It is HIGHLY recommended to make a " +
         "backup of your persistent before enabling this mode. Please report " +
         "issues found here with an [[UNSTABLE] tag."
     )
+
+    # quit yes messages affection scaled
+    QUIT_YES_BROKEN = "You could at least pretend that you care."
+    QUIT_YES_DIS = ":("
+    QUIT_YES_AFF = "T_T [player]..."
+
+    # quit no messages affection scaled
+    QUIT_NO_BROKEN = "{i}Now{/i} you listen?"
+    QUIT_NO_UPSET = "Thanks for being considerate, [player]."
+    QUIT_NO_HAPPY = ":)"
+    QUIT_NO_AFF_G = "Good [boy]."
+    QUIT_NO_AFF_GL = "Good. :)"
+    QUIT_NO_LOVE = "<3 u"
+
+    # quit messages affection scaled
+    QUIT_BROKEN = "Just go."
+    QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
+
+    if gender == "M" or gender == "F":
+        _usage_quit_aff = QUIT_NO_AFF_G
+    else:
+        _usage_quit_aff = QUIT_NO_AFF_GL
+
+    # quit message dicts
+    # tuple:
+    #   [0]: quit message
+    #   [1]: quit yes message
+    #   [2]: quit no message
+    # if something is None we go to the state closest to normal
+    QUIT_MAP = {
+        aff.BROKEN: (QUIT_BROKEN, QUIT_YES_BROKEN, QUIT_NO_BROKEN),
+        aff.DISTRESSED: (None, QUIT_YES_DIS, None),
+        aff.UPSET: (None, None, QUIT_NO_UPSET),
+        aff.NORMAL: (QUIT, QUIT_YES, QUIT_NO),
+        aff.HAPPY: (None, None, QUIT_NO_HAPPY),
+        aff.AFFECTIONATE: (QUIT_AFF, QUIT_YES_AFF, _usage_quit_aff),
+        aff.ENAMORED: (None, None, None),
+        aff.LOVE: (None, None, QUIT_NO_LOVE)
+    }
+
+
+    def findMsg(start_aff, index):
+        """
+        Finds first non-None quit message we need
+
+        This uses the cascade map from affection
+
+        IN:
+            start_aff - starting affection
+            index - index of the tuple we need to look at
+
+        RETURNS:
+            first non-None quit message found.
+        """
+        msg = QUIT_MAP[start_aff][index]
+        while msg is None:
+            start_aff = aff._aff_cascade_map[start_aff]
+            msg = QUIT_MAP[start_aff][index]
+
+        return msg
+
+
+    def setupQuits():
+        """
+        Sets up quit message based on the current affection state
+        """
+        curr_aff_state = store.mas_curr_affection
+
+        quit_msg, quit_yes, quit_no = QUIT_MAP[curr_aff_state]
+
+        if quit_msg is None:
+            quit_msg = findMsg(curr_aff_state, 0)
+
+        if quit_yes is None:
+            quit_yes = findMsg(curr_aff_state, 1)
+
+        if quit_no is None:
+            quit_no = findMsg(curr_aff_state, 2)
+
+        store.layout.QUIT = quit_msg
+        store.layout.QUIT_YES = quit_yes
+        store.layout.QUIT_NO = quit_no
+
+
+init 3000 python:
+    import store.mas_layout
+    store.mas_layout.setupQuits()
+
+
 ## Initialization
 ################################################################################
 
@@ -1619,8 +1723,12 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message="Please don't close the game on me!", ok_action=yes_action)]
-                textbutton _("No") action no_action, Show(screen="dialog", message="Thank you, [player]!\nLet's spend more time together~", ok_action=Hide("dialog"))
+                if mas_finalfarewell_mode:
+                    textbutton _("-") action yes_action
+                    textbutton _("-") action yes_action
+                else:
+                    textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message=layout.QUIT_YES, ok_action=yes_action)]
+                    textbutton _("No") action no_action, Show(screen="dialog", message=layout.QUIT_NO, ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
@@ -1747,7 +1855,7 @@ screen updater:
                 elif u.state == u.PREPARING:
                     text _("Preparing to download the updates.")
                 elif u.state == u.DOWNLOADING:
-                    text _("Downloading the updates.")
+                    text _("Downloading the updates. (Progress bar may not advance during download)")
                 elif u.state == u.UNPACKING:
                     text _("Unpacking the updates.")
                 elif u.state == u.FINISHING:

@@ -163,6 +163,8 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     python:
+        _mas_AffStartup()
+
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
         store.mas_calendar.loadCalendarDatabase()
@@ -200,6 +202,11 @@ label splashscreen:
 #   NOTE: this keeps screwing with my syntax coloring
     python:
         basedir = config.basedir.replace("\\", "/")
+
+        # dump verseion to a firstrun-style file
+        with open(basedir + "/game/masrun", "w") as versfile:
+            versfile.write(config.name + "|" + config.version + "\n")
+
 
     #Check for game updates before loading the game or the splash screen
 #    call update_now from _call_update_now
@@ -320,5 +327,7 @@ label quit:
             for acs in monika_chr.acs[MASMonika.PST_ACS]
             if acs.stay_on_start
         ]
+
+    $ _mas_AffSave()
 
     return

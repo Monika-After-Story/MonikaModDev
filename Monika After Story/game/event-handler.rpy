@@ -176,7 +176,8 @@ init -1 python in evhand:
 
     # restart topic blacklist
     RESTART_BLKLST = [
-        "mas_crashed_start"
+        "mas_crashed_start",
+        "monika_affection_nickname"
     ]
 
     # as well as special functions
@@ -305,6 +306,82 @@ init -1 python in evhand:
         return start_date <= current <= end_date
 
 
+    def _hideEvent(
+            event,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Internalized hideEvent
+        """
+        if event:
+
+            if lock:
+                event.unlocked = False
+
+            if derandom:
+                event.random = False
+
+            if depool:
+                event.pool = False
+
+            if decond:
+                event.conditional = None
+
+
+    def _hideEventLabel(
+            eventlabel,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=event_database
+        ):
+        """
+        Internalized hideEventLabel
+        """
+        ev = eventdb.get(eventlabel, None)
+
+        _hideEvent(
+            ev,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
+
+
+    def _lockEvent(ev):
+        """
+        Internalized lockEvent
+        """
+        _hideEvent(ev, lock=True)
+
+
+    def _lockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized lockEventLabel
+        """
+        _hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+
+
+    def _unlockEvent(ev):
+        """
+        Internalized unlockEvent
+        """
+        if ev:
+            ev.unlocked = True
+
+
+    def _unlockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized unlockEventLabel
+        """
+        _unlockEvent(eventdb.get(evlabel, None))
+
+
 init python:
     import store.evhand as evhand
     import datetime
@@ -367,14 +444,13 @@ init python:
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: evhand.event_database)
-        ev = eventdb.get(eventlabel, None)
-
-        hideEvent(
-            ev,
+        evhand._hideEventLabel(
+            eventlabel,
             lock=lock,
             derandom=derandom,
             depool=depool,
-            decond=decond
+            decond=decond,
+            eventdb=eventdb
         )
 
 
@@ -400,20 +476,13 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
-
-        if event:
-
-            if lock:
-                event.unlocked = False
-
-            if derandom:
-                event.random = False
-
-            if depool:
-                event.pool = False
-
-            if decond:
-                event.conditional = None
+        evhand._hideEvent(
+            event,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
 
 
     def lockEvent(ev):
@@ -423,7 +492,7 @@ init python:
         IN:
             ev - the event object to lock
         """
-        hideEvent(ev, lock=True)
+        evhand._lockEvent(ev)
 
 
     def lockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -434,7 +503,7 @@ init python:
             evlabel - event label of the event to lock
             eventdb - Event database to find this label
         """
-        hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+        evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
     def pushEvent(event_label):
@@ -473,8 +542,7 @@ init python:
         IN:
             ev - the event object to unlock
         """
-        if ev:
-            ev.unlocked = True
+        evhand._unlockEvent(ev)
 
 
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -485,7 +553,7 @@ init python:
             evlabel - event label of the event to lock
             eventdb - Event database to find this label
         """
-        unlockEvent(eventdb.get(evlabel, None))
+        evhand._unlockEventLabel(evlabel, eventdb=eventdb)
 
 
     def isFuture(ev, date=None):
@@ -709,8 +777,6 @@ init python:
         # otherwise we didnt unlock anything because nothing available
         return False
 
-
-
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
@@ -746,9 +812,13 @@ label call_next_event:
             $ ev.shown_count += 1
             $ ev.last_seen = datetime.datetime.now()
 
-        if _return == 'quit':
-            $persistent.closed_self = True #Monika happily closes herself
-            jump _quit
+        if _return is not None:
+            if "derandom" in _return:
+                $ ev.random = False
+
+            if "quit" in _return:
+                $persistent.closed_self = True #Monika happily closes herself
+                jump _quit
 
         show monika 1 at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
 
@@ -804,6 +874,7 @@ label prompt_menu:
         talk_menu.append(("Ask a question.", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
+        talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
@@ -819,6 +890,9 @@ label prompt_menu:
 
     elif madechoice == "repeat":
         call prompts_categories(False) from _call_prompts_categories_1
+
+    elif madechoice == "love":
+        $ pushEvent("monika_love")
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start

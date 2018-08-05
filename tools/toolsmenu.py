@@ -5,12 +5,14 @@
 
 import spritepuller as spp
 import spritechecker as spc
+import testsgenerator as tg
 import menutils
 
 menu_main = [
     ("MAS Dev Tools", "Utility: "),
     ("Sprite Puller", spp.run),
-    ("Check Sprites", spc.run)
+    ("Check Sprites", spc.run),
+    ("Generate Expressions Test", tg.run)
 ]
 
 choice = True

@@ -386,6 +386,7 @@ label mas_hangman_game_loop:
 
                 # display weird text
                 m "{cps=*2}[hm_glitch_word]{/cps}{w=0.2}{nw}"
+                $ _history_list.pop()
 
                 # tear screen and glitch sound
                 show screen tear(20, 0.1, 0.1, 0, 40)
@@ -502,6 +503,7 @@ label mas_hangman_game_loop:
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
             $ grant_xp(xp.WIN_GAME)
+        #TODO: grant a really tiny amount of affection?
 
     # try again?
     menu:
