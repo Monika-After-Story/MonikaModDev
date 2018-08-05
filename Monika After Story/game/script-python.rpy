@@ -47,7 +47,7 @@ init 4 python in mas_ptod:
 
     M_PTOD = "monika_ptod_tip{:0>3d}"
 
-    def has_day_past(tip_num):
+    def has_day_past_tip(tip_num):
         """
         Checks if the tip with the given number has already been seen and
         a day has past since it was unlocked.
@@ -82,18 +82,18 @@ init 4 python in mas_ptod:
             > datetime.timedelta(days=1)
         )
 
-    def has_days_past(*tip_nums):
+    def has_day_past_tips(*tip_nums):
         """
-        Variant of has_day_past that can check multiple numbers
+        Variant of has_day_past_tip that can check multiple numbers
 
-        SEE has_day_past for more info
+        SEE has_day_past_tip for more info
 
         RETURNS:
             true if all the given tip nums have been see nand a day has past
                 since the latest one was unlocked, False otherwise
         """
         for tip_num in tip_nums:
-            if not has_day_past(tip_num):
+            if not has_day_past_tip(tip_num):
                 return False
 
         return True
@@ -167,7 +167,7 @@ init 5 python:
             eventlabel="monika_ptod_tip002",
             category=["python tips"],
             prompt="Types",
-            conditional="store.mas_ptod.has_day_past(3)",
+            conditional="store.mas_ptod.has_day_past_tip(3)",
             action=EV_ACT_POOL
         )
     )
@@ -249,7 +249,7 @@ init 5 python:
             eventlabel="monika_ptod_tip003", # may change order, you decide on this
             category=["python tips"],
             prompt="An Interpreted Language",
-            conditional="store.mas_ptod.has_day_past(1)",
+            conditional="store.mas_ptod.has_day_past_tip(1)",
             action=EV_ACT_POOL
         )
     )
@@ -313,7 +313,7 @@ init 5 python:
             eventlabel="monika_ptod_tip004",
             category=["python tips"],
             prompt="What does python code look like?",
-            conditional="store.mas_ptod.has_day_past(3)",
+            conditional="store.mas_ptod.has_day_past_tip(3)",
             action=EV_ACT_POOL
         )
     )
@@ -354,7 +354,7 @@ init 5 python:
             eventlabel="monika_ptod_tip005",
             category=["python tips"],
             prompt="Comparisons and booleans",
-#            conditional="store.mas_ptod.has_day_past(2)",
+#            conditional="store.mas_ptod.has_day_past_tip(2)",
 #   actually, this should probably unlock after we talk about variable 
 #   assignment, since we can do an example like variable = a == b kind of thing
             action=EV_ACT_POOL
@@ -376,7 +376,7 @@ init 5 python:
             eventlabel="monika_ptod_tip006",
             category=["python tips"],
             prompt="Variables and Assignment",
-            conditional="store.mas_ptod.has_days_past(2,3)",
+            conditional="store.mas_ptod.has_day_past_tips(2,3)",
             action=EV_ACT_POOL
         )
     )
