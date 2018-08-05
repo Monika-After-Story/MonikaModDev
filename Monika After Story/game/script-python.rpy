@@ -138,7 +138,7 @@ label monika_ptod_tip001:
     $ tip_ev.pool = True
 
     m 1esa "Python was created by Guido Van Rossum in the early 90s."
-    m "It is used in many places, including web apps, embedded systems, the rasberry pi, Linux, and of course..."
+    m "It is used in many places, including web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
     m 1eua "DDLC in particular uses a game engine called RenPy,{w} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
@@ -151,9 +151,8 @@ label monika_ptod_tip001:
     m "Even though this introduced a split in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
     m 3eub "I'll tell you about those differences in another lesson."
 
-    if tip_ev.last_seen is None:
-        m 1eua "The RenPy versions that this mod runs on use Python2, so I won't be talking about Python3 too often."
-        m 1hua "But I'll mention it when it's appropriate."
+    m 1eua "The RenPy version that this mod runs on use Python2, so I won't be talking about Python3 too often."
+    m 1hua "But I'll mention it when it's appropriate."
 
     m 3eua "That's my lesson for today."
     m 1hua "Thanks for listening!"
@@ -199,7 +198,7 @@ label monika_ptod_tip002:
     call mas_wx_cmd("type(42)", local_ctx)
 
     ## floats
-    m 1eub "Floats are used to represent decimals:"
+    m 1eub "Floats are used to represent decimals."
 
     call mas_wx_cmd("type(0.14)", local_ctx)
     call mas_wx_cmd("type(9.3)", local_ctx)
@@ -213,19 +212,20 @@ label monika_ptod_tip002:
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
+    m 1eksdlb "Even though these say {i}unicode{/i}, that is basically the same as a string and can be treated that way for our purposes."
     m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
 
     ### booleans
-    m "Booleans are special types that represent {b}True{/b} and {b}False{/b} values."
+    m "Booleans are special types that represent {b}True{/b} or {b}False{/b} values."
     call mas_wx_cmd("type(True)", local_ctx)
     call mas_wx_cmd("type(False)", local_ctx)
 
-    m 1rksdlb "I'll go into more detail about what booleans are in another lesson."
+    m 1eua "I'll go into more detail about what booleans are and what they are used for in another lesson."
 
     ### Nones
     m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w} This type represents the absence of any data."
     m "If you're familiar with other programing languages, this is like a {i}null{/i} or {i}undefined{/i} type."
-    m "The keyword {i}None{/i} represents NoneTypes in Python:"
+    m "The keyword {i}None{/i} represents NoneTypes in Python."
 
     call mas_wx_cmd("type(None)", local_ctx)
 
@@ -262,7 +262,7 @@ label monika_ptod_tip003:
     m 1eua "Programming languages are usually either compiled or interpreted."
     m "Compiled languages require their code to be converted to a machine-readable format before being executed."
     m 3eub "C and Java are two very popular compiled languages."
-    m 1eua "Interpreted langauges are converted into machine-readable as they are being executed."
+    m 1eua "Interpreted langauges are converted into a machine-readable format as they are being executed."
     m 3eub "Python is an interpreted language."
     m 1rksdlb "However, different implementations of Python may be compiled, but that's a complicated topic that I may talk about in a later lesson."
 
@@ -287,12 +287,12 @@ label monika_ptod_tip003:
         m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
 
         m 1hksdlb "Unfortunately, since this is a fully functional python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
-        m "Not that you would{fast}"
+        m "Not that you would{fast}{nw}"
         $ _history_list.pop()
-        m 1eksdlb "I can't let you use this. Sorry..." 
+        m 1eksdlb "I can't let you use this.{w} Sorry..." 
         m "If you want to follow along in future lessons, then run a Python interpreter in a seperate window."
 
-        m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help me teach future lessons."
+        m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
 
     else:
         m 1hua "Pretty cool, right?"
@@ -317,6 +317,8 @@ init 5 python:
         )
     )
 
+# PREREQs:
+#   interpreted language (tip 3)
 label monika_ptod_tip004:
     # PYTHON SYNTAX
     # TODO, actually ths should be a pre-req for block-based code,
@@ -375,11 +377,13 @@ init 5 python:
             eventlabel="monika_ptod_tip006",
             category=["python tips"],
             prompt="Variables and Assignment",
-            conditional="store.mas_ptod.has_day_past_tips(2,3)",
+            conditional="store.mas_ptod.has_day_past_tip(2)",
             action=EV_ACT_POOL
         )
     )
 
+# PREREQS:
+#   Types (tip 2)
 label monika_ptod_tip006:
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
@@ -1166,4 +1170,5 @@ label mas_wx_cmd(cmd, ctx, w_wait=0.7, x_wait=0.7):
 
 # does both writing and executing, no x wait
 label mas_wx_cmd_noxwait(cmd, ctx):
-    jump mas_wx_cmd(cmd, ctx, x_wait=0.0)
+    call mas_wx_cmd(cmd, ctx, x_wait=0.0)
+    return
