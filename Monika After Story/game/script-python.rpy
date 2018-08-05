@@ -257,52 +257,51 @@ init 5 python:
 # PREREQS:
 #   What is python (tip 1)
 label monika_ptod_tip003:
-    # Programming languages usually are one of two types, compiled or 
-    # interpreted. Compiled languages require their code to be converted to a 
-    # machine-readable format before being executed. C and Java are two very
-    # popular compiled languages. Interpreted languages are converted to
-    # machine-readable formats as they are being executed. Python is an 
-    # an interpreted language.
-    #
-    # Before I move on, just want to point out that different implementations
-    # of Python may **not** be solely interpreted, but this something I will
-    # talk about in a later lesson.
-    #
-    # Since Python is an interpreted language, it has a neat interactive thing
-    # called an interpreter, which looks like this:
+    $ tip_ev = mas_getEV("monika_ptod_tip003")
+
+    m 1eua "Programming languages are usually either compiled or interpreted."
+    m "Compiled languages require their code to be converted to a machine-readable format before being executed."
+    m 3eub "C and Java are two very popular compiled languages."
+    m 1eua "Interpreted langauges are converted into machine-readable as they are being executed."
+    m 3eub "Python is an interpreted language."
+    m 1rksdlb "However, different implementations of Python may be compiled, but that's a complicated topic that I may talk about in a later lesson."
+
+    m 1eua "Since Python is an interpreted language, it has a neat interactive thing called an interpreter, which looks like..."
 
     $ store.mas_ptod.rst_cn()
     $ local_ctx = dict()
-    show monika at t22
+    show monika 3eua at t22
     show screen mas_py_console_teaching
 
-    # You can enter Python code directly into here and run it! 
-    # Watch this!
+    m 3eub "this!"
+
+    m "You can enter Python code directly into here and run it, like so:"
+
+    # base commands shown as starter ones
     call mas_wx_cmd("12 + 3", local_ctx)
     call mas_wx_cmd("7 * 6", local_ctx)
     call mas_wx_cmd("121 / 11", local_ctx)
     # NOTE: add more commands as the user goes thru the tips
-    # [show this once]
-    # You can do way more than just math in here, but I'll show you as we go
-    # along.
-    # [end]
-    #
-    # [show this once]
-    # Unfortunatey, since this is a fully functional python interpreter and I
-    # don't want to risk you accidentally deleting me or breaking the game,
-    # ~not that you would~ (fast, and pop off history)
-    # I can't let you use this. If you want to follow along in future lessons,
-    # then download python from <link> here
-    # [end]
+
+    if tip_ev.last_seen is None:
+        m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
+
+        m 1hksdlb "Unfortunately, since this is a fully functional python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
+        m "Not that you would{fast}"
+        $ _history_list.pop()
+        m 1eksdlb "I can't let you use this. Sorry..." 
+        m "If you want to follow along in future lessons, then run a Python interpreter in a seperate window."
+
+        m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help me teach future lessons."
+
+    else:
+        m 1hua "Pretty cool, right?"
+
     $ store.mas_ptod.ex_cn()
     hide screen mas_py_console_teaching
     show monika at t11
-    #
-    # [Show this once]
-    # I think we've covered enough for today
-    # [end]
-    # Thanks for listening!
-    #
+
+    m 1hua "Thanks for listening!"
     return
 
 ###############################################################################
