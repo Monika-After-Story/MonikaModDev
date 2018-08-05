@@ -6892,7 +6892,7 @@ label monika_citizenship:
     m 2ekc "But I won't have any documentation saying who I am or where I came from."
     m 2tkc "I won't even have my high school diploma!"
     m 3tkd "I wish there was more I could do right now to prep…"
-    m 2wud "Like taking online classes or something."
+    m 2wub "Like taking online classes or something."
     m 1lksdlc "I don't want to get there and be a burden because I can't find a job."
     m "Sorry, I guess I shouldn't worry so much about things I can't change."
     m 2eka "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
