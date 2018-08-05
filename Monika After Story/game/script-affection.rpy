@@ -1294,7 +1294,7 @@ label monika_affection_nickname:
         if renpy.seen_label('monika_clones'):
             m 3eua "We did discuss this before after all."
         m 3hua "Well, I thought of a solution!"
-        m 3eua"Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
+        m 3eua "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
         m 3eka "And it would mean a lot if you choose one for me~"
         m 3hua "I'll still get the final say, though!"
         m "What do you say?"
