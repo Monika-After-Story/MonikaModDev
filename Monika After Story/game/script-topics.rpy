@@ -1590,7 +1590,7 @@ label monika_rain_holdme:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Simulated reality",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Being close to you",random=True))
 
 label monika_closeness:
     if mas_curr_affection_group == mas_aff.G_SAD:
