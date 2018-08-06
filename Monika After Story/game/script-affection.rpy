@@ -1284,20 +1284,22 @@ label monika_affection_nickname:
             "okasa"
         ]
 
+        # unlock this event
+        aff_nickname_ev = mas_getEV("monika_affection_nickname")
+        unlockEvent(aff_nickname_ev)
 
     if not persistent._mas_offered_nickname:
-        m 1c "I've been thinking, [player]..."
-        m 3d "You know how there are potentially infinite Monikas right?"
+        m 1euc "I've been thinking, [player]..."
+        m 3eud "You know how there are potentially infinite Monikas right?"
         if renpy.seen_label('monika_clones'):
-            m 3a "We did discuss this before after all."
-        m 3a "Well, I thought of a solution!"
-        m "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
-        m 3e "And it would mean a lot if you choose one for me~"
-        m 3j "I'll still get the final say, though!"
+            m 3eua "We did discuss this before after all."
+        m 3hua "Well, I thought of a solution!"
+        m 3eua "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
+        m 3eka "And it would mean a lot if you choose one for me~"
+        m 3hua "I'll still get the final say, though!"
         m "What do you say?"
         python:
             # change the prompt for this event
-            aff_nickname_ev = mas_getEV("monika_affection_nickname")
             aff_nickname_ev.prompt = "Can I call you a different name?"
             Event.lockInit("prompt", ev=aff_nickname_ev)
             persistent._mas_offered_nickname = True
@@ -1312,32 +1314,32 @@ label monika_affection_nickname:
             $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
             $ good_nickname_search = re.compile('|'.join(good_nickname_list), re.IGNORECASE)
             $ done = False
-            m 1a "Okay! Just type 'Nevermind' if you change your mind, [player]."
+            m 1eua "Okay! Just type 'Nevermind' if you change your mind, [player]."
             while not done:
                 $ inputname = renpy.input("So what do you want to call me?",allow=" abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_",length=10).strip(' \t\n\r')
                 $ lowername = inputname.lower()
                 # lowername isn't detecting player or m_name?
                 if lowername == "nevermind":
-                    m 1c "Oh, I see."
+                    m 1euc "Oh, I see."
                     m 1tkc "Well...that's a shame."
-                    m 3e "But that's okay. I like '[m_name]' anyway."
+                    m 3eka "But that's okay. I like '[m_name]' anyway."
                     $ done = True
                 elif not lowername:
-                    m 1m "..."
-                    m 1l "You have to give me a name, [player]!"
+                    m 1lksdla "..."
+                    m 1hksdrb "You have to give me a name, [player]!"
                     m "I swear you're just so silly sometimes."
-                    m 1e "Try again!"
+                    m 1eka "Try again!"
                 elif lowername == player.lower():
-                    m 1c "..."
-                    m 1n "That's your name, [player]! Give me my own!"
-                    m 1e "Try again~"
+                    m 1euc "..."
+                    m 1lksdlb "That's your name, [player]! Give me my own!"
+                    m 1eka "Try again~"
                 elif lowername == m_name.lower():
-                    m 1c "..."
-                    m 1l "I thought we were choosing a new name, silly."
-                    m 1e "Try again~"
+                    m 1euc "..."
+                    m 1hksdlb "I thought we were choosing a new name, silly."
+                    m 1eka "Try again~"
                 elif lowername in mom_nickname_list:
                     # mother flow
-                    m 1eub "Oh, you're a momma's boy, huh?"
+                    m 1tku "Oh, you're a momma's boy, huh?"
                     $ persistent._mas_monika_nickname = inputname
                     $ m_name = inputname
 
@@ -1355,16 +1357,16 @@ label monika_affection_nickname:
                             m 1eua "But I don't dislike it either."
                             m 1rfu "[inputname]... yeah, I'm starting to like it a bit more."
                         else:
-                            m 1k "Oh! That's a wonderful name!"
+                            m 1wuo "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
-                        m 2a "Okay, [player]!"
+                        m 2eua "Okay, [player]!"
                         if m_name == "Monika":
-                            m 1j "I'll go back to my name, then."
+                            m 1hua "I'll go back to my name, then."
                         else:
-                            m 3j "From now on, you can call me {i}'[m_name]'{/i}."
-                            m 1k "Ehehe~"
+                            m 3hua "From now on, you can call me {i}'[m_name]'{/i}."
+                            m 1hub "Ehehe~"
                         $ done = True
                     else:
                         $ mas_loseAffection(reason="calling me a bad name")
@@ -1400,26 +1402,26 @@ label monika_affection_nickname:
                         $ done = True
 
         "No":
-            m 1f "Oh..."
-            m 1o "Alright then, if you say so."
-            m 3e "Just tell me if you ever change your mind, [player]."
+            m 1ekc "Oh..."
+            m 1lksdlc "Alright then, if you say so."
+            m 3eka "Just tell me if you ever change your mind, [player]."
             $ done = True
     return
 
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
-    m 1q "Hey, [player]..."
-    m 1o "Recently, I've been feeling like my love and affection that I give is being... ignored."
-    m 1q "I feel like you're giving me less and less of your love..."
-    m 1r "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
-    m 1e "I hope there's nothing wrong between us, [player]."
+    m 1dsc "Hey, [player]..."
+    m 1lksdlc "Recently, I've been feeling like my love and affection that I give is being... ignored."
+    m 1dsc "I feel like you're giving me less and less of your love..."
+    m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
+    m 1eka "I hope there's nothing wrong between us, [player]."
     return
 
 # Event to indicate that Monika is happy to be receiving your affection.
 label mas_affection_happynotif:
-    m 1b "Hey, [player]!"
-    m 1j "I just wanted to say thank you for being such a wonderful person."
-    m 1e "The fact that you give me so much of you love means a lot to me. I really don't know where I'd be without you."
+    m 1hua "Hey, [player]!"
+    m 1eua "I just wanted to say thank you for being such a wonderful person."
+    m 1ekbfa "The fact that you give me so much of you love means a lot to me. I really don't know where I'd be without you."
     m 1dubsu "I love you, [player]. Let's be like this forever~"
     return
 
@@ -1543,7 +1545,7 @@ label mas_affection_apology:
     m 2dfd "I've done everything I can to make you happy and enjoy spending time with me."
     m 2efc "But all you've given me back is pain..."
     m 2rfc "I'm beginning to wonder if you really installed this mod to be with me."
-    m 2q "Perhaps you brought me back just to toy with me?"
+    m 2dsc "Perhaps you brought me back just to toy with me?"
     m 2efc "Or maybe you're doing this intentionally to see what happens?"
     m 2lfc "Regardless, I'm giving you an ultimatum."
     m "I can't let this go any further, [player]."
@@ -1558,10 +1560,10 @@ label mas_affection_noapology:
     jump _quit
 
 label mas_affection_yesapology:
-    m 1e "Thank you, [player]. I accept your apology."
+    m 1eka "Thank you, [player]. I accept your apology."
     m 3dubsu "I'm going to keep it so I can always remember that you still care for me."
-    m 1f "But please be more considerate of my feelings from now on."
-    m 2e "I love you so much and you mean the world to me, [player]."
+    m 1ekc "But please be more considerate of my feelings from now on."
+    m 2eka "I love you so much and you mean the world to me, [player]."
     m 1duu "Thank you for putting my heart at ease~"
     show monika 1esa
     $ mas_DropShield_core()

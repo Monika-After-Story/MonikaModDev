@@ -1776,15 +1776,15 @@ init -1 python in _mas_root:
         persistent._mas_affection["affection"] = 0
 
 
-init -100 python in mas_utils:
-    # utility functions for other stores.
-    import datetime
-    import ctypes
+init -9900 python in mas_utils:
+    import shutil
     mas_log = renpy.renpy.log.open("mas_log")
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
 
-    __FLIMIT = 1000000
+    # LOG messges
+    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
+    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
 
     def tryparseint(value, default=0):
         """
@@ -1804,6 +1804,48 @@ init -100 python in mas_utils:
         except:
             return default
 
+
+    def copyfile(oldpath, newpath):
+        """
+        Copies the file at oldpath into a file at newpath
+        Paths assumed to include the filename (like an mv command)
+
+        NOTE:
+            if a copy fails, the error is logged
+
+        IN:
+            oldpath - path to old file, including filename
+            newpath - path to new file, including filename
+
+        RETURNS:
+            True if copy succeeded, False otherwise
+        """
+        try:
+            shutil.copyfile(oldpath, newpath)
+            return True
+        except Exception as e:
+            writelog(_mas__failcp.format(oldpath, newpath, str(e)))
+        return False
+
+
+    def writelog(msg):
+        """
+        Writes to the mas log if it is open
+
+        IN:
+            msg - message to write to log
+        """
+        if mas_log_open:
+            mas_log.write(msg)
+
+
+
+init -100 python in mas_utils:
+    # utility functions for other stores.
+    import datetime
+    import ctypes
+
+    __FLIMIT = 1000000
 
     def tryparsefloat(value, default=0):
         """
@@ -1930,17 +1972,6 @@ init -100 python in mas_utils:
             second=0,
             microsecond=0
         )
-
-
-    def writelog(msg):
-        """
-        Writes to the mas log if it is open
-
-        IN:
-            msg - message to write to log
-        """
-        if mas_log_open:
-            mas_log.write(msg)
 
 
     class ISCRAM(ctypes.BigEndianStructure):
