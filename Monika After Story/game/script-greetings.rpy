@@ -631,10 +631,16 @@ init 5 python:
 
 label monikaroom_greeting_ear_loveme:
     $ cap_he = he.capitalize()
-    m "[cap_he] loves me.{w} [cap_he] loves me not."
-    m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
-    m "[cap_he] loves me."
-    m "...{w} [cap_he] loves me!"
+    if cap_he == "They":
+        m "[cap_he] love me.{w} [cap_he] love me not."
+        m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
+        m "[cap_he] love me."
+        m "...{w} [cap_he] love me!"
+    else:
+        m "[cap_he] loves me.{w} [cap_he] loves me not."
+        m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+        m "[cap_he] loves me."
+        m "...{w} [cap_he] loves me!"
     jump monikaroom_greeting_choice
 
 # monika does the bath/dinner/me thing
