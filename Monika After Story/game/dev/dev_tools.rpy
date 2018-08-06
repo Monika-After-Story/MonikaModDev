@@ -19,5 +19,5 @@ init 2018 python:
            
         persistent.closed_self = True
         persistent._mas_game_crashed = False
-        renpy.persistent.save()
+        renpy.save_persistent()
         renpy.jump("_quit")

@@ -720,7 +720,7 @@ label ch30_preloop:
     $ mas_checked_update = False
 
     # save here before we enter the loop
-    $ renpy.persistent.save()
+    $ renpy.save_persistent()
     jump ch30_loop
 
 label ch30_loop:
@@ -784,7 +784,7 @@ label ch30_loop:
             _mas_AffSave()
 
             # save the persistent
-            renpy.persistent.save()
+            renpy.save_persistent()
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
