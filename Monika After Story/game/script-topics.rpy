@@ -556,7 +556,7 @@ label monika_nihilism:
            m 1euc "I'm not really sure what I would do."
 
     elif mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 1eua "I don'think I would be able to kill myself anyway."
+        m 1eua "I don't think I would be able to kill myself anyway."
         m 1hua "Not because of any kind of selfishness, but because I have too much to live for."
     else:
         m "I think I would be too selfish to kill myself anyway."
