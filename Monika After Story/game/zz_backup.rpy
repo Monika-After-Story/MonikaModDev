@@ -1,6 +1,6 @@
 # module that does some file backup work
 
-init -9001 python:
+init -900 python:
     import os
     import store.mas_utils as mas_utils
 

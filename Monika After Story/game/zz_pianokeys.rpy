@@ -1381,7 +1381,7 @@ init -3 python in mas_piano_keys:
 
 
 # all songs are done in jsons now
-init 1000 python in mas_piano_keys:
+init 790 python in mas_piano_keys:
     import json
 
     # functions used for pnmls.
@@ -1532,7 +1532,7 @@ label mas_piano_dpco_prac:
     return
 
 
-init 1000 python in mas_piano_keys:
+init 800 python in mas_piano_keys:
     # d, piano note setup
     # verse 1
     # also checkpoint 1
@@ -1899,7 +1899,7 @@ init 1000 python in mas_piano_keys:
         return song_list, ("Nevermind", "None", False, False, 10)
 
 # make this later than mas_piano_keys
-init 1001 python:
+init 810 python:
     import store.mas_piano_keys as mas_piano_keys
 
     # setup named tuple dicts

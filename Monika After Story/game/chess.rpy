@@ -388,7 +388,7 @@ init 1 python in mas_chess:
         return _checkInProgressGame(pgn_game, mth)
 
 
-init 2018 python:
+init 999 python:
     # run init function
     store.mas_chess._initMASChess(MASQuipList)
 
