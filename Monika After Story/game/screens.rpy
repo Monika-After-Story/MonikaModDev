@@ -105,7 +105,7 @@ init python in mas_layout:
         store.layout.QUIT_NO = quit_no
 
 
-init 3000 python:
+init 900 python:
     import store.mas_layout
     store.mas_layout.setupQuits()
 
