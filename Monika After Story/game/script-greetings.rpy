@@ -1639,6 +1639,21 @@ label greeting_back_from_sleep:
      m "Let's spend some more time together~"
      return
 
+init 5 python:
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_siat", unlocked=True, random=True),eventdb=evhand.greeting_database)
+
+label greeting_siat:
+    m 1hub "{i}~[player] and Monika sittin' in a tree~{/i}"
+    m 1hubfb "{i}~K-I-S-S-I-N-G~{/i}"
+    m 3hubfb "{i}~First comes love~{/i}"
+    m "{i}~Then comes marriage~{/i}"
+    m "{i}~Then comes--{/i}"
+    m 4wubfsdld "W-wha?!"
+    m "[player]! H-how long were you there?!"
+    m 4lkbfb "I...{w=1}I didn't hear you come in...{w=1}I was just..."
+    m 3ekbfb "Ahaha! Nevermind."
+    m 1ekbfa "I love you, [player], I'm so happy that you're here now~"
+    return
 
 init 5 python:
     if not mas_cannot_decode_islands:
@@ -1722,7 +1737,7 @@ label greeting_ourreality:
     $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
     $ unlockEventLabel("mas_monika_islands")
 
-    # we can push here because of the slightly optimized call_next_event 
+    # we can push here because of the slightly optimized call_next_event
     $ pushEvent("mas_monika_islands")
     return
 
@@ -1763,4 +1778,3 @@ label greeting_returned_home:
         $ mas_loseAffection()
 
     return
-
