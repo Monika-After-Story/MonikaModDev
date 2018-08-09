@@ -481,7 +481,8 @@ init:
         class ChessDisplayable(renpy.Displayable):
             COLOR_WHITE = True
             COLOR_BLACK = False
-            MONIKA_WAITTIME = 1500
+#            MONIKA_WAITTIME = 1500
+            MONIKA_WAITTIME = 750
             MONIKA_OPTIMISM = 33
             MONIKA_THREADS = 1
 
@@ -685,6 +686,7 @@ init:
                 # Set Monika's parameters
                 self.stockfish.stdin.write("setoption name Skill Level value %d\n" % (persistent.chess_strength))
                 self.stockfish.stdin.write("setoption name Contempt value %d\n" % (self.MONIKA_OPTIMISM))
+                self.stockfish.stdin.write("setoption name Ponder value False\n") # dont let moni think during ur turn
 
                 # Set up facilities for asynchronous communication
                 self.queue = collections.deque()
