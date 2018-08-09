@@ -389,111 +389,122 @@ label monika_ptod_tip006:
     $ local_ctx = dict()
     $ num_store = "922"
     $ b_num_store = "323"
-    # [show this once]
-    # Now that you know about types, I can teach you about variables.
-    # [end]
-    #
-    # Variables represent the memory location that stores data. 
-    # To create a variable,
+    $ tip_ev = mas_getEV("monika_ptod_tip006")
+
+    if tip_ev.last_seen is None:
+        m 1eub "Now that you know about types, I can teach you about variables."
+
+    # variable intro
+    m 1eua "Variables represent the memory location that stores data."
+    m "To create a variable,"
+
     show monika at t22
     show screen mas_py_console_teaching
-    # you do: <symbol name> = <value>, like so:
+
+    # a number
+    m 3eua "you do '{b}symbol_name{/b} = {b}value{/b}', like this:"
+
     call mas_wx_cmd("a_number = " + num_store, local_ctx)
-    # The symbol `a_number` now points to a memory location storing the _integer_
-    # [num_store].
-    # If we enter in the symbol name here
+
+    m "The symbol 'a_number' now points to a memory location storing the integer [num_store]."
+    m "If we enter in the symbol name here:"
     call mas_w_cmd("a_number")
-    # we can retrieve the value that we stored.
+    m 3eub "We can retrieve the value that we stored."
     call mas_x_cmd(local_ctx)
-    # 
-    # In C and many other languages, integers are usually stored in
-    # 4 bytes. Python, however, reserves a different amount of memory depending
-    # on the size of the integer being stored. We can check how much memory
-    # our variable `a_number` stores by borrowing a function from the `sys`
-    # library:
-    call mas_wx_cmd("import sys", local_ctx)
-    call mas_wx_cmd("sys.getsizeof(a_number)", local_ctx)
-    $ int_size = store.mas_ptod.get_last_line()
-    # 
-    # I'll talk about libraries and importing later. For now, take a look
-    # at the number returned by the `getsizeof` function. To store the number
-    # [num_store], Python uses [int_size] bytes.
-    #
-    # Anyway, back to the variable we created. Notice how we associated
-    # the symbol `a_number` to the value [num_store] using an equals sign (=)?
-    # That is called assignment, where we take whatever is on the left of
-    # of the equal sign and point it to, or _assign_ it, the value of whatever
-    # is on the right. 
-    #
-    # Assignment is executed in right-to-left order. To illustrate this,
-    # lets create a new variable, `b_number`:
+
+    m "Notice how we associated the symbol 'a_number' to the value [num_store] using an equals (=) sign?"
+    m 1eub "That is called assignment, where we take whatever is on the left of the equal and point it to , or {i}assign{/i} it, the value of whatever is on the right."
+
+    # b_number
+    m 1eua "Assignment is executed in right-to-left order.{w} To illustrate this, let's create a new variable, 'b_number'."
     call mas_w_cmd("b_number = a_number - " + b_num_store)
-    # In assignment, the right side of the equal sign is evaluated first, 
-    # then its data type is inferred and an appropriate amount of memory is
-    # reserved. Then the symbol on the left is added to a lookup table where 
-    # it is associated with the space in memory that was reserved. 
-    # When python encounters a symbol, it looks that symbol up in the lookup
-    # table and replaces it with the value that was associated with the symbol.
-    #
-    # Here, `a_number` would be replaced with [num_store], so the resulting
-    # expression that would be evaluated and assigned to `b_number` would be
-    # [num_store] - [b_num_store]
+
+    m "In assignment, the right side of the equal sign is evaluated first,{w} then its data type is inferred and an appropriate amount of memory is reserved."
+    m "Then the symbol on the left is added to a lookup table,{w} where it is linked with the space in memory that was reserved."
+    m 1eub "When python encounters a symbol,{w} it looks that symbol up in the lookup table and replaces it with the value that was linked to the symbol."
+
+    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
     call mas_x_cmd(local_ctx, 0.0)
-    #
-    # We can verify this by entering only the symbol `b_number`; this will
-    # retrieve the value associated by this symbol in the lookup table
-    # and display it to us.
+
+    m 1eua "We can verify this by entering only the symbol 'b_number'."
+    m "This will retrieve the value linked to this symbol in the lookup table and show it to us."
     call mas_wx_cmd("b_number", local_ctx)
-    #
-    # Note that if we enter in a symbol that hasn't been assigned anything,
-    # Python will complain with an error:
+
+    # c number
+    m 3eua "Note that if we enter in a symbol that hasn't been assigned anything, Python will complain with an error."
     call mas_wx_cmd("c_number", local_ctx)
-    # 
-    # but if we assign this symbol to a value:
+
+    m 3eub "But if we assign this symbol a value..."
     call mas_wx_cmd("c_number = b_number * a_number", local_ctx)
     call mas_wx_cmd("c_number", local_ctx)
-    #
-    # Python is able to find the symbol in the lookup table and won't give us
-    # an error.
-    #
-    # The variables we created are all _integer_ types. We didn't have to 
-    # explicity say that those variables were integers because Python does
-    # dynamic typing. This means that the Python interpreter inferres the type
-    # of a variable based on the data that you are storing with it.
-    # This is unlike other languages like C / Java which require that types
-    # are defined with the variable. This also enables variables in python
-    # to change types during execution, although this generally isn't a good
-    # idea as it can make the resulting code confusing for others to read.
-    #
-    # [Show this once]
-    # Whew! That was a mouthful!
+
+    m 1hua "Python is able to find the symbol in the lookup table and won't give us an error."
+    
+    m 1eua "The variables we created are all {i}integer{/i} types."
+    m "We didn't have to explicity say that those variables were integers because Python does dynamic typing."
+    m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
+    m "This is unlike other languages like C or Java which require that types are defined with the variable."
+    m "This also enables variables in Python to change types during execution,"
+    m 1rksdlb "but that is generally a bad idea as it can make your code confusing for others to read."
+
+    if tip_ev.last_seen is None:
+        m 1eud "Whew!{w} That was a mouthful!"
+
     menu:
         m "Did you understand all that?"
         "Yes!":
-            # yay, I'm glad
-            # But...
-            pass
+            m 1hua "Yay!{w}"
+
         "I'm a bit confused.":
-            # That's okay. Even though I mentioned symbols and values 
-            # here, generally programmers just refer to this as creating 
-            # / assigning / setting variables. The symbol / value names are 
-            # really only useful for hinting at how variables work under the 
-            # hood, so don't feel bad if you didn't understand it all.
-            # Just knowing how to work with variables is enough for future 
-            # lessons!
-            # Anyway...
-            pass
-    # [End]
-    #
-    # [Show this once]
-    # I think that's enough Python for today.
-    # [End]
-    # Thanks for listening!
+            m 1eksdla "That's okay.{w} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or settting variables."
+            m "The symbol / value names are really only useful for hinting at how variables work under the hood, so don't feel bad if you didn't understand it all."
+            m 1eua "Just knowing how to work with variables is enough for future lessons."
+            m "Anyway..."
+
     $ store.mas_ptod.ex_cn()
     hide screen mas_py_console_teaching
     show monika at t11
+
+    if tip_ev.last_seen is None:
+        m 1eua "I think that's enough Python for today."
+
+    m 1hua "Thanks for listening!"
     return
 
+
+###############################################################################
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ptod_tip007",
+            category=["python tips"],
+            prompt="Variable Sizes",
+#            conditional="store.mas_ptod.has_day_past_tip(6)",
+            action=EV_ACT_POOL
+        )
+    )
+
+# PREREQS:
+#   Variables and Assignment (tip 6)
+#
+label monika_ptod_tip007:
+    # TODO
+
+    # integer size
+    m 1eua "In C and many other languages, integers are usually stored in 4 bytes."
+    m "Python, however, reserves a different amount of memory depending on the size of the integer being stored."
+    m 3eua "We can check how much memory our variable 'a_number' stores by borrowing a function from the {i}sys{/i} library."
+
+    call mas_wx_cmd("import sys", local_ctx)
+    call mas_wx_cmd("sys.getsizeof(a_number)", local_ctx)
+    $ int_size = store.mas_ptod.get_last_line()
+
+    m 1eksdla "I'll talk about libraries and importing later."
+    m 1eua "For now, take a look at the number returned by the {i}getsizeof{/i} function."
+    m "To store the number [num_store], Python uses [int_size] bytes."
+
+    return
 
 
 ############################# [CONSOLE] #######################################
