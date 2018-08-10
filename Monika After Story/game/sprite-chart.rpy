@@ -246,6 +246,22 @@ init -5 python in mas_sprites:
     ## Accessory dictionary
     ACS_MAP = dict()
 
+    ## Pose list
+    # NOTE: do NOT include leans in here.
+    POSES = [
+        "steepling",
+        "crossed",
+        "restleftpointright",
+        "pointright",
+        "down"
+    ]
+
+    ## lean poses
+    # NOTE: do NOT include regular poses in here
+    L_POSES = [
+        "def"
+    ]
+
     def acs_lean_mode(lean):
         """
         Returns the appropriate accessory prefix dpenedong on lean
@@ -1117,6 +1133,7 @@ init -2 python:
 #    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
 #    from operator import attrgetter # we need this for sorting items
     import math
+    from collections import namedtuple
 
     # Monika character base
     class MASMonika(renpy.store.object):
@@ -1421,6 +1438,81 @@ init -2 python:
 #
 #    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
 
+    # pose map helps map poses to an image
+    class MASPoseMap(renpy.store.object):
+        """
+        The Posemap helps connect pose names to images
+
+        This is done via a dict containing pose names and where they
+        map to. 
+
+        There is also a seperate dict to handle lean variants
+        """
+        from store.mas_sprites import POSES, L_POSES
+
+        def __init__(self,
+                default=None,
+                l_default=None,
+                p1=None,
+                p2=None,
+                p3=None,
+                p4=None,
+                p5=None,
+                p6=None
+            ):
+            """
+            Constructor
+
+            If None is passed in for any var, we assume that no image should
+            be shown for that pose
+
+            NOTE: all defaults are None
+
+            IN:
+                default - default pose id to use for poses that are not
+                    specified (aka are None).
+                l_default - default pose id to use for lean poses that are not
+                    specified (aka are None).
+                p1 - pose id to use for pose 1 
+                    - steepling
+                p2 - pose id to use for pose 2
+                    - crossed
+                p3 - pose id to use for pose 3
+                    - restleftpointright
+                p4 - pose id to use for pose 4
+                    - pointright
+                p5 - pose id to use for pose 5
+                    - LEAN: def
+                p6 - pose id to use for pose 6
+                    - down
+            """
+            self.map = {
+                POSES[0]: p1,
+                POSES[1]: p2,
+                POSES[2]: p3,
+                POSES[3]: p4,
+                POSES[4]: p6
+            }
+            self.l_map = {
+                L_POSES[0]: p5
+            }
+
+            self.__set_posedefs(self.map, default)
+            self.__set_posedefs(self.l_map, l_default)
+
+
+        def __set_posedefs(self, pose_dict, _def):
+            """
+            Sets pose defaults
+
+            IN:
+                pose_dict - dict of poses
+                _def - default to use here
+            """
+            for k in pose_dict:
+                if pose_dict[k] is None:
+                    pose_dict[k] = _def
+
 
     # instead of clothes, these are accessories
     class MASAccessory(renpy.store.object):
@@ -1443,7 +1535,8 @@ init -2 python:
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
                 no_lean=False,
-                stay_on_start=False
+                stay_on_start=False,
+                pose_map=None
             ):
             """
             MASAccessory constructor
@@ -1471,6 +1564,8 @@ init -2 python:
                     startup. False means the accessory is dropped on next
                     startup.
                     (Default: False)
+                pose_map - MASPoseMap object that contains pose mappings
+                    (Default: None)
             """
             self.name = name
             self.img_sit = img_sit
@@ -1479,6 +1574,7 @@ init -2 python:
             self.priority=priority
             self.no_lean = no_lean
             self.stay_on_start = stay_on_start
+            self.pose_map = pose_map
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1646,6 +1742,19 @@ init -1 python:
     # mas_acs_<accessory name>
     #
     # <accessory name> MUST BE UNIQUE
+    #
+    # File naming:
+    # Accessories should be named like:
+    #   acs-<acs identifier/name>-<night suffix>
+    #
+    # Leaning:
+    #   acs-leaning-<leantype>-<acs identifier/name>-<night suffix>
+    #
+    # If the accessory varies between poses:
+    #   acs-<acs identifier/name>-<pose identifier>-<night suffix>
+    #
+    # Leaning + pose variant:
+    #   acs-leaning-<leantype>-<acs id/name>-<pose id>-<night suffix>
     #
     # NOTE: pleaes preface each accessory with the following commen template
     # this is to ensure we hvae an accurate description of what each accessory
