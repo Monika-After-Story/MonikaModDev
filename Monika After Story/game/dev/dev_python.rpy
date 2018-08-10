@@ -6,7 +6,7 @@ init 10 python:
         persistent._mas_dev_enable_ptods = True
 
 
-init 2020 python:
+init 998 python:
     
     def mas_reset_ptods():
         """

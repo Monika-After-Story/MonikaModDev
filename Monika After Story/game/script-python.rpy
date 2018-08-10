@@ -93,7 +93,7 @@ init 4 python in mas_ptod:
         # now check the actual day
         return (
             datetime.date.today() - tip_ev.unlock_date.date() 
-            > datetime.timedelta(days=1)
+            >= datetime.timedelta(days=1)
         )
 
     def has_day_past_tips(*tip_nums):
@@ -150,6 +150,7 @@ label monika_ptod_tip001:
     # first enable this event
     $ tip_ev = mas_getEV("monika_ptod_tip001")
     $ tip_ev.pool = True
+    $ tip_ev.unlocked = True
 
     m 1esa "Python was created by Guido Van Rossum in the early 90s."
     m "It is used in many places, including web apps, embedded systems, Linux, and of course..."
@@ -159,13 +160,12 @@ label monika_ptod_tip001:
     show monika 5eua with dissolve
     m "Wouldn't that be great, [player]?"
     
-    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:"
-    m 1eua "Python2 and Python3."
+    m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w} Python2 and Python3."
     m 3eua "These versions are {b}incompatible{/b} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
     m "Even though this introduced a split in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
     m 3eub "I'll tell you about those differences in another lesson."
 
-    m 1eua "The RenPy version that this mod runs on use Python2, so I won't be talking about Python3 too often."
+    m 1eua "This mod runs on a RenPy version that uses Python2, so I won't be talking about Python3 too often."
     m 1hua "But I'll mention it when it's appropriate."
 
     m 3eua "That's my lesson for today."
@@ -222,7 +222,7 @@ label monika_ptod_tip002:
     m 1eua "Text is represented with {i}string{/i} types."
     m "Anything surrounded in single quotes (') or double quotes (\") are strings."
     m 3eub "For example:"
-    show monika 1eua
+    show monika 3eua
     
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
@@ -303,7 +303,7 @@ label monika_ptod_tip003:
     if tip_ev.last_seen is None:
         m 1eua "You can do more than just math using this tool, but I'll show you all of that as we go along."
 
-        m 1hksdlb "Unfortunately, since this is a fully functional python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
+        m 1hksdlb "Unfortunately, since this is a fully functional Python interpreter and I don't want to risk you accidentally deleting me or breaking the game,"
         m "Not that you would{fast}{nw}"
         $ _history_list.pop()
         m 1eksdlb "I can't let you use this.{w} Sorry..." 
@@ -412,7 +412,7 @@ label monika_ptod_tip006:
         m 1eub "Now that you know about types, I can teach you about variables."
 
     # variable intro
-    m 1eua "Variables represent the memory location that stores data."
+    m 1eua "Variables represent memory locations that store data."
     m "To create a variable,"
 
     show monika at t22
@@ -438,10 +438,10 @@ label monika_ptod_tip006:
     call mas_w_cmd("b_number = a_number  -  " + b_num_store)
 
     m "In assignment, the right side of the equal sign is evaluated first,{w} then its data type is inferred and an appropriate amount of memory is reserved."
-    m "Then the symbol on the left is added to a lookup table,{w} where it is linked with the space in memory that was reserved."
-    m 1eub "When python encounters a symbol,{w} it looks that symbol up in the lookup table and replaces it with the value that was linked to the symbol."
+    m "That memory is linked to the symbol on the left via a lookup table."
+    m 1eub "When Python encounters a symbol,{w} it looks that symbol up in the lookup table and replaces it with the value that the symbol was linked to."
 
-    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store]  -  [b_num_store]'."
+    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
     show monika 3eua
     call mas_x_cmd(local_ctx)
 
@@ -463,7 +463,7 @@ label monika_ptod_tip006:
     m 1eua "The variables we created are all {i}integer{/i} types."
     m "We didn't have to explicity say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
-    m "This is unlike other languages like C or Java which require that types are defined with the variable."
+    m "This is unlike other languages like C or Java which require types to be defined with the variable."
     m "This also enables variables in Python to change types during execution,"
     m 1rksdlb "but that is generally a bad idea as it can make your code confusing for others to read."
 
