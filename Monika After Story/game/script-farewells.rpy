@@ -543,3 +543,11 @@ label bye_long_absence_2:
     m "Come back to me as soon as you can...okay?"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
     return 'quit'
+
+init 5 python:
+    addEvent(Event(persistent.farewell_database,eventlabel="bye_be_right_back",unlocked=True,prompt="I'll be right back.",pool=True),eventdb=evhand.farewell_database)
+
+label bye_be_right_back:
+    m 1e "Hurry back, dear."
+    $ farewell = store.mas_farewells.selectFarewell()
+    return 'quit'
