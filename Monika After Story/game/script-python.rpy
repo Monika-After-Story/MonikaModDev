@@ -10,13 +10,20 @@
 # And to keep the theme, these are 0-indexed
 #
 # META: Python things to talk about:
-#   0 - what is python?
+# DONE:
+#   0 - intro 
+#   1 - what is python?
 #   --- sugestion python compared to other languages/ how does it work
 #   --- suggestion mention syntax and probably how to get python maybe separate each part
-#   1 - types
-#       - numbers and strings, Nones are together (002)
-#     - comparisons (bools) (should be its own title
-#   2 - Variables and assignment
+#   2 - types
+#       - numbers and strings, bools and Nones
+#   3 - interpreted language
+#   6 - Variables and assignment
+#
+# TODO:
+#   4 - Python sytnax ?
+#   5 - comparisons
+#   7 - variable sizes
 #   3 - If statement / elif and else
 #   4 - while loop
 #   5 - for loop
@@ -39,6 +46,13 @@
 # I think splitting something in more than one topic may be a good idea
 #
 ## We can assume evhand is already imported
+
+###### tip tree ##############################
+# 0 -> 1
+# 1 -> 3
+# 2 -> 6
+# 3 -> 2
+##############################################
 
 init 4 python in mas_ptod:
     # to simplify unlocking, lets use a special function to unlock tips
@@ -186,8 +200,7 @@ label monika_ptod_tip002:
     show screen mas_py_console_teaching
 
     ### numbers
-    m 1eua "Python has two types to represent numbers:"
-    m 3eub "{i}integers{/i}, or {b}ints{/b},{w} and {i}floats{/i}."
+    m 1eua "Python has two types to represent numbers:{w} {i}integers{/i}, or {b}ints{/b},{w} and {i}floats{/i}."
 
     ## integers
     m 1eua "Integers are used to represent whole numbers; basically anything that isn't a decimal."
@@ -199,6 +212,7 @@ label monika_ptod_tip002:
 
     ## floats
     m 1eub "Floats are used to represent decimals."
+    show monika 1eua
 
     call mas_wx_cmd("type(0.14)", local_ctx)
     call mas_wx_cmd("type(9.3)", local_ctx)
@@ -208,6 +222,7 @@ label monika_ptod_tip002:
     m 1eua "Text is represented with {i}string{/i} types."
     m "Anything surrounded in single quotes (') or double quotes (\") are strings."
     m 3eub "For example:"
+    show monika 1eua
     
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
@@ -226,6 +241,7 @@ label monika_ptod_tip002:
     m 3eub "Python also has a special data type called a {b}NoneType{/b}.{w} This type represents the absence of any data."
     m "If you're familiar with other programing languages, this is like a {i}null{/i} or {i}undefined{/i} type."
     m "The keyword {i}None{/i} represents NoneTypes in Python."
+    show monika 1eua
 
     call mas_wx_cmd("type(None)", local_ctx)
 
@@ -276,6 +292,7 @@ label monika_ptod_tip003:
     m 3eub "this!"
 
     m "You can enter Python code directly into here and run it, like so:"
+    show monika 3eua
 
     # base commands shown as starter ones
     call mas_wx_cmd("12 + 3", local_ctx)
@@ -305,17 +322,17 @@ label monika_ptod_tip003:
     return
 
 ###############################################################################
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_ptod_tip004",
-            category=["python tips"],
-            prompt="What does python code look like?",
-            conditional="store.mas_ptod.has_day_past_tip(3)",
-            action=EV_ACT_POOL
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_ptod_tip004",
+#            category=["python tips"],
+#            prompt="What does python code look like?",
+#            conditional="store.mas_ptod.has_day_past_tip(3)",
+#            action=EV_ACT_POOL
+#        )
+#    )
 
 # PREREQs:
 #   interpreted language (tip 3)
@@ -348,19 +365,19 @@ label monika_ptod_tip004:
     return
 
 ###############################################################################
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_ptod_tip005",
-            category=["python tips"],
-            prompt="Comparisons and booleans",
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_ptod_tip005",
+#            category=["python tips"],
+#            prompt="Comparisons and booleans",
 #            conditional="store.mas_ptod.has_day_past_tip(2)",
 #   actually, this should probably unlock after we talk about variable 
 #   assignment, since we can do an example like variable = a == b kind of thing
-            action=EV_ACT_POOL
-        )
-    )
+#            action=EV_ACT_POOL
+#        )
+#    )
 
 label monika_ptod_tip005:
     # [show this once]
@@ -407,24 +424,26 @@ label monika_ptod_tip006:
     call mas_wx_cmd("a_number = " + num_store, local_ctx)
 
     m "The symbol 'a_number' now points to a memory location storing the integer [num_store]."
-    m "If we enter in the symbol name here:"
+    m "If we enter in the symbol name here,"
     call mas_w_cmd("a_number")
     m 3eub "We can retrieve the value that we stored."
+    show monika 3eua
     call mas_x_cmd(local_ctx)
 
     m "Notice how we associated the symbol 'a_number' to the value [num_store] using an equals (=) sign?"
-    m 1eub "That is called assignment, where we take whatever is on the left of the equal and point it to , or {i}assign{/i} it, the value of whatever is on the right."
+    m 1eub "That is called assignment, where we take whatever is on the left of the equals sign and point it to, or {i}assign{/i} it, the value of whatever is on the right."
 
     # b_number
     m 1eua "Assignment is executed in right-to-left order.{w} To illustrate this, let's create a new variable, 'b_number'."
-    call mas_w_cmd("b_number = a_number - " + b_num_store)
+    call mas_w_cmd("b_number = a_number  -  " + b_num_store)
 
     m "In assignment, the right side of the equal sign is evaluated first,{w} then its data type is inferred and an appropriate amount of memory is reserved."
     m "Then the symbol on the left is added to a lookup table,{w} where it is linked with the space in memory that was reserved."
     m 1eub "When python encounters a symbol,{w} it looks that symbol up in the lookup table and replaces it with the value that was linked to the symbol."
 
-    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store] - [b_num_store]'."
-    call mas_x_cmd(local_ctx, 0.0)
+    m 3eub "Here, 'a_number' would be replaced with [num_store],{w} so the expression that would be evaluated and assigned to 'b_number' is '[num_store]  -  [b_num_store]'."
+    show monika 3eua
+    call mas_x_cmd(local_ctx)
 
     m 1eua "We can verify this by entering only the symbol 'b_number'."
     m "This will retrieve the value linked to this symbol in the lookup table and show it to us."
@@ -435,6 +454,7 @@ label monika_ptod_tip006:
     call mas_wx_cmd("c_number", local_ctx)
 
     m 3eub "But if we assign this symbol a value..."
+    show monika 3eua
     call mas_wx_cmd("c_number = b_number * a_number", local_ctx)
     call mas_wx_cmd("c_number", local_ctx)
 
@@ -473,17 +493,17 @@ label monika_ptod_tip006:
 
 
 ###############################################################################
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_ptod_tip007",
-            category=["python tips"],
-            prompt="Variable Sizes",
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_ptod_tip007",
+#            category=["python tips"],
+#            prompt="Variable Sizes",
 #            conditional="store.mas_ptod.has_day_past_tip(6)",
-            action=EV_ACT_POOL
-        )
-    )
+#            action=EV_ACT_POOL
+#        )
+#    )
 
 # PREREQS:
 #   Variables and Assignment (tip 6)
