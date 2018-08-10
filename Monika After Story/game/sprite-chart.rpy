@@ -1981,6 +1981,19 @@ image monika 1eksdlb = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1eksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
 
 image monika 1lksdlc = DynamicDisplayable(
     mas_drawmonika,
@@ -2164,6 +2177,19 @@ image monika 1efo = DynamicDisplayable(
     nose="def",
     mouth="gasp",
     head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1efp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="normal",
+    nose="def",
+    mouth="pout",
+    head="h",
     left="1l",
     right="1r",
     arms="steepling"

@@ -2,6 +2,9 @@ define persistent.demo = False
 define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
 
+init 1 python:
+    persistent.steam = "steamapps" in config.basedir.lower()
+
 python early:
     import singleton
     me = singleton.SingleInstance()
