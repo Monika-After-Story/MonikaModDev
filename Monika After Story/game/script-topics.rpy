@@ -6940,6 +6940,28 @@ label monika_citizenship:
     m 2eka "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
     m 1eka "Thank you for listening to me vent, [player]."
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_procrastination",category=['advice'],prompt="Procrastination",random=True))
+
+label monika_procrastination:
+    m 1esc "Hey [player], have you ever had something you had to do that you found really boring..."
+    m 3esd "And you knew would take a lot of time, so you just kept putting it off?"
+    m 4eud "Well, when you have a task to do like that, I find that it's best to just do it as soon as possible and get it done."
+    m 2tkc "When you put stuff off like that, it's always in the back of your mind..."
+    m 2dkc "And makes everything you do less enjoyable, knowing you have this thing that you have to do."
+    m 4ekd "And what's worse, the longer you put it off, you'll only increase the odds of more tasks getting added..."
+    m 4dkc "Until eventually, you end up with so many things to do, it seems impossible to ever get caught up."
+    m "It creates too much stress that can be easily avoided if you just keep on top of things in the first place."
+    m 4tkd "Plus, if other people are counting on you, they'll start to think less of you and find that you're not very reliable."
+    m 3eud "So please, [player], whenever you have something that you have to do, just get it done."
+    m 1eka "Even if it means you can't spend time with me until it's over, that's okay..."
+    m 1hua "Because then you'll be less stressed and we can enjoy our time together that much more!"
+    m 1esa "So, if you have something you've been putting off, why don't you go do it right now..."
+    m 3eka "And if it's something you can do right here, I'll stay with you and provide all the support you need."
+    m 3hub "Then, when you're done, we can celebrate your accomplishment!"
+    m 1eka "All I want is for you to be happy and to be the best you can be, [player]~"    
+    return   
 
 init 5 python:
     addEvent(
