@@ -379,7 +379,7 @@ init -5 python in mas_sprites:
         # Since None means we dont show, we are going to assume that the
         # accessory should be shown if the pose key is missing.
         if lean:
-            poseid = acs.pose_map.l_map.get(pose, None)
+            poseid = acs.pose_map.l_map.get(lean, None)
         else:
             poseid = acs.pose_map.map.get(pose, None)
 
