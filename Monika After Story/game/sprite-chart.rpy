@@ -278,6 +278,24 @@ init -5 python in mas_sprites:
         return PREFIX_ACS
 
 
+    def acs_pose_mode(acs, pose, lean):
+        """
+        Returns the appropriate pose id depending on accessory / pose / lean
+
+        IN:
+            acs - MASAccessory object we are generating pose id for
+            pose - current pose
+            lean - type of lean
+
+        RETURNS:
+            appropriate pose id
+        """
+
+        if poseid is None:
+            return poseidv
+
+
+
     def face_lean_mode(lean):
         """
         Returns the appropriate face prefix depending on lean
@@ -355,7 +373,7 @@ init -5 python in mas_sprites:
     # sprite maker functions
 
 
-    def _ms_accessory(acs, isnight, issitting, lean=None):
+    def _ms_accessory(acs, isnight, issitting, pose=None, lean=None):
         """
         Creates accessory string
 
@@ -363,12 +381,31 @@ init -5 python in mas_sprites:
             acs - MASAccessory object
             isnight - True will generate night string, false will not
             issitting - True will use sitting pic, false will not
+            pose - current pose
+                (Default: None)
             lean - type of lean
                 (Default: None)
 
         RETURNS:
             accessory string
         """
+        if acs.no_lean:
+            # the lean version is the same as regular
+            lean = None
+
+        # pose map check
+        # Since None means we dont show, we are going to assume that the
+        # accessory should be shown if the pose key is missing.
+        if lean:
+            poseid = acs.pose_map.l_map.get(pose, None)
+        else:
+            poseid = acs.pose_map.map.get(pose, None)
+
+        if poseid is None:
+            # a None here means we should shouldnt' even show this acs
+            # for this pose. Weird, but maybe it happens?
+            return ""
+
         if issitting:
             acs_str = acs.img_sit
 
@@ -379,23 +416,21 @@ init -5 python in mas_sprites:
             # standing string is null or None
             return ""
 
-        if acs.no_lean:
-            # the lean version is the same as regular
-            lean = None
-
         return "".join([
             LOC_Z,
             ',"',
             A_T_MAIN,
             acs_lean_mode(lean),
             acs_str,
+            ART_DLM,
+            poseid,
             night_mode(isnight),
             FILE_EXT,
             '"'
         ])
 
 
-    def _ms_accessorylist(acs_list, isnight, issitting, lean=None):
+    def _ms_accessorylist(acs_list, isnight, issitting, pose=None, lean=None):
         """
         Creates accessory strings for a list of accessories
 
@@ -403,6 +438,8 @@ init -5 python in mas_sprites:
             acs_list - list of MASAccessory object, in order of rendering
             isnight - True will generate night string, false will not
             issitting - True will use sitting pic, false will not
+            pose - arms pose for we are currently rendering
+                (Default: None)
             lean - type of lean
                 (Default: None)
 
@@ -413,7 +450,7 @@ init -5 python in mas_sprites:
             return ""
 
         return "," + ",".join([
-            _ms_accessory(acs, isnight, issitting, lean=lean)
+            _ms_accessory(acs, isnight, issitting, pose, lean=lean)
             for acs in acs_list
         ])
 
@@ -890,12 +927,12 @@ init -5 python in mas_sprites:
             L_COMP,
             "(",
             loc_str,
-            _ms_accessorylist(acs_pre_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean),
             ",",
             LOC_Z,
             ",",
             _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
-            _ms_accessorylist(acs_mid_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean),
             ",",
             LOC_Z,
             ",",
@@ -912,7 +949,7 @@ init -5 python in mas_sprites:
                 tears=tears,
                 emote=emote
             ),
-            _ms_accessorylist(acs_pst_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pst_list, isnight, True, arms, lean=lean),
             "),",
             ZOOM,
             ")"
@@ -1487,14 +1524,14 @@ init -2 python:
                     - down
             """
             self.map = {
-                POSES[0]: p1,
-                POSES[1]: p2,
-                POSES[2]: p3,
-                POSES[3]: p4,
-                POSES[4]: p6
+                self.POSES[0]: p1,
+                self.POSES[1]: p2,
+                self.POSES[2]: p3,
+                self.POSES[3]: p4,
+                self.POSES[4]: p6
             }
             self.l_map = {
-                L_POSES[0]: p5
+                self.L_POSES[0]: p5
             }
 
             self.__set_posedefs(self.map, default)
@@ -1531,12 +1568,12 @@ init -2 python:
         def __init__(self,
                 name,
                 img_sit,
+                pose_map,
                 img_stand="",
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
                 no_lean=False,
-                stay_on_start=False,
-                pose_map=None
+                stay_on_start=False
             ):
             """
             MASAccessory constructor
@@ -1544,6 +1581,7 @@ init -2 python:
             IN:
                 name - name of this accessory
                 img_sit - file name of the sitting image
+                pose_map - MASPoseMap object that contains pose mappings
                 img_stand - file name of the standing image
                     IF this is not passed in, we assume the standing version
                         has no accessory.
@@ -1564,8 +1602,6 @@ init -2 python:
                     startup. False means the accessory is dropped on next
                     startup.
                     (Default: False)
-                pose_map - MASPoseMap object that contains pose mappings
-                    (Default: None)
             """
             self.name = name
             self.img_sit = img_sit
@@ -1575,6 +1611,9 @@ init -2 python:
             self.no_lean = no_lean
             self.stay_on_start = stay_on_start
             self.pose_map = pose_map
+
+            if type(pose_map) != MASPoseMap:
+                raise Exception("PoseMap is REQUIRED")
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1745,16 +1784,15 @@ init -1 python:
     #
     # File naming:
     # Accessories should be named like:
-    #   acs-<acs identifier/name>-<night suffix>
+    #   acs-<acs identifier/name>-<pose id>-<night suffix>
     #
     # Leaning:
-    #   acs-leaning-<leantype>-<acs identifier/name>-<night suffix>
+    #   acs-leaning-<leantype>-<acs identifier/name>-<pose id>-<night suffix>
     #
-    # If the accessory varies between poses:
-    #   acs-<acs identifier/name>-<pose identifier>-<night suffix>
-    #
-    # Leaning + pose variant:
-    #   acs-leaning-<leantype>-<acs id/name>-<pose id>-<night suffix>
+    # acs name - name of the accessory (shoud be unique)
+    # pose id - identifier to map this image to a pose (should be unique
+    #       per accessory)
+    # leantype - leaning type, if appropriate
     #
     # NOTE: pleaes preface each accessory with the following commen template
     # this is to ensure we hvae an accurate description of what each accessory
@@ -1769,10 +1807,30 @@ init -1 python:
     mas_acs_mug = MASAccessory(
         "mug",
         "mug",
-        no_lean=True,
+        MASPoseMap(
+            default="0"
+        ),
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
+
+    ### PROMISE RING
+    ## promisering
+    # Promise ring that can be given to Monika
+    mas_acs_promisering = MASAccessory(
+        "promisering",
+        "promisering",
+        MASPoseMap(
+            p1="3",
+            p2=None,
+            p3="1",
+            p4="1",
+            p5=None,
+            p6=None
+        ),
+        stay_on_start=True
+    )
+    store.mas_sprites.init_acs(mas_acs_promisering)
 
 
 #### IMAGE START (IMG030)
