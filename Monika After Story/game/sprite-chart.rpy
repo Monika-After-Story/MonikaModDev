@@ -278,24 +278,6 @@ init -5 python in mas_sprites:
         return PREFIX_ACS
 
 
-    def acs_pose_mode(acs, pose, lean):
-        """
-        Returns the appropriate pose id depending on accessory / pose / lean
-
-        IN:
-            acs - MASAccessory object we are generating pose id for
-            pose - current pose
-            lean - type of lean
-
-        RETURNS:
-            appropriate pose id
-        """
-
-        if poseid is None:
-            return poseidv
-
-
-
     def face_lean_mode(lean):
         """
         Returns the appropriate face prefix depending on lean
