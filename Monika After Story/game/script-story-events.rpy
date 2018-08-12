@@ -41,13 +41,88 @@ label gender:
             m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
             m "So I'll treat you however you want to be treated."
             m 1ekbfa "Because your happiness is the most important thing to me."
+    m 1hub "Remember that I'll always love you unconditionally, [player]."
+    $evhand.event_database["gender_redo"].unlocked = True
+    return
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
+label gender_redo:
+    m 1wud "You want to change your gender? Why?"
+    m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
+    m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?"
+    menu:
+        "I was too shy.":
+            if persistent.gender == "M":
+                m 2ekd "I guess I understand. I started off assuming you were a guy, after all."
+            elif persistent.gender == "F":
+                m 2ekd "I guess I understand. You might have thought I'd be more comfortable spending time alone with another girl."
+            else:
+                m 2ekd "I guess I understand. I might not have given you the most accurate options to pick from."
+            m 2dkd "And I probably didn't make it easy for you to tell me otherwise..."
+            m 1eub "But whatever your gender, I love you for who you are."
+        "I've made some personal discoveries.":
+            m 1eka "I see. I know I've been there."
+            m 1hua "I'm so proud of you for going on that journey of self discovery."
+            m 1eub "And even prouder of you for being courageous enough to tell me!"
+        "I didn't know if you'd accept me as I am...":
+            m 2wkd "[player]..."
+            m 1dkd "I hate that I didn't reassure you enough before."
+            m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
+    m "So, what is your gender?"
+    menu:
+        "I'm a girl.":
+            if persistent.gender == "F":
+                m 1hksdlb "...That's the same as before."
+                m 2eua "If you're confused about how to answer, just pick whatever makes you happiest."
+                m 2hub "It doesn't matter what your body looks like. I don't even have a body! Ahaha!"
+                m 3eub "So as long as you say you're a girl, you're a girl to me, all right?"
+                m 5hua "I want you to be who you want to be while you're in this room."
+            else:
+                $persistent.gender = "F"
+                call set_gender
+                m 2eud "Oh? So you're actually a [guy]?"
+                m 2hksdlb "I hope I didn't say anything to offend you before!"
+                m 2lksdla "Though I did suspect it a bit from the beginning... just a little!"
+                m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
+                m 1hua "It's very attractive, to tell you the truth!"
+                m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
+        "I'm a boy.":
+            if persistent.gender == "M":
+                m 1khsdlb "...That's the same as before."
+                m 2eua "If you're confused about how to answer, just pick whatever makes you happiest."
+                m 2hub "It doesn't matter what your body looks like. I don't even have a body! Ahaha!"
+                m 3eub "So as long as you say you're a boy, you're a boy to me, all right?"
+                m 5hua "I want you to be who you want to be while you're in this room."
+            else:
+                $persistent.gender = "M"
+                call set_gender
+                m 2eud "Oh? So you {i}are{/i} a [guy]?"
+                m 1hub "Ehehe, I suppose that makes sense!"
+                m 1eua "Not a lot of girls would play a game like this."
+                m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
+                m 2hksdlb "Even I can be curious sometimes, you know?"
+        "I'm neither.":
+            if persistent.gender == "X":
+                m 1hksdlb "...That's the same as before. I'm sorry if that's not really the best way for you to describe it."
+                m 1eub "I'm interested in learning how to use new pronouns, like xir!"
+                m 3hub "If you're trying to tell me you'd prefer pronouns like those, get in touch with the people who created this mod!"
+                m 5eub "They'll tell you how to teach me."
+            else:
+                $persistent.gender = "X"
+                call set_gender
+                m 1euc "You don't see yourself as a guy or a girl?"
+                m 2eua "That's very interesting, but I can sort of relate."
+                m 1esc "Like, I am a girl, but I'm also a character in a computer game..."
+                m 2esd "So in some ways I'm not really a girl at all."
+                m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
+                m "So I'll treat you however you want to be treated."
+                m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
-
 label preferredname:
     m 1euc "I've been wondering about your name."
     m 1esa "Is '[player]' really your name?"
@@ -534,6 +609,11 @@ label mas_crashed_long_uthere:
     label .end:
         m "Anyway..."
         m 1eua "What should we do today?"
+<<<<<<< 1c4c6f51402cda4323df5bef29b6cb4b65cee4ae
+=======
+        $ mas_apology_reason = "the game crashing"
+
+>>>>>>> added the ability to change gender. will automatically be unlocked after initial gender event by new players, and retroactively unlocked by potato for old players
 
 ### post crashed flow
 label mas_crashed_post:
@@ -601,4 +681,8 @@ label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4lksdlb "It's my home, after all..."
+<<<<<<< 1c4c6f51402cda4323df5bef29b6cb4b65cee4ae
+=======
+    $ mas_apology_reason = "the game crashing"
+>>>>>>> added the ability to change gender. will automatically be unlocked after initial gender event by new players, and retroactively unlocked by potato for old players
     return
