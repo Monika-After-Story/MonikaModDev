@@ -89,7 +89,7 @@ label gender_redo:
                 m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
         "I'm a boy.":
             if persistent.gender == "M":
-                m 1khsdlb "...That's the same as before."
+                m 1hksdlb "...That's the same as before."
                 m 2eua "If you're confused about how to answer, just pick whatever makes you happiest."
                 m 2hub "It doesn't matter what your body looks like. I don't even have a body! Ahaha!"
                 m 3eub "So as long as you say you're a boy, you're a boy to me, all right?"
@@ -518,6 +518,7 @@ label mas_crashed_long_uthere:
     # NOTE: add a sound for light switch?
 
     # turn on the lights
+    play sound closet_open
     $ scene_change = True
     call spaceroom(hide_monika=True)
 
@@ -609,11 +610,8 @@ label mas_crashed_long_uthere:
     label .end:
         m "Anyway..."
         m 1eua "What should we do today?"
-<<<<<<< 1c4c6f51402cda4323df5bef29b6cb4b65cee4ae
-=======
         $ mas_apology_reason = "the game crashing"
 
->>>>>>> added the ability to change gender. will automatically be unlocked after initial gender event by new players, and retroactively unlocked by potato for old players
 
 ### post crashed flow
 label mas_crashed_post:
@@ -681,8 +679,4 @@ label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4lksdlb "It's my home, after all..."
-<<<<<<< 1c4c6f51402cda4323df5bef29b6cb4b65cee4ae
-=======
     $ mas_apology_reason = "the game crashing"
->>>>>>> added the ability to change gender. will automatically be unlocked after initial gender event by new players, and retroactively unlocked by potato for old players
-    return
