@@ -570,6 +570,11 @@ init -3 python in mas_piano_keys:
         "C6": C6
     }
 
+    # match notes to strings for displaying
+    KEYMAP_TO_STR = dict()
+    for k in JSON_KEYMAP:
+        KEYMAP_TO_STR[JSON_KEYMAP[k]] = k
+
 
 # FUNCTIONS ===================================================================
 
@@ -3754,7 +3759,10 @@ init 810 python:
                 if len(self.played) > 0:
                     played_text = renpy.render(
                         renpy.text.text.Text(
-                            "".join([chr(x) for x in self.played])
+                            "[[" + ", ".join([
+                                store.mas_piano_keys.KEYMAP_TO_STR.get(x,"")
+                                for x in self.played
+                            ]) + "]"
                         ),
                         1280,
                         720,
