@@ -128,8 +128,8 @@ init 5 python:
 
 label monika_ptod_tip000:
     m 3eub "You want to learn about Python?"
-    m 3hub "I'm glad!"
-    m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best!"
+    m 3hub "I'm so happy you asked me!"
+    m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
     m 1esa "Let's start with what Python even is."
 
     $ hideEventLabel("monika_ptod_tip000", depool=True)
@@ -152,20 +152,20 @@ label monika_ptod_tip001:
     $ tip_ev.pool = True
     $ tip_ev.unlocked = True
 
-    m 1esa "Python was created by Guido Van Rossum in the early 90s."
-    m "It is used in many places, including web apps, embedded systems, Linux, and of course..."
+    m 1esa "Python was created by Guido Van Rossum in the early '90s."
+    m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
-    m 1eua "DDLC in particular uses a game engine called RenPy,{w} which is built off of Python."
+    m 1eua "DDLC uses a visual novel engine called Ren'Py,{w} which is built off of Python."
     m 3eub "That means if you learn a bit of Python, you can add content to my world!"
     show monika 5eua with dissolve
     m "Wouldn't that be great, [player]?"
     
     m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w} Python2 and Python3."
-    m 3eua "These versions are {b}incompatible{/b} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
-    m "Even though this introduced a split in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
+    m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
+    m "Even though this caused rift in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
     m 3eub "I'll tell you about those differences in another lesson."
 
-    m 1eua "This mod runs on a RenPy version that uses Python2, so I won't be talking about Python3 too often."
+    m 1eua "Since this mod runs on a Ren'Py version that uses Python2, I won't be talking about Python3 too often."
     m 1hua "But I'll mention it when it's appropriate."
 
     m 3eua "That's my lesson for today."
@@ -227,7 +227,7 @@ label monika_ptod_tip002:
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
-    m 1eksdlb "Even though these say {i}unicode{/i}, that is basically the same as a string and can be treated that way for our purposes."
+    m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it basically is the same thing."
     m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
 
     ### booleans
@@ -450,7 +450,7 @@ label monika_ptod_tip006:
     call mas_wx_cmd("b_number", local_ctx)
 
     # c number
-    m 3eua "Note that if we enter in a symbol that hasn't been assigned anything, Python will complain with an error."
+    m 3eua "Note that if we enter in a symbol that hasn't been assigned anything, Python will complain."
     call mas_wx_cmd("c_number", local_ctx)
 
     m 3eub "But if we assign this symbol a value..."
@@ -463,9 +463,9 @@ label monika_ptod_tip006:
     m 1eua "The variables we created are all {i}integer{/i} types."
     m "We didn't have to explicity say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
-    m "This is unlike other languages like C or Java which require types to be defined with the variable."
+    m "Other languages, like C or Java, require types to be defined with the variable."
     m "This also enables variables in Python to change types during execution,"
-    m 1rksdlb "but that is generally a bad idea as it can make your code confusing for others to read."
+    m 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
 
     if tip_ev.last_seen is None:
         m 1eud "Whew!{w} That was a mouthful!"
@@ -473,7 +473,7 @@ label monika_ptod_tip006:
     menu:
         m "Did you understand all that?"
         "Yes!":
-            m 1hua "Yay!{w}"
+            m 1hua "Yay!"
 
         "I'm a bit confused.":
             m 1eksdla "That's okay.{w} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or settting variables."
