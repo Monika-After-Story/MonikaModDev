@@ -4886,14 +4886,23 @@ label monika_weddingring:
             m 2lkbsa "I feel like... my heart's going to explode!"
             m 2dsbso "Calm down, Monika. Calm down."
             m 2hubfb "Ahaha..."
+            return "derandom"
 
-        "No, not yet.":
+        "I'm looking for one":
+            $ persistent._mas_pm_have_ring = False
+            m 1ekbfa "Aww, [player]!"
+            m 1hubfb "It makes me so happy knowing that you're looking for a ring for me!"
+            show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eub "I'm sure that the ring you choose will be perfect~"
+            return
+
+        "No":
             $ persistent._mas_pm_have_ring = False
             show monika 1c at t11 zorder MAS_MONIKA_Z with dissolve
-            m 1ekc "Aww. That's a shame."
-            m 1eka "Well, at least think about it, okay?"
-
-    return "derandom"
+            m 1ekc "Aw. That's a shame."
+            m 1ekd "I guess rings are expensive, after all."
+            m 1eka "At least think about it, okay?"
+            return "derandom"
 
 # do you like playing sports
 default persistent._mas_pm_like_playing_sports = None
