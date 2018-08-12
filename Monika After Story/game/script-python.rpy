@@ -464,7 +464,7 @@ label monika_ptod_tip006:
     m "We didn't have to explicity say that those variables were integers because Python does dynamic typing."
     m 1eub "This means that the Python interpreter infers the type of a variable based on the data you are storing in it."
     m "Other languages, like C or Java, require types to be defined with the variable."
-    m "This also enables variables in Python to change types during execution,"
+    m "Dynamic typing enables variables in Python to change types during execution,"
     m 1rksdlb "but that is generally frowned upon as it can make your code confusing for others to read."
 
     if tip_ev.last_seen is None:
