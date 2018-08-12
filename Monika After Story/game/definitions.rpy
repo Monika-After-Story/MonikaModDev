@@ -1776,7 +1776,7 @@ init -1 python in _mas_root:
         persistent._mas_affection["affection"] = 0
 
 
-init -9900 python in mas_utils:
+init -990 python in mas_utils:
     import shutil
     mas_log = renpy.renpy.log.open("mas_log")
     mas_log_open = mas_log.open()

@@ -78,7 +78,7 @@ init -500 python:
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
 
-init 1000 python:
+init 991 python:
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
     mas_all_ev_db = dict()

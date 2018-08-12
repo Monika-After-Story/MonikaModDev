@@ -813,7 +813,7 @@ label mas_lupd_v0_8_3:
     return
 
 
-init 5000 python:
+init 999 python:
     for __temp_version in persistent._mas_zz_lupd_ex_v:
         __lupd_v = "mas_lupd_" + __temp_version
         if renpy.has_label(__lupd_v):
