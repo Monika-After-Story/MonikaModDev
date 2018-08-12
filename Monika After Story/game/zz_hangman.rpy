@@ -359,9 +359,7 @@ label mas_hangman_game_loop:
             if chances == 0:
 
                 # disable hotkeys, music and more
-                $ disable_esc()
-                $ store.songs.enabled = False
-                $ store.hkb_button.enabled = False
+                $ mas_RaiseShield_core()
 
                 # setup glitch text
                 $ hm_glitch_word = glitchtext(40) + "?"
@@ -405,8 +403,9 @@ label mas_hangman_game_loop:
                 else:
                     $ style.say_dialogue = style.default_monika
                 $ is_window_sayori_visible = False
-                $ store.songs.enabled = True
-                $ store.hkb_button.enabled = True
+
+                # enable disabled songs and esc
+                $ mas_MUMUDropShield()
                 $ enable_esc()
 
             # otherwise, window sayori
