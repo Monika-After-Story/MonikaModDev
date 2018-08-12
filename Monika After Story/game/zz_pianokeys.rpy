@@ -570,6 +570,11 @@ init -3 python in mas_piano_keys:
         "C6": C6
     }
 
+    # match notes to strings for displaying
+    KEYMAP_TO_STR = dict()
+    for k in JSON_KEYMAP:
+        KEYMAP_TO_STR[JSON_KEYMAP[k]] = k
+
 
 # FUNCTIONS ===================================================================
 
@@ -1936,7 +1941,7 @@ init 810 python:
 
         # CONSTANTS
         # timeout
-        TIMEOUT = 1.0 # seconds
+        TIMEOUT = 1.5 # seconds
         SONG_TIMEOUT = 3.0 # seconds
         SONG_VIS_TIMEOUT = 4.0 # seconds
 #        FAIL_TIMEOUT = 4.0 # number of seconds to display awkward face on fail
@@ -3750,6 +3755,28 @@ init 810 python:
                         670
                     )
                 )
+
+                if len(self.played) > 0:
+                    played_text = renpy.render(
+                        renpy.text.text.Text(
+                            "[[" + ", ".join([
+                                store.mas_piano_keys.KEYMAP_TO_STR.get(x,"")
+                                for x in self.played
+                            ]) + "]"
+                        ),
+                        1280,
+                        720,
+                        st,
+                        at
+                    )
+                    rtw, rth = played_text.get_size()
+                    r.blit(
+                        played_text,
+                        (
+                            int((width - rtw) / 2),
+                            645
+                        )
+                    )
 
 
 
