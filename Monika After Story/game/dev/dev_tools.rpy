@@ -10,7 +10,14 @@ init 2018 python:
         Use this if you need to reseat an Event
         will quit the game once you have done this
         """
-        for label in labels:
+        mas_remove_event_list(labels)
+
+
+    def mas_remove_event_list(label_list):
+        """
+        Does the same as mas_remove_event, but with a list
+        """
+        for label in label_list:
             if label in persistent.event_database:
                 persistent.event_database.pop(label)
 

@@ -93,6 +93,7 @@ init 991 python:
         Global get function that retreives an event given the label
 
         Designed to be used as a wrapper around the mas_all_ev_db dict
+        NOTE: only available at RUNTIME
 
         IN:
             ev_label - eventlabel to find event for

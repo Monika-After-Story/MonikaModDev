@@ -2,6 +2,9 @@ define persistent.demo = False
 define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
 
+init 1 python:
+    persistent.steam = "steamapps" in config.basedir.lower()
+
 python early:
     import singleton
     me = singleton.SingleInstance()
@@ -1785,6 +1788,28 @@ init -990 python in mas_utils:
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
     _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
+
+    # bad text dict
+    BAD_TEXT = {
+        "{": "{{",
+        "[": "[["
+    }
+
+    def clean_gui_text(text):
+        """
+        Cleans the given text so its suitable for GUI usage
+
+        IN:
+            text - text to clean
+
+        RETURNS:
+            cleaned text
+        """
+        for bad in BAD_TEXT:
+            text = text.replace(bad, BAD_TEXT[bad])
+
+        return text
+
 
     def tryparseint(value, default=0):
         """
