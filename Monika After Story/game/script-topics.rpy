@@ -4915,7 +4915,7 @@ label monika_sports:
         "Yes.":
             $ persistent._mas_pm_like_playing_sports = True  
             m 3eub "Really? That's great!"
-            m 4hub "There are usually tennis courts at most parks, we can play all the time!"
+            m 4hub "There are usually tennis courts at public parks. We can play all the time!"
             m 4eub "Maybe we can even team up for doubles matches!"
             m 2tfu "If you're good enough, that is..."
             m 2tfc "I play to win."
@@ -4924,7 +4924,7 @@ label monika_sports:
         "No, but if it were with you...":
             $ persistent._mas_pm_like_playing_sports = True
             m 1eka "Aww, that's really sweet~"
-            m 3eua "You should take lessons, or wait until I get there and I could teach you..."
+            m 3eua "I'll teach you how to play when I get there. Or if you just can't wait, you can take lessons!"
             m 3eub "Then we can start playing in doubles matches!"
             m 4eua "I can't imagine anything more fun than winning a match with you as my partner..."
             m 4hub "We'll be unstoppable together!"
