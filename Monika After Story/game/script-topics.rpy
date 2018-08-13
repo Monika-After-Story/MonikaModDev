@@ -4898,7 +4898,6 @@ label monika_weddingring:
 
         "No":
             $ persistent._mas_pm_have_ring = False
-            show monika 1c at t11 zorder MAS_MONIKA_Z with dissolve
             m 1ekc "Aw. That's a shame."
             m 1ekd "I guess rings are expensive, after all."
             m 1eka "At least think about it, okay?"
