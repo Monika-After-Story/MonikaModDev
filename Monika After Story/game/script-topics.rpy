@@ -4910,16 +4910,35 @@ label monika_sports:
     m 3eua "Soccer requires a lot of teamwork and coordination. The moment you finally succeed and score a goal is absolutely thrilling!"
     m "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
     m 1lksdla "... Though the long rallies can be a little tiring, ehehe~"
-    m 1eua "Do you like playing sports, [player]?"
+    m 3eua "Plus, tennis is a great sport for two people. Do you play, [player]?"
     menu:
         "Yes.":
+            $ persistent._mas_pm_like_playing_sports = True  
+            m 3eub "Really? That's great!"
+            m 4hub "There are usually tennis courts at most parks, we can play all the time!"
+            m 4eub "Maybe we can even team up for doubles matches!"
+            m 2tfu "If you're good enough, that is..."
+            m 2tfc "I play to win."
+            m 4hub "Ahaha! I'm only joking..."
+            m 3eka "Just playing with you as my partner is more than enough for me, [player]~"
+        "No, but if it were with you...":
             $ persistent._mas_pm_like_playing_sports = True
-            m 1hua "Maybe we could play together sometime in the future. It would be wonderful."
-            m 1tfu "But don't expect me to go easy on you. Ahaha!"
-        "No.":
+            m 1eka "Aww, that's really sweet~"
+            m 3eua "You should take lessons, or wait until I get there and I could teach you..."
+            m 3eub "Then we can start playing in doubles matches!"
+            m 4eua "I can't imagine anything more fun than winning a match with you as my partner..."
+            m 4hub "We'll be unstoppable together!"
+        "No, I prefer other sports.":
+            $ persistent._mas_pm_like_playing_sports = True    
+            m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
+            m 3eua "If it's a sport I haven't played before, you could teach me!"
+            m 1tku "Watch out though, I'm a fast learner..."
+            m 1tfu "It won't be long before I can beat you. Ahaha!"
+        "No, I'm not really into sports.":
             $ persistent._mas_pm_like_playing_sports = False
             m 1eka "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
-            m 1ekc "I would hate to see you get sick because of something like that..."
+            m 1ekc "I would hate to see you get sick because of something like that."
+            m 1eka "It's just hard for me not to worry about you when I love you so much~"
 
     return "derandom"
 
