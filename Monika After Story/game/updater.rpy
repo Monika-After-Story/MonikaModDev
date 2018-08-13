@@ -762,7 +762,7 @@ label forced_update_now:
     $ mas_updater.force = True
 
     # steam check
-    if persistent.steam:
+    if persistent.steam and not persistent._mas_unstable_mode:
 
         $ mas_RaiseShield_core()
 
@@ -785,7 +785,7 @@ label update_now:
     $import time #this instance of time can stay
 
     # steam check
-    if persistent.steam:
+    if persistent.steam and not persistent._mas_unstable_mode:
         return
 
     # screen check
