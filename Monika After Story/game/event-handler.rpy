@@ -6,15 +6,15 @@
 # NOTE: proof oc concept
 # transform to have monika just chill
 image monika_waiting_img:
-    "monika 1a"
+    "monika 1eua"
     1.0
-    "monika 1c"
+    "monika 1euc"
     1.0
-    "monika 1h"
+    "monika 1esc"
     1.0
-    "monika 1o"
+    "monika 1lksdlc"
     1.0
-    "monika 1g"
+    "monika 1ekd"
     1.0
     repeat
 
@@ -41,30 +41,87 @@ init -500 python:
         True, # unlock_date
         True, # shown_count
         False, # diary_entry
-        False # rules
+        False, # rules
+        True, # last_seen
+        False # years
     )
 
     # set defaults
-    if persistent._mas_event_init_lockdb_template is None:
-        persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
-
-    elif len(persistent._mas_event_init_lockdb_template) != len(mas_init_lockdb_template):
+#    if (
+#            persistent._mas_event_init_lockdb_template is not None
+#            and len(persistent._mas_event_init_lockdb_template)
+#                != len(mas_init_lockdb_template)
+#        ):
         # differing lengths mean we have new items to deal with
-
-        for ev_key in persistent._mas_event_init_lockdb:
-            stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
-
-            # splice and dice
-            lock_row = list(mas_init_lockdb_template)
-            lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
-            persistent._mas_event_init_lockdb[ev_key] = tuple(lock_row)
 
     # set db defaults
     if persistent._mas_event_init_lockdb is None:
         persistent._mas_event_init_lockdb = dict()
 
+    for ev_key in persistent._mas_event_init_lockdb:
+        stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
+
+        if len(mas_init_lockdb_template) != len(stored_lock_row):
+            # splice and dice
+            lock_row = list(mas_init_lockdb_template)
+            lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
+            persistent._mas_event_init_lockdb[ev_key] = tuple(lock_row)
+
+    # set the new template
+    persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
+
+    # set db defaults
+#    if persistent._mas_event_init_lockdb is None:
+#        persistent._mas_event_init_lockdb = dict()
+
     # initalizes LOCKDB for the Event class
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
+
+
+init 1000 python:
+    # mainly to create centralized database for calendar lookup
+    # (and possible general db lookups)
+    mas_all_ev_db = dict()
+    mas_all_ev_db.update(store.evhand.event_database)
+    mas_all_ev_db.update(store.evhand.farewell_database)
+    mas_all_ev_db.update(store.evhand.greeting_database)
+    mas_all_ev_db.update(store.mas_moods.mood_db)
+    mas_all_ev_db.update(store.mas_stories.story_database)
+
+    def mas_getEV(ev_label):
+        """
+        Global get function that retreives an event given the label
+
+        Designed to be used as a wrapper around the mas_all_ev_db dict
+        NOTE: only available at RUNTIME
+
+        IN:
+            ev_label - eventlabel to find event for
+
+        RETURNS:
+            the event object you were looking for, or None if not found
+        """
+        return mas_all_ev_db.get(ev_label, None)
+
+
+    def mas_getEVCL(ev_label):
+        """
+        Global get function that retrieves the calendar label for an event
+        given the eventlabel. This is mainly to help with calendar.
+
+        IN:
+            ev_label - eventlabel to find calendar label for
+
+        RETURNS:
+            the calendar label you were looking for, or "Unknown Event" if
+            not found.
+        """
+        ev = mas_getEV(ev_label)
+        if ev is None:
+            return "Unknown Event"
+        else:
+            return ev.label
+
 
 # special store to contain scrollable menu constants
 init -1 python in evhand:
@@ -113,6 +170,16 @@ init -1 python in evhand:
     UNSE_XALIGN = -0.05
     UNSE_AREA = (UNSE_X, UNSE_Y, UNSE_W, UNSE_H)
 
+    # time stuff
+    import datetime
+    LAST_SEEN_DELTA = datetime.timedelta(hours=6)
+
+    # restart topic blacklist
+    RESTART_BLKLST = [
+        "mas_crashed_start",
+        "monika_affection_nickname"
+    ]
+
     # as well as special functions
     def addIfNew(items, pool):
         #
@@ -146,10 +213,180 @@ init -1 python in evhand:
         #       [1]: eventlabel
         return [(db[x].prompt, x) for x in key_list]
 
+
+    def _isFuture(ev, date=None):
+        """INTERNAL
+        Checks if the start_date of the given event happens after the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's start_date is in the future, False otherwise
+        """
+
+        # sanity check
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        start_date = ev.start_date
+
+        # if we don't have an end date we return false
+        if start_date is None:
+            return False
+
+        return date < start_date
+
+
+    def _isPast(ev, date=None):
+        """INTERNAL
+        Checks if the end_date of the given event happens before the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's end_date is in the past, False otherwise
+        """
+
+        # if there's no event to check return False
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        end_date = ev.end_date
+
+        # if we don't have an end date we return false
+        if end_date is None:
+            return False
+
+        return end_date < date
+
+
+    def _isPresent(ev):
+        """INTERNAL
+        Checks if current date falls within the given event's start/end date
+        range
+
+        IN:
+            ev - Event to check the start_time and end_time
+
+        RETURNS:
+            True if current time is inside the  Event's start_date/end_date
+            interval, False otherwise
+        """
+        # check we have an event
+        if ev is None:
+            return False
+
+        start_date = ev.start_date
+        end_date = ev.end_date
+
+        current = datetime.datetime.now()
+
+        # return false if either start or end is None
+        if start_date is None or end_date is None:
+            return False
+
+        return start_date <= current <= end_date
+
+
+    def _hideEvent(
+            event,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Internalized hideEvent
+        """
+        if event:
+
+            if lock:
+                event.unlocked = False
+
+            if derandom:
+                event.random = False
+
+            if depool:
+                event.pool = False
+
+            if decond:
+                event.conditional = None
+
+
+    def _hideEventLabel(
+            eventlabel,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=event_database
+        ):
+        """
+        Internalized hideEventLabel
+        """
+        ev = eventdb.get(eventlabel, None)
+
+        _hideEvent(
+            ev,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
+
+
+    def _lockEvent(ev):
+        """
+        Internalized lockEvent
+        """
+        _hideEvent(ev, lock=True)
+
+
+    def _lockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized lockEventLabel
+        """
+        _hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+
+
+    def _unlockEvent(ev):
+        """
+        Internalized unlockEvent
+        """
+        if ev:
+            ev.unlocked = True
+
+
+    def _unlockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized unlockEventLabel
+        """
+        _unlockEvent(eventdb.get(evlabel, None))
+
+
 init python:
     import store.evhand as evhand
+    import datetime
 
-    def addEvent(event, eventdb=evhand.event_database):
+    def addEvent(event, eventdb=evhand.event_database, skipCalendar=False):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
@@ -159,6 +396,8 @@ init python:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
         #       (Default: evhand.event_database)
+        #   skipCalendar - flag that marks wheter or not calendar check should
+        #       be skipped
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
@@ -173,7 +412,10 @@ init python:
 #                    pass
 #            except:
 #                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
-
+        # if should not skip calendar check and event has a start_date
+        if not skipCalendar and type(event.start_date) is datetime.datetime:
+            # add it to the calendar database
+            store.mas_calendar.addEvent(event)
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
@@ -202,14 +444,13 @@ init python:
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: evhand.event_database)
-        ev = eventdb.get(eventlabel, None)
-
-        hideEvent(
-            ev, 
-            lock=lock, 
-            derandom=derandom, 
+        evhand._hideEventLabel(
+            eventlabel,
+            lock=lock,
+            derandom=derandom,
             depool=depool,
-            decond=decond
+            decond=decond,
+            eventdb=eventdb
         )
 
 
@@ -235,20 +476,34 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
+        evhand._hideEvent(
+            event,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
 
-        if event:
 
-            if lock:
-                event.unlocked = False
+    def lockEvent(ev):
+        """
+        Locks the given event object
 
-            if derandom:
-                event.random = False
+        IN:
+            ev - the event object to lock
+        """
+        evhand._lockEvent(ev)
 
-            if depool:
-                ev.pool = False
 
-            if decond:
-                event.conditional = None
+    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Locks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
     def pushEvent(event_label):
@@ -278,6 +533,77 @@ init python:
 
         persistent.event_list.insert(0,event_label)
         return
+
+
+    def unlockEvent(ev):
+        """
+        Unlocks the given evnet object
+
+        IN:
+            ev - the event object to unlock
+        """
+        evhand._unlockEvent(ev)
+
+
+    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        Unlocks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        evhand._unlockEventLabel(evlabel, eventdb=eventdb)
+
+
+    def isFuture(ev, date=None):
+        """
+        Checks if the start_date of the given event happens after the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's start_date is in the future, False otherwise
+        """
+        return evhand._isFuture(ev, date=date)
+
+
+    def isPast(ev, date=None):
+        """
+        Checks if the end_date of the given event happens before the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's end_date is in the past, False otherwise
+        """
+        return evhand._isPast(ev, date=date)
+
+
+    def isPresent(ev):
+        """
+        Checks if current date falls within the given event's start/end date
+        range
+
+        IN:
+            ev - Event to check the start_time and end_time
+
+        RETURNS:
+            True if current time is inside the  Event's start_date/end_date
+            interval, False otherwise
+        """
+        return evhand._isPresent(ev)
+
 
     def popEvent(remove=True):
         #
@@ -325,34 +651,146 @@ init python:
         #
         # IN:
         #
-        if persistent.current_monikatopic:
+        if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
-            if (not persistent.current_monikatopic.startswith('greeting_')
-                    and not persistent.current_monikatopic.startswith('i_greeting')
-                    and not persistent.current_monikatopic.startswith('bye')
-                    and not persistent.current_monikatopic.startswith('ch30_reload')
-                ):
-                pushEvent(persistent.current_monikatopic)
-                pushEvent('continue_event')
-                persistent.current_monikatopic = 0
+            pushEvent(persistent.current_monikatopic)
+            pushEvent('continue_event')
+            persistent.current_monikatopic = 0
         return
 
 
+    def mas_isRstBlk(topic_label):
+        """
+        Checks if the event with the current label is blacklistd from being
+        restarted
+
+        IN:
+            topic_label - label of the event we are trying to restart
+        """
+        if not topic_label:
+            return True
+
+        if topic_label.startswith("greeting_"):
+            return True
+
+        if topic_label.startswith("bye"):
+            return True
+
+        if topic_label.startswith("i_greeting"):
+            return True
+
+        if topic_label.startswith("ch30_reload"):
+            return True
+
+        # check the blacklist
+        if topic_label in evhand.RESTART_BLKLST:
+            return True
+
+        return False
+
+
+    def mas_cleanJustSeen(eventlist, db):
+        """
+        Cleans the given event list of just seen items (withitn the THRESHOLD)
+        retunrs not just seen items
+
+        IN:
+            eventlist - list of event labels to pick from
+            db - database these events are tied to
+
+        RETURNS:
+            cleaned list of events (stuff not in the time THREASHOLD)
+        """
+        import datetime
+        now = datetime.datetime.now()
+        cleanlist = list()
+
+        for evlabel in eventlist:
+            ev = db.get(evlabel, None)
+
+            if ev:
+                if ev.last_seen:
+                    if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA:
+                        cleanlist.append(evlabel)
+
+                else:
+                    cleanlist.append(evlabel)
+
+        return cleanlist
+
+
+    def mas_cleanJustSeenEV(ev_list):
+        """
+        Cleans the given event list (of events) of just seen items
+        (within the THRESHOLD). Returns not just seen items.
+        Basically the same as mas_cleanJustSeen, except for Event object lists
+
+        IN:
+            ev_list - list of event objects
+
+        RETURNS:
+            cleaned list of events (stuff not in the tiem THRESHOLD)
+        """
+        import datetime
+        now = datetime.datetime.now()
+        cleaned_list = list();
+
+        for ev in ev_list:
+            if ev.last_seen is not None:
+                # this topic has been seen before, must check time
+                if now - ev.last_seen >= store.evhand.LAST_SEEN_DELTA:
+                    cleaned_list.append(ev)
+
+            else:
+                # topic never seen before, its clean!
+                cleaned_list.append(ev)
+
+        return cleaned_list
+
+
+    def mas_unlockPrompt():
+        """
+        Unlocks a pool event
+
+        RETURNS:
+            True if an event was unlocked. False otherwise
+        """
+        pool_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=False,
+            pool=True
+        )
+        pool_event_keys = [
+            evlabel
+            for evlabel in pool_events
+            if "no unlock" not in pool_events[evlabel].rules
+        ]
+
+        if len(pool_event_keys)>0:
+            sel_evlabel = renpy.random.choice(pool_event_keys)
+
+            evhand.event_database[sel_evlabel].unlocked = True
+            evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
+
+            return True
+
+        # otherwise we didnt unlock anything because nothing available
+        return False
 
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
 #
-# ASSUMES:
-#   persistent.event_list
-#   persistent.current_monikatopic
 label call_next_event:
 
 
     $event_label = popEvent()
     if event_label and renpy.has_label(event_label):
-        $ allow_dialogue = False
+
         if not seen_event(event_label): #Give 15 xp for seeing a new event
             $grant_xp(xp.NEW_EVENT)
+
+        $ mas_RaiseShield_dlg()
+
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 
@@ -364,31 +802,48 @@ label call_next_event:
                     ev.unlocked=True
                     ev.unlock_date=datetime.datetime.now()
 
+        else:
+            # othrewise, pull an ev from the all event database
+            # so we can log some data
+            $ ev = mas_getEV(event_label)
+
+        if ev is not None:
             # increment shown count
             $ ev.shown_count += 1
+            $ ev.last_seen = datetime.datetime.now()
 
-        if _return == 'quit':
-            $persistent.closed_self = True #Monika happily closes herself
-            jump _quit
+        if _return is not None:
+            if "derandom" in _return:
+                $ ev.random = False
 
-        # only allow dialogue if the event list is empty
-        $ allow_dialogue = len(persistent.event_list) == 0
-        show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
+            if "quit" in _return:
+                $persistent.closed_self = True #Monika happily closes herself
+                jump _quit
+
+        show monika 1 at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
+
+        # loop over until all events have been called
+        if len(persistent.event_list) > 0:
+            jump call_next_event
+
+        $ mas_DropShield_dlg()
+
     else:
-        return False
+        $ mas_DropShield_dlg()
 
-    return event_label
+    return False
+
+# keep track of number of pool unlocks
+define persistent._mas_pool_unlocks = 0
 
 # This either picks an event from the pool or events or, sometimes offers a set
 # of three topics to get an event from.
 label unlock_prompt:
     python:
-        pool_event_keys = Event.filterEvents(evhand.event_database,unlocked=False,pool=True).keys()
-
-        if len(pool_event_keys)>0:
-            unlock_event = renpy.random.choice(pool_event_keys)
-            evhand.event_database[unlock_event].unlocked = True
-            evhand.event_database[unlock_event].unlock_date = datetime.datetime.now()
+        if not mas_unlockPrompt():
+            # we dont have any unlockable pool topics?
+            # lets count this so we can use it later
+            persistent._mas_pool_unlocks += 1
 
     return
 
@@ -397,7 +852,7 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
-    $allow_dialogue = False
+    $ mas_RaiseShield_dlg()
 
     python:
         unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
@@ -419,6 +874,7 @@ label prompt_menu:
         talk_menu.append(("Ask a question.", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
+        talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
@@ -435,6 +891,9 @@ label prompt_menu:
     elif madechoice == "repeat":
         call prompts_categories(False) from _call_prompts_categories_1
 
+    elif madechoice == "love":
+        $ pushEvent("monika_love")
+
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
         if not _return:
@@ -447,7 +906,7 @@ label prompt_menu:
         $_return = None
 
     show monika at t11
-    $allow_dialogue = True
+    $ mas_DropShield_dlg()
     jump ch30_loop
 
 label show_prompt_list(sorted_event_keys):
@@ -617,4 +1076,3 @@ label prompts_categories(pool=True):
             $pushEvent(_return)
 
     return
-

@@ -108,4 +108,5 @@ def is_supported():
     """
     Check if this system is supported.
     """
-    return _system in get_supported_systems()
+    return False
+#    return _system in get_supported_systems()
