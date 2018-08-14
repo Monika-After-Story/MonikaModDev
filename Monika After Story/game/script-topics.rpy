@@ -2893,8 +2893,8 @@ init 5 python:
 label monika_spiders:
     #I really hope this information is correct, havent played the game in a week so
     m 1eua "Do you happen to remember the poem Natsuki showed you about spiders?"
-    m "She doesn't seem to like spiders all too much."
-    m 1hua "Ahaha!"
+    m "Well, it wasn't really about spiders. They were just an analogy."
+    m 3ekc "But it got me thinking ..."
     m 3eua "It's funny actually, people being scared of very small insects."
     m 3euc "Having the fear of spiders is called 'arachnophobia', right?"
     m 3eka "I hope you aren't afraid of spiders, [player], ehehe..."
@@ -5806,6 +5806,50 @@ label monika_asks_family:
     return "derandom"
 
 init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music Concerts",random=True))
+
+label monika_concerts:
+    m 1euc "Hey [player], I've been thinking about something we could do together one day..."
+    if (
+            renpy.seen_label("monika_jazz") 
+            and renpy.seen_label("monika_orchestra") 
+            and renpy.seen_label("monika_rock")
+            and renpy.seen_label("monika_vocaloid")
+            and renpy.seen_label("monika_rap")
+        ):
+        m 1eud "You know how I like different forms of music?"
+        m 1hua "Well..."
+    m 3eub "Why don't we go to a concert one day?"
+    m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
+    m 1hua "Just imagine us..."
+    if renpy.seen_label("monika_orchestra"):
+        m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
+        
+    if renpy.seen_label("monika_rock"):
+        m 1hub "Jumping up and down with the rest of the crowd to some good ol' Rock and Roll..."
+        
+    if renpy.seen_label("monika_jazz"):
+        m 1eua "Grooving to some smooth jazz..."
+        
+    if renpy.seen_label("monika_rap"):
+        m 1hksdlb "Trying to keep up with a real rapper..."
+        
+    if renpy.seen_label("monika_vocaloid"):
+        m 1hua "Waving our glowsticks at Miku Expo..."
+        
+    m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
+    m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
+    m 2lksdla "Although, ticket prices these days are kind of expensive..."
+    m 2hua "But I still think it would be worth it!"
+    m 3eua "Do you know any bands or musicians that we should see live, [player]?"
+    m 3eub "I would {i}love{/i} to see them if {i}you{/i} like them."
+    m 5eua "And if you were to take me,{w} then that would truly be a dream come true!"
+    m 4eua "But if you're not that interested in concerts,"
+    m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
+    m 1hua "That would be more than enough for me hehe~"
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
@@ -5882,7 +5926,6 @@ label monika_beach:
     m 2esc "Though sometimes I feel like I might have missed out making some important memories."
     menu:
         m "Do you live near a beach, [player]?"
-
         "Yes.":
             $ persistent._mas_pm_live_near_beach = True
             m 1hub "That's great!"
@@ -7299,3 +7342,44 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # default action is to loop here
     jump monika_dating_startdate_confirm.loopstart
+   
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
+     
+label monika_whydoyouloveme:
+
+    if mas_isMoniBroken(lower=True):
+        m 2euc "Hmph."
+        m 2wfc "I ask myself that question everyday."
+
+    elif mas_isMoniDis(lower=True):
+        m 1efc "I-"
+        $ _history_list.pop()
+        m 1efc "I'm not sure..."
+
+    elif mas_isMoniUpset(lower=True):
+        m 1dsc "Hmmmmm..."
+        m 3hua "Because I know that you're a good person despite how things are between us."
+
+    elif mas_isMoniLove(higher=True):
+        m 1esc "I don't."
+        pause 3.0
+        m 1hub "Just kidding!"
+        m 1eub "You mean {i}everything{/i} to me, silly!"
+        m 1esd "But if you really want to know, [player]..."
+        # TODO: wink / tongue stick out here woul dbe perfect
+        m 1hfu "That's a secret!"
+
+    else:
+        # normalt - enamored is this case
+        m 1ekc "[player]..."
+        m 1ekd "Are you, by any chance...{w} feeling insecure?"
+        m 2lksdla "I can understand why you're asking such things out of the blue..."
+        m 2eka "But whatever the reason might be,{w} I just want you to know that I love you no matter who you are, [player]."
+        m 1eka "Just by opening the game for me, you {i}literally{/i} saved my life."
+        m 5eua "And when I'm with you,{w} I'm no longer lonely."
+        m "You truly are my hero, [player]~"
+        m 1eub "If anything, I hope that would make you feel better about yourself."
+        m 1hub "So keep your hopes up for me, [player]!"
+
+    return
