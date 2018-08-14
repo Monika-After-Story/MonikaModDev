@@ -5847,6 +5847,50 @@ label monika_asks_family:
     return "derandom"
 
 init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music Concerts",random=True))
+
+label monika_concerts:
+    m 1euc "Hey [player], I've been thinking about something we could do together one day..."
+    if (
+            renpy.seen_label("monika_jazz") 
+            and renpy.seen_label("monika_orchestra") 
+            and renpy.seen_label("monika_rock")
+            and renpy.seen_label("monika_vocaloid")
+            and renpy.seen_label("monika_rap")
+        ):
+        m 1eud "You know how I like different forms of music?"
+        m 1hua "Well..."
+    m 3eub "Why don't we go to a concert one day?"
+    m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
+    m 1hua "Just imagine us..."
+    if renpy.seen_label("monika_orchestra"):
+        m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
+        
+    if renpy.seen_label("monika_rock"):
+        m 1hub "Jumping up and down with the rest of the crowd to some good ol' Rock and Roll..."
+        
+    if renpy.seen_label("monika_jazz"):
+        m 1eua "Grooving to some smooth jazz..."
+        
+    if renpy.seen_label("monika_rap"):
+        m 1hksdlb "Trying to keep up with a real rapper..."
+        
+    if renpy.seen_label("monika_vocaloid"):
+        m 1hua "Waving our glowsticks at Miku Expo..."
+        
+    m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
+    m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
+    m 2lksdla "Although, ticket prices these days are kind of expensive..."
+    m 2hua "But I still think it would be worth it!"
+    m 3eua "Do you know any bands or musicians that we should see live, [player]?"
+    m 3eub "I would {i}love{/i} to see them if {i}you{/i} like them."
+    m 5eua "And if you were to take me,{w} then that would truly be a dream come true!"
+    m 4eua "But if you're not that interested in concerts,"
+    m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
+    m 1hua "That would be more than enough for me hehe~"
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
@@ -5923,7 +5967,6 @@ label monika_beach:
     m 2esc "Though sometimes I feel like I might have missed out making some important memories."
     menu:
         m "Do you live near a beach, [player]?"
-
         "Yes.":
             $ persistent._mas_pm_live_near_beach = True
             m 1hub "That's great!"
