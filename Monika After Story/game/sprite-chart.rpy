@@ -4045,6 +4045,19 @@ image monika 2wfw = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2wfc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="c",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2wud = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
