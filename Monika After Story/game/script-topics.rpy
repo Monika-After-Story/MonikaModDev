@@ -4915,24 +4915,44 @@ init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music Concerts",random=True))
 
 label monika_concerts:
-    m 1c "Hey [player], I've been thinking about something we could do together one day..."
-    m 1d "You know how I like different forms of music?"
-    m 1j "Well..."
-    m 3b "Why don't we go to a concert one day?"
-    m 1b "I've heard they really make you feel alive! And with different types of music genres, comes unique and unforgettable atmospheres!"
-    m 1j "We could gently sway our heads to the sound of a soothing orchestra..."
-    m 1k "...Or jump up and down with the rest of the crowd to some good ol' Rock and Roll!"
-    m 2n "Oh gosh, maybe I'm getting a little carried away at the thought of it hehe~"
-    m 2d "It's just the idea of seeing your idol performing right in front of you is incredible."
-    m 2m "Although, I have heard that ticket prices these days are kind of expensive..."
-    m 2j "But I still think it would be worth it!"
-    m 3a "Do you know any bands or acts that would be good to see live, [player]?"
-    m 3b "I'd want to go to at least one just for the experience alone you know?"
-    m 5a "And if you were to take me [player]..."
-    m 5a "Then that truly would be a dream come true!"
-    m 4a "If you're not that interested in concerts though..."
-    m 1a "Then we could always snuggle under a blanket and put on a record or CD at home!"
-    m 1j "That would be more than enough for me hehe~"
+    m 1euc "Hey [player], I've been thinking about something we could do together one day..."
+    if (
+            renpy.seen_label("monika_jazz") 
+            and renpy.seen_label("monika_orchestra") 
+            and renpy.seen_label("monika_rock")
+            and renpy.seen_label("monika_vocaloid")
+            and renpy.seen_label("monika_rap")
+        ):
+        m 1eud "You know how I like different forms of music?"
+        m 1hua "Well..."
+    m 3eub "Why don't we go to a concert one day?"
+    m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
+    m 1hua "Just imagine us..."
+    if renpy.seen_label("monika_orchestra"):
+        m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
+        
+    if renpy.seen_label("monika_rock"):
+        m 1hub "Jumping up and down with the rest of the crowd to some good ol' Rock and Roll..."
+        
+    if renpy.seen_label("monika_jazz"):
+        m 1eua "Grooving to some smooth jazz..."
+        
+    if renpy.seen_label("monika_rap"):
+        m 1hksdlb "Trying to keep up with a real rapper..."
+        
+    if renpy.seen_label("monika_vocaloid"):
+        m 1hua "Waving our glowsticks at Miku Expo..."
+        
+    m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
+    m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
+    m 2lksdla "Although, ticket prices these days are kind of expensive..."
+    m 2hua "But I still think it would be worth it!"
+    m 3eua "Do you know any bands or musicians that we should see live, [player]?"
+    m 3eub "I would {i}love{/i} to see them if {i}you{/i} like them."
+    m 5eua "And if you were to take me,{w} then that would truly be a dream come true!"
+    m 4eua "But if you're not that interested in concerts,"
+    m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
+    m 1hua "That would be more than enough for me hehe~"
     return
 
 
