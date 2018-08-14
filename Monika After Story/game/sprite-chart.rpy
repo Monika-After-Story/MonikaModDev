@@ -246,6 +246,22 @@ init -5 python in mas_sprites:
     ## Accessory dictionary
     ACS_MAP = dict()
 
+    ## Pose list
+    # NOTE: do NOT include leans in here.
+    POSES = [
+        "steepling",
+        "crossed",
+        "restleftpointright",
+        "pointright",
+        "down"
+    ]
+
+    ## lean poses
+    # NOTE: do NOT include regular poses in here
+    L_POSES = [
+        "def"
+    ]
+
     def acs_lean_mode(lean):
         """
         Returns the appropriate accessory prefix dpenedong on lean
@@ -339,7 +355,7 @@ init -5 python in mas_sprites:
     # sprite maker functions
 
 
-    def _ms_accessory(acs, isnight, issitting, lean=None):
+    def _ms_accessory(acs, isnight, issitting, pose=None, lean=None):
         """
         Creates accessory string
 
@@ -347,12 +363,31 @@ init -5 python in mas_sprites:
             acs - MASAccessory object
             isnight - True will generate night string, false will not
             issitting - True will use sitting pic, false will not
+            pose - current pose
+                (Default: None)
             lean - type of lean
                 (Default: None)
 
         RETURNS:
             accessory string
         """
+        if acs.no_lean:
+            # the lean version is the same as regular
+            lean = None
+
+        # pose map check
+        # Since None means we dont show, we are going to assume that the
+        # accessory should be shown if the pose key is missing.
+        if lean:
+            poseid = acs.pose_map.l_map.get(lean, None)
+        else:
+            poseid = acs.pose_map.map.get(pose, None)
+
+        if poseid is None:
+            # a None here means we should shouldnt' even show this acs
+            # for this pose. Weird, but maybe it happens?
+            return ""
+
         if issitting:
             acs_str = acs.img_sit
 
@@ -363,23 +398,21 @@ init -5 python in mas_sprites:
             # standing string is null or None
             return ""
 
-        if acs.no_lean:
-            # the lean version is the same as regular
-            lean = None
-
         return "".join([
             LOC_Z,
             ',"',
             A_T_MAIN,
             acs_lean_mode(lean),
             acs_str,
+            ART_DLM,
+            poseid,
             night_mode(isnight),
             FILE_EXT,
             '"'
         ])
 
 
-    def _ms_accessorylist(acs_list, isnight, issitting, lean=None):
+    def _ms_accessorylist(acs_list, isnight, issitting, pose=None, lean=None):
         """
         Creates accessory strings for a list of accessories
 
@@ -387,6 +420,8 @@ init -5 python in mas_sprites:
             acs_list - list of MASAccessory object, in order of rendering
             isnight - True will generate night string, false will not
             issitting - True will use sitting pic, false will not
+            pose - arms pose for we are currently rendering
+                (Default: None)
             lean - type of lean
                 (Default: None)
 
@@ -397,7 +432,7 @@ init -5 python in mas_sprites:
             return ""
 
         return "," + ",".join([
-            _ms_accessory(acs, isnight, issitting, lean=lean)
+            _ms_accessory(acs, isnight, issitting, pose, lean=lean)
             for acs in acs_list
         ])
 
@@ -874,12 +909,12 @@ init -5 python in mas_sprites:
             L_COMP,
             "(",
             loc_str,
-            _ms_accessorylist(acs_pre_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean),
             ",",
             LOC_Z,
             ",",
             _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
-            _ms_accessorylist(acs_mid_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean),
             ",",
             LOC_Z,
             ",",
@@ -896,7 +931,7 @@ init -5 python in mas_sprites:
                 tears=tears,
                 emote=emote
             ),
-            _ms_accessorylist(acs_pst_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pst_list, isnight, True, arms, lean=lean),
             "),",
             ZOOM,
             ")"
@@ -1117,6 +1152,7 @@ init -2 python:
 #    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
 #    from operator import attrgetter # we need this for sorting items
     import math
+    from collections import namedtuple
 
     # Monika character base
     class MASMonika(renpy.store.object):
@@ -1421,6 +1457,81 @@ init -2 python:
 #
 #    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
 
+    # pose map helps map poses to an image
+    class MASPoseMap(renpy.store.object):
+        """
+        The Posemap helps connect pose names to images
+
+        This is done via a dict containing pose names and where they
+        map to. 
+
+        There is also a seperate dict to handle lean variants
+        """
+        from store.mas_sprites import POSES, L_POSES
+
+        def __init__(self,
+                default=None,
+                l_default=None,
+                p1=None,
+                p2=None,
+                p3=None,
+                p4=None,
+                p5=None,
+                p6=None
+            ):
+            """
+            Constructor
+
+            If None is passed in for any var, we assume that no image should
+            be shown for that pose
+
+            NOTE: all defaults are None
+
+            IN:
+                default - default pose id to use for poses that are not
+                    specified (aka are None).
+                l_default - default pose id to use for lean poses that are not
+                    specified (aka are None).
+                p1 - pose id to use for pose 1 
+                    - steepling
+                p2 - pose id to use for pose 2
+                    - crossed
+                p3 - pose id to use for pose 3
+                    - restleftpointright
+                p4 - pose id to use for pose 4
+                    - pointright
+                p5 - pose id to use for pose 5
+                    - LEAN: def
+                p6 - pose id to use for pose 6
+                    - down
+            """
+            self.map = {
+                self.POSES[0]: p1,
+                self.POSES[1]: p2,
+                self.POSES[2]: p3,
+                self.POSES[3]: p4,
+                self.POSES[4]: p6
+            }
+            self.l_map = {
+                self.L_POSES[0]: p5
+            }
+
+            self.__set_posedefs(self.map, default)
+            self.__set_posedefs(self.l_map, l_default)
+
+
+        def __set_posedefs(self, pose_dict, _def):
+            """
+            Sets pose defaults
+
+            IN:
+                pose_dict - dict of poses
+                _def - default to use here
+            """
+            for k in pose_dict:
+                if pose_dict[k] is None:
+                    pose_dict[k] = _def
+
 
     # instead of clothes, these are accessories
     class MASAccessory(renpy.store.object):
@@ -1439,6 +1550,7 @@ init -2 python:
         def __init__(self,
                 name,
                 img_sit,
+                pose_map,
                 img_stand="",
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
@@ -1451,6 +1563,7 @@ init -2 python:
             IN:
                 name - name of this accessory
                 img_sit - file name of the sitting image
+                pose_map - MASPoseMap object that contains pose mappings
                 img_stand - file name of the standing image
                     IF this is not passed in, we assume the standing version
                         has no accessory.
@@ -1479,6 +1592,10 @@ init -2 python:
             self.priority=priority
             self.no_lean = no_lean
             self.stay_on_start = stay_on_start
+            self.pose_map = pose_map
+
+            if type(pose_map) != MASPoseMap:
+                raise Exception("PoseMap is REQUIRED")
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1647,6 +1764,18 @@ init -1 python:
     #
     # <accessory name> MUST BE UNIQUE
     #
+    # File naming:
+    # Accessories should be named like:
+    #   acs-<acs identifier/name>-<pose id>-<night suffix>
+    #
+    # Leaning:
+    #   acs-leaning-<leantype>-<acs identifier/name>-<pose id>-<night suffix>
+    #
+    # acs name - name of the accessory (shoud be unique)
+    # pose id - identifier to map this image to a pose (should be unique
+    #       per accessory)
+    # leantype - leaning type, if appropriate
+    #
     # NOTE: pleaes preface each accessory with the following commen template
     # this is to ensure we hvae an accurate description of what each accessory
     # is:
@@ -1660,10 +1789,30 @@ init -1 python:
     mas_acs_mug = MASAccessory(
         "mug",
         "mug",
-        no_lean=True,
+        MASPoseMap(
+            default="0"
+        ),
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
+
+    ### PROMISE RING
+    ## promisering
+    # Promise ring that can be given to Monika
+    mas_acs_promisering = MASAccessory(
+        "promisering",
+        "promisering",
+        MASPoseMap(
+            p1="3",
+            p2=None,
+            p3="1",
+            p4="1",
+            p5=None,
+            p6=None
+        ),
+        stay_on_start=True
+    )
+    store.mas_sprites.init_acs(mas_acs_promisering)
 
 
 #### IMAGE START (IMG030)
@@ -1981,6 +2130,19 @@ image monika 1eksdlb = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1eksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
 
 image monika 1lksdlc = DynamicDisplayable(
     mas_drawmonika,
@@ -2164,6 +2326,19 @@ image monika 1efo = DynamicDisplayable(
     nose="def",
     mouth="gasp",
     head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1efp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="normal",
+    nose="def",
+    mouth="pout",
+    head="h",
     left="1l",
     right="1r",
     arms="steepling"
@@ -3865,6 +4040,19 @@ image monika 2wfw = DynamicDisplayable(
     nose="def",
     mouth="wide",
     head="i",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2wfc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="c",
     left="1l",
     right="2r",
     arms="crossed"

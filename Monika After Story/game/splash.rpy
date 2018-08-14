@@ -209,7 +209,6 @@ label splashscreen:
 
 
     #Check for game updates before loading the game or the splash screen
-#    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason

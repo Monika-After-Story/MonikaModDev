@@ -671,8 +671,8 @@ init python in mas_updater:
 
             try:
                 os.rename(
-                    renpy.config.basedir + "/game/update",
-                    renpy.config.basedir + "/update"
+                    os.path.normcase(renpy.config.basedir + "/game/update"),
+                    os.path.normcase(renpy.config.basedir + "/update")
                 )
                 can_update = renpy.store.updater.can_update()
 
@@ -748,12 +748,45 @@ init 10 python:
         the_thread.start()
 
 
+label mas_updater_steam_issue:
+#    show monika at t11
+    m 1eub "[player]!{w} I see you're using Steam."
+    m 1eksdlb "Unfortunately..."
+    m 1efp "I can't run the updater because Steam is a meanie!"
+    m 1eksdla "You'll have to manually install the update from the releases page on Github.{w} {a=https://github.com/Monika-After-Story/MonikaModDev/releases}Click here to go to releases page{/a}."
+    m 1hua "Make sure to say goodbye to me first before installing the update."
+    return
+
+
 label forced_update_now:
     $ mas_updater.force = True
+
+    # steam check
+    if persistent.steam and not persistent._mas_unstable_mode:
+
+        $ mas_RaiseShield_core()
+
+        call mas_updater_steam_issue
+
+        if store.mas_globals.dlg_workflow:
+            # current in dialogue workflow, we should only enable the escape
+            # and music stuff
+            $ enable_esc()
+            $ mas_MUMUDropShield()
+
+        else:
+            # otherwise, reenable core interactions
+            $ mas_DropShield_core()
+
+        return
 
 #This file goes through the actions for updating Monika After story
 label update_now:
     $import time #this instance of time can stay
+
+    # steam check
+    if persistent.steam and not persistent._mas_unstable_mode:
+        return
 
     # screen check
     if renpy.showing("masupdateroverlay", layer="overlay"):
