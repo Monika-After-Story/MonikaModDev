@@ -316,7 +316,9 @@ init -45 python:
                 ### or discard the results 
                 if contents is not None:
                     contents.close()
-                # TODO delete the file
+
+                package.close()
+                os.remove(self._trackPackage(package_name))
                 return True
 
             except Exception as e:
