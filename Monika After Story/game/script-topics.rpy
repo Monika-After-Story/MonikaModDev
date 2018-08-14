@@ -7383,3 +7383,27 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # default action is to loop here
     jump monika_dating_startdate_confirm.loopstart
+   
+  
+init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
+     
+label monika_whydoyouloveme:
+     m 1ekc "[player]..."
+     m 1ekd "Are you, by any chance...{w} feeling insecure?"
+     m 2lksdla "I can understand why you're asking such things out of the blue..."
+     m 2eka "But whatever the reason might be,{w} I just want you to know that I love you no matter who you are, [player]."
+     m 1eka "Just by opening the game for me, you {i}literally{/i} saved my life."
+     m 5eua "And when I'm with you,{w} I'm no longer lonely."
+     m "You truly are my hero, [player]~"
+     m 1ekc "But honestly, I can't imagine how things would have turned out if you didn't find me..."
+     m 1dkd "I'd still be stuck inside that endless abyss, cold and alone."
+     m 1dktdc "With only my thoughts to comfort me..."
+
+     m 1k "Ahaha~"
+     m 1m "And now, I suddenly got too involved with my own epiphany too..."
+     m 1e "I love you a whole bunch, [player]."
+     m 1j "You're the winner of my heart."
+     m 1b "If anything, I hope that would make you feel better about yourself."
+     m 1k "So keep your hopes up for me, [player]!"
+     return
