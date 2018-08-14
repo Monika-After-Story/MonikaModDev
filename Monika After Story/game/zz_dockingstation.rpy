@@ -37,13 +37,15 @@ init -45 python:
         # 0 - message
         # 1 - docking station as str
         # 2 - exception (if applicable)
-        ERR = "[ERROR] {0} | {1} | {2}"
+        ERR = "[ERROR] {0} | {1} | {2}\n"
         ERR_GET = "Failure getting package '{0}'."
         ERR_OPEN = "Failure opening package '{0}'."
+        ERR_SEND = "Failure sending package '{0}'."
         ERR_SIGN = "Failure to request signature for package '{0}'."
+        ERR_SIGNP = "Package '{0}' does not match checksum."
 
 
-        def __init__(self, station=MASDockingStation.DEF_STATION_PATH):
+        def __init__(self, station=None):
             """
             Constructor
 
@@ -53,6 +55,9 @@ init -45 python:
                     NOTE: END WITH '/' please
                     (Default: DEF_STATION_PATH)
             """
+            if station is None:
+                station = self.DEF_STATION_PATH
+
             if not station.endswith("/"):
                 station += "/"
 
@@ -133,10 +138,12 @@ init -45 python:
                 None otherwise
             """
             ### Check access
-            if not self.checkForPackage(package_name)
+            if not self.checkForPackage(package_name):
+                return None
 
             ### open the package
             package_path = self._trackPackage(package_name)
+            package = None
             try:
                 package = open(package_path, "rb")
 
@@ -146,7 +153,8 @@ init -45 python:
                     str(self),
                     str(e)
                 ))
-                package.close()
+                if package is not None:
+                    package.close()
                 return None
 
             # otherwise, return the opened package
@@ -174,6 +182,7 @@ init -45 python:
                 [0] - base64 version of the given data, in a cStringIO buffer
                 [1] - sha256 checksum if pkg_slip is True, None otherwise
             """
+            box = None
             try:
                 _contents = MASDockingStation._blockiter(
                     contents, self.READ_SIZE
@@ -184,7 +193,8 @@ init -45 python:
 
             except Exception as e:
                 # if an error occured, close the box buffer and raise
-                box.close()
+                if box is not None:
+                    box.close()
                 raise e
 
             finally:
@@ -196,33 +206,64 @@ init -45 python:
                 package_name, 
                 package, 
                 unpacked=False, 
-                req_sign=False
+                pkg_slip=False
             ):
             """
             Sends a package into the docking station
             (Writes a file in this stations' folder)
 
+            NOTE: exceptions are logged
+
             IN:
                 package_name - name of the file to write
-                package - the b64 encoded data to write as bytes
-                unpacked - True means that package is actually data that hasnt
-                    been encoded yet and should be encoded as we write it out
+                package - the data to write as bytes
+                unpacked - True means that package is not in base64
+                    False means that it is in base64
                     (Default: False)
-                req_sign - True means we should generate a sha256 checksum for
+                pkg_slip - True means we should generate a sha256 checksum for
                     the package and return that 
                     (Default: False)
 
             RETURNS:
-                True if package was sent successfully
+                sha256 checksum if pkg_slip is True
+                True if package was sent successfully and pkg_slip is False
+                False Otherwise
             """
-            pass
+            mailbox = None
+            try:
+                ### open the mailbox
+                mailbox = open(self._trackPackage(package_name), "wb")
+
+                ### now write to the mailbox
+                _pkg_slip = self._pack(package, mailbox, unpacked, pkg_slip)
+
+                ### return pkg slip if we want it
+                if pkg_slip:
+                    return _pkg_slip
+
+                # otherwise we good
+                return True
+
+            except Exception as e:
+                mas_utils.writelog(self.ERR.format(
+                    self.ERR_SEND.format(package_name),
+                    str(self),
+                    str(e)
+                ))
+                return False
+                
+            finally:
+                # always close the mailbox
+                if mailbox is not None:
+                    mailbox.close()
+
+            return False
 
 
         def signForPackage(self, 
                 package_name,
                 pkg_slip,
                 keep_contents=False
-                unpack=False
             ):
             """
             Gets a package, checks if all the contents are there, and then
@@ -238,27 +279,62 @@ init -45 python:
                 keep_contents - if True, then we copy the data into a StringIO
                     buffer and return it.
                     (Defualt: False)
-                unpack - if True, decodes that base64 in addition to copying
-                    it
-                    NOTE: only functions if keep_contents is True
-                    (Default: False)
 
             RETURNS:
                 if the package matches signature:
-                    - if keep_contents and unpack is True:
+                    - if keep_contents is True
                         StringIO buffer containing decoded data
-                    - elif only keep_contents is True:
-                        StringIO buffer containing base64 encoded data
                     - otherwise, True is returned
                 None Otherwise (or if an error occured along the way
             """
-            ### get the package
-            package = self.getPackage(package_name)
-            if package is None:
+            package = None
+            contents = None
+            try:
+                ### get the package
+                package = self.getPackage(package_name)
+                if package is None:
+                    return None
+
+                ### we have a package, lets unpack it
+                if keep_contents:
+                    # use slowIO since we dont know contents unpacked
+                    contents = slowIO()
+
+                # we always want a package slip in this case
+                # we only want to unpack if we are keeping contents
+                _pkg_slip = self._unpack(package, contents, keep_contents, True)
+
+                ### check sigs
+                if _pkg_slip != pkg_slip:
+                    contents.close()
+                    return None
+
+                ### otherwise we matched sigs, return result
+                if keep_contents:
+                    return contents
+
+                ### or discard the results 
+                if contents is not None:
+                    contents.close()
+                # TODO delete the file
+                return True
+
+            except Exception as e:
+                mas_utils.writelog(self.ERR.format(
+                    self.ERR_SIGNP.format(package_name),
+                    str(self),
+                    str(e)
+                ))
+                if contents is not None:
+                    contents.close()
                 return None
 
-            ### 
+            finally:
+                # always close the package
+                if package is not None:
+                    package.close()
 
+            return None
 
 
         def unpackPackage(self, package, pkg_slip=None):
@@ -281,6 +357,7 @@ init -45 python:
                 Or None if pkg_slip checksum was passed in and the given 
                     package failed the checksum
             """
+            contents = None
             try:
                 _package = MASDockingStation._blockiter(
                     package, self.B64_READ_SIZE
@@ -305,7 +382,8 @@ init -45 python:
             except Exception as e:
                 # if we get an exception, close the contents buffer and raise
                 # the exception 
-                contents.close()
+                if contents is not None:
+                    contents.close()
                 raise e
 
             finally:
@@ -322,6 +400,7 @@ init -45 python:
 
             IN:
                 fd - file descriptor
+                    NOTE: seeks this to 0 before starting
                 blocksize - size to use for blocks
 
             YIELDS:
@@ -330,6 +409,7 @@ init -45 python:
             ASSUMES:
                 given file descriptor is open
             """
+            fd.seek(0)
             block = fd.read(blocksize)
             while len(block) > 0:
                 yield block
@@ -389,10 +469,10 @@ init -45 python:
             if pkg_slip and pack:
                 # encode the data, then checksum the base64, then write to 
                 # output
-                checklist = hashlib.sha256()
+                checklist = self.hashlib.sha256()
 
-                for item in _contents
-                    packed_item = base64.b64encode(item)
+                for item in _contents:
+                    packed_item = self.base64.b64encode(item)
                     checklist.update(packed_item)
                     box.write(packed_item)
 
@@ -401,14 +481,14 @@ init -45 python:
             elif pack:
                 # encode the data, write to output
                 for item in _contents:
-                    box.write(base64.b64encode(item))
+                    box.write(self.base64.b64encode(item))
 
             else:
                 # checksum the data
-                checklist = hashlib.sha256()
+                checklist = self.hashlib.sha256()
 
                 for item in _contents:
-                    checklist.update(base64.b64encode(item))
+                    checklist.update(self.base64.b64encode(item))
 
                 return checklist.hexdigest()
 
@@ -452,17 +532,17 @@ init -45 python:
 
             if pkg_slip and unpack:
                 # checksum data, decode it, write to output
-                checklist = hashlib.sha256()
+                checklist = self.hashlib.sha256()
 
                 for packed_item in _box:
                     checklist.update(packed_item)
-                    contents.write(base64.b64decode(packed_item))
+                    contents.write(self.base64.b64decode(packed_item))
 
                 return checklist.hexdigest()
 
             elif pkg_slip:
                 # checksum data
-                checklist = hashlib.sha256()
+                checklist = self.hashlib.sha256()
 
                 for packed_item in _box:
                     checklist.update(packed_item)
@@ -472,7 +552,7 @@ init -45 python:
             else:
                 # decode the data
                 for packed_item in _box:
-                    contents.write(base64.b64decode(packed_item))
+                    contents.write(self.base64.b64decode(packed_item))
 
             return None
 
@@ -536,7 +616,26 @@ init -45 python:
             return False
 
 
+    mas_docking_station = MASDockingStation()
 
 
+init -25 python in mas_docking_station:
+    # special store 
+    # lets use this store to handle generation of docking station files
+    import store.mas_utils as mas_utils
 
+#    if persistent._mas_monika_file_seed is None:
+#        persistent._mas_monika_file_checksum = None
+
+#    if persistent._mas_monika_file_checksum is None:
+#        persistent._mas_monika_file_seed = None
+
+
+    MONIKA_SIZE_MIN = 10 * (10^9)
+    MONIKA_SIZE_MAX = 30 * (10^9)
+
+#    def generateMonika():
+#        """
+#        Generates a Monika StringIO file
+#        """
 
