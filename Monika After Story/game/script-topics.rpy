@@ -4671,6 +4671,7 @@ label monika_orchestra:
                  m 3eub "...Oh!"
                  m 1eka "Aww [player], did you do that for me?"
                  m "That's {i}sooo{/i} adorable!"
+                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                  m 5eubfu "And just so you know, you can play with me anytime you like..."
                  m 5eubfb "Ehehe~"
                  $ persistent.instrument = True 
