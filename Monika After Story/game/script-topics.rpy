@@ -6385,6 +6385,7 @@ label monika_backpacking:
     m 1hubfb "Ehehe~"
     m 1esa "Then we'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
     m 3eub "And wake up each morning to a glorious sunrise."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "..."
     m 5eua "Oh [player], doesn't that just sound like heaven?"
     m 5eua "I can't wait until we can share this experience together."    
