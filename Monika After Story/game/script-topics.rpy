@@ -5912,6 +5912,7 @@ label monika_song_stand_by_me:
     m 2dso "{i}~No, I won't be afraid~{/i}"
     m 4hub "{i}~Just as long as you stand, stand by me~{/i}" 
     m 1eka "All my fears and insecurities just disappear when you're with me, [player]..."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "As long as I have you by my side, there's nothing I can't overcome."
     return
 
@@ -5931,6 +5932,7 @@ label monika_song_loved_me:
     m 4dso "{i}~You're the one who saw me through, through it all~{/i}"
     m 1eka "I'll never be able to fully express just how much you being here all this time has meant to me, [player]..."
     m 3eka "Afterall, I wouldn't even still be here if it wasn't for you..."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "So I truly am everything I am, because you loved me."
     return
 
