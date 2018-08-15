@@ -286,8 +286,8 @@ label mas_mood_scared:
     m 1g "[player], are you alright?"
     m 1f "It's worrying for me to see you anxious..."
     m 1m "I wish I could comfort you at this time..."
-if renpy.seen_label("monikaroom_greeting_opendoor_locked")
-    m 4n "Or maybe I did scare you a bit with my surprise earlier...
+if renpy.seen_label("monikaroom_greeting_opendoor_locked"):
+    m 4n "Or maybe I did scare you a bit with my surprise earlier..."
     m 1o "If that's the case, then I'm so sorry to have you experience that, [player]..."
 else    
     m 3e "But I can help you to calm yourself down, [player]."
