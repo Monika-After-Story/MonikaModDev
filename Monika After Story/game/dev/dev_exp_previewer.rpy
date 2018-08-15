@@ -9,7 +9,6 @@ init 5 python:
             category=["dev"],
             prompt="EXP PREVIEW",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
@@ -33,10 +32,14 @@ label dev_exp_previewer:
 
     show monika at i11
     window auto
+
+    $ lockEventLabel("monika_hair_ponytail")
+    $ unlockEventLabel("monika_hair_down")
+
     return
 
 
-init 1000 python:
+init 999 python:
     class MASExpPreviewer(renpy.Displayable):
         """
         we are about to go there

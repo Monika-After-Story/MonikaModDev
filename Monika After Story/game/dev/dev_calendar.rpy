@@ -8,7 +8,6 @@ init 5 python:
             category=["dev"],
             prompt="TEST CALENDAR",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
