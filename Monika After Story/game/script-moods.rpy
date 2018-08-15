@@ -289,7 +289,7 @@ label mas_mood_scared:
 if renpy.seen_label("monikaroom_greeting_opendoor_locked"):
     m 4n "Or maybe I did scare you a bit with my surprise earlier..."
     m 1o "If that's the case, then I'm so sorry to have you experience that, [player]..."
-else    
+else:
     m 3e "But I can help you to calm yourself down, [player]."
     m 3a "Do you remember when I talked to you about confidence?"
     m 3b "Keeping up your appearance does help with faking your own confidence."
