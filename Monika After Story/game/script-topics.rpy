@@ -4669,11 +4669,20 @@ label monika_orchestra:
             elif tempinstrument == "harmonika":
                  m 1hub "Wow, I've always wanted to try the harmonik--"
                  m 3eub "...Oh!"
-                 m 1eka "Aww [player], did you do that for me?"
-                 m "That's {i}sooo{/i} adorable!"
-                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-                 m 5eubfu "And just so you know, you can play with me anytime you like..."
-                 m 5eubfb "Ehehe~"
+                 if mas_curr_affection == mas_aff.UPSET or mas_curr_affection == mas_aff.DISTRESSED or mas_curr_affection == mas_aff.BROKEN:
+                     m 3esa "Did you do that for me?"
+                     m 1eka "That's actually kinda sweet..."
+                     m "Little things like this really do cheer me up. Thank you, [player]."
+                 elif mas_curr_affection == mas_aff.HAPPY or mas_curr_affection == mas_aff.NORMAL:    
+                     m 1eka "Aww... Did you do that for me?"
+                     m "That's so sweet!"
+                     m 1ekbfa "Cute little things like this really make me feel loved, [player]."
+                 else:
+                     m 1eka "Awww [player]... Did you do that for me?"
+                     m "That's {i}sooo{/i} adorable!"
+                     show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                     m 5eubfu "And just so you know, you can play with me anytime you like..."
+                     m 5eubfb "Ehehe~"
                  $ persistent.instrument = True 
             elif tempinstrument == "harmonica":
                  m 1hub "Wow, I've always wanted to try the harmonica out!"
