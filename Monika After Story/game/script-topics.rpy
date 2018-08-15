@@ -4983,8 +4983,8 @@ label monika_noring:
     $ persistent._mas_pm_have_ring = False
     m 2dsc "..."
     m 2tkd "[player]..."
-    m 2tfc "Why would you lie and tell me that you had a ring?"
-    m 2ekc "You could at least have been honest with me, I'd understand if you didn't have a ring if you didn't?"
+    m 2tfc "Why would you lie and tell me that you had a ring if you didn't?"
+    m 2ekc "You could at least have been honest with me, I'd understand if you didn't have a ring."
     m "Please, just be honest with me next time, [player]..."
     $ lockEventLabel("monika_noring")
     return
