@@ -328,3 +328,31 @@ label mas_story_ravel:
     m 1dsd "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
     m 1tfb "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
     return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
+        prompt="Love Never Ends",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_immortal_love:
+    call mas_story_begin
+    m 3eua "There was a married couple who lived happily together for many years."
+    m "Every Valentine's Day, the husband would have a beautiful bouquet of flowers sent to his wife."
+    m 1eka "Each of these bouquets came with a note with a few simple words written on it."
+    m 3dsc "{i}My love for you only grows.{/i}"
+    m 1eud "After some time, the husband passed away."
+    m 1eka "The wife, saddened by her loss, believed she would spend her next Valentine's Day alone and in mourning."
+    m 1dsc "..."
+    m 2euc "However,{w} on her first Valentine's Day without her husband, she still received a bouquet from him."
+    m 2efd "Heartbroken and angry, she complained to the florist that there was a mistake."
+    m 2euc "The florist explained that there was no mistake."
+    m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
+    m "Speechless and stunned, the wife read the note attached to the bouquet."
+    m "{i}My love for you is eternal.{/i}"
+    
+    m 1dubsu "Ahh..."
+    m 1eua "Wasn't that a touching story, [player]?"
+    m 1hua "I thought it was really romantic."
+    m 1lksdlb "But I don't want to think of either of us dying."
+    m 1eua "At least the ending was very heartwarming."
+    m 1hua "Thanks for listening~"
+    return
