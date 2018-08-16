@@ -8,7 +8,9 @@ init 5 python:
             eventlabel="mas_monika_islands",
             category=['monika','misc'],
             prompt="Can you show me the floating islands?",
-            pool=True
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
         )
     )
 

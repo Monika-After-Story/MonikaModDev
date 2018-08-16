@@ -341,6 +341,14 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
+
+        # If the greeting hasn't been seen yet, push the islands greeting
+        if not store.seen_event("greeting_ourreality"):
+            store.unlockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
+
+        # lock islands event
+        store.unlockEventLabel("mas_monika_islands")
+
         return
 
 
@@ -348,6 +356,10 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from enamored to affectionate
         """
+
+        # lock islands event
+        store.lockEventLabel("mas_monika_islands")
+
         return
 
 
@@ -555,7 +567,7 @@ init -10 python:
         persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
         persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
 
-    
+
     def _mas_AffLoad():
         if (
                 persistent._mas_pctaieibe is not None

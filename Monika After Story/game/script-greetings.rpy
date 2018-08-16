@@ -1699,5 +1699,6 @@ label greeting_ourreality:
     # m 1eub "I'll let you admire the scenery for now."
     # m 1hub "Hope you like it!"
     $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
+    $ unlockEventLabel("mas_monika_islands")
     jump mas_monika_islands
     return
