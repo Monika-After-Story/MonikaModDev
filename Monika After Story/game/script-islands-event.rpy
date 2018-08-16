@@ -1,7 +1,7 @@
 # Monika's ???? Event
 # deserves it's own file because of how much dialogue these have
 # it basically shows a new screen over everything, and has an image map
-# Monika reacts to he place the player clicks 
+# Monika reacts to he place the player clicks
 
 init 5 python:
     addEvent(
@@ -22,6 +22,7 @@ label mas_monika_islands:
     $ mas_RaiseShield_core()
     $ mas_OVLHide()
     $ disable_esc()
+    $ store.mas_hotkeys.no_window_hiding = True
     $ _mas_island_dialogue = False
     show screen mas_show_islands()
     return
@@ -134,6 +135,7 @@ label mas_back_to_spaceroom:
             $ mas_DropShield_core()
             $ mas_OVLShow()
             $ enable_esc()
+            $ store.mas_hotkeys.no_window_hiding = False
             m 1eua "I hope you liked it, [player]~"
         "No":
             m "Alright, please continue looking around~"
