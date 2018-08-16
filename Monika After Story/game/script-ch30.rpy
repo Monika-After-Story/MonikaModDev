@@ -13,7 +13,10 @@ init -1 python in mas_globals:
     dlg_workflow = False
 
 
-
+image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
+image mas_island_day = "mod_assets/location/special/without_frame.png"
+image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
+image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
