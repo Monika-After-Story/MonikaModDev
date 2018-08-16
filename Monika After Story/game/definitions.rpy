@@ -1975,6 +1975,7 @@ init -100 python in mas_utils:
     import datetime
     import ctypes
     import random
+    import os
     from cStringIO import StringIO as fastIO
 
     __FLIMIT = 1000000
@@ -2139,6 +2140,36 @@ init -100 python in mas_utils:
 
         # reset state
         random.setstate(curr_state)
+
+        return data
+
+
+    def randomblob_fast(size):
+        """
+        Generates a randomb blob of stringIO data more efficientally and with
+        true random using urandom
+
+        NOTE: to prevent errors, we only generate bytes at 4M per iteration
+
+        IN:
+            size - size in bytes of the blob to make
+
+        RETURNS:
+            a cStringIO buffer of the random blob
+        """
+        data = fastIO()
+        _byte_limit = 4 * (1024**2) # 4MB
+
+        while size > 0:
+            make_bytes = _byte_limit
+            if (size - _byte_limit) <= 0:
+                make_bytes = size
+                size = 0
+
+            else:
+                size -= make_bytes
+
+            data.write(os.urandom(make_bytes))
 
         return data
 

@@ -308,6 +308,8 @@ label quit:
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
 
+    $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
+
     if persistent._mas_hair_changed:
         $ persistent._mas_monika_hair = monika_chr.hair
         $ persistent._mas_monika_clothes = monika_chr.clothes
