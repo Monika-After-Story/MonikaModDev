@@ -145,7 +145,7 @@ screen mas_show_islands():
 
         #alpha False
         # This is so that everything transparent is invisible to the cursor.
-        hotspot (11, 13, 314, 270) action Call("mas_monika_upsidedownisland") #island upside down
-        hotspot (403, 7, 868, 158) action Call("mas_monika_sky") # sky
-        hotspot (699, 337, 170, 163) action Call("mas_monika_glitchedmess") # glitched house
-        hotspot (1, 606, 300, 100) action Call("mas_back_to_spaceroom")
+        hotspot (11, 13, 314, 270) action Function(renpy.call, "mas_monika_upsidedownisland") # Function(renpy.call_in_new_context(mas_monika_upsidedownisland)) #island upside down
+        hotspot (403, 7, 868, 158) action Function(renpy.call, "mas_monika_sky") # Function(renpy.call_in_new_context(mas_monika_sky)) # sky
+        hotspot (699, 337, 170, 163) action Function(renpy.call, "mas_monika_glitchedmess") # Function(renpy.call_in_new_context(mas_monika_glitchedmess)) # glitched house
+        hotspot (1, 606, 300, 100) action Function(renpy.call, "mas_back_to_spaceroom") # Function(renpy.call_in_new_context(mas_back_to_spaceroom))
