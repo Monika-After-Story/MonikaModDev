@@ -335,24 +335,24 @@ init 5 python:
 
 label mas_story_immortal_love:
     call mas_story_begin
-    m 3eua "There was a married couple who lived happily for many years."
-    m "Every valentine's day, the husband would have a beautiful bouquet of flowers sent to his wife."
-    m 1eka "With each one of these bouquets, was a note with a few simple words on it."
+    m 3eua "There was a married couple who lived happily together for many years."
+    m "Every Valentine's Day, the husband would have a beautiful bouquet of flowers sent to his wife."
+    m 1eka "Each of these bouquets came with a note with a few simple words written on it."
     m 3dsc "{i}My love for you only grows.{/i}"
-    m 1eud "This continued for the rest of the husband's life until he passed away."
-    m 1c "All the wife had left were the memories of all the previous valentine's days with him and the notes he gave her."
-    m 1eka "She had to spend her next valentine's day alone, but at least there were the memories of him."
+    m 1eud "After some time, the husband passed away."
+    m 1eka "The wife, saddened by her loss, believed she would spend her next Valentine's Day alone and in mourning.
     m 1dsc "..."
-    m 2euc "However..."
-    m "On that first valentine's day without her husband around, she was delivered a bouquet addressed to her."
-    m 2eud "It was from her husband."
-    m 2efd "Heartbroken and angry, she went to complain that there was a mistake."
-    m 2euc "After she was finished explaining, she was told that there was no mistake."
-    m "It turns out her husband had prepared far in advance and asked to ensure that his beloved wife continue to recieve flower for many years to come."
-    m "Speechless and left alone with her thoughts, she read the note attatched to the bouquet."
+    m 2euc "However,{w} on her first Valentine's Day without her husband, she still received a bouquet from him.
+    m 2efd "Heartbroken and angry, she complained to the florist that there was a mistake."
+    m 2euc "The florist explained that there was no mistake."
+    m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to recieve flowers long after his death.
+    m "Speechless and stunned, the wife read the note attached to the bouquet."
     m "{i}My love for you is eternal.{/i}"
-    m 1dubsu "..."
-    m 1ekbfa "[player]..."
-    m 1hubfb "I think you know what's going through my head~"
-    m 1hubfa "Eheheh~"
+    
+    m 1dubsu "Ahh..."
+    m 1eua "Wasn't that a touching story, [player]?"
+    m 1hua "I thought it was really romantic."
+    m 1lksdlb "But I don't want to think of either of us dying."
+    m 1eua "At least the ending was very heartwarming."
+    m 1hua "Thanks for listening~"
     return
