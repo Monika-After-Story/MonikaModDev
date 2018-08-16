@@ -4661,45 +4661,49 @@ label monika_orchestra:
             $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
             $ tempinstrument = instrumentname.lower()
             if tempinstrument == "piano":
-                 m 1b "Oh, that's really cool!"
-                 m 1j "Not many people I knew played the piano, so it's really nice to know you do too."
-                 m 5a "Maybe we could do a duet someday!"
-                 m 1j "Ehehe~"
-                 $ persistent.instrument = True
+                m 1b "Oh, that's really cool!"
+                m 1j "Not many people I knew played the piano, so it's really nice to know you do too."
+                m 5a "Maybe we could do a duet someday!"
+                m 1j "Ehehe~"
+                $ persistent.instrument = True
             elif tempinstrument == "harmonika":
-                 m 1hub "Wow, I've always wanted to try the harmonik--"
-                 m 3eub "...Oh!"
-                 if mas_curr_affection == mas_aff.UPSET or mas_curr_affection == mas_aff.DISTRESSED or mas_curr_affection == mas_aff.BROKEN:
-                     m 3esa "Did you do that for me?"
-                     m 1eka "That's actually kinda sweet..."
-                     m "Little things like this really do cheer me up. Thank you, [player]."
-                 elif mas_curr_affection == mas_aff.HAPPY or mas_curr_affection == mas_aff.NORMAL:    
-                     m 1eka "Aww... Did you do that for me?"
-                     m "That's so sweet!"
-                     m 1ekbfa "Cute little things like this really make me feel loved, [player]."
-                 else:
-                     m 1eka "Awww [player]... Did you do that for me?"
-                     m "That's {i}sooo{/i} adorable!"
-                     show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-                     m 5eubfu "And just so you know, you can play with me anytime you like..."
-                     m 5eubfb "Ehehe~"
-                 $ persistent.instrument = True 
+                m 1hub "Wow, I've always wanted to try the harmonik--"
+                m 3eub "...Oh!"
+
+                if mas_isMoniUpset(lower=True):
+                    m 3esa "Did you do that for me?"
+                    m 1eka "That's actually kinda sweet..."
+                    m "Little things like this really do cheer me up. Thank you, [player]."
+
+                elif mas_isMoniHappy(lower=True):
+                    m 1eka "Aww... Did you do that for me?"
+                    m "That's so sweet!"
+                    m 1ekbfa "Cute little things like this really make me feel loved, [player]."
+
+                else: # affectionate and higher
+                    m 1eka "Awww [player]...{w} Did you do that for me?"
+                    m "That's {i}sooo{/i} adorable!"
+                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubfu "And just so you know, you can play with me anytime you like..."
+                    m 5eubfb "Ehehe~"
+
+                $ persistent.instrument = True 
             elif tempinstrument == "harmonica":
-                 m 1hub "Wow, I've always wanted to try the harmonica out!"
-                 m 1eua "I would love to hear you play for me."
-                 m 3eua "Maybe you could teach me how to play, too~"
-                 m 4esa "Although..."
-                 m 2esa "Personally, I prefer the {i}harmonika{/i}..."
-                 m 2eua "..."
-                 m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"              
-                 $ persistent.instrument = True            
+                m 1hub "Wow, I've always wanted to try the harmonica out!"
+                m 1eua "I would love to hear you play for me."
+                m 3eua "Maybe you could teach me how to play, too~"
+                m 4esa "Although..."
+                m 2esa "Personally, I prefer the {cps=*0.7}{i}harmonika{/i}{/cps}..."
+                m 2eua "..."
+                m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"              
+                $ persistent.instrument = True            
             else:
-                 m 1a "Wow, I've always wanted to try the [tempinstrument] out!"
-                 m 3b "I would love to hear you play for me."
-                 m "Maybe you could teach me how to play, too~"
-                 m 5a "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
-                 m 1j "Ehehe~"
-                 $ persistent.instrument = True
+                m 1a "Wow, I've always wanted to try the [tempinstrument] out!"
+                m 3b "I would love to hear you play for me."
+                m "Maybe you could teach me how to play, too~"
+                m 5a "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
+                m 1j "Ehehe~"
+                $ persistent.instrument = True
         "No.":
             $persistent.instrument = False
             m 1i "I see..."
