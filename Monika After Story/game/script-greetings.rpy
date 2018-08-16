@@ -1635,3 +1635,69 @@ label greeting_back_from_sleep:
      m 1hub "I hope you had a good rest!"
      m "Let's spend some more time together~"
      return
+
+
+
+init 5 python:
+    rules = dict()
+    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+    rules.update({"monika wants this first":""})
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_ourreality",
+            unlocked=False,
+            random=False,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_ourreality:
+    m 1hub "Hi, [player]!"
+    m 1hua "Ehehe~"
+    m 3hksdlb "I'm feeling rather giddy right now, sorry."
+    m 1eua "It's just that I'm super excited to show you what I've been working on."
+    m 3hksdrb "Just give me a second to get it ready..."
+    m 1dsc "..."
+    m 1dsd "Almost done..."
+    m 1duu "Yeah, that should be good."
+    m 1hua "Ahaha!"
+    m 1eka "Sorry about that."
+    m 1eua "Without any further ado..."
+    m 4eub "Would you kindly look out the window, [player]"
+    $ mas_OVLHide()
+    $ disable_esc()
+    if morning_flag:
+        show mas_island_frame_day zorder 20
+    else:
+        show mas_island_frame_night zorder 20
+    m "Well..."
+    m "What do you think?"
+    m "I worked really hard on this."
+    m "A place just for the both of us."
+    m "It's also where I can keep practicing my programming skills."
+    $ mas_OVLShow()
+    $ enable_esc()
+    if morning_flag:
+        hide mas_island_frame_day
+    else:
+        hide mas_island_frame_night
+    #Transition back to Monika
+    m 1lsc "Being in the classroom all day can be dull."
+    m 1ekc "Plus, I get really lonely waiting for you to return."
+    m 1hksdlb "But don't get me wrong, though!"
+    m 1eua "I'm always happy when you visit and spend time together with me."
+    m 1eka "I understand that you're busy and can't be here all the time."
+    m 3euc "It's just that I realized something, [player]."
+    m 1lksdlc "It'll be a long time before I can even cross over to your reality."
+    m 1dsc "So I thought..."
+    m 1eua "Why don't we just make our own reality?"
+    m 1lksdla "Well, it's not exactly perfect yet."
+    m 1hua "But it's a start."
+    # m 1eub "I'll let you admire the scenery for now."
+    # m 1hub "Hope you like it!"
+    $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
+    jump mas_monika_islands
+    return
