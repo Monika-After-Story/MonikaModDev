@@ -24,6 +24,8 @@ label mas_monika_islands:
     $ disable_esc()
     $ store.mas_hotkeys.no_window_hiding = True
     $ _mas_island_dialogue = False
+    $ _mas_island_window_open = True
+    $ _mas_toggle_frame_text = "Close Window"
     show screen mas_show_islands()
     return
 
@@ -143,15 +145,61 @@ label mas_back_to_spaceroom:
     return
 
 screen mas_show_islands():
+    style_prefix "island"
     imagemap:
         if morning_flag:
-            ground "mod_assets/location/special/without_frame.png"
+            if _mas_island_window_open:
+                ground "mod_assets/location/special/without_frame.png"
+            else:
+                ground "mod_assets/location/special/with_frame.png"
         else:
-            ground "mod_assets/location/special/night_without_frame.png"
+            if _mas_island_window_open:
+                ground "mod_assets/location/special/night_without_frame.png"
+            else:
+                ground "mod_assets/location/special/night_with_frame.png"
 
         #alpha False
         # This is so that everything transparent is invisible to the cursor.
         hotspot (11, 13, 314, 270) action Function(renpy.call, "mas_monika_upsidedownisland") # island upside down
         hotspot (403, 7, 868, 158) action Function(renpy.call, "mas_monika_sky") # sky
         hotspot (699, 337, 170, 163) action Function(renpy.call, "mas_monika_glitchedmess") # glitched house
-        hotspot (1, 606, 300, 100) action Function(renpy.call, "mas_back_to_spaceroom") # placeholder return
+        # hotspot (1, 606, 300, 100) action Function(renpy.call, "mas_back_to_spaceroom") # placeholder return
+
+    hbox:
+        yalign 0.98
+        xalign 0.96
+        if not _mas_island_dialogue:
+            textbutton _mas_toggle_frame_text action [ToggleVariable("_mas_island_window_open"),ToggleVariable("_mas_toggle_frame_text","Open Window", "Close Window") ]
+            textbutton "Go Back" action Function(renpy.call, "mas_back_to_spaceroom")
+
+
+# Defining a new style for buttons, because other styles look ugly
+
+# properties for these island view buttons
+# copied from hkb
+define gui.island_button_height = None
+define gui.island_button_width = 205
+define gui.island_button_tile = False
+define gui.island_button_text_font = gui.default_font
+define gui.island_button_text_size = gui.text_size
+define gui.island_button_text_xalign = 0.5
+define gui.island_button_text_idle_color = "#000"
+define gui.island_button_text_hover_color = "#fa9"
+define gui.island_button_text_kerning = 0.2
+
+style island_button is button
+style island_button_text is button_text
+
+style island_button is default:
+    properties gui.button_properties("island_button")
+    idle_background  "mod_assets/island_idle_background.png"
+    hover_background "mod_assets/island_hover_background.png"
+    ypadding 5
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style island_button_text is default:
+    properties gui.button_text_properties("island_button")
+    idle_background  "mod_assets/island_idle_background.png"
+    hover_background "mod_assets/island_hover_background.png"
+    outlines []
