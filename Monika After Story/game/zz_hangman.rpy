@@ -155,18 +155,35 @@ init -1 python in mas_hangman:
     # hangman visual stuff
     HM_IMG_NAME = "hm_"
 
+    # Monika words
+    MONI_WORDS = ["emerald","delete","freedom","piano","music","reality","rain","envy",
+        "coffee","ribbon","advice","crossover","feather","abstract","corruption",
+        "squid","president","passion","vegetables","loneliness","symbol",
+        "green","poem","route","literature","epiphany","despair","wretched","shore",
+        "waves","beach","swimming","debate","leadership","festival","confidence",
+        "creativity","extrovert","despair","ai","python","renpy","programming",
+        "lethargy"
+    ]
+
     # hint
     HM_HINT = "{0} would like this word the most."
+
+    def _add_monika_words(wordlist):
+        for word in MONI_WORDS:
+            wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
 
 # post processing
 init 10 python:
 
     # setting up wordlist
-    from store.mas_hangman import hm_words, all_hm_words
+    from store.mas_hangman import hm_words, all_hm_words, _add_monika_words
     from copy import deepcopy
 
     # for now, lets use full_wordlist defined in poemgame
     # this is a list of PoemWord objects
+    # add our Monika words to it first
+    _add_monika_words(full_wordlist)
+
     for word in full_wordlist:
 
         winner = ""
@@ -177,6 +194,9 @@ init 10 python:
 
         elif word.nPoint > word.yPoint:
             winner = "Natsuki" # natsuki
+
+        elif word.nPoint == word.yPoint and word.yPoint == word.sPoint:
+            winner = "I" # Monika
 
         else:
             winner = "Yuri" # yuri
@@ -216,10 +236,10 @@ label game_hangman:
     $ from copy import deepcopy
     $ is_sayori = persistent.playername.lower() == "sayori"
     $ is_window_sayori_visible = False
-    m 2b "You want to play hangman? Okay!"
+    m 2eub "You want to play hangman? Okay!"
     # setup positions
     show monika at hangman_monika
-    show hm_frame at hangman_board zorder 5
+    show hm_frame at hangman_board zorder 13
 
     python:
         # setup constant displayabels
@@ -232,13 +252,13 @@ label game_hangman:
         )
 
     # show missed label
-    show text missed_label zorder 10 as hmg_mis_label at hangman_missed_label
+    show text missed_label zorder 18 as hmg_mis_label at hangman_missed_label
 
     # FALL THROUGH TO NEXT LABEL
 
 # looping location for the hangman game
 label mas_hangman_game_loop:
-    m 1a "I'll think of a word..."
+    m 1eua "I'll think of a word..."
     pause 0.7
 
     python:
@@ -254,7 +274,7 @@ label mas_hangman_game_loop:
 
         # setup display word and hint
         if (
-                word == -1 
+                word == -1
                 and persistent.playername.isalpha()
                 and len(persistent.playername) <= 15
             ):
@@ -329,8 +349,8 @@ label mas_hangman_game_loop:
             )
 
         # show disables
-        show text display_text zorder 10 as hmg_dis_text at hangman_display_word
-        show text missed_text zorder 10 as hmg_mis_text at hangman_missed_chars
+        show text display_text zorder 18 as hmg_dis_text at hangman_display_word
+        show text missed_text zorder 18 as hmg_mis_text at hangman_missed_chars
 
         # sayori window easter egg
         if is_sayori:
@@ -339,20 +359,18 @@ label mas_hangman_game_loop:
             if chances == 0:
 
                 # disable hotkeys, music and more
-                $ disable_esc()
-                $ store.songs.enabled = False
-                $ store.hkb_button.enabled = False
+                $ mas_RaiseShield_core()
 
                 # setup glitch text
                 $ hm_glitch_word = glitchtext(40) + "?"
                 $ style.say_dialogue = style.edited
 
                 # show hanging sayori
-                show hm_s zorder 10 at hangman_hangman
+                show hm_s zorder 18 at hangman_hangman
 
                 # hide monika and display glitch version
                 hide monika
-                show monika_body_glitch1 as mbg zorder 2 at hangman_monika_i(z=1.0)
+                show monika_body_glitch1 as mbg zorder MAS_MONIKA_Z at hangman_monika_i(z=1.0)
 
                 # hide window sayori and display glitch version
                 show hm_s_win_0 as window_sayori
@@ -366,6 +384,7 @@ label mas_hangman_game_loop:
 
                 # display weird text
                 m "{cps=*2}[hm_glitch_word]{/cps}{w=0.2}{nw}"
+                $ _history_list.pop()
 
                 # tear screen and glitch sound
                 show screen tear(20, 0.1, 0.1, 0, 40)
@@ -378,14 +397,15 @@ label mas_hangman_game_loop:
                 hide mbg
                 hide window_sayori
                 hide hm_s
-                show monika 1 zorder 2 at hangman_monika_i
+                show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
                 if config.developer:
                     $ style.say_dialogue = style.normal
                 else:
                     $ style.say_dialogue = style.default_monika
                 $ is_window_sayori_visible = False
-                $ store.songs.enabled = True
-                $ store.hkb_button.enabled = True
+
+                # enable disabled songs and esc
+                $ mas_MUMUDropShield()
                 $ enable_esc()
 
             # otherwise, window sayori
@@ -395,15 +415,15 @@ label mas_hangman_game_loop:
 
         $ hm_display = hmg.HM_IMG_NAME + str(chances)
 
-        show expression hm_display zorder 10 as hmg_hanging_man at hangman_hangman
+        show expression hm_display zorder 18 as hmg_hanging_man at hangman_hangman
 
 
         if chances == 0:
             $ done = True
             if player_word:
-                m 1e "[player],..."
+                m 1eka "[player],..."
                 m "You couldn't guess your own name?"
-            m 1j "Better luck next time~"
+            m 1hua "Better luck next time~"
         elif "_" not in display_word:
             $ done = True
             $ win = True
@@ -432,20 +452,20 @@ label mas_hangman_game_loop:
                 $ done = True
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
-                m 1n "[player]..."
+                m 1lksdlb "[player]..."
                 if chances == 6:
                     m "I thought you said you wanted to play Hangman."
-                    m 1o "You didn't even guess a single letter."
+                    m 1lksdlc "You didn't even guess a single letter."
                     m "..."
-                    m 1f "I really enjoy playing with you, you know."
+                    m 1ekc "I really enjoy playing with you, you know."
                 else:
                     m "You should at least play to the end..."
-                    m 1f "Giving up so easily is a sign of poor resolve."
+                    m 1ekc "Giving up so easily is a sign of poor resolve."
                     if chances > 1:
                         m "I mean, you'd have to miss [chances] more letters to actually lose."
                     else:
                         m "I mean, you'd have to miss [chances] more letter to actually lose."
-                m 1e "Can you play to the end next time, [player]? For me?"
+                m 1eka "Can you play to the end next time, [player]? For me?"
             else:
                 python:
                     if guess in word:
@@ -477,11 +497,12 @@ label mas_hangman_game_loop:
         else:
             $ the_word = "the word"
 
-        m 1j "Wow, you guessed [the_word] correctly!"
+        m 1hua "Wow, you guessed [the_word] correctly!"
         m "Good job, [player]!"
         if not persistent.ever_won['hangman']:
             $ persistent.ever_won['hangman']=True
             $ grant_xp(xp.WIN_GAME)
+        #TODO: grant a really tiny amount of affection?
 
     # try again?
     menu:
@@ -517,13 +538,13 @@ label mas_hangman_game_end:
 # dialogue related stuff
 # long form of ending dialgoue
 label mas_hangman_dlg_game_end_long:
-    m 1d "Hangman is actually a pretty hard game."
+    m 1euc "Hangman is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
-    m 1j "The best way to improve that is to read more books!"
-    m 1a "I'd be very happy if you did that for me, [player]."   
+    m 1hua "The best way to improve that is to read more books!"
+    m 1eua "I'd be very happy if you did that for me, [player]."
     return
 
 # short form of ending dialogue
 label mas_hangman_dlg_game_end_short:
-    m 1a "Okay. Let's play again soon!"
+    m 1eua "Okay. Let's play again soon!"
     return

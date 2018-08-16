@@ -163,8 +163,11 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     python:
+        _mas_AffStartup()
+
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
+        store.mas_calendar.loadCalendarDatabase()
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
@@ -200,13 +203,19 @@ label splashscreen:
     python:
         basedir = config.basedir.replace("\\", "/")
 
+        # dump verseion to a firstrun-style file
+        with open(basedir + "/game/masrun", "w") as versfile:
+            versfile.write(config.name + "|" + config.version + "\n")
+
+
     #Check for game updates before loading the game or the splash screen
-#    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
     if persistent.autoload and not _restart:
         jump autoload
+
+    $ mas_enable_quit()
 
     # Start splash logic
     $ config.allow_skipping = False
@@ -292,6 +301,7 @@ label before_main_menu:
     return
 
 label quit:
+    $ store.mas_calendar.saveCalendarDatabase(CustomEncoder)
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
 
@@ -316,5 +326,7 @@ label quit:
             for acs in monika_chr.acs[MASMonika.PST_ACS]
             if acs.stay_on_start
         ]
+
+    $ _mas_AffSave()
 
     return
