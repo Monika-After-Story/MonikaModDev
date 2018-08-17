@@ -133,6 +133,15 @@ label monika_ptod_tip000:
     m 1esa "Let's start with what Python even is."
 
     $ hideEventLabel("monika_ptod_tip000", depool=True)
+
+    # enable tip 1
+    $ import datetime
+    $ tip_ev = mas_getEV("monika_ptod_tip001")
+    $ tip_ev.pool = True
+    $ tip_ev.unlocked = True
+    $ tip_ev.unlock_date = datetime.datetime.now()
+    $ tip_ev.shown_count = 1
+
     jump monika_ptod_tip001
 
 ###############################################################################
@@ -147,10 +156,15 @@ init 5 python:
     )
 
 label monika_ptod_tip001:
-    # first enable this event
+    
+    # speical stuff for unstablers
     $ tip_ev = mas_getEV("monika_ptod_tip001")
-    $ tip_ev.pool = True
-    $ tip_ev.unlocked = True
+    if tip_ev.unlock_date is None:
+        $ import datetime
+        $ tip_ev.unlock_date = datetime.datetime.now()
+
+    if tip_ev.shown_count == 0:
+        $ tip_ev.shown_count = 1
 
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
