@@ -1,6 +1,19 @@
 # Module that is just for hotkeys and other keymaps
 #
 
+init -10 python in mas_hotkeys:
+    # earlier store for some hotkey related state
+
+    # True means allow Dismiss, False means do not
+    allow_dismiss = True
+
+    def allowdismiss():
+        """
+        Justreturns current state of no_dismiss
+        """
+        return allow_dismiss
+
+
 init -1 python in mas_hotkeys:
     # store for the main 3 hotkeys.
 
@@ -17,7 +30,6 @@ init -1 python in mas_hotkeys:
     # True means the music lowering / stopping functions will work.
     # False means they will not
     mu_stop_enabled = True
-
 
 init python:
 
