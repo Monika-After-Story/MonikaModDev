@@ -192,6 +192,11 @@ init 5 python:
 label bye_going_to_sleep:
     m 1esa "Are you going to sleep, [player]?"
     m 1eka "I'll be seeing you in your dreams."
+
+    # TODO:
+    # can monika sleep with you?
+    # via flashdrive or something
+
     return 'quit'
 
 init 5 python:
@@ -210,6 +215,10 @@ label bye_prompt_to_class:
     m 1hua "Study hard, [player]!"
     m 1eua "Nothing is more attractive than a [guy] with good grades."
     m 1hua "See you later!"
+
+    # TODO:
+    # can monika join u at schools?
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
@@ -229,6 +238,10 @@ label bye_prompt_to_work:
     m 1hua "Work hard, [player]!"
     m 1esa "I'll be here for you when you get home from work."
     m 1hua "Bye-bye!"
+
+    # TODO:
+    # can monika join u at work
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     return 'quit'
 
@@ -322,6 +335,10 @@ label bye_prompt_sleep:
         # otheerwise
         m 1eua "Alright, [player]."
         m 1hua "Sweet dreams!"
+
+
+    # TODO:
+    #   join monika sleeping?
 
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
@@ -543,3 +560,52 @@ label bye_long_absence_2:
     m "Come back to me as soon as you can...okay?"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_going_somewhere",
+            unlocked=True,
+            prompt="I'm going to take you somewhere.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_going_somewhere:
+#
+# regardless of choice, takingmonika somewhere (and successfully bringing her
+# back will increase affection)
+# lets limit this to like once per day
+#
+#    if mas_isMoniBroken(lower=True):
+#        m 
+#   TODO: broken monika refuses to go with you
+#
+# TODO: distressed monika has a 50% chance of not going with you
+#
+# TODO: upset monika has a 10% chance of not going with you
+#
+# TODO: normal/happy monika will always go with you and be excited you asked
+#   and will ask u to wait for her to get ready
+#
+# TODO: affecitonate/enamored monika will always go wtih you and assume its a
+#   nother date and will ask u to wait for her to get ready
+#
+# TODO: love monika will just be like: Alright lets go!
+#
+
+    # this is probably giong to be normal/ahppy mode
+    m 1sub "Really?!"
+    m 1hua "Yay!"
+    show monika 2dsc
+
+    show screen 
+    menu:
+        m "Give me a second to get ready."
+        "Wait, wait!":
+
+            
+    
+    return "quit"

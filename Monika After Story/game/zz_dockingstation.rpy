@@ -959,6 +959,7 @@ label mas_dockstat_ready_to_go:
 
     return can_moni_leave
 
+
 label mas_dockstat_first_time_goers:
     m 3eua "I'm now in the file 'monika' in your characters folder."
     m "After I shutdown the game, you can move me wherever you like."
