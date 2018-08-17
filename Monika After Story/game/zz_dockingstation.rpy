@@ -704,6 +704,9 @@ init -500 python in mas_dockstat:
 init python in mas_dockstat:
     import store
 
+    # blocksize is relatively constant
+    blocksize = 4 * (1024**2)
+
     def setMoniSize(tdelta):
         """
         Sets the appropriate persistent size for monika
