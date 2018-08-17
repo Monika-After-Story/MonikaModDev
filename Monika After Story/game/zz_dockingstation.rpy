@@ -10,13 +10,14 @@
 #   - unpacked files are raw files, not encoded
 
 init -45 python:
+    import os # this thing is super crucial everywhere so we should just
+        # keep it open
 
     class MASDockingStation(object):
         """
         Docking station class designed to help with file reading / writing of
         certain files.
         """
-        import os
         import hashlib  # sha256 signatures
         import base64   # "packing" shipments involve base64
         from StringIO import StringIO as slowIO

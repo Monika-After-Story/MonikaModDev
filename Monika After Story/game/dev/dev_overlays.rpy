@@ -8,7 +8,6 @@ init 5 python:
             category=["dev"],
             prompt="TEST OVERLAYS",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
@@ -20,7 +19,6 @@ init 5 python:
             category=["dev"],
             prompt="TEST SHIELDS",
             pool=True,
-            random=True,
             unlocked=True
         )
     )

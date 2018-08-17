@@ -3633,8 +3633,8 @@ default him = "him"
 default himself = "himself"
 
 
-# default is NORMAL
-default persistent._mas_randchat_freq = 1
+# default is OFTEN
+default persistent._mas_randchat_freq = 0
 define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies
