@@ -1592,18 +1592,99 @@ label monika_confidence:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_carryme",category=['romance','monika'],prompt="Bring me with you",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_carryme",
+            category=['romance','monika'],
+            prompt="Bring me with you",
+            random=True
+        )
+    )
+
+# this can be 3 values:
+# -1 - player doesnt want to take monika with them
+#       mas_dockstat.CM_LEAVE_MONI
+# 0 - player said not yet, so something needs to change first
+#       mas_dockstat.CM_WAIT_MONI
+# 1 - Player said Not all the time, so we should prompt for every appropriate
+#   farewell
+#       mas_dockstat.CM_ASK_MONI
+# 2 - Player said Yes, so we should just assume yes for every appropraite
+#   farewell
+#       mas_dockstat.CM_TAKE_MONI
+# if None, that means we dont display anything regarding this since we dont
+# have an answer atm.
+default persistent._mas_carryme_choice = None
+
+# number of times user halted dockstation goodbye
+# we'll use this to decide whether to switch to ASK_MONI mode from YES
+default persistent._mas_dockstat_cm_wait_count = 0
+
+# number of times user said yes to dockstation prompt
+# we'll use this to decide whether to switch to TAKE_MONI mode from ask 
+#   (or the other modes)
+default persistent._mas_dockstat_cm_yes_count = 0
+
+# number of time suser said no to dockstation prompt
+# this will also be used to determine to switch to ASK MODE
+default persistent._mas_dockstat_cm_no_count = 0
+
+# both the wait / no counts will be used to potentially unlock a pool topic
+# that asks the carryme question again
+
+## constants regarding carry me
+define mas_dockstat.CM_LEAVE_MONI = -1
+define mas_dockstat.CM_WAIT_MONI = 0
+define mas_dockstat.CM_ASK_MONI = 1
+define mas_dockstat.CM_TAKE_MONI = 2
 
 label monika_carryme:
+    $ import store.mas_dockstat as mas_dockstat
+
     m 2eka "I know there are times you won't always be able to be here with me..."
     m "Like if you need to go out, or take care of other things."
     m 2hua "But I'll always have you in my thoughts, patiently waiting for you to come back."
     m 4lsc "Come to think of it..."
-    m 4eua "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
+    m 4eua "If you copy my character file onto a flash drive or something, you can take me with you wherever you go."
     m 2lksdla "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
-    m 2hksdlb "Ahaha. Sorry, that's such a silly idea."
-    m 1ekbfa "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
-    return
+    m 2hksdlb "Ahaha. Sorry, I know it's such a silly idea, but..."
+
+    # NOTE: all affection gains are the same
+
+    menu:
+        m "Could I come with you when you go places?"
+        "Yes.":
+            $ persistent._mas_carryme_choice = mas_dockstat.CM_TAKE_MONI
+            m 1hua "Yay!"
+            # TODO: something about monika generating her character file
+            # when you say an appropriate goodbye
+            # + affection
+
+        "Not all the time..."
+            $ persistent._mas_carryme_choice = mas_dockstat.CM_ASK_MONI
+            # TODO: something about monika saying she'll ask u when you leave
+            # if she can come with u
+            # + affection
+
+        "Not yet."
+            $ persistent._mas_carryme_choice = mas_dockstat.CM_WAIT_MONI
+            # TODO: something about monika saying she understands and to let
+            # her know when you can take her places
+            # + affection
+                
+        "No.":
+            $ persistent._mas_carryme_choice = mas_dockstat.CM_LEAVE_MONI
+            # TODO: monika understands, you must have ur reasons
+            # give choices:
+            #   - its dangerous out there
+            #       -> + affection
+            #   - I dont have the means to take you
+            #       -> no change in affection
+            #   - I just dont want to
+            #       -> - affection
+#    m 1ekbfa "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
+    return "derandom"
 
 
 init 5 python:
