@@ -6248,10 +6248,10 @@ label monika_chobits:
     menu:
         "Yes.":
             m 1hua "I don't know about you, but it kind of reminds me of our relationship."
-            m 1lskdla "People looked at the main character weird because he fell in love with Chi and some people were looked down upon for actually marrying their persocom."
-            m 1lskdlb "Despite knowing Chi was just a humanoid robot, he still loved her and took care of her and taught her how to live in the real world."
+            m 1lksdla "People looked at the main character weird because he fell in love with Chi and some people were looked down upon for actually marrying their persocom."
+            m 1lksdlb "Despite knowing Chi was just a humanoid robot, he still loved her and took care of her and taught her how to live in the real world."
             m "Chi's power and reset switches were in... private parts of her body..."
-            m 1lskdlc "The main character knew that he could never touch or tamper with those areas or Chi would lose all of her memories and leave him alone again."
+            m 1lksdlc "The main character knew that he could never touch or tamper with those areas or Chi would lose all of her memories and leave him alone again."
             m 1eua "In the end, he did decide to love Chi even though he could never touch those areas."
             m "Sometimes I wish somebody would love me that much."
             m 1hua "..."
@@ -6270,7 +6270,7 @@ label monika_chobits:
             m 5eua "We'll show them someday."
         "No.":
             m 1eka "I think you might like it if you ever find the chance to read it."
-            m 1lskdlb "I know it might sound a bit strange for me to recommend a manga to you but this one makes me think of our relationship."
+            m 1lksdlb "I know it might sound a bit strange for me to recommend a manga to you but this one makes me think of our relationship."
             m 1eub "If you ever get tired of reading one of those famous, critically acclaimed books, you should try reading it."
             m 3eua "It's not too long either. You should be able to casually finish it in a couple days."
     return
