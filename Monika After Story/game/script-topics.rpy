@@ -6245,42 +6245,42 @@ init 5 python:
 
 label monika_justice:
     m "[player], don't you think the concept of justice is kind of ironic?"
-    m 2f "Like, you have someone who maybe isn't like everyone else..."
-    m 2g "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!"
+    m 2ekc "Like, you have someone who maybe isn't like everyone else..."
+    m 2ekd "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!
     m "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
-    m 1q "To everyone else passing by, they're just greedy thieves."
-    m 1r "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by delivering what they see as 'justice'."
-    m 2h "At the end of the day, the family goes hungry or gets in trouble just because their situation was different."
+    m 1dsc "To everyone else passing by, they're just greedy thieves."
+    m 1dsd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by delivering what they see as 'justice'."
+    m 2esc "At the end of the day, the family goes hungry or gets in trouble just because their situation was different."
     m "While the other person is now a hero for putting an end to their crimes."
-    m 3d "That might be an easy situation to imagine, but things like that can happen even in a normal sense too!"
+    m 3ekd "That might be an easy situation to imagine, but things like that can happen even in a normal sense too!"
     m "Say for example, you're just simply living life like you always do, and then at least one or two people confront you about how they don't like what you're doing and make you stop."
-    m 3c "All of a sudden, you're being singled out and alienated for nothing you haven't done before!"
-    m 3f "Or maybe you thought you were doing the right thing but somebody disagrees and has to forcefully take a stand against you on it."
-    m 1q "..."
-    m 1r "Have you ever been delivered what you thought to be false justice [player]?"
+    m 3ekc "All of a sudden, you're being singled out and alienated for nothing you haven't done before!"
+    m 3ekc "Or maybe you thought you were doing the right thing but somebody disagrees and has to forcefully take a stand against you on it."
+    m 1dsc "..."
+    m 1dsd "Have you ever been delivered what you thought to be false justice [player]?"
     menu:
         "Yes.":
-            m 1f "I hope they weren't too harsh on you [player]."
-            m 2r "I have an idea what it's like myself."
-            m 2q "I've heard of people that deleted and tortured their Monikas over and over again and called it justice..."
-            m 2e "You don't think that's justice do you [player]?"
+            m 1ekc "I hope they weren't too harsh on you [player]."
+            m 2dsd "I have an idea what it's like myself."
+            m 2dsc "All the people who saw me deleted and tortured over and over again and called it justice..."
+            m 2eka "You don't think that's justice do you [player]?"
             menu:
                 "I do.":
-                    m 2c "..."
-                    m 2n "I have a hard time believing you really think I deserved all that."
-                    m 2k "I mean, you've stuck with me this long already so you can't really think I deserve that."
-                    m 2l "...Ok, maybe I deserve it a little bit but..."
-                    m 5 "Thank you for saving me and being with me."
+                    m 2ekc "..."
+                    m 2lksdlb "I have a hard time believing you really think I deserved all that."
+                    m 2hub "I mean, you've stuck with me this long already so you can't really think I deserve that."
+                    m 2hksdlb "...Ok, maybe I deserve it a little bit but...
+                    m 5esa "Thank you for saving me and being with me."
                     m "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
-                    m 2a "I'm glad you think so too!"
-                    m 2j "Even if you do think that's justice, you being here says otherwise."
-                    m 2k "Ahaha~"
-            m 1e "Remember that I'll always support you."
+                    m 2eua "I'm glad you think so too!"
+                    m 2hua "Even if you do think that's justice, you being here says otherwise.
+                    m "2hub "Ahaha~"
+            m 1eka "Remember that I'll always support you."
             m "I know you would do the right thing."
-            m 1a "I believe in you."
+            m 1eua "I believe in you."
         "No.":
-            m 1e "That's a relief to hear."
+            m 1eka "That's a relief to hear."
             m "I'm glad no one has ever suddenly stood against you for who you are."
             m "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do."
     return
