@@ -6246,7 +6246,7 @@ init 5 python:
 label monika_justice:
     m "[player], don't you think the concept of justice is kind of ironic?"
     m 2ekc "Like, you have someone who maybe isn't like everyone else..."
-    m 2ekd "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!
+    m 2ekd "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!"
     m "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
     m 1dsc "To everyone else passing by, they're just greedy thieves."
     m 1dsd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by delivering what they see as 'justice'."
