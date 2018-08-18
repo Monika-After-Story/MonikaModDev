@@ -17,6 +17,9 @@ init -1 python in mas_greetings:
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
 
+    ### NOTE: there can only be 1 event with this
+    TYPE_GO_SOMEWHERE = "go_somewhere"
+
     # custom greeting functions
     def selectGreeting(type=None):
         """
@@ -1720,3 +1723,23 @@ label greeting_ourreality:
     $ unlockEventLabel("mas_monika_islands")
     jump mas_monika_islands
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_returned_home",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_GO_SOMEWHERE],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_returned_home:
+    # player successfully returned monika back home
+    # this is completely assum
+    # TODO: actually this greeting may not be selectable, it may bef oreced
+    # and act as delgate to ensure that we add the correct thing to say
+    return
+

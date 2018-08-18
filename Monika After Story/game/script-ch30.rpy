@@ -585,6 +585,23 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
+    # check if we took monika out
+    if persistent._mas_moni_chksum is not None:
+        # we took monika out.
+        python:
+            found_moni = mas_docking_station.signForPackage(
+                "monika",
+                persistent._mas_moni_chksum,
+                bs=store.mas_dockstat.blocksize
+            )
+
+        if not found_moni:
+            # monika not here? we need an empty desk scene then
+            pass
+
+
+
+
     $ selected_greeting = None
 
     # TODO should the apology check be only for when she's not affectionate?

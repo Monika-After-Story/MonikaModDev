@@ -601,11 +601,29 @@ label bye_going_somewhere:
     m 1hua "Yay!"
     show monika 2dsc
 
-    show screen 
+    show screen mas_background_timed_jump(4.0, "bye_going_somewhere_rtg")
     menu:
         m "Give me a second to get ready."
         "Wait, wait!":
+            hide screen mas_background_timed_jump
 
-            
-    
+    # fall thru to the wait wait flow
+    m 1ekc "What is it ?"
+    menu:
+        "Actually, I can't take you right now.":
+            # TODO oh okay, tally this occurence and say something nice i think?
+            # be sad okay
+            # ask player if they are still going to leave
+            return "quit"
+
+        "Nothing.":
+            # TODO oh alirhgt, let me continue getting ready
+            pass
+
+label bye_going_somewhere_rtg:
+    hide screen mas_background_timed_jump
+    call mas_dockstat_ready_to_go
+
+    # TODO: see you soon i think
+   
     return "quit"
