@@ -6292,10 +6292,10 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poweroutage",category=['weather'],prompt="Power Outage",random=True))
 
 label monika_poweroutage:
-    m 3lskdla "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
+    m 3lksdla "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
     m "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
-    m 1lskdlc "Thunder and lightning could strike at any time, possibly hitting something damgerous."
-    m 1lskdlb "The effects can be pretty, well... shocking I guess you could say."
+    m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something damgerous."
+    m 1lksdlb "The effects can be pretty, well... shocking I guess you could say."
     m 1hksdlb "Eheh~"
     m 1ekd "I don't even want to think about what would happen if something important to you was struck."
     m 2ekc "What would happen to me if someting surged and fried your computer?"
