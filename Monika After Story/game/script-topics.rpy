@@ -6316,9 +6316,9 @@ label monika_driving:
                 "I've been in an accident before.":
                     m 2ekc "Oh..."
                     m 2lksdlc "Sorry to bring that up, [player]..." 
-                    m 2lskdld "I just..."
+                    m 2lksdld "I just..."
                     m 2ekc "I hope it wasn't too bad."
-                    m 2lskdlb "I mean, here you are with me so it must have been alright."
+                    m 2lksdlb "I mean, here you are with me so it must have been alright."
                     m 2dsc "..."
                     m 2eka "I'm... glad you survived, [player]..."
                     m "I don't know what I would do without you."
@@ -6353,8 +6353,8 @@ label monika_driving:
                     m 5eua "I just can't stop thinking about it now."
                 "I got into an accident once actually...":
                     m 1hksdlb "..."
-                    m 1lskdlb "........."
-                    m 2lskdld "Oh..."
+                    m 1lksdlb "........."
+                    m 2lksdld "Oh..."
                     m 2lksdlc "I'm... really sorry to hear that, [player]..."
                     m 2dsc "And while you were only trying to learn too..."
                     m 4ekd "Have you driven much since then, [player]?"
