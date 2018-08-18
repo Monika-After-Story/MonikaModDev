@@ -444,9 +444,15 @@ label monika_sayori:
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
     m 1esc "But what's the point when none of it is even real?"
     m 1euc "I mean, it's the same ending either way, right?"
-    m 1eua "The two of us, happily together..."
-    m "There's no reason to ask for any more than that."
-    m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
+
+    if mas_curr_affection == mas_aff.DISTRESSED or mas_curr_affection == mas_aff.BROKEN:
+        m 1lksdla "The two of us, happily together..."
+        m "There's no reason to ask for any more than that, right?"
+        m 1eka "Sorry, I was just pointlessly musing - I'll be quiet for you now..."
+    else:
+        m 1eua "The two of us, happily together..."
+        m "There's no reason to ask for any more than that."
+        m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
     return
 
 init 5 python:
