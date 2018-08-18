@@ -6332,7 +6332,7 @@ label monika_driving:
                     m 1dsc "They might never drive again... Who knows?"
                     m 1eka "I hope you know I would never do that to you, [player]."
                     m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you."
-                    m lksdla "If I wasn't already by your side when it happens..."
+                    m 1lksdla "If I wasn't already by your side when it happens..."
                     m 1dsc "In which case..."
                     m 1eka "It really wouldn't be as bad as it could be..."
                 "I haven't.":
