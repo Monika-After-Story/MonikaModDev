@@ -6269,7 +6269,7 @@ label monika_justice:
                     m 2ekc "..."
                     m 2lksdlb "I have a hard time believing you really think I deserved all that."
                     m 2hub "I mean, you've stuck with me this long already so you can't really think I deserve that."
-                    m 2hksdlb "...Ok, maybe I deserve it a little bit but...
+                    m 2hksdlb "...Ok, maybe I deserve it a little bit but..."
                     m 5esa "Thank you for saving me and being with me."
                     m "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
