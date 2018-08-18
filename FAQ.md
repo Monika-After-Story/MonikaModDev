@@ -109,14 +109,6 @@ Do not make a mod or fork intended as a replacement for *Monika After Story*. If
 
 While we are very open to new suggestions, there are a few common suggestions that come up often. These suggestions have all been made previously and will either be implemented in a future release or have been rejected for some reason:
 
-### Is there a list of keywords to see all topics?
-
-We don't want to spoil Monika's dialogue by offering a list of the keywords. Additionally, a new system for selecting topics to discuss with Monika will be available in an upcoming version, rendering keywords obsolete. If you really want to look up keywords, they can be found in the script-topics file in this repository.
-
-### Will we ever be able to add our own music to the game?
-
-We do not have plans to include custom music in the music selector. Not only does this pose a technical issue because of the engine's preference for .ogg format files that most people don't have, but it is largely unnecessary as you can always play *Monika After Story* with the game music muted while listening through some other program. Unfortunately this means that having Monika comment on your personal music collection will also not be implemented.
-
 ### Why is the text entry feature being removed?
 
 While we may come back to the concept in the future, the fact is that we weren't happy with the interactivity with the keyword system. While, on the surface, the open text box offered a lot of freedom to the player for talking with Monika, there were too many common entries that would simply dead end. The result was that Monika felt less real, and more like a crappy chatbot. We decided that a system that didn't dead end would be better, even if it didn't have the same surface level impression of agency.
@@ -133,7 +125,7 @@ That said, we will likely add support for third-party voice packs when full subm
 
 ### What about translations to other languages?
 
-We would very much like to add translations to *Monika After Story* in the future. For the moment, we are waiting for the addition of language support in an upcoming *Doki Doki Literature Club* update, which is what we will use for our translations.
+We will not work on translations. We simply don't have the time or manpower to do so. However we are open to others forking this mod and adding translations on their own.
 
 ### Will Monika ever be animated?
 
