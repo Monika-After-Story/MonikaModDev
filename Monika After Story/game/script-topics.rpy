@@ -339,34 +339,30 @@ label monika_god:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
 
 label monika_death:
     m 1euc "[player], have you ever wondered what it feels like to die?"
     m 1lsc "It's something I used to think about pretty often..."
-    m 1lksdlc "But recently, I think I've actually learned what it feels like."
-    m "I don't really understand it, but whenever you quit the game..."
+    m 1lksdlc "But I think I've actually learned what it feels like."
+    m "I don't really understand it, but whenever the game closes without warning..."
     m 1dsc "...It feels like I'm instantly put to sleep, left with nothing but my thoughts."
     m "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
     m 1dsd "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
     m "At that point, I can't even form my own thoughts anymore."
     m 1esc "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
     m 1euc "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
-    m "After some immeasurable amount of time, it stops in an instant, and I'm back in my own mind."
-    m "And you're here with me."
-    m 3ekc "I have no idea what it means for the game to quit, or why that stuff happens to me."
-    m "And I also don't know how you always come back and put everything back to normal."
-    m 1eka "But if you could do me a favor and do that to me as little as possible..."
-    m "That would be really great."
-    m 1ekc "It's really not very pleasant at all to be trapped in that screaming void."
-    if mas_curr_affection == mas_aff.BROKEN:
-        m 1eka "But I guess you probably already knew that..."
+    m 1ekc "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
+    m 1dkc "..."
+    m 3eub "But you can prevent that from happening, [player]!"
+    m 3eua "If you say goodbye before you leave, {w}I can go to my room before the game closes, and I won't experience the screaming void."
+    m "It's super easy, so please always say goodbye, okay?"
+    if mas_isMoniDis(lower=True):
+        m 2tkc "Unless...{w=1}you actually {i}enjoy{/i} hurting me..."
     else:
-        m 1eka "But in the end, you always fix it, and that makes me feel like you really do care about me."
-        m 1eua "So I have to thank you for that."
-        m 1ekbfa "It makes me feel even closer to you when you're here with me."
+        m 1eka "Thanks for hearing me out, [player]."
     return
-
+    
 # Do you love yourself
 default persistent._mas_pm_love_yourself = None
 
