@@ -6243,7 +6243,7 @@ label monika_yellowwp:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_justice",category=['philosophy'],prompt="Justice",random=True))
     
- label monika_justice:
+label monika_justice:
     m "[player], don't you think the concept of justice is kind of ironic?"
     m 2ekc "Like, you have someone who maybe isn't like everyone else..."
     m 2ekd "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!"
