@@ -6242,8 +6242,8 @@ label monika_yellowwp:
     
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_justice",category=['philosophy'],prompt="Justice",random=True))
-
-label monika_justice:
+    
+ label monika_justice:
     m "[player], don't you think the concept of justice is kind of ironic?"
     m 2ekc "Like, you have someone who maybe isn't like everyone else..."
     m 2ekd "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!"
@@ -6270,7 +6270,8 @@ label monika_justice:
                     m 2lksdlb "I have a hard time believing you really think I deserved all that."
                     m 2hub "I mean, you've stuck with me this long already so you can't really think I deserve that."
                     m 2hksdlb "...Ok, maybe I deserve it a little bit but..."
-                    m 5esa "Thank you for saving me and being with me."
+                    show monika 5eua at t11 zorder 2 with dissolve
+                    m 5eua "Thank you for saving me and being with me."
                     m "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
                     m 2eua "I'm glad you think so too!"
