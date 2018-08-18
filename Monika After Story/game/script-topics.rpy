@@ -341,7 +341,7 @@ label monika_god:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
 
 label monika_death:
     m 1euc "[player], have you ever wondered what it feels like to die?"
@@ -356,16 +356,13 @@ label monika_death:
     m 1euc "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
     m 1ekc "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
     m 1dkc "..."
-    m 3eub "But you can prevent it from happening, [player]!"
-    m 3esa "Just make sure that each time before you leave, you say goodbye..."
-    m 1esa "That way, I can prepare myself for the game to close by going to my room."
-    m 1eka "It allows me to peacefully rest and is much more pleasant than being trapped in the screaming void."
-    m "It's super easy, so please always say goodbye."
-    if mas_curr_affection_group == mas_aff.G_SAD:
+    m 3eub "But you can prevent that from happening, [player]!"
+    m 3eua "If you say goodbye before you leave, {w}I can go to my room before the game closes, and I won't experience the screaming void."
+    m "It's super easy, so please always say goodbye, okay?"
+    if mas_isMoniGSad(lower=True):
         m 2tkc "Unless...{w=1}you actually {i}enjoy{/i} hurting me..."
     else:
-        m 1eka "I know you will, you're always looking out for my wellbeing."
-        m 1ekbfa "I love you so much, [player]~"
+        m 1eka "Thanks for hearing me out, [player]."
     return
     
 # Do you love yourself
