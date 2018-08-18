@@ -6274,7 +6274,7 @@ label monika_justice:
                     m "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
                     m 2eua "I'm glad you think so too!"
-                    m 2hua "Even if you do think that's justice, you being here says otherwise.
+                    m 2hua "Even if you do think that's justice, you being here says otherwise."
                     m "2hub "Ahaha~"
             m 1eka "Remember that I'll always support you."
             m "I know you would do the right thing."
