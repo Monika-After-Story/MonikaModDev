@@ -4489,28 +4489,29 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_soda",category=['life','misc'],prompt="Drinking soda",random=True))
 
 label monika_soda:
-    m 2d "Do you drink soda, [player]?"
+    m 2euc "Do you drink soda, [player]?"
     menu:
         "Yes.":
-            m 4o "..."
-            m "You know they're really bad for you, right?"
-            m 2h "Soda has a lot of stuff that damages your body and overall health."
-            m "They can also corrode your teeth and give you cavities."
+            m 4ekc "You know they're really bad for you, right?"
+            m 2ekc "Soda has a lot of stuff that damages your body and overall health."
+            m 2tkd "They can also corrode your teeth and give you cavities."
             m "You might also think that diet soda is less damaging but they're also very harmful to you."
-            m 2p "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
-            m 2o "I wouldn't want you to become like Natsuki after all..."
-            m 2a "Why don't you try copying my healthy lifestyle?"
-            m 3j "That way you can be more fit like me!"
-            m 2k "Ahaha!"
-            m 2f "I'd really hate it if you let go of your health, [player]."
-            m "I want you to live as long as you can so there'll be a chance we can be together in your reality."
-            m 2j "So do me a favor and cut down on the soda, alright [player]?"
+            m 2lksdlc "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
+            m 2lksdla "I wouldn't want you to become like Natsuki after all..."
+            m 2eua "Why don't you try copying my healthy lifestyle?"
+            m 1hua "That way you can be more fit like me!"
+            m 1hub "Ahaha!"
+            m 2ekc "I'd really hate it if you let go of your health, [player]."
+            m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
+            m "So cut down on the soda, alright [player]?"
         "No.":
-            m 2e "That's a relief to hear."
+            m 2eka "That's a relief to hear."
             m "I'm glad that I don't have to worry about you harming yourself by drinking too much soda."
-            m 3b "Still, it's perfectly fine to have a small treat once in a while."
-            m 5 "Maybe someday we could both have a bit of soda together."
-            m 1n "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun."
+            m 3eub "Still, it's perfectly fine to have a small treat once in a while."
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "Maybe someday we could both have a bit of soda together."
+            show monika 1lskdlb at t11 zorder 2 with dissolve
+            m 1lskdlb "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun."
     return
 
 init 5 python:
