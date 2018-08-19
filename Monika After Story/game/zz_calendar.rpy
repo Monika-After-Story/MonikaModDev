@@ -1931,7 +1931,7 @@ init python:
         """RUNTIME ONLY
         Hides the calendar overlay
         """
-        renpy.hide_screen("calendar_overlay")
+        renpy.hide_screen("calendar_overlay", layer="master")
 
 
     def mas_calIsVisible_ovl():
