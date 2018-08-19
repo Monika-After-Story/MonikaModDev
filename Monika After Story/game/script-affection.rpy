@@ -346,8 +346,9 @@ init 15 python in mas_affection:
         if not store.seen_event("greeting_ourreality"):
             store.unlockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
 
-        # lock islands event
-        store.unlockEventLabel("mas_monika_islands")
+        # unlock islands event if seen already
+        if store.seen_event("mas_monika_islands"):
+            store.unlockEventLabel("mas_monika_islands")
 
         return
 
