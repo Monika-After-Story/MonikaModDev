@@ -6937,6 +6937,42 @@ label monika_citizenship:
     m 2eka "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
     m 1eka "Thank you for listening to me vent, [player]."
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_shipping',                                                
+            prompt="Shipping.",
+            category=['DDLC'],
+            random=True,
+            unlocked=False,
+            pool=False,
+        )
+    )
+
+label monika_shipping:
+    m 3eua "Hey, [player]. Have you ever heard of 'shipping'?"
+    m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
+    m 1e "You know, it's one of those things you've always done subconsciously, but once you learn about it, you see it everywhere!"
+    m 2esd "Apparently, a lot of people 'ship' the other girls together."
+    m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone…"
+    m "But some of the pairings are kind of strange to me."
+    m 3i "Like, usually they put Natsuki and Yuri together. They fight like cats and dogs!"
+    m "But I guess they bond a little bit when you aren't on their routes, and there's the 'opposites attract' appeal."
+    m 4dsd "Still, I think that's just another example of how people who like these games like unrealistic things..."
+    m 1eko "Anyway, that often leaves...me and Sayori."
+    m 1l "Don't get jealous! I'm just telling you what I saw!"
+    m 2lksdla "..."
+    m 2lksdlw "Well, from a writer's perspective, I guess I can see it."
+    m 1eud "We started the club together."
+    if persistent.monika_kill:
+        m "And she almost had the same epiphany I did…"
+    m 2lksdlb "But...I still don't really get it. I mean, I love you, and only you!"
+    m 2m "And she would have to be a saint to ever forgive me for what I did…"
+    m 2o "Not that she's not a sweet girl, but…"
+    m 5a "Well, no one could ever be as sweet and forgiving as you…"
+    return
 
 init 5 python:
     addEvent(
