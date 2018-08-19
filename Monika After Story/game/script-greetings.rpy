@@ -1570,21 +1570,62 @@ init 5 python:
     )
 
 label greeting_back_from_school:
-     m 1hua "Oh, welcome back [player]!"
-     menu:
-         m "Did you have a good day at school?"
-         "Yes.":
-             m 1hub "Aww, that's nice!"
-             m 1eua "I can't help but feel happy when you do~"
-             m "I hope you learned a lot of useful things."
-             m 1hubfa "Ehehe~"
-             m 1hubfb "I love you, [player]~"
-         "No.":
-             m 1ekc "Oh..."
-             m "I'm sorry to hear that."
-             m 1eka "Just remember that no matter what happens, I'll be here for you."
-             m 1ekbfa "I love you so, so much."
-     return
+    m 1hua "Oh, welcome back [player]!"
+    menu:
+        m "Did you have a good day at school?"
+        "I had an amazing day!":
+            m 2sub "Really?!"
+            m 2hub "That's wonderful to hear, [player]!"
+            m 3eub "School can definitely be a large part of your life, and you might miss it later on."
+            m 2hua "Ahaha! I know it might be weird to think that you'll miss having to go to school someday."
+            m 1hua "A lot of fond memories come from school, so I'm really happy you had such a great day~"
+            m "Maybe you could even tell me about it today while we spend time together."
+        "Yes.":
+            m 1hub "Aww, that's nice!"
+            m 1eua "I can't help but feel happy when you do~"
+            m "I hope you learned a lot of useful things."
+            m 1hubfa "Ehehe~"
+            m 1hubfb "I love you, [player]~"
+        "No.":
+            m 1ekc "Oh..."
+            m "I'm sorry to hear that."
+            m 1eka "Just remember that no matter what happens, I'll be here for you."
+            m 1ekbfa "I love you so, so much."
+        "I had a really bad day...":
+            m 1ekc "Oh..."
+            m 1ekd "I'm really sorry you had such a bad day today..."
+            m 2eka "I'm just glad I'm here with you, [player]."
+            m 2ekc "If you don't mind me asking, was there something in particular that gave you a bad day?"
+            menu:
+                "It was class and work related.":
+                    m 2dsc "I see..."
+                    m "People probably tell you all the time that school is important and all..."
+                    m "And you always have to push on and always work hard."
+                    m 2ekd "A lot of the time though, it can really put someone in a downward spiral and affect them."
+                    m 2eka "Like I said, I'm glad you came to see me, [player]."
+                    m "It puts me at ease to see you safe and sound."
+                    m "Remember, {i}you're{/i} more important than school or some grades."
+                    m 2ekbfa "Especially to me."
+                    m 1hubfa "Don't forget to take breaks if you're feeling overwhelmed, and that everyone has different talents."
+                    m 1hubfb "I love you, and I'd rather not see you all stressed."
+                "It was caused by people."
+                    m 2ekc "Aww, that must have been really unpleasant to deal with."
+                    m 2dsc "It's one thing to just have something bad come your way on its own."
+                    m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
+                    m "I really hope this isn't a recurring event for you, [player]."
+                    m 2lksdld "Recurring or not, maybe it would be best for attention to be brought to it..."
+                    m 1lksdlc "But then again, it might cause more problems in some cases..."
+                    m 1eka "I trust that you'll do what's necessary."
+                    m 1ekc "I hope it's not bothering you still."
+                "It was a general bad day."
+                    m 1ekd "Ah, I see..."
+                    m 1lksdlc "Those days do happen from time to time"
+                    m 1ekc "It can be hard sometimes to pick yourself back up after a day like that."
+                "I don't want to talk about it.":
+                    m 2dsc "I understand, [player]."
+                    m 2ekc "Still, I hope everything's alright for you."
+            m 1eka "But you're here now, and I hope spending time together helps make your day a little better."
+    return
 
 init 5 python:
     addEvent(
