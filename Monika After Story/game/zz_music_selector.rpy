@@ -3,9 +3,9 @@
 #
 # NOTE: We added support for custom music.
 # To add custom music to your game:
-# 1. Ensure that the custom music is of "ogg" file format (with the extension)
+# 1. Ensure that the custom music is of OGG/VORBIS / MP3 / OPUS format.
 # 2. Add a directory "custom_bgm" in your DDLC/ directory.
-# 3. Drop your oggs into that directory.
+# 3. Drop your music into that directory.
 # 4. Start the game
 
 # music inits first, so the screen can be made well
@@ -154,6 +154,7 @@ init -1 python in songs:
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
+            
 
         # sayori only allows this
         music_choices.append((SAYO_NARA, FP_SAYO_NARA))
@@ -330,10 +331,10 @@ init -1 python in songs:
             return ""
 
         if _ext == EXT_OGG:
-            return _getOggLoop(_audio_file)
+            return _getOggLoop(_audio_file, _ext)
 
         elif _ext == EXT_OPUS:
-            return _getOggLoop(_audio_file)
+            return _getOggLoop(_audio_file, _ext)
 
         return ""
 
@@ -414,23 +415,50 @@ init -1 python in songs:
         return sel_name
 
 
-    def _getOggLoop(_audio_file):
+    def _getOggLoop(_audio_file, _ext):
         """
         Attempts to retreive loop data from Ogg tags
 
         IN:
             _audio_file - audio object
+            _ext - extension of the audio file
 
         RETURNS:
             the loop string we should use, or "" if no loop
         """
+        # first, try MAS tags
         loopstart = _audio_file.tags.get(MT_LSTART, [])
         loopend = _audio_file.tags.get(MT_LEND, [])
 
-        # pre-check that we even have values
-        if not loopstart and not loopend:
+        if loopstart or loopend:
+            return _getOggLoopMAS(loopstart, loopend, _audio_file)
+
+        # if not found, double check that we are ogg before continuing
+        if _ext != EXT_OGG:
             return ""
 
+        # if ogg, we can try the RPGMaker sample tags
+        loopstart = _audio_file.tags.get(MT_LSSTART, [])
+        looplen = _audio_file.tags.get(MT_LSEND, [])
+
+        if loopstart:
+            return _getOggLoopRPG(loopstart, looplen, _audio_file)
+
+        return ""
+
+
+    def _getOggLoopMAS(loopstart, loopend, _audio_file):
+        """
+        Attempts to retrieve MAS-based loop data from Ogg tags
+
+        IN:
+            loopstart - list of loopstart tags
+            loopend - list of loopend tags
+            _audio_file - audio object
+
+        RETURNS:
+            the loop string we should use or "" if no loop
+        """
         # now try to float these values
         try:
             if loopstart:
@@ -455,7 +483,7 @@ init -1 python in songs:
             loopstart = 0
 
         if loopend is not None and loopend > _audio_file.info.length:
-            loopend = _audio_file.info.length
+            loopend = None
 
         # NOTE: we shoudl for sure have at least one of these tags by now
         # now we can build the tag
@@ -464,6 +492,71 @@ init -1 python in songs:
         if loopstart is not None: 
             _tag_elems.append(RPY_FROM)
             _tag_elems.append(str(loopstart))
+
+        if loopend is not None:
+            _tag_elems.append(RPY_TO)
+            _tag_elems.append(str(loopend))
+
+        _tag_elems.append(RPY_END)
+
+        return " ".join(_tag_elems)
+
+
+    def _getOggLoopRPG(loopstart, looplen, _audio_file):
+        """
+        Attempts to retrieve RPGMaker-based loop data form Ogg tags
+
+        NOTE: unlike the MAS tags, loopstart is REQUIRED
+
+        IN:
+            loopstart - list of loopstart tags
+            looplen - list of loop length tags
+            _audio_file - audio object
+
+        RETURNS:
+            the loop string we should use or "" if no loop
+        """
+        # int these values
+        try:
+            loopstart = int(loopstart[0])
+
+            if looplen:
+                looplen = int(looplen[0])
+
+            else:
+                looplen = None
+
+        except:
+            # error in parsing tags.
+            return ""
+
+        # now we have ints
+        # convert these into seconds
+        _sample_rate = float(_audio_file.info.sample_rate)
+        loopstart = loopstart / _sample_rate
+
+        if looplen is not None:
+            looplen = looplen / _sample_rate
+
+        # validations
+        if loopstart < 0:
+            loopstart = 0
+
+        loopend = None
+        if looplen is not None:
+
+            # calculate endpoint
+            loopend = loopstart + looplen
+
+            if loopend > _audio_file.info.length:
+                loopend = None
+
+        # now we can bulid the tag
+        _tag_elems = [
+            RPY_START,
+            RPY_FROM,
+            str(loopstart)
+        ]
 
         if loopend is not None:
             _tag_elems.append(RPY_TO)
@@ -552,7 +645,11 @@ init -1 python in songs:
     current_track = "bgm/m1.ogg"
     selected_track = current_track
     menu_open = False
+
+    # enables / disables the music menu
+    # NOTE: not really used
     enabled = True
+
     vol_bump = 0.1 # how much to increase volume by
 
     # contains the song list
@@ -581,10 +678,17 @@ init -1 python in songs:
 
     # NOTE: we default looping, so think of this as loop start and loop end
     # seconds to start playback
-    MT_LSTART = "loopstart"
+    MT_LSTART = "masloopstart"
 
     # seconds to end playback
-    MT_LEND = "loopend"
+    MT_LEND = "masloopend"
+
+    # for RPGMaker support
+    # samples to start playback
+    MT_LSSTART = "loopstart"
+
+    # length of loop
+    MT_LSEND = "looplength"
 
     # renpy audio tags
     RPY_START = "<"
@@ -705,9 +809,16 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     $ import store.songs as songs
 
+    # logic to ensure Return works
+    if songs.current_track is None:
+        $ return_value = songs.NO_SONG
+    else:
+        $ return_value = songs.current_track
+
+
     # allows the music menu to quit using hotkey
-    key "noshift_M" action Return()
-    key "noshift_m" action Return()
+    key "noshift_M" action Return(return_value)
+    key "noshift_m" action Return(return_value)
 
     zorder 200
 
@@ -771,12 +882,6 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             style "music_menu_return_button"
             action Return(songs.NO_SONG)
 
-        # logic to ensure Return works
-        if songs.current_track is None:
-            $ return_value = songs.NO_SONG
-        else:
-            $ return_value = songs.current_track
-
         textbutton _("Return"):
             style "music_menu_return_button"
             action Return(return_value)
@@ -789,8 +894,6 @@ label display_music_menu:
     python:
         import store.songs as songs
         songs.menu_open = True
-        prev_dialogue = allow_dialogue
-        allow_dialogue = False
         song_selected = False
         curr_page = 0
 
@@ -814,5 +917,110 @@ label display_music_menu:
         $ song_selected = _return not in songs.music_pages
 
     $ songs.menu_open = False
-    $ allow_dialogue = prev_dialogue
     return _return
+
+
+init python:
+    import store.songs as songs
+    # important song-related things that need to be global
+
+
+    def dec_musicvol():
+        #
+        # decreases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        # ASSUMES:
+        #   persistent.playername
+
+        # sayori cannot make the volume quieter
+        if persistent.playername.lower() != "sayori":
+            songs.adjustVolume(up=False)
+
+
+    def inc_musicvol():
+        #
+        # increases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        songs.adjustVolume()
+
+
+    def mute_music(mute_enabled=True):
+        """
+        Mutes and unmutes the music channel
+
+        IN:
+            mute_enabled - True means we are allowed to mute.
+                False means we are not
+        """
+        curr_volume = songs.getVolume("music")
+        # sayori cannot mute
+        if (
+                curr_volume > 0.0 
+                and persistent.playername.lower() != "sayori"
+                and mute_enabled
+            ):
+            songs.music_volume = curr_volume
+            renpy.music.set_volume(0.0, channel="music")
+        else:
+            renpy.music.set_volume(songs.music_volume, channel="music")
+
+
+    def play_song(song, fadein=0.0):
+        #
+        # literally just plays a song onto the music channel
+        #
+        # IN:
+        #   song - song to play. If None, the channel is stopped
+        #   fadein - number of seconds to fade in the song
+        if song is None:
+            renpy.music.stop(channel="music")
+        else:
+            renpy.music.play(
+                song,
+                channel="music",
+                loop=True,
+                synchro_start=True,
+                fadein=fadein
+            )
+
+
+    def mas_startup_song():
+        """
+        Starts playing either the persistent track
+
+        Meant for usage in startup processes.
+        """
+        if persistent.current_track is not None:
+            play_song(persistent.current_track)
+
+
+    def select_music():
+        # check for open menu
+        if songs.enabled and not songs.menu_open:
+
+            # disable unwanted interactions
+            mas_RaiseShield_mumu()
+
+            # music menu label
+            selected_track = renpy.call_in_new_context("display_music_menu")
+            if selected_track == songs.NO_SONG:
+                selected_track = songs.FP_NO_SONG
+
+            # workaround to handle new context
+            if selected_track != songs.current_track:
+                play_song(selected_track)
+                songs.current_track = selected_track
+                persistent.current_track = selected_track
+
+            # unwanted interactions are no longer unwanted
+            if store.mas_globals.dlg_workflow:
+                # the dialogue workflow means we should only enable
+                # music menu interactions
+                mas_MUMUDropShield()
+
+            else:
+                # otherwise we can enable interactions normally
+                mas_DropShield_mumu()
+
