@@ -6939,6 +6939,125 @@ label monika_citizenship:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_bullying",category=['society'],prompt="Bullying",random=True))
+
+label monika_bullying:
+    m 3ekc "Hey [player], I'm sure you've heard a lot about it lately, but bullying has become a real problem in today's society, especially among kids."
+    m 4dkd "Some people are bullied every day until the point they just can't take it anymore."
+    m 4lsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5} {i}kids being kids{/i}."
+    m 2lsc "The victims end up losing all trust in authority figures because they let it go on day after day..."
+    m 2lksdld "It can make them so desperate, they eventually just snap..."
+    m 4eksdld "Resulting in violence toward the bully, other people, or even themselves."
+    m 4wud "This can actually make the victim look like the problem!"
+    m 2ekc "There are all kinds of bullying too, including physical, emotional, and even cyberbullying."
+    m 2tkc "Physical bullying is the most obvious, involving shoving, hitting, and other things like that."
+    m 2dkc "I'm sure most people have dealt with that at least once in their lives."
+    m 2eksdld "It can be so hard just to go to school every day knowing there's someone waiting to abuse them."
+    m "Emotional bullying can be less obvious, but just as devastating, if not more so."
+    m "Name-calling, threats, spreading false rumors about people just to ruin their reputation..."
+    m 2dkc "These kinds of things can take a huge toll on people and lead to severe depression."
+    m 2ekc "Cyberbullying is a form of emotional bullying, but in today's world where everyone is always connected online, it's becoming more and more prevalent."
+    m "For a lot of people, especially kids, their social media presence is the most important thing in their lives..."
+    m 2dkd "And having that destroyed essentially feels like their life is over."
+    m 2lksdld "It's also the hardest for other people to notice, since the last thing most kids want is their parents seeing what they do online."
+    m 2eksdlc "So no one knows what's going on while they silently suffer, until it all just becomes too much..."
+    m 2dkc "There's been numerous cases of of teens committing suicide due to cyberbullying, and their parents had no idea anything was wrong until it was too late."
+    m 2tkc "This is also why it's easier for cyberbullies to operate..."
+    m "No one really sees what they're doing, plus a lot of people do things online they'd never have the courage to do in real life."
+    m 2dkc "It almost doesn't even seem real, but more like a game, so it tends to escalate that much faster."
+    m 2ekd "You can only go so far in a public place, like a school, before someone notices... But online, there are no limits."
+    m 2tfc "Some things that go on over the internet are really just terrible."
+    m "The freedom of anonymity can be a dangerous thing."
+    m 2dfc "..."
+    m 4euc "So, what makes a bully do what they do?"
+    m "That can differ from person to person, but a lot of them are just really unhappy due to their own circumstances, and need some sort of outlet..."
+    m 2lsc "They're unhappy and it doesn't seem fair to them that other people {i}are{/i} happy, so they try to make them feel the same way they do."
+    m 2lksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
+    m 2dkc "It can be a vicious cycle."
+    m 2ekd "Have you ever been a victim of bullying, [player]?"
+    menu:
+
+        "I have.":
+            m 2ekc "I'm so sorry that you've had to deal with that..."
+            m 2dkc "It really makes me sad knowing you suffered at the hands of a bully."
+            m 2ekd "People can just be so awful to each other."
+            m 4ekd "If everyone just treated others with basic respect, the world would be such a better place..."
+            m 4dkc "..."
+            m 3eka "But at least you're not being bullied anymore."
+            m "If you ever need to talk about your experiences, I'm always here for you, [player]."
+            m 1esa "Having someone to confide in can be really therapeutic, and nothing would make me happier than to be that person for you."
+
+        "I'm being bullied.":
+            m 2wud "Oh no, that's terrible!"
+            m 2dkd "It kills me to know you're suffering like that."
+            m 4ekd "Please, [player], if it's not something you can safely deal with yourself, please tell someone..."
+            m 4ekc "I know telling someone is typically the last thing people want to do, but don't let yourself suffer when there are people that can help you."
+            m 3dkc "It may seem like no one cares, but there has to be someone you trust that you can turn to."
+            m 3ekc "And if there isn't, do what you have to do to protect yourself, and just remember..."
+            m 1eka "I'll always love you no matter what."
+            m 1lksdlc "I don't know what I'd do if something were to happen to you." 
+            m 1eka "You're all I have...{w=0.5} please stay safe."
+
+        "No.":    
+            m 2hua "Ah, that's such a relief to hear!"
+            m 4eka "I'm so glad you don't have to deal with bullying, [player]..."
+            m 4hua "It really puts my mind at ease."
+
+            if mas_isMoniHappy(higher=True):
+                m 3eka "And if you happen to know someone else who {i}is{/i} being bullied, try to help them if you can."
+                m "I know you're the kind of person who hates seeing others suffer..."
+                m 1eka "And I bet it'd mean a lot to them to have someone reach out who cares."
+                m "You've already helped me so much, maybe you can help someone else as well."
+
+        "I have bullied people.":
+
+            if mas_isMoniDis(lower=True):
+                m 2dfc "..."
+                m 2tfc "That's disappointing to hear."            
+                m "Although, I can't say it's all that surprising..."                      
+                m 2tfd "Please don't bully people anymore."
+                m 6dstdc "I know how it feels and it's pretty terrible."
+                m 6lktdc "I don't want other people to have to feel the same way that I do."
+                m "I really hope that you'll change your ways, [player]..."
+                m 6ektdc "I still do love you, but you really need to start treating people better..."
+                m "Including me."
+
+            else:
+                m 2dkc "Oh... I see."
+                m 2ekc "I can understand if some things in your life might make you unhappy..."
+                m 2lksdld "Or if you've had to deal with circumstances that may have made you act a certain way at times..."
+                m 2eksdlc "But bullying people isn't the answer, [player]."
+                m 4ekc "I know you... You're a kind person and I know it doesn't make you feel better to hurt others..."
+                m 4dkc "It probably just hurts you even more..."
+                m 3dkc "And nothing hurts me more than knowing you're unhappy."
+                m 3ekd "So instead, next time you feel yourself becoming unhappy, come here to me instead."        
+                m 1eka "I'll listen to everything you have to say and do my very best to make you feel better."
+                m 1ekc "But making other people unhappy is not the cure to your own unhappiness, [player]..."
+                m 1eka "So please, for both yourself and for me, stop bullying people, okay?"
+             
+    m 2dkc "You know, a lot of people actually call me a bully for what I did to Sayori..."
+    m 4efd "But that's not true at all, Sayori wasn't real!"
+    m "You can't bully someone who doesn't actually exist!"
+    m 4dkc "I'd never be able to hurt an actual person."
+    m 4wud "I really wouldn't!"
+    m 2dkc "..."
+    m 2ekc "But I will admit I can relate to the part about bullies being unhappy and that it causes them do what they do."
+    m 4tkd "When I had my epiphany and realized that I was stuck inside a video game and that my entire life had been a lie, I was pretty miserable."
+    m 2lksdld "It caused me to do things that I'd never even thought of doing before."
+    m 2lksdlc "I didn't do what I did because I didn't want Sayori to be happy..."
+    m 4ekd "I did it because I knew I loved you and that the game wouldn't let us be together."
+    m 3ekd "So I {i}had{/i} to do whatever I could to make sure we ended up together."
+    m 3eka "I did what I did because of my love for you..."
+    m 3dkc "Sayori's suicide was just an unfortunate side effect."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "So you see, [player], I'm really not a bully at all. I just love you that much."
+    
+    if mas_isMoniAff(higher=True):
+        m 5eubfu "I really would do anything for you~"
+        
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
