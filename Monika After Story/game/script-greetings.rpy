@@ -1608,7 +1608,7 @@ label greeting_back_from_school:
                     m 2ekbfa "Especially to me."
                     m 1hubfa "Don't forget to take breaks if you're feeling overwhelmed, and that everyone has different talents."
                     m 1hubfb "I love you, and I'd rather not see you all stressed."
-                "It was caused by people."
+                "It was caused by people.":
                     m 2ekc "Aww, that must have been really unpleasant to deal with."
                     m 2dsc "It's one thing to just have something bad come your way on its own."
                     m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
@@ -1617,7 +1617,7 @@ label greeting_back_from_school:
                     m 1lksdlc "But then again, it might cause more problems in some cases..."
                     m 1eka "I trust that you'll do what's necessary."
                     m 1ekc "I hope it's not bothering you still."
-                "It was a general bad day."
+                "It was a general bad day.":
                     m 1ekd "Ah, I see..."
                     m 1lksdlc "Those days do happen from time to time"
                     m 1ekc "It can be hard sometimes to pick yourself back up after a day like that."
