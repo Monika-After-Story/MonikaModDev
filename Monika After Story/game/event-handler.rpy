@@ -122,9 +122,101 @@ init 991 python:
         else:
             return ev.label
 
+python early:
+    # FLOW CHECK CONSTANTS
+    # these define where in game flow should a delayed action be checked
+    # these are bit based so you can define multiple using bitwise operations
+
+    # checked during init process
+    MAS_FC_INIT = 1
+
+    # checked during runtime start
+    MAS_FC_START = 2
+
+    # checked at end of game
+    MAS_FC_END = 4
+
+    # checked during idle, roughly every minute
+    MAS_FC_IDLE_ROUTINE = 8
+
+    # checked during idle, only once per session
+    MAS_FC_IDLE_ONCE = 16
+
+
+init -600 python:
+    # THE DELAYED ACTION MAP
+    # this is the one we actually use when running stuff
+    # please note that this is internal use only.
+    # right below this is the class definition that should be used for general
+    # purpose
+    if persistent._mas_delayed_action_map is None:
+        persistent._mas_delayed_action_map = dict()
+
+    class MASDelayedAction(object):
+        """
+        A Delayed action consists of the following:
+
+        All exceptions are logged
+        
+        ev_label - label this delayed action is associated to
+            NOTE: this is not checked for existence.
+        conditional - the logical conditional we want to check before performing
+            action
+            NOTE: this is not checked for correctness
+        action - EV_ACTION constant this delayed action will perform
+            NOTE: this is not checked for existence
+        flowcheck - FC constant saying when this delayed action should be
+            checked
+            NOTE: this is not checked for existence
+        been_checked - True if this action has been checked this game session
+        """
+        import store.mas_utils as m_util
+
+        ERR_COND = "[ERROR] delayed action has bad conditional '{1}' | {2}\n"
+
+        def __init__(self, ev_label, conditional, action, flowcheck):
+            """
+            Constructor
+
+            NOTE: MAY raise exceptions
+            NOTE: also logs exceptions.
+
+            IN:
+                ev_label - eventlabel to associated this delayed action to
+                conditional - conditional to check to do this action
+                action - EV_ACTION constant for this delayed action
+                flowcheck - FC constant saying when this delaeyd action should
+                    be checked
+            """
+            try:
+                eval(conditional)
+            except Exception as e:
+                self.m_util.writelog(self.ERR_COND.format(
+                    conditional,
+                    str(e)
+                ))
+                raise e
+
+            self.ev_label = ev_label
+            self.conditional = conditional
+            self.action = action
+            self.flowcheck = flowcheck
+            self.been_checked = False
+
+
+        def __call__(self):
+            """
+            Checks if the conditional passes then performs the action
+            """
+            # TODO: need to decide if flowcheck is handled here or out of here
+            #   is call designed for purely conditoinal check and action or
+            #   should flowcheck or been_checked be checked as well
+
+
 
 # special store to contain scrollable menu constants
 init -1 python in evhand:
+    import store
 
     # this is the event database
     event_database = dict()
@@ -179,6 +271,16 @@ init -1 python in evhand:
         "mas_crashed_start",
         "monika_affection_nickname"
     ]
+
+    #### delayed action maps
+    # how this works:
+    #   add a label that should have a delayed action as keys
+    #   values should consist of tuple:
+    #       [0] -> conditional as string for this action to pass
+    #       [1] -> action constant for what should be done (EV_ACTION)
+    DELAYED_ACTION_MAP = {
+        
+    }
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -776,6 +878,80 @@ init python:
 
         # otherwise we didnt unlock anything because nothing available
         return False
+
+
+init 1 python in evhand:
+    # mainly to contain action-based functions and fill an appropriate action
+    # map
+    # all action-based functions are designed for speed, so they don't 
+    # do any sort of sanity checks
+    # NOTE: do NOT use these in dialogue code. These are designed for
+    #   internal use only
+    import store
+    import datetime
+
+    def actionPush(ev, **kwargs):
+        """
+        Runs Push Event action for the given event
+
+        IN:
+            ev - event to push to event stack
+        """
+        store.pushEvent(ev.eventlabel)
+
+
+    def actionQueue(ev, **kwargs):
+        """
+        Runs Queue event action for the given event
+
+        IN:
+            ev - event to queue to event stack
+        """
+        store.queueEvent(ev.eventlabel)
+
+
+    def actionUnlock(ev, unlock_time, **kwargs):
+        """
+        Unlocks an event. Also setse the unlock_date to the given
+            unlock time
+
+        IN:
+            ev - event to unlock
+            unlock_time - time to set unlock_date to
+        """
+        ev.unlocked = True
+        ev.unlock_date = unlock_time
+
+
+    def actionRandom(ev, **kwargs):
+        """
+        Randos an event.
+
+        IN:
+            ev - event to random
+        """
+        ev.random = True
+
+
+    def actionPool(ev, **kwargs):
+        """
+        Pools an event.
+
+        IN:
+            ev - event to pool
+        """
+        ev.pool = True
+
+
+    # now to setup the action map
+    store.Event.ACTION_MAP = {
+        store.EV_ACT_UNLOCK: actionUnlock,
+        store.EV_ACT_QUEUE: actionQueue,
+        store.EV_ACT_PUSH: actionPush,
+        store.EV_ACT_RANDOM: actionRandom,
+        store.EV_ACT_POOL: actionPool
+    }
+
 
 # This calls the next event in the list. It returns the name of the
 # event called or None if the list is empty or the label is invalid
