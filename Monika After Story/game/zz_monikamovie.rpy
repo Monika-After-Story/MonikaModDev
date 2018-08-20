@@ -52,7 +52,7 @@ label mas_monikamovie:
             def __init__(self, movieName):
                 self.descriptionList = []
                 self.reactionList = []
-                self.closureList = []
+                self.closure = None
                 self.currentReactionIndex = 0 #So monika can react again if user goes backwards
                 self.retrieveMovie(movieName)
 
@@ -115,17 +115,6 @@ label mas_monikamovie:
             def hasDescription(self):
                 return len(self.descriptionList) > 0
 
-            def popClosure(self):
-                string = self.closureList.pop(0)
-                stringArray = string.split(" ", 1)
-                emotion = stringArray[0]
-                line = stringArray[1]
-
-                return emotion, line
-
-            def hasClosure(self):
-                return len(self.closureList) > 0
-
             def formatData(self, data):
                 return data.replace('"','')
 
@@ -153,7 +142,7 @@ label mas_monikamovie:
                         if "m" == firstWord:
                             self.reactionList.append(data)
                         if "closure" == firstWord:
-                            self.closureList.append(data)
+                            self.closure = data
 
             def resynchronizeIndex(self, timer):
                 self.currentReactionIndex = 0
@@ -251,12 +240,11 @@ label mas_monikamovie:
             "Ready?"
             "Yes":
                 label mm_movie_resume:
-                # TODO: update this
-#                    $ allow_dialogue = False
+                    $ mas_RaiseShield_dlg()
                     m 1eua "Three...{w=1}{nw}"
                     m  "Two...{w=1}{nw}"
                     m  "One...{w=1}{nw}"
-                    #Movie loop
+                    # Movie loop
                     $ watchingMovie = True
                     label movie_loop:
                         pause 1.0
@@ -286,17 +274,14 @@ label mas_monikamovie:
         label mm_movie_closure:
             #Starts closure Block
             python:
-                while(movieInformation.hasClosure()):
-                    emotion, what =  movieInformation.popClosure()
-                    updateEmotionMonika(emotion)
-                    renpy.say(eval("m"), what)
+                if movieInformation.closure:
+                    pushEvent(movieInformation.closure)
 
 
 
     label mm_movie_loop_end:
         hide countdown
-        # TODO update this
-#        $ allow_dialogue = True
+        $ mas_DropShield_dlg()
         $ watchingMovie = False
         $ timer.seconds = 0
         $ MovieOverlayHideButtons()

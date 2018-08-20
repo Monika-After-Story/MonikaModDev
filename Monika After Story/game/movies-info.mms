@@ -29,12 +29,12 @@
 ## m 4f [01:12:05] ""
 
 ## [CLOSURE]
-## if "closure" is the first word, the line will be used for Monika's closure lines
-## of the film
-## The line MUST contain an image for her to display
+## if "closure" is the first word, the line will be used for Monika's closure
+## after the word closure add the event label which we'll push once the movie
+## ends
 
 ## example:
-## closure 1g Wow, talk about a blast from the past, [player]
+## closure monika_difficulty
 
 movie Doki Doki Trailer
 description 3b "So the trailer for the game, huh?"
@@ -42,4 +42,5 @@ description 1j "Let's watch it together, then [player]!"
 m 1lksdla [00:00:04] "I wonder why they'd put a warning there."
 m 1hub [00:00:20] "Ahaha, I remember those poems you tried to make."
 m 1dsd [00:00:35] "If only they just introduced me instead of including the others..."
-closure 1g Wow, talk about a blast from the past, [player]
+# TODO replace with an actual label for it
+closure monika_difficulty
