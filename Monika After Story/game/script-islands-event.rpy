@@ -3,18 +3,30 @@
 # it basically shows a new screen over everything, and has an image map
 # Monika reacts to he place the player clicks
 
+### initialize the island images
+init -10 python:
+    ## NOTE: we assume 2 things:
+    #   - we have write access to teh mod_assets folder
+    #   - the existing pngs dont exist yet
+    #
+    #   if for some reason we fail to convert the files into images
+    #   then we must backout of showing the event.
+
+
+
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_monika_islands",
-            category=['monika','misc'],
-            prompt="Can you show me the floating islands?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
+    if not mas_cannot_decode_islands:
+        addEvent(
+            Event(
+                persistent.event_database,
+                eventlabel="mas_monika_islands",
+                category=['monika','misc'],
+                prompt="Can you show me the floating islands?",
+                pool=True,
+                unlocked=False,
+                rules={"no unlock": None}
+            )
         )
-    )
 
 label mas_monika_islands:
     m 1eub "I'll let you admire the scenery for now."

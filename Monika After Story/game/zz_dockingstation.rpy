@@ -9,6 +9,52 @@
 #       encode files into sized chunks that will work nicely with file io
 #   - unpacked files are raw files, not encoded
 
+
+init -900 python in mas_ics:
+    import os
+    # Image CheckSums
+
+    ########################## ISLANDS ########################################
+    # islands folder
+    islands_folder = os.path.normcase(
+        renpy.config.basedir + "/game/mod_assets/location/special/"
+    )
+
+    # Night With Frame
+    islands_nwf = (
+        "0ea361ef4c501c15a23eb36b1c47bf1a8eac1b4c2a1bc214e30db9e4f154dbdc"
+    )
+
+    # night without frame
+    islands_nwof = (
+        "fff96da27e029d5bab839bde8b2a00f8d484ad81880522b0e828c8a2cd0a7c97"
+    )
+
+    # day with frame
+    islands_dwf = (
+        "791f379866edf72dc6fd72ae8d7b26af43dd8278b725a0bf2aeb5c72ba04a672"
+    )
+
+    # day withotu frame
+    islands_dwof = (
+        "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
+    )
+
+    # islands dict to map filenames to checksums and real filenames
+    # key: filename of b64 encode
+    # value: tuple:
+    #   [0] - filename to save the image as
+    #   [1] - checksum for that image
+    islands_map = {
+        "nwf": ("night_with_frame.png", islands_nwf),
+        "nwof": ("night_without_frame.png", islands_nwof),
+        "dwf": ("day_with_frame.png", islands_dwf),
+        "dwof": ("day_without_frame.png", islands_dwof)
+    }
+        
+    ###########################################################################
+
+
 init -45 python:
     import os # this thing is super crucial everywhere so we should just
         # keep it open
@@ -546,7 +592,7 @@ init -45 python:
                 return None
 
             if bs is None:
-                bs = self.B64.READ_SIZE
+                bs = self.B64_READ_SIZE
 
             _box = MASDockingStation._blockiter(box, bs)
 
@@ -655,6 +701,7 @@ init python in mas_dockstat:
 
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
+    b64_blocksize = 5592408 # (above size converted to base64)
 
     def setMoniSize(tdelta):
         """
