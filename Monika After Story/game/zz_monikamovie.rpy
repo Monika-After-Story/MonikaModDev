@@ -211,7 +211,7 @@ label mas_monikamovie:
 
     $ listMovies = AvaiableMovies()
 
-    m 1b "You want to see a movie?"
+    m 1eub "You want to see a movie?"
 
     label mm_choose_movie:
 
@@ -244,8 +244,8 @@ label mas_monikamovie:
                 emotion, what =  movieInformation.popDescription()
                 updateEmotionMonika(emotion)
                 renpy.say(eval("m"), what)
-        m 3b "Let's synchronize the start of the film."
-        m 1k "Get ready to start the film, I'll do the countdown!"
+        m 3eub "Let's synchronize the start of the film."
+        m 1hub "Get ready to start the film, I'll do the countdown!"
 
         menu:
             "Ready?"
@@ -253,7 +253,7 @@ label mas_monikamovie:
                 label mm_movie_resume:
                 # TODO: update this
 #                    $ allow_dialogue = False
-                    m 1a "Three...{w=1}{nw}"
+                    m 1eua "Three...{w=1}{nw}"
                     m  "Two...{w=1}{nw}"
                     m  "One...{w=1}{nw}"
                     #Movie loop
@@ -272,7 +272,7 @@ label mas_monikamovie:
                         if movieInformation.reactionsAreFinished():
                             hide countdown
                             $ MovieOverlayHideButtons()
-                            m 1a "Just ended for me! Did you like it?"
+                            m 1eua "Just ended for me! Did you like it?"
                             jump mm_movie_closure
 
                         jump movie_loop
@@ -280,7 +280,7 @@ label mas_monikamovie:
             "No":
                 hide countdown # Dupicated code, call function?
                 $ MovieOverlayHideButtons()
-                m 1a "Oh, okay! I will just wait for you then~"
+                m 1eua "Oh, okay! I will just wait for you then~"
                 jump mm_movie_loop_end
 
         label mm_movie_closure:
@@ -306,21 +306,21 @@ label mas_monikamovie:
 
     label mm_movie_pausefilm:
         $ watchingMovie = False
-        m 1b "Oh, you just paused the movie, [player]."
+        m 1eub "Oh, you just paused the movie, [player]."
         menu:
             "Do want to continue?"
             "Yes":
-                m 1j "Okay, [player]."
+                m 1hua "Okay, [player]."
                 jump mm_movie_resume
             "No":
-                m 1a "Oh, alright then, [player]."
+                m 1eua "Oh, alright then, [player]."
                 jump mm_movie_loop_end
 
     label mm_movie_settime:
         $ watchingMovie = False
-        m 1b "You want to synchronize the time?"
+        m 1eub "You want to synchronize the time?"
         label mm_movie_repeattime:
-            m 1b "Tell me in the format HH:MM:SS, [player]."
+            m 1eub "Tell me in the format HH:MM:SS, [player]."
             python:
                 player_dialogue = renpy.input('What time should I set the movie to? ',default='',pixel_width=720,length=50)
                 splittedTime = player_dialogue.split(":",2)
@@ -333,17 +333,17 @@ label mas_monikamovie:
                     if not bad_format:
                         bad_format = int(minutes) >= 60 or int(seconds) >= 60
             if bad_format:
-                m 1o "Erm..."
-                m 1n "Sorry, I can't understand that, [player]."
-                m 1e "Remember to set it in the format of HH:MM:SS."
-                m 3a "That's 'Hours:Minutes:Seconds.'"
+                m 1lksdlc "Erm..."
+                m 1lksdlb "Sorry, I can't understand that, [player]."
+                m 1eka "Remember to set it in the format of HH:MM:SS."
+                m 3eua "That's 'Hours:Minutes:Seconds.'"
                 m "Here's an example for you, [player]."
                 m "01:05:32"
-                m 1b "That's 1 hour, 5 minutes, and 32 seconds."
-                m 3j "So try again!"
+                m 1eub "That's 1 hour, 5 minutes, and 32 seconds."
+                m 3hua "So try again!"
                 jump mm_movie_repeattime
             else:
                 $ timer.setFormattedTime(splittedTime[0],splittedTime[1],splittedTime[2])
                 $ movieInformation.resynchronizeIndex(timer)
-        m 1a "Done! Let's keep watching it!"
+        m 1eua "Done! Let's keep watching it!"
         jump mm_movie_resume

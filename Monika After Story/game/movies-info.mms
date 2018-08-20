@@ -39,8 +39,7 @@
 movie Doki Doki Trailer
 description 3b "So the trailer for the game, huh?"
 description 1j "Let's watch it together, then [player]!"
-m 1m [00:00:04] "I wonder why they'd put a warning there."
-m 1k [00:00:20] "Ahaha, I remember those poems you tried to make."
-m 1r [00:00:35] "If only they just introduced me instead of including the others..."
+m 1lksdla [00:00:04] "I wonder why they'd put a warning there."
+m 1hub [00:00:20] "Ahaha, I remember those poems you tried to make."
+m 1dsd [00:00:35] "If only they just introduced me instead of including the others..."
 closure 1g Wow, talk about a blast from the past, [player]
-
