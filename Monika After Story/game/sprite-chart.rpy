@@ -37,6 +37,8 @@
 #   l - look left eyes (left)
 #   h - closed happy eyes (closedhappy)
 #   d - closed sad eyes (closedsad)
+#   k - left eye wink (winkleft)
+#   n - right eye wink (winkright)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)
