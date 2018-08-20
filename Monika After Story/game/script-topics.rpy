@@ -1124,6 +1124,53 @@ label monika_wine:
     m 2hksdlb "...Gosh, what am I talking about this for?"
     m "I don't condone underage drinking!"
     m 2eua "I mean, I've never drank or anything, so...yeah."
+    m 3eua "Speaking of which, I hear different parts of the world have different minimum drinking ages."
+    m "Would we both be able to have a drink where you're from?"
+    menu:
+        "Yes.":
+            m 1hua "That's great!"
+            m 1hub "Another thing to look forward to when we can finally be together!"
+            m 1hubfa "Sitting together, having a drink as we both ponder about life..."
+            m 1dkbfa "Oh gosh... I'm imagining being able to share a lovely drink whenever the mood gets romantic."
+            m 1hksdlb "Of course, we probably shouldn't get {i}too{/i} carried away..."
+            m 1eka "The finest wine isn't exactly cheap if we get too attached to sharing a drink."
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "So do me a favor and wait for me a bit before really treating yourself."
+            show monika 1hua at t11 zorder 2 with dissolve
+            m 1hua "You better have a good bottle to share!"
+            m 1hub "Ahaha~"
+        "No.":
+            m 1eua "At least I don't have to be jealous about you being able to drink while I'm stuck here."
+            m 1lksdla "If that's still the case when I can finally be with you, maybe we could try a little anyway?"
+            m 1lksdlb "Just a little."
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "I mean we'll have eachother to stop one another from having too much, right?"
+        "You can, but I can't.":
+            m 2hua "Maybe then I'll be able to have something you can't!"
+            m "Just like how you can drink coffee in your world."
+            m 2hub "Ahaha~"
+            m 2lksdla "Of course, you know I'm only kidding."
+            m 2eka "By all means, I'd happily wait for you if you were worried about feeling left out."
+            m 3hksdlb "But if you {i}really{/i} wanted to try some, I guess I could give you one little sip."
+            m "No more than that though!"
+        "I can, but you can't.":
+            m 1lksdla "Oh... That only just makes me a little bit jealous."
+            m 1hksdlb "Knowing you can drink coffee {i}and{/i} wine without me."
+            m "Maybe you could let me try a sip sometime?"
+            m 1lksdlb "Just a little bit... Maybe..."
+            m 1hua "Ahaha~ I'm only kidding, [player]."
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "I really wouldn't want you to get in trouble."
+            show monika 1lksdla at t11 zorder 2 with dissolve
+            m 1lksdla "Ok, maybe I was only half kidding, but you don't have to share if it could get you in trouble."
+        "I don't drink.":
+            m 2ekd "Oh!"
+            m 2lksdld "Sorry, I didn't realize."
+            m 2lksdla "But I guess knowing that can put me at ease."
+            m 2eua "I don't have to worry about you having too much!"
+            m 3eua "I respect your decision so I won't have any if you won't either."
+            m 1hua "At least there'll always be coffee we can share."
+            m 1hub "Ahaha!"
     return
 
 
