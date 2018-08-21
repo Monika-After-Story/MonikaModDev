@@ -197,7 +197,7 @@ init -600 python:
         """
         import store.mas_utils as m_util
 
-        ERR_COND = "[ERROR] delayed action has bad conditional '{1}' | {2}\n"
+        ERR_COND = "[ERROR] delayed action has bad conditional '{0}' | {1}\n"
 
 
         def __init__(self, _id, ev, conditional, action, flowcheck):
@@ -254,7 +254,9 @@ init -600 python:
             try:
                 if eval(self.conditional):
                     if self.action in Event.ACTION_MAP:
-                        Event._performAction(self.ev, datetime.datetime.now())
+                        Event.ACTION_MAP[self.action](
+                            self.ev, unlock_time=datetime.datetime.now()
+                        )
                         self.executed = True
 
                     else:
@@ -262,10 +264,11 @@ init -600 python:
                         self.executed = self.action(ev=self.ev)
                             
             except Exception as e:
-                 self.m_util.writelog(self.ERR_COND.format(
-                    conditional,
+                self.m_util.writelog(self.ERR_COND.format(
+                    self.conditional,
                     str(e)
                 ))                   
+#                raise e
 
             return self.executed
 
@@ -347,7 +350,7 @@ init -600 python:
             return
 
         # otherwise, lets try going thru the list
-        for action_id in mas_delayed_action_map:
+        for action_id in list(mas_delayed_action_map):
             action = mas_delayed_action_map[action_id]
 
             # bitcheck the flow
@@ -425,8 +428,8 @@ init 994 python in mas_delact:
     #   NOTE: this function MUST be runnable at init level 995.
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
-        1: __greeting_ourreality_unlock,
-        2: __mas_monika_islands_unlock
+        1: _greeting_ourreality_unlock,
+        2: _mas_monika_islands_unlock
     }
 
     # this is also where we initialize the delayed action map

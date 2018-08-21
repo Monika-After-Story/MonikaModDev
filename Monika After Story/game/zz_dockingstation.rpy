@@ -48,8 +48,8 @@ init -900 python in mas_ics:
     islands_map = {
         "nwf": ("night_with_frame.png", islands_nwf),
         "nwof": ("night_without_frame.png", islands_nwof),
-        "dwf": ("day_with_frame.png", islands_dwf),
-        "dwof": ("day_without_frame.png", islands_dwof)
+        "dwf": ("with_frame.png", islands_dwf),
+        "dwof": ("without_frame.png", islands_dwof)
     }
         
     ###########################################################################
@@ -696,12 +696,13 @@ default persistent._mas_dockstat_checkin_log = list()
 # NOTE: do NOT set this directly. Use the helper functions
 default persistent._mas_dockstat_moni_size = 0
 
-init python in mas_dockstat:
-    import store
-
+init -500 python in mas_dockstat:
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
     b64_blocksize = 5592408 # (above size converted to base64)
+
+init python in mas_dockstat:
+    import store
 
     def setMoniSize(tdelta):
         """
@@ -762,13 +763,6 @@ init 200 python in mas_dockstat:
         ASSUMES:
             blocksize - this is a constant in this store
         """
-        ### functions we need
-        def trydel(f_path):
-            try:
-                os.remove(f_path)
-            except:
-                pass
-
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
@@ -904,7 +898,7 @@ init 200 python in mas_dockstat:
         if moni_pkg is None:
             # ALERT ALERT HOW DID WE FAIL
             mas_utils.writelog("[ERROR] monika not found.")
-            trydel(moni_path)
+            mas_utils.trydel(moni_path)
             return None
 
         # we should have a file descriptor, lets attempt a pkg slip
@@ -912,7 +906,7 @@ init 200 python in mas_dockstat:
         if moni_slip is None:
             # ALERT ALERT WE FAILED AGAIN
             mas_utils.writelog("[ERROR] monika could not be validated.")
-            trydel(moni_path)
+            mas_utils.trydel(moni_path)
             return None
 
         if moni_slip != moni_sum:
@@ -920,7 +914,7 @@ init 200 python in mas_dockstat:
             mas_utils.writelog(
                 "[ERROR] monisums didn't match, did we have write failure?"
             )
-            trydel(moni_path)
+            mas_utils.trydel(moni_path)
             return -1
 
         # otherwise, we managed to create a monika! Congrats!

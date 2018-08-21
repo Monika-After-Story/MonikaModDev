@@ -372,7 +372,7 @@ init 15 python in mas_affection:
 
         # lock islands event and remove the corresponding delayed actions
         store.lockEventLabel("mas_monika_islands")
-        mas_removeDelayedActions(1, 2)
+        store.mas_removeDelayedActions(1, 2)
 
         return
 

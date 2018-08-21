@@ -11,7 +11,101 @@ init -10 python:
     #
     #   if for some reason we fail to convert the files into images
     #   then we must backout of showing the event.
-    mas_cannot_decode_islands = True
+    mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
+
+
+init -11 python in mas_island_event:
+    import store
+    import store.mas_dockstat as mds
+    import store.mas_ics as mis
+    import store.mas_utils as mus
+    import os
+
+    # setup the docking station we are going to use here
+    islands_station = store.MASDockingStation(mis.islands_folder)
+
+    def decodeImages():
+        """
+        Attempts to decode the iamges
+
+        Returns TRUE upon success, False otherwise
+        """
+        for b64_name in mis.islands_map:
+            real_name, chksum = mis.islands_map[b64_name]
+
+            # read in the base64 versions, output an image
+            b64_pkg = islands_station.getPackage(b64_name)
+
+            if b64_pkg is None:
+                # if we didnt find the image, we in big trouble
+                return False
+
+            # setup the outfile
+            real_pkg = None
+            real_chksum = None
+            real_path = islands_station._trackPackage(real_name)
+
+            # now try to decode image
+            try:
+                real_pkg = open(real_path, "wb")
+
+                # unpack this package
+                islands_station._unpack(
+                    b64_pkg,
+                    real_pkg,
+                    True,
+                    False,
+                    bs=mds.b64_blocksize
+                )
+
+                # close and reopen as read
+                real_pkg.close()
+                real_pkg = open(real_path, "rb")
+
+                # check pkg slip
+                real_chksum = islands_station.createPackageSlip(
+                    real_pkg,
+                    bs=mds.blocksize
+                )
+
+            except Exception as e:
+                mus.writelog("[ERROR] failed to decode '{0}' | {1}\n".format(
+                    b64_name,
+                    str(e)
+                ))
+                return False
+
+            finally:
+                # always close the base64 package
+                b64_pkg.close()
+
+                if real_pkg is not None:
+                    real_pkg.close()
+
+            # now to check this image for chksum correctness
+            if real_chksum is None:
+                # bad shit happened here somehow
+                mus.trydel(real_path)
+                return False
+
+            if real_chksum != chksum:
+                # decoded was wrong somehow
+                mus.trydel(real_path)
+                return False
+
+        # otherwise success somehow
+        return True
+
+
+    def removeImages():
+        """
+        Removes the decoded images at the end of their lifecycle
+
+        AKA quitting
+        """
+        for b64_name in mis.islands_map:
+            real_name, chksum = mis.islands_map[b64_name]
+            mus.trydel(islands_station._trackPackage(real_name), log=True)
 
 
 init 5 python:
@@ -32,7 +126,7 @@ init 900 python in mas_delact:
     # this event requires a delayed aciton, since we cannot ensure that
     # the sprites for this were decoded correctly
 
-    def __mas_monika_islands_unlock():
+    def _mas_monika_islands_unlock():
         return store.MASDelayedAction.makeWithLabel(
             2,
             "mas_monika_islands",
@@ -41,7 +135,7 @@ init 900 python in mas_delact:
                 " and mas_isMoniEnamored(higher=True)"
             ),
             store.EV_ACT_UNLOCK,
-            store.FC_START
+            store.MAS_FC_START
         )
 
 

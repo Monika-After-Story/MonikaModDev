@@ -1798,6 +1798,7 @@ init -1 python in _mas_root:
 
 
 init -990 python in mas_utils:
+    import os
     import shutil
     mas_log = renpy.renpy.log.open("mas_log")
     mas_log_open = mas_log.open()
@@ -1881,6 +1882,18 @@ init -990 python in mas_utils:
         if mas_log_open:
             mas_log.write(msg)
 
+
+    def trydel(f_path, log=False):
+        """
+        Attempts to delete something at the given path
+
+        NOTE: completely hides exceptions, unless log is True
+        """
+        try:
+            os.remove(f_path)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(str(e)))
 
 
 init -100 python in mas_utils:

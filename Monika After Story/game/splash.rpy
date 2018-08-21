@@ -330,6 +330,9 @@ label quit:
             if acs.stay_on_start
         ]
 
+    # remove special images
+    $ store.mas_island_event.removeImages()
+
     # delayed action stuff
     $ mas_runDelayedActions(MAS_FC_END)
     $ store.mas_delact.saveDelayedActionMap()

@@ -1659,7 +1659,7 @@ init 900 python in mas_delact:
     # this greeting requires a delayed action, since we cannot ensure that
     # the sprites for this were decoded correctly
 
-    def __greeting_ourreality_unlock():
+    def _greeting_ourreality_unlock():
         return store.MASDelayedAction(
             1,
             store.mas_getEV("greeting_ourreality"),
@@ -1668,7 +1668,7 @@ init 900 python in mas_delact:
                 " and mas_isMoniEnamored(higher=True)"
             ),
             store.EV_ACT_UNLOCK,
-            store.FC_START
+            store.MAS_FC_START
         )
         
 
