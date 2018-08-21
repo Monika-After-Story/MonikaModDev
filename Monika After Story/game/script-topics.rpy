@@ -7255,7 +7255,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
             "Nope.":
                 m 1dfc "..."
 
-                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm.tooslow")
+                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm_tooslow")
 
                 menu:
                     "I'm kidding.":
@@ -7274,8 +7274,10 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                         jump monika_dating_startdate_confirm.loopstart
 
                     "...":
-                        label .tooslow:
-                            hide screen mas_background_timed_jump
+                        hide screen mas_background_timed_jump
+
+                label monika_dating_startdate_confirm_tooslow:
+                    pass
 
                 # lol why would you stay slient?
                 # TODO: Affection considerable decrease?
