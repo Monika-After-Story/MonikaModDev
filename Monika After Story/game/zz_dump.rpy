@@ -12,6 +12,13 @@ init 999 python:
         from store.mas_moods import mood_db
         from store.mas_stories import story_database
 
+        try:
+            mas_all_ev_db.values()
+        except:
+            # we dont have access to the main db
+            # just drop out for now
+            return
+
         # setup filepath
         _ev_stats = "/ev_dump.log"
         _ev_stats_fp = (config.basedir + _ev_stats).replace("\\", "/")
