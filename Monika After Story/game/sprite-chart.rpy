@@ -58,6 +58,10 @@
 # <tears type> - type of tears
 #   ts - tears streaming / running (streaming)
 #   td - dried tears (dried)
+#   tl - tears, single stream, left eye (left)
+#   tr - tears, single stream, right eye (right)
+#   tp - like dried tears but with no redness (pooled)
+#   tu - tears, single stream, both eyes (up)
 #
 # <sweat type> - type of sweat drop
 #   sdl - sweat drop left (def)
