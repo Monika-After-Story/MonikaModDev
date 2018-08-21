@@ -33,7 +33,6 @@ init 5 python:
             category=["dev"],
             prompt="TEST PTOD CONSOLE",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
@@ -82,7 +81,6 @@ init 5 python:
             category=["dev"],
             prompt="TEST PTOD CONSOLE MAX",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
@@ -129,7 +127,6 @@ init 5 python:
             category=["dev"],
             prompt="TEST PTOD CONSOLE LINE BREAK",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
@@ -170,7 +167,6 @@ init 5 python:
             category=["dev"],
             prompt="TEST PTOD CONSOLE BLOCK",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
