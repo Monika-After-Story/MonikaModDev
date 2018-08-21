@@ -294,6 +294,9 @@ label autoload:
             persistent._mas_monika_hair
         )
 
+    # finally lets run actions that needed to be run
+    $ mas_runDelayedActions(MAS_FC_START)
+
     jump expression persistent.autoload
 
 label before_main_menu:
@@ -326,6 +329,10 @@ label quit:
             for acs in monika_chr.acs[MASMonika.PST_ACS]
             if acs.stay_on_start
         ]
+
+    # delayed action stuff
+    $ mas_runDelayedActions(MAS_FC_END)
+    $ store.mas_delact.saveDelayedActionMap()
 
     $ _mas_AffSave()
 

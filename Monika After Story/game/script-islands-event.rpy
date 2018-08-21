@@ -11,7 +11,7 @@ init -10 python:
     #
     #   if for some reason we fail to convert the files into images
     #   then we must backout of showing the event.
-
+    mas_cannot_decode_islands = True
 
 
 init 5 python:
@@ -27,6 +27,23 @@ init 5 python:
                 rules={"no unlock": None}
             )
         )
+
+init 900 python in mas_delact:
+    # this event requires a delayed aciton, since we cannot ensure that
+    # the sprites for this were decoded correctly
+
+    def __mas_monika_islands_unlock():
+        return store.MASDelayedAction.makeWithLabel(
+            2,
+            "mas_monika_islands",
+            (
+                "not store.mas_cannot_decode_islands"
+                " and mas_isMoniEnamored(higher=True)"
+            ),
+            store.EV_ACT_UNLOCK,
+            store.FC_START
+        )
+
 
 label mas_monika_islands:
     m 1eub "I'll let you admire the scenery for now."

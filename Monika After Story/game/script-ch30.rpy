@@ -730,6 +730,9 @@ label ch30_preloop:
     $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
+    
+    # delayed actions in here please
+    $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
     # save here before we enter the loop
     $ renpy.save_persistent()
@@ -788,6 +791,9 @@ label ch30_loop:
 
             #Run actions for any events that are based on the clock
             evhand.event_database=Event.checkCalendar(evhand.event_database)
+
+            # Run delayed actions
+            mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
 
             #Update time
             calendar_last_checked=datetime.datetime.now()

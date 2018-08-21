@@ -342,15 +342,24 @@ init 15 python in mas_affection:
         Runs when transitioning from affectionate to enamored
         """
 
-        if not store.mas_cannot_decode_islands:
-            # we can only run islands stuff if we can even d
+        # If the greeting hasn't been seen yet, push the islands greeting
+        if not store.seen_event("greeting_ourreality"):
+            if store.mas_cannot_decode_islands:
+                # failed to decode the islands, lets delay this action
+                store.mas_addDelayedAction(1)
 
-            # If the greeting hasn't been seen yet, push the islands greeting
-            if not store.seen_event("greeting_ourreality"):
+            else:
+                # otherwise we can directly unlock this greeting
                 store.unlockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
 
-            # unlock islands event if seen already
-            if store.seen_event("mas_monika_islands"):
+        # unlock islands event if seen already
+        if store.seen_event("mas_monika_islands"):
+            if store.mas_cannot_decode_islands:
+                # failed to decode islandds, delay this action
+                store.mas_addDelayedAction(2)
+
+            else:
+                # otherwise we can directly unlock this topic
                 store.unlockEventLabel("mas_monika_islands")
 
         return
@@ -361,8 +370,9 @@ init 15 python in mas_affection:
         Runs when transitioning from enamored to affectionate
         """
 
-        # lock islands event
+        # lock islands event and remove the corresponding delayed actions
         store.lockEventLabel("mas_monika_islands")
+        mas_removeDelayedActions(1, 2)
 
         return
 

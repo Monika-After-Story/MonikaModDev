@@ -1637,22 +1637,40 @@ label greeting_back_from_sleep:
      return
 
 
-
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-    rules.update({"monika wants this first":""})
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_ourreality",
-            unlocked=False,
-            random=False,
-            rules=rules
-        ),
-        eventdb=evhand.greeting_database
-    )
-    del rules
+    if not mas_cannot_decode_islands:
+        rules = dict()
+        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+        rules.update({"monika wants this first":""})
+        addEvent(
+            Event(
+                persistent.greeting_database,
+                eventlabel="greeting_ourreality",
+                unlocked=False,
+                random=False,
+                rules=rules
+            ),
+            eventdb=evhand.greeting_database
+        )
+        del rules
+
+
+init 900 python in mas_delact: 
+    # this greeting requires a delayed action, since we cannot ensure that
+    # the sprites for this were decoded correctly
+
+    def __greeting_ourreality_unlock():
+        return store.MASDelayedAction(
+            1,
+            store.mas_getEV("greeting_ourreality"),
+            (
+                "not store.mas_cannot_decode_islands"
+                " and mas_isMoniEnamored(higher=True)"
+            ),
+            store.EV_ACT_UNLOCK,
+            store.FC_START
+        )
+        
 
 label greeting_ourreality:
     m 1hub "Hi, [player]!"
