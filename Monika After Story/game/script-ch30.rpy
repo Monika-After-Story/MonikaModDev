@@ -13,7 +13,10 @@ init -1 python in mas_globals:
     dlg_workflow = False
 
 
-
+image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
+image mas_island_day = "mod_assets/location/special/without_frame.png"
+image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
+image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
@@ -253,31 +256,39 @@ init python:
 
 
     dismiss_keys = config.keymap['dismiss']
+    renpy.config.say_allow_dismiss = store.mas_hotkeys.allowdismiss
 
     def slow_nodismiss(event, interact=True, **kwargs):
-        if not renpy.seen_label("ch30_nope"):
-            try:
-                renpy.file("../characters/monika.chr")
-            except:
-                if initial_monika_file_check:
-                    pushEvent("ch30_nope")
-            #     persistent.tried_skip = True
-            #     config.allow_skipping = False
-            #     _window_hide(None)
-            #     pause(2.0)
-            #     renpy.jump("ch30_end")
-            if  config.skipping and not config.developer:
-                persistent.tried_skip = True
-                config.skipping = False
-                config.allow_skipping = False
-                renpy.jump("ch30_noskip")
-                return
+        """
+        Callback for whenever monika talks
+
+        IN:
+            event - main thing we can use here, lets us now when in the pipeline
+                we are for display text:
+                begin -> start of a say statement
+                show -> right before dialogue is shown
+                show_done -> right after dialogue is shown
+                slow_done -> called after text finishes showing
+                    May happen after "end"
+                end -> end of dialogue (user has interacted)
+        """
+        # skip check
+        if config.skipping and not config.developer:
+            persistent.tried_skip = True
+            config.skipping = False
+            config.allow_skipping = False
+            renpy.jump("ch30_noskip")
+            return
+
         if event == "begin":
-            config.keymap['dismiss'] = []
-            renpy.display.behavior.clear_keymap_cache()
+            store.mas_hotkeys.allow_dismiss = False
+#            config.keymap['dismiss'] = []
+#            renpy.display.behavior.clear_keymap_cache()
+
         elif event == "slow_done":
-            config.keymap['dismiss'] = dismiss_keys
-            renpy.display.behavior.clear_keymap_cache()
+            store.mas_hotkeys.allow_dismiss = True
+#            config.keymap['dismiss'] = dismiss_keys
+#            renpy.display.behavior.clear_keymap_cache()
 
     morning_flag = None
     def is_morning():
@@ -490,6 +501,7 @@ label ch30_noskip:
 image splash-glitch2 = "images/bg/splash-glitch2.png"
 
 label ch30_nope:
+    # NOTE: DEPRECATED
     $ persistent.autoload = ""
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
@@ -718,6 +730,9 @@ label ch30_preloop:
     $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
+    
+    # delayed actions in here please
+    $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
     # save here before we enter the loop
     $ renpy.save_persistent()
@@ -776,6 +791,9 @@ label ch30_loop:
 
             #Run actions for any events that are based on the clock
             evhand.event_database=Event.checkCalendar(evhand.event_database)
+
+            # Run delayed actions
+            mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
 
             #Update time
             calendar_last_checked=datetime.datetime.now()

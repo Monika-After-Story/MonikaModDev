@@ -12,6 +12,9 @@ python early:
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z =5
 
+    # this is now global
+    import datetime
+
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
@@ -135,6 +138,13 @@ python early:
         # modified during object creation
         # NOTE: this is set in evhand at an init level of -500
         INIT_LOCKDB = None
+
+        # action MAP
+        # actions that should be done given an event
+        # NOTE: this is actually populated later, at init level 1
+        #   SEE the evhand store in event-handler
+        # NOTE: action code should be callable on a given event object
+        ACTION_MAP = dict()
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -667,19 +677,11 @@ python early:
                 #Calendar events use a different function
                 date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
                 if not date_based and events[ev].conditional is not None:
-                    if eval(events[ev].conditional) and events[ev].action is not None:
-                        #Perform the event's action
-                        if events[ev].action == EV_ACT_PUSH:
-                            pushEvent(ev)
-                        elif events[ev].action == EV_ACT_QUEUE:
-                            queueEvent(ev)
-                        elif events[ev].action == EV_ACT_UNLOCK:
-                            events[ev].unlocked = True
-                            events[ev].unlock_date = datetime.datetime.now()
-                        elif events[ev].action == EV_ACT_RANDOM:
-                            events[ev].random = True
-                        elif events[ev].action == EV_ACT_POOL:
-                            events[ev].pool = True
+                    if (
+                            eval(events[ev].conditional) 
+                            and events[ev].action in Event.ACTION_MAP
+                        ):
+                        Event._performAction(events[ev], datetime.datetime.now())
 
                         #Clear the conditional
                         events[ev].conditional = None
@@ -725,19 +727,9 @@ python early:
                         continue
 
 
-                if e.action is not None:
-                    #Perform the event's action
-                    if e.action == EV_ACT_PUSH:
-                        pushEvent(ev)
-                    elif e.action == EV_ACT_QUEUE:
-                        queueEvent(ev)
-                    elif e.action == EV_ACT_UNLOCK:
-                        e.unlocked = True
-                        e.unlock_date = current_time
-                    elif e.action == EV_ACT_RANDOM:
-                        e.random = True
-                    elif e.action == EV_ACT_POOL:
-                        e.pool = True
+                if e.action in Event.ACTION_MAP:
+                    # perform action
+                    Event._performAction(e, current_time)
 
                     # Check if we have a years property
                     if e.years is not None:
@@ -997,6 +989,32 @@ python early:
 
             # return the available events dict
             return available_events
+
+
+        @staticmethod
+        def _performAction(ev, _unlock_time):
+            """
+            Efficient / no checking action performing
+
+            NOTE: does NOT check ev.action for nonNone
+
+            IN:
+                ev - event we are performing action on
+                _unlock_time - datetime to use for unlock_date
+            """
+            Event.ACTION_MAP[ev.action](ev, unlock_time=_unlock_time)
+
+
+        @staticmethod
+        def performAction(ev, _unlock_time=datetime.datetime.now()):
+            """
+            Performs the action of the given event
+
+            IN:
+                ev - event we are perfrming action on
+            """
+            if ev.action in Event.ACTION_MAP:
+                Event._performAction(ev, _unlock_time)
 
 
 # init -1 python:
@@ -1780,6 +1798,7 @@ init -1 python in _mas_root:
 
 
 init -990 python in mas_utils:
+    import os
     import shutil
     mas_log = renpy.renpy.log.open("mas_log")
     mas_log_open = mas_log.open()
@@ -1863,6 +1882,18 @@ init -990 python in mas_utils:
         if mas_log_open:
             mas_log.write(msg)
 
+
+    def trydel(f_path, log=False):
+        """
+        Attempts to delete something at the given path
+
+        NOTE: completely hides exceptions, unless log is True
+        """
+        try:
+            os.remove(f_path)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(str(e)))
 
 
 init -100 python in mas_utils:
