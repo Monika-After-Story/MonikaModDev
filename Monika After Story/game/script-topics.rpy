@@ -1075,7 +1075,7 @@ label monika_horror:
     m 2eua "In my opinion, there's nothing more creepy than things just being slightly off."
     m "Like if you set up a bunch of expectations on what the story is going to be about..."
     m 4tfu "...And then, you just start inverting things and pulling the pieces apart."
-    m "1tfb So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
+    m 1tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
     m 2lksdla "God, just thinking about it gives me the chills."
     m 3eua "That's the kind of horror I can really appreciate."
