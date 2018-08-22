@@ -7118,7 +7118,7 @@ label monika_not_paying_attention:
         m 5euc "Yeah..."
         m 2eka "It's okay, [player], I understand sometimes things happen that can't be avoided."
         m 2esa "Whenever things calm down, I'll give my speech to you again."
-        m 2eua"I still really want to share it with you..."
+        m 2eua "I still really want to share it with you..."
         m "So please, let me know when you have time to hear it, okay?"
     
     else:
@@ -7223,7 +7223,7 @@ label monika_speech:
     m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
     m 4eka "{w=0.2}You know,{w=0.3} I really couldn’t be more proud of you all for getting this far.{w=0.6}{nw}"
     m "{w=0.2}Your hard work and dedication will bring you great things.{w=0.6}{nw}"
-    m 2esa"{w=0.2}Each one of you has shown just what you’re capable of,{w=0.3} and you’ve all proven that you can work hard for your dreams.{w=0.6}{nw}"
+    m 2esa "{w=0.2}Each one of you has shown just what you’re capable of,{w=0.3} and you’ve all proven that you can work hard for your dreams.{w=0.6}{nw}"
     m 2hub "{w=0.2}I hope you are as proud of yourselves as I am.{w=0.7}{nw}"
     m 2ekd "{w=0.2}Now that this entire chapter of our lives --{w=0.3} step one,{w=0.3} has come to an end,{w=0.3} it is now time for us to part ways.{w=0.6}{nw}"
     m 4eka "{w=0.2}In this world of infinite choices,{w=0.3} I believe you all have what it takes to achieve your dreams.{w=0.6}{nw}"
