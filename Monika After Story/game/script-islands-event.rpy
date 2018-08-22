@@ -201,7 +201,7 @@ label mas_monika_cherry_blossom_tree:
 label mas_monika_cherry_blossom1:
     m "It's a beautiful tree, isn't it?"
     m "It's called a Cherry Blossom tree."
-    m "Their native to Japan."
+    m "They're native to Japan."
     m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picknick underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
