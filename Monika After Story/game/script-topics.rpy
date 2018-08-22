@@ -1075,7 +1075,7 @@ label monika_horror:
     m 2eua "In my opinion, there's nothing more creepy than things just being slightly off."
     m "Like if you set up a bunch of expectations on what the story is going to be about..."
     m 4tfu "...And then, you just start inverting things and pulling the pieces apart."
-    m "1tfb So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
+    m 1tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
     m 2lksdla "God, just thinking about it gives me the chills."
     m 3eua "That's the kind of horror I can really appreciate."
@@ -4940,18 +4940,50 @@ label monika_orchestra:
             $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
             $ tempinstrument = instrumentname.lower()
             if tempinstrument == "piano":
-                 m 1wuo "Oh, that's really cool!"
-                 m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
-                 m 1hua "Maybe we could do a duet someday!"
-                 m 1hub "Ehehe~"
-                 $ persistent.instrument = True
+                m 1wuo "Oh, that's really cool!"
+                m 1eua "Not many people I knew played the piano, so it's really nice to know you do too."
+                m 1hua "Maybe we could do a duet someday!"
+                m 1hub "Ehehe~"
+                $ persistent.instrument = True
+            elif tempinstrument == "harmonika":
+                m 1hub "Wow, I've always wanted to try the harmonik--"
+                m 3eub "...Oh!"
+
+                if mas_isMoniUpset(lower=True):
+                    m 3esa "Did you do that for me?"
+                    m 1eka "That's actually kinda sweet..."
+                    m "Little things like this really do cheer me up. Thank you, [player]."
+
+                elif mas_isMoniHappy(lower=True):
+                    m 1eka "Aww... Did you do that for me?"
+                    m "That's so sweet!"
+                    m 1ekbfa "Cute little things like this really make me feel loved, [player]."
+
+                else: # affectionate and higher
+                    m 1eka "Awww [player]...{w} Did you do that for me?"
+                    m "That's {i}sooo{/i} adorable!"
+                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubfu "And just so you know, you can play with me anytime you like..."
+                    m 5eubfb "Ehehe~"
+
+                $ persistent.instrument = True 
+            elif tempinstrument == "harmonica":
+                m 1hub "Wow, I've always wanted to try the harmonica out!"
+                m 1eua "I would love to hear you play for me."
+                m 3eua "Maybe you could teach me how to play, too~"
+                m 4esa "Although..."
+                m 2esa "Personally, I prefer the {cps=*0.7}{i}harmonika{/i}{/cps}..."
+                m 2eua "..."
+                m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"              
+                $ persistent.instrument = True            
             else:
-                 m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
-                 m 1eua "I would love to hear you play for me."
-                 m 3eua "Maybe you could teach me how to play, too~"
-                 m 1wuo "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
-                 m 1hua "Ehehe~"
-                 $ persistent.instrument = True
+                m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
+                m 1eua "I would love to hear you play for me."
+                m 3eua "Maybe you could teach me how to play, too~"
+                m 1wuo "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
+                m 1hua "Ehehe~"
+                $ persistent.instrument = True
+                
         "No.":
             $persistent.instrument = False
             m 1euc "I see..."
@@ -7255,7 +7287,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
             "Nope.":
                 m 1dfc "..."
 
-                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm.tooslow")
+                show screen mas_background_timed_jump(5, "monika_dating_startdate_confirm_tooslow")
 
                 menu:
                     "I'm kidding.":
@@ -7274,8 +7306,10 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                         jump monika_dating_startdate_confirm.loopstart
 
                     "...":
-                        label .tooslow:
-                            hide screen mas_background_timed_jump
+                        hide screen mas_background_timed_jump
+
+                label monika_dating_startdate_confirm_tooslow:
+                    pass
 
                 # lol why would you stay slient?
                 # TODO: Affection considerable decrease?

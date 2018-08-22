@@ -1120,7 +1120,7 @@ init 20 python:
 
         # Makes the game update affection on start-up so the global variables
         # are defined at all times.
-        mas_updateAffectionExp(skipPP=True)
+        mas_updateAffectionExp()
 
         if persistent.sessions["last_session_end"] is not None:
             persistent._mas_absence_time = (
