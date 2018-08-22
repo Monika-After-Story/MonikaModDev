@@ -6953,7 +6953,7 @@ label monika_graduation:
     m "Never got to hear my name being announced and all my friends cheering."
     m 2ekc "It kinda feels like it was all for nothing."
     m 2esd "I know all the things I learned along the way are what's really important..."
-    m 2dkc"But it still feels like I missed out on something special."
+    m 2dkc "But it still feels like I missed out on something special."
     m "..."
     
     #Went through and timed out on the menu twice
