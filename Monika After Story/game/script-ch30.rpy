@@ -1005,4 +1005,11 @@ label ch30_reset:
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
 
+    ## chess strength reset
+    python:
+        if persistent.chess_strength < 0:
+            persistent.chess_strength = 0
+        elif persistent.chess_strength > 20:
+            persistent.chess_strength = 20
+
     return
