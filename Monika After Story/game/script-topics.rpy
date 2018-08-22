@@ -6937,6 +6937,306 @@ label monika_citizenship:
     m 2eka "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
     m 1eka "Thank you for listening to me vent, [player]."
     return
+    
+#Local variable to check if someone has skipped
+default persistent._mas_monika_listened = None
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_graduation",category=['school'],prompt="Graduation",random=True))
+
+label monika_graduation:
+    m 2ekc "You know, [player], one thing I really wish I got to experience is my high school graduation."
+    m "Pretty much my entire life so far has revolved around school..."
+    m 4dkd "All those countless hours of studying, all the afterschool activities and clubs..."
+    m 4ekc "And in the end, after all that hard work, I never got to experience the fulfillment of actually graduating."
+    m 2dkd "Never got to walk across the stage and receive my diploma..."
+    m "Never got to hear my name being announced and all my friends cheering."
+    m 2ekc "It kinda feels like it was all for nothing."
+    m 2esd "I know all the things I learned along the way are what's really important..."
+    m 2dkc"But it still feels like I missed out on something special."
+    m "..."
+    
+    #Went through and timed out on the menu twice
+    if persistent._mas_monika_listened == False: 
+        m 2lsc "Oh... Sorry, I hope I'm not boring you again..."
+        m 2esc "Let's forget about this and talk about something else, okay [player]?"
+        return "derandom"
+        
+    #Normal flow
+    else:
+        m 4eua "By the way, did you know I was the top student in my class?"
+        m 4lksdla "Ah... I don't mean to brag or anything, I only bring it up because as class valedictorian, I was supposed to give a speech at graduation."
+        m 2ekd "I spent so much time writing and practicing my speech, but no one ever got to hear it."
+        m 2eka "I was really proud of that speech, too."
+        m 2eua "I would love to recite it for you sometime, if you want to hear it..."
+        m 2eka "It's about a four minute speech, so just make sure you have enough time to listen to the whole thing."
+        m 4eua "Whenever you want to hear it, just let me know, okay?"
+        $ unlockEventLabel("monika_grad_speech")   
+        return
+
+init 5 python:
+
+    addEvent(Event(persistent.event_database,eventlabel="monika_grad_speech",category=['school'],prompt="Can I hear your speech now?",pool=True,unlocked=False,rules={"no unlock": None}))
+
+label monika_grad_speech:
+    if not renpy.seen_label("monika_speech"):
+        m 2eub "Of course, [player], I'd love to give you my graduation speech now!"
+        m 2eka "I just want to make sure that you have enough time to hear it though. Remember, it takes about four minutes."
+
+        #making sure player has time
+        menu:
+            "I have time.":
+                m 4hub "Great!"
+                m 4eka "I hope you like it, I worked really, {i}really{/i} hard on it."
+                
+                #say speech
+                call monika_speech
+
+                #timed menu to see if player listened
+                show screen mas_background_timed_jump(10, "monika_not_paying_attention")
+                menu:
+                    m "Well [player]? What do you think?"
+
+                    "It's great! I'm so proud of you!":
+                        hide screen mas_background_timed_jump
+                        $ mas_gainAffection(amount=5, bypass=True)
+                        m 2subfb "Aww, [player]!"
+                        m 2ekbfa "Thank you so much! I worked really hard on that speech, and it means so much that you're proud of me"
+                        show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5eubfu "As much as I wish I could have given my speech in front of everyone, just having you by my side is so much better."
+                        m 5eubfb "I love you so much, [player]!"
+
+                    "I like it!":
+                        hide screen mas_background_timed_jump
+                        $mas_gainAffection(amount=3, bypass=True)
+                        m 2eua "Thanks [player]!"
+                        m 4hub "I'm glad you enjoyed it!"
+
+                    "That {i}was{/i} long":
+                        hide screen mas_background_timed_jump
+                        $mas_loseAffection()
+                        m 2tkc "Well, I {i}did{/i} warn you, didn't I?"
+                        m 2dfc "..."
+                        m 2tfc "I spent {i}so{/i} much time on it and that's all you have to say?"
+                        m 6lktdc "I really thought after I told you how important this was to me, you would have been more supportive and let me have my moment."
+                        m 6ektdc "All I wanted was for you to be proud of me, [player]."
+                    
+                return
+
+            "I don't.":
+                m 2eka "Don't worry, [player]. I'll give my speech whenever you want~"
+                return
+                
+    #if you want to hear it again
+    else:
+        #did you timeout once?
+        if not renpy.seen_label("monika_not_paying_attention") or persistent._mas_monika_listened == True:
+            m 2eub "Sure thing [player], I'll happily give my speech again!"
+            m 2eka "You have enough time, right?"
+
+            menu:
+                "I do.":
+                    m 4hua "Perfect, I'll get started then~"
+                    call monika_speech
+            
+                "I don't.":
+                    m 2eka "Don't worry, just let me know when you have the time!"
+                    return
+
+            m 2hub "Thanks for listening to my speech again, [player]."
+            m 2eua "Let me know if you want to hear it another time, ehehe~"
+
+        #You timed out once but want to hear it again
+        else:
+
+            #dialogue based on current affection level
+            if mas_isMoniAff(higher=True):
+                m 2esa "Sure, [player]."
+                m 2eka "I hope whatever happened last time wasn't too serious and that things have calmed down now."
+                m "It really means a lot to me that you want to hear my speech again after you weren't able to listen to the whole thing before."
+                m 2hua "Okay, I'll get started now!"
+
+            else:
+                m 2ekc "Okay, [player], but I hope you actually listen this time."
+                m 2dkd "It really hurt me when you didn't pay attention."
+                m 2dkc "..."
+                m 2eka "I do appreciate you asking to hear it again, so I'll get started now."
+
+            #say speech
+            call monika_speech
+
+            #another timed menu checking if you were listening
+            show screen mas_background_timed_jump(10, "monika_ignored_lock") 
+            menu:
+                m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?"
+                #If menu is used, set player on a good path
+                "It's great! I'm so proud of you!":
+                    hide screen mas_background_timed_jump
+                    $ mas_gainAffection(amount=3, bypass=True)
+                    $ persistent._mas_monika_listened = True
+
+                    m 2subfb "Aww, [player]!"
+                    m 2ekbfa "Thank you so much! I worked really hard on that speech, and it means so much to me that you gave it another chance."
+                    m "Hearing that you're proud of me as well makes it that much better."
+                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubfu "As much as I wish I could have given my speech in front of everyone, just having you by my side is so much better."
+                    m 5eubfb "I love you, [player]!"
+
+                "I like it!":
+                    hide screen mas_background_timed_jump
+                    $mas_gainAffection(amount=1, bypass=True)
+                    $ persistent._mas_monika_listened = True
+
+                    m 2eka "Thanks for listening this time, [player]..."
+                    m "I'm so glad you enjoyed it."                   
+
+                "That {i}was{/i} long":
+                    hide screen mas_background_timed_jump
+                    $mas_loseAffection(modifier=2)
+                    $ persistent._mas_monika_listened = True
+
+                    m 2tfc "After acting like you actually wanted me to recite it for you again, {i}that's{/i} what you have to say?"
+                    m 2dfc "..."
+                    m 6lktdc "I really thought after I told you how important this was to me, {i}{w=1}twice{/i}, {w=1}you would have been more supportive and let me have my moment."
+                    m 6ektdc "All I wanted was for you to be proud of me, [player]..."
+                    m 6dstsc "But I guess that's too much to ask."
+    return
+
+label monika_not_paying_attention:
+    #First menu timeout
+    hide screen mas_background_timed_jump
+    
+    if mas_isMoniAff(higher=True):
+        $ mas_loseAffection(modifier=0.5)
+        m 2ekc "..."
+        m 2ekd "[player]? You didn't pay attention to my speech?"
+        m 2rksdlc "That... that's not like you at all..."
+        m 2eksdlc "You're {i}always{/i} so supportive..."
+        show monika 5rkc at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5rkc "..."
+        m "Something must have happened, I know you love me too much to have done this on purpose."
+        m 5euc "Yeah..."
+        m 2eka "It's okay, [player], I understand sometimes things happen that can't be avoided."
+        m 2esa "Whenever things calm down, I'll give my speech to you again."
+        m 2eua"I still really want to share it with you..."
+        m "So please, let me know when you have time to hear it, okay?"
+    
+    else:
+        $ mas_loseAffection(reason="you didn't listen to my speech. I worked really hard on it.")
+
+        m 2ekc "..."
+        m 6ektdc "[player]! You weren't even paying attention!"
+        m 6lktdc "You have no idea how much that hurts, especially after how much of work I put into it..."
+        m 6ektdc "I just wanted to make you proud of me..."
+        m 6dstsc "..."
+
+    return
+
+label monika_ignored_lock:
+    #Second timeout, lock speech
+    hide screen mas_background_timed_jump
+    #Set false for modified dialogue in the random
+    $ persistent._mas_monika_listened = False
+    $ hideEventLabel("monika_grad_speech",lock=True,depool=True)
+    
+    if mas_isMoniAff(higher=True):
+        $mas_loseAffection(modifier=10)
+        m 6dstsc "..."
+        m 6ektsc "[player]? {w=0.5}You...{w=0.5} You weren't...{w=0.5} listening...{w=0.5} Again?{w=1}{nw}"
+        m 6dstsc "I...{w=0.5} I thought last time it was unavoidable...{w=0.5} but...{w=0.5} twice?{w=1}{nw}"
+        m 6ektsc "You knew how much...{w=0.5} how much this meant to me...{w=1}{nw}"
+        m "Am I really that...{w=0.5} that boring to you?{w=1}{nw}"
+        m 6lktdc "Please...{w=1} don't ask me to recite it again...{w=1}{nw}"
+        m 6ektdc "You obviously don't care."
+
+    else:
+        $ mas_loseAffection(modifier=5)
+        m 2efc "..."
+        m 2wfw "[player]! I can't believe you did this to me again!{w=1}{nw}"
+        m 2tfd "You knew how upset I was the last time and you still couldn't be bothered to give me four minutes of your attention?{w=1}{nw}"
+        m "I don't ask that much of you...{w=1}{nw}"
+        m 2tfc "I really don't.{w=1}{nw}"
+        m 2lfc "All I ever ask is that you care... That's it.{w=1}{nw}"
+        m 2lfd "And yet you can't even {i}pretend{/i} to care about something you {i}know{/i} is so important to me.{w=1}{nw}"
+        m 2dkd "...{w=1}{nw}"
+        m 6lktdc "You know what, nevermind. Just...{w=0.5} nevermind.{w=1}{nw}"
+        m 6ektdc "I won't bother you about this anymore."
+
+    return
+
+label monika_speech:  
+
+    # clear selected track
+    $ songs.current_track = songs.FP_NO_SONG
+    $ songs.selected_track = songs.FP_NO_SONG
+    #play some grad music
+    play music "mod_assets/sounds/amb/PaC.ogg" fadein 1.0
+    $ store.songs.enabled = False
+
+    m 2dsc "Ahem...{w=0.7}{nw}"
+    m ".{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 4eub "{w=0.2}Okay, everyone! It’s time to get started...{w=0.7}{nw}"
+    m 2eub "{w=0.2}Teachers,{w=0.3} faculty,{w=0.3} and fellow students,{w=0.3} I cannot express how proud I am to have made this journey with you.{w=0.6}{nw}"
+    m "{w=0.2}Each and every one of you here today has spent the last four years working hard to achieve the futures you all wanted.{w=0.6}{nw}"
+    m 2hub "{w=0.2}I am so happy that I was able to be a part of some of your journeys,{w=0.7} but I don't think this speech should be about me.{w=0.6}{nw}"
+    m 4eud "{w=0.2}Today isn’t about me.{w=0.7}{nw}"
+    m 2esa "{w=0.2}Today is about celebrating what we all did.{w=0.6}{nw}"
+    m 4eud "{w=0.2}We took on the challenge of our own dreams,{w=0.3} and from here,{w=0.3} the sky’s the limit.{w=0.6}{nw}"
+    m 2eud "{w=0.2}Before moving on though,{w=0.3} I think we could all look back on our time here in high school and effectively end this chapter in our lives...{w=0.7}{nw}" 
+    m 2hub "{w=0.2}We’ll laugh at our past{w=0.7} and see just how far we’ve come in these four short years.{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 2eud "{w=0.2}It honestly feels like just a couple weeks ago...{w=0.6}{nw}"
+    m 2lksdld "{w=0.2}I was back in first year,{w=0.3} on the first day of school,{w=0.3} quivering in my shoes and running up and down the halls from class to class just trying to find my classroom...{w=0.6}{nw}"
+    m 2lksdla "{w=0.2}Hoping that at least one of my friends would walk in before the bell.{w=0.6}{nw}"
+    m 2eka "{w=0.2}You all remember that too,{w=0.3} don’t you?{w=0.6}{nw}"
+    m 2eub "{w=0.2}I also remember making my first new friends.{w=0.6}{nw}"
+    m 2eka "{w=0.2}Things were incredibly different from when we made our friends back in elementary school,{w=0.3} but I guess that’s what happens when you finally grow up.{w=0.6}{nw}"
+    m "{w=0.2}Back in our youth,{w=0.3} we made friends with just about anyone,{w=0.3} but over time,{w=0.3} it seems more and more like a game of chance.{w=0.6}{nw}"
+    m 4dsd "{w=0.2}Maybe that’s just us finally learning more about the world.{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 2eka "{w=0.2}It’s funny just how much we’ve changed.{w=0.6}{nw}"
+    m 4eka "{w=0.2}We’ve gone from being small fish in a huge pond to now being big fish in a small pond.{w=0.6}{nw}"
+    m 4eua "{w=0.2}Each of us have our own experiences with how these four years have changed us and how we’ve all managed to grow as individuals.{w=0.6}{nw}"
+    m 2eud "{w=0.2}Some of us have gone from being quiet and reserved,{w=0.3} to expressive and outgoing.{w=0.6}{nw}"
+    m "{w=0.2}Others from having little work ethic,{w=0.3} to working the hardest.{w=0.7}{nw}"
+    m 2esa "{w=0.2}To think that just a small phase in our lives has changed us so much,{w=0.3} and that there’s still so much we will experience.{w=0.6}{nw}"
+    m 2eua "{w=0.2}The ambition in all of you will surely lead to greatness.{w=0.6}{nw}"
+    m 4hub "I can see it.{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 2eua "{w=0.2}I know I can’t speak for everyone here,{w=0.3} but there is one thing I can say for sure:{w=0.7} my experience in high school wouldn’t be complete without the clubs I was a part of.{w=0.6}{nw}"
+    m 4eua "{w=0.2}Debate club taught me a lot about dealing with people and how to properly handle heated situations.{w=0.6}{nw}"
+    m 4eub "Starting the literatute club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
+    m 4hub "{w=0.2}I met the best friends I could have possibly imagined,{w=0.3} and I learned a lot about leadership.{w=0.6}{nw}"
+    m 2eka "{w=0.2}Sure,{w=0.3} not all of you may have decided to start your own clubs,{w=0.3} but I’m sure plenty of you had the opportunities to learn these values nonetheless.{w=0.6}{nw}" 
+    m 4eub "{w=0.2}Maybe you yourself got into a position in band where you had to lead your instrument section,{w=0.3} or maybe you were the captain of a sports team!{w=0.6}{nw}"
+    m 2eka "{w=0.2}All these small roles teach you so much about the future and how to manage both{w=0.3} projects and people,{w=0.3} but in an environment that you enjoy.{w=0.6}{nw}"
+    m "{w=0.2}If you didn’t join a club,{w=0.3} I encourage you to at least try something in your future paths.{w=0.6}{nw}"
+    m 4eua "{w=0.2}I can assure you,{w=0.7} that you won’t regret it.{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 2eua "{w=0.2}As of today,{w=0.3} it may seem like we’re at the top of the world.{w=0.7}{nw}"
+    m 2lksdld "{w=0.2}The climb may not have been smooth,{w=0.3} and as we get further,{w=0.3} the climb may even get rougher....{w=0.6}{nw}"
+    m 2eksdlc "{w=0.2}There will be stumbles --{w=0.7} even falls along the way,{w=0.3} and sometimes{w=0.7} you may think you've fallen so far that you'll never climb out.{w=0.7}{nw}"
+    m 2euc "{w=0.2}However,{w=0.7} even if we think that we’re still at the bottom of the well of life,{w=0.3} with all that we’ve learned,{w=0.3} all that we’re still going to learn,{w=0.3} and all the dedication we can put in just to achieve our dreams...{w=0.6}{nw}"
+    m 2eua "{w=0.2}I can safely say that each and every one of you now has the tools to climb your way out.{w=0.6}{nw}"
+    m 4eua "{w=0.2}In all of you,{w=0.3} I see brilliant minds:{w=0.7} future doctors,{w=0.3} engineers,{w=0.3} artists,{w=0.3} tradespeople,{w=0.3} and so much more.{w=0.7}{nw}"
+    m 4eka "{w=0.2}It is truly inspiring.{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 4eka "{w=0.2}You know,{w=0.3} I really couldn’t be more proud of you all for getting this far.{w=0.6}{nw}"
+    m "{w=0.2}Your hard work and dedication will bring you great things.{w=0.6}{nw}"
+    m 2esa"{w=0.2}Each one of you has shown just what you’re capable of,{w=0.3} and you’ve all proven that you can work hard for your dreams.{w=0.6}{nw}"
+    m 2hub "{w=0.2}I hope you are as proud of yourselves as I am.{w=0.7}{nw}"
+    m 2ekd "{w=0.2}Now that this entire chapter of our lives --{w=0.3} step one,{w=0.3} has come to an end,{w=0.3} it is now time for us to part ways.{w=0.6}{nw}"
+    m 4eka "{w=0.2}In this world of infinite choices,{w=0.3} I believe you all have what it takes to achieve your dreams.{w=0.6}{nw}"
+    m 4hub "{w=0.2}Thank you all for making these four short years the best they could have been.{w=0.6}{nw}"
+    m 2eua "{w=0.2}Congratulations,{w=0.3} I’m glad we could all be here to celebrate together on this special day.{w=0.6}{nw}"
+    m 2eub "{w=0.2}Keep working hard,{w=0.3} I’m sure we’ll meet again sometime in the future.{w=0.6}{nw}"
+    m 4hub "{w=0.2}We did it everyone!{w=0.7} Thanks for listening~{w=0.6}{nw}"
+    m 2hua "{w=0.2}.{w=0.3} .{w=0.3} .{w=1}{nw}"
+
+    #stop grad music
+    $ store.songs.enabled = True
+    stop music fadeout 1.0
+    return
 
 init 5 python:
     addEvent(
