@@ -149,6 +149,9 @@ label mas_monika_islands:
     $ _mas_island_dialogue = False
     $ _mas_island_window_open = True
     $ _mas_toggle_frame_text = "Close Window"
+    $ _mas_island_shimeji =False
+    if renpy.random.randint(1,2) == 1:
+        $ _mas_island_shimeji = True
     show screen mas_show_islands()
     return
 
@@ -341,6 +344,11 @@ label mas_monika_daynight2:
     m "Ehehe, don't mind me, I just wanted to sing out of the blue~"
     return
 
+label mas_island_shimeji:
+    m "Bye Mini me!"
+    $ _mas_island_shimeji = False
+    return
+
 label mas_back_to_spaceroom:
     if _mas_island_dialogue:
         return
@@ -380,11 +388,14 @@ screen mas_show_islands():
         hotspot (699, 347, 170, 163) action Function(renpy.call, "mas_monika_glitchedmess") # glitched house
         hotspot (622, 269, 360, 78) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
         hotspot (716, 164, 205, 105) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
+        if _mas_island_shimeji:
+            hotspot (920, 395, 30, 80) action Function(renpy.call, "mas_island_shimeji") # cherry blossom tree
 
-    add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
-        xpos 920
-        ypos 395
-        zoom 0.5
+    if _mas_island_shimeji:
+        add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
+            xpos 920
+            ypos 395
+            zoom 0.5
 
     hbox:
         yalign 0.98
