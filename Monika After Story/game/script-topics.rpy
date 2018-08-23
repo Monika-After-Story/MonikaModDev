@@ -2418,8 +2418,8 @@ label monika_love:
     m "[love_quip]"
     #prevents spamming to increase counter.
     if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+        $ persistent._mas_monika_lovecounter += 1
         $ mas_gainAffection()
-    $ persistent._mas_monika_lovecounter += 1
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
