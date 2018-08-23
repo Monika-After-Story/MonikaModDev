@@ -320,7 +320,7 @@ label mas_piano_yr_prac:
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
     import os
-    log = renpy.renpy.log.open("pnm")
+    log = renpy.renpy.log.open("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 
