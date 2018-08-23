@@ -819,6 +819,7 @@ label update_now:
 
             # call quit so we can save important stuff
             call quit
+            $ renpy.save_persistent()
             $ updater.update(update_link, restart=True)
 
             # we have to quit because calling QUIT breaks things
