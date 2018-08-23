@@ -381,6 +381,11 @@ screen mas_show_islands():
         hotspot (622, 269, 360, 78) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
         hotspot (716, 164, 205, 105) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
 
+    add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
+        xpos 920
+        ypos 395
+        zoom 0.5
+
     hbox:
         yalign 0.98
         xalign 0.96
@@ -419,3 +424,11 @@ style island_button_text is default:
     idle_background  "mod_assets/island_idle_background.png"
     hover_background "mod_assets/island_hover_background.png"
     outlines []
+
+# mini moni ATL
+transform moni_sticker_mid:
+    block:
+        function randomPauseMonika
+        parallel:
+            sticker_move_n
+        repeat
