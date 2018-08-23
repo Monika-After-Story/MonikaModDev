@@ -177,18 +177,78 @@ label mas_monika_glitchedmess:
     $ _mas_island_dialogue = False
     return
 
+label mas_monika_cherry_blossom_tree:
+    if _mas_island_dialogue:
+        return
+    $ _mas_island_dialogue = True
+
+    python:
+
+        if not renpy.store.seen_event("mas_monika_cherry_blossom1"):
+
+            renpy.call("mas_monika_cherry_blossom1")
+
+        else:
+            _mas_cherry_blossom_events = ["mas_monika_cherry_blossom1",
+                "mas_monika_cherry_blossom2", "mas_monika_cherry_blossom3",
+                "mas_monika_cherry_blossom4"]
+
+            renpy.call(renpy.random.choice(_mas_cherry_blossom_events))
+
+    $ _mas_island_dialogue = False
+    return
+
+label mas_monika_cherry_blossom1:
+    m "It's a beautiful tree, isn't it?"
+    m "It's called a Cherry Blossom tree."
+    m "They're native to Japan."
+    m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picknick underneath the trees."
+    m "Well, I didn't choose this tree because of tradition."
+    m "I chose it because it's lovely and pleasing to look at."
+    m "Just staring at the falling petals is just awe-inspiring."
+    return
+
+label mas_monika_cherry_blossom2:
+    m "Did you know you can eat the flower petals of a  Cherry Blossom tree?"
+    m "I don't know the taste myself, but I'm sure it'd be as sweet as you."
+    m "Ehehe~"
+    return
+
+label mas_monika_cherry_blossom3:
+    m "You know, the tree is symbolic like life itself."
+    m "Beautiful, but shortlived."
+    m "But with you here, it's always blooming beautifully."
+    m "Know that I'll always be grateful to you for being in my life."
+    m "I love you, [player]~"
+    return
+
+label mas_monika_cherry_blossom4:
+    m "You know what'd be nice to drink under the Cherry Blossom tree?"
+    m "A little sake~"
+    m "Ahaha! I'm just kidding"
+    m "I'd rather have tea or coffee."
+    m "But, it'd be nice to watch the falling petals with you."
+    m "That'd be really romantic~"
+    return
+
+
 label mas_monika_sky:
     if _mas_island_dialogue:
         return
     $ _mas_island_dialogue = True
+
     python:
+
         if morning_flag:
             _mas_sky_events = ["mas_monika_day1","mas_monika_day2",
-            "mas_monika_day3"]
+                "mas_monika_day3"]
+
         else:
-            _mas_sky_events = ["mas_monika_night1","mas_monika_night2"]
+            _mas_sky_events = ["mas_monika_night1","mas_monika_night2",
+                "mas_monika_night3"]
 
         _mas_sky_events.append("mas_monika_daynight1")
+        _mas_sky_events.append("mas_monika_daynight2")
 
         renpy.call(renpy.random.choice(_mas_sky_events))
 
@@ -241,12 +301,44 @@ label mas_monika_night2:
     m "Ahaha..."
     return
 
+label mas_monika_night3:
+    m "What a beautiful night!"
+    m "If I could, I'd add fireflies."
+    m "Their lights complement the night sky, it's a pretty sight."
+    m "Improve the ambience a little, you know?"
+    return
+
 label mas_monika_daynight1:
     m "Maybe I should add more shrubs and trees."
     m "Make the islands more prettier you know?"
     m "I just have to find the right flowers and foliage to go with it."
     m "Or maybe each island should have its own set of plants so that everything will be different and have variety."
     m "I'm getting excited thinking about it~"
+    return
+
+label mas_monika_daynight2:
+    # aurora borealis
+    m "{i}Windmill, windmill for the land{/i}"
+
+    # a-aurora borealis
+    m "{i}Turn forever hand in hand{/i}"
+
+    # aurora borealis
+    m "{i}Take it all in on your stride{/i}"
+
+    # at this time of day?
+    m "{i}It is ticking, falling down{/i}"
+
+    # aurora borealis
+    m "{i}Love forever, love has freely{/i}"
+
+    # a-aurora borealis
+    m "{i}Turned forever you and me{/i}"
+
+    # in this part of the country? Yes
+    m "{i}Windmill, windmill for the land{/i}"
+
+    m "Ehehe, don't mind me, I just wanted to sing out of the blue~"
     return
 
 label mas_back_to_spaceroom:
@@ -285,8 +377,9 @@ screen mas_show_islands():
         # This is so that everything transparent is invisible to the cursor.
         hotspot (11, 13, 314, 270) action Function(renpy.call, "mas_monika_upsidedownisland") # island upside down
         hotspot (403, 7, 868, 158) action Function(renpy.call, "mas_monika_sky") # sky
-        hotspot (699, 337, 170, 163) action Function(renpy.call, "mas_monika_glitchedmess") # glitched house
-        # hotspot (1, 606, 300, 100) action Function(renpy.call, "mas_back_to_spaceroom") # placeholder return
+        hotspot (699, 347, 170, 163) action Function(renpy.call, "mas_monika_glitchedmess") # glitched house
+        hotspot (622, 269, 360, 78) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
+        hotspot (716, 164, 205, 105) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
 
     hbox:
         yalign 0.98

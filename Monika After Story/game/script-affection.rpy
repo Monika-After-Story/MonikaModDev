@@ -45,6 +45,89 @@ init python:
     mas_curr_affection_group = store.mas_affection.G_NORMAL
 
 init -1 python in mas_affection:
+    import os
+    import datetime
+    import store.mas_utils as mas_utils
+    import store
+
+    # affection log rotate
+    #  we do rotations every 100 sessions
+    if store.persistent._mas_affection_log_counter is None:
+        # start counter if None
+        store.persistent._mas_affection_log_counter = 0
+
+    elif store.persistent._mas_affection_log_counter >= 100:
+        # if 100, do a logrotate
+        mas_utils.logrotate(
+            os.path.normcase(renpy.config.basedir + "/log/"),
+            "aff_log.txt"
+        )
+        store.persistent._mas_affection_log_counter = 0
+
+    else:
+        # otherwise increase counter
+        store.persistent._mas_affection_log_counter += 1
+
+    # affection log setup
+    log = renpy.renpy.log.open("log/aff_log", append=True)
+    log_open = log.open()
+    log.raw_write = True
+
+    # LOG messages
+    # [current datetime]: monikatopic | magnitude | prev -> new 
+    _audit = "[{0}]: {1} | {2} | {3} -> {4}\n"
+
+    # [current_datetime]: !FREEZE! | monikatopic | magnitude | prev -> new
+    _audit_f = "[{0}]: {5} | {1} | {2} | {3} -> {4}\n"
+    _freeze_text = "!FREEZE!"
+    _bypass_text = "!BYPASS!"
+
+    def audit(change, new, frozen=False, bypass=False, ldsv=None):
+        """
+        Audits a change in affection.
+
+        IN:
+            change - the amount we are changing by
+            new - what the new affection value will be
+            frozen - True means we were frozen, false measn we are not
+            bypass - True means we bypassed, false means we did not
+            ldsv - Set to the string to use instead of monikatopic
+                NOTE: for load / save operations ONLY
+        """
+        if ldsv is None:
+            piece_one = store.persistent.current_monikatopic
+        else:
+            piece_one = ldsv
+
+        if frozen:
+            
+            # decide what piece 5 is
+            if bypass:
+                piece_five = _bypass_text
+            else:
+                piece_five = _freeze_text
+                
+
+            audit_text = _audit_f.format(
+                datetime.datetime.now(),
+                piece_one,
+                change,
+                store.persistent._mas_affection["affection"],
+                new,
+                piece_five
+            )
+
+        else:
+            audit_text = _audit.format(
+                datetime.datetime.now(),
+                piece_one,
+                change,
+                store.persistent._mas_affection["affection"],
+                new
+            )
+
+        log.write(audit_text)
+
 
     # numerical constants of affection levels
     BROKEN = 1
@@ -576,13 +659,18 @@ default persistent._mas_pctadeibe = None
 
 init -10 python:
     def _mas_AffSave():
-        inum, nnum, dnum = mas_utils._splitfloat(_mas_getAffection())
+        aff_value = _mas_getAffection()
+        inum, nnum, dnum = mas_utils._splitfloat(aff_value)
         persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
         persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
         persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
 
+        # audit this change
+        store.mas_affection.audit(aff_value, aff_value, ldsv="SAVE")
+
 
     def _mas_AffLoad():
+        new_value = 0
         if (
                 persistent._mas_pctaieibe is not None
                 and persistent._mas_pctaneibe is not None
@@ -599,14 +687,19 @@ init -10 python:
                     mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
                 ))
                 if inum < 0:
-                    actual_value = inum - (nnum / dnum)
+                    new_value = inum - (nnum / dnum)
                 else:
-                    actual_value = inum + (nnum / dnum)
+                    new_value = inum + (nnum / dnum)
 
-                persistent._mas_affection["affection"] = actual_value
             except:
                 # dont break me yo
-                persistent._mas_affection["affection"] = 0
+                new_value = 0
+
+        # audit this change
+        store.mas_affection.audit(new_value, new_value, ldsv="LOAD")
+
+        # and set what we got
+        persistent._mas_affection["affection"] = new_value
 
 
 # need to have affection initlaized post event_handler
@@ -1020,18 +1113,23 @@ init 20 python:
             persistent._mas_affection["today_exp"] = 0
             mas_UnfreezeGoodAffExp()
 
+        # calculate new value
+        frozen = persistent._mas_affection_goodexp_freeze
+        change = (amount * modifier)
+        new_value = persistent._mas_affection["affection"] + change
+        if new_value > 1000000:
+            new_value = 1000000
+
+        # audit the attempted change
+        affection.audit(change, new_value, frozen, bypass)
+
         # if we're not freezed or if the bypass flag is True
-        if not persistent._mas_affection_goodexp_freeze or bypass:
-
+        if not frozen or bypass:
             # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] += (amount * modifier)
-
-            # it can't get higher than 1 million
-            if persistent._mas_affection["affection"] > 1000000:
-                persistent.mas_affection["affection"] = 1000000
+            persistent._mas_affection["affection"] = new_value
 
             if not bypass:
-                persistent._mas_affection["today_exp"] += (amount * modifier)
+                persistent._mas_affection["today_exp"] += change
                 if persistent._mas_affection["today_exp"] >= 7:
                     mas_FreezeGoodAffExp()
 
@@ -1057,14 +1155,19 @@ init 20 python:
 
         mas_apology_reason = reason
 
+        # calculate new vlaue
+        frozen = persistent._mas_affection_badexp_freeze
+        change = (amount * modifier)
+        new_value = persistent._mas_affection["affection"] - change
+        if new_value < -1000000:
+            new_value = -1000000
 
-        if not persistent._mas_affection_badexp_freeze:
+        # audit this attempted change
+        affection.audit(change, new_value, frozen)
+
+        if not frozen:
             # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] -= (amount * modifier)
-
-            # it can't get lower than -1 million
-            if persistent._mas_affection["affection"] < -1000000:
-                persistent.mas_affection["affection"] = -1000000
+            persistent._mas_affection["affection"] = new_value
 
             # Updates the experience levels if necessary.
             mas_updateAffectionExp()
@@ -1073,7 +1176,15 @@ init 20 python:
     def mas_setAffection(
             amount=persistent._mas_affection["affection"]
         ):
-        if not persistent._mas_affection_badexp_freeze and not persistent.mas_affection_goodexp_freeze:
+        frozen = (
+            persistent._mas_affection_badexp_freeze
+            or persistent._mas_affection_goodexp_freeze
+        )
+
+        # audit the change (or attempt)
+        affection.audit(amount, amount, frozen)
+
+        if not frozen:
             # Otherwise, use the value passed in the argument.
             persistent._mas_affection["affection"] = amount
             # Updates the experience levels if necessary.
