@@ -1,10 +1,6 @@
 # Module containing custom transform functions.
 # Last just because
 
-init -999 python:
-    # this is initially set to 60 seconds
-    renpy.not_infinite_loop(120)
-
 # special early access image accessors
 init -10 python:
 
