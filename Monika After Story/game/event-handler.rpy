@@ -1256,7 +1256,7 @@ label call_next_event:
     return False
 
 # keep track of number of pool unlocks
-define persistent._mas_pool_unlocks = 0
+default persistent._mas_pool_unlocks = 0
 
 # This either picks an event from the pool or events or, sometimes offers a set
 # of three topics to get an event from.
