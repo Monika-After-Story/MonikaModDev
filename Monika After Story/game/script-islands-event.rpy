@@ -150,7 +150,7 @@ label mas_monika_islands:
     $ _mas_island_window_open = True
     $ _mas_toggle_frame_text = "Close Window"
     $ _mas_island_shimeji =False
-    if renpy.random.randint(1,2) == 1:
+    if renpy.random.randint(1,100) == 1:
         $ _mas_island_shimeji = True
     show screen mas_show_islands()
     return
