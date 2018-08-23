@@ -357,6 +357,35 @@ label mas_island_shimeji:
     $ _mas_island_dialogue = False
     return
 
+label mas_island_bookshelf:
+    if _mas_island_dialogue:
+        return
+    $ _mas_island_dialogue = True
+
+    python:
+
+        _mas_bookshelf_events = ["mas_island_bookshelf1",
+                "mas_island_bookshelf2"]
+
+        renpy.call(renpy.random.choice(_mas_bookshelf_events))
+
+    $ _mas_island_dialogue = False
+    return
+
+label mas_island_bookshelf1:
+    m "Some of my favorite books are in there."
+    m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i} and a few others."
+    m "Maybe we can read them together sometime~"
+    return
+
+label mas_island_bookshelf2:
+    m "Reading outdoors is a nice change of pace, you know?"
+    m "I'd take a cool breeze over a stuffy library any day."
+    m "Maybe I should add a table underneath the Cherry Blossom tree."
+    m "It'd be nice to enjoy a cup of coffee with some snacks to go alongside my book reading."
+    m "That'd be wonderful~"
+    return
+
 label mas_back_to_spaceroom:
     if _mas_island_dialogue:
         return
@@ -396,12 +425,14 @@ screen mas_show_islands():
         hotspot (699, 347, 170, 163) action Function(renpy.call, "mas_monika_glitchedmess") # glitched house
         hotspot (622, 269, 360, 78) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
         hotspot (716, 164, 205, 105) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
+        hotspot (872, 444, 50, 30) action Function(renpy.call, "mas_island_bookshelf") # bookshelf
+        #(960, 441)
         if _mas_island_shimeji:
-            hotspot (920, 395, 30, 80) action Function(renpy.call, "mas_island_shimeji") # cherry blossom tree
+            hotspot (935, 395, 30, 80) action Function(renpy.call, "mas_island_shimeji") # Mini Moni
 
     if _mas_island_shimeji:
         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
-            xpos 920
+            xpos 935
             ypos 395
             zoom 0.5
 
