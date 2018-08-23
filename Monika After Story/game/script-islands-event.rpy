@@ -345,8 +345,16 @@ label mas_monika_daynight2:
     return
 
 label mas_island_shimeji:
-    m "Bye Mini me!"
+    if _mas_island_dialogue:
+        return
+    $ _mas_island_dialogue = True
+    m "Ah!"
+    m "How'd she get there?"
+    m "Give me a second, [player]..."
     $ _mas_island_shimeji = False
+    m "All done!"
+    m "Don't worry, I just moved her to a different place."
+    $ _mas_island_dialogue = False
     return
 
 label mas_back_to_spaceroom:
