@@ -670,6 +670,7 @@ init -10 python:
 
 
     def _mas_AffLoad():
+        new_value = 0
         if (
                 persistent._mas_pctaieibe is not None
                 and persistent._mas_pctaneibe is not None
