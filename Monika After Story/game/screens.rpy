@@ -10,7 +10,6 @@ init -1 python:
 init python in mas_layout:
     import store
     import store.mas_affection as aff
-    gender = renpy.game.persistent.gender 
 
     QUIT_YES = store.layout.QUIT_YES
     QUIT_NO = store.layout.QUIT_NO
@@ -39,7 +38,7 @@ init python in mas_layout:
     QUIT_BROKEN = "Just go."
     QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
 
-    if gender == "M" or gender == "F":
+    if store.persistent.gender == "M" or store.persistent.gender == "F":
         _usage_quit_aff = QUIT_NO_AFF_G
     else:
         _usage_quit_aff = QUIT_NO_AFF_GL
