@@ -154,7 +154,7 @@ label mas_monika_islands:
     if renpy.random.randint(1,100) == 1:
         $ _mas_island_shimeji = True
     show screen mas_show_islands()
-    return
+    return "nocontinue"
 
 label mas_monika_upsidedownisland:
     if _mas_island_dialogue:
