@@ -1719,4 +1719,4 @@ label greeting_ourreality:
     $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
     $ unlockEventLabel("mas_monika_islands")
     jump mas_monika_islands
-    return
+    return "nocontinue"
