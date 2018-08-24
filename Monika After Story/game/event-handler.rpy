@@ -1241,6 +1241,9 @@ label call_next_event:
             if "quit" in _return:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
+            
+            if "nocontinue" in _return:
+                return False
 
         show monika 1 at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
 
