@@ -7417,3 +7417,15 @@ label monika_whydoyouloveme:
         m 1hub "So keep your hopes up for me, [player]!"
 
     return
+    
+    init 5 python:
+     addEvent(Event(persistent.event_database,eventlabel="monika_lackofmotivation",category=['school'],prompt="How can I accomplish my goals?",pool=True))
+     
+label monika_lackofmotivation:
+        m 1eud "It's quite simple really, [player]..."
+        m 5esa "I'll be there along the way, helping you reach your goals"
+        m 4hub "ehehe~"
+        m 5eua "I hope that's all you will ever need, my love~"
+        
+    return
+        
