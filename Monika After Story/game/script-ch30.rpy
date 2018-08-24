@@ -468,6 +468,10 @@ label pick_a_game:
             if not renpy.seen_label("mas_piano_start"):
                 $ grant_xp(xp.NEW_GAME)
             call mas_piano_start from _call_play_piano
+        # "Movie":
+        #     if not renpy.seen_label("mas_monikamovie"):
+        #         $ grant_xp(xp.NEW_GAME)
+        #     call mas_monikamovie from _call_monikamovie
         "Nevermind":
             m "Alright. Maybe later?"
 
