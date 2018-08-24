@@ -145,6 +145,7 @@ label mas_monika_islands:
     $ mas_RaiseShield_core()
     $ mas_OVLHide()
     $ disable_esc()
+    $ mas_RaiseShield_dlg()
     $ store.mas_hotkeys.no_window_hiding = True
     $ _mas_island_dialogue = False
     $ _mas_island_window_open = True
@@ -398,6 +399,7 @@ label mas_back_to_spaceroom:
             $ mas_OVLShow()
             $ enable_esc()
             $ store.mas_hotkeys.no_window_hiding = False
+            $ mas_DropShield_dlg()
             m 1eua "I hope you liked it, [player]~"
         "No":
             m "Alright, please continue looking around~"
