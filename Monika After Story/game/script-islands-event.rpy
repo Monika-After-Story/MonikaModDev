@@ -165,14 +165,14 @@ label mas_monika_islands:
     if renpy.random.randint(1,100) == 1:
         $ _mas_island_shimeji = True
 
+    # double screen trick
+    show screen mas_islands_background
+
     # keep showing the event until the player wants to go
     while _mas_island_keep_going:
 
         # image map with the event
         call screen mas_show_islands()
-
-        # double screen trick
-        show screen mas_islands_background()
 
         if _return:
             # call label if we have one
@@ -395,7 +395,7 @@ label mas_island_bookshelf2:
     m "That'd be wonderful~"
     return
 
-screen mas_islands_background():
+screen mas_islands_background:
     if morning_flag:
         if _mas_island_window_open:
             add "mod_assets/location/special/without_frame.png"

@@ -1718,5 +1718,7 @@ label greeting_ourreality:
     # m 1hub "Hope you like it!"
     $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
     $ unlockEventLabel("mas_monika_islands")
-    call mas_monika_islands
+
+    # we can push here because of the slightly optimized call_next_event 
+    $ pushEvent("mas_monika_islands")
     return
