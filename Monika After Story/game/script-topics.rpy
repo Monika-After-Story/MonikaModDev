@@ -362,7 +362,7 @@ label monika_death:
     else:
         m 1eka "Thanks for hearing me out, [player]."
     return
-    
+
 # Do you love yourself
 default persistent._mas_pm_love_yourself = None
 
@@ -1374,6 +1374,7 @@ label monika_rain:
                 $ unlockEventLabel("monika_rain_holdme")
                 $ lockEventLabel("monika_rain_start")
                 $ lockEventLabel("monika_rain")
+                $ lockEventLabel("mas_monika_islands")
                 $ persistent._mas_likes_rain = True
 
             "I hate the rain":
@@ -1433,6 +1434,9 @@ label monika_rain_stop:
     $ unlockEventLabel("monika_rain_start")
     $ unlockEventLabel("monika_rain")
 
+    # unlock islands event if seen already
+    if seen_event("mas_monika_islands"):
+        $ unlockEventLabel("mas_monika_islands")
 
     return
 
@@ -1473,6 +1477,7 @@ label monika_rain_start:
     $ lockEventLabel("monika_rain_start")
     $ lockEventLabel("monika_rain")
     $ unlockEventLabel("monika_rain_stop")
+    $ lockEventLabel("mas_monika_islands")
 
     return
 
@@ -3383,7 +3388,7 @@ label monika_dunbar:
     m 1eka "It helped us meet though, so it can't be all bad."
     return
 
-# TODO: maybe rewrite? 
+# TODO: maybe rewrite?
 #   there is controversary to this topic
 #   Lets gather data first before decideing wehter or not to completely
 #   remove or keep
@@ -4970,7 +4975,7 @@ label monika_orchestra:
                     m 5eubfu "And just so you know, you can play with me anytime you like..."
                     m 5eubfb "Ehehe~"
 
-                $ persistent.instrument = True 
+                $ persistent.instrument = True
             elif tempinstrument == "harmonica":
                 m 1hub "Wow, I've always wanted to try the harmonica out!"
                 m 1eua "I would love to hear you play for me."
@@ -4978,8 +4983,8 @@ label monika_orchestra:
                 m 4esa "Although..."
                 m 2esa "Personally, I prefer the {cps=*0.7}{i}harmonika{/i}{/cps}..."
                 m 2eua "..."
-                m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"              
-                $ persistent.instrument = True            
+                m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"
+                $ persistent.instrument = True
             else:
                 m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
                 m 1eua "I would love to hear you play for me."
@@ -4987,7 +4992,7 @@ label monika_orchestra:
                 m 1wuo "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
                 m 1hua "Ehehe~"
                 $ persistent.instrument = True
-                
+
         "No.":
             $persistent.instrument = False
             m 1euc "I see..."
@@ -5843,8 +5848,8 @@ init 5 python:
 label monika_concerts:
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
     if (
-            renpy.seen_label("monika_jazz") 
-            and renpy.seen_label("monika_orchestra") 
+            renpy.seen_label("monika_jazz")
+            and renpy.seen_label("monika_orchestra")
             and renpy.seen_label("monika_rock")
             and renpy.seen_label("monika_vocaloid")
             and renpy.seen_label("monika_rap")
@@ -5856,19 +5861,19 @@ label monika_concerts:
     m 1hua "Just imagine us..."
     if renpy.seen_label("monika_orchestra"):
         m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
-        
+
     if renpy.seen_label("monika_rock"):
         m 1hub "Jumping up and down with the rest of the crowd to some good ol' Rock and Roll..."
-        
+
     if renpy.seen_label("monika_jazz"):
         m 1eua "Grooving to some smooth jazz..."
-        
+
     if renpy.seen_label("monika_rap"):
         m 1hksdlb "Trying to keep up with a real rapper..."
-        
+
     if renpy.seen_label("monika_vocaloid"):
         m 1hua "Waving our glowsticks at Miku Expo..."
-        
+
     m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
     m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
     m 2lksdla "Although, ticket prices these days are kind of expensive..."
@@ -7376,10 +7381,10 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # default action is to loop here
     jump monika_dating_startdate_confirm.loopstart
-   
+
 init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
-     
+
 label monika_whydoyouloveme:
 
     if mas_isMoniBroken(lower=True):
