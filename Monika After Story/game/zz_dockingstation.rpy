@@ -822,6 +822,16 @@ init -500 python in mas_dockstat:
     blocksize = 4 * (1024**2)
     b64_blocksize = 5592408 # (above size converted to base64)
 
+    ## package constants for the state of monika
+    # Monika not found
+    MAS_PKG_NF = 1
+
+    # Monika found
+    MAS_PKG_F = 2
+
+    # Not our monika was found
+    MAS_PKG_FO = 3
+
 init python in mas_dockstat:
     import store
 
@@ -865,6 +875,7 @@ init 200 python in mas_dockstat:
     # lets use this store to handle generation of docking station files
     import store
     import store.mas_utils as mas_utils
+    import store.mas_sprites as mas_sprites
     from cStringIO import StringIO as fastIO
     import os
 
@@ -904,11 +915,12 @@ init 200 python in mas_dockstat:
             first_sesh_dt = store.persistent.sessions.get("first_session",None)
 
             if first_sesh_dt is not None:
-                first_sesh = "".join([
-                    num_5.format(first_sesh_dt.year),
-                    num_2.format(first_sesh_dt.month),
-                    num_2.format(first_sesh_dt.day)
-                ])
+                first_sesh = str(first_sesh_dt)
+#                first_sesh = "".join([
+#                    num_5.format(first_sesh_dt.year),
+#                    num_2.format(first_sesh_dt.month),
+#                    num_2.format(first_sesh_dt.day)
+#                ])
 
         if store.persistent._mas_affection is not None:
             _affection = store.persistent._mas_affection.get("affection", None)
@@ -923,9 +935,8 @@ init 200 python in mas_dockstat:
             store.persistent._mas_monika_nickname,
             affection_val,
             store.monika_chr.hair,
-            store.monika_chr.clothes,
-            END_DELIM
-        ]))
+            store.monika_chr.clothes
+        ]) + END_DELIM)
 
         ### monikachr
         moni_chr = None
@@ -1050,18 +1061,87 @@ init 200 python in mas_dockstat:
         Attempts to find monika in the giving docking station
 
         RETURNS: tuple of the following format:
-            [0]: MAS_DS_* constants depending on the state of monika
-                NOTE: this is bit-based
-            [1]: cStringIO buffer of the readable data if we found monika
+            [0]: MAS_PKG_* constants depending on the state of monika
+            [1]: string of important data, if we found a monika. Will be empty
+                if no monika or data found
         """
-        moni_found = dockstat.signForPackage(
+        END_DELIM = "|||"
+
+        status, first_line = dockstat.smartUnpack(
             "monika",
             store.persistent._mas_moni_chksum,
+            one_line=True,
             bs=b64_blocksize
         )
 
-        if moni_found == -1:
+        if (status & (dockstat.PKG_E | dockstat.PKG_N)) > 0:
+            # we had an error in reading, therefore we cant trust the data.
+            # OR, we didnt find the package.
+            # in either case, just say we didnt find monika
+            return (MAS_PKG_NF, "")
+
+        # otherwise, we certainly found monika
+        # lets parse monika's data
+
+        # reset this buffer
+        first_line.seek(0)
+
+        # we only want the data portion that's likely to contain our stuff
+        real_data = first_line.read(dockstat.READ_SIZE)
+        first_line.close()
+
+        # and see if this does contain our stuff
+        real_data, sep, garbage = real_data.partition(END_DELIM)
+
+        # and return results
+        if len(sep) == 0:
+            # no data found, assume a missing monika
+            return (MAS_PKG_NF, "")
+
+        if (status & dockstat.PKG_C) > 0:
+            # we found a different monika (or corrupted monika)
+            return (MAS_PKG_FO, real_data)
+
+        # otherwise, we have a matching monika!
+        return (MAS_PKG_F, real_data)
+
+
+    def parseMoniData(data_line):
+        """
+        Parses monika data into its components
+
+        NOTE: all exceptions are logged
+
+        IN:
+            data_line - PIPE delimeted data line
+
+        RETURNS: list of the following format:
+            [0]: datetime of first sessin
+            [1]: playername
+            [2]: monika's nickname (could be Monika)
+            [3]: affection, integer value (dont really rely on this for much)
+            [4]: monika's hair setting
+            [5]: monika's clothes setting
             
+            OR None if general (not item-specific) parse errors occurs)
+        """
+        try:
+            data_list = data_line.split("|")
+            
+            # now parse what needs to be parsed
+            data_list[0] = mas_utils.tryparsedt(data_list[0])
+            data_list[3] = mas_utils.tryparseint(data_list[3], 0)
+            data_list[4] = mas_sprites.tryparsehair(data_list[4])
+            data_list[5] = mas_sprites.tryparseclothes(data_list[5])
+
+            # and return only the parts we want
+            return data_list[:6]
+
+        except Exception as e:
+            mas_utils.writelog("[ERROR]: Moni Data parse fail: {0}\n".format(
+                str(e)
+            ))
+            return None
 
 
 ### Docking station labels regarding monika leaving the station
