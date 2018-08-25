@@ -247,6 +247,51 @@ init -5 python in mas_sprites:
         "test"
     ]
 
+    # list of available hairstyles
+    HAIRS = [
+        "def", # ponytail
+        "down" # hair down
+    ]
+
+    # list of available clothes
+    CLOTHES = [
+        "def" # school uniform
+    ]
+
+    # tryparses for the hair and clothes
+    def tryparsehair(_hair, default="def"):
+        """
+        Returns the given hair if it exists, or the default if not exist
+
+        IN:
+            _hair - hair to check for existence
+            default - default if hair dont exist
+
+        RETURNS:
+            the hair if it exists, or default if not
+        """
+        if _hair in HAIRS:
+            return _hair
+
+        return default
+
+    def tryparseclothes(_clothes, default="def"):
+        """
+        Returns the given clothes if it exists, or the default if not exist
+
+        IN:
+            _clothes - clothes to check for existence
+            default - default if clothes dont exist
+
+        RETURNS:
+            the clothes if it exists, or default if not
+        """
+        if _clothes in CLOTHES:
+            return _clothes
+
+        return default
+
+
     ## Accessory dictionary
     ACS_MAP = dict()
 
