@@ -395,16 +395,6 @@ label mas_island_bookshelf2:
     m "That'd be wonderful~"
     return
 
-label mas_back_to_spaceroom:
-    menu:
-        "Would you like to return, [player]?"
-        "Yes":
-            $ _mas_island_keep_going = False
-        "No":
-            m "Alright, please continue looking around~"
-
-    return
-
 screen mas_islands_background():
     if morning_flag:
         if _mas_island_window_open:
