@@ -21,7 +21,7 @@ init -1 python in mas_greetings:
     TYPE_GO_SOMEWHERE = "go_somewhere"
 
     # custom greeting functions
-    def selectGreeting(type=None):
+    def selectGreeting(_type=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
@@ -45,13 +45,13 @@ init -1 python in mas_greetings:
 
 
         # check first if we have to select from a special type
-        if type is not None:
+        if _type is not None:
 
             # filter them using the type as filter
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
                 unlocked=True,
-                category=(True,[type])
+                category=(True,[_type])
             )
 
         else:
