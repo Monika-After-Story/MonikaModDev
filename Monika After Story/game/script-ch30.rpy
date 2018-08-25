@@ -586,6 +586,17 @@ label ch30_autoload:
             ]
 
     # check if we took monika out
+    # NOTE:
+    #   if we find our monika, then we skip greeting logics and use a special
+    #       returning home greeting. This completely bypasses the system
+    #       since we should actively get this, not passively, because we assume
+    #       player took monika out
+    #   if we find a different monika, we still skip greeting logic and use
+    #       a differnet, who is this? kind of monika greeting
+    #   if we dont find a monika, we do the empty desk + monika checking flow
+    #       this should skip greetings entirely as well. If monika is returnd
+    #       during this flow, we have her say the same shit as the returning
+    #       home greeting.
     if persistent._mas_moni_chksum is not None:
         # we took monika out.
         python:
@@ -663,11 +674,6 @@ label ch30_autoload:
         $ mas_skip_visuals = True
         $ persistent.closed_self = True
 
-
-    if not mas_skip_visuals:
-        $ mas_startup_song()
-
-    window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
 
@@ -712,6 +718,9 @@ label ch30_autoload:
             # Grant bad exp for closing the game incorrectly.
             mas_loseAffection(modifier=2, reason="closing the game on me")
 
+label ch30_post_greeting_check:
+    # this label skips greeting selection as well as exp checks for game close
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
@@ -730,8 +739,11 @@ label ch30_autoload:
     else:
         $ config.allow_skipping = False
 
+    window auto
+
     if not mas_skip_visuals:
         $ set_keymaps()
+        $ mas_startup_song()
 
         # rain check
         if mas_shouldRain():
