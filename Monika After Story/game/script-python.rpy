@@ -158,6 +158,7 @@ init 5 python:
 label monika_ptod_tip001:
     
     # speical stuff for unstablers
+    # TODO: remove this in 086
     $ tip_ev = mas_getEV("monika_ptod_tip001")
     if tip_ev.unlock_date is None:
         $ import datetime
