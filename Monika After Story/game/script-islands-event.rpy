@@ -145,14 +145,30 @@ label mas_monika_islands:
     $ mas_RaiseShield_core()
     $ mas_OVLHide()
     $ disable_esc()
-    $ store.mas_hotkeys.no_window_hiding = True
+    $ renpy.store.mas_hotkeys.no_window_hiding = True
     $ _mas_island_dialogue = False
+    $ _mas_island_keep_going = True
     $ _mas_island_window_open = True
     $ _mas_toggle_frame_text = "Close Window"
     $ _mas_island_shimeji =False
     if renpy.random.randint(1,100) == 1:
         $ _mas_island_shimeji = True
-    show screen mas_show_islands()
+    while _mas_island_keep_going:
+        call screen mas_show_islands()
+        show screen mas_islands_background()
+
+        if _return:
+            call expression _return
+        else:
+            $ _mas_island_keep_going = False
+
+    hide screen mas_islands_background
+    $ mas_DropShield_core()
+    $ mas_OVLShow()
+    $ enable_esc()
+    $ store.mas_hotkeys.no_window_hiding = False
+
+    m 1eua "I hope you liked it, [player]~"
     return
 
 label mas_monika_upsidedownisland:
@@ -393,16 +409,23 @@ label mas_back_to_spaceroom:
     menu:
         "Would you like to return, [player]?"
         "Yes":
-            hide screen mas_show_islands
-            $ mas_DropShield_core()
-            $ mas_OVLShow()
-            $ enable_esc()
-            $ store.mas_hotkeys.no_window_hiding = False
-            m 1eua "I hope you liked it, [player]~"
+            $ _mas_island_keep_going = False
         "No":
             m "Alright, please continue looking around~"
     $ _mas_island_dialogue = False
     return
+screen mas_islands_background():
+    if morning_flag:
+        if _mas_island_window_open:
+            add "mod_assets/location/special/without_frame.png"
+        else:
+            add "mod_assets/location/special/with_frame.png"
+    else:
+        if _mas_island_window_open:
+            add "mod_assets/location/special/night_without_frame.png"
+        else:
+            add "mod_assets/location/special/night_with_frame.png"
+
 
 screen mas_show_islands():
     style_prefix "island"
@@ -420,15 +443,15 @@ screen mas_show_islands():
 
         #alpha False
         # This is so that everything transparent is invisible to the cursor.
-        hotspot (11, 13, 314, 270) action Function(renpy.call, "mas_monika_upsidedownisland") # island upside down
-        hotspot (403, 7, 868, 158) action Function(renpy.call, "mas_monika_sky") # sky
-        hotspot (699, 347, 170, 163) action Function(renpy.call, "mas_monika_glitchedmess") # glitched house
-        hotspot (622, 269, 360, 78) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
-        hotspot (716, 164, 205, 105) action Function(renpy.call, "mas_monika_cherry_blossom_tree") # cherry blossom tree
-        hotspot (872, 444, 50, 30) action Function(renpy.call, "mas_island_bookshelf") # bookshelf
+        hotspot (11, 13, 314, 270) action Return("mas_monika_upsidedownisland") # island upside down
+        hotspot (403, 7, 868, 158) action Return("mas_monika_sky") # sky
+        hotspot (699, 347, 170, 163) action Return("mas_monika_glitchedmess") # glitched house
+        hotspot (622, 269, 360, 78) action Return("mas_monika_cherry_blossom_tree") # cherry blossom tree
+        hotspot (716, 164, 205, 105) action Return("mas_monika_cherry_blossom_tree") # cherry blossom tree
+        hotspot (872, 444, 50, 30) action Return("mas_island_bookshelf") # bookshelf
         #(960, 441)
         if _mas_island_shimeji:
-            hotspot (935, 395, 30, 80) action Function(renpy.call, "mas_island_shimeji") # Mini Moni
+            hotspot (935, 395, 30, 80) action Return("mas_island_shimeji") # Mini Moni
 
     if _mas_island_shimeji:
         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
@@ -441,7 +464,7 @@ screen mas_show_islands():
         xalign 0.96
         if not _mas_island_dialogue:
             textbutton _mas_toggle_frame_text action [ToggleVariable("_mas_island_window_open"),ToggleVariable("_mas_toggle_frame_text","Open Window", "Close Window") ]
-            textbutton "Go Back" action Function(renpy.call, "mas_back_to_spaceroom")
+            textbutton "Go Back" action Return(False)
 
 
 # Defining a new style for buttons, because other styles look ugly
