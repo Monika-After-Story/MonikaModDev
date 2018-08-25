@@ -592,7 +592,7 @@ label ch30_autoload:
             found_moni = mas_docking_station.signForPackage(
                 "monika",
                 persistent._mas_moni_chksum,
-                bs=store.mas_dockstat.blocksize
+                bs=store.mas_dockstat.b64_blocksize
             )
 
         if not found_moni:

@@ -87,9 +87,24 @@ init -45 python:
         ERR = "[ERROR] {0} | {1} | {2}\n"
         ERR_GET = "Failure getting package '{0}'."
         ERR_OPEN = "Failure opening package '{0}'."
+        ERR_READ = "Failure reading package '{0}'."
         ERR_SEND = "Failure sending package '{0}'."
         ERR_SIGN = "Failure to request signature for package '{0}'."
         ERR_SIGNP = "Package '{0}' does not match checksum."
+
+        ## constants returned from smartUnpack (status constants)
+        ## these are bit-based
+        # errored when we were tryingto red package
+        PKG_E = 1
+
+        # if we found the package
+        PKG_F = 2
+
+        # did not find package at all
+        PKG_N = 4
+
+        # package had bad checksum (corrupted)
+        PKG_C = 8
 
 
         def __init__(self, station=None):
@@ -394,6 +409,112 @@ init -45 python:
                     package.close()
 
             return 0
+
+
+        def smartUnpack(self, 
+                    package_name, 
+                    pkg_slip, 
+                    contents=None, 
+                    one_line=False,
+                    b64=True,
+                    bs=None
+            ):
+            """
+            Combines parts of signForPackage and _unpack in a way that is very
+            useful for us
+
+            NOTE: all exceptions are logged
+
+            NOTE: if contents was passed in an error occurred (PKG_E will be in
+                the return bits), then the contents of contents is undefined.
+
+            IN:
+                package_name - name of the package to read in
+                pkg_slip - chksum to check package with (considerd PRE b64 decode)
+                contents - buffer to save contents of package.
+                    If None, we save contents to a StringIO object and return
+                    that
+                    (Default: None)
+                one_line - True means we only retrieve a single line from the
+                    package
+                    (Default: False)
+                b64 - True means the package is encoded in base64
+                    (Default: True)
+                bs - blocksize to use. By default, we use B64_READ_SIZE
+                    (Default: None)
+
+            RETURNS: tuple of the following format
+                [0]: PKG_* bits constants highlighting success/failure status
+                [1]: buffer containing the contents of the package.
+                    If contents is not None, this is the same reference as
+                    contents.
+            """
+            # First, lets try and get the package
+            package = self.getPackage(package_name)
+
+            # no package? this should already have been logged, so lets just
+            # return appropriate stuff
+            if package is None:
+                return (self.PKG_N, None)
+
+            # otherwise we have the package. Lets setup buffers and blocksizes
+            if bs is None:
+                bs = self.B64_READ_SIZE
+
+            # internalize contents so we can do proper file closing
+            if contents is None:
+                _contents = self.slowIO()
+            else:
+                _contents = contents
+
+            # as well as the return bytes
+            ret_val = self.PKG_F
+
+            # and our pkgslip checker
+            checklist = self.hashlib.sha256()
+
+            # and attempt to decode package
+            keep_saving = True
+            try:
+                # iterator for looping
+                _box = MASDockingStation._blockiter(package, bs)
+
+                # and now we look. However we only save what is asked of us
+                for packed_item in _box:
+                    checklist.update(packed_item)
+
+                    if keep_saving:
+                        # writing out contents to buffer
+                        _contents.write(self.base64.b64decode(packed_item))
+
+                        if one_line:
+                            # stop saving contents if we only want 1 line
+                            keep_saving = False
+
+            except Exception as e:
+                mas_utils.writelog(self.ERR.format(
+                    self.ERR_READ.format(package_name),
+                    str(self),
+                    str(e)
+                ))
+
+                if contents is None:
+                    # only close our internal contents if we made it
+                    _contents.close()
+
+                return (ret_val | self.PKG_E, None)
+
+            finally:
+                # always close package after this
+                package.close()
+
+            # now to check checksums
+            if checklist.hexdigest() != pkg_slip:
+                # no match? uh oh, lets return stuff anyway
+                return (ret_val | self.PKG_C, _contents)
+
+            # otherwise, we got a match so
+            return (ret_val, _contents)
 
 
         def unpackPackage(self, package, pkg_slip=None):
@@ -924,6 +1045,25 @@ init 200 python in mas_dockstat:
         return moni_sum
 
 
+    def findMonika(dockstat):
+        """
+        Attempts to find monika in the giving docking station
+
+        RETURNS: tuple of the following format:
+            [0]: MAS_DS_* constants depending on the state of monika
+                NOTE: this is bit-based
+            [1]: cStringIO buffer of the readable data if we found monika
+        """
+        moni_found = dockstat.signForPackage(
+            "monika",
+            store.persistent._mas_moni_chksum,
+            bs=b64_blocksize
+        )
+
+        if moni_found == -1:
+            
+
+
 ### Docking station labels regarding monika leaving the station
 
 # call this label when monika is ready to leave the station
@@ -1013,5 +1153,4 @@ label mas_dockstat_empty_desk:
         # monika returned dialogue
         # TODO: jump to that correct monika returned stuff
     return
-
 
