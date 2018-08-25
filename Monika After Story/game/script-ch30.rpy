@@ -943,9 +943,8 @@ label ch30_reset:
             lockEventLabel("monika_rain_stop")
             # unlock islands event if seen already
             if store.seen_event("mas_monika_islands"):
-                if not store.mas_cannot_decode_islands:
-                    # we can unlock the topic
-                    store.unlockEventLabel("mas_monika_islands")
+                # we can unlock the topic
+                store.unlockEventLabel("mas_monika_islands")
 #            lockEventLabel("monika_rain_holdme")
 
         if mas_isMoniNormal(higher=True):
