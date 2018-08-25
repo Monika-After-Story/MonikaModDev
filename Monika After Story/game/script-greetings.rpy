@@ -1655,7 +1655,7 @@ init 5 python:
         del rules
 
 
-init 900 python in mas_delact: 
+init 900 python in mas_delact:
     # this greeting requires a delayed action, since we cannot ensure that
     # the sprites for this were decoded correctly
 
@@ -1670,7 +1670,7 @@ init 900 python in mas_delact:
             store.EV_ACT_UNLOCK,
             store.MAS_FC_START
         )
-        
+
 
 label greeting_ourreality:
     m 1hub "Hi, [player]!"
@@ -1718,5 +1718,5 @@ label greeting_ourreality:
     # m 1hub "Hope you like it!"
     $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
     $ unlockEventLabel("mas_monika_islands")
-    jump mas_monika_islands
+    call mas_monika_islands
     return
