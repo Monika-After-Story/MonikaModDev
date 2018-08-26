@@ -43,6 +43,8 @@ label gender:
             m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
     $evhand.event_database["gender_redo"].unlocked = True
+    $evhand.event_database["gender_redo"].pool = True
+
     return
 
 init 5 python:
@@ -610,11 +612,12 @@ label mas_crashed_long_uthere:
     label .end:
         m "Anyway..."
         m 1eua "What should we do today?"
-        $ mas_apology_reason = "the game crashing"
+        return
 
 
 ### post crashed flow
 label mas_crashed_post:
+    $ mas_apology_reason = "the game crashing"
     # but this needs to do some things
     python:
         enable_esc()
@@ -679,4 +682,4 @@ label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4lksdlb "It's my home, after all..."
-    $ mas_apology_reason = "the game crashing"
+    return
