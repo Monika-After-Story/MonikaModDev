@@ -585,6 +585,9 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
+    # set this to None for now
+    $ selected_greeting = None
+
     # check if we took monika out
     # NOTE:
     #   if we find our monika, then we skip greeting logics and use a special
@@ -600,20 +603,23 @@ label ch30_autoload:
     if persistent._mas_moni_chksum is not None:
         # we took monika out.
         python:
-            found_moni = mas_docking_station.signForPackage(
-                "monika",
-                persistent._mas_moni_chksum,
-                bs=store.mas_dockstat.b64_blocksize
+            import store.mas_dockstat as mas_dockstat
+            moni_status, moni_data = mas_dockstat.findMonika(
+                mas_docking_station
             )
 
-        if not found_moni:
-            # monika not here? we need an empty desk scene then
-            pass
+        if moni_status == mas_dockstat.MAS_PKG_F:
+            # we found monika, jump to appropriate flow
+            jump mas_dockstat_found_monika
 
+        if moni_status == mas_dockstat.MAS_PKG_FO:
+            # we found a different monika, jump to the different monika 
+            # greeting
+            jump mas_dockstat_different_monika
 
+        # otherwise, assume we did not find monika
+        jump mas_dockstat_empty_desk
 
-
-    $ selected_greeting = None
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
@@ -720,6 +726,7 @@ label ch30_autoload:
 
 label ch30_post_greeting_check:
     # this label skips greeting selection as well as exp checks for game close
+    # we assume here that you set selected_greeting if you needed to
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)

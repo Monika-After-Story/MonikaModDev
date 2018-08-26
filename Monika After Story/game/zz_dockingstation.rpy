@@ -838,6 +838,9 @@ init python in mas_dockstat:
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
 
+    # previous vars dict
+    previous_vars = dict()
+
     def setMoniSize(tdelta):
         """
         Sets the appropriate persistent size for monika
@@ -1233,7 +1236,12 @@ label mas_dockstat_first_time_goers:
 # empty desk. This one includes file checking every 1 seconds for monika
 label mas_dockstat_empty_desk:
     call spaceroom(hide_monika=True)
-    show emptydesk zorder MAS_MONIKA_Z at i11
+
+    # empty desk should be a zorder lower so we can pop monika over it
+    $ ed_zorder = MAS_MONIKA_Z - 1
+    show emptydesk zorder ed_zorder at i11
+
+label mas_dockstat_empty_desk_loop:
 
     python:
         # setup ui hiding
@@ -1244,33 +1252,99 @@ label mas_dockstat_empty_desk:
         mas_enable_quit()
 
         # now just check for monika
-        moni_found = None
-        while moni_found is None:
-            moni_found = mas_docking_station.signForPackage(
-                "monika", 
-                persistent._mas_moni_chksum,
-                bs=mas_dockstat.blocksize
+        moni_found = False
+        while not moni_found:
+            # wait a second
+            renpy.pause(1.0, hard=True)
+
+            moni_status, moni_data = mas_dockstat.findMonika(
+                mas_docking_station
             )
 
-            if moni_found == -1 or moni_found == 0:
-                # no monika found
-                moni_found = None
+            if moni_status == mas_dockstat.MAS_PKG_FO:
+                # found a different monika, jump to the different monika
+                # greeting
+                moni_found = True
 
-                # wait a second
-                renpy.pause(1.0, hard=True)
+                # with a different monika, she won't care if you quit, but
+                # if you do, it's game over for this monika
 
-            # otherwise, we found monika, so leave moni_found not None so
-            # we can parse what to do next
+                renpy.jump("mas_dockstat_different_monika")
 
-        if moni_found == -2:
-            # a monika is in here, but its not ours
-            # TODO: read in this monika and setup some temporary vars
-            # then we need to jump to an appropraite flow
-            pass
+            if moni_status = mas_dockstat.MAS_PKG_F:
+                # found our monika, jump to the found monika greeting
+                moni_found = True
 
-        # otherwise, we found monika
-        # this means we have returned monika here. Let's go to her
-        # monika returned dialogue
-        # TODO: jump to that correct monika returned stuff
-    return
+                # but we gotta clear some of the ui hiding stuff
+                enable_esc()
+                mas_disable_quit()
 
+                renpy.jump("mas_dockstat_found_monika")
+
+            # otherwise we still havent' found monika, so lets just continue
+            # the loop
+
+    # we should never, ever reach here. If we do, just do a straight quit
+    jump _quit
+
+define mas_dockstat.different_moni_flow = False
+
+# different monika found
+label mas_dockstat_different_monika:
+    # ASSUMES:
+    #   moni_data - data line of the monika we read in. Would need parsing
+
+    # NOTE: we also need to save current vars so we dont have issues
+    $ mas_dockstat.previous_vars["m_name"] = persistent._mas_monika_nickname
+    $ mas_dockstat.previous_vars["playername"] = persistent.playername
+    $ mas_dockstat.previous_vars["hair"] = persistent._mas_monika_hair
+    $ mas_dockstat.previous_vars["clothes"] = persistent._mas_monika_clothes
+
+    # we set this to true so in QUIT we can delete monika if you quit before
+    # resolving this monika situation (as well as reset some previous vars)
+    $ mas_dockstat.different_moni_flow = True
+
+    # NOTE: in this case, we need to completely avoid the traditional
+    # spaceroom logic since we need to assume that this monika is different
+    # this means the greeting is entirely held in here.
+
+    # first, lets split the data and get some meaningful results
+    $ moni_data = mas_dockstat.parseMoniData(moni_data)
+
+    if moni_data is None:
+        # bad data means we actually have a corrupted monika. Let's delete her
+        # and return to empty desk
+        $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+        $ mas_dockstat.different_moni_flow = False
+        jump mas_dockstat_empty_desk
+
+    # otherwise, we have a monika. Let's setup some vars and do some dialgoue
+    # NOTE: some key vars have been overwritten here. Please watch out for the
+    #   player - player's name
+    #   m_name - monika's name
+    $ moni_sesh, player, m_name, aff_val, moni_hair, moni_clothes = moni_data
+    $ monika_chr.change_outfit(moni_clothes, moni_hair)
+
+    # and then we can begin talking
+    show monika 1ekd zorder MAS_MONIKA_Z at t11
+
+    # 1 line of dialgoue before we remove the empty desk
+    m "[player]?" 
+    hide emptydesk
+
+    m "Wait, you're not [player]."
+
+
+
+
+    
+
+    jump ch30_post_greeting_check
+
+# found our monika
+label mas_dockstat_found_monika:
+    # ASSUMES:
+    #   moni_data - data line of the monika we read in. Would need parsing
+
+
+    jump ch30_post_greeting_check
