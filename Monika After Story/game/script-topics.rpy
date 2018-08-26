@@ -299,7 +299,7 @@ init 11 python:
 #fields you don't plan to use
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_god',
-                                                            prompt="Thoughts on God.",
+                                                            prompt="Thoughts on God",
                                                             label=None,
                                                             category=['philosophy'],
                                                             random=True,
@@ -410,7 +410,7 @@ label monika_selfesteem:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sayori",category=['club members'],prompt="Sayori regrets.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_sayori",category=['club members'],prompt="Sayori regrets",random=True))
 
 label monika_sayori:
     m 2euc "I was thinking about Sayori earlier..."
@@ -450,7 +450,7 @@ label monika_sayori:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_japan",category=['ddlc'],prompt="DDLC's Setting.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_japan",category=['ddlc'],prompt="DDLC's setting",random=True))
 
 label monika_japan:
     m 3eud "By the way, there's something that's been bothering me..."
@@ -477,7 +477,7 @@ label monika_japan:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_high_school",category=['advice','school'],prompt="High School.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_high_school",category=['advice','school'],prompt="High school",random=True))
 
 label monika_high_school:
     m 4eua "You know, high school is a really turbulent time in a lot of people's lives."
@@ -524,7 +524,7 @@ label monika_high_school:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_nihilism",category=['philosophy'],prompt="Nihilism.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_nihilism",category=['philosophy'],prompt="Nihilism",random=True))
 
 label monika_nihilism:
     m 2eud "Do you ever just feel like there's no real reason for you to be alive?"
@@ -707,7 +707,7 @@ label monika_secrets:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_color",category=['monika'],prompt="Favorite color.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_color",category=['monika'],prompt="Favorite color",random=True))
 
 label monika_color:
     m 3eua "Hey, what's your favorite color?"
@@ -1039,7 +1039,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika'],prompt="Wearing other clothes",random=True))
 
 label monika_outfit:
-    m 1lsc "You know, I'm kind of jealous that everyone else in the club had scenes outside of school too..."
+    m 1lsc "You know, I'm kind of jealous that everyone else in the club had scenes outside of school..."
     m 1lfc "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
     m 2euc "It's kind of a shame..."
     m 2eka "I would have loved to wear some cute clothes for you."
@@ -1087,7 +1087,7 @@ label monika_horror:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rap",category=['literature'],prompt="Rap music.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_rap",category=['literature'],prompt="Rap music",random=True))
 
 label monika_rap:
     m 1hua "You know what's a neat form of literature?"
@@ -1128,7 +1128,7 @@ label monika_wine:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_date",category=['romance'],prompt="Romantic date.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_date",category=['romance'],prompt="Romantic date",random=True))
 
 label monika_date:
     m 1hub "I've been imagining all the romantic things we could do if we went on a date..."
@@ -1304,7 +1304,7 @@ label monika_creative:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_simulated",category=['philosophy'],prompt="Simulated Reality",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_simulated",category=['philosophy'],prompt="Simulated reality",random=True))
 
 
 label monika_simulated:
@@ -2666,7 +2666,7 @@ label monika_images:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself.",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_herself",category=['monika','ddlc'],prompt="Tell me about yourself",pool=True))
 
 label monika_herself:
     m 1euc "What's there really to say about myself that you don't know already?"
@@ -5155,7 +5155,7 @@ label monika_writingtip5:
      return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self harm",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self-harm",random=True))
 
 label monika_selfharm:
     m 1lksdlc "Hey [player]..."
@@ -5435,7 +5435,7 @@ label monika_system_charging:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired",random=True))
 
 label monika_sleep:
     m 1euc "[player], do you get good sleep?"
@@ -5651,7 +5651,7 @@ label monika_smoking:
     return "derandom"
 
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road Trip",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_cartravel",category=['romance'],prompt="Road trip",random=True))
 
 label monika_cartravel:
     m 1euc "[player], something has been on my mind lately..."
@@ -5843,7 +5843,7 @@ label monika_asks_family:
     return "derandom"
 
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music Concerts",random=True))
+     addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music concerts",random=True))
 
 label monika_concerts:
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
@@ -5948,7 +5948,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_beach",
             category=['misc'],
-            prompt="The beach.",
+            prompt="The beach",
             random=True
         )
     )
@@ -5994,7 +5994,7 @@ label monika_beach:
     return "derandom"
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you'],pool=True,unlocked=True))
+   addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
 
 label monika_playerapologizes:
     # if there's no reason to apologize
@@ -6275,7 +6275,7 @@ label monika_prom:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be Careful",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be careful",random=True))
 
 label monika_careful:
     m 1lsc "Hey, [player]..."
@@ -6309,7 +6309,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_natsuki_letter",
             category=['club members'],
-            prompt="Natsuki's Letter",
+            prompt="Natsuki's letter",
             random=True
         )
     )
@@ -6350,7 +6350,7 @@ default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep Concern",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -6778,7 +6778,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_familygathering",
             category=['you'],
-            prompt="Family Gatherings",
+            prompt="Family gatherings",
             random=True
         )
     )
@@ -6958,7 +6958,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_citizenship",
             category=['monika'],
-            prompt="Happy Ever After?",
+            prompt="Happy ever after?",
             random=True
         )
     )
