@@ -6545,7 +6545,7 @@ label monika_yellowwp:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water Conservation",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water conservation",random=True))
 
 label monika_savingwater:
     m 1euc "[player], Have you ever stopped and wondered how much water people use everyday?"
