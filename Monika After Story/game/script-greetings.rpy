@@ -17,7 +17,7 @@ init -1 python in mas_greetings:
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
 
-    ### NOTE: there can only be 1 event with this
+    ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
 
     # custom greeting functions

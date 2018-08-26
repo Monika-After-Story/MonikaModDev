@@ -876,8 +876,11 @@ init 200 python in mas_dockstat:
     import store
     import store.mas_utils as mas_utils
     import store.mas_sprites as mas_sprites
+    import store.mas_greetings as mas_greetings
+    import store.evhand as evhand
     from cStringIO import StringIO as fastIO
     import os
+    import random
 
     def generateMonika(dockstat):
         """
@@ -1142,6 +1145,43 @@ init 200 python in mas_dockstat:
                 str(e)
             ))
             return None
+
+
+    def selectReturnHomeGreeting(_type=None):
+        """
+        Selects the correct Return Home greeting.
+        Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
+
+        NOTE: this calls mas_getEV, so do NOT run this function prior to 
+            runtime
+        
+        IN:
+            _type - list of additoinal mas_greetings types to search on
+
+        RETURNS:
+            Event object representing the selected greeting
+        """
+        if _type is not None:
+            greeting_types = list(_type)
+        else:
+            greeting_types = list()
+
+        # add the return home type
+        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+
+        # and now we need to find greetings that fit
+        rethome_greetings = store.Event.filterEvents(
+            evhand.greeting_database,
+            unlocked=True,
+            category=(False, greeting_types)
+        )
+
+        if len(rethome_greetings) > 0:
+            # if we have at least one from this list, random select
+            return rethome_greetings[random.choice(rethome_greetings.keys())]
+
+        # otherwise, always return the generic random event
+        return store.mas_getEV("greeting_returned_home")
 
 
 ### Docking station labels regarding monika leaving the station
