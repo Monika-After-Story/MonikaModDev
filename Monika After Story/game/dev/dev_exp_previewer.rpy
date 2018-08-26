@@ -128,7 +128,9 @@ init 999 python:
             "r": "right",
             "l": "left",
             "h": "closedhappy",
-            "d": "closedsad"
+            "d": "closedsad",
+            "k": "winkleft",
+            "n": "winkright"
         }
 
         EYEBROW_SMAP = {
@@ -230,7 +232,9 @@ init 999 python:
             "r": "Look Right",
             "l": "Look Left",
             "h": "Closed (Happy)",
-            "d": "Closed (Sad)"
+            "d": "Closed (Sad)",
+            "k": "Wink Left",
+            "n": "Wink Right"
         }
 
         EYEBROW_MAP = {
@@ -337,7 +341,9 @@ init 999 python:
             "r",
             "l",
             "h",
-            "d"
+            "d",
+            "k",
+            "n"
         ]
 
         EYEBROW_SC = [
