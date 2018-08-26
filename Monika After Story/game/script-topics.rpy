@@ -6289,7 +6289,7 @@ label monika_yellowwp:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_poweroutage",category=['weather'],prompt="Power Outage",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_poweroutage",category=['weather'],prompt="Power outage",random=True))
 
 label monika_poweroutage:
     m 3lksdla "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
