@@ -7046,7 +7046,7 @@ label monika_yellowwp:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_beingevil",category=['monika'],prompt="Being Evil.",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_beingevil",category=['monika'],prompt="Being evil.",random=True))
 
 label monika_beingevil:
     m 1euc "Say, [player]..."
