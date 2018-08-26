@@ -293,7 +293,7 @@ label monika_ptod_tip003:
     m 1eua "Programming languages are usually either compiled or interpreted."
     m "Compiled languages require their code to be converted to a machine-readable format before being executed."
     m 3eub "C and Java are two very popular compiled languages."
-    m 1eua "Interpreted langauges are converted into a machine-readable format as they are being executed."
+    m 1eua "Interpreted languages are converted into a machine-readable format as they are being executed."
     m 3eub "Python is an interpreted language."
     m 1rksdlb "However, different implementations of Python may be compiled, but that's a complicated topic that I may talk about in a later lesson."
 
@@ -322,7 +322,7 @@ label monika_ptod_tip003:
         m "Not that you would{fast}{nw}"
         $ _history_list.pop()
         m 1eksdlb "I can't let you use this.{w} Sorry..." 
-        m "If you want to follow along in future lessons, then run a Python interpreter in a seperate window."
+        m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
 
         m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
 
