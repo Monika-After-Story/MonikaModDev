@@ -362,7 +362,7 @@ label monika_death:
     else:
         m 1eka "Thanks for hearing me out, [player]."
     return
-    
+
 # Do you love yourself
 default persistent._mas_pm_love_yourself = None
 
@@ -5843,8 +5843,8 @@ init 5 python:
 label monika_concerts:
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
     if (
-            renpy.seen_label("monika_jazz") 
-            and renpy.seen_label("monika_orchestra") 
+            renpy.seen_label("monika_jazz")
+            and renpy.seen_label("monika_orchestra")
             and renpy.seen_label("monika_rock")
             and renpy.seen_label("monika_vocaloid")
             and renpy.seen_label("monika_rap")
@@ -5856,19 +5856,19 @@ label monika_concerts:
     m 1hua "Just imagine us..."
     if renpy.seen_label("monika_orchestra"):
         m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
-        
+
     if renpy.seen_label("monika_rock"):
         m 1hub "Jumping up and down with the rest of the crowd to some good ol' Rock and Roll..."
-        
+
     if renpy.seen_label("monika_jazz"):
         m 1eua "Grooving to some smooth jazz..."
-        
+
     if renpy.seen_label("monika_rap"):
         m 1hksdlb "Trying to keep up with a real rapper..."
-        
+
     if renpy.seen_label("monika_vocaloid"):
         m 1hua "Waving our glowsticks at Miku Expo..."
-        
+
     m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
     m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
     m 2lksdla "Although, ticket prices these days are kind of expensive..."
@@ -6978,6 +6978,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel='monika_shipping',
+            prompt="Shipping.",
+            category=['ddlc'],
+            random=True,
+            unlocked=False,
+            pool=False
+        )
+    )
+
+label monika_shipping:
+    m 3eua "Hey, [player].{w} Have you ever heard of 'shipping'?"
+    m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
+    m 1eka "I think most people do it subconciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
+    m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
+    m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone…"
+    m "But some of the pairings are kind of strange to me."
+    m 3esd "Like, usually they put Natsuki and Yuri together. They fight like cats and dogs!"
+    m 3hksdlb "I guess they bond a little bit when you aren't on their routes, and there's the 'opposites attract' appeal."
+    m 4dsd "Still, I think that's just another example of how people who like these games like unrealistic things..."
+    m 1ekd "Anyway, that often leaves...me and Sayori."
+    m 1hksdlb "Don't get jealous! I'm just telling you what I saw!"
+    m 2lksdla "..."
+    m 2lksdlb "Well, from a writer's perspective, I guess I can see it."
+    m 1eud "We started the club together."
+    if persistent.monika_kill:
+        m "And she almost had the same epiphany I did…"
+    m 2lksdlb "But...I still don't really get it. I mean, I love you, and only you!"
+    m 2lksdla "And she would have to be a saint to ever forgive me for what I did…"
+    m 2lksdlc "Not that she's not a sweet girl, but…"
+    m 5eua "Well, no one could ever be as sweet and forgiving as you…"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_short_stories",
             category=['literature'],
             prompt="Can you tell me a story?",
@@ -7376,10 +7412,10 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # default action is to loop here
     jump monika_dating_startdate_confirm.loopstart
-   
+
 init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
-     
+
 label monika_whydoyouloveme:
 
     if mas_isMoniBroken(lower=True):
