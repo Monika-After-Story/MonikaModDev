@@ -1546,6 +1546,7 @@ label mas_dockstat_found_monika:
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
 
+    # TODO: if we aren't coming from empty desk, we shouldn't show this at all
     show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
     hide emptydesk
 
