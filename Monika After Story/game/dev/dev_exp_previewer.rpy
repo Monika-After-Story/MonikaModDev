@@ -154,7 +154,11 @@ init 999 python:
 
         TEARS_SMAP = {
             "ts": "streaming",
-            "td": "dried"
+            "td": "dried",
+            "tp": "pooled",
+            "tu": "up",
+            "tl": "left",
+            "tr": "right"
         }
 
         SWEAT_SMAP = {
@@ -252,7 +256,11 @@ init 999 python:
 
         TEARS_MAP = {
             "ts": "Streaming Tears",
-            "td": "Dried Tears"
+            "td": "Dried Tears",
+            "tp": "Pooled Tears",
+            "tu": "Tearing Up",
+            "tl": "Tearing Up (Left)",
+            "tr": "Tearing Up (Right)"
         }
 
         SWEAT_MAP = {
@@ -359,7 +367,11 @@ init 999 python:
         TEARS_SC = [
             None,
             "ts",
-            "td"
+            "td",
+            "tp",
+            "tu",
+            "tl",
+            "tr"
         ]
 
         SWEAT_SC = [

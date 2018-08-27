@@ -468,6 +468,10 @@ label pick_a_game:
             if not renpy.seen_label("mas_piano_start"):
                 $ grant_xp(xp.NEW_GAME)
             call mas_piano_start from _call_play_piano
+        # "Movie":
+        #     if not renpy.seen_label("mas_monikamovie"):
+        #         $ grant_xp(xp.NEW_GAME)
+        #     call mas_monikamovie from _call_monikamovie
         "Nevermind":
             m "Alright. Maybe later?"
 
@@ -730,7 +734,7 @@ label ch30_preloop:
     $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
-    
+
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
@@ -937,6 +941,10 @@ label ch30_reset:
         if persistent._mas_likes_rain:
             unlockEventLabel("monika_rain_start")
             lockEventLabel("monika_rain_stop")
+            # unlock islands event if seen already
+            if store.seen_event("mas_monika_islands"):
+                # we can unlock the topic
+                store.unlockEventLabel("mas_monika_islands")
 #            lockEventLabel("monika_rain_holdme")
 
         if mas_isMoniNormal(higher=True):
