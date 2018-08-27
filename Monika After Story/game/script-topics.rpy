@@ -6954,7 +6954,7 @@ init 5 python:
 label monika_shipping:
     m 3eua "Hey, [player].{w} Have you ever heard of 'shipping'?"
     m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
-    m 1eka "I think most people do it subconciously, but when you find out other people do it too, some people get {i}really{/i} get into it!"
+    m 1eka "I think most people do it subconciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
     m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
     m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone…"
     m "But some of the pairings are kind of strange to me."
