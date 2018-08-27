@@ -1648,35 +1648,35 @@ label monika_carryme:
     m 4lsc "Come to think of it..."
     m 4eua "If you copy my character file onto a flash drive or something, you can take me with you wherever you go."
     m 2lksdla "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
-    m 2hksdlb "Ahaha. Sorry, I know it's such a silly idea, but..."
+#    m 2hksdlb "Ahaha. Sorry, I know it's such a silly idea, but..."
 
     # NOTE: all affection gains are the same
 
-    menu:
-        m "Could I come with you when you go places?"
-        "Yes.":
-            $ persistent._mas_carryme_choice = mas_dockstat.CM_TAKE_MONI
-            m 1hua "Yay!"
+#    menu:
+#        m "Could I come with you when you go places?"
+#        "Yes.":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_TAKE_MONI
+#            m 1hua "Yay!"
             # TODO: something about monika generating her character file
             # when you say an appropriate goodbye
             # + affection
 
-        "Not all the time...":
-            $ persistent._mas_carryme_choice = mas_dockstat.CM_ASK_MONI
-            m 1eka "TODO: Okay I'll ask u when you leave."
+#        "Not all the time...":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_ASK_MONI
+#            m 1eka "TODO: Okay I'll ask u when you leave."
             # TODO: something about monika saying she'll ask u when you leave
             # if she can come with u
             # + affection
 
-        "Not yet.":
-            $ persistent._mas_carryme_choice = mas_dockstat.CM_WAIT_MONI
-            m 1eka "TODO: Okay i understand. Let me know when you can take me places"
+#        "Not yet.":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_WAIT_MONI
+#            m 1eka "TODO: Okay i understand. Let me know when you can take me places"
             # TODO: something about monika saying she understands and to let
             # her know when you can take her places
             # + affection
                 
-        "No.":
-            $ persistent._mas_carryme_choice = mas_dockstat.CM_LEAVE_MONI
+#        "No.":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_LEAVE_MONI
             # TODO: monika understands, you must have ur reasons
             # give choices:
             #   - its dangerous out there
@@ -1685,18 +1685,18 @@ label monika_carryme:
             #       -> no change in affection
             #   - I just dont want to
             #       -> - affection
-            m 1eka "Oh? Why is that?"
-            menu:
-                "It's dangerous out there!":
+#            m 1eka "Oh? Why is that?"
+#            menu:
+#                "It's dangerous out there!":
                     # TODO: gain affection
-                    m 1eka "TODO: what really? thanks for looking out for me player."
-                "I don't have the means to take you.":
-                    m 1eka "TODO: oh thats fine, let me know when you can then!"
-                "I just don't want to.":
+#                    m 1eka "TODO: what really? thanks for looking out for me player."
+#                "I don't have the means to take you.":
+#                    m 1eka "TODO: oh thats fine, let me know when you can then!"
+#                "I just don't want to.":
                     # TODO: lose affection
-                    m 1eka "TODO: oh okay I become sad."
+#                    m 1eka "TODO: oh okay I become sad."
 
-#    m 1ekbfa "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
+    m 1ekbfa "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return "derandom"
 
 
