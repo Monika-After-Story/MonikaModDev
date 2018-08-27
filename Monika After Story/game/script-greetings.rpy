@@ -1730,16 +1730,35 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_returned_home",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_GO_SOMEWHERE],
-            random=True
+            category=[store.mas_greetings.TYPE_GO_SOMEWHERE]
         ),
         eventdb=evhand.greeting_database
     )
 
+default persistent._mas_monika_returned_home = None
+
 label greeting_returned_home:
-    # player successfully returned monika back home
-    # this is completely assum
-    # TODO: actually this greeting may not be selectable, it may bef oreced
-    # and act as delgate to ensure that we add the correct thing to say
+    # this is going to act as the generic returned home greeting.
+    # please note, that we will use last_session to determine how long we were
+    # out. If shorter than 5 minutes, monika won't gain any affection.
+    $ five_minutes = datetime.timedelta(seconds=5*60)
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+
+    if time_out > five_minutes:
+        m 1hua "And we're home!"
+        m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+        m 2ekc "Well, it felt really great!"
+        m 5eub "Let's do this again soon, okay?"
+        if persistent._mas_monika_returned_home is None:
+            $ mas_gainAffection(5, bypass=True)
+            $ persistent._mas_monika_returned_home = datetime.datetime.now()
+
+        $ grant_xp(xp.NEW_GAME)
+
+    else:
+        m 2ekp "That wasn't much of a trip, [player]."
+        m "Next time better last a little longer..."
+        $ mas_loseAffection()
+
     return
 

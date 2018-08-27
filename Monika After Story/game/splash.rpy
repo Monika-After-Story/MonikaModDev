@@ -341,4 +341,8 @@ label quit:
 
     $ _mas_AffSave()
 
+    # delete the monika file if we aren't leaving
+    if not persistent._mas_dockstat_going_to_leave:
+        $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+
     return

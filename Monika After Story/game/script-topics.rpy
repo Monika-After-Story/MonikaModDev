@@ -1661,14 +1661,16 @@ label monika_carryme:
             # when you say an appropriate goodbye
             # + affection
 
-        "Not all the time..."
+        "Not all the time...":
             $ persistent._mas_carryme_choice = mas_dockstat.CM_ASK_MONI
+            m 1eka "TODO: Okay I'll ask u when you leave."
             # TODO: something about monika saying she'll ask u when you leave
             # if she can come with u
             # + affection
 
-        "Not yet."
+        "Not yet.":
             $ persistent._mas_carryme_choice = mas_dockstat.CM_WAIT_MONI
+            m 1eka "TODO: Okay i understand. Let me know when you can take me places"
             # TODO: something about monika saying she understands and to let
             # her know when you can take her places
             # + affection
@@ -1683,6 +1685,17 @@ label monika_carryme:
             #       -> no change in affection
             #   - I just dont want to
             #       -> - affection
+            m 1eka "Oh? Why is that?"
+            menu:
+                "It's dangerous out there!":
+                    # TODO: gain affection
+                    m 1eka "TODO: what really? thanks for looking out for me player."
+                "I don't have the means to take you.":
+                    m 1eka "TODO: oh thats fine, let me know when you can then!"
+                "I just don't want to.":
+                    # TODO: lose affection
+                    m 1eka "TODO: oh okay I become sad."
+
 #    m 1ekbfa "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
     return "derandom"
 

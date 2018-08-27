@@ -12,6 +12,19 @@ init -1 python in mas_globals:
     # True means we are in the dialogue workflow. False means not
     dlg_workflow = False
 
+init 970 python:
+    if persistent._mas_moni_chksum is not None:
+        # do check for monika existence
+        moni_tuple = store.mas_dockstat.findMonika(
+            mas_docking_station
+        )
+
+        # set the init data 
+        store.mas_dockstat.retmoni_status = moni_tuple[0]
+        store.mas_dockstat.retmoni_data = moni_tuple[1]
+
+        del moni_tuple
+
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
@@ -600,24 +613,16 @@ label ch30_autoload:
     #       this should skip greetings entirely as well. If monika is returnd
     #       during this flow, we have her say the same shit as the returning
     #       home greeting.
-    if persistent._mas_moni_chksum is not None:
-        # we took monika out.
-        python:
-            import store.mas_dockstat as mas_dockstat
-            moni_status, moni_data = mas_dockstat.findMonika(
-                mas_docking_station
-            )
+    if store.mas_dockstat.retmoni_status is not None:
+        # non None means we have a status
+        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_FO:
+            # TODOL: jump to the mas_dockstat_different_monika label
+            jump mas_dockstat_empty_desk
 
-        if moni_status == mas_dockstat.MAS_PKG_F:
-            # we found monika, jump to appropriate flow
+        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_F:
             jump mas_dockstat_found_monika
 
-        if moni_status == mas_dockstat.MAS_PKG_FO:
-            # we found a different monika, jump to the different monika 
-            # greeting
-            jump mas_dockstat_different_monika
-
-        # otherwise, assume we did not find monika
+        # otherwise, lets jump to the empty desk
         jump mas_dockstat_empty_desk
 
 
@@ -1051,5 +1056,15 @@ label ch30_reset:
             persistent.chess_strength = 0
         elif persistent.chess_strength > 20:
             persistent.chess_strength = 20
+
+    ## monika returned home reset
+    python:
+        if persistent._mas_monika_returned_home is not None:
+            _now = datetime.date.today()
+            _rh = persistent._mas_monika_returned_home.date()
+            if _now > _rh:
+                persistent._mas_monika_returned_home = None
+
+        
 
     return
