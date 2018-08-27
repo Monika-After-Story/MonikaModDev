@@ -12,6 +12,19 @@ init -1 python in mas_globals:
     # True means we are in the dialogue workflow. False means not
     dlg_workflow = False
 
+init 970 python:
+    if persistent._mas_moni_chksum is not None:
+        # do check for monika existence
+        moni_tuple = store.mas_dockstat.findMonika(
+            mas_docking_station
+        )
+
+        # set the init data 
+        store.mas_dockstat.retmoni_status = moni_tuple[0]
+        store.mas_dockstat.retmoni_data = moni_tuple[1]
+
+        del moni_tuple
+
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
@@ -585,7 +598,33 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
+    # set this to None for now
     $ selected_greeting = None
+
+    # check if we took monika out
+    # NOTE:
+    #   if we find our monika, then we skip greeting logics and use a special
+    #       returning home greeting. This completely bypasses the system
+    #       since we should actively get this, not passively, because we assume
+    #       player took monika out
+    #   if we find a different monika, we still skip greeting logic and use
+    #       a differnet, who is this? kind of monika greeting
+    #   if we dont find a monika, we do the empty desk + monika checking flow
+    #       this should skip greetings entirely as well. If monika is returnd
+    #       during this flow, we have her say the same shit as the returning
+    #       home greeting.
+    if store.mas_dockstat.retmoni_status is not None:
+        # non None means we have a status
+        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_FO:
+            # TODOL: jump to the mas_dockstat_different_monika label
+            jump mas_dockstat_empty_desk
+
+        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_F:
+            jump mas_dockstat_found_monika
+
+        # otherwise, lets jump to the empty desk
+        jump mas_dockstat_empty_desk
+
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
@@ -646,11 +685,6 @@ label ch30_autoload:
         $ mas_skip_visuals = True
         $ persistent.closed_self = True
 
-
-    if not mas_skip_visuals:
-        $ mas_startup_song()
-
-    window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
 
@@ -695,6 +729,10 @@ label ch30_autoload:
             # Grant bad exp for closing the game incorrectly.
             mas_loseAffection(modifier=2, reason="closing the game on me")
 
+label ch30_post_greeting_check:
+    # this label skips greeting selection as well as exp checks for game close
+    # we assume here that you set selected_greeting if you needed to
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
@@ -713,8 +751,11 @@ label ch30_autoload:
     else:
         $ config.allow_skipping = False
 
+    window auto
+
     if not mas_skip_visuals:
         $ set_keymaps()
+        $ mas_startup_song()
 
         # rain check
         if mas_shouldRain():
@@ -1019,5 +1060,15 @@ label ch30_reset:
             persistent.chess_strength = 0
         elif persistent.chess_strength > 20:
             persistent.chess_strength = 20
+
+    ## monika returned home reset
+    python:
+        if persistent._mas_monika_returned_home is not None:
+            _now = datetime.date.today()
+            _rh = persistent._mas_monika_returned_home.date()
+            if _now > _rh:
+                persistent._mas_monika_returned_home = None
+
+        
 
     return

@@ -192,6 +192,11 @@ init 5 python:
 label bye_going_to_sleep:
     m 1esa "Are you going to sleep, [player]?"
     m 1eka "I'll be seeing you in your dreams."
+
+    # TODO:
+    # can monika sleep with you?
+    # via flashdrive or something
+
     return 'quit'
 
 init 5 python:
@@ -210,6 +215,10 @@ label bye_prompt_to_class:
     m 1hua "Study hard, [player]!"
     m 1eua "Nothing is more attractive than a [guy] with good grades."
     m 1hua "See you later!"
+
+    # TODO:
+    # can monika join u at schools?
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
@@ -229,6 +238,10 @@ label bye_prompt_to_work:
     m 1hua "Work hard, [player]!"
     m 1esa "I'll be here for you when you get home from work."
     m 1hua "Bye-bye!"
+
+    # TODO:
+    # can monika join u at work
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     return 'quit'
 
@@ -322,6 +335,10 @@ label bye_prompt_sleep:
         # otheerwise
         m 1eua "Alright, [player]."
         m 1hua "Sweet dreams!"
+
+
+    # TODO:
+    #   join monika sleeping?
 
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
@@ -543,3 +560,164 @@ label bye_long_absence_2:
     m "Come back to me as soon as you can...okay?"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
     return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_going_somewhere",
+            unlocked=True,
+            prompt="I'm going to take you somewhere.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_going_somewhere:
+    $ import random
+#
+# regardless of choice, takingmonika somewhere (and successfully bringing her
+# back will increase affection)
+# lets limit this to like once per day
+#
+    if mas_isMoniBroken(lower=True):
+        # broken monika dont ever want to go with u
+        jump bye_going_somewhere_nothanks
+
+    elif mas_isMoniDis(lower=True):
+        # distressed monika has a 50% chance of not going with you
+        if random.randint(1,2) == 1:
+            jump bye_going_somewhere_nothanks
+        
+        # otherwse we go
+        m 1wud "You really want to bring me along?"
+        m 1ekd "Are you sure this isn't some...{nw}"
+        $ _history_list.pop()
+        m 1lksdlc "..."
+        m 1eksdlb "What am I saying? Of course I'll go with you!"
+
+    elif mas_isMoniUpset(lower=True):
+        # upset monika has a 10% chance of not going with you
+        if random.randint(1,10) == 1:
+            jump bye_going_somewhere_nothanks
+
+        # otherwise we go
+        m 1wud "You really want to bring me along?"
+        m 1eka "..."
+        m 1hua "Well, I suposed it can't hurt to join you."
+        m 1hub "I really can't wait to spend more time with you."
+
+    elif mas_isMoniLove(higher=True):
+        m 1hua "All right! Let's go!"
+
+#    elif mas_isMoniAff(higher=True):
+        # TODO: affecitonate/enamored monika will always go wtih you and assume its a
+        #   nother date and will ask u to wait for her to get ready
+#        m 1hua "TODO: LETS GO ON DATE"
+
+    else:
+        # TODO: normal/happy monika will always go with you and be excited you asked
+        #   and will ask u to wait for her to get ready
+        m 1sub "Really?"
+        m 1hua "Yay!"
+
+    show monika 2dsc
+    $ persistent._mas_dockstat_going_to_leave = True
+
+    # launch I/O thread
+    $ store.mas_dockstat._startGenerateMonika()
+
+    show screen mas_background_timed_jump(4.0, "bye_going_somewhere_rtg")
+    menu:
+        m "Give me a second to get ready."
+        "Wait, wait!":
+            hide screen mas_background_timed_jump
+            $ persistent._mas_dockstat_cm_wait_count += 1
+
+    # fall thru to the wait wait flow
+    m 1ekc "What is it?"
+    menu:
+        "Actually, I can't take you right now.":
+            $ persistent._mas_dockstat_going_to_leave = False
+
+            # cleanup I/O thread
+            $ store.mas_dockstat._endGenerateMonika()
+            $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+            jump bye_going_somewhere_leavemenu
+
+        "Nothing.":
+            m 2hub "Oh , good! Let me finish getting ready."
+
+
+label bye_going_somewhere_rtg:
+    hide screen mas_background_timed_jump
+
+    # cleanup I/O thread
+    $ moni_chksum = store.mas_dockstat._endGenerateMonika()
+    call mas_dockstat_ready_to_go(moni_chksum)
+    if _return:
+        return "quit"
+
+    # otherwise, ask if player still going
+    menu:
+        m "Are you still going to go?"
+        "Yes.":
+            m 2eka "I understand. you have things to do, after all..."
+            m 2hub "Be safe out there! I'll be right here waiting for you!"
+            return "quit"
+
+        "No.":
+            m 2wub "Really? Are you sure? Even though it's my own fault I can't go with you..."
+            m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
+            $ mas_gainAffection()
+
+    return 
+
+
+label bye_going_somewhere_nothanks:
+    m 2lksdlc "...No thanks."
+    m 2ekd "I appreciate the offer, but I think I need little time to myself right now."
+    m 1eka "You understand, right?"
+    m 1eka "Go, have fun without me..."
+    return
+
+
+label bye_going_somewhere_leavemenu:
+    if mas_isMoniDis(lower=True):
+        m 1tkc "..."
+        m 1tkd "I knew it.{nw}"
+        $ _history_list.pop()
+        m 1lksdld "That's okay, I guess."
+
+    elif mas_isMoniHappy(lower=True):
+        m 1ekd "Oh,{w} all right. Maybe next time?"
+
+    else:
+        # otherwise affection and higher:
+        m 2ekp "Aww..."
+        m 1hub "Fine, but you better take me next time!"
+
+    menu:
+        m "Are you still going to go?"
+        "Yes.":
+            if mas_isMoniUpset(higher=True):
+                m 2eka "All right. I'll be right here waiting for you, as usual..."
+                m 2hub "So hurry back! I love you, [player]!"
+
+            else:
+                # otherwise, distressed and below
+                m 1tfd "...Fine."
+
+            return "quit"
+            
+        "No.":
+            if mas_isMoniNormal(higher=True):
+                m 2eka "...Thank you."
+                m "It means a lot that you're going to spend more time with me since I can't come along."
+                m 3ekb "Please just go about your day whenever you need to, though. I wouldn't want to make you late!"
+
+            else:
+                # otherwise, upset and below
+                m 2lud "All right, then..."
+
+    return

@@ -17,8 +17,11 @@ init -1 python in mas_greetings:
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
 
+    ### NOTE: all Return Home greetings must have this
+    TYPE_GO_SOMEWHERE = "go_somewhere"
+
     # custom greeting functions
-    def selectGreeting(type=None):
+    def selectGreeting(_type=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
@@ -42,13 +45,13 @@ init -1 python in mas_greetings:
 
 
         # check first if we have to select from a special type
-        if type is not None:
+        if _type is not None:
 
             # filter them using the type as filter
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
                 unlocked=True,
-                category=(True,[type])
+                category=(True,[_type])
             )
 
         else:
@@ -1722,3 +1725,42 @@ label greeting_ourreality:
     # we can push here because of the slightly optimized call_next_event 
     $ pushEvent("mas_monika_islands")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_returned_home",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_GO_SOMEWHERE]
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+default persistent._mas_monika_returned_home = None
+
+label greeting_returned_home:
+    # this is going to act as the generic returned home greeting.
+    # please note, that we will use last_session to determine how long we were
+    # out. If shorter than 5 minutes, monika won't gain any affection.
+    $ five_minutes = datetime.timedelta(seconds=5*60)
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+
+    if time_out > five_minutes:
+        m 1hua "And we're home!"
+        m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+        m 2ekc "Well, it felt really great!"
+        m 5eub "Let's do this again soon, okay?"
+        if persistent._mas_monika_returned_home is None:
+            $ mas_gainAffection(5, bypass=True)
+            $ persistent._mas_monika_returned_home = datetime.datetime.now()
+
+        $ grant_xp(xp.NEW_GAME)
+
+    else:
+        m 2ekp "That wasn't much of a trip, [player]."
+        m "Next time better last a little longer..."
+        $ mas_loseAffection()
+
+    return
+
