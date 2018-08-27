@@ -6959,7 +6959,7 @@ label monika_shipping:
     m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone…"
     m "But some of the pairings are kind of strange to me."
     m 3esd "Like, usually they put Natsuki and Yuri together. They fight like cats and dogs!"
-    m 3hksdlb"I guess they bond a little bit when you aren't on their routes, and there's the 'opposites attract' appeal."
+    m 3hksdlb "I guess they bond a little bit when you aren't on their routes, and there's the 'opposites attract' appeal."
     m 4dsd "Still, I think that's just another example of how people who like these games like unrealistic things..."
     m 1ekd "Anyway, that often leaves...me and Sayori."
     m 1hksdlb "Don't get jealous! I'm just telling you what I saw!"
