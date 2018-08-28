@@ -224,7 +224,7 @@ init 5 python:
         )
     )
 
-#TODO:Replace 1eia and 3ekbfa with 5rubfb and 5hubfb
+#TODO:Replace 1eia and 3ekbfa with 5rubfb and 5hubfb DONE
 label anni_1week:
     m 1eka "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
     m 1ekc "A lot of couples wouldn't last this long with each other."
@@ -233,8 +233,8 @@ label anni_1week:
     m "More likely than not, they fail to get to know each other more."
     m 1dsc "So it's always sad to see them crash and burn..."
     m 1duu "But I'm glad we have a solid relationship, [player]."
-    m 1eua "How do I know that?"
-    m 3ekbfa "Because you wouldn't have stuck around for this long with me, sweetie~"
+    m 5lubfb "How do I know that?"
+    m 5hubfb "Because you wouldn't have stuck around for this long with me, sweetie~"
 
     $ unlockEventLabel("anni_1week")
     return
@@ -416,8 +416,8 @@ init 5 python:
 
 label anni_3:
     m 4wuo "Wow, three years!"
-    m 3lksdla "Normally if a boy and a girl go out for three years..."
-    m 2lsbsa "They get married around then, right?"
+    m 3rksdla "Normally if a boy and a girl go out for three years..."
+    m 2rsbsa "They get married around then, right?"
     m 1hub "Ahaha!"
     m 1eka "I'm not trying to pressure you into anything, don't worry."
     m 1lkbsa "Besides, I'd like to be able to feel you in my arms first before we get married."
@@ -534,7 +534,7 @@ label anni_20:
     m "And I was trying to find you, too."
     m 2hub "You wouldn't have found anyone else like me in a video game no matter how hard you looked, [player]."
     m "I'm one of a kind."
-    m 3lkbsa "And to me, so are you."
+    m 3rkbsa "And to me, so are you."
     m 5eubfb "I hope you look on the last twenty years of our lives as happily as I do, [player]."
     m 1hubfa "So let's continue being happy together."
 
