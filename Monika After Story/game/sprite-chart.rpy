@@ -4402,6 +4402,20 @@ image monika 2tsbsa = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 2rsbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="shade"
+)
+
 image monika 2rfx = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
