@@ -6203,7 +6203,7 @@ label monika_song_dream:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_im_glad_youre_evil_too",category=['songs'],prompt="I'm Glad You're Evil Too",pool=True, random=True))
  
- label monika_song_im_glad_youre_evil_too:
+label monika_song_im_glad_youre_evil_too:
     m 1dsd "{i}~We'd admire the beautiful sunset, or gush about a cute dog together~{/i}"
     m "{i}~We both get offended at some piece of crude news~{/i}"
     m 3hksdlb "{i}~We laugh at some terrible movie, and cry while watching a variety show~{/i}"
