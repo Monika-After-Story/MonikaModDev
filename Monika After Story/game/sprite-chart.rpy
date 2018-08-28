@@ -4697,6 +4697,20 @@ image monika 2ektdb = DynamicDisplayable(
     tears="dried",
 )
 
+image monika 2ektdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="crossed",
+    tears="dried",
+)
+
 image monika 2rksdla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
