@@ -11,6 +11,7 @@ define testitem = 0
 define numbers_only = "0123456789"
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
+define mas_sensitive_limit = 3
 
 init -2 python in mas_topics:
 
@@ -452,7 +453,12 @@ label monika_sayori:
         m 1eua "The two of us, happily together..."
         m "There's no reason to ask for any more than that."
         m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
-    return
+
+    if mas_getEV("monika_sayori").shown_count < mas_sensitive_limit:
+        return
+
+    # otherwise derandom
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japan",category=['ddlc'],prompt="DDLC's setting",random=True))
@@ -2409,7 +2415,11 @@ label monika_natsuki:
     m 1eka "But for what it's worth, you made her the happiest she ever was."
     m "Hope you don't feel too guilty..."
     m 1esa "I certainly don't."
-    return
+    if mas_getEV("monika_natsuki").shown_count < mas_sensitive_limit:
+        return
+    
+    # otherwise, derandom
+    return "derandom"
 
 init 5 python:
         addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True))
@@ -2866,7 +2876,8 @@ label monika_othergames:
     m 3hua "I wonder if I could go into one of your other games and see what it's like?"
     m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
     m 2lksdla "Then again... they're not real people, so it shouldn't matter much."
-    m "It's not like Yuri's death mattered."
+    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit:
+        m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
     m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
     m 3eua "Maybe some kind of nice adventure game with big environments would be nice."
