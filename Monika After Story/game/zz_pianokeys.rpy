@@ -35,7 +35,7 @@
 #       at the end.
 #       NOTE: optional
 #       (Default: 0)
-#   NOTE: all labels would need to be defined in rpy source, so atm, custom 
+#   NOTE: all labels would need to be defined in rpy source, so atm, custom
 #       songs  will ALWAYS use default labels
 #
 # PianoNoteMatch objects:
@@ -55,11 +55,11 @@
 #       - like "1eua"
 #       NOTE: optional
 #       (Default: 1eua)
-#   ev_timeout: (float) number of seconds to use as grace period for user to 
+#   ev_timeout: (float) number of seconds to use as grace period for user to
 #       begin this note match.
 #       NOTE: optional
 #       (Default: None / actual default varies on hardcoded value)
-#   vis_timeout: (float) number of seconds to wait after the match before 
+#   vis_timeout: (float) number of seconds to wait after the match before
 #       cleaning visual expressions
 #       NOTE: optional
 #       (Default: None / actual default varies on hardcoded value)
@@ -230,14 +230,14 @@ label mas_piano_result_none:
 # TODO all of these default labels
 # default win
 label mas_piano_def_win:
-    m 1a "Wow! You almost got it!"
-    m 2b "Good job, [player]."
+    m 1eua "Wow! You almost got it!"
+    m 2eub "Good job, [player]."
     return
 
 # default fail
 label mas_piano_def_fail:
-    m 1m "..."
-    m 1n "You did your best, [player]..."
+    m 1lksdla "..."
+    m 1lksdlb "You did your best, [player]..."
     return
 
 # defualt fc
@@ -256,25 +256,33 @@ label mas_piano_def_prac:
 
 label mas_piano_hb_win:
     $ mas_gainAffection()
-    m 1a "Wow! You almost got it!"
-    m 2b "Good job, [player]."
+    m 1eua "Wow! You almost got it!"
+    m 2eub "Good job, [player]."
     return
 
 label mas_piano_hb_fail:
-    m 1m "..."
-    m 1n "You did your best, [player]..."
+    m 1lksdla "..."
+    m 1lksdlb "You did your best, [player]..."
     m "Even a simple song takes time to learn."
     return
 
 label mas_piano_hb_fc:
     $ mas_gainAffection(modifier=1.5)
-    m 1a "Hehe, great job!"
-    m 2b "I know that's an easy one, but you did great."
-    m 1k "Are you going to play that for me on my Birthday?"
+    if datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22):
+        m "Oh, [player]!"
+        m "Have you been practicing this one for me?"
+        m "You did it great!"
+        m "Thanks for this gift, [player]!"
+        if mas_isMoniAff(higher=True):
+            m "You always make me feel special~"
+        return
+    m 1eua "Hehe, great job!"
+    m 2eub "I know that's an easy one, but you did great."
+    m 1hub "Are you going to play that for me on my Birthday?"
     return
 
 label mas_piano_hb_prac:
-    m 1a "You're practing the Birthday Song?"
+    m 1eua "You're practing the Birthday Song?"
     m "I know you can do it, [player]!"
     return
 
@@ -874,7 +882,7 @@ init -3 python in mas_piano_keys:
     #       False if not
     #
     class PianoNoteMatch(object):
-        
+
         # constants
         REQ_ARG = [
             "text",
@@ -1043,7 +1051,7 @@ init -3 python in mas_piano_keys:
             self.passes = 0
             self.matched = False
 
-        
+
         @staticmethod
         def fromJSON(jobj):
             """
@@ -1062,7 +1070,7 @@ init -3 python in mas_piano_keys:
                 [1]: List of warning strings
                     Or error message string if fatal error occurs
             """
-            # inital check to make sure the required items are in 
+            # inital check to make sure the required items are in
             for required in PianoNoteMatch.REQ_ARG:
                 if required not in jobj:
                     return (None, MISS_KEY.format(required))
@@ -1104,7 +1112,7 @@ init -3 python in mas_piano_keys:
             if len(jobj) > 0:
                 for extra in jobj:
                     _warn.append(EXTRA_BAD.format(extra))
-                    
+
             return (PianoNoteMatch(**_params), _warn)
 
 
@@ -1237,7 +1245,7 @@ init -3 python in mas_piano_keys:
         @staticmethod
         def fromJSON(jobj):
             """
-            Creats a PianoNoteMatchList from a given JSON object (which is 
+            Creats a PianoNoteMatchList from a given JSON object (which is
             just a dict)
 
             May add warnings to logg file
@@ -1252,7 +1260,7 @@ init -3 python in mas_piano_keys:
             islogopen = log.open()
             log.raw_write = True
 
-            # inital check to make sure the required items are in 
+            # inital check to make sure the required items are in
             for required in PianoNoteMatchList.REQ_ARG:
                 if required not in jobj:
                     if islogopen:
@@ -1441,7 +1449,7 @@ init 790 python in mas_piano_keys:
 
         # otherwise we need to check for files
         json_files = [
-            j_file 
+            j_file
             for j_file in os.listdir(pnml_basedir)
             if j_file.endswith(".json")
         ]
@@ -1931,7 +1939,7 @@ init 810 python:
             mas_piano_keys.pnml_bk_db
         """
         persistent._mas_pnml_data = [
-            mas_piano_keys.pnml_bk_db[k]._saveTuple() 
+            mas_piano_keys.pnml_bk_db[k]._saveTuple()
             for k in mas_piano_keys.pnml_bk_db
         ]
 
