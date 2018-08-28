@@ -6199,6 +6199,27 @@ label monika_song_dream:
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
     m 1ekbfa "My dream finally came true."
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_song_im_glad_youre_evil_too",category=['songs'],prompt="I'm Glad You're Evil Too",pool=True, random=True))
+ 
+ label monika_song_im_glad_youre_evil_too:
+    m 1dsd "{i}~We'd admire the beautiful sunset, or gush about a cute dog together~{/i}"
+    m "{i}~We both get offended at some piece of crude news~{/i}"
+    m 3hksdlb "{i}~We laugh at some terrible movie, and cry while watching a variety show~{/i}"
+    m 1hubfb "{i}~That's us- Two slightly lonely souls, having the time of our lives~{/i}"
+    m 3lksdld "{i}~Our time is only finite, yet it feels like an unending joke~{/i}"
+    m 1dkbfa "{i}~But I have you to keep me company thorugh this all too short life~{/i}"
+    m 1tubfb "{i}~And together we'd laugh at this boring world, saying: 'How boring~{/i}'"
+    m 1hubfb "{i}~That's us- Two slightly lonely souls, leaning on eachother's shoulders~{/i}"
+    m 1lubfb "{i}~I'm glad you're just as evil as me~{/i}"
+    show monika 5rubfsdrb at t11 zorder 2 with dissolve
+    m 5rubfsdrb "{i}~And once again, I wish to live through another day. I'm glad I fell in love with you~{/i}"
+    show monika 1hubfa at t11 zorder 2 with dissolve
+    m 1hubfa "Eheh, I don't really think either of us are evil, [player]."
+    m 3tubfb "Maybe we {i}are{/i} equally evil in that case~"
+    m 1ekbfb "It would be a dream come true to face the world together, side by side, don't you think?"
+    return
 
 # been to prom?
 default persistent._mas_pm_gone_to_prom = None
