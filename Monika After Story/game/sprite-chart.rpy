@@ -7654,6 +7654,7 @@ image monika 4rssdrc = DynamicDisplayable(
     right="2r",
     arms="pointright",
     sweat="right"
+)    
 
 image monika 4rfx = DynamicDisplayable(
     mas_drawmonika,
