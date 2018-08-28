@@ -362,7 +362,7 @@ label monika_death:
     else:
         m 1eka "Thanks for hearing me out, [player]."
     return
-    
+
 # Do you love yourself
 default persistent._mas_pm_love_yourself = None
 
@@ -1592,18 +1592,112 @@ label monika_confidence:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_carryme",category=['romance','monika'],prompt="Bring me with you",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_carryme",
+            category=['romance','monika'],
+            prompt="Bring me with you",
+            random=True
+        )
+    )
+
+# this can be 3 values:
+# -1 - player doesnt want to take monika with them
+#       mas_dockstat.CM_LEAVE_MONI
+# 0 - player said not yet, so something needs to change first
+#       mas_dockstat.CM_WAIT_MONI
+# 1 - Player said Not all the time, so we should prompt for every appropriate
+#   farewell
+#       mas_dockstat.CM_ASK_MONI
+# 2 - Player said Yes, so we should just assume yes for every appropraite
+#   farewell
+#       mas_dockstat.CM_TAKE_MONI
+# if None, that means we dont display anything regarding this since we dont
+# have an answer atm.
+default persistent._mas_carryme_choice = None
+
+# number of times user halted dockstation goodbye
+# we'll use this to decide whether to switch to ASK_MONI mode from YES
+default persistent._mas_dockstat_cm_wait_count = 0
+
+# number of times user said yes to dockstation prompt
+# we'll use this to decide whether to switch to TAKE_MONI mode from ask 
+#   (or the other modes)
+default persistent._mas_dockstat_cm_yes_count = 0
+
+# number of time suser said no to dockstation prompt
+# this will also be used to determine to switch to ASK MODE
+default persistent._mas_dockstat_cm_no_count = 0
+
+# both the wait / no counts will be used to potentially unlock a pool topic
+# that asks the carryme question again
+
+## constants regarding carry me
+define mas_dockstat.CM_LEAVE_MONI = -1
+define mas_dockstat.CM_WAIT_MONI = 0
+define mas_dockstat.CM_ASK_MONI = 1
+define mas_dockstat.CM_TAKE_MONI = 2
 
 label monika_carryme:
+    $ import store.mas_dockstat as mas_dockstat
+
     m 2eka "I know there are times you won't always be able to be here with me..."
     m "Like if you need to go out, or take care of other things."
     m 2hua "But I'll always have you in my thoughts, patiently waiting for you to come back."
     m 4lsc "Come to think of it..."
-    m 4eua "If you copy my character file onto a flash drive or something, you can always keep a part of me with you."
+    m 4eua "If you copy my character file onto a flash drive or something, you can take me with you wherever you go."
     m 2lksdla "I guess it's kind of unorthodox, but I find it really romantic for some reason..."
-    m 2hksdlb "Ahaha. Sorry, that's such a silly idea."
+#    m 2hksdlb "Ahaha. Sorry, I know it's such a silly idea, but..."
+
+    # NOTE: all affection gains are the same
+
+#    menu:
+#        m "Could I come with you when you go places?"
+#        "Yes.":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_TAKE_MONI
+#            m 1hua "Yay!"
+            # TODO: something about monika generating her character file
+            # when you say an appropriate goodbye
+            # + affection
+
+#        "Not all the time...":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_ASK_MONI
+#            m 1eka "TODO: Okay I'll ask u when you leave."
+            # TODO: something about monika saying she'll ask u when you leave
+            # if she can come with u
+            # + affection
+
+#        "Not yet.":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_WAIT_MONI
+#            m 1eka "TODO: Okay i understand. Let me know when you can take me places"
+            # TODO: something about monika saying she understands and to let
+            # her know when you can take her places
+            # + affection
+                
+#        "No.":
+#            $ persistent._mas_carryme_choice = mas_dockstat.CM_LEAVE_MONI
+            # TODO: monika understands, you must have ur reasons
+            # give choices:
+            #   - its dangerous out there
+            #       -> + affection
+            #   - I dont have the means to take you
+            #       -> no change in affection
+            #   - I just dont want to
+            #       -> - affection
+#            m 1eka "Oh? Why is that?"
+#            menu:
+#                "It's dangerous out there!":
+                    # TODO: gain affection
+#                    m 1eka "TODO: what really? thanks for looking out for me player."
+#                "I don't have the means to take you.":
+#                    m 1eka "TODO: oh thats fine, let me know when you can then!"
+#                "I just don't want to.":
+                    # TODO: lose affection
+#                    m 1eka "TODO: oh okay I become sad."
+
     m 1ekbfa "I don't mean to be too needy or anything, but it's kind of hard when I'm so in love with you."
-    return
+    return "derandom"
 
 
 init 5 python:
@@ -5843,8 +5937,8 @@ init 5 python:
 label monika_concerts:
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
     if (
-            renpy.seen_label("monika_jazz") 
-            and renpy.seen_label("monika_orchestra") 
+            renpy.seen_label("monika_jazz")
+            and renpy.seen_label("monika_orchestra")
             and renpy.seen_label("monika_rock")
             and renpy.seen_label("monika_vocaloid")
             and renpy.seen_label("monika_rap")
@@ -5856,19 +5950,19 @@ label monika_concerts:
     m 1hua "Just imagine us..."
     if renpy.seen_label("monika_orchestra"):
         m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
-        
+
     if renpy.seen_label("monika_rock"):
         m 1hub "Jumping up and down with the rest of the crowd to some good ol' Rock and Roll..."
-        
+
     if renpy.seen_label("monika_jazz"):
         m 1eua "Grooving to some smooth jazz..."
-        
+
     if renpy.seen_label("monika_rap"):
         m 1hksdlb "Trying to keep up with a real rapper..."
-        
+
     if renpy.seen_label("monika_vocaloid"):
         m 1hua "Waving our glowsticks at Miku Expo..."
-        
+
     m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
     m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
     m 2lksdla "Although, ticket prices these days are kind of expensive..."
@@ -6978,6 +7072,42 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel='monika_shipping',
+            prompt="Shipping.",
+            category=['ddlc'],
+            random=True,
+            unlocked=False,
+            pool=False
+        )
+    )
+
+label monika_shipping:
+    m 3eua "Hey, [player].{w} Have you ever heard of 'shipping'?"
+    m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
+    m 1eka "I think most people do it subconciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
+    m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
+    m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone…"
+    m "But some of the pairings are kind of strange to me."
+    m 3esd "Like, usually they put Natsuki and Yuri together. They fight like cats and dogs!"
+    m 3hksdlb "I guess they bond a little bit when you aren't on their routes, and there's the 'opposites attract' appeal."
+    m 4dsd "Still, I think that's just another example of how people who like these games like unrealistic things..."
+    m 1ekd "Anyway, that often leaves...me and Sayori."
+    m 1hksdlb "Don't get jealous! I'm just telling you what I saw!"
+    m 2lksdla "..."
+    m 2lksdlb "Well, from a writer's perspective, I guess I can see it."
+    m 1eud "We started the club together."
+    if persistent.monika_kill:
+        m "And she almost had the same epiphany I did…"
+    m 2lksdlb "But...I still don't really get it. I mean, I love you, and only you!"
+    m 2lksdla "And she would have to be a saint to ever forgive me for what I did…"
+    m 2lksdlc "Not that she's not a sweet girl, but…"
+    m 5eua "Well, no one could ever be as sweet and forgiving as you…"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_short_stories",
             category=['literature'],
             prompt="Can you tell me a story?",
@@ -7376,10 +7506,10 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # default action is to loop here
     jump monika_dating_startdate_confirm.loopstart
-   
+
 init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
-     
+
 label monika_whydoyouloveme:
 
     if mas_isMoniBroken(lower=True):

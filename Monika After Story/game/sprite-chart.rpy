@@ -37,12 +37,15 @@
 #   l - look left eyes (left)
 #   h - closed happy eyes (closedhappy)
 #   d - closed sad eyes (closedsad)
+#   k - left eye wink (winkleft)
+#   n - right eye wink (winkright)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)
 #   u - up / happy (up)
 #   k - knit / upset / concerned (knit)
 #   s - straight / normal / regular (mid)
+#   t - thinking (think)
 #
 # <nose type> - type of nose
 #   nd - default nose (def) NOTE: UNUSED
@@ -91,6 +94,8 @@
 # NOTE:
 # not every possible combination has been created as an image. If you want
 # a particular expression, make a github issue about it and why we need it.
+#
+# hmmmmmm (1etecc)
 
 # This defines a dynamic displayable for Monika whose position and style changes
 # depending on the variables is_sitting and the function morning_flag
@@ -246,6 +251,51 @@ init -5 python in mas_sprites:
 #        "mug"
         "test"
     ]
+
+    # list of available hairstyles
+    HAIRS = [
+        "def", # ponytail
+        "down" # hair down
+    ]
+
+    # list of available clothes
+    CLOTHES = [
+        "def" # school uniform
+    ]
+
+    # tryparses for the hair and clothes
+    def tryparsehair(_hair, default="def"):
+        """
+        Returns the given hair if it exists, or the default if not exist
+
+        IN:
+            _hair - hair to check for existence
+            default - default if hair dont exist
+
+        RETURNS:
+            the hair if it exists, or default if not
+        """
+        if _hair in HAIRS:
+            return _hair
+
+        return default
+
+    def tryparseclothes(_clothes, default="def"):
+        """
+        Returns the given clothes if it exists, or the default if not exist
+
+        IN:
+            _clothes - clothes to check for existence
+            default - default if clothes dont exist
+
+        RETURNS:
+            the clothes if it exists, or default if not
+        """
+        if _clothes in CLOTHES:
+            return _clothes
+
+        return default
+
 
     ## Accessory dictionary
     ACS_MAP = dict()
@@ -3382,7 +3432,6 @@ image monika 1ekbfa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
-
 )
 
 image monika 1dkbfa = DynamicDisplayable(
@@ -3397,7 +3446,6 @@ image monika 1dkbfa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
-
 )
 
 
@@ -3413,7 +3461,6 @@ image monika 1ekbfb = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
-
 )
 
 image monika 1ektsc = DynamicDisplayable(
@@ -5059,6 +5106,18 @@ image monika 2ekbfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 2ekp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="pout",
+    head="a",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
 
 image monika 2tfp = DynamicDisplayable(
     mas_drawmonika,
@@ -6619,6 +6678,18 @@ image monika 3dkbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3ekb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
 
 image monika 3ekbfb = DynamicDisplayable(
     mas_drawmonika,

@@ -1814,6 +1814,7 @@ init -999 python:
 init -990 python in mas_utils:
     import os
     import shutil
+    import datetime
     mas_log = renpy.renpy.log.open("log/mas_log")
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
@@ -1969,12 +1970,59 @@ init -990 python in mas_utils:
         # and delete the current file
         trydel(old_path)
 
+    def tryparsedt(_datetime, default=None, sep=" "):
+        """
+        Trys to parse a datetime isoformat string into a datetime object
+
+        IN:
+            _datetime - datetime iso format string to parse
+            default - default value to return if parsing fails
+            sep - separator used when converting to isoformat
+
+        RETURNS:
+            datetime object, or default if parsing failed
+        """
+        if len(_datetime) == 0:
+            return default
+
+        try:
+            # separate into date / time portions
+            _date, _sep, _time = _datetime.partition(sep)
+
+            # separate _date into y/m/d
+            year, month, day = _date.split("-")
+
+            # separate _time into h/m/s
+            hour, minute, second = _time.split(":", 2)
+
+            # separate second into s/ms (if applicable)
+            second, _sep, ms = second.partition(".")
+
+            # clean ms
+            ms = ms[:6]
+
+            # now try and parse everything into ints
+            year = tryparseint(year, -1)
+            month = tryparseint(month, -1)
+            day = tryparseint(day, -1)
+            hour = tryparseint(hour, -1)
+            minute = tryparseint(minute, -1)
+            second = tryparseint(second, -1)
+            ms = tryparseint(ms, 0) # ms isn't really important
+
+            # now try to bulid our datetime
+            return datetime.datetime(year, month, day, hour, minute, second, ms)
+
+        except:
+            return default
+
 
 init -100 python in mas_utils:
     # utility functions for other stores.
     import datetime
     import ctypes
     import random
+    import os
     from cStringIO import StringIO as fastIO
 
     __FLIMIT = 1000000
@@ -2139,6 +2187,36 @@ init -100 python in mas_utils:
 
         # reset state
         random.setstate(curr_state)
+
+        return data
+
+
+    def randomblob_fast(size):
+        """
+        Generates a randomb blob of stringIO data more efficientally and with
+        true random using urandom
+
+        NOTE: to prevent errors, we only generate bytes at 4M per iteration
+
+        IN:
+            size - size in bytes of the blob to make
+
+        RETURNS:
+            a cStringIO buffer of the random blob
+        """
+        data = fastIO()
+        _byte_limit = 4 * (1024**2) # 4MB
+
+        while size > 0:
+            make_bytes = _byte_limit
+            if (size - _byte_limit) <= 0:
+                make_bytes = size
+                size = 0
+
+            else:
+                size -= make_bytes
+
+            data.write(os.urandom(make_bytes))
 
         return data
 

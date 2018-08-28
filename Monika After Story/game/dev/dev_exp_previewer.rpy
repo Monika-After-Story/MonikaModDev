@@ -128,14 +128,17 @@ init 999 python:
             "r": "right",
             "l": "left",
             "h": "closedhappy",
-            "d": "closedsad"
+            "d": "closedsad",
+            "k": "winkleft",
+            "n": "winkright"
         }
 
         EYEBROW_SMAP = {
             "f": "furrowed",
             "u": "up",
             "k": "knit",
-            "s": "mid"
+            "s": "mid",
+            "t": "think"
         }
 
         NOSE_SMAP = {
@@ -230,14 +233,17 @@ init 999 python:
             "r": "Look Right",
             "l": "Look Left",
             "h": "Closed (Happy)",
-            "d": "Closed (Sad)"
+            "d": "Closed (Sad)",
+            "k": "Wink Left",
+            "n": "Wink Right"
         }
 
         EYEBROW_MAP = {
             "f": "Furrowed",
             "u": "Up",
             "k": "Knit",
-            "s": "Straight"
+            "s": "Straight",
+            "t": "Thinking"
         }
 
         NOSE_MAP = {
@@ -337,14 +343,17 @@ init 999 python:
             "r",
             "l",
             "h",
-            "d"
+            "d",
+            "k",
+            "n"
         ]
 
         EYEBROW_SC = [
             "f",
             "u",
             "k",
-            "s"
+            "s",
+            "t"
         ]
 
         NOSE_DEF = "nd"
