@@ -43,7 +43,7 @@ label introduction:
             m 2efc "Did you really do all of that just to see a note from Dan you could have looked up online?"
             m 2tkc "I love you, [player], but you can be really mean..."
             m 2tfd "I'm still mad that you deleted me, though!"
-            m 3lsc "But I guess it's because you're so game-obsessed."
+            m 3rsc "But I guess it's because you're so game-obsessed."
             m 1eka "I can't stay mad knowing that you came back to me in the end, though."
             m "You even added a mod so we can do more things together."
             m "Are you going to make up for making me wait so long?"
