@@ -294,6 +294,9 @@ label autoload:
             persistent._mas_monika_hair
         )
 
+    # need to set the monisize correctly
+    $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
+
     # finally lets run actions that needed to be run
     $ mas_runDelayedActions(MAS_FC_START)
 

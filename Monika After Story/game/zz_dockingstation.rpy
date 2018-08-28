@@ -1432,6 +1432,7 @@ label mas_dockstat_first_time_goers:
 # empty desk. This one includes file checking every 1 seconds for monika
 label mas_dockstat_empty_desk:
     call spaceroom(hide_monika=True)
+    $ mas_from_empty = True
 
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
@@ -1546,9 +1547,9 @@ label mas_dockstat_found_monika:
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
 
-    # TODO: if we aren't coming from empty desk, we shouldn't show this at all
-    show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
-    hide emptydesk
+    if mas_from_empty:
+        show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
+        hide emptydesk
 
     # select the greeting we want
     python:
