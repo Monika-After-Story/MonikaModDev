@@ -12,8 +12,24 @@ init -1 python in mas_globals:
     # True means we are in the dialogue workflow. False means not
     dlg_workflow = False
 
+init 970 python:
+    if persistent._mas_moni_chksum is not None:
+        # do check for monika existence
+        moni_tuple = store.mas_dockstat.findMonika(
+            mas_docking_station
+        )
+
+        # set the init data 
+        store.mas_dockstat.retmoni_status = moni_tuple[0]
+        store.mas_dockstat.retmoni_data = moni_tuple[1]
+
+        del moni_tuple
 
 
+image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
+image mas_island_day = "mod_assets/location/special/without_frame.png"
+image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
+image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
@@ -253,31 +269,39 @@ init python:
 
 
     dismiss_keys = config.keymap['dismiss']
+    renpy.config.say_allow_dismiss = store.mas_hotkeys.allowdismiss
 
     def slow_nodismiss(event, interact=True, **kwargs):
-        if not renpy.seen_label("ch30_nope"):
-            try:
-                renpy.file("../characters/monika.chr")
-            except:
-                if initial_monika_file_check:
-                    pushEvent("ch30_nope")
-            #     persistent.tried_skip = True
-            #     config.allow_skipping = False
-            #     _window_hide(None)
-            #     pause(2.0)
-            #     renpy.jump("ch30_end")
-            if  config.skipping and not config.developer:
-                persistent.tried_skip = True
-                config.skipping = False
-                config.allow_skipping = False
-                renpy.jump("ch30_noskip")
-                return
+        """
+        Callback for whenever monika talks
+
+        IN:
+            event - main thing we can use here, lets us now when in the pipeline
+                we are for display text:
+                begin -> start of a say statement
+                show -> right before dialogue is shown
+                show_done -> right after dialogue is shown
+                slow_done -> called after text finishes showing
+                    May happen after "end"
+                end -> end of dialogue (user has interacted)
+        """
+        # skip check
+        if config.skipping and not config.developer:
+            persistent.tried_skip = True
+            config.skipping = False
+            config.allow_skipping = False
+            renpy.jump("ch30_noskip")
+            return
+
         if event == "begin":
-            config.keymap['dismiss'] = []
-            renpy.display.behavior.clear_keymap_cache()
+            store.mas_hotkeys.allow_dismiss = False
+#            config.keymap['dismiss'] = []
+#            renpy.display.behavior.clear_keymap_cache()
+
         elif event == "slow_done":
-            config.keymap['dismiss'] = dismiss_keys
-            renpy.display.behavior.clear_keymap_cache()
+            store.mas_hotkeys.allow_dismiss = True
+#            config.keymap['dismiss'] = dismiss_keys
+#            renpy.display.behavior.clear_keymap_cache()
 
     morning_flag = None
     def is_morning():
@@ -457,6 +481,10 @@ label pick_a_game:
             if not renpy.seen_label("mas_piano_start"):
                 $ grant_xp(xp.NEW_GAME)
             call mas_piano_start from _call_play_piano
+        # "Movie":
+        #     if not renpy.seen_label("mas_monikamovie"):
+        #         $ grant_xp(xp.NEW_GAME)
+        #     call mas_monikamovie from _call_monikamovie
         "Nevermind":
             m "Alright. Maybe later?"
 
@@ -490,6 +518,7 @@ label ch30_noskip:
 image splash-glitch2 = "images/bg/splash-glitch2.png"
 
 label ch30_nope:
+    # NOTE: DEPRECATED
     $ persistent.autoload = ""
     $ m.display_args["callback"] = slow_nodismiss
     $ quick_menu = True
@@ -569,7 +598,33 @@ label ch30_autoload:
                 if renpy.has_label(ev_label)
             ]
 
+    # set this to None for now
     $ selected_greeting = None
+
+    # check if we took monika out
+    # NOTE:
+    #   if we find our monika, then we skip greeting logics and use a special
+    #       returning home greeting. This completely bypasses the system
+    #       since we should actively get this, not passively, because we assume
+    #       player took monika out
+    #   if we find a different monika, we still skip greeting logic and use
+    #       a differnet, who is this? kind of monika greeting
+    #   if we dont find a monika, we do the empty desk + monika checking flow
+    #       this should skip greetings entirely as well. If monika is returnd
+    #       during this flow, we have her say the same shit as the returning
+    #       home greeting.
+    if store.mas_dockstat.retmoni_status is not None:
+        # non None means we have a status
+        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_FO:
+            # TODOL: jump to the mas_dockstat_different_monika label
+            jump mas_dockstat_empty_desk
+
+        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_F:
+            jump mas_dockstat_found_monika
+
+        # otherwise, lets jump to the empty desk
+        jump mas_dockstat_empty_desk
+
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
@@ -630,11 +685,6 @@ label ch30_autoload:
         $ mas_skip_visuals = True
         $ persistent.closed_self = True
 
-
-    if not mas_skip_visuals:
-        $ mas_startup_song()
-
-    window auto
     #If you were interrupted, push that event back on the stack
     $restartEvent()
 
@@ -679,6 +729,10 @@ label ch30_autoload:
             # Grant bad exp for closing the game incorrectly.
             mas_loseAffection(modifier=2, reason="closing the game on me")
 
+label ch30_post_greeting_check:
+    # this label skips greeting selection as well as exp checks for game close
+    # we assume here that you set selected_greeting if you needed to
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
@@ -697,8 +751,11 @@ label ch30_autoload:
     else:
         $ config.allow_skipping = False
 
+    window auto
+
     if not mas_skip_visuals:
         $ set_keymaps()
+        $ mas_startup_song()
 
         # rain check
         if mas_shouldRain():
@@ -718,9 +775,12 @@ label ch30_preloop:
     $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
+    
+    # delayed actions in here please
+    $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
     # save here before we enter the loop
-    $ renpy.persistent.save()
+    $ renpy.save_persistent()
     jump ch30_loop
 
 label ch30_loop:
@@ -777,6 +837,9 @@ label ch30_loop:
             #Run actions for any events that are based on the clock
             evhand.event_database=Event.checkCalendar(evhand.event_database)
 
+            # Run delayed actions
+            mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
+
             #Update time
             calendar_last_checked=datetime.datetime.now()
 
@@ -784,7 +847,7 @@ label ch30_loop:
             _mas_AffSave()
 
             # save the persistent
-            renpy.persistent.save()
+            renpy.save_persistent()
 
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
@@ -986,5 +1049,22 @@ label ch30_reset:
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
+
+    ## chess strength reset
+    python:
+        if persistent.chess_strength < 0:
+            persistent.chess_strength = 0
+        elif persistent.chess_strength > 20:
+            persistent.chess_strength = 20
+
+    ## monika returned home reset
+    python:
+        if persistent._mas_monika_returned_home is not None:
+            _now = datetime.date.today()
+            _rh = persistent._mas_monika_returned_home.date()
+            if _now > _rh:
+                persistent._mas_monika_returned_home = None
+
+        
 
     return

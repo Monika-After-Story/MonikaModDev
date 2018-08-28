@@ -2,12 +2,18 @@ define persistent.demo = False
 define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
 
+init 1 python:
+    persistent.steam = "steamapps" in config.basedir.lower()
+
 python early:
     import singleton
     me = singleton.SingleInstance()
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z =5
+
+    # this is now global
+    import datetime
 
 
 # uncomment this if you want syntax highlighting support on vim
@@ -132,6 +138,13 @@ python early:
         # modified during object creation
         # NOTE: this is set in evhand at an init level of -500
         INIT_LOCKDB = None
+
+        # action MAP
+        # actions that should be done given an event
+        # NOTE: this is actually populated later, at init level 1
+        #   SEE the evhand store in event-handler
+        # NOTE: action code should be callable on a given event object
+        ACTION_MAP = dict()
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -664,19 +677,11 @@ python early:
                 #Calendar events use a different function
                 date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
                 if not date_based and events[ev].conditional is not None:
-                    if eval(events[ev].conditional) and events[ev].action is not None:
-                        #Perform the event's action
-                        if events[ev].action == EV_ACT_PUSH:
-                            pushEvent(ev)
-                        elif events[ev].action == EV_ACT_QUEUE:
-                            queueEvent(ev)
-                        elif events[ev].action == EV_ACT_UNLOCK:
-                            events[ev].unlocked = True
-                            events[ev].unlock_date = datetime.datetime.now()
-                        elif events[ev].action == EV_ACT_RANDOM:
-                            events[ev].random = True
-                        elif events[ev].action == EV_ACT_POOL:
-                            events[ev].pool = True
+                    if (
+                            eval(events[ev].conditional) 
+                            and events[ev].action in Event.ACTION_MAP
+                        ):
+                        Event._performAction(events[ev], datetime.datetime.now())
 
                         #Clear the conditional
                         events[ev].conditional = None
@@ -722,19 +727,9 @@ python early:
                         continue
 
 
-                if e.action is not None:
-                    #Perform the event's action
-                    if e.action == EV_ACT_PUSH:
-                        pushEvent(ev)
-                    elif e.action == EV_ACT_QUEUE:
-                        queueEvent(ev)
-                    elif e.action == EV_ACT_UNLOCK:
-                        e.unlocked = True
-                        e.unlock_date = current_time
-                    elif e.action == EV_ACT_RANDOM:
-                        e.random = True
-                    elif e.action == EV_ACT_POOL:
-                        e.pool = True
+                if e.action in Event.ACTION_MAP:
+                    # perform action
+                    Event._performAction(e, current_time)
 
                     # Check if we have a years property
                     if e.years is not None:
@@ -994,6 +989,32 @@ python early:
 
             # return the available events dict
             return available_events
+
+
+        @staticmethod
+        def _performAction(ev, _unlock_time):
+            """
+            Efficient / no checking action performing
+
+            NOTE: does NOT check ev.action for nonNone
+
+            IN:
+                ev - event we are performing action on
+                _unlock_time - datetime to use for unlock_date
+            """
+            Event.ACTION_MAP[ev.action](ev, unlock_time=_unlock_time)
+
+
+        @staticmethod
+        def performAction(ev, _unlock_time=datetime.datetime.now()):
+            """
+            Performs the action of the given event
+
+            IN:
+                ev - event we are perfrming action on
+            """
+            if ev.action in Event.ACTION_MAP:
+                Event._performAction(ev, _unlock_time)
 
 
 # init -1 python:
@@ -1776,12 +1797,53 @@ init -1 python in _mas_root:
         persistent._mas_affection["affection"] = 0
 
 
-init -100 python in mas_utils:
-    # utility functions for other stores.
-    import datetime
-    import ctypes
+init -999 python:
+    import os
 
-    __FLIMIT = 1000000
+    # this is initially set to 60 seconds
+    renpy.not_infinite_loop(120)
+
+    # create the log folder if not exist
+    if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
+        try:
+            os.mkdir(os.path.normcase(renpy.config.basedir + "/log"))
+        except:
+            pass
+
+
+init -990 python in mas_utils:
+    import os
+    import shutil
+    import datetime
+    mas_log = renpy.renpy.log.open("log/mas_log")
+    mas_log_open = mas_log.open()
+    mas_log.raw_write = True
+
+    # LOG messges
+    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
+    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
+
+    # bad text dict
+    BAD_TEXT = {
+        "{": "{{",
+        "[": "[["
+    }
+
+    def clean_gui_text(text):
+        """
+        Cleans the given text so its suitable for GUI usage
+
+        IN:
+            text - text to clean
+
+        RETURNS:
+            cleaned text
+        """
+        for bad in BAD_TEXT:
+            text = text.replace(bad, BAD_TEXT[bad])
+
+        return text
+
 
     def tryparseint(value, default=0):
         """
@@ -1801,6 +1863,169 @@ init -100 python in mas_utils:
         except:
             return default
 
+
+    def copyfile(oldpath, newpath):
+        """
+        Copies the file at oldpath into a file at newpath
+        Paths assumed to include the filename (like an mv command)
+
+        NOTE:
+            if a copy fails, the error is logged
+
+        IN:
+            oldpath - path to old file, including filename
+            newpath - path to new file, including filename
+
+        RETURNS:
+            True if copy succeeded, False otherwise
+        """
+        try:
+            shutil.copyfile(oldpath, newpath)
+            return True
+        except Exception as e:
+            writelog(_mas__failcp.format(oldpath, newpath, str(e)))
+        return False
+
+
+    def writelog(msg):
+        """
+        Writes to the mas log if it is open
+
+        IN:
+            msg - message to write to log
+        """
+        if mas_log_open:
+            mas_log.write(msg)
+
+
+    def trydel(f_path, log=False):
+        """
+        Attempts to delete something at the given path
+
+        NOTE: completely hides exceptions, unless log is True
+        """
+        try:
+            os.remove(f_path)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(str(e)))
+
+
+    def logrotate(logpath, filename):
+        """
+        Does a log rotation. Log rotations contstantly increase. We defualt
+        to about 2 decimal places, but let the limit go past that
+
+        NOTE: exceptions are logged
+
+        IN:
+            logpath - path to the folder containing logs
+                NOTE: this is assumed to have the trailing slash
+            filename - filename of the log to rotate
+        """
+        try:
+            filelist = os.listdir(logpath)
+        except Exception as e:
+            writelog("[ERROR] " + str(e) + "\n")
+            return
+
+        # log rotation constants
+        __numformat = "{:02d}"
+        __numdelim = "."
+
+        # parse filelist for valid filenames,
+        # also sort them so the largest number is last
+        filelist = sorted([
+            x
+            for x in filelist
+            if x.startswith(filename)
+        ])
+
+        # now extract only the largest number in this list.
+        # NOTE: this is only possible if we have more than one file in the list
+        if len(filelist) > 1:
+            fname, dot, largest_num = filelist.pop().rpartition(__numdelim)
+            largest_num = tryparseint(largest_num, -1)
+
+        else:
+            # otherwise
+            largest_num = -1
+
+        # now increaese largest num to get the next number we should write out
+        largest_num += 1
+
+        # delete whatever file that is if it exists
+        new_path = os.path.normcase("".join([
+            logpath,
+            filename,
+            __numdelim,
+            __numformat.format(largest_num)
+        ]))
+        trydel(new_path)
+
+        # and copy our main file over
+        old_path = os.path.normcase(logpath + filename)
+        copyfile(old_path, new_path)
+
+        # and delete the current file
+        trydel(old_path)
+
+    def tryparsedt(_datetime, default=None, sep=" "):
+        """
+        Trys to parse a datetime isoformat string into a datetime object
+
+        IN:
+            _datetime - datetime iso format string to parse
+            default - default value to return if parsing fails
+            sep - separator used when converting to isoformat
+
+        RETURNS:
+            datetime object, or default if parsing failed
+        """
+        if len(_datetime) == 0:
+            return default
+
+        try:
+            # separate into date / time portions
+            _date, _sep, _time = _datetime.partition(sep)
+
+            # separate _date into y/m/d
+            year, month, day = _date.split("-")
+
+            # separate _time into h/m/s
+            hour, minute, second = _time.split(":", 2)
+
+            # separate second into s/ms (if applicable)
+            second, _sep, ms = second.partition(".")
+
+            # clean ms
+            ms = ms[:6]
+
+            # now try and parse everything into ints
+            year = tryparseint(year, -1)
+            month = tryparseint(month, -1)
+            day = tryparseint(day, -1)
+            hour = tryparseint(hour, -1)
+            minute = tryparseint(minute, -1)
+            second = tryparseint(second, -1)
+            ms = tryparseint(ms, 0) # ms isn't really important
+
+            # now try to bulid our datetime
+            return datetime.datetime(year, month, day, hour, minute, second, ms)
+
+        except:
+            return default
+
+
+init -100 python in mas_utils:
+    # utility functions for other stores.
+    import datetime
+    import ctypes
+    import random
+    import os
+    from cStringIO import StringIO as fastIO
+
+    __FLIMIT = 1000000
 
     def tryparsefloat(value, default=0):
         """
@@ -1927,6 +2152,73 @@ init -100 python in mas_utils:
             second=0,
             microsecond=0
         )
+
+
+    def randomblob(size, seed=None):
+        """
+        Generates a blob of StringIO data with the given size
+
+        NOTE: if seed is given, the current random state will be restored
+            after this function ends
+
+        NOTE: generated bytes are in range of 0-255
+
+        IN:
+            size - size in bytes of the blob to make
+            seed - seed to use
+                if None, curent time is used (as per random documentation)
+                (Default: None)
+
+        RETURNS:
+            a cStringIO buffer of the random blob
+        """
+        data = fastIO()
+        _byte_count = 0
+        curr_state = None
+
+        # seed set
+        curr_state = random.getstate()
+        random.seed(seed)
+
+        # generate random bytes
+        while _byte_count < size:
+            data.write(chr(random.randint(0, 255)))
+            _byte_count += 1
+
+        # reset state
+        random.setstate(curr_state)
+
+        return data
+
+
+    def randomblob_fast(size):
+        """
+        Generates a randomb blob of stringIO data more efficientally and with
+        true random using urandom
+
+        NOTE: to prevent errors, we only generate bytes at 4M per iteration
+
+        IN:
+            size - size in bytes of the blob to make
+
+        RETURNS:
+            a cStringIO buffer of the random blob
+        """
+        data = fastIO()
+        _byte_limit = 4 * (1024**2) # 4MB
+
+        while size > 0:
+            make_bytes = _byte_limit
+            if (size - _byte_limit) <= 0:
+                make_bytes = size
+                size = 0
+
+            else:
+                size -= make_bytes
+
+            data.write(os.urandom(make_bytes))
+
+        return data
 
 
     class ISCRAM(ctypes.BigEndianStructure):
@@ -3524,8 +3816,8 @@ default him = "him"
 default himself = "himself"
 
 
-# default is NORMAL
-default persistent._mas_randchat_freq = 1
+# default is OFTEN
+default persistent._mas_randchat_freq = 0
 define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies

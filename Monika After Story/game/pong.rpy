@@ -6,9 +6,6 @@
         import random
         import math
 
-        def is_morning():
-            return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-
         class PongDisplayable(renpy.Displayable):
 
             def __init__(self):

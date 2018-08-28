@@ -209,7 +209,6 @@ label splashscreen:
 
 
     #Check for game updates before loading the game or the splash screen
-#    call update_now from _call_update_now
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
@@ -295,6 +294,9 @@ label autoload:
             persistent._mas_monika_hair
         )
 
+    # finally lets run actions that needed to be run
+    $ mas_runDelayedActions(MAS_FC_START)
+
     jump expression persistent.autoload
 
 label before_main_menu:
@@ -305,6 +307,8 @@ label quit:
     $ store.mas_calendar.saveCalendarDatabase(CustomEncoder)
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
+
+    $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
     if persistent._mas_hair_changed:
         $ persistent._mas_monika_hair = monika_chr.hair
@@ -328,6 +332,17 @@ label quit:
             if acs.stay_on_start
         ]
 
+    # remove special images
+    $ store.mas_island_event.removeImages()
+
+    # delayed action stuff
+    $ mas_runDelayedActions(MAS_FC_END)
+    $ store.mas_delact.saveDelayedActionMap()
+
     $ _mas_AffSave()
+
+    # delete the monika file if we aren't leaving
+    if not persistent._mas_dockstat_going_to_leave:
+        $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
     return

@@ -17,8 +17,11 @@ init -1 python in mas_greetings:
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
 
+    ### NOTE: all Return Home greetings must have this
+    TYPE_GO_SOMEWHERE = "go_somewhere"
+
     # custom greeting functions
-    def selectGreeting(type=None):
+    def selectGreeting(_type=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
@@ -42,13 +45,13 @@ init -1 python in mas_greetings:
 
 
         # check first if we have to select from a special type
-        if type is not None:
+        if _type is not None:
 
             # filter them using the type as filter
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
                 unlocked=True,
-                category=(True,[type])
+                category=(True,[_type])
             )
 
         else:
@@ -631,10 +634,16 @@ init 5 python:
 
 label monikaroom_greeting_ear_loveme:
     $ cap_he = he.capitalize()
-    m "[cap_he] loves me.{w} [cap_he] loves me not."
-    m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
-    m "[cap_he] loves me."
-    m "...{w} [cap_he] loves me!"
+    if cap_he == "They":
+        m "[cap_he] love me.{w} [cap_he] love me not."
+        m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
+        m "[cap_he] love me."
+        m "...{w} [cap_he] love me!"
+    else:
+        m "[cap_he] loves me.{w} [cap_he] loves me not."
+        m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+        m "[cap_he] loves me."
+        m "...{w} [cap_he] loves me!"
     jump monikaroom_greeting_choice
 
 # monika does the bath/dinner/me thing
@@ -1629,3 +1638,127 @@ label greeting_back_from_sleep:
      m 1hub "I hope you had a good rest!"
      m "Let's spend some more time together~"
      return
+
+
+init 5 python:
+    if not mas_cannot_decode_islands:
+        rules = dict()
+        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+        rules.update({"monika wants this first":""})
+        addEvent(
+            Event(
+                persistent.greeting_database,
+                eventlabel="greeting_ourreality",
+                unlocked=False,
+                random=False,
+                rules=rules
+            ),
+            eventdb=evhand.greeting_database
+        )
+        del rules
+
+
+init 900 python in mas_delact: 
+    # this greeting requires a delayed action, since we cannot ensure that
+    # the sprites for this were decoded correctly
+
+    def _greeting_ourreality_unlock():
+        return store.MASDelayedAction(
+            1,
+            store.mas_getEV("greeting_ourreality"),
+            (
+                "not store.mas_cannot_decode_islands"
+                " and mas_isMoniEnamored(higher=True)"
+            ),
+            store.EV_ACT_UNLOCK,
+            store.MAS_FC_START
+        )
+        
+
+label greeting_ourreality:
+    m 1hub "Hi, [player]!"
+    m 1hua "Ehehe~"
+    m 3hksdlb "I'm feeling rather giddy right now, sorry."
+    m 1eua "It's just that I'm super excited to show you what I've been working on."
+    m 3hksdrb "Just give me a second to get it ready..."
+    m 1dsc "..."
+    m 1dsd "Almost done..."
+    m 1duu "Yeah, that should be good."
+    m 1hua "Ahaha!"
+    m 1eka "Sorry about that."
+    m 1eua "Without any further ado..."
+    m 4eub "Would you kindly look out the window, [player]"
+    $ mas_OVLHide()
+    $ disable_esc()
+    if morning_flag:
+        show mas_island_frame_day zorder 20
+    else:
+        show mas_island_frame_night zorder 20
+    m "Well..."
+    m "What do you think?"
+    m "I worked really hard on this."
+    m "A place just for the both of us."
+    m "It's also where I can keep practicing my programming skills."
+    $ mas_OVLShow()
+    $ enable_esc()
+    if morning_flag:
+        hide mas_island_frame_day
+    else:
+        hide mas_island_frame_night
+    #Transition back to Monika
+    m 1lsc "Being in the classroom all day can be dull."
+    m 1ekc "Plus, I get really lonely waiting for you to return."
+    m 1hksdlb "But don't get me wrong, though!"
+    m 1eua "I'm always happy when you visit and spend time together with me."
+    m 1eka "I understand that you're busy and can't be here all the time."
+    m 3euc "It's just that I realized something, [player]."
+    m 1lksdlc "It'll be a long time before I can even cross over to your reality."
+    m 1dsc "So I thought..."
+    m 1eua "Why don't we just make our own reality?"
+    m 1lksdla "Well, it's not exactly perfect yet."
+    m 1hua "But it's a start."
+    # m 1eub "I'll let you admire the scenery for now."
+    # m 1hub "Hope you like it!"
+    $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
+    $ unlockEventLabel("mas_monika_islands")
+    jump mas_monika_islands
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_returned_home",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_GO_SOMEWHERE]
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+default persistent._mas_monika_returned_home = None
+
+label greeting_returned_home:
+    # this is going to act as the generic returned home greeting.
+    # please note, that we will use last_session to determine how long we were
+    # out. If shorter than 5 minutes, monika won't gain any affection.
+    $ five_minutes = datetime.timedelta(seconds=5*60)
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+
+    if time_out > five_minutes:
+        m 1hua "And we're home!"
+        m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+        m 2ekc "Well, it felt really great!"
+        m 5eub "Let's do this again soon, okay?"
+        if persistent._mas_monika_returned_home is None:
+            $ mas_gainAffection(5, bypass=True)
+            $ persistent._mas_monika_returned_home = datetime.datetime.now()
+
+        $ grant_xp(xp.NEW_GAME)
+
+    else:
+        m 2ekp "That wasn't much of a trip, [player]."
+        m "Next time better last a little longer..."
+        $ mas_loseAffection()
+
+    return
+

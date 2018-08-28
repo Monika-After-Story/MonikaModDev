@@ -388,7 +388,7 @@ init 1 python in mas_chess:
         return _checkInProgressGame(pgn_game, mth)
 
 
-init 2018 python:
+init 899 python:
     # run init function
     store.mas_chess._initMASChess(MASQuipList)
 
@@ -1383,8 +1383,10 @@ label demo_minigame_chess:
                         mas_monika_twitter_handle
                     )
                 else:
+                    store.mas_utils.writelog("Failed to access quickfile.\n")
                     quicksaved_file = None
-            except:
+            except Exception as e:
+                store.mas_utils.writelog("QUICKFILE: " + str(e) + "\n")
                 quicksaved_file = None
 
         # failure reading the saved game from text
@@ -1407,8 +1409,14 @@ label demo_minigame_chess:
                                 mas_monika_twitter_handle
                             )
                         else:
+                            store.mas_utils.writelog(
+                                "Failed to access quickfile.\n"
+                            )
                             quicksaved_file = None
-                    except:
+                    except Exception as e:
+                        store.mas_utils.writelog(
+                            "QUICKFILE: " + str(e) + "\n"
+                        )
                         quicksaved_file = None
 
                 if quicksaved_file is None:

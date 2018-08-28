@@ -320,7 +320,7 @@ label mas_piano_yr_prac:
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
     import os
-    log = renpy.renpy.log.open("pnm")
+    log = renpy.renpy.log.open("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 
@@ -569,6 +569,11 @@ init -3 python in mas_piano_keys:
         "B5": B5,
         "C6": C6
     }
+
+    # match notes to strings for displaying
+    KEYMAP_TO_STR = dict()
+    for k in JSON_KEYMAP:
+        KEYMAP_TO_STR[JSON_KEYMAP[k]] = k
 
 
 # FUNCTIONS ===================================================================
@@ -1381,7 +1386,7 @@ init -3 python in mas_piano_keys:
 
 
 # all songs are done in jsons now
-init 1000 python in mas_piano_keys:
+init 790 python in mas_piano_keys:
     import json
 
     # functions used for pnmls.
@@ -1532,7 +1537,7 @@ label mas_piano_dpco_prac:
     return
 
 
-init 1000 python in mas_piano_keys:
+init 800 python in mas_piano_keys:
     # d, piano note setup
     # verse 1
     # also checkpoint 1
@@ -1899,7 +1904,7 @@ init 1000 python in mas_piano_keys:
         return song_list, ("Nevermind", "None", False, False, 10)
 
 # make this later than mas_piano_keys
-init 1001 python:
+init 810 python:
     import store.mas_piano_keys as mas_piano_keys
 
     # setup named tuple dicts
@@ -1936,7 +1941,7 @@ init 1001 python:
 
         # CONSTANTS
         # timeout
-        TIMEOUT = 1.0 # seconds
+        TIMEOUT = 1.5 # seconds
         SONG_TIMEOUT = 3.0 # seconds
         SONG_VIS_TIMEOUT = 4.0 # seconds
 #        FAIL_TIMEOUT = 4.0 # number of seconds to display awkward face on fail
@@ -3750,6 +3755,28 @@ init 1001 python:
                         670
                     )
                 )
+
+                if len(self.played) > 0:
+                    played_text = renpy.render(
+                        renpy.text.text.Text(
+                            "[[" + ", ".join([
+                                store.mas_piano_keys.KEYMAP_TO_STR.get(x,"")
+                                for x in self.played
+                            ]) + "]"
+                        ),
+                        1280,
+                        720,
+                        st,
+                        at
+                    )
+                    rtw, rth = played_text.get_size()
+                    r.blit(
+                        played_text,
+                        (
+                            int((width - rtw) / 2),
+                            645
+                        )
+                    )
 
 
 
