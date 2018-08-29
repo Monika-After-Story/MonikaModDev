@@ -283,29 +283,32 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_scared:
-    m 1g "[player], are you alright?"
-    m 1f "It's worrying for me to see you anxious..."
-    m 1m "I wish I could comfort you at this time..."
-    if renpy.seen_label("monikaroom_greeting_opendoor_locked"):
-        m 4n "Or maybe I did scare you a bit with my surprise earlier..."
-        m 1o "If that's the case, then I'm so sorry to have you experience that, [player]..."
-    else:
-    m 3e "But I can help you to calm yourself down, [player]."
-    m 3a "Do you remember when I talked to you about confidence?"
-    m 3b "Keeping up your appearance does help with faking your own confidence."
-    m "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
-    m "Maybe you could take things slowly, and do it one at a time."
-    m "You'd be surprised on how smooth you can be, if you let the time flows on it's own."
-    m 4b "You can even spend a few minutes to meditate!"
-    m 4n "It doesn't necessarily mean you have to cross your legs when sitting on the ground..."
-    m 4k "Just by listening to your favourite music can be counted as meditating!"
-    m 3l "Make sure you don't get {i}too{/i} carried away while doing so. Ahaha!"
-    m 1d "I'm serious. If anything else, you can try putting away your work and do something else for the meantime."
-    m 1e "I love you so much I'm also worried when you're worried, [player]."
-    m 1k "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
-    m 1l "Ahaha! Sorry, I know that's not something you'd expect of me."
-    m 5a "Or you can just stay here with me."
-    m  "There's nothing to worry about when we're together~"
+    m 1euc "[player], are you alright?"
+    m 1ekc "It's worrying for me to hear you this anxious..."
+    m "I wish I could comfort you and help right now..."
+    m 3eka "But I can at the very least help you to calm yourself down."
+    if seen_event("monika_anxious"):
+        m 1eua "After all, I did promise to help you relax if you ever felt anxious."
+    m 3eua "Do you remember when I talked to you about faking confidence?"
+    if not seen_event("monika_confidence"):
+        m 2euc "No?"
+        m 2lksdla "Guess that’s for another time then."
+        m 1eka "Anyways…"
+    m 1eua "Keeping up one’s appearance helps with faking your own confidence."
+    m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
+    if seen_event("monika_confidence_2"):
+        m "I remember explaining how initiative is an important skill to have as well."
+    m "Maybe you could take things slowly, and do them one at a time."
+    m 1esa "You'd be surprised on how smooth it can be, when you let the time flow on its own."
+    m 1hub "You can also try spending a few minutes to meditate!"
+    m 1hksdlb "It doesn't necessarily mean you have to cross your legs when sitting on the ground."
+    m 1hua " Listening to your favourite music can be counted as meditating too!"
+    m 1eua "I'm serious!"
+    m 3eua "You can try setting aside your work and do something else in the meantime."
+    m "Procrastination isn’t necessarily bad, you know?"
+    m 2esc "Besides…"
+    m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
+    m 1hubfa "There's nothing to worry about when we're together forever~"
     return
 
 init 5 python:
