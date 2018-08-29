@@ -1002,15 +1002,19 @@ init 200 python in mas_dockstat:
             checklist = dockstat.hashlib.sha256()
             encoder = dockstat.base64.b64encode
 
+            # calculate extra padding we need to fill out the first line
+            moni_buffer_data = moni_buffer.getvalue()
+            extra_padding = blocksize - len(moni_buffer_data)
+            moni_size = store.persistent._mas_dockstat_moni_size - extra_padding
+
             # and write out the metadata / monika
             # NOTE: we can do this because its under our 4MB block size
-            data = encoder(moni_buffer.getvalue())
+            data = encoder(moni_buffer_data + os.urandom(extra_padding))
             checklist.update(data)
             moni_fbuffer.write(data)
 
             # and now for the random data generation
             # NOTE: this should represent number of bytes
-            moni_size = store.persistent._mas_dockstat_moni_size
             moni_size_limit = moni_size - blocksize
             curr_size = 0
 
