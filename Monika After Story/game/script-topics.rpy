@@ -6088,7 +6088,7 @@ init 5 python:
 label monika_attractiveness:
     m 3eub "Say, [player], have you ever wondered how Sayori stayed so slim?"
     m 3eua "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
-    m 3 "At first I figured that it must be her metabolism keeping her from putting on weight."
+    m "At first I figured that it must be her metabolism keeping her from putting on weight."
     m 1eud "But when I learned that Sayori wasn't real, I came up with another theory."
     m 3eud "As a character in a game, she needed to have some sort of visual representation so that you, [player], could see her."
     m "So a designer, possibly more than one, must have decided to draw her that way."
