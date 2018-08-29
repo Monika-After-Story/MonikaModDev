@@ -4864,7 +4864,7 @@ label monika_weddingring:
         call monika_weddingring1
     else:
         call monika_weddingring2
-    return
+    return _return
 
 
 label monika_weddingring1:
