@@ -2360,6 +2360,215 @@ init -1 python:
         return (int(mins / 60), int(mins % 60))
 
 
+    def mas_isSTtoAny(_time, _suntime, _hour, _min):
+        """
+        Checks if the given time is within this range:
+        _suntime <= _time < (_hour, _min)
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _suntime - suntime to use for lower bound
+                NOTE: suntimes are given in minutes
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+
+        RETURNS:
+            True if the given time is within bounds of the given suntime and
+                given hour / mins, False otherwise
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        _upper_minutes = (_hour * 60) + _min
+        return _suntime <= _curr_minutes < _upper_minutes
+
+
+    def mas_isSRtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within Sunrise time to the given _hour
+        and _minute
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is whithin bounds of sunrise and the given
+            hour / mins, False otherwise
+        """
+        return mas_isSTtoAny(_time, persistent._mas_sunrise, _hour, _min)
+
+
+    def mas_isSStoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within sunset to the given _hour and minute
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of sunset and the given
+            hour/min, False otherwise
+        """
+        return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
+
+
+    def mas_isAnytoST(_time, _hour, _min, _suntime):
+        """
+        Checks if the given time is within this range:
+        (_hour, _min) <= _time < _suntime
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+            _suntime - suntime to use for upper bound
+                NOTE: suntimes are given in minutes
+
+        RETURNS:
+            True if the given time is within bounds of the given hour / mins
+            and the given suntime, false Otherwise
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        _lower_minutes = (_hour * 60) + _min
+        return _lower_minutes <= _curr_minutes < _suntime
+
+
+    def mas_isAnytoSR(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour and minute to sunrise
+        time
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and sunrise, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunrise)
+
+
+    def mas_isAnytoSS(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to sunset time
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and sunset, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
+
+    
+    def mas_isMNtoSR(_time):
+        """
+        Checks if the given time is within midnight to sunrise
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within midnight to sunrise
+        """
+        return mas_isAnytoSR(_time, 0)
+
+
+    def mas_isSRtoN(_time):
+        """
+        Checks if the given time is within sunrise to noon
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is witin sunrise to noon
+        """
+        return mas_isSRtoAny(_time, 12)
+
+
+    def mas_isNtoSS(_time):
+        """
+        Checks if the given time is within noon to sunset
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within noon to sunset
+        """
+        return mas_isAnytoSS(_time, 12)
+
+
+    def mas_isSStoMN(_time):
+        """
+        Checks if the given time is within sunset to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within sunset to midnight
+        """
+        return mas_isSStoAny(_time, 24)
+
+
+    def mas_isSunny(_time):
+        """
+        Checks if the sun is up during the given time
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if it is sunny during the given time
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        return persistent._mas_sunrise <= _curr_minutes < persistent._mas_sunset
+
+
+    def mas_isNight(_time):
+        """
+        Checks if the sun is down during the given time
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if it the sun is down during the given time
+        """
+        return not mas_isSunny(_time)
+
+
     def mas_cvToDHM(mins):
         """
         Converts the given minutes into a displayable hour / minutes
