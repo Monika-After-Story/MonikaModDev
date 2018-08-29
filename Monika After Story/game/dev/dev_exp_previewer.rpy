@@ -137,7 +137,8 @@ init 999 python:
             "f": "furrowed",
             "u": "up",
             "k": "knit",
-            "s": "mid"
+            "s": "mid",
+            "t": "think"
         }
 
         NOSE_SMAP = {
@@ -241,7 +242,8 @@ init 999 python:
             "f": "Furrowed",
             "u": "Up",
             "k": "Knit",
-            "s": "Straight"
+            "s": "Straight",
+            "t": "Thinking"
         }
 
         NOSE_MAP = {
@@ -350,7 +352,8 @@ init 999 python:
             "f",
             "u",
             "k",
-            "s"
+            "s",
+            "t"
         ]
 
         NOSE_DEF = "nd"

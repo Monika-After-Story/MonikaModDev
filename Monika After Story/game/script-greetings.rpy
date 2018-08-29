@@ -1749,7 +1749,7 @@ label greeting_returned_home:
     if time_out > five_minutes:
         m 1hua "And we're home!"
         m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
-        m 2ekc "Well, it felt really great!"
+        m 2eua "Well, it felt really great!"
         m 5eub "Let's do this again soon, okay?"
         if persistent._mas_monika_returned_home is None:
             $ mas_gainAffection(5, bypass=True)

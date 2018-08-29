@@ -1002,15 +1002,19 @@ init 200 python in mas_dockstat:
             checklist = dockstat.hashlib.sha256()
             encoder = dockstat.base64.b64encode
 
+            # calculate extra padding we need to fill out the first line
+            moni_buffer_data = moni_buffer.getvalue()
+            extra_padding = blocksize - len(moni_buffer_data)
+            moni_size = store.persistent._mas_dockstat_moni_size - extra_padding
+
             # and write out the metadata / monika
             # NOTE: we can do this because its under our 4MB block size
-            data = encoder(moni_buffer.getvalue())
+            data = encoder(moni_buffer_data + os.urandom(extra_padding))
             checklist.update(data)
             moni_fbuffer.write(data)
 
             # and now for the random data generation
             # NOTE: this should represent number of bytes
-            moni_size = store.persistent._mas_dockstat_moni_size
             moni_size_limit = moni_size - blocksize
             curr_size = 0
 
@@ -1432,6 +1436,7 @@ label mas_dockstat_first_time_goers:
 # empty desk. This one includes file checking every 1 seconds for monika
 label mas_dockstat_empty_desk:
     call spaceroom(hide_monika=True)
+    $ mas_from_empty = True
 
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
@@ -1546,8 +1551,9 @@ label mas_dockstat_found_monika:
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
 
-    show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
-    hide emptydesk
+    if mas_from_empty:
+        show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
+        hide emptydesk
 
     # select the greeting we want
     python:

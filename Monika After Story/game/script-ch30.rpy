@@ -615,6 +615,8 @@ label ch30_autoload:
     #       home greeting.
     if store.mas_dockstat.retmoni_status is not None:
         # non None means we have a status
+        $ mas_from_empty = False
+
         if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_FO:
             # TODOL: jump to the mas_dockstat_different_monika label
             jump mas_dockstat_empty_desk

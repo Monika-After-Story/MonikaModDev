@@ -45,6 +45,7 @@
 #   u - up / happy (up)
 #   k - knit / upset / concerned (knit)
 #   s - straight / normal / regular (mid)
+#   t - thinking (think)
 #
 # <nose type> - type of nose
 #   nd - default nose (def) NOTE: UNUSED
@@ -93,6 +94,8 @@
 # NOTE:
 # not every possible combination has been created as an image. If you want
 # a particular expression, make a github issue about it and why we need it.
+#
+# hmmmmmm (1etecc)
 
 # This defines a dynamic displayable for Monika whose position and style changes
 # depending on the variables is_sitting and the function morning_flag
