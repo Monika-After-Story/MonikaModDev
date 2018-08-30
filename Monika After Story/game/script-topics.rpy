@@ -3815,7 +3815,7 @@ label monika_afternoon:
         m 1hua "Eheh, good {i}morning,{/i} [player]~"
         m 3eua "It's not the afternoon just yet."
         m 1hub "Are you still half asleep or something, or are you just trying to be funny?"
-        show monika 5eubfu at t11 zorder 2 with dissolve
+        show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eubfu "I swear, you are just {i}too adorable{/i} sometimes~"
         m "Eheheh~"
     elif mas_isNtoSS:
@@ -3843,7 +3843,7 @@ label monika_afternoon:
         m 1hua "Just promise me you won't overwork yourself, alright, [player]?"
         m "I just thought it'd be nice for the both of us to lay back and relax together."
         if mas_isMoniAff(higher=True):
-            show monika 5eubfu at t11 zorder 2 with dissolve
+            show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eubfu "I'll be right here if you want me~"
         else:
             m 1eub "I'll be right here if you need me~"
