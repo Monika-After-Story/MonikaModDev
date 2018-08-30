@@ -6942,10 +6942,10 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_bullying",category=['society'],prompt="Bullying",random=True))
 
 label monika_bullying:
-    m 3ekc "Hey [player], I'm sure you've heard a lot about it lately, but bullying has become a real problem in today's society, especially among kids."
+    m 4ekc "Hey [player], I'm sure you've heard a lot about it lately, but bullying has become a real problem in today's society, especially among kids."
     m 4dkd "Some people are bullied every day until the point they just can't take it anymore."
-    m 4lsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5} {i}kids being kids{/i}."
-    m 2lsc "The victims end up losing all trust in authority figures because they let it go on day after day..."
+    m 2lsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5} {i}kids being kids{/i}."
+    m "The victims end up losing all trust in authority figures because they let it go on day after day..."
     m 2lksdld "It can make them so desperate, they eventually just snap..."
     m 4eksdld "Resulting in violence toward the bully, other people, or even themselves."
     m 4wud "This can actually make the victim look like the problem!"
