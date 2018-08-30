@@ -1691,10 +1691,10 @@ label greeting_back_from_sleep:
             m 1hua "That's nice~"
             m 1dkbfa "Nothing really beats waking up after a nice, peaceful rest, don't you think, [player]?"
             if mas_isMoniHappy(higher=True):
-                show monika 5rubfsdrb at t11 zorder 2 with dissolve
+                show monika 5rubfsdrb at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5rubfsdrb "Except waking up next to you maybe..."
                 m 5eubfu "Eheheh~"
-            show monika 5eub at t11 zorder 2 with dissolve
+            show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eub "I'm glad you slept well~"
             m 5eubfu "Maybe you even had a nice dream about me?"
             m 5hubfb "Ehehe~"
