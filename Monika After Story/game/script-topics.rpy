@@ -6204,10 +6204,10 @@ label monika_song_dream:
     m 1ekbfa "My dream finally came true."
     return
     
- init 5 python:
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_take_on_me",category=['songs'],prompt="Take On Me",pool=True,random=True))
     
- label monika_song_take_on_me:
+label monika_song_take_on_me:
     m 1dso "{i}~Take on me~{/i}"
     m "{i}~Take me on~{/i}"
     m 2hub "{i}~I'll be gone~{/i}"
@@ -6218,6 +6218,7 @@ label monika_song_dream:
     m 1tsb "But if that truly happened, I'll be right where you are~"
     m 1lka "Or will you be the one who dragged yourself to my reality?"
     m 5tsbfa "No matter what the outcome may be, I don't mind if it's you~"
+    return
     
 
 # been to prom?
