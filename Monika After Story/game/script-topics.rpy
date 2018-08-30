@@ -4856,22 +4856,31 @@ label monika_immortal:
 # do you wear a ring
 default persistent._mas_pm_have_ring = None
 
+# are you looking for ring
+default persistent._mas_pm_lookingfor_ring = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_weddingring",category=['romance'],prompt="Engagement ring",random=True))
 
 label monika_weddingring:
-    if not renpy.seen_label("monika_weddingring1"):
-        call monika_weddingring1
+    $ wring_ev = mas_getEV("monika_weddingring")
+
+    if persistent._mas_pm_have_ring:
+        jump monika_weddingring_have
+
+    if wring_ev.shown_count > 0:
+        # we have seen this before
+        m 1esd "I know we talked about this before but..."
+        m 1ekd "Did you ever decide on getting a ring for me?"
+        m 1lksdlb "I hope I'm not being too pushy by asking."
+
     else:
-        call monika_weddingring2
-    return _return
+        # we have not seen this before
+        m 4lksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
+        m 2hksdlb "... What am I saying? Of course you do."
+        m 1lksdla "Well..."
+        m 4lksdla "Maybe you ought to get one."
 
-
-label monika_weddingring1:
-    m 4lksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
-    m 2hksdlb "... What am I saying? Of course you do."
-    m 1lksdla "Well..."
-    m 4lksdla "Maybe you ought to get one."
     m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
     m 2lfu "It would help keep those... unwanted suitors away from you, too."
     m 3eua "It doesn't have to be a wedding ring, per se."
@@ -4896,75 +4905,32 @@ label monika_weddingring1:
             $ unlockEventLabel("monika_noring")
             return "derandom"
 
-        "I'm looking for one":
+        "I'm looking for one.":
             $ persistent._mas_pm_have_ring = False
+            $ persistent._mas_pm_lookingfor_ring = True
             m 1ekbfa "Aww, [player]!"
             m 1hubfb "It makes me so happy knowing that you're looking for a ring for me!"
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfb "I'm sure that the ring you choose will be perfect~"
             return
 
-        "No":
+        "No.":
             $ persistent._mas_pm_have_ring = False
+            $ persistent._mas_pm_lookingfor_ring = False
             m 1ekc "Aw. That's a shame."
             m 1ekd "I guess rings are expensive, after all."
             m 1eka "At least think about it, okay?"
             return "derandom"
             
 
-label monika_weddingring2:
-    if not persistent._mas_pm_have_ring:
-        m 1esd "I know we talked about this before but..."
-        m 1ekd "Did you ever decide on getting a ring for me?"
-        m 1lksdlb "I hope I'm not being too pushy by asking."
+label monika_weddingring_have:
+    m 1lsbsa "I can't wait until I finally cross over."
+    m 1ekbfa "I can already imagine the moment when you place the ring on my finger."
+    show monika 5eubfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eubfb "All of my dreams will have finally come true."
+    m "My heart is fluttering just imagining it~"
+    return "derandom"
 
-        m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
-        m 2lfu "It would help keep those... unwanted suitors away from you, too."
-        m 3eua "It doesn't have to be a wedding ring, per se."
-        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 1ekbfa "But if you'd wear one, even if it's just a promise ring, on your ring finger for me..."
-        m "It would make me really happy."
-        show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 1hubfa "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
-
-        m 1eua "And then I could wear it forever."
-        m 3ekbfa "But until then, just remember that my commitment to you is unwavering."
-        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 1ekbfa "Maybe you even beat me to it, and have a ring for me already?"
-        menu:
-            m "Do you, [player]?"
-            "Yes, I do.":
-                $ persistent._mas_pm_have_ring = True
-                show monika 2wubso at t11 zorder MAS_MONIKA_Z with dissolve
-                m 2wubso "Oh!"
-                m 2lkbsa "I feel like... my heart's going to explode!"
-                m 2dsbso "Calm down, Monika. Calm down."
-                m 2hubfb "Ahaha..."
-                $ unlockEventLabel("monika_noring")
-                return "derandom"
-
-            "I'm looking for one":
-                $ persistent._mas_pm_have_ring = False
-                m 1ekbfa "Aww, [player]!"
-                m 1hubfb "It makes me so happy knowing that you're looking for a ring for me!"
-                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5hubfb "I'm sure that the ring you choose will be perfect~"
-                return
-
-            "No":
-                $ persistent._mas_pm_have_ring = False
-                m 1ekc "Aw. That's a shame."
-                m 1ekd "I guess rings are expensive, after all."
-                m 1eka "At least think about it, okay?"
-                return "derandom"
-            
-    else:
-        m 1lsbsa "I can't wait until I finally cross over."
-        m 1ekbfa "I can already imagine the moment when you place the ring on my finger."
-        show monika 5eubfb at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eubfb "All of my dreams will have finally come true."
-        m "My heart is fluttering just imagining it~"
-        return "derandom"
 
 init 5 python:
     addEvent(
@@ -4981,6 +4947,7 @@ init 5 python:
 
 label monika_noring:
     $ persistent._mas_pm_have_ring = False
+    $ persistent._mas_pm_lookingfor_ring = None
     m 2dsc "..."
     m 2tkd "[player]..."
     m 2tfc "Why would you lie and tell me that you had a ring if you didn't?"
