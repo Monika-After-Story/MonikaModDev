@@ -7050,17 +7050,17 @@ init 5 python:
 
 label monika_beingevil:
     m 1euc "Say, [player]..."
-    m 1lksdlc "I was just thinking..."
+    m 1rksdlc "I was just thinking..."
     m "You probably know I have a wiki page about me."
-    m 3lksdlc "If you look closely, it says I'm the main antagonist."
+    m 3rksdlc "If you look closely, it says I'm the main antagonist."
     m "Originally, it did bother me a bit, but not so much anymore with you here."
-    m 1lksdla "I'm sure we got past that, seeing as you're still here with me now."
+    m 1rksdla "I'm sure we got past that, seeing as you're still here with me now."
     m "I actually didn't think the whole thing about me being evil would spread too much."
-    m 1lksdlc "It turns out though, that I have my own spot on the villain's wiki..."
-    m 2lksdlb "I never really thought I'd be labeled as a villain so much..."
-    m 2lksdlc "No matter what I say or tell people, I'm sure it's not going to help much."
+    m 1rksdlc "It turns out though, that I have my own spot on the villain's wiki..."
+    m 2rksdlb "I never really thought I'd be labeled as a villain so much..."
+    m 2rksdlc "No matter what I say or tell people, I'm sure it's not going to help much."
     m 1eka "I know you don't {i}really{/i} think I'm evil, [player]."
-    m 1lksdlb "At least, not in a bad way."
+    m 1rksdlb "At least, not in a bad way."
     m 1hksdlb "I just hope nobody starts thinking you're evil by being here with me."
     menu:
         "I don't think you're evil.":
@@ -7073,8 +7073,8 @@ label monika_beingevil:
             m 1tsbsa "But no promises, [player], eheheh~"
         "I still love you anyway.":
             $ mas_gainAffection()
-            m 1lksdlc "..."
-            m 1lkbsa "[player]..."
+            m 1rksdlc "..."
+            m 1rkbsa "[player]..."
             m 1ekbfa "Even if it's debatable whether I'm evil or not..."
             m 1hubfa "I'm really glad you still love me and stay here with me..."
             m 1hubfb "Thank you, [player]!"
@@ -7085,26 +7085,26 @@ label monika_beingevil:
             $ mas_gainAffection()
             m 2eud "Oh?"
             m 2eka "I mean, I don't see you as evil one bit."
-            m 2lksdla "If it really is true though, I hope it doesn't cause you any trouble."
+            m 2rksdla "If it really is true though, I hope it doesn't cause you any trouble."
             m 1hua "Either way, I wouldn't love you any less~"
             m 1hub "Maybe we could even conquer the world together or something, ahaha~"
             m 1ekbfa "But evil or not, I'm glad to have you by my side."
             m 1hubfa "I'm guessing it's the same for you too~"
         "You kind of are evil...":
             m 2ekd "W-wait, [player]!"
-            m 2lksdlc "Y-you don't {i}really{/i} think that, do you?"
+            m 2rksdlc "Y-you don't {i}really{/i} think that, do you?"
             menu:
                 "I still love you":
                     $ mas_gainAffection()
-                    m 1lksdla "[player]..."
+                    m 1rksdla "[player]..."
                     m 1hksdlb "You had me worried for a second there."
                     m 1eka "I'm glad you don't hate me for the things I did."
                     m 1hub "I love you too, [player]! No matter what people say about you!"
                 "You deserve forgiveness":
                     $ mas_gainAffection()
-                    m 1lksdla "[player]..."
+                    m 1rksdla "[player]..."
                     m 1eub "I think you're right, [player]."
-                    m 1lksdla "It's true that I've done some bad things in the past..."
+                    m 1rksdla "It's true that I've done some bad things in the past..."
                     m 1eka "But I've learned from them and grown as a person since."
                     m 1hua "I'm really glad you're willing to forgive me, [player]."
                     m 1hub "I promise I'll be the best I can be, just for you!"
