@@ -321,7 +321,7 @@ label unlock_hangman:
     m 1eua "It was always my favorite game to play with the club."
     m 1lsc "But, come to think of it..."
     m "The game is actually quite morbid."
-    m 3lssdrc "You guess letters for a word to save someone's life."
+    m 3rssdrc "You guess letters for a word to save someone's life."
     m "Get them all correct and the person doesn't hang."
     m 1lksdlc "But guess them all wrong..."
     m "They die because you didn't guess the right letters."
@@ -681,5 +681,5 @@ label mas_crashed_short:
 label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
-    m 4lksdlb "It's my home, after all..."
+    m 4rksdlb "It's my home, after all..."
     return
