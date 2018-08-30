@@ -444,7 +444,7 @@ label monika_sayori:
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
     m 1esc "But what's the point when none of it is even real?"
     m 1euc "I mean, it's the same ending either way, right?"
-    if isMoniDis(lower=True)
+    if isMoniDis(lower=True):
         m 1lksdla "The two of us, happily together..."
         m "There's no reason to ask for any more than that, right?"
         m 1eka "Sorry, I was just pointlessly musing - I'll be quiet for you now..."
