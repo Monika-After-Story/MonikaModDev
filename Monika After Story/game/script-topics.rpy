@@ -6965,7 +6965,7 @@ label monika_graduation:
     #Normal flow
     else:
         m 4eua "By the way, did you know I was the top student in my class?"
-        m 4lksdla "Ah... I don't mean to brag or anything, I only bring it up because as class valedictorian, I was supposed to give a speech at graduation."
+        m 4rksdla "Ah... I don't mean to brag or anything, I only bring it up because as class valedictorian, I was supposed to give a speech at graduation."
         m 2ekd "I spent so much time writing and practicing my speech, but no one ever got to hear it."
         m 2eka "I was really proud of that speech, too."
         m 2eua "I would love to recite it for you sometime, if you want to hear it..."
@@ -7112,8 +7112,8 @@ label monika_not_paying_attention:
         m 2ekd "[player]? You didn't pay attention to my speech?"
         m 2rksdlc "That... that's not like you at all..."
         m 2eksdlc "You're {i}always{/i} so supportive..."
-        show monika 5rkc at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5rkc "..."
+        show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5lkc "..."
         m "Something must have happened, I know you love me too much to have done this on purpose."
         m 5euc "Yeah..."
         m 2eka "It's okay, [player], I understand sometimes things happen that can't be avoided."
