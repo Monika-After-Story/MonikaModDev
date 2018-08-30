@@ -1134,16 +1134,16 @@ label monika_wine:
             m 1dkbfa "Oh gosh... I'm imagining being able to share a lovely drink whenever the mood gets romantic."
             m 1hksdlb "Of course, we probably shouldn't get {i}too{/i} carried away..."
             m 1eka "The finest wine isn't exactly cheap if we get too attached to sharing a drink."
-            show monika 5eua at t11 zorder 2 with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "So do me a favor and wait for me a bit before really treating yourself."
-            show monika 1hua at t11 zorder 2 with dissolve
+            show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
             m 1hua "You better have a good bottle to share!"
             m 1hub "Ahaha~"
         "No.":
             m 1eua "At least I don't have to be jealous about you being able to drink while I'm stuck here."
             m 1lksdla "If that's still the case when I can finally be with you, maybe we could try a little anyway?"
             m 1lksdlb "Just a little."
-            show monika 5eua at t11 zorder 2 with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I mean we'll have eachother to stop one another from having too much, right?"
         "You can, but I can't.":
             m 2hua "Maybe then I'll be able to have something you can't!"
@@ -1159,9 +1159,9 @@ label monika_wine:
             m "Maybe you could let me try a sip sometime?"
             m 1lksdlb "Just a little bit... Maybe..."
             m 1hua "Ahaha~ I'm only kidding, [player]."
-            show monika 5eua at t11 zorder 2 with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I really wouldn't want you to get in trouble."
-            show monika 1lksdla at t11 zorder 2 with dissolve
+            show monika 1lksdla at t11 zorder MAS_MONIKA_Z with dissolve
             m 1lksdla "Ok, maybe I was only half kidding, but you don't have to share if it could get you in trouble."
         "I don't drink.":
             m 2ekd "Oh!"
