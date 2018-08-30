@@ -929,7 +929,7 @@ init 5 python:
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    m 3rssdrc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
+    m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
     m 3eua "That was actually a little more of an experiment than a poem, you could say."
     m "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
     m "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
@@ -1187,7 +1187,7 @@ label monika_yuri:
     m 1rksdlb "Also, I might be a little obsessed with you, but I'm far from crazy..."
     m 1eua "It's kind of the opposite, actually."
     m "I turned out to be the only normal girl in this game."
-    m 3rssdrc "It's not like I could ever actually kill a person..."
+    m 3rssdlc "It's not like I could ever actually kill a person..."
     m 2dsc "Just the thought of it makes me shiver."
     m 2eka "But come on...everyone's killed people in games before."
     m "Does that make you a psychopath? Of course not."
