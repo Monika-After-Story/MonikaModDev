@@ -1650,7 +1650,7 @@ label greeting_siat:
     m "{i}~Then comes--{/i}"
     m 4wubfsdld "W-wha?!"
     m "[player]! H-how long were you there?!"
-    m 4lkbfb "I...{w=1} I didn't notice you come in...{w=1} I was just..."
+    m 4rkbfb "I...{w=1} I didn't notice you come in...{w=1} I was just..."
     m 3ekbfb "Ahaha! Nevermind."
     m 1ekbfa "I love you, [player], I'm so happy that you're here now~"
     return
