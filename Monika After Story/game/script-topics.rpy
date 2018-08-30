@@ -1153,7 +1153,7 @@ init 5 python:
 label monika_kiss:
     m 1wubsw "Eh? D-Did you say...k...kiss?"
     m 2lkbsa "This suddenly...it's a little embarrassing..."
-    m 2lsbssdrb "But...if it's with you...I-I might be okay with it..."
+    m 2lsbssdlb "But...if it's with you...I-I might be okay with it..."
     m 2hksdlb "...Ahahaha! Wow, sorry..."
     m 1eka "I really couldn't keep a straight face there."
     m 1eua "That's the kind of thing girls say in these kinds of romance games, right?"
@@ -1621,7 +1621,7 @@ default persistent._mas_carryme_choice = None
 default persistent._mas_dockstat_cm_wait_count = 0
 
 # number of times user said yes to dockstation prompt
-# we'll use this to decide whether to switch to TAKE_MONI mode from ask 
+# we'll use this to decide whether to switch to TAKE_MONI mode from ask
 #   (or the other modes)
 default persistent._mas_dockstat_cm_yes_count = 0
 
@@ -1673,7 +1673,7 @@ label monika_carryme:
             # TODO: something about monika saying she understands and to let
             # her know when you can take her places
             # + affection
-                
+
 #        "No.":
 #            $ persistent._mas_carryme_choice = mas_dockstat.CM_LEAVE_MONI
             # TODO: monika understands, you must have ur reasons
@@ -3476,7 +3476,7 @@ label monika_dunbar:
     m 1eka "It helped us meet though, so it can't be all bad."
     return
 
-# TODO: maybe rewrite? 
+# TODO: maybe rewrite?
 #   there is controversary to this topic
 #   Lets gather data first before decideing wehter or not to completely
 #   remove or keep
@@ -5063,7 +5063,7 @@ label monika_orchestra:
                     m 5eubfu "And just so you know, you can play with me anytime you like..."
                     m 5eubfb "Ehehe~"
 
-                $ persistent.instrument = True 
+                $ persistent.instrument = True
             elif tempinstrument == "harmonica":
                 m 1hub "Wow, I've always wanted to try the harmonica out!"
                 m 1eua "I would love to hear you play for me."
@@ -5071,8 +5071,8 @@ label monika_orchestra:
                 m 4esa "Although..."
                 m 2esa "Personally, I prefer the {cps=*0.7}{i}harmonika{/i}{/cps}..."
                 m 2eua "..."
-                m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"              
-                $ persistent.instrument = True            
+                m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"
+                $ persistent.instrument = True
             else:
                 m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
                 m 1eua "I would love to hear you play for me."
@@ -5080,7 +5080,7 @@ label monika_orchestra:
                 m 1wuo "Oh! Would a duet between the [tempinstrument] and the piano sound nice?"
                 m 1hua "Ehehe~"
                 $ persistent.instrument = True
-                
+
         "No.":
             $persistent.instrument = False
             m 1euc "I see..."

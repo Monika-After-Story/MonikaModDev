@@ -1517,7 +1517,7 @@ init -2 python:
         The Posemap helps connect pose names to images
 
         This is done via a dict containing pose names and where they
-        map to. 
+        map to.
 
         There is also a seperate dict to handle lean variants
         """
@@ -1546,7 +1546,7 @@ init -2 python:
                     specified (aka are None).
                 l_default - default pose id to use for lean poses that are not
                     specified (aka are None).
-                p1 - pose id to use for pose 1 
+                p1 - pose id to use for pose 1
                     - steepling
                 p2 - pose id to use for pose 2
                     - crossed
@@ -4739,6 +4739,21 @@ image monika 2lsbssdrb = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 2lsbssdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def",
+    blush="shade"
+)
+
 image monika 2lsbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7654,7 +7669,7 @@ image monika 4rssdrc = DynamicDisplayable(
     right="2r",
     arms="pointright",
     sweat="right"
-)    
+)
 
 image monika 4rfx = DynamicDisplayable(
     mas_drawmonika,
