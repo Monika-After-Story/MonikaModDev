@@ -4335,6 +4335,21 @@ image monika 2tkd = DynamicDisplayable(
     right="2r",
     arms="crossed"
 )
+
+image monika 2dktsd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="g",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="streaming"
+)
+
 image monika 2dkd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
