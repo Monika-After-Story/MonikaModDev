@@ -26,23 +26,23 @@ init 4 python:
         # clearing this to prevent crash
         persistent.monika_topic = None
 
-default persistent._mas_084_hotfix_farewellbug = None
+#default persistent._mas_084_hotfix_farewellbug = None
 
 # post many things, but not late update script appropriate
 # init-based update scripts
 # TODO: remove this when we reach 085
-init 600 python:
-    if (
-            persistent._mas_084_hotfix_farewellbug is None
-            and renpy.seen_label("bye_long_absence")
-        ):
-        # reset affection to 0 to help people that got screwed with
-        # the farewell bug
-        _mas_AffLoad()
-        if persistent._mas_affection["affection"] < 0:
-            mas_setAffection(0)
-            _mas_AffSave()
-    persistent._mas_084_hotfix_farewellbug = True
+# this was init 600 python
+#    if (
+#            persistent._mas_084_hotfix_farewellbug is None
+#            and renpy.seen_label("bye_long_absence")
+#        ):
+#        # reset affection to 0 to help people that got screwed with
+#        # the farewell bug
+#        _mas_AffLoad()
+#        if persistent._mas_affection["affection"] < 0:
+#            mas_setAffection(0)
+#            _mas_AffSave()
+#    persistent._mas_084_hotfix_farewellbug = True
 
 
 # create some functions
@@ -267,6 +267,19 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.8.6
+label v0_8_6(version="v0_8_6"):
+    python:
+        import store.evhand as evhand
+        
+        # unlock gender redo if we have seen the other event
+        genderredo_ev = evhand.event_database.get("gender_redo", None)
+        if genderredo_ev and renpy.seen_label("gender"):
+            genderredo_ev.unlocked = True
+            genderredo_ev.pool = True
+
+    return
 
 # 0.8.4
 label v0_8_4(version="v0_8_4"):

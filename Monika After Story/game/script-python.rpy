@@ -133,6 +133,15 @@ label monika_ptod_tip000:
     m 1esa "Let's start with what Python even is."
 
     $ hideEventLabel("monika_ptod_tip000", depool=True)
+
+    # enable tip 1
+    $ import datetime
+    $ tip_ev = mas_getEV("monika_ptod_tip001")
+    $ tip_ev.pool = True
+    $ tip_ev.unlocked = True
+    $ tip_ev.unlock_date = datetime.datetime.now()
+    $ tip_ev.shown_count = 1
+
     jump monika_ptod_tip001
 
 ###############################################################################
@@ -147,10 +156,16 @@ init 5 python:
     )
 
 label monika_ptod_tip001:
-    # first enable this event
+    
+    # speical stuff for unstablers
+    # TODO: remove this in 086
     $ tip_ev = mas_getEV("monika_ptod_tip001")
-    $ tip_ev.pool = True
-    $ tip_ev.unlocked = True
+    if tip_ev.unlock_date is None:
+        $ import datetime
+        $ tip_ev.unlock_date = datetime.datetime.now()
+
+    if tip_ev.shown_count == 0:
+        $ tip_ev.shown_count = 1
 
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
@@ -162,7 +177,7 @@ label monika_ptod_tip001:
     
     m 4eub "Anyway, I need to mention that there are currently two main versions of Python:{w} Python2 and Python3."
     m 3eua "These versions are {u}incompatible{/u} with each other because the changes added in Python3 fixed many fundamental design flaws in Python2."
-    m "Even though this caused rift in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
+    m "Even though this caused a rift in the Python community,{w} it's generally agreed that both versions of the language have their own strengths and weaknesses."
     m 3eub "I'll tell you about those differences in another lesson."
 
     m 1eua "Since this mod runs on a Ren'Py version that uses Python2, I won't be talking about Python3 too often."
@@ -278,7 +293,7 @@ label monika_ptod_tip003:
     m 1eua "Programming languages are usually either compiled or interpreted."
     m "Compiled languages require their code to be converted to a machine-readable format before being executed."
     m 3eub "C and Java are two very popular compiled languages."
-    m 1eua "Interpreted langauges are converted into a machine-readable format as they are being executed."
+    m 1eua "Interpreted languages are converted into a machine-readable format as they are being executed."
     m 3eub "Python is an interpreted language."
     m 1rksdlb "However, different implementations of Python may be compiled, but that's a complicated topic that I may talk about in a later lesson."
 
@@ -307,7 +322,7 @@ label monika_ptod_tip003:
         m "Not that you would{fast}{nw}"
         $ _history_list.pop()
         m 1eksdlb "I can't let you use this.{w} Sorry..." 
-        m "If you want to follow along in future lessons, then run a Python interpreter in a seperate window."
+        m "If you want to follow along in future lessons, then run a Python interpreter in a separate window."
 
         m 1eua "Anyway, I'll be using {i}this{/i} interpreter to help with teaching."
 

@@ -816,7 +816,14 @@ label update_now:
         if updater_selection > 0:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
+
+            # call quit so we can save important stuff
+            call quit
+            $ renpy.save_persistent()
             $ updater.update(update_link, restart=True)
+
+            # we have to quit because calling QUIT breaks things
+            jump _quit
 
         else:
             # just update the last checked, regardless of issue

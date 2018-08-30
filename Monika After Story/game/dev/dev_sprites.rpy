@@ -82,7 +82,6 @@ init 5 python:
             category=["dev"],
             prompt="ACCESSORY POSE TEST",
             pool=True,
-            random=True,
             unlocked=True
         )
     )

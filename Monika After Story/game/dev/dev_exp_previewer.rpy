@@ -9,7 +9,6 @@ init 5 python:
             category=["dev"],
             prompt="EXP PREVIEW",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
@@ -33,10 +32,14 @@ label dev_exp_previewer:
 
     show monika at i11
     window auto
+
+    $ lockEventLabel("monika_hair_ponytail")
+    $ unlockEventLabel("monika_hair_down")
+
     return
 
 
-init 1000 python:
+init 999 python:
     class MASExpPreviewer(renpy.Displayable):
         """
         we are about to go there
@@ -125,14 +128,17 @@ init 1000 python:
             "r": "right",
             "l": "left",
             "h": "closedhappy",
-            "d": "closedsad"
+            "d": "closedsad",
+            "k": "winkleft",
+            "n": "winkright"
         }
 
         EYEBROW_SMAP = {
             "f": "furrowed",
             "u": "up",
             "k": "knit",
-            "s": "mid"
+            "s": "mid",
+            "t": "think"
         }
 
         NOSE_SMAP = {
@@ -151,7 +157,11 @@ init 1000 python:
 
         TEARS_SMAP = {
             "ts": "streaming",
-            "td": "dried"
+            "td": "dried",
+            "tp": "pooled",
+            "tu": "up",
+            "tl": "left",
+            "tr": "right"
         }
 
         SWEAT_SMAP = {
@@ -223,14 +233,17 @@ init 1000 python:
             "r": "Look Right",
             "l": "Look Left",
             "h": "Closed (Happy)",
-            "d": "Closed (Sad)"
+            "d": "Closed (Sad)",
+            "k": "Wink Left",
+            "n": "Wink Right"
         }
 
         EYEBROW_MAP = {
             "f": "Furrowed",
             "u": "Up",
             "k": "Knit",
-            "s": "Straight"
+            "s": "Straight",
+            "t": "Thinking"
         }
 
         NOSE_MAP = {
@@ -249,7 +262,11 @@ init 1000 python:
 
         TEARS_MAP = {
             "ts": "Streaming Tears",
-            "td": "Dried Tears"
+            "td": "Dried Tears",
+            "tp": "Pooled Tears",
+            "tu": "Tearing Up",
+            "tl": "Tearing Up (Left)",
+            "tr": "Tearing Up (Right)"
         }
 
         SWEAT_MAP = {
@@ -326,14 +343,17 @@ init 1000 python:
             "r",
             "l",
             "h",
-            "d"
+            "d",
+            "k",
+            "n"
         ]
 
         EYEBROW_SC = [
             "f",
             "u",
             "k",
-            "s"
+            "s",
+            "t"
         ]
 
         NOSE_DEF = "nd"
@@ -356,7 +376,11 @@ init 1000 python:
         TEARS_SC = [
             None,
             "ts",
-            "td"
+            "td",
+            "tp",
+            "tu",
+            "tl",
+            "tr"
         ]
 
         SWEAT_SC = [

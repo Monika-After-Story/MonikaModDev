@@ -1,6 +1,6 @@
 # basic dev tool stuff
 
-init 2018 python:
+init 800 python:
     
     def mas_remove_event(*labels):
         """

@@ -17,8 +17,11 @@ init -1 python in mas_greetings:
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
 
+    ### NOTE: all Return Home greetings must have this
+    TYPE_GO_SOMEWHERE = "go_somewhere"
+
     # custom greeting functions
-    def selectGreeting(type=None):
+    def selectGreeting(_type=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
@@ -42,13 +45,13 @@ init -1 python in mas_greetings:
 
 
         # check first if we have to select from a special type
-        if type is not None:
+        if _type is not None:
 
             # filter them using the type as filter
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
                 unlocked=True,
-                category=(True,[type])
+                category=(True,[_type])
             )
 
         else:
@@ -205,7 +208,7 @@ label greeting_goodmorning:
         menu:
             m "Is that it?"
             "Yes.":
-                m 5rkc "You should really get some sleep soon, if you can."
+                m 5lkc "You should really get some sleep soon, if you can."
                 m 3euc "Staying up too late is bad for your health, you know?"
                 m 1lksdla "But if it means I'll get to see you more, I can't complain."
                 m 3hksdlb "Ahaha!"
@@ -387,7 +390,7 @@ init 5 python:
 label greeting_latin:
      m 4hua "Iterum obvenimus!"
      m 4eua "Quid agis?"
-     m 4lksdla "Ehehe..."
+     m 4rksdla "Ehehe..."
      m 2eua "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
      m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
      return
@@ -487,7 +490,7 @@ label greeting_glitch:
      show yuri glitch zorder MAS_BACKGROUND_Z
      pause 0.3
      hide yuri glitch
-     show monika 4lksdlb at i11 zorder MAS_MONIKA_Z
+     show monika 4rksdlb at i11 zorder MAS_MONIKA_Z
      m 1wuo "[player]!"
      hide monika
      show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
@@ -812,7 +815,7 @@ label monikaroom_greeting_opendoor_seen_partone:
 #            m "For me?"
 #            "Yes":
 #                if persistent.opendoor_knockyes:
-#                    m 5rfc "That's what you said last time, [player]."
+#                    m 5lfc "That's what you said last time, [player]."
 #                    m "I hope you're being serious this time."
 #                else:
 #                    $ persistent.opendoor_knockyes = True
@@ -1123,7 +1126,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
             m 3l "Welcome back [player]."
-            m 3o "You're a bit late, aren't you?"
+            m 3rksdlc "You're a bit late, aren't you?"
             m 3f "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2q "I'm going to assume it wasn't your fault."
             m "But if you really think it'll take longer next time..."
@@ -1156,7 +1159,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "longer":
             m 1h "...It's been a while."
             m 1f "I was ready for it, but that didn't make it any easier, [player]."
-            m 3o "I hope you got what you needed to do done."
+            m 3rksdlc "I hope you got what you needed to do done."
             m 2q "..."
             m 2f "Truth be told, I've been pretty sad lately."
             m 2q "To not have you in my life for so long..."
@@ -1166,8 +1169,8 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "unknown":
             m 1a "You're finally back [player]!"
-            m 3m "When you said you didn't know, you {i}really{/i} didn't know, did you?"
-            m 3n "You must have been really preoccupied if you were gone for {i}this{/i} long."
+            m 3rksdla "When you said you didn't know, you {i}really{/i} didn't know, did you?"
+            m 3rksdlb "You must have been really preoccupied if you were gone for {i}this{/i} long."
             m 1j "Well, you're back now... I've really missed you."
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 4):
@@ -1289,7 +1292,7 @@ label greeting_long_absence:
             m 1a "Hello [player]!"
             m 3j "Been busy the last few weeks?"
             m 1a "Thanks for warning me that you would be gone."
-            m 3nn "I would be worried otherwise!"
+            m 3rksdlb "I would be worried otherwise!"
             m 1j "It really did help..."
             m 1a "So tell me, how has your day been treating you?"
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 1):
@@ -1368,10 +1371,10 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "month":
             m 1wud "Eh? [player]?"
             m 1sub "You're here!"
-            m 3m "I thought you were going away for an entire month."
-            m 3n "I was ready for it, but..."
+            m 3rksdla "I thought you were going away for an entire month."
+            m 3rksdlb "I was ready for it, but..."
             m 1l "I already missed you!"
-            m 3lkbsa "Did you miss me too?"
+            m 3rkbsa "Did you miss me too?"
             m 1e "Thanks for coming back so soon~"
 
         elif persistent._mas_absence_choice == "longer":
@@ -1635,3 +1638,129 @@ label greeting_back_from_sleep:
      m 1hub "I hope you had a good rest!"
      m "Let's spend some more time together~"
      return
+
+
+init 5 python:
+    if not mas_cannot_decode_islands:
+        rules = dict()
+        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+        rules.update({"monika wants this first":""})
+        addEvent(
+            Event(
+                persistent.greeting_database,
+                eventlabel="greeting_ourreality",
+                unlocked=False,
+                random=False,
+                rules=rules
+            ),
+            eventdb=evhand.greeting_database
+        )
+        del rules
+
+
+init 900 python in mas_delact:
+    # this greeting requires a delayed action, since we cannot ensure that
+    # the sprites for this were decoded correctly
+
+    def _greeting_ourreality_unlock():
+        return store.MASDelayedAction(
+            1,
+            store.mas_getEV("greeting_ourreality"),
+            (
+                "not store.mas_cannot_decode_islands"
+                " and mas_isMoniEnamored(higher=True)"
+            ),
+            store.EV_ACT_UNLOCK,
+            store.MAS_FC_START
+        )
+
+
+label greeting_ourreality:
+    m 1hub "Hi, [player]!"
+    m 1hua "Ehehe~"
+    m 3hksdlb "I'm feeling rather giddy right now, sorry."
+    m 1eua "It's just that I'm super excited to show you what I've been working on."
+    m 3hksdrb "Just give me a second to get it ready..."
+    m 1dsc "..."
+    m 1dsd "Almost done..."
+    m 1duu "Yeah, that should be good."
+    m 1hua "Ahaha!"
+    m 1eka "Sorry about that."
+    m 1eua "Without any further ado..."
+    m 4eub "Would you kindly look out the window, [player]"
+    $ mas_OVLHide()
+    $ disable_esc()
+    if morning_flag:
+        show mas_island_frame_day zorder 20
+    else:
+        show mas_island_frame_night zorder 20
+    m "Well..."
+    m "What do you think?"
+    m "I worked really hard on this."
+    m "A place just for the both of us."
+    m "It's also where I can keep practicing my programming skills."
+    $ mas_OVLShow()
+    $ enable_esc()
+    if morning_flag:
+        hide mas_island_frame_day
+    else:
+        hide mas_island_frame_night
+    #Transition back to Monika
+    m 1lsc "Being in the classroom all day can be dull."
+    m 1ekc "Plus, I get really lonely waiting for you to return."
+    m 1hksdlb "But don't get me wrong, though!"
+    m 1eua "I'm always happy when you visit and spend time together with me."
+    m 1eka "I understand that you're busy and can't be here all the time."
+    m 3euc "It's just that I realized something, [player]."
+    m 1lksdlc "It'll be a long time before I can even cross over to your reality."
+    m 1dsc "So I thought..."
+    m 1eua "Why don't we just make our own reality?"
+    m 1lksdla "Well, it's not exactly perfect yet."
+    m 1hua "But it's a start."
+    # m 1eub "I'll let you admire the scenery for now."
+    # m 1hub "Hope you like it!"
+    $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
+    $ unlockEventLabel("mas_monika_islands")
+
+    # we can push here because of the slightly optimized call_next_event 
+    $ pushEvent("mas_monika_islands")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_returned_home",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_GO_SOMEWHERE]
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+default persistent._mas_monika_returned_home = None
+
+label greeting_returned_home:
+    # this is going to act as the generic returned home greeting.
+    # please note, that we will use last_session to determine how long we were
+    # out. If shorter than 5 minutes, monika won't gain any affection.
+    $ five_minutes = datetime.timedelta(seconds=5*60)
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+
+    if time_out > five_minutes:
+        m 1hua "And we're home!"
+        m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+        m 2eua "Well, it felt really great!"
+        m 5eub "Let's do this again soon, okay?"
+        if persistent._mas_monika_returned_home is None:
+            $ mas_gainAffection(5, bypass=True)
+            $ persistent._mas_monika_returned_home = datetime.datetime.now()
+
+        $ grant_xp(xp.NEW_GAME)
+
+    else:
+        m 2ekp "That wasn't much of a trip, [player]."
+        m "Next time better last a little longer..."
+        $ mas_loseAffection()
+
+    return
+
