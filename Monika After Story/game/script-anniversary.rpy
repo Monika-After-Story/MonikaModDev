@@ -34,11 +34,11 @@ init -1 python in mas_anni:
             return None
 
         if (weeks + years + months) == 0:
-            # we need at least one of these to work 
+            # we need at least one of these to work
             return None
 
         # sanity checks are done
-        
+
         if years > 0:
             new_date = mas_utils.add_years(first_sesh, years)
 
@@ -47,7 +47,7 @@ init -1 python in mas_anni:
 
         else:
             new_date = first_sesh + datetime.timedelta(days=(weeks * 7))
-           
+
         # check for starting
         if isstart:
             return mas_utils.mdnt(new_date)
@@ -224,7 +224,6 @@ init 5 python:
         )
     )
 
-#TODO:Replace 1eia and 3ekbfa with 5rubfb and 5hubfb DONE
 label anni_1week:
     m 1eka "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
     m 1ekc "A lot of couples wouldn't last this long with each other."
