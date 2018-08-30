@@ -3811,17 +3811,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_afternoon",category=['misc'],prompt="Good afternoon",pool=True))
 
 label monika_afternoon:
-    $ current_time = datetime.datetime.now().time().hour
-    $ sunrise_hour = int(persistent._mas_sunrise / 60)
-    $ sunset_hour = int(persistent._mas_sunset / 60)
-    if 4 <= current_time < 12:
+    if mas_isSRtoN:
         m 1hua "Eheh, good {i}morning,{/i} [player]~"
         m 3eua "It's not the afternoon just yet."
         m 1hub "Are you still half asleep or something, or are you just trying to be funny?"
         show monika 5eubfu at t11 zorder 2 with dissolve
         m 5eubfu "I swear, you are just {i}too adorable{/i} sometimes~"
         m "Eheheh~"
-    elif 12 <= current_time <= sunset_hour:
+    elif mas_isNtoSS:
         m 1hua "Good afternoon to you too, [player]!"
         m 1hubfa "It's so sweet of you to take time out of your day to spend with me~"
         m 3euc "Afternoons sure can be a strange part of the day don't you think?"
