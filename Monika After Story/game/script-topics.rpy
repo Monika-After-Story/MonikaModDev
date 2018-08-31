@@ -6208,6 +6208,23 @@ label monika_song_dream:
     m 1eka "Now that you're here, [player], I don't have to dream anymore."
     m 1ekbfa "My dream finally came true."
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_song_take_on_me",category=['songs'],prompt="Take On Me",pool=True,random=True))
+    
+label monika_song_take_on_me:
+    m 1dso "{i}~Take on me~{/i}"
+    m "{i}~Take me on~{/i}"
+    m 2hub "{i}~I'll be gone~{/i}"
+    m 1dsblt "{i}~In a day or twooo~{/i}"
+    m 1esb "It's impressive how the music still hold themselves well to this date."
+    m 1lkbfa "Their music video reminded me of how our love story would go."
+    m 2hub "Well, if I happened to be in your reality, that is. Ahaha!"
+    m 1tsb "But if that truly happened, I'll be right where you are~"
+    m 1lka "Or will you be the one who dragged yourself to my reality?"
+    m 5tsbfa "No matter what the outcome may be, I don't mind if it's you~"
+    return
+    
 
 # been to prom?
 default persistent._mas_pm_gone_to_prom = None
