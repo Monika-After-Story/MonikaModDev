@@ -1634,8 +1634,8 @@ init 5 python:
     )
 
 label greeting_back_from_sleep:
-    $ current_time = datetime.datetime.now().time().hour
-    if mas_isMNtoSR:
+    $ _now = datetime.datetime.now().time()
+    if mas_isMNtoSR(_now):
         m 1hua "Good morning-"
         m 1hksdlb "...oh, wait."
         m "It's the dead of night, honey."
@@ -1659,12 +1659,12 @@ label greeting_back_from_sleep:
                 m 3tkc "But if you're really tired, please go to sleep!"
                 m 2eka "I love you a lot, so don't tire yourself!"
         return
-    elif mas_isSRtoN:
+    elif mas_isSRtoN(_now):
         m 1hua "Good morning, [player]!"
         m 1eua "I love waking up early in the morning."
         m 1hksdlb "But I have to admit that it can be nice to sleep in {i}a little{/i}..."
         m 1eua "Anyway, did you sleep well?"
-    elif mas_isNtoSS:
+    elif mas_isNtoSS(_now):
         m 1eub "Good morning, [player]."
         m 3hua "Or should I say afternoon?"
         m 3hub "Ahaha~"
