@@ -2359,6 +2359,7 @@ init -100 python in mas_utils:
 
 init -1 python:
     import datetime # for mac issues i guess.
+    import os
     if "mouseup_3" in config.keymap['game_menu']:
         config.keymap['game_menu'].remove('mouseup_3')
     if "mouseup_3" not in config.keymap["hide_windows"]:
@@ -2410,17 +2411,17 @@ init -1 python:
         # otherwise, not found
         return False
 
-    def is_file_present(file):
-        try:
-            renpy.file(
-                ".." +
-                file
-            )
-            is_file = True
-        except:
-            is_file = False
+    def is_file_present(filename):
+        if not filename.startswith("/"):
+            filename = "/" + filename
 
-        return is_file
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
+
 
     def is_apology_present():
         return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
