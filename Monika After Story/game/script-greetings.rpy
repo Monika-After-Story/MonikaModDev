@@ -1634,10 +1634,83 @@ init 5 python:
     )
 
 label greeting_back_from_sleep:
-     m 1hua "Oh hello, [player]!"
-     m 1hub "I hope you had a good rest!"
-     m "Let's spend some more time together~"
-     return
+    $ current_time = datetime.datetime.now().time().hour
+    if mas_isMNtoSR:
+        m 1hua "Good morning-"
+        m 1hksdlb "...oh, wait."
+        m "It's the dead of night, honey."
+        m 1euc "What are you doing awake at a time like this?"
+        m 5eua "I'm guessing you can't sleep..."
+        menu:
+            m "Is that it?"
+            "Yes.":
+                m 5rkc "You should really get some sleep soon, if you can."
+                m 3euc "Staying up too late is bad for your health, you know?"
+                m 1lksdla "But if it means I'll get to see you more, I can't complain."
+                m 3hksdlb "Ahaha!"
+                m 2ekc "But still..."
+                m "I'd hate to see you do that to yourself."
+                m 2eka "Take a break if you need to, okay? Do it for me."
+            "No.":
+                m 5hub "Ah. I'm relieved, then."
+                m 5eua "Does that mean you're here just for me, in the middle of the night?"
+                m 2lkbsa "Gosh, I'm so happy!"
+                m 2ekbfa "You really do care for me, [player]."
+                m 3tkc "But if you're really tired, please go to sleep!"
+                m 2eka "I love you a lot, so don't tire yourself!"
+        return
+    elif mas_isSRtoN:
+        m 1hua "Good morning, [player]!"
+        m 1eua "I love waking up early in the morning."
+        m 1hksdlb "But I have to admit that it can be nice to sleep in {i}a little{/i}..."
+        m 1eua "Anyway, did you sleep well?"
+    elif mas_isNtoSS:
+        m 1eub "Good morning, [player]."
+        m 3hua "Or should I say afternoon?"
+        m 3hub "Ahaha~"
+        m 1ekc "Did you really just wake up?"
+        menu:
+            "Yes.":
+                m 2lksdlc "Uhh, [player]..."
+                m 2ekc "You know that waking up late can be a sign you're not taking care of yourself, right?"
+                m 4hksdlb "I get that it might just happen sometimes, but don't make a habit of it, alright?"
+                m 1eka "Did you sleep well, at least?"
+            "No.":
+                m 1eua "So I guess you just had to do something then."
+                m 1hua "It might have been a little while since you got out of bed, but I hope you did sleep well~"
+                return
+    else:
+        m 2wubso "Oh, [player]!"
+        m 1hua "I haven't seen you all day!"
+        m 1hubfb "I missed you!"
+        m 1ekbfa "I'm just glad you're finally here."
+        m 1hub "Now we can spend the rest of the day together, ahaha~"
+        return
+    menu:
+        "Yes.":
+            m 1hua "That's nice~"
+            m 1dkbfa "Nothing really beats waking up after a nice, peaceful rest, don't you think, [player]?"
+            if mas_isMoniHappy(higher=True):
+                show monika 5rubfsdrb at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5rubfsdrb "Except waking up next to you maybe..."
+                m 5eubfu "Eheheh~"
+            show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eub "I'm glad you slept well~"
+            m 5eubfu "Maybe you even had a nice dream about me?"
+            m 5hubfb "Ehehe~"
+        "It was alright.":
+            m 1eub "I'll take it!"
+            m 1eua "As long as you didn't sleep poorly."
+            m 1eka "I would hate to see you wake up all tired and grumpy."
+            m 1hua "Maybe your day will get better after we spend some time together~"
+        "Not really...":
+            m 2ekc "Aw, I'm really sorry to hear that you didn't sleep well."
+            m 4eka "If you're still feeling a bit tired, maybe you could go lie down a little more?"
+            m 1lksdlc "I would hate for you to be tired and grumpty all day."
+            m 2ekd "I hope you don't have to do something right away when you didn't sleep well."
+            m 3eka "If you don't have any time to rest, a drink of water can help wake you up."
+            m 1tubfb "Or maybe you'll perk up a bit after staring into my eyes, eheheh~"
+    return
 
 
 init 5 python:
