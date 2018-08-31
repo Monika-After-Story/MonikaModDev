@@ -3816,7 +3816,47 @@ label monika_morning:
         m "Well, maybe not as funny as me~" #Expand more maybe?
     return
 
-#Add one for the afternoon?
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_afternoon",category=['misc'],prompt="Good afternoon",pool=True))
+
+label monika_afternoon:
+    if mas_isSRtoN:
+        m 1hua "Eheh, good {i}morning,{/i} [player]~"
+        m 3eua "It's not the afternoon just yet."
+        m 1hub "Are you still half asleep or something, or are you just trying to be funny?"
+        show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubfu "I swear, you are just {i}too adorable{/i} sometimes~"
+        m "Eheheh~"
+    elif mas_isNtoSS:
+        m 1hua "Good afternoon to you too, [player]!"
+        m 1hubfa "It's so sweet of you to take time out of your day to spend with me~"
+        m 3euc "Afternoons sure can be a strange part of the day don't you think?"
+        m 4eud "Sometimes they're really busy..."
+        m 4lsc "Sometimes you'll have nothing to do..."
+        m 1lksdla "They can seem to last forever or really fly by."
+        if mas_isMoniUpset(lower=True):
+            m 1lksdlb "Sometimes, my day really flies by while I wait for you to come back to me."
+            m 1hksdlb "I'm sure you're busy, so you can go ahead and get back to what you were doing, don't mind me."
+        else:
+            m 1ekbfa "But with you here, I don't mind any of those outcomes."
+            m 1hubfa "No matter what, I'll always enjoy the time you spend with me, [player]!"
+            m 1hubfb "I love you!"
+    else:
+        m 2hksdlb "It's already sundown!"
+        m 4lksdlb "I guess today really flew by for you huh, [player]?"
+        m 3eka "Maybe you were having fun or really busy all day and now you just noticed how much time passed?"
+        m 1eua "I hope you did everything you wanted to do today."
+        m 1eka "I know some days, there's just too much to finish all in one day."
+        m 1hua "If you didn't get everything done, there's always tomorrow."
+        m 2lksdla "I mean, I guess you could keep at it right now if you wanted to."
+        m 1hua "Just promise me you won't overwork yourself, alright, [player]?"
+        m "I just thought it'd be nice for the both of us to lay back and relax together."
+        if mas_isMoniAff(higher=True):
+            show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eubfu "I'll be right here if you want me~"
+        else:
+            m 1eub "I'll be right here if you need me~"
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_evening",category=['misc'],prompt="Good evening",pool=True))
