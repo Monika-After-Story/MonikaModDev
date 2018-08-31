@@ -678,7 +678,7 @@ python early:
                 date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
                 if not date_based and events[ev].conditional is not None:
                     if (
-                            eval(events[ev].conditional) 
+                            eval(events[ev].conditional)
                             and events[ev].action in Event.ACTION_MAP
                         ):
                         Event._performAction(events[ev], datetime.datetime.now())
@@ -2422,6 +2422,9 @@ init -1 python:
 
         return is_file
 
+    def is_apology_present():
+        return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
+
 
     def mas_cvToHM(mins):
         """
@@ -2567,7 +2570,7 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
 
-    
+
     def mas_isMNtoSR(_time):
         """
         Checks if the given time is within midnight to sunrise
