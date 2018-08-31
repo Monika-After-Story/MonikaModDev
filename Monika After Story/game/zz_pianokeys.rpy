@@ -269,12 +269,12 @@ label mas_piano_hb_fail:
 label mas_piano_hb_fc:
     $ mas_gainAffection(modifier=1.5)
     if datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22):
-        m "Oh, [player]!"
-        m "Have you been practicing this one for me?"
-        m "You did it great!"
-        m "Thanks for this gift, [player]!"
+        m 1rusdlb "Ahaha! It feels weird to sing the Birthday Song for myself..."
+        m 1hub "But you did such a great job playing it!"
+        m 1ekbfa "You must have practiced really hard for me..."
+        m 1hubfb "Thanks for this gift, [player]!"
         if mas_isMoniAff(higher=True):
-            m "You always make me feel special~"
+            m 1ekbfa "You always make me feel special~"
         return
     m 1eua "Hehe, great job!"
     m 2eub "I know that's an easy one, but you did great."
