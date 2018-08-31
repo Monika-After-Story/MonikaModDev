@@ -6939,7 +6939,7 @@ label monika_citizenship:
     return
     
 #Local variable to check if someone has skipped
-default persistent._mas_monika_listened = None
+default persistent._mas_pm_monika_listened = None
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_graduation",category=['school'],prompt="Graduation",random=True))
@@ -6957,7 +6957,7 @@ label monika_graduation:
     m "..."
     
     #Went through and timed out on the menu twice
-    if persistent._mas_monika_listened == False: 
+    if not persistent._mas_pm_monika_listened:
         m 2lsc "Oh... Sorry, I hope I'm not boring you again..."
         m 2esc "Let's forget about this and talk about something else, okay [player]?"
         return "derandom"
@@ -6971,15 +6971,15 @@ label monika_graduation:
         m 2eua "I would love to recite it for you sometime, if you want to hear it..."
         m 2eka "It's about a four minute speech, so just make sure you have enough time to listen to the whole thing."
         m 4eua "Whenever you want to hear it, just let me know, okay?"
-        $ unlockEventLabel("monika_grad_speech")   
+        $ unlockEventLabel("monika_grad_speech_call")   
         return
 
 init 5 python:
 
-    addEvent(Event(persistent.event_database,eventlabel="monika_grad_speech",category=['school'],prompt="Can I hear your speech now?",pool=True,unlocked=False,rules={"no unlock": None}))
+    addEvent(Event(persistent.event_database,eventlabel="monika_grad_speech_call",category=['school'],prompt="Can I hear your speech now?",pool=True,unlocked=False,rules={"no unlock": None}))
 
-label monika_grad_speech:
-    if not renpy.seen_label("monika_speech"):
+label monika_grad_speech_call:
+    if not renpy.seen_label("monika_grad_speech"):
         m 2eub "Of course, [player], I'd love to give you my graduation speech now!"
         m 2eka "I just want to make sure that you have enough time to hear it though. Remember, it takes about four minutes."
 
@@ -6990,7 +6990,7 @@ label monika_grad_speech:
                 m 4eka "I hope you like it, I worked really, {i}really{/i} hard on it."
                 
                 #say speech
-                call monika_speech
+                call monika_grad_speech
 
                 #timed menu to see if player listened
                 show screen mas_background_timed_jump(10, "monika_not_paying_attention")
@@ -7030,14 +7030,14 @@ label monika_grad_speech:
     #if you want to hear it again
     else:
         #did you timeout once?
-        if not renpy.seen_label("monika_not_paying_attention") or persistent._mas_monika_listened == True:
+        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_monika_listened:
             m 2eub "Sure thing [player], I'll happily give my speech again!"
             m 2eka "You have enough time, right?"
 
             menu:
                 "I do.":
                     m 4hua "Perfect, I'll get started then~"
-                    call monika_speech
+                    call monika_grad_speech
             
                 "I don't.":
                     m 2eka "Don't worry, just let me know when you have the time!"
@@ -7063,17 +7063,17 @@ label monika_grad_speech:
                 m 2eka "I do appreciate you asking to hear it again, so I'll get started now."
 
             #say speech
-            call monika_speech
+            call monika_grad_speech
 
             #another timed menu checking if you were listening
-            show screen mas_background_timed_jump(10, "monika_ignored_lock") 
+            show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock") 
             menu:
                 m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?"
                 #If menu is used, set player on a good path
                 "It's great! I'm so proud of you!":
                     hide screen mas_background_timed_jump
                     $ mas_gainAffection(amount=3, bypass=True)
-                    $ persistent._mas_monika_listened = True
+                    $ persistent._mas_pm_monika_listened = True
 
                     m 2subfb "Aww, [player]!"
                     m 2ekbfa "Thank you so much! I worked really hard on that speech, and it means so much to me that you gave it another chance."
@@ -7085,7 +7085,7 @@ label monika_grad_speech:
                 "I like it!":
                     hide screen mas_background_timed_jump
                     $mas_gainAffection(amount=1, bypass=True)
-                    $ persistent._mas_monika_listened = True
+                    $ persistent._mas_pm_monika_listened = True
 
                     m 2eka "Thanks for listening this time, [player]..."
                     m "I'm so glad you enjoyed it."                   
@@ -7093,7 +7093,7 @@ label monika_grad_speech:
                 "That {i}was{/i} long":
                     hide screen mas_background_timed_jump
                     $mas_loseAffection(modifier=2)
-                    $ persistent._mas_monika_listened = True
+                    $ persistent._mas_pm_monika_listened = True
 
                     m 2tfc "After acting like you actually wanted me to recite it for you again, {i}that's{/i} what you have to say?"
                     m 2dfc "..."
@@ -7102,7 +7102,7 @@ label monika_grad_speech:
                     m 6dstsc "But I guess that's too much to ask."
     return
 
-label monika_not_paying_attention:
+label monika_grad_speech_not_paying_attention:
     #First menu timeout
     hide screen mas_background_timed_jump
     
@@ -7132,12 +7132,12 @@ label monika_not_paying_attention:
 
     return
 
-label monika_ignored_lock:
+label monika_grad_speech_ignored_lock:
     #Second timeout, lock speech
     hide screen mas_background_timed_jump
     #Set false for modified dialogue in the random
-    $ persistent._mas_monika_listened = False
-    $ hideEventLabel("monika_grad_speech",lock=True,depool=True)
+    $ persistent._mas_pm_monika_listened = False
+    $ hideEventLabel("monika_grad_speech_call",lock=True,depool=True)
     
     if mas_isMoniAff(higher=True):
         $mas_loseAffection(modifier=10)
@@ -7164,7 +7164,7 @@ label monika_ignored_lock:
 
     return
 
-label monika_speech:  
+label monika_grad_speech:  
 
     # clear selected track
     $ songs.current_track = songs.FP_NO_SONG
