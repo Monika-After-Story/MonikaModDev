@@ -1,5 +1,178 @@
 # module that does some file backup work
 
+python early:
+    # sometimes we have persistent issues. Why? /shrug.
+    # but we do know is that we might be able to tell if a persistent got
+    # screwed by attempting to read it in now, before renpy actually does so.
+    mas_corrupted_per = False
+    mas_no_backups_found = False
+    mas_backup_copy_failed = False
+    
+    def _mas_earlyCheck():
+        """
+        attempts to read in the persistent and load it. if an error occurs
+        during loading, we'll log it in a dumped file in basedir.
+
+        NOTE: we don't have many functions available here. However, we can
+        import __main__ and gain access to core functions.
+        """
+        import __main__
+        import cPickle
+        import os
+        import datetime
+        import shutil
+        global mas_corrupted_per, mas_no_backups_found, mas_backup_copy_failed
+        early_log_path = os.path.normcase(renpy.config.basedr + "/early.log")
+
+        def trywrite(_path, msg):
+            # attempt to write, no worries if no worko
+            _fileobj = None
+            try:
+                _fileobj = open(_path, "a")
+                _fileobj.write("[{0}]: {1}\n".format(
+                    datetime.datetime.now(),
+                    msg
+                )
+            except:
+                pass
+            finally:
+                if _fileobj is not None:
+                    _fileobj.close()
+
+
+        def tryper(_tp_filepath):
+            # tryies a persistent and checks if it is decoded succesfully
+            # returns True on success. raises errors if failure
+            per_file = None
+            try:
+                per_file = file(_tp_persistent, "rb")
+                per_data = per_file.read().decode("zlib")
+                per_file.close()
+                actual_data = cPickle.loads(per_data)
+                return True
+
+            except Exception as e:
+                raise e
+
+            finally:
+                if per_file is not None:
+                    per_file.close()
+
+
+        per_dir = __main__.path_to_saves(renpy.config.gamedir)
+        
+        # okay, now let's attempt to read the persistent.
+        try:
+            if tryper(per_dir + "/persistent"):
+                return
+
+        except Exception as e:
+            mas_corrupted_per = True
+            trywrite(early_log_path, "persistent was corrupted!: " + repr(e))
+        
+        # if we got here, we had an exception. Let's attempt to restore from
+        # an eariler persistent backup.
+
+        # lets get all the persistent files here.
+        per_files = os.listdir(per_dir)
+        per_files = [x for x in per_dir if x.startswith("persistent")]
+
+        if len(per_files) == 0:
+            trywrite(early_log_path, "no backups available")
+            mas_no_backups_found = True
+            return
+
+        # now lets map them by number and also generate a list of the numbers
+        file_nums = list()
+        file_map = dict()
+        for p_file in per_files:
+            pname, dot, bakext = p_file.partition(".")
+            try:
+                num = int(pname[-2:])
+            except:
+                num = -1
+
+            if 0 <= num < 100:
+                file_nums.append(num)
+                file_map[num] = p_file
+
+        if len(file_nums) == 0:
+            trywrite(early_log_path, "no backups available")
+            mas_no_backups_found = True
+            return
+
+        # sort number list
+        def wraparound_sort(_numlist):
+            """
+            Sorts a list of numbers using a special wraparound sort.
+            Basically if all the numbers are between 0 and 98, then we sort
+            normally. If we have 99 in there, then we need to make the wrap
+            around numbers (the single digit ints in the list) be sorted
+            as larger than 99.
+            """
+            if 99 in _numlist:
+                for index in range(0, len(_numlist)):
+                    if _numlist[index] < 10:
+                        _numlist[index] += 100
+
+            _numlist.sort()
+
+        # using the special sort function
+        wraparound_sort(file_nums)
+
+        # okay, now to iteratively test backups and pick the good one
+        sel_back = None
+        while sel_back is None and len(file_nums) > 0:
+            _this_file = file_map.get(file_nums.pop(), None)
+            if _this_file is not None:
+                try:
+                    if tryper(per_dir + "/" + _this_file):
+                        sel_back = _this_file
+                except Exception as e:
+                    trywrite(
+                        early_log_path,
+                        "'{0}' was corrupted: {1}".format(_this_file, repr(e))
+                    )
+                    sel_back = None
+
+        # did we get any?
+        if sel_back is None:
+            trywrite(early_log_file, "no working backups found")
+            mas_no_backups_found = True
+            return
+
+        # otherwise, lets rename the existence persistent to bad and copy the
+        # good persistent into the system
+        _bad_per = os.path.normcase(per_dir + "/persistent_bad")
+        _cur_per = os.path.normcase(per_dir + "/persistent")
+        _god_per = os.path.normcase(per_dir + "/" + sel_back)
+
+        # we should at least try to keep a copy of the current persistent
+        try:
+            # copy current persistent
+            shutil.copy(_cur_per, _bad_per)
+
+        except Exception as e:
+            trywrite(
+                early_log_file, 
+                "Failed to rename existing persistent: " + repr(e)
+            )
+
+        # regardless, we should try to copy over the good backup
+        try:
+            # copy the good one
+            shutil.copy(_god_per, _cur_per)
+
+        except Exception as e:
+            mas_backup_copy_failed = True
+            trywrite(
+                early_log_file, 
+                "Failed to copy backup persistent: " + repr(e)
+            )
+           
+        # well, hopefully we were successful!
+
+
 init -900 python:
     import os
     import store.mas_utils as mas_utils
@@ -166,5 +339,6 @@ init -900 python:
             mas_utils.writelog("[ERROR]: {0}".format(str(e)))
 
     
-    # run the backup system
-    __mas__memoryBackup()
+    # run the backup system if persistents arent screwd
+    if not mas_corrupted_per:
+        __mas__memoryBackup()
