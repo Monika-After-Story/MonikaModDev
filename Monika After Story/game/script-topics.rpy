@@ -7171,7 +7171,7 @@ label monika_grad_speech:
     $ songs.selected_track = songs.FP_NO_SONG
     #play some grad music
     play music "mod_assets/sounds/amb/PaC.ogg" fadein 1.0
-    $ store.songs.enabled = False
+    $ mas_MUMURaiseShield()
 
     m 2dsc "Ahem...{w=0.7}{nw}"
     m ".{w=0.3} .{w=0.3} .{w=0.6}{nw}"
@@ -7234,7 +7234,7 @@ label monika_grad_speech:
     m 2hua "{w=0.2}.{w=0.3} .{w=0.3} .{w=1}{nw}"
 
     #stop grad music
-    $ store.songs.enabled = True
+    $ mas_MUMUDropShield()
     stop music fadeout 1.0
     return
 
