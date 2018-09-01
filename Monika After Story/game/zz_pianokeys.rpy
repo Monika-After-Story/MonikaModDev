@@ -268,7 +268,7 @@ label mas_piano_hb_fail:
 
 label mas_piano_hb_fc:
     $ mas_gainAffection(modifier=1.5)
-    if datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22):
+    if mas_isMonikaBirthday():
         m 1rusdlb "Ahaha! It feels weird to sing the Birthday Song for myself..."
         m 1hub "But you did such a great job playing it!"
         m 1ekbfa "You must have practiced really hard for me..."

@@ -678,7 +678,7 @@ python early:
                 date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
                 if not date_based and events[ev].conditional is not None:
                     if (
-                            eval(events[ev].conditional) 
+                            eval(events[ev].conditional)
                             and events[ev].action in Event.ACTION_MAP
                         ):
                         Event._performAction(events[ev], datetime.datetime.now())
@@ -2567,7 +2567,7 @@ init -1 python:
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
 
-    
+
     def mas_isMNtoSR(_time):
         """
         Checks if the given time is within midnight to sunrise
@@ -2662,6 +2662,8 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
+    def mas_isMonikaBirthday():
+        return datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22)
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
