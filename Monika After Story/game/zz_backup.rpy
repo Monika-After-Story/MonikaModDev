@@ -388,6 +388,10 @@ label mas_backups_you_have_corrupted_persistent:
             "No":
                 jump mas_backups_dont_tell
 
+    # otherwise we culd not copy
+    jump mas_backups_could_not_copy
+
+
 label mas_backups_have_some:
 
     show chibika smile sticker_hop
