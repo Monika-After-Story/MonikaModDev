@@ -7,6 +7,7 @@ python early:
     mas_corrupted_per = False
     mas_no_backups_found = False
     mas_backup_copy_failed = False
+    mas_backup_copy_filename = None
     
     def _mas_earlyCheck():
         """
@@ -22,17 +23,30 @@ python early:
         import datetime
         import shutil
         global mas_corrupted_per, mas_no_backups_found, mas_backup_copy_failed
-        early_log_path = os.path.normcase(renpy.config.basedr + "/early.log")
+        global mas_backup_copy_filename
+        early_log_path = os.path.normcase(renpy.config.basedir + "/early.log")
 
-        def trywrite(_path, msg):
+        per_dir = __main__.path_to_saves(renpy.config.gamedir)
+
+        # first, check if we even have a persistent
+        if not os.access(os.path.normcase(per_dir + "/persistent"), os.F_OK):
+            # NO ERROR TO REPORT!
+            return
+
+        def trywrite(_path, msg, first=False):
             # attempt to write, no worries if no worko
+            if first:
+                mode = "w"
+            else:
+                mode = "a"
+
             _fileobj = None
             try:
-                _fileobj = open(_path, "a")
+                _fileobj = open(_path, mode)
                 _fileobj.write("[{0}]: {1}\n".format(
                     datetime.datetime.now(),
                     msg
-                )
+                ))
             except:
                 pass
             finally:
@@ -40,7 +54,7 @@ python early:
                     _fileobj.close()
 
 
-        def tryper(_tp_filepath):
+        def tryper(_tp_persistent):
             # tryies a persistent and checks if it is decoded succesfully
             # returns True on success. raises errors if failure
             per_file = None
@@ -58,8 +72,6 @@ python early:
                 if per_file is not None:
                     per_file.close()
 
-
-        per_dir = __main__.path_to_saves(renpy.config.gamedir)
         
         # okay, now let's attempt to read the persistent.
         try:
@@ -75,7 +87,7 @@ python early:
 
         # lets get all the persistent files here.
         per_files = os.listdir(per_dir)
-        per_files = [x for x in per_dir if x.startswith("persistent")]
+        per_files = [x for x in per_files if x.startswith("persistent")]
 
         if len(per_files) == 0:
             trywrite(early_log_path, "no backups available")
@@ -123,7 +135,8 @@ python early:
         # okay, now to iteratively test backups and pick the good one
         sel_back = None
         while sel_back is None and len(file_nums) > 0:
-            _this_file = file_map.get(file_nums.pop(), None)
+            _this_num = file_nums.pop() % 100
+            _this_file = file_map.get(_this_num, None)
             if _this_file is not None:
                 try:
                     if tryper(per_dir + "/" + _this_file):
@@ -137,12 +150,14 @@ python early:
 
         # did we get any?
         if sel_back is None:
-            trywrite(early_log_file, "no working backups found")
+            trywrite(early_log_path, "no working backups found")
             mas_no_backups_found = True
             return
 
         # otherwise, lets rename the existence persistent to bad and copy the
         # good persistent into the system
+        # also let the log know we found a good one
+        trywrite(early_log_path, "working backup found: " + sel_back)
         _bad_per = os.path.normcase(per_dir + "/persistent_bad")
         _cur_per = os.path.normcase(per_dir + "/persistent")
         _god_per = os.path.normcase(per_dir + "/" + sel_back)
@@ -154,7 +169,7 @@ python early:
 
         except Exception as e:
             trywrite(
-                early_log_file, 
+                early_log_path, 
                 "Failed to rename existing persistent: " + repr(e)
             )
 
@@ -165,12 +180,16 @@ python early:
 
         except Exception as e:
             mas_backup_copy_failed = True
+            mas_backup_copy_filename = sel_back
             trywrite(
-                early_log_file, 
+                early_log_path, 
                 "Failed to copy backup persistent: " + repr(e)
             )
            
         # well, hopefully we were successful!
+    
+    # now call this
+    _mas_earlyCheck()
 
 
 init -900 python:
