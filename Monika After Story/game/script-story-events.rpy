@@ -683,3 +683,20 @@ label mas_crashed_quip_takecare:
     m "You should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
     return
+
+#### corrupted persistent
+init 5 python:
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_corrupted_persistent"
+        )
+    )
+
+label mas_corrupted_persistent:
+    # monika mentions that she found a note
+    # NOTE: the note is from chibi monika, but there's no actual sig.
+    # note explains that the persisten got corrupted, which ones are good
+    # and so forth
+    return

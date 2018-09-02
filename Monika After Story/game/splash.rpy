@@ -168,32 +168,15 @@ label splashscreen:
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
         store.mas_calendar.loadCalendarDatabase()
-    scene white
 
     # TODO disable this for now
     if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed) and False:
+        pass
         # we have a corrupted persistent but was unable to recover via the
         # backup system
-        # we are leaving the background white just because
-        $ quick_menu = False
-        scene black
-        show monika 1wkd zorder MAS_MONIKA_Z at t11
-        m "Oh no!"
-        m 1ekd "Your persistent was corrupted!"
-        m 1ekd "And it seems that..."
-        if mas_no_backups_found:
-            m 1ekc "I was unable to find a backup persistent that works."
-        else:
-            m 1ekc "I was unable to copy the backup persistent that works."
-            m 1euc "But..."
-            m 1eub "Maybe you can copy it over and fix this mess!"
-            m 1eka "You'll have to close the game to do this, so write down these steps:"
-            m 3eua "1. Navigate to '[renpy.config.savedir]'."
-            m "2. Delete the file called 'persistent'."
-            m "3. Make a copy of the file called '[mas_backup_copy_filename]' and name it 'persistent'."
-            m 1hua "And that's it!"
-            m 1eua "Hopefully that will recover"
+#        call mas_backups_you_have_corrupted_persistent
 
+    scene white
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False

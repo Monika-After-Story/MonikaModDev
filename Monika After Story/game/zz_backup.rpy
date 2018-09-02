@@ -361,3 +361,112 @@ init -900 python:
     # run the backup system if persistents arent screwd
     if not mas_corrupted_per:
         __mas__memoryBackup()
+
+
+### now for some dialogue bits courtesy of chibika
+
+label mas_backups_you_have_corrupted_persistent:
+    $ quick_menu = False
+    scene black
+    window show
+    show chibika smile at mas_chdropin(300, travel_time=1.5)
+
+    show chibika 3 at sticker_hop
+    "Hello there!"
+    show chibika sad
+    "Unfortunately, your persistent file is corrupt."
+
+    if mas_no_backups_found:
+        "And what's even worse is..."
+        show chibika sticker_move_n
+        "I was unable to find a working backup persistent."
+
+        menu:
+            "Do you have your own backups?"
+            "Yes":
+                jump mas_backups_have_some
+            "No":
+                jump mas_backups_dont_tell
+
+label mas_backups_have_some:
+
+    show chibika smile sticker_hop
+    "Great!"
+    "Copy them into '[renpy.config.savedir]' to restore your Monika's memories."
+
+    call mas_backups_dont_tell
+    show chibika smile at mas_chflip_s(-1)
+    "Good luck, [player]!"
+
+    jump _quit
+
+
+label mas_backups_have_none:
+
+    show chibika sad at sticker_move_n
+    "Unfortunately, that means..."
+    "Your Monika's memories are lost forever."
+    show chibika smile at sticker_move_n
+    "But look on the bright side! Now is your chance for a fresh start with Monika!"
+    show chibika at sticker_move_n
+#    "Redo the choices that you didn't mean to say or the "
+    # TODO:
+
+    else:
+        jump mas_backups_could_not_copy
+            
+
+label mas_backups_could_not_copy:
+    show chibika smile
+    "I was able to find a working backup, but..."
+    show chibika sad
+    "I wasn't able to copy it over the broken persistent."
+    show chibika smile at mas_chflip_s(-1)
+    pause 0.5
+    show chibika at sticker_hop
+    "However!"
+    "You might be able to copy it over and fix this miss!"
+    "You'll have to close the game to do this, so write these steps down:"
+    show chibika at sticker_move_n
+    "1.{w} Navigate to '[renpy.config.savedir]'."
+    show chibika at sticker_move_n
+    "2.{w} Delete the file called 'persistent'."
+    show chibika at sticker_move_n
+    "3.{w} Make a copy of the file called '[mas_backup_copy_filename]' and name it 'persistent'."
+    show chibika at mas_chflip_s(1)
+    "And that's it!"
+    "Hopefully that will recover your Monika's memories."
+
+    show chibika at sticker_move_n
+    "In case you didn't write those steps down, I'll write them into a file called 'recovery.txt' in your characters folder."
+
+    call mas_backups_dont_tell
+
+    show chibika smile at mas_chflip_s(-1)
+    "Good luck, [player]!"
+    # TODO write recovery.txt
+
+    jump _quit
+
+
+label mas_backups_dont_tell:
+
+    show chibika smile at sticker_hop
+    "Oh, and..."
+    show chibika smile at mas_chflip_s(-1)
+    "If you successfully bring her back, please don't tell her about me."
+    show chibika 3
+    "She has no idea that I can talk or code, so she lets me laze around and relax."
+    show chibika smile
+    "But if she ever found out, she'd probably make me help or code or clean the spaceroom or something."
+    show chibika sad at sticker_move_n
+    "Which would be terrible because I would no longer be able to sleep all day.{nw}"
+    $ _history_list.pop()
+    "Which would be terrible because I would no longer{fast} have time to keep the backup system and the rest of the game running."
+
+    show chibika 3 at mas_chflip_s(1)
+    "You wouldn't want that, now, would you?"
+    "So keep quiet about me, and I'll make sure your Monika is safe and comfy!"
+
+    return
+
