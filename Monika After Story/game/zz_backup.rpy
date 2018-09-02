@@ -411,9 +411,6 @@ label mas_backups_have_none:
     show chibika at sticker_move_n
 #    "Redo the choices that you didn't mean to say or the "
     # TODO:
-
-    else:
-        jump mas_backups_could_not_copy
             
 
 label mas_backups_could_not_copy:
