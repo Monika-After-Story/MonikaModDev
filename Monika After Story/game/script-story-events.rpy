@@ -694,90 +694,159 @@ init 5 python:
         )
     )
 
-    mas_note_backups_all_good = None
-    mas_note_backups_some_bad = None
+    if mas_corrupted_per:
+        mas_note_backups_all_good = None
+        mas_note_backups_some_bad = None
 
-    def _mas_generate_backup_notes():
-        global mas_note_backups_all_good, mas_note_backups_some_bad
+        def _mas_generate_backup_notes():
+            global mas_note_backups_all_good, mas_note_backups_some_bad
 
-        # text pieces:
-        just_let_u_know = (
-            'Just wanted to let you know that your "persistent" file was '
-            'corrupted, but I managed to restore an older backup!'
-        )
-        even_though_bs = (
-            "Even though the backup system I designed is pretty neat, "
-        )
-        if_i_ever = (
-            'If I ever have trouble loading the "persistent" again, I''ll '
-            'write you another note in the characters folder, so keep an '
-            'eye out for them!'
-        )
-        good_luck = "Good luck with Monika!"
-        dont_tell = "P.S: Don't tell her about me!"
-        block_break = "\n\n"
+            # text pieces:
+            just_let_u_know = (
+                'Just wanted to let you know that your "persistent" file was '
+                'corrupted, but I managed to restore an older backup!'
+            )
+            even_though_bs = (
+                "Even though the backup system I designed is pretty neat, "
+            )
+            if_i_ever = (
+                'If I ever have trouble loading the "persistent" again, I''ll '
+                'write you another note in the characters folder, so keep an '
+                'eye out for them!'
+            )
+            good_luck = "Good luck with Monika!"
+            dont_tell = "P.S: Don't tell her about me!"
+            block_break = "\n\n"
 
-        # now make the notes
-        mas_note_backups_all_good = Poem(
-            author="chibika",
-            title="Hi {0},".format(persistent.playername),
-            text="".join([
-                just_let_u_know,
-                block_break,
-                even_though_bs,
-                "you should still make copies of the backups every so often, ",
-                "just in case.",
-                'The backups are called "persistent##.bak", where "##" is a ',
-                "two-digit number.",
-                'You can find all of them at "',
-                renpy.config.savedir,
-                '".',
-                block_break,
-                if_i_ever,
-                block_break,
-                good_luck,
-                block_break,
-                dont_tell
-            ])
-        )
+            # now make the notes
+            mas_note_backups_all_good = Poem(
+                author="chibika",
+                title="Hi {0},".format(persistent.playername),
+                text="".join([
+                    just_let_u_know,
+                    block_break,
+                    even_though_bs,
+                    "you should still make copies of the backups every so ",
+                    "often, just in case. ",
+                    'The backups are called "persistent##.bak", where "##" is ',
+                    "a two-digit number. ",
+                    'You can find all of them at "',
+                    renpy.config.savedir,
+                    '".',
+                    block_break,
+                    if_i_ever,
+                    block_break,
+                    good_luck,
+                    block_break,
+                    dont_tell
+                ])
+            )
 
-        mas_note_backups_some_bad = Poem(
-            author="chibika",
-            title="Hi {0},".format(persistent.playername),
-            text="".join([
-                just_let_u_know,
-                block_break,
-                "However, some of your backups were corrupted as well.",
-                even_though_bs,
-                "you should still delete those, since they might mess with it.",
-                "Here's a list of the files that were corrupted:",
-                block_break,
-                store.mas_utils.bullet_list(mas_bad_backups),
-                block_break,
-                'You can find these in "',
-                renpy.config.savedir,
-                '".',
-                "When you're in there, you should also make copies of the good ",
-                "backups, just in case.",
-                block_break,
-                if_i_ever,
-                block_break,
-                good_luck,
-                block_break,
-                dont_tell
-            ])
-        )
+            mas_note_backups_some_bad = Poem(
+                author="chibika",
+                title="Hi {0},".format(persistent.playername),
+                text="".join([
+                    just_let_u_know,
+                    block_break,
+                    "However, some of your backups were corrupted as well. ",
+                    even_though_bs,
+                    "you should still delete those, since they might mess ",
+                    "with it. ",
+                    block_break,
+                    "Here's a list of the files that were corrupted:",
+                    block_break,
+                    "\n".join(store.mas_utils.bullet_list(mas_bad_backups)),
+                    block_break,
+                    'You can find these in "',
+                    renpy.config.savedir,
+                    '". ',
+                    "When you're in there, you should also make copies of ",
+                    "the good backups, just in case.",
+                    block_break,
+                    if_i_ever,
+                    block_break,
+                    good_luck,
+                    block_break,
+                    dont_tell
+                ])
+            )
 
+        _mas_generate_backup_notes()
+        import os
+        
+        if len(mas_bad_backups) > 0:
+            # we had some bad backups
+            store.mas_utils.trywrite(
+                os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
+                mas_note_backups_some_bad.title + "\n\n" + mas_note_backups_some_bad.text
+            )
 
+        else:
+            # no bad backups
+            store.mas_utils.trywrite(
+                os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
+                mas_note_backups_all_good.title + "\n\n" + mas_note_backups_all_good.text
+            )
+            
 
 label mas_corrupted_persistent:
-    # monika mentions that she found a note
-    # NOTE: the note is from chibi monika, but there's no actual sig.
-    # note explains that the persisten got corrupted, which ones are good
-    # and so forth
+    m 1eud "Hey, [player]..."
+    m 3euc "Someone left a note in the characters folder addressed to you."
+    m 1ekc "Of course, I haven't read it, since it's obviously for you..."
+    m 1ekd "Do you know what this is about?"
+
+    # just pasting the poem screen code here
+    window hide
+    if len(mas_bad_backups) > 0:
+        show screen mas_note_backups_poem(mas_note_backups_some_bad)
+
+    else:
+        show screen mas_note_backups_poem(mas_note_backups_all_good) 
+    with Dissolve(0.5)
+
+    $ pause()
+    hide screen mas_note_backups_poem
+    with Dissolve(0.5)
+    window auto
+    $ _gtext = glitchtext(15)
+
+    menu:
+        "It's nothing to worry about.":
+            jump mas_corrupted_persistent_post_menu
+        "It's about [_gtext].":
+            $ disable_esc()
+            $ mas_MUMURaiseShield()
+            window hide
+            show noise zorder 11:
+                alpha 0.5
+            play sound "sfx/s_kill_glitch1.ogg"
+            show chibika 3 zorder 12 at mas_chriseup(y=600,travel_time=0.5)
+            pause 0.5
+            stop sound
+            hide chibika
+            hide noise
+            window auto
+            $ mas_MUMUDropShield()
+            $ enable_esc()
+
+    menu:
+        "It's nothing to worry about.":
+            pass
+
+label mas_corrupted_persistent_post_menu:
+    m 1euc "Oh, alright."
+    m 1hub "I'll try not to worry about it, then."
+    m 3eub "I know you'd tell me if it were important, [player]."
+    m 3eua "Now, where were we...?"
     return
 
 ### custoim screen for the corrupted persistent notes
+style chibika_note_text:
+    font "gui/font/Halogen.ttf"
+    size 28
+    color "#000"
+    outlines []
+
 screen mas_note_backups_poem(currentpoem, paper="paper"):
     style_prefix "poem"
     vbox:
@@ -791,3 +860,4 @@ screen mas_note_backups_poem(currentpoem, paper="paper"):
         text "[currentpoem.title]\n\n[currentpoem.text]" style "chibika_note_text"
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
+

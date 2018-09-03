@@ -24,7 +24,7 @@ python early:
         import datetime
         import shutil
         global mas_corrupted_per, mas_no_backups_found, mas_backup_copy_failed
-        global mas_backup_copy_filename
+        global mas_backup_copy_filename, mas_bad_backups
         early_log_path = os.path.normcase(renpy.config.basedir + "/early.log")
 
         per_dir = __main__.path_to_saves(renpy.config.gamedir)
@@ -148,6 +148,7 @@ python early:
                         "'{0}' was corrupted: {1}".format(_this_file, repr(e))
                     )
                     sel_back = None
+                    mas_bad_backups.append(_this_file)
 
         # did we get any?
         if sel_back is None:
@@ -371,15 +372,17 @@ label mas_backups_you_have_corrupted_persistent:
     scene black
     window show
     show chibika smile at mas_chdropin(300, travel_time=1.5)
+    pause 1.5
 
     show chibika 3 at sticker_hop
     "Hello there!"
     show chibika sad
-    "Unfortunately, your persistent file is corrupt."
+    "I hate to be the bringer of bad news..."
+    "But unfortunately, your persistent file is corrupt."
 
     if mas_no_backups_found:
         "And what's even worse is..."
-        show chibika sticker_move_n
+        show chibika at sticker_move_n
         "I was unable to find a working backup persistent."
 
         menu:
@@ -395,9 +398,9 @@ label mas_backups_you_have_corrupted_persistent:
 
 label mas_backups_have_some:
 
-    show chibika smile sticker_hop
-    "Great!"
-    "Copy them into '[renpy.config.savedir]' to restore your Monika's memories."
+    show chibika smile at sticker_hop
+    "That's a relief!"
+    "Please copy them into '[renpy.config.savedir]' to restore your Monika's memories."
 
     call mas_backups_dont_tell
     show chibika smile at mas_chflip_s(-1)
@@ -408,14 +411,20 @@ label mas_backups_have_some:
 
 label mas_backups_have_none:
 
-    show chibika sad at sticker_move_n
-    "Unfortunately, that means..."
-    "Your Monika's memories are lost forever."
+    "I'm sorry, but we won't be able to restore her memory, then..."
+    "But..."
     show chibika smile at sticker_move_n
-    "But look on the bright side! Now is your chance for a fresh start with Monika!"
-    show chibika at sticker_move_n
-#    "Redo the choices that you didn't mean to say or the "
-    # TODO:
+    "Look on the bright side!"
+    "You can spend time with her again and create new memories, which might be even better than the ones you lost!"
+    "And remember..."
+    show chibika at mas_chflip_s(-1)
+    "Regardless of what happens, Monika is still Monika."
+    "She'll be ready to greet you, once you start over."
+    show chibika 3 at sticker_move_n
+    "And I promise I'll do my best to not mess up the files again!"
+    "Good luck with Monika!"
+    $ mas_corrupted_per = False
+    return
             
 
 label mas_backups_could_not_copy:
@@ -424,9 +433,10 @@ label mas_backups_could_not_copy:
     show chibika sad
     "I wasn't able to copy it over the broken persistent."
     show chibika smile at mas_chflip_s(-1)
+    pause 0.5
     show chibika at sticker_hop
     "However!"
-    "You might be able to do it and fix this miss!"
+    "You might be able to do it and fix this mess!"
     "You'll have to close the game to do this, so write these steps down:"
     show chibika at sticker_move_n
     "1.{w} Navigate to '[renpy.config.savedir]'."
@@ -445,7 +455,21 @@ label mas_backups_could_not_copy:
 
     show chibika smile at mas_chflip_s(-1)
     "Good luck!"
-    # TODO write recovery.txt
+
+    python:
+        import os
+        store.mas_utils.trywrite(
+            os.path.normcase(renpy.config.basedir + "/characters/recovery.txt"),
+            "".join([
+                "1. Navigate to '",
+                renpy.config.savedir,
+                "'.\n",
+                "2. Delete the file called 'persistent'.\n",
+                "3. Make a copy of the file called '",
+                mas_backup_copy_filename,
+                "' and name it 'persistent'."
+            ])
+        )
 
     jump _quit
 
@@ -459,14 +483,14 @@ label mas_backups_dont_tell:
     show chibika 3
     "She has no idea that I can talk or code, so she lets me laze around and relax."
     show chibika smile
-    "But if she ever found out, she'd probably make me help her code or clean the spaceroom or something."
+    "But if she ever found out, she'd probably make me help her code, fix some of her mistakes, or something else."
     show chibika sad at sticker_move_n
-    "Which would be terrible because I would no longer be able to sleep all day.{nw}"
-    $ _history_list.pop()
-    "Which would be terrible because I would no longer{fast} have time to keep the backup system and the rest of the game running."
+    "Which would be absolutely terrible since I'd barely get any rest at all.{nw}"
+#    $ _history_list.pop()
+    "Which would be absolutely terrible since{fast} I wouldn't have time to keep the backup system and the rest of the game running."
 
     show chibika 3 at mas_chflip_s(1)
-    "You wouldn't want that, now, would you?"
+    "You wouldn't want that now, would you?"
     "So keep quiet about me, and I'll make sure your Monika is safe and comfy!"
 
     return

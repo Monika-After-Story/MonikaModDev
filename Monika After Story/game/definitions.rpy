@@ -1908,7 +1908,33 @@ init -990 python in mas_utils:
             os.remove(f_path)
         except Exception as e:
             if log:
-                writelog("[exp] {0}\n".format(str(e)))
+                writelog("[exp] {0}\n".format(repr(e)))
+
+
+    def trywrite(f_path, msg, log=False, mode="w"):
+        """
+        Attempts to write out a file at the given path 
+
+        Exceptions are hidden
+
+        IN:
+            f_path - path to write file
+            msg - text to write
+            log - True means we log exceptions
+                (Default: False)
+            mode - write mode to use 
+                (Defaut: w)
+        """
+        outfile = None
+        try:
+            outfile = open(f_path, mode)
+            outfile.write(msg)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(repr(e)))
+        finally:
+            if outfile is not None:
+                outfile.close()
 
 
     def logrotate(logpath, filename):

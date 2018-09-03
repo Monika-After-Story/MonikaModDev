@@ -57,5 +57,9 @@ transform mas_chmove(x, y, travel_time=1.0):
 
 # NOTE: use sticker_hop for straight hopping
 
+transform mas_chriseup(x=300, y=405, travel_time=1.00):
+    ypos 800 xcenter x
+    easein travel_time ypos y
+
 
 
