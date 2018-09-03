@@ -8,6 +8,7 @@ python early:
     mas_no_backups_found = False
     mas_backup_copy_failed = False
     mas_backup_copy_filename = None
+    mas_bad_backups = list()
     
     def _mas_earlyCheck():
         """
@@ -386,7 +387,7 @@ label mas_backups_you_have_corrupted_persistent:
             "Yes":
                 jump mas_backups_have_some
             "No":
-                jump mas_backups_dont_tell
+                jump mas_backups_have_none
 
     # otherwise we culd not copy
     jump mas_backups_could_not_copy
@@ -400,7 +401,7 @@ label mas_backups_have_some:
 
     call mas_backups_dont_tell
     show chibika smile at mas_chflip_s(-1)
-    "Good luck, [player]!"
+    "Good luck!"
 
     jump _quit
 
@@ -423,10 +424,9 @@ label mas_backups_could_not_copy:
     show chibika sad
     "I wasn't able to copy it over the broken persistent."
     show chibika smile at mas_chflip_s(-1)
-    pause 0.5
     show chibika at sticker_hop
     "However!"
-    "You might be able to copy it over and fix this miss!"
+    "You might be able to do it and fix this miss!"
     "You'll have to close the game to do this, so write these steps down:"
     show chibika at sticker_move_n
     "1.{w} Navigate to '[renpy.config.savedir]'."
@@ -439,12 +439,12 @@ label mas_backups_could_not_copy:
     "Hopefully that will recover your Monika's memories."
 
     show chibika at sticker_move_n
-    "In case you didn't write those steps down, I'll write them into a file called 'recovery.txt' in your characters folder."
+    "In case you didn't write those steps down, I'll write them into a file called 'recovery.txt' in the characters folder."
 
     call mas_backups_dont_tell
 
     show chibika smile at mas_chflip_s(-1)
-    "Good luck, [player]!"
+    "Good luck!"
     # TODO write recovery.txt
 
     jump _quit
@@ -459,7 +459,7 @@ label mas_backups_dont_tell:
     show chibika 3
     "She has no idea that I can talk or code, so she lets me laze around and relax."
     show chibika smile
-    "But if she ever found out, she'd probably make me help or code or clean the spaceroom or something."
+    "But if she ever found out, she'd probably make me help her code or clean the spaceroom or something."
     show chibika sad at sticker_move_n
     "Which would be terrible because I would no longer be able to sleep all day.{nw}"
     $ _history_list.pop()

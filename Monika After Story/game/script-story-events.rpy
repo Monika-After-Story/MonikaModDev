@@ -694,9 +694,100 @@ init 5 python:
         )
     )
 
+    mas_note_backups_all_good = None
+    mas_note_backups_some_bad = None
+
+    def _mas_generate_backup_notes():
+        global mas_note_backups_all_good, mas_note_backups_some_bad
+
+        # text pieces:
+        just_let_u_know = (
+            'Just wanted to let you know that your "persistent" file was '
+            'corrupted, but I managed to restore an older backup!'
+        )
+        even_though_bs = (
+            "Even though the backup system I designed is pretty neat, "
+        )
+        if_i_ever = (
+            'If I ever have trouble loading the "persistent" again, I''ll '
+            'write you another note in the characters folder, so keep an '
+            'eye out for them!'
+        )
+        good_luck = "Good luck with Monika!"
+        dont_tell = "P.S: Don't tell her about me!"
+        block_break = "\n\n"
+
+        # now make the notes
+        mas_note_backups_all_good = Poem(
+            author="chibika",
+            title="Hi {0},".format(persistent.playername),
+            text="".join([
+                just_let_u_know,
+                block_break,
+                even_though_bs,
+                "you should still make copies of the backups every so often, ",
+                "just in case.",
+                'The backups are called "persistent##.bak", where "##" is a ',
+                "two-digit number.",
+                'You can find all of them at "',
+                renpy.config.savedir,
+                '".',
+                block_break,
+                if_i_ever,
+                block_break,
+                good_luck,
+                block_break,
+                dont_tell
+            ])
+        )
+
+        mas_note_backups_some_bad = Poem(
+            author="chibika",
+            title="Hi {0},".format(persistent.playername),
+            text="".join([
+                just_let_u_know,
+                block_break,
+                "However, some of your backups were corrupted as well.",
+                even_though_bs,
+                "you should still delete those, since they might mess with it.",
+                "Here's a list of the files that were corrupted:",
+                block_break,
+                store.mas_utils.bullet_list(mas_bad_backups),
+                block_break,
+                'You can find these in "',
+                renpy.config.savedir,
+                '".',
+                "When you're in there, you should also make copies of the good ",
+                "backups, just in case.",
+                block_break,
+                if_i_ever,
+                block_break,
+                good_luck,
+                block_break,
+                dont_tell
+            ])
+        )
+
+
+
 label mas_corrupted_persistent:
     # monika mentions that she found a note
     # NOTE: the note is from chibi monika, but there's no actual sig.
     # note explains that the persisten got corrupted, which ones are good
     # and so forth
     return
+
+### custoim screen for the corrupted persistent notes
+screen mas_note_backups_poem(currentpoem, paper="paper"):
+    style_prefix "poem"
+    vbox:
+        add paper
+    viewport id "vp":
+        child_size (710, None)
+        mousewheel True
+        draggable True
+        has vbox
+        null height 40
+        text "[currentpoem.title]\n\n[currentpoem.text]" style "chibika_note_text"
+        null height 100
+    vbar value YScrollValue(viewport="vp") style "poem_vbar"

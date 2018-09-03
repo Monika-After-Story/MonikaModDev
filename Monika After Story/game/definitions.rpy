@@ -2046,6 +2046,21 @@ init -100 python in mas_utils:
             return default
 
 
+    def bullet_list(_list, bullet="  -"):
+        """
+        Converts a list of items into a bulleted list of strings.
+
+        IN:
+            _list - list to convert into bulleted list
+            bullet - the bullet to use. A space is added between the bullet and
+                the item.
+                (Default: 2 spaces and a dash)
+
+        RETURNS: a list of strings where each string is an item with a bullet.
+        """
+        return [bullet + " " + str(item) for item in _list]
+
+
     ### date adjusting functions
     def add_years(initial_date, years):
         """
