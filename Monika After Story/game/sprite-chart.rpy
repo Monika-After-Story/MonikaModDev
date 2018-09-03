@@ -8541,6 +8541,21 @@ image monika 5euc = DynamicDisplayable(
     single="3b"
 )
 
+image monika 5hubfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="full",
+    single="3b"
+)
+
 image monika 5hubfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8595,6 +8610,21 @@ image monika 5efa = DynamicDisplayable(
     left="",
     right="",
     lean="def",
+    single="3b"
+)
+
+image monika 5ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="full",
     single="3b"
 )
 
