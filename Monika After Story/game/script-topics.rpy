@@ -6053,7 +6053,7 @@ label monika_concerts:
     if persistent._mas_pm_like_other_music:
         m 1hua "Jamming along to your favorite [tempmusicgenre] artist..."
         
-    m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
+    m 2hub "Doesn't that sound just amazing?"
     m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
     m 2lksdla "Although, ticket prices these days are kind of expensive..."
     m 2hua "But I still think it would be worth it!"
