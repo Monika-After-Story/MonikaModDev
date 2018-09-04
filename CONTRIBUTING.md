@@ -121,7 +121,7 @@ Psychology, Society, School, Life, Media,Literature,Games Literature Club, Roman
 
 When writing dialogue always start with m **<spritecode>** " and end with".
 
-For **<spritecode>**, refer to using the [Sprite Previewer](link)
+To find a **<spritecode>**, use the [Sprite Previewer](https://github.com/Monika-After-Story/MonikaModDev/blob/master/FAQ.md#how-do-i-find-the-spritecode-for-an-expression).
 
 If you want to write more complicated dialogue, visit [Dialogue Coding](https://github.com/Monika-After-Story/MonikaModDev/wiki/Dialogue-Coding) 
 
