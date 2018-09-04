@@ -9452,3 +9452,10 @@ image monika 6ATL_cryleftright:
                 0.8
 
         repeat
+
+
+### [IMG100]
+# chibi monika sprites
+image chibika smile = "gui/poemgame/m_sticker_1.png"
+image chibika sad = "mod_assets/other/m_sticker_sad.png"
+image chibika 3 = "gui/poemgame/m_sticker_2.png"
