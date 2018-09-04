@@ -168,6 +168,12 @@ label splashscreen:
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
         store.mas_calendar.loadCalendarDatabase()
+
+    if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
+        # we have a corrupted persistent but was unable to recover via the
+        # backup system
+        call mas_backups_you_have_corrupted_persistent
+
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
