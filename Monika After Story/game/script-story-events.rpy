@@ -694,7 +694,10 @@ init 5 python:
         )
     )
 
-    if mas_corrupted_per:
+    if (
+            mas_corrupted_per 
+            and not (mas_no_backups_found or mas_backup_copy_failed)
+        ):
         mas_note_backups_all_good = None
         mas_note_backups_some_bad = None
 
