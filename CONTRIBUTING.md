@@ -119,9 +119,9 @@ Psychology, Society, School, Life, Media,Literature,Games Literature Club, Roman
 
 **IMPORTANT:** Do NOT use capital letters on keywords. The input lowercases all strings, hence making capitalized letters in keywords unreachable.
 
-When writing dialogue always start with m **#X** " and end with".
+When writing dialogue always start with m **spritecode** " and end with".
 
-For **#X** refer to the [cheat sheet](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/MonikaCheatsheetupdate3.png) for the numbers and letters.
+To find a **spritecode**, use the [Sprite Previewer](https://github.com/Monika-After-Story/MonikaModDev/blob/master/FAQ.md#how-do-i-find-the-spritecode-for-an-expression).
 
 If you want to write more complicated dialogue, visit [Dialogue Coding](https://github.com/Monika-After-Story/MonikaModDev/wiki/Dialogue-Coding) 
 

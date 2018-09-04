@@ -19,7 +19,7 @@ init 970 python:
             mas_docking_station
         )
 
-        # set the init data 
+        # set the init data
         store.mas_dockstat.retmoni_status = moni_tuple[0]
         store.mas_dockstat.retmoni_data = moni_tuple[1]
 
@@ -615,6 +615,8 @@ label ch30_autoload:
     #       home greeting.
     if store.mas_dockstat.retmoni_status is not None:
         # non None means we have a status
+        $ mas_from_empty = False
+
         if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_FO:
             # TODOL: jump to the mas_dockstat_different_monika label
             jump mas_dockstat_empty_desk
@@ -629,14 +631,14 @@ label ch30_autoload:
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
         #If the conditions are met and Monika expects an apology, jump to this label.
-        if persistent._mas_affection["apologyflag"] == True and not is_file_present('/imsorry.txt'):
+        if persistent._mas_affection["apologyflag"] and not is_apology_present():
             $scene_change = True
             $ mas_RaiseShield_core()
             call spaceroom
             jump mas_affection_noapology
 
         #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
-        elif persistent._mas_affection["apologyflag"] == True and is_file_present('/imsorry.txt'):
+        elif persistent._mas_affection["apologyflag"] and is_apology_present():
             $ persistent._mas_affection["apologyflag"] = False
             $scene_change = True
             $ mas_RaiseShield_core()
@@ -644,7 +646,7 @@ label ch30_autoload:
             jump mas_affection_yesapology
 
         #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
-        elif persistent._mas_affection["apologyflag"] == False and not is_file_present('/imsorry.txt'):
+        elif not persistent._mas_affection["apologyflag"] and not is_apology_present():
             $ persistent._mas_affection["apologyflag"] = True
             $scene_change = True
             $ mas_RaiseShield_core()
@@ -742,6 +744,10 @@ label ch30_post_greeting_check:
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
 
+    # corruption check
+    if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
+        $ pushEvent("mas_corrupted_persistent")
+
     # push greeting if we have one
     if selected_greeting:
         $ pushEvent(selected_greeting)
@@ -775,7 +781,7 @@ label ch30_preloop:
     $ persistent._mas_game_crashed = True
     $startup_check = False
     $ mas_checked_update = False
-    
+
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
@@ -982,6 +988,10 @@ label ch30_reset:
         if persistent._mas_likes_rain:
             unlockEventLabel("monika_rain_start")
             lockEventLabel("monika_rain_stop")
+            # unlock islands event if seen already
+            if store.seen_event("mas_monika_islands"):
+                # we can unlock the topic
+                store.unlockEventLabel("mas_monika_islands")
 #            lockEventLabel("monika_rain_holdme")
 
         if mas_isMoniNormal(higher=True):
@@ -1065,6 +1075,6 @@ label ch30_reset:
             if _now > _rh:
                 persistent._mas_monika_returned_home = None
 
-        
+
 
     return

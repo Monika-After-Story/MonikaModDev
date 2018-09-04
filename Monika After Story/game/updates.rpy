@@ -268,6 +268,19 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.6
+label v0_8_6(version="v0_8_6"):
+    python:
+        import store.evhand as evhand
+        
+        # unlock gender redo if we have seen the other event
+        genderredo_ev = evhand.event_database.get("gender_redo", None)
+        if genderredo_ev and renpy.seen_label("gender"):
+            genderredo_ev.unlocked = True
+            genderredo_ev.pool = True
+
+    return
+
 # 0.8.4
 label v0_8_4(version="v0_8_4"):
     python:

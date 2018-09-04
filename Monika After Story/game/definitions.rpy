@@ -678,7 +678,7 @@ python early:
                 date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
                 if not date_based and events[ev].conditional is not None:
                     if (
-                            eval(events[ev].conditional) 
+                            eval(events[ev].conditional)
                             and events[ev].action in Event.ACTION_MAP
                         ):
                         Event._performAction(events[ev], datetime.datetime.now())
@@ -1908,7 +1908,33 @@ init -990 python in mas_utils:
             os.remove(f_path)
         except Exception as e:
             if log:
-                writelog("[exp] {0}\n".format(str(e)))
+                writelog("[exp] {0}\n".format(repr(e)))
+
+
+    def trywrite(f_path, msg, log=False, mode="w"):
+        """
+        Attempts to write out a file at the given path 
+
+        Exceptions are hidden
+
+        IN:
+            f_path - path to write file
+            msg - text to write
+            log - True means we log exceptions
+                (Default: False)
+            mode - write mode to use 
+                (Defaut: w)
+        """
+        outfile = None
+        try:
+            outfile = open(f_path, mode)
+            outfile.write(msg)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(repr(e)))
+        finally:
+            if outfile is not None:
+                outfile.close()
 
 
     def logrotate(logpath, filename):
@@ -2044,6 +2070,21 @@ init -100 python in mas_utils:
             return float(value)
         except:
             return default
+
+
+    def bullet_list(_list, bullet="  -"):
+        """
+        Converts a list of items into a bulleted list of strings.
+
+        IN:
+            _list - list to convert into bulleted list
+            bullet - the bullet to use. A space is added between the bullet and
+                the item.
+                (Default: 2 spaces and a dash)
+
+        RETURNS: a list of strings where each string is an item with a bullet.
+        """
+        return [bullet + " " + str(item) for item in _list]
 
 
     ### date adjusting functions
@@ -2359,6 +2400,7 @@ init -100 python in mas_utils:
 
 init -1 python:
     import datetime # for mac issues i guess.
+    import os
     if "mouseup_3" in config.keymap['game_menu']:
         config.keymap['game_menu'].remove('mouseup_3')
     if "mouseup_3" not in config.keymap["hide_windows"]:
@@ -2410,17 +2452,20 @@ init -1 python:
         # otherwise, not found
         return False
 
-    def is_file_present(file):
-        try:
-            renpy.file(
-                ".." +
-                file
-            )
-            is_file = True
-        except:
-            is_file = False
+    def is_file_present(filename):
+        if not filename.startswith("/"):
+            filename = "/" + filename
 
-        return is_file
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
+
+
+    def is_apology_present():
+        return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
 
 
     def mas_cvToHM(mins):
@@ -2436,6 +2481,215 @@ init -1 python:
                 [1] - minutes
         """
         return (int(mins / 60), int(mins % 60))
+
+
+    def mas_isSTtoAny(_time, _suntime, _hour, _min):
+        """
+        Checks if the given time is within this range:
+        _suntime <= _time < (_hour, _min)
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _suntime - suntime to use for lower bound
+                NOTE: suntimes are given in minutes
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+
+        RETURNS:
+            True if the given time is within bounds of the given suntime and
+                given hour / mins, False otherwise
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        _upper_minutes = (_hour * 60) + _min
+        return _suntime <= _curr_minutes < _upper_minutes
+
+
+    def mas_isSRtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within Sunrise time to the given _hour
+        and _minute
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is whithin bounds of sunrise and the given
+            hour / mins, False otherwise
+        """
+        return mas_isSTtoAny(_time, persistent._mas_sunrise, _hour, _min)
+
+
+    def mas_isSStoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within sunset to the given _hour and minute
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of sunset and the given
+            hour/min, False otherwise
+        """
+        return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
+
+
+    def mas_isAnytoST(_time, _hour, _min, _suntime):
+        """
+        Checks if the given time is within this range:
+        (_hour, _min) <= _time < _suntime
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+            _suntime - suntime to use for upper bound
+                NOTE: suntimes are given in minutes
+
+        RETURNS:
+            True if the given time is within bounds of the given hour / mins
+            and the given suntime, false Otherwise
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        _lower_minutes = (_hour * 60) + _min
+        return _lower_minutes <= _curr_minutes < _suntime
+
+
+    def mas_isAnytoSR(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour and minute to sunrise
+        time
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and sunrise, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunrise)
+
+
+    def mas_isAnytoSS(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to sunset time
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and sunset, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
+
+
+    def mas_isMNtoSR(_time):
+        """
+        Checks if the given time is within midnight to sunrise
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within midnight to sunrise
+        """
+        return mas_isAnytoSR(_time, 0)
+
+
+    def mas_isSRtoN(_time):
+        """
+        Checks if the given time is within sunrise to noon
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is witin sunrise to noon
+        """
+        return mas_isSRtoAny(_time, 12)
+
+
+    def mas_isNtoSS(_time):
+        """
+        Checks if the given time is within noon to sunset
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within noon to sunset
+        """
+        return mas_isAnytoSS(_time, 12)
+
+
+    def mas_isSStoMN(_time):
+        """
+        Checks if the given time is within sunset to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within sunset to midnight
+        """
+        return mas_isSStoAny(_time, 24)
+
+
+    def mas_isSunny(_time):
+        """
+        Checks if the sun is up during the given time
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if it is sunny during the given time
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        return persistent._mas_sunrise <= _curr_minutes < persistent._mas_sunset
+
+
+    def mas_isNight(_time):
+        """
+        Checks if the sun is down during the given time
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if it the sun is down during the given time
+        """
+        return not mas_isSunny(_time)
 
 
     def mas_cvToDHM(mins):

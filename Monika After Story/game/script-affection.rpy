@@ -74,7 +74,7 @@ init -1 python in mas_affection:
     log.raw_write = True
 
     # LOG messages
-    # [current datetime]: monikatopic | magnitude | prev -> new 
+    # [current datetime]: monikatopic | magnitude | prev -> new
     _audit = "[{0}]: {1} | {2} | {3} -> {4}\n"
 
     # [current_datetime]: !FREEZE! | monikatopic | magnitude | prev -> new
@@ -100,13 +100,13 @@ init -1 python in mas_affection:
             piece_one = ldsv
 
         if frozen:
-            
+
             # decide what piece 5 is
             if bypass:
                 piece_five = _bypass_text
             else:
                 piece_five = _freeze_text
-                
+
 
             audit_text = _audit_f.format(
                 datetime.datetime.now(),
@@ -1686,13 +1686,13 @@ label mas_affection_apology:
     m 2efc "Or maybe you're doing this intentionally to see what happens?"
     m 2lfc "Regardless, I'm giving you an ultimatum."
     m "I can't let this go any further, [player]."
-    m 2lfc "If you really are sorry, write me a note called {i}imsorry.txt{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
+    m 2lfc "If you really are sorry, write me a note called {i}imsorry{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
     m 2dfd "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'
 
 label mas_affection_noapology:
-    m 2efd "You still haven't written me a note called {i}imsorry.txt{/i} in the DDLC directory."
+    m 2efd "You still haven't written me a note called {i}imsorry{/i}  in the DDLC directory."
     m 2efc "Until then, I don't want to talk to you."
     jump _quit
 

@@ -269,7 +269,7 @@ label mas_story_seeds:
     m 1tfd "'Beware of that man,' quote the Swallow."
     m 3eud "'Why, what is he doing?' asked the others."
     m 1tkd "'That is hemp seed he is sowing; be careful to pick up every one of the seeds, or else you will repent it.' The Swallow replied."
-    m 3lksdld "The birds paid no heed to the Swallow's words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
+    m 3rksdld "The birds paid no heed to the Swallow's words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
     m 1euc "Many birds that had despised the Swallow's advice were caught in nets made out of that very hemp."
     m 3hfu "'What did I tell you?' said the Swallow."
     m 3hua "The moral of this story is: 'Destroy the seeds of evil before they grow up to be your ruin.'"
@@ -287,7 +287,7 @@ label mas_story_gray_hair:
     call mas_story_begin
     m 1eua "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
     m 1euc "The Man's hair was turning grey, which the young Wife did not like, as it made him look too old."
-    m 3lksdla "So, every night she picked out the white hairs."
+    m 3rksdla "So, every night she picked out the white hairs."
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
     m 3hksdlb "The Man soon found himself entirely bald."
