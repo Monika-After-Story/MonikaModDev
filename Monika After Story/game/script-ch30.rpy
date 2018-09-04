@@ -744,6 +744,10 @@ label ch30_post_greeting_check:
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
 
+    # corruption check
+    if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
+        $ pushEvent("mas_corrupted_persistent")
+
     # push greeting if we have one
     if selected_greeting:
         $ pushEvent(selected_greeting)
