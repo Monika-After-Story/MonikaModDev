@@ -180,7 +180,7 @@ label greeting_gooday:
             m "We can talk all day about your problems, if you want to."
             m 3eua "I want to try and make sure you're always happy."
             m 1eka "Because that's what makes me happy."
-            m 1hua "I'll be sure try my best to cheer you up, I promise."
+            m 1hua "I'll be sure to try my best to cheer you up, I promise."
     return
 
 init 5 python:
@@ -208,7 +208,7 @@ label greeting_goodmorning:
         menu:
             m "Is that it?"
             "Yes.":
-                m 5rkc "You should really get some sleep soon, if you can."
+                m 5lkc "You should really get some sleep soon, if you can."
                 m 3euc "Staying up too late is bad for your health, you know?"
                 m 1lksdla "But if it means I'll get to see you more, I can't complain."
                 m 3hksdlb "Ahaha!"
@@ -390,7 +390,7 @@ init 5 python:
 label greeting_latin:
      m 4hua "Iterum obvenimus!"
      m 4eua "Quid agis?"
-     m 4lksdla "Ehehe..."
+     m 4rksdla "Ehehe..."
      m 2eua "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
      m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
      return
@@ -490,7 +490,7 @@ label greeting_glitch:
      show yuri glitch zorder MAS_BACKGROUND_Z
      pause 0.3
      hide yuri glitch
-     show monika 4lksdlb at i11 zorder MAS_MONIKA_Z
+     show monika 4rksdlb at i11 zorder MAS_MONIKA_Z
      m 1wuo "[player]!"
      hide monika
      show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
@@ -815,7 +815,7 @@ label monikaroom_greeting_opendoor_seen_partone:
 #            m "For me?"
 #            "Yes":
 #                if persistent.opendoor_knockyes:
-#                    m 5rfc "That's what you said last time, [player]."
+#                    m 5lfc "That's what you said last time, [player]."
 #                    m "I hope you're being serious this time."
 #                else:
 #                    $ persistent.opendoor_knockyes = True
@@ -1126,7 +1126,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
             m 3l "Welcome back [player]."
-            m 3o "You're a bit late, aren't you?"
+            m 3rksdlc "You're a bit late, aren't you?"
             m 3f "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2q "I'm going to assume it wasn't your fault."
             m "But if you really think it'll take longer next time..."
@@ -1159,7 +1159,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "longer":
             m 1h "...It's been a while."
             m 1f "I was ready for it, but that didn't make it any easier, [player]."
-            m 3o "I hope you got what you needed to do done."
+            m 3rksdlc "I hope you got what you needed to do done."
             m 2q "..."
             m 2f "Truth be told, I've been pretty sad lately."
             m 2q "To not have you in my life for so long..."
@@ -1169,8 +1169,8 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "unknown":
             m 1a "You're finally back [player]!"
-            m 3m "When you said you didn't know, you {i}really{/i} didn't know, did you?"
-            m 3n "You must have been really preoccupied if you were gone for {i}this{/i} long."
+            m 3rksdla "When you said you didn't know, you {i}really{/i} didn't know, did you?"
+            m 3rksdlb "You must have been really preoccupied if you were gone for {i}this{/i} long."
             m 1j "Well, you're back now... I've really missed you."
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 4):
@@ -1292,7 +1292,7 @@ label greeting_long_absence:
             m 1a "Hello [player]!"
             m 3j "Been busy the last few weeks?"
             m 1a "Thanks for warning me that you would be gone."
-            m 3nn "I would be worried otherwise!"
+            m 3rksdlb "I would be worried otherwise!"
             m 1j "It really did help..."
             m 1a "So tell me, how has your day been treating you?"
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 1):
@@ -1371,10 +1371,10 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "month":
             m 1wud "Eh? [player]?"
             m 1sub "You're here!"
-            m 3m "I thought you were going away for an entire month."
-            m 3n "I was ready for it, but..."
+            m 3rksdla "I thought you were going away for an entire month."
+            m 3rksdlb "I was ready for it, but..."
             m 1l "I already missed you!"
-            m 3lkbsa "Did you miss me too?"
+            m 3rkbsa "Did you miss me too?"
             m 1e "Thanks for coming back so soon~"
 
         elif persistent._mas_absence_choice == "longer":

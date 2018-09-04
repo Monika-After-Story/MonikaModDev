@@ -44,31 +44,31 @@ label dev_ptod_console_testing:
     $ local_context = dict()
     $ store.mas_ptod.restart_console()
 
-    m "Hi, I'm going to show the console right now"
-    m "edit 'good_cmd' and 'bad_cmd' to change the commands"
-    m "edit 'good_cmd_check' to change the 'good_cmd' verification command"
+    m "Hello! I'm going to show the console."
+    m "Edit 'good_cmd' and 'bad_cmd' to change the commands."
+    m "Edit 'good_cmd_check' to change the 'good_cmd' verification command."
 
     show monika at t22
     show screen mas_py_console_teaching
 
-    m "I will write command to console"
+    m "I'll write something to the console."
     $ store.mas_ptod.write_command(good_cmd)
-    m "This command should execute correctly"
+    m "This command should execute correctly."
     $ store.mas_ptod.exec_command(local_context)
 
     if len(good_cmd_check) > 0:
-        m "let me check that the command worked!"
+        m "Let me check to see if that command worked..."
         $ store.mas_ptod.write_command(good_cmd_check)
-        m "should get result!"
+        m 1hua "And no issues."
         $ store.mas_ptod.exec_command(local_context)
 
-    m "now lets try something that will fail"
+    m 1eua "Now, let's try something that will fail..."
     $ store.mas_ptod.write_command(bad_cmd)
-    m "this should fail with a reason"
+    m "This should fail, and give a reason."
     $ store.mas_ptod.exec_command(local_context)
 
-    m "good?"
-    m "okay time to hide screen"
+    m "Alright, I hope everything's working~"
+    m "I'll hide the screen now."
     hide screen mas_py_console_teaching
     return
 
@@ -97,24 +97,24 @@ label dev_ptod_console_testing_lines:
         store.mas_ptod.restart_console()
         max_history = store.mas_ptod.H_SIZE + 1
 
-    m "hi, let me show the screen"
+    m "I'll show the screen!"
     show monika at t22
     show screen mas_py_console_teaching
 
-    m "I am going to test for max lines that can fit and max number of charcters."
+    m "I'm going to test for the maximum lines and characters."
 
-    m "First, the max number of characters is [store.mas_ptod.LINE_MAX]"
+    m "First, the max number of characters is [store.mas_ptod.LINE_MAX]."
     $ store.mas_ptod.write_command(char_lim)
     $ store.mas_ptod.exec_command(local_context)
 
-    m "and the max number of lines in history is [max_history]"
+    m "And the max number of lines in history is [max_history]."
     python:
         for ln in range(0, store.mas_ptod.H_SIZE):
             store.mas_ptod.write_command(char_lim)
             store.mas_ptod.exec_command(local_context)
 
-    m "And that is the line dimensions for the console."
-    m " now i will hide the screen"
+    m "And there you have it! The console dimensions."
+    m "I'll hide the screen now~"
     hide screen mas_py_console_teaching
     return
 
@@ -142,20 +142,20 @@ label dev_ptod_console_testing_line_break:
         local_context = dict()
         store.mas_ptod.restart_console()
 
-    m "hi, let me show the screen"
+    m "Here, I'll bring the screen up."
     show monika at t22
     show screen mas_py_console_teaching
 
-    m "I am going to test for line breaks"
+    m "I'm going to test for line breaks."
 
-    m "First, the max number of characters is [store.mas_ptod.LINE_MAX]"
+    m "First, the max number of characters is [store.mas_ptod.LINE_MAX]."
     $ store.mas_ptod.write_command(char_lim)
-    m "This command should be split on 2 lines"
+    m "This command should be split on 2 lines."
     $ store.mas_ptod.exec_command(local_context)
-    m "But the result should fit on one line"
+    m "But the result should fit on one line."
 
-    m "good?"
-    m "okay i hide screen now"
+    m "I hope everything's working!"
+    m "Alright, I'll hide the screen now~"
     hide screen mas_py_console_teaching
     return
 
@@ -182,13 +182,13 @@ label dev_ptod_console_testing_block:
         local_context = dict()
         store.mas_ptod.restart_console()
 
-    m "hi, let me show the screen"
+    m "Here, I'll pull the screen up~"
     show monika at t22
     show screen mas_py_console_teaching
 
-    m "I am going to test block statements"
+    m 1hua "I'm going to test block statements."
 
-    m "First, lets define two test values"
+    m eua "First, let's define two test values."
     $ store.mas_ptod.write_command("test = 12")
     pause 0.7
     $ store.mas_ptod.exec_command(local_context)
@@ -197,7 +197,7 @@ label dev_ptod_console_testing_block:
     pause 0.7
     $ store.mas_ptod.x_cmd(local_context)
 
-    m "Now lets run if statement tests"
+    m "Now to run if statement tests..."
     $ store.mas_ptod.w_cmd("if test % 2 == 1:")
     pause 0.7
     $ store.mas_ptod.x_cmd(local_context)
@@ -223,19 +223,19 @@ label dev_ptod_console_testing_block:
     $ store.mas_ptod.x_cmd(local_context)
     pause 0.7
     $ store.mas_ptod.w_cmd("")
-    m "Hopefully no errors here"
+    m "Hopefully, there's no errors here."
     $ store.mas_ptod.x_cmd(local_context)
-    m "Now result should be 2 I think"
+    m "The result should be 2!"
     $ store.mas_ptod.w_cmd("result")
     pause 0.7
     $ store.mas_ptod.x_cmd(local_context)
 
-    m "Let me try a syntax error real quick"
+    m "Let's try a syntax error."
     $ store.mas_ptod.w_cmd(":")
     pause 0.7
     $ store.mas_ptod.x_cmd(local_context)
 
-    m "And now lets try a block error"
+    m "And now, a block error..."
     call mas_w_cmd("if True:")
     call mas_x_cmd(local_context)
     call mas_w_cmd(" result = 100")
@@ -243,30 +243,30 @@ label dev_ptod_console_testing_block:
     call mas_w_cmd("  result = 200")
     call mas_x_cmd(local_context)
     call mas_w_cmd("")
-    m "We should get an error now"
+    m "We should get an error now."
     call mas_x_cmd(local_context)
 
-    m "But result should still be 2"
+    m "But the result should still be 2."
     call mas_w_cmd("result")
     call mas_x_cmd(local_context)
 
-    m "okay, lets try a loop"
+    m "Okay, now for a loop!"
     call mas_wx_cmd("size = 11", local_context)
     call mas_wx_cmd("a_list = list()", local_context)
     call mas_wx_cmd("for i in range(0, size):", local_context)
     call mas_wx_cmd("  a_list.append(i)", local_context)
     call mas_w_cmd("")
-    m "lets try it!"
+    m "Here we go!"
     call mas_x_cmd(local_context)
 
-    m "and print out the list"
+    m "And let's print out the list..."
     call mas_wx_cmd("a_list", local_context)
 
-    m "time to disable the console"
+    m "Alright, time to disable the console."
     $ store.mas_ptod.ex_cn()
 
-    m "i think thats enough testing for today."
-    m "good?"
-    m "okay i hide screen now"
+    m 1hua "I think that's enough testing for today."
+    m 1eua "I hope everything's working."
+    m "Alright, I'll hide the screen now~"
     hide screen mas_py_console_teaching
     return
