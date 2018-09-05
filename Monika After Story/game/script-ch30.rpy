@@ -616,12 +616,13 @@ label ch30_autoload:
     if store.mas_dockstat.retmoni_status is not None:
         # non None means we have a status
         $ mas_from_empty = False
+        $ moni_status = store.mas_dockstat.retmoni_status
 
-        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_FO:
+        if (moni_status & store.mas_dockstat.MAS_PKG_FO) > 0:
             # TODOL: jump to the mas_dockstat_different_monika label
             jump mas_dockstat_empty_desk
 
-        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_F:
+        if (moni_status & store.mas_dockstat.MAS_PKG_F) > 0:
             jump mas_dockstat_found_monika
 
         # otherwise, lets jump to the empty desk
@@ -1074,6 +1075,17 @@ label ch30_reset:
             _rh = persistent._mas_monika_returned_home.date()
             if _now > _rh:
                 persistent._mas_monika_returned_home = None
+
+    ## resset playtime issues
+    python:
+        # reset total playtime to 0 if we got negative time.
+        # we could scale this, but it honestly is impossible for us to 
+        # figure out the original number accurately, and giving people free
+        # playtime doesn't sit well with me
+        if persistent.sessions is not None:
+            tp_time = persistent.sessions.get("total_playtime", None)
+            if tp_time < datetime.timedelta(0):
+                persistent.sessions["total_playtime"] = datetime.timedelta(0)
 
 
 
