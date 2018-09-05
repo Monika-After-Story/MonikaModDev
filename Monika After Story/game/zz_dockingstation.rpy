@@ -841,6 +841,7 @@ init -500 python in mas_dockstat:
     b64_blocksize = 5592408 # (above size converted to base64)
 
     ## package constants for the state of monika
+    # bit-based
     # Monika not found
     MAS_PKG_NF = 1
 
@@ -848,10 +849,17 @@ init -500 python in mas_dockstat:
     MAS_PKG_F = 2
 
     # Not our monika was found
-    MAS_PKG_FO = 3
+    MAS_PKG_FO = 4
+
+    # Monika data is in list form
+    MAS_PKG_DL = 8
+
+    # Monika data is in persitent form
+    MAS_PKG_DP = 16
 
 init python in mas_dockstat:
     import store
+    import cPickle
 
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
@@ -909,29 +917,14 @@ init 200 python in mas_dockstat:
     retmoni_status = None
     retmoni_data = None
 
-    def generateMonika(dockstat):
+
+    def _buildMetaDataList(_outbuffer):
         """
-        Generates / writes a monika blob file.
+        Writes out a pipe-delimeted metadata list tot he given buffer
 
-        NOTE: This does both generation and integretiy checking
-        NOTE: exceptions are logged
-
-        IN:
-            dockstat - the docking station to generate Monika in
-
-        RETURNS:
-            checksum of monika
-            -1 if checksums didnt match (and we cant verify data integrity of
-                the generated moinika file)
-            None otherwise
-
-        ASSUMES:
-            blocksize - this is a constant in this store
+        OUT:
+            _outbuffer - buffer to write metadata to
         """
-        ### other stuff we need
-        # inital buffer
-        moni_buffer = fastIO()
-
         ### metadata elements
         END_DELIM = "|||"
         num_5 = "{:05d}"
@@ -959,7 +952,7 @@ init 200 python in mas_dockstat:
                 affection_val = num_f.format(_affection)
 
         # build metadata list
-        moni_buffer.write("|".join([
+        _outbuffer.write("|".join([
             first_sesh,
             store.persistent.playername,
             store.persistent._mas_monika_nickname,
@@ -967,6 +960,63 @@ init 200 python in mas_dockstat:
             store.monika_chr.hair,
             store.monika_chr.clothes
         ]) + END_DELIM)
+
+
+    def _buildMetaDataPer(_outbuffer):
+        """
+        Writes out the persistent's data into the given buffer
+        
+        Exceptions are logged
+
+        OUT:
+            _outbuffer - buffer to write persistent data to
+
+        RETURNS:
+            True on success, False if failed
+        """
+        ### metadata elements
+        END_DELIM = "|||per|"
+
+        try:
+            _outbuffer.write(cPickle.dumps(store.persistent))
+            _outbuffer.write(END_DELIM)
+            return True
+                
+        except Exception as e:
+            mas_utils.writelog(
+                "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
+            )
+            return False
+
+
+    def generateMonika(dockstat):
+        """
+        Generates / writes a monika blob file.
+
+        NOTE: This does both generation and integretiy checking
+        NOTE: exceptions are logged
+
+        IN:
+            dockstat - the docking station to generate Monika in
+
+        RETURNS:
+            checksum of monika
+            -1 if checksums didnt match (and we cant verify data integrity of
+                the generated moinika file)
+            None otherwise
+
+        ASSUMES:
+            blocksize - this is a constant in this store
+        """
+        ### other stuff we need
+        # inital buffer
+        moni_buffer = fastIO()
+
+        ### write metadata
+        if not _buildMetaDataPer(moni_buffer):
+            # if we failed to do this via persistent, then we'll use the old
+            # style instead
+            _buildMetaDataList(moni_buffer)
 
         ### monikachr
         moni_chr = None
@@ -1003,6 +1053,10 @@ init 200 python in mas_dockstat:
             encoder = dockstat.base64.b64encode
 
             # calculate extra padding we need to fill out the first line
+            # TODO: need to handle the case where the buffer gets larger than
+            #   blocksize. 
+            #   NOTE: this isn't urgent, we can probably take another year or
+            #   so to do this
             moni_buffer_data = moni_buffer.getvalue()
             extra_padding = blocksize - len(moni_buffer_data)
             moni_size = store.persistent._mas_dockstat_moni_size - extra_padding
@@ -1096,10 +1150,12 @@ init 200 python in mas_dockstat:
 
         RETURNS: tuple of the following format:
             [0]: MAS_PKG_* constants depending on the state of monika
-            [1]: string of important data, if we found a monika. Will be empty
-                if no monika or data found
+            [1]: either list of data or persistent object of data. Will be
+                None if no data or errors occured
         """
         END_DELIM = "|||"
+        PER_DELIM = "per|"
+        ret_code = 0
 
         status, first_line = dockstat.smartUnpack(
             "monika",
@@ -1112,7 +1168,7 @@ init 200 python in mas_dockstat:
             # we had an error in reading, therefore we cant trust the data.
             # OR, we didnt find the package.
             # in either case, just say we didnt find monika
-            return (MAS_PKG_NF, "")
+            return (MAS_PKG_NF, None)
 
         # otherwise, we certainly found monika
         # lets parse monika's data
@@ -1121,20 +1177,41 @@ init 200 python in mas_dockstat:
         first_line.seek(0)
 
         # we only want the data portion that's likely to contain our stuff
-        real_data = first_line.read(dockstat.READ_SIZE)
+        # TODO: we do NOT have a system in place to handle persistents above
+        #   4 MB. we need to consider this when we do long term
+        real_data = first_line.read()
         first_line.close()
 
-        # and see if this does contain our stuff
-        real_data, sep, garbage = real_data.partition(END_DELIM)
+        # because the console may have shit, we should just attempt to parse
+        # the data as persistent first, and then as a backup, try non-persist.
+        per_data = parseMoniDataPer(real_data)
 
-        # and return results
-        if len(sep) == 0:
-            # no data found, assume a missing monika
-            return (MAS_PKG_NF, "")
+        if per_data is None:
+            # this isn't a persistent. Let's try backup strats
+
+            # and see if this does contain our stuff
+            real_data, sep, garbage = real_data.partition(END_DELIM)
+
+            # and return results
+            if len(sep) == 0:
+                # no data found, assume a missing monika
+                return (MAS_PKG_NF, None)
+
+            real_data = parseMoniData(real_data)
+            ret_code = MAS_PKG_DL
+
+        else:
+            real_data = per_data
+            ret_code = MAS_PKG_DP
+
+        if real_data is None:
+            # we failed to parse data. Please return an error
+            # in this case, we should assume monika was not found
+            return (MAS_PKG_NF, real_data)
 
         if (status & dockstat.PKG_C) > 0:
             # we found a different monika (or corrupted monika)
-            return (MAS_PKG_FO, real_data)
+            return (ret_code | MAS_PKG_FO | MAS_PKG_F, real_data)
 
         # otherwise, we have a matching monika!
         # lets log this monika
@@ -1145,7 +1222,7 @@ init 200 python in mas_dockstat:
 
         # and clear the checksum
         store.persistent._mas_moni_chksum = None
-        return (MAS_PKG_F, real_data)
+        return (ret_code | MAS_PKG_F, real_data)
 
 
     def parseMoniData(data_line):
@@ -1181,8 +1258,29 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR]: Moni Data parse fail: {0}\n".format(
-                str(e)
+                repr(e)
             ))
+            return None
+
+
+    def parseMoniDataPer(data_line):
+        """
+        Parses persitent data into a persitent object.
+
+        NOTE: all exceptions are loggeed
+
+        IN:
+            data_line - the data portion that may contain a persitent
+
+        RETURNS: a persistent object, or None if failure
+        """
+        try:
+            return cPickle.loads(data_line)
+
+        except Exception as e:
+            mas_utils.writelog(
+                "[ERROR]: persistent unpickle failed: {0}\n".format(repr(e))
+            )
             return None
 
 
@@ -1357,7 +1455,7 @@ init 200 python in mas_dockstat:
 
         if _th_cond_findMonika is None:
             # please dont do this
-            return ("","")
+            return (0, None)
 
         # acquire lock
         _th_cond_findMonika.acquire()
@@ -1467,7 +1565,7 @@ label mas_dockstat_empty_desk_loop:
             # get result
             moni_status, mas_dockstat.retmoni_data = mas_dockstat._endFindMonika()
 
-            if moni_status == mas_dockstat.MAS_PKG_FO:
+            if (moni_status & mas_dockstat.MAS_PKG_FO) > 0:
                 # found a different monika, jump to the different monika
                 # greeting
                 #moni_found = True
@@ -1479,7 +1577,7 @@ label mas_dockstat_empty_desk_loop:
                 #TODO: for now, lets just continue this loop
                 moni_found = None
 
-            if moni_status == mas_dockstat.MAS_PKG_F:
+            if (moni_status & mas_dockstat.MAS_PKG_F) > 0:
                 # found our monika, jump to the found monika greeting
                 moni_found = True
                 renpy.jump("mas_dockstat_found_monika")
@@ -1495,7 +1593,7 @@ define mas_dockstat.different_moni_flow = False
 # different monika found
 label mas_dockstat_different_monika:
     # ASSUMES:
-    #   moni_data - data line of the monika we read in. Would need parsing
+    # mas_dockstat.retmoni_data - should be the data portion of monika
 
     # NOTE: we also need to save current vars so we dont have issues
     $ mas_dockstat.previous_vars["m_name"] = persistent._mas_monika_nickname
@@ -1546,8 +1644,7 @@ label mas_dockstat_different_monika:
 
 # found our monika
 label mas_dockstat_found_monika:
-    # ASSUMES:
-    #   moni_data - data line of the monika we read in. Would need parsing
+
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
 

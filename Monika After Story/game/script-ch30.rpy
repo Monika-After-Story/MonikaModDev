@@ -616,12 +616,13 @@ label ch30_autoload:
     if store.mas_dockstat.retmoni_status is not None:
         # non None means we have a status
         $ mas_from_empty = False
+        $ moni_status = store.mas_dockstat.retmoni_status
 
-        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_FO:
+        if (moni_status & store.mas_dockstat.MAS_PKG_FO) > 0:
             # TODOL: jump to the mas_dockstat_different_monika label
             jump mas_dockstat_empty_desk
 
-        if store.mas_dockstat.retmoni_status == store.mas_dockstat.MAS_PKG_F:
+        if (moni_status & store.mas_dockstat.MAS_PKG_F) > 0:
             jump mas_dockstat_found_monika
 
         # otherwise, lets jump to the empty desk

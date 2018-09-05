@@ -313,11 +313,19 @@ label before_main_menu:
     return
 
 label quit:
-    $ store.mas_calendar.saveCalendarDatabase(CustomEncoder)
-    $persistent.sessions['last_session_end']=datetime.datetime.now()
-    $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
+    python:
+        store.mas_calendar.saveCalendarDatabase(CustomEncoder)
+        persistent.sessions['last_session_end']=datetime.datetime.now()
+        today_time = (
+            persistent.sessions["last_session_end"] 
+            - persistent.sessions["current_session_start"]
+        )
+        # gotta prevent negative time addons
+        if today_time > datetime.timedelta(0):
+            persistent.sessions['total_playtime'] += today_time
 
-    $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
+        # set the monika size
+        store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
     if persistent._mas_hair_changed:
         $ persistent._mas_monika_hair = monika_chr.hair
