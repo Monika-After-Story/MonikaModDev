@@ -415,7 +415,7 @@ init -45 python:
                     package_name, 
                     pkg_slip, 
                     contents=None, 
-                    one_line=False,
+                    one_line=False, # TODO: change this to number of lines
                     b64=True,
                     bs=None
             ):
