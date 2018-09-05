@@ -280,15 +280,6 @@ label v0_8_6(version="v0_8_6"):
             genderredo_ev.unlocked = True
             genderredo_ev.pool = True
 
-        # reset total playtime to 0 if we got negative time.
-        # we could scale this, but it honestly is impossible for us to 
-        # figure out the original number accurately, and giving people free
-        # playtime doesn't sit well with me
-        if persistent.sessions is not None:
-            tp_time = persistent.sessions.get("total_playtime", None)
-            if tp_time < datetime.timedelta(0):
-                persistent.sessions["total_playtime"] = datetime.timedelta(0)
-
     return
 
 # 0.8.4
