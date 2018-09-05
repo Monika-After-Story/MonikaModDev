@@ -272,6 +272,7 @@ label v0_3_1(version=version): # 0.3.1
 label v0_8_6(version="v0_8_6"):
     python:
         import store.evhand as evhand
+        import datetime
         
         # unlock gender redo if we have seen the other event
         genderredo_ev = evhand.event_database.get("gender_redo", None)
