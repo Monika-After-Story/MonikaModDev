@@ -2,8 +2,6 @@
 #Feel free to modify to your own accord
 
 #File format: word,sPoint,nPoint,yPoint,mPoint
-
-#Sayori's winning words
 happiness,4,3,1,2
 sadness,4,3,1,2
 death,4,1,2,3
@@ -256,8 +254,6 @@ crickets,4,3,1,2
 serendipitous,4,2,3,1
 clutch,4,1,2,3
 hold,4,1,2,3
-
-#Natsuki's words
 cute,2,4,1,3
 fluffy,3,4,2,1
 pure,2,4,3,1
@@ -510,8 +506,6 @@ ladder,3,4,1,2
 confirm,3,4,2,1
 swallow,3,4,1,2
 taunt,2,4,3,1
-
-#Yuri's words
 determination,2,1,4,3
 suicide,3,1,4,2
 imagination,3,1,4,2
@@ -764,8 +758,6 @@ sisyphus,1,3,4,2
 loathe,3,2,4,1
 spiral,3,2,4,1
 triumphant,2,3,4,1
-
-#Monika's words
 continental,3,2,1,4
 viola,3,1,2,4
 begrudge,3,1,2,4
@@ -1018,3 +1010,7 @@ symbol,1,2,3,4
 dissociate,2,1,3,4
 trait,1,2,3,4
 golden,2,1,3,4
+holding,2,3,1,4
+avidity,3,3,1,4
+delve,3,2,1,4
+sift,1,2,2,4
