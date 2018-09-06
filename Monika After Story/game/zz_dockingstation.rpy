@@ -1211,7 +1211,7 @@ init 200 python in mas_dockstat:
 
         if (status & dockstat.PKG_C) > 0:
             # we found a different monika (or corrupted monika)
-            return (ret_code | MAS_PKG_FO | MAS_PKG_F, real_data)
+            return (ret_code | MAS_PKG_FO, real_data)
 
         # otherwise, we have a matching monika!
         # lets log this monika
@@ -1577,7 +1577,7 @@ label mas_dockstat_empty_desk_loop:
                 #TODO: for now, lets just continue this loop
                 moni_found = None
 
-            if (moni_status & mas_dockstat.MAS_PKG_F) > 0:
+            elif (moni_status & mas_dockstat.MAS_PKG_F) > 0:
                 # found our monika, jump to the found monika greeting
                 moni_found = True
                 renpy.jump("mas_dockstat_found_monika")
