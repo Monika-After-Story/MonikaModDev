@@ -9225,6 +9225,32 @@ image monika 6wfw = DynamicDisplayable(
     arms="down"
 )
 
+image monika 6rkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6lkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
 image monika 6sub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9233,6 +9259,19 @@ image monika 6sub = DynamicDisplayable(
     nose="def",
     mouth="big",
     head="b",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6ckc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="crazy",
+    nose="def",
+    mouth="smirk",
+    head="c",
     left="1l",
     right="1r",
     arms="down"
@@ -9452,6 +9491,44 @@ image monika 6ATL_cryleftright:
                 0.8
 
         repeat
+
+# similar to cryleft and right
+# meant for DISTRESSED
+image monika 6ATL_lookleftright:
+    block:
+        # select an image
+        block:
+            choice:
+                "monika 6rkc"
+            choice:
+                "monika 6lkc"
+
+        # select a wait time
+        block:
+            choice:
+                5.0
+            choice:
+                6.0
+            choice:
+                7.0
+            choice:
+                8.0
+            choice:
+                9.0
+            choice:
+                10.0
+
+
+### [IMG050]
+# condition-switched images for old school image selecting
+image monika idle = ConditionSwitch(
+    "mas_isMoniBroken(lower=True)", "monika 6ckc"
+    "mas_isMoniDis()", "monika 6ATL_lookleftright",
+    "mas_isMoniUpset()", "monika 2efc",
+    "mas_isMoniNormal()", "monika 1esa",
+    "mas_isMoniHappy()", "monika 1eua",
+    predict_all=True
+)
 
 
 ### [IMG100]
