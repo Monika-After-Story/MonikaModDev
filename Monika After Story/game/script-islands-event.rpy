@@ -204,7 +204,7 @@ label mas_monika_upsidedownisland:
 label mas_monika_glitchedmess:
     m "Oh, that."
     m "It's something I'm currently working on."
-    m "It's still a huge mess, thought. I'm still trying to figure out how to be good at it."
+    m "It's still a huge mess, though. I'm still trying to figure out how to be good at it."
     m "In due time, I'm sure I'll get better at coding!"
     m "Practice makes perfect after all, right?"
     return
