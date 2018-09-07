@@ -275,7 +275,7 @@ label mas_story_seeds:
     m 3hua "The moral of this story is: 'Destroy the seeds of evil before they grow up to be your ruin.'"
     m 1lksdlc "..."
     m 2dsc "I wish I could've followed that moral."
-    m 2lksdlc "You wouldn't had to go through what you saw."
+    m 2lksdlc "You wouldn't have had to go through what you saw."
     m 4hksdlb "Anyway, I hope you liked the story, [player]!"
     return
 
