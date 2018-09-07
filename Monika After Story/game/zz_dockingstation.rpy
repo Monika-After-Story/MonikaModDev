@@ -1211,6 +1211,9 @@ init 200 python in mas_dockstat:
 
         if (status & dockstat.PKG_C) > 0:
             # we found a different monika (or corrupted monika)
+            mas_utils.writelog(
+                "[!] I found a corrupt monika! {0}\n".format(status)
+            )
             return (ret_code | MAS_PKG_FO, real_data)
 
         # otherwise, we have a matching monika!
