@@ -2114,6 +2114,19 @@ image monika 1hub = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1huu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smug",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2519,6 +2532,32 @@ image monika 1subftsb = DynamicDisplayable(
     arms="steepling",
     blush="full",
     tears="streaming"
+)
+
+image monika 1kua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="winkleft",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1sua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
 )
 
 image monika 1sub = DynamicDisplayable(
@@ -8541,6 +8580,34 @@ image monika 5euc = DynamicDisplayable(
     single="3b"
 )
 
+image monika 5esu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3a"
+)
+
+image monika 5tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3a"
+)
+
 image monika 5hubfa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8625,6 +8692,21 @@ image monika 5ekbfa = DynamicDisplayable(
     right="",
     lean="def",
     blush="full",
+    single="3b"
+)
+
+image monika 5eubla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="lines",
     single="3b"
 )
 
@@ -8943,6 +9025,21 @@ image monika 5luu = DynamicDisplayable(
     eyes="left",
     nose="def",
     mouth="smug",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3b"
+)
+
+# bored
+image monika 5tsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smirk",
     head="",
     left="",
     right="",
@@ -9495,38 +9592,196 @@ image monika 6ATL_cryleftright:
 # similar to cryleft and right
 # meant for DISTRESSED
 image monika 6ATL_lookleftright:
+    # select an image
     block:
-        # select an image
-        block:
-            choice:
-                "monika 6rkc"
-            choice:
-                "monika 6lkc"
+        choice:
+            "monika 6rkc"
+        choice:
+            "monika 6lkc"
 
-        # select a wait time
-        block:
+    # select a wait time
+    block:
+        choice:
+            5.0
+        choice:
+            6.0
+        choice:
+            7.0
+        choice:
+            8.0
+        choice:
+            9.0
+        choice:
+            10.0
+    repeat
+
+### [IMG045]
+# special purpose ATLs that cant really be used for other things atm
+
+# Below 0 to upset affection
+image monika ATL_0_to_upset:
+    # select image
+    block:
+        choice 0.95:
+            "monika 1esa"
+        choice 0.05:
+            "monika 5tsc"
+
+    # select a wait time
+    block:
+        choice:
+            5.0
+        choice:
+            6.0
+        choice:
+            7.0
+        choice:
+            8.0
+        choice:
+            9.0
+        choice:
+            10.0
+    repeat
+
+# affectionate
+image monika ATL_affectionate:
+    # select image
+    block:
+        choice 0.02:
+            "monika 1eua"
+            1.0
             choice:
-                5.0
+                "monika 1sua"
+                4.0
             choice:
-                6.0
+                "monika 1kua"
+                1.5
+            "monika 1eua"
+
+        choice 0.98:
+            choice 0.94898:
+                "monika 1eua"
+            choice 0.051020:
+                "monika 1hua"
+
+    # 5 to 10s wait times
+    block:
+        choice:
+            5.0
+        choice:
+            6.0
+        choice:
+            7.0
+        choice:
+            8.0
+        choice:
+            9.0
+        choice:
+            10.0
+
+    repeat
+
+# enamored
+image monika ATL_enamored:
+
+    # select image
+    block:
+        choice 0.02:
+            "monika 1eua"
+            1.0
             choice:
-                7.0
+                "monika 1sua"
+                4.0
             choice:
-                8.0
+                "monika 1kua"
+                1.5
+            "monika 1eua"
+
+        choice 0.98:
+            choice 0.765306:
+                "monika 1eua"
+            choice 0.112245:
+                "monika 5esu"
+            choice 0.061224:
+                "monika 5tsu"
+            choice 0.061224:
+                "monika 1huu"
+
+    # 5 to 10s wait times
+    block:
+        choice:
+            5.0
+        choice:
+            6.0
+        choice:
+            7.0
+        choice:
+            8.0
+        choice:
+            9.0
+        choice:
+            10.0
+
+    repeat
+
+# love
+image monika ATL_love:
+    
+    # select image
+    block:
+        choice 0.02:
+            "monika 1eua"
+            1.0
             choice:
-                9.0
+                "monika 1sua"
+                4.0
             choice:
-                10.0
+                "monika 1kua"
+                1.5
+            "monika 1eua"
+
+        choice 0.98:
+            choice 0.510104:
+                "monika 1eua"
+            choice 0.255102:
+                "monika 5esu"
+            choice 0.091837:
+                "monika 5tsu"
+            choice 0.091837:
+                "monika 1huu"
+            choice 0.051020:
+                "monika 5eubla"
+
+    # 5 to 10s wait times
+    block:
+        choice:
+            5.0
+        choice:
+            6.0
+        choice:
+            7.0
+        choice:
+            8.0
+        choice:
+            9.0
+        choice:
+            10.0
+
+    repeat
 
 
 ### [IMG050]
 # condition-switched images for old school image selecting
 image monika idle = ConditionSwitch(
-    "mas_isMoniBroken(lower=True)", "monika 6ckc"
+    "mas_isMoniBroken(lower=True)", "monika 6ckc",
     "mas_isMoniDis()", "monika 6ATL_lookleftright",
     "mas_isMoniUpset()", "monika 2efc",
-    "mas_isMoniNormal()", "monika 1esa",
+    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
     "mas_isMoniHappy()", "monika 1eua",
+    "mas_isMoniAff()", "monika ATL_affectionate",
+    "mas_isMoniEnamored()", "monika ATL_enamored",
+    "mas_isMoniLove()", "monika ATL_love",
+    "True", "monika 1esa",
     predict_all=True
 )
 

@@ -735,6 +735,10 @@ init 20 python:
     def _mas_getAffection():
         return persistent._mas_affection["affection"]
 
+    # numerical affection check
+    def mas_isBelowZero():
+        return _mas_getAffection() < 0
+
 
     ## affection comparison
     # [AFF020] Affection comparTos
@@ -1211,7 +1215,8 @@ init 20 python:
 
         # If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
-            pushEvent("mas_affection_apology")
+            if not persistent._mas_disable_sorry:
+                pushEvent("mas_affection_apology")
         # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -100 and not seen_event("greeting_tears"):
             unlockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
