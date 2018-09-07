@@ -9339,7 +9339,7 @@ image monika 6lkc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
-    eyes="right",
+    eyes="left",
     nose="def",
     mouth="smirk",
     head="o",
@@ -9592,7 +9592,8 @@ image monika 6ATL_cryleftright:
 # similar to cryleft and right
 # meant for DISTRESSED
 image monika 6ATL_lookleftright:
-    # select an image
+
+    # select image
     block:
         choice:
             "monika 6rkc"
@@ -9623,7 +9624,7 @@ image monika ATL_0_to_upset:
     # select image
     block:
         choice 0.95:
-            "monika 1esa"
+            "monika 1esc"
         choice 0.05:
             "monika 5tsc"
 
