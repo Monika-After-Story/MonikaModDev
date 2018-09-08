@@ -9628,20 +9628,20 @@ image monika ATL_0_to_upset:
         choice 0.05:
             "monika 5tsc"
 
-    # select a wait time
+    # select wait time
     block:
         choice:
-            5.0
-        choice:
-            6.0
-        choice:
-            7.0
-        choice:
-            8.0
-        choice:
-            9.0
-        choice:
             10.0
+        choice:
+            12.0
+        choice:
+            14.0
+        choice:
+            16.0
+        choice:
+            18.0
+        choice:
+            20.0
     repeat
 
 # affectionate
@@ -9665,20 +9665,20 @@ image monika ATL_affectionate:
             choice 0.051020:
                 "monika 1hua"
 
-    # 5 to 10s wait times
+    # select wait time
     block:
         choice:
-            5.0
-        choice:
-            6.0
-        choice:
-            7.0
-        choice:
-            8.0
-        choice:
-            9.0
-        choice:
             10.0
+        choice:
+            12.0
+        choice:
+            14.0
+        choice:
+            16.0
+        choice:
+            18.0
+        choice:
+            20.0
 
     repeat
 
@@ -9708,20 +9708,20 @@ image monika ATL_enamored:
             choice 0.061224:
                 "monika 1huu"
 
-    # 5 to 10s wait times
+    # select wait time
     block:
         choice:
-            5.0
-        choice:
-            6.0
-        choice:
-            7.0
-        choice:
-            8.0
-        choice:
-            9.0
-        choice:
             10.0
+        choice:
+            12.0
+        choice:
+            14.0
+        choice:
+            16.0
+        choice:
+            18.0
+        choice:
+            20.0
 
     repeat
 
@@ -9753,20 +9753,20 @@ image monika ATL_love:
             choice 0.051020:
                 "monika 5eubla"
 
-    # 5 to 10s wait times
+    # select wait time
     block:
         choice:
-            5.0
-        choice:
-            6.0
-        choice:
-            7.0
-        choice:
-            8.0
-        choice:
-            9.0
-        choice:
             10.0
+        choice:
+            12.0
+        choice:
+            14.0
+        choice:
+            16.0
+        choice:
+            18.0
+        choice:
+            20.0
 
     repeat
 
