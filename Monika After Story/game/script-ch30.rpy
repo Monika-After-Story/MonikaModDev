@@ -171,7 +171,7 @@ init python:
     # we need a new music channel for background audio (like rain!)
     renpy.music.register_channel(
         "background",
-        mixer="music",
+        mixer="sfx",
         loop=True,
         stop_on_mute=True,
         tight=True
