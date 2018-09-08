@@ -259,6 +259,16 @@ init -45 python:
                 contents.close()
 
 
+        def safeRandom(self, amount):
+            """
+            Generates a random amount of unicode-safe bytes.
+
+            IN:
+                amount - number of bytes to generate
+            """
+            return self.base64.b64encode(os.urandom(amount))[:amount]
+
+
         def sendPackage(self, 
                 package_name, 
                 package, 
@@ -1126,6 +1136,8 @@ init 200 python in mas_dockstat:
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
+            def safe_encoder(data):
+                return dockstat.base64.b64encode(dockstat.safeRandom(data))
             encoder = dockstat.base64.b64encode
 
             # now write this buffer out, keeping track of the last buffer
@@ -1163,7 +1175,7 @@ init 200 python in mas_dockstat:
                     moni_size_left -= extra_padding
 
                 # and write out the metadata / monika
-                data = encoder(_line + os.urandom(extra_padding))
+                data = encoder(_line + dockstat.safeRandom(extra_padding))
                 checklist.update(data)
                 moni_fbuffer.write(data)
 
@@ -1173,7 +1185,7 @@ init 200 python in mas_dockstat:
                 curr_size = 0
 
                 while curr_size < moni_size_limit:
-                    data = encoder(os.urandom(blocksize))
+                    data = safe_encoder(blocksize)
                     checklist.update(data)
                     moni_fbuffer.write(data)
                     curr_size += blocksize
@@ -1181,7 +1193,7 @@ init 200 python in mas_dockstat:
                 # we should have some leftovers
                 leftovers = moni_size_left - curr_size
                 if leftovers > 0:
-                    data = encoder(os.urandom(leftovers))
+                    data = safe_encoder(leftovers)
                     checklist.update(data)
                     moni_fbuffer.write(data)
 
