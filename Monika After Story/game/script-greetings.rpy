@@ -1752,7 +1752,7 @@ label greeting_returned_home:
         m 2eua "Well, it felt really great!"
         m 5eub "Let's do this again soon, okay?"
         if persistent._mas_monika_returned_home is None:
-            $ hours_out = int(time_out.seconds * 3600)
+            $ hours_out = int(time_out.seconds / 3600)
 
             # you gain 1 per hour, max 5, min 1
             if hours_out > 5:
