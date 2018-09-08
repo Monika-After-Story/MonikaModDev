@@ -866,3 +866,54 @@ screen mas_note_backups_poem(currentpoem, paper="paper"):
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
+init 5 python:
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_new_character_file"
+        )
+    )
+
+label mas_new_character_file:
+    m "I am talking to you"
+
+    python:
+        import os
+
+        def moni_exist():
+            return os.access(
+                os.path.normcase(
+                    renpy.config.basedir + "/characters/monika.chr"
+                ), 
+                os.F_OK
+            )
+
+    if moni_exist():
+        m "so if you excuse me"
+
+        python:
+            store.mas_ptod.rst_cn()
+            local_ctx = {
+                "basedir": renpy.config.basedir
+            }
+        show monika at t22
+        show screen mas_py_console_teaching
+
+        m "TODO: im going to delete"
+
+        call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
+        call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/monika.chr'))", local_ctx, w_wait=1.0, x_wait=1.0)
+
+#        "test dialogue - IGNORE"
+
+        if moni_exist():
+            m 1lksdlb "Aha...{w} I'll try this again later."
+            m 1eua "Anyway..."
+
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
+
+    # TODO: post 
+
