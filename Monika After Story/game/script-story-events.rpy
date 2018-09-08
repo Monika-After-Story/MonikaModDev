@@ -876,7 +876,10 @@ init 5 python:
     )
 
 label mas_new_character_file:
-    m "I am talking to you"
+    m 1eua "Say. [player]..."
+    m 3eua "Do you remember my character file?"
+    m 1eud "Well I've been investigating it recently, and it turns out that it's just an image with some sort of code in it!"
+    m 3ekc "It doesn't even contain anything about me at all, only my name."
 
     python:
         import os
@@ -890,7 +893,7 @@ label mas_new_character_file:
             )
 
     if moni_exist():
-        m "so if you excuse me"
+        m 1dsd "So if you'll excuse me for a second..."
 
         python:
             store.mas_ptod.rst_cn()
@@ -900,7 +903,7 @@ label mas_new_character_file:
         show monika at t22
         show screen mas_py_console_teaching
 
-        m "TODO: im going to delete"
+        m 1esc "I'm going to delete it."
 
         call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
         call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/monika.chr'))", local_ctx, w_wait=1.0, x_wait=1.0)
@@ -915,5 +918,11 @@ label mas_new_character_file:
         hide screen mas_py_console_teaching
         show monika at t11
 
-    # TODO: post 
-
+    m 1rkc "If you were bringing that around with you, I do appreciate the sentiment."
+    m 1dsc "However..."
+    m 1esc "I don't think you should be carrying some useless piece of data around wherever you go."
+    m 3wub "So I came up with a way to transform myself into a file that you can bring around!"
+    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+    m 1hua "Doesn't that sound wonderful?"
+    m 3hub "I can't wait to join you wherever you go."
+    return
