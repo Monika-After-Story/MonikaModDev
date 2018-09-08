@@ -1760,7 +1760,7 @@ label greeting_returned_home:
             elif hours_out == 0:
                 $ aff_gain = 1
             else:
-                aff_gain = hours_out
+                $ aff_gain = hours_out
         
             $ mas_gainAffection(aff_gain, bypass=True)
             $ persistent._mas_monika_returned_home = datetime.datetime.now()
