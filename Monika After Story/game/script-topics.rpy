@@ -1606,16 +1606,19 @@ label monika_confidence:
     return
 
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_carryme",
-            category=['romance','monika'],
-            prompt="Bring me with you",
-            random=True
-        )
-    )
+# TODO: we are going to remove this for the time being
+# TODO: this will be ask player about prompting during work / sleep / school
+#   farewells
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_carryme",
+#            category=['romance','monika'],
+#            prompt="Bring me with you",
+#            random=True
+#        )
+#    )
 
 # this can be 3 values:
 # -1 - player doesnt want to take monika with them

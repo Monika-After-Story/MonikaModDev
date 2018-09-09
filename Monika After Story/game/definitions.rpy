@@ -1811,10 +1811,17 @@ init -999 python:
 
 
 init -990 python in mas_utils:
+    import store
     import os
     import shutil
     import datetime
-    mas_log = renpy.renpy.log.open("log/mas_log")
+
+    # unstable should never delete logs
+    if store.persistent._mas_unstable_mode:
+        mas_log = renpy.renpy.log.open("log/mas_log", append=True, flush=True)
+    else:
+        mas_log = renpy.renpy.log.open("log/mas_log")
+
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
 

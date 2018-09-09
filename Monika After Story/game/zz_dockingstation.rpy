@@ -259,6 +259,16 @@ init -45 python:
                 contents.close()
 
 
+        def safeRandom(self, amount):
+            """
+            Generates a random amount of unicode-safe bytes.
+
+            IN:
+                amount - number of bytes to generate
+            """
+            return self.base64.b64encode(os.urandom(amount))[:amount]
+
+
         def sendPackage(self, 
                 package_name, 
                 package, 
@@ -415,7 +425,7 @@ init -45 python:
                     package_name, 
                     pkg_slip, 
                     contents=None, 
-                    one_line=False,
+                    lines=0,
                     b64=True,
                     bs=None
             ):
@@ -435,9 +445,11 @@ init -45 python:
                     If None, we save contents to a StringIO object and return
                     that
                     (Default: None)
-                one_line - True means we only retrieve a single line from the
-                    package
-                    (Default: False)
+                lines - number of lines to retrieve when reading data.
+                    If less than 0, then we scan the file itself to tell us
+                    how many lines to read.
+                    If "all", then we read ALL LINES
+                    (Default: 0)
                 b64 - True means the package is encoded in base64
                     (Default: True)
                 bs - blocksize to use. By default, we use B64_READ_SIZE
@@ -449,6 +461,8 @@ init -45 python:
                     If contents is not None, this is the same reference as
                     contents.
             """
+            NUM_DELIM = "|num|"
+
             # First, lets try and get the package
             package = self.getPackage(package_name)
 
@@ -474,28 +488,66 @@ init -45 python:
             checklist = self.hashlib.sha256()
 
             # and attempt to decode package
-            keep_saving = True
+            if lines == "all":
+                # nothing we read should be 200 million lines of 4MB
+                lines = 20000000
+
             try:
                 # iterator for looping
                 _box = MASDockingStation._blockiter(package, bs)
 
-                # and now we look. However we only save what is asked of us
+                # no lines means we need to look for them instead
+                if lines < 0:
+                    first_item = next(_box, None)
+
+                    if first_item is None:
+                        raise Exception("EMPTY PACKAGE")
+
+                    checklist.update(first_item)
+                    first_unpacked = self.base64.b64decode(first_item)
+
+                    # parse the line for the first NUM_DELIM
+                    raw_num, sep, remain = first_unpacked.partition(NUM_DELIM)
+                    if len(sep) == 0:
+                        raise Exception(
+                            "did not find sep. size of first {0}".format(
+                                len(raw_num)
+                            )
+                        )
+
+                    num = mas_utils.tryparseint(raw_num, -1)
+
+                    if num < 0:
+                        # this is a problem. Raise an exception
+                        raise Exception(
+                            "did not find lines. found {0}".format(raw_num)
+                        )
+
+                    # otherwise, set lines to num
+                    lines = num
+
+                    if lines > 0:
+                        # do we save the first line?
+                        _contents.write(remain)
+                        lines -= 1
+
+                # and now to look at the rest.
+                # only save what we need though
                 for packed_item in _box:
+
                     checklist.update(packed_item)
 
-                    if keep_saving:
+                    if lines > 0:
                         # writing out contents to buffer
                         _contents.write(self.base64.b64decode(packed_item))
+                        lines -= 1
 
-                        if one_line:
-                            # stop saving contents if we only want 1 line
-                            keep_saving = False
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_READ.format(package_name),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
 
                 if contents is None:
@@ -841,6 +893,7 @@ init -500 python in mas_dockstat:
     b64_blocksize = 5592408 # (above size converted to base64)
 
     ## package constants for the state of monika
+    # bit-based
     # Monika not found
     MAS_PKG_NF = 1
 
@@ -848,10 +901,17 @@ init -500 python in mas_dockstat:
     MAS_PKG_F = 2
 
     # Not our monika was found
-    MAS_PKG_FO = 3
+    MAS_PKG_FO = 4
+
+    # Monika data is in list form
+    MAS_PKG_DL = 8
+
+    # Monika data is in persitent form
+    MAS_PKG_DP = 16
 
 init python in mas_dockstat:
     import store
+    import cPickle
 
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
@@ -909,29 +969,14 @@ init 200 python in mas_dockstat:
     retmoni_status = None
     retmoni_data = None
 
-    def generateMonika(dockstat):
+
+    def _buildMetaDataList(_outbuffer):
         """
-        Generates / writes a monika blob file.
+        Writes out a pipe-delimeted metadata list tot he given buffer
 
-        NOTE: This does both generation and integretiy checking
-        NOTE: exceptions are logged
-
-        IN:
-            dockstat - the docking station to generate Monika in
-
-        RETURNS:
-            checksum of monika
-            -1 if checksums didnt match (and we cant verify data integrity of
-                the generated moinika file)
-            None otherwise
-
-        ASSUMES:
-            blocksize - this is a constant in this store
+        OUT:
+            _outbuffer - buffer to write metadata to
         """
-        ### other stuff we need
-        # inital buffer
-        moni_buffer = fastIO()
-
         ### metadata elements
         END_DELIM = "|||"
         num_5 = "{:05d}"
@@ -959,7 +1004,7 @@ init 200 python in mas_dockstat:
                 affection_val = num_f.format(_affection)
 
         # build metadata list
-        moni_buffer.write("|".join([
+        _outbuffer.write("|".join([
             first_sesh,
             store.persistent.playername,
             store.persistent._mas_monika_nickname,
@@ -967,6 +1012,66 @@ init 200 python in mas_dockstat:
             store.monika_chr.hair,
             store.monika_chr.clothes
         ]) + END_DELIM)
+
+
+    def _buildMetaDataPer(_outbuffer):
+        """
+        Writes out the persistent's data into the given buffer
+        
+        Exceptions are logged
+
+        OUT:
+            _outbuffer - buffer to write persistent data to
+
+        RETURNS:
+            True on success, False if failed
+        """
+        ### metadata elements
+        END_DELIM = "|||per|"
+
+        try:
+            _outbuffer.write(cPickle.dumps(store.persistent))
+            _outbuffer.write(END_DELIM)
+            return True
+                
+        except Exception as e:
+            mas_utils.writelog(
+                "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
+            )
+            return False
+
+
+    def generateMonika(dockstat):
+        """
+        Generates / writes a monika blob file.
+
+        NOTE: This does both generation and integretiy checking
+        NOTE: exceptions are logged
+
+        IN:
+            dockstat - the docking station to generate Monika in
+
+        RETURNS:
+            checksum of monika
+            -1 if checksums didnt match (and we cant verify data integrity of
+                the generated moinika file)
+            None otherwise
+
+        ASSUMES:
+            blocksize - this is a constant in this store
+        """
+        ### other stuff we need
+        # inital buffer
+        moni_buffer = fastIO()
+
+        # number deliemter
+        NUM_DELIM = "|num|"
+
+        ### write metadata
+        if not _buildMetaDataPer(moni_buffer):
+            # if we failed to do this via persistent, then we'll use the old
+            # style instead
+            _buildMetaDataList(moni_buffer)
 
         ### monikachr
         moni_chr = None
@@ -980,10 +1085,10 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR] mbase copy failed | {0}".format(
-                str(e)
+                repr(e)
             ))
             moni_buffer.close()
-            return None
+            return False
             
         finally:
             # always close moni_chr
@@ -993,41 +1098,109 @@ init 200 python in mas_dockstat:
         ### now we must do the streamlined write system to file
         moni_path = dockstat._trackPackage("monika")
         moni_fbuffer = None
+        moni_tbuffer = None
         moni_sum = None
         try:
-            # first, lets open up the moni file buffer
+
+            # First, lets iterate over the data to figure out how many lines
+            # we will need, as well as how large this thing will be
+            moni_buffer_iter = store.MASDockingStation._blockiter(
+                moni_buffer, 
+                blocksize
+            )
+            lines = 0
+            last_line_size = 0
+            for _line in moni_buffer_iter:
+                lines += 1
+                last_line_size = len(_line)
+
+            # check if adding the line data would go over the line size
+            line_str_size = len(str(lines) + NUM_DELIM)
+            if (last_line_size + line_str_size) > blocksize:
+                lines += 1
+
+            # fill a new buffer with the number of lines and reset it for
+            # blocksize iterating
+            moni_buffer_iter = store.MASDockingStation._blockiter(
+                moni_buffer, 
+                blocksize
+            )
+            moni_tbuffer = fastIO()
+            moni_tbuffer.write(str(lines) + NUM_DELIM)
+            for _line in moni_buffer_iter:
+                moni_tbuffer.write(_line)
+            moni_buffer.close()
+
+            # now we can prepare to write
             moni_fbuffer = open(moni_path, "wb")
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
+            def safe_encoder(data):
+                return dockstat.base64.b64encode(dockstat.safeRandom(data))
             encoder = dockstat.base64.b64encode
 
-            # calculate extra padding we need to fill out the first line
-            moni_buffer_data = moni_buffer.getvalue()
-            extra_padding = blocksize - len(moni_buffer_data)
-            moni_size = store.persistent._mas_dockstat_moni_size - extra_padding
-
-            # and write out the metadata / monika
-            # NOTE: we can do this because its under our 4MB block size
-            data = encoder(moni_buffer_data + os.urandom(extra_padding))
-            checklist.update(data)
-            moni_fbuffer.write(data)
-
-            # and now for the random data generation
-            # NOTE: this should represent number of bytes
-            moni_size_limit = moni_size - blocksize
-            curr_size = 0
-
-            while curr_size < moni_size_limit:
-                data = encoder(os.urandom(blocksize))
+            # now write this buffer out, keeping track of the last buffer
+            # size
+            moni_tbuffer.seek(0)
+            _line = moni_tbuffer.read(blocksize)
+            total_buffer_size = 0
+            while len(_line) == blocksize:
+                total_buffer_size += blocksize
+                data = encoder(_line)
                 checklist.update(data)
                 moni_fbuffer.write(data)
-                curr_size += blocksize
+                _line = moni_tbuffer.read(blocksize)
+            moni_tbuffer.close()
 
-            # we should have some leftovers
-            leftovers = moni_size - curr_size
-            if leftovers > 0:
-                data = encoder(os.urandom(leftovers))
+            # when we reach here, we either have no more lines or leftovers
+            last_buffer_size = len(_line)
+            total_buffer_size += last_buffer_size
+
+            # calculate extra padding for last line and the remaining buffer
+            # size we need to write out
+            moni_size_left = (
+                store.persistent._mas_dockstat_moni_size
+                - total_buffer_size
+            )
+            if moni_size_left > 0:
+                # we should do some padding and additional data writes
+
+                # what padding do we even have
+                if (moni_size_left + last_buffer_size) <= blocksize:
+                    extra_padding = moni_size_left
+                    moni_size_left = 0
+                else:
+                    extra_padding = blocksize - last_buffer_size
+                    moni_size_left -= extra_padding
+
+                # and write out the metadata / monika
+                data = encoder(_line + dockstat.safeRandom(extra_padding))
+                checklist.update(data)
+                moni_fbuffer.write(data)
+
+                # and now for the random data generation
+                # NOTE: this should represent number of bytes
+                moni_size_limit = moni_size_left - blocksize
+                curr_size = 0
+
+                while curr_size < moni_size_limit:
+                    data = safe_encoder(blocksize)
+                    checklist.update(data)
+                    moni_fbuffer.write(data)
+                    curr_size += blocksize
+
+                # we should have some leftovers
+                leftovers = moni_size_left - curr_size
+                if leftovers > 0:
+                    data = safe_encoder(leftovers)
+                    checklist.update(data)
+                    moni_fbuffer.write(data)
+
+            else:
+                # otherwise, we shoudl just write out the last line and 
+                # be done with it
+                data = encoder(_line)
                 checklist.update(data)
                 moni_fbuffer.write(data)
 
@@ -1036,7 +1209,7 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR] monibuffer write failed | {0}".format(
-                str(e)
+                repr(e)
             ))
 
             # attempt to delete existing file if its there
@@ -1052,12 +1225,16 @@ init 200 python in mas_dockstat:
             except:
                 pass
 
-            return None
+            return False
 
         finally:
             # always close the fbuffer
             if moni_fbuffer is not None:
                 moni_fbuffer.close()
+
+            # always close the temp buffer
+            if moni_tbuffer is not None:
+                moni_tbuffer.close()
 
             # we dont need this buffer after here
             moni_buffer.close()
@@ -1068,7 +1245,7 @@ init 200 python in mas_dockstat:
             # ALERT ALERT HOW DID WE FAIL
             mas_utils.writelog("[ERROR] monika not found.")
             mas_utils.trydel(moni_path)
-            return None
+            return False
 
         # we should have a file descriptor, lets attempt a pkg slip
         moni_slip = dockstat.createPackageSlip(moni_pkg, blocksize)
@@ -1076,7 +1253,7 @@ init 200 python in mas_dockstat:
             # ALERT ALERT WE FAILED AGAIN
             mas_utils.writelog("[ERROR] monika could not be validated.")
             mas_utils.trydel(moni_path)
-            return None
+            return False
 
         if moni_slip != moni_sum:
             # WOW SRS THIS IS BAD
@@ -1096,15 +1273,17 @@ init 200 python in mas_dockstat:
 
         RETURNS: tuple of the following format:
             [0]: MAS_PKG_* constants depending on the state of monika
-            [1]: string of important data, if we found a monika. Will be empty
-                if no monika or data found
+            [1]: either list of data or persistent object of data. Will be
+                None if no data or errors occured
         """
         END_DELIM = "|||"
+        PER_DELIM = "per|"
+        ret_code = 0
 
         status, first_line = dockstat.smartUnpack(
             "monika",
             store.persistent._mas_moni_chksum,
-            one_line=True,
+            lines=-1,
             bs=b64_blocksize
         )
 
@@ -1112,7 +1291,7 @@ init 200 python in mas_dockstat:
             # we had an error in reading, therefore we cant trust the data.
             # OR, we didnt find the package.
             # in either case, just say we didnt find monika
-            return (MAS_PKG_NF, "")
+            return (MAS_PKG_NF, None)
 
         # otherwise, we certainly found monika
         # lets parse monika's data
@@ -1121,20 +1300,44 @@ init 200 python in mas_dockstat:
         first_line.seek(0)
 
         # we only want the data portion that's likely to contain our stuff
-        real_data = first_line.read(dockstat.READ_SIZE)
+        # TODO: we do NOT have a system in place to handle persistents above
+        #   4 MB. we need to consider this when we do long term
+        real_data = first_line.read()
         first_line.close()
 
-        # and see if this does contain our stuff
-        real_data, sep, garbage = real_data.partition(END_DELIM)
+        # because the console may have shit, we should just attempt to parse
+        # the data as persistent first, and then as a backup, try non-persist.
+        per_data = parseMoniDataPer(real_data)
 
-        # and return results
-        if len(sep) == 0:
-            # no data found, assume a missing monika
-            return (MAS_PKG_NF, "")
+        if per_data is None:
+            # this isn't a persistent. Let's try backup strats
+
+            # and see if this does contain our stuff
+            real_data, sep, garbage = real_data.partition(END_DELIM)
+
+            # and return results
+            if len(sep) == 0:
+                # no data found, assume a missing monika
+                return (MAS_PKG_NF, None)
+
+            real_data = parseMoniData(real_data)
+            ret_code = MAS_PKG_DL
+
+        else:
+            real_data = per_data
+            ret_code = MAS_PKG_DP
+
+        if real_data is None:
+            # we failed to parse data. Please return an error
+            # in this case, we should assume monika was not found
+            return (MAS_PKG_NF, real_data)
 
         if (status & dockstat.PKG_C) > 0:
             # we found a different monika (or corrupted monika)
-            return (MAS_PKG_FO, real_data)
+            mas_utils.writelog(
+                "[!] I found a corrupt monika! {0}\n".format(status)
+            )
+            return (ret_code | MAS_PKG_FO, real_data)
 
         # otherwise, we have a matching monika!
         # lets log this monika
@@ -1145,7 +1348,7 @@ init 200 python in mas_dockstat:
 
         # and clear the checksum
         store.persistent._mas_moni_chksum = None
-        return (MAS_PKG_F, real_data)
+        return (ret_code | MAS_PKG_F, real_data)
 
 
     def parseMoniData(data_line):
@@ -1181,8 +1384,29 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR]: Moni Data parse fail: {0}\n".format(
-                str(e)
+                repr(e)
             ))
+            return None
+
+
+    def parseMoniDataPer(data_line):
+        """
+        Parses persitent data into a persitent object.
+
+        NOTE: all exceptions are loggeed
+
+        IN:
+            data_line - the data portion that may contain a persitent
+
+        RETURNS: a persistent object, or None if failure
+        """
+        try:
+            return cPickle.loads(str(data_line))
+
+        except Exception as e:
+            mas_utils.writelog(
+                "[ERROR]: persistent unpickle failed: {0}\n".format(repr(e))
+            )
             return None
 
 
@@ -1270,12 +1494,16 @@ init 200 python in mas_dockstat:
         """
         global _th_cond_generateMonika
 
-        _th_cond_generateMonika = threading.Condition(_th_lock_generateMonika)
+        if _th_cond_generateMonika is None:
+            # only start a thread if we can build a condition
+            _th_cond_generateMonika = threading.Condition(
+                _th_lock_generateMonika
+            )
 
-        moni_gen_thread = threading.Thread(
-            target=_th_generateMonika
-        )
-        moni_gen_thread.start()
+            moni_gen_thread = threading.Thread(
+                target=_th_generateMonika
+            )
+            moni_gen_thread.start()
 
 
     def _endGenerateMonika():
@@ -1338,12 +1566,15 @@ init 200 python in mas_dockstat:
         """
         global _th_cond_findMonika
 
-        _th_cond_findMonika = threading.Condition(_th_lock_findMonika)
+        if _th_cond_findMonika is None:
+            # only start a thread if condition doesnt exist
 
-        moni_find_thread = threading.Thread(
-            target=_th_findMonika
-        )
-        moni_find_thread.start()
+            _th_cond_findMonika = threading.Condition(_th_lock_findMonika)
+
+            moni_find_thread = threading.Thread(
+                target=_th_findMonika
+            )
+            moni_find_thread.start()
 
 
     def _endFindMonika():
@@ -1357,7 +1588,7 @@ init 200 python in mas_dockstat:
 
         if _th_cond_findMonika is None:
             # please dont do this
-            return ("","")
+            return (0, None)
 
         # acquire lock
         _th_cond_findMonika.acquire()
@@ -1388,7 +1619,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
-    $ can_moni_leave = moni_chksum is not None and moni_chksum != -1
+    $ can_moni_leave = moni_chksum and moni_chksum != -1
      
     if can_moni_leave:
         # file successfully made
@@ -1467,7 +1698,7 @@ label mas_dockstat_empty_desk_loop:
             # get result
             moni_status, mas_dockstat.retmoni_data = mas_dockstat._endFindMonika()
 
-            if moni_status == mas_dockstat.MAS_PKG_FO:
+            if (moni_status & mas_dockstat.MAS_PKG_FO) > 0:
                 # found a different monika, jump to the different monika
                 # greeting
                 #moni_found = True
@@ -1479,7 +1710,7 @@ label mas_dockstat_empty_desk_loop:
                 #TODO: for now, lets just continue this loop
                 moni_found = None
 
-            if moni_status == mas_dockstat.MAS_PKG_F:
+            elif (moni_status & mas_dockstat.MAS_PKG_F) > 0:
                 # found our monika, jump to the found monika greeting
                 moni_found = True
                 renpy.jump("mas_dockstat_found_monika")
@@ -1495,7 +1726,7 @@ define mas_dockstat.different_moni_flow = False
 # different monika found
 label mas_dockstat_different_monika:
     # ASSUMES:
-    #   moni_data - data line of the monika we read in. Would need parsing
+    # mas_dockstat.retmoni_data - should be the data portion of monika
 
     # NOTE: we also need to save current vars so we dont have issues
     $ mas_dockstat.previous_vars["m_name"] = persistent._mas_monika_nickname
@@ -1546,8 +1777,7 @@ label mas_dockstat_different_monika:
 
 # found our monika
 label mas_dockstat_found_monika:
-    # ASSUMES:
-    #   moni_data - data line of the monika we read in. Would need parsing
+
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
 
