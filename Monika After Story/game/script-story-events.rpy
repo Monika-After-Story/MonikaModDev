@@ -638,7 +638,7 @@ label mas_crashed_post:
 
 
 label mas_crashed_long_fluster:
-    $ mas_apology_reason = "the game crashing. It really was scary, but I'm just glad you came back to me and made things better."
+    $ mas_setApologyReason("the game crashing. It really was scary, but I'm just glad you came back to me and made things better.")
     m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black...{/cps}{nw}"
     m "{cps=*1.5}and then you d-{w=0.3}disappeared, so I was worried that s-{w=0.3}s-{w=0.3}something happened to you...{/cps}{nw}"
     m "{cps=*1.5}...and I was so s-{w=0.3}scared because I thought I broke everything again!{/cps}{nw}"
@@ -679,7 +679,7 @@ label mas_crashed_short:
 
 ### crash labels
 label mas_crashed_quip_takecare:
-    $ mas_apology_reason = "the game crashing. I understand it happens sometimes, but don't worry, I'm alright!"
+    $ mas_setApologyReason("the game crashing. I understand it happens sometimes, but don't worry, I'm alright!")
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4rksdlb "It's my home, after all..."

@@ -74,7 +74,7 @@ init -1 python in mas_affection:
     log.raw_write = True
 
     # LOG messages
-    # [current datetime]: monikatopic | magnitude | prev -> new 
+    # [current datetime]: monikatopic | magnitude | prev -> new
     _audit = "[{0}]: {1} | {2} | {3} -> {4}\n"
 
     # [current_datetime]: !FREEZE! | monikatopic | magnitude | prev -> new
@@ -100,13 +100,13 @@ init -1 python in mas_affection:
             piece_one = ldsv
 
         if frozen:
-            
+
             # decide what piece 5 is
             if bypass:
                 piece_five = _bypass_text
             else:
                 piece_five = _freeze_text
-                
+
 
             audit_text = _audit_f.format(
                 datetime.datetime.now(),
@@ -1151,9 +1151,8 @@ init 20 python:
             reason=""
         ):
 
-        global mas_apology_reason
-
-        mas_apology_reason = reason
+        #set apology flag
+        mas_setApologyReason(reason)
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
@@ -1189,6 +1188,19 @@ init 20 python:
             persistent._mas_affection["affection"] = amount
             # Updates the experience levels if necessary.
             mas_updateAffectionExp()
+
+    def mas_setApologyReason(reason):
+        """
+        Sets a reason for apologizing
+
+        IN:
+            reason - The reason for the apology
+                (required)
+
+        """
+        global mas_apology_reason
+
+        mas_apology_reason = reason
 
 
     # Used to check to see if affection level has reached the point where it should trigger an event while playing the game.

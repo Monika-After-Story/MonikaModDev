@@ -5570,7 +5570,7 @@ label monika_breakup:
             m 1wktsd "I refuse to believe you; you're all I have left!"
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
             m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
-            $ mas_apology_reason= ""
+            $ mas_setApologyReason("")
         else:
             m 2dsc "Are you...{w} really..."
             m "..."
@@ -5586,7 +5586,7 @@ label monika_breakup:
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
             m 1ekc "..." # TODO review
-            $ mas_apology_reason= ""
+            $ mas_setApologyReason("")
         else:
             m 1hua "Ehehe~"
 
@@ -5600,7 +5600,7 @@ label monika_breakup:
             m 1lksdld "That's not a joke, [player]!"
             m 1lksdlc "Don't say that again unless you really, truly mean it..."
             m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-            $ mas_apology_reason= ""
+            $ mas_setApologyReason("")
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."
@@ -6114,7 +6114,7 @@ label monika_playerapologizes:
         m 2tkd "What you did wasn't funny, [player]."
         m 2dkd "Please be more considerate about my feelings in the future."
     # reset the reason
-    $ mas_apology_reason = None
+    $ mas_setApologyReason(None)
     return
 
 init 5 python:
