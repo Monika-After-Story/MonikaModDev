@@ -1242,7 +1242,7 @@ label call_next_event:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
-        show monika 1 at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
@@ -1287,6 +1287,9 @@ label prompt_menu:
 
         repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
     #Top level menu
+    # NOTE: should we force this to a particualr exp considering that 
+    # monika now rotates
+    # NOTE: actually we could use boredom setup in here.
     show monika at t21
     #To make the menu line up right we have to build it up manually
     python:
@@ -1301,7 +1304,7 @@ label prompt_menu:
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
-        renpy.say(m, "What would you like to talk about?", interact=False)
+        renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
@@ -1327,7 +1330,7 @@ label prompt_menu:
     else: #nevermind
         $_return = None
 
-    show monika at t11
+    show monika idle at t11
     $ mas_DropShield_dlg()
     jump ch30_loop
 

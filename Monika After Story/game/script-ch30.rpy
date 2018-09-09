@@ -364,7 +364,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 show monika_day_room zorder MAS_BACKGROUND_Z
                 $ mas_calShowOverlay()
             if not hide_monika:
-                show monika 1 at t11 zorder MAS_MONIKA_Z
+                show monika idle at t11 zorder MAS_MONIKA_Z
                 with Dissolve(dissolve_time)
     else:
         if morning_flag or scene_change:
@@ -379,7 +379,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ mas_calShowOverlay()
                 #show monika_bg_highlight
             if not hide_monika:
-                show monika 1 at t11 zorder MAS_MONIKA_Z
+                show monika idle at t11 zorder MAS_MONIKA_Z
                 with Dissolve(dissolve_time)
 
     $scene_change = False
@@ -463,8 +463,11 @@ label pick_a_game:
             and not chess_disabled
         )
 
+        # decide the say dialogue
+        play_menu_dlg = store.mas_affection.play_quip()[1]
+
     menu:
-        "What game would you like to play?"
+        m "[play_menu_dlg]"
         "Pong" if persistent.game_unlocks['pong']:
             if not renpy.seen_label('game_pong'):
                 $grant_xp(xp.NEW_GAME)
@@ -486,9 +489,12 @@ label pick_a_game:
         #         $ grant_xp(xp.NEW_GAME)
         #     call mas_monikamovie from _call_monikamovie
         "Nevermind":
-            m "Alright. Maybe later?"
+            # NOTE: changing this to no dialogue so we dont have to edit this
+            # for affection either
+            pass
+#            m "Alright. Maybe later?"
 
-    show monika 1 at tinstant zorder MAS_MONIKA_Z
+    show monika idle at tinstant zorder MAS_MONIKA_Z
 
     $ mas_DropShield_dlg()
 
