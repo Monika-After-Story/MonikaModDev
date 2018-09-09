@@ -1297,6 +1297,7 @@ python early:
 #init -1 python:
     # new class to manage a list of quips
     class MASQuipList(object):
+        import random
         """
         Class that manages a list of quips. Quips have types which helps us
         when deciding how to execute quips. Also we have some properties that
@@ -1526,13 +1527,13 @@ python early:
             """
             if remove:
                 # if we need to remove, we should use randint instead
-                sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
+                sel_index = random.randint(0, len(self.__quiplist) - 1)
                 quip_type, quip_value = self.__quiplist.pop(sel_index)
 
             else:
                 # if we dont need to remove, we can just use renpy random
                 # choice
-                quip_type, quip_value = renpy.random.choice(self.__quiplist)
+                quip_type, quip_value = random.choice(self.__quiplist)
 
             # now do preocessing then send
             if quip_type == self.TYPE_GLITCH:
