@@ -783,6 +783,45 @@ init 15 python in mas_affection:
     _init_play_quips()
 
 
+    def _dict_quip(_quips):
+        """
+        Returns a quip based on the current affection using the given quip
+        dict
+
+        IN:
+            _quips - quip dict to pull from
+
+        RETURNS:
+            quip or empty string if failure
+        """
+        quipper = _quips.get(store.mas_curr_affection, None)
+        if quipper is not None:
+            return quipper.quip()
+
+        return ""
+
+
+    def talk_quip():
+        """
+        Returns a talk quip based on the current affection
+        """
+        quip = _dict_quip(talk_menu_quips)
+        if len(quip) > 0:
+            return quip
+        return "What would you like to talk about?"
+
+
+    def play_quip():
+        """
+        Returns a play quip based on the current affection
+        """
+        quip = _dict_quip(play_menu_quips)
+        if len(quip) > 0:
+            return quip
+        return "What game would you like to play?"
+        
+
+
 default persistent._mas_long_absence = False
 default persistent._mas_pctaieibe = None
 default persistent._mas_pctaneibe = None

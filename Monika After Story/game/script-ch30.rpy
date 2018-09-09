@@ -464,26 +464,10 @@ label pick_a_game:
         )
 
         # decide the say dialogue
-        if mas_isMoniBroken(lower=True):
-            menu_dlg = "..."
-
-        elif mas_isMoniDis():
-            menu_dlg = "...Sure."
-
-        elif mas_isMoniUpset():
-            menu_dlg = "Which game?"
-
-        elif mas_isMoniLove(higher=True):
-            menu_dlg = "Yay! Let's play together!"
-
-        elif mas_isMoniAff(higher=True):
-            menu_dlg = "What game would you like to play? <3"
-
-        else:
-            menu_dlg = "What game would you like to play?"
+        play_menu_dlg = store.mas_affection.play_quip()[1]
 
     menu:
-        m "[menu_dlg]"
+        m "[play_menu_dlg]"
         "Pong" if persistent.game_unlocks['pong']:
             if not renpy.seen_label('game_pong'):
                 $grant_xp(xp.NEW_GAME)

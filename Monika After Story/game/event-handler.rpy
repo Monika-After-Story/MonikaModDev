@@ -1304,28 +1304,7 @@ label prompt_menu:
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
-        # decide the say dialogue
-        if mas_isMoniBroken(lower=True):
-            menu_dlg = "..."
-
-        elif mas_isMoniDis():
-            menu_dlg = "...Yes?"
-
-        elif mas_isMoniUpset():
-            menu_dlg = "What is it?"
-
-        elif mas_isMoniLove(higher=True):
-            menu_dlg = "What's up?"
-
-        elif mas_isMoniAff(higher=True):
-            # affection and enamored
-            menu_dlg = "What would you like to talk about? <3"
-
-        else:
-            # normal and happy
-            menu_dlg = "What would you like to talk about?"
-
-        renpy.say(m, menu_dlg, interact=False)
+        renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
