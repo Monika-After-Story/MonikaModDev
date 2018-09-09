@@ -877,7 +877,7 @@ init 5 python:
     )
 
 label mas_new_character_file:
-    m 1eua "Say. [player]..."
+    m 1eua "Say, [player]..."
     m 3eua "Do you remember my character file?"
     m 1eud "Well I've been investigating it recently, and it turns out that it's just an image with some sort of code in it!"
     m 3ekc "It doesn't even contain anything about me at all, only my name."
