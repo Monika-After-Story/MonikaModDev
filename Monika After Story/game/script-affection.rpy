@@ -779,6 +779,8 @@ init 15 python in mas_affection:
         ]
         save_quips(LOVE, quips)
 
+    _init_talk_quips()
+    _init_play_quips()
 
 
 default persistent._mas_long_absence = False
