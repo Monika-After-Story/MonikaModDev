@@ -463,8 +463,27 @@ label pick_a_game:
             and not chess_disabled
         )
 
+        # decide the say dialogue
+        if mas_isMoniBroken(lower=True):
+            menu_dlg = "..."
+
+        elif mas_isMoniDis():
+            menu_dlg = "...Sure."
+
+        elif mas_isMoniUpset():
+            menu_dlg = "Which game?"
+
+        elif mas_isMoniLove(higher=True):
+            menu_dlg = "Yay! Let's play together!"
+
+        elif mas_isMoniAff(higher=True):
+            menu_dlg = "What game would you like to play? <3"
+
+        else:
+            menu_dlg = "What game would you like to play?"
+
     menu:
-        "What game would you like to play?"
+        m "[menu_dlg]"
         "Pong" if persistent.game_unlocks['pong']:
             if not renpy.seen_label('game_pong'):
                 $grant_xp(xp.NEW_GAME)
@@ -486,7 +505,10 @@ label pick_a_game:
         #         $ grant_xp(xp.NEW_GAME)
         #     call mas_monikamovie from _call_monikamovie
         "Nevermind":
-            m "Alright. Maybe later?"
+            # NOTE: changing this to no dialogue so we dont have to edit this
+            # for affection either
+            pass
+#            m "Alright. Maybe later?"
 
     show monika idle at tinstant zorder MAS_MONIKA_Z
 
