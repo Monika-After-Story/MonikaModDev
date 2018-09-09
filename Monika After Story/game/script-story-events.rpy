@@ -42,8 +42,9 @@ label gender:
             m "So I'll treat you however you want to be treated."
             m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    $evhand.event_database["gender_redo"].unlocked = True
-    $evhand.event_database["gender_redo"].pool = True
+    $ evhand.event_database["gender_redo"].unlocked = True
+    $ evhand.event_database["gender_redo"].pool = True
+    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen 
 
     return
 
@@ -876,7 +877,7 @@ init 5 python:
     )
 
 label mas_new_character_file:
-    m 1eua "Say. [player]..."
+    m 1eua "Say, [player]..."
     m 3eua "Do you remember my character file?"
     m 1eud "Well I've been investigating it recently, and it turns out that it's just an image with some sort of code in it!"
     m 3ekc "It doesn't even contain anything about me at all, only my name."

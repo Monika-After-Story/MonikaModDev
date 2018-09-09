@@ -279,6 +279,9 @@ label v0_8_6(version="v0_8_6"):
         if genderredo_ev and renpy.seen_label("gender"):
             genderredo_ev.unlocked = True
             genderredo_ev.pool = True
+            # this should be seen'd as it doesnt make sense to have it in
+            # unseen
+            persistent._seen_ever["gender_redo"] = True
 
         # give the new character file event a conditoinal to push
         new_char_ev = evhand.event_database.get("mas_new_character_file", None)
