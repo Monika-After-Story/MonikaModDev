@@ -280,6 +280,12 @@ label v0_8_6(version="v0_8_6"):
             genderredo_ev.unlocked = True
             genderredo_ev.pool = True
 
+        # give the new character file event a conditoinal to push
+        new_char_ev = evhand.event_database.get("mas_new_character_file", None)
+        if new_char_ev and not renpy.seen_label("mas_new_character_file"):
+            new_char_ev.conditional = "True"
+            new_char_ev.action = EV_ACT_PUSH
+
     return
 
 # 0.8.4

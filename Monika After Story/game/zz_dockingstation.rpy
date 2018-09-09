@@ -259,6 +259,16 @@ init -45 python:
                 contents.close()
 
 
+        def safeRandom(self, amount):
+            """
+            Generates a random amount of unicode-safe bytes.
+
+            IN:
+                amount - number of bytes to generate
+            """
+            return self.base64.b64encode(os.urandom(amount))[:amount]
+
+
         def sendPackage(self, 
                 package_name, 
                 package, 
@@ -415,7 +425,7 @@ init -45 python:
                     package_name, 
                     pkg_slip, 
                     contents=None, 
-                    one_line=False, # TODO: change this to number of lines
+                    lines=0,
                     b64=True,
                     bs=None
             ):
@@ -435,9 +445,11 @@ init -45 python:
                     If None, we save contents to a StringIO object and return
                     that
                     (Default: None)
-                one_line - True means we only retrieve a single line from the
-                    package
-                    (Default: False)
+                lines - number of lines to retrieve when reading data.
+                    If less than 0, then we scan the file itself to tell us
+                    how many lines to read.
+                    If "all", then we read ALL LINES
+                    (Default: 0)
                 b64 - True means the package is encoded in base64
                     (Default: True)
                 bs - blocksize to use. By default, we use B64_READ_SIZE
@@ -449,6 +461,8 @@ init -45 python:
                     If contents is not None, this is the same reference as
                     contents.
             """
+            NUM_DELIM = "|num|"
+
             # First, lets try and get the package
             package = self.getPackage(package_name)
 
@@ -474,28 +488,66 @@ init -45 python:
             checklist = self.hashlib.sha256()
 
             # and attempt to decode package
-            keep_saving = True
+            if lines == "all":
+                # nothing we read should be 200 million lines of 4MB
+                lines = 20000000
+
             try:
                 # iterator for looping
                 _box = MASDockingStation._blockiter(package, bs)
 
-                # and now we look. However we only save what is asked of us
+                # no lines means we need to look for them instead
+                if lines < 0:
+                    first_item = next(_box, None)
+
+                    if first_item is None:
+                        raise Exception("EMPTY PACKAGE")
+
+                    checklist.update(first_item)
+                    first_unpacked = self.base64.b64decode(first_item)
+
+                    # parse the line for the first NUM_DELIM
+                    raw_num, sep, remain = first_unpacked.partition(NUM_DELIM)
+                    if len(sep) == 0:
+                        raise Exception(
+                            "did not find sep. size of first {0}".format(
+                                len(raw_num)
+                            )
+                        )
+
+                    num = mas_utils.tryparseint(raw_num, -1)
+
+                    if num < 0:
+                        # this is a problem. Raise an exception
+                        raise Exception(
+                            "did not find lines. found {0}".format(raw_num)
+                        )
+
+                    # otherwise, set lines to num
+                    lines = num
+
+                    if lines > 0:
+                        # do we save the first line?
+                        _contents.write(remain)
+                        lines -= 1
+
+                # and now to look at the rest.
+                # only save what we need though
                 for packed_item in _box:
+
                     checklist.update(packed_item)
 
-                    if keep_saving:
+                    if lines > 0:
                         # writing out contents to buffer
                         _contents.write(self.base64.b64decode(packed_item))
+                        lines -= 1
 
-                        if one_line:
-                            # stop saving contents if we only want 1 line
-                            keep_saving = False
 
             except Exception as e:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_READ.format(package_name),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
 
                 if contents is None:
@@ -1012,6 +1064,9 @@ init 200 python in mas_dockstat:
         # inital buffer
         moni_buffer = fastIO()
 
+        # number deliemter
+        NUM_DELIM = "|num|"
+
         ### write metadata
         if not _buildMetaDataPer(moni_buffer):
             # if we failed to do this via persistent, then we'll use the old
@@ -1030,10 +1085,10 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR] mbase copy failed | {0}".format(
-                str(e)
+                repr(e)
             ))
             moni_buffer.close()
-            return None
+            return False
             
         finally:
             # always close moni_chr
@@ -1043,45 +1098,109 @@ init 200 python in mas_dockstat:
         ### now we must do the streamlined write system to file
         moni_path = dockstat._trackPackage("monika")
         moni_fbuffer = None
+        moni_tbuffer = None
         moni_sum = None
         try:
-            # first, lets open up the moni file buffer
+
+            # First, lets iterate over the data to figure out how many lines
+            # we will need, as well as how large this thing will be
+            moni_buffer_iter = store.MASDockingStation._blockiter(
+                moni_buffer, 
+                blocksize
+            )
+            lines = 0
+            last_line_size = 0
+            for _line in moni_buffer_iter:
+                lines += 1
+                last_line_size = len(_line)
+
+            # check if adding the line data would go over the line size
+            line_str_size = len(str(lines) + NUM_DELIM)
+            if (last_line_size + line_str_size) > blocksize:
+                lines += 1
+
+            # fill a new buffer with the number of lines and reset it for
+            # blocksize iterating
+            moni_buffer_iter = store.MASDockingStation._blockiter(
+                moni_buffer, 
+                blocksize
+            )
+            moni_tbuffer = fastIO()
+            moni_tbuffer.write(str(lines) + NUM_DELIM)
+            for _line in moni_buffer_iter:
+                moni_tbuffer.write(_line)
+            moni_buffer.close()
+
+            # now we can prepare to write
             moni_fbuffer = open(moni_path, "wb")
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
+            def safe_encoder(data):
+                return dockstat.base64.b64encode(dockstat.safeRandom(data))
             encoder = dockstat.base64.b64encode
 
-            # calculate extra padding we need to fill out the first line
-            # TODO: need to handle the case where the buffer gets larger than
-            #   blocksize. 
-            #   NOTE: this isn't urgent, we can probably take another year or
-            #   so to do this
-            moni_buffer_data = moni_buffer.getvalue()
-            extra_padding = blocksize - len(moni_buffer_data)
-            moni_size = store.persistent._mas_dockstat_moni_size - extra_padding
-
-            # and write out the metadata / monika
-            # NOTE: we can do this because its under our 4MB block size
-            data = encoder(moni_buffer_data + os.urandom(extra_padding))
-            checklist.update(data)
-            moni_fbuffer.write(data)
-
-            # and now for the random data generation
-            # NOTE: this should represent number of bytes
-            moni_size_limit = moni_size - blocksize
-            curr_size = 0
-
-            while curr_size < moni_size_limit:
-                data = encoder(os.urandom(blocksize))
+            # now write this buffer out, keeping track of the last buffer
+            # size
+            moni_tbuffer.seek(0)
+            _line = moni_tbuffer.read(blocksize)
+            total_buffer_size = 0
+            while len(_line) == blocksize:
+                total_buffer_size += blocksize
+                data = encoder(_line)
                 checklist.update(data)
                 moni_fbuffer.write(data)
-                curr_size += blocksize
+                _line = moni_tbuffer.read(blocksize)
+            moni_tbuffer.close()
 
-            # we should have some leftovers
-            leftovers = moni_size - curr_size
-            if leftovers > 0:
-                data = encoder(os.urandom(leftovers))
+            # when we reach here, we either have no more lines or leftovers
+            last_buffer_size = len(_line)
+            total_buffer_size += last_buffer_size
+
+            # calculate extra padding for last line and the remaining buffer
+            # size we need to write out
+            moni_size_left = (
+                store.persistent._mas_dockstat_moni_size
+                - total_buffer_size
+            )
+            if moni_size_left > 0:
+                # we should do some padding and additional data writes
+
+                # what padding do we even have
+                if (moni_size_left + last_buffer_size) <= blocksize:
+                    extra_padding = moni_size_left
+                    moni_size_left = 0
+                else:
+                    extra_padding = blocksize - last_buffer_size
+                    moni_size_left -= extra_padding
+
+                # and write out the metadata / monika
+                data = encoder(_line + dockstat.safeRandom(extra_padding))
+                checklist.update(data)
+                moni_fbuffer.write(data)
+
+                # and now for the random data generation
+                # NOTE: this should represent number of bytes
+                moni_size_limit = moni_size_left - blocksize
+                curr_size = 0
+
+                while curr_size < moni_size_limit:
+                    data = safe_encoder(blocksize)
+                    checklist.update(data)
+                    moni_fbuffer.write(data)
+                    curr_size += blocksize
+
+                # we should have some leftovers
+                leftovers = moni_size_left - curr_size
+                if leftovers > 0:
+                    data = safe_encoder(leftovers)
+                    checklist.update(data)
+                    moni_fbuffer.write(data)
+
+            else:
+                # otherwise, we shoudl just write out the last line and 
+                # be done with it
+                data = encoder(_line)
                 checklist.update(data)
                 moni_fbuffer.write(data)
 
@@ -1090,7 +1209,7 @@ init 200 python in mas_dockstat:
 
         except Exception as e:
             mas_utils.writelog("[ERROR] monibuffer write failed | {0}".format(
-                str(e)
+                repr(e)
             ))
 
             # attempt to delete existing file if its there
@@ -1106,12 +1225,16 @@ init 200 python in mas_dockstat:
             except:
                 pass
 
-            return None
+            return False
 
         finally:
             # always close the fbuffer
             if moni_fbuffer is not None:
                 moni_fbuffer.close()
+
+            # always close the temp buffer
+            if moni_tbuffer is not None:
+                moni_tbuffer.close()
 
             # we dont need this buffer after here
             moni_buffer.close()
@@ -1122,7 +1245,7 @@ init 200 python in mas_dockstat:
             # ALERT ALERT HOW DID WE FAIL
             mas_utils.writelog("[ERROR] monika not found.")
             mas_utils.trydel(moni_path)
-            return None
+            return False
 
         # we should have a file descriptor, lets attempt a pkg slip
         moni_slip = dockstat.createPackageSlip(moni_pkg, blocksize)
@@ -1130,7 +1253,7 @@ init 200 python in mas_dockstat:
             # ALERT ALERT WE FAILED AGAIN
             mas_utils.writelog("[ERROR] monika could not be validated.")
             mas_utils.trydel(moni_path)
-            return None
+            return False
 
         if moni_slip != moni_sum:
             # WOW SRS THIS IS BAD
@@ -1160,7 +1283,7 @@ init 200 python in mas_dockstat:
         status, first_line = dockstat.smartUnpack(
             "monika",
             store.persistent._mas_moni_chksum,
-            one_line=True,
+            lines=-1,
             bs=b64_blocksize
         )
 
@@ -1278,7 +1401,7 @@ init 200 python in mas_dockstat:
         RETURNS: a persistent object, or None if failure
         """
         try:
-            return cPickle.loads(data_line)
+            return cPickle.loads(str(data_line))
 
         except Exception as e:
             mas_utils.writelog(
@@ -1371,12 +1494,16 @@ init 200 python in mas_dockstat:
         """
         global _th_cond_generateMonika
 
-        _th_cond_generateMonika = threading.Condition(_th_lock_generateMonika)
+        if _th_cond_generateMonika is None:
+            # only start a thread if we can build a condition
+            _th_cond_generateMonika = threading.Condition(
+                _th_lock_generateMonika
+            )
 
-        moni_gen_thread = threading.Thread(
-            target=_th_generateMonika
-        )
-        moni_gen_thread.start()
+            moni_gen_thread = threading.Thread(
+                target=_th_generateMonika
+            )
+            moni_gen_thread.start()
 
 
     def _endGenerateMonika():
@@ -1439,12 +1566,15 @@ init 200 python in mas_dockstat:
         """
         global _th_cond_findMonika
 
-        _th_cond_findMonika = threading.Condition(_th_lock_findMonika)
+        if _th_cond_findMonika is None:
+            # only start a thread if condition doesnt exist
 
-        moni_find_thread = threading.Thread(
-            target=_th_findMonika
-        )
-        moni_find_thread.start()
+            _th_cond_findMonika = threading.Condition(_th_lock_findMonika)
+
+            moni_find_thread = threading.Thread(
+                target=_th_findMonika
+            )
+            moni_find_thread.start()
 
 
     def _endFindMonika():
@@ -1489,7 +1619,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
-    $ can_moni_leave = moni_chksum is not None and moni_chksum != -1
+    $ can_moni_leave = moni_chksum and moni_chksum != -1
      
     if can_moni_leave:
         # file successfully made

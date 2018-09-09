@@ -1752,7 +1752,17 @@ label greeting_returned_home:
         m 2eua "Well, it felt really great!"
         m 5eub "Let's do this again soon, okay?"
         if persistent._mas_monika_returned_home is None:
-            $ mas_gainAffection(5, bypass=True)
+            $ hours_out = int(time_out.seconds / 3600)
+
+            # you gain 1 per hour, max 5, min 1
+            if hours_out > 5:
+                $ aff_gain = 5
+            elif hours_out == 0:
+                $ aff_gain = 1
+            else:
+                $ aff_gain = hours_out
+        
+            $ mas_gainAffection(aff_gain, bypass=True)
             $ persistent._mas_monika_returned_home = datetime.datetime.now()
 
         $ grant_xp(xp.NEW_GAME)
