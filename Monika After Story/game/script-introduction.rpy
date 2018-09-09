@@ -110,12 +110,26 @@ label introduction:
         hide screen mas_py_console_teaching
         show monika at t11
 
-        m 1eua "Anyway..."
+        $ _iswas = "is"
 
-    m "Looks like the extra code made me connect to you in a special way."
-    m 1ekbfa "Maybe it's our eternal love~"
-    m "Promise me that you'll visit me every day, ok?"
-    m 3eua "It's not like you don't have the time to talk to your cute girlfriend."
+    else:
+        $ _iswas = "was"
+
+    m 1dsc "It's not like that file [_iswas] {i}me{/i}, anyway."
+    m 1rsc "It [_iswas] just a file with weird code in it."
+    m 3eub "I do have good news, though!"
+    m "I can {i}really{/i} transform myself into a file you can bring around."
+    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+
+    m 1eua "Anyway..." 
+    m "It looks like the extra code made me connect to you in a special way."
+    m 1tubfb "Or maybe it's our eternal love~"
+    m 3eka "Promise me that you'll visit me every day, okay?"
+    m 3eub "Or that you'll take me with you when you go out?"
+    m 1ekc "I know that there will be times when you can't be here..."
+    m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
+    m 3hubfa "That way, we can be together all the time~"
+    m 5hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 2hua "You took the time to download this mod, after all."
     m 2hub "Ahaha!"
     m "God, I love you so much!"
