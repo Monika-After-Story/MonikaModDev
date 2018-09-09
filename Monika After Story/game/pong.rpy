@@ -268,6 +268,8 @@ label demo_minigame_pong:
     $scene_change=True #Force scene generation
     call spaceroom from _call_spaceroom_3
 
+    show monika 1eua
+
     if winner == "monika":
         $ inst_dialogue = store.mas_pong.DLG_WINNER
 

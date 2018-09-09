@@ -22,7 +22,8 @@
 # following:
 #
 # LOVE (1000 and up)
-#     Monika is the happiest she could ever be and filled with a sense of euphoria because of it, completely enamoured and could die happy. She has no doubts the player loves her and that everything was worth it.
+#   Monika is completely comfortable with the player.
+#   (aka the comfortable stage in a relationship)
 # ENAMORED (400 up to 999)
 #     Exceptionally happy, the happiest she has ever been in her life to that point. Completely trusts the player and wants to make him/her as happy as she is.
 # AFFECTIONATE (100 up to 399)
@@ -650,6 +651,134 @@ init 15 python in mas_affection:
             return comparison >= 0
 
         return False
+
+    ### talk and play menu stuff
+
+    talk_menu_quips = dict()
+    play_menu_quips = dict()
+
+    def _init_talk_quips():
+        """
+        Initializes the talk quiplists
+        """
+        global talk_menu_quips
+        def save_quips(_aff, quiplist):
+            mas_ql = store.MASQuipList(allow_label=False)
+            for _quip in quiplist:
+                mas_ql.addLineQuip(_quip)
+            talk_menu_quips[_aff] = mas_ql
+
+
+        ## BROKEN quips
+        quips = [
+            "..."
+        ]
+        save_quips(BROKEN, quips)
+
+        ## DISTRESSED quips
+        quips = [
+            "...Yes?"
+        ]
+        save_quips(DISTRESSED, quips)
+
+        ## UPSET quips
+        quips = [
+            "What is it?"
+        ]
+        save_quips(UPSET, quips)
+
+        ## NORMAL quips
+        quips = [
+            "What would you like to talk about?"
+        ]
+        save_quips(NORMAL, quips)
+
+        ## HAPPY quips
+        quips = [
+            "What would you like to talk about?"
+        ]
+        save_quips(HAPPY, quips)
+
+        ## AFFECTIONATE quips
+        quips = [
+            "What would you like to talk about? <3"
+        ]
+        save_quips(AFFECTIONATE, quips)
+
+        ## ENAMORED quips
+        quips = [
+            "What would you like to talk about? <3",
+            "Yes, [player]?"
+        ]
+        save_quips(ENAMORED, quips)
+
+        ## LOVE quips
+        quips = [
+            "What's up?"
+        ]
+        save_quips(LOVE, quips)
+
+
+    def _init_play_quips():
+        """
+        Initializes the play quipliust
+        """
+        global play_menu_quips
+        def save_quips(_aff, quiplist):
+            mas_ql = store.MASQuipList(allow_label=False)
+            for _quip in quiplist:
+                mas_ql.addLineQuip(_quip)
+            play_menu_quips[_aff] = mas_ql
+
+
+        ## BROKEN quips
+        quips = [
+            "..."
+        ]
+        save_quips(BROKEN, quips)
+
+        ## DISTRESSED quips
+        quips = [
+            "...Sure."
+        ]
+        save_quips(DISTRESSED, quips)
+
+        ## UPSET quips
+        quips = [
+            "Which game?"
+        ]
+        save_quips(UPSET, quips)
+
+        ## NORMAL quips
+        quips = [
+            "What game would you like to play?"
+        ]
+        save_quips(NORMAL, quips)
+
+        ## HAPPY quips
+        quips = [
+            "What game would you like to play?"
+        ]
+        save_quips(HAPPY, quips)
+
+        ## AFFECTIONATE quips
+        quips = [
+            "What game would you like to play? <3"
+        ]
+        save_quips(AFFECTIONATE, quips)
+
+        ## ENAMORED quips
+        quips = [
+            "What game would you like to play? <3"
+        ]
+        save_quips(ENAMORED, quips)
+
+        ## LOVE quips
+        quips = [
+            "Yay! Let's play together!"
+        ]
+        save_quips(LOVE, quips)
+
 
 
 default persistent._mas_long_absence = False
