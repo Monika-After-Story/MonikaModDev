@@ -23,7 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "0.8.5-unstable.2018.09.08.57"
+define config.version = "0.8.6-unstable.2018.09.09.58"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
