@@ -1778,13 +1778,12 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_chess_dlg_actions = dict()
         renpy.game.persistent._mas_chess_timed_disable = None
         renpy.game.persistent._mas_chess_3_edit_sorry = False
-        renpy.game.persistent._mas_chess_mangle_all = False
 
         # greetings
         renpy.game.persistent._mas_you_chr = False
         renpy.game.persistent.opendoor_opencount = 0
         renpy.game.persistent.opendoor_knockyes = False
-        persistent._mas_greeting_type = None
+        renpy.game.persistent._mas_greeting_type = None
 
         # hangman
         renpy.game.persistent._mas_hangman_playername = False
@@ -1794,7 +1793,7 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_piano_keymaps = dict()
 
         # affection
-        persistent._mas_affection["affection"] = 0
+        renpy.game.persistent._mas_affection["affection"] = 0
 
 
 init -999 python:
