@@ -653,6 +653,11 @@ init 15 python in mas_affection:
         return False
 
     ### talk and play menu stuff
+    # [AFF015]
+    #
+    # initial contributions by:
+    #   @jmwall24
+    #   @multimokia
 
     talk_menu_quips = dict()
     play_menu_quips = dict()
@@ -677,13 +682,28 @@ init 15 python in mas_affection:
 
         ## DISTRESSED quips
         quips = [
-            "...Yes?"
+            "...Yes?",
+            "...Oh?",
+            "...Huh?",
+            "...Hm?",
+            "We can try talking, I guess.",
+            "I guess we can talk.",
+            "Oh...you want to talk?",
+            "If you want to talk, go ahead.",
+            "We can talk if you really want to.",
+            "Are you sure you want to talk to me?",
+            "You actually want to talk to me?"
         ]
         save_quips(DISTRESSED, quips)
 
         ## UPSET quips
         quips = [
-            "What is it?"
+            "What?",
+            "What do you want?",
+            "What now?",
+            "What is it?",
+            "Fine...we can talk.",
+            "Just...whatever, go ahead."
         ]
         save_quips(UPSET, quips)
 
@@ -701,20 +721,39 @@ init 15 python in mas_affection:
 
         ## AFFECTIONATE quips
         quips = [
-            "What would you like to talk about? <3"
+            "What would you like to talk about? <3",
+            "What would you like to talk about, [player]?",
+            "Yes, [player]?",
+            "What's on your mind, [player]?",
+            "What would you like to talk about, [player]?"
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
             "What would you like to talk about? <3",
-            "Yes, [player]?"
+            "What would you like to talk about, honey?",
+            "Yes, sweetheart?",
+            "Yes, honey?",
+            "Yes, dear?",
+            "What's on your mind, darling?",
+            "What would you like to talk about, sweetie?",
+            "What would you like to talk about, [player]?",
+            "Yes, [player]?",
+            "What's on your mind, [player]?",
+            "What would you like to talk about, [player]?"
         ]
         save_quips(ENAMORED, quips)
 
         ## LOVE quips
         quips = [
-            "What's up?"
+            "Hey, what's up?",
+            "What's on your mind?",
+            "Anything on your mind?",
+            "What's up, [player]?",
+            "What's up?",
+            "Anything you'd like to talk about?",
+            "We can talk about anything you like, [player]."
         ]
         save_quips(LOVE, quips)
 
@@ -739,43 +778,61 @@ init 15 python in mas_affection:
 
         ## DISTRESSED quips
         quips = [
-            "...Sure."
+            "...Sure.",
+            "...Fine.",
+            "I guess we can play a game.",
+            "I guess, if you really want to.",
+            "I suppose a game would be fine."
         ]
         save_quips(DISTRESSED, quips)
 
         ## UPSET quips
         quips = [
-            "Which game?"
+            "...Which game?",
+            "Okay...whatever, choose a game.",
+            "Fine, pick a game."
         ]
         save_quips(UPSET, quips)
 
         ## NORMAL quips
         quips = [
-            "What game would you like to play?"
+            "What would you like to play?",
+            "What did you have in mind?",
+            "Anything specific you'd like to play?"
         ]
         save_quips(NORMAL, quips)
 
         ## HAPPY quips
         quips = [
-            "What game would you like to play?"
+            "What would you like to play?",
+            "What did you have in mind?",
+            "Anything specific you'd like to play?"
         ]
         save_quips(HAPPY, quips)
 
         ## AFFECTIONATE quips
         quips = [
-            "What game would you like to play? <3"
+            "What would you like to play? <3",
+            "Choose anything you like, [player].",
+            "Pick anything you like, [player]."
         ]
         save_quips(AFFECTIONATE, quips)
 
         ## ENAMORED quips
         quips = [
-            "What game would you like to play? <3"
+            "What would you like to play? <3",
+            "Choose anything you like, [player].",
+            "Pick anything you like, [player].",
+            "Choose anything you like, honey.",
+            "Pick anything you like, sweetheart."
         ]
         save_quips(ENAMORED, quips)
 
         ## LOVE quips
         quips = [
-            "Yay! Let's play together!"
+            "Yay! Let's play together!",
+            "I'd love to play something with you!",
+            "I'd love to play with you!"
         ]
         save_quips(LOVE, quips)
 
@@ -818,7 +875,7 @@ init 15 python in mas_affection:
         quip = _dict_quip(play_menu_quips)
         if len(quip) > 0:
             return quip
-        return "What game would you like to play?"
+        return "What would you like to play?"
         
 
 
