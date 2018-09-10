@@ -271,7 +271,7 @@ label mas_piano_hb_fail:
             m 1dsd "Well, if you wanted to play this on my birthday..."
             m 3tsd "You should have practiced sooner."
             return
-        m 1lksdla "I appreciate the thought player."
+        m 1lksdla "I appreciate the thought [player]."
         m 3eka "Even if you can't get it by the end of the day, I'm sure you'll do better next year."
         return
     m 1lksdla "..."
@@ -297,8 +297,8 @@ label mas_piano_hb_fc:
 
 label mas_piano_hb_prac:
     if mas_isMonikaBirthday():
-        m "Thanks for trying to play this one on my birthday!"
-        m "I appreciate your efforts!"
+        m 1eua "Thanks for trying to play this one on my birthday!"
+        m 1hub "I appreciate your effort!"
         return
     m 1eua "You're practing the Birthday Song?"
     m "I know you can do it, [player]!"
