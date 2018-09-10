@@ -2714,6 +2714,8 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
+    def mas_isMonikaBirthday():
+        return datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22)
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
