@@ -7167,6 +7167,7 @@ label monika_grad_speech_ignored_lock:
 label monika_grad_speech:  
 
     # clear selected track
+    stop music fadeout 1.0
     $ songs.current_track = songs.FP_NO_SONG
     $ songs.selected_track = songs.FP_NO_SONG
     #play some grad music
