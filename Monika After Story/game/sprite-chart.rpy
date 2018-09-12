@@ -3626,6 +3626,20 @@ image monika 1wubfsdld = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1rusdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
 image monika 1ektda = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6771,6 +6785,19 @@ image monika 3tubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3tsd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="small",
+    head="r",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3subfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9621,28 +9648,36 @@ image monika 6ATL_lookleftright:
 
 # Below 0 to upset affection
 image monika ATL_0_to_upset:
-    # select image
-    block:
-        choice 0.95:
-            "monika 1esc"
-        choice 0.05:
-            "monika 5tsc"
 
-    # select wait time
+    # 1 time this part
+    "monika 1esc"
+    5.0
+
+    # repeat this part
     block:
-        choice:
-            10.0
-        choice:
-            12.0
-        choice:
-            14.0
-        choice:
-            16.0
-        choice:
-            18.0
-        choice:
-            20.0
-    repeat
+        # select image
+        block:
+            choice 0.95:
+                "monika 1esc"
+            choice 0.05:
+                "monika 5tsc"
+
+        # select wait time
+        block:
+            choice:
+                10.0
+            choice:
+                12.0
+            choice:
+                14.0
+            choice:
+                16.0
+            choice:
+                18.0
+            choice:
+                20.0
+
+        repeat
 
 # affectionate
 image monika ATL_affectionate:
@@ -9685,90 +9720,102 @@ image monika ATL_affectionate:
 # enamored
 image monika ATL_enamored:
 
-    # select image
-    block:
-        choice 0.02:
-            "monika 1eua"
-            1.0
-            choice:
-                "monika 1sua"
-                4.0
-            choice:
-                "monika 1kua"
-                1.5
-            "monika 1eua"
+    # 1 time this part
+    "monika 1eua"
+    5.0
 
-        choice 0.98:
-            choice 0.765306:
+    # repeat
+    block:
+        # select image
+        block:
+            choice 0.02:
                 "monika 1eua"
-            choice 0.112245:
-                "monika 5esu"
-            choice 0.061224:
-                "monika 5tsu"
-            choice 0.061224:
-                "monika 1huu"
+                1.0
+                choice:
+                    "monika 1sua"
+                    4.0
+                choice:
+                    "monika 1kua"
+                    1.5
+                "monika 1eua"
 
-    # select wait time
-    block:
-        choice:
-            10.0
-        choice:
-            12.0
-        choice:
-            14.0
-        choice:
-            16.0
-        choice:
-            18.0
-        choice:
-            20.0
+            choice 0.98:
+                choice 0.765306:
+                    "monika 1eua"
+                choice 0.112245:
+                    "monika 5esu"
+                choice 0.061224:
+                    "monika 5tsu"
+                choice 0.061224:
+                    "monika 1huu"
 
-    repeat
+        # select wait time
+        block:
+            choice:
+                10.0
+            choice:
+                12.0
+            choice:
+                14.0
+            choice:
+                16.0
+            choice:
+                18.0
+            choice:
+                20.0
+
+        repeat
 
 # love
 image monika ATL_love:
-    
-    # select image
-    block:
-        choice 0.02:
-            "monika 1eua"
-            1.0
-            choice:
-                "monika 1sua"
-                4.0
-            choice:
-                "monika 1kua"
-                1.5
-            "monika 1eua"
 
-        choice 0.98:
-            choice 0.510104:
+    # 1 time this parrt
+    "monika 1eua"
+    5.0
+
+    # repeat
+    block:
+        # select image
+        block:
+            choice 0.02:
                 "monika 1eua"
-            choice 0.255102:
-                "monika 5esu"
-            choice 0.091837:
-                "monika 5tsu"
-            choice 0.091837:
-                "monika 1huu"
-            choice 0.051020:
-                "monika 5eubla"
+                1.0
+                choice:
+                    "monika 1sua"
+                    4.0
+                choice:
+                    "monika 1kua"
+                    1.5
+                "monika 1eua"
 
-    # select wait time
-    block:
-        choice:
-            10.0
-        choice:
-            12.0
-        choice:
-            14.0
-        choice:
-            16.0
-        choice:
-            18.0
-        choice:
-            20.0
+            choice 0.98:
+                choice 0.510104:
+                    "monika 1eua"
+                choice 0.255102:
+                    "monika 5esu"
+                choice 0.091837:
+                    "monika 5tsu"
+                choice 0.091837:
+                    "monika 1huu"
+                choice 0.051020:
+                    "monika 5eubla"
 
-    repeat
+        # select wait time
+        block:
+            choice:
+                10.0
+            choice:
+                12.0
+            choice:
+                14.0
+            choice:
+                16.0
+            choice:
+                18.0
+            choice:
+                20.0
+
+        repeat
 
 
 ### [IMG050]
