@@ -365,7 +365,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 $ mas_calShowOverlay()
             if not hide_monika:
                 show monika idle at t11 zorder MAS_MONIKA_Z
-                with Dissolve(dissolve_time)
+#                with Dissolve(dissolve_time)
     else:
         if morning_flag or scene_change:
             $ morning_flag = False
@@ -380,7 +380,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
                 #show monika_bg_highlight
             if not hide_monika:
                 show monika idle at t11 zorder MAS_MONIKA_Z
-                with Dissolve(dissolve_time)
+#                with Dissolve(dissolve_time)
 
     $scene_change = False
 
