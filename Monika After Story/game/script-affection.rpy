@@ -886,7 +886,7 @@ default persistent._mas_pctadeibe = None
 
 init -10 python:
     def _mas_AffSave():
-        #aff_value = _mas_getAffection()
+        aff_value = _mas_getAffection()
         #inum, nnum, dnum = mas_utils._splitfloat(aff_value)
         #persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
         #persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
