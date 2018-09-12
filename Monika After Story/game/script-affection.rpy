@@ -886,47 +886,59 @@ default persistent._mas_pctadeibe = None
 
 init -10 python:
     def _mas_AffSave():
-        aff_value = _mas_getAffection()
-        inum, nnum, dnum = mas_utils._splitfloat(aff_value)
-        persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
-        persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
-        persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
+        #aff_value = _mas_getAffection()
+        #inum, nnum, dnum = mas_utils._splitfloat(aff_value)
+        #persistent._mas_pctaieibe = bytearray(mas_utils._itoIS(inum))
+        #persistent._mas_pctaneibe = bytearray(mas_utils._itoIS(nnum))
+        #persistent._mas_pctadeibe = bytearray(mas_utils._itoIS(dnum))
+
+        # reset
+        persistent._mas_pctaieibe = None
+        persistent._mas_pctaneibe = None
+        persistent._mas_pctadeibe = None
 
         # audit this change
         store.mas_affection.audit(aff_value, aff_value, ldsv="SAVE")
 
 
     def _mas_AffLoad():
-        new_value = 0
-        if (
-                persistent._mas_pctaieibe is not None
-                and persistent._mas_pctaneibe is not None
-                and persistent._mas_pctadeibe is not None
-            ):
-            try:
-                inum = mas_utils._IStoi(
-                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
-                )
-                nnum = mas_utils._IStoi(
-                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
-                )
-                dnum = float(mas_utils._IStoi(
-                    mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
-                ))
-                if inum < 0:
-                    new_value = inum - (nnum / dnum)
-                else:
-                    new_value = inum + (nnum / dnum)
+        #new_value = 0
+        #if (
+        #        persistent._mas_pctaieibe is not None
+        #        and persistent._mas_pctaneibe is not None
+        #        and persistent._mas_pctadeibe is not None
+        #    ):
+        #    try:
+        #        inum = mas_utils._IStoi(
+        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctaieibe)
+        #        )
+        #        nnum = mas_utils._IStoi(
+        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctaneibe)
+        #        )
+        #        dnum = float(mas_utils._IStoi(
+        #            mas_utils.ISCRAM.from_buffer(persistent._mas_pctadeibe)
+        #        ))
+        #        if inum < 0:
+        #            new_value = inum - (nnum / dnum)
+        #        else:
+        #            new_value = inum + (nnum / dnum)
+#
+#            except:
+#                # dont break me yo
+#                new_value = 0
+#
+        # reset
+        persistent._mas_pctaieibe = None
+        persistent._mas_pctaneibe = None
+        persistent._mas_pctadeibe = None
 
-            except:
-                # dont break me yo
-                new_value = 0
-
+        # pull numerical afffection for audting
+        new_value = persistent._mas_affection["affection"]
         # audit this change
         store.mas_affection.audit(new_value, new_value, ldsv="LOAD")
 
         # and set what we got
-        persistent._mas_affection["affection"] = new_value
+#        persistent._mas_affection["affection"] = new_value
 
 
 # need to have affection initlaized post event_handler
