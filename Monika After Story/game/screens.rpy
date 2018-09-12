@@ -1077,7 +1077,7 @@ screen preferences():
                 vbox:
                     style_prefix "check"
                     label _("Graphics")
-                    textbutton _("Disable Animation") action [ToggleField(persistent, "_mas_disable_animations"), Function(mas_drawSpaceroomMasks)]
+                    textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 

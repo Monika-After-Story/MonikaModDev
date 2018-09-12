@@ -150,7 +150,12 @@ init python:
         Wrapper aound _invoke_game_menu that follows additional ui rules
         """
         if not _windows_hidden:
+            prev_disable_animations = persistent._mas_disable_animations
             _invoke_game_menu()
+
+            # call backs for the game menu
+            if prev_disable_animations != persistent._mas_disable_animations:
+                mas_drawSpaceroomMasks()
 
 
     def _mas_hide_windows():
