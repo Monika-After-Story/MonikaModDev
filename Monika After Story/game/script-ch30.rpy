@@ -6,11 +6,15 @@ default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
 
+# True means disable animations, False means enable
+default persistent._mas_disable_animations = False
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 
     # True means we are in the dialogue workflow. False means not
     dlg_workflow = False
+
 
 init 970 python:
     if persistent._mas_moni_chksum is not None:
@@ -95,24 +99,44 @@ image ut_slash:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(channel="window_1", play="mod_assets/window_1.webm",mask=None,image="mod_assets/window_1_fallback.png")
-image room_mask2 = Movie(channel="window_2", play="mod_assets/window_2.webm",mask=None,image="mod_assets/window_2_fallback.png")
-image room_mask3 = Movie(channel="window_3", play="mod_assets/window_3.webm",mask=None,image="mod_assets/window_3_fallback.png")
-image room_mask4 = Movie(channel="window_4", play="mod_assets/window_4.webm",mask=None,image="mod_assets/window_4_fallback.png")
+image room_mask = Movie(
+    channel="window_1",
+    play="mod_assets/window_1.webm",
+    mask=None
+)
+image room_mask_fb = "mod_assets/window_1_fallback.png"
+image room_mask2 = Movie(
+    channel="window_2",
+    play="mod_assets/window_2.webm",
+    mask=None
+)
+image room_mask2_fb = "mod_assets/window_2_fallback.png"
+image room_mask3 = Movie(
+    channel="window_3",
+    play="mod_assets/window_3.webm",
+    mask=None
+)
+image room_mask3_fb = "mod_assets/window_3_fallback.png"
+image room_mask4 = Movie(
+    channel="window_4",
+    play="mod_assets/window_4.webm",
+    mask=None
+)
+image room_mask4_fb = "mod_assets/window_4_fallback.png"
 
 # big thanks to sebastianN01 for the rain art!
 image rain_mask_left = Movie(
     channel="window_5",
     play="mod_assets/window_5.webm",
-    mask=None,
-    image="mod_assets/window_5_fallback.png"
+    mask=None
 )
+image rain_mask_left_fb = "mod_assets/window_5_fallback.png"
 image rain_mask_right = Movie(
     channel="window_6",
     play="mod_assets/window_6.webm",
-    mask=None,
-    image="mod_assets/window_6_fallback.png"
+    mask=None
 )
+image rain_mask_right_fb = "mod_assets/window_6_fallback.png"
 
 # spaceroom window positions
 transform spaceroom_window_left:
@@ -234,6 +258,10 @@ init python:
             morning_flag
             mas_is_raining
         """
+        # hide the existing masks 
+        renpy.hide("rm")
+        renpy.hide("rm2")
+
         if mas_is_raining:
             # raining takes priority
             left_window = "rain_mask_left"
@@ -248,6 +276,11 @@ init python:
             # night time
             left_window = "room_mask"
             right_window = "room_mask2"
+
+        # should we use fallbacks instead?
+        if persistent._mas_disable_animations:
+            left_window += "_fb"
+            right_window += "_fb"
 
         # now show the masks
         renpy.show(left_window, at_list=[spaceroom_window_left], tag="rm")
@@ -1093,6 +1126,14 @@ label ch30_reset:
             if tp_time < datetime.timedelta(0):
                 persistent.sessions["total_playtime"] = datetime.timedelta(0)
 
-
-
+    ## reset future freeze times for exp
+    python:
+        # reset freeze date to today if it is in the future
+        if persistent._mas_affection is not None:
+            freeze_date = persistent._mas_affection.get("freeze_date", None)
+            if freeze_date is not None:
+                _today = datetime.date.today()
+                if freeze_date > _today:
+                    persistent._mas_affection["freeze_date"] = _today
+            
     return
