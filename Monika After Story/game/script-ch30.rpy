@@ -1093,6 +1093,14 @@ label ch30_reset:
             if tp_time < datetime.timedelta(0):
                 persistent.sessions["total_playtime"] = datetime.timedelta(0)
 
-
-
+    ## reset future freeze times for exp
+    python:
+        # reset freeze date to today if it is in the future
+        if persistent._mas_affection is not None:
+            freeze_date = persistent._mas_affection.get("freeze_date", None)
+            if freeze_date is not None:
+                _today = datetime.date.today()
+                if freeze_date > _today:
+                    persistent._mas_affection["freeze_date"] = _today
+            
     return
