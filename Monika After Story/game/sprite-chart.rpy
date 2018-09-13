@@ -1444,7 +1444,7 @@ init -2 python:
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None:
-                acs_list.append(accessory)
+                mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
@@ -1746,20 +1746,9 @@ init -2 python:
         """
 
         # gather accessories
-        unsort_pre = character.acs.get(MASMonika.PRE_ACS, [])
-        unsort_mid = character.acs.get(MASMonika.MID_ACS, [])
-        unsort_pst = character.acs.get(MASMonika.PST_ACS, [])
-
-        # and generate a big list
-        unsort_all = list(unsort_pre)
-        unsort_all.extend(unsort_mid)
-        unsort_all.extend(unsort_pst)
-
-        # sort the accessories
-        acs_pre_list = sorted(unsort_pre, key=MASAccessory.get_priority)
-        acs_mid_list = sorted(unsort_mid, key=MASAccessory.get_priority)
-        acs_pst_list = sorted(unsort_pst, key=MASAccessory.get_priority)
-        acs_all_list = sorted(unsort_all, key=MASAccessory.get_priority)
+        acs_pre_list = character.acs.get(MASMonika.PRE_ACS, [])
+        acs_mid_list = character.acs.get(MASMonika.MID_ACS, [])
+        acs_pst_list = character.acs.get(MASMonika.PST_ACS, [])
 
         # are we sitting or not
         if is_sitting:
