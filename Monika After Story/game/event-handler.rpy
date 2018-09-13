@@ -88,6 +88,7 @@ init 850 python:
     mas_all_ev_db.update(store.mas_moods.mood_db)
     mas_all_ev_db.update(store.mas_stories.story_database)
     mas_all_ev_db.update(store.mas_compliments.compliment_database)
+    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
 
     def mas_getEV(ev_label):
         """

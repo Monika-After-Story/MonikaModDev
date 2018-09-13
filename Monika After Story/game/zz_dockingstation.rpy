@@ -183,6 +183,29 @@ init -45 python:
             return pkg_slip
 
 
+        def getPackageList(self, ext_filter=""):
+            """
+            Gets a list of the packages in the docking station.
+
+            IN:
+                ext_filter - extension filter to use when getting list.
+                    the '.' is added if not already given.
+                    If not given, we get all the packages
+                    (Default: "")
+
+            RETURNS: list of packages 
+            """
+            # correct filter if needed
+            if len(ext_filter) > 0 and not ext_filter.startswith("."):
+                ext_filter = "." + extfilter
+
+            return [
+                package
+                for package in os.listdir(self.station)
+                if package.endswith(ext_filter)
+            ]
+
+
         def getPackage(self, package_name):
             """
             Gets a package from the docking station
