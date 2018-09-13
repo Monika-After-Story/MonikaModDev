@@ -168,6 +168,12 @@ label splashscreen:
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
         store.mas_calendar.loadCalendarDatabase()
+
+    if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
+        # we have a corrupted persistent but was unable to recover via the
+        # backup system
+        call mas_backups_you_have_corrupted_persistent
+
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
@@ -294,6 +300,12 @@ label autoload:
             persistent._mas_monika_hair
         )
 
+    # need to set the monisize correctly
+    $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
+
+    # finally lets run actions that needed to be run
+    $ mas_runDelayedActions(MAS_FC_START)
+
     jump expression persistent.autoload
 
 label before_main_menu:
@@ -301,9 +313,19 @@ label before_main_menu:
     return
 
 label quit:
-    $ store.mas_calendar.saveCalendarDatabase(CustomEncoder)
-    $persistent.sessions['last_session_end']=datetime.datetime.now()
-    $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
+    python:
+        store.mas_calendar.saveCalendarDatabase(CustomEncoder)
+        persistent.sessions['last_session_end']=datetime.datetime.now()
+        today_time = (
+            persistent.sessions["last_session_end"] 
+            - persistent.sessions["current_session_start"]
+        )
+        # gotta prevent negative time addons
+        if today_time > datetime.timedelta(0):
+            persistent.sessions['total_playtime'] += today_time
+
+        # set the monika size
+        store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
     if persistent._mas_hair_changed:
         $ persistent._mas_monika_hair = monika_chr.hair
@@ -327,6 +349,17 @@ label quit:
             if acs.stay_on_start
         ]
 
+    # remove special images
+    $ store.mas_island_event.removeImages()
+
+    # delayed action stuff
+    $ mas_runDelayedActions(MAS_FC_END)
+    $ store.mas_delact.saveDelayedActionMap()
+
     $ _mas_AffSave()
+
+    # delete the monika file if we aren't leaving
+    if not persistent._mas_dockstat_going_to_leave:
+        $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
     return

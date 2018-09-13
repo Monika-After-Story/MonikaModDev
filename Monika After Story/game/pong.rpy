@@ -6,9 +6,6 @@
         import random
         import math
 
-        def is_morning():
-            return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-
         class PongDisplayable(renpy.Displayable):
 
             def __init__(self):
@@ -19,7 +16,7 @@
                 self.paddle = Image("mod_assets/pong.png")
                 self.ball = Image("mod_assets/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
-                self.monika = Text(_("Monika"), size=36)
+                self.monika = Text(_("[m_name]"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
                 # The sizes of some of the images.
@@ -270,6 +267,8 @@ label demo_minigame_pong:
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
     call spaceroom from _call_spaceroom_3
+
+    show monika 1eua
 
     if winner == "monika":
         $ inst_dialogue = store.mas_pong.DLG_WINNER

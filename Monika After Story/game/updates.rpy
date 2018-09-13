@@ -26,23 +26,23 @@ init 4 python:
         # clearing this to prevent crash
         persistent.monika_topic = None
 
-default persistent._mas_084_hotfix_farewellbug = None
+#default persistent._mas_084_hotfix_farewellbug = None
 
 # post many things, but not late update script appropriate
 # init-based update scripts
 # TODO: remove this when we reach 085
-init 600 python:
-    if (
-            persistent._mas_084_hotfix_farewellbug is None
-            and renpy.seen_label("bye_long_absence")
-        ):
-        # reset affection to 0 to help people that got screwed with
-        # the farewell bug
-        _mas_AffLoad()
-        if persistent._mas_affection["affection"] < 0:
-            mas_setAffection(0)
-            _mas_AffSave()
-    persistent._mas_084_hotfix_farewellbug = True
+# this was init 600 python
+#    if (
+#            persistent._mas_084_hotfix_farewellbug is None
+#            and renpy.seen_label("bye_long_absence")
+#        ):
+#        # reset affection to 0 to help people that got screwed with
+#        # the farewell bug
+#        _mas_AffLoad()
+#        if persistent._mas_affection["affection"] < 0:
+#            mas_setAffection(0)
+#            _mas_AffSave()
+#    persistent._mas_084_hotfix_farewellbug = True
 
 
 # create some functions
@@ -267,6 +267,29 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.8.6
+label v0_8_6(version="v0_8_6"):
+    python:
+        import store.evhand as evhand
+        import datetime
+        
+        # unlock gender redo if we have seen the other event
+        genderredo_ev = evhand.event_database.get("gender_redo", None)
+        if genderredo_ev and renpy.seen_label("gender"):
+            genderredo_ev.unlocked = True
+            genderredo_ev.pool = True
+            # this should be seen'd as it doesnt make sense to have it in
+            # unseen
+            persistent._seen_ever["gender_redo"] = True
+
+        # give the new character file event a conditoinal to push
+        new_char_ev = evhand.event_database.get("mas_new_character_file", None)
+        if new_char_ev and not renpy.seen_label("mas_new_character_file"):
+            new_char_ev.conditional = "True"
+            new_char_ev.action = EV_ACT_PUSH
+
+    return
 
 # 0.8.4
 label v0_8_4(version="v0_8_4"):

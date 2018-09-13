@@ -10,7 +10,6 @@ init -1 python:
 init python in mas_layout:
     import store
     import store.mas_affection as aff
-    gender = renpy.game.persistent.gender 
 
     QUIT_YES = store.layout.QUIT_YES
     QUIT_NO = store.layout.QUIT_NO
@@ -39,7 +38,7 @@ init python in mas_layout:
     QUIT_BROKEN = "Just go."
     QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
 
-    if gender == "M" or gender == "F":
+    if store.persistent.gender == "M" or store.persistent.gender == "F":
         _usage_quit_aff = QUIT_NO_AFF_G
     else:
         _usage_quit_aff = QUIT_NO_AFF_GL
@@ -509,14 +508,23 @@ screen quick_menu():
             yalign 0.995
 
             #textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
+
+#            textbutton _("History") action ShowMenu('history')
+            textbutton _("History") action Function(_mas_quick_menu_cb, "history")
+
             textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
             textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Load") action ShowMenu('load')
+
+#            textbutton _("Save") action ShowMenu('save')
+            textbutton _("Save") action Function(_mas_quick_menu_cb, "save")
+
+#            textbutton _("Load") action ShowMenu('load')
+            textbutton _("Load") action Function(_mas_quick_menu_cb, "load")
             #textbutton _("Q.Save") action QuickSave()
             #textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Settings") action ShowMenu('preferences')
+
+#            textbutton _("Settings") action ShowMenu("preferences")
+            textbutton _("Settings") action Function(_mas_quick_menu_cb, "preferences")
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -1078,7 +1086,7 @@ screen preferences():
                 vbox:
                     style_prefix "check"
                     label _("Graphics")
-                    textbutton _("Disable Animation") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 

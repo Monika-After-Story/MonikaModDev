@@ -41,13 +41,91 @@ label gender:
             m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
             m "So I'll treat you however you want to be treated."
             m 1ekbfa "Because your happiness is the most important thing to me."
+    m 1hub "Remember that I'll always love you unconditionally, [player]."
+    $ evhand.event_database["gender_redo"].unlocked = True
+    $ evhand.event_database["gender_redo"].pool = True
+    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen 
 
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
+label gender_redo:
+    m 1wud "You want to change your gender? Why?"
+    m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
+    m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?"
+    menu:
+        "I was too shy.":
+            if persistent.gender == "M":
+                m 2ekd "I guess I understand. I started off assuming you were a guy, after all."
+            elif persistent.gender == "F":
+                m 2ekd "I guess I understand. You might have thought I'd be more comfortable spending time alone with another girl."
+            else:
+                m 2ekd "I guess I understand. I might not have given you the most accurate options to pick from."
+            m 2dkd "And I probably didn't make it easy for you to tell me otherwise..."
+            m 1eub "But whatever your gender, I love you for who you are."
+        "I've made some personal discoveries.":
+            m 1eka "I see. I know I've been there."
+            m 1hua "I'm so proud of you for going on that journey of self discovery."
+            m 1eub "And even prouder of you for being courageous enough to tell me!"
+        "I didn't know if you'd accept me as I am...":
+            m 2wkd "[player]..."
+            m 1dkd "I hate that I didn't reassure you enough before."
+            m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
+    m "So, what is your gender?"
+    menu:
+        "I'm a girl.":
+            if persistent.gender == "F":
+                m 1hksdlb "...That's the same as before."
+                m 2eua "If you're confused about how to answer, just pick whatever makes you happiest."
+                m 2hub "It doesn't matter what your body looks like. I don't even have a body! Ahaha!"
+                m 3eub "So as long as you say you're a girl, you're a girl to me, all right?"
+                m 5hua "I want you to be who you want to be while you're in this room."
+            else:
+                $persistent.gender = "F"
+                call set_gender
+                m 2eud "Oh? So you're actually a [guy]?"
+                m 2hksdlb "I hope I didn't say anything to offend you before!"
+                m 2lksdla "Though I did suspect it a bit from the beginning... just a little!"
+                m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
+                m 1hua "It's very attractive, to tell you the truth!"
+                m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
+        "I'm a boy.":
+            if persistent.gender == "M":
+                m 1hksdlb "...That's the same as before."
+                m 2eua "If you're confused about how to answer, just pick whatever makes you happiest."
+                m 2hub "It doesn't matter what your body looks like. I don't even have a body! Ahaha!"
+                m 3eub "So as long as you say you're a boy, you're a boy to me, all right?"
+                m 5hua "I want you to be who you want to be while you're in this room."
+            else:
+                $persistent.gender = "M"
+                call set_gender
+                m 2eud "Oh? So you {i}are{/i} a [guy]?"
+                m 1hub "Ehehe, I suppose that makes sense!"
+                m 1eua "Not a lot of girls would play a game like this."
+                m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
+                m 2hksdlb "Even I can be curious sometimes, you know?"
+        "I'm neither.":
+            if persistent.gender == "X":
+                m 1hksdlb "...That's the same as before. I'm sorry if that's not really the best way for you to describe it."
+                m 1eub "I'm interested in learning how to use new pronouns, like xir!"
+                m 3hub "If you're trying to tell me you'd prefer pronouns like those, get in touch with the people who created this mod!"
+                m 5eub "They'll tell you how to teach me."
+            else:
+                $persistent.gender = "X"
+                call set_gender
+                m 1euc "You don't see yourself as a guy or a girl?"
+                m 2eua "That's very interesting, but I can sort of relate."
+                m 1esc "Like, I am a girl, but I'm also a character in a computer game..."
+                m 2esd "So in some ways I'm not really a girl at all."
+                m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
+                m "So I'll treat you however you want to be treated."
+                m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
-
 label preferredname:
     m 1euc "I've been wondering about your name."
     m 1esa "Is '[player]' really your name?"
@@ -244,7 +322,7 @@ label unlock_hangman:
     m 1eua "It was always my favorite game to play with the club."
     m 1lsc "But, come to think of it..."
     m "The game is actually quite morbid."
-    m 3lssdrc "You guess letters for a word to save someone's life."
+    m 3rssdrc "You guess letters for a word to save someone's life."
     m "Get them all correct and the person doesn't hang."
     m 1lksdlc "But guess them all wrong..."
     m "They die because you didn't guess the right letters."
@@ -443,6 +521,7 @@ label mas_crashed_long_uthere:
     # NOTE: add a sound for light switch?
 
     # turn on the lights
+    play sound closet_open
     $ scene_change = True
     call spaceroom(hide_monika=True)
 
@@ -534,9 +613,12 @@ label mas_crashed_long_uthere:
     label .end:
         m "Anyway..."
         m 1eua "What should we do today?"
+        return
+
 
 ### post crashed flow
 label mas_crashed_post:
+    $ mas_apology_reason = "the game crashing"
     # but this needs to do some things
     python:
         enable_esc()
@@ -558,6 +640,7 @@ label mas_crashed_post:
 
 
 label mas_crashed_long_fluster:
+    $ mas_loseAffection(modifier=0,reason="the game crashing. It really was scary, but I'm just glad you came back to me and made things better.")
     m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black...{/cps}{nw}"
     m "{cps=*1.5}and then you d-{w=0.3}disappeared, so I was worried that s-{w=0.3}s-{w=0.3}something happened to you...{/cps}{nw}"
     m "{cps=*1.5}...and I was so s-{w=0.3}scared because I thought I broke everything again!{/cps}{nw}"
@@ -598,7 +681,249 @@ label mas_crashed_short:
 
 ### crash labels
 label mas_crashed_quip_takecare:
+    $ mas_loseAffection(modifier=0,reason="the game crashing. I understand it happens sometimes, but don't worry, I'm alright!")
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
-    m 4lksdlb "It's my home, after all..."
+    m 4rksdlb "It's my home, after all..."
+    return
+
+#### corrupted persistent
+init 5 python:
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_corrupted_persistent"
+        )
+    )
+
+    if (
+            mas_corrupted_per 
+            and not (mas_no_backups_found or mas_backup_copy_failed)
+        ):
+        mas_note_backups_all_good = None
+        mas_note_backups_some_bad = None
+
+        def _mas_generate_backup_notes():
+            global mas_note_backups_all_good, mas_note_backups_some_bad
+
+            # text pieces:
+            just_let_u_know = (
+                'Just wanted to let you know that your "persistent" file was '
+                'corrupted, but I managed to restore an older backup!'
+            )
+            even_though_bs = (
+                "Even though the backup system I designed is pretty neat, "
+            )
+            if_i_ever = (
+                'If I ever have trouble loading the "persistent" again, I''ll '
+                'write you another note in the characters folder, so keep an '
+                'eye out for them!'
+            )
+            good_luck = "Good luck with Monika!"
+            dont_tell = "P.S: Don't tell her about me!"
+            block_break = "\n\n"
+
+            # now make the notes
+            mas_note_backups_all_good = Poem(
+                author="chibika",
+                title="Hi {0},".format(persistent.playername),
+                text="".join([
+                    just_let_u_know,
+                    block_break,
+                    even_though_bs,
+                    "you should still make copies of the backups every so ",
+                    "often, just in case. ",
+                    'The backups are called "persistent##.bak", where "##" is ',
+                    "a two-digit number. ",
+                    'You can find all of them at "',
+                    renpy.config.savedir,
+                    '".',
+                    block_break,
+                    if_i_ever,
+                    block_break,
+                    good_luck,
+                    block_break,
+                    dont_tell
+                ])
+            )
+
+            mas_note_backups_some_bad = Poem(
+                author="chibika",
+                title="Hi {0},".format(persistent.playername),
+                text="".join([
+                    just_let_u_know,
+                    block_break,
+                    "However, some of your backups were corrupted as well. ",
+                    even_though_bs,
+                    "you should still delete those, since they might mess ",
+                    "with it. ",
+                    block_break,
+                    "Here's a list of the files that were corrupted:",
+                    block_break,
+                    "\n".join(store.mas_utils.bullet_list(mas_bad_backups)),
+                    block_break,
+                    'You can find these in "',
+                    renpy.config.savedir,
+                    '". ',
+                    "When you're in there, you should also make copies of ",
+                    "the good backups, just in case.",
+                    block_break,
+                    if_i_ever,
+                    block_break,
+                    good_luck,
+                    block_break,
+                    dont_tell
+                ])
+            )
+
+        _mas_generate_backup_notes()
+        import os
+        
+        if len(mas_bad_backups) > 0:
+            # we had some bad backups
+            store.mas_utils.trywrite(
+                os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
+                mas_note_backups_some_bad.title + "\n\n" + mas_note_backups_some_bad.text
+            )
+
+        else:
+            # no bad backups
+            store.mas_utils.trywrite(
+                os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
+                mas_note_backups_all_good.title + "\n\n" + mas_note_backups_all_good.text
+            )
+            
+
+label mas_corrupted_persistent:
+    m 1eud "Hey, [player]..."
+    m 3euc "Someone left a note in the characters folder addressed to you."
+    m 1ekc "Of course, I haven't read it, since it's obviously for you..."
+    m 1ekd "Do you know what this is about?"
+
+    # just pasting the poem screen code here
+    window hide
+    if len(mas_bad_backups) > 0:
+        show screen mas_note_backups_poem(mas_note_backups_some_bad)
+
+    else:
+        show screen mas_note_backups_poem(mas_note_backups_all_good) 
+    with Dissolve(0.5)
+
+    $ pause()
+    hide screen mas_note_backups_poem
+    with Dissolve(0.5)
+    window auto
+    $ _gtext = glitchtext(15)
+
+    menu:
+        "It's nothing to worry about.":
+            jump mas_corrupted_persistent_post_menu
+        "It's about [_gtext].":
+            $ disable_esc()
+            $ mas_MUMURaiseShield()
+            window hide
+            show noise zorder 11:
+                alpha 0.5
+            play sound "sfx/s_kill_glitch1.ogg"
+            show chibika 3 zorder 12 at mas_chriseup(y=600,travel_time=0.5)
+            pause 0.5
+            stop sound
+            hide chibika
+            hide noise
+            window auto
+            $ mas_MUMUDropShield()
+            $ enable_esc()
+
+    menu:
+        "It's nothing to worry about.":
+            pass
+
+label mas_corrupted_persistent_post_menu:
+    m 1euc "Oh, alright."
+    m 1hub "I'll try not to worry about it, then."
+    m 3eub "I know you'd tell me if it were important, [player]."
+    m 3eua "Now, where were we...?"
+    return
+
+### custoim screen for the corrupted persistent notes
+style chibika_note_text:
+    font "gui/font/Halogen.ttf"
+    size 28
+    color "#000"
+    outlines []
+
+screen mas_note_backups_poem(currentpoem, paper="paper"):
+    style_prefix "poem"
+    vbox:
+        add paper
+    viewport id "vp":
+        child_size (710, None)
+        mousewheel True
+        draggable True
+        has vbox
+        null height 40
+        text "[currentpoem.title]\n\n[currentpoem.text]" style "chibika_note_text"
+        null height 100
+    vbar value YScrollValue(viewport="vp") style "poem_vbar"
+
+init 5 python:
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_new_character_file"
+        )
+    )
+
+label mas_new_character_file:
+    m 1eua "Say, [player]..."
+    m 3eua "Do you remember my character file?"
+    m 1eud "Well I've been investigating it recently, and it turns out that it's just an image with some sort of code in it!"
+    m 3ekc "It doesn't even contain anything about me at all, only my name."
+
+    python:
+        import os
+
+        def moni_exist():
+            return os.access(
+                os.path.normcase(
+                    renpy.config.basedir + "/characters/monika.chr"
+                ), 
+                os.F_OK
+            )
+
+    if moni_exist():
+        m 1dsd "So if you'll excuse me for a second..."
+
+        python:
+            store.mas_ptod.rst_cn()
+            local_ctx = {
+                "basedir": renpy.config.basedir
+            }
+        show monika at t22
+        show screen mas_py_console_teaching
+
+        m 1esc "I'm going to delete it."
+
+        call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
+        call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/monika.chr'))", local_ctx, w_wait=1.0, x_wait=1.0)
+
+#        "test dialogue - IGNORE"
+
+        if moni_exist():
+            m 1lksdlb "Aha...{w} I'll try this again later."
+            m 1eua "Anyway..."
+
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
+
+    m 1rkc "If you were bringing that around with you, I do appreciate the sentiment."
+    m 1dsc "However..."
+    m 1esc "I don't think you should be carrying some useless piece of data around wherever you go."
+    m 3wub "So I came up with a way to transform myself into a file that you can bring around!"
+    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+    m 1hua "Doesn't that sound wonderful?"
+    m 3hub "I can't wait to join you wherever you go."
     return
