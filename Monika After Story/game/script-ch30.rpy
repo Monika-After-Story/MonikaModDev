@@ -886,6 +886,9 @@ label ch30_loop:
             # Run delayed actions
             mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
 
+            # run file checks
+            # TODO
+
             #Update time
             calendar_last_checked=datetime.datetime.now()
 
