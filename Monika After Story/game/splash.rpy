@@ -320,9 +320,12 @@ label quit:
             persistent.sessions["last_session_end"] 
             - persistent.sessions["current_session_start"]
         )
-        # gotta prevent negative time addons
-        if today_time > datetime.timedelta(0):
-            persistent.sessions['total_playtime'] += today_time
+        new_time = today_time + persistent.sessions["total_playtime"]
+
+        # prevent out of boudns time
+        if datetime.timedelta(0) < new_time <= mas_maxPlaytime():
+            persistent.sessions['total_playtime'] = new_time
+
 
         # set the monika size
         store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])

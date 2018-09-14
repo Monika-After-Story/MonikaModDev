@@ -2717,6 +2717,11 @@ init -1 python:
     def mas_isMonikaBirthday():
         return datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22)
 
+
+    def mas_maxPlaytime():
+        return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos
