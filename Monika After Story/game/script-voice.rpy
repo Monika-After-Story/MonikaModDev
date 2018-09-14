@@ -1,6 +1,6 @@
-#This park is responsible for voice recognition using Google API for now
-#Probably need reaction of Monica when she hear you first time and either we can hump to topic
-#or create new replays depended on player key words
+#This part is responsible for voice recognition using Google API for now
+#Probably need reaction of Monica when she hear you first time and either we can jump to topic
+#or create new replys depended on player key words
 #Also someone need to change all Monika dialouge cus I can't write.
 
 
