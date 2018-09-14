@@ -32,8 +32,7 @@ except ImportError:  # use the Python 3 modules
     from urllib.parse import urlencode
     from urllib.request import Request, urlopen
     from urllib.error import URLError, HTTPError
-
-
+    
 class WaitTimeoutError(Exception): pass
 
 
@@ -52,7 +51,6 @@ class AudioSource(object):
 
     def __exit__(self, exc_type, exc_value, traceback):
         raise NotImplementedError("this is an abstract class")
-
 
 class Microphone(AudioSource):
     """
@@ -465,7 +463,6 @@ class Recognizer(AudioSource):
         """
         Creates a new ``Recognizer`` instance, which represents a collection of speech recognition functionality.
         """
-        
         self.energy_threshold = 300  # minimum audio energy to consider for recording
         self.dynamic_energy_threshold = True
         self.dynamic_energy_adjustment_damping = 0.15
@@ -1179,12 +1176,14 @@ class Recognizer(AudioSource):
                     transcription.append(hypothesis["transcript"])
         return "\n".join(transcription)
 
-
+path_to_game_dir = None
+        
 def get_flac_converter():
     """Returns the absolute path of a FLAC converter executable, or raises an OSError if none can be found."""
+    
     flac_converter = shutil_which("flac")  # check for installed version first
     if flac_converter is None:  # flac utility is not installed
-        base_path = os.getcwd()  # directory of the current module file, where all the FLAC bundled binaries are stored
+        base_path = path_to_game_dir  # directory of the current module file, where all the FLAC bundled binaries are stored
         base_path += "\\game\\python-packages\\speech_recognition"  #need to add \\game\\ for release
         system, machine = platform.system(), platform.machine()
         if system == "Windows" and machine in {"i686", "i786", "x86", "x86_64", "AMD64"}:

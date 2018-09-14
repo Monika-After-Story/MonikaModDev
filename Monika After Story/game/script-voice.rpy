@@ -3,10 +3,11 @@
 #or create new replays depended on player key words
 #Also someone need to change all Monika dialouge cus I can't write.
 
+default global_path = config.basedir 
 
 init -1 python:
     import sys
-    base_path = os.getcwd()  # directory of the current module file, where all the FLAC bundled binaries are stored
+    base_path = config.basedir  # directory of the current module file, where all the FLAC bundled binaries are stored
     base_path += "\\game\\python-packages\\speech_recognition"
     sys.path.append(base_path)
     try:
@@ -14,6 +15,7 @@ init -1 python:
     except ImportError:
         raise Exception('Fail importing _portaudio')
     import speech_recognition as sr
+    sr.path_to_game_dir = config.basedir
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel='monika_hear_voice',
