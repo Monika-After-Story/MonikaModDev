@@ -1110,9 +1110,8 @@ label ch30_reset:
     ## monika returned home reset
     python:
         if persistent._mas_monika_returned_home is not None:
-            _now = datetime.date.today()
             _rh = persistent._mas_monika_returned_home.date()
-            if _now > _rh:
+            if today > _rh:
                 persistent._mas_monika_returned_home = None
 
     ## resset playtime issues
@@ -1121,19 +1120,39 @@ label ch30_reset:
         # we could scale this, but it honestly is impossible for us to 
         # figure out the original number accurately, and giving people free
         # playtime doesn't sit well with me
+        #
+        # we should also reset total playtime to half of possible time if
+        # the user is over the mas possible amount. Max amount is defined
+        # in a function in mas_utils
         if persistent.sessions is not None:
             tp_time = persistent.sessions.get("total_playtime", None)
-            if tp_time < datetime.timedelta(0):
-                persistent.sessions["total_playtime"] = datetime.timedelta(0)
+            if tp_time is not None:
+                max_time = mas_maxPlaytime()
+                if tp_time > max_time:
+                    # cut the max time and reset totalplaytime to it
+                    persistent.sessions["total_playtime"] = max_time // 100
+
+                    # set the monika size
+                    store.mas_dockstat.setMoniSize(
+                        persistent.sessions["total_playtime"]
+                    )
+
+                elif tp_time < datetime.timedelta(0):
+                    # 0 out the total playtime
+                    persistent.sessions["total_playtime"] = datetime.timedelta(0)
+
+                    # set the monika size
+                    store.mas_dockstat.setMoniSize(
+                        persistent.sessions["total_playtime"]
+                    )
 
     ## reset future freeze times for exp
     python:
         # reset freeze date to today if it is in the future
         if persistent._mas_affection is not None:
             freeze_date = persistent._mas_affection.get("freeze_date", None)
-            if freeze_date is not None:
-                _today = datetime.date.today()
-                if freeze_date > _today:
-                    persistent._mas_affection["freeze_date"] = _today
+            if freeze_date is not None and freeze_date > today:
+                persistent._mas_affection["freeze_date"] = today
+
             
     return
