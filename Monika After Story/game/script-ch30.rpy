@@ -1085,17 +1085,17 @@ label ch30_reset:
     # accessories rest
     python:
         for acs_name in persistent._mas_acs_pre_list:
-            monika_chr.acs[MASMonika.PRE_ACS].append(
+            monika_chr.wear_acs_pre(
                 store.mas_sprites.ACS_MAP[acs_name]
             )
         for acs_name in persistent._mas_acs_mid_list:
-            monika_chr.acs[MASMonika.MID_ACS].append(
+            monika_chr.wear_acs_mid(
                 store.mas_sprites.ACS_MAP[acs_name]
             )
         for acs_name in persistent._mas_acs_pst_list:
-            monika_chr.acs[MASMonika.PST_ACS].append(
+            monika_chr.wear_acs_pst(
                 store.mas_sprites.ACS_MAP[acs_name]
-        )
+            )
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
