@@ -1,11 +1,18 @@
-#This part is responsible for voice recognition using Google API for now
-#Probably need reaction of Monica when she hear you first time and either we can jump to topic
-#or create new replys depended on player key words
+#This park is responsible for voice recognition using Google API for now
+#Probably need reaction of Monica when she hear you first time and either we can hump to topic
+#or create new replays depended on player key words
 #Also someone need to change all Monika dialouge cus I can't write.
 
 
 init -1 python:
-    import _portaudio
+    import sys
+    base_path = os.getcwd()  # directory of the current module file, where all the FLAC bundled binaries are stored
+    base_path += "\\game\\python-packages\\speech_recognition"
+    sys.path.append(base_path)
+    try:
+        import _portaudio
+    except ImportError:
+        raise Exception('Fail importing _portaudio')
     import speech_recognition as sr
 
 init 5 python:
@@ -27,8 +34,8 @@ label monika_hear_voice:
     m 1eua "[player], would you like to tell me something?"
     menu:
         "Yes.":
-            m "It might lag game a little fro time when i will try to hear your gently voice but don't worry about it"
-            m "I\'m all ears"
+            m 1hub "It might lag game a little for time when i will try to hear your gently voice but don't worry about it"
+            m 1eua "I\'m all ears but please keep it to one sentance for now. I am still learning how to do it after all"
             python:
                 r = sr.Recognizer()
                 with sr.Microphone() as source:
