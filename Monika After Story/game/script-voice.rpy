@@ -13,7 +13,7 @@ init -1 python:
     try:
         import _portaudio
     except ImportError:
-        raise Exception('Fail importing _portaudio')
+        pass #raise Exception('Fail importing _portaudio') - just for testing purpose
     import speech_recognition as sr
     sr.path_to_game_dir = config.basedir
 
