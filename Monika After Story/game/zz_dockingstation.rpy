@@ -85,6 +85,7 @@ init -45 python:
         # 1 - docking station as str
         # 2 - exception (if applicable)
         ERR = "[ERROR] {0} | {1} | {2}\n"
+        ERR_DEL = "Failure removing package '{0}'."
         ERR_GET = "Failure getting package '{0}'."
         ERR_OPEN = "Failure opening package '{0}'."
         ERR_READ = "Failure reading package '{0}'."
@@ -183,6 +184,58 @@ init -45 python:
             return pkg_slip
 
 
+        def destroyPackage(self, package_name):
+            """
+            Attempts to destroy the given package in the docking station.
+
+            NOTE: exceptions are logged
+
+            IN:
+                package_name - name of the package to delete
+
+            RETURNS:
+                True if package no exist or was deleted. False otherwise
+            """
+            if not self.checkForPackage(package_name, False):
+                return True
+
+            # otherwise we have a package
+            try:
+                os.remove(self._trackPackage(package_name))
+                return True
+
+            except Exception as e:
+                mas_utils.writelog(self.ERR.format(
+                    self.ERR_DEL.format(package_name),
+                    str(self),
+                    repr(e)
+                ))
+                return False
+
+
+        def getPackageList(self, ext_filter=""):
+            """
+            Gets a list of the packages in the docking station.
+
+            IN:
+                ext_filter - extension filter to use when getting list.
+                    the '.' is added if not already given.
+                    If not given, we get all the packages
+                    (Default: "")
+
+            RETURNS: list of packages 
+            """
+            # correct filter if needed
+            if len(ext_filter) > 0 and not ext_filter.startswith("."):
+                ext_filter = "." + ext_filter
+
+            return [
+                package
+                for package in os.listdir(self.station)
+                if package.endswith(ext_filter)
+            ]
+
+
         def getPackage(self, package_name):
             """
             Gets a package from the docking station
@@ -211,7 +264,7 @@ init -45 python:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_OPEN.format(package_name),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
                 if package is not None:
                     package.close()
@@ -822,7 +875,7 @@ init -45 python:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_GET.format(package_path),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
 
                 # in error case, assume failure

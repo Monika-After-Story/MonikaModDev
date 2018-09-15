@@ -88,6 +88,7 @@ init 850 python:
     mas_all_ev_db.update(store.mas_moods.mood_db)
     mas_all_ev_db.update(store.mas_stories.story_database)
     mas_all_ev_db.update(store.mas_compliments.compliment_database)
+    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
 
     def mas_getEV(ev_label):
         """
@@ -1242,11 +1243,12 @@ label call_next_event:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
-
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
             jump call_next_event
+
+        # return to normal pose
+        show monika idle at t11 zorder MAS_MONIKA_Z
 
         $ mas_DropShield_dlg()
 

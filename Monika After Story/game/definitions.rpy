@@ -2269,6 +2269,15 @@ init -100 python in mas_utils:
         return data
 
 
+    def intersperse(_list, _sep):
+        """
+        Intersperses a list with the given separator
+        """
+        result_list = [_sep] * (len(_list) * 2 - 1)
+        result_list[0::2] = _list
+        return result_list
+
+
     class ISCRAM(ctypes.BigEndianStructure):
         _iscramfieldbuilder = [
             3, 3, 2, 1, 3, 2, 2, 1, 3, 3, 1, 3, 1
