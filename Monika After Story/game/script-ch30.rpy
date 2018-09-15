@@ -17,6 +17,8 @@ init -1 python in mas_globals:
 
 
 init 970 python:
+    import store.mas_filereacts as mas_filereacts
+
     if persistent._mas_moni_chksum is not None:
         # do check for monika existence
         moni_tuple = store.mas_dockstat.findMonika(
@@ -788,6 +790,11 @@ label ch30_post_greeting_check:
     if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
         $ pushEvent("mas_corrupted_persistent")
 
+    # file reactions
+#    if mas_isMonikaBirthday():
+    if True:
+        $ mas_checkReactions()
+
     # push greeting if we have one
     if selected_greeting:
         $ pushEvent(selected_greeting)
@@ -887,7 +894,8 @@ label ch30_loop:
             mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
 
             # run file checks
-            # TODO
+#            if mas_isMonikaBirthday():
+            mas_checkReactions()
 
             #Update time
             calendar_last_checked=datetime.datetime.now()

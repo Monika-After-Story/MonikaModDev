@@ -1243,11 +1243,12 @@ label call_next_event:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
-
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
             jump call_next_event
+
+        # return to normal pose
+        show monika idle at t11 zorder MAS_MONIKA_Z
 
         $ mas_DropShield_dlg()
 

@@ -227,7 +227,7 @@ init -45 python:
             """
             # correct filter if needed
             if len(ext_filter) > 0 and not ext_filter.startswith("."):
-                ext_filter = "." + extfilter
+                ext_filter = "." + ext_filter
 
             return [
                 package

@@ -35,30 +35,32 @@ init -1 python in mas_filereacts:
     connectors = None
     gift_connectors = None
 
-    def addReaction(ev_label, fname_list, _action=store.EV_ACT_QUEUE):
+    def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE):
         """
         Adds a reaction to the file reactions database.
 
         IN:
             ev_label - label of this event
-            fname_list - list of filenames to react to (lowercase please)
+            fname - filename to react to
             _action - the EV_ACT to do
                 (Default: EV_ACT_QUEUE)
         """
         # lowercase the list in case
-        fname_list = sorted([x.lower() for x in fname_list])
+        if fname is not None:
+            fname = fname.lower()
+
 
         # build new Event object
         ev = store.Event(
             store.persistent.event_database,
             ev_label,
-            category=fname_list,
+            category=fname,
             action=_action
         )
 
         # add it to the db and map
         filereact_db[ev_label] = ev
-        filereact_map[fname_list] = ev
+        filereact_map[fname] = ev
 
 
     def _initConnectorQuips():
@@ -97,23 +99,24 @@ init -1 python in mas_filereacts:
         for _gift in raw_gifts:
             gift_name, ext, garbage = _gift.partition(GIFT_EXT)
             c_gift_name = gift_name.lower()
-            gifts_found.append(c_gift_name)
-            found_map[c_gift_name] = _gift
+            if c_gift_name not in store.persistent._mas_filereacts_failed_map:
+                gifts_found.append(c_gift_name)
+                found_map[c_gift_name] = _gift
 
         # then sort the list
         gifts_found.sort()
             
         # now we are ready to check for reactions
         # first we check for all file reacts:
-        all_reaction = filereact_map.get(gifts_found, None)
+        #all_reaction = filereact_map.get(gifts_found, None)
 
-        if all_reaction is not None:
-            return [all_reaction.eventlabel]
+        #if all_reaction is not None:
+        #    return [all_reaction.eventlabel]
 
         # otherwise, we need to do this more carefully
         found_reacts = list()
-        for index in range(len(gifts_round)-1, -1, -1):
-            _gift = gifts_round[index]
+        for index in range(len(gifts_found)-1, -1, -1):
+            _gift = gifts_found[index]
             reaction = filereact_map.get(_gift, None)
 
             if _gift is not None:
@@ -123,13 +126,14 @@ init -1 python in mas_filereacts:
                 found_reacts.append(gift_connectors.quip()[1])
 
         # add in the generic gift reactions
-        if len(gifts_round) > 0:
+        if len(gifts_found) > 0:
             for _gift in gifts_found:
                 found_reacts.append("mas_reaction_gift_generic")
                 found_reacts.append(gift_connectors.quip()[1])
 
         # gotta remove the extra
-        found_reacts.pop()
+        if len(found_reacts) > 0:
+            found_reacts.pop()
 
         # now return the list
         return found_reacts
@@ -150,17 +154,29 @@ init -1 python in mas_filereacts:
         if _filename is None:
             _filename = random.choice(_map.keys()) 
 
-        file_to_delete = _map.get(_filename, None):
+        file_to_delete = _map.get(_filename, None)
         if file_to_delete is None:
             return
 
         if store.mas_docking_station.destroyPackage(file_to_delete):
             # file has been deleted (or is gone). pop and go
-            _map.pop(file_to_delete)
+            _map.pop(_filename)
             return
 
         # otherwise add to the failed map
         store.persistent._mas_filereacts_failed_map[_filename] = file_to_delete
+
+
+    def _core_delete_list(_filename_list, _map):
+        """
+        Core deletion filename list function
+
+        IN:
+            _filename - list of filenames to delete.
+            _map - the map to use when deleting files
+        """
+        for _fn in _filename_list:
+            _core_delete(_fn, _map)
 
 
     def delete_file(_filename):
@@ -174,11 +190,37 @@ init -1 python in mas_filereacts:
         _core_delete(_filename, foundreact_map)
 
 
+    def delete_files(_filename_list):
+        """
+        Deletes multiple files off the found_react map
+
+        IN:
+            _filename_list - list of filenames to delete.
+        """
+        for _fn in _filename_list:
+            delete_file(_fn)
+
+
     def th_delete_file(_filename):
         """
         Deletes a file off the threaded found_react map
+
+        IN:
+            _filename - the name of the file to delete. If None, we delete one
+                randomly
         """
         _core_delete(_filename, th_foundreact_map)
+
+
+    def th_delete_files(_filename_list):
+        """
+        Deletes multiple files off the threaded foundreact map
+
+        IN:
+            _filename_list - list of ilenames to delete
+        """
+        for _fn in _filename_list:
+            th_delete_file(_fn)            
 
 
     def delete_all(_map):
@@ -196,6 +238,29 @@ init -1 python in mas_filereacts:
 
     _initConnectorQuips()
 
+init python:
+    import store.mas_filereacts as mas_filereacts
+
+    def addReaction(ev_label, fname_list, _action=EV_ACT_QUEUE):
+        """
+        Globalied version of the addReaction function in the mas_filereacts
+        store.
+
+        Refer to that function for more information
+        """
+        mas_filereacts.addReaction(ev_label, fname_list, _action)
+
+
+    def mas_checkReactions():
+        """
+        Checks for reactions, then pushes them
+        """
+        mas_filereacts.foundreact_map.clear()
+        reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
+        if len(reacts) > 0:
+            for _react in reacts:
+                pushEvent(_react)
+
 
 ### CONNECTORS [RCT000]
 
@@ -204,7 +269,7 @@ init -1 python in mas_filereacts:
 ## Gift CONNECTORS [RCT10]
 
 init 5 python:
-    store.mas_reactions.gift_connectors.addLabelQuip(
+    store.mas_filereacts.gift_connectors.addLabelQuip(
         "mas_reaction_gift_connector_test"
     )
 
@@ -227,4 +292,25 @@ init 5 python:
 
 label mas_reaction_gift_generic:
     m "this is a test of the generic gift reaction"
+    $ store.mas_filereacts.delete_file(None)
+    return
+
+init 5 python:
+    addReaction("mas_reaction_gift_test1", "test1")
+
+label mas_reaction_gift_test1:
+    m "Thank you for gift test 1!"
+
+    $ gift_ev = mas_getEV("mas_reaction_gift_test1")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+init 5 python:
+    addReaction("mas_reaction_gift_test2", "test2")
+
+label mas_reaction_gift_test2:
+    m "Thank you for gift test 2!"
+
+    $ gift_ev = mas_getEV("mas_reaction_gift_test2")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
     return
