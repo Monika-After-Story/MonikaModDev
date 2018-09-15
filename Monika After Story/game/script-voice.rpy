@@ -4,33 +4,35 @@
 #Also someone need to change all Monika dialouge cus I can't write.
 
 default global_path = config.basedir 
-
+default disable_voice_option = None
 init -1 python:
     import sys
     base_path = config.basedir  # directory of the current module file, where all the FLAC bundled binaries are stored
-    base_path += "\\game\\python-packages\\speech_recognition"
+    base_path += "/game/python-packages/speech_recognition"
     sys.path.append(base_path)
+    disable_voice_option = False
     try:
         import _portaudio
+        import speech_recognition as sr
+        sr.path_to_game_dir = base_path
     except ImportError:
-        pass #raise Exception('Fail importing _portaudio') - just for testing purpose
-    import speech_recognition as sr
-    sr.path_to_game_dir = config.basedir
+        disable_voice_option = True #pass #raise Exception('Fail importing _portaudio')
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_hear_voice',
-                                                            prompt="I want to tell you something",
-                                                            label=None,
-                                                            category=['misc'],
-                                                            random=False,
-                                                            unlocked=True,
-                                                            pool=False,
-                                                            conditional=None,
-                                                            action=None,
-                                                            start_date=None,
-                                                            end_date=None,
-                                                            unlock_date=None
-                                                            ))
+    if disable_voice_option == False:
+        addEvent(Event(persistent.event_database,eventlabel='monika_hear_voice',
+                                                                prompt="I want to tell you something",
+                                                                label=None,
+                                                                category=['misc'],
+                                                                random=False,
+                                                                unlocked=True,
+                                                                pool=False,
+                                                                conditional=None,
+                                                                action=None,
+                                                                start_date=None,
+                                                                end_date=None,
+                                                                unlock_date=None
+                                                                ))
 
 label monika_hear_voice:
     m 1eua "[player], would you like to tell me something?"
