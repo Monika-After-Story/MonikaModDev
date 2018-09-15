@@ -1746,6 +1746,9 @@ label greeting_returned_home:
     $ five_minutes = datetime.timedelta(seconds=5*60)
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
+    if mas_isMonikaBirthday():
+        jump greeting_returned_home_bday
+
     if time_out > five_minutes:
         m 1hua "And we're home!"
         m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
@@ -1772,5 +1775,10 @@ label greeting_returned_home:
         m "Next time better last a little longer..."
         $ mas_loseAffection()
 
+    return
+
+label greeting_returned_home_bday:
+    # TODO: all birthday stuff for the returned home greeting here
+    m "test dialogue"
     return
 
