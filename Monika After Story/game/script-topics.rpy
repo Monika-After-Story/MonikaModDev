@@ -4959,7 +4959,7 @@ label monika_fun_facts_open:
         if persistent._mas_funfactfun:
            m 3hua "That last one was pretty interesting after all!"
         else:
-           m 2rksdlb "I know that last one wasn't great...but I'm sure this next one will be better."
+           m 2rksdlb "I know that last one wasn't great... but I'm sure this next one will be better."
     m 2dsc "Now, let's see..."
 
 
