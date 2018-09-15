@@ -115,6 +115,8 @@ label mas_farewell_start:
     # otherwise, select a random farewell
     $ farewell = store.mas_farewells.selectFarewell()
     $ pushEvent(farewell.eventlabel)
+    # dont evalulate the mid loop checks since we are quitting
+    $ mas_skip_mid_loop_eval = True
 
     return
 

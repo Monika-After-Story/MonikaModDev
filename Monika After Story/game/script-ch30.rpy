@@ -5,6 +5,7 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
+define mas_skip_mid_loop_eval = False
 
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
@@ -777,6 +778,11 @@ label ch30_post_greeting_check:
     # this label skips greeting selection as well as exp checks for game close
     # we assume here that you set selected_greeting if you needed to
 
+    # file reactions
+#    if mas_isMonikaBirthday():
+    if True:
+        $ mas_checkReactions()
+
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
 
@@ -789,11 +795,6 @@ label ch30_post_greeting_check:
     # corruption check
     if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
         $ pushEvent("mas_corrupted_persistent")
-
-    # file reactions
-#    if mas_isMonikaBirthday():
-    if True:
-        $ mas_checkReactions()
 
     # push greeting if we have one
     if selected_greeting:
@@ -859,6 +860,9 @@ label ch30_loop:
     else:
         $ config.allow_skipping = False
 
+    if mas_skip_mid_loop_eval:
+        jump ch30_post_mid_loop_eval
+
     #Check time based events and grant time xp
     python:
         try:
@@ -906,10 +910,15 @@ label ch30_loop:
             # save the persistent
             renpy.save_persistent()
 
+label ch30_post_mid_loop_eval:
+
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
+
+    # reset the mid loop eval if we didnt' quit right away
+    $ mas_skip_mid_loop_eval = False
 
     #If there's no event in the queue, add a random topic as an event
     if not _return:

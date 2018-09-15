@@ -2,6 +2,7 @@
 # not too different from events
 
 default persistent._mas_filereacts_failed_map = dict()
+default persistent._mas_filereacts_just_reacted = False
 
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
@@ -126,17 +127,20 @@ init -1 python in mas_filereacts:
                 found_reacts.append(gift_connectors.quip()[1])
 
         # add in the generic gift reactions
+        generic_reacts = list()
         if len(gifts_found) > 0:
             for _gift in gifts_found:
-                found_reacts.append("mas_reaction_gift_generic")
-                found_reacts.append(gift_connectors.quip()[1])
+                generic_reacts.append("mas_reaction_gift_generic")
+                generic_reacts.append(gift_connectors.quip()[1])
+        generic_reacts.extend(found_reacts)
 
         # gotta remove the extra
-        if len(found_reacts) > 0:
-            found_reacts.pop()
+        if len(generic_reacts) > 0:
+            generic_reacts.pop()
+            generic_reacts.insert(0, "mas_reaction_end")
 
         # now return the list
-        return found_reacts
+        return generic_reacts
 
 
     def _core_delete(_filename, _map):
@@ -255,11 +259,17 @@ init python:
         """
         Checks for reactions, then pushes them
         """
+        # only check if we didnt just react
+        if persistent._mas_filereacts_just_reacted:
+            return
+
+        # otherwise check
         mas_filereacts.foundreact_map.clear()
         reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
         if len(reacts) > 0:
             for _react in reacts:
                 pushEvent(_react)
+            persistent._mas_filereacts_just_reacted = True
 
 
 ### CONNECTORS [RCT000]
@@ -313,4 +323,8 @@ label mas_reaction_gift_test2:
 
     $ gift_ev = mas_getEV("mas_reaction_gift_test2")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+label mas_reaction_end:
+    $ persistent._mas_filereacts_just_reacted = False
     return
