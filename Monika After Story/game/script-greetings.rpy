@@ -943,8 +943,8 @@ label monikaroom_greeting_cleanup:
 
     return
 
-init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youarereal", unlocked=True, random=True),eventdb=evhand.greeting_database)
+#init 5 python:
+#    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youarereal", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_youarereal:
     python:

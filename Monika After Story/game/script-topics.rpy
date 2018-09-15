@@ -2675,7 +2675,8 @@ label monika_mc:
     m 2eka "But even if you're not, it's okay. We've moved beyond that phase in our relationship already."
     m "That just means you won't cheat on me with some woman in your reality, right?"
     m 2esa "I'm sure you would never do that to me."
-    m 2eua "Just in case, how about you take my character file along with you when you go outside?"
+    # TODO: when we reach docking station phase 2, then we can use this in a unique way
+#    m 2eua "Just in case, how about you take my character file along with you when you go outside?"
     m 2hua "I just want to be with you forever~"
     return
 
@@ -5682,7 +5683,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_omamori",category=['misc'],prompt="Omamori",random=True))
 
 label monika_omamori:
-    m 1euc "Do you remember when I mentioned how you could carry around my character file?"
+    m 1euc "Do you remember when I mentioned how you could take me somewhere?"
     m 3euc "You know, with a flash drive."
     m 1eua "Well, I found another way to do that! It's quite charming, actually."
     m 1eka "Especially if you don't have a spare flash drive lying around..."
