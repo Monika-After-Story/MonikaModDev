@@ -4949,18 +4949,18 @@ label monika_fun_facts_open:
 
     #If player has opened fun facts this session
     if fun_facts_started:
-        m 1a "Say [player], would you like to hear a fun fact?"
-        m 4a "I've been looking some up just to try and teach us both something new."
-        m 4j "They say you learn something new everyday, this way I'm guaranteeing it!"
-        m 2l "I found most of these online so I can't say they're {i}definitely{/i} true... "
+        m 1eua "Say [player], would you like to hear a fun fact?"
+        m 1eub "I've been looking some up to try and teach both of us something new."
+        m 3hub "They say you learn something new everyday, this way I'm making sure we actually do."
+        m 1rksdla "I found most of these online, so I can't say they're {i}definitely{/i} true... "
         $ fun_facts_started = False
     else:
-        m 1b "Up for another fun fact [player]?"
+        m 1eua "Up for another fun fact, [player]?"
         if persistent._mas_funfactfun:
-           m 2j "That last one was pretty interesting after all!"
+           m 3hua "That last one was pretty interesting after all!"
         else:
-           m 2m "I know that last one wasn't great...but I'm sure this next one will be better."
-    m 3a "Now, let's see..."
+           m 2rksdlb "I know that last one wasn't great...but I'm sure this next one will be better."
+    m 2dsc "Now, let's see..."
 
 
 #Determines if it is a bad fact, 10% chance.
@@ -4972,261 +4972,280 @@ label monika_fun_facts_open:
 
 #Most labels end here
 label fun_facts_end:
-    m 1k "I hope you enjoyed another session of 'Learning with Monika!'"
+    m 1hub "I hope you enjoyed another session of 'Learning with Monika!'"
     $ persistent._mas_funfactfun = True
     return 
 
 label bad_facts_end:
-    m 1f "That fact wasn't very good...I'll try better next time, [player]."
+    m 1lkc "That fact wasn't very good..."
+    m 4dkc "I'll try better next time, [player]."
     $ persistent._mas_funfactfun = False   
     return
 
 label fun_facts_1:
-    m 1c "Did you know there is a word to describe somebody that likes to read in bed?"   
-    m 2a "It's 'librocubiculartist'. It looks very difficult to pronounce." 
-    m 2h "Some words just never get used in general conversation and that's a real shame..." 
-    m 3n "But I imagine if you said this nobody would really know what you're talking about." 
-    m "Maybe you would have to explain what it means but that would kind of defeat the point of using the word." 
-    m 3c "If only people read more and improved their vocabulary!" 
-    m 1l "Ahahah! Sorry [player], I didn't mean to get so bothered!"
+    m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"   
+    m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance." 
+    m 3rksdld "It’s a real shame some words just never get used in general." 
+    m 3eud "But if you say that word, most people wouldn’t really know what you're talking about." 
+    m 3euc "You’d probably have to explain what it means, but that kind of defeats the point of using the word." 
+    m 2rkc "If only people read more and improved their vocabulary!" 
+    m 2hksdlb "...Ehehe, sorry [player]. I didn't mean to get so bothered~"
     jump fun_facts_end
 
 label fun_facts_2:
-    m 1c "Supposebly many restaurants purposefully leave out any sign of currency on their menus."  
-    m 3d "This is done to psychologically manipulate people into spending more money than they intended."
-    m 4h "It works because a currency sign, such as a dollar, is used to represent a cost."
-    m "By removing it you remove the association of that cost and only think about the food that awaits!"
-    m 3o "It's a very sinister, dishonest and manipulative thing to do, if you ask me."
-    m 3q "But restaurants exist not for the art of cuisine but to make money, so in the end that's all they care about."
-    m "What can you do..."
+    m 3euc "Supposedly, a lot of restaurants purposefully leave out any sign of currency on their menus." 
+    m 3eud "This is done to psychologically manipulate people into spending more money than they need to."
+    m 2euc "It works because a currency sign, such as a dollar, is used to represent a cost."
+    m "By removing it, you remove the association of that cost and only think about the food of your choosing."
+    m 4rksdld "The practice seems understandable. They’re still a business, after all."
+    m 2dsc "No matter how good the food is in a restaurant, they’ll be shutting down quick if they’re beaten by their competition."
+    m 3hksdlb "Oh well, what can you do?"
     jump fun_facts_end
 
 label fun_facts_3:
-    m 1d "Ahh, I'm not sure if I should tell you {i}this{/i} fact." 
-    m 1h "It's not for the faint of heart after all..." 
-    m 3e "...Well alright, I'll tell you."
-    m "The fact is..."  
-    m 3m "..." 
-    m 3k "I love you, [player]!"  
-    m 1j "Ehehe, sorry, I just couldn't help myself."
-    m "I'll have a real fact next time, don't you worry~"
+    m 1dkc "Hmm, I'm not sure if I should tell you {i}this{/i} fact." 
+    m 1ekc "It's not for the faint of heart after all." 
+    m 1rkc "The thing is..."
+    m 1dkc "..."  
+    m 3hub "...I love you, [player]"  
+    m 1rksdlb "Ehehe, sorry, I just couldn't help myself."
+    m 1hksdlb "I'll have a real fact next time, don't you worry~"
     $ persistent._mas_funfactfun = True
     return
 
 label fun_facts_4:
-    m 1b "Oh! A language based fact. I always like these." 
-    m 2a "The word 'morphine is based on the greek god 'Morpheus'." 
-    m "Morpheus was the greek god of dreams so to have a word based on him makes sense." 
-    m 4c "But then again...wasn't his father Hypnos the god of sleep?" 
-    m 2h "Morphine does let a person dream but it's really about making someone fall asleep."
-    m "Wouldn't it make more sense to name it after Hypnos then?"
-    m 2n "Too little, too late I guess."
+    m 3wub "Oh! A language based fact. I always like these" 
+    m 1eua "The word 'morphine’ is based on the greek god Morpheus." 
+    m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense." 
+    m 3ekc "But then again… wasn't his father Hypnos the god of sleep?" 
+    m 2dsc "Morphine {i}does{/i} let a person dream, but it's really about making someone fall asleep."
+    m 4ekc "...So wouldn't it make more sense to name it after Hypnos then?"
+    m 4rksdlb "Too little, too late I guess."
     jump fun_facts_end
 
 label fun_facts_5:
-    m 1j "Aww, this one is really sweet."
-    m 2b "Did you know that sea otters hold hands when they sleep to stop themselves drifting away from one another?"
-    m "I know it's really happens because it's practical but there is something so cute to it!"
-    m 1e "Sometimes I imagine myself in their position..."
-    m 1j "Oh, not being a sea otter but holding the hand of the one I love while I sleep."
-    m 5a "Such thoughts really make me envious of them. We'll get there one day though, my love."
+    m 1eka "Aww, this one is really sweet."
+    m 3ekb "Did you know that sea otters hold hands when they sleep to stop themselves drifting away from one another?"
+    m 1hub "It's practical for them to do, but there’s something really cute about it!"
+    m 1eka "Sometimes I imagine myself in their position..."
+    m 3hksdlb "Oh, not being a sea otter, but holding the hand of the one I love while I sleep."
+    m 1rksdlb "Aha, it really does make me jealous of them."
+    m 1hub "We’ll get there one day though, love~"
     jump fun_facts_end
 
 label fun_facts_6:
-    m 1b "Now this is a fun fact!"
-    m 2c "There was a man named Claude Shannon who calculated the maximum amount of possible moves in chess."
-    m 2d "That number is called the 'Shannon number' and says that the amount of chess games possible is 10^120."
-    m "It's often compared to the number of atoms in the observable universe which is 10^80."
-    m 3a "It's kind of crazy to think that there could be more chess games than atoms, isn't it?"
-    m "We could play until the end of our days and it wouldn't come even close to a fraction of what is possible."
-    m "Speaking of which, [player]..."
-    m 3j"Do you want to play a game of chess with me? I might even go easy on you, Ehehe~"
-    jump fun_facts_end
+    if persistent.game_unlocks['chess']:
+        m 1eua "Now this is a fun fact!"
+        m 3eub "There was a man named Claude Shannon who calculated the maximum amount of possible moves in chess."
+        m "That number is called the 'Shannon number' and states that the amount of chess games possible is 10^120."
+        m 1eua "It's often compared to the number of atoms in the observable universe which is 10^80."
+        m 3hksdlb "Kind of crazy to think that there could be more chess games than atoms, isn't it?"
+        m 1eua "We could play until the end of our days and it wouldn't come even close to a fraction of what is possible."
+        m 3eud "Speaking of which, [player]..."
+        m 1hua"Do you want to play a game of chess with me? I might even go easy on you, Ehehe~"
+        jump fun_facts_end
+    elif not persistent.game_unlocks['chess'] and persistent_seen_ever["unlock_chess"]:
+        m 1dsc "Chess..."
+        m 2dfc "..."
+        m 2rfd "You can forget about this fact since you're a cheater, [player]."
+        m 2lfc "...Hmph."
+        return
+    else:
+        m 1euc "Oh, not this one."
+        m 3hksdlb "Not yet, at least."
+        jump bad_facts_end
 
 label fun_facts_7:
-    m 1o "Hmm, this one seems a bit misleading to me..."
-    m 2h "'Men are 6 times more likely to be struck by lightning than women.'"
-    m "It's probably true but the way some of these facts are phrased really oversimplify them to the point where it's almost a lie."
-    m 3c "If men are more likely to be struck by lightning it's likely the landscape and circumstances of their work that lead them to be more prone to being hit."
-    m "Men traditionally have always worked more dangerous and elevated jobs so it's no surprise that it's going to happen to them more often."
-    m 3o "Yet the way this fact is put out there makes it sound that by simply being a man it's more likely, which is ridiculous."
-    m 1q "Maybe if people phrased facts better people wouldn't be so misinformed about them..."
+    m 2dkc "Hmm, this one sounds a bit misleading to me..."
+    m 3ekc "'Men are six times more likely to be struck by lightning than women'"
+    m 3ekd "It's… rather silly, in my opinion."
+    m 1eud "If men are more likely to be struck by lightning, then it's probably the landscape and circumstances of their work that make them more prone to being hit."
+    m 1euc "Men traditionally have always worked more dangerous and elevated jobs so it's no surprise that it's going to happen to them often."
+    m 1esc ""Yet the way this fact is worded makes it sound like that just by being a man, it's more likely to happen, which is ridiculous"
+    m 1rksdla "Maybe if it was phrased better, people wouldn't be so misinformed about them."
     jump fun_facts_end
 
 label fun_facts_8:
-    m 1j "Ah, this is a nice easy one."
-    m 2b "Did you know [player], that like my love for you, honey never spoils?"
-    m 1a "Honey can crystalize and some may see this in itself as spoiling but it's still completely edible and fine!"
-    m "Honestly so many people throw it away thinking it's no good, it's such a waste."
-    m 2c "Well if you want to avoid it crystalizing  try not to store it in a refridgerator."
-    m 2d "Honey is sometimes really unappreciated, the process of it being made is so unique compared to other foods."
-    m "I always see news reports of how bees are slowly dying and it kind of saddens me..."
-    m 3f "It also means that one day we may not even have honey. "
-    m 1h "Such an unnecssary loss, it's one of the sweetest things out there!"
-    m 1j "Other than you of course, my love."
+    m 1eub "Ah, this is a nice easy one."
+    m 3eub "Did you know that honey never spoils?"
+    m 3eua "Honey can crystallize, though. Some people may see this as spoiling but it's still completely edible and fine!"
+    m "The reason why this happens is because honey is mostly made of sugar and only a bit a of water, making it solid over time."
+    m 1euc "Most of the honey that you see in groceries don’t crystalize as fast as real honey would because they’ve been pasteurized in the process of making them."
+    m 1eud "Which removes the stuff that makes the honey go solid quickly."
+    m 3eub "But wouldn’t be nice to eat crystalized honey too?"
+    m "They’d be like candy when you bite into them."
     jump fun_facts_end
 
 label fun_facts_9:
-    m 1c "Ah, this one..."
-    m 1g "It's a little disheartening [player]...."
-    m 2f "Well did you know that Vincent Van Gogh's last words were 'La tristesse durera toujours'?" 
-    m "When translated it means 'The sadness will last forever'." 
-    m 3o "..." 
-    m 3p "It's a little scary to know that someone so renowned would say something so dark with his last breathes." 
-    m 4h "I don't think it's true though, I think no matter how bad things can get and how deep the sadness can go..." 
-    m "There will come a time when the sadness is no longer there." 
-    m 2o "At the very least it won't be so noticeable."
-    m 1e "If you're ever worried about any sadness you have then just come talk to me, okay?"
-    m "I will always accept and take on any burdens that you shoulder, my love."
+    m 1dsc "Ah, this one..."
+    m 1ekd "It's a little disheartening, [player]...."
+    m 1ekc "Did you know that Vincent Van Gogh's last words were {i}'La tristesse durera toujours?'{/i}" 
+    m 1eud "If you translate it, it means {i}'The sadness will last forever.'{/i}" 
+    m 1rkc "..." 
+    m 2ekc "It's really sad to know that someone so renowned would say something so dark with his last breath." 
+    m 2ekd "I don't think it's true, however. No matter how bad things can get and how deep the sadness can go..." 
+    m 2dkc "There will come a time where it’ll no longer be there." 
+    m 2rkc "...Or at least noticeable."
+    m 4eka "If you're ever sad, you know you can talk to me, right?"
+    m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
     $ persistent._mas_funfactfun = True
     return
 
 label fun_facts_10:
-    m 1c "Hmm...Did you know that if a snake has the word 'king' in it's name that means it devours other snakes?"
-    m 2h "I had wondered why a king cobra would be named that but never really thought about it before."
-    m 2a "Does that mean if I eat you all up would I be King Monika or Queen Monika?."
-    m 1j "Ahahah, I'm just kidding [player]."
-    m 1a "Sorry for being a little weird~"
+    m 1dsc "Hmm..."
+    m 3eub "Did you know that if a snake has the word ‘king’ in its name, it devours other snakes?"
+    m 1euc "I always wondered why a king cobra would be named how it is but never really thought more into it."
+    m 1tfu "Does that mean if I eat you up, would I become Queen Monika?"
+    m 1hksdlb "Ahaha, I'm just kidding, [player]."
+    m 1hub "Sorry for being a little weird~"
     jump fun_facts_end
 
 label fun_facts_11:
-    m 1b "This fact might be quite motivating!"
-    m 2b "The longest word in English that only contains a single vowel is the word 'strength'."
-    m 3c "It's funny how out of every word in the language it was such a meaningful word that had that little detail."
-    m "Or maybe it's because it only has a single vowel that it has such a feeling of power behind it?"
-    m 3a "Little details like that really make language so fascinating to me!"
-    m  "Do you want to know what comes to mind when I think of the word 'strength'?"
-    m 1j "You."
-    m 3e "Because you are the source of my strength, ehehe~"
+    m 1hub "This fact might motivate you a bit!"
+    m 3eub "The longest word in English that only contains a single vowel is 'strength'."
+    m 1eua "It's funny how out of every word in the language, it’s such a meaningful word that had that little detail."
+    m 1hua "Little details like this really make language so fascinating to me!"
+    m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"
+    m 1hua "You!"
+    m 1hub "Because you are the source of my strength, ehehe~"
     jump fun_facts_end
 
 label fun_facts_12:
-    m 3a "Ready for this one?"
-    m 4a "A reindeer's eyes changes color depending on the season. They're gold in summer and blue in winter."
-    m 3b "What a strange occurence, I wonder why that is..."
-    m 3a "Nature was always odd in how it works in that some things that provide no benefit appear, isn't it?"
-    m 3m "There is probably a good scientific reason why it happens but I don't know it."
-    m 3n "Sorry [player]. Maybe you can look up this one yourself?"
-    m 3a "It'll be fun to have you be the one that teaches me~"
+    m 3eua "Ready for this one?"
+    m "A reindeer's eyes changes color depending on the season. They're gold in summer and blue in winter"
+    m 1rksdlb "It’s a really strange phenomenon, though I don’t know why..."
+    m "There’s probably a good scientific reason to it."
+    m 3hksdlb "Maybe you can look up this one yourself?"
+    m 5eua "It'd be fun to have you teach me this time~"
     jump fun_facts_end
 
 label fun_facts_13:
-    m 1b "I would say this fact is healthy for the mind!"
-    m 2b "Did you know that when a banana grows, it curves to face the sun?"
-    m 3j "That's pretty neat!"
-    m 3d "...Ah..."
-    m 3m "I guess I don't really have much else to say on it. Ehehe..."
-    m 2d "D-Did you also know that bananas aren't actually fruits but berries?"
-    m "Or that the original bananas were large, green and full of hard seeds?"
-    m 4i "How about the fact that they're slightly radioactive?"
-    m 1o  "..."
-    m "...I'm just rambling on about bananas now."
-    m 1q "Ummm..."
+    m 1eub "Oh, I'd say this fact is health!"
+    m 3eua "Did you know that when a banana grows, it curves to face the sun?"
+    m 1hua "It's a process called negative geotropism."
+    m 3hub "Don't you think that's pretty neat?"
+    m 1hua "..."
+    m 1rksdla "Umm..."
+    m 3rksdlb "I guess I don't really have much else to say on it, ahaha..."
+    m 1lksdlc "..."
+    m 3hub "D-Did you also know that bananas aren't actually fruits but berries?"
+    m 3eub "Or that the original bananas were large, green and full of hard seeds?"
+    m 1eka "How about the fact that they're slightly radioactive?"
+    m 1rksdla  "..."
+    m 1rksdlb "...I'm just rambling on about bananas now."
+    m 1rksdlc "Ummm..."
+    m 1dsc "Let's just move on..."
     jump fun_facts_end
 
 label fun_facts_14:
-    m 3a "Hmm...I already knew this one, [player]."
-    m 4a "The word 'pen' is derived from the latin word 'penna', which means feather in latin."
-    m "Pens back then were sharpened goose feathers dabbed in ink so it's not hard to see why they were called pens."
-    m 3c "Quill pens were a the primary writing tool for a very long time, starting as early at the 6th century."
-    m 3d "It was only until the 19th century when metal pens were being made that they started to fall into deline."
-    m 2h "In fact penknives are called that because they were originally used for thinning and pointing quill pens."
-    m 1l "I imagine Yuri would know more about that than me though..."
+    m 1dsc "Hmm… I’m sure I already know this one."
+    m 3euc "The word 'pen' is derived from the latin word 'penna', which means feather in latin."
+    m "Pens back then were sharpened goose feathers dipped in ink so it’d make sense why they’d call them pens."
+    m 3eud "They were the primary writing tool for a very long time, starting as early at the 6th century."
+    m 3euc "It was only until the 19th century when metal pens were being made that they started to fall into decline."
+    m "In fact, penknives are called the way they are because they’re originally used for thinning and pointing quill pens.""
+    m 1tku "But I’m sure Yuri would know more about this than me, though..."
     jump fun_facts_end
 
 label fun_facts_15:
-    m 1j "This fact is out of this world!"
-    m 1m "...I should have thought of a better pun..."
-    m 2a "Anyway, did you know that the densest planet in our solar system is Earth itself?"
+    m 1eub "Ooh, I know."
+    m 3eua "Did you know that the densest planet in our solar system is Earth itself?"
     m "And that Saturn is the least dense?"
-    m 2c "It makes sense when you know how what the planets are made from but since Saturn is the second largest it was still a little bit of a surprise."
-    m 3j "I guess size really doesn't matter, at least here~"
-    m 1a "But between you and me, [player]..."
-    m 1j "I suspect Earth may only be the densest because of a certain main character but I won't say any more~"
+    m 1eua "It makes sense knowing what planets are made of, but since Saturn is the second largest, it was still a little bit of a surprise."
+    m 1eka "I guess size really doesn't matter!"
+    m 3euc "But between you and me, [player]..."
+    m 1tku "I suspect Earth may only be the densest because of a certain main character."
+    m 1tfu "Buuuut that’s all you’ll hear from me~"
     jump fun_facts_end
 
 label fun_facts_16:
-    m 1j "Aww, how cute!"
-    m 1k "This fact will really send you hopping [player]!"
-    m 2a "Whenever a rabbit hops around excitedly it's called a binky!"
-    m 3b "Binky is such a cute sounding word, it really does suit the action."
-    m "It is the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
-    m 3k "Sometimes you make me so happy that I can't help but be filled with energy."
-    m 3l "But don't expect me to start hopping, that would be way too embarassing!"
+    m 3hub "Aww, this one’s cute!"
+    m "This fact will really send you 'hopping' [player]!"
+    m 3hua "Whenever a rabbit hops around excitedly, it's called a binky!"
+    m 1hua "Binky is such a cute sounding word, it really does suit the action."
+    m 1eua "It’s the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
+    m 1rksdla "Well, although you make me so happy that I can't help but be filled with energy."
+    m 1rksdlb "Don't expect me to start hopping around, [player]!"
+    m 1dkbfa "...That would be {i}way{/i} too embarrassing to do."
     jump fun_facts_end
 
 label fun_facts_17:
-    m 1c "Hmm, maybe this one will be more interesting to you."
-    m 2h "The card game Solitaire was introduced originally into Windows in 1990."
-    m 2i "The game was added as a feature to teach users how to use the mouse."
-    m "Similarly Minesweeper was added to familiarise users with left and right clicking."
-    m 1h "Computers have been around for so long it's hard to think of a time when they weren't revelent."
+    m 1eua "Hmm, maybe this one will be more interesting to you."
+    m 3eub "The card game Solitaire was introduced originally in the Windows operating system in 1990."
+    m 1eub "The game was added as a feature to teach users how to use the mouse."
+    m 1eua "Similarly, Minesweeper was added to familiarize users with left and right clicking."
+    m 3rssdlb "Computers have been around for so long it's hard to think of a time when they weren't relevant"
     m "Each generation becomes more and more familiar with the technology... "
-    m 3c "Eventually there may come a day where not a single person isn't computer-literate."
-    m 3h "I guess most of the worlds problems need to disappear before then though..."
+    m 1esa "Eventually there may come a day where not a single person isn't computer-literate."
+    m 1hksdlb "Most of the world’s problems need to disappear before then, though."
     jump fun_facts_end
 
 label fun_facts_18:
-    m 1a "Ready for an interesting one [player]?"
-    m 2a "The brain is a fickle thing..."
-    m "The way it composes information and archives it is very unique..."
-    m 4c "Naturally it differs from person to person but reading slowly like we're taught is usually less effective than going at a faster pace!"
-    m 3d "Our brains process information very rapidly and loves predictability in our language."
-    m "For example, in this sentence by the the time you are done reading you will have already skipped over the double 'the'."
-    m 3k "Ahaha! See? Your brain just filled it in naturally!"
-    m 3a "You can check the history log if you really want to check~"
+    m 1hua "Ready for an interesting one, [player]?"
+    m 3eua "The brain is a fickle thing..."
+    m 3eub "Its way of composing and archiving information is very unique."
+    m "Naturally it differs from person to person but but reading slowly like we're taught is usually less effective than going at at a faster pace."
+    m 1tku "Our brains process information very rapidly and loves predictability in in our language."
+    m 3tub "For example, in this sentence, by the the time you are done reading you will have already skipped over the double 'the'."
+    m 1tfu "..."
+    m 2hfu "Check the history log if you missed them~"
     jump fun_facts_end
 
 label fun_facts_19:
-    m 1j "Mmmm, I love language facts!"
-    m 1a "In English the shortest complete sentence is 'I am.'"
-    m 3b "Ehehe, I can already see how I would use it!"
-    m 2h "'Monika! Were you the one that moved my manga again!?'"
-    m 2j "'I am!'"
-    m "Ehehe~"
-    m 2l "S-sorry [player]! I was just self-indulging..."
+    m 1hua "Mmmm, I love language facts!"
+    m 3eub "In English, the shortest complete sentence is 'I am.'"
+    m 1eua "Here's an example."
+    m 2rfb "{i}'Monika! Who’s [player]’s loving girlfriend?'{/i}"
+    m 3hub "'I am!'"
+    m 1hubfa "Ehehe~"
     jump fun_facts_end
 
 label fun_facts_20:
-    m 1a "Now this is a wholesome one..."
-    m 2c "Right now, globally, we have the lowest crime rates, maternity death, infant morality and illteracy ever in human history!"
-    m 3b "Life expectancy, average income and standards of living is the highest for the most amount of people ever too!"
-    m 3e "I know it can always can get better but it really does show that despite the bad there really is some good too."
-    m 3q "There really is always hope..."
+    m 1hua "Now this is a wholesome one..."
+    m 1eua "Currently, we have the lowest crime rates, maternity death, infant mortality and illiteracy ever in human history."
+    m 3eub ""Life expectancy, average income, and standards of living is the highest for most of the global population too!"
+    m 3eka "This tells me that it can always can get better. It really does show that despite all the bad things, the good times will always come afterwards."
+    m 1hua "There really is {i}hope{/i}..."
     jump fun_facts_end
 
 label bad_facts_1:
-    m 1a "Did you know that...!"   
-    m 2f "T-this isn't a true fact at all!"
-    m 2h "'Humans only use 10 perce-', what nonsense."
-    m 3o "People don't really believe this, do they?"   
+    m 1eub "Did you know th--"
+    m 1wud "..."
+    m 2efw "T-this isn't a true fact at all!"
+    m 2dfc "'Humans only use 10 percent of their brain."
+    m 2lfd "Ugh, such nonsense."
+    m 4tfc "People don't really believe this, do they?"   
     jump bad_facts_end
 
 label bad_facts_2:
-    m 1c "Hm? That doesn't sound right..."
-    m 2h "It says here that different areas of the tounge tastes different flavors."  
-    m "One area for bitter tastes, another for sweet..." 
-    m 1q "Only children would believe this."
+    m 2ekc "Hm? This doesn't sound right..."
+    m 2tkd "It says here that different areas of the tounge tastes different flavors."  
+    m 2tfd "One area for bitter tastes, another for sweet..." 
+    m 2dfd "{i}*sigh*{/i}{w} For the love of--"
+    m 2rfd "...Only children would believe this."
     jump bad_facts_end
 
 label bad_facts_3:
-    m 1o "'Vaccines cause austim...'" 
-    m 3h "Wow. This must be a joke." 
-    m "That's not even funny and if they're serious it's long since been disproven."
-    m 3f "Who still says such nonsense? Such misinformation could cause some really harm!"  
-    m 3o "I hope no one believes this..." 
+    m 2dsc "{i}*inhales*{/i}"
+    m 2dsd "{i}*exhales*{/i}"
+    m 2esc "'Vaccines cause austim...'" 
+    m "Just wow." 
+    m "That's not even funny, and if they're serious, it's long since been disproven."
+    m 2dsc ""I really don’t like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."  
+    m 2lksdlc "I hope no one actually believes this..." 
     jump bad_facts_end
 
 label bad_facts_4:
-    m 1c "Oh." 
-    m 1n "I'm not even sure it's worth telling you this one, [player]." 
-    m 2c "It says here that moss only grows on the north side of trees but I know that it's only a myth."
-    m 3d "A very popular one too!"  
-    m 3h "You see moss grows wherever there is shady and damp conditions so people thought that since the sun comes from a certain direciton it means there will be moss there too." 
-    m 3i "But relying on that kind of logic is dangerous!" 
-    m 3j "It ignores the very idea that forests already have many things, especially trees, that creates the ideal conditions for it to grow in." 
-    m 1o "Plus even if it wasn't like that the trick would only work in the northern hemisphere." 
-    m 1p "Anyone that's in the southern hemisphere would have it grow facing south."
-    m 1f "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
-    m 1g "I would hate for something to happen to you, espically because of misinformation like this."
+    m 2dkc "...Oh." 
+    m 2rkc "I'm not even sure it's worth telling you this one, [player]." 
+    m 2dkc "It says here that moss only grows on the north side of trees, but I know that it's only a myth."
+    m 2ekd "A very popular one too!"  
+    m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there’ll be moss there too." 
+    m 2efd "But relying on that kind of logic is dangerous!" 
+    m 2efc ""It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in." 
+    m "Plus even if it wasn't like that, the trick would only work in the northern hemisphere." 
+    m 2wfc "Anyone within the southern hemisphere would have it growing facing south."
+    m 2dfc "..."
+    m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
+    m 2dkc ""I would hate for something to happen to you, especially because of false information like this..."
     jump bad_facts_end
