@@ -516,18 +516,10 @@ init -1 python in evhand:
     # restart topic blacklist
     RESTART_BLKLST = [
         "mas_crashed_start",
-        "monika_affection_nickname"
+        "monika_affection_nickname",
+        "mas_coffee_finished_brewing",
+        "mas_coffee_finished_drinking"
     ]
-
-    #### delayed action maps
-    # how this works:
-    #   add a label that should have a delayed action as keys
-    #   values should consist of tuple:
-    #       [0] -> conditional as string for this action to pass
-    #       [1] -> action constant for what should be done (EV_ACTION)
-    DELAYED_ACTION_MAP = {
-        
-    }
 
     # as well as special functions
     def addIfNew(items, pool):

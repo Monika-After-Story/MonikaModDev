@@ -1155,5 +1155,8 @@ label ch30_reset:
                 _today = datetime.date.today()
                 if freeze_date > _today:
                     persistent._mas_affection["freeze_date"] = _today
+
+    ## should we drink coffee?
+    $ _mas_startupCoffeeLogic()
             
     return

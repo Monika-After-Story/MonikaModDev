@@ -927,3 +927,86 @@ label mas_new_character_file:
     m 1hua "Doesn't that sound wonderful?"
     m 3hub "I can't wait to join you wherever you go."
     return
+
+
+### coffee is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_coffee_finished_brewing"
+        )
+    )
+
+
+label mas_coffee_finished_brewing:
+    m 1esd "Oh, coffee's done."
+
+    # this line is here so we dont it looks better when we hide monika
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statement so we ensure that monika is only shown once her
+    # coffee mug is ready
+    pause 1.0
+    $ monika_chr.wear_acs_pst(mas_acs_mug)
+    $ persistent._mas_coffee_brew_time = None
+    $ mas_drinkCoffee()
+    pause 1.0
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
+### coffee drinking is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_coffee_finished_drinking"
+        )
+    )
+
+
+label mas_coffee_finished_drinking:
+
+    # monika only gets a new cup between 6am and noon
+    $ get_new_cup = mas_isCoffeeTime()
+    m 1esd "Oh, I've finished my coffee."
+
+    if get_new_cup:
+        # its currently morning, monika should get another drink
+        m 1eua "I'm going to get another cup."
+
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statemetns so we can properly add / remove the mug
+    pause 1.0
+    # decide if new coffee
+    if not get_new_cup:
+        $ monika_chr.remove_acs(mas_acs_mug)
+        $ persistent._mas_coffee_cup_done = None
+
+    else:
+        $ mas_drinkCoffee()
+
+    pause 1.0
+        
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return

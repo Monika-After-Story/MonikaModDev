@@ -325,6 +325,55 @@ label mas_reaction_gift_test2:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
+## coffee vars 
+# NOTE: this is just for reference, check sprite-chart for inits
+# persistent._mas_acs_enable_coffee
+# persistent._mas_coffee_brewing
+
+init 5 python:
+    addReaction("mas_reaction_gift_coffee", "coffee")
+
+label mas_reaction_gift_coffee:
+
+    m 1euc "Hmm?"
+    m 1euc "Oh,{w} is this coffee?"
+
+    if persistent._mas_coffee_been_given:
+        $ mas_gainAffection(bypass=True)
+        m 1wuo "It's a flavor I've haven't had before, too."
+        m 1hua "I can't wait to try it!"
+        m "Thank you so much, [player]!"
+
+    else:
+        show emptydesk at i11 zorder 9
+        $ mas_gainAffection(modifier=2, bypass=True)
+
+        m 1hua "Now I can finally make some!"
+        m "Thank you so much, [player]!"
+        m "Why don't I go ahead and make a cup right now?"
+        m 1eua "I'd like to share the first with you, after all."
+
+        # monika is off screen
+        hide monika with dissolve
+        pause 2.0
+        m "I know there's a coffee machine somewhere around here...{w=2}{nw}"
+        m "Ah, there it is!{w=2}{nw}"
+        pause 5.0
+        m "And there we go!{w=2}{nw}"
+        show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+        hide emptydesk
+
+        # monika back on screen
+        m 1eua "I'll let that brew for a few minutes."
+        $ mas_brewCoffee()
+        $ persistent._mas_acs_enable_coffee = True
+        $ persistent._mas_coffee_been_given = True
+
+    $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+# ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
     $ persistent._mas_filereacts_just_reacted = False
     return

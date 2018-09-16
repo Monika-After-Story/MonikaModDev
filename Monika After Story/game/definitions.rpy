@@ -2734,6 +2734,7 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
+
     def mas_isMonikaBirthday():
         return datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22)
 
@@ -2792,6 +2793,221 @@ init -1 python:
         except:
             appIds = None
         return appIds
+
+init 2 python:
+    # global functions that should be defined after level 0
+
+    def mas_isCoffeeTime(_time=None):
+        """
+        Checks if its coffee time for monika
+
+        IN:
+            _time - time to check
+                If None, we use current time
+                (Defualt: None)
+
+        RETURNS:
+            true if its coffee time, false if not
+        """
+        if _time is None:
+            _time = datetime.datetime.now()
+
+        # monika drinks coffee between 6 am and noon
+        return (
+            store.mas_coffee.COFFEE_TIME_START 
+            <= _time.hour <
+            store.mas_coffee.COFFEE_TIME_END
+        )
+
+
+    def mas_brewCoffee(_start_time=None):
+        """
+        Starts brewing coffee aka sets up the coffee finished brewing event
+
+        IN:
+            _start_time - time to start brewing the coffee
+                If None, we assume now
+                (Default: None)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # start brew
+        persistent._mas_coffee_brew_time = _start_time
+
+        # calculate end brew time
+        end_brew = random.randint(
+            store.mas_coffee.BREW_LOW,
+            store.mas_coffee.BREW_HIGH
+        )
+
+        # setup the event conditional
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        brew_ev.conditional = (
+            "persistent._mas_coffee_brew_time is not None "
+            "and (datetime.datetime.now() - persistent._mas_coffee_brew_time) "
+            "> datetime.timedelta(0, {0})"
+        ).format(end_brew)
+        brew_ev.action = EV_ACT_PUSH
+
+
+    def mas_drinkCoffee(_start_time=None):
+        """
+        Lets monika drink coffee aka sets the time she should stop drinking
+        coffee (coffee finished drinking event)
+
+        IN:
+            _start_time - time to start dirnking coffee
+                If None, we use now
+                (Defualt: now)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # delta for drinking
+        # NOTE: between 10 minutes to 2 hours
+        drinking_time = datetime.timedelta(
+            0,
+            random.randint(
+                store.mas_coffee.DRINK_LOW,
+                store.mas_coffee.DRINK_HIGH
+            )
+        )
+
+        # setup the stop time for the cup
+        persistent._mas_coffee_cup_done = _start_time + drinking_time
+
+        # setup the event conditional
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        drink_ev.conditional = (
+            "persistent._mas_coffee_cup_done is not None "
+            "and datetime.datetime.now() > persistent._mas_coffee_cup_done"
+        )
+        drink_ev.action = EV_ACT_PUSH
+
+        # increment cup count
+        persistent._mas_coffee_cups_drank += 1
+
+
+    def mas_resetCoffee():
+        """
+        Completely resets all coffee vars
+        NOTE: this only resets the coffee drinking vars, not the history
+        """
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        monika_chr.remove_acs(mas_acs_mug)
+        brew_ev.conditional = None
+        brew_ev.action = None
+        drink_ev.conditional = None
+        drink_ev.action = None
+        persistent._mas_coffee_brew_time = None
+        persistent._mas_coffee_cup_done = None
+
+
+    def _mas_startupCoffeeLogic():
+        """
+        Runs startup logic regarding coffee stuff.
+
+        It is assumed that this run prior to conditional checking.
+        """
+        # do we even have coffee enabled?
+        if not persistent._mas_acs_enable_coffee:
+            return
+
+        # setup some vars
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        _now = datetime.datetime.now()
+        _chance = random.randint(1, 100)
+        time_for_coffee = mas_isCoffeeTime(_now)
+
+        # setup some functions
+        def still_brew(_time):
+            return (
+                _time is not None 
+                and _time.date() == _now.date()
+                and mas_isCoffeeTime(_time)
+            )
+
+        def still_drink(_time):
+            return _time is not None and _now < _time
+
+
+        # should we even drink coffee right now?
+        if not time_for_coffee:
+
+            # if its not time for coffee, we can still be drinking coffee
+            # because of a couple reasons:
+            #   - monika started her brew before her cut off time
+            #   - monika's drink time hasn't been reached yet
+            if still_brew(persistent._mas_coffee_brew_time):
+                # monika's brew started before the cut off.
+                # if the brew is done, then skip to drinking.
+                # otherwise, the finished brewing event will trigger on its
+                # own
+                if brew_ev.conditional is not None and eval(brew_ev.conditional):
+                    # even though this in inaccurate, it works for the
+                    # immersive purposes, so whatever.
+                    mas_drinkCoffee(persistent._mas_coffee_brew_time)
+
+                    if not still_drink(persistent._mas_coffee_cup_done):
+                        # monika should have finished this coffee already
+                        mas_resetCoffee()
+
+                    else:
+                        # monika is currently drinking this coffee
+                        brew_ev.conditional = None
+                        brew_ev.action = None
+                        persistent._mas_coffee_brew_time = None
+                        monika_chr.wear_acs_pst(mas_acs_mug)
+
+            elif still_drink(persistent._mas_coffee_cup_done):
+                # monika is still drinking coffee
+                # clear brew vars just in case
+                brew_ev.conditional = None
+                brew_ev.action = None
+                persistent._mas_coffee_brew_time = None
+
+                # make sure she has the cup, just in case
+                if not monika_chr.is_wearing_acs(mas_acs_mug):
+                    monika_chr.wear_acs_pst(mas_acs_mug)
+
+            else:
+                # otherwise, just reset coffee
+                mas_resetCoffee()
+
+        else:
+            # its coffee time!
+            # if we are currently brewing or drinking, we don't need to do
+            # anything else
+            if (
+                    still_brew(persistent._mas_coffee_brew_time)
+                    or still_drink(persistent._mas_coffee_cup_done)
+                ):
+                return
+
+            # otherwise, lets checek if monika should be brewing or drinking
+            # coffee
+
+            # first clear vars so we start fresh
+            mas_resetCoffee()
+
+            if (
+                    _now.hour < store.mas_coffee.BREW_DRINK_SPLIT
+                    and _chance <= store.mas_coffee.BREW_CHANCE
+                ):
+                # monika is brewing coffee
+                mas_brewCoffee()
+
+            elif _chance <= store.mas_coffee.DRINK_CHANCE:
+                # monika is drinking coffee
+                mas_drinkCoffee()
+                monika_chr.wear_acs_pst(mas_acs_mug)
+
+        return
+
+
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
