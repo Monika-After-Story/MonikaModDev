@@ -1771,14 +1771,210 @@ label greeting_returned_home:
         $ grant_xp(xp.NEW_GAME)
 
     else:
-        m 2ekp "That wasn't much of a trip, [player]."
-        m "Next time better last a little longer..."
+        call greeting_returned_home_lessthan5mins
+
         $ mas_loseAffection()
 
     return
 
-label greeting_returned_home_bday:
-    # TODO: all birthday stuff for the returned home greeting here
-    m "test dialogue"
+label greeting_returned_home_lessthan5mins:
+    m 2ekp "That wasn't much of a trip, [player]."
+    m "Next time better last a little longer..."
     return
 
+default persistent._mas_bday_date_count = 0
+default persistent._mas_bday_date_time_out = datetime.timedelta(0)
+default persistent._mas_bday_date_affection_lost = 0
+default persistent._mas_bday_date_affection_gained = 0
+
+label greeting_returned_home_bday:
+    python:
+        total_time_out = store.mas_dockstat.timeOut(mas_monika_birthday)
+        fifty_mins = datetime.timedelta(seconds=50*60)
+        one5_hour = datetime.timedelta(seconds=int(1.5*3600))
+        three_hour = datetime.timedelta(seconds=3*3600)
+        six_hour = datetime.timedelta(seconds=6*3600)
+
+        def is_first_date():
+            return persistent._mas_bday_date_count < 1
+
+
+        def is_short_date(_timeout):
+            return _timeout <= one5_hour
+
+
+        def is_normal_date(_timeout):
+            return one5_hour < _timeout <= six_hour
+
+
+        def is_long_date(_timeout):
+            return six_hour < _timeout
+
+
+        def lose_and_track_affection(_mod):
+            prev_aff = _mas_getAffection()
+            mas_loseAffection(modifier=_mod)
+            persistent._mas_bday_affection_lost += (
+                prev_aff - _mas_getAffection()
+            )
+
+        
+        def cap_gain_aff(amount):
+            persistent._mas_bday_affection_gained += amount
+            if persistent._mas_bday_affection_gained < 50:
+                mas_gainAffection(amount, bypass=True)
+
+
+        def regain_lost_aff():
+            if persistent._mas_bday_affection_lost > 0:
+                mas_gainAffection(
+                    persistent._mas_bday_affection_lost,
+                    bypass=True
+                )
+                persistent._mas_bday_affection_lost = 0
+
+
+    if time_out <= five_minutes:
+        # under 5 minutes
+        call greeting_returned_home_lessthan5mins
+        $ lose_and_track_affection(2)
+
+    elif time_out <= fifty_mins:
+        # under 50 minutes
+
+        if is_first_date():
+            $ lose_and_track_affection(1)
+            m "the first date was under 50 minutes"
+
+        elif is_short_date(total_time_out):
+            $ lose_and_track_affection(1)
+            call greeting_returned_home_bday_short_sub_short_total
+
+        elif is_normal_date(total_time_out):
+            $ regain_lost_aff()
+
+            # normal date has a affection range between 3.3/hour and 6.6/hour
+            # we do 4 so its not a cheap way to gain affection quickly while
+            # still being helpful to people who do multi dates
+            $ cap_gain_aff(4)
+            call greeting_returned_home_bday_short_sub_normal_total
+
+        else:
+            $ regain_lost_aff()
+
+            # been out for a long time already
+            # long dates has an affection gain of 8.3/hour.
+            $ cap_gain_aff(6)
+            call greeting_returned_home_bday_short_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+
+    elif time_out <= one5_hour:
+        # under 1.5 hour
+
+        if is_first_date():
+            $ cap_gain_aff(1)
+            m "the first date was under 1.5 hours"
+
+        elif is_short_date(total_time_out):
+            $ cap_gain_aff(1)
+            call greeting_returned_home_bday_short_sub_short_total
+
+        elif is_normal_date(total_time_out):
+            $ regain_lost_aff()
+
+            # slightly above the super short date amount, for that extra
+            # half hour
+            $ cap_gain_aff(4.5)
+            call greeting_returned_home_bday_short_sub_normal_total
+
+        else:
+            $ regain_lost_aff()
+
+            # been out for a long time already
+            # slightly above the super short amount, again for extra half hour
+            $ cap_gain_aff(6.5)
+            call greeting_returned_home_bday_short_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+
+    elif time_out <= three_hour:
+        # under 3 hour
+        $ regain_lost_aff()
+
+        if is_first_date():
+            $ cap_gain_aff(10)
+            m "the first date was under 3 hours"
+
+        elif is_normal_date(total_time_out):
+            $ cap_gain_aff(10)
+            call greeting_returned_home_bday_normal_sub_normal_total
+
+        else:
+            # been out for a long time alrady
+            # since long has 8.3/hour, this is like 2 hours but not quite
+            $ cap_gain_aff(12)
+            call greeting_returned_home_bday_normal_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+
+    elif time_out <= six_hour:
+        # under 6 hour
+        $ regain_lost_aff()
+
+        if is_first_date():
+            $ cap_gain_aff(20)
+            m "the first date was under 6 hours"
+
+        elif is_normal_date(total_time_out):
+            $ cap_gain_aff(20)
+            call greeting_returned_home_bday_normal_sub_normal_total
+
+        else:
+            # been out for a long time alrady
+            $ cap_gain_aff(24)
+            call greeting_returned_home_bday_normal_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+            
+    else:
+        # 6+ hours
+        $ regain_lost_aff()
+
+        if is_first_date90:
+            $ cap_gain_aff(50)
+            m "the first date was over 6 hours"
+            
+        else:
+            # been out for a long time already
+            # you cant really gain more affection here since you already max
+            # out so no gains here
+            call greeting_returned_home_bday_long_sub
+
+        $ persistent._mas_bday_date_count += 1
+
+    return
+
+label greeting_returned_home_bday_short_sub_short_total:
+    m "subsequent date is short, total date time is short"
+    return
+
+label greeting_returned_home_bday_short_sub_normal_total:
+    m "subsequent date is short, total date time is normal"
+    return
+
+label greeting_returned_home_bday_short_sub_long_total:
+    m "subsequent date is short, total date time is long"
+    return
+
+label greeting_returned_home_bday_normal_sub_normal_total:
+    m "subsequent date is normal, total date time is normal"
+    return
+
+label greeting_returned_home_bday_normal_sub_long_total:
+    m "subsequent date is normal, total date time is long"
+    return
+
+label greeting_returned_home_bday_long_sub:
+    m "subsequent date is long"
+    return
