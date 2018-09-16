@@ -1464,6 +1464,17 @@ python early:
                 return -1
 
 
+        def addLabelQuips(self, label_list):
+            """
+            Adds multiple label quips.
+
+            IN:
+                label_list - list of label names to add
+            """
+            for _label in label_list:
+                self.addLabelQuip(_label)
+
+
         def addLineQuip(self, line, custom_type=None):
             """
             Adds a line quip. A custom type can be given if the caller wants
