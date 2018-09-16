@@ -1157,7 +1157,6 @@ label ch30_reset:
                     persistent._mas_affection["freeze_date"] = _today
 
     ## should we drink coffee?
-    # NOTE: this MUST be after the accessories reset
-    # TODO
+    $ _mas_startupCoffeeLogic()
             
     return

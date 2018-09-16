@@ -2724,25 +2724,6 @@ init -1 python:
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
 
-    def mas_isCoffeeTime(_time=None):
-        """
-        Checks if its coffee time for monika
-
-        IN:
-            _time - time to check
-                If None, we use current time
-                (Defualt: None)
-
-        RETURNS:
-            true if its coffee time, false if not
-        """
-        if _time is None:
-            _time = datetime.datetime.now()
-
-        # monika drinks coffee between 6 am and noon
-        return 6 <= _time.hour < 12
-
-
     def mas_isMonikaBirthday():
         return datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22)
 
@@ -2801,6 +2782,32 @@ init -1 python:
         except:
             appIds = None
         return appIds
+
+init 2 python:
+    # global functions that should be defined after level 0
+
+    def mas_isCoffeeTime(_time=None):
+        """
+        Checks if its coffee time for monika
+
+        IN:
+            _time - time to check
+                If None, we use current time
+                (Defualt: None)
+
+        RETURNS:
+            true if its coffee time, false if not
+        """
+        if _time is None:
+            _time = datetime.datetime.now()
+
+        # monika drinks coffee between 6 am and noon
+        return (
+            store.mas_coffee.COFFEE_TIME_START 
+            <= _time.hour <
+            store.mas_coffee.COFFEE_TIME_END
+        )
+
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

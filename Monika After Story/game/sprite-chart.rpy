@@ -434,6 +434,11 @@ init -5 python in mas_sprites:
         # accessory should be shown if the pose key is missing.
         if lean:
             poseid = acs.pose_map.l_map.get(lean, None)
+
+            if acs.pose_map.use_reg_for_l:
+                # clear lean if dont want to use it for rendering
+                lean = None
+
         else:
             poseid = acs.pose_map.map.get(pose, None)
 
@@ -1526,6 +1531,7 @@ init -2 python:
         def __init__(self,
                 default=None,
                 l_default=None,
+                use_reg_for_l=False,
                 p1=None,
                 p2=None,
                 p3=None,
@@ -1546,6 +1552,9 @@ init -2 python:
                     specified (aka are None).
                 l_default - default pose id to use for lean poses that are not
                     specified (aka are None).
+                use_reg_for_l - if True and default is not None and l_default
+                    is None, then we use the default instead of l_default
+                    when rendering for lean poses
                 p1 - pose id to use for pose 1
                     - steepling
                 p2 - pose id to use for pose 2
@@ -1569,9 +1578,13 @@ init -2 python:
             self.l_map = {
                 self.L_POSES[0]: p5
             }
+            self.use_reg_for_l = use_reg_for_l
 
             self.__set_posedefs(self.map, default)
-            self.__set_posedefs(self.l_map, l_default)
+            if use_reg_for_l and l_default is None and default is not None:
+                self.__set_posedefs(self.l_map, default)
+            else:
+                self.__set_posedefs(self.l_map, l_default)
 
 
         def __set_posedefs(self, pose_dict, _def):
@@ -1833,7 +1846,8 @@ init -1 python:
         "mug",
         "mug",
         MASPoseMap(
-            default="0"
+            default="0",
+            use_reg_for_l=True
         ),
         stay_on_start=True
     )
@@ -1878,6 +1892,40 @@ default persistent._mas_coffee_brew_time = None
 
 default persistent._mas_coffee_cup_done = None
 # datetime that monika will finish her coffee. None means she isnt drinking any
+
+default persistent._mas_coffee_cups_drank = 0
+# number of cups of coffee monika has drank
+
+define mas_coffee.BREW_LOW = 2*60
+# lower bound of seconds it takes to brew some coffee
+
+define mas_coffee.BREW_HIGH = 4*60
+# upper bound of seconds it takes to brew some coffee
+
+define mas_coffee.DRINK_LOW = 10 * 60
+# lower bound of seconds it takes for monika to drink coffee
+
+define mas_coffee.DRINK_HIGH = 2 * 3600
+# upper bound of seconds it takes for monika to drink coffee
+
+define mas_coffee.BREW_CHANCE = 80
+# percent chance out of 100 that we are brewing coffee during the appropriate
+# times
+
+define mas_coffee.DRINK_CHANCE = 80
+# percent chance out of 100 that we are drinking coffee during the appropriate
+# times
+
+define mas_coffee.COFFEE_TIME_START = 5
+# hour that coffee time begins (inclusive)
+
+define mas_coffee.COFFEE_TIME_END =  12
+# hour that coffee time ends (exclusive)
+
+define mas_coffee.BREW_DRINK_SPLIT = 9
+# hour between the coffee times where brewing turns to drinking
+# from COFFEE_TIME_START to this time, brew chance is used
+# from this time to COFFEE_TIME_END, drink chance is used
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes

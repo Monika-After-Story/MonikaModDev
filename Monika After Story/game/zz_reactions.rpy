@@ -334,23 +334,19 @@ init 5 python:
     addReaction("mas_reaction_gift_coffee", "coffee")
 
 label mas_reaction_gift_coffee:
-#    if mas_isMonikaBirthday():
-#        # birthday related
-#        m 1eua "Yay its my birthday and I get cofeee"
-#
-#    else:
-#        # not birthday gift
-#    m "this is a test of coffee"
+
     m 1euc "Hmm?"
     m 1euc "Oh,{w} is this coffee?"
 
     if persistent._mas_coffee_been_given:
+        $ mas_gainAffection(bypass=True)
         m 1wuo "It's a flavor I've haven't had before, too."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
 
     else:
         show emptydesk at i11 zorder 9
+        $ mas_gainAffection(modifier=2, bypass=True)
 
         m 1hua "Now I can finally make some!"
         m "Thank you so much, [player]!"
@@ -364,7 +360,7 @@ label mas_reaction_gift_coffee:
         m "Ah, there it is!{w=2}{nw}"
         pause 5.0
         m "And there we go!{w=2}{nw}"
-        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
         hide emptydesk
 
         # monika back on screen
