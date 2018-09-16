@@ -4957,9 +4957,9 @@ label monika_fun_facts_open:
     else:
         m 1eua "Up for another fun fact, [player]?"
         if persistent._mas_funfactfun:
-           m 3hua "That last one was pretty interesting after all!"
+           m 3hua "Thae last one was pretty interesting after all!"
         else:
-           m 2rksdlb "I know that last one wasn't great... but I'm sure this next one will be better."
+           m 2rksdlb "I know the last one wasn't great... but I'm sure this next one will be better."
     m 2dsc "Now, let's see..."
 
 
@@ -4977,7 +4977,7 @@ label fun_facts_end:
     return 
 
 label bad_facts_end:
-    m 1lkc "That fact wasn't very good..."
+    m 1rkc "That fact wasn't very good..."
     m 4dkc "I'll try better next time, [player]."
     $ persistent._mas_funfactfun = False   
     return
@@ -5007,14 +5007,14 @@ label fun_facts_3:
     m 1ekc "It's not for the faint of heart after all." 
     m 1rkc "The thing is..."
     m 1dkc "..."  
-    m 3hub "...I love you, [player]"  
+    m 3hub "...I love you, [player]!"  
     m 1rksdlb "Ehehe, sorry, I just couldn't help myself."
     m 1hksdlb "I'll have a real fact next time, don't you worry~"
     $ persistent._mas_funfactfun = True
     return
 
 label fun_facts_4:
-    m 3wub "Oh! A language based fact. I always like these" 
+    m 3wub "Oh! A language based fact. I always like these." 
     m 1eua "The word 'morphine’ is based on the greek god Morpheus." 
     m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense." 
     m 3ekc "But then again… wasn't his father Hypnos the god of sleep?" 
@@ -5042,12 +5042,13 @@ label fun_facts_6:
         m 3hksdlb "Kind of crazy to think that there could be more chess games than atoms, isn't it?"
         m 1eua "We could play until the end of our days and it wouldn't come even close to a fraction of what is possible."
         m 3eud "Speaking of which, [player]..."
-        m 1hua"Do you want to play a game of chess with me? I might even go easy on you, Ehehe~"
+        m 1hua "Do you want to play a game of chess with me? I might even go easy on you, Ehehe~"
         jump fun_facts_end
     elif not persistent.game_unlocks['chess'] and persistent_seen_ever["unlock_chess"]:
         m 1dsc "Chess..."
         m 2dfc "..."
         m 2rfd "You can forget about this fact since you're a cheater, [player]."
+        m "Not to mention you still haven't apologized."
         m 2lfc "...Hmph."
         return
     else:
@@ -5057,11 +5058,11 @@ label fun_facts_6:
 
 label fun_facts_7:
     m 2dkc "Hmm, this one sounds a bit misleading to me..."
-    m 3ekc "'Men are six times more likely to be struck by lightning than women'"
+    m 3ekc "'Men are six times more likely to be struck by lightning than women.'"
     m 3ekd "It's… rather silly, in my opinion."
     m 1eud "If men are more likely to be struck by lightning, then it's probably the landscape and circumstances of their work that make them more prone to being hit."
     m 1euc "Men traditionally have always worked more dangerous and elevated jobs so it's no surprise that it's going to happen to them often."
-    m 1esc ""Yet the way this fact is worded makes it sound like that just by being a man, it's more likely to happen, which is ridiculous"
+    m 1esc ""Yet the way this fact is worded makes it sound like that just by being a man, it's more likely to happen, which is ridiculous."
     m 1rksdla "Maybe if it was phrased better, people wouldn't be so misinformed about them."
     jump fun_facts_end
 
@@ -5078,7 +5079,7 @@ label fun_facts_8:
 
 label fun_facts_9:
     m 1dsc "Ah, this one..."
-    m 1ekd "It's a little disheartening, [player]...."
+    m 1ekd "It's a little disheartening, [player]..."
     m 1ekc "Did you know that Vincent Van Gogh's last words were {i}'La tristesse durera toujours?'{/i}" 
     m 1eud "If you translate it, it means {i}'The sadness will last forever.'{/i}" 
     m 1rkc "..." 
@@ -5112,7 +5113,7 @@ label fun_facts_11:
 
 label fun_facts_12:
     m 3eua "Ready for this one?"
-    m "A reindeer's eyes changes color depending on the season. They're gold in summer and blue in winter"
+    m "A reindeer's eyes changes color depending on the season. They're gold in summer and blue in winter."
     m 1rksdlb "It’s a really strange phenomenon, though I don’t know why..."
     m "There’s probably a good scientific reason to it."
     m 3hksdlb "Maybe you can look up this one yourself?"
@@ -5120,7 +5121,7 @@ label fun_facts_12:
     jump fun_facts_end
 
 label fun_facts_13:
-    m 1eub "Oh, I'd say this fact is health!"
+    m 1eub "Oh, I'd say this fact is healthy!"
     m 3eua "Did you know that when a banana grows, it curves to face the sun?"
     m 1hua "It's a process called negative geotropism."
     m 3hub "Don't you think that's pretty neat?"
@@ -5143,7 +5144,7 @@ label fun_facts_14:
     m "Pens back then were sharpened goose feathers dipped in ink so it’d make sense why they’d call them pens."
     m 3eud "They were the primary writing tool for a very long time, starting as early at the 6th century."
     m 3euc "It was only until the 19th century when metal pens were being made that they started to fall into decline."
-    m "In fact, penknives are called the way they are because they’re originally used for thinning and pointing quill pens.""
+    m "In fact, penknives are called the way they are because they’re originally used for thinning and pointing quill pens."
     m 1tku "But I’m sure Yuri would know more about this than me, though..."
     jump fun_facts_end
 
@@ -5174,7 +5175,7 @@ label fun_facts_17:
     m 3eub "The card game Solitaire was introduced originally in the Windows operating system in 1990."
     m 1eub "The game was added as a feature to teach users how to use the mouse."
     m 1eua "Similarly, Minesweeper was added to familiarize users with left and right clicking."
-    m 3rssdlb "Computers have been around for so long it's hard to think of a time when they weren't relevant"
+    m 3rssdlb "Computers have been around for so long it's hard to think of a time when they weren't relevant."
     m "Each generation becomes more and more familiar with the technology... "
     m 1esa "Eventually there may come a day where not a single person isn't computer-literate."
     m 1hksdlb "Most of the world’s problems need to disappear before then, though."
