@@ -1783,7 +1783,6 @@ label greeting_returned_home_lessthan5mins:
     return
 
 default persistent._mas_bday_date_count = 0
-default persistent._mas_bday_date_time_out = datetime.timedelta(0)
 default persistent._mas_bday_date_affection_lost = 0
 default persistent._mas_bday_date_affection_gained = 0
 
@@ -1814,24 +1813,24 @@ label greeting_returned_home_bday:
         def lose_and_track_affection(_mod):
             prev_aff = _mas_getAffection()
             mas_loseAffection(modifier=_mod)
-            persistent._mas_bday_affection_lost += (
+            persistent._mas_bday_date_affection_lost += (
                 prev_aff - _mas_getAffection()
             )
 
         
         def cap_gain_aff(amount):
-            persistent._mas_bday_affection_gained += amount
-            if persistent._mas_bday_affection_gained < 50:
+            persistent._mas_bday_date_affection_gained += amount
+            if persistent._mas_bday_date_affection_gained < 50:
                 mas_gainAffection(amount, bypass=True)
 
 
         def regain_lost_aff():
-            if persistent._mas_bday_affection_lost > 0:
+            if persistent._mas_bday_date_affection_lost > 0:
                 mas_gainAffection(
-                    persistent._mas_bday_affection_lost,
+                    persistent._mas_bday_date_affection_lost,
                     bypass=True
                 )
-                persistent._mas_bday_affection_lost = 0
+                persistent._mas_bday_date_affection_lost = 0
 
 
     if time_out <= five_minutes:
@@ -1941,14 +1940,13 @@ label greeting_returned_home_bday:
         # 6+ hours
         $ regain_lost_aff()
 
-        if is_first_date90:
+        if is_first_date():
             $ cap_gain_aff(50)
             m "the first date was over 6 hours"
             
         else:
             # been out for a long time already
-            # you cant really gain more affection here since you already max
-            # out so no gains here
+            $ cap_gain_aff(50)
             call greeting_returned_home_bday_long_sub
 
         $ persistent._mas_bday_date_count += 1
