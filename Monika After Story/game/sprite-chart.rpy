@@ -1838,6 +1838,8 @@ init -1 python:
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
+    # initalize this 
+    persistent._mas_acs_enable_coffee = False
 
     ### PROMISE RING
     ## promisering

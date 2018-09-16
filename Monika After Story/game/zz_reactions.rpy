@@ -325,12 +325,20 @@ label mas_reaction_gift_test2:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-default persistent._mas_acs_enable_coffee = False
+## coffee vars 
+# NOTE: this is just for reference, check sprite-chart for inits
+# persistent._mas_acs_enable_coffee
 
-#init 5 python:
-#    addReaction("mas_reaction_gift_coffee", "coffee")
+init 5 python:
+    addReaction("mas_reaction_gift_coffee", "coffee")
 
 label mas_reaction_gift_coffee:
+    if mas_isMonikaBirthday():
+        # birthday related
+        m 1eua "Yay its my birthday and I get cofeee"
+
+    else:
+        # not birthday gift
     m "this is a test of coffee"
 
     $ persistent._mas_acs_enable_coffee = True
