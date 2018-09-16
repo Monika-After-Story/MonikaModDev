@@ -927,3 +927,233 @@ label mas_new_character_file:
     m 1hua "Doesn't that sound wonderful?"
     m 3hub "I can't wait to join you wherever you go."
     return
+
+
+### coffee is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_coffee_finished_brewing"
+        )
+    )
+
+    # special function for this event
+    def mas_brewCoffee(_start_time=None):
+        """
+        Starts brewing coffee aka sets up the coffee finished brewing event
+
+        IN:
+            _start_time - time to start brewing the coffee
+                If None, we assume now
+                (Default: None)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # start brew
+        persistent._mas_coffee_brew_time = _start_time
+
+        # calculate end brew time
+        # NOTE: between 2 to 5 minutes
+        end_brew = random.randint(2, 5) * 60
+
+        # setup the event conditional
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        brew_ev.conditional = (
+            "persistent._mas_coffee_brew_time is not None "
+            "and (datetime.datetime.now() - persistent._mas_coffee_brew_time) "
+            "> datetime.timedelta(0, {0})"
+        ).format(end_brew)
+        brew_ev.action = EV_ACT_PUSH
+
+
+    def mas_resetCoffee():
+        """
+        Completely resets all coffee vars
+        NOTE: this only resets the coffee drinking vars, not the history
+        """
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        monika_chr.remove_acs(mas_acs_mug)
+        brew_ev.conditional = None
+        brew_ev.action = None
+        drink_ev.conditional = None
+        drink_ev.action = None
+        persistent._mas_coffee_brew_time = None
+        persistent._mas_coffee_cup_done = None
+
+
+    def mas_isBrewingCoffee():
+        """
+        Returns true if we are currently brewing coffee
+
+        Resets the brew_time var if we should not be brewing right now
+        """
+        if persistent._mas_coffee_brew_time is None:
+            return False
+
+#        if persistent._mas_coffee_brew_time
+#        _now = datetime.datetime.now()
+
+
+    def _mas_startupCoffeeLogic():
+        """
+        Runs startup logic regarding coffee stuff.
+
+        It is assumed that this run prior to conditional checking.
+        """
+        # do we even have coffee enabled?
+        if not persistent._mas_acs_enable_coffee:
+            return
+
+        # setup some vars
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        _now = datetime.datetime.now()
+        time_for_coffee = mas_isCoffeeTime(_now)
+
+        # setup some functions
+        def still_brew(_time):
+            return (
+                _time is not None 
+                and _time.date() == _now.date()
+                and mas_isCoffeeTime(_time)
+            )
+
+        def still_drink(_time):
+            return _time is not None and _time.date() == _now.date()
+
+
+        # should we even drink coffee right now?
+        if not time_for_coffee:
+
+            # if its not time for coffee, we can still be drinking coffee
+            # because of a couple reasons:
+            #   - monika started her brew before her cut off time
+            #   - monika's cut off time is after noon
+            if still_brew(persistent._mas_coffee_brew_time):
+                # monika's brew started before the cut off.
+                # if the brew is done, then skip to drinking.
+                # otherwise, the finished brewing event will trigger on its
+                # own
+                if brew_ev.conditional is not None and eval(brew_ev.conditional):
+                    # TODO
+                    pass
+
+            # reset brewing / drinking and the associated evs
+            monika_chr.remove_acs(mas_acs_mug)
+            brew_ev.conditional = None
+            brew_ev.action = None
+            drink_ev.conditional = None
+            drink_ev.action = None
+            persistent._mas_coffee_brew_time = None
+            persistent._mas_coffee_cup_done = None
+            return
+
+        # are we currently brewing coffee?
+        return
+
+
+
+label mas_coffee_finished_brewing:
+    m 1esd "Oh, coffee's done."
+
+    # this line is here so we dont it looks better when we hide monika
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statement so we ensure that monika is only shown once her
+    # coffee mug is ready
+    pause 1.0
+    $ monika_chr.wear_acs_pst(mas_acs_mug)
+    $ persistent._mas_coffee_brew_time = None
+    $ mas_drinkCoffee()
+    pause 1.0
+
+    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
+### coffee drinking is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_coffee_finished_drinking"
+        )
+    )
+
+    def mas_drinkCoffee(_start_time=None):
+        """
+        Lets monika drink coffee aka sets the time she should stop drinking
+        coffee (coffee finished drinking event)
+
+        IN:
+            _start_time - time to start dirnking coffee
+                If None, we use now
+                (Defualt: now)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # delta for drinking
+        # NOTE: between 10 minutes to 2 hours
+        drinking_time = datetime.timedelta(0,
+            random.randint(10, 2*60) * 60
+        )
+
+        # setup the stop time for the cup
+        persistent._mas_coffee_cup_done = _start_time + drinking_time
+
+        # setup the event conditional
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        drink_ev.conditional(
+            "persistent._mas_coffee_cup_done is not None "
+            "and datetime.datetime.now() > persistent._mas_coffee_cup_done"
+        )
+        drink_ev.action = EV_ACT_PUSH
+
+
+label mas_coffee_finished_drinking:
+
+    # monika only gets a new cup between 6am and noon
+    $ get_new_cup = mas_isCoffeeTime()
+    m 1esd "Oh, I've finished my coffee."
+
+    if get_new_cup:
+        # its currently morning, monika should get another drink
+        m 1eua "I'm going to get another cup."
+
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statemetns so we can properly add / remove the mug
+    pause 1.0
+    # decide if new coffee
+    if not get_new_cup:
+        $ monika_chr.remove_acs(mas_acs_mug)
+        $ persistent._mas_coffee_cup_done = None
+
+    else:
+        $ mas_drinkCoffee()
+
+    pause 1.0
+        
+    show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return

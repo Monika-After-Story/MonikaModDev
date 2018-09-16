@@ -2723,6 +2723,26 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
+
+    def mas_isCoffeeTime(_time=None):
+        """
+        Checks if its coffee time for monika
+
+        IN:
+            _time - time to check
+                If None, we use current time
+                (Defualt: None)
+
+        RETURNS:
+            true if its coffee time, false if not
+        """
+        if _time is None:
+            _time = datetime.datetime.now()
+
+        # monika drinks coffee between 6 am and noon
+        return 6 <= _time.hour < 12
+
+
     def mas_isMonikaBirthday():
         return datetime.date.today() == datetime.date(datetime.date.today().year, 9, 22)
 

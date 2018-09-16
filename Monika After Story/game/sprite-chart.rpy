@@ -1838,8 +1838,6 @@ init -1 python:
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
-    # initalize this 
-    persistent._mas_acs_enable_coffee = False
 
     ### PROMISE RING
     ## promisering
@@ -1859,6 +1857,27 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_promisering)
 
+
+#### ACCCESSORY VARIABLES (IMG025)
+# variables that accessories may need for enabling / disabling / whatever
+# please comment the groups and usage like so:
+### accessory name
+# <var>
+# <var comment>
+
+### COFFEE MUG
+
+default persistent._mas_acs_enable_coffee = False
+# True enables coffee, False disables coffee
+
+default persistent._mas_coffee_been_given = False
+# True means user has given monika coffee before, False means no
+
+default persistent._mas_coffee_brew_time = None
+# datetime that coffee startd brewing. None if coffe not brewing
+
+default persistent._mas_coffee_cup_done = None
+# datetime that monika will finish her coffee. None means she isnt drinking any
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes
