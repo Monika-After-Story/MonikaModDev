@@ -7711,7 +7711,7 @@ label fun_facts_7:
     m 3ekd "It's… rather silly, in my opinion."
     m 1eud "If men are more likely to be struck by lightning, then it's probably the landscape and circumstances of their work that make them more prone to being hit."
     m 1euc "Men traditionally have always worked more dangerous and elevated jobs so it's no surprise that it's going to happen to them often."
-    m 1esc ""Yet the way this fact is worded makes it sound like that just by being a man, it's more likely to happen, which is ridiculous."
+    m 1esc "Yet the way this fact is worded makes it sound like that just by being a man, it's more likely to happen, which is ridiculous."
     m 1rksdla "Maybe if it was phrased better, people wouldn't be so misinformed about them."
     jump fun_facts_end
 
@@ -7853,7 +7853,7 @@ label fun_facts_19:
 label fun_facts_20:
     m 1hua "Now this is a wholesome one..."
     m 1eua "Currently, we have the lowest crime rates, maternity death, infant mortality and illiteracy ever in human history."
-    m 3eub ""Life expectancy, average income, and standards of living is the highest for most of the global population too!"
+    m 3eub "Life expectancy, average income, and standards of living is the highest for most of the global population too!"
     m 3eka "This tells me that it can always can get better. It really does show that despite all the bad things, the good times will always come afterwards."
     m 1hua "There really is {i}hope{/i}..."
     jump fun_facts_end
@@ -7881,7 +7881,7 @@ label bad_facts_3:
     m 2esc "'Vaccines cause austim...'" 
     m "Just wow." 
     m "That's not even funny, and if they're serious, it's long since been disproven."
-    m 2dsc ""I really don’t like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."  
+    m 2dsc "I really don’t like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."  
     m 2lksdlc "I hope no one actually believes this..." 
     jump bad_facts_end
 
@@ -7892,10 +7892,10 @@ label bad_facts_4:
     m 2ekd "A very popular one too!"  
     m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there’ll be moss there too." 
     m 2efd "But relying on that kind of logic is dangerous!" 
-    m 2efc ""It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in." 
+    m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in." 
     m "Plus even if it wasn't like that, the trick would only work in the northern hemisphere." 
     m 2wfc "Anyone within the southern hemisphere would have it growing facing south."
     m 2dfc "..."
     m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
-    m 2dkc ""I would hate for something to happen to you, especially because of false information like this..."
+    m 2dkc "I would hate for something to happen to you, especially because of false information like this..."
     jump bad_facts_end
