@@ -325,7 +325,7 @@ init -1 python in mas_hangman:
             copyWordsList(_mode)
 
         # now random select
-        return words.pop(random.randint(0, len(words)))
+        return words.pop(random.randint(0, len(words)-1))
 
 
 # post processing
