@@ -374,8 +374,6 @@ label mas_reaction_gift_coffee:
     return
 
 init 5 python:
-    addReaction("mas_reaction_quetzal_plush", "quetzal")
-    addReaction("mas_reaction_quetzal_plush", "quetzalp")
     addReaction("mas_reaction_quetzal_plush", "quetzalplushie")
 
 label mas_reaction_quetzal_plush:
