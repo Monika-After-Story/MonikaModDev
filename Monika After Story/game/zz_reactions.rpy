@@ -13,7 +13,7 @@ init -1 python in mas_filereacts:
     import store.mas_utils as mas_utils
     import datetime
     import random
-    
+
     # file react database
     filereact_db = dict()
 
@@ -22,7 +22,7 @@ init -1 python in mas_filereacts:
     # value: Event
     filereact_map = dict()
 
-    # currently found files react map 
+    # currently found files react map
     # NOTE: highly volitatle. Expect this to change often
     # key: lowercase filename, without extension
     # value: on disk filename
@@ -106,7 +106,7 @@ init -1 python in mas_filereacts:
 
         # then sort the list
         gifts_found.sort()
-            
+
         # now we are ready to check for reactions
         # first we check for all file reacts:
         #all_reaction = filereact_map.get(gifts_found, None)
@@ -156,7 +156,7 @@ init -1 python in mas_filereacts:
 
         # otherwise check for random deletion
         if _filename is None:
-            _filename = random.choice(_map.keys()) 
+            _filename = random.choice(_map.keys())
 
         file_to_delete = _map.get(_filename, None)
         if file_to_delete is None:
@@ -224,7 +224,7 @@ init -1 python in mas_filereacts:
             _filename_list - list of ilenames to delete
         """
         for _fn in _filename_list:
-            th_delete_file(_fn)            
+            th_delete_file(_fn)
 
 
     def delete_all(_map):
@@ -233,7 +233,7 @@ init -1 python in mas_filereacts:
         Removes files in that map if they dont exist no more
 
         IN:
-            _map - map to delete all 
+            _map - map to delete all
         """
         _map_keys = _map.keys()
         for _key in _map_keys:
@@ -325,7 +325,7 @@ label mas_reaction_gift_test2:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-## coffee vars 
+## coffee vars
 # NOTE: this is just for reference, check sprite-chart for inits
 # persistent._mas_acs_enable_coffee
 # persistent._mas_coffee_brewing
@@ -370,6 +370,32 @@ label mas_reaction_gift_coffee:
         $ persistent._mas_coffee_been_given = True
 
     $ gift_ev = mas_getEV("mas_reaction_gift_coffee")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+init 5 python:
+    addReaction("mas_reaction_quetzal_plush", "quetzal")
+    addReaction("mas_reaction_quetzal_plush", "quetzalp")
+    addReaction("mas_reaction_quetzal_plush", "quetzalplushie")
+
+label mas_reaction_quetzal_plush:
+    if not persistent._mas_acs_enable_quetzalplushie:
+        $ mas_gainAffection(modifier=2, bypass=True)
+        m 1wud "Oh!"
+        $ monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+        $ persistent._mas_acs_enable_quetzalplushie = True
+        m 1sub "It’s a quetzal!"
+        m "Oh my gosh, thanks a lot, [player]!"
+        m 1eua "I did mention that I’d like to have a quetzal as a pet..."
+        m 1rud "But I would never force the poor thing to stay."
+        m 1hua "And now you gave me the next closest thing!"
+        m 1hub "This makes me so happy!"
+        if mas_isMoniAff(higher=True):
+            m 5esbfa "You always seem to know how to make me smile."
+
+        m 1hsb "Thank you again, [player]~"
+
+    $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 

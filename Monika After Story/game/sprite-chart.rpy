@@ -1870,7 +1870,19 @@ init -1 python:
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_promisering)
-
+    ### QUETZAL PLUSHIE
+    ## qplushie
+    # Quetzal plushie that sits on Monika's desk
+    mas_acs_quetzalplushie = MASAccessory(
+        "quetzalplushie",
+        "quetzalplushie",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False
+    )
+    store.mas_sprites.init_acs(mas_acs_quetzalplushie)
 
 #### ACCCESSORY VARIABLES (IMG025)
 # variables that accessories may need for enabling / disabling / whatever
