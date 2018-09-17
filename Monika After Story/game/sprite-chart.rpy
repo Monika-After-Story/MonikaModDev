@@ -3563,6 +3563,21 @@ image monika 1hkbltpa = DynamicDisplayable(
     tears="pooled"
 )
 
+image monika 1dkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
 image monika 1skbltpa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3597,6 +3612,20 @@ image monika 1hkbla = DynamicDisplayable(
     character=monika_chr,
     eyebrows="knit",
     eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
+image monika 1dkbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
     nose="def",
     mouth="smile",
     head="b",
@@ -6467,6 +6496,21 @@ image monika 3hkbltpa = DynamicDisplayable(
     character=monika_chr,
     eyebrows="knit",
     eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 3dkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
     nose="def",
     mouth="smile",
     head="h",

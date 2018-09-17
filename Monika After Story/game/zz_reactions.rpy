@@ -411,14 +411,14 @@ label mas_reaction_ring:
             m "..."
             m 1wka "I..."
             m 1wkbltpa "I'm sorry, [player], I just..."
-            m 1hkbltpa "You might not have even meant much by it, but..."
+            m 1dkbltpa "You might not have even meant much by it, but..."
             m "Just in case this is a promise from you..."
             m 3lkbltpa "Know that I’ll cherish it."
-            m 3hkbltpa "Always."
+            m 3dkbltpa "Always."
             m 1skbltpa "This makes me so happy!"
-            m 1hkbltpa "Aha, sorry for crying, [player]..."
+            m 1dkbltpa "Aha, sorry for crying, [player]..."
             m 1skbla "I’m just really, really happy right now."
-            m 1hkbla "Thank you."
+            m 1dkbla "Thank you."
             m "I love you, [player]."
             m "More than anything else in this fleeting world."
         elif mas_isMoniNormal(higher=True):
@@ -429,17 +429,16 @@ label mas_reaction_ring:
             m "Is that... a ring?"
             m 1sub " I can’t believe it, [player]!"
             m 1hua "This...{w} means a lot to me."
-            m 1hub "Seriously."
             m 3hub "This makes me so happy!"
             m 3eub "Seriously, thank you so much for this, [player]!"
         else:
             $ mas_gainAffection(bypass=True)
             m 1wud "Is that a ring?"
-            m "That's so ..."
+            m "That's very ..."
             m "Unexpected."
             if mas_isMoniDis(lower=True):
                 m 2rkc "I appreciate the thought ...{w} but I can't accept it."
-                m 2ekc "Sorry [player]."
+                m 2ekc "Sorry, [player]."
                 $ persistent._mas_acs_enable_promisering = False
             else:
                 $ monika_chr.wear_acs_pst(mas_acs_promisering)
