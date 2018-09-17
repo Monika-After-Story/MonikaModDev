@@ -1931,7 +1931,7 @@ init -990 python in mas_utils:
 
     def trywrite(f_path, msg, log=False, mode="w"):
         """
-        Attempts to write out a file at the given path 
+        Attempts to write out a file at the given path
 
         Exceptions are hidden
 
@@ -1940,7 +1940,7 @@ init -990 python in mas_utils:
             msg - text to write
             log - True means we log exceptions
                 (Default: False)
-            mode - write mode to use 
+            mode - write mode to use
                 (Defaut: w)
         """
         outfile = None
@@ -2814,7 +2814,7 @@ init 2 python:
 
         # monika drinks coffee between 6 am and noon
         return (
-            store.mas_coffee.COFFEE_TIME_START 
+            store.mas_coffee.COFFEE_TIME_START
             <= _time.hour <
             store.mas_coffee.COFFEE_TIME_END
         )
@@ -2925,7 +2925,7 @@ init 2 python:
         # setup some functions
         def still_brew(_time):
             return (
-                _time is not None 
+                _time is not None
                 and _time.date() == _now.date()
                 and mas_isCoffeeTime(_time)
             )
@@ -3005,6 +3005,22 @@ init 2 python:
                 mas_drinkCoffee()
                 monika_chr.wear_acs_pst(mas_acs_mug)
 
+        return
+
+    def mas_startupPlushieLogic(chance=4):
+        """
+        Runs a simple random check for the quetzal plushie.
+
+        IN:
+            chance - value that determines the chance of that
+                determines if the plushie will appear
+                Defualts to 4
+        """
+        # do we even have coffee enabled?
+        if not persistent._mas_acs_enable_quetzalplushie:
+            return
+        if renpy.random.randint(1,chance) == 1:
+            monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
         return
 
 

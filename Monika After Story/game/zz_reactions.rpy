@@ -392,7 +392,8 @@ label mas_reaction_quetzal_plush:
             m 5esbfa "You always seem to know how to make me smile."
 
         m 1hsb "Thank you again, [player]~"
-
+    else:
+        $ 1rksdlb "You already gave me a quetzal plushie, [player]"
     $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return

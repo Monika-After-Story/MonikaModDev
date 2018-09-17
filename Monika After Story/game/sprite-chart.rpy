@@ -1939,6 +1939,10 @@ define mas_coffee.BREW_DRINK_SPLIT = 9
 # from COFFEE_TIME_START to this time, brew chance is used
 # from this time to COFFEE_TIME_END, drink chance is used
 
+### QUETZAL PLUSHIE ###
+default persistent._mas_acs_enable_quetzalplushie = False
+# True enables plushie, False disables plushie
+
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes
 # to sprites without having to remake everything. This saves us on image

@@ -261,7 +261,7 @@ init python:
             morning_flag
             mas_is_raining
         """
-        # hide the existing masks 
+        # hide the existing masks
         renpy.hide("rm")
         renpy.hide("rm2")
 
@@ -731,8 +731,11 @@ label ch30_autoload:
         $ persistent.closed_self = True
 
     #If you were interrupted, push that event back on the stack
-    $restartEvent()
+    $ restartEvent()
 
+    # call plushie logic
+    $ mas_startupPlushieLogic(4)
+    
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
@@ -1138,7 +1141,7 @@ label ch30_reset:
     ## resset playtime issues
     python:
         # reset total playtime to 0 if we got negative time.
-        # we could scale this, but it honestly is impossible for us to 
+        # we could scale this, but it honestly is impossible for us to
         # figure out the original number accurately, and giving people free
         # playtime doesn't sit well with me
         if persistent.sessions is not None:
@@ -1158,5 +1161,5 @@ label ch30_reset:
 
     ## should we drink coffee?
     $ _mas_startupCoffeeLogic()
-            
+
     return
