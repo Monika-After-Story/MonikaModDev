@@ -1843,7 +1843,8 @@ label greeting_returned_home_bday:
 
         if is_first_date():
             $ lose_and_track_affection(1)
-            m "the first date was under 50 minutes"
+            m 2rsc "...Hmph."
+            m 2dsc "Some {i}'date'{/i} that was."
 
         elif is_short_date(total_time_out):
             $ lose_and_track_affection(1)
@@ -1873,7 +1874,9 @@ label greeting_returned_home_bday:
 
         if is_first_date():
             $ cap_gain_aff(1)
-            m "the first date was under 1.5 hours"
+            m 1hua "That was fun, [player]."
+            m 1eua "Even if it wasn't for too long, I still enjoyed the time we spent together."
+            m 1hua "Let's try to schedule something longer next time, okay?"
 
         elif is_short_date(total_time_out):
             $ cap_gain_aff(1)
@@ -1954,15 +1957,29 @@ label greeting_returned_home_bday:
     return
 
 label greeting_returned_home_bday_short_sub_short_total:
-    m "subsequent date is short, total date time is short"
+    m 2rkc "..."
+    m "[player], I'm grateful that you're spending time with me, I really am. I'm fine with these short trips you're taking me to as well."
+    m 1dkc "But...{w}I do hope there's more to this."
+    m 4ekc "It's just th--{nw}"
+    $ _history_list.pop()
+    m 1dkc "..."
+    m 1rkc "...nevermind."
     return
 
 label greeting_returned_home_bday_short_sub_normal_total:
-    m "subsequent date is short, total date time is normal"
+    m 1hua "Well! That was fun, [player]."
+    m "We already had a good date, but I'm glad you took me somewhere again."
+    m 3tku "Just can'tget enough of me, can you?"
+    m 1dkbfa "...Not that I mind~"
     return
 
 label greeting_returned_home_bday_short_sub_long_total:
-    m "subsequent date is short, total date time is long"
+    m 1hua "Ehehe~"
+    m 3eub "We sure spent a lot of time together today, [player]."
+    m 1ekbfa "...And thank you for that."
+    m 3ekbfa "I've said it a million times already, I know."
+    m 1hua "But I'll always be happy when we're together."
+    m "I love you so much..."
     return
 
 label greeting_returned_home_bday_normal_sub_normal_total:
