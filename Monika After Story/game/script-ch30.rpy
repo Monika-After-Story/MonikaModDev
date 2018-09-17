@@ -1167,6 +1167,17 @@ label ch30_reset:
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
+    ## should we reset birthday
+    python:
+        if (
+                persistent._mas_bday_need_to_reset_bday 
+                and not mas_isMonikaBithday()
+            ):
+            bday_ev = mas_getEV("mas_bday_pool_happy_bday")
+            if bday_ev:
+                bday_ev.conditional="mas_isMonikaBirthday()"
+                bday_ev.action=EV_ACT_UNLOCK
+                persistent._mas_bday_need_to_reset_bday = False
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
