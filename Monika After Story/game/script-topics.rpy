@@ -903,8 +903,10 @@ label monika_tea:
     m 1hub "Ahaha!"
     m "I guess I never really thought of that."
     m 2eua "Well, there's no sense thinking about it now."
-    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eua "But if you still get to drink coffee, then that makes me a little jealous~"
+    if persistent._mas_acs_enable_coffee:
+        m 1hua "I can just make coffee whenever I want to, thanks to you."
+    else:
+        m 5eua "But if you still get to drink coffee, then that makes me a little jealous~"
     return
 
 
@@ -5457,7 +5459,10 @@ label monika_coffee:
     m 3hua "Whether it's hot or cold, coffee is always nice."
     m 4eua "Iced coffee, however, tends to be sweeter and more pleasant to drink in warmer weathers."
     m 3eka "It's funny how a drink for giving you energy became a treat for you to enjoy."
-    m 1hub "Maybe if I find out how, I'll tinker with the script so I can finally drink some! Ahaha~"
+    if persistent._mas_acs_enable_coffee:
+        m 1hua "I'm glad I get to enjoy it now, thanks to you~"
+    else:
+        m 1hub "Maybe if I had some coffee, I could finally drink some! Ahaha~"
     return
 
 init 5 python:
