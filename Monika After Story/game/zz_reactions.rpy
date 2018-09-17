@@ -539,6 +539,49 @@ label mas_reaction_promisering:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
+init 5 python:
+    addReaction("mas_reaction_plush", "plushie")
+
+label mas_reaction_plush:
+    m 1wud "What’s this, [player]?"
+    m "Are you trying to give me a plushie?"
+    m 1rksdlb "I appreciate the thought, but ..."
+    m 1ekd "For some reason, I can’t seem to bring it here."
+    m 1rkc "I wish I could ..."
+    m 1hua "But don’t worry, [player]!"
+    m 1hub "Ehehe~"
+    m 1hua "Thank you for trying!"
+    $ gift_ev = mas_getEV("mas_reaction_plush")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+init 5 python:
+    addReaction("mas_reaction_bday_cake", "birthdaycake")
+
+label mas_reaction_bday_cake:
+    if not mas_isMonikaBirthday():
+        m 1rksdlb "Today is not my birthday, did you forget when is it, [player]?"
+    else:
+        $ mas_gainAffection(modifier=2, bypass=True)
+        m 1wud "Oh, [player]..."
+        m "A... birthday cake?"
+        # show image bday_cake at zorder 11
+        m 3sub "Gosh, this is so sweet of you!"
+        m 1hub "I really love this a lot!"
+        m 1rksdlb "I really love this a lot!"
+        m 1dkbfa "I’ll save it for now"
+        # hide image bday_cake
+        m 3hua "I can’t wait to try it later!"
+        m 1dsc "But..."
+        m 3ekbfa "I wish we could eat it together..."
+        m 1dkbfa "A birthday cake is for sharing, after all~"
+        m 1ekbfa "Thank you for this, [player]."
+        if mas_isMoniAff(higher=True):
+            m 3hubfb "I love you! Ehehe~"
+    $ gift_ev = mas_getEV("mas_reaction_bday_cake")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
     $ persistent._mas_filereacts_just_reacted = False
