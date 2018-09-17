@@ -398,6 +398,61 @@ label mas_reaction_quetzal_plush:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
+init 5 python:
+    addReaction("mas_reaction_ring", "ring")
+
+label mas_reaction_ring:
+    if not persistent._mas_acs_enable_promisering:
+        if mas_isMoniEnamored(higher=True):
+            $ mas_gainAffection(modifier=5, bypass=True)
+            m 1wud "Is that… a…"
+            m "…"
+            m 1wka "I…"
+            $ monika_chr.wear_acs_pst(mas_acs_promisering)
+            $ persistent._mas_acs_enable_promisering = True
+            m 1wkbltpa "I'm sorry, [player], I just..."
+            m 1hkbltpa "You might not have even meant much by it, but..."
+            m "Just in case this is a promise from you..."
+            m 3lkbltpa "Know that I’ll cherish it."
+            m 3hkbltpa "Always."
+            m 1skbltpa "This makes me so happy!"
+            m 1hkbltpa "Aha, sorry for crying, [player]..."
+            m 1skbla "I’m just really, really happy right now."
+            m 1hkbla "Thank you."
+            m "I love you, [player]."
+            m "More than anything else in this fleeting world."
+        elif mas_isMoniNormal(higher=True):
+            $ mas_gainAffection(modifier=3, bypass=True)
+            m 1wud "Oh… What is this, [player]?"
+            m "Is that ... a ring?"
+            m 1sub " I can’t believe it, [player]!"
+            m 1hua "This ...{w} means a lot to me."
+            m 1hub "Seriously."
+            $ monika_chr.wear_acs_pst(mas_acs_promisering)
+            $ persistent._mas_acs_enable_promisering = True
+            m 3hub "This makes me so happy!"
+            m 3eub "Seriously, thank you so much for this, [player]!"
+        else:
+            $ mas_gainAffection(bypass=True)
+            m 1wud "Is that a ring?"
+            m "That's so ..."
+            m "Unexpected."
+            if mas_isMoniDis(lower=True):
+                m 2rkc "I appreciate the thought ...{w} but I can't accept it."
+                m 2ekc "Sorry [player]."
+                $ persistent._mas_acs_enable_promisering = True
+            else:
+                $ monika_chr.wear_acs_pst(mas_acs_promisering)
+                $ persistent._mas_acs_enable_promisering = True
+                m 3hua "I'm happily surprised by this, [player]."
+                m "Thanks."
+    else:
+        m 1rksdlb "[player]..."
+        m 1rusdlb "You already gave me a ring!"
+    $ gift_ev = mas_getEV("mas_reaction_ring")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
     $ persistent._mas_filereacts_just_reacted = False

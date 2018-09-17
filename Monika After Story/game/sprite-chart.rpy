@@ -1860,11 +1860,11 @@ init -1 python:
         "promisering",
         "promisering",
         MASPoseMap(
-            p1="3",
-            p2=None,
+            p1=None,
+            p2="4",
             p3="1",
-            p4="1",
-            p5=None,
+            p4=None,
+            p5="5",
             p6=None
         ),
         stay_on_start=True
@@ -1941,6 +1941,10 @@ define mas_coffee.BREW_DRINK_SPLIT = 9
 
 ### QUETZAL PLUSHIE ###
 default persistent._mas_acs_enable_quetzalplushie = False
+# True enables plushie, False disables plushie
+
+### PROMISE RING ###
+default persistent._mas_acs_enable_promisering = False
 # True enables plushie, False disables plushie
 
 #### IMAGE START (IMG030)
@@ -3544,6 +3548,64 @@ image monika 1hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1hkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 1skbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 1skbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
+image monika 1hkbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
 image monika 1tubfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3656,6 +3718,34 @@ image monika 1wuw = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1wka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1wkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
 image monika 1wub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3709,6 +3799,21 @@ image monika 1lkbfb = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
+)
+
+image monika 1lkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
 )
 
 image monika 1wubfsdld = DynamicDisplayable(
@@ -6355,6 +6460,36 @@ image monika 3lfx = DynamicDisplayable(
     left="2l",
     right="1r",
     arms="restleftpointright"
+)
+
+image monika 3hkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 3lkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines",
+    tears="pooled"
 )
 
 image monika 3lfu = DynamicDisplayable(
