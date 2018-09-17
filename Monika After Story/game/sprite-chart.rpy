@@ -1870,7 +1870,19 @@ init -1 python:
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_promisering)
-
+    ### QUETZAL PLUSHIE
+    ## qplushie
+    # Quetzal plushie that sits on Monika's desk
+    mas_acs_quetzalplushie = MASAccessory(
+        "quetzalplushie",
+        "quetzalplushie",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False
+    )
+    store.mas_sprites.init_acs(mas_acs_quetzalplushie)
 
 #### ACCCESSORY VARIABLES (IMG025)
 # variables that accessories may need for enabling / disabling / whatever
@@ -1926,6 +1938,10 @@ define mas_coffee.BREW_DRINK_SPLIT = 9
 # hour between the coffee times where brewing turns to drinking
 # from COFFEE_TIME_START to this time, brew chance is used
 # from this time to COFFEE_TIME_END, drink chance is used
+
+### QUETZAL PLUSHIE ###
+default persistent._mas_acs_enable_quetzalplushie = False
+# True enables plushie, False disables plushie
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes
@@ -2153,6 +2169,19 @@ image monika 1hua = DynamicDisplayable(
     eyes="closedhappy",
     nose="def",
     mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1hsb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
     head="j",
     left="1l",
     right="1r",
@@ -3074,6 +3103,19 @@ image monika 1rkc = DynamicDisplayable(
     nose="def",
     mouth="smirk",
     head="o",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1rud = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="d",
     left="1l",
     right="1r",
     arms="steepling"
@@ -8776,6 +8818,21 @@ image monika 5efa = DynamicDisplayable(
     left="",
     right="",
     lean="def",
+    single="3b"
+)
+
+image monika 5esbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="full",
     single="3b"
 )
 

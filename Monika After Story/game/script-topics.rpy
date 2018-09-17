@@ -4778,12 +4778,17 @@ label monika_pets:
     m 4rksdlc "They die in captivity. That's why you rarely see them in zoos."
     m "Even if the bird wouldn't be real, it still would feel wrong to keep one trapped in this room."
     m 1ekc "... I can't bring myself to do something like that, knowing what it's like."
-    m 1hua "A plush bird would be nice, though!"
-    m 2hub "..."
-    m 2hksdlb "Sorry for rambling, [player]."
-    m 1eka "Until I find a way out, could you promise to keep me from feeling lonely?"
-    show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1hua "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
+    if persistent._mas_acs_enable_quetzalplushie:
+        m 1hua "I'm so glad you gave me a plush one, [player]."
+        m 1eka "It keeps me from feeling lonely when you're not here."
+        m 1hua "But don't worry, you're still my favorite~"
+
+    else:
+        m 1hua "A plush bird would be nice, though!"
+        m 2hub "..."
+        m 2hksdlb "Sorry for rambling, [player]."
+        m 1eka "Until I find a way out, could you promise to keep me from feeling lonely?"
+        m 1hua "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
     return
 
 init 5 python:
