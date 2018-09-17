@@ -153,6 +153,7 @@ init -1 python in mas_filereacts:
 
             if _gift is not None:
                 # remove from the list and add to found
+                # TODO add to the persistent react map today
                 gifts_found.pop()
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(gift_connectors.quip()[1])
