@@ -1161,4 +1161,14 @@ label ch30_reset:
 
     # call plushie logic
     $ mas_startupPlushieLogic(4)
+
+
+    ## certain things may need to be reset if we took monika out
+    # NOTE: this should be at the end of this label, much of this code might
+    # undo stuff from above
+    python:
+        if store.mas_dockstat.retmoni_status is not None:
+            mas_resetCoffee()
+            monika_chr.remove_acs(mas_acs_quetzalplushie)
+
     return
