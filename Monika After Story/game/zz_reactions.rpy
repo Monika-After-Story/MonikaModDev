@@ -405,11 +405,11 @@ label mas_reaction_ring:
     if not persistent._mas_acs_enable_promisering:
         if mas_isMoniEnamored(higher=True):
             $ mas_gainAffection(modifier=5, bypass=True)
-            m 1wud "Is that… a…"
-            m "…"
-            m 1wka "I…"
             $ monika_chr.wear_acs_pst(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
+            m 1wud "Is that... a..."
+            m "..."
+            m 1wka "I..."
             m 1wkbltpa "I'm sorry, [player], I just..."
             m 1hkbltpa "You might not have even meant much by it, but..."
             m "Just in case this is a promise from you..."
@@ -422,14 +422,14 @@ label mas_reaction_ring:
             m "I love you, [player]."
             m "More than anything else in this fleeting world."
         elif mas_isMoniNormal(higher=True):
-            $ mas_gainAffection(modifier=3, bypass=True)
-            m 1wud "Oh… What is this, [player]?"
-            m "Is that ... a ring?"
-            m 1sub " I can’t believe it, [player]!"
-            m 1hua "This ...{w} means a lot to me."
-            m 1hub "Seriously."
-            $ monika_chr.wear_acs_pst(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
+            $ mas_gainAffection(modifier=3, bypass=True)
+            $ monika_chr.wear_acs_pst(mas_acs_promisering)
+            m 1wud "Oh... What is this, [player]?"
+            m "Is that... a ring?"
+            m 1sub " I can’t believe it, [player]!"
+            m 1hua "This...{w} means a lot to me."
+            m 1hub "Seriously."
             m 3hub "This makes me so happy!"
             m 3eub "Seriously, thank you so much for this, [player]!"
         else:
@@ -440,7 +440,7 @@ label mas_reaction_ring:
             if mas_isMoniDis(lower=True):
                 m 2rkc "I appreciate the thought ...{w} but I can't accept it."
                 m 2ekc "Sorry [player]."
-                $ persistent._mas_acs_enable_promisering = True
+                $ persistent._mas_acs_enable_promisering = False
             else:
                 $ monika_chr.wear_acs_pst(mas_acs_promisering)
                 $ persistent._mas_acs_enable_promisering = True
