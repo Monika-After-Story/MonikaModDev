@@ -733,9 +733,6 @@ label ch30_autoload:
     #If you were interrupted, push that event back on the stack
     $ restartEvent()
 
-    # call plushie logic
-    $ mas_startupPlushieLogic(4)
-    
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
         if persistent.sessions['last_session_end'] is not None and persistent.closed_self:
@@ -1162,4 +1159,6 @@ label ch30_reset:
     ## should we drink coffee?
     $ _mas_startupCoffeeLogic()
 
+    # call plushie logic
+    $ mas_startupPlushieLogic(4)
     return
