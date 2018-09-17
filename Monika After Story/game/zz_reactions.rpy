@@ -2,7 +2,16 @@
 # not too different from events
 
 default persistent._mas_filereacts_failed_map = dict()
+# mapping of failed deleted file reacts
+
 default persistent._mas_filereacts_just_reacted = False
+# True if we just reacted to something
+
+default persistent._mas_filereacts_reacted_map = dict()
+# mapping of file reacts that we have already reacted to today
+
+default persistent._mas_filereacts_stop_map = dict()
+# mapping of file reacts that we should no longer react to ever again
 
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
@@ -35,6 +44,10 @@ init -1 python in mas_filereacts:
     # connector quips
     connectors = None
     gift_connectors = None
+
+    # starter quips
+    starters = None
+    gift_starters = None
 
     def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE):
         """
@@ -75,6 +88,17 @@ init -1 python in mas_filereacts:
         gift_connectors = store.MASQuipList(allow_glitch=False, allow_line=False)
 
 
+    def _initStarterQuips():
+        """
+        Initializes the starter quips
+        """
+        global starters, gift_starters
+
+        # the starter is a MASQuipList
+        starters = store.MASQuipList(allow_glitch=False, allow_line=False)
+        gift_starters = store.MASQuipList(allow_glitch=False, allow_line=False)
+
+
     def react_to_gifts(found_map, connect=True):
         """
         call this function when you want to check files for reacting to gifts.
@@ -100,7 +124,14 @@ init -1 python in mas_filereacts:
         for _gift in raw_gifts:
             gift_name, ext, garbage = _gift.partition(GIFT_EXT)
             c_gift_name = gift_name.lower()
-            if c_gift_name not in store.persistent._mas_filereacts_failed_map:
+            if (
+                    c_gift_name not in 
+                        store.persistent._mas_filereacts_failed_map
+                    and c_gift_name not in 
+                        store.persistent._mas_filereacts_reacted_map
+                    and c_gift_name not in 
+                        store.persistent._mas_filereacts_stop_map
+                ):
                 gifts_found.append(c_gift_name)
                 found_map[c_gift_name] = _gift
 
@@ -137,7 +168,12 @@ init -1 python in mas_filereacts:
         # gotta remove the extra
         if len(generic_reacts) > 0:
             generic_reacts.pop()
+
+            # add the ender 
             generic_reacts.insert(0, "mas_reaction_end")
+
+            # add the starter
+            generic_reacts.append(gift_starters.quip()[1])
 
         # now return the list
         return generic_reacts
@@ -240,7 +276,9 @@ init -1 python in mas_filereacts:
             _core_delete(_key, _map)
 
 
+    # init
     _initConnectorQuips()
+    _initStarterQuips()
 
 init python:
     import store.mas_filereacts as mas_filereacts
@@ -276,7 +314,7 @@ init python:
 
 # none here!
 
-## Gift CONNECTORS [RCT10]
+## Gift CONNECTORS [RCT010]
 
 init 5 python:
     store.mas_filereacts.gift_connectors.addLabelQuip(
@@ -285,6 +323,36 @@ init 5 python:
 
 label mas_reaction_gift_connector_test:
     m "this is a test of the connector system"
+    return
+
+init 5 python:
+    store.mas_filereacts.gift_connectors.addLabelQuip(
+        "mas_reaction_gift_connector1"
+    )
+
+label mas_reaction_gift_connector1:
+    m "gift ocnnector 1"
+    return
+
+init 5 python:
+    store.mas_filereacts.gift_connectors.addLabelQuip(
+        "mas_reaction_gift_connector2"
+    )
+
+label mas_reaction_gift_connector2:
+    m "gift connector 2"
+    return
+
+
+### STARTERS [RCT050]
+
+init 5 python:
+    store.mas_filereacts.gift_starters.addLabelQuip(
+        "mas_reaction_gift_starter_generic"
+    )
+
+label mas_reaction_gift_starter_generic:
+    m "test of the generic starter system"
     return
 
 
