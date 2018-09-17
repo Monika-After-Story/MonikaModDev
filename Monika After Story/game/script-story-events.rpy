@@ -44,7 +44,7 @@ label gender:
     m 1hub "Remember that I'll always love you unconditionally, [player]."
     $ evhand.event_database["gender_redo"].unlocked = True
     $ evhand.event_database["gender_redo"].pool = True
-    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen 
+    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
     return
 
@@ -613,7 +613,6 @@ label mas_crashed_long_uthere:
     label .end:
         m "Anyway..."
         m 1eua "What should we do today?"
-        return
 
 
 ### post crashed flow
@@ -698,7 +697,7 @@ init 5 python:
     )
 
     if (
-            mas_corrupted_per 
+            mas_corrupted_per
             and not (mas_no_backups_found or mas_backup_copy_failed)
         ):
         mas_note_backups_all_good = None
@@ -779,7 +778,7 @@ init 5 python:
 
         _mas_generate_backup_notes()
         import os
-        
+
         if len(mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
@@ -793,7 +792,7 @@ init 5 python:
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
                 mas_note_backups_all_good.title + "\n\n" + mas_note_backups_all_good.text
             )
-            
+
 
 label mas_corrupted_persistent:
     m 1eud "Hey, [player]..."
@@ -807,7 +806,7 @@ label mas_corrupted_persistent:
         show screen mas_note_backups_poem(mas_note_backups_some_bad)
 
     else:
-        show screen mas_note_backups_poem(mas_note_backups_all_good) 
+        show screen mas_note_backups_poem(mas_note_backups_all_good)
     with Dissolve(0.5)
 
     $ pause()
@@ -889,7 +888,7 @@ label mas_new_character_file:
             return os.access(
                 os.path.normcase(
                     renpy.config.basedir + "/characters/monika.chr"
-                ), 
+                ),
                 os.F_OK
             )
 
