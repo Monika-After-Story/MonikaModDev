@@ -399,9 +399,9 @@ label mas_reaction_quetzal_plush:
     return
 
 init 5 python:
-    addReaction("mas_reaction_ring", "ring")
+    addReaction("mas_reaction_promisering", "promisering")
 
-label mas_reaction_ring:
+label mas_reaction_promisering:
     if not persistent._mas_acs_enable_promisering:
         if mas_isMoniEnamored(higher=True):
             $ mas_gainAffection(modifier=5, bypass=True)
@@ -448,7 +448,7 @@ label mas_reaction_ring:
     else:
         m 1rksdlb "[player]..."
         m 1rusdlb "You already gave me a ring!"
-    $ gift_ev = mas_getEV("mas_reaction_ring")
+    $ gift_ev = mas_getEV("mas_reaction_promisering")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
