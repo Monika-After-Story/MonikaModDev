@@ -1,6 +1,6 @@
 # Module that provides an interface for loading / saving files that we interact with
 #
-# NOTE: this is meant purely for reading / writing files into base64 with 
+# NOTE: this is meant purely for reading / writing files into base64 with
 #   checksums. If you want readable text files for users, DO NOT USE THIS.
 #
 # NOTE: some clarifications:
@@ -51,7 +51,7 @@ init -900 python in mas_ics:
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof)
     }
-        
+
     ###########################################################################
 
 
@@ -113,7 +113,8 @@ init -45 python:
 
             IN:
                 station - the path to the folder this docking station interacts
-                    with. (absolute path) 
+                    with. (absolute path), will try to create the folder if it
+                    doesn't exist. Exceptions will be logged.
                     NOTE: END WITH '/' please
                     (Default: DEF_STATION_PATH)
             """
@@ -125,6 +126,17 @@ init -45 python:
 
             self.station = os.path.normcase(station)
 
+            if not os.path.isdir(self.station):
+                try:
+                    os.makedirs(self.station)
+                except OSError:
+                   mas_utils.writelog(self.ERR.format(
+                       self.ERR_CREATE.format(self.station),
+                       str(self),
+                       repr(e)
+                   ))
+
+
 
         def __str__(self):
             """
@@ -132,7 +144,7 @@ init -45 python:
             """
             return "DS: [{0}]".format(self.station)
 
-       
+
         def checkForPackage(self, package_name, check_read=True):
             """
             Checks if a package exists in the docking station
@@ -269,10 +281,10 @@ init -45 python:
             return self.base64.b64encode(os.urandom(amount))[:amount]
 
 
-        def sendPackage(self, 
-                package_name, 
-                package, 
-                unpacked=False, 
+        def sendPackage(self,
+                package_name,
+                package,
+                unpacked=False,
                 pkg_slip=False
             ):
             """
@@ -288,7 +300,7 @@ init -45 python:
                     False means that it is in base64
                     (Default: False)
                 pkg_slip - True means we should generate a sha256 checksum for
-                    the package and return that 
+                    the package and return that
                     (Default: False)
 
             RETURNS:
@@ -318,7 +330,7 @@ init -45 python:
                     str(e)
                 ))
                 return False
-                
+
             finally:
                 # always close the mailbox
                 if mailbox is not None:
@@ -327,7 +339,7 @@ init -45 python:
             return False
 
 
-        def signForPackage(self, 
+        def signForPackage(self,
                 package_name,
                 pkg_slip,
                 keep_contents=False,
@@ -395,7 +407,7 @@ init -45 python:
                 if keep_contents:
                     return contents
 
-                ### or discard the results 
+                ### or discard the results
                 if contents is not None:
                     contents.close()
 
@@ -421,10 +433,10 @@ init -45 python:
             return 0
 
 
-        def smartUnpack(self, 
-                    package_name, 
-                    pkg_slip, 
-                    contents=None, 
+        def smartUnpack(self,
+                    package_name,
+                    pkg_slip,
+                    contents=None,
                     lines=0,
                     b64=True,
                     bs=None
@@ -586,7 +598,7 @@ init -45 python:
 
             RETURNS:
                 StringIO buffer containing the package decoded
-                Or None if pkg_slip checksum was passed in and the given 
+                Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
             contents = None
@@ -610,7 +622,7 @@ init -45 python:
 
             except Exception as e:
                 # if we get an exception, close the contents buffer and raise
-                # the exception 
+                # the exception
                 if contents is not None:
                     contents.close()
                 raise e
@@ -701,7 +713,7 @@ init -45 python:
             _contents = MASDockingStation._blockiter(contents, bs)
 
             if pkg_slip and pack:
-                # encode the data, then checksum the base64, then write to 
+                # encode the data, then checksum the base64, then write to
                 # output
                 checklist = self.hashlib.sha256()
 
@@ -747,7 +759,7 @@ init -45 python:
             IN:
                 box - file descriptor to read data from
                 contents - file descriptor to write data to
-                unpack - if True, decode input data from base64 prior to 
+                unpack - if True, decode input data from base64 prior to
                     writing output data
                     (Default: True)
                 pkg_slip - if True, genereate a checksum of the data.
@@ -952,7 +964,7 @@ init python in mas_dockstat:
 
 
 init 200 python in mas_dockstat:
-    # special store 
+    # special store
     # lets use this store to handle generation of docking station files
     import store
     import store.mas_utils as mas_utils
@@ -984,7 +996,7 @@ init 200 python in mas_dockstat:
         num_f = "{:6f}"
         first_sesh = ""
         affection_val = ""
-       
+
         # metadata parsing
         if store.persistent.sessions is not None:
             first_sesh_dt = store.persistent.sessions.get("first_session",None)
@@ -999,7 +1011,7 @@ init 200 python in mas_dockstat:
 
         if store.persistent._mas_affection is not None:
             _affection = store.persistent._mas_affection.get("affection", None)
-            
+
             if _affection is not None:
                 affection_val = num_f.format(_affection)
 
@@ -1017,7 +1029,7 @@ init 200 python in mas_dockstat:
     def _buildMetaDataPer(_outbuffer):
         """
         Writes out the persistent's data into the given buffer
-        
+
         Exceptions are logged
 
         OUT:
@@ -1033,7 +1045,7 @@ init 200 python in mas_dockstat:
             _outbuffer.write(cPickle.dumps(store.persistent))
             _outbuffer.write(END_DELIM)
             return True
-                
+
         except Exception as e:
             mas_utils.writelog(
                 "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
@@ -1089,7 +1101,7 @@ init 200 python in mas_dockstat:
             ))
             moni_buffer.close()
             return False
-            
+
         finally:
             # always close moni_chr
             if moni_chr is not None:
@@ -1105,7 +1117,7 @@ init 200 python in mas_dockstat:
             # First, lets iterate over the data to figure out how many lines
             # we will need, as well as how large this thing will be
             moni_buffer_iter = store.MASDockingStation._blockiter(
-                moni_buffer, 
+                moni_buffer,
                 blocksize
             )
             lines = 0
@@ -1122,7 +1134,7 @@ init 200 python in mas_dockstat:
             # fill a new buffer with the number of lines and reset it for
             # blocksize iterating
             moni_buffer_iter = store.MASDockingStation._blockiter(
-                moni_buffer, 
+                moni_buffer,
                 blocksize
             )
             moni_tbuffer = fastIO()
@@ -1198,7 +1210,7 @@ init 200 python in mas_dockstat:
                     moni_fbuffer.write(data)
 
             else:
-                # otherwise, we shoudl just write out the last line and 
+                # otherwise, we shoudl just write out the last line and
                 # be done with it
                 data = encoder(_line)
                 checklist.update(data)
@@ -1213,7 +1225,7 @@ init 200 python in mas_dockstat:
             ))
 
             # attempt to delete existing file if its there
-            # NOTE: dont care if it fails, we just want to try it 
+            # NOTE: dont care if it fails, we just want to try it
             try:
                 # NOTE: we do buffer closing here because we need to try
                 # file deletion in here too
@@ -1367,12 +1379,12 @@ init 200 python in mas_dockstat:
             [3]: affection, integer value (dont really rely on this for much)
             [4]: monika's hair setting
             [5]: monika's clothes setting
-            
+
             OR None if general (not item-specific) parse errors occurs)
         """
         try:
             data_list = data_line.split("|")
-            
+
             # now parse what needs to be parsed
             data_list[0] = mas_utils.tryparsedt(data_list[0])
             data_list[3] = mas_utils.tryparseint(data_list[3], 0)
@@ -1415,9 +1427,9 @@ init 200 python in mas_dockstat:
         Selects the correct Return Home greeting.
         Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to 
+        NOTE: this calls mas_getEV, so do NOT run this function prior to
             runtime
-        
+
         IN:
             _type - list of additoinal mas_greetings types to search on
 
@@ -1620,7 +1632,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
     $ can_moni_leave = moni_chksum and moni_chksum != -1
-     
+
     if can_moni_leave:
         # file successfully made
         # monika can leave
@@ -1763,11 +1775,11 @@ label mas_dockstat_different_monika:
     show monika 1ekd zorder MAS_MONIKA_Z at t11
 
     # 1 line of dialgoue before we remove the empty desk
-    m "[player]?" 
+    m "[player]?"
     hide emptydesk
 
     m "Wait, you're not [player]."
-   
+
     # TODO: more dialogue
 
     $ mas_dockstat.retmoni_data = None
@@ -1793,7 +1805,7 @@ label mas_dockstat_found_monika:
 
         # reset greeting type
         persistent._mas_greeting_type = None
-        
+
         # removee the monika
         store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
