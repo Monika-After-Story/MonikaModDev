@@ -129,7 +129,7 @@ init -45 python:
             if not os.path.isdir(self.station):
                 try:
                     os.makedirs(self.station)
-                except OSError:
+                except Exception as e:
                    mas_utils.writelog(self.ERR.format(
                        self.ERR_CREATE.format(self.station),
                        str(self),
