@@ -582,6 +582,37 @@ label mas_reaction_bday_cake:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
+init 5 python:
+    addReaction("mas_reaction_cupcake", "cupcake")
+
+label mas_reaction_cupcake:
+    m 1wud "Is that a...cupcake?"
+    m 3hub "Wow, thanks [player]!"
+    m 3euc "Come to think of it, I’ve been meaning to make some cupcakes myself."
+    m 1eua "I wanted to learn how to bake good pastries like Natsuki did."
+    m 1rksdlb "Buuut I’ve yet to make a kitchen to use!"
+    m 3eub "Maybe in the future once I get better at programming, I’ll be able to make one here."
+    m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
+    $ gift_ev = mas_getEV("mas_reaction_cupcake")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+init 5 python:
+    addReaction("mas_reaction_knife", "knife")
+
+label mas_reaction_knife:
+    m 1euc "...?"
+    m 1wud "Is that...a knife?"
+    m 2wfc "Why would you want to give me that?"
+    m 2wfd "I don’t need this here!."
+    m 3tfc "...Someone else, maybe."
+    m 1dfc "..."
+    m 1rsc "I’m not taking this, [player]."
+    m 1rfc "If you were trying to be funny, then you have {i}very{/i} poor taste."
+    $ gift_ev = mas_getEV("mas_reaction_cupcake")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
     $ persistent._mas_filereacts_just_reacted = False
