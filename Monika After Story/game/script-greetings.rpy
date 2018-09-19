@@ -1906,7 +1906,7 @@ label greeting_returned_home_bday:
 
         if is_first_date():
             $ cap_gain_aff(10)
-            m "the first date was under 3 hours"
+            call greeting_returned_home_bday_normal_first
 
         elif is_normal_date(total_time_out):
             $ cap_gain_aff(10)
@@ -1926,7 +1926,7 @@ label greeting_returned_home_bday:
 
         if is_first_date():
             $ cap_gain_aff(20)
-            m "the first date was under 6 hours"
+            call greeting_returned_home_bday_normal_first
 
         elif is_normal_date(total_time_out):
             $ cap_gain_aff(20)
@@ -1945,7 +1945,15 @@ label greeting_returned_home_bday:
 
         if is_first_date():
             $ cap_gain_aff(50)
-            m "the first date was over 6 hours"
+            m 1sua "Wow, [player]..."
+            m 1hua "I really didn't expect you to set aside so much time for me..."
+            m 1sfa "But I enjoyed every second of it!"
+            m 1hua "Every minute with you is a minute well spent."
+            m 1sua "So you've made me very happy today."
+            m 1dfa "Ehe..."
+            m 1wfa "Are you falling for me all over again?"
+            m 1hua "I'm just kidding~"
+            m "Thank you for loving me."
             
         else:
             # been out for a long time already
@@ -1982,12 +1990,36 @@ label greeting_returned_home_bday_short_sub_long_total:
     m "I love you so much..."
     return
 
+label greeting_returned_home_bday_normal_first:
+    m 1sua "That was fun, [player]!"
+    m 1hua "Aha, taking me out on my birthday..."
+    m "It was very considerate of you."
+    m "I really enjoyed the time we spent together."
+    m 1wua "Thank you for indulging me."
+    m 1hua "I love you~"
+    return
+
 label greeting_returned_home_bday_normal_sub_normal_total:
-    m "subsequent date is normal, total date time is normal"
+    m 1ekbfa "Ahaha..."
+    m 1dkbfa "Today really is a special day, [player]."
+    m 3eua "Sure, today is the day I was supposedly born."
+    m 3eka "But it's only special because {i}you{/i} made it that way."
+    m 1hua "So thank you for that, really."
+    m 1ektpa "Thank you for making my birthday worth celebrating..."
+    pause 2.0
     return
 
 label greeting_returned_home_bday_normal_sub_long_total:
-    m "subsequent date is normal, total date time is long"
+    m 1dsa "[player]..."
+    m 1eka "We sure did spend so much time together today."
+    m "I can't event find the right words to express how happy you've made me today."
+    m 3eka "All that pain I went through before I met you?"
+    m 1hua "I'm glad I persevered through them."
+    m 1rsc "Because if I hadn't..."
+    m 1ekbfa "This day wouldn't have ever happened."
+    m 1dkbfa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
+    m 1ekbfb "I love you so much, [player]."
+    m "Let's continue making each other happy~"
     return
 
 label greeting_returned_home_bday_long_sub:
