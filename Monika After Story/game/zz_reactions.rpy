@@ -13,6 +13,8 @@ default persistent._mas_filereacts_reacted_map = dict()
 default persistent._mas_filereacts_stop_map = dict()
 # mapping of file reacts that we should no longer react to ever again
 
+default persistent._mas_filereacts_historic = dict()
+
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
         store.mas_filereacts.delete_all(persistent._mas_filereacts_failed_map)
@@ -138,6 +140,11 @@ init -1 python in mas_filereacts:
         # then sort the list
         gifts_found.sort()
 
+        # check for stats dict for today
+        today = datetime.date.today()
+        if not today in persistent._mas_filereacts_historic:
+            persistent._mas_filereacts_historic[today] = dict()
+
         # now we are ready to check for reactions
         # first we check for all file reacts:
         #all_reaction = filereact_map.get(gifts_found, None)
@@ -157,6 +164,9 @@ init -1 python in mas_filereacts:
                 gifts_found.pop()
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(gift_connectors.quip()[1])
+                # keep stats for today
+                persistent._mas_filereacts_historic[today][reaction.eventlabel] =
+                    persistent._mas_filereacts_historic[today].get(reaction.eventlabel,0) + 1
 
         # add in the generic gift reactions
         generic_reacts = list()
@@ -164,6 +174,9 @@ init -1 python in mas_filereacts:
             for _gift in gifts_found:
                 generic_reacts.append("mas_reaction_gift_generic")
                 generic_reacts.append(gift_connectors.quip()[1])
+                # keep stats for today
+                persistent._mas_filereacts_historic[today]["mas_reaction_gift_generic"] =
+                    persistent._mas_filereacts_historic[today].get("mas_reaction_gift_generic",0) + 1
         generic_reacts.extend(found_reacts)
 
         # gotta remove the extra
@@ -219,6 +232,22 @@ init -1 python in mas_filereacts:
         """
         for _fn in _filename_list:
             _core_delete(_fn, _map)
+
+    def _get_full_stats_for_date(date=None):
+        """
+        Getter for the full stats dict for gifts on a given date
+        IN:
+            date - the date to get the report for, if None is given will check
+                today's date
+                (Defaults to None)
+
+        RETURNS:
+            The dict containing the full stats or None if it's empty
+
+        """
+        if date is None:
+            date = datetime.date.today()
+        return persistent._mas_filereacts_historic.get(date,None)
 
 
     def delete_file(_filename):
@@ -277,6 +306,17 @@ init -1 python in mas_filereacts:
         for _key in _map_keys:
             _core_delete(_key, _map)
 
+    def get_report_for_date(date=None):
+        """
+        Generates a report for all the gifts given on the input date.
+        The report is in tuple form (total, good_gifts, neutral_gifts, bad_gifts)
+        it contains the totals of each type of gift.
+        """
+        if date is None:
+            date = datetime.date.today()
+
+        stats = _get_full_stats_for_date(date)
+        
 
     # init
     _initConnectorQuips()
