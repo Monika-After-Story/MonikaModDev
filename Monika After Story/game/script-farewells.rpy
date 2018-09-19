@@ -582,35 +582,50 @@ label bye_going_somewhere:
 # back will increase affection)
 # lets limit this to like once per day
 #
+
+    python:
+        # setup the random chances
+        if mas_isMonikaBirthday():
+            dis_chance = 10
+            upset_chance = 0
+
+        else:
+            dis_chance = 50
+            upset_chance = 10
+
     if mas_isMoniBroken(lower=True):
         # broken monika dont ever want to go with u
         jump bye_going_somewhere_nothanks
 
     elif mas_isMoniDis(lower=True):
         # distressed monika has a 50% chance of not going with you
-        if random.randint(1,2) == 1:
+        if random.randint(1,100) <= dis_chance:
             jump bye_going_somewhere_nothanks
         
         # otherwse we go
         m 1wud "You really want to bring me along?"
-        m 1ekd "Are you sure this isn't some...{nw}"
+        m 1ekd "Are you sure this isn't some--{nw}"
         $ _history_list.pop()
         m 1lksdlc "..."
         m 1eksdlb "What am I saying? Of course I'll go with you!"
 
     elif mas_isMoniUpset(lower=True):
         # upset monika has a 10% chance of not going with you
-        if random.randint(1,10) == 1:
+        if random.randint(1, 100) <= upset_chance:
             jump bye_going_somewhere_nothanks
 
         # otherwise we go
         m 1wud "You really want to bring me along?"
         m 1eka "..."
         m 1hua "Well, I suposed it can't hurt to join you."
-        m 1hub "I really can't wait to spend more time with you."
+        m 2dsc "Just...please."
+        m 2rkc "{i}Please{/i} understand what I'm going through."
+        m 1dkc "..."
 
     elif mas_isMoniLove(higher=True):
-        m 1hua "All right! Let's go!"
+        m 1hub "Oh, okay!"
+        m 3tub "Taking me somewhere special today?"
+        m 1hua "I can't wait!"
 
 #    elif mas_isMoniAff(higher=True):
         # TODO: affecitonate/enamored monika will always go wtih you and assume its a
@@ -622,6 +637,14 @@ label bye_going_somewhere:
         #   and will ask u to wait for her to get ready
         m 1sub "Really?"
         m 1hua "Yay!"
+        m 1ekbfa "I wonder where you'll take me today..."
+
+    if mas_isMonikaBirthday():
+        m 1hua "Ehehe. It's a bit romantic, isn't it?"
+        m 1eua "Maybe you'd even want to call it a da-{nw}"
+        $ _history_list.pop()
+        $ _history_list.pop()
+        m 1hua "Oh! Sorry, did I say something?"
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True

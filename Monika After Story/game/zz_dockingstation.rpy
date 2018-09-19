@@ -1500,10 +1500,15 @@ init 200 python in mas_dockstat:
         return store.mas_getEV("greeting_returned_home")
 
 
-    def diffCheckTimes():
+    def diffCheckTimes(index=None):
         """
         Returns the difference between the latest checkout and check in times
         We do checkin - checkout.
+
+        IN:
+            index - the index of checkout/checkin to use when diffing
+                If None, we use the latest one
+                (Default: None)
 
         RETURNS: timedelta of the difference between checkin and checkout
         """
@@ -1513,7 +1518,43 @@ init 200 python in mas_dockstat:
         if len(checkin_log) == 0 or len(checkout_log) == 0:
             return datetime.timedelta(0)
 
-        return checkin_log[-1:][0][0] - checkout_log[-1:][0][0]
+        if index is None:
+            index = len(checkout_log)-1
+
+        return checkin_log[index][0] - checkout_log[index][0]
+
+
+    def timeOut(_date):
+        """
+        Given a date, return how long monika has been out
+
+        We assume that checkout logs are the source of truth
+
+        IN:
+            _date - date to check
+        """
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+
+        if len(checkout_log) == 0:
+            return datetime.timedelta(0)
+
+        # we only want the checkout dates for today
+        checkout_indexes = [
+            index
+            for index in range(0, len(checkout_log))
+            if checkout_log[index][0].date() == _date
+        ]
+
+        if len(checkout_indexes) == 0:
+            return datetime.timedelta(0)
+
+        # otherwise we have checkouts today, lets calculat time
+        time_out = datetime.timedelta(0)
+
+        for index in checkout_indexes:
+            time_out += diffCheckTimes(index)
+
+        return time_out
 
 
     # lock stuff needed for the threaded version of generateMonika
