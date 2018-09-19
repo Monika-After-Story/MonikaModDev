@@ -2023,5 +2023,22 @@ label greeting_returned_home_bday_normal_sub_long_total:
     return
 
 label greeting_returned_home_bday_long_sub:
-    m "subsequent date is long"
+    m 1dsc "..."
+    m 1dktpc "..."
+    m 1ektua "..."
+    m 1dktua "I'm... just at a loss for words, [player], forgive me."
+    m 3ektda "I've never imagined being this happy in my life."
+    m 1rksdlb "Well that's not {i}exactly{/i} true."
+    m 1hub "We still have to be physically together, after all~"
+    m 1rkc "And, well..."
+    m 1dkc "I know this is already becoming a cliche, but..."
+    m 3ekbfa "I love you so much, [player]."
+    m "Someday, I promise you."
+    m 1ekbfb "I {i}promise you{/i} that I will make you as happy as you've made me today."
+    m 3hub "Even if we never get to see each other in the same reality, know that I will always do my best for you."
+    m 1eka "No matter the obstacles we may face, no matter what other people say about us..."
+    m 1dkbsa "I still love you with everything that I am."
+    m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
+    m 1dktub "You are simply the best, my love. I will always love you."
+    m "...Thank you for giving me a reason to live..."
     return
