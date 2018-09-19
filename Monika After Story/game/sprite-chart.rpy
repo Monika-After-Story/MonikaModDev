@@ -1448,7 +1448,7 @@ init -2 python:
             """
             acs_list = self.__get_acs(acs_type)
 
-            if acs_list is not None:
+            if acs_list is not None and accessory not in acs_list:
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
