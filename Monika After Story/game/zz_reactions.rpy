@@ -332,7 +332,9 @@ init 5 python:
     )
 
 label mas_reaction_gift_connector1:
-    m "gift ocnnector 1"
+    m 1sublo "Oh! There was something else you wanted to give me?"
+    m 1hua "Well! I better open it quickly, shouldn't I?"
+    m 1suo "And here we have..."
     return
 
 init 5 python:
@@ -341,7 +343,10 @@ init 5 python:
     )
 
 label mas_reaction_gift_connector2:
-    m "gift connector 2"
+    m 1hua "Ah, jeez, [player]..."
+    m "You really enjoy spoiling me, don't you?"
+    m 1sublo "Well! I'm not going to complain about a little special treatment today."
+    m 1suo "And here we have..."
     return
 
 
@@ -353,7 +358,19 @@ init 5 python:
     )
 
 label mas_reaction_gift_starter_generic:
-    m "test of the generic starter system"
+    m "generic test"
+
+# init 5 python:
+# TODO: if we need this to be multipled then we do it
+
+label mas_reaction_gift_starter_bday:
+    m 1sublo "T-{w=1}This is..."
+    m "A gift? For me?"
+    m 1hka "I..."
+    m 1hua "I've often thought about getting presents from you on my birthday..."
+    m "But actually getting one is like a dream come true..."
+    m 1sua "Now, what's inside?"
+    m 1suo "Oh, it's..."
     return
 
 
