@@ -565,12 +565,11 @@ label mas_reaction_bday_cake:
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh, [player]..."
         m "A... birthday cake?"
-        # show image bday_cake at zorder 11
+        # show mas_bday_cake zorder 11
         m 3sub "Gosh, this is so sweet of you!"
         m 1hub "I really love this a lot!"
-        m 1rksdlb "I really love this a lot!"
         m 1dkbfa "I’ll save it for now"
-        # hide image bday_cake
+        # hide mas_bday_cake
         m 3hua "I can’t wait to try it later!"
         m 1dsc "But..."
         m 3ekbfa "I wish we could eat it together..."
@@ -609,7 +608,7 @@ label mas_reaction_knife:
     m 1dfc "..."
     m 1rsc "I’m not taking this, [player]."
     m 1rfc "If you were trying to be funny, then you have {i}very{/i} poor taste."
-    $ gift_ev = mas_getEV("mas_reaction_cupcake")
+    $ gift_ev = mas_getEV("mas_reaction_knife")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
