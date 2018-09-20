@@ -14,6 +14,7 @@ default persistent._mas_filereacts_stop_map = dict()
 # mapping of file reacts that we should no longer react to ever again
 
 default persistent._mas_filereacts_historic = dict()
+# historic database used to track when and how many gifts Monika has received
 
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
@@ -349,7 +350,7 @@ init -1 python in mas_filereacts:
                 neutral = stats[_key]
         total = good + neutral + bad
         return (total, good, neutral, bad)
-        
+
 
 
     # init
@@ -658,11 +659,9 @@ label mas_reaction_bday_cake:
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh, [player]..."
         m "A... birthday cake?"
-        # show mas_bday_cake zorder 11
         m 3sub "Gosh, this is so sweet of you!"
         m 1hub "I really love this a lot!"
         m 1dkbfa "I’ll save it for now"
-        # hide mas_bday_cake
         m 3hua "I can’t wait to try it later!"
         m 1dsc "But..."
         m 3ekbfa "I wish we could eat it together..."
