@@ -2749,6 +2749,26 @@ init -1 python:
         return mas_monika_birthday
 
 
+    def mas_recognizedBday(_date=None):
+        """
+        Checks if the user recognized monika's birthday at all.
+
+        TODO: this is one-shot. we need to make this generic to future bdays
+
+        RETURNS:
+            True if the user recoginzed monika's birthday, False otherwise
+        """
+        if _date is None:
+            _date = mas_monika_birthday
+
+        return (
+            mas_generateGiftsReport(_date)[0] > 0
+            or persistent._mas_bday_date_count > 0
+            or persistent._mas_bday_sbp_reacted
+            or True # TODO the bday pool topic
+        )
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos

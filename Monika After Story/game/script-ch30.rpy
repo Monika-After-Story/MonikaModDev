@@ -36,6 +36,23 @@ init 970 python:
         del moni_tuple
 
 
+    postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
+
+    if (
+            postbday_ev is not None
+            and persistent._mas_long_absence
+            and postbday_ev.conditional is not None
+            and eval(postbday_ev.conditional)
+        ):
+        # reset the post bday event if users did long absence to skip the 
+        # event
+        postbday_ev.conditional = None
+        postbday_ev.action = None
+
+    if postbday_ev is not None:
+        del postbday_ev
+
+
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
 image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"

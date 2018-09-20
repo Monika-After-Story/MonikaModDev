@@ -1074,6 +1074,7 @@ label mas_bday_spent_time_with:
     m 3hub "Let’s do it again sometime soon, okay?"
     return
 
+### no time spent
 init 5 python:
     addEvent(
         Event(
@@ -1270,3 +1271,25 @@ label mas_bday_pool_happy_bday:
     $ persistent._mas_bday_need_to_reset_bday = True
     $ lockEventLabel("mas_bday_pool_happy_bday")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_postbday_notimespent",
+
+            # within a week after monika's birthday, user did not recognize
+            # monika's birthday at all, and they were not long absenced
+            conditional=(
+                "mas_monika_birthday < datetime.date.today() <= "
+                "(mas_monika_birthday + datetime.timedelta(7)) "
+                "and not mas_recognizedBday()"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_bday_postbday_notimespent:
+
+    return
+
