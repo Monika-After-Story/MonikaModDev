@@ -1236,8 +1236,15 @@ init 5 python:
     )
 
 label mas_bday_pool_happy_bday:
-    $ persistent._mas_bday_said_happybday = True
-    m "thanks for telling me happy birthday!"
+    python:
+        persistent._mas_bday_said_happybday = True
+        did_something_today = (
+            mas_generateGiftsReport(mas_monika_birthday)[0] > 0
+            or persistent._mas_bday_date_count > 0
+            or True
+        ) #TODO surprise party rebase please
+
+    
 
     # dont need to say happy birthday again today, but let the game know to 
     # reset it at some point in the future
