@@ -1170,14 +1170,20 @@ label ch30_reset:
     ## should we reset birthday
     python:
         if (
-                persistent._mas_bday_need_to_reset_bday 
-                and not mas_isMonikaBithday()
+                persistent._mas_bday_need_to_reset_bday
+                and not mas_isMonikaBirthday()
             ):
             bday_ev = mas_getEV("mas_bday_pool_happy_bday")
             if bday_ev:
                 bday_ev.conditional="mas_isMonikaBirthday()"
                 bday_ev.action=EV_ACT_UNLOCK
                 persistent._mas_bday_need_to_reset_bday = False
+
+            bday_spent_ev = mas_getEV("mas_bday_spent_time_with")
+            if bday_spent_ev:
+                bday_spent_ev.action = EV_ACT_QUEUE
+                bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
+                bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
