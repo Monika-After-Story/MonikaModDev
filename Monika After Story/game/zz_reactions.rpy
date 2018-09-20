@@ -149,6 +149,7 @@ init -1 python in mas_filereacts:
                 ):
                 gifts_found.append(c_gift_name)
                 found_map[c_gift_name] = _gift
+                store.persistent._mas_filereacts_reacted_map[c_gift_name] = _gift
 
         # then sort the list
         gifts_found.sort()
@@ -181,6 +182,7 @@ init -1 python in mas_filereacts:
                 generic_reacts.append(gift_connectors.quip()[1])
                 # keep stats for today
                 _register_received_gift("mas_reaction_gift_generic")
+
 
         generic_reacts.extend(found_reacts)
 
@@ -658,7 +660,7 @@ label mas_reaction_plush:
     m 1hua "But don’t worry, [player]!"
     m 1hub "Ehehe~"
     m 1hua "Thank you for trying!"
-    $ mas_receivedGift("mas_reaction_bday_cake") # while unsuccessful counts
+    $ mas_receivedGift("mas_reaction_plush") # while unsuccessful counts
     $ gift_ev = mas_getEV("mas_reaction_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
@@ -668,7 +670,7 @@ init 5 python:
 
 label mas_reaction_bday_cake:
     if not mas_isMonikaBirthday():
-        m 1rksdlb "Today is not my birthday, did you forget when is it, [player]?"
+        m 1rksdlb "Today is not my birthday, did you forget when it is, [player]?"
     else:
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh, [player]..."
