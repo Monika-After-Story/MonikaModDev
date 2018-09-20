@@ -52,6 +52,29 @@ init -900 python in mas_ics:
         "dwof": ("without_frame.png", islands_dwof)
     }
 
+    ########################## SURPRISE BDAY PARTY ############################
+    # cake
+    sbp_cake = (
+        "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
+    )
+    
+    # banners
+    sbp_banners = (
+        "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
+    )
+
+    # balloons
+    sbp_balloons = (
+        "eda87e74b8dc9d5082a0f2a7d5202dc0e7b96ec36cbaebc98eb046584834b8e9"
+    )
+
+    # surprise bday party dicts to map filenames to checksums
+    sbp_map = {
+        "cake": sbp_cake,
+        "banners": sbp_banners,
+        "balloons": sbp_balloons
+    }
+        
     ###########################################################################
 
 
@@ -85,6 +108,7 @@ init -45 python:
         # 1 - docking station as str
         # 2 - exception (if applicable)
         ERR = "[ERROR] {0} | {1} | {2}\n"
+        ERR_DEL = "Failure removing package '{0}'."
         ERR_GET = "Failure getting package '{0}'."
         ERR_OPEN = "Failure opening package '{0}'."
         ERR_READ = "Failure reading package '{0}'."
@@ -195,6 +219,58 @@ init -45 python:
             return pkg_slip
 
 
+        def destroyPackage(self, package_name):
+            """
+            Attempts to destroy the given package in the docking station.
+
+            NOTE: exceptions are logged
+
+            IN:
+                package_name - name of the package to delete
+
+            RETURNS:
+                True if package no exist or was deleted. False otherwise
+            """
+            if not self.checkForPackage(package_name, False):
+                return True
+
+            # otherwise we have a package
+            try:
+                os.remove(self._trackPackage(package_name))
+                return True
+
+            except Exception as e:
+                mas_utils.writelog(self.ERR.format(
+                    self.ERR_DEL.format(package_name),
+                    str(self),
+                    repr(e)
+                ))
+                return False
+
+
+        def getPackageList(self, ext_filter=""):
+            """
+            Gets a list of the packages in the docking station.
+
+            IN:
+                ext_filter - extension filter to use when getting list.
+                    the '.' is added if not already given.
+                    If not given, we get all the packages
+                    (Default: "")
+
+            RETURNS: list of packages 
+            """
+            # correct filter if needed
+            if len(ext_filter) > 0 and not ext_filter.startswith("."):
+                ext_filter = "." + ext_filter
+
+            return [
+                package
+                for package in os.listdir(self.station)
+                if package.endswith(ext_filter)
+            ]
+
+
         def getPackage(self, package_name):
             """
             Gets a package from the docking station
@@ -223,7 +299,7 @@ init -45 python:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_OPEN.format(package_name),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
                 if package is not None:
                     package.close()
@@ -834,7 +910,7 @@ init -45 python:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_GET.format(package_path),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
 
                 # in error case, assume failure
@@ -899,6 +975,17 @@ default persistent._mas_dockstat_going_to_leave = False
 # NOTE: do NOT set this directly. Use the helper functions
 default persistent._mas_dockstat_moni_size = 0
 
+default persistent._mas_bday_sbp_reacted = False
+# True means we have reacted to the surprise birthday party.
+# NOTE: we need to consider how we want to do this in future bdays. probably
+# may do historical when we can
+
+# this will act historial until we have better data poitns
+default persistent._mas_bday_sbp_found_cake = False
+default persistent._mas_bday_sbp_found_banners = False
+default persistent._mas_bday_sbp_found_balloons = False
+
+
 init -500 python in mas_dockstat:
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
@@ -920,6 +1007,21 @@ init -500 python in mas_dockstat:
 
     # Monika data is in persitent form
     MAS_PKG_DP = 16
+
+    ## surprise party constants for the state of the surprise party
+    # bit based
+    
+    MAS_SBP_NONE = 1
+    # no surprise party files
+
+    MAS_SBP_CAKE = 2
+    # cake was found
+
+    MAS_SBP_BANR = 4
+    # banner was found
+
+    MAS_SBP_BLON = 8
+    # balloon was found
 
 init python in mas_dockstat:
     import store
@@ -970,6 +1072,7 @@ init 200 python in mas_dockstat:
     import store.mas_utils as mas_utils
     import store.mas_sprites as mas_sprites
     import store.mas_greetings as mas_greetings
+    import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
     import os
@@ -980,6 +1083,9 @@ init 200 python in mas_dockstat:
     # we set these during init phase if we found a monika
     retmoni_status = None
     retmoni_data = None
+
+    # and these are set for bday related stuff
+    retsbp_status = None
 
 
     def _buildMetaDataList(_outbuffer):
@@ -1051,6 +1157,196 @@ init 200 python in mas_dockstat:
                 "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
             )
             return False
+
+
+    def packageCheck(
+            dockstat,
+            pkg_name,
+            pkg_slip,
+            on_succ,
+            on_fail,
+            sign=True
+        ):
+        """
+        Checks for existence of a package that matches the pkg name and slip.
+
+        This acts as a wrapper around the signForPackage that can encapsulate
+        return values with different values.
+
+        Success is when signForPackage returns 1. All other values are 
+        considered failures.
+
+        NOTE: if sign is False, then we use createPackageSlip + getPackage
+        instead. use this if you don't want to delete the package once you
+        have checked them in.
+
+        IN:
+            dockstat - docking station to check packag ein
+            pkg_name - name of the package to check
+            pkg_slip - checksum of this package
+            on_succ - value to return on successful package check
+            on_fail - value to return on failed package check
+            sign - True to use signForPackage (aka delete after checking),
+                False uses getPackage + createPackageSlip (aka no delete after
+                checking)
+                (Default: True)
+        """
+        if sign:
+            if dockstat.signForPackage(pkg_name, pkg_slip, bs=b64_blocksize) == 1:
+                return on_succ
+
+        else:
+            # use getPackage and createPackageSlip
+            package = dockstat.getPackage(pkg_name)
+            if package is None:
+                return on_fail
+
+            try:
+                read_slip = dockstat.createPackageSlip(package, b64_blocksize)
+
+                if read_slip == pkg_slip:
+                    return on_succ
+
+            except Exception as e:
+                mas_utils.writelog(
+                    "[WARN]: package slip fail? {0} | {1}\n".format(
+                        pkg_name,
+                        repr(e)
+                    )
+                )
+
+            finally:
+                if package is not None:
+                    package.close()
+
+        return on_fail
+
+
+    def surpriseBdayCheck(dockstat):
+        """
+        Checks for surprise party files in the given docking station.
+        Returns a bit set of surprise party states
+
+        Also sets the dockstat retsbp status var
+
+        IN:
+            dockstat - the docking station to check surprise party files
+
+        RETURNS:
+            MAS_SBP bit constants
+        """
+        global retsbp_status
+        if not store.mas_isMonikaBirthday():
+            retsbp_status = MAS_SBP_NONE
+            return MAS_SBP_NONE
+
+        ret_val = (
+            packageCheck(
+                dockstat,
+                "cake",
+                mas_ics.sbp_cake,
+                MAS_SBP_CAKE,
+                0,
+                False
+            )
+            | packageCheck(
+                dockstat,
+                "banners",
+                mas_ics.sbp_banners,
+                MAS_SBP_BANR,
+                0,
+                False
+            )
+            | packageCheck(
+                dockstat,
+                "balloons",
+                mas_ics.sbp_balloons,
+                MAS_SBP_BLON,
+                0,
+                False
+            )
+        )
+
+        if ret_val == 0:
+            retsbp_status = MAS_SBP_NONE
+            return MAS_SBP_NONE
+
+        retsbp_status = ret_val
+        return ret_val
+
+
+    def surpriseBdayShowVisuals(_status=None, bday_bypass=False):
+        """
+        Checks status and shows bday visuals if we need to
+
+        IN:
+            _status - status to use when checking. If None, we check status
+                ourselves.
+                (Default: None)
+            bday_bypass - set to True to bypass birthday check
+                (Defalt: False)
+        """
+        if not bday_bypass and not store.mas_isMonikaBirthday():
+            return
+
+        if _status is None:
+            _status = surpriseBdayCheck(store.mas_docking_station)
+
+        if (_status & MAS_SBP_NONE) > 0:
+            surpriseBdayHideVisuals()
+            return
+
+        # otherwise we have visuals to show
+        if (
+                (_status & MAS_SBP_CAKE) > 0
+                and not store.persistent._mas_bday_sbp_reacted
+            ):
+            store.persistent._mas_bday_sbp_found_cake = True
+            renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+        else:
+            renpy.hide("mas_bday_cake")
+
+        if (_status & MAS_SBP_BANR) > 0:
+            store.persistent._mas_bday_sbp_found_banners = True
+            renpy.show("mas_bday_banners", zorder=7)
+        else:
+            renpy.hide("mas_bday_banners")
+
+        if (_status & MAS_SBP_BLON) > 0:
+            store.persistent._mas_bday_sbp_found_balloons = True
+            renpy.show("mas_bday_balloons", zorder=8)
+        else:
+            renpy.hide("mas_bday_balloons")
+
+
+    def surpriseBdayHideVisuals():
+        """
+        Hides all visuals for surprise party
+        """
+        renpy.hide("mas_bday_cake")
+        renpy.hide("mas_bday_banners")
+        renpy.hide("mas_bday_balloons")
+
+
+    def surpriseBdayIsCake():
+        """
+        Returns true if cake was found, False otherwise
+        """
+        return (retsbp_status & MAS_SBP_CAKE) > 0
+
+
+    def surpriseBdayIsBanners():
+        """
+        Returns true if banners were found, false otherwise
+        """
+        return (retsbp_status & MAS_SBP_BANR) > 0
+
+
+    def surpriseBdayIsBalloon():
+        """
+        Returns true if balloon was found, false otherwise
+        """
+        return (retsbp_status & MAS_SBP_BLON) > 0
 
 
     def generateMonika(dockstat):
@@ -1459,10 +1755,15 @@ init 200 python in mas_dockstat:
         return store.mas_getEV("greeting_returned_home")
 
 
-    def diffCheckTimes():
+    def diffCheckTimes(index=None):
         """
         Returns the difference between the latest checkout and check in times
         We do checkin - checkout.
+
+        IN:
+            index - the index of checkout/checkin to use when diffing
+                If None, we use the latest one
+                (Default: None)
 
         RETURNS: timedelta of the difference between checkin and checkout
         """
@@ -1472,7 +1773,43 @@ init 200 python in mas_dockstat:
         if len(checkin_log) == 0 or len(checkout_log) == 0:
             return datetime.timedelta(0)
 
-        return checkin_log[-1:][0][0] - checkout_log[-1:][0][0]
+        if index is None:
+            index = len(checkout_log)-1
+
+        return checkin_log[index][0] - checkout_log[index][0]
+
+
+    def timeOut(_date):
+        """
+        Given a date, return how long monika has been out
+
+        We assume that checkout logs are the source of truth
+
+        IN:
+            _date - date to check
+        """
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+
+        if len(checkout_log) == 0:
+            return datetime.timedelta(0)
+
+        # we only want the checkout dates for today
+        checkout_indexes = [
+            index
+            for index in range(0, len(checkout_log))
+            if checkout_log[index][0].date() == _date
+        ]
+
+        if len(checkout_indexes) == 0:
+            return datetime.timedelta(0)
+
+        # otherwise we have checkouts today, lets calculat time
+        time_out = datetime.timedelta(0)
+
+        for index in checkout_indexes:
+            time_out += diffCheckTimes(index)
+
+        return time_out
 
 
     # lock stuff needed for the threaded version of generateMonika
@@ -1684,6 +2021,9 @@ label mas_dockstat_empty_desk:
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
     show emptydesk zorder ed_zorder at i11
+    
+    # show birthday visuals?
+    $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
 
 label mas_dockstat_empty_desk_loop:
 
@@ -1709,6 +2049,9 @@ label mas_dockstat_empty_desk_loop:
 
             # get result
             moni_status, mas_dockstat.retmoni_data = mas_dockstat._endFindMonika()
+
+            # but check for surprise visuals
+            store.mas_dockstat.surpriseBdayShowVisuals()
 
             if (moni_status & mas_dockstat.MAS_PKG_FO) > 0:
                 # found a different monika, jump to the different monika
@@ -1799,9 +2142,13 @@ label mas_dockstat_found_monika:
 
     # select the greeting we want
     python:
-        selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
-            persistent._mas_greeting_type
-        ).eventlabel
+        if not persistent._mas_bday_sbp_reacted:
+            selected_greeting = "mas_bday_surprise_party_reaction"
+       
+        else:
+            selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
+                persistent._mas_greeting_type
+            ).eventlabel
 
         # reset greeting type
         persistent._mas_greeting_type = None
@@ -1816,3 +2163,7 @@ label mas_dockstat_found_monika:
         startup_check = False
 
     jump ch30_post_greeting_check
+
+
+
+
