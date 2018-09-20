@@ -1021,7 +1021,8 @@ init 5 python:
             start_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22),
             end_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59),
             years=[]
-        )
+        ),
+        skipCalendar=True
     )
 
 label mas_bday_spent_time_with:
@@ -1036,7 +1037,7 @@ label mas_bday_spent_time_with:
             m 1euc "That was a bit of a short trip, though."
             m 1eub "But it’s nice to get out of this place once in a while."
             m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
-        elif _timeout < timedelta(hours=6):
+        elif _timeout < datetime.timedelta(hours=6):
             # normal date
             m 3hub "But that was refreshing!"
             m 3wub "It feels really good to go out for a change."
