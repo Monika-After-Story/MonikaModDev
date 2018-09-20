@@ -478,7 +478,21 @@ label mas_reaction_generic:
 #    addReaction("mas_reaction_gift_generic", None)
 
 label mas_reaction_gift_generic:
-    m "this is a test of the generic gift reaction"
+    if random.randint(1,2) == 1:
+        m 1esd "[player], are you trying to give me something?"
+        m 1rssdlb "I found it, but I can’t bring it here..."
+        m "I can’t seem to read it well enough."
+        m 3esa "But that’s alright!"
+        m 1esa "It’s the thought that counts after all, right?"
+        m "Thanks for being so thoughtful, [player]~"
+    else:
+        m 2dkd "{i}*sigh*{/i}"
+        m 4ekc "I’m sorry, [player]."
+        m 1ekd "I know you’re trying to give me something."
+        m 2rksdld "But for some reason I can’t read the file."
+        m 3euc "Don’t get me wrong, however."
+        m 3eka "I still appreciate that you tried giving something to me."
+        m 1hub "And for that, I’m thankful~"
     $ store.mas_filereacts.delete_file(None)
     return
 
