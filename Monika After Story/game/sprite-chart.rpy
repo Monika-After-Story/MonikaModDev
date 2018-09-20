@@ -171,7 +171,7 @@ image mas_bday_cake = ConditionSwitch(
     "not morning_flag and not mas_bday_cake_lit",
     "mod_assets/location/spaceroom/bday/birthday_cake-n.png"
 )
-image mas_bday_banner = ConditionSwitch(
+image mas_bday_banners = ConditionSwitch(
     "morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations.png",
     "not morning_flag",

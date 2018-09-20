@@ -1010,3 +1010,71 @@ label mas_coffee_finished_drinking:
 
     m 1eua "Okay, what else should we do today?"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_reaction"
+        )
+    )
+
+label mas_bday_surprise_party_reaction:
+    $ store.mas_dockstat.surpriseBdayShowVisuals()
+
+    m 6wuo "T-{w=0.5}This is..."
+    m 6wka "Oh, [player]..."
+    m 6hua "I'm at a loss for words."
+    m "Setting this all up to surprise me on my birthday."
+    # additional dialogue
+
+    if surpriseBdayIsCake():
+        # we have cake?
+        m "cake dialogue"
+
+        menu:
+            "Light candles.":
+                $ mas_bday_cake_lit = True
+
+        m "cake is now lit!"
+
+        show screen mas_background_timed_jump(4, "mas_bday_surprise_party_reaction_no_make_wish")
+        menu:
+            "Make a wish, [m_name]...":
+                m "i blow out candles yo"
+                hide screen mas_background_timed_jump
+                jump mas_bday_surprise_party_reaction_post_make_wish
+
+label mas_bday_surprise_party_reaction_no_make_wish:
+    hide screen mas_background_timed_jump
+    m "i blow out candles without the smie"
+
+label mas_bday_surprise_party_reaction_post_make_wish:
+    $ mas_bday_cake_lit = False
+    m "somethin gabout post"
+
+    $ persistent._mas_bday_sbp_reacted = True
+    $ mas_docking_station.destroyPackage("cake")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_cleanup",
+            conditional=(
+                "persistent._mas_bday_sbp_reacted "
+                "and datetime.date.today().day > mas_monika_birthday.day"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+
+label mas_bday_surprise_party_cleanup:
+    # surprise party cleaning
+    # mainly to delete files that exist
+    $ mas_docking_station.destroyPackage("banners")
+    $ mas_docking_station.destroyPackage("balloons")
+    $ mas_docking_station.destroyPackage("cake")
+    return

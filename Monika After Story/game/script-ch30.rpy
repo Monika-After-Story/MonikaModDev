@@ -30,6 +30,9 @@ init 970 python:
         store.mas_dockstat.retmoni_status = moni_tuple[0]
         store.mas_dockstat.retmoni_data = moni_tuple[1]
 
+        # check surprise party
+        surpriseBdayCheck(mas_docking_station)
+
         del moni_tuple
 
 
@@ -420,6 +423,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
     $scene_change = False
 
+    # bday stuff (this checks itself)
+    $ store.mas_dockstat.surpriseBdayShowVisuals()
     return
 
 
