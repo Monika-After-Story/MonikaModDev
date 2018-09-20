@@ -2631,6 +2631,46 @@ image monika 1subftsb = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 1sublo = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="gasp",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
+image monika 1suo = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="gasp",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1hka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="l",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1kua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,

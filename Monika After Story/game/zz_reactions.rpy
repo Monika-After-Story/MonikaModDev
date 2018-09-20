@@ -125,11 +125,11 @@ init -1 python in mas_filereacts:
             gift_name, ext, garbage = _gift.partition(GIFT_EXT)
             c_gift_name = gift_name.lower()
             if (
-                    c_gift_name not in 
+                    c_gift_name not in
                         store.persistent._mas_filereacts_failed_map
-                    and c_gift_name not in 
+                    and c_gift_name not in
                         store.persistent._mas_filereacts_reacted_map
-                    and c_gift_name not in 
+                    and c_gift_name not in
                         store.persistent._mas_filereacts_stop_map
                 ):
                 gifts_found.append(c_gift_name)
@@ -151,7 +151,7 @@ init -1 python in mas_filereacts:
             _gift = gifts_found[index]
             reaction = filereact_map.get(_gift, None)
 
-            if _gift is not None:
+            if _gift is not None and reaction is not None:
                 # remove from the list and add to found
                 # TODO add to the persistent react map today
                 gifts_found.pop()
@@ -170,7 +170,7 @@ init -1 python in mas_filereacts:
         if len(generic_reacts) > 0:
             generic_reacts.pop()
 
-            # add the ender 
+            # add the ender
             generic_reacts.insert(0, "mas_reaction_end")
 
             # add the starter
