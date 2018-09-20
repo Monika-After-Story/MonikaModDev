@@ -1225,6 +1225,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_pool_happy_bday",
             prompt="Happy birthday!",
+            category=["monika"],
             conditional="mas_isMonikaBirthday()",
             action=EV_ACT_UNLOCK,
             pool=True,
@@ -1234,6 +1235,9 @@ init 5 python:
 #            years=[]
         )
     )
+    
+    # make sure this event is considered seen
+    persistent._seen_ever["mas_bday_pool_happy_bday"] = True
 
 label mas_bday_pool_happy_bday:
     python:
@@ -1241,10 +1245,25 @@ label mas_bday_pool_happy_bday:
         did_something_today = (
             mas_generateGiftsReport(mas_monika_birthday)[0] > 0
             or persistent._mas_bday_date_count > 0
-            or True
-        ) #TODO surprise party rebase please
+            or persistent._mas_bday_sbp_reacted
+        )
 
-    
+    if did_something_today:
+        m 3hub "Ehehe, thanks [player]!"
+        m 3eub "I was waiting for you to say those magic words~"
+        m 1eua "{i}Now{/i} we can call it a birthday celebration."
+        m 1hua "Doesn't matter if how it's done is unorthodox."
+        m 3eua "What matters the most is that you did it in the first place, right?"
+        m 1eka "You really made this occasion so special, [player]."
+        m 1ekbfa "I can't thank you enough for loving me this much..."
+
+    else:
+        m 1wkb "Aww, [player]!"
+        m 1wub "You remembered my birthday...!"
+        m 1wktpa "Oh gosh, I'm so happy that you remembered."
+        m 1dktda "I feel like today is going to be such a special day~"
+        m 1ekbfa "What else do you have in store for me, I wonder."
+        m 1hub "Ahaha!"
 
     # dont need to say happy birthday again today, but let the game know to 
     # reset it at some point in the future
