@@ -36,6 +36,26 @@ init 970 python:
         del moni_tuple
 
 
+    postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
+
+    if (
+            postbday_ev is not None
+            and persistent._mas_long_absence
+            and postbday_ev.conditional is not None
+            and eval(postbday_ev.conditional)
+        ):
+        # reset the post bday event if users did long absence to skip the 
+        # event
+        postbday_ev.conditional = None
+        postbday_ev.action = None
+
+    if postbday_ev is not None:
+        del postbday_ev
+
+    if mas_isMonikaBirthday():
+        persistent._mas_bday_opened_game = True
+
+
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
 image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
@@ -1185,6 +1205,23 @@ label ch30_reset:
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 
+    ## should we reset birthday
+    python:
+        if (
+                persistent._mas_bday_need_to_reset_bday
+                and not mas_isMonikaBirthday()
+            ):
+            bday_ev = mas_getEV("mas_bday_pool_happy_bday")
+            if bday_ev:
+                bday_ev.conditional="mas_isMonikaBirthday()"
+                bday_ev.action=EV_ACT_UNLOCK
+                persistent._mas_bday_need_to_reset_bday = False
+
+            bday_spent_ev = mas_getEV("mas_bday_spent_time_with")
+            if bday_spent_ev:
+                bday_spent_ev.action = EV_ACT_QUEUE
+                bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
+                bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

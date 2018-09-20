@@ -1722,7 +1722,7 @@ label greeting_ourreality:
     $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
     $ unlockEventLabel("mas_monika_islands")
 
-    # we can push here because of the slightly optimized call_next_event 
+    # we can push here because of the slightly optimized call_next_event
     $ pushEvent("mas_monika_islands")
     return
 
@@ -1764,7 +1764,7 @@ label greeting_returned_home:
                 $ aff_gain = 1
             else:
                 $ aff_gain = hours_out
-        
+
             $ mas_gainAffection(aff_gain, bypass=True)
             $ persistent._mas_monika_returned_home = datetime.datetime.now()
 
@@ -1817,7 +1817,7 @@ label greeting_returned_home_bday:
                 prev_aff - _mas_getAffection()
             )
 
-        
+
         def cap_gain_aff(amount):
             persistent._mas_bday_date_affection_gained += amount
             if persistent._mas_bday_date_affection_gained < 50:
@@ -1938,7 +1938,7 @@ label greeting_returned_home_bday:
             call greeting_returned_home_bday_normal_sub_long_total
 
         $ persistent._mas_bday_date_count += 1
-            
+
     else:
         # 6+ hours
         $ regain_lost_aff()
@@ -1954,7 +1954,7 @@ label greeting_returned_home_bday:
             m 1wfa "Are you falling for me all over again?"
             m 1hua "I'm just kidding~"
             m "Thank you for loving me."
-            
+
         else:
             # been out for a long time already
             $ cap_gain_aff(50)
@@ -1977,7 +1977,7 @@ label greeting_returned_home_bday_short_sub_short_total:
 label greeting_returned_home_bday_short_sub_normal_total:
     m 1hua "Well! That was fun, [player]."
     m "We already had a good date, but I'm glad you took me somewhere again."
-    m 3tku "Just can'tget enough of me, can you?"
+    m 3tku "Just can't get enough of me, can you?"
     m 1dkbfa "...Not that I mind~"
     return
 
