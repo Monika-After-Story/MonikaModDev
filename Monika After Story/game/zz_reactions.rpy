@@ -340,6 +340,8 @@ init -1 python in mas_filereacts:
             date = datetime.date.today()
 
         stats = _get_full_stats_for_date(date)
+        if stats is None:
+            return (0,0,0,0)
         good = 0
         bad = 0
         neutral = 0

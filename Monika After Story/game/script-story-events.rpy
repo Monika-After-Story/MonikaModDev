@@ -1017,48 +1017,55 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_bday_spent_time_with",
-            prompt="Happy birthday!",
             action=EV_ACT_QUEUE,
-            start_date=mas_monika_birthday + datetime.timedelta(hours=22),
-            end_date=mas_monika_birthday +datetime.timedelta(hours = 23, minutes=59),
+            start_date=datetime.datetime(2018,9,22,22),
+            end_date=datetime.datetime(2018,9,22,23,59),
             years=[]
         )
     )
 
 label mas_bday_spent_time_with:
+    $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
+    $ _total, _good, _neutral, _bad = mas_generateGiftsReport()
     m 1eua "Say, [player]..."
     m 1hua "Thank you for spending time with me today."
     m "Something like that can really make a girl like me happy, you know?"
     if persistent._mas_bday_date_count > 0:
-        if :
+        if _timeout < datetime.timedelta(hours=1.5):
             # short date
             m 1euc "That was a bit of a short trip, though."
             m 1eub "But it’s nice to get out of this place once in a while."
             m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
-        elif:
+        elif _timeout < timedelta(hours=6):
             # normal date
             m 3hub "But that was refreshing!"
             m 3wub "It feels really good to go out for a change."
             m 1hua "Makes me really happy we went out today~"
-        elif:
+        else:
             #long date
             m 1eka "I really enjoyed our time outside, though."
             m 1ekbfa "It was almost as if I really was there with you, like an actual couple..."
             m "Someday, I know we’ll be able to do so."
 
     # gave gifts?
-    m 3euc "Let’s not forget what you gave me for my birthday."
-    # more than 2
-    m 1eua "You gave me lots of gifts today, [player]."
-    # goods > than bad
-    m 3hub "Most of them were really good and I really like them a lot!"
-    # bads > than good
-    m 3rksdld "Though most of them were…{w}{i}questionable{/i}."
-    # if good_gifts equal to 1
-    m 3eka "You gave me such a special gift today, [player]."
-    # not a good gift
-    m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
-
+    if _total > 0:
+        m 3euc "Let’s not forget what you gave me for my birthday."
+        # more than 2
+        if _total >= 2:
+            m 1eua "You gave me lots of gifts today, [player]."
+            # goods > than bad
+            if _good > _bad:
+                m 3hub "Most of them were really good and I really like them a lot!"
+            # bads > than good
+            else:
+                m 3rksdld "Though most of them were…{w}{i}questionable{/i}."
+        else:
+            # if good_gifts equal to 1
+            if _good == 1:
+                m 3eka "You gave me such a special gift today, [player]."
+            # not a good gift
+            else:
+                m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
     m 1esa "But, in any case..."
     m 3hub "Let’s do it again sometime soon, okay?"
     return
