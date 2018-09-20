@@ -29,8 +29,8 @@ init python:
     "I have granted kids to hell",
     "PM died for this.",
     "It was only partially your fault.",
-    "This game is not suitable for children\nor those who are easily dismembered.",
-    "Don't forget to backup Monika's character file."
+    "This game is not suitable for children\nor those who are easily dismembered."
+#    "Don't forget to backup Monika's character file."
     ]
 
 image splash_warning = ParameterizedText(style="splash_text", xalign=0.5, yalign=0.5)
