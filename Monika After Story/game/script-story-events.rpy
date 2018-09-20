@@ -1267,6 +1267,6 @@ label mas_bday_pool_happy_bday:
 
     # dont need to say happy birthday again today, but let the game know to 
     # reset it at some point in the future
-    $ persistent._mas_bday_need_to_reset_bday
+    $ persistent._mas_bday_need_to_reset_bday = True
     $ lockEventLabel("mas_bday_pool_happy_bday")
     return
