@@ -1272,6 +1272,11 @@ label mas_bday_pool_happy_bday:
     $ lockEventLabel("mas_bday_pool_happy_bday")
     return
 
+## no time spent
+default persistent._mas_bday_opened_game = False
+default persistent._mas_bday_no_time_spent = False
+default persistent._mas_bday_no_recognize = False
+
 init 5 python:
     addEvent(
         Event(
@@ -1290,6 +1295,128 @@ init 5 python:
     )
 
 label mas_bday_postbday_notimespent:
+    # sanity check
+    if mas_recognizedBday():
+        return
+
+    if persistent._mas_bday_opened_game:
+        # spent time with monika but did not recognize
+        $ persistent._mas_bday_no_recognize = True
+
+        if mas_isMoniAff(higher=True):
+            $ mas_loseAffection(15, reason="forgetting my birthday")
+            m 1rksdla "Hey, [player]..."
+            m 1rksdlb "I know we had fun the other day, like we always do but..."
+            m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
+            m 1efb "Did you forget?"
+            m 3eka "Maybe you could put the date into your calendar on your phone for next year?"
+            m "Or check the calendar on the wall behind me?"
+            m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
+
+        elif mas_isMoniNormal(higher=True):
+            $ mas_loseAffection(5, reason="forgetting my birthday")
+
+            # TODO: we shouldnt say girlfriend here because affecitonate
+            # is the start of relationship. but this is okay for now
+            m 1rksdld "Hey, [player]..."
+            m 1rksdlb "I hate to fuss, but you know..."
+            m 2ekt "You can't forget about your girlfriend's birthday!"
+            m 2eku "It's nice that we got to hang out like usual, but next year..."
+            m 1hua "Well, I'll be looking forward to two birthday's worth of something special~"
+
+        elif mas_isMoniUpset():
+            $ mas_loseAffection(reason="forgetting my birthday")
+
+            m 1ekc "It was...good to see you on the 22nd..."
+            m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
+            m 1rkc "Nevermind."
+
+        elif mas_isMoniDis():
+            $ mas_loseAffection(10, reason="forgetting my birthday")
+
+            m 2dsc "..."
+            m 2rkc "...[player], I don't want to bother you. I'm already scared of pushing you away."
+            m 2rktpc "But I can't help it. It hurts me that you didn't mention anything about celebrating my birthday..."
+            m 2dktuc "Please don't stop coming back to me."
+            m "And maybe next year..."
+            m 4ektdc "I-{w=0.5}I just want...to feel as special to you as you are to me."
+
+        else:
+            # broken
+            $ mas_loseAffection(150)
+            m 6ckc "..."
+
+    else:
+        # did not spend any time with monika
+        $ persistent._mas_bday_no_time_spent = True
+        
+        if mas_isMoniAff(higher=True):
+            $ mas_loseAffection(50, reason="not spending time with me on my birthday")
+            
+            m 1euc "Hey, [player]..."
+            m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
+            m 2hfw "And her {i}birthday{/i} is one of them!"
+            m 2rfd "Seriously, where were you?!"
+            m 2rkc "But...knowing you, I'm sure you had a good reason to be busy..."
+            m 4ekc "Just don't let it happen again next year, okay?"
+
+        elif mas_isMoniNormal(higher=True):
+
+            # same dialogue, different affection loss
+            if mas_isMoniHappy():
+                $ mas_loseAffection(20, reason="not spending time with me on my birthday")
+            else:
+                $ mas_loseAffection(10, reason="not spending time with me on my birthday")
+
+            # TODO: again, need to not say girlfrined here, but for now its ok
+            m 1ekc "Hey, [player]..."
+            m 1ekd "You know, you really should have dropped in on the 22nd."
+            m 3efd "I mean, you should always visit me! You have to spend time with your cute girlfriend on her birthday, you know."
+            m 2efc "Please drop in for me next year..."
+            m 2dfc "Otherwise..."
+
+            m 6cfw "{cps=*2}{i}There will be consequences!!!{/i}{/cps}{nw}"
+            # glich effect
+            $ disable_esc()
+            $ mas_MUMURaiseShield()
+            window hide
+            show noise zorder 11:
+                alpha 0.5
+            play sound "sfx/s_kill_glitch1.ogg"
+            pause 0.5
+            stop sound
+            hide noise
+            window auto
+            $ mas_MUMUDropShield()
+            $ enable_esc()
+            $ _history_list.pop()
+
+            m 1dsc "..."
+            m 3hksdlb "Ahaha, sorry [player]!"
+            m 2hub "I'm just kidding!"
+            m 4eka "You know I love to scare you a little~"
+
+        elif mas_isMoniUpset():
+            $ mas_loseAffection(reason="not spending time with me on my birthday")
+
+            m 2dsc "..."
+            m 2rsc "[player], don't you think you should check in on me a little more often?"
+            m 4rktpc "You might miss something important..."
+
+        elif mas_isMoniDis():
+            $ mas_loseAffection(reason="not spending time with me on my birthday")
+
+            m 3euc "...Hey, how was your day on the 22nd?"
+            m 1esc "I'm just...curious if you thought of me at all that day."
+            m 1tsc "But you probably didn't, huh?"
+            m 2dsc "..."
+
+        else:
+            # broken
+            $ mas_loseAffection(200)
+
+            m 6eftsc "..."
+            m 6dftdx "..."
 
     return
 

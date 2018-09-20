@@ -2765,7 +2765,7 @@ init -1 python:
             mas_generateGiftsReport(_date)[0] > 0
             or persistent._mas_bday_date_count > 0
             or persistent._mas_bday_sbp_reacted
-            or True # TODO the bday pool topic
+            or persistent._mas_bday_said_happybday
         )
 
 

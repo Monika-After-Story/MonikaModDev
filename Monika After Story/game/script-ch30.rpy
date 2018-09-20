@@ -52,6 +52,9 @@ init 970 python:
     if postbday_ev is not None:
         del postbday_ev
 
+    if mas_isMonikaBirthday():
+        persistent._mas_bday_opened_game = True
+
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
@@ -1195,6 +1198,7 @@ label ch30_reset:
                 bday_ev.conditional="mas_isMonikaBirthday()"
                 bday_ev.action=EV_ACT_UNLOCK
                 persistent._mas_bday_need_to_reset_bday = False
+
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
