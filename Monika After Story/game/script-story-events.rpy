@@ -1116,7 +1116,7 @@ label mas_bday_surprise_party_reaction:
 
         m 6hub "Ahh, it's so pretty, [player]!"
         m 6wub "Reminds me of that cake someone gave me once."
-        m 6eua "It was as pretty as you've made this one!"
+        m 6eua "It was almost as pretty as you've made this one!"
         m 6dua "But anyway..."
         window hide
 
@@ -1235,7 +1235,7 @@ init 5 python:
 #            years=[]
         )
     )
-    
+
     # make sure this event is considered seen
     persistent._seen_ever["mas_bday_pool_happy_bday"] = True
 
@@ -1265,7 +1265,7 @@ label mas_bday_pool_happy_bday:
         m 1ekbfa "What else do you have in store for me, I wonder."
         m 1hub "Ahaha!"
 
-    # dont need to say happy birthday again today, but let the game know to 
+    # dont need to say happy birthday again today, but let the game know to
     # reset it at some point in the future
     $ persistent._mas_bday_need_to_reset_bday = True
     $ lockEventLabel("mas_bday_pool_happy_bday")
@@ -1348,10 +1348,10 @@ label mas_bday_postbday_notimespent:
     else:
         # did not spend any time with monika
         $ persistent._mas_bday_no_time_spent = True
-        
+
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(50, reason="not spending time with me on my birthday")
-            
+
             m 1euc "Hey, [player]..."
             m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
             m 2hfw "And her {i}birthday{/i} is one of them!"
@@ -1418,4 +1418,3 @@ label mas_bday_postbday_notimespent:
             m 6dftdx "..."
 
     return
-
