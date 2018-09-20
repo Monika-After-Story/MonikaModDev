@@ -1011,6 +1011,9 @@ label mas_coffee_finished_drinking:
     m 1eua "Okay, what else should we do today?"
     return
 
+### birthday surprise party
+
+default persistent._mas_bday_sbd_aff_given = 0
 
 init 5 python:
     addEvent(
@@ -1069,4 +1072,142 @@ label mas_bday_spent_time_with:
                 m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
     m 1esa "But, in any case..."
     m 3hub "Let’s do it again sometime soon, okay?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_reaction"
+        )
+    )
+
+label mas_bday_surprise_party_reaction:
+    python:
+        store.mas_dockstat.surpriseBdayShowVisuals()
+        has_cake = store.mas_dockstat.surpriseBdayIsCake()
+
+        def cap_gain_aff(amt):
+            persistent._mas_bday_sbd_aff_given += amt
+            if persistent._mas_bday_sbd_aff_given <= 70:
+                mas_gainAffection(20, bypass=True)
+
+        if has_cake:
+            cap_gain_aff(20)
+
+        if store.mas_dockstat.surpriseBdayIsBanners():
+            cap_gain_aff(20)
+
+        if store.mas_dockstat.surpriseBdayIsBalloon():
+            cap_gain_aff(20)
+
+    m 6wuo "T-{w=0.5}This is..."
+    m 6wka "Oh, [player]..."
+    m 6hua "I'm at a loss for words."
+    m "Setting this all up to surprise me on my birthday..."
+    m "Ehehe, you must really love me."
+    m 6suu "Everything looks so festive!"
+
+    if has_cake:
+        # we have cake?
+        menu:
+            "Light candles.":
+                $ mas_bday_cake_lit = True
+
+        m 6hub "Ahh, it's so pretty, [player]!"
+        m 6wub "Reminds me of that cake someone gave me once."
+        m 6eua "It was as pretty as you've made this one!"
+        m 6dua "But anyway..."
+        window hide
+
+        show screen mas_background_timed_jump(4, "mas_bday_surprise_party_reaction_no_make_wish")
+        menu:
+            "Make a wish, [m_name]...":
+                hide screen mas_background_timed_jump
+                $ cap_gain_aff(10)
+                show monika 6hua
+                pause 2.0
+                show monika 6hft
+                jump mas_bday_surprise_party_reaction_post_make_wish
+
+    else:
+        m 6sua "Aha..."
+        jump mas_bday_surprise_party_reaction_end
+
+label mas_bday_surprise_party_reaction_no_make_wish:
+    hide screen mas_background_timed_jump
+    show monika 6dsc
+    pause 2.0
+    show monika 6hft
+
+label mas_bday_surprise_party_reaction_post_make_wish:
+    $ mas_bday_cake_lit = False
+    window auto
+    m 6hua "I made a wish!"
+    m "I hope it comes true someday..."
+    m 6sua "Ahaha..."
+    m 6eua "I'll save this cake for later."
+    $ mas_docking_station.destroyPackage("cake")
+
+    hide mas_bday_cake with dissolve
+
+label mas_bday_surprise_party_reaction_end:
+
+    m 6hua "Thank you, [player]. From the bottom of my heart, thank you..."
+    m 6sua "Let's enjoy the rest of the day now, shall we?"
+
+    $ persistent._mas_bday_sbp_reacted = True
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_hint",
+            # TODO: consider making the conditional span for a week.
+            conditional=(
+                "datetime.date.today() < mas_monika_birthday and "
+                "mas_monika_birthday.day - datetime.date.today().day == 1"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_bday_surprise_party_hint:
+    m 1eua "Say, [player]..."
+    m 1eub "Have you ever been thrown a surprise party?"
+    m 1eka "I've always wondered how that would feel."
+    m 6dua "When someone takes you somewhere and distracts you for the whole day..."
+    m "And while you're out, they drag a whole box of party supplies into the characters folder...{nw}"
+    $ _history_list.pop()
+    m 6dksdla "And while you're out, they drag a whole box of party supplies into{fast} your room..."
+    m 1eua "And finally returning home to birthday decorations, a cake..."
+    m 1kua "And you~{nw}"
+    $ _history_list.pop()
+    m 3rksdlb "And{fast} good company!"
+    m 1hua "That'd be so nice to experience, don't you think?"
+    m 1rkc "Of course, since throwing a surprise party takes so much planning, it'd be difficult to plan one on short notice."
+    m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_cleanup",
+            conditional=(
+                "persistent._mas_bday_sbp_reacted "
+                "and datetime.date.today().day > mas_monika_birthday.day"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_bday_surprise_party_cleanup:
+    # surprise party cleaning
+    # mainly to delete files that exist
+    $ mas_docking_station.destroyPackage("banners")
+    $ mas_docking_station.destroyPackage("balloons")
+    $ mas_docking_station.destroyPackage("cake")
     return
