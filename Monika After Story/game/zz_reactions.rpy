@@ -43,6 +43,18 @@ init -1 python in mas_filereacts:
     # same keys/values as foundreact_map
     th_foundreact_map = dict()
 
+    # good gifts list
+    # TODO: note this would probably be better handled by a property
+    # on the event
+    good_gifts = ["mas_reaction_gift_coffee","mas_reaction_quetzal_plush",
+        "mas_reaction_promisering", "mas_reaction_plush",
+        "mas_reaction_bday_cake","mas_reaction_cupcake"]
+    # bad gifts list
+    # TODO: note this would probably be better handled by a property
+    # on the event
+    bad_gifts = ["mas_reaction_knife"]
+
+
     # connector quips
     connectors = None
     gift_connectors = None
@@ -140,11 +152,6 @@ init -1 python in mas_filereacts:
         # then sort the list
         gifts_found.sort()
 
-        # check for stats dict for today
-        today = datetime.date.today()
-        if not today in persistent._mas_filereacts_historic:
-            persistent._mas_filereacts_historic[today] = dict()
-
         # now we are ready to check for reactions
         # first we check for all file reacts:
         #all_reaction = filereact_map.get(gifts_found, None)
@@ -164,9 +171,6 @@ init -1 python in mas_filereacts:
                 gifts_found.pop()
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(gift_connectors.quip()[1])
-                # keep stats for today
-                persistent._mas_filereacts_historic[today][reaction.eventlabel] =
-                    persistent._mas_filereacts_historic[today].get(reaction.eventlabel,0) + 1
 
         # add in the generic gift reactions
         generic_reacts = list()
@@ -175,8 +179,8 @@ init -1 python in mas_filereacts:
                 generic_reacts.append("mas_reaction_gift_generic")
                 generic_reacts.append(gift_connectors.quip()[1])
                 # keep stats for today
-                persistent._mas_filereacts_historic[today]["mas_reaction_gift_generic"] =
-                    persistent._mas_filereacts_historic[today].get("mas_reaction_gift_generic",0) + 1
+                _register_received_gift("mas_reaction_gift_generic")
+
         generic_reacts.extend(found_reacts)
 
         # gotta remove the extra
@@ -233,6 +237,23 @@ init -1 python in mas_filereacts:
         for _fn in _filename_list:
             _core_delete(_fn, _map)
 
+
+    def _register_received_gift(eventlabel):
+        """
+        Registers when player gave a gift successfully
+        IN:
+            eventlabel - the event label for the gift reaction
+
+        """
+        # check for stats dict for today
+        today = datetime.date.today()
+        if not today in store.persistent._mas_filereacts_historic:
+            store.persistent._mas_filereacts_historic[today] = dict()
+
+        # Add stats
+        store.persistent._mas_filereacts_historic[today][eventlabel] = store.persistent._mas_filereacts_historic[today].get(eventlabel,0) + 1
+
+
     def _get_full_stats_for_date(date=None):
         """
         Getter for the full stats dict for gifts on a given date
@@ -247,7 +268,7 @@ init -1 python in mas_filereacts:
         """
         if date is None:
             date = datetime.date.today()
-        return persistent._mas_filereacts_historic.get(date,None)
+        return store.persistent._mas_filereacts_historic.get(date,None)
 
 
     def delete_file(_filename):
@@ -316,7 +337,20 @@ init -1 python in mas_filereacts:
             date = datetime.date.today()
 
         stats = _get_full_stats_for_date(date)
+        good = 0
+        bad = 0
+        neutral = 0
+        for _key in stats.keys():
+            if _key in good_gifts:
+                good = good + stats[_key]
+            if _key in bad_gifts:
+                bad = bad + stats[_key]
+            if _key == "":
+                neutral = stats[_key]
+        total = good + neutral + bad
+        return (total, good, neutral, bad)
         
+
 
     # init
     _initConnectorQuips()
@@ -350,6 +384,21 @@ init python:
             for _react in reacts:
                 pushEvent(_react)
             persistent._mas_filereacts_just_reacted = True
+
+
+    def mas_receivedGift(ev_label):
+        """
+        Globalied version for gift stats tracking
+        """
+        mas_filereacts._register_received_gift(ev_label)
+
+
+    def mas_generateGiftsReport(date=None):
+        """
+        Globalied version for gift stats tracking
+        """
+        return mas_filereacts.get_report_for_date(date)
+
 
 
 ### CONNECTORS [RCT000]
@@ -464,6 +513,7 @@ label mas_reaction_gift_coffee:
 
     m 1euc "Hmm?"
     m 1euc "Oh,{w} is this coffee?"
+    $ mas_receivedGift("mas_reaction_gift_coffee")
 
     if persistent._mas_coffee_been_given:
         $ mas_gainAffection(bypass=True)
@@ -505,6 +555,7 @@ init 5 python:
 
 label mas_reaction_quetzal_plush:
     if not persistent._mas_acs_enable_quetzalplushie:
+        $ mas_receivedGift("mas_reaction_quetzal_plush")
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh!"
         $ monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
@@ -530,6 +581,7 @@ init 5 python:
 
 label mas_reaction_promisering:
     if not persistent._mas_acs_enable_promisering:
+        $ mas_receivedGift("mas_reaction_promisering")
         if mas_isMoniEnamored(higher=True):
             $ mas_gainAffection(modifier=5, bypass=True)
             $ monika_chr.wear_acs_pst(mas_acs_promisering)
@@ -591,6 +643,7 @@ label mas_reaction_plush:
     m 1hua "But don’t worry, [player]!"
     m 1hub "Ehehe~"
     m 1hua "Thank you for trying!"
+    $ mas_receivedGift("mas_reaction_bday_cake") # while unsuccessful counts
     $ gift_ev = mas_getEV("mas_reaction_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
@@ -615,6 +668,7 @@ label mas_reaction_bday_cake:
         m 3ekbfa "I wish we could eat it together..."
         m 1dkbfa "A birthday cake is for sharing, after all~"
         m 1ekbfa "Thank you for this, [player]."
+        $ mas_receivedGift("mas_reaction_bday_cake")
         if mas_isMoniAff(higher=True):
             m 3hubfb "I love you! Ehehe~"
     $ gift_ev = mas_getEV("mas_reaction_bday_cake")
@@ -632,6 +686,7 @@ label mas_reaction_cupcake:
     m 1rksdlb "Buuut I’ve yet to make a kitchen to use!"
     m 3eub "Maybe in the future once I get better at programming, I’ll be able to make one here."
     m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
+    $ mas_receivedGift("mas_reaction_cupcake")
     $ gift_ev = mas_getEV("mas_reaction_cupcake")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
@@ -648,6 +703,7 @@ label mas_reaction_knife:
     m 1dfc "..."
     m 1rsc "I’m not taking this, [player]."
     m 1rfc "If you were trying to be funny, then you have {i}very{/i} poor taste."
+    $ mas_receivedGift("mas_reaction_knife") # while technically she didn't accept this one counts
     $ gift_ev = mas_getEV("mas_reaction_knife")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
