@@ -2741,7 +2741,11 @@ init -1 python:
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
         if mas_monika_birthday < today:
-            return datetime.date(today.year + 1, 9, 22)
+            return datetime.date(
+                today.year + 1,
+                mas_monika_birthday.month,
+                mas_monika_birthday.day
+            )
         return mas_monika_birthday
 
 
