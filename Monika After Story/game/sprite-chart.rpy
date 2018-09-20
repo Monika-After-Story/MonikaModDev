@@ -181,8 +181,7 @@ image mas_bday_balloons = ConditionSwitch(
     "morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
     "not morning_flag",
-#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n2.png"
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
 init -5 python in mas_sprites:
