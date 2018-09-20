@@ -174,7 +174,8 @@ init -1 python in mas_filereacts:
             generic_reacts.insert(0, "mas_reaction_end")
 
             # add the starter
-            generic_reacts.append(gift_starters.quip()[1])
+            generic_reacts.append("mas_reaction_gift_starter_bday")
+#            generic_reacts.append(gift_starters.quip()[1])
 
         # now return the list
         return generic_reacts
@@ -316,11 +317,11 @@ init python:
 # none here!
 
 ## Gift CONNECTORS [RCT010]
-
-init 5 python:
-    store.mas_filereacts.gift_connectors.addLabelQuip(
-        "mas_reaction_gift_connector_test"
-    )
+#
+#init 5 python:
+#    store.mas_filereacts.gift_connectors.addLabelQuip(
+#        "mas_reaction_gift_connector_test"
+#    )
 
 label mas_reaction_gift_connector_test:
     m "this is a test of the connector system"
@@ -383,8 +384,8 @@ label mas_reaction_generic:
     "This is a test"
     return
 
-init 5 python:
-    addReaction("mas_reaction_gift_generic", None)
+#init 5 python:
+#    addReaction("mas_reaction_gift_generic", None)
 
 label mas_reaction_gift_generic:
     m "this is a test of the generic gift reaction"
