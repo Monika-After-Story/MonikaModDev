@@ -44,7 +44,7 @@ label gender:
     m 1hub "Remember that I'll always love you unconditionally, [player]."
     $ evhand.event_database["gender_redo"].unlocked = True
     $ evhand.event_database["gender_redo"].pool = True
-    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen 
+    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
     return
 
@@ -698,7 +698,7 @@ init 5 python:
     )
 
     if (
-            mas_corrupted_per 
+            mas_corrupted_per
             and not (mas_no_backups_found or mas_backup_copy_failed)
         ):
         mas_note_backups_all_good = None
@@ -779,7 +779,7 @@ init 5 python:
 
         _mas_generate_backup_notes()
         import os
-        
+
         if len(mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
@@ -793,7 +793,7 @@ init 5 python:
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
                 mas_note_backups_all_good.title + "\n\n" + mas_note_backups_all_good.text
             )
-            
+
 
 label mas_corrupted_persistent:
     m 1eud "Hey, [player]..."
@@ -807,7 +807,7 @@ label mas_corrupted_persistent:
         show screen mas_note_backups_poem(mas_note_backups_some_bad)
 
     else:
-        show screen mas_note_backups_poem(mas_note_backups_all_good) 
+        show screen mas_note_backups_poem(mas_note_backups_all_good)
     with Dissolve(0.5)
 
     $ pause()
@@ -889,7 +889,7 @@ label mas_new_character_file:
             return os.access(
                 os.path.normcase(
                     renpy.config.basedir + "/characters/monika.chr"
-                ), 
+                ),
                 os.F_OK
             )
 
@@ -1004,9 +1004,56 @@ label mas_coffee_finished_drinking:
         $ mas_drinkCoffee()
 
     pause 1.0
-        
+
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
     m 1eua "Okay, what else should we do today?"
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_spent_time_with",
+            prompt="Happy birthday!",
+            action=EV_ACT_QUEUE,
+            start_date=mas_monika_birthday + datetime.timedelta(hours=22),
+            end_date=mas_monika_birthday +datetime.timedelta(hours = 23, minutes=59),
+            years=[]
+        )
+    )
+
+label mas_bday_spent_time_with:
+    m 1eua "Say, [player]..."
+    m 1hua "Thank you for spending time with me today."
+    m "Something like that can really make a girl like me happy, you know?"
+    # short date
+    m 1euc "That was a bit of a short trip, though."
+    m 1eub "But it’s nice to get out of this place once in a while."
+    m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
+    # normal date
+    m 3hub "But that was refreshing!"
+    m 3wub "It feels really good to go out for a change."
+    m 1hua"Makes me really happy we went out today~"
+    #long date
+    m 1eka "I really enjoyed our time outside, though."
+    m 1ekbfa "It was almost as if I really was there with you, like an actual couple..."
+    m "Someday, I know we’ll be able to do so."
+    # gave gifts?
+    m 3euc "Let’s not forget what you gave me for my birthday."
+    # more than 2
+    m 1eua "You gave me lots of gifts today, [player]."
+    # goods > than bad
+    m 3hub "Most of them were really good and I really like them a lot!"
+    # bads > than good
+    m 3rksdld "Though most of them were…{w}{i}questionable{/i}."
+    # if good_gifts equal to 1
+    m 3eka "You gave me such a special gift today, [player]."
+    # not a good gift
+    m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
+
+    m 1esa "But, in any case..."
+    m 3hub "Let’s do it again sometime soon, okay?"
     return
