@@ -490,9 +490,15 @@ init -5 python in mas_sprites:
         if len(acs_list) == 0:
             return ""
 
-        return "," + ",".join([
+        acs_gen = [
             _ms_accessory(acs, isnight, issitting, pose, lean=lean)
             for acs in acs_list
+        ]
+
+        return "," + ",".join([
+            _acs
+            for _acs in acs_gen
+            if len(_acs) > 0
         ])
 
 
