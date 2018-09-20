@@ -31,7 +31,7 @@ init 970 python:
         store.mas_dockstat.retmoni_data = moni_tuple[1]
 
         # check surprise party
-        surpriseBdayCheck(mas_docking_station)
+        store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
 
         del moni_tuple
 
@@ -424,7 +424,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     $scene_change = False
 
     # bday stuff (this checks itself)
-    $ store.mas_dockstat.surpriseBdayShowVisuals()
+    if persistent._mas_bday_sbp_reacted:
+        $ store.mas_dockstat.surpriseBdayShowVisuals()
     return
 
 
@@ -784,8 +785,7 @@ label ch30_post_greeting_check:
     # we assume here that you set selected_greeting if you needed to
 
     # file reactions
-#    if mas_isMonikaBirthday():
-    if True:
+    if mas_isMonikaBirthday():
         $ mas_checkReactions()
 
     #Run actions for any events that need to be changed based on a condition
@@ -903,8 +903,8 @@ label ch30_loop:
             mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
 
             # run file checks
-#            if mas_isMonikaBirthday():
-            mas_checkReactions()
+            if mas_isMonikaBirthday():
+                mas_checkReactions()
 
             #Update time
             calendar_last_checked=datetime.datetime.now()

@@ -34,3 +34,30 @@ label dev_bday_visuals:
     hide mas_bday_balloons
     hide mas_bday_cake
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_bday_visual_files",
+            category=["dev"],
+            prompt="BDAY VISUALS (Files)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_bday_visual_files:
+    m 1eua "Okay, lets try looking for the files we need"
+    $ store.mas_dockstat.surpriseBdayShowVisuals()
+
+    m "candle light?"
+    $ mas_bday_cake_lit = True
+
+    m "off"
+    $ mas_bday_cake_lit = False
+
+    m "remove visuals"
+    $ store.mas_dockstat.surpriseBdayHideVisuals()
+    m "done"
+    return

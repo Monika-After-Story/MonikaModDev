@@ -1060,6 +1060,7 @@ init 200 python in mas_dockstat:
     import store.mas_utils as mas_utils
     import store.mas_sprites as mas_sprites
     import store.mas_greetings as mas_greetings
+    import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
     import os
@@ -1228,11 +1229,18 @@ init 200 python in mas_dockstat:
             return MAS_SBP_NONE
 
         ret_val = (
-            packageCheck(dockstat, "cake", sbp_cake, MAS_SBP_CAKE, 0, False)
+            packageCheck(
+                dockstat,
+                "cake",
+                mas_ics.sbp_cake,
+                MAS_SBP_CAKE,
+                0,
+                False
+            )
             | packageCheck(
                 dockstat,
                 "banners",
-                sbp_banners,
+                mas_ics.sbp_banners,
                 MAS_SBP_BANR,
                 0,
                 False
@@ -1240,7 +1248,7 @@ init 200 python in mas_dockstat:
             | packageCheck(
                 dockstat,
                 "balloons",
-                sbp_balloons,
+                mas_ics.sbp_balloons,
                 MAS_SBP_BLON,
                 0,
                 False
@@ -1281,19 +1289,19 @@ init 200 python in mas_dockstat:
                 (_status & MAS_SBP_CAKE) > 0
                 and not store.persistent._mas_bday_sbp_reacted
             ):
-            persistent._mas_bday_sbp_found_cake = True
+            store.persistent._mas_bday_sbp_found_cake = True
             renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
         else:
             renpy.hide("mas_bday_cake")
 
         if (_status & MAS_SBP_BANR) > 0:
-            persistent._mas_bday_sbp_found_banners = True
+            store.persistent._mas_bday_sbp_found_banners = True
             renpy.show("mas_bday_banners", zorder=7)
         else:
             renpy.hide("mas_bday_banners")
 
         if (_status & MAS_SBP_BLON) > 0:
-            persistent._mas_bday_sbp_found_balloons = True
+            store.persistent._mas_bday_sbp_found_balloons = True
             renpy.show("mas_bday_balloons", zorder=8)
         else:
             renpy.hide("mas_bday_balloons")
@@ -1313,6 +1321,20 @@ init 200 python in mas_dockstat:
         Returns true if cake was found, False otherwise
         """
         return (retsbp_status & MAS_SBP_CAKE) > 0
+
+
+    def surpriseBdayIsBanners():
+        """
+        Returns true if banners were found, false otherwise
+        """
+        return (retsbp_status & MAS_SBP_BANR) > 0
+
+
+    def surpriseBdayIsBalloon():
+        """
+        Returns true if balloon was found, false otherwise
+        """
+        return (retsbp_status & MAS_SBP_BLON) > 0
 
 
     def generateMonika(dockstat):
