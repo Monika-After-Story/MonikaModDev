@@ -51,6 +51,9 @@ init -900 python in mas_ics:
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof)
     }
+
+    ########################## SURPRISE BDAY PARTY ############################
+    # 
         
     ###########################################################################
 
@@ -962,6 +965,21 @@ init -500 python in mas_dockstat:
     # Monika data is in persitent form
     MAS_PKG_DP = 16
 
+    ## surprise party constants for the state of the surprise party
+    # bit based
+    
+    MAS_SBP_NONE = 1
+    # no surprise party files
+
+    MAS_SBP_CAKE = 2
+    # cake was found
+
+    MAS_SBP_BANR = 4
+    # banner was found
+
+    MAS_SBP_BLON = 8
+    # balloon was found
+
 init python in mas_dockstat:
     import store
     import cPickle
@@ -1092,6 +1110,13 @@ init 200 python in mas_dockstat:
                 "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
             )
             return False
+
+    def surpriseBdayCheck(dockstat):
+        """
+        Checks for surprise party files in the given docking station.
+        Returns a bit set of surprise party states
+        """
+        return False
 
 
     def generateMonika(dockstat):
@@ -1898,3 +1923,7 @@ label mas_dockstat_found_monika:
         startup_check = False
 
     jump ch30_post_greeting_check
+
+
+
+

@@ -159,6 +159,32 @@ image emptydesk = ConditionSwitch(
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
+### bday stuff
+define mas_bday_cake_lit = False
+image mas_bday_cake = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake-n.png"
+)
+image mas_bday_banner = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
+)
+image mas_bday_balloons = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+    "not morning_flag",
+#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n2.png"
+)
+
 init -5 python in mas_sprites:
     # specific image generation functions
 
